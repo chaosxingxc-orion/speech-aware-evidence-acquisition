@@ -1,0 +1,76 @@
+{
+  "schema": "saea-root-remaining-proposer-quota-closure-v1",
+  "at_utc": "2026-10-04T05:36:37.374786+00:00",
+  "owner_authority": "owner227 plus direct human continuation",
+  "status": "STOPPED-SUBSCRIPTION-SHARING-QUOTA",
+  "provider_error": {
+    "code": "subscription_sharing_usage_limit_exceeded",
+    "message": "The ChatGPT user has reached their Subscription Sharing usage limit. Ask the user to try again after their usage limit resets or use an API key instead.",
+    "param": null,
+    "type": "invalid_request_error"
+  },
+  "allocation": "B-9-1",
+  "allocation_spent": true,
+  "candidate_received": false,
+  "contact_count": 1,
+  "input_tokens": null,
+  "output_tokens": null,
+  "metering_complete": false,
+  "closed_not_retried": [
+    "L-9-1"
+  ],
+  "remaining_unspent": [
+    "L-9-2",
+    "B-9-2"
+  ],
+  "reset_time": null,
+  "worker_pid_absent": 620657,
+  "windows_task_exit_code": 1,
+  "disposition": "Close the actual reserved B-9-1 opportunity as invalid with an empty final response and unknown usage. Preserve original transport bytes. Hold the two untouched opportunities. No automatic retry, replacement, separate quota probe or paid fallback.",
+  "heartbeat": "PAUSED",
+  "paid_api_spend": 0,
+  "gpu_dispatch": false,
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-remaining-v1/finished.json",
+      "sha256": "c1fae6808deed983aaa59b6dbd7d1ebd47509a1f77a55509994c077093338ace"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-remaining-v1/transport/B-9-1/outcome.json",
+      "sha256": "b9a099b4bb779ac36d0bd7d8d1350636a49bb9f826986d50c51c42f93d4c7982"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-remaining-v1/contacts/B-9-1/001.json",
+      "sha256": "9bae627e12080a46ad6a1fb7790f866100a1406be5076f264565d9167ca36308"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-remaining-v1/transport/B-9-1/contact-001/events.jsonl",
+      "sha256": "6c2e14afa93733a49a6b787de4301ce6dd7a1b3cfcc7db270fa4a952db8d9351"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-remaining-v1/transport/B-9-1/contact-001/response.sse",
+      "sha256": "3f8ce626ef531853e340aa3ad560e474277f7dc6e8eb92175d48f2d7c13ec3fb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-remaining-owner227-v1/launcher-exit.json",
+      "sha256": "e2def0809598d9e1805ed7cbd2e7bdf7ffb5206014f7e5b9d7ca122750ebb8fc"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/responses/B-9-1.json",
+      "sha256": "d5c9334b4359e7596bf41d40659f14f6719c07c209b59365bf78208c9dc06d64"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/proposals/B-9-1.json",
+      "sha256": "ad51b1bd535c3a544a6dd0fa8c2030c804268bcfd6f135664ee681cf62b15625"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/imports/B-9-1.json",
+      "sha256": "256fcca8d9f94796240b20b6a1fbc9f27f4d8b9702b821a5518d287dcbf9a277"
+    }
+  ],
+  "archive_closure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-remaining-owner227-v1/B-9-1-root-disposition-v1.json",
+    "sha256": "76617f14a2b9c291bcbbcceebe4e748b98b1c16c849d0a713bf996907291cd80"
+  },
+  "total_closed_imports": 31
+}

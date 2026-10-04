@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Requested continuation stopped on provider quota, 2026-10-04T05:36:37.374786+00:00
+
+The requested remaining-only task has ended, superseding the live checkpoint below. The first actual B-9-1 request again received subscription_sharing_usage_limit_exceeded at05:33:53Z. No candidate or complete usage was returned. Windows exit1,original PID620657 absent. [Fresh stop and root closure](../receipts/continuation/2026-10-04-four-node-round9-remaining-quota-stop.json) preserves the transport/error and closes B-9-1 invalid/spent with unknown token usage,not zero. L-9-1 was not retried. L-9-2 and B-9-2 have no contact and remain unspent.
+
+The human-reported reset was a valid basis for one real continuation,not proof that this service quota had reset. The fresh actual response still refuses; no reset time is supplied. Stop here without another model probe,retry,replacement,paid fallback or credential reset. The task made exactly one reserved contact and no GPU/scoring contact. Old three-remaining preflight is now historical; future continuation must exclude both closed allocations and bind the two untouched inputs before admission.
+
+All four-node compilation,measurement and existing-prefix preparation remains available. No new candidate,quality result or learning gain exists. Keep source/capsule histories,root-only sequential work,heartbeat PAUSED,human before8x400 and separate carrier holds. Await a new availability basis or directly authorized admissible route; do not silently continue.
+
 ## Owner-requested remaining round9 continuation running, 2026-10-04T05:33:05.767043+00:00
 
 The human directly requested continuation and reported an understood quota reset. [Root admission](../receipts/continuation/2026-10-04-four-node-round9-remaining-root-admission.json) and [launch receipt](../receipts/continuation/2026-10-04-four-node-round9-remaining-launch.json) supersede the earlier waiting boundary for exactly B-9-1,L-9-2,B-9-2. Preserve spent L-9-1 without retry or replacement. Inputs,capsules,model,budgets,source pins and isolation are unchanged.
