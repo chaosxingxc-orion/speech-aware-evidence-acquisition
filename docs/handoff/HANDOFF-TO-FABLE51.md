@@ -1,5 +1,19 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Four-node seed capacity accepted, 2026-10-04T03:44:02.260000+00:00
+
+[Exact completion receipt](../receipts/continuation/2026-10-04-four-node-seed-capacity-complete.json) closes the Windows capacity task successfully at03:36:57Z on frozen6d542d7c4. All44 measured graph requests fit;297 service endpoints match the sequential contact journal. Full512-token output and2048-token structural reserves leave minimum5546 tokens. Zero generation/scorer contacts. Stable memory wait and running guard passed; minimum observed Windows free16.51GiB. Lease released, launcher PID absent and worker clean. This is bounded graph stress, not an exhaustive arbitrary-text proof; each future actual request still requires FIT.
+
+The exact capacity structural READ is complete. The separately prepared four-row generation remains HELD pending its own registration/admission/frozen checks. Proposal sharing quota remains unresolved; no probe, paid fallback or retry is authorized. Full four-node text/context scope and measured quality/latency selection are implemented, but no new efficacy or learning gain is established. Root-only, sequential execution, heartbeat PAUSED, human before8x400; other-carrier holds remain.
+
+## Four-node seed capacity running, 2026-10-04T03:36:47.207317+00:00
+
+[Launch receipt](../receipts/continuation/2026-10-04-four-node-seed-capacity-launch.json) records Windows task `SAEA-Four-Node-Seed-Capacity-Owner227`, epoch03:35:16Z, frozen `/home/chao/saea-worktrees/codex-four-node-seed-capacity-v2` at `6d542d7c44c7dde262f51bd85d6f233736bfb9cd`. PID611920/start ticks43450210 was observed live. Exact frozen registration/runtime/graph checks pass, with no prepared-artifact blockers. No STOP or competing flight/lease; service healthy idle,4 slots,Windows21.59GiB at startup. Revalidate actual handles rather than assuming completion.
+
+Run only `SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-FIT-V1`, up to297 tokenizer endpoints,zero generation/scoring. Shared guarded coordinator, lease and12.5/8GiB memory floors remain. The final four-row model-free graph matches all request-affecting fields. Await exact terminal capacity receipt and endpoint accounting; task start is not a FIT result. The actual four-row engineering generation stays HELD until acceptance and its own admission.
+
+The first frozen model-free check refused a noncanonical exposure table header before any contact; root corrected only the header and preserved original `c72225424` checkout/logs. [Disposition](../receipts/continuation/2026-10-04-four-node-seed-precontact-header-disposition.json) grants no automatic retry. All inputs,policies,assets and budgets remain fixed. Proposer quota remains unresolved, L-9-1 spent and three slots unspent; no new proposal contact. Root-only,heartbeat PAUSED,human before8x400,other-carrier holds unchanged;no new scientific gain.
+
 ## Four-node seed runtime proof prepared independently of proposer quota, 2026-10-04T03:19:14.797270+00:00
 
 [New HELD capacity/structural package](../readiness/2026-10-04-four-node-seed-engineering-v1/README.md) and [receipt](../receipts/continuation/2026-10-04-four-node-seed-runtime-prepared.json) bind the explicit seed to the SAME existing UPDATE2 first20/first4 assets. All four role bytes remain identical to the predecessor. The generic seed's R01C agreement binding was caught by an offline source-equality assertion before any cell/contact; the final derivation preserves existing UPDATE2 components and compiles only role/presentation declarations. Complete knowledge/query/vote sources and packet promotion match exactly, and knowledge construction sources remain disjoint.

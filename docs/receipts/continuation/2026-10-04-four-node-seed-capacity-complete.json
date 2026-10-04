@@ -1,0 +1,73 @@
+{
+  "schema": "saea-four-node-seed-capacity-complete-v1",
+  "at_utc": "2026-10-04T03:44:02.260000+00:00",
+  "status": "PASS",
+  "root_authority": "owner227",
+  "worker": "/home/chao/saea-worktrees/codex-four-node-seed-capacity-v2",
+  "source_commit": "6d542d7c44c7dde262f51bd85d6f233736bfb9cd",
+  "run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-FIT-V1",
+  "attempt_id": "attempt-slurp-native-stage3-system-text-four-node-seed-capacity-fit-v1",
+  "service_endpoints": 297,
+  "routes": {
+    "/props": 1,
+    "/tokenize": 252,
+    "/apply-template": 44
+  },
+  "measured_requests": 44,
+  "every_request_fits": true,
+  "minimum_margin_after_output_and_structural_reserves": 5546,
+  "output_reserve": 512,
+  "structural_reserve": 2048,
+  "minimum_observed_windows_free_gib": 16.50543212890625,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "lease_released": true,
+  "worker_clean": true,
+  "launcher_pid_absent": true,
+  "scope": "Reachable graph stress with measured longest tool values, not an exhaustive bound over arbitrary future text. Exact native per-contact FIT remains mandatory.",
+  "structural_read": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-STRUCTURE-V1",
+  "scientific_results_read": false,
+  "next": "Separately register and admit the existing four-row structural proof; proposal continuation remains quota-held. No efficacy or learning claim.",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/registration-v1.json",
+      "sha256": "74f1f01f6b2b27ff65ff56e93880ef86c8e6376b3f3580e5961c2ee335d60019"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/root-admission-v1.json",
+      "sha256": "5f63abe1ab5bdef2ab2e7aa10741408d701980d755c7a0d12d79f8b1ab428d41"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/capacity-finished.json",
+      "sha256": "921eea6542db714add5ae3351607dd5d48ab74d8b9beedaa4aadf48da2d588e7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/launcher-exit.json",
+      "sha256": "d5270fe1ad190613befbb5758ee706842abe8d4473076104849a7a714fbd54d6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/four-node-seed-capacity-exit.json",
+      "sha256": "455231d83b3df9fb0d6d97cd9965a7e978440c1cfbc0ca40195c0609b9010450"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/four-node-seed/request-fit-v1.json",
+      "sha256": "b2a9e0ff77b6688c18db9d363925b77dbd0d8b56b06c7bf11abe1384ebe9c763"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/four-node-seed/request-fit-v1.json.contacts.jsonl",
+      "sha256": "98b693e5e5363a037cc8d9cf7e9000addfe6dfa77d5888c349e63a91c518d578"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/four-node-seed/memory-wait/finished.json",
+      "sha256": "1007594cc5c8a67077506fea302f3fa97ceb76e237b819edab2e60cfb7dead81"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/four-node-seed/memory-guard/finished.json",
+      "sha256": "35c9d724c14dd6c58837e020dcb3fe547411453b21d66f28f89a35ed5ed719b9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/four-node-seed-lease.stdout.log",
+      "sha256": "6b00db3c87502125897868523e358a315aec1ccf1e1a8ba8850f807f2f9979d1"
+    }
+  ]
+}

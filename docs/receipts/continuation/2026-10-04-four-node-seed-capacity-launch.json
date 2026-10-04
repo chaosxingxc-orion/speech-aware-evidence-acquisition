@@ -1,0 +1,45 @@
+{
+  "schema": "saea-four-node-seed-capacity-launch-v1",
+  "at_utc": "2026-10-04T03:36:47.207317+00:00",
+  "task_name": "SAEA-Four-Node-Seed-Capacity-Owner227",
+  "windows_epoch": "2026-10-04T03:35:16.9926252Z",
+  "worker": "/home/chao/saea-worktrees/codex-four-node-seed-capacity-v2",
+  "source_commit": "6d542d7c44c7dde262f51bd85d6f233736bfb9cd",
+  "windows_free_gib_at_startup": 21.59,
+  "pid": 611920,
+  "process_start_ticks": "43450210",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/registration-v1.json",
+    "sha256": "74f1f01f6b2b27ff65ff56e93880ef86c8e6376b3f3580e5961c2ee335d60019"
+  },
+  "root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "5f63abe1ab5bdef2ab2e7aa10741408d701980d755c7a0d12d79f8b1ab428d41"
+  },
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/frozen-check-v2.json",
+    "sha256": "bbcc3097899af01c00f8a51f9e97609ce724bf9531ebc00e76fc3b19a4413ec9"
+  },
+  "live_process": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/launch-live-process-v1.json",
+    "sha256": "74bfa879fe4ca8dd15c3b3e728557de480b86734f062ef701df4a4ff1092d017"
+  },
+  "prelaunch_state": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/prelaunch-live-proof-v1.json",
+    "sha256": "7b2aa7d4cea3cedbcf74e49636d63b37a6c40b6dc284878627e4412bfd85d534"
+  },
+  "wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/launch-v1.ps1",
+    "sha256": "98ee2a09f5c3e7ee512b8ba386ec82bd76fe43bbdaf610852bd97e64dfca0976"
+  },
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints_per_member": 297,
+    "tokenizer_endpoints_total": 297
+  },
+  "runtime_success_established": false,
+  "scientific_benefit_established": false,
+  "heartbeat": "PAUSED",
+  "scope": "One nongenerative capacity proof. No real four-row generation or scoring yet. Proposer quota remains separately blocked; no new proposal contacts."
+}
