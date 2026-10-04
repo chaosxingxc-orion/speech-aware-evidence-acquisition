@@ -1,0 +1,47 @@
+{
+  "schema": "saea-context-tf-four-child-capacity-prepared-v1",
+  "at_utc": "2026-10-04T15:39:39.466224+00:00",
+  "registered_members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/registered-capacity-members-v1.json",
+    "sha256": "af47bbdd0710077b33283ef4f609015df4fb4e8d26f2bdc146331cea24dffa9b"
+  },
+  "decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/root-capacity-admission-v1.json",
+    "sha256": "bd206aa11687196e08da23cd9083794d8025eb4247c5059b6fb18ba1e5de6bac"
+  },
+  "helper_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/prepare-capacity-entry-v1.py",
+      "sha256": "0e946b295d82eee8da70b5be530ef4d3add11088a1fbbe9f18a24c96f125db24"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/launch-capacity-v1.py",
+      "sha256": "6665496dd83476a5cdbe2964810ee66e70349635351f2620da30a8bc88580ab9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/guarded-child-v1.py",
+      "sha256": "61f8f4a42cb0e64181ae019f6a66e67925241c5ef8905fadfe00bfa788dccc04"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/frozen-check-v1.py",
+      "sha256": "db0b22d73847293ee872e07975c877fb315e3d176913c2d5f7c60c604bcbb1fe"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/finalize-capacity-registration-v1.py",
+      "sha256": "d0989f6678e200fa3fe31d0143d16ad0e19176dc9d9e72b1533c364a009a80b9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/check-prospective-helpers-v1.py",
+      "sha256": "6d4117dde140bb78e9cd55e318bd13b7ee19cb42e9fda853f45278d71f49f3d1"
+    }
+  ],
+  "checks": "Six helper syntax checks, exact population/budget guards and synthetic optional-key addition/removal/mismatch checks pass. All four actual child configurations warm-verified; all16 role texts compile and bind.",
+  "budget": {
+    "tokenizer_endpoints": 1188,
+    "generation_contacts": 0,
+    "official_score_jobs": 0
+  },
+  "contacts_added": 0,
+  "dispatch": "Pending clean frozen check and live service/resource admission. No source/queue/STOP change authorized outside this exact capacity entry.",
+  "scientific_state": "No TF trial run or quality read; original evaluator callback0045 waits. Structural proof and complete family remain required."
+}

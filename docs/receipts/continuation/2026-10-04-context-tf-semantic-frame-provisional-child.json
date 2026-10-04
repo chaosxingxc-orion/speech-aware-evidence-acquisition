@@ -1,0 +1,105 @@
+{
+  "schema": "saea-context-tf-provisional-child-prepared-v1",
+  "at_utc": "2026-10-04T15:37:37.300682+00:00",
+  "candidate_id": "semantic-frame",
+  "parent_bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+  "child_bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+  "original_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0044-propose/original-response.json",
+    "sha256": "938ad9d0db8be970afaa376644952e1a9c0566f8c93da0487711a02647a1b3fc"
+  },
+  "compile_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-semantic-frame-child-compiled-v1.json",
+    "sha256": "9c22f64e20605a112f3b21e9e9ff72b4468b7d64433eca8d2c0acb8da5368283"
+  },
+  "prepared_members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-tf-iteration1-semantic-frame-engineering-v1/prepared-members-v1.json",
+    "sha256": "a15458dfa9fe86dd17a911a50dd805d03e3195dad212c95638985adb16b8675c"
+  },
+  "changed_roles": [
+    "perception",
+    "planner",
+    "reviewer",
+    "solver"
+  ],
+  "changed_policy_fields": [
+    "role_text",
+    "node_context"
+  ],
+  "actual_binding": {
+    "bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+    "role_sha256": {
+      "perception": "b8d9bf8fe8717f7507d9d8352a3ddbba9f27d943801a239df2629838fe7e151a",
+      "planner": "0bac6ab685a8ec9618ce7467efcc17570e45b1fab704f87abbc389e9ecbe488c",
+      "reviewer": "62d40869ad6386b5da45d257e7b70c308b443462b3f735d630be4350a1b6d327",
+      "solver": "ff35f79daa4e0ca2f852a472bcfba9d0495ba25d86a19f8017729f053bf26802"
+    },
+    "context_layout": {
+      "native_role_query_placement": null
+    },
+    "node_context": {
+      "tool_schema_rendering": "per-role",
+      "reviewer_history_scope": "latest-solver-and-local-tools"
+    }
+  },
+  "targeted_checks": [
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-semantic-frame-graph-v1.json",
+        "sha256": "421f6f8e7fb557e0c9783881211f45d2bfe12d52f2c3a90108537f6788b21766"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-semantic-frame-graph-prepared-v1.json",
+        "sha256": "994f38f6d5b191cb2c38c7801971c3e64f3bf0ccd2ae6be6c5cb529faaf65e8d"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "status": "PASS; HELD"
+    },
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-semantic-frame-capacity-v1.json",
+        "sha256": "25f431f299b78fac7aa8b846437d97f065988d3920d4bf97bfd1b4ae461d3320"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-semantic-frame-capacity-v1.json",
+        "sha256": "3af8996a003dc9ac6334c64112b1766b0426a9fe49ce4f392bc93f0529a8d3ce"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "status": "PASS; HELD"
+    },
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-v1.json",
+        "sha256": "da6a849622220d33b2dee365ee537a1a22d5207b20ae00861492c4f87cc73ffa"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-v1.json",
+        "sha256": "c05bd48662d6b0088863a7f9230ccd78182b4dcdd476808f5413afb5ec9a7b96"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "status": "PASS; HELD"
+    }
+  ],
+  "compile_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-variant-v1.py",
+    "sha256": "968d94ef645b07e2eaa7fdbf3a80a0350a8de56635d747b1b7f07e85f2c1ebab"
+  },
+  "preparation_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-child-engineering-v2.py",
+    "sha256": "a4851180ea481cbb11aeccb8acc8d20325e4f948c4c8564f6f55c4623cefbb07"
+  },
+  "root_text_review": "All submitted runtime role texts were reviewed. Legal output/control interfaces and Omni answer authority are retained in the instructions. No sample identifiers, answer lookup tables or copied source answer values were found. This review does not establish runtime compliance, capacity or quality.",
+  "global_checks": "Not rerun for this metadata-only preparation. Prior engineering-base and harness checks passed; global algorithm-label check has two preserved historical failures. Targeted new-member checks above are not a waiver or global PASS.",
+  "runtime_admission": false,
+  "contacts_added": 0,
+  "scope": "Original provisional response compiled unchanged. Three own preparations warm-verify against original knowledge selection outputs. Actual capacity, structural proof and complete-family evaluation remain required."
+}

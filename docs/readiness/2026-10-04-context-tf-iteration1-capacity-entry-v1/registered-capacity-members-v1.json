@@ -1,0 +1,74 @@
+[
+  {
+    "decision": {
+      "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "bd206aa11687196e08da23cd9083794d8025eb4247c5059b6fb18ba1e5de6bac"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-speech-evidence-capacity-v1",
+    "graph": "slurp-native-stage3-context-tf-iteration1-speech-evidence-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/speech-evidence-capacity-fit-plan-registered-v1.json",
+      "sha256": "3abcfdc59f14c8d00e8860366a3518fad969e75e0a2f8dc781046372a0735611"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/speech-evidence-capacity-analysis-recipe-v1.json",
+      "sha256": "6eddf8565e6739b32e56cecd401f3b34db308c69c7139a51bc4ea17f7baed00b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SPEECH-EVIDENCE-CAPACITY-FIT-V1",
+    "system_id": "speech-evidence"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "bd206aa11687196e08da23cd9083794d8025eb4247c5059b6fb18ba1e5de6bac"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-v1",
+    "graph": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/coverage-ledger-capacity-fit-plan-registered-v1.json",
+      "sha256": "7517efc1d13ba9821f91d54ca8e50a0f79d6d5362e06e9b04ad05fc756b35e32"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/coverage-ledger-capacity-analysis-recipe-v1.json",
+      "sha256": "7a706435b9a929d2de80af39f62db23b70dc1c192522d5092f6a47298510fe14"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+    "system_id": "coverage-ledger"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "bd206aa11687196e08da23cd9083794d8025eb4247c5059b6fb18ba1e5de6bac"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-counterexample-check-capacity-v1",
+    "graph": "slurp-native-stage3-context-tf-iteration1-counterexample-check-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/counterexample-check-capacity-fit-plan-registered-v1.json",
+      "sha256": "b24e36488c44716f5c40bc80c54d715eebcc4e24f8a66e546ecd292652e68f1f"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/counterexample-check-capacity-analysis-recipe-v1.json",
+      "sha256": "acf901d84c092e767d6cbf91c9c259975943cd614a3ab8c431be0936650ac8b2"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1",
+    "system_id": "counterexample-check"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "bd206aa11687196e08da23cd9083794d8025eb4247c5059b6fb18ba1e5de6bac"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-semantic-frame-capacity-v1",
+    "graph": "slurp-native-stage3-context-tf-iteration1-semantic-frame-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/semantic-frame-capacity-fit-plan-registered-v1.json",
+      "sha256": "b0bf73f5b793bdc2ed878388314e35126c950ecb3f9d92340b88dde04ad69f6f"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-capacity-entry-v1/semantic-frame-capacity-analysis-recipe-v1.json",
+      "sha256": "f5935e8a7e5c29963015b5a10c1227a3460732406e082682aa8569e612f121d1"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-CAPACITY-FIT-V1",
+    "system_id": "semantic-frame"
+  }
+]

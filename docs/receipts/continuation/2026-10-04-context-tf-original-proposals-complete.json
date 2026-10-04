@@ -1,0 +1,107 @@
+{
+  "schema": "saea-context-tf-original-proposals-complete-v1",
+  "at_utc": "2026-10-04T15:36:26.288306+00:00",
+  "accepted_summary_callbacks": 32,
+  "accepted_compare_callbacks": 8,
+  "experience_updates": 1,
+  "experience_additions": 9,
+  "original_proposals": 4,
+  "provisional_distinct_children": 4,
+  "complete_role_texts_changed": 16,
+  "members": [
+    {
+      "candidate_id": "speech-evidence",
+      "child_bundle_id": "1647b93e094719343c823cb0f4a691438603d2e04079923bb7fa6418bfca9577",
+      "changed_policy_fields": [
+        "role_text",
+        "context_layout"
+      ],
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0041-propose/original-response.json",
+        "sha256": "2f3a642f9b9d8cecd62a88c735d8fc5e12f399b4a9e6acb6dc96477f3bd3fb82"
+      },
+      "compile": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-speech-evidence-child-compiled-v1.json",
+        "sha256": "dd9f6ce9d302d0172ef8700938438e4793d48eee87f65265e8544210909de8b7"
+      },
+      "completion": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0041-propose-complete.json",
+        "sha256": "705339cfe4f7343ed57a0d6175cae549df726ffbb17b4b2b45005173e46f0cda"
+      }
+    },
+    {
+      "candidate_id": "coverage-ledger",
+      "child_bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+      "changed_policy_fields": [
+        "role_text",
+        "node_context"
+      ],
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0042-propose/original-response.json",
+        "sha256": "f10086c060a99a1126a0a4f37fc21bba7afd74d38fc1147b698db86afc301a62"
+      },
+      "compile": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-coverage-ledger-child-compiled-v1.json",
+        "sha256": "dd98de4aa623577975c0571d05fe6d46997098cb716b47025a842dba2880ea1d"
+      },
+      "completion": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0042-propose-complete.json",
+        "sha256": "7113e4159b7031ff94c80f3268e3535a55dd9ea673b92709df8f670bccf07d8b"
+      }
+    },
+    {
+      "candidate_id": "counterexample-check",
+      "child_bundle_id": "fac18294fae47670f61fad4899bede30c274e80b1fcb239c432c6e49f2267345",
+      "changed_policy_fields": [
+        "role_text",
+        "context_layout",
+        "node_context"
+      ],
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0043-propose/original-response.json",
+        "sha256": "f1a7f8121559b15bdb44d3c229370bc31706b8cd7516ebf295a5c071354043b6"
+      },
+      "compile": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-counterexample-check-child-compiled-v1.json",
+        "sha256": "7e8de5da7d0857f7feb2964fd03c5b86a0b57d4185902a0aba2df318a38f03b5"
+      },
+      "completion": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0043-propose-complete.json",
+        "sha256": "39c48405962bae88ea93e953fc0f688ff8b64483a9c1bfae8f799b1a158ffe92"
+      }
+    },
+    {
+      "candidate_id": "semantic-frame",
+      "child_bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+      "changed_policy_fields": [
+        "role_text",
+        "node_context"
+      ],
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0044-propose/original-response.json",
+        "sha256": "938ad9d0db8be970afaa376644952e1a9c0566f8c93da0487711a02647a1b3fc"
+      },
+      "compile": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-semantic-frame-child-compiled-v1.json",
+        "sha256": "9c22f64e20605a112f3b21e9e9ff72b4468b7d64433eca8d2c0acb8da5368283"
+      },
+      "completion": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0044-propose-complete.json",
+        "sha256": "ef6782f64084c3db917ab1166a102f565353ae59e296ebde009ee7e2a65804a5"
+      }
+    }
+  ],
+  "evaluation_request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0045-evaluate/request.json",
+    "sha256": "8ab2bee31eca98a6ff144058ef47b653b3467493a479b07d4fb415e686b1b889"
+  },
+  "worker": {
+    "pid": 671290,
+    "start_ticks": 46087929,
+    "state": "live; waiting for exact complete-family evaluation"
+  },
+  "usage": "Provider/token usage remains unknown; no matched-total-compute claim.",
+  "activation": false,
+  "runtime_generation_added": 0,
+  "scope": "Original qualified initial family only. No GEPA/root/test outcome export. Full source responses and spent allocations preserved. Separate capacity, structural engineering and exact120-trajectory family required."
+}

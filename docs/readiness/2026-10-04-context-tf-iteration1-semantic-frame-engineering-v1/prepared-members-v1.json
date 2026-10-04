@@ -1,0 +1,116 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-semantic-frame-graph-v1",
+    "baseline": "slurp-native-stage3-context-tf-iteration1-semantic-frame-graph-prepared-v1",
+    "config_hash": "8170b60fd49c247f16cb1ef4d3239fdb9bef1bbd6b95f61d9db23ba6b2d1783c",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-semantic-frame-graph-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "model-free-check",
+      "planned_gpu_hours": 0.01,
+      "planned_model_calls": 1,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "bcea22212c0a69cfaae91ca355038b857e931508941744d104e650b50be9c40e",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-GRAPH-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-semantic-frame-graph-v1",
+    "kind": "graph",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7.json",
+        "sha256": "8e7fd9f7e35ff033a4951ea9c0fa3506e9a5ae3eca68d3621e04311011269c62"
+      },
+      "bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-GRAPH-V1/phase-supply-v1.json",
+      "sha256": "87052ef86c0f402165c2b6944767d9a3f422b1a121474b06d4493c012f3e27a5"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-GRAPH-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-semantic-frame-capacity-fit-v1",
+    "baseline": "slurp-native-stage3-context-tf-iteration1-semantic-frame-capacity-v1",
+    "config_hash": "d6bc68eec81d4c38eb9929876c2d64fefa567ad868a6556c22a7faea92230838",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-semantic-frame-capacity-fit-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 297,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "72d4880e8ac48467eeb4ddf272e377ddd405afda68b274bac05322cc35e03af9",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-CAPACITY-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-semantic-frame-capacity-v1",
+    "kind": "capacity",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7.json",
+        "sha256": "8e7fd9f7e35ff033a4951ea9c0fa3506e9a5ae3eca68d3621e04311011269c62"
+      },
+      "bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-CAPACITY-FIT-V1/phase-supply-v1.json",
+      "sha256": "6a8a11ff7c54e4076423ae0a7ae26879b5234865c039ba299a732d7543ccb682"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-CAPACITY-FIT-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-generation-v1",
+    "baseline": "slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-v1",
+    "config_hash": "fab6be06ea71df6ac14d36d9e9527dd66ff050c9fd1ea0168bf21551cdcfda70",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-generation-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "3fdc410c631ebb05aad02df157f303e9d52d7d14a27c33c91be246a5b40b22eb",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-SMOKE-4-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-v1",
+    "kind": "smoke-4",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7.json",
+        "sha256": "8e7fd9f7e35ff033a4951ea9c0fa3506e9a5ae3eca68d3621e04311011269c62"
+      },
+      "bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "047212c391aca82184210e61294d5c3f0f83da9d1e7973a659df09ebeffc27f3"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-SMOKE-4-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  }
+]

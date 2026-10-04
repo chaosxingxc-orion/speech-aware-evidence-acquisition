@@ -1,0 +1,49 @@
+{
+  "at_utc": "2026-10-04T15:37:49.422148+00:00",
+  "cell": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-v1",
+  "composed_config_hash": "bb747632eda7a9842630e48e79303be329457d464245f1985f5ba40f48a94288",
+  "decision_receipt": {
+    "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/root-capacity-admission-v1.json",
+    "sha256": "bd206aa11687196e08da23cd9083794d8025eb4247c5059b6fb18ba1e5de6bac"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "125c7b1bf60ff2e7bab1e2baf2e792e46dc7e26653b639fc8413df9e71aea865",
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8.json",
+      "sha256": "d227c32d1908623d1cfbf73078f64645b841e9f67669da6b63fe96c40fa0a19b"
+    },
+    "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "04b344cea85f0398108de07dac846a54e8c198991a859bd358339df8224161f0"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}
