@@ -1,12 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
-## TF semantic callbacks advancing independently, 2026-10-04T11:30:09.256751+00:00
+## TF semantic callbacks advancing independently, 2026-10-04T11:36:17.434179+00:00
 
-The first two original summarize responses (0000 and0001) are preserved and accepted unchanged; exact completion receipts are under docs/receipts/continuation. Callback0002-summarize is prospectively admitted to fresh GPT-6.1 Sol/high/no-history actor tf_iteration1_summary0002_sol with manifest c7e39c3ec0d3a8cac49fd76b4bc97b3baceb2edaded2d1a2a13e22666d5e3396. Its output is pending. Do not retry or replace spent callbacks. Original worker671290/start46087929 remains live; GEPA worker657258/start45657241 still waits for complete trial evidence.
+The first three original summarize responses (0000,0001,0002) are preserved and accepted unchanged; exact completion receipts are under docs/receipts/continuation. Callback0003-summarize is prospectively admitted to fresh GPT-6.1 Sol/high/no-history actor tf_iteration1_summary0003_sol with manifest cb2e515d9f97c41b0a7f8d533e00a5583b03ce4865200fa4e324c9ccc8f505e4. Its output is pending. Do not retry or replace spent callbacks. Original worker671290/start46087929 remains live; GEPA worker657258/start45657241 still waits for complete trial evidence.
 
 [Observed TF workload](../receipts/continuation/2026-10-04-context-tf-observed-workload.json) has eight nonconstant groups:32 summaries,8 comparisons,1 experience update and4 proposals if all stages complete. Twelve zero-variance groups skip semantic comparison according to the original algorithm; all80 complete source episodes remain preserved. Unknown provider/token counts stay null, no matched-compute or learned-benefit claim.
 
-GEPA trial driver670616/start46068063 is live at the third member. Seed/A/A are FINALIZED, other members remain incomplete; exact READ stays unsigned. No partial quality read. Prepared root qualification/countersign/read helpers exist in its coordination directory but are not executed. Keep paused heartbeat, seed incumbent, same immutable400 pool and separate carrier holds.
+GEPA trial driver670616/start46068063 is live at the fourth member. Seed,A/A,speech-evidence are FINALIZED; other members remain incomplete and exact READ stays unsigned. No partial quality read. Prepared root qualification/countersign/read and source-binding callback helpers exist in its coordination directory but are not executed. Keep paused heartbeat, seed incumbent, same immutable400 pool and separate carrier holds.
 
 
 ## Independent TF learner started from original family, 2026-10-04T11:17:16.103494+00:00
