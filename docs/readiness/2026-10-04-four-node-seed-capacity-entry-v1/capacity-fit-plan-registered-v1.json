@@ -1,0 +1,40 @@
+{
+  "cell": "slurp-native-stage3-system-text-four-node-seed-capacity-v1",
+  "composed_config_hash": "72b4eac3d90a1a052cd9fe8489c22c5cd5a991c424a92da6b2ef689b650e8eea",
+  "decision_receipt": {
+    "relpath": "coordination/four-node-seed-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "5f63abe1ab5bdef2ab2e7aa10741408d701980d755c7a0d12d79f8b1ab428d41"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-four-node-seed-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "1a5fc25afeb134625ae813f47fa42c84c1152f6910e92ccbc49f4e5e9c6778b0",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-four-node-seed-capacity-v1",
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "96c49002b4656d27c63d45e0327ea4f325dae0e14984d3592fabadf1b5824fee"
+  },
+  "read_run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

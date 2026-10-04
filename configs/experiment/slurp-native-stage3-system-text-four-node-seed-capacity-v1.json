@@ -12,9 +12,21 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Prospective four-node seed proof. Root registration, separate capacity acceptance and exact frozen execution admission remain required.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root227 admits one nongenerative four-node seed capacity proof only.",
+        "requirements": [
+          {
+            "expected_decision_id": "four-node-seed-capacity-owner227-v1",
+            "kind": "decision",
+            "relpath": "coordination/four-node-seed-capacity-owner227-v1/root-admission-v1.json",
+            "sha256": "5f63abe1ab5bdef2ab2e7aa10741408d701980d755c7a0d12d79f8b1ab428d41"
+          },
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-FIT-V1/phase-supply-v1.json",
+            "sha256": "96c49002b4656d27c63d45e0327ea4f325dae0e14984d3592fabadf1b5824fee"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-FIT-V1",
       "system_text_policy_binding": {

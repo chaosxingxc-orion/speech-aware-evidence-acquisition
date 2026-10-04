@@ -1,0 +1,11 @@
+{
+  "at_utc": "2026-10-04T03:25:01.729343+00:00",
+  "decision": {
+    "relpath": "coordination/four-node-seed-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "5f63abe1ab5bdef2ab2e7aa10741408d701980d755c7a0d12d79f8b1ab428d41"
+  },
+  "plan": {
+    "relpath": "docs/readiness/2026-10-04-four-node-seed-capacity-entry-v1/capacity-fit-plan-registered-v1.json",
+    "sha256": "bdf4939766c9b50593a958108fb5c1eb557c04890bcc9aa5957ed42637159f7d"
+  }
+}

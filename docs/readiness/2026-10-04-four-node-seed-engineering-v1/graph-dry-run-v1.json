@@ -1,0 +1,25 @@
+{
+  "schema": "saea-four-node-seed-model-free-graph-v1",
+  "rows": 4,
+  "configuration_equality": {
+    "policy": true,
+    "native_episode": true,
+    "phase_material": true,
+    "phase_tools": true,
+    "knowledge_stores": true,
+    "native_prefix_slots": true,
+    "native_node_batch": true,
+    "native_node_pipeline": true,
+    "native_role_query_placement": true
+  },
+  "role_text_hashes": {
+    "perception": "b78effe9c12aff133d4b325c706a641d8e3bb22f072209d1ebdbed8e29075fac",
+    "reviewer": "cdfc5a242f731df43ca258c1912d588a9e990fa03b6bf68130faa6192059e618",
+    "planner": "830fe9cd326ee6ae24b5c3ca2399c5c1e86e91263e980fa906d1c72c00cafb60",
+    "solver": "d9930af70f42dedf377517b6d8eb4b4a84222da6dd99a799fd3fcb06ab22e54e"
+  },
+  "contacts": 0,
+  "graph_generation_admitted": false,
+  "native_role_query_placement": null,
+  "native_prefix_slots": null
+}
