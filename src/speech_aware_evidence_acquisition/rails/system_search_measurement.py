@@ -67,6 +67,7 @@ def measured_rows(document, candidate_ids, bindings, *, profile):
     require(set(summaries) == set(bindings) and len(set(candidate_ids)) == len(candidate_ids)
             and set(candidate_ids) <= set(summaries), "latency family bindings differ")
     sessions, reports = set(), {}
+    admission_order = None
     for cid, summary in summaries.items():
         report = summary.get("sample_timing")
         require(isinstance(report, dict) and report.get("schema") == "saea-system-sample-timing-v1"
@@ -75,8 +76,15 @@ def measured_rows(document, candidate_ids, bindings, *, profile):
                 "complete pinned sample timing report required")
         require(report.get("available") is True
                 and all(report.get(k) == profile[k] for k in ("slot_count", "queue_depth"))
-                and [s["sample_id"] for s in report["samples"]] == ids,
+                and len(report["samples"]) == len(ids)
+                and {s["sample_id"] for s in report["samples"]} == set(ids),
                 "timing cohort or scheduling envelope differs")
+        current_order = [s["sample_id"] for s in report["samples"]]
+        require(admission_order is None or current_order == admission_order,
+                "measured family admission order differs")
+        admission_order = current_order
+        require(report.get("first_admitted_sample") == report["samples"][0],
+                "first sample must be the actual first admission")
         values = [finite(s["elapsed_seconds"]) for s in report["samples"]]
         require([s.get("admission_index") for s in report["samples"]] == list(range(len(ids)))
                 and all(s.get("status") in {"completed", "failed"} for s in report["samples"]),
@@ -96,7 +104,10 @@ def measured_rows(document, candidate_ids, bindings, *, profile):
         sessions.add(session)
         reports[cid] = report
     require(len(sessions) == 1, "latency comparison cannot mix serving session receipts")
-    identity = content_hash({"profile": profile, "sample_ids": ids, "session": next(iter(sessions))})
+    identity_fields = {"profile": profile, "sample_ids": ids, "session": next(iter(sessions))}
+    if admission_order != ids:
+        identity_fields["admission_order"] = admission_order
+    identity = content_hash(identity_fields)
     result = []
     for cid in candidate_ids:
         summary, report = summaries[cid], reports[cid]

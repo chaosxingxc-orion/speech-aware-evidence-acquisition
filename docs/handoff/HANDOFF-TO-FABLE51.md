@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Exact initial N20K4 scientific family registered, 2026-10-04T08:43:08.266743+00:00
+
+[Six-member entry](../readiness/2026-10-04-context-initial4-n20-entry-v1/README.md) is prospectively registered under root227: unchanged seed/A/A then four distinct complete context systems,120 trajectories total (candidate80/control40),1560 generation and6240 separate actual-request FIT endpoint caps,six unique complete official scores. Same UPDATE2 first20 assets,temperature0/seed20260913,sequential4slot/queue4. All own supplies warm-verify and all six exact registration checks pass. Scientific READ remains unsigned. Clean frozen/runtime/live admission is still required; this is not a launch.
+
+The shared prelaunch gate now validates the new context-family scope, member attempt/policy/config and full measurement binding before contact. Six negative cases reproduced the previous missing linkage. Numeric timing now distinguishes analysis roster order from actual admission order and refuses mixed admission orders across a measured family. All four completed engineering sources reproduce their original timing exactly; first/non-first means retain the real first admission. No original trace or score changed.335 focused tests,base/harness andRuff pass.
+
+This common initialization is shared by both baseline learners; real summary/reflection callbacks are not admitted here. No efficacy or learned improvement exists yet. Keep frozen workers, paused heartbeat, one generating experiment/one scorer, resource floors and human-before8x400. Other carrier holds are unchanged.
+
 ## Baseline iteration engine reviewed; initial scientific admission remains next, 2026-10-04T08:34:30.869101+00:00
 
 [Root iteration review](../receipts/continuation/2026-10-04-context-learning-iterations-root-review.json) independently reruns185 passing tests after integrating GPT-6.1 Sol commitb65d382db asbe1ecfaf0. TF semantic summaries/comparisons/experience updates and four context proposals, plus GEPA default instance-front selection/round-robin component mutation/strict utility retention, now run through bounded injected callbacks. Immutable failures, no-change/spent opportunities, source requalification and exact complete trial accounting are tested. This is engineering behavior, not an executed real learning iteration. Real reflection and evaluation callbacks still need exact contact admission and external runtime integration.

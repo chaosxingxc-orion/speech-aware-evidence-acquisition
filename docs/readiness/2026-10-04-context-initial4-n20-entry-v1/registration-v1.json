@@ -1,0 +1,70 @@
+{
+  "expected_members": {
+    "counterexample-check": "SAEA-SLURP-CONTEXT-INITIAL4-N20-COUNTEREXAMPLE-CHECK-V1",
+    "coverage-ledger": "SAEA-SLURP-CONTEXT-INITIAL4-N20-COVERAGE-LEDGER-V1",
+    "seed": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-V1",
+    "seed-aa": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-AA-V1",
+    "semantic-frame": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEMANTIC-FRAME-V1",
+    "speech-evidence": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SPEECH-EVIDENCE-V1"
+  },
+  "family_id": "context-initial4-n20",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "member_bindings": {
+    "counterexample-check": {
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-counterexample-check-generation-v1",
+      "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+      "config_hash": "932807aaa1c140e9f0db2461e67342580ff55abb792eb6ed144ac30b2dd2b800",
+      "experiment": "slurp-native-stage3-context-initial4-n20-counterexample-check-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-COUNTEREXAMPLE-CHECK-V1"
+    },
+    "coverage-ledger": {
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-coverage-ledger-generation-v1",
+      "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+      "config_hash": "1fdf9f2067366f1740c5cbcc327c28c2c1aca86aa6810f7533d0f52cc42d2f26",
+      "experiment": "slurp-native-stage3-context-initial4-n20-coverage-ledger-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-COVERAGE-LEDGER-V1"
+    },
+    "seed": {
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-seed-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "23ea80226209afc5a416e87a1065cd3d74e6ae18b931b2570401981c7a3a039e",
+      "experiment": "slurp-native-stage3-context-initial4-n20-seed-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-V1"
+    },
+    "seed-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-seed-aa-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "ef5b138d0da33db207c6ebcf4150af16140995c5c6899415b23fe7366671581c",
+      "experiment": "slurp-native-stage3-context-initial4-n20-seed-aa-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-AA-V1"
+    },
+    "semantic-frame": {
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-semantic-frame-generation-v1",
+      "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+      "config_hash": "93555e9ff923f2f2251820009e42ea3898672df09d80918627f9b0559f16c3ab",
+      "experiment": "slurp-native-stage3-context-initial4-n20-semantic-frame-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEMANTIC-FRAME-V1"
+    },
+    "speech-evidence": {
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-speech-evidence-generation-v1",
+      "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+      "config_hash": "322bd4dc8ebd8a257e72b00b263775d660a9edbbd77bfa6b0928719e01f47557",
+      "experiment": "slurp-native-stage3-context-initial4-n20-speech-evidence-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SPEECH-EVIDENCE-V1"
+    }
+  },
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-entry-v1/protocol-v1.json",
+    "sha256": "ba8447e18e0ba015c4c37454231322095c57f22c59b7e04b94778ce97e471d2a"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1",
+  "registration_sha256": "c7cc010fc6c7e9a89757aa877db5bea63f4ed00891c817d026be0be431ae81fa",
+  "schema": "saea-context-learning-registration-v1"
+}

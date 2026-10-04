@@ -1,0 +1,21 @@
+{
+  "at_utc": "2026-10-04T08:42:45.943406+00:00",
+  "exact_member_registration_checks": [
+    "seed",
+    "seed-aa",
+    "speech-evidence",
+    "coverage-ledger",
+    "counterexample-check",
+    "semantic-frame"
+  ],
+  "focused_tests_passed": 335,
+  "focused_tests_failed": 0,
+  "new_negative_reproductions": "Six prelaunch identity/scope mismatch cases and runtime-order timing failures reproduced before correction.",
+  "real_timing_rehearsal": "All four structurally qualified sources retain identical original sample timing despite differing analysis and admission order. No quality read.",
+  "engineering_base": "PASS",
+  "harness_admission": "PASS",
+  "ruff": "PASS",
+  "contacts": 0,
+  "scientific_read": "UNSIGNED",
+  "frozen_runtime_admission": "PENDING"
+}

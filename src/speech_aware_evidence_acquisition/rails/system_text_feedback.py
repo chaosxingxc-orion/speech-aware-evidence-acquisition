@@ -287,6 +287,18 @@ class CompleteSystemFeedback:
         return cls(canonical(result))
 
 
+def _summarize_official_sample_timing(rows, analysis_ids):
+    """Preserve real admission order while pairing the unchanged analysis cohort."""
+    from ..analysis.system_cache_cost import summarize_sample_execution_timing
+    require(set(rows) == set(analysis_ids) and len(analysis_ids) == len(set(analysis_ids)),
+            "timing analysis cohort differs")
+    records = [row["sample_timing_record"] for row in rows.values()]
+    ordered = sorted(records, key=lambda row: row["admission_index"])
+    admission_ids = [row["sample_id"] for row in ordered]
+    require(set(admission_ids) == set(analysis_ids), "timing admission cohort differs")
+    return summarize_sample_execution_timing(records, expected_sample_ids=admission_ids)
+
+
 def _official_family_rows(bindings, metadata, grouped, *, measurement_profile=None):
     """Read common official counts and attributed costs after every seal passes."""
     by_candidate, summaries = {}, {}
@@ -312,10 +324,8 @@ def _official_family_rows(bindings, metadata, grouped, *, measurement_profile=No
                           "tool_calls": sum(r["tool_calls"] for r in rows.values()),
                           "reliable_completion_rate": sum(r["reliable_completion"] for r in rows.values()) / len(rows)}
         if measurement_profile is not None:
-            from ..analysis.system_cache_cost import summarize_sample_execution_timing
             from .system_text_policy import sha
-            report = summarize_sample_execution_timing([r["sample_timing_record"] for r in rows.values()],
-                expected_sample_ids=[g["sample_id"] for g in grouped["groups"]])
+            report = _summarize_official_sample_timing(rows, [g["sample_id"] for g in grouped["groups"]])
             require(all(report[k] == measurement_profile[k] for k in ("slot_count", "queue_depth")),
                     "sample timing scheduling envelope differs from profile")
             session = manifest["session_receipt"]["sha256"]

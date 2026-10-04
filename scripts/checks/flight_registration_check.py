@@ -1461,17 +1461,30 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
         _read_pin, require, verify_system_text_binding,
     )
     family = str(recipe.get("family_id", ""))
+    context = "context_learning_registration" in recipe or family.startswith("context-initial4-")
     fixed = family.startswith("fixed400-context")
     panel = (family.startswith("fixed400-text-") or "system_panel_registration" in recipe
              or report.run_id.startswith("SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND"))
-    if not fixed and not panel and "system_text_policy_binding" not in cell:
+    if not context and not fixed and not panel and "system_text_policy_binding" not in cell:
         return
     from speech_aware_evidence_acquisition.core.config import ConfigError, compose
     try:
         registration = {}
         binding = cell.get("system_text_policy_binding")
         require(binding is not None, "declared system text policy binding is missing")
-        if panel:
+        if context:
+            from speech_aware_evidence_acquisition.rails.system_context_learning import _validate_scope
+            require(not panel and not fixed and "pilot_registration" not in recipe,
+                    "ambiguous context learning registration")
+            registration = json.loads(_read_pin(recipe["context_learning_registration"], repo_root))
+            protocol = json.loads(_read_pin(registration["protocol"], repo_root))
+            _validate_scope(recipe, registration, protocol, root=repo_root)
+            members = [m for m in registration["member_bindings"].values()
+                       if m["run_id"] == report.run_id]
+            require(len(members) == 1 and members[0]["bundle_id"] == binding["bundle_id"]
+                    and members[0]["attempt_id"] == cell.get("attempt_id"),
+                    "cell differs from the registered context member")
+        elif panel:
             from speech_aware_evidence_acquisition.rails.hashing import content_hash
             require(not fixed and "pilot_registration" not in recipe,
                     "ambiguous legacy and panel registrations")
@@ -1505,14 +1518,18 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
                     "cell policy differs from the registered comparison member")
         # Verify what the shared runtime consumes, including options declared in
         # model, dataset or experiment fragments instead of the baseline.
-        effective = compose(repo_root, model=cell["model_fragment"],
+        composed = compose(repo_root, model=cell["model_fragment"],
                             dataset=cell["dataset_fragment"],
                             baseline=cell["baseline_fragment"],
-                            experiment=report.experiment).values
+                            experiment=report.experiment)
+        effective = composed.values
+        if context:
+            require(members[0]["config_hash"] == composed.config_hash,
+                    "context member configuration differs from registration")
         verify_system_text_binding(effective, binding, repo_root=repo_root, data_root=data_root)
         # Compare prospective measurement custody before spending model contacts.
         profile = recipe.get("measurement_profile")
-        require((not (panel or fixed) or registration.get("measurement_profile") == profile)
+        require((not (context or panel or fixed) or registration.get("measurement_profile") == profile)
                 and effective.get("system_search_measurement") == profile,
                 "registered measurement profile differs from runtime or read recipe")
         if profile is not None:
