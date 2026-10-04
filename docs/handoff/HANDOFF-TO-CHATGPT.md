@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Sequential context priority and Reviewer optimization, 2026-10-04T00:12:51.118380+00:00
+
+The latest direct human instruction keeps sequential trajectory execution and asks for compact/progressive cross-node context. The follow-up concern explicitly rejects treating344 newly evaluated tokens as the Reviewer optimization allowance. [Owner amendment](../receipts/owner/2026-10-04-sequential-progressive-context.json), [offline design](../readiness/2026-10-04-sequential-progressive-context-v1/README.md), and [source-pinned footprint audit](../receipts/continuation/2026-10-04-sequential-context-footprint.json) supersede the earlier next-step priority of saved-state investigation. No new runtime admission.
+
+All1033 sequential contacts from the already qualified complete family were audited, with zero new model/tokenizer/scorer contacts. Legacy Reviewer averages10983 input tokens,10639 reused,344 evaluated;prefill0.245s,output generation7.970s. About57% of decoded text characters are slot knowledge and3% node history;these are not token or causal cost fractions. Cached evidence remains usable. Permit changes to role instructions,evidence views and bounded handoffs even when they cost more prefill;judge complete sample latency and official quality,not cache hits. Compression and progressive expansion remain unimplemented/unactivated proposals in this record.
+
+Reuse the shared context compiler,source custody and native tool path. Prove omitted facts are recoverable before claiming progressive loading;account for every summary/expansion call. Current disk slot save can hit a media-token assertion for decoder-only speech features;do not test it on the live service. RAM bank fidelity is unproven and deferred. Keep learning HELD,heartbeat PAUSED,root only,human before8x400. Frozen workers,existing controls,service and other-carrier holds are unchanged.
+
 ## Complete node schedule read: preserve cross-node prefix value, 2026-10-03T23:50:12.912932+00:00
 
 The exact16-member family is qualified and root READ complete;the admitted reader exited zero23:25:13Z with no new contacts. All320 trajectories finalized with verified seals,one official successful complete score each and zero failures. [Root report](../results/2026-10-03-node-panel-schedule-cache-and-latency.md),[all strata/repeats](../results/2026-10-03-node-panel-schedule-strata-and-repeats.md),and[receipt](../receipts/continuation/2026-10-03-node-panel-schedule-n20-scientific-read.json) pin complete evidence.

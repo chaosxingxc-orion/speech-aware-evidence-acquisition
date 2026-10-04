@@ -1,0 +1,227 @@
+{
+  "at_utc": "2026-10-04T00:11:04.129095+00:00",
+  "audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/sequential-context-footprint-v1/audit.json",
+    "sha256": "9dee202cdc83a7f4febc382886c3abe0ef63d7cec29d8d8ec0c84a445ccca7af"
+  },
+  "authority": "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-READ-V1",
+  "contacts_audited": 1033,
+  "disposition": "Keep sequential execution. Prepare a source-bound progressive evidence design; do not constrain Reviewer edits to the cached suffix. No compression implementation or efficacy is claimed.",
+  "groups": [
+    {
+      "contacts": 80,
+      "layout": "before-speech",
+      "mean_character_and_part_counts": {
+        "all_text_chars": 15794.45,
+        "exact_duplicate_text_chars": 0,
+        "intent_knowledge_chars": 6541.45,
+        "role_query_chars": 1135,
+        "speech_parts": 1,
+        "system_chars": 8118
+      },
+      "mean_measured_costs": {
+        "client_transport_ms": 12056.5904779236,
+        "evaluated_input_tokens": 1477.85,
+        "generated_tokens": 104.6875,
+        "generation_ms": 10681.893375,
+        "input_tokens": 4003.85,
+        "prefill_ms": 1038.9306625,
+        "reused_input_tokens": 2526
+      },
+      "role": "perception"
+    },
+    {
+      "contacts": 143,
+      "layout": "before-speech",
+      "mean_character_and_part_counts": {
+        "all_text_chars": 50976.307692307695,
+        "exact_duplicate_text_chars": 0,
+        "exemplar_knowledge_chars": 3571.3006993006993,
+        "history_blocks": 4.321678321678322,
+        "history_chars": 2334.8811188811187,
+        "intent_knowledge_chars": 6539.867132867133,
+        "role_query_chars": 1805.1538461538462,
+        "slot_knowledge_chars": 28607.104895104894,
+        "speech_parts": 1,
+        "system_chars": 8118
+      },
+      "mean_measured_costs": {
+        "client_transport_ms": 4810.266607770715,
+        "evaluated_input_tokens": 8980.601398601399,
+        "generated_tokens": 2.7482517482517483,
+        "generation_ms": 313.38715384615386,
+        "input_tokens": 11509.601398601399,
+        "prefill_ms": 4183.621006993007,
+        "reused_input_tokens": 2529
+      },
+      "role": "planner"
+    },
+    {
+      "contacts": 143,
+      "layout": "before-speech",
+      "mean_character_and_part_counts": {
+        "all_text_chars": 49508.503496503494,
+        "exact_duplicate_text_chars": 0,
+        "exemplar_knowledge_chars": 3571.3006993006993,
+        "history_blocks": 3.3216783216783217,
+        "history_chars": 1517.076923076923,
+        "intent_knowledge_chars": 6539.867132867133,
+        "role_query_chars": 1155.1538461538462,
+        "slot_knowledge_chars": 28607.104895104894,
+        "speech_parts": 1,
+        "system_chars": 8118
+      },
+      "mean_measured_costs": {
+        "client_transport_ms": 25623.861945086483,
+        "evaluated_input_tokens": 8631.356643356643,
+        "generated_tokens": 162.7762237762238,
+        "generation_ms": 20727.44793006993,
+        "input_tokens": 11157.356643356643,
+        "prefill_ms": 4366.913895104895,
+        "reused_input_tokens": 2526
+      },
+      "role": "reviewer"
+    },
+    {
+      "contacts": 143,
+      "layout": "before-speech",
+      "mean_character_and_part_counts": {
+        "all_text_chars": 49346.6013986014,
+        "exact_duplicate_text_chars": 0,
+        "exemplar_knowledge_chars": 3571.3006993006993,
+        "history_blocks": 2.3216783216783217,
+        "history_chars": 1211.1748251748252,
+        "intent_knowledge_chars": 6539.867132867133,
+        "role_query_chars": 1299.1538461538462,
+        "slot_knowledge_chars": 28607.104895104894,
+        "speech_parts": 1,
+        "system_chars": 8118
+      },
+      "mean_measured_costs": {
+        "client_transport_ms": 10118.342952644436,
+        "evaluated_input_tokens": 8542.699300699302,
+        "generated_tokens": 35.77622377622377,
+        "generation_ms": 4729.746272727272,
+        "input_tokens": 11068.699300699302,
+        "prefill_ms": 4719.538188811189,
+        "reused_input_tokens": 2526
+      },
+      "role": "solver"
+    },
+    {
+      "contacts": 80,
+      "layout": "legacy",
+      "mean_character_and_part_counts": {
+        "all_text_chars": 15794.45,
+        "exact_duplicate_text_chars": 0,
+        "intent_knowledge_chars": 6541.45,
+        "role_query_chars": 1135,
+        "speech_parts": 1,
+        "system_chars": 8118
+      },
+      "mean_measured_costs": {
+        "client_transport_ms": 6332.920710573671,
+        "evaluated_input_tokens": 1477.85,
+        "generated_tokens": 121.1875,
+        "generation_ms": 5462.5673875,
+        "input_tokens": 4003.85,
+        "prefill_ms": 650.498875,
+        "reused_input_tokens": 2526
+      },
+      "role": "perception"
+    },
+    {
+      "contacts": 148,
+      "layout": "legacy",
+      "mean_character_and_part_counts": {
+        "all_text_chars": 49977.31081081081,
+        "exact_duplicate_text_chars": 0,
+        "exemplar_knowledge_chars": 3582.4527027027025,
+        "history_blocks": 4.378378378378378,
+        "history_chars": 2224.885135135135,
+        "intent_knowledge_chars": 6539.736486486487,
+        "role_query_chars": 1804.945945945946,
+        "slot_knowledge_chars": 27707.29054054054,
+        "speech_parts": 1,
+        "system_chars": 8118
+      },
+      "mean_measured_costs": {
+        "client_transport_ms": 826.8377523400468,
+        "evaluated_input_tokens": 565.3445945945946,
+        "generated_tokens": 2.891891891891892,
+        "generation_ms": 207.45069594594594,
+        "input_tokens": 11312.702702702703,
+        "prefill_ms": 368.1293310810811,
+        "reused_input_tokens": 10747.358108108108
+      },
+      "role": "planner"
+    },
+    {
+      "contacts": 148,
+      "layout": "legacy",
+      "mean_character_and_part_counts": {
+        "all_text_chars": 48613.06081081081,
+        "exact_duplicate_text_chars": 0,
+        "exemplar_knowledge_chars": 3582.4527027027025,
+        "history_blocks": 3.3783783783783785,
+        "history_chars": 1510.6351351351352,
+        "intent_knowledge_chars": 6539.736486486487,
+        "role_query_chars": 1154.945945945946,
+        "slot_knowledge_chars": 27707.29054054054,
+        "speech_parts": 1,
+        "system_chars": 8118
+      },
+      "mean_measured_costs": {
+        "client_transport_ms": 8336.844257182895,
+        "evaluated_input_tokens": 344.2162162162162,
+        "generated_tokens": 154.36486486486487,
+        "generation_ms": 7970.044736486487,
+        "input_tokens": 10983.06081081081,
+        "prefill_ms": 244.7358716216216,
+        "reused_input_tokens": 10638.844594594595
+      },
+      "role": "reviewer"
+    },
+    {
+      "contacts": 148,
+      "layout": "legacy",
+      "mean_character_and_part_counts": {
+        "all_text_chars": 48465.51351351351,
+        "exact_duplicate_text_chars": 0,
+        "exemplar_knowledge_chars": 3582.4527027027025,
+        "history_blocks": 2.3783783783783785,
+        "history_chars": 1219.087837837838,
+        "intent_knowledge_chars": 6539.736486486487,
+        "role_query_chars": 1298.945945945946,
+        "slot_knowledge_chars": 27707.29054054054,
+        "speech_parts": 1,
+        "system_chars": 8118
+      },
+      "mean_measured_costs": {
+        "client_transport_ms": 4141.252929046263,
+        "evaluated_input_tokens": 3813.587837837838,
+        "generated_tokens": 31.75,
+        "generation_ms": 1967.2250405405405,
+        "input_tokens": 10898.547297297297,
+        "prefill_ms": 1819.6931554054054,
+        "reused_input_tokens": 7084.959459459459
+      },
+      "role": "solver"
+    }
+  ],
+  "new_contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "optimizer_export": false,
+  "owner_amendment": {
+    "relpath": "docs/receipts/owner/2026-10-04-sequential-progressive-context.json",
+    "sha256": "2b2d89e2be0e5e060cd3dbc6a709c17eb38126d8728cefa28a5dd628050f6416"
+  },
+  "runtime_changes": false,
+  "schema": "saea-sequential-context-footprint-receipt-v1",
+  "scope": "All eight qualified sequential members of the complete sixteen-member family. Root engineering only; no optimizer export.",
+  "source_code_commit": "b35010a2b4becc83751d0db967b8f307d298a76a",
+  "wire_artifacts": 8
+}
