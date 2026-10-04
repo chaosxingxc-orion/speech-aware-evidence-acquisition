@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Baseline iteration engine reviewed; initial scientific admission remains next, 2026-10-04T08:34:30.869101+00:00
+
+[Root iteration review](../receipts/continuation/2026-10-04-context-learning-iterations-root-review.json) independently reruns185 passing tests after integrating GPT-6.1 Sol commitb65d382db asbe1ecfaf0. TF semantic summaries/comparisons/experience updates and four context proposals, plus GEPA default instance-front selection/round-robin component mutation/strict utility retention, now run through bounded injected callbacks. Immutable failures, no-change/spent opportunities, source requalification and exact complete trial accounting are tested. This is engineering behavior, not an executed real learning iteration. Real reflection and evaluation callbacks still need exact contact admission and external runtime integration.
+
+[Initial protocol draft](../readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/README.md) pins the unchanged UPDATE2 ordered400 and original initial TRAIN reference metadata. Both algorithms share the same qualified initial120-trajectory family, charged once; each changed later trial separately reserves80 candidate plus40 control trajectories. Draft callback caps do not authorize provider contacts or prove equal compute. Exact scientific member/READ/exposure registration and clean runtime admission remain before N20 dispatch.
+
+Four initial context systems have completed independent capacity and structural qualification. Keep their frozen workers and unscored structural outputs unchanged. No quality, stable benefit or learning gain is established. Heartbeat stays PAUSED; root227 bounds and other-carrier holds remain.
+
 ## Four complete context systems passed structural acceptance, 2026-10-04T08:28:28.244910+00:00
 
 [Completed structural evidence](../receipts/continuation/2026-10-04-context-initial4-structural-complete.json) supersedes the running snapshot: driver ended normally08:25:17Z, all four members passed exact structural audit on frozen237c4658e. Sixteen trajectories consumed76 model contacts and76 actual-request FIT receipts/304 endpoints. All20 Reviewer handoffs are valid and visible to Planner; all16 terminal deliveries retain native Omni custody. No official scorer or task-quality read. Preserve intentional OPENED engineering attempts and prepared score specs; never score/reseal/restart them.

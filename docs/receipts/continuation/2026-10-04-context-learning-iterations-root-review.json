@@ -1,0 +1,22 @@
+{
+  "schema": "saea-context-learning-iteration-root-review-v1",
+  "at_utc": "2026-10-04T08:34:30.869101+00:00",
+  "source_commit": "b65d382dbe0f95ce3f02c0bb4bae17206300d8e5",
+  "integrated_commit": "be1ecfaf0",
+  "reviewed": [
+    "Complete shared iteration control flow and source gates",
+    "Explicit deterministic-context TF adaptation and GEPA selector/component/acceptance fidelity",
+    "Immutable consumed callbacks, invalid/no-change/regression history and no automatic retries",
+    "Actual provider usage distinct from callback counts; unknown metering remains unknown",
+    "Complete new trial family requalification, fresh attempts, exact child/unchanged/control bindings",
+    "Quality and latency preserved separately; optimization retention is not formal adoption"
+  ],
+  "root_tests": {
+    "passed": 185,
+    "failed": 0,
+    "command": "python -B -m pytest -q tests/unit/test_system_context_iteration.py tests/unit/test_system_context_learning.py tests/unit/test_system_text_policy.py tests/unit/test_system_text_feedback.py tests/unit/test_system_text_search_cli.py tests/unit/test_system_search_measurement.py"
+  },
+  "new_model_tokenizer_proposer_scorer_contacts": 0,
+  "frozen_worker_modified": false,
+  "remaining": "Bind separately admitted real English reflection callbacks and whole-family evaluator callbacks. Initial N20 protocol is DRAFT; no scientific runtime or learned improvement is claimed."
+}
