@@ -1,0 +1,64 @@
+{
+  "schema": "saea-context-learning-iteration-engineering-validation-v1",
+  "base_commit": "4c1f020b4f7e7fe746eb9fe7a3c69631ac139af0",
+  "worktree": "/home/chao/saea-worktrees/codex-context-learning-iterations",
+  "branch": "codex/context-learning-iterations",
+  "authoring_channel": "Human-authorized GPT-6.1 Sol engineering subagent",
+  "scope": "Bounded shared baseline learning iteration with injected external callbacks; no runtime dispatch or scientific adoption",
+  "tdd": {
+    "skill": "C:/Users/35686/.agents/skills/tdd-workflow/SKILL.md",
+    "initial_red": "17 iteration tests failed on missing orchestration APIs before implementation.",
+    "additional_red": "History, common-plan, duplicate-runtime-content and non-JSON callback negatives failed before fixes.",
+    "final_green": {
+      "total_tests": 185,
+      "new_iteration_tests": 34,
+      "existing_focused_tests": 151
+    }
+  },
+  "coverage": {
+    "measured_module": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+    "aggregate_module": {
+      "covered_lines": 420,
+      "num_statements": 420,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 94,
+      "num_partial_branches": 0,
+      "covered_branches": 94,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "changed_executable_lines": 236,
+    "changed_missing_lines": [],
+    "changed_branch_arcs": 64,
+    "changed_missing_branch_arcs": [],
+    "scope_note": "100% covers this entire shared module and all changed executable lines/arcs; it is not whole-repository coverage."
+  },
+  "checks": {
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "ruff_changed_python": "PASS",
+    "git_diff_check": "PASS",
+    "supplemental_official_source_hashes": "PASS"
+  },
+  "commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /home/chao/.venvs/speechrl/bin/python -B -m coverage run --branch --source=speech_aware_evidence_acquisition.rails.system_context_learning -m pytest -q tests/unit/test_system_context_iteration.py tests/unit/test_system_context_learning.py tests/unit/test_system_text_policy.py tests/unit/test_system_text_feedback.py tests/unit/test_system_text_search_cli.py tests/unit/test_system_search_measurement.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /home/chao/.venvs/speechrl/bin/python -B -m coverage json -o /tmp/context-iteration-coverage.json",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /home/chao/.venvs/speechrl/bin/python -B scripts/checks/engineering_base_check.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /home/chao/.venvs/speechrl/bin/python -B scripts/checks/harness_admission_check.py",
+    "/home/chao/.venvs/speechrl/bin/ruff check src/speech_aware_evidence_acquisition/rails/system_context_learning.py tests/unit/test_system_context_iteration.py",
+    "git diff --check"
+  ],
+  "external_official_source_fetches": 2,
+  "paid_spend": 0,
+  "actual_model_tokenizer_proposer_scorer_contacts": 0,
+  "actual_gpu_dispatches": 0,
+  "task_quality_or_raw_answer_reads": 0,
+  "evidence_limit": "All learning trajectories and callbacks in these tests are synthetic. They establish implementation behavior, not efficacy.",
+  "remaining_work": "Root must bind separately admitted real reflection calls and complete-family runtime/scoring/READ callbacks, prepare selected historical-parent families when necessary, and review further exposure. No automatic scaling or formal adoption is enabled."
+}
