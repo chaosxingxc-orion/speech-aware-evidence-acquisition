@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K16 structural frozen preflight running, 2026-10-04T19:41:43.222509+00:00
+
+[Exact live handle](../receipts/continuation/2026-10-04-template-k16-structural-frozen-preflight-running.json):Linux736158/start49045896, exec88513, clean frozen /home/chao/saea-worktrees/codex-context-template-k16-structural-v1 at a024df8aecfbdf69efbd3d4f93f9b464f9e7f777. Registered64 structural rows are committed and integrated. Continue this exact16-member preflight; no generation task has launched. Its receipt must prove all16 before the prepared normal completed-TF-control transition and one Windows SAEA-Batch-Driver launch. Do not restart on observation timeout.
+
+Capacity is terminal-success:16 members,4752 endpoints/704 request forms, zero generation/scoring, all leases released. Preserve its frozen16cd42cd1 worker and receipts. Scientific18x20 remains HELD until exact64-row structural acceptance and source-bound timing. Heartbeat PAUSED; no quality/learning claim or new proposal in this update.
+
+
 ## K16 capacities complete;64 structural rows registered, 2026-10-04T19:39:01.034838+00:00
 
 [All16 actual capacities passed](../receipts/continuation/2026-10-04-template-k16-capacity-complete.json):4752 tokenizer endpoints covering704 measured request forms, zero generation/scoring, every lease released. Minimum margin after full512 output and2048 structural reserve is5494tokens. Original Linux730548 and Windows20272 ended0 at19:33:59Z; do not restart. All32 capacity/FIT structural-read rows are marked consumed once.

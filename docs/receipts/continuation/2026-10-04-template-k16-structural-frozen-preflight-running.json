@@ -1,0 +1,18 @@
+{
+  "schema": "saea-k16-structural-frozen-preflight-live-v1",
+  "at_utc": "2026-10-04T19:41:43.222509+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-structural-v1",
+  "commit": "a024df8aecfbdf69efbd3d4f93f9b464f9e7f777",
+  "process": {
+    "pid": 736158,
+    "start_ticks": "49045896"
+  },
+  "exec_session": 88513,
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-structural-owner227-v1/frozen-check-v1.py",
+    "sha256": "b95c5f78dc553c8e6c17ac14e03dbd1841fc81780af58344b48bbb51fba8820b"
+  },
+  "members": 16,
+  "contacts_added": 0,
+  "continuation": "Wait for this exact process and frozen-check-v1.json with passed=true and16 members. Observation timeout is not a failure; do not restart. Only then run the pinned completed-TF transition after live STOP/process/service/memory checks, and start the Windows batch task once."
+}
