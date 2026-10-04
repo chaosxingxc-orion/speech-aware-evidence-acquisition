@@ -1,0 +1,39 @@
+{
+  "schema": "saea-template-k16-capacity-launch-v1",
+  "at_utc": "2026-10-04T19:11:29.260775+00:00",
+  "windows_launch": {
+    "schema": "saea-template-k16-capacity-windows-launch-v1",
+    "utc": "2026-10-04T19:08:56.0796851Z",
+    "windows_pid": 20272,
+    "wrapper_sha256": "e83215246da958e74a062cf548e62abf1e70a55b439b2065200d259afde40484",
+    "registration_sha256": "06b69eb575261886930299501d893dc0a3c5fb6f5ab669950624700fee2f9c43",
+    "members": 16,
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "maximum_tokenizer_endpoints": 4752,
+    "automatic_retry": false
+  },
+  "linux_pid": 730548,
+  "linux_start_ticks": "48865276",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-capacity-v1",
+  "worker_commit": "16cd42cd1ec4dc2e687222c295ba796c27de4d80",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/registration-v1.json",
+    "sha256": "06b69eb575261886930299501d893dc0a3c5fb6f5ab669950624700fee2f9c43"
+  },
+  "frozen_checks": {
+    "all_members": 16,
+    "passed": true,
+    "receipt_sha256": "732e79391b59e21cd353fcbdf794ac1d48a7773cb00f8e3d6cea1331150ee678"
+  },
+  "scope": {
+    "members": 16,
+    "maximum_tokenizer_endpoints": 4752,
+    "generation_contacts": 0,
+    "scorer_contacts": 0
+  },
+  "prelaunch_windows_free_gib": 18.613,
+  "automatic_retry": false,
+  "status": "RUNNING; revalidate original process and durable exits, never restart for observation timeout",
+  "next": "All sixteen capacities must complete and release before separate64-row structural admission; scientific18x20 remains HELD."
+}

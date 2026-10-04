@@ -20,9 +20,29 @@ def analyze(evidence, *, recipe, registration, protocol, roster, supplement):
     d = evidence.as_json()
     bindings = registration["member_bindings"]
     candidates, controls = protocol["candidate_members"], protocol["control_members"]
+    # The caller qualifies the hash-pinned owner amendment before reading sources.
+    # This pure reporter still rejects silent resizing and incomplete populations.
+    population = protocol.get("population_authorization")
+    expected_k = 4
+    if population is not None:
+        require(
+            isinstance(population, dict)
+            and isinstance(population.get("relpath"), str)
+            and bool(population["relpath"])
+            and isinstance(population.get("sha256"), str)
+            and len(population["sha256"]) == 64
+            and all(c in "0123456789abcdef" for c in population["sha256"])
+            and protocol.get("N") == 20
+            and protocol.get("algorithms") == ["tf-grpo-context-diversity"]
+            and candidates == [f"branch-{i:02d}" for i in range(1, 17)],
+            "exact prospective K16 report scope required",
+        )
+        expected_k = 16
     require(
-        controls == ["seed", "seed-aa"]
-        and len(candidates) == len(set(candidates)) == 4
+        type(protocol.get("K", 4)) is int
+        and protocol.get("K", 4) == expected_k
+        and controls == ["seed", "seed-aa"]
+        and len(candidates) == len(set(candidates)) == expected_k
         and set(candidates + controls) == set(bindings),
         "complete context and control scope required",
     )

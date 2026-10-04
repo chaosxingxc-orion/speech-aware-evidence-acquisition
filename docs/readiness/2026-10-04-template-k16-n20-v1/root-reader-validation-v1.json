@@ -1,0 +1,15 @@
+{
+  "at_utc": "2026-10-04T19:11:29.260775+00:00",
+  "tests": 154,
+  "passed": 154,
+  "reader_statements": 26,
+  "reader_statement_coverage_percent": 100,
+  "red_before_change": "Synthetic complete18-member report was refused by legacy hard-coded4; an inconsistent declaredK16 with4members was not refused. Both now pass/refuse as specified.",
+  "scope": "Prospective exactK16 report only when amendment pin, ordered16 branches, N20 and TF-only protocol are declared. Upstream hash-pinned owner and complete-family READ qualification remain mandatory. LegacyK4 stays strict.",
+  "source": {
+    "path": "src/speech_aware_evidence_acquisition/analysis/system_context_read.py",
+    "sha256": "66353f33dada9110ebbf41d6630444c85a77dfd27ce6bba2a172378513ca731f"
+  },
+  "contacts_added": 0,
+  "frozen_runtime_modified": false
+}

@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## K16 capacity launched; root report scope verified, 2026-10-04T19:11:29.260775+00:00
+
+[Exact Windows-owned launch](../receipts/continuation/2026-10-04-template-k16-capacity-launch.json) follows all16 frozen preflight PASS. Original Linux730548/start48865276, Windows20272, frozen16cd42cd1ec4dc2e687222c295ba796c27de4d80 run the registered4752-endpoint nongenerative capacity sequence. Continue this exact process through durable member exits; no retry for observation timeout. Queue/service/STOP controls are unchanged. Scientific generation remains HELD; heartbeat PAUSED. Revalidate live state rather than this launch snapshot.
+
+[Root report validation](../readiness/2026-10-04-template-k16-n20-v1/root-reader-validation-v1.json):154 tests PASS, root reporter26statements100% coverage. Prospective K16 reports retain all16 candidates plus seed/A/A and refuse silent resizing; original K4 remains strict. Actual owner-pin/complete-family READ qualification remains upstream. This root-only analysis correction does not modify the frozen capacity worker. No quality, scorer or learner contact was added.
+
+After all16 capacities exit0 and release, run the prepared structural entry helper in coordination/context-template-k16-structural-owner227-v1. Its frozen verifier, structural audit, node/sample timing, dynamic contact accounting and completed-TF-control transition are prepared but unexecuted. Prove all64 rows with valid four-node/control custody, then separately register/freeze/check all18 scientificN20 members and prospectively pin the new root analysis supplement. Do not run the old K4 callback or export concrete task/knowledge content to the learner. Preserve formal seed, fixed assets/decoding, paused heartbeat, other-carrier holds and human-before8x400.
+
+
 ## Frozen K16 capacity preflight live, 2026-10-04T18:55:56.802662+00:00
 
 The complete preparation is serially integrated at16cd42cd1ec4dc2e687222c295ba796c27de4d80. The clean frozen worker is `/home/chao/saea-worktrees/codex-context-template-k16-capacity-v1` at that commit. [Live preflight receipt](../receipts/continuation/2026-10-04-template-k16-frozen-preflight-running.json) pins Linux728587/start48772912 and exec session50199. It is running the16 member-specific registration/runtime, actual-policy-byte, graph equality and warm-supply checks. Branch01 has printed PASS. Continue this exact process; observation timeout is not failure. No capacity/model/scorer contact has been dispatched.
