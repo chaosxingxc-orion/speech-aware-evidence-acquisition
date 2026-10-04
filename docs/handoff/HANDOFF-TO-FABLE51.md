@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K16 abstract update-two original received and compiled, 2026-10-04
+
+[Original completion](../receipts/continuation/2026-10-04-k16-update2-proposer-complete.json) preserves the terminal GPT-6.1 Sol/high actor response,224429bytes,SHA2567c372a9a91f32400435a14709f54db3fc21099c04f49d4e470c0c79ddfd2618a. All three allowed input files remain unchanged. All16 reserved positions are spent; provider usage remains null. The actor is complete; never resubmit or repair its original response.
+
+[Shared compilation](../receipts/continuation/2026-10-04-k16-update2-compiled.json) records16 provisional,distinct full-system successors with verified actual role bytes. Each edits all four node templates; assembly stays as its own parent. Knowledge,data,retrieval and construction remain fixed. [Sixty boundary/archive tests](../receipts/continuation/2026-10-04-k16-update2-abstract-boundary-validation.json) pass. The actor saw templates and anonymous structural/numeric feedback only; no concrete case contents,knowledge,reason text or source roster. Node quality stays unmeasured. No benefit or adoption follows from compilation.
+
+Serial model-free child supply-envelope preparation is running through coordination/context-template-k16-update2-owner227-v1/prepare-child-engineering-v1.py,with per-branch exclusive stdout/stderr logs. The root execution session is42864; validate actual process/log completion before continuing or resubmitting. Prepared members remain HELD. New capacity helpers in coordination/context-template-k16-update2-capacity-owner227-v1 are syntax checked only; exact complete preparation,registration,frozen checks and live admission remain before tokenizer contacts. No new generation or score. Preserve formal seed,paused heartbeat,other-carrier holds and human-before8x400.
+
 ## K16 abstract update-two actor dispatched, 2026-10-04
 
 [Prospective admission](../receipts/continuation/2026-10-04-k16-update2-proposer-admission.json) and update2 actor readiness bind one fresh GPT-6.1 Sol/high fork-none task, template_k16_update2_sol, with16 reserved positions. Exact input totals513794bytes under589824-byte prospective input bound; maximum original response262144bytes. The complete504732-byte actor input, output contract and instructions are the only allowed data files. This is fresh-context/tool-use instruction isolation, not an OS filesystem sandbox or server-enforced token cap. Unknown provider usage stays null; no matched-total-compute claim.

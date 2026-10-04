@@ -1,0 +1,32 @@
+{
+  "at_utc": "2026-10-04T23:30:19.821370+00:00",
+  "model_contacts_added": 0,
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/original-response.json",
+    "sha256": "7c372a9a91f32400435a14709f54db3fc21099c04f49d4e470c0c79ddfd2618a"
+  },
+  "result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/populations/update-two/result.json",
+    "sha256": "1be110a92001a7d6262c8b4faeee493329b0e31c777b18fdf5ccb3df6cf83750"
+  },
+  "runtime_admission": false,
+  "schema": "saea-k16-update-original-archived-v1",
+  "statuses": {
+    "branch-01": "provisional",
+    "branch-02": "provisional",
+    "branch-03": "provisional",
+    "branch-04": "provisional",
+    "branch-05": "provisional",
+    "branch-06": "provisional",
+    "branch-07": "provisional",
+    "branch-08": "provisional",
+    "branch-09": "provisional",
+    "branch-10": "provisional",
+    "branch-11": "provisional",
+    "branch-12": "provisional",
+    "branch-13": "provisional",
+    "branch-14": "provisional",
+    "branch-15": "provisional",
+    "branch-16": "provisional"
+  }
+}

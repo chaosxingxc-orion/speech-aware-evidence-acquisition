@@ -1,0 +1,27 @@
+{
+  "schema": "saea-k16-update2-abstract-boundary-validation-v1",
+  "at_utc": "2026-10-04T23:34:24.071329+00:00",
+  "tests": {
+    "command": "python -B -m pytest -q -p no:cacheprovider tests/unit/test_abstract_node_feedback.py tests/unit/test_context_population_actor_view.py tests/unit/test_context_population_update.py",
+    "passed": 60,
+    "failed": 0
+  },
+  "compiled_members": 16,
+  "distinct_editable_programs": 16,
+  "all_original_statuses": "provisional",
+  "edited_roles_per_member": [
+    "perception",
+    "solver",
+    "reviewer",
+    "planner"
+  ],
+  "assembly_configuration": "Preserved per parent; diversity retained across original branches.",
+  "knowledge_data_unchanged": true,
+  "feedback_boundary": "Complete editable templates plus anonymous numeric/bool/null output structure, measured node costs and official terminal counts. No concrete task contents, entity values, knowledge, reasons or source rosters.",
+  "unmeasured_node_quality": null,
+  "new_runtime_contacts": 0,
+  "runtime_admission": false,
+  "engineering_preparation": "Serial shared-runtime supply envelope preparation is running; do not rerun completed or active members.",
+  "held_carriers_unchanged": true,
+  "heartbeat": "PAUSED"
+}

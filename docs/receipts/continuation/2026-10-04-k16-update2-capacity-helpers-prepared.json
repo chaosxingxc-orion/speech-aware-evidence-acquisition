@@ -1,0 +1,66 @@
+{
+  "schema": "saea-k16-update2-capacity-helper-preparation-v1",
+  "at_utc": "2026-10-04T23:31:21.608876+00:00",
+  "helpers": [
+    {
+      "name": "prepare-capacity-entry-v1.py",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/prepare-capacity-entry-v1.py",
+        "sha256": "35417cde72c968c88510029a03398ba70ab63e1d7fecf5637c28c8fc402ed7d0"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/prepare-capacity-entry-v1.py",
+        "sha256": "fb23700128dc473eb12d113684a41a312a66fcd41a9b50ed6e34a6df0a37cafe"
+      }
+    },
+    {
+      "name": "frozen-check-v1.py",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/frozen-check-v1.py",
+        "sha256": "0302bb75db341b33572715bb8e6e326b32a033ffc0823070e4c19d8eb7f4e29e"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/frozen-check-v1.py",
+        "sha256": "8ee3fb1c3e13be4800a009ddeeedf0dedb76881b9d47c3638daed96f32085567"
+      }
+    },
+    {
+      "name": "finalize-capacity-registration-v1.py",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/finalize-capacity-registration-v1.py",
+        "sha256": "edbb037df486801eb5c7ab54cf692d8b9a4eefe4e4b5767e09d29c6d7c3cd32f"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/finalize-capacity-registration-v1.py",
+        "sha256": "d3581b8383d7e1621d7053075d062fc9f7767686fe3a8d8c4d70829e6c504d5f"
+      }
+    },
+    {
+      "name": "launch-capacity-v1.py",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/launch-capacity-v1.py",
+        "sha256": "d5b390efa7be607d3f862d866566100bfda9f09dda9a4f47f16250191e59ca0a"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/launch-capacity-v1.py",
+        "sha256": "68e67abd5cf6d133e88612bbf6894040a898fea046b3ba6175fb90dd67026b37"
+      }
+    },
+    {
+      "name": "guarded-child-v1.py",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/guarded-child-v1.py",
+        "sha256": "61f8f4a42cb0e64181ae019f6a66e67925241c5ef8905fadfe00bfa788dccc04"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/guarded-child-v1.py",
+        "sha256": "61f8f4a42cb0e64181ae019f6a66e67925241c5ef8905fadfe00bfa788dccc04"
+      }
+    }
+  ],
+  "scope": "Identity/path and source-completion binding adaptation of proven shared capacity orchestration. Four roles editable; fixed knowledge/data/runtime.",
+  "syntax_checked": true,
+  "runtime_admission": false,
+  "contacts_added": 0,
+  "conditions": "Prepare exact supplies and registration; freeze and validate all members before any tokenizer contact."
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "saea-k16-update2-proposer-completion-v1",
+  "at_utc": "2026-10-04T23:29:24.228068+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-PROPOSE-V1",
+  "agent": "/root/template_k16_update2_sol",
+  "status": "ORIGINAL RECEIVED AND PRESERVED; VALIDATION PENDING",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/original-response.json",
+    "sha256": "7c372a9a91f32400435a14709f54db3fc21099c04f49d4e470c0c79ddfd2618a",
+    "bytes": 224429
+  },
+  "input_manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/manifest.json",
+    "sha256": "e0129f5cac9c1e65ff741d0e900bc2ffbdc21fd91ac82fc6e41578c52f3772c7"
+  },
+  "all_allowed_input_bytes_unchanged": true,
+  "semantic_opportunities": 1,
+  "design_slots": 16,
+  "provider_contacts": null,
+  "input_tokens": null,
+  "output_tokens": null,
+  "runtime_admission": false,
+  "paid_api_spend": 0,
+  "limitations": [
+    "Original proposals are unevaluated and unadopted.",
+    "Provider metering is unavailable.",
+    "Isolation is fresh-context and explicit tool-use instruction, not an OS sandbox."
+  ]
+}
