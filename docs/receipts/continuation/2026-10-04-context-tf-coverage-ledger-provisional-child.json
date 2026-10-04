@@ -1,0 +1,105 @@
+{
+  "schema": "saea-context-tf-provisional-child-prepared-v1",
+  "at_utc": "2026-10-04T15:25:07.504142+00:00",
+  "candidate_id": "coverage-ledger",
+  "parent_bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+  "child_bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+  "original_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0042-propose/original-response.json",
+    "sha256": "f10086c060a99a1126a0a4f37fc21bba7afd74d38fc1147b698db86afc301a62"
+  },
+  "compile_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-coverage-ledger-child-compiled-v1.json",
+    "sha256": "dd98de4aa623577975c0571d05fe6d46997098cb716b47025a842dba2880ea1d"
+  },
+  "prepared_members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-tf-iteration1-coverage-ledger-engineering-v1/prepared-members-v1.json",
+    "sha256": "678f300bfc9be03a17e10cc62b0b616833b4ed3f66379c786f4addee571a97f0"
+  },
+  "changed_roles": [
+    "perception",
+    "planner",
+    "reviewer",
+    "solver"
+  ],
+  "changed_policy_fields": [
+    "role_text",
+    "node_context"
+  ],
+  "actual_binding": {
+    "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+    "role_sha256": {
+      "perception": "61b88f4ad2454cc19d5cb677e4402e4e492e9b21181fc6e984521dda403ec473",
+      "planner": "78fc358c01787798c7bbf50bc8fefac20d29289761c7b2f0090f1fa5baba0ce4",
+      "reviewer": "c153e00ae8beec071d1459cd7c0ec9335c7c6dec6dcba724230519ba5c7d4cb7",
+      "solver": "49e13c87ae262ff086e614e99028755c6861c983f213fddaee443691e4f35f82"
+    },
+    "context_layout": {
+      "native_role_query_placement": null
+    },
+    "node_context": {
+      "tool_schema_rendering": "per-role",
+      "reviewer_history_scope": "latest-solver-and-local-tools"
+    }
+  },
+  "targeted_checks": [
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-coverage-ledger-graph-v1.json",
+        "sha256": "e2c5246124cc4f254167e8500e2ad7e315428f35c5a7eb192473f709d305951f"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-coverage-ledger-graph-prepared-v1.json",
+        "sha256": "0a681bd84608a66bd7805f7159690eb4a92265afba8c5f4e7c9277650efac2e0"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "status": "PASS; HELD"
+    },
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-v1.json",
+        "sha256": "3362ca7274b9792e517c4923152e6bd97e40b3828fa3f9202099328561095319"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-v1.json",
+        "sha256": "696884c950c92c8429b753cf02ee47fd232010e9817156f356d51e1464f78b00"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "status": "PASS; HELD"
+    },
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-v1.json",
+        "sha256": "296e21367407094f5157dfeec4d8afe867239d511d730303a5bb2e0b72ee25b9"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-v1.json",
+        "sha256": "6dcac198242a94ee698ed06b39373d0a5f88ec3173ae7c07a94b95a6dc24a270"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "status": "PASS; HELD"
+    }
+  ],
+  "compile_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-variant-v1.py",
+    "sha256": "968d94ef645b07e2eaa7fdbf3a80a0350a8de56635d747b1b7f07e85f2c1ebab"
+  },
+  "preparation_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-child-engineering-v2.py",
+    "sha256": "a4851180ea481cbb11aeccb8acc8d20325e4f948c4c8564f6f55c4623cefbb07"
+  },
+  "root_text_review": "All submitted runtime role texts were reviewed. Legal output/control interfaces and Omni answer authority are retained in the instructions. No sample identifiers, answer lookup tables or copied source answer values were found. This review does not establish runtime compliance, capacity or quality.",
+  "global_checks": "Not rerun for this metadata-only preparation. Prior engineering-base and harness checks passed; global algorithm-label check has two preserved historical failures. Targeted new-member checks above are not a waiver or global PASS.",
+  "runtime_admission": false,
+  "contacts_added": 0,
+  "scope": "Original provisional response compiled unchanged. Three own preparations warm-verify against original knowledge selection outputs. Actual capacity, structural proof and complete-family evaluation remain required."
+}

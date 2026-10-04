@@ -1,0 +1,116 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-graph-v1",
+    "baseline": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-graph-prepared-v1",
+    "config_hash": "24eb9d6754c0f0ab407269103d7fb63f035ae492ce015ed2910584c6def4df2d",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-graph-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "model-free-check",
+      "planned_gpu_hours": 0.01,
+      "planned_model_calls": 1,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "5053fb9460e1046c74a39679a90f19c6a31547152ddc5478ca2c82e52ec851a5",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-GRAPH-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-graph-v1",
+    "kind": "graph",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8.json",
+        "sha256": "d227c32d1908623d1cfbf73078f64645b841e9f67669da6b63fe96c40fa0a19b"
+      },
+      "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-GRAPH-V1/phase-supply-v1.json",
+      "sha256": "b3258f810e56fbcd330fb26d99d0f32e7520aa13e6975ef55a5e20bf58a07790"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-GRAPH-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-fit-v1",
+    "baseline": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-v1",
+    "config_hash": "6bf98eb07cb6ddd203ead70197a22c6ff0ecdc8b268b624a35dbf451b61562c5",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-fit-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 297,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "49c3b463a8b8cfc6cde6af8766cc814348918a9c95a9f86c575815a1381e163d",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-capacity-v1",
+    "kind": "capacity",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8.json",
+        "sha256": "d227c32d1908623d1cfbf73078f64645b841e9f67669da6b63fe96c40fa0a19b"
+      },
+      "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-CAPACITY-FIT-V1/phase-supply-v1.json",
+      "sha256": "04b344cea85f0398108de07dac846a54e8c198991a859bd358339df8224161f0"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-generation-v1",
+    "baseline": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-v1",
+    "config_hash": "9d0bd2dc5883aa999d73f5a6441beae581d07a160af5af3ecf258e45b94af9bc",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-generation-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "441e00bdc6467be8978f6035b051c734649d8c0ae909e2b5b409703b9f026a84",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-SMOKE-4-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-v1",
+    "kind": "smoke-4",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8.json",
+        "sha256": "d227c32d1908623d1cfbf73078f64645b841e9f67669da6b63fe96c40fa0a19b"
+      },
+      "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "f51d7f01eb51c0bbe83b2ae70e127a7700dccc3142e47277757cdfa6b6e14b59"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-SMOKE-4-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  }
+]
