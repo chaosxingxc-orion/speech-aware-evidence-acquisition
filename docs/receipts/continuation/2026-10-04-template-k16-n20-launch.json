@@ -1,0 +1,236 @@
+{
+  "schema": "saea-template-k16-n20-launch-v1",
+  "at_utc": "2026-10-04T20:52:55.405387+00:00",
+  "authority": "Root227 bounded comparison and direct K16 owner scope after all64 structural rows and all18 frozen preflight checks",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1",
+  "commit": "a7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087",
+  "driver_epoch": "2026-10-04T20:49:45Z",
+  "root_driver": {
+    "pid": 747661,
+    "parent_pid": 747660,
+    "start_ticks": "49451009",
+    "state": "S",
+    "args": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ],
+    "cwd": "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1"
+  },
+  "processes": [
+    {
+      "pid": 747661,
+      "parent_pid": 747660,
+      "start_ticks": "49451009",
+      "state": "S",
+      "args": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ],
+      "cwd": "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1"
+    },
+    {
+      "pid": 747826,
+      "parent_pid": 747794,
+      "start_ticks": "49453930",
+      "state": "S",
+      "args": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.cli",
+        "campaign",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--owner",
+        "chatgpt-root-owner227",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--experiment",
+        "slurp-native-stage3-context-template-k16-n20-seed-v1"
+      ],
+      "cwd": "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1"
+    }
+  ],
+  "windows_dispatch": {
+    "schema": "saea-k16-n20-windows-dispatch-v1",
+    "at_utc": "2026-10-04T20:49:44.0708808Z",
+    "task": "SAEA-Batch-Driver",
+    "status": "dispatch-requested",
+    "prelaunch_free_gib": 18.482643127441406,
+    "worker_commit": "a7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087",
+    "members": 18,
+    "rows": 360,
+    "official_score_jobs": 18,
+    "automatic_retry": false
+  },
+  "frozen_preflight": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/frozen-check-v1.json",
+    "sha256": "d0e27d81fdde37f41e2d97017dc573077533446a2cb2dfeb5a2de796da7e73ce"
+  },
+  "normal_completed_control_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/driver-transition-v1.json",
+    "sha256": "6aa2ccdb7225e219f7dd0e425cfef7331b449b2c7a1503f694d6148b2e686fc0"
+  },
+  "queue": {
+    "path": "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1/docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/queue-v1.json",
+    "sha256": "28ced50a85c0f3c8f0141eeee8fd6f8fbe56d40c92558bd82b5ba6d299f5f15f"
+  },
+  "registration": {
+    "path": "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1/docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/registration-v1.json",
+    "sha256": "6b036687e3849be491f243ecfc804d91a93cb7b8c17e1baf2f8dcb64d8f9a96e"
+  },
+  "analysis_supplement": {
+    "path": "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1/docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/analysis-supplement-v1.json",
+    "sha256": "9e8cb8fca2a4d9b36031eaec772f60edd70c3e6d2ec5534162d7780023ff1ecb"
+  },
+  "startup_memory": [
+    {
+      "at": "2026-10-04T20:50:08Z",
+      "event": "memory-wait-ok",
+      "detail": {
+        "elapsed_seconds": 21.905388750019483,
+        "exit_code": 0,
+        "interval_seconds": 10,
+        "observer_sha256": "9d61272c6f4756d2962ec934869ffea61d5e0d1b7adcd544f504abb36e69218c",
+        "running_floor_gib": 8.0,
+        "schema": "saea-precontact-memory-wait-v1",
+        "stable_samples": 3,
+        "start_gib": 12.5,
+        "status": "ready",
+        "stop_marker": "/home/chao/batch-STOP",
+        "wait_seconds": 600.0,
+        "worker_started": false
+      }
+    }
+  ],
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-seed-generation-v1",
+      "state": "OPENED",
+      "model_contacts": 83
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-seed-aa-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-01-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-01-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-02-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-02-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-03-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-03-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-04-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-04-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-05-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-05-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-06-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-06-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-07-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-07-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-08-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-08-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-09-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-09-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-10-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-10-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-11-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-11-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-12-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-12-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-13-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-13-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-14-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-14-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-15-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-15-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-BRANCH-16-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-n20-branch-16-generation-v1",
+      "state": "ABSENT",
+      "model_contacts": null
+    }
+  ],
+  "scope": {
+    "distinct_inputs": 20,
+    "original_candidates": 16,
+    "control_members": 2,
+    "candidate_trajectories": 320,
+    "control_trajectories": 40,
+    "total_trajectories": 360,
+    "generation_contact_cap": 4680,
+    "request_fit_endpoint_cap": 18720,
+    "official_complete_score_jobs": 18
+  },
+  "read": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1 remains unsigned until all18 independently FINALIZED, verified seals, exactly one complete official score each and zero failed jobs. No partial task-quality read.",
+  "learner": "No next proposal or export. Any later abstract TF source needs separate complete-family admission; no K4 callback, concrete-content view, GEPA or milestone/test export.",
+  "preservation": "Preserve all structural/old workers and original responses. Formal seed unchanged; fixed data/knowledge/T0/seed/sequential4slot/queue4. Other-carrier holds and human-before8x400 retained. Heartbeat PAUSED. No automatic recovery."
+}
