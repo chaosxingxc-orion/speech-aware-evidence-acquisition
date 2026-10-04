@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Four-node round9 stopped on provider sharing quota, 2026-10-04T03:02:18.763084+00:00
+
+This supersedes the running checkpoint below. Windows task `SAEA-System-Text-Proposer-Four-Node-Round9-Owner227` exited1 at02:51:19Z after one reserved L-9-1 contact. The provider returned `subscription_sharing_usage_limit_exceeded`; credential readiness had passed. No candidate was returned and token usage is incomplete, so record input/output as unknown rather than zero. Do not attribute this refusal to model quality, prompt design, context capacity or authentication. No reset time is supplied.
+
+[Root227 disposition and exact evidence](../receipts/continuation/2026-10-04-four-node-round9-quota-stop.json) preserve the original HTTP/SSE/events, reservation, task logs and frozen `8eafb9f60` worker. L-9-1 is now closed invalid with an empty final proposal and unknown usage;30 total closed including29 predecessors,3 inherited HELD. B-9-1/L-9-2/B-9-2 have no reservation or contact and remain unspent. Do not retry/replace L-9-1, probe quota with model calls, switch to a paid API, or manufacture a complete candidate panel. Worker PID607813 was verified absent and the Windows task result is1.
+
+The [remaining-three model-free check](../receipts/continuation/2026-10-04-four-node-round9-remaining-preflight.json) passed at03:03:04Z using the existing closed-allocation filter and unchanged input/model/budgets. It verified exactly3 unspent jobs and0 added contacts, with no credential request. The separate draft registration remains PREPARED-NOT-ADMITTED. No dispatch until a fresh availability basis and exact root review are recorded; no scheduled continuation or new task is created. Current serving/queue/STOP and all original frozen bytes stay untouched. Full-node optimization and measured quality/latency engineering remain implemented; no new system benefit or learning gain is established. Keep sequential execution, same fixed400 assets, L/B isolation, root-only work and heartbeat PAUSED; human before8x400 and other-carrier holds remain unchanged.
+
 ## Four-node round9 proposer running, 2026-10-04T02:50:33.835160+00:00
 
 The exact four proposals are running through Windows task `SAEA-System-Text-Proposer-Four-Node-Round9-Owner227`, epoch02:48:42Z, on frozen `/home/chao/saea-worktrees/codex-four-node-proposer-round9-v1` at `8eafb9f601242d7310cb889656d30dc3cb9af214`. [Launch receipt](../receipts/continuation/2026-10-04-four-node-round9-launch.json) pins the final zero-contact PASS, registration, wrapper and actual process proof: PID607813/start ticks43190323. Windows free26.621GiB at startup; no competing proposer. The Windows task and Python worker were independently observed live. Revalidate the same PID/start identity and task; observation timeout is not failure or permission to restart.
@@ -1342,7 +1350,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T02:50:33.835160+00:00
+Last refreshed: 2026-10-04T03:02:18.763084+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,0 +1,37 @@
+{
+  "schema": "saea-model-free-remaining-proposer-preparation-v1",
+  "receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-remaining-preparation-v1/check-receipt.json",
+    "sha256": "886b1018edb786f287e299a7cfb5263f979ab72e28b683de0f43890b60a558bc"
+  },
+  "at_utc": "2026-10-04T03:03:04.013186+00:00",
+  "exit_code": 0,
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-remaining-preparation-v1/registration-draft.json",
+    "sha256": "9006783a37665bae708f3379917df0a4382025aa88223f804796e927bfd9d4a8"
+  },
+  "stdout": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-remaining-preparation-v1/stdout.log",
+    "sha256": "64dd823cf883673dbee5d13e5acd2dd1a49467894b0c88d4520e15a509d53101"
+  },
+  "stderr": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-remaining-preparation-v1/stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "contacts_added": 0,
+  "credentials_requested": false,
+  "status": "PREPARED-NOT-ADMITTED",
+  "remaining": [
+    "B-9-1",
+    "L-9-2",
+    "B-9-2"
+  ],
+  "closed": [
+    "L-9-1"
+  ],
+  "dispatch_permitted": false,
+  "task_created": false,
+  "provider_availability_verified": false,
+  "reset_time": null,
+  "root_review_required_before_dispatch": true
+}

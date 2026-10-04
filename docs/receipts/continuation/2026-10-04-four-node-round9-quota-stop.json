@@ -1,0 +1,86 @@
+{
+  "schema": "saea-root-four-node-proposer-quota-closure-v1",
+  "at_utc": "2026-10-04T03:00:33.959826+00:00",
+  "owner_decision": 227,
+  "status": "STOPPED-SUBSCRIPTION-SHARING-QUOTA",
+  "provider_error": {
+    "code": "subscription_sharing_usage_limit_exceeded",
+    "message": "The ChatGPT user has reached their Subscription Sharing usage limit. Ask the user to try again after their usage limit resets or use an API key instead.",
+    "param": null,
+    "type": "invalid_request_error"
+  },
+  "cause": "The provider refused the first reserved proposal contact because the own-app subscription-sharing usage limit was exceeded.",
+  "allocation": "L-9-1",
+  "allocation_spent": true,
+  "candidate_received": false,
+  "input_tokens": null,
+  "output_tokens": null,
+  "metering_complete": false,
+  "contact_count": 1,
+  "remaining_unspent": [
+    "B-9-1",
+    "L-9-2",
+    "B-9-2"
+  ],
+  "reset_time": null,
+  "retry": false,
+  "replacement": false,
+  "paid_api_spend": 0,
+  "gpu_dispatch": false,
+  "heartbeat": "PAUSED",
+  "source_root": "/home/chao/saea-worktrees/codex-four-node-proposer-round9-v1",
+  "source_commit": "8eafb9f601242d7310cb889656d30dc3cb9af214",
+  "worker_pid_absent": 607813,
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-v1/finished.json",
+      "sha256": "8886a46268fb3c9c5112bf3359b934fc54f01079bbe43ad43f0af016f2521035"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-v1/transport/L-9-1/outcome.json",
+      "sha256": "b9a099b4bb779ac36d0bd7d8d1350636a49bb9f826986d50c51c42f93d4c7982"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-v1/contacts/L-9-1/001.json",
+      "sha256": "2a609730a8c2379ee925e5374f4599433d5e903a6e82c277e976f746f957edea"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-v1/transport/L-9-1/contact-001/reservation.json",
+      "sha256": "68abdc4247505181b748e00a75bc078c6db1e1035704a76c9d1d805cb969a767"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-v1/transport/L-9-1/contact-001/response.sse",
+      "sha256": "8a57953af55c14c2f77a282961e8c7b0942e0220870d3b51ad20c992208ef6c9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-v1/transport/L-9-1/contact-001/events.jsonl",
+      "sha256": "031f3330f8ac29b54735d4bdc40bf86320458e06193c2c158805a2da86e07b45"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-owner227-v1/launcher-exit.json",
+      "sha256": "45447ec12d36e69b7e550281c2f5454d062aebf26dca6fe7ea94df54d4ae44da"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/responses/L-9-1.json",
+      "sha256": "09fc39cf12668212852cd01cbf545e697beb0377b2a728602c3c0b247d6be35a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/proposals/L-9-1.json",
+      "sha256": "c9832a8bb80e369a8505de9da755fec52cf8b890f910ae259c989c5b0ebe7e25"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/imports/L-9-1.json",
+      "sha256": "9b3e53c768f87762f05a3ffed341b37156340c92f4677ae6613af50a108086bb"
+    }
+  ],
+  "disposition": "Preserve the failed spent opportunity and all original bytes. Hold the three unspent opportunities without model probes, paid fallback, replacement or automatic retry. Prepare only model-free remaining-allocation continuation; dispatch requires a recorded root review of fresh provider availability and exact source/input custody. No quality or learning conclusion follows from this transport refusal.",
+  "archive_closure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-owner227-v1/L-9-1-root-disposition-v1.json",
+    "sha256": "fe23e8645a352f228d71afd59f7a0848f4a434501be4d0480d600a16ecccd137"
+  },
+  "closed_predecessors": 29,
+  "total_closed": 30,
+  "inherited_held": 3,
+  "remaining_round9_unspent": 3,
+  "root_disposition_at_utc": "2026-10-04T03:02:18.763084+00:00"
+}
