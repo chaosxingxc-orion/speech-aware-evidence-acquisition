@@ -1,0 +1,21 @@
+{
+  "schema": "saea-template-tf-actor-event-v1",
+  "at_utc": "2026-10-04T17:47:56.302883+00:00",
+  "event": "dispatched",
+  "admission": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-template-tf-iteration2-0001-propose-admission.json",
+    "sha256": "7a3fb3d21f6633f88fd6efd78cd8bdfa69b948b6426c9e39fc553edf0f8e7fc6"
+  },
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-0001-PROPOSE-V1",
+  "runtime_dispatch": false,
+  "agent_task": "/root/template_tf2_proposal1_sol",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/actor-capsules/0001-propose/manifest.json",
+    "sha256": "2aab6d1e2d0172a078c9c5d42ec8beef8645903d23d5993e32401c30d573163d",
+    "bytes": 1370
+  },
+  "allowed_files": 2
+}

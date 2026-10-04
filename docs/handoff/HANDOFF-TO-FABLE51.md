@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Template-only TF iteration2 experience accepted, 2026-10-04T17:50:26.623949+00:00
+
+The original 0000 experience response was submitted unchanged and accepted by worker714195/start48300862: eight template-level operations, unknown provider usage remains null. [Completion](../receipts/continuation/2026-10-04-template-tf-iteration2-0000-update_experience-completed.json) preserves the original response and accepted-response hashes. These are proposed iteration experience, not formal adoption or a measured gain.
+
+The original0001 proposal is [admitted](../receipts/continuation/2026-10-04-template-tf-iteration2-0001-propose-admission.json) and [dispatched](../receipts/continuation/2026-10-04-template-tf-iteration2-0001-propose-dispatched.json) to a fresh GPT-6.1 Sol/high fork-none actor. Exactly two files,99,431 bytes; complete editable templates, aggregate own feedback and provisional experience only. No individual cases, source roster, knowledge content, GEPA feedback or runtime dispatch. Continue the original four proposal opportunities without replacements, compile original provisional children and separately admit capacity/structural/full-family evaluation. Keep N20, formal seed, frozen worker/sources, paused heartbeat and other-carrier holds.
+
 ## Template-only TF iteration2 first semantic request, 2026-10-04T17:42:20.766987+00:00
 
 Original worker714195/start48300862 completed source qualification and emitted0000-update_experience. [Exact admission](../receipts/continuation/2026-10-04-template-tf-iteration2-0000-update_experience-admission.json) and [dispatch](../receipts/continuation/2026-10-04-template-tf-iteration2-0000-dispatched.json) bind the two-file81,235-byte capsule and fresh GPT-6.1 Sol/high fork-none task /root/template_tf2_experience_sol. Await its original response; do not create a replacement or reopen sample material. No new runtime/GPU experiment has been dispatched. Service subsequent original proposal requests with their own exact capsules. Preserve the live frozen worker and source READs.

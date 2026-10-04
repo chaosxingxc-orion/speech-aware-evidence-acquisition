@@ -1,0 +1,26 @@
+{
+  "schema": "saea-template-tf-actor-event-v1",
+  "at_utc": "2026-10-04T17:47:55.624807+00:00",
+  "event": "completed",
+  "admission": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-template-tf-iteration2-0000-update_experience-admission.json",
+    "sha256": "5c9db59f1fcff78398d583d49b75dbd1826af304bf193cbb6391fe6eb7147110"
+  },
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-TF-ITERATION2-0000-UPDATE-EXPERIENCE-V1",
+  "runtime_dispatch": false,
+  "accepted": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/external-exchange/requests/0000-update_experience/accepted.json",
+    "sha256": "d9d44c21c12c212b88746d671f8f0e6133333bed6f1283b8992d766507436376"
+  },
+  "original_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/actor-capsules/0000-update_experience/original-response.json",
+    "sha256": "1be9477a54dcd8105f043003f04e7289e6e9b9cde4c9ee096584a6c8082af076"
+  },
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "no_repair_or_retry": true,
+  "operation_count": 8
+}
