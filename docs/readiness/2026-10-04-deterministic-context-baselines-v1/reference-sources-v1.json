@@ -1,0 +1,146 @@
+{
+  "schema": "saea-baseline-reference-sources-v1",
+  "use": "Read-only algorithm research; no installation or execution; no task data.",
+  "sources": [
+    {
+      "algorithm": "training-free-grpo",
+      "repository": "https://github.com/TencentCloudADP/youtu-agent",
+      "commit": "7612f860a2314c015573adc742f82157b0d66a6f",
+      "source_path": "training_free_grpo/train.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/7612f860a2314c015573adc742f82157b0d66a6f/training_free_grpo/train.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/training-free-grpo/training_free_grpo/train.py",
+      "sha256": "0413d6fc915c4f8775235d2b351ec4e6f4540e65dcb5e05f20366b91d984aa23",
+      "bytes": 8678
+    },
+    {
+      "algorithm": "training-free-grpo",
+      "repository": "https://github.com/TencentCloudADP/youtu-agent",
+      "commit": "7612f860a2314c015573adc742f82157b0d66a6f",
+      "source_path": "training_free_grpo/math/experience.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/7612f860a2314c015573adc742f82157b0d66a6f/training_free_grpo/math/experience.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/training-free-grpo/training_free_grpo/math/experience.py",
+      "sha256": "7c859225dd0c0ce6c6a5438f7869be122cfa59ee2567b3915fd982902ae9b3af",
+      "bytes": 11703
+    },
+    {
+      "algorithm": "training-free-grpo",
+      "repository": "https://github.com/TencentCloudADP/youtu-agent",
+      "commit": "7612f860a2314c015573adc742f82157b0d66a6f",
+      "source_path": "training_free_grpo/math/prompts.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/7612f860a2314c015573adc742f82157b0d66a6f/training_free_grpo/math/prompts.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/training-free-grpo/training_free_grpo/math/prompts.py",
+      "sha256": "5969ecab0233432a30ed3a895afc4fd4e7d178760163be142f75d9b2f2a981ca",
+      "bytes": 8370
+    },
+    {
+      "algorithm": "training-free-grpo",
+      "repository": "https://github.com/TencentCloudADP/youtu-agent",
+      "commit": "7612f860a2314c015573adc742f82157b0d66a6f",
+      "source_path": "training_free_grpo/web/experience.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/7612f860a2314c015573adc742f82157b0d66a6f/training_free_grpo/web/experience.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/training-free-grpo/training_free_grpo/web/experience.py",
+      "sha256": "efcdb7912033237c7f4b9fe4c573f4f7a3f50ce8d01ae03c59f3ff9dc7ea9d82",
+      "bytes": 14089
+    },
+    {
+      "algorithm": "training-free-grpo",
+      "repository": "https://github.com/TencentCloudADP/youtu-agent",
+      "commit": "7612f860a2314c015573adc742f82157b0d66a6f",
+      "source_path": "training_free_grpo/main.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/7612f860a2314c015573adc742f82157b0d66a6f/training_free_grpo/main.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/training-free-grpo/training_free_grpo/main.py",
+      "sha256": "eb51ed12c923ab846a46115baa78d940f30629c5375c450854ab2e0b5f41f410",
+      "bytes": 11599
+    },
+    {
+      "algorithm": "gepa",
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/core/adapter.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/core/adapter.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/gepa/src/gepa/core/adapter.py",
+      "sha256": "c32c4c2ea8ed9fc4f2c65e8d28184e3f63e10e39546a865e556d351f547d88b5",
+      "bytes": 12688
+    },
+    {
+      "algorithm": "gepa",
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/core/engine.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/core/engine.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/gepa/src/gepa/core/engine.py",
+      "sha256": "96779c98be8568eeb3899044cb37b0fb87d07a91af2979403dff2a7b6eeba365",
+      "bytes": 59528
+    },
+    {
+      "algorithm": "gepa",
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/core/state.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/core/state.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/gepa/src/gepa/core/state.py",
+      "sha256": "6872c4645cd448597f9937061fb46c9f21c1866839ac509afb7373f2f1ebedcd",
+      "bytes": 55679
+    },
+    {
+      "algorithm": "gepa",
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/strategies/candidate_selector.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/strategies/candidate_selector.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/gepa/src/gepa/strategies/candidate_selector.py",
+      "sha256": "c2565e251d0cdc00d7548dde7fd0316190c97a64bc130ea86ea6e2fc8a232cfd",
+      "bytes": 3033
+    },
+    {
+      "algorithm": "gepa",
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/strategies/component_selector.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/strategies/component_selector.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/gepa/src/gepa/strategies/component_selector.py",
+      "sha256": "248cc6eb125eeddaa98f90b7780db2754ec0444a6143aeb1f97ff5660cf39568",
+      "bytes": 1203
+    },
+    {
+      "algorithm": "gepa",
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/proposer/reflective_mutation/reflective_mutation.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/proposer/reflective_mutation/reflective_mutation.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/gepa/src/gepa/proposer/reflective_mutation/reflective_mutation.py",
+      "sha256": "2fcc6681d3498700a4a6b79297c98e0fcfc8601503cc019dca56681f51e4eb5d",
+      "bytes": 33446
+    },
+    {
+      "algorithm": "gepa",
+      "repository": "https://github.com/gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "source_path": "src/gepa/api.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/api.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/gepa/src/gepa/api.py",
+      "sha256": "304b7f10faea546c0eac7161890625bebbdea784eaafb09838e944f8477ec1fd",
+      "bytes": 30763
+    },
+    {
+      "algorithm": "skillopt",
+      "repository": "microsoft/SkillOpt",
+      "commit": "fa4ca184573e42ec11472959dd57422381418096",
+      "source_path": "docs/guide/training-loop.md",
+      "url": "https://raw.githubusercontent.com/microsoft/SkillOpt/fa4ca184573e42ec11472959dd57422381418096/docs/guide/training-loop.md",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/skillopt/docs/guide/training-loop.md",
+      "sha256": "286a302159afb79980cb80acfcd84bf62bcd691c50c302f440fc7d733a0d2ad5",
+      "bytes": 4301
+    },
+    {
+      "algorithm": "skillopt",
+      "repository": "microsoft/SkillOpt",
+      "commit": "fa4ca184573e42ec11472959dd57422381418096",
+      "source_path": "docs/guide/skill-document.md",
+      "url": "https://raw.githubusercontent.com/microsoft/SkillOpt/fa4ca184573e42ec11472959dd57422381418096/docs/guide/skill-document.md",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-v1/skillopt/docs/guide/skill-document.md",
+      "sha256": "9c8fd7cd62e76bd717da92d06402b99ddd5a33c6abb17e15b97440f42d25254b",
+      "bytes": 3424
+    }
+  ]
+}
