@@ -1,0 +1,19 @@
+{
+  "schema": "saea-template-tf-actor-dispatch-v1",
+  "admission": "docs/receipts/continuation/2026-10-04-template-tf-iteration2-0000-update_experience-admission.json",
+  "dispatch": {
+    "agent_task": "/root/template_tf2_experience_sol",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "fork_turns": "none",
+    "allowed_files": 2,
+    "at_utc": "2026-10-04T17:42:20.766987+00:00"
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-tf-iteration2-v1/actor-capsules/0000-update_experience/manifest.json",
+    "sha256": "43e80884147085a9b3d7cd86acdd3f46fab56c2a94821e170e4fc92ea561e3df",
+    "bytes": 1420
+  },
+  "input_bytes": 81235,
+  "no_runtime_dispatch": true
+}

@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Template-only TF iteration2 first semantic request, 2026-10-04T17:42:20.766987+00:00
+
+Original worker714195/start48300862 completed source qualification and emitted0000-update_experience. [Exact admission](../receipts/continuation/2026-10-04-template-tf-iteration2-0000-update_experience-admission.json) and [dispatch](../receipts/continuation/2026-10-04-template-tf-iteration2-0000-dispatched.json) bind the two-file81,235-byte capsule and fresh GPT-6.1 Sol/high fork-none task /root/template_tf2_experience_sol. Await its original response; do not create a replacement or reopen sample material. No new runtime/GPU experiment has been dispatched. Service subsequent original proposal requests with their own exact capsules. Preserve the live frozen worker and source READs.
+
 ## Template-only TF iteration2 worker launched, 2026-10-04T17:33:04.891960+00:00
 
 [Exact launch](../receipts/continuation/2026-10-04-template-tf-iteration2-worker-launch.json): Windows27392, Linux714195/start48300862, frozen f66d9aabf. The process is live requalifying its registered sources; no semantic request or model contact observed at this checkpoint. Use new archive context-template-tf-iteration2-v1 and coordination context-template-tf-iteration2-owner227-v1. Do not restart for observation timeout. Exact request/capsule admission remains required before each GPT-6.1 Sol/high fork-none actor; the worker has no model client or GPU dispatch authority.
@@ -1804,7 +1808,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T17:33:04.891960+00:00
+Last refreshed: 2026-10-04T17:42:20.766987+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
