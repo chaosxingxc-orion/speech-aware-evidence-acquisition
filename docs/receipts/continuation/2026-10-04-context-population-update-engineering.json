@@ -1,0 +1,45 @@
+{
+  "schema": "saea-context-population-update-engineering-v1",
+  "at_utc": "2026-10-04T21:20:56.196899+00:00",
+  "module": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+    "sha256": "09bb52c7305b7806d77279c0fdb02ab3568b72f2239d7aab6ce47d7646bf7859"
+  },
+  "test": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_context_population_update.py",
+    "sha256": "a52839ee12a51d614ea5e6155b827cb314d448c901c158cb63595aa63403806e"
+  },
+  "tests_passed": 193,
+  "module_statement_coverage_percent": 87.65217391304348,
+  "new_function_coverage": {
+    "_population_update_input": {
+      "covered_statements": 20,
+      "missing_statements": []
+    },
+    "reserve_context_population_update": {
+      "covered_statements": 6,
+      "missing_statements": []
+    },
+    "record_context_population_update": {
+      "covered_statements": 29,
+      "missing_statements": []
+    }
+  },
+  "engineering_base_check": "PASS",
+  "diff_check": "PASS",
+  "model_contacts_added": 0,
+  "score_jobs_added": 0,
+  "real_reservations_added": 0,
+  "quality_read": false,
+  "runtime_admission": false,
+  "first_test_missing_api_failure_observed": true,
+  "cumulative_exposure_regression_red_then_green": true,
+  "scope": "Single registered TF K16 batch reservation and immutable original-response archival, using the existing per-slot policy compiler. Preserve invalid/no-change/malformed positions; no automatic retry, replacement, execution or selection. Retain all observed policy cumulative exposure in future children. Private packet and isolated actor capsule are bound sequentially, avoiding circular hashes.",
+  "still_required": [
+    "complete current eighteen-member READ",
+    "prospective qualified abstract source and private iteration packet",
+    "isolated actor capsule, exact contact admission and one future reservation",
+    "real actor response",
+    "capacity, structural proof, full successor evaluation and retention"
+  ]
+}

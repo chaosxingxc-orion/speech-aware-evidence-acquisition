@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K16 single-batch update archival implemented, 2026-10-04
+
+[Engineering receipt](../receipts/continuation/2026-10-04-context-population-update-engineering.json) and [interface contract](../readiness/2026-10-04-context-population-update-interface-v1.md) add one prospective TF K16 reservation and immutable response archival through the existing shared per-slot materializer. All16 original positions remain spent, including invalid/no-change; malformed envelopes are preserved and no automatic replacement or reentry is allowed. Future children retain cumulative exposure from every visible input policy. Private packet and isolated actor hashes are bound sequentially, not circularly.
+
+193 related tests pass; all statements in the three new functions are covered, shared-module coverage exceeds80percent, and engineering-base check passes. This is synthetic/model-free engineering only: no real allocation, actor call, scoring, quality read or runtime configuration change. Full current eighteen-member completion/READ, source admission, private iteration packet, isolated capsule, real one-batch response, capacity/structure/evaluation and retention remain pending. Legacy K4/GEPA contracts stay unchanged; active frozen N20 worker and paused heartbeat remain untouched.
+
 ## Strict abstract K16 population boundary prepared, 2026-10-04
 
 [Validation receipt](../receipts/continuation/2026-10-04-abstract-population-boundary-validation.json) records74 passing tests,100percent statement coverage for the abstract-feedback module and a passing engineering-base check. The new pure population boundary requires all16 exact policy bindings, complete anonymous input pairing, allowed numeric structural/node performance fields, unmeasured node quality and official terminal utility consistency. Fractional official counts are preserved. It produces same-input relative returns with zero for zero variance; no causal node credit or policy-gradient claim.

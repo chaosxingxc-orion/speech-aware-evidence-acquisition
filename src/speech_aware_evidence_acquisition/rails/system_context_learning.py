@@ -351,10 +351,19 @@ def record_context_update(archive, *, input_sha256, update_id, proposal_document
             require(set(p["changes"]) <= {field} and (not role or set(p["changes"].get(field, {})) <= {role}),
                     "GEPA update changes another component")
         parent = archive.load_policy(parent_id)
-        exposed_ids = sorted(set(packet["reference"]["sample_ids"]) |
-                             {g["sample_id"] for g in packet["groups"]})
-        sources = [{"kind": "feedback", "sha256": input_sha256,
-                    "sample_ids": exposed_ids},
+        # Every policy visible to the learner contributes cumulative exposure,
+        # even when the original proposal names only one parent.
+        observed_sources = []
+        for entry in packet["policies"].values():
+            observed = archive.load_policy(entry["bundle_id"])
+            require(observed.as_json() == entry["policy"], "observed policy bytes differ")
+            observed_sources.extend(observed.as_json()["cumulative_sources"])
+        feedback_ids = sorted(set(packet["reference"]["sample_ids"]) |
+                              {g["sample_id"] for g in packet["groups"]})
+        exposed_ids = sorted(set(feedback_ids) |
+                             {sid for source in observed_sources for sid in source["sample_ids"]})
+        sources = observed_sources + [{"kind": "feedback", "sha256": input_sha256,
+                    "sample_ids": feedback_ids},
                    {"kind": "proposal", "sha256": content_hash(p),
                     "sample_ids": exposed_ids}]
         child = apply_text_proposal(proposal, parents=[parent], added_sources=sources)
@@ -859,3 +868,122 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
     decision["decision_sha256"] = content_hash(decision)
     archive._write(directory + "/decision.json", decision)
     return decision
+
+
+def _population_update_input(archive, input_sha256):
+    """Load a private, prospectively prepared packet; do not grant READ authority."""
+    sha(input_sha256)
+    matches = [json.loads(p.read_text()) for p in (archive.root / "context-learning/inputs").glob("*.json")]
+    matches = [p for p in matches if p.get("input_sha256") == input_sha256]
+    require(len(matches) == 1, "exact immutable optimizer input required")
+    packet = matches[0]
+    require(content_hash({k: v for k, v in packet.items() if k != "input_sha256"}) == input_sha256,
+            "optimizer input hash differs")
+    require(packet.get("schema") == "saea-context-optimizer-input-v1"
+            and packet.get("algorithm") == "tf-grpo-context-diversity"
+            and type(packet.get("iteration")) is int and packet["iteration"] > 0,
+            "prospective TF population input required")
+    plan = packet.get("population_update_plan")
+    require(isinstance(plan, dict) and set(plan) == {"schema", "batch_id", "model", "reasoning_effort",
+            "semantic_batches", "proposal_slots"}
+            and plan["schema"] == "saea-context-population-update-plan-v1"
+            and isinstance(plan["batch_id"], str)
+            and re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", plan["batch_id"])
+            and plan["model"] == "gpt-6.1-sol" and plan["reasoning_effort"] == "high"
+            and type(plan["semantic_batches"]) is int and plan["semantic_batches"] == 1
+            and type(plan["proposal_slots"]) is int and plan["proposal_slots"] == 16,
+            "exact prospective single-batch population plan required")
+    ids = [f"branch-{i:02d}" for i in range(1, 17)]
+    require(isinstance(packet.get("policies"), dict) and list(packet["policies"]) == ids,
+            "all16 ordered original policies required")
+    budget = packet.get("budget", {})
+    n = budget.get("N")
+    require(type(n) is int and n > 0 and budget.get("K") == 16
+            and budget.get("candidate_trajectories") == 16*n
+            and budget.get("control_trajectories") == 2*n
+            and budget.get("family_trajectories") == 18*n, "exact population evaluation accounting required")
+    groups = packet.get("groups")
+    require(isinstance(groups, list) and len(groups) == n
+            and len({g["sample_id"] for g in groups}) == n
+            and all([m["candidate_id"] for m in g["members"]] == ids for g in groups),
+            "complete paired population input required")
+    for entry in packet["policies"].values():
+        require(archive.load_policy(entry["bundle_id"]).as_json() == entry["policy"],
+                "immutable input policy bytes differ")
+    return packet, plan, ids
+
+
+def reserve_context_population_update(archive, *, input_sha256, actor_input_sha256):
+    """Consume one registered semantic batch and all16 slots before actor contact.
+
+    The caller separately owns source qualification, prospective model admission
+    and enforceable actor isolation. This reservation invokes no model or runtime.
+    """
+    packet, plan, ids = _population_update_input(archive, input_sha256)
+    # Hash the isolated actor capsule after the private packet has its identity;
+    # binding it in the reservation avoids a circular pair of content hashes.
+    sha(actor_input_sha256)
+    record = {"schema": "saea-context-population-reservation-v1", "input_sha256": input_sha256,
+              "actor_input_sha256": actor_input_sha256,
+              "plan": plan, "candidate_ids": ids, "algorithm": packet["algorithm"],
+              "iteration": packet["iteration"], "proposal_slots": 16,
+              "semantic_batches": 1, "runtime_admission": False}
+    archive._write(f"context-learning/populations/{plan['batch_id']}/reservation.json", record)
+    return record
+
+
+def record_context_population_update(archive, *, input_sha256, response_document):
+    """Preserve one original batch, then reuse the shared per-slot compiler.
+
+    Invalid and no-change slots remain spent; no repair, callback, scoring or
+    activation occurs. An unexpected archival failure preserves the response
+    and refuses reentry until an explicit incident disposition is implemented.
+    """
+    packet, plan, ids = _population_update_input(archive, input_sha256)
+    base = f"context-learning/populations/{plan['batch_id']}"
+    reservation_path = archive.root / base / "reservation.json"
+    require(reservation_path.is_file(), "population must be reserved before contact")
+    reservation = json.loads(reservation_path.read_text())
+    require(reservation.get("input_sha256") == input_sha256 and reservation.get("plan") == plan
+            and reservation.get("candidate_ids") == ids and reservation.get("proposal_slots") == 16,
+            "exact population reservation required")
+    sha(reservation.get("actor_input_sha256"))
+    raw = {"schema": "saea-context-population-original-response-v1", "input_sha256": input_sha256,
+           "response_sha256": content_hash(response_document), "response_document": response_document}
+    archive._write(base + "/response.json", raw)
+    result = {"schema": "saea-context-population-update-record-v1", "input_sha256": input_sha256,
+              "response_sha256": raw["response_sha256"], "status": "recorded", "records": [],
+              "usage": None, "runtime_admission": False}
+    try:
+        r = response_document
+        require(isinstance(r, dict) and set(r) == {"schema", "input_sha256", "actor_input_sha256",
+                "model", "reasoning_effort", "usage", "branches"}
+                and r["schema"] == "saea-context-population-update-response-v1"
+                and r["input_sha256"] == input_sha256
+                and r["actor_input_sha256"] == reservation["actor_input_sha256"]
+                and all(r[k] == plan[k] for k in ("model", "reasoning_effort")),
+                "original population envelope differs")
+        require(isinstance(r["usage"], dict)
+                and set(r["usage"]) == {"provider_contacts", "input_tokens", "output_tokens"}
+                and all(v is None or type(v) is int and v >= 0 for v in r["usage"].values()),
+                "original provider usage differs")
+        require(isinstance(r["branches"], list) and len(r["branches"]) == 16,
+                "all16 original response positions required")
+    except ValueError as error:
+        result.update(status="invalid-envelope", error=str(error),
+                      records=[{"candidate_id": cid, "status": "invalid"} for cid in ids])
+    else:
+        result["usage"] = dict(r["usage"])
+        for cid, row in zip(ids, r["branches"], strict=True):
+            try:
+                require(isinstance(row, dict) and set(row) == {"candidate_id", "proposal", "experience_operations"}
+                        and row["candidate_id"] == cid, "original branch position or shape differs")
+            except ValueError as error:
+                result["records"].append({"candidate_id": cid, "status": "invalid", "error": str(error)})
+                continue
+            update = record_context_update(archive, input_sha256=input_sha256,
+                update_id=f"{plan['batch_id']}-{cid}", proposal_document=row["proposal"],
+                experience_operations=row["experience_operations"], expected_candidate_id=cid)
+            result["records"].append({"candidate_id": cid, **update})
+    archive._write(base + "/result.json", result)
+    return result
