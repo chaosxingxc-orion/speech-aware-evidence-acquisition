@@ -210,3 +210,48 @@ def test_unexpected_phase_spec_is_refused(monkeypatch):
     specs["candidate"]["extra"] = "not admitted"
     with pytest.raises(PolicyError, match="specification"):
         export(Archive(), bindings, specs)
+
+
+def test_bulk_projection_indexes_each_source_once_with_identical_episode_bytes(
+    monkeypatch,
+):
+    from dataclasses import replace
+
+    source, evidence, recipe, bindings, specs = setup(monkeypatch)
+    initial_index = material.export_system_trajectories(source)
+    expected_first = material.materialize_context_trajectory(source, "s1")
+    # Synthetic two-input projection isolates index scheduling; the existing
+    # full-source tests verify actual request/response/receipt custody.
+    second = copy.deepcopy(initial_index["trajectories"][0])
+    second["sample_id"] = "s2"
+    initial_index["sample_ids"].append("s2")
+    initial_index["trajectories"].append(second)
+    source = replace(
+        source,
+        sample_ids=("s1", "s2"),
+        phase_results={
+            "s1": source.phase_results["s1"],
+            "s2": copy.deepcopy(source.phase_results["s1"]),
+        },
+        output_rows={
+            "s1": source.output_rows["s1"],
+            "s2": copy.deepcopy(source.output_rows["s1"]),
+        },
+    )
+    recipe["sample_ids"].append("s2")
+    other = copy.deepcopy(evidence["feedback"]["groups"][0])
+    other["sample_id"] = "s2"
+    evidence["feedback"]["groups"].append(other)
+    monkeypatch.setattr(material, "verify_native_episode_source", lambda **kw: source)
+    calls = []
+
+    def index_once(value):
+        calls.append(value)
+        return initial_index
+
+    monkeypatch.setattr(material, "export_system_trajectories", index_once)
+    archive = Archive()
+    index = export(archive, bindings, specs)
+    assert len(calls) == 1
+    first = index["members"]["candidate"][0]
+    assert archive.rows[first["archive_path"]] == expected_first

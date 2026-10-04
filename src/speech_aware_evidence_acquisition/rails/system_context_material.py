@@ -25,7 +25,13 @@ def materialize_context_trajectory(source, sample_id):
     learner entry. No truncation, success selection, gold or reward is added.
     Original record hashes remain in the shared trajectory index.
     """
-    index = export_system_trajectories(source)
+    return _materialize_indexed_trajectory(
+        source, sample_id, export_system_trajectories(source)
+    )
+
+
+def _materialize_indexed_trajectory(source, sample_id, index):
+    """Reuse the exact verified index across a bulk export without changing bytes."""
     require(sample_id in index["sample_ids"], "sample is outside the verified source")
     trajectory = next(r for r in index["trajectories"] if r["sample_id"] == sample_id)
     result = {
@@ -100,6 +106,7 @@ def export_context_source_material(
             "semantic source cohort differs",
         )
         members[candidate] = []
+        trajectory_index = export_system_trajectories(source)
         for sid in recipe["sample_ids"]:
             execution = groups[sid][candidate]["execution"]
             require(
@@ -107,7 +114,7 @@ def export_context_source_material(
                 and source.bundle.manifest["outputs"] == execution["terminal_output"],
                 "semantic source differs from qualified feedback",
             )
-            document = materialize_context_trajectory(source, sid)
+            document = _materialize_indexed_trajectory(source, sid, trajectory_index)
             path = (
                 directory
                 + "/"

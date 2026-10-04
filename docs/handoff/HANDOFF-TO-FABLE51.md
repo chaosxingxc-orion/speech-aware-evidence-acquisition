@@ -1,5 +1,19 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Model-free preparation refused a concurrent READ bookkeeping change, 2026-10-04T09:47:43.050110+00:00
+
+[Root disposition](../receipts/continuation/2026-10-04-context-material-preparation-disposition.json) preserves the failed v1 input preparation. It correctly exited1 before material publication because root changed the READ consumed flag during export. Only six copied policy files exist;zero proposer/model/scorer contacts. Scientific generation/scoring/read remain complete and unchanged. Leave the settled READ row untouched while preparing fresh v2 archives.
+
+The same review removed repeated whole-candidate index construction:one verified index now serves every sample with byte-identical material.137 focused tests,52 statements/six branches100%,base/harness/Ruff pass. New v2 preparation remains the next action;no real semantic callback or learner worker has launched. Keep seed as incumbent,N20 stage,paused heartbeat and separate carrier holds.
+
+## Initial N20K4 full read complete, 2026-10-04T09:43:14.877685+00:00
+
+[Root scientific read](../results/2026-10-04-context-initial4-n20.md) follows exact six-member qualification and countersignature. All120 trajectories finalized;651 generation contacts,six unique successful complete official scores,zero failed jobs. No replay. Driver ended normally;preserve frozen c6f5543b7 and completed controls. No stable benefit or learning result. Keep seed as formal incumbent and stay atN20 for the registered separate baseline updates.
+
+Seed F1/intent/all-sample mean:63.521%/70%/30.356seconds;A/A57.840%/70%/34.208seconds. Candidate F1/all means:speech53.318%/58.530s,coverage60.120%/29.502s,counterexample48.784%/86.650s,semantic55.969%/48.437s. All registered reliable completion rates100%,zero active knowledge calls. A/A varies -5.681pp;all candidate-versus-A/A intervals include zero. This reused20-input panel supports no formal efficacy,causal node,independent validation or adoption claim. Full paired,stratum,damage and node-timing evidence is retained.
+
+Measured downstream prefill and Reviewer decoding both contribute to slower configurations;do not assert cache eviction as an isolated cause. Fresh qualified learner source preparation is underway;no real semantic actor has launched yet. Root report/earlier incidental log are excluded from actor inputs. Keep heartbeat PAUSED,immutable same400 assets,other-carrier holds and human-before8x400.
+
 ## Baseline subagent stages prospectively separated, 2026-10-04T09:25:52.072184+00:00
 
 [Actor preparation](../readiness/2026-10-04-context-baseline-actors-v1/README.md) pins the original TF/GEPA callback allocations and the requested GPT-6.1 Sol channel. Use one fresh no-history actor per semantic callback, with a concrete stage-scoped input manifest before each spawn. Individual summaries cannot inherit other rollouts; comparison/experience/proposal stages receive their original algorithm tasks. Root alone handles complete GPU evaluation. Source READ, source export and exact per-request admission still precede contact; no real actor or learner worker was launched.

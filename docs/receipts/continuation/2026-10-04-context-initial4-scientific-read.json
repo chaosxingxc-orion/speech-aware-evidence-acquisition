@@ -1,0 +1,28 @@
+{
+  "schema": "saea-context-initial4-scientific-read-v1",
+  "read_at_utc": "2026-10-04T09:43:14.877685+00:00",
+  "read_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1",
+  "analysis_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1/report.json",
+    "sha256": "3471207d73f5a59d892525b9e8e878ce101ca4f92de5258f737c99cbf6bc0376"
+  },
+  "timing_summary": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1/timing-summary.json",
+    "sha256": "2c271ae7e4202f4ed2211a300b78e12b7ff32f0a5f7e4c17f01ffe70fb5f9cde"
+  },
+  "family": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1/family.json",
+    "sha256": "3b10520f2f260ee73de6edb513e32342ed938807d7d28649c7672322e9a32ad9"
+  },
+  "root_report": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/results/2026-10-04-context-initial4-n20.md",
+    "sha256": "fbb2bc44d1e35ff92c54c9d4e3c1f89e44b838896f738e0bd59cb802a2403668"
+  },
+  "formal_incumbent": "seed",
+  "stage_decision": "Remain N20; proceed with bounded separate baseline learning; no adoption or expansion",
+  "stable_benefit": false,
+  "learned_improvement": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "original_generation_contacts": 651
+}
