@@ -1,0 +1,48 @@
+{
+  "schema": "saea-context-k16-update-actor-plan-v1",
+  "status": "ROOT-ADMITTED-BEFORE-CONTACT",
+  "at_utc": "2026-10-04T23:17:48.061731+00:00",
+  "root_authority": 227,
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-PROPOSE-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "split_role": "discovery",
+  "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+  "source_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/manifest.json",
+    "sha256": "e0129f5cac9c1e65ff741d0e900bc2ffbdc21fd91ac82fc6e41578c52f3772c7",
+    "bytes": 1779
+  },
+  "source_packet": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/inputs/tf-grpo-context-diversity-population-2.json",
+    "sha256": "773b1303f61dc27b009ff70c0e9427c28f5f54eaf321eeb2bbfbf7db6b230fd1",
+    "bytes": 29357281
+  },
+  "source_qualification": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-k16-abstract-actor-input-prepared.json",
+    "sha256": "10011989facc41508f479ac25feeef1d211ffd7ed95a48e691eeb7e28f9f1aba",
+    "bytes": 1890
+  },
+  "output_contract": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-update2-output-contract-v1/output-contract.json",
+    "sha256": "49163d9f83cb550ea9dc86516901b3ddc8fb84f0938399700afb352613e4e9b2",
+    "bytes": 4995
+  },
+  "K": 16,
+  "M": 4,
+  "N": 20,
+  "source_iteration": 1,
+  "target_iteration": 2,
+  "semantic_opportunities": 1,
+  "design_slots": 16,
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "max_input_bytes": 589824,
+  "max_output_bytes": 262144,
+  "paid_api_spend": 0,
+  "original_usage_null_when_unavailable": true,
+  "no_automatic_retry_or_replacement": true,
+  "runtime_admission": false,
+  "scope": "One full-population template-only update from all320 abstract trajectories; no concrete sources or per-case semantic calls. Preserve current originals, all spent positions and cumulative exposure. Capacity, structure and exact complete evaluation remain separate."
+}

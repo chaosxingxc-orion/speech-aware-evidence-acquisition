@@ -1,0 +1,36 @@
+{
+  "schema": "saea-context-k16-update-evaluation-intent-v1",
+  "status": "PROSPECTIVE-RULES-NO-RUNTIME-ADMISSION",
+  "at_utc": "2026-10-04T23:22:41.346202+00:00",
+  "authority": 227,
+  "source_packet": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/inputs/tf-grpo-context-diversity-population-2.json",
+    "sha256": "773b1303f61dc27b009ff70c0e9427c28f5f54eaf321eeb2bbfbf7db6b230fd1"
+  },
+  "K": 16,
+  "N": 20,
+  "controls": [
+    "seed",
+    "seed-aa"
+  ],
+  "candidate_trajectories": 320,
+  "control_trajectories": 40,
+  "family_trajectories": 360,
+  "evaluation": "One fresh complete18-member family on the same ordered20 inputs; all original slot outcomes retained. Exact compiled policies, supplies, capacity, unscored structure and member/read registrations required before launch.",
+  "sampling": {
+    "temperature": 0,
+    "seed": 20260913,
+    "scheduler": "sequential complete trajectories",
+    "slots": 4,
+    "slot_context": 24576,
+    "max_output_tokens": 512,
+    "queue_depth": 4
+  },
+  "retention": "Preserve the existing TF study-adaptation strict increase in sum of frozen-reference terminal utility across all16x20 paired trajectories. This is optimization state selection only, never formal adoption. Publish whole-population and per-template quality, intent, reliable completion, mean/non-first latency and current-family frontier. Root may hold a utility-increasing update for unacceptable business/resource regressions; never label that held update adopted or silently revise its result.",
+  "unchanged_or_invalid": "No replacement proposals. Before runtime, record an explicit slot disposition; keep exact evaluated parents for any admitted unchanged/invalid fallback. Do not discard original slots or select a preferred subset. Duplicate runtime programs require explicit recorded disposition before admission.",
+  "comparison_limit": "Previous and successor executions are separate batches on the same optimization roster. Do not merge them into a single scientific frontier or claim paired node causality. Each family has its own seed/A/A; uncertainty and replication remain necessary for any future efficacy claim.",
+  "algorithm_fidelity": "One abstract-feedback joint template batch is a K16 deterministic TF context-diversity study adaptation. Do not call it unchanged upstream stochastic GRPO, GEPA or policy-gradient training. Preserve historical original baseline evidence.",
+  "formal_incumbent": "seed",
+  "automatic_expansion": false,
+  "next_scale": "Root review after complete exact family; human before8x400; no split evasion."
+}

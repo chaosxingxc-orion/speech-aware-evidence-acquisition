@@ -1,0 +1,18 @@
+{
+  "reservation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/populations/update-two/reservation.json",
+    "sha256": "314af5f5ecba0e6c1a05cf1f199a1e5f35f682baa026e2c72b99bc86be0be716",
+    "bytes": 725
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/manifest.json",
+    "sha256": "e0129f5cac9c1e65ff741d0e900bc2ffbdc21fd91ac82fc6e41578c52f3772c7",
+    "bytes": 1779
+  },
+  "plan": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-update2-actor-v1/plan-v1.json",
+    "sha256": "6e8800c493541f3d7d0747ef8fe84ccd28bf6e8a281ca6599c6b207c0a61c0e2",
+    "bytes": 2344
+  },
+  "contacts_before_dispatch": 0
+}

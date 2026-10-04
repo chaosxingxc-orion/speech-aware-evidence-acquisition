@@ -1,0 +1,9 @@
+{
+  "schema": "saea-k16-update-compile-helper-prepared-v1",
+  "at_utc": "2026-10-04T23:21:47.476191+00:00",
+  "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-owner227-v1/record-compile-original-v1.py",
+  "sha256": "df430e75cbcd05845be9c427e99006d6a0e729ccfc305c7fe798ce0072d01604",
+  "status": "PREPARED-NOT-EXECUTED",
+  "requires": "Actual original actor completion, exact unchanged capsule and response size; one shared archive call; refuse automatic handling of invalid/no-change/duplicate slots.",
+  "scope": "Shared policy/compiler and verified original operational delta; no runtime or scoring contacts."
+}

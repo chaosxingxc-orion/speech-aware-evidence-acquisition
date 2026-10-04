@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K16 abstract update-two actor dispatched, 2026-10-04
+
+[Prospective admission](../receipts/continuation/2026-10-04-k16-update2-proposer-admission.json) and update2 actor readiness bind one fresh GPT-6.1 Sol/high fork-none task, template_k16_update2_sol, with16 reserved positions. Exact input totals513794bytes under589824-byte prospective input bound; maximum original response262144bytes. The complete504732-byte actor input, output contract and instructions are the only allowed data files. This is fresh-context/tool-use instruction isolation, not an OS filesystem sandbox or server-enforced token cap. Unknown provider usage stays null; no matched-total-compute claim.
+
+The immutable reservation under context-learning/populations/update-two is present. The agent is running; do not spawn a duplicate, re-reserve, repair original outputs or replace invalid/no-change slots. On completion preserve exact original-response.json, record its source/manifest hashes and use the prepared shared record-compile-original-v1.py only once. That helper refuses automatic invalid/no-change/duplicate handling. Preparation helpers grant no GPU dispatch.
+
+[Prospective evaluation intent](../readiness/2026-10-04-context-template-k16-update2-actor-v1/evaluation-intent-v1.json) retains all16 slots plusseed/A/A on the same20 inputs after actual capacity/structural proof and exact registration. TF strict utility-sum improvement is only an optimization retention signal; report quality/intent/reliability and actual mean/non-first sample latency separately, with root business review. No global cross-batch frontier, formal adoption or automatic expansion. Formal seed,paused heartbeat,other-carrier holds and human-before8x400 remain.
+
 ## Complete abstract K16 learning input prepared, 2026-10-04
 
 [Verified actor-input preparation](../receipts/continuation/2026-10-04-k16-abstract-actor-input-prepared.json) now binds all16 full template systems/64 role texts to320 anonymous paired candidate trajectories and1559 node contacts. The complete projection and public qualification helper ended0,with zero new model/scorer contacts. The504732-byte actor input is under system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/actor-input.json. Its SHA-256 is68ce78daee7e5f99e321b3ce574fdacccb61471103e4ce1dffb7f14a132caec6.

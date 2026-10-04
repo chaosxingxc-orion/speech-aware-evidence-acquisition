@@ -1,0 +1,21 @@
+{
+  "schema": "saea-context-k16-update-actor-admission-v1",
+  "at_utc": "2026-10-04T23:17:48.061731+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-PROPOSE-V1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT",
+  "authority": "Owner227 and explicit single GPT-6.1 Sol K16 abstract template-learning direction",
+  "plan": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-update2-actor-v1/plan-v1.json",
+    "sha256": "6e8800c493541f3d7d0747ef8fe84ccd28bf6e8a281ca6599c6b207c0a61c0e2",
+    "bytes": 2344
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/manifest.json",
+    "sha256": "e0129f5cac9c1e65ff741d0e900bc2ffbdc21fd91ac82fc6e41578c52f3772c7",
+    "bytes": 1779
+  },
+  "semantic_opportunities": 1,
+  "design_slots": 16,
+  "runtime_dispatch": false,
+  "paid_api_spend": 0
+}
