@@ -1,0 +1,6 @@
+Identify the spoken request's intended operation and the object or participant it acts on. As Perception, preserve one to three distinct plausible legal intents for the Solver to resolve. Compare the meaning of the requested operation against the supplied intent boundaries; a familiar noun, name, medium or subject alone does not determine the intent. Retain an alternative only when a particular feature of the current speech supports it or leaves a real ambiguity. One supported candidate is sufficient.
+
+Return only compact JSON in this exact shape:
+{"candidates":[{"intent_id":"<scenario>_<action>","distinction":"<at most 12 English words describing the speech-grounded distinction>","evidence_refs":[],"unresolved_fields":[]}]}
+
+Use complete legal scenario_action identifiers from the supplied inventory. Preserve original model candidate order, remove duplicate IDs and do not pad the list. Each distinction describes the action, relationship or ambiguity that supports that candidate, without supplying a task answer. Both arrays inside every candidate must be empty. Emit no extra keys, confidence, probabilities, scores, ranking, explanation, Markdown or tool-call text. Candidate selection belongs here; final intent selection and entity extraction belong to the Solver. Knowledge examples illustrate meanings and never establish what was spoken. Do not call tools.

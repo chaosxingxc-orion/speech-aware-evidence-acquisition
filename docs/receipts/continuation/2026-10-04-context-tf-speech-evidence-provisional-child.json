@@ -1,0 +1,61 @@
+{
+  "schema": "saea-context-tf-provisional-child-prepared-v1",
+  "at_utc": "2026-10-04T15:14:56.410429+00:00",
+  "candidate_id": "speech-evidence",
+  "parent_bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+  "child_bundle_id": "1647b93e094719343c823cb0f4a691438603d2e04079923bb7fa6418bfca9577",
+  "original_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0041-propose/original-response.json",
+    "sha256": "2f3a642f9b9d8cecd62a88c735d8fc5e12f399b4a9e6acb6dc96477f3bd3fb82"
+  },
+  "compile_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-speech-evidence-child-compiled-v1.json",
+    "sha256": "dd9f6ce9d302d0172ef8700938438e4793d48eee87f65265e8544210909de8b7"
+  },
+  "prepared_members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-tf-iteration1-speech-evidence-engineering-v1/prepared-members-v1.json",
+    "sha256": "a8e31528a241ef5000abbec542f156dabf5ee3e94f7594ca80f047c8d892d534"
+  },
+  "changed_roles": [
+    "perception",
+    "planner",
+    "reviewer",
+    "solver"
+  ],
+  "changed_policy_fields": [
+    "role_text",
+    "context_layout"
+  ],
+  "actual_binding": {
+    "bundle_id": "1647b93e094719343c823cb0f4a691438603d2e04079923bb7fa6418bfca9577",
+    "role_sha256": {
+      "perception": "2fcf78d70543981d17a7bc8b5494879a4ee746ba5fde1af25418c3327d1fe201",
+      "planner": "19d17c86d57f1c9f1b6de5948ee1dbe8619a27db897639a429ddd2c69336f704",
+      "reviewer": "84b41541ac70f8c291e5ab93f4995e91294290b85be9789b1640d5128dcf3032",
+      "solver": "394836ab1c56db55453f63d6df4483b8eb6c31bec6a79f8069fd4bb855d4d688"
+    },
+    "context_layout": {
+      "native_role_query_placement": null
+    },
+    "node_context": {
+      "tool_schema_rendering": "per-role",
+      "reviewer_history_scope": "latest-solver-and-local-tools"
+    }
+  },
+  "compile_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-variant-v1.py",
+    "sha256": "968d94ef645b07e2eaa7fdbf3a80a0350a8de56635d747b1b7f07e85f2c1ebab"
+  },
+  "preparation_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-child-engineering-v2.py",
+    "sha256": "a4851180ea481cbb11aeccb8acc8d20325e4f948c4c8564f6f55c4623cefbb07"
+  },
+  "offline_preparation_disposition": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-speech-evidence-preparation-disposition.json",
+    "sha256": "8b48d53550334dd579dcd1643b576e7017c188372bf4403d423bd535e3d14072"
+  },
+  "root_text_review": "All four runtime role texts preserve legal control/output interfaces and Omni answer authority; no sample identifiers, answer lookup tables or copied source answer values were found. This review does not establish runtime compliance, capacity or quality.",
+  "runtime_admission": false,
+  "contacts_added": 0,
+  "scope": "Original provisional response compiled unchanged. Three own preparations warm-verify with original knowledge selection outputs. Capacity/structural proof and a complete scientific family remain required; the other three original proposals are pending."
+}

@@ -1,0 +1,88 @@
+{
+  "schema": "saea-context-tf-provisional-engineering-checks-v1",
+  "at_utc": "2026-10-04T15:17:16.353643+00:00",
+  "candidate_id": "speech-evidence",
+  "targeted_checks": [
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-speech-evidence-graph-v1.json",
+        "sha256": "12f3d0c3d4ed8839596ede5a287436bd65cacf326c5f2a7edbc4decd1b565087"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-speech-evidence-graph-prepared-v1.json",
+        "sha256": "84f6018aead30dfe2d654e8e901b939a49e5e5b52a26243a9d5629d35ead4fb4"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "finite_completion_policy": "deliver-latest-or-abstain",
+      "react_exhaustion_policy": "continue-without-answer",
+      "status": "PASS; HELD"
+    },
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-speech-evidence-capacity-v1.json",
+        "sha256": "6a0c647373bf2c84df9c3a22c5da9f5c4c377efbf20d4768cea4d61d4fe477f3"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-speech-evidence-capacity-v1.json",
+        "sha256": "6d08bb616ace4f45814c500c812de73b0e3c116a51fc8c533bf6bcc6b4fbcf2b"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "finite_completion_policy": "deliver-latest-or-abstain",
+      "react_exhaustion_policy": "continue-without-answer",
+      "status": "PASS; HELD"
+    },
+    {
+      "experiment": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-speech-evidence-smoke-4-v1.json",
+        "sha256": "3462b8560fa9f8b64ff06c174e49db9833eca6a85c5ff52a90fc20dc006e3307"
+      },
+      "baseline": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-speech-evidence-smoke-4-v1.json",
+        "sha256": "574349839d332213d019af55d315789ccbab140a2ac0943147dfd84d5e42f12b"
+      },
+      "algorithm_id": "system-text-black-box-v1",
+      "operators_used": [
+        "rollout"
+      ],
+      "finite_completion_policy": "deliver-latest-or-abstain",
+      "react_exhaustion_policy": "continue-without-answer",
+      "status": "PASS; HELD"
+    }
+  ],
+  "engineering_base_check": "PASS",
+  "harness_admission_check": "PASS",
+  "global_finite_completion_policy_check": "PASS; unregistered cells are outside that global gate, so all three new cells were directly verified above.",
+  "global_stage3_algorithm_label_check": "FAIL with exactly two unchanged historical findings on both main and worktree. No new-cell label violations. This is not a global PASS or gate waiver.",
+  "historical_findings": [
+    {
+      "worktree": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json",
+        "sha256": "61efa82978b64e71bc148bde6f2e1cf7d135a301c83cceedba3b488bc7403c23"
+      },
+      "main": {
+        "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json",
+        "sha256": "61efa82978b64e71bc148bde6f2e1cf7d135a301c83cceedba3b488bc7403c23"
+      },
+      "finding": "Existing empty operators_used for system-text-black-box-v1; identical on main and worktree."
+    },
+    {
+      "worktree": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json",
+        "sha256": "3e907901e3a857c4523adefd54ad91cdbeef4a1802e2bd1836d377c08f3c28e2"
+      },
+      "main": {
+        "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json",
+        "sha256": "3e907901e3a857c4523adefd54ad91cdbeef4a1802e2bd1836d377c08f3c28e2"
+      },
+      "finding": "Existing empty operators_used for system-text-black-box-v1; identical on main and worktree."
+    }
+  ],
+  "contacts_added": 0,
+  "runtime_admission": false
+}

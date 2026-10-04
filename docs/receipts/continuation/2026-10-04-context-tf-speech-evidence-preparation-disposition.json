@@ -1,0 +1,58 @@
+{
+  "schema": "saea-context-model-free-preparation-disposition-v1",
+  "at_utc": "2026-10-04T15:12:20.715327+00:00",
+  "authority": "Owner227 bounded root engineering",
+  "failure": "Preparation helper KeyError: prepared_phase_supply when comparing the old model-free graph with its unpinned source supply field.",
+  "scope": "Offline preparation only; no registered attempt, tokenizer, generation or official scoring was dispatched. The provisional policy is unchanged.",
+  "preserved": [
+    {
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-child-engineering-v1.py",
+        "sha256": "3fa1a3677791d68a8166e08d8b62c275946fcc3f756e55138f2052212346a174"
+      },
+      "preserved": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-speech-evidence-model-free-preparation-incident-v1/0-prepare-tf-child-engineering-v1.py",
+        "sha256": "3fa1a3677791d68a8166e08d8b62c275946fcc3f756e55138f2052212346a174"
+      }
+    },
+    {
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/baseline/slurp-native-stage3-context-tf-iteration1-speech-evidence-graph-prepared-v1.json",
+        "sha256": "5eab07d0aa5262ed88040915a3f7f780da9c76477efd0260b04209d89970b17c"
+      },
+      "preserved": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-speech-evidence-model-free-preparation-incident-v1/1-slurp-native-stage3-context-tf-iteration1-speech-evidence-graph-prepared-v1.json",
+        "sha256": "5eab07d0aa5262ed88040915a3f7f780da9c76477efd0260b04209d89970b17c"
+      }
+    },
+    {
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-tf-iteration1-speech-evidence-graph-v1.json",
+        "sha256": "12f3d0c3d4ed8839596ede5a287436bd65cacf326c5f2a7edbc4decd1b565087"
+      },
+      "preserved": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-speech-evidence-model-free-preparation-incident-v1/2-slurp-native-stage3-context-tf-iteration1-speech-evidence-graph-v1.json",
+        "sha256": "12f3d0c3d4ed8839596ede5a287436bd65cacf326c5f2a7edbc4decd1b565087"
+      }
+    },
+    {
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-SPEECH-EVIDENCE-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "100fb9953d19cf05f44903b2709c7c3295367808e71e4fa667058902cbed0bd6"
+      },
+      "preserved": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-speech-evidence-model-free-preparation-incident-v1/3-phase-supply-v1.json",
+        "sha256": "100fb9953d19cf05f44903b2709c7c3295367808e71e4fa667058902cbed0bd6"
+      }
+    }
+  ],
+  "successor_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-child-engineering-v2.py",
+    "sha256": "a4851180ea481cbb11aeccb8acc8d20325e4f948c4c8564f6f55c4623cefbb07"
+  },
+  "disposition": "Continue exact model-free preparation. Require byte-equal existing partial configuration and reuse its existing warm supply. Where the original graph has no prepared supply, verify identical graph/structural rosters and the original structural supply hash, then compare selection outputs. Keep all three cells HELD; no runtime admission.",
+  "model_contacts_added": 0,
+  "tokenizer_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "policy_changes": false
+}
