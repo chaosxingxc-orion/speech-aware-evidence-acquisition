@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Shared-base acceptance scope rechecked offline, 2026-10-04
+
+[Current-source audit](../receipts/continuation/2026-10-04-cross-carrier-base-scope-audit.json) and [goal coverage matrix](../readiness/2026-10-04-shared-base-goal-coverage-v1.md) record126 passing synthetic adapter/FlightRuntime/OpenJiuwen/native-branch/consumption-transfer tests, no skips and zero real model/scorer/data contacts. The tests prove the named offline paths and unsupported-component refusals, not full live carrier acceptance or performance. Current text-policy ancestry, fixed-roster learning gates and SLU utility remain SLURP-specific. Do not represent them as a generic carrier optimizer.
+
+The full goal remains open: current K16 comparison and subsequent learned improvement are unfinished, and Audio2Tool/E21/E22 still need their exact real execution/score acceptance within separate admission. Preserve decision211 holds, E22 no-GPU admission, other coordinators' state and human-before8x400. No queue, service or frozen source changed; heartbeat remains paused.
+
 ## Complete-source K16 update preparation helper ready offline, 2026-10-04
 
 [Prepared helper receipt](../receipts/continuation/2026-10-04-k16-update-preparation-helper.json) pins prepare-abstract-update2-v1.py in coordination/context-template-k16-n20-owner227-v1. Its no-admission rehearsal correctly returned HELD before any result read, write, reservation, model or scoring contact. All16 existing immutable policy parent closures were independently loaded and verified. Syntax and the shared211-test input/update interfaces are checked; real helper execution remains pending.

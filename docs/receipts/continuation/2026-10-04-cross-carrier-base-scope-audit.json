@@ -1,0 +1,54 @@
+{
+  "schema": "saea-cross-carrier-base-scope-audit-v1",
+  "at_utc": "2026-10-04T21:38:45.323096+00:00",
+  "source_commit": "4b92049a05c83066dca2dfd9ab9a6e39db08d24d",
+  "tests": [
+    {
+      "path": "tests/unit/test_consumption_module_carrier_transfer.py",
+      "sha256": "f252e71bd34b6ff94480b5a2282d6f86d089074f5b2f8bbcc50938d4bbdbcd58"
+    },
+    {
+      "path": "tests/unit/test_consumption_module_carrier_hooks.py",
+      "sha256": "27d985ea651cf59bc79fa3900a1b6b5abb3fe6cc7b89126fc3d120b4949f729c"
+    },
+    {
+      "path": "tests/unit/test_earnings22_runtime_adapter.py",
+      "sha256": "7e522aa61b6f863df212b7774af24bdc506f04dc8f5eaca337c9c98d0d6787b2"
+    },
+    {
+      "path": "tests/unit/test_earnings_runtime_adapter.py",
+      "sha256": "72db30f1c41eee4d8a88eb097dd607c5182b4b6d86d152125484ac5c109d8598"
+    },
+    {
+      "path": "tests/unit/test_audio2tool_runtime_adapter.py",
+      "sha256": "ee171b81d31a1d20f24b8fbb62b3368dae0b68ee5715cb1cc0d6c7ad91c902a4"
+    },
+    {
+      "path": "tests/unit/test_earnings_native_branch_integration.py",
+      "sha256": "af3b468ba5e1540ed79c815bc00849a407e8226c088e50bd27aac12d3d40480f"
+    },
+    {
+      "path": "tests/unit/test_e35_earnings_native_episode_wire.py",
+      "sha256": "8ce1b2ce6fca2611c6d78dc3afe90117ff68bd33f2cfb7fc3eb760ff877ca8a2"
+    }
+  ],
+  "passed": 126,
+  "skipped": 0,
+  "failed": 0,
+  "warnings": 3,
+  "warning_scope": "Dependency deprecation notices only.",
+  "elapsed_seconds": 17.22,
+  "real_model_contacts": 0,
+  "real_score_jobs": 0,
+  "real_data_preprocessing": 0,
+  "task_quality_read": false,
+  "queue_or_service_changes": false,
+  "evidence_scope": "Synthetic speech/data/model replies exercise actual registered adapters, shared FlightRuntime/OpenJiuwen programs, delivery and custody. Consumption transfer tests also prove refusal of unsupported or unadmitted components; they do not prove every component is available on every carrier.",
+  "limitations": [
+    "No fresh real-carrier full-system flight or complete official score was demonstrated by this audit.",
+    "Current system-text optimizer, source validation and abstract terminal utility remain SLURP-specific.",
+    "Audio2Tool/E21 decision211 holds and E22 no-GPU-admission remain.",
+    "The active SLURP K16 family is incomplete; no benefit or learned improvement claim."
+  ],
+  "goal_complete": false
+}
