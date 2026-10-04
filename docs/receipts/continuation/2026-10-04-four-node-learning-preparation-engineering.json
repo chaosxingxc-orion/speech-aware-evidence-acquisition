@@ -1,0 +1,78 @@
+{
+  "authority": "docs/receipts/owner/2026-10-04-node-optimization-space.json",
+  "boundaries": [
+    "Root-only.",
+    "Keep heartbeat PAUSED.",
+    "Same fixed400 assets; sequential trajectory execution.",
+    "Human before8x400.",
+    "Preserve frozen workers and all other-carrier holds."
+  ],
+  "contact_cap": 4,
+  "files": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_optimization.py",
+      "sha256": "e1b679c55845e6f340453bf26bed15b53161dc06ddebef9fc37b5670b8f362c1"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_successor.py",
+      "sha256": "3e0e4b230b3b8582faf8249580cb5cae57a7362d4fab7f06105b65124d71a995"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_proposer_capsule.py",
+      "sha256": "e14154b878646965b64f3290c3ad2365ca6e98bb6c05267cb1f136b3b1ac9d5f"
+    },
+    {
+      "relpath": "tests/unit/test_system_seed_successor.py",
+      "sha256": "ea40da51e95f21c4d26e3da62a21cf5b7cfa9d11d65c965c64dca222f126f3bf"
+    },
+    {
+      "relpath": "tests/unit/test_system_historical_bootstrap.py",
+      "sha256": "8c8473e16d53f4aba7fb1ded7f0ebd4ed00e3ba41e7d9fe14885493f9f08ba8e"
+    },
+    {
+      "relpath": "tests/unit/test_system_proposer_capsule.py",
+      "sha256": "3355ed749acd7ca96f149d6df94ea33b0b0476732d27ea2555de481c5f1e6dde"
+    }
+  ],
+  "learning_gain_established": false,
+  "new_contacts": {
+    "generation": 0,
+    "proposer": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "new_reserved_allocations": 0,
+  "output_acceptance_cap": 4096,
+  "predecessor": {
+    "closed_preserved": 29,
+    "held_preserved": 3
+  },
+  "previews": {
+    "relpath": "docs/readiness/2026-10-04-four-node-round9-preparation-v1/preview-inputs-v2.json",
+    "sha256": "cd0e37573b031e42fcc34f0a34ddd9e4fe30930b3eb78db3491d1774c19a35bc"
+  },
+  "prospective_input_cap_each_branch": 163840,
+  "remaining": [
+    "Rebuild final protocol-bound inputs/capsules and verify their exact continuation bounds.",
+    "Register successor and isolated proposer admission before first contact.",
+    "Freeze resulting policies and register FIT, structural proof and complete small family."
+  ],
+  "runtime_mutations": false,
+  "schema": "saea-four-node-learning-preparation-engineering-v1",
+  "stable_benefit_established": false,
+  "status": "offline-adapters-verified-final-admission-pending",
+  "tests": {
+    "checks": [
+      "engineering-base",
+      "harness-admission",
+      "targeted-ruff"
+    ],
+    "files": 18,
+    "passed": 470,
+    "statement_coverage": {
+      "covered": 847,
+      "total": 860
+    }
+  },
+  "timestamp": "2026-10-04T02:11:30.389486+00:00"
+}

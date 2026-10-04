@@ -368,3 +368,65 @@ def test_page_boundaries_are_replayable_and_mutating_returned_state_is_harmless(
     assert start["eof"] is False and end["eof"] is True
     with pytest.raises(PolicyError, match="offset"):
         capsule.read_artifact({"artifact_id": identity, "offset": 100000, "limit": 3})
+
+
+@pytest.mark.parametrize("mode", ["disk", "memory", "over-limit", "tampered"])
+def test_large_history_has_separate_bounded_disk_custody(tmp_path, monkeypatch, mode):
+    from speech_aware_evidence_acquisition.rails import system_proposer_capsule as module
+    packet, roots = fixture(tmp_path, "L")
+    record = {"cumulative_sources": packet["parent_policy"]["cumulative_sources"]}
+    docs = {"input": packet, "response": {"raw_response": "No change."}, "import": {"status": "no-change"}}
+    for kind, doc in docs.items():
+        folder = {"input": "inputs", "response": "responses", "import": "imports"}[kind]
+        path = roots["archive"] / folder / "L-1-1.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(doc))
+        record[kind] = {"relpath": f"{folder}/L-1-1.json", "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    history_path = roots["archive"] / "inputs/L-1-1.json"
+    original = history_path.read_text()
+    size = history_path.stat().st_size
+    monkeypatch.setattr(module, "MAX_ARTIFACT_BYTES", size - 1)
+    monkeypatch.setattr(module, "MAX_DISK_HISTORY_BYTES", size - 1 if mode == "over-limit" else size + 100)
+    packet["round"] = 2
+    packet["learning_history"] = [record]
+    reseal(packet)
+    if mode == "tampered":
+        history_path.write_text(original + " ")
+    if mode != "disk":
+        with pytest.raises(PolicyError, match="size|hash"):
+            ProposerCapsule.from_packet(packet, roots=roots, cache_root=None if mode == "memory" else tmp_path / "cache")
+    else:
+        c = ProposerCapsule.from_packet(packet, roots=roots, cache_root=tmp_path / "cache")
+        a = next(a for a in c.as_json()["artifacts"] if a["kind"] == "history-input")
+        assert c._page(a, 0, a["characters"]) == original
+
+
+
+def test_disk_history_diamond_parses_each_pinned_ancestor_once(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.rails import system_proposer_capsule as module
+    packet, roots = fixture(tmp_path, "L")
+    history = []
+    for round_index in (1, 2):
+        packet.update(round=round_index, learning_history=list(history))
+        reseal(packet)
+        record = {"cumulative_sources": packet["parent_policy"]["cumulative_sources"]}
+        for kind, doc in {"input": packet, "response": {"raw_response": "No change."}, "import": {"status": "no-change"}}.items():
+            folder = {"input": "inputs", "response": "responses", "import": "imports"}[kind]
+            rel = f"{folder}/L-{round_index}-1.json"
+            path = roots["archive"] / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(doc))
+            record[kind] = {"relpath": rel, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        history.append(record)
+    packet.update(round=3, learning_history=history)
+    reseal(packet)
+    reads = []
+    original = module._read_registered
+    def observed(reference, roots, **kwargs):
+        if reference["kind"] == "history-input":
+            reads.append(reference["pin"]["relpath"])
+        return original(reference, roots, **kwargs)
+    monkeypatch.setattr(module, "_read_registered", observed)
+    c = ProposerCapsule.from_packet(packet, roots=roots, cache_root=tmp_path / "cache")
+    assert sorted(reads) == ["inputs/L-1-1.json", "inputs/L-2-1.json"]
+    assert len([a for a in c.as_json()["artifacts"] if a["kind"] == "history-input"]) == 2

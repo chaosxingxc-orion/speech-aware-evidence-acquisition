@@ -28,6 +28,7 @@ HARD_BUDGET = "provider-hard-limit"
 SUBSCRIPTION_BUDGET = "subscription-metered-reject-v1"
 MAX_ARTIFACT_BYTES = 128 * 1024 * 1024
 MAX_CAPSULE_BYTES = 256 * 1024 * 1024
+MAX_DISK_HISTORY_BYTES = 256 * 1024 * 1024
 MAX_PAGE_CHARACTERS = 16384
 CACHE_CHARS = 256 * 1024
 COHERENT_PROFILES = ("coherent-feedback-v1", "typed-coherent-feedback-v1")
@@ -276,6 +277,8 @@ class ProposerCapsule:
         artifacts = {}
         total = 0
         visited = set()
+        pending_history = []
+        parsed_history = set()
 
         def append(raw, kind, source):
             nonlocal total
@@ -305,9 +308,11 @@ class ProposerCapsule:
                 identity = content_hash({"sha256": source["sha256"], "kind": kind, "source": source})
                 raw = None
                 if identity not in artifacts:
-                    if cache_root is not None and kind not in {"history-input", "knowledge-snapshot"}:
+                    if cache_root is not None and kind != "knowledge-snapshot":
                         path = _registered_path(reference, roots)
                         size = path.stat().st_size
+                        if kind == "history-input":
+                            require(size <= MAX_DISK_HISTORY_BYTES, "history exceeds packaging size limit")
                         with path.open("r", encoding="utf-8", newline="") as stream:
                             artifacts[identity] = _cache_artifact(stream, cache_root, kind=kind, source=source,
                                 expected_sha256=source["sha256"], expected_bytes=size)
@@ -315,11 +320,9 @@ class ProposerCapsule:
                         raw = _read_registered(reference, roots)
                         append(raw, kind, source)
                 if kind == "history-input":
-                    prior = json.loads(raw if raw is not None else _read_registered(reference, roots))
-                    require(prior["branch"] == "L" and prior["round"] < current["round"]
-                            and prior["model_version"] == current["model_version"], "history branch/round/model differs")
-                    # Reopen only typed pins from a verified earlier input packet.
-                    expand(prior)
+                    # Do not retain every parsed ancestor on a recursive stack.
+                    # Each edge is checked, but each immutable input is expanded once.
+                    pending_history.append((reference, current["round"], current["model_version"]))
             for field, kind in (("feedback", "complete-feedback"), ("learning_history", "complete-history-index")):
                 if field in current:
                     append(canonical(current[field]).encode(), kind, {"packet_field": field})
@@ -354,6 +357,23 @@ class ProposerCapsule:
                 append(canonical(contract).encode(), "slot-value-edit-context", {
                     "release": policy["knowledge"]["release"], "base_rows_sha256": contract["base_rows_sha256"]})
         expand(packet)
+        history_metadata = {}
+        while pending_history:
+            reference, upper_round, model = pending_history.pop()
+            identity = content_hash(reference)
+            if identity not in parsed_history:
+                raw = _read_registered(reference, roots, byte_limit=(
+                    MAX_DISK_HISTORY_BYTES if cache_root is not None else MAX_ARTIFACT_BYTES))
+                prior = json.loads(raw)
+                del raw
+                require(prior["branch"] == "L" and prior["round"] < upper_round
+                        and prior["model_version"] == model, "history branch/round/model differs")
+                history_metadata[identity] = (prior["round"], prior["model_version"])
+                expand(prior)
+                parsed_history.add(identity)
+                del prior
+            prior_round, prior_model = history_metadata[identity]
+            require(prior_round < upper_round and prior_model == model, "history branch/round/model differs")
         append(canonical(packet).encode(), "complete-proposal-packet", {"input_sha256": packet["input_sha256"]})
         if view_profile in COMPACT_PROFILES:
             from .system_proposer_views import build_feedback_views
@@ -423,6 +443,21 @@ class ProposerCapsule:
                 or TextPolicyUpdateProposal.schema_for_packet(packet) in (CONTEXT_PROPOSAL_SCHEMA, NODE_PROPOSAL_SCHEMA)):
             result["response_contract"] = TextPolicyUpdateProposal.response_contract(packet)
         full = json.loads(self._packet)
+        from .system_optimization import BOOTSTRAP_SELECTION_SCHEMA
+        selection = full.get("selection", {})
+        if selection.get("schema") == BOOTSTRAP_SELECTION_SCHEMA:
+            result["historical_bootstrap"] = {
+                "binding": copy.deepcopy(selection["historical_bootstrap"]),
+                "interpretation": (
+                    "These are historical own-branch observations, not measurements of the new seed. "
+                    "The explicit four-node seed preserves the previous seed's actual role texts; "
+                    "its identity now also binds Perception. Use the cases as proposal evidence, "
+                    "not a new-seed performance or learning-gain claim. Historical feedback has no "
+                    "prospective complete-sample latency measurement. The bound measurement profile "
+                    "applies to future complete-family evaluation only. Do not relabel old outcomes "
+                    "or infer latency from model contact counts."),
+                "original_utility_reference_preserved": True,
+            }
         if "feedback" in full:
             result["feedback_summary"] = {"family_id": full["feedback"].get("family_id"),
                 "summaries": full["feedback"]["summaries"],

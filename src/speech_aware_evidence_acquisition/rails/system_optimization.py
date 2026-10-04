@@ -9,6 +9,7 @@ import json
 from .hashing import content_hash
 from .system_text_policy import (
     _read_pin,
+    _pin,
     assert_roster_disjoint,
     cumulative_sources,
     require,
@@ -25,6 +26,7 @@ CONTEXT_SCOPES = (CONTEXT_SCOPE_SCHEMA, NODE_SCOPE_SCHEMA)
 PILOT = "pilot20-owner220"
 LEARNING_MEMBERS = {"L-parent", "L-parent-aa", "L-candidate-1", "L-candidate-2"}
 SELECTION_SCHEMA = "saea-exploratory-learning-selection-v1"
+BOOTSTRAP_SELECTION_SCHEMA = "saea-historical-seed-selection-v1"
 
 
 def editable_for_scope(schema):
@@ -176,6 +178,46 @@ def require_context_only_changes(changes, *, protocol, stage, repo_root):
         )
 
 
+def require_historical_bootstrap(value, *, feedback, parent, own, round_index, protocol=None):
+    """Keep qualified old evidence separate from a new measured policy sequence."""
+    from .system_search_measurement import validate_profile
+    from .system_text_policy import NODE_BUNDLE_SCHEMA
+    require(isinstance(value, dict) and set(value) == {
+        "schema", "round", "seed_transition", "previous_parent_id", "seed_bundle_id",
+        "source_projection_sha256", "prospective_measurement_profile"}
+        and value["schema"] == "saea-historical-seed-bootstrap-v1",
+        "exact historical bootstrap descriptor required")
+    _pin(value["seed_transition"])
+    for key in ("previous_parent_id", "seed_bundle_id", "source_projection_sha256"):
+        sha(value[key])
+    validate_profile(value["prospective_measurement_profile"])
+    require(type(value["round"]) is int and value["round"] == round_index and round_index > 3
+            and content_hash(feedback) == value["source_projection_sha256"]
+            and "measurement_profile" not in feedback,
+            "historical bootstrap is restricted to its unchanged unmeasured source and round")
+    require(set(own) == LEARNING_MEMBERS
+            and own["L-parent"]["bundle_id"] == value["previous_parent_id"]
+            and own["L-parent-aa"]["bundle_id"] == value["previous_parent_id"]
+            and parent.get("schema") == NODE_BUNDLE_SCHEMA
+            and content_hash(parent) == value["seed_bundle_id"]
+            and parent.get("parent_ids") == [value["previous_parent_id"]]
+            and not parent.get("optimizer_experience")
+            and all(s["kind"] == "knowledge" for s in parent.get("cumulative_sources", [])),
+            "historical observations cannot be relabeled as the new seed")
+    if protocol is not None:
+        from .system_search_successor import SEED_SCHEMA
+        extension = protocol.get("allocation_extension", {})
+        require(protocol.get("historical_bootstrap") == value
+                and protocol.get("measurement_profile") == value["prospective_measurement_profile"]
+                and extension.get("schema") == SEED_SCHEMA
+                and extension.get("round") == round_index
+                and extension.get("seed_bundle_id") == value["seed_bundle_id"]
+                and extension.get("seed_transition", {}).get("parent_bundle_id") == value["previous_parent_id"]
+                and extension.get("seed_transition", {}).get("receipt") == value["seed_transition"],
+                "historical bootstrap lacks the exact seed-transition protocol authority")
+    return value
+
+
 def exploratory_selection(feedback, *, registration, binding, protocol, parents):
     """Record the root's provisional parent without posing as a formal retention."""
     d = feedback.as_json()
@@ -185,11 +227,17 @@ def exploratory_selection(feedback, *, registration, binding, protocol, parents)
         if cid in LEARNING_MEMBERS
     }
     active = [binding["parent_id"], *binding["complementary_ids"]]
+    bootstrap = protocol.get("historical_bootstrap")
+    if bootstrap is not None:
+        require(len(parents) == 1 and active == [content_hash(parents[0])],
+                "historical bootstrap retains only the explicit transitioned seed")
+        require_historical_bootstrap(bootstrap, feedback=d, parent=parents[0], own=own,
+                                     round_index=binding["next_round"], protocol=protocol)
     require(
         set(own) == LEARNING_MEMBERS
         and 1 <= len(active) <= 2
         and len(set(active)) == len(active)
-        and set(active) <= {v["bundle_id"] for v in own.values()},
+        and (bootstrap is not None or set(active) <= {v["bundle_id"] for v in own.values()}),
         "exploratory parent must be an observed learning-branch policy",
     )
     ids = sorted(
@@ -216,6 +264,10 @@ def exploratory_selection(feedback, *, registration, binding, protocol, parents)
         "cumulative_sources": sources,
     }
     profile = protocol.get("measurement_profile")
+    if bootstrap is not None:
+        result.update(schema=BOOTSTRAP_SELECTION_SCHEMA,
+                      historical_bootstrap=json.loads(json.dumps(bootstrap)))
+        profile = None
     require(d.get("measurement_profile") == profile, "exploratory measurement profile differs")
     if profile is not None:
         from .system_search_measurement import measured_rows, measured_frontier
@@ -238,6 +290,17 @@ def exploratory_selection(feedback, *, registration, binding, protocol, parents)
 def require_exploratory_packet(packet, *, protocol=None):
     """Check the small-family commitment at packaging and again before transport."""
     d, s = packet.get("feedback", {}), packet.get("selection", {})
+    bootstrap = s.get("schema") == BOOTSTRAP_SELECTION_SCHEMA
+    if bootstrap:
+        require(not packet.get("complementary_policies")
+                and s.get("active_ids") == [packet.get("parent_bundle_id")]
+                and not {"measurement_profile", "measurements", "frontier", "repeated_measurements"}.intersection(s),
+                "historical bootstrap has no new measured frontier or complementary selection")
+        require_historical_bootstrap(s.get("historical_bootstrap"), feedback=d,
+            parent=packet.get("parent_policy", {}), own=s.get("member_bindings", {}),
+            round_index=packet.get("round"), protocol=protocol)
+    else:
+        require("historical_bootstrap" not in s, "bootstrap cannot borrow a measured selection schema")
     rows, read_id = 20, "SAEA-SLURP-SYSTEM-TEXT-PILOT20-OWNER220-READ-V1"
     family = d.get("family_id")
     if family != PILOT:
@@ -279,7 +342,7 @@ def require_exploratory_packet(packet, *, protocol=None):
         "exploratory feedback must keep all registered complete L trajectories",
     )
     require(
-        s.get("schema") == SELECTION_SCHEMA
+        s.get("schema") in (SELECTION_SCHEMA, BOOTSTRAP_SELECTION_SCHEMA)
         and s.get("stage") == family
         and s.get("branch") == "L"
         and s.get("formal_adoption") is False
@@ -303,7 +366,7 @@ def require_exploratory_packet(packet, *, protocol=None):
             for source in d["feedback"]["sources"]),
             "panel learning sources differ from the observed selection")
     require(
-        set(s["active_ids"]) <= {v["bundle_id"] for v in s["member_bindings"].values()}
+        (bootstrap or set(s["active_ids"]) <= {v["bundle_id"] for v in s["member_bindings"].values()})
         and {content_hash(p) for p in packet.get("complementary_policies", [])}
         <= set(s["active_ids"][1:]),
         "exploratory parent or complementary policy differs",
@@ -318,7 +381,7 @@ def require_exploratory_packet(packet, *, protocol=None):
     )
     require(s.get("measurement_profile") == d.get("measurement_profile"),
             "learning selection and feedback measurement profiles differ")
-    if protocol is not None:
+    if protocol is not None and not bootstrap:
         require(s.get("measurement_profile") == protocol.get("measurement_profile"),
                 "learning measurement profile differs from frozen protocol")
     if packet["round"] > 3:

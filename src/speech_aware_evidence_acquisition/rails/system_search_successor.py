@@ -18,7 +18,8 @@ OWNER227 = "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-be
 SCHEMA = "saea-system-search-successor-sequence-v1"
 CONTEXT_SCHEMA = "saea-system-search-successor-sequence-v2"
 NODE_SCHEMA = "saea-system-search-successor-sequence-v3"
-SCHEMAS = (SCHEMA, CONTEXT_SCHEMA, NODE_SCHEMA)
+SEED_SCHEMA = "saea-system-search-successor-sequence-v4"
+SCHEMAS = (SCHEMA, CONTEXT_SCHEMA, NODE_SCHEMA, SEED_SCHEMA)
 FIELDS = {"schema", "round", "owner", "transition", "previous_protocol", "earlier_allocations",
     "held_allocations", "model_version", "seed_bundle_id", "input_token_cap", "output_token_cap",
     "contact_cap", "editable", "no_runtime_authority", "sequence_id", "predecessor_archive",
@@ -32,9 +33,12 @@ def digest(path):
 
 
 def require_successor(index, document):
-    node_version = isinstance(document, dict) and document.get("schema") == NODE_SCHEMA
+    node_version = isinstance(document, dict) and document.get("schema") in (NODE_SCHEMA, SEED_SCHEMA)
     context_version = node_version or (isinstance(document, dict) and document.get("schema") == CONTEXT_SCHEMA)
     fields = FIELDS | {"context_authority"} if context_version else FIELDS
+    if isinstance(document, dict) and document.get("schema") == SEED_SCHEMA:
+        fields = fields | {"seed_transition"}
+        _require_seed_transition(document["seed_transition"])
     require(isinstance(document, dict) and set(document) == fields
         and document["schema"] in SCHEMAS and type(index) is int and index > 3
         and type(document["round"]) is int and document["round"] == index, "registered successor sequence required")
@@ -144,6 +148,61 @@ def partition(predecessor, index, model):
     return closed, held, files
 
 
+def _require_seed_transition(value):
+    require(isinstance(value, dict) and set(value) == {
+        "receipt", "source_archive", "parent_bundle_id", "bundle_sha256"},
+        "exact seed transition custody required")
+    _pin(value["receipt"])
+    sha(value["parent_bundle_id"])
+    sha(value["bundle_sha256"])
+    require(isinstance(value["source_archive"], str) and Path(value["source_archive"]).is_absolute(),
+            "seed source archive must be absolute")
+
+
+def transitioned_seed(predecessor, document, *, repo_root=None):
+    """Verify an explicit behavior-preserving seed without modifying old archives."""
+    from .system_search_archive import SystemSearchArchive
+    from .system_text_policy import NODE_BUNDLE_SCHEMA, bind_four_node_seed
+    desc = document["seed_transition"]
+    _require_seed_transition(desc)
+    source = SystemSearchArchive(desc["source_archive"])
+    for target in (predecessor.root, Path(document["successor_archive"])):
+        require(source.root.resolve() != target.resolve()
+                and source.root.resolve() not in target.resolve().parents
+                and target.resolve() not in source.root.resolve().parents,
+                "seed source must be isolated from the sequence archives")
+    path = source.root / "policies" / (document["seed_bundle_id"] + ".json")
+    require(digest(path) == desc["bundle_sha256"], "seed source bytes changed")
+    child = source.load_policy(document["seed_bundle_id"])
+    parent = predecessor.load_policy(desc["parent_bundle_id"])
+    d, old = child.as_json(), parent.as_json()
+    require(d["schema"] == NODE_BUNDLE_SCHEMA and d["parent_ids"] == [parent.bundle_id]
+            and not d["optimizer_experience"]
+            and all(v["kind"] == "knowledge" for v in d["cumulative_sources"])
+            and all(d[k] == v for k, v in old.items()
+                    if k not in {"schema", "parent_ids", "role_text"})
+            and all(d["role_text"].get(k) == v for k, v in old["role_text"].items()),
+            "seed transition changed ancestry, old role bytes or blind evidence")
+    if repo_root is not None:
+        receipt = json.loads(_read_pin(desc["receipt"], repo_root))
+        require(receipt.get("schema") == "saea-four-node-seed-transition-v1"
+                and receipt.get("status") == "frozen-offline-seed"
+                and receipt.get("runtime_admission") is False
+                and receipt.get("parent_bundle_id") == parent.bundle_id
+                and receipt.get("bundle_id") == child.bundle_id
+                and receipt.get("authority") == document["context_authority"]
+                and receipt.get("seed_bundle", {}).get("sha256") == desc["bundle_sha256"],
+                "seed transition receipt differs")
+        baseline = json.loads(_read_pin(receipt["original_seed_config"], repo_root))
+        perception = _read_pin(receipt["source_perception"], repo_root)
+        require(perception == d["role_text"]["perception"].encode("utf-8")
+                and receipt["source_perception"]["relpath"] ==
+                "configs/" + baseline["phase_material"]["perception"]["instruction_template"]
+                and bind_four_node_seed(parent, baseline, repo_root=repo_root).as_json() == d,
+                "seed transition is not the exact historical runtime policy")
+    return child
+
+
 def validate_successor(archive, document, *, repo_root=None, preparing=False):
     from .system_search_archive import SystemSearchArchive
     require_successor(document.get("round"), document)
@@ -159,7 +218,12 @@ def validate_successor(archive, document, *, repo_root=None, preparing=False):
     if not preparing:
         require(all((archive.root / p).is_file() and digest(archive.root / p) == value for p, value in files.items()),
             "successor snapshot changed")
-    if document["schema"] == NODE_SCHEMA:
+    if document["schema"] == SEED_SCHEMA:
+        seed = transitioned_seed(predecessor, document, repo_root=repo_root)
+        if not preparing:
+            require(archive.load_policy(seed.bundle_id).as_json() == seed.as_json(),
+                    "published transitioned seed differs")
+    elif document["schema"] == NODE_SCHEMA:
         from .system_text_policy import NODE_BUNDLE_SCHEMA
         seed = predecessor.load_policy(document["seed_bundle_id"])
         require(seed.as_json()["schema"] == NODE_BUNDLE_SCHEMA,
@@ -169,7 +233,8 @@ def validate_successor(archive, document, *, repo_root=None, preparing=False):
         require(owner.get("decision_id") == 227 and owner.get("status") == "approved", "owner227 is not approved")
         previous = json.loads(_read_pin(document["previous_protocol"], repo_root))
         require(previous["proposer_exact_version"] == document["model_version"]
-            and previous["seed_bundle"]["bundle_id"] == document["seed_bundle_id"]
+            and previous["seed_bundle"]["bundle_id"] == (document["seed_transition"]["parent_bundle_id"]
+                if document["schema"] == SEED_SCHEMA else document["seed_bundle_id"])
             and previous["proposal_output_token_cap"] == document["output_token_cap"]
             and previous["proposal_contact_cap"] == document["contact_cap"], "successor changes a fixed factor")
         ancestor = previous.get("allocation_extension", {})
@@ -181,12 +246,14 @@ def validate_successor(archive, document, *, repo_root=None, preparing=False):
             and all(decision.get(k) == document[k] for k in ("round", "sequence_id", "input_token_cap", "output_token_cap", "contact_cap"))
             and set(decision.get("held_allocations", [])) == set(held)
             and decision.get("new_allocations") == document["allocations"], "exact root transition disposition required")
+        require(decision.get("seed_transition") == document.get("seed_transition"),
+                "successor seed transition differs from root disposition")
         require(decision.get("context_authority") == document.get("context_authority"),
                 "successor context scope differs from root transition")
-        if document["schema"] in (CONTEXT_SCHEMA, NODE_SCHEMA):
+        if document["schema"] in (CONTEXT_SCHEMA, NODE_SCHEMA, SEED_SCHEMA):
             from .system_optimization import validate_context_authority
             validate_context_authority(document["context_authority"], repo_root=repo_root,
-                                       node_version=document["schema"] == NODE_SCHEMA)
+                                       node_version=document["schema"] in (NODE_SCHEMA, SEED_SCHEMA))
     return document
 
 
@@ -208,6 +275,12 @@ def build_successor(predecessor, successor, *, round_index, owner, transition, p
         document.update(schema=NODE_SCHEMA if node_version else CONTEXT_SCHEMA,
                         editable=["role_text", "context_layout", "node_context"] if node_version else ["role_text", "context_layout"],
                         context_authority=decision["context_authority"])
+    if "seed_transition" in decision:
+        require(document["schema"] == NODE_SCHEMA, "seed transition needs four-node scope")
+        desc = decision["seed_transition"]
+        _require_seed_transition(desc)
+        receipt = json.loads(_read_pin(desc["receipt"], repo_root))
+        document.update(schema=SEED_SCHEMA, seed_transition=desc, seed_bundle_id=receipt["bundle_id"])
     return validate_successor(successor, document, repo_root=repo_root, preparing=True)
 
 
@@ -221,5 +294,7 @@ def register_successor(predecessor, successor, document, *, repo_root):
         destination.parent.mkdir(parents=True, exist_ok=True)
         with (predecessor.root / relative).open("rb") as source, destination.open("xb") as output:
             shutil.copyfileobj(source, output)
+    if document["schema"] == SEED_SCHEMA:
+        successor.store_policy(transitioned_seed(predecessor, document, repo_root=repo_root))
     validate_successor(successor, document, repo_root=repo_root)
     successor._write(f"allocations/round-{document['round']}.json", document)

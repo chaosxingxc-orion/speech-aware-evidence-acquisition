@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Four-node learning adapters and real input rehearsal, 2026-10-04T02:11:30.389486+00:00
+
+[Preparation package](../readiness/2026-10-04-four-node-round9-preparation-v1/README.md) and [engineering receipt](../receipts/continuation/2026-10-04-four-node-learning-preparation-engineering.json) implement exact v4 successor seed custody and qualified historical own-L bootstrap. Preserve all29 closed/3 HELD predecessor slots. Historical feedback retains old identities and utility reference, cannot become a new latency frontier, and carries an explicit qualification in the initial model view. B remains feedback-free.470 targeted tests pass; three modules98% statement coverage; base/harness/lint pass.
+
+Both offline preview refusals are preserved: the predecessor correctly refused an unregistered round9 history read; next the two153755899-byte L8 inputs exceeded the128MiB artifact limit. Disk-backed history now has a separate256MiB cap, full hash checks, iterative ancestry expansion and one parse per pinned ancestor. In-memory limits remain unchanged; no cumulative evidence is truncated. Four real capsules subsequently packaged successfully, each L retaining15 own histories. Their initial request bounds23843 fit, but four-request L envelopes144534 exceed139264; B envelopes115222 fit. These are conservative byte bounds, not measured usage.
+
+The v2 prospective disposition/protocol selects equal163840 input caps,4096 output acceptance and four contacts. Exact final inputs/capsules and continuation bounds still need rebuilding before registration; no new allocation or model/tokenizer/scorer contact occurred. Old previews, sources and runtime controls are unchanged. Next finish this admission, then proposals and separately registered FIT/structural/full8x20 evaluation. No stable benefit or learning gain is established. Root-only; heartbeat PAUSED; same fixed400; sequential execution; human before8x400; other-carrier holds remain.
+
 ## Explicit four-node seed frozen, 2026-10-04T01:29:51.303168+00:00
 
 [Seed transition and next design](../readiness/2026-10-04-four-node-seed-transition-v1/README.md) freeze policy `ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572` with ancestry `d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15`. All four actual role bytes and effective non-metadata configuration match the existing seed. Perception is now explicitly bound; no role is rewritten. Real knowledge/compiler/binding checks pass.106 focused tests pass, policy module98% statement coverage; transition function fully covered. Old29 closed and3 HELD allocations are preserved; no new allocation/contact/runtime mutation.

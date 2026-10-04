@@ -1,0 +1,56 @@
+{
+  "interpretation": "All four capsules package successfully. Both L initial requests fit but their four-request envelope exceeds139264; both B envelopes fit. No proposal slot was reserved or model contacted.163840 is a prospective equal budget requiring final request revalidation.",
+  "runtime_admission": false,
+  "schema": "saea-four-node-preview-evidence-v1",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-round9-preview-v2/summary.json",
+    "sha256": "a987e2ee8c3996aec6b24ad495d92b5840f5f087517f496cee5140f168b98090"
+  },
+  "summary": {
+    "actual_contacts": 0,
+    "allocations_reserved": 0,
+    "rows": [
+      {
+        "elapsed_seconds": 184.25730468099937,
+        "envelope_bound": 144534,
+        "history_records": 15,
+        "initial_bound": 23843,
+        "input_sha256": "7c7a7efcbce8e5143f4fbba6b290aca70b605a2a509b9e03c70620f2ec6bd19e",
+        "key": "L-9-1",
+        "process_peak_rss_kib": 3133948,
+        "status": "input_budget_exceeded"
+      },
+      {
+        "elapsed_seconds": 2.254227487021126,
+        "envelope_bound": 115222,
+        "history_records": 0,
+        "initial_bound": 16515,
+        "input_sha256": "bfaeab5fde28165a2fd25df57325e60430b79f7eecebb7c92a243ebe8f310035",
+        "key": "B-9-1",
+        "process_peak_rss_kib": 3133948,
+        "status": "covered_envelope_fits"
+      },
+      {
+        "elapsed_seconds": 174.59499081998365,
+        "envelope_bound": 144534,
+        "history_records": 15,
+        "initial_bound": 23843,
+        "input_sha256": "afa204b7e044234e7bdbaab64562797f9ff87d068e5026a8d493c205b525ba68",
+        "key": "L-9-2",
+        "process_peak_rss_kib": 3156744,
+        "status": "input_budget_exceeded"
+      },
+      {
+        "elapsed_seconds": 2.297699611983262,
+        "envelope_bound": 115222,
+        "history_records": 0,
+        "initial_bound": 16515,
+        "input_sha256": "18d9b57026d041e88319f2225609b8f871405b1ebda652cbedf21fedae265879",
+        "key": "B-9-2",
+        "process_peak_rss_kib": 3156744,
+        "status": "covered_envelope_fits"
+      }
+    ],
+    "status": "complete"
+  }
+}

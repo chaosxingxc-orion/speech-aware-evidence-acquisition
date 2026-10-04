@@ -1,0 +1,34 @@
+{
+  "contact_cap": 4,
+  "context_authority": {
+    "relpath": "docs/receipts/owner/2026-10-04-node-optimization-space.json",
+    "sha256": "af96bf4f14456ec1e1bc6a13f6f0781dbf43be9181d883e121c9f97d08c90cf0"
+  },
+  "dispatch_authority": false,
+  "held_allocations": [
+    "B-6-1",
+    "L-6-2",
+    "B-6-2"
+  ],
+  "input_token_cap": 163840,
+  "new_allocations": [
+    "L-9-1",
+    "B-9-1",
+    "L-9-2",
+    "B-9-2"
+  ],
+  "output_token_cap": 4096,
+  "reason": "The real historical-feedback initial request fits, but the four-request continuation envelope exceeds139264. Prospectively use the same163840 cumulative input cap for both branches; output4096 and contact4 stay fixed. Recheck exact final inputs before registration or contact.",
+  "round": 9,
+  "seed_transition": {
+    "bundle_sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31",
+    "parent_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+    "receipt": {
+      "relpath": "docs/readiness/2026-10-04-four-node-seed-transition-v1/seed-transition-v1.json",
+      "sha256": "105ea2cca6614a6f54af87fb7bac7cda879a3e78301f8646188c7831029c5592"
+    },
+    "source_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-seed-v1"
+  },
+  "sequence_id": "four-node-measured-successor3-owner227",
+  "status": "root-selected-for-preparation"
+}

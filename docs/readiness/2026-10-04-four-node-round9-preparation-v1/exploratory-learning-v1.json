@@ -1,0 +1,27 @@
+{
+  "analysis_supplement": {
+    "relpath": "docs/readiness/2026-10-03-slurp-fixed400-round5-n20-supply-v2/analysis-supplement-v1.json",
+    "sha256": "5ee1e4a64931c99cbef1d9fbe824487ea0b56ffd2d8ce1cfd9928c0530d06df3"
+  },
+  "complementary_ids": [],
+  "expected_projection_sha256": "b457a5b18e64a24a4e0aa06f3338032e140ab7b88d6d9ac2ff7a53c8b3ace411",
+  "family": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND5-N20-READ-V1/family.json",
+    "sha256": "e483b465bf12e7af61fbd8743139baf641c26f313650c73fab97ded704c18f27"
+  },
+  "next_round": 9,
+  "optimization_plan": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/plan.json",
+    "sha256": "883a2db2b3e96c1447003c8cd5f06d4d3b970f8e71d81f21cfd175a73d538888"
+  },
+  "owner_learning": {
+    "relpath": "docs/receipts/owner/2026-10-02-decision223-progressive-learning-ladder.json",
+    "sha256": "003710d4e8a017fc2c4a126197396ce3bac4d406edc86c7b38e7acc4023d1123"
+  },
+  "parent_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+  "reference_family": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-SYSTEM-TEXT-INITIAL-CONTROL2-READ-V1/family.json",
+    "sha256": "c037f1706f9365c47360a20ef87645781ca30fbe777e45d711b2a1068b778148"
+  },
+  "schema": "saea-exploratory-learning-binding-v1"
+}
