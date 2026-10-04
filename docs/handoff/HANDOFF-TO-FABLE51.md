@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## GPT-6.1 Sol analysis and measured-panel repair integrated, 2026-10-04T06:13:39.301435+00:00
+
+The explicitly requested gpt-6.1-sol subagent completed analysis and a narrowly scoped TDD repair, reviewed by root and serially integrated at676c369dfbd330ccd2953334384f6754bee547a7. [Design and handoff](../readiness/2026-10-04-sol-panel-measurement-fix-v1/README.md) and [validation](../readiness/2026-10-04-sol-panel-measurement-fix-v1/validation.json) record18 reproduced failures followed by197 passing focused tests. The actual freezer has100% statement/branch coverage; base,harness,lint and whitespace checks pass.
+
+A declared measurement profile is now validated before archive work, copied into registration before hashing and independently into the READ recipe. Historical absent-profile outputs remain unchanged. Root inspected code, tests and design. No runtime/model/scorer contact or scientific read occurred in this repair.
+
+Two Astra candidates remain compiled and unactivated. The present extra-round panel still requires eight valid members and has an owner223/227 scope mismatch for round9. Prepare a distinct prospectively registered six-member evaluation preserving invalid spent slot1 records and exact candidate2 identities; shared reader, projection and retention changes require tests before admission. No silent omission, replacement or retrospective protocol rewrite. The current Sol analyst has seen both branches and cannot become a blind proposer.
+
+Future engineering analysis uses the human-selected GPT-6.1 Sol subagent channel. Research program catalogue absence does not block this authorized analysis channel. Preserve model and exposure provenance for any later Sol-created policy; no new programmatic Astra requests. Keep heartbeat PAUSED,sequential same400 execution,human before8x400,zero paid API spend and separate carrier holds.
+
 ## Round9 proposals compiled; GPT-6.1 Sol analysis authorized, 2026-10-04T06:01:16.256722+00:00
 
 [Completion and compilation](../receipts/continuation/2026-10-04-four-node-round9-final-two-complete.json) supersedes the live and quota-blocked snapshots below. The manually reset continuation completed normally at05:49:40Z; Windows exit0 and original process exited. L-9-2 and B-9-2 are both provisional and compiled through the shared exact-cohort path. Six actual contacts used27980 input/2476 output tokens with complete metering. L changes Planner evidence/revision handling; B changes Solver support/coverage and grounded revision. Both slot1 failures remain invalid/spent; all33 imports remain preserved. No replacement or replay.
