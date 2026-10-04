@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Measured latency and reliable completion connected to search, 2026-10-04T01:12:58.422090+00:00
+
+[Measured-latency package](../readiness/2026-10-04-system-search-measured-latency-v1/README.md) and [engineering evidence](../receipts/continuation/2026-10-04-system-search-measured-latency-engineering.json) close the preceding implementation gap for workflow latency. The opt-in v2 measurement profile is identical in protocol, registration and exact READ recipe. Complete pinned trace timing joins terminal cohorts and unique official scores; qualified L-only projection and both exploratory/formal selectors preserve it. Old profile-free request/selection behavior stays unchanged. Reject missing/mixed timing, rosters, sessions and scheduling envelopes. Preserve failed samples, reliability floor, A/A and repeated-policy custody; retain balanced non-dominated policies.
+
+505 targeted tests pass across18 files; new measurement module100% statement coverage, six relevant modules about99% combined. Lint/base/harness checks pass. Tests include actual pinned synthetic score/trace joins and the complete public panel reader/projection; they are not GPU efficacy evidence. No real proposer/model/tokenizer/scorer contacts, optimizer export or runtime mutation.
+
+The measured interval is admission-to-settled-workflow, including internal waits/FIT/tools/revisions/cleanup. Pre-admission wait is separate; roster preparation/final persistence/scoring are excluded. It is not full business end-to-end latency. Record overall mean, first/non-first sample means and first-slot cohort/batch diagnostics. This frontier is exploratory point-estimate selection; formal measurement rules and root review still apply.
+
+Next freeze an explicit four-node starting policy and new exact protocol, qualified initial L evidence and budgets. Historical feedback without timing remains ineligible for latency selection; do not fabricate it or silently rebase old identities. Actual capacity/structural/small-family runs remain separately registered. Root-only; heartbeat PAUSED; owner227 before8x400; all frozen sources, current controls and other-carrier holds preserved. No new stable system benefit or learning gain is established.
+
 ## Full node optimization interface and learning preparation, 2026-10-04T00:49:12.658310+00:00
 
 The latest direct owner instruction concludes general cache/scheduler analysis and moves toward learning over the complete editable policy of every node. [Owner amendment](../receipts/owner/2026-10-04-node-optimization-space.json), [space contract and algorithm handoff](../readiness/2026-10-04-node-optimization-space-v1/README.md), and [engineering receipt](../receipts/continuation/2026-10-04-node-optimization-space-engineering.json) are authoritative for this priority. Sequential trajectory execution remains the reference.344 was newly evaluated prefill, not an optimizer allowance.

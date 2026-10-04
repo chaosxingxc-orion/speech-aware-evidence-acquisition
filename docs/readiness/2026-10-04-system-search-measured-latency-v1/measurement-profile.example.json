@@ -1,0 +1,8 @@
+{
+  "schema": "saea-system-search-measurement-v2",
+  "latency_scope": "sample-admission-to-settled-workflow-v1",
+  "schedule": "sequential-trajectory",
+  "slot_count": 4,
+  "queue_depth": 4,
+  "minimum_reliable_completion_rate": 1.0
+}

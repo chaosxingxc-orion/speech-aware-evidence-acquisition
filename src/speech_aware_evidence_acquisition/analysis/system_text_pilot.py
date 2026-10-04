@@ -216,6 +216,11 @@ def read_pilot_evidence(bindings, *, recipe, registration, owner, authority):
 def _read_complete_evidence(bindings, *, recipe, registration, authority,
                             family, schema, evidence_type):
     """Shared closed-family read; each public caller enforces its own scope first."""
+    profile = recipe.get("measurement_profile")
+    require(registration.get("measurement_profile") == profile, "registered measurement profile differs")
+    if profile is not None:
+        from ..rails.system_search_measurement import validate_profile
+        validate_profile(profile)
     metadata = preflight_family(bindings, recipe["expected_members"])
     ids = recipe["sample_ids"]
     for binding, (manifest, _) in zip(bindings, metadata, strict=True):
@@ -243,7 +248,8 @@ def _read_complete_evidence(bindings, *, recipe, registration, authority,
         and [g["sample_id"] for g in grouped["groups"]] == ids,
         "pilot score cohort differs",
     )
-    rows, summaries = _official_family_rows(bindings, metadata, grouped)
+    rows, summaries = (_official_family_rows(bindings, metadata, grouped) if profile is None else
+                       _official_family_rows(bindings, metadata, grouped, measurement_profile=profile))
     for group in grouped["groups"]:
         for member in group["members"]:
             # No relative advantage or update utility belongs in pilot evidence.
@@ -254,6 +260,7 @@ def _read_complete_evidence(bindings, *, recipe, registration, authority,
         canonical(
             {
                 "schema": schema,
+                **({"measurement_profile": profile} if profile is not None else {}),
                 "family_id": family,
                 "read_authority": authority,
                 "registration_sha256": registration["registration_sha256"],

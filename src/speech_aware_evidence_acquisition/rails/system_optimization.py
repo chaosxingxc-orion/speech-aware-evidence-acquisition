@@ -215,6 +215,22 @@ def exploratory_selection(feedback, *, registration, binding, protocol, parents)
         "member_bindings": own,
         "cumulative_sources": sources,
     }
+    profile = protocol.get("measurement_profile")
+    require(d.get("measurement_profile") == profile, "exploratory measurement profile differs")
+    if profile is not None:
+        from .system_search_measurement import measured_rows, measured_frontier
+        measured = measured_rows(d, ["L-parent", "L-candidate-1", "L-candidate-2"], own, profile=profile)
+        unique, repeats, seen = [], [], set()
+        for row in measured:
+            (repeats if row["bundle_id"] in seen else unique).append(row)
+            seen.add(row["bundle_id"])
+        frontier = measured_frontier(unique, profile=profile)
+        fallback = active == [own["L-parent"]["bundle_id"]]
+        require(fallback or set(active) <= {r["bundle_id"] for r in frontier},
+                "exploratory candidates must be eligible and non-dominated")
+        result.update(measurement_profile=profile, measurements=unique, repeated_measurements=repeats,
+                      frontier=frontier, retain_parent=fallback,
+                      same_chain_aa={"candidate_id": "L-parent-aa", **d["summaries"]["L-parent-aa"]})
     result["selection_sha256"] = content_hash(result)
     return result
 
@@ -300,6 +316,11 @@ def require_exploratory_packet(packet, *, protocol=None):
         {g["sample_id"] for g in groups} | set(d["reference"]["sample_ids"]) <= exposed,
         "exploratory feedback ancestry is incomplete",
     )
+    require(s.get("measurement_profile") == d.get("measurement_profile"),
+            "learning selection and feedback measurement profiles differ")
+    if protocol is not None:
+        require(s.get("measurement_profile") == protocol.get("measurement_profile"),
+                "learning measurement profile differs from frozen protocol")
     if packet["round"] > 3:
         from .system_search_allocations import require_packet_round_shape, require_packet_allocation
         require_packet_round_shape(packet)

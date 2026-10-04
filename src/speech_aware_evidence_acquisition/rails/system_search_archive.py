@@ -344,9 +344,15 @@ class SystemSearchArchive:
         parent = "seed" if stage_name == "selection" else branch + "-parent"
         aa = "seed-aa" if stage_name == "selection" else branch + "-parent-aa"
         members = [parent, *sorted(cid for cid in bindings if cid.startswith(branch + "-") and cid not in {parent, aa})]
-        all_measurements = [{"candidate_id": cid, "bundle_id": bindings[cid]["bundle_id"],
-            "cohort_id": content_hash(ids), **{k: d["summaries"][cid][k] for k in OBJECTIVES}}
-            for cid in members]
+        profile = protocol.get("measurement_profile")
+        require(d.get("measurement_profile") == profile, "feedback measurement profile differs")
+        if profile is None:
+            all_measurements = [{"candidate_id": cid, "bundle_id": bindings[cid]["bundle_id"],
+                "cohort_id": content_hash(ids), **{k: d["summaries"][cid][k] for k in OBJECTIVES}}
+                for cid in members]
+        else:
+            from .system_search_measurement import measured_rows
+            all_measurements = measured_rows(d, members, bindings, profile=profile)
         # A repeated identical bundle is a replicate, not another selectable
         # policy. Use the designated comparator first, then fixed slot order;
         # preserve all repeats without choosing their most favorable draw.
@@ -354,7 +360,11 @@ class SystemSearchArchive:
         for row in all_measurements:
             (repeats if row["bundle_id"] in seen else measurements).append(row)
             seen.add(row["bundle_id"])
-        frontier = pareto_frontier(measurements)
+        if profile is None:
+            frontier = pareto_frontier(measurements)
+        else:
+            from .system_search_measurement import measured_frontier
+            frontier = measured_frontier(measurements, profile=profile)
         require(0 < len(selected_ids) <= 2 and len(set(selected_ids)) == len(selected_ids),
                 "retain at most two distinct active search candidates")
         require(type(retain_parent) is bool, "parent fallback must be explicit")
@@ -382,6 +392,8 @@ class SystemSearchArchive:
             "statistical_review": "Root applies the registered own-A/A guard and tie-breaks; no automatic verdict."}
         ancestry.append({"kind": "selection", "sha256": content_hash(record), "sample_ids": list(ids)})
         record["cumulative_sources"] = cumulative_sources([], ancestry)
+        if profile is not None:
+            record.update(schema="saea-system-search-retention-v2", measurement_profile=profile)
         record["selection_sha256"] = content_hash(record)
         self._write(f"retentions/{stage_name}/{branch}.json", record)
         return record

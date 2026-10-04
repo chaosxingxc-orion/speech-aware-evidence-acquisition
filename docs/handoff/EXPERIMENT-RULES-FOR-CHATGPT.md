@@ -1,5 +1,9 @@
 # Experiment rules for the ChatGPT side
 
+## Full-node learning preparation priority, 2026-10-04
+
+The [later direct owner instruction](../receipts/owner/2026-10-04-node-optimization-space.json) concludes general cache/scheduler exploration and authorizes preparation of learning over complete independent node policies. It supersedes the older learning-priority hold below; it does not waive exact model exposure, complete-family READ, isolated L/B contexts, spent allocations or owner227 limits. Keep sequential trajectories and the heartbeat PAUSED. The [opt-in measured-latency profile](../readiness/2026-10-04-system-search-measured-latency-v1/README.md) measures admission-to-settled-workflow, not unmeasured business preparation/persistence. Freeze the four-node seed, protocol and timing scope before new contacts. Other-carrier holds remain separate.
+
 ## Current context-engineering measurement priority,2026-10-03
 
 Apply the [latest direct owner amendment](../receipts/owner/2026-10-03-sample-latency-quality-node-context.json):root alone continues this task,with no further subagents. Permit independent node contexts and role texts;cache reuse is diagnostic,not a reason to homogenize nodes or sacrifice business performance. Anchor efficiency on original mean sample wall time,report first admitted sample and remaining-sample mean separately,and require official complete-family task quality and reliability alongside cost. Keep engineering first and learning HELD. Use [matrix v2 and the measurement contract](../readiness/2026-10-03-context-layout-engineering-v1/sample-latency-and-quality.md);exact admission/read and owner227 limits remain.

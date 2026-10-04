@@ -48,6 +48,12 @@ def scope_record(registration, owner, growth):
 
 def validate_definition(recipe, registration, owner, *, growth, protocol, pool_ids):
     """Validate prospective scope without granting or fabricating READ authority."""
+    profile = protocol.get("measurement_profile")
+    require(recipe.get("measurement_profile") == registration.get("measurement_profile") == profile,
+            "panel measurement profile differs from protocol or READ recipe")
+    if profile is not None:
+        from ..rails.system_search_measurement import validate_profile
+        validate_profile(profile)
     require(
         owner.get("decision_id") == 224
         and owner.get("status") == "approved"

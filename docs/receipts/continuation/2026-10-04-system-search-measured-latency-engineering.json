@@ -1,0 +1,139 @@
+{
+  "at_utc": "2026-10-04T01:12:58.422090+00:00",
+  "authority": "docs/receipts/owner/2026-10-04-node-optimization-space.json",
+  "base_commit": "4ba9880510f6a8416384a599c1668d369b7f8a4c",
+  "changes": [
+    "Add an opt-in measured workflow-latency/reliability profile; keep historical selection unchanged.",
+    "Join pinned trace timing with complete terminal cohorts and unique official whole-manifest scores.",
+    "Bind the profile identically to protocol, panel registration and exact READ recipe.",
+    "Connect timing to qualified L-only feedback, small-panel exploratory selection and formal retention.",
+    "Preserve first/non-first samples, scheduling envelope, session identity, failures, A/A and repeated-policy custody."
+  ],
+  "file_sha256": {
+    "docs/readiness/2026-10-04-system-search-measured-latency-v1/README.md": "89bdff505bef270bf041cd61f30c13f91a684e0629e39838f89b1fdc92c05c94",
+    "docs/readiness/2026-10-04-system-search-measured-latency-v1/measurement-profile.example.json": "ea28325697ce052e6f9f4616ca88d80f771f21b2a88cbaee36a45725712a11c9",
+    "src/speech_aware_evidence_acquisition/analysis/system_text_panel.py": "a7a173dee34bc4f5444fc4b406484d7e4544d60293a6c7481de0e2dca8025a39",
+    "src/speech_aware_evidence_acquisition/analysis/system_text_pilot.py": "011e463fcd213d1c2263801650a8a73d6f4002ba07e94d53a4ba7df3d92ed5ac",
+    "src/speech_aware_evidence_acquisition/rails/system_optimization.py": "1793f8a477068b88d9a4e483c13eb0124202e58eafad997b6e75fb6db05ab890",
+    "src/speech_aware_evidence_acquisition/rails/system_search_archive.py": "663d9b5aabcb5cc8a1f78412011e13032f47172ba841fdbf1fa9f729c911d1f9",
+    "src/speech_aware_evidence_acquisition/rails/system_search_measurement.py": "3921b9b278b9c5ba455768ee7f376d51554737492b084d3967cb9ab7eae6a0d8",
+    "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py": "a14ba903a40fea4ce8b31819366c7ff3190d2a513f689d0b0b9aaf0ddec9dac8",
+    "tests/unit/test_system_search_measurement.py": "ae58ad20463ce0c693925db46e8f0dab96fc7636cbc96b28d467de9866f317ea"
+  },
+  "heartbeat": "PAUSED",
+  "new_contacts": {
+    "model": 0,
+    "official_scorer": 0,
+    "proposer": 0,
+    "tokenizer": 0
+  },
+  "offline_failure_history": [
+    "Tests first failed because the new measurement module was absent, before implementation.",
+    "The first public-reader integration fixture omitted official job metadata; added complete synthetic job records, without bypassing that guard.",
+    "New test one-line branches failed lint; reformatted the new test file."
+  ],
+  "optimizer_export_from_real_runs": false,
+  "previous_goal_turn": "progress: complete four-node policy interface integrated and verified",
+  "remaining": [
+    "Freeze a prospective four-node seed transition and complete comparison/proposer protocol.",
+    "Declare the qualified initial L evidence and treatment of historical feedback without timing.",
+    "Run separately registered actual FIT/structural checks and a complete small comparison before policy updates.",
+    "Keep broader business timing and recoverable progressive views explicit if admitted.",
+    "Retain owner227 boundaries and separate other-carrier holds; human before8x400."
+  ],
+  "runtime_mutations": false,
+  "schema": "saea-system-search-measured-latency-engineering-v1",
+  "scientific_claims": {
+    "benefit_established": false,
+    "formal_adoption": false,
+    "learning_gain_established": false
+  },
+  "scope_limit": "Admission-to-settled-workflow time excludes roster preparation, final persistence and scoring; do not call it full business end-to-end latency.",
+  "status": "OFFLINE_VERIFIED_NO_NEW_EXPERIMENT_ADMISSION",
+  "validation": {
+    "coverage_kind": "statement",
+    "coverage_total": {
+      "covered_lines": 995,
+      "excluded_lines": 0,
+      "missing_lines": 8,
+      "num_statements": 1003,
+      "percent_covered": 99.2023928215354,
+      "percent_covered_display": "99",
+      "percent_statements_covered": 99.2023928215354,
+      "percent_statements_covered_display": "99"
+    },
+    "diff_check": "PASS",
+    "engineering_base": "PASS",
+    "english_hashes_links": "PASS",
+    "experiment_handoff": "PASS; no errors, historical snapshot/local-change warnings only",
+    "handoff_freshness": "PASS",
+    "harness_admission": "PASS",
+    "lint": "PASS",
+    "module_coverage": {
+      "system_optimization.py": {
+        "covered_lines": 178,
+        "excluded_lines": 0,
+        "missing_lines": 1,
+        "num_statements": 179,
+        "percent_covered": 99.44134078212291,
+        "percent_covered_display": "99",
+        "percent_statements_covered": 99.44134078212291,
+        "percent_statements_covered_display": "99"
+      },
+      "system_search_archive.py": {
+        "covered_lines": 308,
+        "excluded_lines": 0,
+        "missing_lines": 3,
+        "num_statements": 311,
+        "percent_covered": 99.03536977491962,
+        "percent_covered_display": "99",
+        "percent_statements_covered": 99.03536977491962,
+        "percent_statements_covered_display": "99"
+      },
+      "system_search_measurement.py": {
+        "covered_lines": 60,
+        "excluded_lines": 0,
+        "missing_lines": 0,
+        "num_statements": 60,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100"
+      },
+      "system_text_feedback.py": {
+        "covered_lines": 229,
+        "excluded_lines": 0,
+        "missing_lines": 4,
+        "num_statements": 233,
+        "percent_covered": 98.28326180257511,
+        "percent_covered_display": "98",
+        "percent_statements_covered": 98.28326180257511,
+        "percent_statements_covered_display": "98"
+      },
+      "system_text_panel.py": {
+        "covered_lines": 103,
+        "excluded_lines": 0,
+        "missing_lines": 0,
+        "num_statements": 103,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100"
+      },
+      "system_text_pilot.py": {
+        "covered_lines": 117,
+        "excluded_lines": 0,
+        "missing_lines": 0,
+        "num_statements": 117,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100"
+      }
+    },
+    "new_tests_passed": 24,
+    "test_files": 18,
+    "tests_passed": 505,
+    "warnings": 3
+  }
+}

@@ -103,7 +103,7 @@ def _pinned_rows(pin, label):
     require(digest.hexdigest() == pin["sha256"], f"{label} bytes changed during read")
 
 
-def _row_cost_and_terminal(manifest):
+def _row_cost_and_terminal(manifest, *, include_sample_timing=False):
     """Stream attributed costs, including failed contacts, without retaining answers.
 
     The production adapter binds MODEL_RESPONSE by its record_id suffix, not a
@@ -111,6 +111,7 @@ def _row_cost_and_terminal(manifest):
     indexes, so out-of-order records do not lose usage or require the full trace.
     """
     result, requests, responses, tool_contacts = {}, {}, {}, {}
+    timing_records, timing_refs = [], {}
     for output in _pinned_rows(manifest["outputs"], "terminal"):
         sid = output["sample_id"]
         require(sid not in result, "duplicate terminal sample identity")
@@ -132,6 +133,15 @@ def _row_cost_and_terminal(manifest):
 
     for record in _pinned_rows(manifest["raw_trace"], "trace"):
         payload, record_id = record["payload"], record["record_id"]
+        if include_sample_timing and "use_sample_execution_timing" in payload:
+            timing = payload["use_sample_execution_timing"]
+            require(isinstance(timing, dict) and timing.get("sample_id") in result
+                    and record_id.startswith(timing["sample_id"] + "/")
+                    and record_id.endswith("/sample-execution-timing")
+                    and timing["sample_id"] not in timing_refs,
+                    "timing trace identity differs or is duplicated")
+            timing_records.append(timing)
+            timing_refs[timing["sample_id"]] = {"record_id": record_id, "content_sha256": content_hash(payload)}
         if record["channel"] == "MODEL_REQUEST":
             request = payload.get("payload", {})
             sid = request.get("sample_id")
@@ -177,6 +187,17 @@ def _row_cost_and_terminal(manifest):
         for key in ("prompt_tokens", "completion_tokens"):
             row[key] = (sum(u[key] for u in usage) if len(usage) == row["model_calls"]
                         and all(type(u.get(key)) is int and u[key] >= 0 for u in usage) else None)
+    if include_sample_timing:
+        from ..analysis.system_cache_cost import summarize_sample_execution_timing, CacheCostError
+        try:
+            report = summarize_sample_execution_timing(timing_records, expected_sample_ids=list(result))
+        except CacheCostError as error:
+            raise PolicyError(str(error)) from error
+        records_by_id = {r["sample_id"]: r for r in timing_records}
+        for measured in report["samples"]:
+            sid = measured["sample_id"]
+            result[sid].update(wall_time_seconds=measured["elapsed_seconds"], sample_timing=measured,
+                sample_timing_record=records_by_id[sid], sample_timing_trace=timing_refs[sid])
     return result
 
 
@@ -224,7 +245,11 @@ class CompleteSystemFeedback:
         return CompleteSystemFeedback(canonical(d))
 
     @classmethod
-    def from_family(cls, bindings, *, expected_members, family_id, reference=None, initial_reference_member=None):
+    def from_family(cls, bindings, *, expected_members, family_id, reference=None, initial_reference_member=None,
+                    measurement_profile=None):
+        if measurement_profile is not None:
+            from .system_search_measurement import validate_profile
+            validate_profile(measurement_profile)
         metadata = preflight_family(bindings, expected_members)
         require(all(manifest.get("split", {}).get("count", 0) >= 400
                     for manifest, _ in metadata),
@@ -236,7 +261,7 @@ class CompleteSystemFeedback:
         grouped = build_group_relative_feedback(bindings)
         require(grouped["carrier_lock_key"] == "slurp" and len(grouped["groups"]) >= 400,
                 "system search feedback requires the entire registered cohort of at least 400 rows")
-        by_candidate, summaries = _official_family_rows(bindings, metadata, grouped)
+        by_candidate, summaries = _official_family_rows(bindings, metadata, grouped, measurement_profile=measurement_profile)
         if reference is None:
             require(initial_reference_member in summaries, "initial reference member must be preregistered")
             reference = {"family_id": family_id, "candidate_id": initial_reference_member,
@@ -257,12 +282,17 @@ class CompleteSystemFeedback:
                   "reference": reference, "summaries": summaries, "feedback": grouped,
                   "interpretation": "Whole-system realized return; no node causal credit or policy gradient.",
                   "model_contacts_added": 0, "scorer_contacts_added": 0}
+        if measurement_profile is not None:
+            result["measurement_profile"] = measurement_profile
         return cls(canonical(result))
 
 
-def _official_family_rows(bindings, metadata, grouped):
+def _official_family_rows(bindings, metadata, grouped, *, measurement_profile=None):
     """Read common official counts and attributed costs after every seal passes."""
     by_candidate, summaries = {}, {}
+    if measurement_profile is not None:
+        from .system_search_measurement import validate_profile
+        validate_profile(measurement_profile)
     for binding, (manifest, job) in zip(bindings, metadata, strict=True):
         cid = binding["candidate_id"]
         require(binding["config"]["projection"]["scorer"] == "slurp-slu-official-train",
@@ -272,7 +302,8 @@ def _official_family_rows(bindings, metadata, grouped):
         score = _absolute_json(receipt["score_result"])["scores"]["slurp-slu-official-train"]
         aggregate = score["aggregate"]
         require(aggregate["identity_check"]["passed"] is True, "official sufficient-count identity failed")
-        rows = _row_cost_and_terminal(manifest)
+        rows = (_row_cost_and_terminal(manifest) if measurement_profile is None else
+                _row_cost_and_terminal(manifest, include_sample_timing=True))
         require(set(rows) == {g["sample_id"] for g in grouped["groups"]}, "terminal cohort differs")
         by_candidate[cid] = rows
         summaries[cid] = {"slu_f1": aggregate["official"]["slu_f1"],
@@ -280,4 +311,17 @@ def _official_family_rows(bindings, metadata, grouped):
                           "model_calls": sum(r["model_calls"] for r in rows.values()),
                           "tool_calls": sum(r["tool_calls"] for r in rows.values()),
                           "reliable_completion_rate": sum(r["reliable_completion"] for r in rows.values()) / len(rows)}
+        if measurement_profile is not None:
+            from ..analysis.system_cache_cost import summarize_sample_execution_timing
+            from .system_text_policy import sha
+            report = summarize_sample_execution_timing([r["sample_timing_record"] for r in rows.values()],
+                expected_sample_ids=[g["sample_id"] for g in grouped["groups"]])
+            require(all(report[k] == measurement_profile[k] for k in ("slot_count", "queue_depth")),
+                    "sample timing scheduling envelope differs from profile")
+            session = manifest["session_receipt"]["sha256"]
+            sha(session)
+            summaries[cid].update(sample_timing=report, timing_session_sha256=session)
+    if measurement_profile is not None:
+        require(len({s["timing_session_sha256"] for s in summaries.values()}) == 1,
+                "measured family mixes serving session receipts")
     return by_candidate, summaries
