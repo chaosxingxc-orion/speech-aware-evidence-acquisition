@@ -21,6 +21,7 @@ from ..analysis.system_text_panel import _job_metadata
 from ..analysis.system_text_pilot import _read_complete_evidence
 from .hashing import content_hash
 from .system_search_measurement import measured_rows, validate_profile
+from .system_context_template_feedback import validate_template_profile, template_feedback, proposer_view
 from .system_text_feedback import CompleteSystemFeedback, feedback_utility
 from .system_text_policy import (
     CONTEXT_COMPONENTS, CONTEXT_LEARNING_ALGORITHMS, NODE_BUNDLE_SCHEMA,
@@ -187,12 +188,14 @@ def _candidate_groups(evidence, recipe, registration, candidates, reference):
 
 def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
                                     algorithm, iteration, policies, experiences=None,
-                                    candidate_id=None, component=None):
+                                    candidate_id=None, component=None, feedback_profile=None):
     """Freshly qualify a whole family and save an immutable offline reflection task.
 
     GEPA's caller chooses a parent among the per-example front and one legal
     component. TF-GRPO receives individual-summary and semantic-comparison tasks.
-    No callback is invoked; packet production itself adds zero contacts.
+    A prospectively pinned template profile replaces per-row reflection tasks
+    with complete numeric aggregates and bounded example pointers. No callback
+    is invoked; packet production itself adds zero contacts.
     """
     require(algorithm in CONTEXT_LEARNING_ALGORITHMS and type(iteration) is int and iteration > 0,
             "unknown context baseline/iteration")
@@ -205,6 +208,11 @@ def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
         require(policy.as_json()["schema"] == NODE_BUNDLE_SCHEMA
                 and policy.bundle_id == registration["member_bindings"][cid]["bundle_id"],
                 "complete four-role policy binding differs")
+    if feedback_profile is not None:
+        validate_template_profile(feedback_profile)
+        _, registered_plan = _iteration_plan(protocol, recipe, Path(repo_root), algorithm, iteration, controls)
+        require(registered_plan.get("feedback_profile") == feedback_profile,
+                "template profile must be prospectively registered")
     fixed = ("seed_config_sha256", "construction_instruction", "supply", "knowledge", "construction_receipt")
     require(len({content_hash({k: p.as_json()[k] for k in fixed}) for p in policies.values()}) == 1,
             "all context candidates must preserve the same fixed knowledge/supply/base")
@@ -247,6 +255,19 @@ def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
             "parent_bundle_id": policies[candidate_id].bundle_id,
             "instructions": "Reflect on this component using all retained per-input feedback and source-addressed trajectories. Propose one component mutation. Preserve tied per-example best programs; keep selection separate from pooled official quality/cost assessment.",
             "fidelity": "Offline GEPA component-reflection and per-example selection seam; no search engine or reflection call executed."}
+    if feedback_profile is not None:
+        packet["feedback_profile"] = feedback_profile
+        for group in groups:
+            group.pop("summary_tasks", None)
+            if group.get("semantic_advantage") != "skip-zero-variation" and algorithm == "tf-grpo-context-diversity":
+                group["semantic_advantage"] = "template-batch-reflection"
+        packet["template_feedback"] = template_feedback(packet, feedback_profile)
+        packet["reflection_task"]["instructions"] = (
+            "Optimize complete node template text and supported context assembly, not individual sample answers. "
+            "Use all-template measured outcomes and bounded stratified cases. Keep knowledge, retrieval, "
+            "construction, runtime interfaces and decoding fixed. Do not request a semantic summary for every row. "
+            "Retain failed, negative and no-change evidence; changes remain hypotheses until full-system evaluation.")
+        packet["reflection_task"]["fidelity"] = "Prospective template-batch reflection study adaptation; not unchanged upstream reproduction."
     packet["input_sha256"] = content_hash(packet)
     for policy in policies.values():
         archive.store_policy(policy)
@@ -437,6 +458,11 @@ def _iteration_plan(protocol, recipe, root, algorithm, iteration, controls):
             and plan.get("evaluation_candidate_trajectories_cap") == 80
             and plan.get("evaluation_control_trajectories_cap") == 20 * len(controls),
             "exact bounded callback and full-family evaluation caps required")
+    if "feedback_profile" in plan:
+        validate_template_profile(plan["feedback_profile"])
+        require(caps["summarize"] == caps["compare"] == 0
+                and caps["update_experience"] == (1 if algorithm == "tf-grpo-context-diversity" else 0),
+                "template feedback forbids per-sample semantic callbacks")
     return pin, plan
 
 
@@ -539,10 +565,10 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
         selected = next(c for c in candidates if active[c] == schedule["parent_bundle_id"])
         packet = prepare_context_optimizer_input(archive, bindings=bindings, recipe_pin=recipe_pin,
             repo_root=root, algorithm=algorithm, iteration=iteration, policies=policies,
-            candidate_id=selected, component=schedule["component"])
+            candidate_id=selected, component=schedule["component"], feedback_profile=plan.get("feedback_profile"))
     else:
         packet = prepare_context_optimizer_input(archive, bindings=bindings, recipe_pin=recipe_pin,
-            repo_root=root, algorithm=algorithm, iteration=iteration, policies=policies, experiences=state["experience"])
+            repo_root=root, algorithm=algorithm, iteration=iteration, policies=policies, experiences=state["experience"], feedback_profile=plan.get("feedback_profile"))
     directory = f"context-learning/iterations/{algorithm}-{iteration}"
     archive._write(directory + "/reservation.json", {"plan": plan_pin, "input_sha256": packet["input_sha256"],
         "previous_decision_sha256": previous_decision_sha256, "callbacks_do_not_grant_contact_authority": True})
@@ -561,6 +587,9 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
             "tf_sampling": "deterministic-distinct-context-study-adaptation", "tf_retention": "quality-gated-study-adaptation"},
         "business_before": packet["business_measurements"], "business_after": None,
         "updates": updates, "status": "failed", "error": None}
+    if "feedback_profile" in packet:
+        decision["feedback_profile"] = packet["feedback_profile"]
+        decision["fidelity"]["reflection"] = "template-batch-study-adaptation-v1"
     reserved_candidate = reserved_control = 0
 
     def invoke(stage, task):
@@ -608,7 +637,7 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
         operations, experience_after = None, state["experience"]
         if algorithm == "tf-grpo-context-diversity":
             comparisons = []
-            for group in packet["groups"]:
+            for group in ([] if "template_feedback" in packet else packet["groups"]):
                 if group["semantic_advantage"] == "skip-zero-variation":
                     continue
                 summaries = []
@@ -621,11 +650,16 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
                     "summaries": summaries, "experience": state["experience"]})
                 _text(comparison)
                 comparisons.append({"sample_id": group["sample_id"], "semantic_advantage": comparison})
-            if not comparisons:
+            varying = any(g["semantic_advantage"] != "skip-zero-variation" for g in packet["groups"])
+            if not varying:
                 decision["status"] = "skip-zero-variation"
             else:
-                operations = invoke("update_experience", {"input_sha256": packet["input_sha256"],
-                    "experience": state["experience"], "comparisons": comparisons})
+                task = {"input_sha256": packet["input_sha256"], "experience": state["experience"]}
+                if "template_feedback" in packet:
+                    task["template_feedback"] = proposer_view(packet)["template_feedback"]
+                else:
+                    task["comparisons"] = comparisons
+                operations = invoke("update_experience", task)
                 experience_after = apply_experience_operations(state["experience"], operations)
         task_candidates = [selected] if algorithm == "gepa" else candidates if decision["status"] != "skip-zero-variation" else []
         trial_policies = dict(active)
@@ -635,7 +669,7 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
                 "algorithm": algorithm, "iteration": iteration,
                 "parent_bundle_id": active[c], "component": schedule["component"] if schedule else "joint-system",
                 "policy": packet["policies"][c]["policy"], "experience": experience_after,
-                "qualified_input": packet})
+                "qualified_input": proposer_view(packet)})
             update = record_context_update(archive, input_sha256=packet["input_sha256"], update_id=f"system-{candidates.index(c)}",
                 proposal_document=response, experience_operations=operations, expected_candidate_id=c)
             updates.append(update)

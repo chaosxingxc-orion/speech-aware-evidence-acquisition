@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Prospective template-level feedback implemented, 2026-10-04T16:14:03.255840+00:00
+
+[Shared-base implementation](../readiness/2026-10-04-template-first-feedback-v1/README.md) adds a pinned optional template-only profile: all80 numeric candidate rows, at most12 source examples in the example profile, zero per-row summary/comparison callbacks, one TF batch experience update/four proposals; GEPA retains separate component selection. Full policies/complete evaluation, fixed knowledge and runtime boundaries remain.208 relevant tests pass; both modified modules have100% statement coverage; engineering-base check passes. No new-profile proposer/contact or efficiency/quality benefit is asserted. Register exact next plan and source-limited isolated capsules before use. Original live TF learner and frozen structural proof are unchanged.
+
+
+## TF structural proof launched, 2026-10-04T16:10:02.089563+00:00
+
+[Exact launch](../receipts/continuation/2026-10-04-context-tf-iteration1-structural-launch.json) records driver epoch2026-10-04T16:07:07Z, frozen e3bc294a0, four policies and16 engineering trajectories. All four frozen/live gates passed; Windows free16.20GiB before dispatch and stable startup guard remains. Only structural/timing read is admitted; no official scoring or optimizer feedback. Full120-trajectory evaluation remains separately HELD. Template-first feedback implementation is prospective and does not change this frozen execution or the live original TF learner.
+
+
 ## TF capacities complete; four-row structural entry prepared, 2026-10-04T15:56:57.346973+00:00
 
 [Four actual capacities](../receipts/continuation/2026-10-04-context-tf-iteration1-capacity-complete.json) passed1188 endpoints/176 measured requests with zero generation/scoring. Minimum margin5359 tokens after full512 output and2048 structural reserve. All four leases and Windows wrapper exited0. Root227 registered four independent four-row structural members,16 trajectories total,208 maximum generation contacts and832 separate actual-request FIT endpoints, zero official scoring. Frozen/live admission remains pending; exact full120-trajectory evaluation remains HELD. New template-first owner steering preserves these existing policies and stops future per-sample semantic callback chains.

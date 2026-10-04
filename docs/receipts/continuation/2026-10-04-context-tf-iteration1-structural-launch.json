@@ -1,0 +1,33 @@
+{
+  "actual_fit_endpoint_cap": 832,
+  "at_utc": "2026-10-04T16:10:02.089563+00:00",
+  "authority": "root227 registered four-system structural entry",
+  "commit": "e3bc294a05455abb624eaa1a54215415e9d97804",
+  "decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "19272a89d8a197358f43422f952a517a6db7eb826c1ff6bf357fb65669425df0"
+  },
+  "driver_epoch": "2026-10-04T16:07:07Z",
+  "driver_pid": 702360,
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-structural-owner227-v1/frozen-check-v1.json",
+    "sha256": "94534d8fd351925d7c076ec3105e128ecef16b79767a7eff4777c3941998bef3"
+  },
+  "generation_contact_cap": 208,
+  "next": "Complete root structural audit before separate full-family N20 admission.",
+  "normal_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-structural-owner227-v1/driver-transition-v1.json",
+    "sha256": "6e39dfe8019febe776395b3684f3bae5882684e7a409d688b7363233dba9020c"
+  },
+  "official_scores": 0,
+  "preflight_observation": "One early normal-transition invocation refused before any mutation because the final frozen-check receipt was not yet present. The four-member check subsequently completed; the normal transition then succeeded. No worker/model/scorer retry.",
+  "read_scope": "Complete structural-only handoffs, native terminal custody and numeric timing. No task-quality read or optimizer export.",
+  "rows": 16,
+  "schema": "saea-tf-four-system-structural-launch-v1",
+  "start_ticks": 47806087,
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-structural-owner227-v1/windows-launch-proof-v1.json",
+    "sha256": "e621d867ff9736f62c259d180c03f990eabbd40fd04a3e860d7f6461db8fa3b4"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-tf-iteration1-structural-v1"
+}

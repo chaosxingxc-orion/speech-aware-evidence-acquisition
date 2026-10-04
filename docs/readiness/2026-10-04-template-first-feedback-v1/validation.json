@@ -1,0 +1,50 @@
+{
+  "at_utc": "2026-10-04T16:14:03.255840+00:00",
+  "behavior": {
+    "complete_evaluation_callback_cap": 1,
+    "formal_benefit_established": false,
+    "gepa_proposal_callback_cap": 1,
+    "new_proposal_contacts": 0,
+    "per_row_semantic_comparison_callbacks": 0,
+    "per_row_semantic_summary_callbacks": 0,
+    "runtime_admission": false,
+    "sampled_examples_at_example_profile": 12,
+    "scored_candidate_rows_n20_k4": 80,
+    "tf_batch_experience_callback_cap": 1,
+    "tf_proposal_callback_cap": 4
+  },
+  "limitations": [
+    "No actual new-profile proposal has run. Exact prospective registration and isolated selected-source capsules remain required.",
+    "Coverage measures executed statements, not scientific validity.",
+    "Semantic examples are sampled; small budgets may omit individual strata. All numeric rows still count.",
+    "No promise of positive learning gain or total compute equivalence. Original baseline callbacks and ongoing runtime remain unchanged."
+  ],
+  "owner": "docs/receipts/owner/2026-10-04-progressive-template-first-feedback.json",
+  "schema": "saea-template-first-feedback-validation-v1",
+  "scope": "Prospective template-only batch feedback mode, existing shared learner and callback exchange",
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+      "sha256": "e7450de9c0e56991970c94ed0942a490cc49624a4ffc6183473fd13e318a8140"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_template_feedback.py",
+      "sha256": "2c59604d1121208d6e3b40fdca35e4b4005e769c6bfd8ea6a0586f979c981ce9"
+    },
+    {
+      "relpath": "tests/unit/test_system_context_template_feedback.py",
+      "sha256": "410f2bbeaa4801aa1eb57d8e6dde1aae4803212e8c8b54acee2eff1074a03201"
+    }
+  ],
+  "validation": {
+    "all_passed": true,
+    "diff_check": "passed",
+    "engineering_base_check": "passed; no new offenders",
+    "exchange_read_prelaunch_source_tests": 64,
+    "learner_proposal_template_tests": 144,
+    "statement_coverage": {
+      "system_context_learning": 100,
+      "system_context_template_feedback": 100
+    }
+  }
+}
