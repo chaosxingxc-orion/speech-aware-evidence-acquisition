@@ -1,0 +1,42 @@
+{
+  "at_utc": "2026-10-04T03:17:35.770109+00:00",
+  "members": [
+    {
+      "experiment": "slurp-native-stage3-system-text-four-node-seed-capacity-v1",
+      "held": true,
+      "four_role_binding": "PASS",
+      "finite_completion": "PASS",
+      "final_config_supply_identity": "PASS",
+      "prepared_supply_sha256": "96c49002b4656d27c63d45e0327ea4f325dae0e14984d3592fabadf1b5824fee"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-four-node-seed-smoke-4-v1",
+      "held": true,
+      "four_role_binding": "PASS",
+      "finite_completion": "PASS",
+      "final_config_supply_identity": "PASS",
+      "prepared_supply_sha256": "f2e781e70ef500dcd526b8e871568b602b9de37334cd50c53ae3f3c29b1166e4"
+    }
+  ],
+  "node_optimization_tests": {
+    "passed": 31
+  },
+  "engineering_base": "PASS",
+  "harness_admission": "PASS",
+  "global_algorithm_label_check": "FAIL: two unchanged historical findings",
+  "historical_findings": [
+    {
+      "path": "configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json",
+      "unchanged_from_head": "158a18fa1",
+      "issue": "Existing empty stage3_algorithm.operators_used; frozen historical record is not edited."
+    },
+    {
+      "path": "configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json",
+      "unchanged_from_head": "158a18fa1",
+      "issue": "Existing empty stage3_algorithm.operators_used; frozen historical record is not edited."
+    }
+  ],
+  "new_cell_algorithm_labels": "PASS",
+  "contacts_added": 0,
+  "dispatch": false
+}

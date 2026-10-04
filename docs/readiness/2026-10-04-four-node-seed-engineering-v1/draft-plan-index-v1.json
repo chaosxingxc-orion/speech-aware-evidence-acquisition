@@ -1,0 +1,26 @@
+{
+  "at_utc": "2026-10-04T03:15:22.183101+00:00",
+  "dispatch": false,
+  "generation_contact_cap": 52,
+  "official_score_jobs": 0,
+  "plans": [
+    {
+      "artifact": "docs/readiness/2026-10-04-four-node-seed-engineering-v1/capacity-fit-plan-draft-v1.json",
+      "label": "capacity-fit",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-FIT-V1"
+    },
+    {
+      "artifact": "docs/readiness/2026-10-04-four-node-seed-engineering-v1/generation-plan-draft-v1.json",
+      "label": "generation",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-SMOKE-4-V1"
+    },
+    {
+      "artifact": "docs/readiness/2026-10-04-four-node-seed-engineering-v1/request-fit-plan-draft-v1.json",
+      "label": "request-fit",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-SMOKE-4-FIT-V1"
+    }
+  ],
+  "root_decision": 227,
+  "status": "DRAFT-HELD",
+  "tokenizer_endpoint_cap_total": 505
+}

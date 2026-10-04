@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Four-node seed runtime proof prepared independently of proposer quota, 2026-10-04T03:19:14.797270+00:00
+
+[New HELD capacity/structural package](../readiness/2026-10-04-four-node-seed-engineering-v1/README.md) and [receipt](../receipts/continuation/2026-10-04-four-node-seed-runtime-prepared.json) bind the explicit seed to the SAME existing UPDATE2 first20/first4 assets. All four role bytes remain identical to the predecessor. The generic seed's R01C agreement binding was caught by an offline source-equality assertion before any cell/contact; the final derivation preserves existing UPDATE2 components and compiles only role/presentation declarations. Complete knowledge/query/vote sources and packet promotion match exactly, and knowledge construction sources remain disjoint.
+
+Both own prepared-supply envelopes pass final-configuration warm verification and reproduce existing selected outputs exactly. Separate DRAFT plans register297 tokenizer capacity endpoints and a four-row52-contact structural ceiling plus208 actual-request FIT endpoints, with zero official scores. Both cells remain HELD; no live queue, STOP, worker or service is changed.31 node optimization tests, base/harness gates and new-cell bindings pass. The global algorithm-label gate still reports2 unchanged historical empty-operator declarations; preserve those frozen records and do not claim a global PASS.
+
+Next root227 may admit/freeze/revalidate the independent capacity proof, then the structural proof after capacity acceptance. This is meaningful work while subscription-sharing quota blocks real proposals. L-9-1 stays spent/invalid; B-9-1/L-9-2/B-9-2 remain unspent and held, with no quota-reset evidence, model probe or paid fallback. Do not manufacture a candidate or admit an incomplete comparison. No new quality/latency gain is established. Keep sequential execution, root-only work, heartbeat PAUSED, human before8x400 and all separate carrier holds.
+
 ## Four-node round9 stopped on provider sharing quota, 2026-10-04T03:02:18.763084+00:00
 
 This supersedes the running checkpoint below. Windows task `SAEA-System-Text-Proposer-Four-Node-Round9-Owner227` exited1 at02:51:19Z after one reserved L-9-1 contact. The provider returned `subscription_sharing_usage_limit_exceeded`; credential readiness had passed. No candidate was returned and token usage is incomplete, so record input/output as unknown rather than zero. Do not attribute this refusal to model quality, prompt design, context capacity or authentication. No reset time is supplied.

@@ -1,0 +1,50 @@
+{
+  "schema": "saea-four-node-seed-runtime-preparation-v1",
+  "at_utc": "2026-10-04T03:19:14.797270+00:00",
+  "owner_decision": 227,
+  "status": "PREPARED-HELD",
+  "package": "docs/readiness/2026-10-04-four-node-seed-engineering-v1",
+  "evidence": [
+    {
+      "relpath": "docs/readiness/2026-10-04-four-node-seed-engineering-v1/binding-audit-v1.json",
+      "sha256": "c4a375aa3f24152d487908c3f71ddaf79215b989211e150ac1d291c6011b1f5c"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-04-four-node-seed-engineering-v1/supply-verification-v1.json",
+      "sha256": "fd272a79940db0d5380918ea6d9380d312aa8eb2bad64261f81b5aa518750cb8"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-04-four-node-seed-engineering-v1/draft-plan-index-v1.json",
+      "sha256": "bcb8099c885b01a485d00fb30955097cb7df2fd26f9e62a9fb9422fb2a69958c"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-04-four-node-seed-engineering-v1/final-offline-verification-v1.json",
+      "sha256": "be5e90672ef35213ff3d8edfdec159e3410e54ed5b4c27d9b5774722fdbd8a11"
+    }
+  ],
+  "runtime_configs": [
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-system-text-four-node-seed-capacity-v1.json",
+      "sha256": "98b73028ab687a6074d387398d24ef6fac9018fdf5586c65a4f3560b3e33a1c6"
+    },
+    {
+      "relpath": "configs/experiment/slurp-native-stage3-system-text-four-node-seed-capacity-v1.json",
+      "sha256": "43528d4a6ab59d1dbad15c400e638a76214fa702547760ae798997eb9475c458"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-system-text-four-node-seed-smoke-4-v1.json",
+      "sha256": "cd6e44961350241741dda57efa23b4ab0edab051fcd984769e1c6bd6260a863a"
+    },
+    {
+      "relpath": "configs/experiment/slurp-native-stage3-system-text-four-node-seed-smoke-4-v1.json",
+      "sha256": "7283155de4f8e677a8d7a16b31a54c2b9688650c40876ba733783c8c24f5afbf"
+    }
+  ],
+  "contacts_added": 0,
+  "official_scores": 0,
+  "data_rebuild": false,
+  "gpu_dispatch": false,
+  "heartbeat": "PAUSED",
+  "scientific_benefit": false,
+  "next_step": "Record exact root capacity admission, freeze and revalidate runtime, then execute shared request FIT; admit structural proof only after capacity acceptance. Subscription quota remains a separate unresolved proposal blocker."
+}

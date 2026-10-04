@@ -1,0 +1,11 @@
+{
+  "allowed_read": "Structural request capacity, source identity, role/control handoffs, sample timing completeness and Omni terminal custody only. Never task quality or optimizer feedback.",
+  "expected_rows": 4,
+  "run_ids": {
+    "generation": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-SMOKE-4-V1",
+    "read": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-SMOKE-4-STRUCTURE-V1"
+  },
+  "schema": "saea-system-text-engineering-analysis-v1",
+  "score_jobs": 0,
+  "status": "DRAFT-HELD"
+}

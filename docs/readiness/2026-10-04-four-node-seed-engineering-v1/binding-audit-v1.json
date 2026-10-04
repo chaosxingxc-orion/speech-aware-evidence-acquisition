@@ -1,0 +1,76 @@
+{
+  "at_utc": "2026-10-04T03:10:53.396893+00:00",
+  "contacts_added": 0,
+  "data_rebuild": false,
+  "gpu_dispatch": false,
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-four-node-seed-capacity-fit-v1",
+      "binding": {
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "reviewer_history_scope": "full",
+          "tool_schema_rendering": "constant"
+        },
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "contact_cap": 297,
+      "experiment": "slurp-native-stage3-system-text-four-node-seed-capacity-v1",
+      "kind": "capacity",
+      "knowledge_source_overlap": 0,
+      "old_prepared_supply": null,
+      "rows": 20,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-CAPACITY-FIT-V1",
+      "same_knowledge_and_query_vote_sources": true,
+      "same_packet_promotion": true,
+      "same_role_bytes_as_predecessor": true,
+      "same_roster": true,
+      "status": "HELD"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-system-text-four-node-seed-smoke-4-generation-v1",
+      "binding": {
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "reviewer_history_scope": "full",
+          "tool_schema_rendering": "constant"
+        },
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        }
+      },
+      "contact_cap": 52,
+      "experiment": "slurp-native-stage3-system-text-four-node-seed-smoke-4-v1",
+      "kind": "smoke-4",
+      "knowledge_source_overlap": 0,
+      "old_prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-EXTRA5-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "b0a166342368eacda5e944a7636a893306728ce1816014780f63d9a696ae0a77"
+      },
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-FOUR-NODE-SEED-SMOKE-4-V1",
+      "same_knowledge_and_query_vote_sources": true,
+      "same_packet_promotion": true,
+      "same_role_bytes_as_predecessor": true,
+      "same_roster": true,
+      "status": "HELD"
+    }
+  ],
+  "offline_refusal": "Whole seed module copied R01C agreement binding; exact source equality assertion refused before publishing any cell or contact. Correct derivation retains existing UPDATE2 module components and compiles only the new role/presentation declarations.",
+  "schema": "saea-four-node-seed-proof-binding-audit-v1",
+  "source_head": "158a18fa186a73f8c6fe9134ed5e681f8fbb8dec"
+}
