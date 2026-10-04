@@ -500,6 +500,11 @@ def freeze_optimization_panel(
     from .system_text_policy import _read_pin, apply_text_proposal
     from ..analysis.system_text_panel import REGISTRATION_SCHEMA, validate_definition
 
+    profile = None
+    if "measurement_profile" in protocol:
+        from .system_search_measurement import validate_profile
+        profile = copy.deepcopy(validate_profile(protocol["measurement_profile"]))
+
     family, read_id = panel_identities(round_index, rows)
     relative = f"panels/{family}.json"
     require(
@@ -734,6 +739,8 @@ def freeze_optimization_panel(
         "retained_exposure": exposure,
         "runtime_admission": "separate-required",
     }
+    if profile is not None:
+        d["measurement_profile"] = copy.deepcopy(profile)
     d["registration_sha256"] = content_hash(d)
     recipe = {
         "family_id": family,
@@ -742,6 +749,8 @@ def freeze_optimization_panel(
         "required_rows_per_member": rows,
         "run_ids": {"read": read_id},
     }
+    if profile is not None:
+        recipe["measurement_profile"] = copy.deepcopy(profile)
     validate_definition(
         recipe, d, owner, growth=growth, protocol=protocol, pool_ids=pool
     )

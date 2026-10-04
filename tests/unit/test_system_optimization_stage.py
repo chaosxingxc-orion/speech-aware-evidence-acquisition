@@ -30,9 +30,13 @@ from speech_aware_evidence_acquisition.rails.system_text_policy import (
 )
 from test_system_search_allocations import fixture as allocation_fixture, write_pin
 from test_system_optimization import fixture as pool_fixture, learning_fixture
+from test_system_search_measurement import profile as measurement_profile
 
 
-def fixture(tmp_path, rows=50):
+UNSET = object()
+
+
+def fixture(tmp_path, rows=50, *, profile=UNSET):
     archive, repo, seed, ext = allocation_fixture(tmp_path)
     ext["owner"] = write_pin(
         repo,
@@ -55,8 +59,14 @@ def fixture(tmp_path, rows=50):
     )
     protocol["optimization_panel"]["stages"] = ["update-4"]
     protocol["stages"][0]["stage"] = "update-4"
+    if profile is not UNSET:
+        protocol["measurement_profile"] = copy.deepcopy(profile)
     archive.store_policy(seed)
     _, learning = learning_fixture(tmp_path / "learning")
+    if profile is not UNSET:
+        learning["feedback"]["measurement_profile"] = copy.deepcopy(profile)
+        learning["selection"]["measurement_profile"] = copy.deepcopy(profile)
+        learning["selection"]["learning_feedback_sha256"] = content_hash(learning["feedback"])
     learning["selection"].update(
         next_round=4,
         active_ids=[seed.bundle_id],
@@ -197,11 +207,102 @@ def test_freeze_complete_extra_round_keeps_spent_no_change_and_exact_panel(
     assert reg["allocations"]["L-candidate-1"]["status"] == "no-change"
     assert reg["allocations"]["B-candidate-2"]["status"] == "duplicate"
     assert reg["runtime_admission"] == "separate-required"
+    assert "measurement_profile" not in reg
+    assert "measurement_profile" not in frozen["recipe"]
+    assert set(reg) == {
+        "schema", "family_id", "proposal_round", "expected_members", "member_bindings",
+        "rows_per_member", "trajectory_cap", "official_score_jobs_cap",
+        "new_proposal_opportunities", "owner_decisions", "read_id", "root_stage_review",
+        "root_stage_review_receipt", "independent_validation", "automatic_expansion",
+        "scientific_role", "proposal_protocol_sha256", "pool_sample_ids_sha256",
+        "prefix_sample_ids_sha256", "allocations", "retained_exposure",
+        "runtime_admission", "registration_sha256",
+    }
+    assert set(frozen["recipe"]) == {
+        "family_id", "expected_members", "sample_ids", "required_rows_per_member", "run_ids",
+    }
     assert frozen["recipe"]["sample_ids"] == pool[:rows]
     assert all(Path(p).read_bytes() == raw for p, raw in before.items())
     assert not data.exists()
     with pytest.raises(PolicyError):
         freeze(f, rows)
+
+
+def panel_authorities(repo, protocol):
+    plan = json.loads((repo / protocol["optimization_panel"]["plan"]["relpath"]).read_text())
+    owner = json.loads((repo / plan["owner"]["relpath"]).read_text())
+    growth = json.loads((repo / protocol["allocation_extension"]["owner"]["relpath"]).read_text())
+    return owner, growth
+
+
+@pytest.mark.parametrize("rows", [20, 50, 100, 200, 400])
+def test_actual_freezer_pins_measured_profile_in_registration_and_recipe(tmp_path, rows):
+    from speech_aware_evidence_acquisition.analysis.system_text_panel import validate_definition
+
+    f = fixture(tmp_path, rows, profile=measurement_profile())
+    archive, repo, data, protocol, _, _, pool = f
+    before = copy.deepcopy(protocol)
+    frozen = freeze(f, rows)
+    reg, recipe = frozen["registration"], frozen["recipe"]
+    assert reg["measurement_profile"] == recipe["measurement_profile"] == before["measurement_profile"]
+    assert reg["registration_sha256"] == content_hash(
+        {k: v for k, v in reg.items() if k != "registration_sha256"}
+    )
+    family, _ = panel_identities(4, rows)
+    assert json.loads((archive.root / f"panels/{family}.json").read_text()) == frozen
+    owner, growth = panel_authorities(repo, protocol)
+    validate_definition(recipe, reg, owner, growth=growth, protocol=protocol, pool_ids=pool)
+    assert protocol == before
+    # Published definitions must not retain a mutable alias to the caller's protocol.
+    protocol["measurement_profile"]["queue_depth"] = 8
+    assert reg["measurement_profile"] == recipe["measurement_profile"] == before["measurement_profile"]
+    assert not data.exists()
+
+
+@pytest.mark.parametrize(
+    "profile",
+    [
+        None,
+        [],
+        {},
+        {**measurement_profile(), "schema": "unregistered-version"},
+        {**measurement_profile(), "schedule": "node-panel"},
+        {**measurement_profile(), "slot_count": True},
+        {**measurement_profile(), "queue_depth": 0},
+        {**measurement_profile(), "minimum_reliable_completion_rate": 1.1},
+        {**measurement_profile(), "unknown": "not-registered"},
+    ],
+)
+def test_actual_freezer_refuses_malformed_profile_without_writing(tmp_path, profile):
+    f = fixture(tmp_path, profile=profile)
+    archive, _, data, _, _, _, _ = f
+    before = {str(p): p.read_bytes() for p in archive.root.rglob("*") if p.is_file()}
+    with pytest.raises(PolicyError, match="measurement|finite|reliability"):
+        freeze(f)
+    assert not (archive.root / "panels").exists()
+    assert {str(p): p.read_bytes() for p in archive.root.rglob("*") if p.is_file()} == before
+    assert not data.exists()
+
+
+@pytest.mark.parametrize("target", ["protocol", "registration", "recipe"])
+@pytest.mark.parametrize("fault", ["missing", "conflicting", "malformed"])
+def test_actual_freezer_output_refuses_changed_measurement_binding(tmp_path, target, fault):
+    from speech_aware_evidence_acquisition.analysis.system_text_panel import validate_definition
+
+    f = fixture(tmp_path, profile=measurement_profile())
+    _, repo, _, protocol, _, _, pool = f
+    frozen = freeze(f)
+    reg, recipe = frozen["registration"], frozen["recipe"]
+    owner, growth = panel_authorities(repo, protocol)
+    changed = {"protocol": protocol, "registration": reg, "recipe": recipe}[target]
+    if fault == "missing":
+        changed.pop("measurement_profile")
+    elif fault == "conflicting":
+        changed["measurement_profile"]["queue_depth"] = 8
+    else:
+        changed["measurement_profile"] = None
+    with pytest.raises(PolicyError, match="measurement profile differs"):
+        validate_definition(recipe, reg, owner, growth=growth, protocol=protocol, pool_ids=pool)
 
 
 @pytest.mark.parametrize(
@@ -332,15 +433,16 @@ def test_freeze_refuses_incomplete_changed_or_post_contact_sources(tmp_path, fau
 
 
 @pytest.mark.parametrize("rows", [50, 100, 200])
+@pytest.mark.parametrize("measured", [False, True])
 def test_cli_freezes_only_definition_and_never_invents_read_authority(
-    tmp_path, capsys, rows
+    tmp_path, capsys, rows, measured
 ):
     from test_system_text_search_cli import cli, write
     from speech_aware_evidence_acquisition.analysis.system_text_panel import (
         validate_registration,
     )
 
-    f = fixture(tmp_path, rows)
+    f = fixture(tmp_path, rows, profile=measurement_profile() if measured else UNSET)
     archive, repo, data, protocol, members, review, pool = f
     args = [
         "--archive",

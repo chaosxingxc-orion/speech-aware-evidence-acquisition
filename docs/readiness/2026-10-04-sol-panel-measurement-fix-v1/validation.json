@@ -1,0 +1,77 @@
+{
+  "schema": "saea-offline-engineering-validation-v1",
+  "base_commit": "ee04ea4d6e9eef7332a1248b46e0d775b8d43354",
+  "branch": "codex/sol-panel-measurement-fix",
+  "scope": "Propagate and validate measured profiles in the existing eight-member optimization-panel freezer; document a separate prospective six-member family without implementing it.",
+  "skill_source": "C:/Users/35686/.agents/skills/tdd-workflow/SKILL.md",
+  "python_discipline": "PYTHONDONTWRITEBYTECODE=1 and python -B; PYTHONPATH=src selects this isolated checkout.",
+  "red": {
+    "test_file": "tests/unit/test_system_optimization_stage.py",
+    "selection": "measured_profile or malformed_profile or changed_measurement_binding or cli_freezes",
+    "failed": 18,
+    "passed": 11,
+    "deselected": 35,
+    "elapsed_seconds": 4.85,
+    "observed_failure": "Measured actual-freezer and CLI tests reached panel-profile equality and refused omitted registration/recipe profiles. Explicit null was incorrectly accepted.",
+    "fixture_preparation": "Before the recorded RED run, synchronize synthetic learning profile bindings and replace a non-serializable NaN fixture with a serializable out-of-range reliability value. These are test-fixture corrections, not runtime failures."
+  },
+  "green": {
+    "test_files": [
+      "tests/unit/test_system_optimization_stage.py",
+      "tests/unit/test_system_search_stage.py",
+      "tests/unit/test_system_text_panel_read.py",
+      "tests/unit/test_system_search_measurement.py"
+    ],
+    "passed": 197,
+    "failed": 0,
+    "elapsed_seconds": 21.20,
+    "coverage": {
+      "module": "speech_aware_evidence_acquisition.rails.system_search_stage",
+      "covered_statements": 220,
+      "statements": 238,
+      "statement_percent": 92.43697478991596,
+      "covered_branches": 57,
+      "branches": 62,
+      "branch_percent": 91.93548387096774,
+      "combined_percent": 92.33333333333333,
+      "freeze_optimization_panel": {
+        "covered_statements": 85,
+        "statements": 85,
+        "covered_branches": 16,
+        "branches": 16,
+        "percent": 100.0
+      },
+      "changed_executable_statements": {
+        "lines": [503, 504, 505, 506, 742, 743, 752, 753],
+        "covered": 8,
+        "total": 8
+      }
+    }
+  },
+  "offline_checks": {
+    "engineering_base_check": "PASS",
+    "harness_admission_check": "PASS",
+    "focused_ruff": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "guarantees_checked": [
+    "Actual freeze entry and CLI preserve the exact registered profile across all supported prefix sizes.",
+    "Profile-free registration and recipe field sets remain unchanged.",
+    "Null and malformed profiles refuse before any archive panel write.",
+    "Protocol, registration or recipe omission, conflict or null replacement refuses definition validation.",
+    "Registration hashing includes the profile; persisted archive output equals the returned definition.",
+    "Caller profile mutation does not change either output, and registration and recipe hold independent copies.",
+    "Existing eight-member, spent-allocation, custody, runtime and READ-authority refusals remain intact."
+  ],
+  "contacts": {
+    "model": 0,
+    "gpu": 0,
+    "scorer": 0,
+    "external_service": 0
+  },
+  "dispatch": false,
+  "scientific_result_reads": false,
+  "membership_or_authority_expansion": false,
+  "heartbeat": "PAUSED",
+  "handoff": "Root reviews and serially integrates the patch. Round9 still requires a separately registered six-member evaluation design and explicit resolution of the owner223/227 mismatch."
+}
