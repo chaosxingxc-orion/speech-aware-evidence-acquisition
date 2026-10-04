@@ -1,5 +1,29 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete abstract K16 learning input prepared, 2026-10-04
+
+[Verified actor-input preparation](../receipts/continuation/2026-10-04-k16-abstract-actor-input-prepared.json) now binds all16 full template systems/64 role texts to320 anonymous paired candidate trajectories and1559 node contacts. The complete projection and public qualification helper ended0,with zero new model/scorer contacts. The504732-byte actor input is under system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/actor-input.json. Its SHA-256 is68ce78daee7e5f99e321b3ce574fdacccb61471103e4ce1dffb7f14a132caec6.
+
+Real input uses exact template/role allowlists and excludes concrete task contents,entity values,knowledge,reasons,private input IDs and source rosters. Node quality remains unmeasured/null. Actual first-admission/non-first latency is retained. Forty abstract/actor-view tests pass. The separate private qualification packet is custody only; never execute its legacy semantic callbacks or send it to the actor.
+
+Update-two has no reservation or actor contact yet. Bind the exact prepared output contract, isolated allowed-file manifest and prospective contact registration before one GPT-6.1 Sol/high batch. Preserve every spent initialization slot and all16 future responses including invalid/no-change. Successors require real capacity/structure and completeN20 family evaluation; no adoption or scale dispatch. Formal seed,paused heartbeat,other-carrier holds and human-before8x400 remain.
+
+## K16 N20 root analysis complete, 2026-10-04
+
+[Complete root report](../results/2026-10-04-context-template-k16-n20.md) and [read receipt](../receipts/continuation/2026-10-04-k16-scientific-read.json) cover all18 members,360 trajectories,13 strata,both weightings,paired intervals and source-bound per-node/actual sample latency. All deliver reliably. Candidate15 SLU60.8061% versus seed60.7229% is only+0.0833pp with CI95[-13.9759,11.3793],while non-first latency rises65.722s versus34.703s. Candidate09 is faster26.999s but SLU56.3068%; candidate13 fastest25.454s but SLU44.9145%. No stable benefit,adoption or learning gain. Keep formal seed andN20.
+
+The original source-hash refusal was resolved using the exact original analysis checkout under recorded root227 disposition; all estimators and frozen sources stayed unchanged. Read helper completed successfully with zero new model/scorer contacts. Do not rerun analysis output,score,reseal or regenerate.
+
+The separately admitted full-family abstract projection is now running: all16 complete candidate systems,anonymous aligned numeric/bool/null node outputs,costs,official terminal counts and frozen-reference utility. Original complete traces stay in backend custody. No utterances,entity values,knowledge,reason text,source rosters or root prose interpretation go to the actor; no semantic per-sample calls. Forty abstract-feedback/actor-view tests pass. Next actor remains unreserved until actual capsule hashes,isolation and contact registration. Heartbeat remains paused; other-carrier holds and human-before8x400 remain.
+
+## K16 complete; exact registered analysis environment restored, 2026-10-04
+
+[Complete operational qualification](../receipts/continuation/2026-10-04-context-template-k16-family-qualified.json) verifies all18 members FINALIZED,20 rows each,360 total,verified seals,one successful complete official score each and zero failed jobs. Driver completed normally; no STOP or new dispatch. Root countersigned the exact K16 N20 READ at2026-10-04T22:54:06.565285+00:00.
+
+[Root227 analysis-entry disposition](../receipts/continuation/2026-10-04-k16-analysis-entry-disposition.json) preserves a pre-read source-hash refusal: the editable checkout had advanced system_context_learning.py for future learning interfaces. No analysis output or task-quality read occurred in that failed entry. A separate checkout at the original registered a7b3a21c commit matches all seven source pins; only the already signed READ ledger row is overlaid. The successor helper changes only its analysis-root path. The complete read is running there; no score replay, model contact, changed estimator or modified frozen worker.
+
+Do not infer improvement from operational completion. Keep all16 proposals and full backend evidence. Learner export remains separately admitted and must contain full templates plus anonymous numeric/bool/null structural output features, measured costs and official terminal counts/utility. Exclude concrete contents, labels/values, knowledge, reasons and source rosters; no per-sample semantic summaries or invented node correctness. Preserve the formal seed, paused heartbeat, other-carrier holds and human-before8x400.
+
 ## Prospective K16 actor output contract rehearsed, 2026-10-04
 
 [Output contract](../readiness/2026-10-04-context-template-k16-update2-output-contract-v1/output-contract.json) fixes one GPT-6.1 Sol/high semantic batch, sixteen ordered branch updates, exact current shared proposal fields and supported assembly values. Preserve complete edited English role texts and parent interface contracts; keep knowledge/data/runtime fixed. Use empty changes for no-change, empty experience operations for this template-only update and null unavailable provider usage. Keep concrete cases and source rosters outside the actor input. Do not infer node correctness or causal credit from system reward.
@@ -1975,7 +1999,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T18:55:56.802662+00:00
+Last refreshed: 2026-10-04T23:14:29+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

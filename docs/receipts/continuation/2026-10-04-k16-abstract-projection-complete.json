@@ -1,0 +1,30 @@
+{
+  "schema": "saea-k16-abstract-projection-complete-v1",
+  "at_utc": "2026-10-04T23:09:10.614812+00:00",
+  "status": "COMPLETE-CONTENT-FREE",
+  "source_family_members": 18,
+  "exported_candidate_templates": 16,
+  "exported_complete_trajectories": 320,
+  "node_contacts": 1559,
+  "learner_view": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/abstract-outcomes-v2/learner-view.json",
+    "sha256": "c0ab4f68984edc55de222599257a8113498e478c67042e1be5330a7a7edeec9c"
+  },
+  "population_feedback": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/abstract-outcomes-v2/population-feedback.json",
+    "sha256": "3e76f4daa1ab948bf11bd08c4b636d79b57b0d86db4cfcb80a4cac28198868bf"
+  },
+  "private_custody": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/abstract-outcomes-v2/private-custody.json",
+    "sha256": "5a4086d8ac8673d2a145303fd1adb4145d64d92fcfe9149efae09f68184b91ba"
+  },
+  "source_registration": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/abstract-source-registration-v1.json",
+    "sha256": "52fcea22e3c92dced8442df1fbed68ab2a4366dc3bcb0d0d9cf81ed36f637428"
+  },
+  "model_contacts_added": 0,
+  "score_jobs_added": 0,
+  "individual_semantic_calls": 0,
+  "tests": "40 abstract-feedback and actor-view tests passed",
+  "boundary": "All dynamic per-episode leaves are numeric,bool or null; anonymous ordinals retain pairing. Concrete task content,entity values,knowledge,reasons and source rosters remain excluded."
+}

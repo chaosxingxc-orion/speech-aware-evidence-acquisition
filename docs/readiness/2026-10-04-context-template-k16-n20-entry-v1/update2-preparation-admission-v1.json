@@ -1,0 +1,31 @@
+{
+  "schema": "saea-context-k16-update-preparation-admission-v1",
+  "status": "ROOT-ADMITTED",
+  "root_authority": 227,
+  "at_utc": "2026-10-04T23:09:10.614812+00:00",
+  "source_family": "context-template-k16-n20",
+  "source_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1",
+  "source_iteration": 1,
+  "target_iteration": 2,
+  "model_contacts_authorized_by_this_preparation": 0,
+  "scope": "template-only-abstract-k16",
+  "K": 16,
+  "N": 20,
+  "M": 4,
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "semantic_batch_requests": 1,
+  "source_recipe": {
+    "relpath": "docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/analysis-recipe-v1.json",
+    "sha256": "74e683fded86de8a992f1f6a2cd517103fb082923556a362efdb60c9b1b35635"
+  },
+  "abstract_learner_view": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/abstract-outcomes-v2/learner-view.json",
+    "sha256": "c0ab4f68984edc55de222599257a8113498e478c67042e1be5330a7a7edeec9c"
+  },
+  "abstract_private_custody": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/abstract-outcomes-v2/private-custody.json",
+    "sha256": "5a4086d8ac8673d2a145303fd1adb4145d64d92fcfe9149efae09f68184b91ba"
+  },
+  "decision": "Prepare complete template and anonymous numerical feedback capsule. No reservation, actor contact, runtime dispatch, expansion or adoption."
+}

@@ -1916,3 +1916,8 @@ Both cohort4/16 configurations fit88 measured requests with594 tokenizer endpoin
 ## 2026-10-03: node-batch structural generation - STRUCTURAL ONLY
 
 Both four-row workers completed normally with53 model contacts and212 actual FIT endpoints. All15 Reviewer handoffs are valid and visible;all8 deliveries retain Omni authority;14 node waves and original sample timing are source-bound. Batch16 is underfilled and no live knowledge call occurred;prior synthetic proofs cover conditional tools. No task quality,scoring or speedup claim. [Complete evidence](../receipts/continuation/2026-10-03-node-batch-structural-complete.json). Owner now requests full-panel node queues with downstream preparation overlapping current-node generation;the existing cohort scheduler does not yet implement this. Prepare offline before further admission.
+
+
+## 2026-10-04: K16 template N20 population - EXPLORATORY, NO ADOPTION
+
+All18 members finalized/sealed/scored once,360 trajectories; exact root READ complete. Highest candidate SLU60.8061% versus seed60.7229%,difference+0.0833pp CI95[-13.9759,11.3793]; non-first latency65.722s versus34.703s. Faster branch09 reaches26.999s but SLU56.3068%. All deliver reliably,which does not establish correctness. Retain seed andN20; no stable benefit or learned successor demonstrated. [All18 members,13 strata,both weightings and node/sample costs](2026-10-04-context-template-k16-n20.md). Complete abstract feedback is separately admitted; no concrete-content learner export,automatic expansion or held-carrier release.

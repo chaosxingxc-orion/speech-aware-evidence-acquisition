@@ -1,0 +1,27 @@
+{
+  "schema": "saea-k16-complete-abstract-export-v1",
+  "status": "ROOT-ADMITTED",
+  "root_authority": 227,
+  "recorded_at": "2026-10-04T23:06:40.092419+00:00",
+  "source_family": "context-template-k16-n20",
+  "all_original_branches_required": true,
+  "concrete_content_allowed": false,
+  "sources": [
+    {
+      "tag": "k16-complete",
+      "recipe_pin": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-n20-entry-v1/analysis-recipe-v1.json",
+        "sha256": "74e683fded86de8a992f1f6a2cd517103fb082923556a362efdb60c9b1b35635"
+      }
+    }
+  ],
+  "complete_root_read": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1/report.json",
+    "sha256": "53854da67d15ff5fd228ec67100f6e3dee63e0f3045846bf1437673dc3bb0717"
+  },
+  "root_read_receipt": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-k16-scientific-read.json",
+    "sha256": "d6dbd9840c9b6993e49722c68447eaa6f5e39d1f8bdeee5ec7c18cdb76a95885"
+  },
+  "scope": "All16 candidate branches with complete anonymous node features and terminal numeric feedback. No concrete contents, source rosters or semantic summaries. No actor/runtime/scorer contact."
+}

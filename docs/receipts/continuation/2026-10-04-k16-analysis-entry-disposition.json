@@ -1,0 +1,59 @@
+{
+  "schema": "saea-root-analysis-entry-disposition-v1",
+  "recorded_at": "2026-10-04T23:02:28.549179+00:00",
+  "root_authority": 227,
+  "status": "EXACT_REGISTERED_ANALYSIS_ENVIRONMENT_RESTORED",
+  "family": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1",
+  "failure": "Original read helper refused artifact hash mismatch in load_documents before creating output or reading task quality.",
+  "cause": "The editable checkout advanced system_context_learning.py for future population updates after the prospective analysis source pin.",
+  "mismatched_sources": [
+    "src/speech_aware_evidence_acquisition/rails/system_context_learning.py"
+  ],
+  "original_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/read-family-v1.py",
+    "sha256": "36133efebe4f19075c1dddf22c9d6f15acee2aff610a7902eeb093fbf07988e1"
+  },
+  "analysis_checkout": "/home/chao/saea-worktrees/codex-k16-registered-analysis",
+  "analysis_commit": "a7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087",
+  "registered_source_verification": {
+    "scripts/analysis/system_text_pilot_read.py": {
+      "relpath": "scripts/analysis/system_text_pilot_read.py",
+      "sha256": "53ee150c86e80af85b89b0940ec226830e7a974dc9771ccc3558d0fb738b0842"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_context_read.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_context_read.py",
+      "sha256": "66353f33dada9110ebbf41d6630444c85a77dfd27ce6bba2a172378513ca731f"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_text_update.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_text_update.py",
+      "sha256": "602c77693ebf5a52bb677e57229ce007ca25cdbde02b49a74b1fe16db2de200a"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_context_learning.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+      "sha256": "e3a4fa71e46d6147e3cf77b28e94917912b880601b777536961d1d0c5d32dcdf"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_search_measurement.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_measurement.py",
+      "sha256": "dcea023512c2de81e12fc59c10e6610bfea8232723b3e1fb06daa62d75fefb6b"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py",
+      "sha256": "3ebf16b43103474b39f9cfe618c0b36ced76d78a6d8dc2427cd3f50e8290a2ec"
+    }
+  },
+  "authority_overlay": "Only exact already countersigned READ ledger row transferred. No analysis source, recipe, estimator, runtime or score changed.",
+  "read_row_sha256": "edb46dd3ffacd06b06de8cf4269a3c3c65cf279ffa9fc185f9f6c5ef83a2081e",
+  "successor_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/read-family-registered-environment-v2.py",
+    "sha256": "3769f745fe28e978fca1c0735f2a8fb76b1f7d0681767d22bc34fff7d4244ae9"
+  },
+  "helper_difference": "Only R path; original preserved.",
+  "analysis_output_absent_before_continuation": true,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "disposition": "Permit one complete registered read in the exact original analysis environment. Preserve any later failure. No regeneration, reseal, score replay, runtime dispatch or learner export."
+}

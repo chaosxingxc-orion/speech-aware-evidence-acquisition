@@ -1,0 +1,29 @@
+{
+  "schema": "saea-k16-complete-scientific-read-v1",
+  "recorded_at": "2026-10-04T23:06:40.076947+00:00",
+  "status": "COMPLETE-EXPLORATORY-NO-ADOPTION",
+  "root_authority": 227,
+  "family_members": 18,
+  "complete_trajectories": 360,
+  "analysis_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1/report.json",
+    "sha256": "53854da67d15ff5fd228ec67100f6e3dee63e0f3045846bf1437673dc3bb0717"
+  },
+  "timing": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1/timing-summary.json",
+    "sha256": "c12ac0cf778ad4ec06fd3c3a1f10a5a85e44b4a8e52b1d5555b50687726c90f3"
+  },
+  "sources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K16-N20-READ-V1/source-specifications.json",
+    "sha256": "e71cabfd9c16fd66366f7cc81d378322d7eb9683ab18e481bd1936593f2f2908"
+  },
+  "root_report": {
+    "relpath": "docs/results/2026-10-04-context-template-k16-n20.md",
+    "sha256": "bbb748693d6c8d09a592ac434b6e5a6a968e8df314af571e2f5f08565214c2b0"
+  },
+  "formal_incumbent": "seed",
+  "stable_benefit_established": false,
+  "learning_gain_established": false,
+  "contacts_added": 0,
+  "next": "Prepare separately registered complete abstract source; no automatic actor or GPU launch."
+}

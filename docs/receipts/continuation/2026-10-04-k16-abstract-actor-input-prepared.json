@@ -1,0 +1,27 @@
+{
+  "schema": "saea-k16-abstract-actor-input-prepared-v1",
+  "at_utc": "2026-10-04T23:13:09.592060+00:00",
+  "status": "PREPARED-NOT-RESERVED",
+  "actor_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/actor-input.json",
+    "sha256": "68ce78daee7e5f99e321b3ce574fdacccb61471103e4ce1dffb7f14a132caec6"
+  },
+  "private_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/private-preparation-receipt.json",
+    "sha256": "5634b06d2b68050f3ebbded167643b8eceb26dc09129ca1b08459f1da5af7619"
+  },
+  "bytes": 504732,
+  "templates": 16,
+  "complete_role_templates": 64,
+  "paired_anonymous_inputs": 20,
+  "candidate_trajectories": 320,
+  "node_contacts_projected": 1559,
+  "scope": "Complete editable templates plus abstract numeric/bool/null structural outputs, measured costs and official terminal counts/utility. No task contents, entity values, reason text, knowledge content or source rosters.",
+  "real_input_audit": "Exact template field/role allowlist; no private input IDs, source paths or sample_ids. No draft_fragment in dynamic feedback; its generic schema instruction is correctly retained in editable templates. Builder cross-checks whole-family packet and preserves actual first-admission latency.",
+  "validation": "40 abstract-feedback and actor-view tests passed; results-ledger check PASS with262 nonblocking reported findings.",
+  "formal_incumbent": "seed",
+  "model_contacts": 0,
+  "score_jobs": 0,
+  "reservation_created": false,
+  "next": "Prospectively bind exact output contract, enforceable isolated input manifest and contact registration before one GPT-6.1 Sol/high batch. Retain all16 slots; evaluate successors atN20 before retention."
+}
