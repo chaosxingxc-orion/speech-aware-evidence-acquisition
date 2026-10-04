@@ -1,0 +1,48 @@
+{
+  "cell": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-v1",
+  "composed_config_hash": "c00f4136012354f762a5426a2dac46742a1f12cd83a6b9a13030abbeb084bc39",
+  "decision_receipt": {
+    "relpath": "coordination/context-tf-iteration1-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "19272a89d8a197358f43422f952a517a6db7eb826c1ff6bf357fb65669425df0"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "3e9670c9a8fd91c07e836214147bcf5c6db0e007b9305420d54273c515563568",
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8.json",
+      "sha256": "d227c32d1908623d1cfbf73078f64645b841e9f67669da6b63fe96c40fa0a19b"
+    },
+    "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "f51d7f01eb51c0bbe83b2ae70e127a7700dccc3142e47277757cdfa6b6e14b59"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-SMOKE-4-STRUCTURE-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-speech-evidence-smoke-4-generation-v1",
+    "bundle_id": "1647b93e094719343c823cb0f4a691438603d2e04079923bb7fa6418bfca9577",
+    "experiment": "slurp-native-stage3-context-tf-iteration1-speech-evidence-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-tf-iteration1-speech-evidence-graph-v1",
+    "label": "speech-evidence",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-structural-entry-v1/speech-evidence-generation-plan-registered-v1.json",
+      "sha256": "9e274f12665f4abcf3f0caeec472a1ce57ebefb299b4f81a935cb7d805a1f789"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "b8aeac5003984e5b9490c0d8819c4908e73b947b95ec695472aea04b887a8447"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-structural-entry-v1/speech-evidence-analysis-recipe-v1.json",
+      "sha256": "bad3c2c6d1e9f97437bf20c0eba7fc2f13889b33d8a740977b069e10d349bd55"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SPEECH-EVIDENCE-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-generation-v1",
+    "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+    "experiment": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-tf-iteration1-coverage-ledger-graph-v1",
+    "label": "coverage-ledger",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-structural-entry-v1/coverage-ledger-generation-plan-registered-v1.json",
+      "sha256": "b0cac82fdd4bca6438f3628380a7bb291aac5dabd1f7742ef5f816407f8b22a3"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "f51d7f01eb51c0bbe83b2ae70e127a7700dccc3142e47277757cdfa6b6e14b59"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-structural-entry-v1/coverage-ledger-analysis-recipe-v1.json",
+      "sha256": "78a7d85ed7cd8524fb1e2f83495d8361d1b95f56698f0350f7e36b37b3e76b42"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COVERAGE-LEDGER-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-counterexample-check-smoke-4-generation-v1",
+    "bundle_id": "fac18294fae47670f61fad4899bede30c274e80b1fcb239c432c6e49f2267345",
+    "experiment": "slurp-native-stage3-context-tf-iteration1-counterexample-check-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-tf-iteration1-counterexample-check-graph-v1",
+    "label": "counterexample-check",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-structural-entry-v1/counterexample-check-generation-plan-registered-v1.json",
+      "sha256": "fef429771235b316dd04c6a05d549325cda205df15b1e5dda5eb3c39f56e754a"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "33b174bb42c2c2fbf125df6eb823c6ff92b9c00d8722744d7baa5bbb24ddeaa9"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-structural-entry-v1/counterexample-check-analysis-recipe-v1.json",
+      "sha256": "a6bca1b65da827374a94326ad801aa19266e6425d12f5598d6bb43bb50e64caf"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-COUNTEREXAMPLE-CHECK-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-generation-v1",
+    "bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+    "experiment": "slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-tf-iteration1-semantic-frame-graph-v1",
+    "label": "semantic-frame",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-structural-entry-v1/semantic-frame-generation-plan-registered-v1.json",
+      "sha256": "f16ca7d369064f717ebc0b95273ef08b4bfe110e8b2db66a69c8c510b57e942f"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "047212c391aca82184210e61294d5c3f0f83da9d1e7973a659df09ebeffc27f3"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-structural-entry-v1/semantic-frame-analysis-recipe-v1.json",
+      "sha256": "2e545a764ec0a8ade0752c5f6032933d5d3510efcae50bfd80698db4a178398e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-SMOKE-4-V1"
+  }
+]

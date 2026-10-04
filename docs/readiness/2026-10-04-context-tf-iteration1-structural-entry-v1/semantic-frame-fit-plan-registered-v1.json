@@ -1,0 +1,48 @@
+{
+  "cell": "slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-v1",
+  "composed_config_hash": "2b15d6e6030c8c3f59bb9323399b6c61ab1e5a8e88f32fd383f83adb01433b94",
+  "decision_receipt": {
+    "relpath": "coordination/context-tf-iteration1-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "19272a89d8a197358f43422f952a517a6db7eb826c1ff6bf357fb65669425df0"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 208,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "712129b57b1882012a82f631a99cd7fca52b007a311c9a5b4e38d516075689b2",
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-tf-iteration1-semantic-frame-smoke-4-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7.json",
+      "sha256": "8e7fd9f7e35ff033a4951ea9c0fa3506e9a5ae3eca68d3621e04311011269c62"
+    },
+    "bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "047212c391aca82184210e61294d5c3f0f83da9d1e7973a659df09ebeffc27f3"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-SEMANTIC-FRAME-SMOKE-4-STRUCTURE-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

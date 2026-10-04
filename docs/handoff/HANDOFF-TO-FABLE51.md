@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## TF capacities complete; four-row structural entry prepared, 2026-10-04T15:56:57.346973+00:00
+
+[Four actual capacities](../receipts/continuation/2026-10-04-context-tf-iteration1-capacity-complete.json) passed1188 endpoints/176 measured requests with zero generation/scoring. Minimum margin5359 tokens after full512 output and2048 structural reserve. All four leases and Windows wrapper exited0. Root227 registered four independent four-row structural members,16 trajectories total,208 maximum generation contacts and832 separate actual-request FIT endpoints, zero official scoring. Frozen/live admission remains pending; exact full120-trajectory evaluation remains HELD. New template-first owner steering preserves these existing policies and stops future per-sample semantic callback chains.
+
+
+## Progressive template-first feedback amendment, 2026-10-04T15:56:57.346973+00:00
+
+The [latest direct owner input](../receipts/owner/2026-10-04-progressive-template-first-feedback.json) prioritizes complete node template/assembly optimization with fixed knowledge/retrieval/construction first. Knowledge-content optimization is a later reviewed stage. Aggregate full-family numeric outcomes by template and sample bounded, balanced source evidence; stop requiring per-sample semantic summaries/comparisons in future iterations. Preserve spent original TF callbacks and all four original children; finish their current engineering and exact120-trajectory evaluation without retroactively changing the registered baseline. Future feedback flow needs a prospective version and exact actor/runtime budgets. Keep fixed400 sources, complete-family READ, separate algorithms, paused heartbeat and human-before8x400.
+
+
 ## TF four-child capacity launched, 2026-10-04T15:45:52.904014+00:00
 
 [Exact launch](../receipts/continuation/2026-10-04-context-tf-capacity-launch.json) records Windows25240 and the revalidated Linux worker, frozen b05a49fb1. All four frozen registration/runtime/role-byte checks passed. Windows free14.92GiB at launch; existing stable12.5GiB startup/8GiB running guards remain. Admit1188 tokenizer endpoints maximum, zero generation/scoring, no cache/geometry/queue/STOP mutation. Completion is not yet asserted. Preserve failure evidence; no automatic retry. Original TF worker waits0045-evaluate; all scientific members remain HELD and unread.

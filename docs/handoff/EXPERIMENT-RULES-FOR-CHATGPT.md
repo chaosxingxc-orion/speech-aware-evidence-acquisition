@@ -1,5 +1,10 @@
 # Experiment rules for the ChatGPT side
 
+## Progressive template-first feedback amendment, 2026-10-04T15:56:57.346973+00:00
+
+The [latest direct owner input](../receipts/owner/2026-10-04-progressive-template-first-feedback.json) prioritizes complete node template/assembly optimization with fixed knowledge/retrieval/construction first. Knowledge-content optimization is a later reviewed stage. Aggregate full-family numeric outcomes by template and sample bounded, balanced source evidence; stop requiring per-sample semantic summaries/comparisons in future iterations. Preserve spent original TF callbacks and all four original children; finish their current engineering and exact120-trajectory evaluation without retroactively changing the registered baseline. Future feedback flow needs a prospective version and exact actor/runtime budgets. Keep fixed400 sources, complete-family READ, separate algorithms, paused heartbeat and human-before8x400.
+
+
 ## Deterministic system-skill population amendment, 2026-10-04T07:07:19.130577+00:00
 
 The [latest direct owner instructions](../receipts/owner/2026-10-04-deterministic-context-rollouts.json) replace the next-GPU priority below with a fresh deterministic context population. K means distinct complete context systems, M is four nodes, and N means distinct inputs. Initialize K4/M4 with sixteen full English role texts; N20 gives eighty candidate trajectories before separately accounted comparators and engineering. Keep temperature0/seed20260913. GPT-6.1 Sol is authoring this initialization separately from historical Astra allocations.

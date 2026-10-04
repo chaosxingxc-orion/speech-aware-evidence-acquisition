@@ -1,0 +1,53 @@
+{
+  "at_utc": "2026-10-04T15:52:17.781673+00:00",
+  "capacity_passed": true,
+  "generation_contacts": 0,
+  "limits": "Reachable graph with longest legal supplied knowledge and bounded role replies; not an exhaustive arbitrary-text guarantee. Actual request FIT remains mandatory for every generation contact.",
+  "members": [
+    {
+      "artifact": {
+        "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/speech-evidence/request-fit-v1.json",
+        "sha256": "6956da1545eb7dd1e6a2eea512a62854902b77b4a655e73ec7feb3d5447687af"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5441,
+      "system_id": "speech-evidence"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/coverage-ledger/request-fit-v1.json",
+        "sha256": "5b15133f59e3e79c15849e66e13eaf81c3c05e3949e244ff14b3c34e729c4924"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5636,
+      "system_id": "coverage-ledger"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/counterexample-check/request-fit-v1.json",
+        "sha256": "90a0749a7539d05ceb5b4d0a17af0aeeaafa59cf5426288352cca19d86817b6b"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5359,
+      "system_id": "counterexample-check"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-tf-iteration1-engineering-owner227-v1/semantic-frame/request-fit-v1.json",
+        "sha256": "2062f360009853f68da08cc0468a11dd87b5715976f89b99fad62e76c524d4f1"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5616,
+      "system_id": "semantic-frame"
+    }
+  ],
+  "read_scope": "Registered structural-only capacity read; no task quality or optimizer feedback.",
+  "schema": "saea-context-tf-iteration1-capacity-complete-v1",
+  "scorer_contacts": 0,
+  "source_commit": "b05a49fb17ac73f16bd51719360e4e34272b600d",
+  "tokenizer_endpoints": 1188
+}
