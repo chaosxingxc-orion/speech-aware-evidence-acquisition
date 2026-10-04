@@ -1,0 +1,79 @@
+{
+  "schema": "saea-context-initial4-structural-complete-v1",
+  "at_utc": "2026-10-04T08:28:28.244910+00:00",
+  "authority": "owner227 root structural-only",
+  "driver_completed_at": "2026-10-04T08:25:17Z",
+  "worker": "/home/chao/saea-worktrees/codex-context-initial4-engineering-v1",
+  "commit": "237c4658ee5f4436f353ae7861df7f1ad0e6d658",
+  "structural_acceptance": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/structural-acceptance-v1.json",
+    "sha256": "39e226bcdac4761f706c367f081374f42dfcb22271eebb20704e14bfc9afa241"
+  },
+  "sample_timing": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/root-sample-timing-v1.json",
+    "sha256": "d65bd578af82fb242074caf0e6c9e9d878a809dedb76c300b5c0f3f5d9649966"
+  },
+  "node_timing": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/root-node-timing-v1.json",
+    "sha256": "d393a20194680cf86b3f305d9f0246e97d3a9c9ab3d1ac89a1585062827a7272"
+  },
+  "audit_scripts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/structural-audit-v1.py",
+      "sha256": "dd7fd754b594486c3664808ea7659bbcb9de72b00b4cbe266167df78d1967ed1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/root-node-timing-v1.py",
+      "sha256": "770de5a0516a65bf39c90197796672b601fa20c6a3a065c89012f314776c8a5b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-engineering-owner227-v1/root-sample-timing-v1.py",
+      "sha256": "0018e58212cdc555d43d84c7e3ad55c108a0939a91a6aab787feccc7d9f53f7f"
+    }
+  ],
+  "rows": 16,
+  "model_contacts": 76,
+  "actual_request_fit_receipts": 76,
+  "actual_request_fit_endpoints": 304,
+  "official_scorer_contacts": 0,
+  "valid_visible_reviewer_handoffs": 20,
+  "native_terminal_deliveries": 16,
+  "task_quality_read": false,
+  "optimizer_export": false,
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1",
+      "model_contacts": 19,
+      "structural_pass": true,
+      "all_sample_mean_seconds": 46.97516299675,
+      "non_first_mean_seconds": 47.262238177
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1",
+      "model_contacts": 19,
+      "structural_pass": true,
+      "all_sample_mean_seconds": 24.570489535500002,
+      "non_first_mean_seconds": 24.750859394333332
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1",
+      "model_contacts": 22,
+      "structural_pass": true,
+      "all_sample_mean_seconds": 59.87730669849999,
+      "non_first_mean_seconds": 57.66375498233333
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1",
+      "model_contacts": 16,
+      "structural_pass": true,
+      "all_sample_mean_seconds": 29.44866710075,
+      "non_first_mean_seconds": 31.310922547
+    }
+  ],
+  "limitations": [
+    "Four-row structural proof does not establish task benefit or comparative speedup.",
+    "No complete second admission wave exists; non-first is not synonymous with warm cache.",
+    "No knowledge tool call occurred in these observed trajectories; do not claim all possible tool branches were visited.",
+    "Engineering attempts intentionally remain OPENED with prepared score specifications; never score/reseal/restart them."
+  ]
+}

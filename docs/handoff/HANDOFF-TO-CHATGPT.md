@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Four complete context systems passed structural acceptance, 2026-10-04T08:28:28.244910+00:00
+
+[Completed structural evidence](../receipts/continuation/2026-10-04-context-initial4-structural-complete.json) supersedes the running snapshot: driver ended normally08:25:17Z, all four members passed exact structural audit on frozen237c4658e. Sixteen trajectories consumed76 model contacts and76 actual-request FIT receipts/304 endpoints. All20 Reviewer handoffs are valid and visible to Planner; all16 terminal deliveries retain native Omni custody. No official scorer or task-quality read. Preserve intentional OPENED engineering attempts and prepared score specs; never score/reseal/restart them.
+
+Original numeric sample and node timing is pinned. All/non-first mean seconds respectively: speech-evidence46.98/47.26,coverage-ledger24.57/24.75,counterexample-check59.88/57.66,semantic-frame29.45/31.31. These four-row observations are not comparative efficacy or stable speed claims. There is no complete second admission wave, and non-first does not imply a warm cache. No knowledge lookup was exercised by these trajectories.
+
+The six prepared N20 members remain HELD pending exact scientific protocol/registration, frozen reference pins and full runtime admission. Candidate80 plus control40,total120. No learned system improvement is established. Keep heartbeat PAUSED and prior owner boundaries unchanged.
+
 ## Initial4 structural GPU running; six N20 supplies prepared, 2026-10-04T08:24:36.645714+00:00
 
 [Structural launch](../receipts/continuation/2026-10-04-context-initial4-structural-launch.json) runs through Windows SAEA-Batch-Driver epoch08:16:12Z on frozen237c4658e. All four frozen registration/runtime checks passed before normal transition of completed controls. Three engineering steps completed and the fourth is running; revalidate actual status. This admits sixteen structural trajectories and no official scoring or quality read. Preserve intentional OPENED engineering lifecycles; final structural acceptance remains pending.
