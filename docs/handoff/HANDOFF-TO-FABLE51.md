@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner-requested remaining round9 continuation running, 2026-10-04T05:33:05.767043+00:00
+
+The human directly requested continuation and reported an understood quota reset. [Root admission](../receipts/continuation/2026-10-04-four-node-round9-remaining-root-admission.json) and [launch receipt](../receipts/continuation/2026-10-04-four-node-round9-remaining-launch.json) supersede the earlier waiting boundary for exactly B-9-1,L-9-2,B-9-2. Preserve spent L-9-1 without retry or replacement. Inputs,capsules,model,budgets,source pins and isolation are unchanged.
+
+Fresh check-only passes exactly3 members/zero contacts. Windows task SAEA-System-Text-Proposer-Four-Node-Round9-Remaining-Owner227 is running on the original clean frozen8eafb9f60 worker. PID620657/start44110718 was observed validating inputs; no model contact existed at that checkpoint. Revalidate this exact handle. A task start is not evidence of restored quota or proposal completion. Any failure stops for preserved evidence and root disposition.
+
+No GPU family, policy activation, new allocation or scientific read is admitted. After actual outcomes resolve prospective complete comparison membership; do not fabricate missing candidates or treat transport failure as a learning result. Keep root-only,sequential execution,paused heartbeat,zero paid spend,human before8x400 and all separate carrier holds.
+
 ## Goal continuation blocked audit, 2026-10-04T04:26:07.638054+00:00
 
 [Current audit](../receipts/continuation/2026-10-04-four-node-goal-blocked-audit.json) revalidates the original proposer task as terminal: Windows Ready/last result1/no next run,original PID607813 absent,all10 preserved evidence hashes intact,and no response/proposal for the three remaining unspent round9 slots. This is not a live wait. The historical quota refusal remains the last provider evidence; current availability and reset time are unknown because no model probe was made.
