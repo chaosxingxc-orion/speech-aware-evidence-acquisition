@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete-source K16 update preparation helper ready offline, 2026-10-04
+
+[Prepared helper receipt](../receipts/continuation/2026-10-04-k16-update-preparation-helper.json) pins prepare-abstract-update2-v1.py in coordination/context-template-k16-n20-owner227-v1. Its no-admission rehearsal correctly returned HELD before any result read, write, reservation, model or scoring contact. All16 existing immutable policy parent closures were independently loaded and verified. Syntax and the shared211-test input/update interfaces are checked; real helper execution remains pending.
+
+After exact full18-member root READ and the separately admitted v2 abstract projection, root may record update2-preparation-admission-v1.json under the N20 entry readiness directory with exact source pins. The helper reuses public complete-family qualification, preserves its private qualification packet without executing legacy semantic tasks, then creates a prospectively bound iteration2 private packet and the whitelisted actor view. It never reserves or contacts the actor. Exact output contract, isolated file manifest and contact admission remain separate before one GPT-6.1 Sol batch. No automatic dispatch, selection or adoption follows. Active frozen N20 generation and the paused heartbeat are unchanged.
+
 ## Template-only K16 actor input implemented, 2026-10-04
 
 [Actor-view validation](../receipts/continuation/2026-10-04-context-population-actor-view-engineering.json) records211 related passing tests and full statement coverage for context_population_actor_view. It builds an explicit allowlist from the private registered packet: full node role text and supported assembly, anonymous numeric outputs/terminal feedback, official quality, reliability, measured mean and actual non-first mean sample latency. It cross-checks paired counts/utility/completion/cost/contact totals and preserves actual admission-based non-first timing. Roster index zero is not assumed to be first admission. Knowledge, concrete task values, private IDs/rosters, free-form experience and arbitrary budget annotations are excluded. Abstracted source/measurement provenance remains in the private packet and archive.
