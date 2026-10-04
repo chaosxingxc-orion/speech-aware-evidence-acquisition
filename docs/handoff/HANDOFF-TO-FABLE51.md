@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Template-only consumption implementation verified, 2026-10-04T16:38:11.031630+00:00
+
+[Validation v3](../readiness/2026-10-04-template-first-feedback-v1/validation-v3.json) confirms146 learner/proposal tests,100% statement coverage and engineering-base PASS. Actual aggregate-only actor instructions prioritize Solver/Reviewer consumption under the fixed-supply working hypothesis; zero individual cases/source rosters/knowledge contents enter the view. All80 numeric rows and complete backend inheritance remain. Real-file projected view31,005 bytes is not a measured latency/quality gain. Use the zero-case profile prospectively after the current complete TF evaluation. Preserve existing frozen trials and callback identity; no new-profile contacts or admission.
+
+
+## Template-only consumption priority, 2026-10-04T16:30:54.393335+00:00
+
+The [latest direct owner amendment](../receipts/owner/2026-10-04-template-only-consumption-priority.json) treats current knowledge supply as sufficient for this stage and prioritizes consumption. Rank joint Solver/Reviewer instructions first,context organization/handoffs second,Planner revision/stop decisions third,Perception presentation fourth. Keep runtime knowledge unchanged. The learner receives editable templates/assembly and aggregate system feedback only: no knowledge/construction/supply content,expanded source lists or default per-sample cases. Use [zero-case profile and priorities](../readiness/2026-10-04-template-first-feedback-v1/consumption-priorities.md) prospectively. This supersedes the earlier immediate raw-case capsule work,not complete backend provenance or existing trial contracts. TF120 trial remains frozen and unread until complete exact root READ.
+
+
 ## Template actor-view provenance bounded, 2026-10-04T16:26:27.653801+00:00
 
 [Validation v2](../readiness/2026-10-04-template-first-feedback-v1/validation-v2.json) records the real-file source of prompt bloat: repeated cumulative-source rosters. Preserve full archive/compiler inheritance; send exact hashes/counts plus complete editable template fields. Original TF input6,923,909 bytes projects to66,113 bytes, all80 numeric rows retained.145 learner/proposal tests pass,100% statement coverage. No new-profile model contact or measured speed/quality claim. Twelve raw case sources still total8,079,266 characters and must NOT be automatically inlined; build bounded source-linked structural/model-output capsule views before future admission. Current frozen TF120 trial and original callback are unchanged.

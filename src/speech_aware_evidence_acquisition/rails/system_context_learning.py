@@ -267,6 +267,16 @@ def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
             "Use all-template measured outcomes and bounded stratified cases. Keep knowledge, retrieval, "
             "construction, runtime interfaces and decoding fixed. Do not request a semantic summary for every row. "
             "Retain failed, negative and no-change evidence; changes remain hypotheses until full-system evaluation.")
+        if feedback_profile["examples_per_template"] == 0:
+            packet["reflection_task"]["instructions"] = (
+                "Optimize complete node templates and supported context assembly using aggregate system feedback. "
+                "Treat adequate existing knowledge supply as the working hypothesis; keep knowledge, retrieval, "
+                "construction, runtime interfaces and decoding fixed. Prioritize Solver/Reviewer evidence use "
+                "and justified revision, then context organization and handoffs, then Planner revision/stop/delivery "
+                "decisions, then Perception presentation. Follow the registered component selector when applicable. "
+                "Do not request individual cases or source rosters. Retain failed, negative and no-change evidence. "
+                "Evaluate complete-system quality, intent, reliability and mean/non-first sample latency; "
+                "do not infer causal node credit or promise positive gains from these aggregates.")
         packet["reflection_task"]["fidelity"] = "Prospective template-batch reflection study adaptation; not unchanged upstream reproduction."
     packet["input_sha256"] = content_hash(packet)
     for policy in policies.values():

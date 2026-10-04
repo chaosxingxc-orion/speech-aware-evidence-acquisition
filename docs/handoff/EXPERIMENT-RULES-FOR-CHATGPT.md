@@ -1,5 +1,10 @@
 # Experiment rules for the ChatGPT side
 
+## Template-only consumption priority, 2026-10-04T16:30:54.393335+00:00
+
+The [latest direct owner amendment](../receipts/owner/2026-10-04-template-only-consumption-priority.json) treats current knowledge supply as sufficient for this stage and prioritizes consumption. Rank joint Solver/Reviewer instructions first,context organization/handoffs second,Planner revision/stop decisions third,Perception presentation fourth. Keep runtime knowledge unchanged. The learner receives editable templates/assembly and aggregate system feedback only: no knowledge/construction/supply content,expanded source lists or default per-sample cases. Use [zero-case profile and priorities](../readiness/2026-10-04-template-first-feedback-v1/consumption-priorities.md) prospectively. This supersedes the earlier immediate raw-case capsule work,not complete backend provenance or existing trial contracts. TF120 trial remains frozen and unread until complete exact root READ.
+
+
 ## Progressive template-first feedback amendment, 2026-10-04T15:56:57.346973+00:00
 
 The [latest direct owner input](../receipts/owner/2026-10-04-progressive-template-first-feedback.json) prioritizes complete node template/assembly optimization with fixed knowledge/retrieval/construction first. Knowledge-content optimization is a later reviewed stage. Aggregate full-family numeric outcomes by template and sample bounded, balanced source evidence; stop requiring per-sample semantic summaries/comparisons in future iterations. Preserve spent original TF callbacks and all four original children; finish their current engineering and exact120-trajectory evaluation without retroactively changing the registered baseline. Future feedback flow needs a prospective version and exact actor/runtime budgets. Keep fixed400 sources, complete-family READ, separate algorithms, paused heartbeat and human-before8x400.

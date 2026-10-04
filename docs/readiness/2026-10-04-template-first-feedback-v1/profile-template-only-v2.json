@@ -1,0 +1,9 @@
+{
+  "example_sampling": "stratified-stable-hash-v1",
+  "examples_per_template": 0,
+  "phase": "template-only",
+  "schema": "saea-template-feedback-profile-v1",
+  "selection_seed": 20261004,
+  "semantic_comparisons": false,
+  "semantic_summaries": false
+}

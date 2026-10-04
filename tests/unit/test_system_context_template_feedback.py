@@ -192,8 +192,8 @@ def test_actor_policy_view_keeps_all_editable_text_without_expanding_provenance(
         assert "cumulative_sources" not in p
         assert p["schema"] == "saea-template-policy-view-v1"
         assert p["source_policy_sha256"] == content_hash(parent)
-        assert p["exposure_commitment"]["sha256"] == content_hash(parent["cumulative_sources"])
-        assert p["exposure_commitment"]["source_records"] == len(parent["cumulative_sources"])
+        assert set(p) == {"schema", "source_policy_sha256", "role_text", "context_layout", "node_context"}
+        assert not any(k in p for k in ("knowledge", "construction_instruction", "construction_receipt", "supply", "exposure_commitment"))
         assert p["role_text"] == parent["role_text"]
         assert p["context_layout"] == parent["context_layout"]
         assert p["node_context"] == parent["node_context"]
@@ -208,3 +208,41 @@ def test_actor_policy_view_keeps_all_editable_text_without_expanding_provenance(
         parent = f.policies[update["proposal"]["candidate_id"]].as_json()
         child = f.archive.load_policy(update["bundle_id"]).as_json()
         assert all(source in child["cumulative_sources"] for source in parent["cumulative_sources"])
+
+
+
+def test_aggregate_only_profile_never_sends_sample_cases_or_knowledge(tmp_path, monkeypatch):
+    f = iteration_fixture(tmp_path, monkeypatch, algorithm="tf-grpo-context-diversity")
+    plan = configure(f)
+    plan["feedback_profile"]["examples_per_template"] = 0
+    f.protocol["iteration_plan"] = pin(f.root, "iteration-plan.json", plan)
+    repin(f)
+    original = f.callbacks.propose
+    def check(view):
+        assert view["rows_scored"] == 80
+        assert view["omissions"]["numeric_rows_omitted"] == 0
+        assert view["omissions"]["unsampled_trajectories"] == 80
+        assert all(t["examples"] == [] for t in view["templates"])
+        assert "slurp:train:" not in json.dumps(view)
+        assert all(sum(t["category_counts"].values()) == 20 for t in view["templates"])
+    def experience(task):
+        check(task["template_feedback"])
+        return {"value": [], "provenance": {"kind": "synthetic"},
+                "usage": dict.fromkeys(("provider_contacts", "input_tokens", "output_tokens"), None)}
+    def propose(task):
+        check(task["qualified_input"]["template_feedback"])
+        instructions = task["qualified_input"]["reflection_task"]["instructions"]
+        assert "Solver/Reviewer" in instructions
+        assert "working hypothesis" in instructions
+        assert "Do not request individual cases or source rosters" in instructions
+        assert "bounded stratified cases" not in instructions
+        for parent in task["qualified_input"]["policies"].values():
+            assert set(parent["policy"]) == {"schema", "source_policy_sha256", "role_text", "context_layout", "node_context"}
+        assert "slurp:train:" not in json.dumps(task)
+        return original(task)
+    f.callbacks = replace(f.callbacks, summarize=None, compare=None, update_experience=experience, propose=propose)
+    d = run(f, "tf-grpo-context-diversity")
+    assert d["status"] == "retained-for-optimization", d["error"]
+    assert f.calls == ["propose"] * 4 + ["evaluate"]
+    assert d["accounting"]["callback_counts"]["summarize"] == 0
+    assert d["accounting"]["callback_counts"]["compare"] == 0

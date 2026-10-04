@@ -1,0 +1,59 @@
+{
+  "schema": "saea-template-only-consumption-validation-v3",
+  "at_utc": "2026-10-04T16:38:11.031630+00:00",
+  "owner_receipt": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/owner/2026-10-04-template-only-consumption-priority.json",
+    "sha256": "f44be4126a3707b34d3ce63df434ffb5c817f9dc2be3f1dc1cad9535c54f890b"
+  },
+  "profile": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-template-first-feedback-v1/profile-template-only-v2.json",
+    "sha256": "efa2fc805286bb9ccaa82152e88d4875d0f3a2ddcb1f0a0d74f3b7147dc31bb7"
+  },
+  "rehearsal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-n20-owner227-v1/template-feedback-rehearsal-v3.json",
+    "sha256": "968c18921500104f966d037d03a0435fc0e78dbfc085fb12d15ea20d747c7a20"
+  },
+  "tests": {
+    "passed": 146,
+    "statement_coverage_percent": {
+      "system_context_learning": 100,
+      "system_context_template_feedback": 100
+    },
+    "engineering_base_check": "PASS",
+    "test_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python -B -m coverage run --source=speech_aware_evidence_acquisition.rails.system_context_learning,speech_aware_evidence_acquisition.rails.system_context_template_feedback -m pytest tests/unit/test_system_context_template_feedback.py tests/unit/test_system_context_learning.py tests/unit/test_system_context_iteration.py tests/unit/test_system_context_proposals.py -q"
+  },
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+      "sha256": "1a4289a7a5c69f002773b68c2cb241f19c65f33cd73a88709be85454a235e5ea"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_template_feedback.py",
+      "sha256": "8b3b8ea91494c683f08c23e482aeebf2fddea64343cc535e11475f6e7ffefbde"
+    },
+    {
+      "relpath": "tests/unit/test_system_context_template_feedback.py",
+      "sha256": "e036e69381eb81eadd5bf8b8f9c3d2bec9f1d12df7ce01162d442ba75d338d9b"
+    }
+  ],
+  "scope": {
+    "runtime_knowledge_fixed": true,
+    "individual_examples": 0,
+    "semantic_summaries": 0,
+    "semantic_comparisons": 0,
+    "all_numeric_candidate_rows": 80,
+    "source_rosters_sent_to_learner": false,
+    "full_backend_provenance_inherited": true
+  },
+  "claims": {
+    "new_profile_contacts": 0,
+    "proposer_admission": false,
+    "runtime_admission": false,
+    "measured_speed_or_quality_gain": false
+  },
+  "validation_notes": [
+    "The first test invocation resolved the installed main checkout because PYTHONPATH was omitted. It was not used as worktree validation. The corrected isolated invocation failed on the new instruction assertion before implementation.",
+    "pytest-cov is not installed; coverage run was used. A singular proposal-test filename typo collected no tests; the recorded final run uses the existing plural filename.",
+    "All repairs were model-free. Frozen runtime/learner sources, original input/response and allocations are unchanged."
+  ]
+}

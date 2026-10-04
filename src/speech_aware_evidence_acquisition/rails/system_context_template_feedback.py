@@ -26,7 +26,7 @@ def validate_template_profile(profile):
             and profile["semantic_summaries"] is False and profile["semantic_comparisons"] is False
             and type(profile["selection_seed"]) is int
             and type(profile["examples_per_template"]) is int
-            and 1 <= profile["examples_per_template"] <= 8,
+            and 0 <= profile["examples_per_template"] <= 8,
             "bounded template-only feedback profile required")
     return profile
 
@@ -96,18 +96,13 @@ def template_feedback(packet, profile):
 
 
 def _policy_view(policy):
-    """Retain editable text and bind full exposure without repeating rosters."""
-    sources = policy["cumulative_sources"]
-    ids = [sid for source in sources for sid in source["sample_ids"]]
-    return {**{k: v for k, v in policy.items() if k != "cumulative_sources"},
-        "schema": "saea-template-policy-view-v1", "source_policy_sha256": content_hash(policy),
-        "exposure_commitment": {"sha256": content_hash(sources), "source_records": len(sources),
-            "sample_occurrences": len(ids), "distinct_samples": len(set(ids)),
-            "storage": "Complete immutable parent bundle; inherited by the shared compiler, never deleted."}}
+    """Expose only the template edit surface; retain full provenance in the archive."""
+    return {"schema": "saea-template-policy-view-v1", "source_policy_sha256": content_hash(policy),
+            **{key: policy[key] for key in ("role_text", "context_layout", "node_context")}}
 
 
 def proposer_view(packet):
-    """Keep full policies and template statistics, not all per-input record trees."""
+    """Keep complete editable templates and statistics, not per-input record trees."""
     if "template_feedback" not in packet:
         return packet
     feedback = packet["template_feedback"]

@@ -1,0 +1,30 @@
+{
+  "schema": "saea-owner-template-only-consumption-priority-v1",
+  "at_utc": "2026-10-04T16:30:54.393335+00:00",
+  "source": "Two latest direct owner messages in this root conversation after the template-feedback real-file rehearsal.",
+  "complete_english_translations": [
+    "At the current stage, focus only on optimizing templates, similar to skill optimization. Do not mix knowledge into it. The expanded source lists do not need to be given to the learner for analysis.",
+    "Note that this is based on a judgment: our explicit optimization opportunity is that knowledge supply is sufficient while the knowledge consumption stage still needs improvement. Use this analysis to identify and rank priorities."
+  ],
+  "resolved_scope": {
+    "working_judgment": "Treat existing knowledge supply as sufficient for the present optimization stage; seek improvements in consumption. This directs engineering/search effort and is not a proof that every input has complete knowledge.",
+    "learner_inputs": "Complete editable role templates and supported assembly parameters, plus aggregate full-system measurements. Exclude knowledge content, construction instructions/receipts, supply definitions and expanded cumulative-source rosters from the model policy view. Default to zero individual-case payloads. Keep complete provenance and knowledge/runtime assets in the backend.",
+    "priorities": [
+      "Joint Solver/Reviewer evidence use and revision quality.",
+      "Role-local context organization and accurate latest-state handoffs.",
+      "Planner revision/stop/delivery decisions and unnecessary repeat work.",
+      "Perception evidence presentation only when it enables downstream consumption; no new ASR or knowledge production."
+    ],
+    "not_in_scope": [
+      "Knowledge library rebuild or enrichment",
+      "Retrieval-model or supply-algorithm changes",
+      "Knowledge construction search",
+      "Per-sample semantic summarization",
+      "Sending source rosters to the learner"
+    ],
+    "evaluation": "Compare complete template systems on the same inputs. Preserve official SLU-F1, intent and reliability alongside mean/non-first sample latency. Use automatic aggregate counts and cost attribution for diagnosis, not invented node causal rewards.",
+    "running_trial": "Preserve exact original four TF children and currently running120-trajectory comparison. No new mutation, proposer, rerun or partial-family quality read. Apply the tightened learner view prospectively.",
+    "bounds": "Owner227, same fixed400 assets, frozen Omni, T0/fixedseed, paused heartbeat, no paid API, human before8x400, other-carrier holds unchanged."
+  },
+  "new_contacts_from_this_record": 0
+}
