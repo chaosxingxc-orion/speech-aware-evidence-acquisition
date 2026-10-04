@@ -1,0 +1,290 @@
+[
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-01-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-01-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-01-capacity-fit-plan-registered-v1.json",
+      "sha256": "44723384d79311e68c15db210712eb41f19a26df3b7dcdde9a5d50ecdcec7090"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-01-capacity-analysis-recipe-v1.json",
+      "sha256": "190b0f9f6465de58d26c1557a82be408f26bcb14ce49f095f426bf6d2d0ace4c"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-01-CAPACITY-FIT-V1",
+    "system_id": "branch-01"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-02-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-02-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-02-capacity-fit-plan-registered-v1.json",
+      "sha256": "2f79297eaeb91241fe4aa41b6d168383be6d8a7e251142c5585cdd666208925e"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-02-capacity-analysis-recipe-v1.json",
+      "sha256": "612a69b2019a5b5e040e0c592a4a09165ccc95fb824b3f53b9d2296b8d72d878"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-02-CAPACITY-FIT-V1",
+    "system_id": "branch-02"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-03-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-03-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-03-capacity-fit-plan-registered-v1.json",
+      "sha256": "292ef3ab31c291ebe6c41ea10ef591924f257f8be8484e03c48050070879e08e"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-03-capacity-analysis-recipe-v1.json",
+      "sha256": "f5eb1efca545da965bab8bfda209fe62fbbb71b4a693baa9dfdd8c0155daf700"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-03-CAPACITY-FIT-V1",
+    "system_id": "branch-03"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-04-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-04-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-04-capacity-fit-plan-registered-v1.json",
+      "sha256": "ac4d9fb81b0a14680140ccda2354521b5ba875e5825e70f875ec837e83484d71"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-04-capacity-analysis-recipe-v1.json",
+      "sha256": "22d6566625ce01c15e536edf434a1b687e58e8ba10f47985310218ec5f5cac63"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-04-CAPACITY-FIT-V1",
+    "system_id": "branch-04"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-05-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-05-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-05-capacity-fit-plan-registered-v1.json",
+      "sha256": "5ba14ef35dbe628f25de8beffc02866509397dcbca4eb7a0178b575f48e2947a"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-05-capacity-analysis-recipe-v1.json",
+      "sha256": "96fcef99a654d4c8ad0af2a9c1872710e0dffb872513900266d1e9c60964af98"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-05-CAPACITY-FIT-V1",
+    "system_id": "branch-05"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-06-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-06-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-06-capacity-fit-plan-registered-v1.json",
+      "sha256": "0993d3a8e8908afe3aa2b008845d622a40980846847336c688877605821442a8"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-06-capacity-analysis-recipe-v1.json",
+      "sha256": "2c61731c8ba7d15ebb60f026124fd90e7cd5feae11bbe47996f60f1f33ee5ca9"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-06-CAPACITY-FIT-V1",
+    "system_id": "branch-06"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-07-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-07-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-07-capacity-fit-plan-registered-v1.json",
+      "sha256": "4b5c1e40dbd1c3dadf993a8939268cd72554146d6c15234461c9d7aa031ee670"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-07-capacity-analysis-recipe-v1.json",
+      "sha256": "4d444d1896cf56ff3956b58bccb02a5cc6491cd1a7c0cc7bdd42840f26e77dd5"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-07-CAPACITY-FIT-V1",
+    "system_id": "branch-07"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-08-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-08-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-08-capacity-fit-plan-registered-v1.json",
+      "sha256": "777a8e7b85f506e4ea1abb12226a818962a1a8e8697ee4ce1a99f684e60fdbac"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-08-capacity-analysis-recipe-v1.json",
+      "sha256": "99368ef7f0d20d9e503276a218b5b7c9f52784bb90df8750f437bc00fc49a79f"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-08-CAPACITY-FIT-V1",
+    "system_id": "branch-08"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-09-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-09-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-09-capacity-fit-plan-registered-v1.json",
+      "sha256": "5f4c59f5f33a4a4790ba1533104aa7a32952ebb927c8813e5686906827145783"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-09-capacity-analysis-recipe-v1.json",
+      "sha256": "5f42c752f32e65fb8e47a893f210fb66822a309394453f0cc66e831d1d613e0b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-09-CAPACITY-FIT-V1",
+    "system_id": "branch-09"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-10-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-10-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-10-capacity-fit-plan-registered-v1.json",
+      "sha256": "a24a165ccbe897a4282971480a0298ab2314577735a8c80e1c27cb2cb79168dc"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-10-capacity-analysis-recipe-v1.json",
+      "sha256": "6c2d9ded2373c467ed62e81e7df2b3823e8f202fada221080e333d9286cbdde1"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-10-CAPACITY-FIT-V1",
+    "system_id": "branch-10"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-11-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-11-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-11-capacity-fit-plan-registered-v1.json",
+      "sha256": "2cd1682bcffe1000060fd18e15334e164e1fb1a8080983d2f521520aaba60f49"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-11-capacity-analysis-recipe-v1.json",
+      "sha256": "5cbb1052310a1eeac576ff8e4f3f8deb90277b4d64edcd18b0cab7cbbd7edef5"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-11-CAPACITY-FIT-V1",
+    "system_id": "branch-11"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-12-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-12-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-12-capacity-fit-plan-registered-v1.json",
+      "sha256": "c2b02599ee852057cc02c498d540d7b438ef629e792b4fbd982b3742191b73e8"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-12-capacity-analysis-recipe-v1.json",
+      "sha256": "4a10d5dd71a5225f02bf8ee2662051de0fa4bda2b0db8689e9ed9dc21036c6f6"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-12-CAPACITY-FIT-V1",
+    "system_id": "branch-12"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-13-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-13-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-13-capacity-fit-plan-registered-v1.json",
+      "sha256": "2e7f64adf074e0c44690e6f2fba34f46172ed80cc0b25d29a6e702a802d44547"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-13-capacity-analysis-recipe-v1.json",
+      "sha256": "79915027c4987af12e8a72a883ed86054f047c0dee58d1c2c862b37a1d2dbd7b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-13-CAPACITY-FIT-V1",
+    "system_id": "branch-13"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-14-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-14-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-14-capacity-fit-plan-registered-v1.json",
+      "sha256": "99aa9494f5fba74bfa5689bde891b5af756d6d743df7f0f741c097ef55ce2613"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-14-capacity-analysis-recipe-v1.json",
+      "sha256": "32bde924a8e37e0a238484b6bd217ae7a5c150ecb990f49405ef923962642e81"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-CAPACITY-FIT-V1",
+    "system_id": "branch-14"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-15-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-15-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-15-capacity-fit-plan-registered-v1.json",
+      "sha256": "f6f047c1d988a781acf5bdb23676ca575b18ab87f088700a678eab85cf8a4cb6"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-15-capacity-analysis-recipe-v1.json",
+      "sha256": "8396698963a60dacb9d3067840c653a313203f97d5e28f107fb1e4220a041a79"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-15-CAPACITY-FIT-V1",
+    "system_id": "branch-15"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-16-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-branch-16-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-16-capacity-fit-plan-registered-v1.json",
+      "sha256": "c1025353954fe9339eade30fa4c3c52b5684bbd5a8e36704d51308d570e63b0c"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-capacity-entry-v1/branch-16-capacity-analysis-recipe-v1.json",
+      "sha256": "33174baaaa387d1bd6877514f09f776e4cd4d349bb3c6703a49e887d4f428998"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-16-CAPACITY-FIT-V1",
+    "system_id": "branch-16"
+  }
+]

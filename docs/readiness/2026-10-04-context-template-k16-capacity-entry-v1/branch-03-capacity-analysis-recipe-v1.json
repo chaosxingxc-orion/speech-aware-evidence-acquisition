@@ -1,0 +1,19 @@
+{
+  "allowed_read": "Capacity/source/endpoint accounting only; no quality or optimizer feedback.",
+  "expected_rows": 20,
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "run_ids": {
+    "capacity": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-03-CAPACITY-FIT-V1",
+    "read": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-03-CAPACITY-STRUCTURE-V1"
+  },
+  "schema": "saea-system-text-engineering-analysis-v1",
+  "score_jobs": 0,
+  "status": "ROOT COUNTERSIGNED structural-only capacity read under owner227"
+}

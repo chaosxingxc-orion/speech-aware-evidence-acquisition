@@ -1,0 +1,49 @@
+{
+  "at_utc": "2026-10-04T18:47:34.885565+00:00",
+  "cell": "slurp-native-stage3-context-template-k16-branch-04-capacity-v1",
+  "composed_config_hash": "cd52c433808c89bd2655a31f2f46cb397efc8a95593fb873870ab8a1126fdff8",
+  "decision_receipt": {
+    "relpath": "coordination/context-template-k16-engineering-owner227-v1/root-capacity-admission-v1.json",
+    "sha256": "e2fcd3ee11e5c68d6ae2ad233653d2a617f67639d81959ea11423746994f394a"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-04-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "aa066daa96ad769cad3d0d2fa310f7a528c8b3c3ac404fd1ce928dcc0d4e775a",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-04-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-k16-branch-04-capacity-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-template-k16-v1/policies/3183decb35b0447055fe9abf480faaa4f165810e6e854139ad1e2c76eb8b10c5.json",
+      "sha256": "3c4cb0a208f79005beb69afe4df47b187125d167da726ac39daf5c95c82c893e"
+    },
+    "bundle_id": "3183decb35b0447055fe9abf480faaa4f165810e6e854139ad1e2c76eb8b10c5",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-04-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "61be488ec3b8b574d5ebd8da7cc60e38808b859e0dca9b205c319a90e0bcd669"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-04-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

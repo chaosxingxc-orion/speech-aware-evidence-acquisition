@@ -1,0 +1,511 @@
+{
+  "arm": "speech-feature-query-native-tools",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "knowledge_stores": {
+    "intent-boundaries": {
+      "phase_supply": {
+        "perception": {
+          "agreement_source": {
+            "embedded_signal": "Pinned update-9 speech-query votes from the frozen source-excluded exemplar pool; no evaluation labels.",
+            "kind": "sealed-agreement",
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1/agreement.jsonl",
+            "sha256": "3e65820a9dd2ccac36dfe4aaa190bd019946b49a656df830eb856ad03591d031",
+            "tool_contact_ledger_row": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1"
+          },
+          "dimensions": [
+            "intent-boundary"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+            "kind": "sealed-vectors",
+            "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+            "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+            "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+          },
+          "fuse_coverage": {
+            "c": 1,
+            "m": 8,
+            "top_l": 8
+          },
+          "fuse_policy": "saea-fuse-associated-values-v1",
+          "k": 60,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by sealed full-utterance segments in the intent-boundary retrieval dimension; segment identities are preserved and no flattening, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-segment-vectors",
+            "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+            "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b",
+            "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 1.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+        "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json",
+        "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+      },
+      "store_role": "intent-boundaries"
+    },
+    "slot-contracts": {
+      "candidate_supply": {
+        "solver": {
+          "candidate_state_phase": "perception",
+          "compact_source_phase": "perception",
+          "fuse_policy": "saea-candidate-semantic-passthrough-v1",
+          "max_candidates": 3,
+          "max_total_values": 28,
+          "max_values_per_candidate": 16,
+          "projection_policy": "bounded-first-occurrence-distinct-slurp-intent-hypotheses-v1",
+          "provider": "slurp-candidate-semantic-v1",
+          "rank_policy": "saea-ranked-candidate-round-robin-v1"
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/release.json",
+        "sha256": "f8e42d4ff1b220f45b26397340149566544cf5b13d7453fbc46a2b5c3400d11b"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/semantic/slot-contracts-v2/snapshot.json",
+        "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
+      },
+      "store_role": "slot-contracts"
+    },
+    "train-exemplars": {
+      "phase_supply": {
+        "solver": {
+          "dimensions": [
+            "content"
+          ],
+          "expose_facets": false,
+          "facet_source": {
+            "embedded_signal": "text: Omni-Embed-Nemotron-3B over the 11,514 governed SLURP TRAIN utterance texts, prompt 'passage: ', mean-pooled and L2-normalised; one vector per content facet id facet:content:<slurp_id>. The KEY side is knowledge text by construction and is unconstrained by the owner's 2026-09-06 query-signal rule.",
+            "kind": "sealed-vectors",
+            "relpath": "vectors/slurp-kus3/facet-vectors.jsonl",
+            "sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+            "tool_contact_ledger_row": "SAEA-SLURP-MF7B-NEMOTRON-EMBEDDING-V1"
+          },
+          "fuse_coverage": {
+            "c": 20,
+            "m": 20,
+            "top_l": 20
+          },
+          "fuse_policy": "saea-fuse-supplyfilter-v1",
+          "k": 20,
+          "provider": "kb-facet-v1",
+          "query_source": {
+            "embedded_signal": "speech: complete original TRAIN Fold A recordings represented by the sealed full-utterance speech vector of the row's own recording, in the content retrieval dimension; flattened from the sealed intent-boundary full-utterance SEGMENT vectors (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json's sibling provenance vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json -- one segment per row, dimension renamed intent-boundary to content, every float byte-identical to the parent) because docs/results/2026-09-17-slurp-a2-exemplar-headroom-audit-v1.md establishes intent-boundary as an alias of the content embedding space; no flattening of MEANING, re-encoding, transcript, answer or future turn enters this query.",
+            "kind": "sealed-vectors",
+            "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+            "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff",
+            "tool_contact_ledger_row": "SAEA-SLURP-TFRL-FOLD-A-SPEECH-QUERY-ENCODING-V1"
+          },
+          "rank_policy": "saea-rank-wcos-prior-agree-v1",
+          "rank_weights": {
+            "w_agree": 0.0,
+            "w_cos": 1.0,
+            "w_prior": 0.0
+          },
+          "tau": 0.0
+        }
+      },
+      "release": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+        "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
+      },
+      "snapshot": {
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+        "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+      },
+      "store_role": "train-exemplars"
+    }
+  },
+  "native_contact_fit": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-03-smoke-4-fit-v1",
+    "contact_cap": 208,
+    "max_speech_packets": 1,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-03-SMOKE-4-FIT-V1"
+  },
+  "native_episode": {
+    "actions": {
+      "accept": "ACCEPT",
+      "acquire": "ACQUIRE",
+      "revise": "REVISE"
+    },
+    "consumption_module": {
+      "columns": [],
+      "components": [
+        {
+          "admitted_by": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+          "component_id": "agree-vote-seed",
+          "params": {
+            "agreement_source": {
+              "embedded_signal": "Pinned update-9 speech-query votes from the frozen source-excluded exemplar pool; no evaluation labels.",
+              "kind": "sealed-agreement",
+              "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1/agreement.jsonl",
+              "sha256": "3e65820a9dd2ccac36dfe4aaa190bd019946b49a656df830eb856ad03591d031",
+              "tool_contact_ledger_row": "SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1"
+            },
+            "k": 60,
+            "w_agree": 1.0
+          },
+          "record": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+          "state": "on"
+        },
+        {
+          "admitted_by": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+          "component_id": "centroid-boundary-key",
+          "params": {
+            "facet_source": {
+              "embedded_signal": "text: the intent's unit-normalised MEAN construction-TRAIN utterance vector (R01-excluded pool, one centroid per released intent-boundary facet; the one intent with no pool member keeps the flown written key), arithmetic over the pinned pool key vectors at zero encoder contacts; the key side is knowledge, the delivered body is unchanged.",
+              "kind": "sealed-vectors",
+              "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/facets.jsonl",
+              "sha256": "16c33640151cff6428bc50e4f00ced93b35f76fa186b8d08fcefdfdb33fd5532",
+              "tool_contact_ledger_row": "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1"
+            }
+          },
+          "record": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+          "state": "on"
+        },
+        {
+          "component_id": "solver-citation-contract",
+          "state": "off"
+        },
+        {
+          "component_id": "reviewer-g5-repair",
+          "state": "off"
+        },
+        {
+          "component_id": "relisten",
+          "state": "off"
+        },
+        {
+          "component_id": "top2-contrast",
+          "state": "off"
+        },
+        {
+          "component_id": "forced-candidate-list",
+          "state": "off"
+        },
+        {
+          "component_id": "key-source:k6p",
+          "state": "off"
+        },
+        {
+          "component_id": "scope-rule",
+          "state": "off"
+        },
+        {
+          "component_id": "e3-progressive-slots",
+          "state": "off"
+        },
+        {
+          "component_id": "supply-abstain",
+          "state": "off"
+        },
+        {
+          "admitted_by": "docs/readiness/2026-10-01-slurp-knowledge-opportunity-v1/owner-decisions.md",
+          "component_id": "construction-store-binding",
+          "params": {
+            "release": {
+              "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+              "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
+            },
+            "snapshot": {
+              "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+              "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+            },
+            "store_id": "train-exemplars"
+          },
+          "record": "docs/readiness/2026-10-01-slurp-knowledge-opportunity-v1/owner-decisions.md",
+          "state": "on"
+        },
+        {
+          "admitted_by": "Owner-approved bounded exploration only; no effectiveness admission",
+          "component_id": "knowledge-consumption-opportunity",
+          "params": {
+            "mode": "targeted",
+            "perception_template": "probes/system-text-policy/39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7/perception.txt",
+            "planner_template": "probes/system-text-policy/39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7/planner.txt",
+            "reviewer_response_format_id": "saea-slot-review-handoff-v1",
+            "reviewer_template": "probes/system-text-policy/39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7/reviewer.txt",
+            "solver_template": "probes/system-text-policy/39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7/solver.txt",
+            "store_id": "slot-contracts",
+            "value_limit": 2
+          },
+          "record": "docs/readiness/2026-10-01-slurp-knowledge-opportunity-v1/owner-decisions.md",
+          "state": "on"
+        },
+        {
+          "admitted_by": "owner227; direct node optimization scope",
+          "component_id": "node-context-presentation",
+          "params": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "per-role"
+          },
+          "record": "docs/receipts/owner/2026-10-04-node-optimization-space.json",
+          "state": "on"
+        }
+      ],
+      "lock": "v2.1",
+      "module_id": "saea-evidence-consumption-module-v1",
+      "profile": "slurp"
+    },
+    "context_fit_policy": "compact-or-abstain",
+    "deliver_normaliser": {
+      "normaliser": "saea-deliver-normalise-v3"
+    },
+    "episode_id": "slurp-native-dual-store-dev1000-v1",
+    "exhaustion_policy": "deliver-latest-solver",
+    "finite_completion_policy": "deliver-latest-or-abstain",
+    "max_revisions": 1,
+    "react_exhaustion_policy": "continue-without-answer",
+    "review_handoff": "slot-issues-v1",
+    "review_loop": "on",
+    "roles": {
+      "perception": {
+        "max_iterations": 1,
+        "phase_id": "perception"
+      },
+      "planner": {
+        "max_iterations": 2,
+        "phase_id": "planner"
+      },
+      "reviewer": {
+        "history_scope": "full",
+        "max_iterations": 3,
+        "phase_id": "reviewer"
+      },
+      "solver": {
+        "max_iterations": 1,
+        "phase_id": "solver"
+      }
+    },
+    "schema": "saea-native-episode-config-v1",
+    "tool_schema_rendering": "per-role"
+  },
+  "native_role_query_placement": "before-speech-v1",
+  "phase_material": {
+    "perception": {
+      "fill_params": {
+        "id": "slurp-intent-hypotheses-v1",
+        "max_candidates": 3,
+        "max_distinction_chars": 128,
+        "max_evidence_refs": 0,
+        "max_unresolved_fields": 0,
+        "min_candidates": 1,
+        "source_catalog": {
+          "data_relpath": "prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+          "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263",
+          "source_sha256": "deb4e097459157a719e34b3fb46014d5f9bcb86c9e952014c1e02f26474db201"
+        }
+      },
+      "instruction_fill": null,
+      "instruction_template": "probes/system-text-policy/39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7/perception.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "slurp-intent-hypotheses-v1",
+      "state_fill": null
+    },
+    "planner": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/system-text-policy/39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7/planner.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    },
+    "reviewer": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/system-text-policy/39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7/reviewer.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "saea-slot-review-handoff-v1",
+      "state_fill": null
+    },
+    "solver": {
+      "fill_params": {},
+      "instruction_fill": null,
+      "instruction_template": "probes/system-text-policy/39fc581f0401837f17075a426654ca59eb2f35fa661e404fe5f82ff85d3be8c7/solver.txt",
+      "predecessor_binding": "none",
+      "response_format_id": null,
+      "state_fill": null
+    }
+  },
+  "phase_tools": {
+    "planner": {
+      "allowed_tools": [
+        "saea-tool-knowledge-target-lookup-v1"
+      ],
+      "candidate_limit": 2,
+      "knowledge_selection_mode": "targeted",
+      "knowledge_store_ids": [
+        "slot-contracts"
+      ],
+      "knowledge_target_axis": "slot-type",
+      "knowledge_value_limit": 2,
+      "knowledge_values_per_candidate": 1,
+      "knowledge_views": [
+        "text"
+      ],
+      "max_calls_per_sample": 1,
+      "mode": "native-tools",
+      "source_authority_role": "planner"
+    }
+  },
+  "policy": "phase-native-slot-review-contract-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/release.json",
+      "root": "data",
+      "sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",
+      "root": "data",
+      "sha256": "ebd60aca7e16e647c750a59370fce8010d55f3b57375d202817a4a08da1f4a5e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/release.json",
+      "root": "data",
+      "sha256": "8a29c48bfc5aed2eb27ce38073252d3fc608c9102aa8b8095a072667289b4f3e"
+    },
+    {
+      "relpath": "knowledge/slurp/semantic/slot-contracts-v1/completion.json",
+      "root": "data",
+      "sha256": "7acb644871b037f7123adec0c8fd7283ab9215d67c12fc0a32748a67a0f9dc51"
+    },
+    {
+      "relpath": "preparation-runs/SAEA-SLURP-INTENT-BOUNDARY-KEY-ENCODING-V1/encode-v1/receipt.json",
+      "root": "data",
+      "sha256": "3c152fc086ed1d1858f5b3021a336570d1b68c87f9c3a5abbe16209c009e2653"
+    },
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-minus-r01.json",
+      "root": "repository",
+      "sha256": "e4d7bb61a65dd17d42c3d601c4b3bd33effe48920dd59cb2e9232e739221d1c4"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "root": "repository",
+      "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd"
+    },
+    {
+      "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.jsonl",
+      "root": "data",
+      "sha256": "ebaa743241a67a2cb759353fa8a9f58a3f09d27c00c8c66cb3172958dcccc1b8"
+    },
+    {
+      "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-segments.provenance.json",
+      "root": "data",
+      "sha256": "10e6479c9ae201a267067353e8746a39fbb3904db8772a3da5d1dc93af6c09cc"
+    },
+    {
+      "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl",
+      "root": "data",
+      "sha256": "dd3b2924cda10810487b2b114e61380beaf8477634c602096b875e461ae44baa"
+    },
+    {
+      "relpath": "vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.provenance.json",
+      "root": "data",
+      "sha256": "e259ea1a80799bac906942bc1eb7d0a42443064a3696f35cc94507d5209634e9"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/plan.json",
+      "root": "repository",
+      "sha256": "883a2db2b3e96c1447003c8cd5f06d4d3b970f8e71d81f21cfd175a73d538888"
+    },
+    {
+      "relpath": "docs/receipts/owner/2026-10-02-decision224-fixed400-context-postcall.json",
+      "root": "repository",
+      "sha256": "1ec142d3893025a5f8daef70367604c5ab3bc7e683fde5351e169364a426bdf7"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-system-text-update-2-400-v1.json",
+      "root": "repository",
+      "sha256": "ca3ec9d7cb1269018c7e01b5812a3a74474db9ea177c7512b0e6ab5df8f619d5"
+    },
+    {
+      "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+      "root": "repository",
+      "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+      "root": "repository",
+      "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+    },
+    {
+      "relpath": "vectors/slurp-intent-boundaries-train-fold-a-1080-v1/query-vectors-speech-segments.jsonl",
+      "root": "data",
+      "sha256": "e7a5b2264dc61fcab3c63d50fb645d4629d3f0a99f83ad5fbe323c73884e5f0b"
+    },
+    {
+      "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.jsonl",
+      "root": "data",
+      "sha256": "d0f06ed21c6a576d8118d5a914e34807c24a3d3523d89e7b30d90575d24104ff"
+    },
+    {
+      "relpath": "vectors/slurp-exemplars-pool/query-vectors-speech-content-v1.provenance.json",
+      "root": "data",
+      "sha256": "96e0c924d7d5f2ef431d425d35e99774adca72d838a756d5458c7856f7c757ed"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-system-common-fold-a-v1.json",
+      "root": "repository",
+      "sha256": "abc7a02676f7368a52a7e908ee7b50b794932059f09126c0f8a144d4e36cc85b"
+    },
+    {
+      "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE-2-AGREEMENT-V1/receipt.json",
+      "root": "data",
+      "sha256": "570c7a5cea16eee2219ea41d7ce46221a01e6640f8e31cd7070e6dae1747c465"
+    },
+    {
+      "relpath": "configs/dataset/slurp-speech-native-system-text-pilot20-owner220-v1.json",
+      "root": "repository",
+      "sha256": "138a727592e6e9d376a3a629227cec37bb0c85988e4b127e7838cc0eac63acff"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-system-text-pilot20-rh1-l-parent-v1.json",
+      "root": "repository",
+      "sha256": "0b05a5f424210f4f91c22ea9340d1e34a12929dc86a5519f853f9dd58a74febe"
+    }
+  ],
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-03-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "8fbc432899ff87c127242ef6472224ef5fedcbf7741f7baa7effd2c1015b301a"
+  },
+  "scorers": [
+    "slurp-slu-official-train",
+    "cost"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-v1:query-speech",
+  "speech_feature_matcher_policy_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-v1",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json",
+  "speech_packet_promotion_receipt_sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247",
+  "system_search_measurement": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "task_instruction_fill": "slurp-label-inventory",
+  "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
+  "task_instruction_template_active": true,
+  "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
+  "what_this_is": "HELD K16 original template population complete-system child engineering. Reuse immutable UPDATE2 speech, knowledge, queries and votes. Own capacity/structural/scientific admission required; no task-quality read from engineering."
+}

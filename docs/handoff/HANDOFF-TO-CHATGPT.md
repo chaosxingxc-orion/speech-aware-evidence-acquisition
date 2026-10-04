@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## K16 preparation complete; capacity entry registered, 2026-10-04T18:52:14.825710+00:00
+
+All CPU preparation processes above have exited0; do not restart them. [Engineering preparation](../receipts/continuation/2026-10-04-template-k16-engineering-prepared.json) covers48 warm-verified graph/capacity/four-row structural configurations across all16 original policies. [Scientific preparation](../receipts/continuation/2026-10-04-template-k16-n20-prepared.json) covers all18 exact N20 members, unchanged formal seed/A/A and16 original branches,360 trajectories. Every selection output remains equal to its source; no data/knowledge rebuild or model/scorer contact. The same-family A/A identity and18 algorithm labels are checked. Scientific generation remains HELD.
+
+[Exact capacity registration](../readiness/2026-10-04-context-template-k16-capacity-entry-v1/README.md) and16 plans are complete, with root227 admission for at most297 tokenizer endpoints per original branch,4752 total, zero generation/scoring. Freeze a clean worker at the committed preparation, run `context-template-k16-engineering-owner227-v1/frozen-check-v1.py` with SAEA_EXPECTED_COMMIT and the matching PYTHONPATH, finalize the registration, then separately launch its pinned Windows wrapper. No capacity contact has occurred yet. Retain original queue/STOP/service; no control reconciliation is needed for the independent capacity lease.
+
+[Gate evidence](../readiness/2026-10-04-template-k16-n20-v1/engineering-gates-v1.json): engineering-base PASS and all48 new engineering labels PASS. Global algorithm-label check reports two preexisting immutable historical capacity configurations with empty operators_used; bytes are unchanged from615f34bcf. Preserve those exact historical sources and report the limitation; do not claim the global check passed. Per-member frozen registration/runtime checks are still required.138 related tests pass and the shared population scope has100% statement coverage.
+
+Prospective next entry helper `context-template-k16-n20-owner227-v1/prepare-entry-v1.py` requires64 structurally accepted rows first. It registers all18 members with the exact K16 owner pin, TF-only algorithm scope,4680 maximum generation contacts,18720 request-FIT endpoints and18 unique complete official score jobs. It is not executed. After full-family root READ, any next abstract learner input needs a new source binding; never answer the old K4 callback. Preserve formal seed,N20,fixed decoding/knowledge/data,sequential scheduling,paused heartbeat,other-carrier holds and human-before8x400.
+
 ## K16 compiled; bounded CPU preparations active, 2026-10-04T18:43:49.314244+00:00
 
 [All16 original branches compiled](../receipts/continuation/2026-10-04-template-k16-compiled.json) through the existing immutable policy/archive/consumption compiler and actual role-byte binding verifier. Each branch inherits the full cumulative exposure of all eight observed initial/rejected policies plus source families, frozen TRAIN reference and exact abstract input/original response. Knowledge, supply, construction, seed configuration and runtime experience remain unchanged. No actor response was edited. The first offline helper correctly stopped on a reduced rejected-policy view; its uncontacted v1 remains preserved, and v2 verifies the exact source-policy hash and editable bytes against the full archive before inheritance. No model/scorer contact or runtime incident occurred.
@@ -1834,7 +1844,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T18:43:49.314244+00:00
+Last refreshed: 2026-10-04T18:52:14.825710+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

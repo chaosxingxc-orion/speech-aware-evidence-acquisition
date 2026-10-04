@@ -1,0 +1,17 @@
+{
+  "schema": "saea-template-k16-n20-preparation-complete-v1",
+  "at_utc": "2026-10-04T18:51:30.086878+00:00",
+  "prepared_members": {
+    "relpath": "docs/readiness/2026-10-04-context-template-k16-n20-preparation-v1/prepared-members-v1.json",
+    "sha256": "7ad8dad9b07f78dabfbaccd331b3276c6f3b4f9d9d670510637deb68e20ec2d1"
+  },
+  "members": 18,
+  "candidate_trajectories": 320,
+  "unchanged_control_trajectories": 40,
+  "all_own_supplies_warm_verified": true,
+  "same_family_replicate_bound": true,
+  "original_branches_unmodified": true,
+  "model_tokenizer_scorer_contacts": 0,
+  "runtime_admission": false,
+  "status": "HELD until all16 capacity and structural proofs, exact complete-family registration, frozen/live checks and root admission."
+}

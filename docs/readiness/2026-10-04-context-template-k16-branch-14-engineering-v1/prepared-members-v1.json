@@ -1,0 +1,116 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-14-graph-v1",
+    "baseline": "slurp-native-stage3-context-template-k16-branch-14-graph-prepared-v1",
+    "config_hash": "7c6aeb11885d45ab7a8f687f9dadfb17ec76c1fa82355fef5315d0981fdde604",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-14-graph-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "model-free-check",
+      "planned_gpu_hours": 0.01,
+      "planned_model_calls": 1,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "e0e5c5a0f848fed96912e509f96042d9ba2c10596fdffab86fd9c95a13da681f",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-GRAPH-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-14-graph-v1",
+    "kind": "graph",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab.json",
+        "sha256": "f93ae14f1463036103cf1dc572c12ee25aa4507b7400ad47eaccad29f6126383"
+      },
+      "bundle_id": "440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-GRAPH-V1/phase-supply-v1.json",
+      "sha256": "5ebab0c8d93c5eb209370ec267f545841517b294f1d9fbfcd5a1b8ff40f0b24d"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-GRAPH-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-14-capacity-fit-v1",
+    "baseline": "slurp-native-stage3-context-template-k16-branch-14-capacity-v1",
+    "config_hash": "33e96a09974e98ee3793b83ef9a3d99cdb4beaa3013a9580b4e92e2bf7c1ab62",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-14-capacity-fit-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 297,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "59767b701356b4a887f7d2abb2a767b53a5ee7f5213a91d2689d55d0f647d1ca",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-CAPACITY-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-14-capacity-v1",
+    "kind": "capacity",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab.json",
+        "sha256": "f93ae14f1463036103cf1dc572c12ee25aa4507b7400ad47eaccad29f6126383"
+      },
+      "bundle_id": "440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-CAPACITY-FIT-V1/phase-supply-v1.json",
+      "sha256": "c8058162d4ca406c1866b3dbb0a79823037bd734082c907d8b668ea1d7c90b13"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-CAPACITY-FIT-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-14-smoke-4-generation-v1",
+    "baseline": "slurp-native-stage3-context-template-k16-branch-14-smoke-4-v1",
+    "config_hash": "a7985f9dda3d643afd308e8e6bf0dcc910a82c56f105646614f3aee3c5d19f3a",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-branch-14-smoke-4-generation-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "c09202194bb8cf0eb08758c1ceb2d98dadc119e13a1452fc5985aba1cb1cb0e9",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-SMOKE-4-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-branch-14-smoke-4-v1",
+    "kind": "smoke-4",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab.json",
+        "sha256": "f93ae14f1463036103cf1dc572c12ee25aa4507b7400ad47eaccad29f6126383"
+      },
+      "bundle_id": "440754a4faa83ca3f40c6439a12ccd559aa414b09d7a8a3df44d7dfd9dd650ab",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "632326af4e77f30c88faac0cb330b1281a279bb6d799202e11ab7951b411b1c9"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-BRANCH-14-SMOKE-4-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  }
+]

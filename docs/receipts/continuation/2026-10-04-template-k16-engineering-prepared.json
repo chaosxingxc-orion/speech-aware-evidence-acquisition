@@ -1,0 +1,141 @@
+{
+  "schema": "saea-template-k16-engineering-preparation-v1",
+  "at_utc": "2026-10-04T18:49:13.770379+00:00",
+  "branches": [
+    {
+      "branch": "branch-01",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-01-engineering-v1/prepared-members-v1.json",
+        "sha256": "964653a26e8070582effaf89e2ac134b9c04aec82365a34fe835dd0a10441deb"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-02",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-02-engineering-v1/prepared-members-v1.json",
+        "sha256": "ecc40e99e172447451fffbc6b62a8346f99bdac83d34b08fb76aab7d8c84f2f6"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-03",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-03-engineering-v1/prepared-members-v1.json",
+        "sha256": "143ed1d1dd99ec3fc133332c56fd535826060b2be3fe2ba6744ec86cd8c83dc6"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-04",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-04-engineering-v1/prepared-members-v1.json",
+        "sha256": "74d186a0806e6fdebf9d242b0d40b5cd1092adcde19434f00334aa8077c572ae"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-05",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-05-engineering-v1/prepared-members-v1.json",
+        "sha256": "b5d0a2700324797ef8251a0260569b424b58b0d0f5257579db3930500e122d26"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-06",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-06-engineering-v1/prepared-members-v1.json",
+        "sha256": "9d9f1c1032657c202ca281e5d2a0a3f8ab3bd8c273e39e127745b698d976ad5b"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-07",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-07-engineering-v1/prepared-members-v1.json",
+        "sha256": "1bbe8214b530497a50c2c06e22c9acbd8bbd60d68ad5c695b5a68f7a5ad17b3c"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-08",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-08-engineering-v1/prepared-members-v1.json",
+        "sha256": "cd714758d6cb429c40e67f18b526da768c017ddb6886226dcd93c6e6069a34a3"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-09",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-09-engineering-v1/prepared-members-v1.json",
+        "sha256": "eea5e473139f0bc60f9edc43813be5931dba15b2770681bc77aa4a0af22dc0a3"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-10",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-10-engineering-v1/prepared-members-v1.json",
+        "sha256": "89ab2907a5dc2b9733b33b58500745ada5d01d0c5d9d315fb302533b0b8440e7"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-11",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-11-engineering-v1/prepared-members-v1.json",
+        "sha256": "5bba796f8fa8916cee493b0fba58fdda96708920ffc94d73718c5d3e7fbc447f"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-12",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-12-engineering-v1/prepared-members-v1.json",
+        "sha256": "a1db56a282a95abee32581fcaa2466f1c703234ee49ef40d525a8623d221da3d"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-13",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-13-engineering-v1/prepared-members-v1.json",
+        "sha256": "d914a38c704972f485d4ac2309f6fdd1c927ea209a090fcfc27e20a51c9626aa"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-14",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-14-engineering-v1/prepared-members-v1.json",
+        "sha256": "63c9fd3ecf9525d4cc1e6514ee359750cf132b9a5453b7e8147ddcd28d8f6a1f"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-15",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-15-engineering-v1/prepared-members-v1.json",
+        "sha256": "3fb7a731152cdb7f37de653f4df00f1773d4c6ba5a4032252d4bdcd2df66780a"
+      },
+      "members": 3
+    },
+    {
+      "branch": "branch-16",
+      "preparation": {
+        "relpath": "docs/readiness/2026-10-04-context-template-k16-branch-16-engineering-v1/prepared-members-v1.json",
+        "sha256": "7d256c87ef7fae4c4281883a5715cd52a229512985edc88143f4477eac87bb0e"
+      },
+      "members": 3
+    }
+  ],
+  "prepared_configurations": 48,
+  "all_own_supplies_warm_verified": true,
+  "same_existing_selection_outputs": true,
+  "knowledge_data_rebuild": false,
+  "model_tokenizer_scorer_contacts": 0,
+  "runtime_admission": false,
+  "next": "Separate capacity registration/frozen admission then64 structural-only rows and18-member N20 scientific family."
+}

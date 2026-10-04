@@ -1,0 +1,28 @@
+{
+  "schema": "saea-template-k16-engineering-gates-v1",
+  "at_utc": "2026-10-04T18:50:25.097893+00:00",
+  "engineering_base": "PASS",
+  "population_algorithm_labels": {
+    "status": "PASS",
+    "members": 48,
+    "validator": "core.stage3_algorithms.validate_stage3_algorithm_label"
+  },
+  "global_stage3_algorithm_gate": {
+    "status": "FAIL_PREEXISTING_HISTORICAL_RECORDS",
+    "findings": [
+      {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json",
+        "sha256": "61efa82978b64e71bc148bde6f2e1cf7d135a301c83cceedba3b488bc7403c23",
+        "preexisting_at": "615f34bcf",
+        "finding": "Nonempty system-text-black-box-v1 label with empty operators_used; immutable historical source preserved."
+      },
+      {
+        "relpath": "configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json",
+        "sha256": "3e907901e3a857c4523adefd54ad91cdbeef4a1802e2bd1836d377c08f3c28e2",
+        "preexisting_at": "615f34bcf",
+        "finding": "Nonempty system-text-black-box-v1 label with empty operators_used; immutable historical source preserved."
+      }
+    ]
+  },
+  "runtime_dispatch": false
+}
