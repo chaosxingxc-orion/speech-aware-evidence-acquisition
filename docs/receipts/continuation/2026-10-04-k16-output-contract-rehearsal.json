@@ -1,0 +1,22 @@
+{
+  "schema": "saea-context-k16-output-contract-rehearsal-v1",
+  "at_utc": "2026-10-04T21:44:20.314116+00:00",
+  "contract": {
+    "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-output-contract-v1/output-contract.json",
+    "sha256": "49163d9f83cb550ea9dc86516901b3ddc8fb84f0938399700afb352613e4e9b2"
+  },
+  "synthetic_rehearsal": {
+    "slots": 16,
+    "provisional": 15,
+    "no_change": 1,
+    "assembly_combinations": 4,
+    "shared_archive_and_compiler": "PASS",
+    "real_archive_modified": false
+  },
+  "real_reservations": 0,
+  "model_contacts": 0,
+  "score_jobs": 0,
+  "quality_reads": 0,
+  "runtime_admission": false,
+  "remaining": "Complete current family and source READ, bind actual input/output identities, verify enforced isolation, then separately register/reserve one actor batch."
+}

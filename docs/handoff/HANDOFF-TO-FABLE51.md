@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Prospective K16 actor output contract rehearsed, 2026-10-04
+
+[Output contract](../readiness/2026-10-04-context-template-k16-update2-output-contract-v1/output-contract.json) fixes one GPT-6.1 Sol/high semantic batch, sixteen ordered branch updates, exact current shared proposal fields and supported assembly values. Preserve complete edited English role texts and parent interface contracts; keep knowledge/data/runtime fixed. Use empty changes for no-change, empty experience operations for this template-only update and null unavailable provider usage. Keep concrete cases and source rosters outside the actor input. Do not infer node correctness or causal credit from system reward.
+
+[Model-free rehearsal](../receipts/continuation/2026-10-04-k16-output-contract-rehearsal.json) passed through the real shared archive/compiler using sixteen synthetic slots, all four assembly combinations and a retained no-change. Temporary synthetic artifacts were discarded; zero real reservations, models, scorers or quality reads. Actual full18 READ, qualified abstract source, exact input hashes, enforced isolated file allowlist and root contact registration/reservation remain required. This prepared contract grants no contact or runtime admission. Current frozen N20 generation and paused heartbeat are unchanged.
+
 ## Shared-base acceptance scope rechecked offline, 2026-10-04
 
 [Current-source audit](../receipts/continuation/2026-10-04-cross-carrier-base-scope-audit.json) and [goal coverage matrix](../readiness/2026-10-04-shared-base-goal-coverage-v1.md) record126 passing synthetic adapter/FlightRuntime/OpenJiuwen/native-branch/consumption-transfer tests, no skips and zero real model/scorer/data contacts. The tests prove the named offline paths and unsupported-component refusals, not full live carrier acceptance or performance. Current text-policy ancestry, fixed-roster learning gates and SLU utility remain SLURP-specific. Do not represent them as a generic carrier optimizer.

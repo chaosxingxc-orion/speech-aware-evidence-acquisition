@@ -1,0 +1,114 @@
+{
+  "schema": "saea-context-population-actor-output-contract-v1",
+  "status": "PREPARED-NOT-ADMITTED",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "semantic_batches": 1,
+  "proposal_slots": 16,
+  "response_fields": [
+    "schema",
+    "input_sha256",
+    "actor_input_sha256",
+    "model",
+    "reasoning_effort",
+    "usage",
+    "branches"
+  ],
+  "response_schema": "saea-context-population-update-response-v1",
+  "bindings": {
+    "input_sha256": "Copy actor-input.json optimizer_input_sha256.",
+    "actor_input_sha256": "Copy the externally supplied canonical actor-input content hash; never hash an object containing its own hash.",
+    "iteration": "Copy actor-input.json iteration.",
+    "parent_ids": "Use exactly the bundle_id of this same candidate_id in actor-input.json templates.",
+    "evidence": "Use a singleton list containing input_sha256."
+  },
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "usage_rule": "Use null for unavailable authoritative provider metering. Do not estimate or fabricate usage. Preserve original response metering and independently bind external receipts when available.",
+  "ordered_candidate_ids": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "branch_fields": [
+    "candidate_id",
+    "proposal",
+    "experience_operations"
+  ],
+  "proposal_fields": [
+    "schema",
+    "algorithm",
+    "iteration",
+    "candidate_id",
+    "component",
+    "parent_ids",
+    "changes",
+    "rationale",
+    "hypotheses",
+    "evidence"
+  ],
+  "proposal_schema": "saea-context-policy-update-proposal-v1",
+  "algorithm": "tf-grpo-context-diversity",
+  "component": "joint-system",
+  "editable": {
+    "role_text": [
+      "perception",
+      "solver",
+      "reviewer",
+      "planner"
+    ],
+    "context_layout": {
+      "native_role_query_placement": [
+        null,
+        "before-speech-v1"
+      ]
+    },
+    "node_context": {
+      "tool_schema_rendering": [
+        "constant",
+        "per-role"
+      ],
+      "reviewer_history_scope": [
+        "full",
+        "latest-solver-and-local-tools"
+      ]
+    }
+  },
+  "instructions": [
+    "Return one JSON object only, with the exact response fields and all sixteen original branch positions in order. Add no markdown wrapper.",
+    "Jointly reason over the whole population in one semantic batch. Preserve useful diversity across instruction and assembly strategies rather than rewriting every branch into one identical policy.",
+    "Optimize complete consumption templates using anonymous abstract behavior and measured complete-system quality, intent, reliability and mean/non-first sample latency. Treat small-panel changes as optimization signals, not demonstrated generalization.",
+    "Prioritize joint Solver/Reviewer evidence use, then organization and handoff, then Planner revision/termination, then Perception presentation. Preserve exact executable output/interface contracts found in the full parent templates.",
+    "Keep knowledge, retrieval, construction, data, tools, parsers, scorers, answer authority, decoding, scheduler and serving geometry fixed. Never request source rosters, utterances, entity values, raw reasoning or per-sample semantic summaries.",
+    "Replace each edited role with its complete English text. A changes.role_text object may include only the edited roles; omitted roles are inherited. If editing context_layout or node_context, supply that complete object with the exact keys and one supported value for every key.",
+    "Use the branch-specific evaluated parent identity. Cross-branch numeric evidence may motivate ideas, but do not alter ancestry hashes or expose private provenance; the archive retains cumulative exposure.",
+    "Use changes={} for no-change. Keep all sixteen slots, including unsuccessful hypotheses; never silently replace, repair or request extra proposals.",
+    "Return experience_operations=[] for this template-only update. Express learned general rules in proposed templates, and keep rationale/hypotheses concise and abstract.",
+    "Unknown node correctness remains unknown. Relative terminal utility is guidance for whole-system search, not causal node credit, policy gradients or a proof of positive learning.",
+    "A provisional output grants no runtime admission or adoption. All successors require compilation, capacity, structure and complete registered evaluation."
+  ],
+  "contact_admission": false,
+  "required_before_contact": [
+    "Complete eighteen-member root READ",
+    "Separately qualified full abstract source",
+    "Pinned private packet and actor input",
+    "Exact isolated file allowlist and original response destination",
+    "Root contact/exposure registration and one population reservation"
+  ]
+}
