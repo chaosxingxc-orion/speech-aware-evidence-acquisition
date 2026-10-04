@@ -1,0 +1,74 @@
+[
+  {
+    "decision": {
+      "relpath": "coordination/context-initial4-capacity-owner227-v1/root-admission-v1.json",
+      "sha256": "daaff2c8bb94b70e745644bcc17d93c4640ebeab2c81806cbbed2a8a54a0977d"
+    },
+    "experiment": "slurp-native-stage3-context-initial4-speech-evidence-capacity-v1",
+    "graph": "slurp-native-stage3-context-initial4-speech-evidence-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/speech-evidence-fit-plan-registered-v1.json",
+      "sha256": "a0bfb252e065fbda9aa4972b225a3678f9bd89d4fd981cd689a532a610cbdfb0"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/speech-evidence-analysis-recipe-registered-v1.json",
+      "sha256": "1f116a5299de06fe3cf3a66f8ad690db4bcfb1fbdb596e5d9446061b2b345a9a"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-CAPACITY-FIT-V1",
+    "system_id": "speech-evidence"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-initial4-capacity-owner227-v1/root-admission-v1.json",
+      "sha256": "daaff2c8bb94b70e745644bcc17d93c4640ebeab2c81806cbbed2a8a54a0977d"
+    },
+    "experiment": "slurp-native-stage3-context-initial4-coverage-ledger-capacity-v1",
+    "graph": "slurp-native-stage3-context-initial4-coverage-ledger-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/coverage-ledger-fit-plan-registered-v1.json",
+      "sha256": "f49d170048cb9c1716c47a8743d0686b46809881ea01bcec4be12c2a849946e4"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/coverage-ledger-analysis-recipe-registered-v1.json",
+      "sha256": "15433d09d4b57156ea490a7e1d2b37e14c7876cf00a464f79fbdae3563d1638b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+    "system_id": "coverage-ledger"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-initial4-capacity-owner227-v1/root-admission-v1.json",
+      "sha256": "daaff2c8bb94b70e745644bcc17d93c4640ebeab2c81806cbbed2a8a54a0977d"
+    },
+    "experiment": "slurp-native-stage3-context-initial4-counterexample-check-capacity-v1",
+    "graph": "slurp-native-stage3-context-initial4-counterexample-check-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/counterexample-check-fit-plan-registered-v1.json",
+      "sha256": "3d3ac2d5213cde1b309de31ce7ff5fc92fcec0057d82cb14f66bf94d0a151261"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/counterexample-check-analysis-recipe-registered-v1.json",
+      "sha256": "f0dfde7e906424dd58043f87eca70515cce705c38f836f017bc367218f27d4f8"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1",
+    "system_id": "counterexample-check"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-initial4-capacity-owner227-v1/root-admission-v1.json",
+      "sha256": "daaff2c8bb94b70e745644bcc17d93c4640ebeab2c81806cbbed2a8a54a0977d"
+    },
+    "experiment": "slurp-native-stage3-context-initial4-semantic-frame-capacity-v1",
+    "graph": "slurp-native-stage3-context-initial4-semantic-frame-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/semantic-frame-fit-plan-registered-v1.json",
+      "sha256": "cb64d41c216912d35673969ada9fdef2cb66833096d6165738c4dd67da261f3b"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/semantic-frame-analysis-recipe-registered-v1.json",
+      "sha256": "cadb5582bd860ba88c994083d92e930f09f394128bd36cc992043b50a4997fcf"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-CAPACITY-FIT-V1",
+    "system_id": "semantic-frame"
+  }
+]

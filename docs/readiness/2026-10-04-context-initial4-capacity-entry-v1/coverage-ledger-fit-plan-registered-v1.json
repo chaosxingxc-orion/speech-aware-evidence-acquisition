@@ -1,0 +1,49 @@
+{
+  "at_utc": "2026-10-04T07:32:09.550418+00:00",
+  "cell": "slurp-native-stage3-context-initial4-coverage-ledger-capacity-v1",
+  "composed_config_hash": "c1e3c63518a37038211df458ed84dab7ee956ed45606fcf25506005da677c01e",
+  "decision_receipt": {
+    "relpath": "coordination/context-initial4-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "daaff2c8bb94b70e745644bcc17d93c4640ebeab2c81806cbbed2a8a54a0977d"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-coverage-ledger-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "10e9a9f3dedf5c2a6db0a40ba887a3b049b9962b613963337cfcadee1c73dd06",
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-initial4-coverage-ledger-capacity-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f.json",
+      "sha256": "690e45215e5229bdfe40dd096beece6240c264f6cd162d21a2f149eb644748c1"
+    },
+    "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "39e8a1754fd03dbcf4a98ac45bb602bb67316fb25b380a44e3fda20dbe261228"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

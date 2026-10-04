@@ -1,0 +1,208 @@
+{
+  "schema": "saea-context-initial4-supply-verification-v1",
+  "at_utc": "2026-10-04T07:24:10.664272+00:00",
+  "records": [
+    {
+      "system_id": "speech-evidence",
+      "kind": "capacity",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "1db077974b6711663a2e5f057df2694dc911cd8430108f2cbd3bc613a6c7ba5a",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "1db077974b6711663a2e5f057df2694dc911cd8430108f2cbd3bc613a6c7ba5a",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "1db077974b6711663a2e5f057df2694dc911cd8430108f2cbd3bc613a6c7ba5a"
+      },
+      "reference": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "4c0d61ab89adefb08979ee179e0bb9c4c8b70a0d9226b28156b97cabd9b6bdf3"
+      }
+    },
+    {
+      "system_id": "speech-evidence",
+      "kind": "smoke-4",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "14fb7e24a8f126f40edd54f4238318a59649eae6473a2d159b59ff59c022bf90",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "14fb7e24a8f126f40edd54f4238318a59649eae6473a2d159b59ff59c022bf90",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "14fb7e24a8f126f40edd54f4238318a59649eae6473a2d159b59ff59c022bf90"
+      },
+      "reference": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "6f20a0cb2df97696a202076726aaff56be1c66d2bffd31002b75a88ca062353d"
+      }
+    },
+    {
+      "system_id": "coverage-ledger",
+      "kind": "capacity",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "39e8a1754fd03dbcf4a98ac45bb602bb67316fb25b380a44e3fda20dbe261228",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "39e8a1754fd03dbcf4a98ac45bb602bb67316fb25b380a44e3fda20dbe261228",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "39e8a1754fd03dbcf4a98ac45bb602bb67316fb25b380a44e3fda20dbe261228"
+      },
+      "reference": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "4c0d61ab89adefb08979ee179e0bb9c4c8b70a0d9226b28156b97cabd9b6bdf3"
+      }
+    },
+    {
+      "system_id": "coverage-ledger",
+      "kind": "smoke-4",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "cb5f657b5330fc701c7744740b668dd472f806a7e450c572bdc9ac62b37eedcd",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "cb5f657b5330fc701c7744740b668dd472f806a7e450c572bdc9ac62b37eedcd",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "cb5f657b5330fc701c7744740b668dd472f806a7e450c572bdc9ac62b37eedcd"
+      },
+      "reference": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "6f20a0cb2df97696a202076726aaff56be1c66d2bffd31002b75a88ca062353d"
+      }
+    },
+    {
+      "system_id": "counterexample-check",
+      "kind": "capacity",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "0754506d094c4d21deeda4c274ecf1be15cb3b53a4bab396456df139cbc1a3d1",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "0754506d094c4d21deeda4c274ecf1be15cb3b53a4bab396456df139cbc1a3d1",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "0754506d094c4d21deeda4c274ecf1be15cb3b53a4bab396456df139cbc1a3d1"
+      },
+      "reference": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "4c0d61ab89adefb08979ee179e0bb9c4c8b70a0d9226b28156b97cabd9b6bdf3"
+      }
+    },
+    {
+      "system_id": "counterexample-check",
+      "kind": "smoke-4",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "c92dc827928b0dc5ce15412ae16914fb247acae6e2d888144997eda8b43d4eda",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "c92dc827928b0dc5ce15412ae16914fb247acae6e2d888144997eda8b43d4eda",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "c92dc827928b0dc5ce15412ae16914fb247acae6e2d888144997eda8b43d4eda"
+      },
+      "reference": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "6f20a0cb2df97696a202076726aaff56be1c66d2bffd31002b75a88ca062353d"
+      }
+    },
+    {
+      "system_id": "semantic-frame",
+      "kind": "capacity",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "f45c586df9c2280677515a34ee6bb682723f9c78ea741c76b10d6a2bb0b59c64",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "f45c586df9c2280677515a34ee6bb682723f9c78ea741c76b10d6a2bb0b59c64",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "f45c586df9c2280677515a34ee6bb682723f9c78ea741c76b10d6a2bb0b59c64"
+      },
+      "reference": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "4c0d61ab89adefb08979ee179e0bb9c4c8b70a0d9226b28156b97cabd9b6bdf3"
+      }
+    },
+    {
+      "system_id": "semantic-frame",
+      "kind": "smoke-4",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "47516d926a9fa131acd6f48f578f95c7d64d0e17e1a2635fac2077c76e154203",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "47516d926a9fa131acd6f48f578f95c7d64d0e17e1a2635fac2077c76e154203",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "47516d926a9fa131acd6f48f578f95c7d64d0e17e1a2635fac2077c76e154203"
+      },
+      "reference": {
+        "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "6f20a0cb2df97696a202076726aaff56be1c66d2bffd31002b75a88ca062353d"
+      }
+    }
+  ],
+  "runtime_admitted": false,
+  "new_contacts": 0
+}

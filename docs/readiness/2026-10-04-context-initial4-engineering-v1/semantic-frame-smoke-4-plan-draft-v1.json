@@ -1,0 +1,43 @@
+{
+  "schema": "saea-context-initial4-proof-plan-draft-v1",
+  "status": "DRAFT-HELD-NOT-ADMITTED",
+  "experiment": "slurp-native-stage3-context-initial4-semantic-frame-smoke-4-v1",
+  "cell": "slurp-native-stage3-context-initial4-semantic-frame-smoke-4-v1",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "planned_model_calls": 52,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "46caed755fe8695321bacff9cd47993cfd748a18fe10781a1142643dd3bac4b6",
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-semantic-frame-smoke-4-generation-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "composed_config_hash": "8beb06c2ff4efc5b9c78646c941968e9810830ef1bdbe23fdf8d325ea870365e",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091.json",
+      "sha256": "8026f9b3fedcf435b53ea4b1a800946e8d55489dc803fdc5930fd46439331834"
+    },
+    "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v2.json",
+    "sha256": "4979531bbc1438bc47f15d628ec25264c749f25634e6a32f6ae1e0d6276cbce9"
+  },
+  "official_score_jobs": 0,
+  "scientific_feedback": false
+}

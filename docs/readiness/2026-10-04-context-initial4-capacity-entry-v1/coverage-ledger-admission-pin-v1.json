@@ -1,0 +1,11 @@
+{
+  "at_utc": "2026-10-04T07:32:09.550418+00:00",
+  "decision": {
+    "relpath": "coordination/context-initial4-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "daaff2c8bb94b70e745644bcc17d93c4640ebeab2c81806cbbed2a8a54a0977d"
+  },
+  "plan": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-capacity-entry-v1/coverage-ledger-fit-plan-registered-v1.json",
+    "sha256": "f49d170048cb9c1716c47a8743d0686b46809881ea01bcec4be12c2a849946e4"
+  }
+}

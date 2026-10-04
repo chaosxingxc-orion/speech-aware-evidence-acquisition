@@ -1,0 +1,49 @@
+{
+  "at_utc": "2026-10-04T07:32:09.550418+00:00",
+  "cell": "slurp-native-stage3-context-initial4-semantic-frame-capacity-v1",
+  "composed_config_hash": "1cf42a74b041867e90301b24f9294dc102a0f1dc03fa3b7867e1e731931ba77e",
+  "decision_receipt": {
+    "relpath": "coordination/context-initial4-capacity-owner227-v1/root-admission-v1.json",
+    "sha256": "daaff2c8bb94b70e745644bcc17d93c4640ebeab2c81806cbbed2a8a54a0977d"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-semantic-frame-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "4256c8ca14417fbac379138e1cd35c73a9fa49cdf475d46b0330c472af9ff291",
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-initial4-semantic-frame-capacity-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091.json",
+      "sha256": "8026f9b3fedcf435b53ea4b1a800946e8d55489dc803fdc5930fd46439331834"
+    },
+    "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "f45c586df9c2280677515a34ee6bb682723f9c78ea741c76b10d6a2bb0b59c64"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

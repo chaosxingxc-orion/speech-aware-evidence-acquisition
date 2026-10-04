@@ -1,0 +1,224 @@
+{
+  "schema": "saea-context-initial4-engineering-preparation-v1",
+  "at_utc": "2026-10-04T07:20:12.449719+00:00",
+  "members": [
+    {
+      "system_id": "speech-evidence",
+      "kind": "capacity",
+      "experiment": "slurp-native-stage3-context-initial4-speech-evidence-capacity-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-speech-evidence-capacity-fit-v1",
+      "rows": 20,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303.json",
+          "sha256": "5fa0d2c6c2a3bbd99463f91623e8d0a1a07454ce778f80768c079aa3b110745c"
+        },
+        "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-capacity-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "speech-evidence",
+      "kind": "smoke-4",
+      "experiment": "slurp-native-stage3-context-initial4-speech-evidence-smoke-4-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-speech-evidence-smoke-4-generation-v1",
+      "rows": 4,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303.json",
+          "sha256": "5fa0d2c6c2a3bbd99463f91623e8d0a1a07454ce778f80768c079aa3b110745c"
+        },
+        "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-smoke-4-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "speech-evidence",
+      "kind": "graph",
+      "experiment": "slurp-native-stage3-context-initial4-speech-evidence-graph-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-GRAPH-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-speech-evidence-graph-v1",
+      "rows": 4,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303.json",
+          "sha256": "5fa0d2c6c2a3bbd99463f91623e8d0a1a07454ce778f80768c079aa3b110745c"
+        },
+        "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-graph-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "coverage-ledger",
+      "kind": "capacity",
+      "experiment": "slurp-native-stage3-context-initial4-coverage-ledger-capacity-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-coverage-ledger-capacity-fit-v1",
+      "rows": 20,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f.json",
+          "sha256": "690e45215e5229bdfe40dd096beece6240c264f6cd162d21a2f149eb644748c1"
+        },
+        "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-capacity-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "coverage-ledger",
+      "kind": "smoke-4",
+      "experiment": "slurp-native-stage3-context-initial4-coverage-ledger-smoke-4-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-coverage-ledger-smoke-4-generation-v1",
+      "rows": 4,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f.json",
+          "sha256": "690e45215e5229bdfe40dd096beece6240c264f6cd162d21a2f149eb644748c1"
+        },
+        "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-smoke-4-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "coverage-ledger",
+      "kind": "graph",
+      "experiment": "slurp-native-stage3-context-initial4-coverage-ledger-graph-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-GRAPH-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-coverage-ledger-graph-v1",
+      "rows": 4,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f.json",
+          "sha256": "690e45215e5229bdfe40dd096beece6240c264f6cd162d21a2f149eb644748c1"
+        },
+        "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-graph-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "counterexample-check",
+      "kind": "capacity",
+      "experiment": "slurp-native-stage3-context-initial4-counterexample-check-capacity-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-counterexample-check-capacity-fit-v1",
+      "rows": 20,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09.json",
+          "sha256": "73605db79d885d654242e741ac90e70adeffda5533d207fcb0ad8fb5c7aec60b"
+        },
+        "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-capacity-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "counterexample-check",
+      "kind": "smoke-4",
+      "experiment": "slurp-native-stage3-context-initial4-counterexample-check-smoke-4-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-counterexample-check-smoke-4-generation-v1",
+      "rows": 4,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09.json",
+          "sha256": "73605db79d885d654242e741ac90e70adeffda5533d207fcb0ad8fb5c7aec60b"
+        },
+        "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-smoke-4-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "counterexample-check",
+      "kind": "graph",
+      "experiment": "slurp-native-stage3-context-initial4-counterexample-check-graph-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-GRAPH-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-counterexample-check-graph-v1",
+      "rows": 4,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09.json",
+          "sha256": "73605db79d885d654242e741ac90e70adeffda5533d207fcb0ad8fb5c7aec60b"
+        },
+        "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-graph-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "semantic-frame",
+      "kind": "capacity",
+      "experiment": "slurp-native-stage3-context-initial4-semantic-frame-capacity-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-semantic-frame-capacity-fit-v1",
+      "rows": 20,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091.json",
+          "sha256": "8026f9b3fedcf435b53ea4b1a800946e8d55489dc803fdc5930fd46439331834"
+        },
+        "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-capacity-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "semantic-frame",
+      "kind": "smoke-4",
+      "experiment": "slurp-native-stage3-context-initial4-semantic-frame-smoke-4-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-semantic-frame-smoke-4-generation-v1",
+      "rows": 4,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091.json",
+          "sha256": "8026f9b3fedcf435b53ea4b1a800946e8d55489dc803fdc5930fd46439331834"
+        },
+        "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-smoke-4-v1",
+      "status": "HELD"
+    },
+    {
+      "system_id": "semantic-frame",
+      "kind": "graph",
+      "experiment": "slurp-native-stage3-context-initial4-semantic-frame-graph-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-GRAPH-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-semantic-frame-graph-v1",
+      "rows": 4,
+      "binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091.json",
+          "sha256": "8026f9b3fedcf435b53ea4b1a800946e8d55489dc803fdc5930fd46439331834"
+        },
+        "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "reference_experiment": "slurp-native-stage3-system-text-round9-parent-graph-v1",
+      "status": "HELD"
+    }
+  ],
+  "runtime_admitted": false,
+  "new_contacts": 0
+}

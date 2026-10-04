@@ -1,0 +1,128 @@
+{
+  "schema": "saea-context-initial4-final-fit-binding-v1",
+  "at_utc": "2026-10-04T07:30:16.240642+00:00",
+  "reason": "Rebind inherited legacy FIT identities before any registration or contact; preserve old model-free supply envelopes.",
+  "records": [
+    {
+      "system_id": "speech-evidence",
+      "native_contact_fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-initial4-speech-evidence-smoke-4-fit-v1",
+        "contact_cap": 208,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-FIT-V1"
+      },
+      "prior_supply_preserved": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "14fb7e24a8f126f40edd54f4238318a59649eae6473a2d159b59ff59c022bf90"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "2912071f765a064a706be8ec0be7bb11ca3f8f20b0e7e877b2745a22fe26d36d"
+      },
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "2912071f765a064a706be8ec0be7bb11ca3f8f20b0e7e877b2745a22fe26d36d",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "2912071f765a064a706be8ec0be7bb11ca3f8f20b0e7e877b2745a22fe26d36d",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true
+    },
+    {
+      "system_id": "coverage-ledger",
+      "native_contact_fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-initial4-coverage-ledger-smoke-4-fit-v1",
+        "contact_cap": 208,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-FIT-V1"
+      },
+      "prior_supply_preserved": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "cb5f657b5330fc701c7744740b668dd472f806a7e450c572bdc9ac62b37eedcd"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "02fafc045b64b7fdc71a57a3a3845e138f1f41edf8db93810d26dcdb19517a29"
+      },
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "02fafc045b64b7fdc71a57a3a3845e138f1f41edf8db93810d26dcdb19517a29",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COVERAGE-LEDGER-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "02fafc045b64b7fdc71a57a3a3845e138f1f41edf8db93810d26dcdb19517a29",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true
+    },
+    {
+      "system_id": "counterexample-check",
+      "native_contact_fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-initial4-counterexample-check-smoke-4-fit-v1",
+        "contact_cap": 208,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-FIT-V1"
+      },
+      "prior_supply_preserved": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "c92dc827928b0dc5ce15412ae16914fb247acae6e2d888144997eda8b43d4eda"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "970f42250cd890995614a9a2ac47f0d4fbdd986a25efb9a9dee43109c6c9aa71"
+      },
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "970f42250cd890995614a9a2ac47f0d4fbdd986a25efb9a9dee43109c6c9aa71",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "970f42250cd890995614a9a2ac47f0d4fbdd986a25efb9a9dee43109c6c9aa71",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true
+    },
+    {
+      "system_id": "semantic-frame",
+      "native_contact_fit": {
+        "attempt_id": "attempt-slurp-native-stage3-context-initial4-semantic-frame-smoke-4-fit-v1",
+        "contact_cap": 208,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-FIT-V1"
+      },
+      "prior_supply_preserved": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "47516d926a9fa131acd6f48f578f95c7d64d0e17e1a2635fac2077c76e154203"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "4979531bbc1438bc47f15d628ec25264c749f25634e6a32f6ae1e0d6276cbce9"
+      },
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "4979531bbc1438bc47f15d628ec25264c749f25634e6a32f6ae1e0d6276cbce9",
+        "cache": "cold",
+        "contact_class": "model-free"
+      },
+      "warm_verification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-CONTEXT-INITIAL4-SEMANTIC-FRAME-SMOKE-4-V1/phase-supply-v2.json",
+        "sha256": "4979531bbc1438bc47f15d628ec25264c749f25634e6a32f6ae1e0d6276cbce9",
+        "cache": "warm",
+        "contact_class": "model-free"
+      },
+      "unchanged_selected_output": true
+    }
+  ],
+  "new_contacts": 0
+}

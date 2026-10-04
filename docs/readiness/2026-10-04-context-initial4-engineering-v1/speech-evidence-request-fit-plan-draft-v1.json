@@ -1,0 +1,43 @@
+{
+  "schema": "saea-context-initial4-proof-plan-draft-v1",
+  "status": "DRAFT-HELD-NOT-ADMITTED",
+  "experiment": "slurp-native-stage3-context-initial4-speech-evidence-smoke-4-v1",
+  "cell": "slurp-native-stage3-context-initial4-speech-evidence-smoke-4-v1",
+  "execution_plan": {
+    "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-FIT-V1",
+    "execution_profile": "bounded-discovery-probe",
+    "carrier_lock_key": "slurp",
+    "split_role": "discovery",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "planned_model_calls": 208,
+    "planned_gpu_hours": 1.0,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "a7287f4896365458717002d0ae49b4083342ba01d71f474c89a0d9697e958d0d",
+    "attempt_id": "attempt-slurp-native-stage3-context-initial4-speech-evidence-smoke-4-fit-v1",
+    "schema": "saea-execution-plan-v1",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "composed_config_hash": "6d6efaf6aafe7cb9d90143a92e1e17f550c1cb72fc5a300c37014e9a3d336553",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303.json",
+      "sha256": "5fa0d2c6c2a3bbd99463f91623e8d0a1a07454ce778f80768c079aa3b110745c"
+    },
+    "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-INITIAL4-SPEECH-EVIDENCE-SMOKE-4-V1/phase-supply-v2.json",
+    "sha256": "2912071f765a064a706be8ec0be7bb11ca3f8f20b0e7e877b2745a22fe26d36d"
+  },
+  "official_score_jobs": 0,
+  "scientific_feedback": false
+}

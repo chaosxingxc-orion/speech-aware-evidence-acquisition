@@ -1,0 +1,155 @@
+{
+  "schema": "saea-context-initial4-graph-audit-v1",
+  "at_utc": "2026-10-04T07:30:17.434255+00:00",
+  "members": [
+    {
+      "system_id": "speech-evidence",
+      "capacity_config_hash": "1c236397ab7c4695f3d8a1a67714c9dedb477b5ebf20a7fd89b50e4410b1522f",
+      "graph_config_hash": "140e19382923a061c984ae6cd759520c1975d5a12f8b6d5325c960f1c75c3275",
+      "capacity_rows": 20,
+      "graph_rows": 4,
+      "configuration_equality": {
+        "policy": true,
+        "native_episode": true,
+        "phase_material": true,
+        "phase_tools": true,
+        "knowledge_stores": true,
+        "native_prefix_slots": true,
+        "native_node_batch": true,
+        "native_node_pipeline": true,
+        "native_role_query_placement": true,
+        "system_search_measurement": true
+      },
+      "policy_binding": {
+        "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+        "role_sha256": {
+          "perception": "8820b302bef1e56968bb1f54a8ee47dbef70c5da18a3f83dc7cfe5a8ad7dfd45",
+          "planner": "8cf1391f88ae9d15319f38bfe1339e03631001683cb64acab1b159fd04e38122",
+          "reviewer": "ade8ada541354866fb4154df270328cc11ddc3b172a44eefe1b720c730baa748",
+          "solver": "1577fda4e9c639246044aee6855c4d00de92e6504a595f37260b6fd07b244565"
+        },
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "node_context": {
+          "tool_schema_rendering": "per-role",
+          "reviewer_history_scope": "latest-solver-and-local-tools"
+        }
+      },
+      "model_free_graph_composed": true,
+      "new_contacts": 0
+    },
+    {
+      "system_id": "coverage-ledger",
+      "capacity_config_hash": "59dbd42a36d2791cad17ebb2bd0228642687976f958b4d56b6ba15f9ad122b56",
+      "graph_config_hash": "698a6a5b392fd46b4c6c4be8f0f5a13ba020cc6220f1e4fbcf9726682ad3e9da",
+      "capacity_rows": 20,
+      "graph_rows": 4,
+      "configuration_equality": {
+        "policy": true,
+        "native_episode": true,
+        "phase_material": true,
+        "phase_tools": true,
+        "knowledge_stores": true,
+        "native_prefix_slots": true,
+        "native_node_batch": true,
+        "native_node_pipeline": true,
+        "native_role_query_placement": true,
+        "system_search_measurement": true
+      },
+      "policy_binding": {
+        "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+        "role_sha256": {
+          "perception": "23d02fc929d948b65adbaa21fc0543bc08494e4a05414260936f479a593e1cb8",
+          "planner": "0255a5ad6118cba49fc4acb05ed12430730c621eaf4d5c33b3c1e92503d52d1a",
+          "reviewer": "016f497d3d99df7a69f148c86ca268c01a44c665ad922f5bfc0e3d071cdc44c4",
+          "solver": "59eb48e5f20f5c92886f11a6dea8445e28d3c40ab74a38b02b3dd1e0e00a0b3e"
+        },
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "tool_schema_rendering": "constant",
+          "reviewer_history_scope": "full"
+        }
+      },
+      "model_free_graph_composed": true,
+      "new_contacts": 0
+    },
+    {
+      "system_id": "counterexample-check",
+      "capacity_config_hash": "3e96ea9c7b4b72942689881e3f8132316a054f3beb82978b4937785ce886f6d5",
+      "graph_config_hash": "f2b30e597a4ca22fe7fdc2b4dce36c18c6ad71b483d2e6234ef828b22e3262c1",
+      "capacity_rows": 20,
+      "graph_rows": 4,
+      "configuration_equality": {
+        "policy": true,
+        "native_episode": true,
+        "phase_material": true,
+        "phase_tools": true,
+        "knowledge_stores": true,
+        "native_prefix_slots": true,
+        "native_node_batch": true,
+        "native_node_pipeline": true,
+        "native_role_query_placement": true,
+        "system_search_measurement": true
+      },
+      "policy_binding": {
+        "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+        "role_sha256": {
+          "perception": "f6a39175a449b2d08adc45b3b9b1b5e6bec979260b2b9ec4ea3c07c6a24684b2",
+          "planner": "c63879dc850a76d8a9ab010dbb5e21eaf8a44e9ca1e27872b605230d0db83062",
+          "reviewer": "35c2c88dc80432896db1aa7c1aa6122fdaee4cd18765ca1bde8bdcab4d36232c",
+          "solver": "86db2558a36fe0ec4f20c31e51b068abaa8c81dcbf6cd7811fc20895b4ff6321"
+        },
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "node_context": {
+          "tool_schema_rendering": "constant",
+          "reviewer_history_scope": "latest-solver-and-local-tools"
+        }
+      },
+      "model_free_graph_composed": true,
+      "new_contacts": 0
+    },
+    {
+      "system_id": "semantic-frame",
+      "capacity_config_hash": "14ad30423c3cebda0b478d43ee3e87bc6990475990f3b6db00c669a3aa929cb2",
+      "graph_config_hash": "afa372ad470f16f4339cfc255682692d45f52cd2ef84a8ed57fc686e85bd903a",
+      "capacity_rows": 20,
+      "graph_rows": 4,
+      "configuration_equality": {
+        "policy": true,
+        "native_episode": true,
+        "phase_material": true,
+        "phase_tools": true,
+        "knowledge_stores": true,
+        "native_prefix_slots": true,
+        "native_node_batch": true,
+        "native_node_pipeline": true,
+        "native_role_query_placement": true,
+        "system_search_measurement": true
+      },
+      "policy_binding": {
+        "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+        "role_sha256": {
+          "perception": "401d59f2dafa616461265fcfcc86b2df287fec0f3108278f53c6274e4a06a08d",
+          "planner": "85e4f4feda1427bde3164e4676d1e2dc0447397a80a0efb7907ea309da55f486",
+          "reviewer": "8937feadab135981a169821fa5179ed99e8cef13deb6946ee46185e30b9d4c6f",
+          "solver": "6c8df9f0e6acd1ee42ce0fde1fe77cdf4f21b36b0ac3dd3b3890c76038688af4"
+        },
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "tool_schema_rendering": "per-role",
+          "reviewer_history_scope": "full"
+        }
+      },
+      "model_free_graph_composed": true,
+      "new_contacts": 0
+    }
+  ],
+  "new_contacts": 0
+}

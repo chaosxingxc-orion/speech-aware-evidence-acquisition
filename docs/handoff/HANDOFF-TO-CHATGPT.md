@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Initial four-system runtime preparation and conditional capacity entry, 2026-10-04T07:41:33.839738+00:00
+
+[Engineering preparation](../readiness/2026-10-04-context-initial4-engineering-v1/README.md) binds all four distinct complete policies to the existing UPDATE2 first20/first4 supplies through the shared compiler/runtime. Twelve role bindings and four model-free graph compositions pass. Eight own supplies warm-verify with unchanged selected output bytes. The initial smoke preparation retained legacy request-FIT identities; this was detected before any contact, corrected in new v2 envelopes and recorded without changing the v1 envelopes.
+
+[Capacity entry](../readiness/2026-10-04-context-initial4-capacity-entry-v1/README.md) prospectively registers four exact nongenerative297-endpoint members (1188 maximum total) with separate structural READ recipes under root227. Base/harness and all four exact registration gates pass. This is conditional admission, not a launch: clean frozen runtime preflight, live lease/STOP/session and memory checks remain. Smoke and scientific generation stay HELD; no tokenizer/model/scorer contact has occurred for this population. Keep temperature0/seed20260913, four24576 slots/max512, sequential trajectories, same400 assets, heartbeat PAUSED and human before8x400.
+
+The authorized GPT-6.1 Sol agent is implementing a tested optimizer boundary for deterministic-context Training-Free GRPO adaptation and GEPA. It is not a completed learning run. Official frozen-reference count utility, complete-family/source validation and measured quality/latency remain mandatory.
+
 ## Four deterministic system-skill candidates integrated, 2026-10-04T07:15:45.241666+00:00
 
 [Four-system skill package](../readiness/2026-10-04-context-diversity-initial4-sol-v1/SYSTEM-SKILL.md) now contains sixteen full English node texts, four supported assembly configurations, compact edits and retained history. Root reviewed and cherry-picked the authorized Sol commit710710581 as12b39d438. [Independent root audit](../receipts/continuation/2026-10-04-context-initial4-root-review.json) verifies all four final data-root policy bindings; all sixteen text hashes are distinct. Agent reports99 focused tests and base/harness/diff checks passing. No learner or runtime contact is implied.
