@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Four-node round9 proposer running, 2026-10-04T02:50:33.835160+00:00
+
+The exact four proposals are running through Windows task `SAEA-System-Text-Proposer-Four-Node-Round9-Owner227`, epoch02:48:42Z, on frozen `/home/chao/saea-worktrees/codex-four-node-proposer-round9-v1` at `8eafb9f601242d7310cb889656d30dc3cb9af214`. [Launch receipt](../receipts/continuation/2026-10-04-four-node-round9-launch.json) pins the final zero-contact PASS, registration, wrapper and actual process proof: PID607813/start ticks43190323. Windows free26.621GiB at startup; no competing proposer. The Windows task and Python worker were independently observed live. Revalidate the same PID/start identity and task; observation timeout is not failure or permission to restart.
+
+The worker was still validating sources/inputs at the launch proof; 0 contact receipts were present at this checkpoint. Do not infer model completion from task start. Preserve its one-shot output directory `four-node-measured-successor3-owner227/execution-four-node-round9-v1`, per-contact reservations, raw metered responses, imports and terminal receipt. Any failure stops for root disposition, with no replacement of spent slots. All29 old closed and3 HELD allocations remain preserved. No GPU dispatch, task-quality read or policy activation is admitted by this launch.
+
+Next inspect the actual proposal outcomes after completion, compile legal complete four-node candidates and separately register FIT, structural proof and the full8x20 comparison. Keep historical own-L feedback distinct from newly measured latency and keep B feedback-free. No stable benefit or learning gain is established. Root-only; heartbeat PAUSED; same fixed400 assets and sequential runtime; human before8x400; other-carrier holds unchanged.
+
 ## Four-node round9 inputs registered and root proposal admission, 2026-10-04T02:43:18.543142+00:00
 
 [Exact proposer package](../readiness/2026-10-04-slurp-four-node-proposer-round9-v1/README.md) and [conditional root admission](../receipts/continuation/2026-10-04-four-node-round9-root-admission.json) register L-9-1/B-9-1/L-9-2/B-9-2 in `four-node-measured-successor3-owner227`. All four formal exporter packets exactly match final previews after whole-family qualification and normal history validation. Both L inputs preserve15 own-L histories and explicitly labeled historical feedback; B has none. All29 closed/3 HELD predecessor slots stay preserved. Four new slots are available, unspent; zero new model contacts at this checkpoint.
@@ -1334,7 +1342,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T02:43:18.543142+00:00
+Last refreshed: 2026-10-04T02:50:33.835160+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
