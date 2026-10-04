@@ -1,0 +1,222 @@
+{
+  "authoring_mode": "prospective complete-system context authoring, not reward learning or a formal metered proposer contact",
+  "authoring_model": "GPT-6.1 Sol; human-authorized engineering subagent",
+  "candidate_count": 4,
+  "compiled_configuration_status": "Policy-compilation templates only. Inherited legacy R01C query/supply fields, old prepared_phase_supply/FIT identities and historical what_this_is text are not current UPDATE2 runtime evidence. Per-system UPDATE2 query/supply/geometry preparation remains required.",
+  "compression_and_progressive_loading": "unsupported; future implementation and admission required",
+  "contacts_added_by_preparation_tools": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "current_update2_own_supplies_prepared": false,
+  "execution_configuration_ready": false,
+  "full_instruction_text_count": 16,
+  "interface_seed_bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+  "node_count_per_system": 4,
+  "old_astra_history_modified": false,
+  "policy_stage_root": "system-text-search/context-diversity-initial4-sol-v1",
+  "policy_stage_status": "New immutable draft metadata archive; no runtime, proposal allocation, exposure or scientific READ admission.",
+  "runtime_admitted": false,
+  "schema": "saea-context-diversity-initial-candidates-v1",
+  "scientific_proposal_allocation": null,
+  "supported_edit_fields": [
+    "role_text",
+    "context_layout",
+    "node_context"
+  ],
+  "systems": [
+    {
+      "binding_audit": {
+        "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "node_context": {
+          "reviewer_history_scope": "latest-solver-and-local-tools",
+          "tool_schema_rendering": "per-role"
+        },
+        "role_sha256": {
+          "perception": "8820b302bef1e56968bb1f54a8ee47dbef70c5da18a3f83dc7cfe5a8ad7dfd45",
+          "planner": "8cf1391f88ae9d15319f38bfe1339e03631001683cb64acab1b159fd04e38122",
+          "reviewer": "ade8ada541354866fb4154df270328cc11ddc3b172a44eefe1b720c730baa748",
+          "solver": "1577fda4e9c639246044aee6855c4d00de92e6504a595f37260b6fd07b244565"
+        }
+      },
+      "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+      "compiled_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-speech-evidence-initial20-v1.json",
+        "sha256": "da93d4f0c1990492e584fd2872d5b2febcaf9914b1d314065b473db2bc388902"
+      },
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "hypothesis": "Put the independent role instruction before speech, show role-specific tools, and review only the latest Solver/local-tool evidence. Align every decision with a concrete speech-supported uncertainty.",
+      "node_context": {
+        "reviewer_history_scope": "latest-solver-and-local-tools",
+        "tool_schema_rendering": "per-role"
+      },
+      "policy_stage_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303.json",
+          "sha256": "5fa0d2c6c2a3bbd99463f91623e8d0a1a07454ce778f80768c079aa3b110745c"
+        },
+        "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "role_character_counts": {
+        "perception": 1229,
+        "planner": 1528,
+        "reviewer": 1247,
+        "solver": 1334
+      },
+      "status": "PROSPECTIVE-DRAFT-NOT-RUNTIME-ADMITTED",
+      "system_id": "speech-evidence",
+      "system_index": 0
+    },
+    {
+      "binding_audit": {
+        "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "reviewer_history_scope": "full",
+          "tool_schema_rendering": "constant"
+        },
+        "role_sha256": {
+          "perception": "23d02fc929d948b65adbaa21fc0543bc08494e4a05414260936f479a593e1cb8",
+          "planner": "0255a5ad6118cba49fc4acb05ed12430730c621eaf4d5c33b3c1e92503d52d1a",
+          "reviewer": "016f497d3d99df7a69f148c86ca268c01a44c665ad922f5bfc0e3d071cdc44c4",
+          "solver": "59eb48e5f20f5c92886f11a6dea8445e28d3c40ab74a38b02b3dd1e0e00a0b3e"
+        }
+      },
+      "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+      "compiled_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-coverage-ledger-initial20-v1.json",
+        "sha256": "b67d75664786a5f0cc44e0158f1bdf02beb57b84cf28466df34e3bfd105a619a"
+      },
+      "context_layout": {
+        "native_role_query_placement": null
+      },
+      "hypothesis": "Keep the historical placement, constant tool presentation and full Reviewer history. Use intent/entity coverage checks to detect omissions while distinguishing completed checks from unresolved findings.",
+      "node_context": {
+        "reviewer_history_scope": "full",
+        "tool_schema_rendering": "constant"
+      },
+      "policy_stage_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f.json",
+          "sha256": "690e45215e5229bdfe40dd096beece6240c264f6cd162d21a2f149eb644748c1"
+        },
+        "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "role_character_counts": {
+        "perception": 1162,
+        "planner": 1465,
+        "reviewer": 1246,
+        "solver": 1321
+      },
+      "status": "PROSPECTIVE-DRAFT-NOT-RUNTIME-ADMITTED",
+      "system_id": "coverage-ledger",
+      "system_index": 1
+    },
+    {
+      "binding_audit": {
+        "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+        "context_layout": {
+          "native_role_query_placement": "before-speech-v1"
+        },
+        "node_context": {
+          "reviewer_history_scope": "latest-solver-and-local-tools",
+          "tool_schema_rendering": "constant"
+        },
+        "role_sha256": {
+          "perception": "f6a39175a449b2d08adc45b3b9b1b5e6bec979260b2b9ec4ea3c07c6a24684b2",
+          "planner": "c63879dc850a76d8a9ab010dbb5e21eaf8a44e9ca1e27872b605230d0db83062",
+          "reviewer": "35c2c88dc80432896db1aa7c1aa6122fdaee4cd18765ca1bde8bdcab4d36232c",
+          "solver": "86db2558a36fe0ec4f20c31e51b068abaa8c81dcbf6cd7811fc20895b4ff6321"
+        }
+      },
+      "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+      "compiled_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-counterexample-check-initial20-v1.json",
+        "sha256": "7ab0d63b22fda036c5d4703946e577dc18b4340a7cdd26e809f87fd29b95f208"
+      },
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "hypothesis": "Place instructions before speech with constant tool presentation and latest-draft Reviewer history. Test a specific alternative explanation before revising, avoiding feedback cascades from historical criticism.",
+      "node_context": {
+        "reviewer_history_scope": "latest-solver-and-local-tools",
+        "tool_schema_rendering": "constant"
+      },
+      "policy_stage_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09.json",
+          "sha256": "73605db79d885d654242e741ac90e70adeffda5533d207fcb0ad8fb5c7aec60b"
+        },
+        "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "role_character_counts": {
+        "perception": 1090,
+        "planner": 1445,
+        "reviewer": 1225,
+        "solver": 1280
+      },
+      "status": "PROSPECTIVE-DRAFT-NOT-RUNTIME-ADMITTED",
+      "system_id": "counterexample-check",
+      "system_index": 2
+    },
+    {
+      "binding_audit": {
+        "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "reviewer_history_scope": "full",
+          "tool_schema_rendering": "per-role"
+        },
+        "role_sha256": {
+          "perception": "401d59f2dafa616461265fcfcc86b2df287fec0f3108278f53c6274e4a06a08d",
+          "planner": "85e4f4feda1427bde3164e4676d1e2dc0447397a80a0efb7907ea309da55f486",
+          "reviewer": "8937feadab135981a169821fa5179ed99e8cef13deb6946ee46185e30b9d4c6f",
+          "solver": "6c8df9f0e6acd1ee42ce0fde1fe77cdf4f21b36b0ac3dd3b3890c76038688af4"
+        }
+      },
+      "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+      "compiled_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-semantic-frame-initial20-v1.json",
+        "sha256": "01475696690bca144df1c20677c9d57b2c6729d961587e264dc29ab23af5bb74"
+      },
+      "context_layout": {
+        "native_role_query_placement": null
+      },
+      "hypothesis": "Use historical placement, role-specific tools and full Reviewer history. Reconstruct the request as an action/argument frame so intent and entity decisions stay mutually consistent through bounded review.",
+      "node_context": {
+        "reviewer_history_scope": "full",
+        "tool_schema_rendering": "per-role"
+      },
+      "policy_stage_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-diversity-initial4-sol-v1/policies/612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091.json",
+          "sha256": "8026f9b3fedcf435b53ea4b1a800946e8d55489dc803fdc5930fd46439331834"
+        },
+        "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "role_character_counts": {
+        "perception": 1121,
+        "planner": 1487,
+        "reviewer": 1255,
+        "solver": 1398
+      },
+      "status": "PROSPECTIVE-DRAFT-NOT-RUNTIME-ADMITTED",
+      "system_id": "semantic-frame",
+      "system_index": 3
+    }
+  ]
+}

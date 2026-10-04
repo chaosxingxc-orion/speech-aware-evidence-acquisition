@@ -1,0 +1,77 @@
+{
+  "active_or_frozen_artifacts_modified": false,
+  "authoring_model": "GPT-6.1 Sol; human-authorized engineering subagent",
+  "binding_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+  "compiled_template_readiness_check": "PASS: all4 are policy-compilation templates, not live cells. Legacy R01C query/supply/FIT/prepared_phase_supply bindings remain inherited for roundtrip identity only; actual per-system UPDATE2 bindings must supersede them before runtime.",
+  "current_update2_own_supplies_prepared": false,
+  "execution_configuration_ready": false,
+  "existing_compiler_tests": {
+    "passed": 99,
+    "seconds": 3.98,
+    "suites": [
+      "test_system_text_policy.py",
+      "test_system_text_context_layout.py",
+      "test_node_context_policy.py",
+      "test_consumption_node_context.py"
+    ],
+    "warnings": 3
+  },
+  "final_data_root_binding_verification": "PASS all4 via verify_system_text_binding; same4 candidate IDs and exact stored audit equality. Only a new draft metadata namespace was written.",
+  "formal_proposal_contacts": 0,
+  "full_unique_role_texts": 16,
+  "large_ancestry_location": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-diversity-initial4-sol-v1",
+  "learner_implemented": false,
+  "model_tokenizer_scorer_contacts_added_by_preparation": 0,
+  "next_work": "Root review and adapted baseline protocol; full request FIT and structural proof. No dispatch, exposure countersignature or panel archive freeze.",
+  "offline_gates": {
+    "engineering_base_check": "PASS",
+    "git_diff_check": "PASS",
+    "harness_admission_check": "PASS"
+  },
+  "raw_task_traces_committed": false,
+  "records": [
+    {
+      "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+      "deterministic_sampling_unchanged": true,
+      "four_role_binding": "PASS",
+      "non_editable_configuration_unchanged": true,
+      "shared_compile_roundtrip": "PASS",
+      "system_id": "speech-evidence",
+      "unsupported_compression_rejected": true
+    },
+    {
+      "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+      "deterministic_sampling_unchanged": true,
+      "four_role_binding": "PASS",
+      "non_editable_configuration_unchanged": true,
+      "shared_compile_roundtrip": "PASS",
+      "system_id": "coverage-ledger",
+      "unsupported_compression_rejected": true
+    },
+    {
+      "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+      "deterministic_sampling_unchanged": true,
+      "four_role_binding": "PASS",
+      "non_editable_configuration_unchanged": true,
+      "shared_compile_roundtrip": "PASS",
+      "system_id": "counterexample-check",
+      "unsupported_compression_rejected": true
+    },
+    {
+      "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+      "deterministic_sampling_unchanged": true,
+      "four_role_binding": "PASS",
+      "non_editable_configuration_unchanged": true,
+      "shared_compile_roundtrip": "PASS",
+      "system_id": "semantic-frame",
+      "unsupported_compression_rejected": true
+    }
+  ],
+  "root_independent_binding_check": "Earlier root verification: PASS all4 with isolated repository staging root, exact stored audit equality and16 unique role hashes. This precedes final data-root publication; final data-root independent check remains root work.",
+  "runtime_admitted": false,
+  "schema": "saea-context-diversity-initial4-model-free-audit-v1",
+  "scientific_results_read": false,
+  "seed": 20260913,
+  "source_base_commit": "fece7425c",
+  "temperature": 0
+}

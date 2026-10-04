@@ -1,0 +1,55 @@
+{
+  "schema": "saea-system-skill-history-v1",
+  "version": "initial4-sol-v1",
+  "append_only_intent": true,
+  "records": [
+    {
+      "kind": "interface-seed",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "disposition": "retained-unchanged-reference",
+      "reason": "Use the approved four independent node contracts and implemented assembly surface; do not replace old proposal history."
+    },
+    {
+      "kind": "superseded-design-only",
+      "description": "Repeated sampling of one fixed policy/E with positive temperature and distinct seeds",
+      "disposition": "rejected-before-implementation",
+      "reason": "Direct owner correction: K means distinct complete prompt+assembly systems per input. Keep temperature0 and seed20260913; context diversity supplies exploration.",
+      "files_or_candidates_created_for_design": 0,
+      "runtime_contacts": 0
+    },
+    {
+      "kind": "scope-correction",
+      "description": "4x20 means80 distinct inputs in the sizing ladder; N is distinct-input count and K is a separate system multiplier",
+      "disposition": "retained-current-semantics",
+      "initial_scope": {"N": 20, "K": 4, "M": 4},
+      "runtime_contacts": 0
+    },
+    {
+      "kind": "prospective-authoring",
+      "authoring_model": "GPT-6.1 Sol; human-authorized engineering subagent",
+      "system_ids": ["speech-evidence", "coverage-ledger", "counterexample-check", "semantic-frame"],
+      "disposition": "all-four-retained-for-review-no-reward-selection",
+      "full_role_texts": 16,
+      "learned_from_task_results": false,
+      "formal_metered_proposer_allocation": null
+    },
+    {
+      "kind": "unsupported-assembly-design",
+      "description": "Compression or progressive loading",
+      "disposition": "future-only-not-implemented",
+      "reason": "The existing renderer supports placement, tool presentation and Reviewer history selection only. No compression/postprocessing/runtime code is added."
+    },
+    {
+      "kind": "old-comparison-preservation",
+      "description": "Round9 Astra proposal custody and prospective six-member comparison",
+      "disposition": "unchanged-and-paused",
+      "replaced_proposal_slots": 0,
+      "archive_freezes": 0,
+      "runtime_contacts": 0
+    }
+  ],
+  "best_skill_selected": false,
+  "rejected_empirical_candidates": [],
+  "empirical_evaluations": 0,
+  "retention_rule": "Keep all authored and later rejected candidate versions addressable; do not erase ancestry or infer selection before qualified feedback."
+}
