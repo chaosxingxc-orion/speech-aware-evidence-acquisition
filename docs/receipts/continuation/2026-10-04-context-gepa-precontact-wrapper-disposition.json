@@ -1,0 +1,20 @@
+{
+  "schema": "saea-context-learner-precontact-disposition-v1",
+  "recorded_at_utc": "2026-10-04T09:58:47.585519+00:00",
+  "authority": "owner227 bounded root incident disposition",
+  "original_worker_start": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-v2/worker-start.json",
+  "original_exit": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/gepa-worker-v1.windows-exit.json",
+  "reproduced_wrapper_error": "too many positional arguments",
+  "original_process_gone": true,
+  "original_exchange_absent": true,
+  "original_optimizer_input_absent": true,
+  "semantic_callbacks": 0,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "signature_binding_fixed": true,
+  "material_bytes_identical": true,
+  "successor_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-worker2-v1",
+  "successor_admission": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/gepa-worker-admission-v2.json",
+  "preserve_originals": true,
+  "automatic_retry": false
+}

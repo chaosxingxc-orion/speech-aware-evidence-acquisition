@@ -1,0 +1,22 @@
+{
+  "schema": "saea-context-gepa-worker-launch-v1",
+  "recorded_at_utc": "2026-10-04T10:00:03.885065+00:00",
+  "worker": {
+    "admission": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/gepa-worker-admission-v2.json",
+    "admission_sha256": "ea439c186010e88eb0f56cabaca7a34b945526f7bb4900f588b92474276c868c",
+    "algorithm": "gepa",
+    "model_contacts_added": 0,
+    "no_automatic_restart": true,
+    "pid": 657258,
+    "start_ticks": "45657241",
+    "started_unix": 1791107972.3450315,
+    "worker_commit": "a403cad0b51638f2a8903cbbc0a8873019bba9aa"
+  },
+  "windows_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/gepa-worker-v2.windows-launch.json",
+  "status": "RUNNING; requalifying complete source before callback publication",
+  "semantic_contacts_added": 0,
+  "generation_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "automatic_restart": false,
+  "paid_api_spend": 0
+}

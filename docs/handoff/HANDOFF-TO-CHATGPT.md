@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Qualified baseline inputs and bounded GEPA worker, 2026-10-04T10:00:03.885065+00:00
+
+[Prepared input evidence](../receipts/continuation/2026-10-04-context-baseline-inputs-prepared.json) records separate complete eighty-episode candidate material exports for GEPA and TF. Source READ is complete and stable. The first GEPA wrapper stopped before any callback because it passed a keyword-only argument positionally; Windows stderr handling also truncated the outer diagnostic. [Root227 disposition](../receipts/continuation/2026-10-04-context-gepa-precontact-wrapper-disposition.json) preserves every original and admits one corrected successor with identical material, algorithms and allocations. Signature binding and native stdout/stderr/exit capture proofs pass; source feedback independently requalifies. No model or scorer contact was consumed.
+
+[Successor worker launch](../receipts/continuation/2026-10-04-context-gepa-worker-launch.json) uses frozen a403cad0b, Windows hidden background PID34796 and Linux PID657258/start45657241. It requalifies source before publishing its one GEPA proposal callback. Every actual GPT-6.1 Sol actor still needs the exact request and a concrete allowed-file manifest before contact. Preserve unknown provider usage. The worker cannot dispatch GPU or synthesize reward; root separately admits a full changed trial before answering evaluation. TF remains prepared from the same original input, independent of GEPA outcomes. Keep seed as formal incumbent and stay N20; no learned benefit or expansion. Heartbeat remains PAUSED; preserve other-carrier holds and human-before8x400.
+
 ## Model-free preparation refused a concurrent READ bookkeeping change, 2026-10-04T09:47:43.050110+00:00
 
 [Root disposition](../receipts/continuation/2026-10-04-context-material-preparation-disposition.json) preserves the failed v1 input preparation. It correctly exited1 before material publication because root changed the READ consumed flag during export. Only six copied policy files exist;zero proposer/model/scorer contacts. Scientific generation/scoring/read remain complete and unchanged. Leave the settled READ row untouched while preparing fresh v2 archives.

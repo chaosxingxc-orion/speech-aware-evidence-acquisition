@@ -1,0 +1,41 @@
+{
+  "schema": "saea-context-baseline-inputs-prepared-v1",
+  "recorded_at_utc": "2026-10-04T09:56:14.613233+00:00",
+  "archives": [
+    {
+      "algorithm": "gepa",
+      "prepared": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-v2/prepared-inputs.json",
+        "sha256": "e5618e9837dc1c65604aa2989921c652b93d010ed8869c093c8b3ac7a6e0ba08"
+      },
+      "index": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-v2/context-learning/material/649a2a1c6bb07c4bf7e77407c09c97e0e649dbff9808fb56965fa1ddd3598846/index.json",
+        "sha256": "58baf1cd85f5824a6e201b72a523b5f83ba6abe070db7cd8ccba4f08905a484e"
+      },
+      "index_content_sha256": "618eb116abc2289dd212822395b89a6727381b6c0463be04de26bef8d1b040b9"
+    },
+    {
+      "algorithm": "tf-grpo-context-diversity",
+      "prepared": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-v2/prepared-inputs.json",
+        "sha256": "6e351f14c5a92834835406c132c3663a46c06ce902591d082648109f88c9635d"
+      },
+      "index": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-v2/context-learning/material/649a2a1c6bb07c4bf7e77407c09c97e0e649dbff9808fb56965fa1ddd3598846/index.json",
+        "sha256": "58baf1cd85f5824a6e201b72a523b5f83ba6abe070db7cd8ccba4f08905a484e"
+      },
+      "index_content_sha256": "618eb116abc2289dd212822395b89a6727381b6c0463be04de26bef8d1b040b9"
+    }
+  ],
+  "candidate_episodes_per_archive": 80,
+  "contacts_added": 0,
+  "initial_read_status": "Complete and stable",
+  "original_v1_failure_preserved": true,
+  "worker_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/gepa-worker-admission-v1.json",
+    "sha256": "319fa4b00629b04a48830f8db85e5b4d15cb81519382534620c7d4171c848479"
+  },
+  "worker_status": "Prepared, not launched",
+  "scientific_status": "Seed remains formal incumbent; N20; no learned benefit established",
+  "heartbeat": "PAUSED"
+}
