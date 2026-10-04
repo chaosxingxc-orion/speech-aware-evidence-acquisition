@@ -1,0 +1,47 @@
+{
+  "at_utc": "2026-10-04T11:09:49.957418+00:00",
+  "authority": "root227 exact GEPA iteration1 evaluation",
+  "candidate_systems": 4,
+  "candidate_trajectories": 80,
+  "commit": "c41772055e5d7db35634fe50bca0e6e92607a1df",
+  "control_trajectories": 40,
+  "distinct_inputs": 20,
+  "driver_epoch": "2026-10-04T11:09:35Z",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-n20-owner227-v1/frozen-check-v1.json",
+      "sha256": "ec486fad42ca266698ebbec9dde70a47079a1eb17d8289582228e6cffc3dd9d4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-n20-owner227-v1/root-admission-v1.json",
+      "sha256": "81d232122b0ebe7129ad3f7cab76b3fdbce61f45ccef83bc11f6b45569c0a871"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-n20-owner227-v1/driver-transition-v1.json",
+      "sha256": "77ef21f6ead6aeb97fb527a74b7c8d74f5e12ed5b70e814aec8cf4c834c6b772"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-n20-owner227-v1/windows-launch-proof-v1.json",
+      "sha256": "f55eb95340c1f08049c893479b0d1e064e3069a0d903c1b05fc7669640ce1787"
+    }
+  ],
+  "fit_endpoint_cap": 6240,
+  "generation_contact_cap": 1560,
+  "live_driver_processes": [
+    {
+      "pid": 670616,
+      "start_ticks": 46068063
+    },
+    {
+      "pid": 670683,
+      "start_ticks": 46068152
+    }
+  ],
+  "next": "Wait for all six independently finalized verified seals and exactly one successful complete official score each, zero failed jobs; exact root READ and source-bound evaluation callback. No partial feedback. TF remains separate.",
+  "official_score_jobs": 6,
+  "read_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-READ-V1",
+  "read_signed": false,
+  "schema": "saea-context-gepa-iteration1-n20-launch-v1",
+  "total_trajectories": 120,
+  "worker": "/home/chao/saea-worktrees/codex-context-gepa-iteration1-n20-v1"
+}

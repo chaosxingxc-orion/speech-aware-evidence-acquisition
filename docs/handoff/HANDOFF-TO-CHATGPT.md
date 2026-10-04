@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## GEPA first complete trial launched, 2026-10-04T11:09:49.957418+00:00
+
+[Exact launch](../receipts/continuation/2026-10-04-context-gepa-iteration1-n20-launch.json) pins frozen c41772055 and Windows SAEA-Batch-Driver epoch 2026-10-04T11:09:35Z. All six actual policy/supply/registration/runtime checks passed. Twenty unchanged inputs, four complete candidate systems plus seed/A/A:120 trajectories. Only the selected counterexample Perception child differs from the original population. Preserve fixed temperature0/seed20260913, sequential four-slot execution and full output reserve.
+
+The original GEPA worker waits at its evaluator callback. Require six FINALIZED verified seals, six unique successful official scores and zero failed jobs, then exact ROOT READ before feedback. Return source bindings, never synthesized numeric reward. TF original inputs remain separate. No stable improvement, adoption or next-stage approval is implied. Keep seed incumbent, N20, heartbeat PAUSED, other-carrier holds and human-before8x400. The completed child structural attempt remains intentionally unscored.
+
+
 ## GEPA child structural proof complete, 2026-10-04T11:01:22.120712+00:00
 
 [Exact completion](../receipts/continuation/2026-10-04-context-gepa-iteration1-structural-complete.json): four rows,22 model contacts,22 actual FIT receipts/88 endpoints. Six Reviewer handoffs are valid and visible; all four terminal deliveries retain Omni custody. Driver completed normally, engineering attempt intentionally remains OPENED with prepared score specification and no official score. Do not score/reseal or read task quality. Original sample and node timing are source-bound; this is not a speed or benefit comparison.
