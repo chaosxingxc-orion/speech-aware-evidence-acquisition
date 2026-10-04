@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Stronger unscored structural acceptance selected, 2026-10-04
+
+[Prospective scorer-entry guard](../receipts/continuation/2026-10-04-template-k16-scorer-entry-guard.json) selects structural-audit-v2.py and record-completion-v2.py in coordination/context-template-k16-structural-owner227-v1 after the exact completed64-row engineering family. Preserve v1 helpers unexecuted. Eleven synthetic tests and four prior engineering metadata-only checks pass. Require absent scoring stage/batch/lock/scores, deferred finalization and one exactly bound inert score specification; hash/recheck those metadata files before recording completion. A missing score file alone no longer proves the registered scorer was never entered. No quality read, model/scorer contact, runtime request or frozen source changed.
+
+Continue original frozen preflight Linux736158/start49045896, exec88513, worker a024df8ae; it has printed PASS through branch07 at this checkpoint. Revalidate live state. Existing node/sample timing helpers, transition and Windows batch launch remain unchanged. All16 checks are still required before dispatch. Heartbeat PAUSED; scientific family and next learner export remain separately gated.
+
+
 ## K16 structural frozen preflight running, 2026-10-04T19:41:43.222509+00:00
 
 [Exact live handle](../receipts/continuation/2026-10-04-template-k16-structural-frozen-preflight-running.json):Linux736158/start49045896, exec88513, clean frozen /home/chao/saea-worktrees/codex-context-template-k16-structural-v1 at a024df8aecfbdf69efbd3d4f93f9b464f9e7f777. Registered64 structural rows are committed and integrated. Continue this exact16-member preflight; no generation task has launched. Its receipt must prove all16 before the prepared normal completed-TF-control transition and one Windows SAEA-Batch-Driver launch. Do not restart on observation timeout.
