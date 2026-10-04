@@ -10,7 +10,7 @@
     },
     "read_recipe": {
       "relpath": "docs/readiness/2026-10-04-context-gepa-iteration1-capacity-recovery1-v1/capacity-analysis-recipe-v1.json",
-      "sha256": "f89e7e03103f16d7e202848f3f36d80903e37a8adaff817065973ce5e062f7ad"
+      "sha256": "6b668a324608bb113a1695c43274a2001426b9271483a82cc1c00f473cbf99ef"
     },
     "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-RECOVERY1-FIT-V1",
     "system_id": "counterexample-check"
