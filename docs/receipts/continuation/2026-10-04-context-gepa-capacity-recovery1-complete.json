@@ -1,0 +1,26 @@
+{
+  "artifact": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-capacity-recovery1-owner227-v1/counterexample-check/request-fit-v1.json",
+    "sha256": "9e6bfed6b78f62bcafad05f440f694c7158a9ab8e0326a1c33e08d95e49dc37c"
+  },
+  "at_utc": "2026-10-04T10:45:19.465458+00:00",
+  "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-counterexample-check-capacity-recovery1-fit-v1",
+  "authority": "root227 registered structural-only read",
+  "capacity_passed": true,
+  "commit": "6bf07f6d34aef18e31bfd25c6bdef9837ad70681",
+  "finished": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-capacity-recovery1-owner227-v1/capacity-finished.json",
+    "sha256": "a9d86af59373693005ca1a38a11c59aaa08042bb2a28fe671d4f8de783d0632c"
+  },
+  "generation_contacts": 0,
+  "measured_requests": 44,
+  "minimum_margin_after_full_output_and_structural_reserve": 5535,
+  "next": "Separately register the unchanged provisional child four-row structural run, then fresh six-member N20 whole-family evaluation and exact READ. Original GEPA worker waits; TF remains independent. No learning reward yet.",
+  "prior_failed_endpoints_preserved": 140,
+  "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-CAPACITY-RECOVERY1-FIT-V1",
+  "schema": "saea-context-gepa-capacity-recovery-complete-v1",
+  "scope": "Reachable current graph with longest legal supplied knowledge and bounded role replies. Exact native per-contact FIT remains mandatory; no exhaustive arbitrary-text guarantee.",
+  "scorer_contacts": 0,
+  "tokenizer_endpoints": 297,
+  "worker": "/home/chao/saea-worktrees/codex-context-gepa-iteration1-capacity-recovery1-v2"
+}

@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## GEPA child capacity passed after named recovery, 2026-10-04T10:45:19.465458+00:00
+
+[Exact completion](../receipts/continuation/2026-10-04-context-gepa-capacity-recovery1-complete.json) supersedes the running snapshot. Frozen6bf07f6d3 successor ended normally:297 endpoints,44 actual measured requests all fit with max512 plus2048 structural reserve; minimum remaining margin5535 tokens. Zero generation/scoring. Lease released normally, STOP absent; preserve the original140-endpoint failed attempt and all old scratch. The new identity was executed once. This is capacity evidence, not a task-quality or learned-benefit result.
+
+Next root action is separate four-row structural admission for the unchanged provisional child, then the fresh six-member120-trajectory N20 evaluation/READ before answering the original waiting GEPA callback. Six own trial supplies are HELD and warm-verified; do not infer dispatch authority. Keep seed incumbent,TF independent,heartbeatPAUSED,other-carrier holds and human-before8x400.
+
+
 ## GEPA exact capacity recovery launched, 2026-10-04T10:43:25.284821+00:00
 
 [Launch evidence](../receipts/continuation/2026-10-04-context-gepa-capacity-recovery1-launch.json) pins frozen6bf07f6d3, Windows PID26064 and Linux PID666643/start45909244. This is the single fresh297-endpoint nongenerative recovery after the named scratch collision. Exact frozen policy/registration/runtime checks pass. Root archived only the failed dead-owner lock after healthy idle service/no competing processes; no STOP or queue changed. Original140 endpoints and all historical scratch remain preserved.
