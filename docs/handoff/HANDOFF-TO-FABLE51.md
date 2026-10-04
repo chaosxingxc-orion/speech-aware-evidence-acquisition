@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Measured runtime queue binding verified, 2026-10-04T04:15:08.551562+00:00
+
+[Offline correction](../readiness/2026-10-04-measured-runtime-binding-v1/README.md) now routes the opt-in experiment measurement profile into the shared sequential runner. Pre-preparation and dispatch validation reject incompatible envelopes; registration requires recipe/registration/runtime equality and explicit geometry. The existing complete-family protocol hash/profile check remains. Absent profile preserves legacy behavior. Candidates cannot edit the scheduling envelope.
+
+204 focused tests pass, including actual shared scripted OpenJiuwen trajectories; measured-selection module69 statements/100% coverage, base/harness/focused lint pass. Zero real contacts and no runtime admission. Preserve the completed four-row proof's original queue16 timing; the prospective queue4 panel needs its own exact evidence and must not claim these numbers.
+
+Four-node independent policy/context learning remains the next objective. Proposal quota is unresolved; no quota probe, spent-slot replacement, paid fallback or incomplete panel. Keep sequential execution, fixed400 assets, root-only work, heartbeat PAUSED and human review before8x400. Other-carrier holds remain.
+
 ## Four-node seed structural proof accepted, 2026-10-04T03:59:41.363638+00:00
 
 [Complete structural receipt](../receipts/continuation/2026-10-04-four-node-seed-engineering-complete.json) closes the single4-row worker at03:53:29Z on frozen53ecaca74.22 original model contacts match22 actual-request FIT receipts/88 endpoint journal entries and reconstructed request bodies. All6 Reviewer handoffs are valid and visible to Planner; all4 terminal deliveries preserve Omni custody. No knowledge call occurred, so do not claim that optional branch was naturally covered. Zero official scoring and no task-quality read or optimizer export. Preserve intentional OPENED worker lifecycle, complete generation and prepared score specification; never score/reseal/retry.

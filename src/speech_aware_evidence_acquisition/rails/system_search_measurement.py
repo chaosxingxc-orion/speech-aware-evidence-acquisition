@@ -30,6 +30,28 @@ def validate_profile(profile):
     return profile
 
 
+def runtime_options(values, *, slot_count):
+    """Bind opt-in measurement to the existing trajectory runner's real queue.
+
+    Keep legacy calls unchanged when absent. The experiment owns this envelope;
+    candidates cannot change it through editable policy fields.
+    """
+    if "system_search_measurement" not in values:
+        return {}
+    profile = validate_profile(values["system_search_measurement"])
+    require(type(slot_count) is int and slot_count > 0
+            and profile["slot_count"] == slot_count,
+            "measured slot count differs from runtime geometry")
+    require(profile["queue_depth"] >= slot_count,
+            "measured queue depth must cover every serving slot")
+    require(isinstance(values.get("native_episode"), dict),
+            "measured schedule requires a native episode")
+    require(not any(key in values for key in (
+        "native_node_batch", "native_node_pipeline", "native_prefix_slots", "dispatch")),
+        "measured sequential schedule cannot mix scheduling overrides")
+    return {"slot_count": slot_count, "queue_depth": profile["queue_depth"]}
+
+
 def measured_rows(document, candidate_ids, bindings, *, profile):
     """Join complete qualified feedback; never accept hand-entered latency scores.
 

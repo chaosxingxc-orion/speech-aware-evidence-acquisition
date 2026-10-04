@@ -135,10 +135,13 @@ Missing timing coverage blocks a latency comparison. Compare only common sample/
 serving geometry, schedule and measurement definitions; retain A/A variability and the existing
 scientific measurement rules. Point estimates may guide exploration, not prove benefit.
 
-**Implementation gap:** the existing archive frontier still uses F1, intent, model-call and
-tool-call counts. It does not yet select on per-sample latency or enforce a new reliability
-profile. Add an opt-in versioned measured-latency profile and complete timing custody before
-claiming this learning loop is ready. Do not reinterpret historical frontiers.
+**Implemented successor:** the [measured-latency profile](../2026-10-04-system-search-measured-latency-v1/README.md)
+now joins complete original timing with quality and reliability for selection. The
+[runtime binding](../2026-10-04-measured-runtime-binding-v1/README.md) enforces the declared
+queue in actual shared execution. Historical profile-free frontiers remain unchanged.
+The implemented timing boundary is admission-to-settled-workflow; preprocessing and final
+persistence/scoring are not included and must not be claimed as measured business latency.
+No efficacy or learning benefit follows from this implementation alone.
 
 ## Exit from general engineering analysis
 

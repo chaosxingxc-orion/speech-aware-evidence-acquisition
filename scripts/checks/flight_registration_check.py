@@ -1468,6 +1468,7 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
         return
     from speech_aware_evidence_acquisition.core.config import ConfigError, compose
     try:
+        registration = {}
         binding = cell.get("system_text_policy_binding")
         require(binding is not None, "declared system text policy binding is missing")
         if panel:
@@ -1499,6 +1500,20 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
                             baseline=cell["baseline_fragment"],
                             experiment=report.experiment).values
         verify_system_text_binding(effective, binding, repo_root=repo_root, data_root=data_root)
+        # Compare prospective measurement custody before spending model contacts.
+        profile = recipe.get("measurement_profile")
+        require(registration.get("measurement_profile") == profile
+                and effective.get("system_search_measurement") == profile,
+                "registered measurement profile differs from runtime or read recipe")
+        if profile is not None:
+            from speech_aware_evidence_acquisition.rails.system_search_measurement import runtime_options
+            from speech_aware_evidence_acquisition.rails.adapters.runtime_view import configured_geometry
+            require(type(effective.get("serving_slots")) is int
+                    and type(effective.get("serving_slot_tokens")) is int,
+                    "measured runtime geometry must be explicit")
+            geometry = configured_geometry(effective, defaults=(0, 0, 0))
+            runtime_options(effective, slot_count=geometry["slots"])
+
     except (ConfigError, ValueError, TypeError, KeyError, OSError) as error:
         report.findings.append(Finding(
             "system-text-policy-binding", f"{report.run_id}: {error}", report.run_id

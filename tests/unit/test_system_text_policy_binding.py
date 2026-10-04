@@ -133,7 +133,7 @@ def test_real_prelaunch_gate_requires_the_registered_bundle(bound, tmp_path, mis
         assert "system-text-policy-binding" in _kinds(result)
         assert not result["passed"]
     else:
-        assert "system-text-policy-binding" not in _kinds(result)
+        assert "system-text-policy-binding" not in _kinds(result), result
         compiled["phase_material"]["planner"]["instruction_template"] = "probes/legacy.txt"
         _write(w.repo / "configs/baseline" / (base_name + ".json"), compiled)
         result = w.run(cells=[EXPERIMENT])
@@ -155,6 +155,11 @@ def test_real_prelaunch_gate_requires_the_registered_bundle(bound, tmp_path, mis
         "old-planner",
         "ambiguous",
         "changed-registration",
+        "measurement-missing-runtime",
+        "measurement-wrong-recipe",
+        "measurement-wrong-registration",
+        "measurement-wrong-slots",
+        "measurement-valid",
     ],
 )
 def test_new_panel_prelaunch_requires_exact_member_and_effective_role_bytes(
@@ -199,6 +204,19 @@ def test_new_panel_prelaunch_requires_exact_member_and_effective_role_bytes(
         registration["member_bindings"]["B-parent-aa"] = registration[
             "member_bindings"
         ]["B-parent"]
+    if fault and fault.startswith("measurement-"):
+        from test_system_search_measurement import profile
+        p = profile()
+        registration["measurement_profile"] = p
+        w.recipe["measurement_profile"] = copy.deepcopy(p)
+        fragment["system_search_measurement"] = copy.deepcopy(p)
+        compiled.update(serving_slots=4, serving_slot_tokens=24576,
+                        server_args=["-np", "4", "-c", "98304"], decoding_params={"max_tokens": 512})
+        if fault == "measurement-missing-runtime": del fragment["system_search_measurement"]
+        elif fault == "measurement-wrong-recipe": w.recipe["measurement_profile"]["queue_depth"] = 16
+        elif fault == "measurement-wrong-registration": registration["measurement_profile"] = {**p, "queue_depth": 16}
+        elif fault == "measurement-wrong-slots": compiled["serving_slots"] = 8
+        _write(base_path, compiled)
     registration["registration_sha256"] = content_hash(registration)
     if fault == "changed-registration":
         registration["registration_sha256"] = "0" * 64
@@ -221,7 +239,7 @@ def test_new_panel_prelaunch_requires_exact_member_and_effective_role_bytes(
     _write(path, fragment)
     _write(w.repo / "docs/readiness" / PACKAGE / "analysis-recipe-v1.json", w.recipe)
     result = w.run(cells=[EXPERIMENT])
-    if fault:
+    if fault and fault != "measurement-valid":
         assert "system-text-policy-binding" in _kinds(result)
     else:
-        assert "system-text-policy-binding" not in _kinds(result)
+        assert "system-text-policy-binding" not in _kinds(result), result

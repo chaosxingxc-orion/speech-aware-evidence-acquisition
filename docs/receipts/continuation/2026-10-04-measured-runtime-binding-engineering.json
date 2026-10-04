@@ -1,0 +1,28 @@
+{
+  "schema": "saea-measured-runtime-binding-engineering-v1",
+  "at_utc": "2026-10-04T04:15:08.551562+00:00",
+  "status": "OFFLINE_VERIFIED_NOT_RUNTIME_ADMITTED",
+  "base_commit": "e0cb7b945",
+  "readiness": "docs/readiness/2026-10-04-measured-runtime-binding-v1/README.md",
+  "tests_passed": 204,
+  "coverage": {
+    "module": "rails.system_search_measurement",
+    "statements": 69,
+    "percent": 100
+  },
+  "checks": [
+    "engineering_base_check PASS",
+    "harness_admission_check PASS",
+    "focused ruff PASS",
+    "git diff --check PASS"
+  ],
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "legacy_default_unchanged": true,
+  "prior_structural_queue_depth": 16,
+  "prospective_profile_queue_depth": 4,
+  "scientific_gain_established": false,
+  "proposal_quota": "UNRESOLVED",
+  "heartbeat": "PAUSED"
+}

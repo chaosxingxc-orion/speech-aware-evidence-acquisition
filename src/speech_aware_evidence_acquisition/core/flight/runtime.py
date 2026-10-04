@@ -4140,6 +4140,8 @@ class FlightRuntime:
         self._adapter = adapter
 
         # Validate an armed scheduler before preparation can contact a service.
+        if "system_search_measurement" in values:
+            self._system_search_measurement_options()
         if "native_prefix_slots" in values:
             self._native_prefix_slots()
         if "native_node_batch" in values:
@@ -7239,6 +7241,28 @@ class FlightRuntime:
         except NativeWorkflowPanelError as error:
             raise FlightRuntimeError(str(error)) from error
 
+    def _system_search_measurement_options(self, native_config=None):
+        """Validate and bind the measured queue before preparation and dispatch."""
+        values = self._composed.values
+        if "system_search_measurement" not in values:
+            return {}
+        from ...rails.system_search_measurement import runtime_options
+        from ...rails.system_text_policy import PolicyError
+        from ...rails.native_episode_config import load_native_episode_config
+        try:
+            policy = values.get("policy")
+            if policy == "fixed" or policy in self._obs_policy_names():
+                raise PolicyError("measured schedule requires a native role episode")
+            if native_config is None:
+                native_config = load_native_episode_config(values, default_phase_program(policy))
+            if native_config is None:
+                raise PolicyError("measured schedule requires a native role episode")
+            if getattr(self, "_native_workflow_panel", None) is not None:
+                raise PolicyError("measured sequential schedule cannot use a workflow panel")
+            return runtime_options(values, slot_count=self._adapter.serving_geometry()["slots"])
+        except PolicyError as error:
+            raise FlightRuntimeError(str(error)) from error
+
     def _native_node_pipeline(self, native_config=None):
         """Bind full-panel stage/prefetch limits before any model contact."""
         from ...rails.dispatch_slot_fill import NativeNodePipelineError, parse_native_node_pipeline
@@ -7303,6 +7327,7 @@ class FlightRuntime:
         )
 
         native_config = load_native_episode_config(self._composed.values, program)
+        measured_options = self._system_search_measurement_options(native_config)
         prefix_slots = self._native_prefix_slots(native_config)
         node_batch = self._native_node_batch(native_config)
         node_pipeline = self._native_node_pipeline(native_config)
@@ -7633,6 +7658,7 @@ class FlightRuntime:
             if whole_roster
             else {}
         )
+        live_options.update(measured_options)
         if flown_sample_ids is not None:
             live_options["flown_sample_ids"] = flown_sample_ids
         if binding.get("initial_feedback_states") is not None:
