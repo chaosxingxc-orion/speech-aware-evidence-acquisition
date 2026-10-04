@@ -1,0 +1,34 @@
+{
+  "schema": "saea-context-external-callback-validation-v1",
+  "at_utc": "2026-10-04T09:10:58.468040+00:00",
+  "authority": "owner227 root",
+  "status": "MODEL-FREE ENGINEERING ONLY",
+  "tests_passed": 120,
+  "new_module_statement_count": 135,
+  "new_module_branch_count": 12,
+  "new_module_statement_and_branch_coverage_percent": 100,
+  "ruff": "PASS",
+  "engineering_base": "PASS",
+  "harness_admission": "PASS",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "source_pins": {
+    "src/speech_aware_evidence_acquisition/rails/system_context_exchange.py": "2b8476a5758622789890c81b9aab8a923e3d4aaa8b140b5c85f0f1be35fc65c7",
+    "tests/unit/test_context_callback_exchange.py": "e19bc1027589db81588db1d9522a95ab6c546378621198289136540ed4213b82"
+  },
+  "red_evidence": "Eight missing-adapter tests and five missing-qualified-entry tests failed before their implementation.",
+  "integrated_synthetic_paths": [
+    "GEPA proposal and qualified complete evaluation, two external requests",
+    "TF76 summaries,19 comparisons,one experience update,four proposals,one complete evaluation,101 external requests"
+  ],
+  "negative_evidence": [
+    "unsigned READ before creating exchange",
+    "changed plan,scope,algorithm or input",
+    "spent quotas and replay",
+    "wrong actor/request identity",
+    "non-English response,missing provenance or invalid usage",
+    "caller-entered evaluation reward",
+    "timeout and duplicate JSON"
+  ],
+  "real_execution": "No exchange worker, proposer or reflection request has been launched. Initial six-member family is still incomplete and its READ unsigned."
+}

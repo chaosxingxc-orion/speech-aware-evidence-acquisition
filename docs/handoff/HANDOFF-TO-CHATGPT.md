@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## External callback handoff proven offline, 2026-10-04T09:11:37.036107+00:00
+
+[External callback adapter](../readiness/2026-10-04-context-external-callbacks-v1/README.md) now connects the original bounded TF/GEPA runner to source-bound file requests and separately serviced responses. The qualified entry checks full READ and exact plan before creating an exchange.120 focused tests pass, with135 new statements/12 branches covered100%;base/harness/Ruff pass. Tests drive complete synthetic GEPA and TF iterations through actual file waits, preserving unknown usage, spent opportunities, immutable failure and full evaluator source requalification. No real proposer, summary/reflection, external worker or new GPU contact follows from this patch.
+
+A live worker waits rather than replaying callbacks. Timeout, malformed output or a dead process still requires preserved failure/root disposition; there is no automatic resume. Actor labels are not authentication, byte caps are not model-token FIT, and missing provider usage stays unknown. Prospectively bind actual GPT-6.1 Sol isolated inputs/receipts and evaluator admission after complete current-family feedback. Never supply this root conversation or incidental log exposure.
+
+The initial N20K4 driver is still running; at09:06Z seed and seed-aa completed and the speech-evidence campaign began. Revalidate actual operational metadata without reading quality. Exact six-member READ remains unsigned. Keep frozen execution, paused heartbeat, resource floors, carrier holds and human-before8x400 unchanged.
+
 ## Six-member complete feedback reader integrated, 2026-10-04T09:01:57.105391+00:00
 
 [Reader integration](../receipts/continuation/2026-10-04-context-learning-reader-integration.json) extends the existing saved-score reader and cohort statistics to the exact seed/A/A plus four context systems.202 focused tests,base/harness/Ruff pass; the new21-statement analyzer has100% statement coverage. The real recipe and [analysis supplement v2](../readiness/2026-10-04-context-initial4-n20-entry-v1/analysis-supplement-v2.json) correctly refuse at unsigned READ before any source or output directory is opened. V2 only pins the implemented analysis; original estimator definitions and frozen execution are unchanged.
