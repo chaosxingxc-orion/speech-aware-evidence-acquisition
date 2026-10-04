@@ -6888,4 +6888,25 @@ Historical non-English quotation handling: the immutable old rows are preserved.
 
 | Date | Run/experiment ID | Execution profile | Scope | Model/tool | Speech carrier + split | Split role | Split identity hash | Consumed | Calls | Speech audio seconds | GPU hours | Inherited exposure | Artifacts | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-10-04 | SAEA-SLURP-CONTEXT-TF-ITERATION1-0017-SUMMARIZE-V1 | bounded-discovery-probe | TF summarize semantic callback | GPT-6.1 Sol isolated subagent | slurp initial4 N20 qualified TRAIN feedback | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 1 | 0 | 0 | Original full-family READ; cumulative TRAIN reference | docs/receipts/continuation/2026-10-04-context-tf-0017-summarize-admission.json | ROOT COUNTERSIGNED BEFORE CONTACT. One semantic opportunity, not provider usage. Exact manifest 60d895eb8287b8ddd926385374472d48bd8546083ba1e9b81eb55ca0ef927d59. No GEPA/root/B/test feedback; no automatic retry. |
+| 2026-10-04 | SAEA-SLURP-CONTEXT-TF-ITERATION1-0017-SUMMARIZE-V1 | bounded-discovery-probe | TF summarize semantic callback | GPT-6.1 Sol isolated subagent | slurp initial4 N20 qualified TRAIN feedback | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | yes | 1 | 0 | 0 | Original full-family READ; cumulative TRAIN reference | docs/receipts/continuation/2026-10-04-context-tf-0017-summarize-admission.json | ROOT COUNTERSIGNED BEFORE CONTACT. One semantic opportunity, not provider usage. Exact manifest 60d895eb8287b8ddd926385374472d48bd8546083ba1e9b81eb55ca0ef927d59. No GEPA/root/B/test feedback; no automatic retry. Original isolated callback completed and accepted unchanged; provider usage remains unknown. Receipt docs/receipts/continuation/2026-10-04-context-tf-0017-summarize-complete.json. |
+
+
+## TF iteration1 0018-summarize
+
+| Date | Run/experiment ID | Execution profile | Scope | Model/tool | Speech carrier + split | Split role | Split identity hash | Consumed | Calls | Speech audio seconds | GPU hours | Inherited exposure | Artifacts | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-04 | SAEA-SLURP-CONTEXT-TF-ITERATION1-0018-SUMMARIZE-V1 | bounded-discovery-probe | TF summarize semantic callback | GPT-6.1 Sol isolated subagent | slurp initial4 N20 qualified TRAIN feedback | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | yes | 1 | 0 | 0 | Original full-family READ; cumulative TRAIN reference | docs/receipts/continuation/2026-10-04-context-tf-0018-summarize-admission.json | ROOT COUNTERSIGNED BEFORE CONTACT. One semantic opportunity, not provider usage. Exact manifest bfbe466d40b3f91d8b1a48df76b78167cf6942d84047b51d2db85482f8bae5a4. No GEPA/root/B/test feedback; no automatic retry. Original isolated callback completed and accepted unchanged; provider usage remains unknown. Receipt docs/receipts/continuation/2026-10-04-context-tf-0018-summarize-complete.json. |
+
+
+## TF iteration1 0019-compare
+
+| Date | Run/experiment ID | Execution profile | Scope | Model/tool | Speech carrier + split | Split role | Split identity hash | Consumed | Calls | Speech audio seconds | GPU hours | Inherited exposure | Artifacts | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-04 | SAEA-SLURP-CONTEXT-TF-ITERATION1-0019-COMPARE-V1 | bounded-discovery-probe | TF compare semantic callback | GPT-6.1 Sol isolated subagent | slurp initial4 N20 qualified TRAIN feedback | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | yes | 1 | 0 | 0 | Original full-family READ; cumulative TRAIN reference | docs/receipts/continuation/2026-10-04-context-tf-0019-compare-admission.json | ROOT COUNTERSIGNED BEFORE CONTACT. One semantic opportunity, not provider usage. Exact manifest 88ea6fcf71b6e6798a9ef5cdb5bb14bc04dfa07c81b78916a01aa5e40d4df6d1. No GEPA/root/B/test feedback; no automatic retry. Original isolated callback completed and accepted unchanged; provider usage remains unknown. Receipt docs/receipts/continuation/2026-10-04-context-tf-0019-compare-complete.json. |
+
+
+## TF iteration1 0020-summarize
+
+| Date | Run/experiment ID | Execution profile | Scope | Model/tool | Speech carrier + split | Split role | Split identity hash | Consumed | Calls | Speech audio seconds | GPU hours | Inherited exposure | Artifacts | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-04 | SAEA-SLURP-CONTEXT-TF-ITERATION1-0020-SUMMARIZE-V1 | bounded-discovery-probe | TF summarize semantic callback | GPT-6.1 Sol isolated subagent | slurp initial4 N20 qualified TRAIN feedback | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 1 | 0 | 0 | Original full-family READ; cumulative TRAIN reference | docs/receipts/continuation/2026-10-04-context-tf-0020-summarize-admission.json | ROOT COUNTERSIGNED BEFORE CONTACT. One semantic opportunity, not provider usage. Exact manifest 4fab4b4497fbf9f441625a794f625e70b96882e728713d8f5f17c43838608096. No GEPA/root/B/test feedback; no automatic retry. |

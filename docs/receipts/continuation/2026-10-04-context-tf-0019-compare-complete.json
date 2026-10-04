@@ -1,0 +1,33 @@
+{
+  "schema": "saea-context-tf-semantic-callback-complete-v1",
+  "at_utc": "2026-10-04T13:03:51.739215+00:00",
+  "identity": "0019-compare",
+  "stage": "compare",
+  "algorithm": "tf-grpo-context-diversity",
+  "iteration": 1,
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0019-compare/original-response.json",
+    "sha256": "3d5ded957d99b387b45eaab3f06776edbf33cf8cd15bb83bb4f70945b1487d3a"
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0019-compare/manifest.json",
+    "sha256": "88ea6fcf71b6e6798a9ef5cdb5bb14bc04dfa07c81b78916a01aa5e40d4df6d1"
+  },
+  "request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0019-compare/request.json",
+    "sha256": "df1384ca549f4b441c16af965ed825249c2a1a8ca1441a7e4e9f0ddd80b01aed"
+  },
+  "accepted": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0019-compare/accepted.json",
+    "sha256": "f852612711f33437b1abd3d8ef8045475e949ff1db7cf49e6879fc4fcdb7147d"
+  },
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "semantic_opportunities_spent": 1,
+  "policy_activation": false,
+  "runtime_dispatch": false,
+  "scope": "Original semantic response submitted unchanged; callback acceptance is not policy efficacy or adoption."
+}
