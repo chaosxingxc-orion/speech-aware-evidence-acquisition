@@ -1,0 +1,61 @@
+{
+  "schema": "saea-context-gepa-iteration1-complete-v1",
+  "at_utc": "2026-10-04T12:02:32.401446+00:00",
+  "status": "COMPLETE; RETAINED FOR OPTIMIZATION ONLY",
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-n20-owner227-v1/family-qualified-v1.json",
+    "sha256": "ec169ae976a61ed8222b7728f845690356bb4c922289f34506155a2dca7a55b5"
+  },
+  "read_authorization": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-n20-owner227-v1/root-read-authorization-v1.json",
+    "sha256": "db33abfb7436f06e5d789364c08106d6c4a920f971219227b374900a8f4c345a"
+  },
+  "report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-READ-V1/report.json",
+    "sha256": "fb78cf83d88427a93e619ea899d98227042ff035ca2c8ddd3951a466537e742d"
+  },
+  "timing": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-READ-V1/timing-summary.json",
+    "sha256": "3f032f9772890ed46f5a34d69cca78c37e9e0ebec5fa2719323fcc5ee59e232c"
+  },
+  "learner_decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-gepa-iteration1-worker2-v1/context-learning/iterations/gepa-1/decision.json",
+    "sha256": "1d8d6cb2ccdc3f5cc5c287eb0a8f5749e4bcada9d508d07464570cb300a875ea"
+  },
+  "worker_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/gepa-worker-v2.windows-exit.json",
+    "sha256": "792eb2629de9915d195f413975197e62eb898b5bea9c234e4599e7b7bc28a09d"
+  },
+  "root_report": {
+    "relpath": "docs/results/2026-10-04-context-gepa-iteration1-n20.md",
+    "sha256": "a4d727a018e22de5b04586f0784253fc0c3646b86b8b21bbb44fb08b97c95a9b"
+  },
+  "rows": 120,
+  "generation_contacts": 651,
+  "official_scores": 6,
+  "failed_score_jobs": 0,
+  "utility_before": -8.032166453054149,
+  "utility_after": -6.195754023165205,
+  "formal_incumbent": "seed",
+  "formal_adoption": false,
+  "stable_benefit_established": false,
+  "next_stage": "N20; complete independent original TF iteration",
+  "automatic_next_iteration": false,
+  "tf_export": false,
+  "additional_contacts_from_this_read": 0,
+  "provider_usage": {
+    "callback_counts": {
+      "compare": 0,
+      "evaluate": 1,
+      "propose": 1,
+      "summarize": 0,
+      "update_experience": 0
+    },
+    "callback_elapsed_seconds": 6768.146348419017,
+    "evaluation_candidate_trajectories_reserved": 80,
+    "evaluation_control_trajectories_reserved": 40,
+    "input_tokens": null,
+    "output_tokens": null,
+    "provider_contacts": null
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "schema": "saea-context-gepa-iteration1-family-qualified-v1",
+  "recorded_at_utc": "2026-10-04T11:55:30.867594+00:00",
+  "status": "ALL_SIX_OPERATIONALLY_QUALIFIED",
+  "members": [
+    {
+      "member": "counterexample-check",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-generation-v1/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1.run-manifest.json",
+        "sha256": "7baa4bccb97275388c37e311c3b9370ddf195d6df8d7f7980222fa57b58f3cdd"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-generation-v1"
+    },
+    {
+      "member": "coverage-ledger",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-generation-v1/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1.run-manifest.json",
+        "sha256": "bc54a663c991f3f4ed108a48b75ac1a49ff76806dd9459af886ba6c09e5ff206"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-generation-v1"
+    },
+    {
+      "member": "seed",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-generation-v1/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1.run-manifest.json",
+        "sha256": "57f40fadfd0b798712442d08b80f3ed9924f99c6aeea36c2e3f8649ef8c684d5"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-generation-v1"
+    },
+    {
+      "member": "seed-aa",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-generation-v1/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1.run-manifest.json",
+        "sha256": "b441cae6619fa9c8c2819583304956e0f933399e378eb809e10c1d6a9190256b"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-generation-v1"
+    },
+    {
+      "member": "semantic-frame",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-generation-v1/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1.run-manifest.json",
+        "sha256": "3df7d76a28277b24e734e177e2875e7bf54156067a6ca51d0bb5628b0bbdaf79"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-generation-v1"
+    },
+    {
+      "member": "speech-evidence",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1.run-manifest.json",
+        "sha256": "25dbbc05afcce82fe84183c3229d5346825497349cc61bc8b95e6e7da1ceafb3"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1"
+    }
+  ],
+  "attempt_observations": [
+    {
+      "member": "counterexample-check",
+      "state": "FINALIZED",
+      "calls": 122
+    },
+    {
+      "member": "coverage-ledger",
+      "state": "FINALIZED",
+      "calls": 89
+    },
+    {
+      "member": "seed",
+      "state": "FINALIZED",
+      "calls": 128
+    },
+    {
+      "member": "seed-aa",
+      "state": "FINALIZED",
+      "calls": 125
+    },
+    {
+      "member": "semantic-frame",
+      "state": "FINALIZED",
+      "calls": 89
+    },
+    {
+      "member": "speech-evidence",
+      "state": "FINALIZED",
+      "calls": 98
+    }
+  ],
+  "job_metadata_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-generation-v1/score-jobs.jsonl",
+      "sha256": "6c32fa0bdd932f214cc37ac04d977dd616237337fc8923e13293c88e1e9f0b00"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-generation-v1/score-batch/batch-summary.json",
+      "sha256": "601d8252547904cfc87cc8c41ef4733f31cd9f5076f4e99606fb8ba5b2f13edd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-generation-v1/score-jobs.jsonl",
+      "sha256": "414bdedceac23628f48fd62989d9da017783b8c378d1b931bd5ee7847d99a17f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-generation-v1/score-batch/batch-summary.json",
+      "sha256": "7d524f934096f708bd4d093e69a5304180b1476f299e090e39870fe34e74f238"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-generation-v1/score-jobs.jsonl",
+      "sha256": "a85ba766b6a58e827144db7c3d0ec510f5d87515dd0db3525afe7f93a1471fc1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-generation-v1/score-batch/batch-summary.json",
+      "sha256": "76d00c33535725db09835040eb5529c9f44b1c29d5d557426cd9743d1631f25b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-generation-v1/score-jobs.jsonl",
+      "sha256": "0627c72f007c8372405b5cd77fef4c08ce8776f9d163e6ee9cd67c03519e9e4e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-generation-v1/score-batch/batch-summary.json",
+      "sha256": "d4019cf0f3af166129a3113a718114d3f2228f8c57bdbef99d4b10ee1f12941f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-generation-v1/score-jobs.jsonl",
+      "sha256": "3bcc1ddff7f4dd104cf3fb880eff9731858cba392a94f5850c11f5f81a561f06"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-generation-v1/score-batch/batch-summary.json",
+      "sha256": "42903c390d3c9eadf0a451673d8950bd3e18299538d562ad25c8b8582f810f5e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1/score-jobs.jsonl",
+      "sha256": "2a958c91149b840e2d9c83fdc8bfd17f17a870105d6b81631730c743723536df"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1/score-batch/batch-summary.json",
+      "sha256": "ac911cce3ca6129c9e35fab49e959c12627982fb933d999b3b4e90585fa77812"
+    }
+  ],
+  "script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-n20-owner227-v1/qualify-family-v1.py",
+    "sha256": "1ded4aaeb91faff298a96f4f6e0654fb4f74c0f6812d8ddfaac143546038f9a1"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-READ-V1",
+  "root_read_signed_by_this_script": false,
+  "quality_values_reported": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0
+}

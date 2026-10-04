@@ -1,0 +1,92 @@
+{
+  "schema": "saea-context-gepa-iteration1-contact-accounting-v1",
+  "at_utc": "2026-10-04T12:07:24.734508+00:00",
+  "members": [
+    {
+      "member": "counterexample-check",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 122,
+      "actual_request_fit_receipts": 122,
+      "fit_service_endpoints": 488,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-generation-v1/flight-receipts.json",
+        "sha256": "d839c44244d3b16f4b416586e950a2b2ebcbb7837bb949b925c0e94e0eaefc97"
+      }
+    },
+    {
+      "member": "coverage-ledger",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 89,
+      "actual_request_fit_receipts": 89,
+      "fit_service_endpoints": 356,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-generation-v1/flight-receipts.json",
+        "sha256": "4c6746d9f406b651fe8f929faf722808d8e6f382c2ccf1e70b8adec67f206732"
+      }
+    },
+    {
+      "member": "seed",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 128,
+      "actual_request_fit_receipts": 128,
+      "fit_service_endpoints": 512,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-generation-v1/flight-receipts.json",
+        "sha256": "1f8015a0bef513a5b8fdc9dcb8ff858feaa682c6eafba0d77ee0117cd5616f69"
+      }
+    },
+    {
+      "member": "seed-aa",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 125,
+      "actual_request_fit_receipts": 125,
+      "fit_service_endpoints": 500,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-generation-v1/flight-receipts.json",
+        "sha256": "0eb3885ecb8abc4a276da27fda785ccdbe2b19d050b423d1f773cff4c10c6f83"
+      }
+    },
+    {
+      "member": "semantic-frame",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 89,
+      "actual_request_fit_receipts": 89,
+      "fit_service_endpoints": 356,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-generation-v1/flight-receipts.json",
+        "sha256": "7e5647c57bce940fcd63315cbeb469904b3f0d3c864e672e5074f66fa9dd158a"
+      }
+    },
+    {
+      "member": "speech-evidence",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 98,
+      "actual_request_fit_receipts": 98,
+      "fit_service_endpoints": 392,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1/flight-receipts.json",
+        "sha256": "ee253815f56ead6c6d45b25560d9515586188859b3b0588e9ff0d39a4d11eb4b"
+      }
+    }
+  ],
+  "totals": {
+    "rows": 120,
+    "generation_contacts": 651,
+    "actual_request_fit_receipts": 651,
+    "fit_service_endpoints": 2604
+  },
+  "service_total_inference": false,
+  "extra_contacts": 0
+}
