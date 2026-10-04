@@ -1,0 +1,78 @@
+{
+  "base_commit": "19f1348c6",
+  "branch": "codex/context-learning-baselines",
+  "contacts_added": {
+    "model": 0,
+    "proposer": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "coverage": {
+    "changed_policy": {
+      "branch_arcs": 12,
+      "missing_branch_arcs": [],
+      "missing_statements": [],
+      "statements": 30
+    },
+    "interpretation": "Changed/new code coverage is separate from preexisting policy-module coverage.",
+    "new_adapter": {
+      "branches": 30,
+      "covered_branches": 30,
+      "covered_statements": 185,
+      "percent": 100.0,
+      "statements": 185
+    },
+    "selected_module_aggregate": {
+      "covered_branches": 104,
+      "covered_lines": 460,
+      "excluded_lines": 0,
+      "missing_branches": 32,
+      "missing_lines": 97,
+      "num_branches": 136,
+      "num_partial_branches": 12,
+      "num_statements": 557,
+      "percent_branches_covered": 76.47058823529412,
+      "percent_branches_covered_display": "76",
+      "percent_covered": 81.38528138528139,
+      "percent_covered_display": "81",
+      "percent_statements_covered": 82.58527827648115,
+      "percent_statements_covered_display": "83"
+    }
+  },
+  "gates": {
+    "engineering_base": "PASS",
+    "git_diff_check": "PASS",
+    "harness_admission": "PASS",
+    "ruff_changed_files": "PASS"
+  },
+  "remaining": [
+    "Actual reviewed common-feedback protocol/registration/READ and runtime admission.",
+    "Authorized metered trajectory summarization/reflection with original response receipts.",
+    "GEPA selector/acceptance scheduling and complete learning-loop orchestration.",
+    "Prospective shared compilation/evaluation/retention of real updates.",
+    "Experience runtime renderer and separately reviewed N/K expansion."
+  ],
+  "schema": "saea-context-learning-adapter-validation-v1",
+  "scientific_quality_or_task_answers_read": false,
+  "scope": "Model-free synthetic engineering checks only; no efficacy or runtime admission.",
+  "tdd_red_evidence": [
+    "Initial adapter import failed before implementation.",
+    "Semantic experience history test failed before adding operation import.",
+    "Control timing/session/profile tests failed before shared measured validation.",
+    "Blind reference and evidence commitment tests failed before scope validation.",
+    "Pinned-owner recheck and fixed-supply tests failed before preservation checks.",
+    "Reference-exposure ancestry test failed before retaining the original reference cohort."
+  ],
+  "tests": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src /home/chao/.venvs/speechrl/bin/python -B -m pytest -q <listed files>",
+    "files": [
+      "tests/unit/test_system_context_learning.py",
+      "tests/unit/test_system_text_policy.py",
+      "tests/unit/test_system_text_feedback.py",
+      "tests/unit/test_system_text_search_cli.py",
+      "tests/unit/test_system_search_measurement.py"
+    ],
+    "focused_passed": 151,
+    "new_adapter_passed": 65
+  }
+}

@@ -23,12 +23,15 @@ CONTEXT_LAYOUT_FIELD = "native_role_query_placement"
 PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v1"
 CONTEXT_PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v2"
 NODE_PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v3"
+CONTEXT_LEARNING_PROPOSAL_SCHEMA = "saea-context-policy-update-proposal-v1"
 TEXT_CHARACTER_CAP = 32768
 PROPOSAL_KEYS = frozenset({"schema", "branch", "round", "slot", "parent_ids",
                            "changes", "rationale", "hypotheses", "evidence"})
 EDITABLE = frozenset({"construction_instruction", "role_text", "supply", "slot_value_edits"})
 CONTEXT_EDITABLE = frozenset({"role_text", "context_layout"})
 NODE_EDITABLE = frozenset({"role_text", "context_layout", "node_context"})
+CONTEXT_LEARNING_ALGORITHMS = ("tf-grpo-context-diversity", "gepa")
+CONTEXT_COMPONENTS = tuple(f"role_text.{r}" for r in ("perception", "solver", "reviewer", "planner")) + ("context_layout", "node_context")
 BUNDLE_KEYS = frozenset({"schema", "parent_ids", "seed_config_sha256", "construction_instruction",
                         "role_text", "supply", "knowledge", "construction_receipt",
                         "cumulative_sources", "optimizer_experience"})
@@ -88,6 +91,22 @@ def _node_context(value):
     require(isinstance(value["reviewer_history_scope"], str)
             and value["reviewer_history_scope"] in {"full", "latest-solver-and-local-tools"},
             "node context history selection is not implemented")
+
+
+def _context_changes(changes):
+    """Validate only the implemented four-node text and assembly edit surface."""
+    require(isinstance(changes, dict) and set(changes) <= NODE_EDITABLE,
+            "proposal changes an undeclared editable surface")
+    if "role_text" in changes:
+        require(isinstance(changes["role_text"], dict)
+                and set(changes["role_text"]) <= {"perception", "solver", "reviewer", "planner"},
+                "unknown role text")
+        for text in changes["role_text"].values():
+            _text(text)
+    if "context_layout" in changes:
+        _context_layout(changes["context_layout"])
+    if "node_context" in changes:
+        _node_context(changes["node_context"])
 
 
 def validate_sources(sources):
@@ -345,6 +364,35 @@ class TextPolicyUpdateProposal:
         reject_non_latin_scripts(d)
         return cls(canonical(d))
 
+    @classmethod
+    def from_context_json(cls, d):
+        """Opt into offline baseline updates without historical L/B slot aliases.
+
+        This validates a payload, not proposal-call allocation or execution.
+        The context-learning archive additionally binds the qualified input.
+        """
+        fields = {"schema", "algorithm", "iteration", "candidate_id", "component",
+                  "parent_ids", "changes", "rationale", "hypotheses", "evidence"}
+        require(isinstance(d, dict) and set(d) == fields
+                and d["schema"] == CONTEXT_LEARNING_PROPOSAL_SCHEMA,
+                "context proposal fields differ")
+        require(d["algorithm"] in CONTEXT_LEARNING_ALGORITHMS
+                and type(d["iteration"]) is int and d["iteration"] > 0,
+                "context algorithm/iteration differs")
+        _text(d["candidate_id"])
+        require(d["component"] in ((*CONTEXT_COMPONENTS, "joint-system") if d["algorithm"] == "tf-grpo-context-diversity"
+                else CONTEXT_COMPONENTS), "context component differs")
+        require(isinstance(d["parent_ids"], list) and len(d["parent_ids"]) == 1,
+                "context update requires exactly one complete-system parent")
+        sha(d["parent_ids"][0])
+        _context_changes(d["changes"])
+        _text(d["rationale"])
+        require(isinstance(d["hypotheses"], list) and isinstance(d["evidence"], list), "invalid evidence index")
+        for text in d["hypotheses"]:
+            _text(text)
+        reject_non_latin_scripts(d)
+        return cls(canonical(d))
+
 
 def _read_pin(pin, root):
     _pin(pin)
@@ -366,7 +414,7 @@ def apply_text_proposal(proposal, *, parents, added_sources, knowledge=None, con
     require(parents and p["parent_ids"] == [b.bundle_id for b in parents], "proposal parent binding differs")
     d = parents[0].as_json()
     changes = p["changes"]
-    if p["schema"] == NODE_PROPOSAL_SCHEMA:
+    if p["schema"] in (NODE_PROPOSAL_SCHEMA, CONTEXT_LEARNING_PROPOSAL_SCHEMA):
         require(d["schema"] == NODE_BUNDLE_SCHEMA,
                 "node proposals require an explicitly frozen four-role parent")
     if "node_context" in changes:
@@ -381,7 +429,7 @@ def apply_text_proposal(proposal, *, parents, added_sources, knowledge=None, con
     if "role_text" in changes:
         require(isinstance(changes["role_text"], dict)
                 and set(changes["role_text"]) <= (
-                    {"perception", "solver", "reviewer", "planner"} if p["schema"] == NODE_PROPOSAL_SCHEMA
+                    {"perception", "solver", "reviewer", "planner"} if p["schema"] in (NODE_PROPOSAL_SCHEMA, CONTEXT_LEARNING_PROPOSAL_SCHEMA)
                     else {"solver", "reviewer", "planner"}), "unknown role text")
         d["role_text"].update(changes["role_text"])
     for key in ("construction_instruction", "supply"):
