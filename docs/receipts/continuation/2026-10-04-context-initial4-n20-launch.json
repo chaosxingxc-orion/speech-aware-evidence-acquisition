@@ -1,0 +1,42 @@
+{
+  "schema": "saea-context-initial4-n20-launch-v1",
+  "at_utc": "2026-10-04T08:52:13.289197+00:00",
+  "authority": "owner227 root",
+  "worker": "/home/chao/saea-worktrees/codex-context-initial4-n20-v1",
+  "commit": "c6f5543b7d5f66707a80fd09435953da7dfc1b51",
+  "driver_epoch": "2026-10-04T08:50:55Z",
+  "driver_identity": {
+    "pid": 647580,
+    "start_ticks": "45254813"
+  },
+  "first_campaign_at": "2026-10-04T08:51:23Z",
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/windows-launch-proof-v1.json",
+    "sha256": "14e8046858e032a481f62a97e2a8e37afacc7f99904477b5c25d0f05c0f7ce60"
+  },
+  "frozen_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/frozen-check-v1.json",
+    "sha256": "51e47322d70c7e0f00e46a8a58651bdea54a58e01aa47a5e20ceb4d31f144976"
+  },
+  "normal_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/driver-transition-v1.json",
+    "sha256": "71fb7a114cac8aa933bb686e4e8f87e5cc330b785f5919cedd153cb4d965bdbe"
+  },
+  "scope": {
+    "distinct_inputs": 20,
+    "distinct_candidate_systems": 4,
+    "nodes_per_system": 4,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "complete_trajectories": 120,
+    "official_complete_scores": 6,
+    "temperature": 0,
+    "seed": 20260913
+  },
+  "observed_state": "Driver and guarded first campaign are live. Stable startup memory passed three samples. No attempt existed at08:51:45Z; do not infer inference from task state. Revalidate operational metadata.",
+  "read_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1",
+  "read_status": "UNSIGNED; all six finalized verified seals and unique successful complete official scores required",
+  "learning_status": "Common initialization only; no real summary/reflection callbacks or learned improvement",
+  "heartbeat": "PAUSED",
+  "analysis_supplement": "docs/readiness/2026-10-04-context-initial4-n20-entry-v1/analysis-supplement-v1.json"
+}

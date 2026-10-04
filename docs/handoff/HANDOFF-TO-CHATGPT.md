@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Initial N20K4 scientific driver launched, 2026-10-04T08:52:13.289197+00:00
+
+[Launch receipt](../receipts/continuation/2026-10-04-context-initial4-n20-launch.json): Windows SAEA-Batch-Driver epoch08:50:55Z, first guarded campaign08:51:23Z, frozen codex-context-initial4-n20-v1 atc6f5543b7. All six frozen registration/runtime checks passed. Normal transition archived the completed structural controls without STOP, recovery or service mutation. Three stable memory samples passed in21.89seconds. Driver PID647580/start45254813 and first campaign were independently observed; no attempt existed at08:51:45Z. Verify later admission/contacts rather than inferring them from task state.
+
+Exact sequence is seed,seed-aa,speech-evidence,coverage-ledger,counterexample-check,semantic-frame; each20 rows,120 total (candidate80/control40). Preserve independent full-node contexts, fixed0/20260913, sequential4slot/queue4 and the same UPDATE2 inputs. The additive analysis supplement was registered before contact and preserves actual admission-order latency, paired utterance resampling and both stratum weightings. No partial quality read. Exact SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1 remains unsigned until all six verified finalized members have one unique successful complete official score and zero failed jobs.
+
+This is the shared baseline initialization, not learned improvement. Real TF/GEPA reflection/evaluation callback admission remains next after complete feedback. Keep original engineering attempts unscored, all frozen sources unchanged, heartbeat PAUSED, resource floors and human-before8x400. Other carrier holds remain.
+
 ## Exact initial N20K4 scientific family registered, 2026-10-04T08:43:08.266743+00:00
 
 [Six-member entry](../readiness/2026-10-04-context-initial4-n20-entry-v1/README.md) is prospectively registered under root227: unchanged seed/A/A then four distinct complete context systems,120 trajectories total (candidate80/control40),1560 generation and6240 separate actual-request FIT endpoint caps,six unique complete official scores. Same UPDATE2 first20 assets,temperature0/seed20260913,sequential4slot/queue4. All own supplies warm-verify and all six exact registration checks pass. Scientific READ remains unsigned. Clean frozen/runtime/live admission is still required; this is not a launch.
