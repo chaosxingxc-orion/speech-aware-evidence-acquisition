@@ -1,0 +1,33 @@
+{
+  "schema": "saea-template-actor-entry-validation-v1",
+  "at_utc": "2026-10-04T16:48:16.294062+00:00",
+  "passed_tests": 178,
+  "statement_coverage_percent": {
+    "system_context_exchange": 100,
+    "system_context_learning": 100,
+    "system_context_template_feedback": 100
+  },
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_exchange.py",
+      "sha256": "39ae96d389dd0ef3c6e15a521afc6b752f1d552150d690ce2322957a4389ed3c"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+      "sha256": "eb3b0632b3022124107b990a6c387d61bf144ae2f4e3de5768297f58d4d5b82e"
+    },
+    {
+      "relpath": "tests/unit/test_template_actor_capsule.py",
+      "sha256": "98f996e2c2cbf5c3eec3f3b2f2b0ddad0d8e9d2cab6e38327575c0605acd7b88"
+    },
+    {
+      "relpath": "tests/unit/test_system_context_template_feedback.py",
+      "sha256": "0ae711ece6ddbf726e2503854b472bd54bc02b61abbf10fee7adc01be785e514"
+    }
+  ],
+  "test_evidence": "Complete synthetic learner, proposal, external exchange and adversarial capsule suite. New assertion first failed on missing template context; new capsule suite first failed on missing API. No runtime model/scorer contact.",
+  "model_contacts_added": 0,
+  "actor_spawns": 0,
+  "proposer_admission": false,
+  "runtime_dispatch": false
+}

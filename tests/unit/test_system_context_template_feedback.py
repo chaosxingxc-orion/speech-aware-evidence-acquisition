@@ -227,6 +227,11 @@ def test_aggregate_only_profile_never_sends_sample_cases_or_knowledge(tmp_path, 
         assert all(sum(t["category_counts"].values()) == 20 for t in view["templates"])
     def experience(task):
         check(task["template_feedback"])
+        assert set(task["policies"]) == set(f.policies)
+        assert "Solver/Reviewer" in task["reflection_task"]["instructions"]
+        assert "slurp:train:" not in json.dumps(task)
+        for cid, policy in task["policies"].items():
+            assert policy["policy"]["role_text"] == f.policies[cid].as_json()["role_text"]
         return {"value": [], "provenance": {"kind": "synthetic"},
                 "usage": dict.fromkeys(("provider_contacts", "input_tokens", "output_tokens"), None)}
     def propose(task):

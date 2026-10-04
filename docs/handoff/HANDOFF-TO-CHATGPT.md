@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Template-only actor entry prepared, 2026-10-04T16:48:16.294062+00:00
+
+[Prepared entry](../readiness/2026-10-04-template-only-actor-entry-v1/README.md) supplies complete editable templates to the aggregate TF experience updater and snapshots exactly two bounded actor files.178 relevant tests pass,100% statement coverage across exchange/learning/template modules. No new semantic contact or allocation. Exact accepted parents, successor learning READ/protocol, carried-experience scope and actor admission remain pending after original TF0045 completion. Preserve original sources and existing algorithm separation.
+
+[TF read preparation audit](../receipts/continuation/2026-10-04-context-tf-read-preparation-audit.json) adds the missing analysis supplement before first quality read and preserves v1 helper copies. Use root-countersign-v2.py and submit-qualified-evaluation-v2.py in the existing coordination directory after full operational qualification. Other read/accounting helpers are unchanged. No result read or score replay occurred.
+
 ## Template-only consumption implementation verified, 2026-10-04T16:38:11.031630+00:00
 
 [Validation v3](../readiness/2026-10-04-template-first-feedback-v1/validation-v3.json) confirms146 learner/proposal tests,100% statement coverage and engineering-base PASS. Actual aggregate-only actor instructions prioritize Solver/Reviewer consumption under the fixed-supply working hypothesis; zero individual cases/source rosters/knowledge contents enter the view. All80 numeric rows and complete backend inheritance remain. Real-file projected view31,005 bytes is not a measured latency/quality gain. Use the zero-case profile prospectively after the current complete TF evaluation. Preserve existing frozen trials and callback identity; no new-profile contacts or admission.

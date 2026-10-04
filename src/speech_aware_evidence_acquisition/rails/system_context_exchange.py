@@ -369,3 +369,91 @@ def run_external_context_iteration(
         },
     )
     return decision
+
+
+def prepare_template_actor_capsule(request_path, *, request_sha256, instructions_path,
+                                   instructions_sha256, output_dir, max_input_bytes):
+    """Snapshot a zero-case template request; never admit or dispatch an actor.
+
+    Root must bind these exact bytes to a separate prospective actor receipt.
+    Source paths are custody references, not permission to open other material.
+    """
+    from .system_context_template_feedback import validate_template_profile
+    import re
+
+    require(type(max_input_bytes) is int and max_input_bytes > 0, "positive capsule byte ceiling required")
+    sha(request_sha256)
+    sha(instructions_sha256)
+    path = Path(request_path)
+    request, source_sha = _read(path, max_input_bytes)
+    require(request.get("schema") == "saea-context-callback-request-v1"
+            and request.get("request_sha256") == request_sha256
+            == content_hash({k: v for k, v in request.items() if k != "request_sha256"}),
+            "capsule request commitment differs")
+    require(not any((path.parent / name).exists() for name in
+                    ("response.json", "accepted.json", "failed.json")),
+            "capsule requires an unconsumed request")
+    stage = request.get("stage")
+    require(stage in ("update_experience", "propose"), "template semantic stage required")
+    task = request["task"]
+    require(request.get("task_sha256") == content_hash(task)
+            and request.get("input_sha256") == task.get("input_sha256"), "capsule task commitment differs")
+    expected = ({"input_sha256", "experience", "template_feedback", "policies", "reflection_task"}
+                if stage == "update_experience" else
+                {"input_sha256", "candidate_id", "algorithm", "iteration", "parent_bundle_id",
+                 "component", "policy", "experience", "qualified_input"})
+    require(set(task) == expected, "template task fields differ")
+    view = task if stage == "update_experience" else task["qualified_input"]
+    feedback = view["template_feedback"]
+    profile = validate_template_profile(feedback["profile"])
+    require(profile["examples_per_template"] == 0
+            and all(t["examples"] == [] for t in feedback["templates"]), "aggregate-only capsule required")
+    policies = view["policies"]
+    require(len(policies) == 4, "complete four-system template view required")
+    policy_views = [p["policy"] for p in policies.values()]
+    if stage == "propose":
+        policy_views.append(task["policy"])
+    for policy in policy_views:
+        require(set(policy) == {"schema", "source_policy_sha256", "role_text", "context_layout", "node_context"}
+                and policy["schema"] == "saea-template-policy-view-v1", "template policy view fields differ")
+        sha(policy["source_policy_sha256"])
+    forbidden = {"knowledge", "construction_instruction", "construction_receipt", "supply",
+                 "cumulative_sources", "unsampled_sample_ids", "groups", "official_summaries",
+                 "comparisons", "summary_tasks"}
+    def check(value):
+        if isinstance(value, dict):
+            require(not forbidden.intersection(value), "excluded material in template actor task")
+            for item in value.values(): check(item)
+        elif isinstance(value, list):
+            for item in value: check(item)
+    check(task)
+    require(re.search(r"slurp:(?:train|dev|test):", canonical(task)) is None,
+            "individual sample identifiers excluded from template actor task")
+    _english(request)
+    instruction_path = Path(instructions_path)
+    require(not instruction_path.is_symlink(), "capsule instructions cannot be a symlink")
+    with instruction_path.open("rb") as stream:
+        instruction_bytes = stream.read(max_input_bytes + 1)
+    require(hashlib.sha256(instruction_bytes).hexdigest() == instructions_sha256,
+            "capsule instruction commitment differs")
+    instructions = instruction_bytes.decode("utf-8")
+    _english(instructions)
+    input_bytes = len((canonical(request) + "\n").encode("utf-8")) + len(instruction_bytes)
+    require(input_bytes <= max_input_bytes, "capsule exceeds registered byte ceiling")
+    directory = Path(output_dir).resolve()
+    directory.mkdir(parents=True, exist_ok=False)
+    _publish(directory / "request.json", request)
+    with (directory / "instructions.md").open("xb") as stream:
+        stream.write(instruction_bytes)
+    def pin(p):
+        return {"path": str(p), "sha256": hashlib.sha256(p.read_bytes()).hexdigest(), "bytes": p.stat().st_size}
+    manifest = {"schema": "saea-template-actor-capsule-v1", "stage": stage,
+        "source_request": {"path": str(path.resolve()), "sha256": source_sha},
+        "request_sha256": request_sha256, "instructions_sha256": instructions_sha256,
+        "allowed_files": [pin(directory / "request.json"), pin(directory / "instructions.md")],
+        "input_bytes": input_bytes, "max_input_bytes": max_input_bytes,
+        "output": str(directory / "original-response.json"),
+        "contact_authority": False, "runtime_dispatch": False, "automatic_retry": False,
+        "bounds_are_token_limits": False}
+    _publish(directory / "manifest.json", manifest)
+    return manifest

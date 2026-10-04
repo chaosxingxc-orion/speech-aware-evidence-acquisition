@@ -1,0 +1,68 @@
+{
+  "schema": "saea-template-only-next-stage-preparation-v1",
+  "at_utc": "2026-10-04T16:48:16.294062+00:00",
+  "status": "PREPARED; EXACT SOURCE/PARENT DECISION AND ROOT ADMISSION PENDING",
+  "profile": {
+    "relpath": "docs/readiness/2026-10-04-template-first-feedback-v1/profile-template-only-v2.json",
+    "sha256": "efa2fc805286bb9ccaa82152e88d4875d0f3a2ddcb1f0a0d74f3b7147dc31bb7"
+  },
+  "instructions": {
+    "relpath": "docs/readiness/2026-10-04-template-only-actor-entry-v1/actor-instructions-v1.md",
+    "sha256": "b66bd9465f6a373269407b1550c441861d33183924e848759165daf0483481ce"
+  },
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "paid_api_spend": 0,
+  "same_ordered_update2_pool": 400,
+  "N": 20,
+  "K": 4,
+  "M": 4,
+  "runtime_sampling": {
+    "temperature": 0,
+    "seed": 20260913
+  },
+  "callback_caps": {
+    "tf-grpo-context-diversity": {
+      "summarize": 0,
+      "compare": 0,
+      "update_experience": 1,
+      "propose": 4,
+      "evaluate": 1
+    },
+    "gepa": {
+      "summarize": 0,
+      "compare": 0,
+      "update_experience": 0,
+      "propose": 1,
+      "evaluate": 1
+    }
+  },
+  "evaluation_per_algorithm": {
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "full_member_scores": 6,
+    "shared_initial_feedback_is_not_new_runtime": true
+  },
+  "transport": {
+    "max_input_bytes": 262144,
+    "max_response_bytes": 262144,
+    "server_enforced_token_cap": false,
+    "request_or_response_overflow": "Stop and preserve evidence; no truncation, automatic retry or replacement."
+  },
+  "actor_input": "Complete editable templates, supported assembly, qualified aggregate feedback and source-scoped template experience only. Exactly two snapshotted allowed files; no sample/source roster or knowledge expansion.",
+  "pending": [
+    "Complete original TF trial and original0045 evaluator without a replacement reflection.",
+    "Bind the original algorithm decision and accepted-parent/source-family identities. Preserve rejected proposals and their allocation.",
+    "Create an exact successor learning READ/protocol without altering the completed evaluation recipe. Pin the zero-case plan before semantic contacts.",
+    "Audit carried optimizer experience for template-only scope. Preserve old case-derived experience in archive; never silently expose or delete it. Any phase-boundary reset requires an explicit root record.",
+    "Freeze the worker and per-request capsule manifest; exact contact/ledger admission remains separate.",
+    "Prepare changed policies through the shared compile/supply/FIT/structural/full-family path."
+  ],
+  "other_carrier_holds_unchanged": true,
+  "heartbeat": "PAUSED",
+  "human_before": "8x400, including equivalent split campaigns",
+  "proposer_admission": false,
+  "runtime_dispatch": false,
+  "automatic_next_iteration": false
+}

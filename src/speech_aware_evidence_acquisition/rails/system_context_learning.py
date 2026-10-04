@@ -666,7 +666,10 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
             else:
                 task = {"input_sha256": packet["input_sha256"], "experience": state["experience"]}
                 if "template_feedback" in packet:
-                    task["template_feedback"] = proposer_view(packet)["template_feedback"]
+                    view = proposer_view(packet)
+                    task["template_feedback"] = view["template_feedback"]
+                    if packet["feedback_profile"]["examples_per_template"] == 0:
+                        task.update(policies=view["policies"], reflection_task=view["reflection_task"])
                 else:
                     task["comparisons"] = comparisons
                 operations = invoke("update_experience", task)
