@@ -1,5 +1,17 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Template actor-view provenance bounded, 2026-10-04T16:26:27.653801+00:00
+
+[Validation v2](../readiness/2026-10-04-template-first-feedback-v1/validation-v2.json) records the real-file source of prompt bloat: repeated cumulative-source rosters. Preserve full archive/compiler inheritance; send exact hashes/counts plus complete editable template fields. Original TF input6,923,909 bytes projects to66,113 bytes, all80 numeric rows retained.145 learner/proposal tests pass,100% statement coverage. No new-profile model contact or measured speed/quality claim. Twelve raw case sources still total8,079,266 characters and must NOT be automatically inlined; build bounded source-linked structural/model-output capsule views before future admission. Current frozen TF120 trial and original callback are unchanged.
+
+
+## TF first complete trial launched, 2026-10-04T16:25:37.534698+00:00
+
+[Exact launch](../receipts/continuation/2026-10-04-context-tf-iteration1-n20-launch.json) pins frozen a74951313 and Windows SAEA-Batch-Driver epoch 2026-10-04T16:24:24Z. All six actual policy/supply/registration/runtime checks passed. Twenty unchanged inputs, four complete updated systems plus seed/A/A:120 trajectories. All four children contain independent complete node texts and permitted assembly changes. Preserve temperature0/seed20260913,sequential4-slot execution and full output reserve.
+
+Original TF learner671290 remains at0045-evaluate. Require six FINALIZED verified seals,six unique successful complete official scores and zero failed jobs,then exact root READ. Return source bindings,never hand-entered reward. New template-batch feedback code does not alter this iteration. GEPA stays separate. Keep seed incumbent,N20,heartbeat PAUSED,other-carrier holds and human-before8x400. Completed structural attempts remain intentionally unscored.
+
+
 ## TF four-system structural proof complete, 2026-10-04T16:16:58.700522+00:00
 
 [Exact completion](../receipts/continuation/2026-10-04-context-tf-iteration1-structural-complete.json):16 rows,67 generation contacts,67 actual-request FIT receipts/268 endpoints. All17 Reviewer handoffs valid and visible; all16 terminal deliveries retain Omni custody. Driver completed normally16:15:35Z. Engineering attempts intentionally remain OPENED with completed generation and prepared score specs, no official scoring. Node/sample timing is source-bound; this is not a speed/quality comparison.

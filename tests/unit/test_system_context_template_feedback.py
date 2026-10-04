@@ -180,3 +180,31 @@ def test_profile_cannot_be_added_after_registration(tmp_path, monkeypatch):
             policies=f.policies, candidate_id="context-3", component="role_text.perception",
             feedback_profile=profile())
     assert not (f.archive.root / "context-learning").exists()
+
+
+def test_actor_policy_view_keeps_all_editable_text_without_expanding_provenance(tmp_path, monkeypatch):
+    f = iteration_fixture(tmp_path, monkeypatch, algorithm="tf-grpo-context-diversity")
+    configure(f)
+    original = f.callbacks.propose
+    def propose(task):
+        p = task["policy"]
+        parent = f.policies[task["candidate_id"]].as_json()
+        assert "cumulative_sources" not in p
+        assert p["schema"] == "saea-template-policy-view-v1"
+        assert p["source_policy_sha256"] == content_hash(parent)
+        assert p["exposure_commitment"]["sha256"] == content_hash(parent["cumulative_sources"])
+        assert p["exposure_commitment"]["source_records"] == len(parent["cumulative_sources"])
+        assert p["role_text"] == parent["role_text"]
+        assert p["context_layout"] == parent["context_layout"]
+        assert p["node_context"] == parent["node_context"]
+        assert task["qualified_input"]["policies"][task["candidate_id"]]["policy"] == p
+        return original(task)
+    f.callbacks = replace(f.callbacks, propose=propose,
+        update_experience=lambda task: {"value": [], "provenance": {"kind": "synthetic"},
+            "usage": dict.fromkeys(("provider_contacts", "input_tokens", "output_tokens"), None)})
+    d = run(f, "tf-grpo-context-diversity")
+    assert d["status"] == "retained-for-optimization", d["error"]
+    for update in d["updates"]:
+        parent = f.policies[update["proposal"]["candidate_id"]].as_json()
+        child = f.archive.load_policy(update["bundle_id"]).as_json()
+        assert all(source in child["cumulative_sources"] for source in parent["cumulative_sources"])

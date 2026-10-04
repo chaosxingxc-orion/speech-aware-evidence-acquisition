@@ -1,0 +1,44 @@
+{
+  "at_utc": "2026-10-04T16:25:37.534698+00:00",
+  "authority": "root227 exact original TF iteration1 evaluation",
+  "candidate_systems": 4,
+  "candidate_trajectories": 80,
+  "commit": "a74951313b824d3fbf45f00e780d4e2d3f859b90",
+  "control_trajectories": 40,
+  "distinct_inputs": 20,
+  "driver_epoch": "2026-10-04T16:24:24Z",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-n20-owner227-v1/frozen-check-v1.json",
+      "sha256": "63e54437c4a663fc503301b2fd1a4ad169bff68ec36461eb1517670424c4dc95"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-n20-owner227-v1/root-admission-v1.json",
+      "sha256": "e8a4553964ceab4b0c104b211ed9f03a5e04f6e0e7ecff6e8dcc73a8447ccef8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-n20-owner227-v1/driver-transition-v1.json",
+      "sha256": "3ab9ff4eb58f727cfebaeef8cc2b449ac674f9e6b7ee54bb0c5d86ad6fec7b2f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-n20-owner227-v1/windows-launch-proof-v1.json",
+      "sha256": "248bcec9cad80e29fa424f588d1b1b94ef5d1002d013d88dcfe3fa96cd1eb392"
+    }
+  ],
+  "fit_endpoint_cap": 6240,
+  "generation_contact_cap": 1560,
+  "live_driver_processes": [
+    {
+      "parent_pid": 705416,
+      "pid": 705417,
+      "start_ticks": 47906505
+    }
+  ],
+  "next": "Wait for all six independently finalized verified seals and exactly one successful complete official score each, zero failed jobs; exact root READ and original0045 source-bound evaluation callback. No partial feedback, new semantic reflection or GEPA export.",
+  "official_score_jobs": 6,
+  "read_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1",
+  "read_signed": false,
+  "schema": "saea-context-tf-iteration1-n20-launch-v1",
+  "total_trajectories": 120,
+  "worker": "/home/chao/saea-worktrees/codex-context-tf-iteration1-n20-v1"
+}

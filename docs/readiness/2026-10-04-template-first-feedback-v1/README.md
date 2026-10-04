@@ -21,3 +21,11 @@ This is a prospectively versioned template-batch reflection adaptation, not unch
 Pin the profile in the next iteration plan, set summary/comparison caps to zero, and bind fresh isolated GPT-6.1 Sol capsules to the projected input and selected case hashes. Declare exact proposer/context/output/evaluation budgets before contacts. The current implementation does not itself dispatch a proposer or a GPU job. Start on the same twenty inputs; expand only after reviewed engineering, performance and efficiency evidence. Owner227 permits bounded reviewed stages; return to the human before8x400.
 
 Report proposal and evaluation cost separately. Reducing semantic calls is a measured workflow change, not evidence that quality improved. Keep negative results and formal seed until complete comparisons justify a change. Runtime knowledge must never include optimizer summaries, labels or sample answer memories.
+
+## Real-file provenance projection
+
+The first real-file rehearsal found6,675,066 bytes of expanded policy objects, mostly repeated cumulative-source rosters. The successor actor view retains every editable role text and assembly field but replaces the repeated provenance lists with exact policy/exposure hashes and counts. The archive and proposal compiler still keep and inherit the complete records; the model view cannot erase them. Both the direct policy task and its qualified-input policy collection use this view.
+
+On the original qualified TF input, canonical serialized input size falls from6,923,909 to66,113 bytes. This is a byte-size observation, not a token count, latency saving or learning result.145 learner/proposal tests pass with100% statement coverage for both modules. Earlier validation and rehearsal records remain preserved.
+
+The twelve example pointers reference8,079,266 characters of complete raw episodes. Do not automatically inline those episodes. Future isolated actor capsules must render bounded structural/model-output evidence, preserve source links and omission accounting, and enforce prospective byte/token ceilings before contacts. This remaining capsule preparation is not permission for exhaustive per-sample semantic analysis.

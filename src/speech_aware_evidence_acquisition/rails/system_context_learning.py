@@ -664,12 +664,13 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
         task_candidates = [selected] if algorithm == "gepa" else candidates if decision["status"] != "skip-zero-variation" else []
         trial_policies = dict(active)
         changed = []
+        actor_input = proposer_view(packet)
         for c in task_candidates:
             response = invoke("propose", {"input_sha256": packet["input_sha256"], "candidate_id": c,
                 "algorithm": algorithm, "iteration": iteration,
                 "parent_bundle_id": active[c], "component": schedule["component"] if schedule else "joint-system",
-                "policy": packet["policies"][c]["policy"], "experience": experience_after,
-                "qualified_input": proposer_view(packet)})
+                "policy": actor_input["policies"][c]["policy"], "experience": experience_after,
+                "qualified_input": actor_input})
             update = record_context_update(archive, input_sha256=packet["input_sha256"], update_id=f"system-{candidates.index(c)}",
                 proposal_document=response, experience_operations=operations, expected_candidate_id=c)
             updates.append(update)

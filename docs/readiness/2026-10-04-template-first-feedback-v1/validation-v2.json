@@ -1,0 +1,45 @@
+{
+  "actual_input_bytes_before": 6923909,
+  "actual_projected_view_bytes": 66113,
+  "at_utc": "2026-10-04T16:26:27.653801+00:00",
+  "case_material_warning": "Twelve selected full raw source episodes still total8079266 characters. They are pointers only, never automatically inlined. Before any future actor admission, create source-limited structural/model-output views under explicit byte/token ceilings; preserve omitted source addresses. No all-case semantic summarization.",
+  "change": "Replace only actor-side expanded cumulative-source rosters with exact policy/exposure hashes and counts. Preserve all editable node text, fixed-field descriptors, original immutable policies and full inherited exposure in compiler/archive. Both top-level proposal policy and qualified policy collection use the same view.",
+  "claims": {
+    "end_to_end_speed_measured": false,
+    "new_model_contacts": 0,
+    "new_profile_learning_gain_established": false,
+    "proposer_admission": false,
+    "token_count_measured": false
+  },
+  "prior_rehearsal_preserved": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-n20-owner227-v1/template-feedback-rehearsal-v1.json",
+    "sha256": "1b51520dadce49fbb284cd786ae88af934bd99f922567d8c8a800df2c7f97c89"
+  },
+  "rehearsal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-n20-owner227-v1/template-feedback-rehearsal-v2.json",
+    "sha256": "0c758e0b48679504606f05ebcc707cb058a65a656b488a1196a561e980aa52f1"
+  },
+  "schema": "saea-template-feedback-provenance-view-validation-v2",
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+      "sha256": "a83960445bdd52d62572119063272ca4f282756f175154b122dc0c6f352a9881"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_template_feedback.py",
+      "sha256": "652806a33fcb6ec32bbe40df6109a6c0ed7409e840b3346920744058aee41530"
+    },
+    {
+      "relpath": "tests/unit/test_system_context_template_feedback.py",
+      "sha256": "84d3ed2fcbb048e60515cb351aa1d17cb40ecea5446d31b32ea7468bac892b1a"
+    }
+  ],
+  "tests": {
+    "learner_and_proposal_tests": 145,
+    "passed": true,
+    "statement_coverage_percent": {
+      "system_context_learning": 100,
+      "system_context_template_feedback": 100
+    }
+  }
+}

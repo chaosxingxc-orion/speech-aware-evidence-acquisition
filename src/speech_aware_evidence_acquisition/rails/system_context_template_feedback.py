@@ -95,6 +95,17 @@ def template_feedback(packet, profile):
         "runtime_admission": False, "semantic_model_calls": 0}
 
 
+def _policy_view(policy):
+    """Retain editable text and bind full exposure without repeating rosters."""
+    sources = policy["cumulative_sources"]
+    ids = [sid for source in sources for sid in source["sample_ids"]]
+    return {**{k: v for k, v in policy.items() if k != "cumulative_sources"},
+        "schema": "saea-template-policy-view-v1", "source_policy_sha256": content_hash(policy),
+        "exposure_commitment": {"sha256": content_hash(sources), "source_records": len(sources),
+            "sample_occurrences": len(ids), "distinct_samples": len(set(ids)),
+            "storage": "Complete immutable parent bundle; inherited by the shared compiler, never deleted."}}
+
+
 def proposer_view(packet):
     """Keep full policies and template statistics, not all per-input record trees."""
     if "template_feedback" not in packet:
@@ -102,8 +113,9 @@ def proposer_view(packet):
     feedback = packet["template_feedback"]
     feedback = {**feedback, "templates": [{k: v for k, v in row.items() if k != "unsampled_sample_ids"}
                                          for row in feedback["templates"]]}
+    policies = {c: {**p, "policy": _policy_view(p["policy"])} for c, p in packet["policies"].items()}
     keys = ("algorithm", "iteration", "family_id", "recipe", "protocol", "read_authority",
-            "sampling", "measurement_profile", "family_commitment", "policies", "budget",
+            "sampling", "measurement_profile", "family_commitment", "budget",
             "feedback_profile", "reflection_task", "experience", "runtime_admission")
     return {"schema": "saea-template-proposer-view-v1", "source_input_sha256": packet["input_sha256"],
-            **{k: packet[k] for k in keys if k in packet}, "template_feedback": feedback}
+            **{k: packet[k] for k in keys if k in packet}, "policies": policies, "template_feedback": feedback}
