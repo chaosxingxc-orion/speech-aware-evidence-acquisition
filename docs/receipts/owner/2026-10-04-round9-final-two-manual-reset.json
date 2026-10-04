@@ -1,0 +1,16 @@
+{
+  "schema": "saea-owner-proposer-manual-reset-continuation-v1",
+  "at_utc": "2026-10-04T05:39:16.571256+00:00",
+  "complete_english_translation": "Continue. I manually reset the quota.",
+  "source": "New direct human message after the B-9-1 refusal, in this root conversation.",
+  "scope": [
+    "L-9-2",
+    "B-9-2"
+  ],
+  "closed_not_retried": [
+    "L-9-1",
+    "B-9-1"
+  ],
+  "interpretation": "One new continuation of the two untouched allocations after the owner's reported manual reset. No independent quota probe, replacement, model change, input change or paid API fallback.",
+  "heartbeat": "PAUSED"
+}

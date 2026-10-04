@@ -1,0 +1,39 @@
+{
+  "schema": "saea-root-final-two-proposer-admission-v1",
+  "at_utc": "2026-10-04T05:39:16.571256+00:00",
+  "owner_authority": "owner227 plus direct human manual-reset continuation",
+  "status": "root-admitted-conditional-on-fresh-check-only-pass",
+  "owner_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/owner-continuation.json",
+    "sha256": "b41181050ce5015e9c74e711dbdd9a4faaa5170a1fc885df74b68d395d4767b8"
+  },
+  "remaining": [
+    "L-9-2",
+    "B-9-2"
+  ],
+  "closed_not_retried": [
+    "L-9-1",
+    "B-9-1"
+  ],
+  "availability_basis": "The human states that they manually reset the quota; the actual next response will determine provider acceptance.",
+  "source_commit": "8eafb9f601242d7310cb889656d30dc3cb9af214",
+  "source_root": "/home/chao/saea-worktrees/codex-four-node-proposer-round9-v1",
+  "unchanged": [
+    "protocol",
+    "inputs",
+    "capsules",
+    "model",
+    "budgets",
+    "source pins",
+    "branch isolation"
+  ],
+  "conditions": [
+    "Fresh two-member check-only PASS",
+    "No live competing proposer",
+    "Unique output and Windows task"
+  ],
+  "failure": "Stop on any real failure and preserve all receipts; no automatic retry or replacement.",
+  "gpu_dispatch": false,
+  "paid_api_spend": 0,
+  "heartbeat": "PAUSED"
+}
