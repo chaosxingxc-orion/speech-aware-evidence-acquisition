@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Four-node seed structural proof accepted, 2026-10-04T03:59:41.363638+00:00
+
+[Complete structural receipt](../receipts/continuation/2026-10-04-four-node-seed-engineering-complete.json) closes the single4-row worker at03:53:29Z on frozen53ecaca74.22 original model contacts match22 actual-request FIT receipts/88 endpoint journal entries and reconstructed request bodies. All6 Reviewer handoffs are valid and visible to Planner; all4 terminal deliveries preserve Omni custody. No knowledge call occurred, so do not claim that optional branch was naturally covered. Zero official scoring and no task-quality read or optimizer export. Preserve intentional OPENED worker lifecycle, complete generation and prepared score specification; never score/reseal/retry.
+
+Original monotonic timing covers all4 samples: mean24.651seconds,first22.909seconds,remaining3 mean25.232seconds;batch dispatch30.394seconds. These are structural descriptors,not efficacy or cache comparisons. Queue depth is the existing16,not the prospective measured profile4: future scientific panels must bind their declared envelope and cannot reuse these numbers as a latency frontier. The initial offline timing reader refused declaration-order input; correction uses verified original terminal cohort order,with evidence preserved and zero contacts.
+
+Windows task exited0,owned driver/worker exited,lease released,STOP absent and frozen worker clean. Minimum sampled running memory17.866GiB. Four-node seed capacity and real structural execution are now proved. Proposal sharing quota still blocks new candidates; no reset evidence,probe,paid fallback or replacement. Next prepare exact schedule-matched candidate/comparator panels when admissible; no new stable benefit or learning gain. Root-only,sequential,heartbeat PAUSED,human before8x400,other-carrier holds remain.
+
+## Four-node seed structural proof running, 2026-10-04T03:52:41.280366+00:00
+
+[Launch receipt](../receipts/continuation/2026-10-04-four-node-seed-engineering-launch.json) records Windows SAEA-Batch-Driver epoch03:51:26Z on frozen53ecaca74 at `/home/chao/saea-worktrees/codex-four-node-seed-engineering-v1`. One four-row shared-worker proof,52-contact ceiling and208 separate actual-request FIT endpoints; zero official scores or quality reads. Clean frozen registration/runtime/source-binding checks passed. Old complete batch controls were preserved under the named normal-transition archive after fresh no-STOP/no-flight validation. Stable startup memory passed21.75seconds; Windows free20.85GiB at launch. Revalidate live PID identities; completion remains pending.
+
+The runtime heuristic Solver budget reports COMPACT_REQUIRED, while the independently measured reachable-graph stress fit passed; exact per-contact FIT remains enforced. No budget guard or geometry was relaxed. Inspect the real handoffs, control parsing, terminal Omni custody and complete timing after worker completion; do not score/reseal or infer quality. Natural4-row optional branch coverage must be reported honestly.
+
+Proposal quota holds remain independent. No new learning benefit established. Keep root-only work, sequential execution, heartbeat PAUSED, human before8x400 and all other-carrier holds.
+
 ## Four-node seed capacity accepted, 2026-10-04T03:44:02.260000+00:00
 
 [Exact completion receipt](../receipts/continuation/2026-10-04-four-node-seed-capacity-complete.json) closes the Windows capacity task successfully at03:36:57Z on frozen6d542d7c4. All44 measured graph requests fit;297 service endpoints match the sequential contact journal. Full512-token output and2048-token structural reserves leave minimum5546 tokens. Zero generation/scorer contacts. Stable memory wait and running guard passed; minimum observed Windows free16.51GiB. Lease released, launcher PID absent and worker clean. This is bounded graph stress, not an exhaustive arbitrary-text proof; each future actual request still requires FIT.

@@ -1,0 +1,142 @@
+{
+  "schema": "saea-four-node-seed-engineering-complete-v1",
+  "at_utc": "2026-10-04T03:59:41.363638+00:00",
+  "status": "PASS structural proof only",
+  "owner_authority": "owner227",
+  "worker": "/home/chao/saea-worktrees/codex-four-node-seed-engineering-v1",
+  "commit": "53ecaca74ed3653ed8506a950d9239c21a98c714",
+  "driver_completed_at": "2026-10-04T03:53:29Z",
+  "rows": 4,
+  "model_contacts": 22,
+  "actual_request_fit_receipts": 22,
+  "tokenizer_endpoints": 88,
+  "valid_visible_reviewer_handoffs": 6,
+  "omni_terminal_deliveries": 4,
+  "official_scorer_contacts": 0,
+  "knowledge_tool_calls": 0,
+  "optional_knowledge_branch_covered_by_this_flight": false,
+  "lifecycle": "Intentional OPENED worker-only attempt, COMPLETED generation, one prepared score specification, no official score; never score/reseal/retry.",
+  "sample_timing": {
+    "all_samples": {
+      "count": 4,
+      "mean_seconds": 24.65121254825,
+      "p50_seconds": 23.6763975625,
+      "p95_seconds": 29.98487483
+    },
+    "excluding_first": {
+      "count": 3,
+      "mean_seconds": 25.232050279333333,
+      "p50_seconds": 24.44409577,
+      "p95_seconds": 29.98487483
+    },
+    "first_admitted_sample": {
+      "sample_id": "slurp:train:003560:audio-1501686037",
+      "admission_index": 0,
+      "status": "completed",
+      "error_type": null,
+      "elapsed_seconds": 22.908699355,
+      "admission_wait_seconds": 5.1823e-05,
+      "timing_record_sha256": "1145f33b19ff67997a64d25d3867a72f0c84d26634512bebed8049d8e168faf7"
+    },
+    "batch_dispatch_wall_seconds": 30.393977876,
+    "slot_count": 4,
+    "queue_depth": 16,
+    "timing_scope": "Monotonic admission-to-settled-workflow wall time includes internal model/tool waits, FIT and cleanup. Pre-admission wait is separate. Roster preparation, final persistence and official scoring are excluded. Batch wall per sample measures throughput, not individual latency."
+  },
+  "node_timing": {
+    "perception": {
+      "contacts": 4,
+      "mean_prefill_seconds": 1.02963175,
+      "mean_decode_seconds": 3.82741,
+      "mean_client_transport_seconds": 5.5921308662655065,
+      "token_weighted_reuse": 0.6313027179006561
+    },
+    "planner": {
+      "contacts": 6,
+      "mean_prefill_seconds": 0.25872083333333334,
+      "mean_decode_seconds": 0.07398033333333333,
+      "mean_client_transport_seconds": 0.3806799218291417,
+      "token_weighted_reuse": 0.9493888348333739
+    },
+    "reviewer": {
+      "contacts": 6,
+      "mean_prefill_seconds": 0.18617066666666668,
+      "mean_decode_seconds": 3.3879360000000003,
+      "mean_client_transport_seconds": 3.6285145560007854,
+      "token_weighted_reuse": 0.9690284193220073
+    },
+    "solver": {
+      "contacts": 6,
+      "mean_prefill_seconds": 2.2470711666666667,
+      "mean_decode_seconds": 2.9771290000000006,
+      "mean_client_transport_seconds": 6.667029872507555,
+      "token_weighted_reuse": 0.5962111301990575
+    }
+  },
+  "resources": {
+    "guard_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/smoke-1-slurp-native-stage3-system-text-four-node-seed-smoke-4-v1-20261004T035157Z",
+    "minimum_observed_windows_free_gib": 17.866416931152344,
+    "guard_exit_code": 0,
+    "events_sha256": "7c5c3876616baa3f244f24ab83fd7f6c1a7f9d2b15c914b628dea6c5530a6769",
+    "finished_sha256": "077d331026a85913c2d74ef4d84ed0351cf566d02037a71e0b3ce31b06d2e9c9",
+    "original_driver_absent": true,
+    "original_worker_absent": true,
+    "lease_absent": true,
+    "STOP_absent": true
+  },
+  "no_task_quality_read": true,
+  "no_optimizer_export": true,
+  "limitations": [
+    "Four examples prove the observed paths only, not optional knowledge branch coverage or stable benefit.",
+    "Existing worker queue_depth16 differs from prospective measured profile queue_depth4; never splice this timing into that scientific frontier.",
+    "Reader initially used declaration roster order and refused; corrected offline to original validated terminal cohort order without runtime mutation.",
+    "Measured latency excludes roster preparation, final persistence and official scoring."
+  ],
+  "next": "Freeze exact candidate policies and queue-depth-matched scientific runtime after proposer availability is established. Preserve quota failure and all spent allocations; no probe or paid fallback.",
+  "evidence": [
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "f9c738b8ef782e69824b8dc0c26645e97e8feeb7d66f6463f6c5b79a6be64bea"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/structural-audit-v1.py",
+      "sha256": "85ea9ff42f383c25c51b3cf5324b3671cfae109623133824d5f44d98788fac94"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/root-node-timing-v1.json",
+      "sha256": "c86099555c33195f226dc633b81155f16a4dbbe017e724caaa271a4d646a380e"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/root-node-timing-v1.py",
+      "sha256": "7edceb41fb95d24116cc2c5eb99f784db4fbdbf82c52294c0cc2555a5a1c7643"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/root-sample-timing-v1.json",
+      "sha256": "ff7bb6b7f3a5e002ee5b0f4ec855dd5275cad956a18f5698205b21315ba7be7a"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/timing-reader-order-refusal-v1.json",
+      "sha256": "9f6f2dee30d3a7ff5e66c75d847539c88cee351fbefb0adfc03774603e612be4"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/fit-journal-audit-v1.json",
+      "sha256": "ed50a87f87acbb3613ce5c8977c4afaf78a0393e466b1aa9bc14e07f9bb44592"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/resource-completion-v1.json",
+      "sha256": "e1267501e88ca0acd8bd89ee544a66176a36d08d658aeac9273b1b3f289af78b"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/windows-completion-v1.json",
+      "sha256": "548b1a4a7f33595e2e3a7d39e5625db45ff5ec6ae265d2826cf7d6b6fc1728ca"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/frozen-check-v2.json",
+      "sha256": "bcf9bf22f6937a547ab3be6d477b6675911f46e6586cdc676bc25331d53e9889"
+    },
+    {
+      "relpath": "coordination/four-node-seed-engineering-owner227-v1/driver-transition-v1.json",
+      "sha256": "1946d4f4c2a105222c301c88e8c1853087b6440432a649fe8ccb62143dbe3dd5"
+    }
+  ]
+}

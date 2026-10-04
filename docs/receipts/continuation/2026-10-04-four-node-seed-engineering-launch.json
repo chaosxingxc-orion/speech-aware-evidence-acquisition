@@ -1,0 +1,39 @@
+{
+  "schema": "saea-four-node-seed-engineering-launch-v1",
+  "at_utc": "2026-10-04T03:52:41.280366+00:00",
+  "owner_authority": "owner227",
+  "windows_task": "SAEA-Batch-Driver",
+  "driver_epoch": "2026-10-04T03:51:26Z",
+  "worker": "/home/chao/saea-worktrees/codex-four-node-seed-engineering-v1",
+  "commit": "53ecaca74ed3653ed8506a950d9239c21a98c714",
+  "queue": {
+    "path": "docs/readiness/2026-10-04-four-node-seed-engineering-entry-v1/queue-v1.json",
+    "sha256": "99e9dd3f5203528a83c3ac5ee8066aa1fcf35cc93a183933d1ebbd359278d873"
+  },
+  "windows_free_gib": 20.854042053222656,
+  "status": "RUNNING; memory wait passed and registration/prelaunch passed; structural completion pending.",
+  "scope": "Four existing inputs,52 generation ceiling,208 actual-request FIT endpoints,zero official scores; structural/timing read only.",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-engineering-owner227-v1/root-admission-v1.json",
+      "sha256": "4a66eb7ac02304eda2baabd6e8eafedceba8f9f8a761cbbbd6bb0fd1429217cb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-engineering-owner227-v1/frozen-check-v2.json",
+      "sha256": "bcf9bf22f6937a547ab3be6d477b6675911f46e6586cdc676bc25331d53e9889"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-engineering-owner227-v1/driver-transition-v1.json",
+      "sha256": "1946d4f4c2a105222c301c88e8c1853087b6440432a649fe8ccb62143dbe3dd5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-engineering-owner227-v1/windows-launch-proof-v1.json",
+      "sha256": "af74e4bc65a4a4206116b134a90fe8148f4332343678f772f2fb9301ee4aceb1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-engineering-owner227-v1/launch-process-proof-v1.json",
+      "sha256": "f4fce4800570a0e1b98875ba62104b91805262717f56143e9a9d3e705f53afa2"
+    }
+  ],
+  "proposal_continuation": "Sharing quota unresolved; no probe, paid fallback or replacement."
+}
