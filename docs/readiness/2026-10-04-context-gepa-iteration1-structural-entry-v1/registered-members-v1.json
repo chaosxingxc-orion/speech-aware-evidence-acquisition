@@ -1,0 +1,22 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-counterexample-check-smoke-4-generation-v1",
+    "bundle_id": "0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff",
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-counterexample-check-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-gepa-iteration1-counterexample-check-graph-v1",
+    "label": "counterexample-check",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-gepa-iteration1-structural-entry-v1/counterexample-check-generation-plan-registered-v1.json",
+      "sha256": "6f24bf6852a60bfbcacb35ace29f35b84bba77e3540677997172f9a482937c29"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "c0a2d351fd51e9ba96f47008c0c442ef4cdda0bb636fde6365de12e3e73587e7"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-gepa-iteration1-structural-entry-v1/counterexample-check-analysis-recipe-v1.json",
+      "sha256": "14dcebe5260d17cf5cf268c5a91f91df11eabb6a537fdd6d13d861986210f07c"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-COUNTEREXAMPLE-CHECK-SMOKE-4-V1"
+  }
+]

@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## GEPA child four-row structural entry registered, 2026-10-04T10:48:20.2971386Z
+
+[Exact structural entry](../readiness/2026-10-04-context-gepa-iteration1-structural-entry-v1/README.md) binds the unchanged provisional child after its passed capacity recovery. Register four actual shared-runtime trajectories,52 generation contacts maximum and208 separate actual-request FIT endpoints,zero official scores. Own supply warm-verifies and the named registration gate has no blocking finding; the structural-only roster advisory does not authorize any quality read. Clean frozen runtime, actual-policy bytes, exact first4 source identity and live admission remain required before launch.
+
+Preserve the original GEPA worker at its evaluation callback. Six N20 trial supplies remain HELD, TF remains independent, seed is the incumbent and no learned improvement is established. Heartbeat stays PAUSED, other carrier holds and human-before8x400 remain.
+
+
 ## GEPA child capacity passed after named recovery, 2026-10-04T10:45:19.465458+00:00
 
 [Exact completion](../receipts/continuation/2026-10-04-context-gepa-capacity-recovery1-complete.json) supersedes the running snapshot. Frozen6bf07f6d3 successor ended normally:297 endpoints,44 actual measured requests all fit with max512 plus2048 structural reserve; minimum remaining margin5535 tokens. Zero generation/scoring. Lease released normally, STOP absent; preserve the original140-endpoint failed attempt and all old scratch. The new identity was executed once. This is capacity evidence, not a task-quality or learned-benefit result.
