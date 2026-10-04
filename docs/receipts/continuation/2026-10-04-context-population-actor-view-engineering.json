@@ -1,0 +1,34 @@
+{
+  "schema": "saea-context-population-actor-view-engineering-v1",
+  "at_utc": "2026-10-04T21:28:21.650366+00:00",
+  "module": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+    "sha256": "8ee04a95a4b73e44e3e8d5aa30de3979921e0f1f14f585b1736f437475ef0e9e"
+  },
+  "tests": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_context_population_actor_view.py",
+    "sha256": "62629757ca1c9a682176b9f281486b8c237f01beef58f594774d124cb6d2a221"
+  },
+  "related_tests_passed": 211,
+  "shared_module_statement_coverage_percent": 88.30313014827018,
+  "new_function_covered_statements": 32,
+  "new_function_missing_statements": [],
+  "engineering_base_check": "PASS",
+  "diff_check": "PASS",
+  "test_first_missing_interface_failure": true,
+  "private_budget_leak_regression_red_then_green": true,
+  "nonfirst_admission_order_regression_red_then_green": true,
+  "real_actor_input_created": false,
+  "model_contacts_added": 0,
+  "score_jobs_added": 0,
+  "quality_read": false,
+  "runtime_admission": false,
+  "scope": "Whitelist complete editable templates/assembly, anonymous structural outcomes and measured numeric objectives. Require pinned abstract source, exact paired terminal counts/utility/completion/cost and complete measured timing objectives. Preserve actual non-first latency, not roster-derived pseudo-warm timing. Exclude knowledge, concrete task data, private IDs/source rosters, free-form experience and arbitrary budget annotations.",
+  "remaining": [
+    "complete current eighteen-member READ",
+    "separate abstract source admission and full projection",
+    "prospective private iteration packet and actor capsule/output protocol",
+    "isolated one-batch model contact",
+    "successor full-system evaluation and retention"
+  ]
+}

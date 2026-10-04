@@ -987,3 +987,90 @@ def record_context_population_update(archive, *, input_sha256, response_document
             result["records"].append({"candidate_id": cid, **update})
     archive._write(base + "/result.json", result)
     return result
+
+
+def context_population_actor_view(archive, *, input_sha256, source):
+    """Build a template-only actor view from a pinned abstract source.
+
+    The caller owns full-family/source READ and isolation admission. No raw
+    trajectory, source roster, runtime knowledge or private source ID is copied.
+    This builds no per-sample semantic task and invokes no model.
+    """
+    from copy import deepcopy
+    from ..analysis.abstract_node_feedback import abstract_population_feedback, FEEDBACK_SCHEMA
+
+    packet, plan, ids = _population_update_input(archive, input_sha256)
+    binding = packet.get("abstract_source")
+    require(isinstance(binding, dict) and set(binding) == {"source_sha256", "source_batch"},
+            "exact abstract source admission required")
+    sha(binding["source_sha256"])
+    require(content_hash(source) == binding["source_sha256"], "pinned abstract source differs")
+    feedback = abstract_population_feedback(source,
+        expected_bundles={cid: packet["policies"][cid]["bundle_id"] for cid in ids},
+        expected_family_id=packet["family_id"], expected_source_batch=binding["source_batch"],
+        sample_count=packet["budget"]["N"], reference_f1=packet["reference"]["f1"])
+    for abstract_group, original_group in zip(feedback["groups"], packet["groups"], strict=True):
+        for abstract, original in zip(abstract_group["members"], original_group["members"], strict=True):
+            terminal, execution = abstract["terminal"], original["execution"]
+            require(abstract["candidate_id"] == original["candidate_id"]
+                    and terminal["official_counts"] == original["native_counts"]
+                    and terminal["utility"] == original["utility"],
+                    "abstract terminal feedback differs from private qualified source")
+            require(terminal["reliable"] == execution["reliable_completion"]
+                    and terminal["abstained"] == execution["abstained"]
+                    and terminal["sample_seconds"] == execution["wall_time_seconds"]
+                    and len(abstract["nodes"]) == execution["model_calls"],
+                    "abstract operational feedback differs from private qualified source")
+    measured = packet.get("business_measurements")
+    require(isinstance(measured, list) and len(measured) == len(ids),
+            "complete measured business objectives required")
+    business = []
+    numeric_fields = ("slu_f1", "intent", "reliable_completion_rate", "mean_sample_seconds",
+                      "non_first_mean_seconds", "model_calls", "tool_calls")
+    for position, (cid, row) in enumerate(zip(ids, measured, strict=True)):
+        require(isinstance(row, dict) and row.get("candidate_id") == cid
+                and row.get("bundle_id") == packet["policies"][cid]["bundle_id"],
+                "measured objective policy identity differs")
+        sha(row.get("timing_report_sha256"))
+        require(all(type(row.get(k)) in (int, float) and math.isfinite(row[k]) and row[k] >= 0
+                    for k in numeric_fields) and type(row.get("eligible")) is bool,
+                "finite measured objectives and eligibility required")
+        terminals = [g["members"][position]["terminal"] for g in feedback["groups"]]
+        seconds = [t["sample_seconds"] for t in terminals]
+        require(math.isclose(row["mean_sample_seconds"], math.fsum(seconds)/len(seconds),
+                             abs_tol=1e-10, rel_tol=1e-12)
+                and math.isclose(row["reliable_completion_rate"],
+                                 sum(t["reliable"] for t in terminals)/len(terminals), abs_tol=1e-12)
+                and row["model_calls"] == sum(len(g["members"][position]["nodes"]) for g in feedback["groups"]),
+                "measured aggregate differs from complete abstract episodes")
+        # Actual admission order was verified by measured_rows upstream. Never
+        # treat anonymous roster index zero as the first admitted sample.
+        first_cost = math.fsum(seconds) - row["non_first_mean_seconds"] * (len(seconds)-1)
+        require(any(math.isclose(first_cost, value, abs_tol=1e-8, rel_tol=1e-10) for value in seconds),
+                "non-first timing cannot exclude a recorded sample")
+        summary = feedback["templates"][position]["official_summary"]
+        require(row["slu_f1"] == summary["slu_f1"] and row["intent"] == summary["intent"]
+                and all(row[k] <= 1 for k in ("slu_f1", "intent", "reliable_completion_rate")),
+                "official quality units or summary differ")
+        business.append({"candidate_id": cid, **{k: row[k] for k in numeric_fields}, "eligible": row["eligible"]})
+    templates = {cid: {"bundle_id": packet["policies"][cid]["bundle_id"],
+                      **{k: deepcopy(packet["policies"][cid]["policy"][k])
+                         for k in ("role_text", "context_layout", "node_context")}} for cid in ids}
+    return {"schema": "saea-context-population-actor-view-v1",
+            "optimizer_input_sha256": input_sha256, "algorithm": packet["algorithm"],
+            "iteration": packet["iteration"], "model": plan["model"],
+            "reasoning_effort": plan["reasoning_effort"], "templates": templates,
+            "representation": deepcopy(FEEDBACK_SCHEMA), "feedback": feedback,
+            "business_measurements": business,
+            "budget": {"M": 4, **{k: packet["budget"][k] for k in
+                ("N", "K", "candidate_trajectories", "control_trajectories", "family_trajectories")}},
+            "runtime_admission": False,
+            "instructions": "Produce one original response containing all16 reserved template updates in order. "
+                "Optimize complete node instructions and supported assembly using abstract behavior and complete-system "
+                "quality, intent, reliability and measured sample latency. Keep knowledge, retrieval, data, interfaces "
+                "and decoding fixed. Never request concrete cases, source rosters or per-sample semantic summaries. "
+                "Unknown node correctness remains unknown; terminal reward is not causal node credit. "
+                "Preserve no-change and failed hypotheses instead of fabricating positive gains. "
+                "Archived free-form experience is not included in this template-only view; materialize proposed "
+                "improvements as explicit template/assembly edits. Any proposed experience operations remain offline "
+                "and require evaluated retention. No candidate is adopted merely because it is proposed."}

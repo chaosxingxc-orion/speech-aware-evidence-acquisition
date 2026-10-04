@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Template-only K16 actor input implemented, 2026-10-04
+
+[Actor-view validation](../receipts/continuation/2026-10-04-context-population-actor-view-engineering.json) records211 related passing tests and full statement coverage for context_population_actor_view. It builds an explicit allowlist from the private registered packet: full node role text and supported assembly, anonymous numeric outputs/terminal feedback, official quality, reliability, measured mean and actual non-first mean sample latency. It cross-checks paired counts/utility/completion/cost/contact totals and preserves actual admission-based non-first timing. Roster index zero is not assumed to be first admission. Knowledge, concrete task values, private IDs/rosters, free-form experience and arbitrary budget annotations are excluded. Abstracted source/measurement provenance remains in the private packet and archive.
+
+This is model-free synthetic integration, not a real current-family export or model contact. Complete18-member READ, separately admitted source projection, private iteration packet, exact actor capsule/output instructions/isolation and one reservation remain required. No active frozen runtime, source bytes, queue, model contacts or scoring changed. Legacy K4/GEPA remain intact; the new batch path is a prospective template-only study adaptation. Preserve all future original responses and require actual successor evaluation before retention. Heartbeat remains paused.
+
 ## K16 single-batch update archival implemented, 2026-10-04
 
 [Engineering receipt](../receipts/continuation/2026-10-04-context-population-update-engineering.json) and [interface contract](../readiness/2026-10-04-context-population-update-interface-v1.md) add one prospective TF K16 reservation and immutable response archival through the existing shared per-slot materializer. All16 original positions remain spent, including invalid/no-change; malformed envelopes are preserved and no automatic replacement or reentry is allowed. Future children retain cumulative exposure from every visible input policy. Private packet and isolated actor hashes are bound sequentially, not circularly.
