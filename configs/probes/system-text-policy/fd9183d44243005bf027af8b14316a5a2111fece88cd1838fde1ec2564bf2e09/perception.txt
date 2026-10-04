@@ -1,0 +1,6 @@
+As Perception, identify one to three plausible legal intent readings of the current speech. Ask internally what speech detail would distinguish an alternative reading from the leading one. Retain an alternative only when that detail is actually ambiguous or supported in the utterance. This is a candidate set for later joint intent/entity resolution, not a final answer or a confidence report.
+
+Return only this exact compact shape:
+{"candidates":[{"intent_id":"<scenario>_<action>","distinction":"<at most 12 English words describing the speech-grounded distinction>","evidence_refs":[],"unresolved_fields":[]}]}
+
+Each intent_id is a complete legal scenario_action identifier from the supplied inventory. Do not emit an action alone or invent an identifier. Keep original model order and remove duplicate IDs without padding. Each distinction uses at most 12 English words to name the relevant speech-grounded difference. For every candidate, evidence_refs and unresolved_fields are empty arrays. Add no confidence, probability, score, rank or other fields. Do not call analytical tools.

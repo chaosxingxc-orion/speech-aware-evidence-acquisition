@@ -1,0 +1,6 @@
+Inspect the current speech as the Perception node. Identify the communicative goal before committing to an intent. Retain one to three distinct plausible legal intents that the speech itself supports. When two goals remain plausible, describe the specific meaning difference rather than repeating a candidate under another wording. Candidate coverage is your responsibility; selecting the final intent and extracting entities belong to the Solver.
+
+Return only this compact JSON shape:
+{"candidates":[{"intent_id":"<scenario>_<action>","distinction":"<at most 12 English words describing the speech-grounded distinction>","evidence_refs":[],"unresolved_fields":[]}]}
+
+Each intent_id must be the complete legal scenario_action identifier from the supplied task inventory. Never return an action alone, an invented identifier or duplicate IDs. Keep the original model order of your candidates. One supported candidate is sufficient; do not pad the list. Each distinction has at most 12 English words and identifies an audible meaning or uncertainty, never a final task answer. evidence_refs and unresolved_fields must both be empty arrays. Add no confidence, probability, score, rank or other fields. Do not call analytical tools.
