@@ -478,6 +478,7 @@ def freeze_optimization_panel(
     root_review,
     repo_root,
     data_root,
+    evaluation_authority=None,
 ):
     """Freeze a reviewed extra-round eight-member definition, never launch it.
 
@@ -496,6 +497,8 @@ def freeze_optimization_panel(
         require_exploratory_packet,
         require_optimization_scope,
         require_context_only_changes,
+        SUCCESSOR_MEMBERS, SUCCESSOR_EXCLUDED, SUCCESSOR_REGISTRATION,
+        load_successor_panel_authority,
     )
     from .system_text_policy import _read_pin, apply_text_proposal
     from ..analysis.system_text_panel import REGISTRATION_SCHEMA, validate_definition
@@ -505,7 +508,9 @@ def freeze_optimization_panel(
         from .system_search_measurement import validate_profile
         profile = copy.deepcopy(validate_profile(protocol["measurement_profile"]))
 
-    family, read_id = panel_identities(round_index, rows)
+    successor = evaluation_authority is not None
+    require(not successor or profile is not None, "successor panel requires measured profile")
+    family, read_id = panel_identities(round_index, rows, successor=successor)
     relative = f"panels/{family}.json"
     require(
         not os.path.lexists(archive.root / relative),
@@ -526,11 +531,18 @@ def freeze_optimization_panel(
     )
     plan, pool = resolved
     owner = json.loads(_read_pin(plan["owner"], repo_root))
-    growth = json.loads(_read_pin(extension["owner"], repo_root))
+    evaluation_scope = None
+    if successor:
+        evaluation_scope, growth = load_successor_panel_authority(evaluation_authority,
+            protocol=protocol, pool_ids=pool, rows=rows, repo_root=repo_root)
+    else:
+        growth = json.loads(_read_pin(extension["owner"], repo_root))
     evaluation = copy.deepcopy(protocol)
     stage_for(evaluation, name)["sample_ids"] = pool[:rows]
     stage_for(evaluation, name)["roster_sha256"] = content_hash(pool[:rows])
     review = json.loads(_read_pin(root_review, repo_root))
+    require(not successor or review.get("evaluation_authority") == evaluation_authority,
+            "root review must pin exact successor evaluation authority")
     require(
         review.get("schema") == "saea-fixed400-panel-stage-review-v1"
         and review.get("reviewer") == "ChatGPT root"
@@ -561,13 +573,17 @@ def freeze_optimization_panel(
     for cid, b in member_bindings.items():
         require(
             set(b) == {"bundle_id", "run_id", "attempt_id", "config_hash"}
-            and b["run_id"] == panel_member_run_id(round_index, rows, cid)
+            and b["run_id"] == panel_member_run_id(round_index, rows, cid, successor=successor)
             and isinstance(b["attempt_id"], str)
             and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,240}", b["attempt_id"]),
             "exact confined prospective member identities required",
         )
-        sha(b["bundle_id"])
-        sha(b["config_hash"])
+        if successor and cid in SUCCESSOR_EXCLUDED:
+            require(b["bundle_id"] is None and b["config_hash"] is None,
+                    "excluded successor slots cannot activate a policy")
+        else:
+            sha(b["bundle_id"])
+            sha(b["config_hash"])
     require(
         len({b["attempt_id"] for b in member_bindings.values()}) == 8,
         "panel attempts must be distinct",
@@ -592,7 +608,7 @@ def freeze_optimization_panel(
         return json.loads(raw)
 
     records = archive.history()
-    allocations, parents = {}, {}
+    allocations, parents, exclusions = {}, {}, {}
     for branch in ("L", "B"):
         for slot in (1, 2):
             key, cid = f"{branch}-{round_index}-{slot}", f"{branch}-candidate-{slot}"
@@ -639,6 +655,23 @@ def freeze_optimization_panel(
                 archive.load_policy(parent).as_json() == packet["parent_policy"],
                 "proposal parent policy differs from archive",
             )
+            if successor and cid in SUCCESSOR_EXCLUDED:
+                require(imported["proposal_allocation"] == [branch, round_index, slot]
+                    and imported["input_sha256"] == packet["input_sha256"]
+                    and imported["receipt_sha256"] == content_hash(response)
+                    and imported["status"] == "invalid"
+                    and _response_invalid(packet, response, records, allocation_extension=extension)
+                    and not os.path.lexists(archive.root / f"compilations/{key}.json"),
+                    "only objectively invalid spent uncompiled slots may be excluded")
+                invalid = read(f"proposals/{key}.json")
+                require(invalid["receipt"] == response and invalid["status"] == "invalid"
+                    and invalid["proposal"] is None, "invalid proposal custody differs")
+                allocations[cid] = {"input_sha256": packet["input_sha256"],
+                    "receipt_sha256": content_hash(response), "import_sha256": content_hash(imported),
+                    "compilation_sha256": None, "status": "invalid"}
+                exclusions[cid] = {"status": "invalid", "run_id": member_bindings[cid]["run_id"],
+                    "attempt_id": member_bindings[cid]["attempt_id"], "import_sha256": content_hash(imported)}
+                continue
             require(
                 imported["proposal_allocation"] == [branch, round_index, slot]
                 and imported["input_sha256"] == packet["input_sha256"]
@@ -705,6 +738,7 @@ def freeze_optimization_panel(
             ),
             "panel comparator differs from proposal parent",
         )
+    admitted = {cid: b for cid, b in member_bindings.items() if not successor or cid in SUCCESSOR_MEMBERS}
     exposure = {
         cid: assert_policy_roster(
             archive.load_policy(b["bundle_id"]).as_json()["cumulative_sources"],
@@ -713,17 +747,17 @@ def freeze_optimization_panel(
             stage=name,
             repo_root=repo_root,
         )
-        for cid, b in member_bindings.items()
+        for cid, b in admitted.items()
     }
     d = {
-        "schema": REGISTRATION_SCHEMA,
+        "schema": SUCCESSOR_REGISTRATION if successor else REGISTRATION_SCHEMA,
         "family_id": family,
         "proposal_round": round_index,
-        "expected_members": {cid: b["run_id"] for cid, b in member_bindings.items()},
-        "member_bindings": copy.deepcopy(member_bindings),
+        "expected_members": {cid: b["run_id"] for cid, b in admitted.items()},
+        "member_bindings": copy.deepcopy(admitted),
         "rows_per_member": rows,
-        "trajectory_cap": 8 * rows,
-        "official_score_jobs_cap": 8,
+        "trajectory_cap": len(admitted) * rows,
+        "official_score_jobs_cap": len(admitted),
         "new_proposal_opportunities": 0,
         "owner_decisions": [223, 224],
         "read_id": read_id,
@@ -741,6 +775,10 @@ def freeze_optimization_panel(
     }
     if profile is not None:
         d["measurement_profile"] = copy.deepcopy(profile)
+    if successor:
+        d.update(evaluation_authority=copy.deepcopy(evaluation_authority), exclusions=exclusions,
+                 planned_runs={cid: b["run_id"] for cid, b in member_bindings.items()},
+                 owner_decisions=[222, 223, 224, 227])
     d["registration_sha256"] = content_hash(d)
     recipe = {
         "family_id": family,
@@ -752,7 +790,8 @@ def freeze_optimization_panel(
     if profile is not None:
         recipe["measurement_profile"] = copy.deepcopy(profile)
     validate_definition(
-        recipe, d, owner, growth=growth, protocol=protocol, pool_ids=pool
+        recipe, d, owner, growth=growth, protocol=protocol, pool_ids=pool,
+        **({"evaluation": evaluation_scope} if successor else {})
     )
     require(
         all((archive.root / p).read_bytes() == raw for p, raw in observed.items()),
@@ -763,6 +802,10 @@ def freeze_optimization_panel(
         "root review changed during freeze",
     )
     validate_extension(archive, extension, repo_root=repo_root)
+    if successor:
+        require(load_successor_panel_authority(evaluation_authority, protocol=protocol,
+            pool_ids=pool, rows=rows, repo_root=repo_root) == (evaluation_scope, growth),
+            "successor evaluation authority changed during freeze")
     no_runtime_artifacts()
     result = {
         "registration": d,

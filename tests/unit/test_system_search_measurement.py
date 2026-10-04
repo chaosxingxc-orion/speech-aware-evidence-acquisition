@@ -296,6 +296,26 @@ def test_bad_measurement_profile_refuses_before_any_family_read(monkeypatch):
         )
 
 
+def test_legacy_duplicate_candidate_keeps_parent_first_and_aa_separate(tmp_path):
+    from test_system_optimization import learning_fixture
+    from speech_aware_evidence_acquisition.rails.system_optimization import exploratory_selection
+    protocol, packet = learning_fixture(tmp_path)
+    protocol["measurement_profile"] = profile()
+    d = packet["feedback"]
+    d["measurement_profile"] = profile()
+    ids = [g["sample_id"] for g in d["feedback"]["groups"]]
+    for summary in d["summaries"].values():
+        summary.update(sample_timing=timing(ids), timing_session_sha256="a" * 64)
+    bindings = packet["selection"]["member_bindings"]
+    bindings["L-candidate-1"]["bundle_id"] = bindings["L-parent"]["bundle_id"]
+    selected = exploratory_selection(CompleteSystemFeedback(canonical(d)), registration={"member_bindings": bindings},
+        binding={"next_round": 3, "parent_id": packet["parent_bundle_id"], "complementary_ids": []},
+        protocol=protocol, parents=[{"cumulative_sources": []}])
+    assert [r["candidate_id"] for r in selected["measurements"]] == ["L-parent", "L-candidate-2"]
+    assert [r["candidate_id"] for r in selected["repeated_measurements"]] == ["L-candidate-1"]
+    assert selected["same_chain_aa"]["candidate_id"] == "L-parent-aa"
+
+
 def test_declared_latency_never_silently_falls_back_when_trace_is_missing(tmp_path):
     from speech_aware_evidence_acquisition.rails.system_text_feedback import (
         _row_cost_and_terminal,

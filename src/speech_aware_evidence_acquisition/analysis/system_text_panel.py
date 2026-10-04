@@ -16,6 +16,8 @@ from ..rails.system_optimization import (
     require_panel_scope,
     panel_identities as identities,
     panel_member_run_id as member_run_id,
+    SUCCESSOR_MEMBERS, SUCCESSOR_EXCLUDED, SUCCESSOR_REGISTRATION,
+    load_successor_panel_authority, validate_successor_custody,
 )
 from ..rails.system_text_policy import _read_pin, canonical, require, sha
 from .system_text_pilot import (
@@ -30,9 +32,9 @@ SCHEMA = "saea-complete-system-panel-evidence-v1"
 REGISTRATION_SCHEMA = "saea-fixed400-system-panel-registration-v1"
 
 
-def scope_record(registration, owner, growth):
+def scope_record(registration, owner, growth, *, evaluation=None):
     """Keep only source commitments in the scope shared with the L proposer."""
-    return {
+    result = {
         "family_id": registration["family_id"],
         "proposal_round": registration["proposal_round"],
         "rows": registration["rows_per_member"],
@@ -44,11 +46,41 @@ def scope_record(registration, owner, growth):
         "pool_owner_sha256": content_hash(owner),
         "growth_owner_sha256": content_hash(growth),
     }
+    if registration.get("schema") == SUCCESSOR_REGISTRATION:
+        custody = {k: registration[k] for k in ("allocations", "exclusions")}
+        result.update(evaluation_schema=SUCCESSOR_REGISTRATION,
+            evaluation_authority_sha256=registration["evaluation_authority"]["sha256"],
+            learning_owner_sha256=content_hash(evaluation["learning"]),
+            root_custody_sha256=content_hash(custody), custody_sha256=content_hash(custody),
+            root_bindings_sha256=content_hash(registration["member_bindings"]),
+            bindings_sha256=content_hash(registration["member_bindings"]))
+    return result
 
 
-def validate_definition(recipe, registration, owner, *, growth, protocol, pool_ids):
+def validate_definition(recipe, registration, owner, *, growth, protocol, pool_ids, evaluation=None):
     """Validate prospective scope without granting or fabricating READ authority."""
     profile = protocol.get("measurement_profile")
+    successor = registration.get("schema") == SUCCESSOR_REGISTRATION
+    members_required = SUCCESSOR_MEMBERS if successor else MEMBERS
+    count = len(members_required)
+    if successor:
+        require(isinstance(evaluation, dict) and set(evaluation) == {"authority", "owner227", "learning"}
+            and profile is not None, "successor evaluation scope and measured profile are required")
+        decision = evaluation["authority"]
+        require(decision["proposal_protocol_sha256"] == content_hash(protocol)
+            and decision["proposal_round"] == registration["proposal_round"]
+            and decision["pool_sample_ids_sha256"] == content_hash(pool_ids)
+            and decision["admitted_members"] == sorted(SUCCESSOR_MEMBERS)
+            and decision["excluded_members"] == sorted(SUCCESSOR_EXCLUDED)
+            and registration["evaluation_authority"].get("sha256") is not None
+            and {222, 223, 224, 227} <= set(registration["owner_decisions"]),
+            "successor evaluation identity differs")
+        validate_successor_custody({k: registration[k] for k in ("allocations", "exclusions")},
+            round_index=registration["proposal_round"], rows=registration["rows_per_member"])
+        require(set(registration["planned_runs"]) == MEMBERS
+            and all(run == member_run_id(registration["proposal_round"], registration["rows_per_member"], cid,
+                successor=True) for cid, run in registration["planned_runs"].items()),
+            "successor must account for all eight prospective run identities")
     require(recipe.get("measurement_profile") == registration.get("measurement_profile") == profile,
             "panel measurement profile differs from protocol or READ recipe")
     if profile is not None:
@@ -67,9 +99,9 @@ def validate_definition(recipe, registration, owner, *, growth, protocol, pool_i
         "approved owner223 reviewed scaling scope is required",
     )
     r, rows = registration.get("proposal_round"), registration.get("rows_per_member")
-    family, read_id = identities(r, rows)
+    family, read_id = identities(r, rows, successor=successor)
     require(
-        registration.get("schema") == REGISTRATION_SCHEMA
+        registration.get("schema") == (SUCCESSOR_REGISTRATION if successor else REGISTRATION_SCHEMA)
         and registration.get("family_id") == recipe.get("family_id") == family,
         "exact prospective fixed-pool panel family is required",
     )
@@ -99,8 +131,8 @@ def validate_definition(recipe, registration, owner, *, growth, protocol, pool_i
     )
     require(
         recipe.get("required_rows_per_member") == rows
-        and registration.get("trajectory_cap") == rows * 8
-        and registration.get("official_score_jobs_cap") == 8
+        and registration.get("trajectory_cap") == rows * count
+        and registration.get("official_score_jobs_cap") == count
         and registration.get("new_proposal_opportunities") == 0
         and {223, 224} <= set(registration.get("owner_decisions", []))
         and registration.get("root_stage_review") == "completed"
@@ -114,20 +146,20 @@ def validate_definition(recipe, registration, owner, *, growth, protocol, pool_i
         registration.get("expected_members", {}),
     )
     require(
-        set(bindings) == set(members) == MEMBERS
+        set(bindings) == set(members) == members_required
         and members == recipe.get("expected_members"),
-        "all eight panel members are required",
+        "all admitted panel members are required",
     )
     require(
         all(
-            b.get("run_id") == members[c] == member_run_id(r, rows, c)
+            b.get("run_id") == members[c] == member_run_id(r, rows, c, successor=successor)
             and all(
                 isinstance(b.get(k), str) and b[k]
                 for k in ("attempt_id", "config_hash", "bundle_id")
             )
             for c, b in bindings.items()
         )
-        and len({b["attempt_id"] for b in bindings.values()}) == 8,
+        and len({b["attempt_id"] for b in bindings.values()}) == count,
         "panel member run, attempt or policy identity differs",
     )
     for branch in ("L", "B"):
@@ -149,9 +181,9 @@ def validate_definition(recipe, registration, owner, *, growth, protocol, pool_i
     )
 
 
-def validate_registration(recipe, registration, owner, authority, *, growth, protocol, pool_ids):
+def validate_registration(recipe, registration, owner, authority, *, growth, protocol, pool_ids, evaluation=None):
     """Require real countersigned READ metadata in addition to prospective scope."""
-    validate_definition(recipe, registration, owner, growth=growth, protocol=protocol, pool_ids=pool_ids)
+    validate_definition(recipe, registration, owner, growth=growth, protocol=protocol, pool_ids=pool_ids, evaluation=evaluation)
     require(isinstance(authority, dict) and authority.get("read_run_id") == registration["read_id"],
             "exact panel root READ authority is required")
     sha(authority.get("ledger_row_sha256"))
@@ -159,24 +191,38 @@ def validate_registration(recipe, registration, owner, authority, *, growth, pro
 
 def _require_complete(d):
     scope = require_panel_scope(d)
-    require(d.get("schema") == SCHEMA, "complete panel evidence schema differs")
+    successor = scope.get("evaluation_schema") == SUCCESSOR_REGISTRATION
+    members = SUCCESSOR_MEMBERS if successor else MEMBERS
     feedback = d.get("feedback", {})
     groups, sources = feedback.get("groups", []), feedback.get("sources", [])
+    if successor:
+        require(content_hash(d.get("successor_custody", {})) == scope["root_custody_sha256"] == scope["custody_sha256"],
+            "successor evidence custody differs")
+        validate_successor_custody(d["successor_custody"], round_index=scope["proposal_round"], rows=scope["rows"])
+        bindings = d.get("successor_bindings", {})
+        require(set(bindings) == members
+            and content_hash(bindings) == scope["root_bindings_sha256"] == scope["bindings_sha256"],
+            "successor evidence member bindings differ")
+        require(all(all(s[k] == bindings[s["candidate_id"]][k] for k in ("run_id", "attempt_id", "config_hash"))
+            for s in sources), "successor evidence source bindings differ")
+        from ..rails.system_search_measurement import measured_rows
+        measured_rows(d, sorted(members), bindings, profile=d.get("measurement_profile"))
+    require(d.get("schema") == SCHEMA, "complete panel evidence schema differs")
     require(
-        set(d.get("summaries", {})) == MEMBERS
-        and len(sources) == 8
-        and {s["candidate_id"] for s in sources} == MEMBERS,
-        "all eight complete panel summaries and sources are required",
+        set(d.get("summaries", {})) == members
+        and len(sources) == len(members)
+        and {s["candidate_id"] for s in sources} == members,
+        "all admitted complete panel summaries and sources are required",
     )
     require(
         all(
             s.get("run_id")
-            == member_run_id(scope["proposal_round"], scope["rows"], s["candidate_id"])
+            == member_run_id(scope["proposal_round"], scope["rows"], s["candidate_id"], successor=successor)
             and s.get("attempt_id")
             and s.get("config_hash")
             for s in sources
         )
-        and len({s["attempt_id"] for s in sources}) == 8,
+        and len({s["attempt_id"] for s in sources}) == len(members),
         "complete panel source identity differs",
     )
     ids = [g["sample_id"] for g in groups]
@@ -185,8 +231,8 @@ def _require_complete(d):
         and all(isinstance(s, str) and s.startswith("slurp:train:") for s in ids)
         and content_hash(ids) == scope["prefix_sample_ids_sha256"]
         and all(
-            len(g["members"]) == 8
-            and {m["candidate_id"] for m in g["members"]} == MEMBERS
+            len(g["members"]) == len(members)
+            and {m["candidate_id"] for m in g["members"]} == members
             for g in groups
         ),
         "panel feedback is incomplete or mixes cohorts",
@@ -206,6 +252,17 @@ class CompletePanelEvidence:
     def learning_projection(self, *, amendment, reference):
         d = self.as_json()
         scope = _require_complete(d)
+        successor = scope.get("evaluation_schema") == SUCCESSOR_REGISTRATION
+        if successor:
+            require(amendment.get("decision_id") == 222 and amendment.get("status") == "approved"
+                and amendment.get("family_id") == "pilot20-owner220"
+                and amendment.get("allow_learning_feedback") is True and amendment.get("recipient_branch") == "L"
+                and amendment.get("complete_family_required") is True and amendment.get("formal_adoption") is False
+                and content_hash(amendment) == scope["learning_owner_sha256"],
+                "exact successor owner222 learning allowance is required")
+            return _learning_projection(d, amendment=amendment, reference=reference,
+                interpretation="Exploratory complete successor family; own L trajectories only, no formal adoption.",
+                members=SUCCESSOR_MEMBERS)
         require(
             amendment.get("decision_id") == 223
             and amendment.get("status") == "approved"
@@ -226,7 +283,7 @@ class CompletePanelEvidence:
 
 
 def read_evidence(
-    bindings, *, recipe, registration, owner, authority, growth, protocol, pool_ids
+    bindings, *, recipe, registration, owner, authority, growth, protocol, pool_ids, evaluation=None
 ):
     validate_registration(
         recipe,
@@ -236,7 +293,12 @@ def read_evidence(
         growth=growth,
         protocol=protocol,
         pool_ids=pool_ids,
+        evaluation=evaluation,
     )
+    if registration.get("schema") == SUCCESSOR_REGISTRATION:
+        require(len(bindings) == len(SUCCESSOR_MEMBERS)
+            and {b.get("candidate_id") for b in bindings} == SUCCESSOR_MEMBERS,
+            "successor READ requires every admitted source exactly once before task results")
     job_pins = _job_metadata(bindings)
     result = _read_complete_evidence(
         bindings,
@@ -251,14 +313,21 @@ def read_evidence(
         _job_metadata(bindings) == job_pins,
         "panel official job metadata changed during read",
     )
-    return CompletePanelEvidence(
+    evidence = CompletePanelEvidence(
         canonical(
             {
                 **result.as_json(),
-                "panel_scope": scope_record(registration, owner, growth),
+                "panel_scope": scope_record(registration, owner, growth, evaluation=evaluation),
+                **({"successor_custody": {k: registration[k] for k in ("allocations", "exclusions")}}
+                    if registration.get("schema") == SUCCESSOR_REGISTRATION else {}),
+                **({"successor_bindings": registration["member_bindings"]}
+                    if registration.get("schema") == SUCCESSOR_REGISTRATION else {}),
             }
         )
     )
+    if registration.get("schema") == SUCCESSOR_REGISTRATION:
+        _require_complete(evidence.as_json())
+    return evidence
 
 
 def analyze(evidence, *, recipe, registration, roster, supplement):
@@ -280,7 +349,7 @@ def analyze(evidence, *, recipe, registration, roster, supplement):
     )
     bindings = registration["member_bindings"]
     require(
-        set(bindings) == MEMBERS
+        set(bindings) == (SUCCESSOR_MEMBERS if scope.get("evaluation_schema") == SUCCESSOR_REGISTRATION else MEMBERS)
         and all(
             all(
                 s[k] == bindings[s["candidate_id"]][k]
@@ -309,19 +378,20 @@ def analyze(evidence, *, recipe, registration, roster, supplement):
         "One reused learning sequence does not establish stable recursive improvement or independent "
         "generalization. Root reviews before scaling; no proposer receives this combined report.",
     )
-    _attach_answer_changes(report, d, recipe["sample_ids"], MEMBERS)
+    _attach_answer_changes(report, d, recipe["sample_ids"], set(bindings))
     return report
 
 
-def load_scope(registration, owner, supplement, *, repo_root):
+def load_scope(registration, owner, supplement, *, repo_root, recipe=None):
     """Resolve the already registered proposal protocol and immutable pool."""
     from ..rails.system_optimization import load_optimization_panel
 
     protocol = json.loads(_read_pin(supplement["proposal_protocol"], repo_root))
     growth_pin = supplement["growth_owner_decision"]
     growth = json.loads(_read_pin(growth_pin, repo_root))
+    successor = registration.get("schema") == SUCCESSOR_REGISTRATION
     require(
-        protocol.get("allocation_extension", {}).get("owner") == growth_pin,
+        successor or protocol.get("allocation_extension", {}).get("owner") == growth_pin,
         "panel must use the proposal allocation's exact growth authority",
     )
     resolved = load_optimization_panel(
@@ -335,7 +405,25 @@ def load_scope(registration, owner, supplement, *, repo_root):
         json.loads(_read_pin(plan["owner"], repo_root)) == owner,
         "panel analysis owner differs from the proposal's fixed pool",
     )
-    return {"growth": growth, "protocol": protocol, "pool_ids": pool}
+    result = {"growth": growth, "protocol": protocol, "pool_ids": pool}
+    if successor:
+        if recipe is not None:
+            source = json.loads(_read_pin(recipe["successor_panel_scope"], repo_root))
+            fields = {"owner_decision", "proposal_protocol", "growth_owner_decision",
+                      "evaluation_authority", "learning_owner_decision"}
+            require(set(source) == fields | {"schema"}
+                and source["schema"] == "saea-successor-panel-source-scope-v1"
+                and all(source[k] == supplement[k] for k in fields),
+                "successor launch and READ source scopes differ")
+        pin = supplement.get("evaluation_authority")
+        require(pin == registration["evaluation_authority"], "successor evaluation authority pin differs")
+        evaluation, expected_growth = load_successor_panel_authority(pin, protocol=protocol,
+            pool_ids=pool, rows=registration["rows_per_member"], repo_root=repo_root)
+        require(growth == expected_growth and growth_pin == evaluation["authority"]["growth_owner_decision"]
+            and supplement.get("learning_owner_decision") == evaluation["authority"]["learning_owner_decision"],
+            "successor growth and learning authority pins differ")
+        result["evaluation"] = evaluation
+    return result
 
 
 def _job_metadata(bindings):

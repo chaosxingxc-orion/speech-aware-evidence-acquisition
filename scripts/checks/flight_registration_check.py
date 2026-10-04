@@ -1476,7 +1476,17 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
             require(not fixed and "pilot_registration" not in recipe,
                     "ambiguous legacy and panel registrations")
             registration = json.loads(_read_pin(recipe["system_panel_registration"], repo_root))
-            require(registration.get("schema") == "saea-fixed400-system-panel-registration-v1"
+            from speech_aware_evidence_acquisition.rails.system_optimization import SUCCESSOR_REGISTRATION
+            successor = registration.get("schema") == SUCCESSOR_REGISTRATION
+            if successor:
+                from speech_aware_evidence_acquisition.analysis import system_text_panel
+                supplement = json.loads(_read_pin(recipe["successor_panel_scope"], repo_root))
+                owner = json.loads(_read_pin(supplement["owner_decision"], repo_root))
+                require(supplement.get("schema") == "saea-successor-panel-source-scope-v1",
+                        "successor prelaunch needs its complete analysis scope")
+                scope = system_text_panel.load_scope(registration, owner, supplement, repo_root=repo_root, recipe=recipe)
+                system_text_panel.validate_definition(recipe, registration, owner, **scope)
+            require(registration.get("schema") in {"saea-fixed400-system-panel-registration-v1", SUCCESSOR_REGISTRATION}
                     and registration.get("family_id") == family
                     and registration.get("registration_sha256") == content_hash(
                         {k: v for k, v in registration.items() if k != "registration_sha256"}),
@@ -1502,7 +1512,7 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
         verify_system_text_binding(effective, binding, repo_root=repo_root, data_root=data_root)
         # Compare prospective measurement custody before spending model contacts.
         profile = recipe.get("measurement_profile")
-        require(registration.get("measurement_profile") == profile
+        require((not (panel or fixed) or registration.get("measurement_profile") == profile)
                 and effective.get("system_search_measurement") == profile,
                 "registered measurement profile differs from runtime or read recipe")
         if profile is not None:

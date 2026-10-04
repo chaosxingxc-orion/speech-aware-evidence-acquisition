@@ -72,7 +72,7 @@ class CompleteSystemPilotEvidence:
         )
 
 
-def _learning_projection(d, *, amendment, reference, interpretation):
+def _learning_projection(d, *, amendment, reference, interpretation, members=None):
     """Project a separately qualified full family; callers enforce exact allowance."""
     require(
         isinstance(reference, CompleteSystemFeedback),
@@ -85,13 +85,18 @@ def _learning_projection(d, *, amendment, reference, interpretation):
         "preserve the original TRAIN reference F1",
     )
     family_hash = content_hash(d)
-    own = sorted(c for c in MEMBERS if c.startswith("L-"))
+    from ..rails.system_optimization import SUCCESSOR_MEMBERS, SUCCESSOR_REGISTRATION
+    members = MEMBERS if members is None else members
+    require(members == MEMBERS or (members == SUCCESSOR_MEMBERS
+        and d.get("panel_scope", {}).get("evaluation_schema") == SUCCESSOR_REGISTRATION),
+        "learning projection cannot select an arbitrary member subset")
+    own = sorted(c for c in members if c.startswith("L-"))
     d["schema"] = "saea-exploratory-system-feedback-v1"
     d["reference"] = frozen
     for group in d["feedback"]["groups"]:
         require(
-            len(group["members"]) == 8
-            and {m["candidate_id"] for m in group["members"]} == MEMBERS,
+            len(group["members"]) == len(members)
+            and {m["candidate_id"] for m in group["members"]} == members,
             "all original trajectories must remain in the root pilot evidence",
         )
         group["members"] = [m for m in group["members"] if m["candidate_id"] in own]
@@ -113,7 +118,7 @@ def _learning_projection(d, *, amendment, reference, interpretation):
         s for s in d["feedback"]["sources"] if s["candidate_id"] in own
     ]
     require(
-        len(d["feedback"]["sources"]) == 4
+        len(d["feedback"]["sources"]) == len(own)
         and {s["candidate_id"] for s in d["feedback"]["sources"]} == set(own),
         "all four learning source indexes are required",
     )
@@ -124,6 +129,12 @@ def _learning_projection(d, *, amendment, reference, interpretation):
         formal_adoption=False,
         interpretation=interpretation,
     )
+    if members == SUCCESSOR_MEMBERS:
+        d["successor_custody"] = {k: {cid: value for cid, value in values.items() if cid.startswith("L-")}
+            for k, values in d["successor_custody"].items()}
+        d["panel_scope"]["custody_sha256"] = content_hash(d["successor_custody"])
+        d["successor_bindings"] = {cid: b for cid, b in d["successor_bindings"].items() if cid in own}
+        d["panel_scope"]["bindings_sha256"] = content_hash(d["successor_bindings"])
     return CompleteSystemFeedback(canonical(d))
 
 

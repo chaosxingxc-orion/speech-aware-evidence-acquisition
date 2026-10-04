@@ -149,8 +149,9 @@ def read_pilot_learning(protocol, *, round_index, family_path, repo_root, archiv
     reader = read_pilot_evidence
     if is_panel:
         from speech_aware_evidence_acquisition.analysis import system_text_panel as measured_panel
-        kwargs = measured_panel.load_scope(registration, owner, supplement, repo_root=repo_root)
-        require(binding["owner_learning"] == supplement["growth_owner_decision"]
+        kwargs = measured_panel.load_scope(registration, owner, supplement, repo_root=repo_root, recipe=recipe)
+        expected_learning = supplement["learning_owner_decision"] if "evaluation" in kwargs else supplement["growth_owner_decision"]
+        require(binding["owner_learning"] == expected_learning
                 and round_index > registration["proposal_round"]
                 and kwargs["pool_ids"] == panel[1],
                 "panel feedback needs its own approved allowance and the same pool in a later round")
@@ -171,7 +172,7 @@ def read_pilot_learning(protocol, *, round_index, family_path, repo_root, archiv
         for source in (spec["read_registration"], binding["analysis_supplement"],
                        supplement["owner_decision"], binding["owner_learning"], registration_pin):
             _read_pin(source, repo_root)
-        require(measured_panel.load_scope(registration, owner, supplement, repo_root=repo_root) == kwargs
+        require(measured_panel.load_scope(registration, owner, supplement, repo_root=repo_root, recipe=recipe) == kwargs
                 and load_optimization_panel(protocol, f"update-{round_index}", repo_root=repo_root) == panel,
                 "fixed panel scope changed during export")
         _absolute_json(binding["reference_family"])
@@ -265,6 +266,11 @@ def main(argv=None):
     panel_cmd.add_argument("--rows", type=int, choices=(20, 50, 100, 200, 400), required=True)
     for option in ("protocol", "member-bindings", "root-review", "repo-root", "data-root"):
         panel_cmd.add_argument("--" + option, type=Path, required=True)
+    successor_cmd = commands.add_parser("freeze-successor-panel", help="Freeze exact six admitted members with all spent custody; no dispatch")
+    successor_cmd.add_argument("--round", type=int, required=True)
+    successor_cmd.add_argument("--rows", type=int, choices=(20, 50, 100, 200), required=True)
+    for option in ("protocol", "member-bindings", "root-review", "repo-root", "data-root", "evaluation-authority"):
+        successor_cmd.add_argument("--" + option, type=Path, required=True)
     selection_cmd = commands.add_parser("freeze-selection", help="Bind historical nominees before the common cohort; no dispatch")
     selection_cmd.add_argument("--protocol", type=Path, required=True)
     selection_cmd.add_argument("--update-family", type=Path, action="append", required=True,
@@ -469,11 +475,12 @@ def main(argv=None):
         print(json.dumps({"registration_sha256": registration["registration_sha256"],
             "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],
             "contacts_added": 0, "runtime_admission": "separate-required"}))
-    elif args.command == "freeze-panel":
+    elif args.command in {"freeze-panel", "freeze-successor-panel"}:
         from speech_aware_evidence_acquisition.rails.system_search_stage import freeze_optimization_panel
         frozen = freeze_optimization_panel(archive, protocol=read(args.protocol), round_index=args.round,
             rows=args.rows, member_bindings=read(args.member_bindings), root_review=read(args.root_review),
-            repo_root=args.repo_root, data_root=args.data_root)
+            repo_root=args.repo_root, data_root=args.data_root,
+            **({"evaluation_authority": read(args.evaluation_authority)} if args.command == "freeze-successor-panel" else {}))
         registration = frozen["registration"]
         print(json.dumps({"registration_sha256": registration["registration_sha256"],
             "members": len(registration["expected_members"]), "trajectory_cap": registration["trajectory_cap"],

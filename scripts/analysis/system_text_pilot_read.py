@@ -173,9 +173,10 @@ def run(
         require(is_context, "recovery authority belongs only to its context family")
         recovery_kwargs = {"recovery": json.loads(_read_pin(recovery_pin, repo_root))}
     if is_panel:
-        recovery_kwargs = panel.load_scope(registration, owner, supplement, repo_root=repo_root)
+        recovery_kwargs = panel.load_scope(registration, owner, supplement, repo_root=repo_root, recipe=recipe)
         if learning_amendment_pin is not None:
-            require(learning_amendment_pin == supplement["growth_owner_decision"],
+            expected_learning = supplement["learning_owner_decision"] if "evaluation" in recovery_kwargs else supplement["growth_owner_decision"]
+            require(learning_amendment_pin == expected_learning,
                     "panel learning export must use its exact approved growth authority")
     validate(recipe, registration, owner, authority, **recovery_kwargs)
     reference_pin = pin(reference_family_path) if is_panel and reference_family_path else None
@@ -284,7 +285,7 @@ def run(
     if is_context:
         _read_pin(owner["fixed_roster"], repo_root)
     if is_panel:
-        require(panel.load_scope(registration, owner, supplement, repo_root=repo_root) == recovery_kwargs,
+        require(panel.load_scope(registration, owner, supplement, repo_root=repo_root, recipe=recipe) == recovery_kwargs,
                 "panel scope changed during read")
     for source in (recipe["analysis_roster"], supplement["stratum_metadata"]):
         _read_pin(source, repo_root)
@@ -304,7 +305,7 @@ def run(
             require(pin(reference_family_path) == reference_pin, "frozen reference family changed during export")
         report["learning_projection"] = {
             "owner_decision": learning_amendment_pin,
-            "scope": f"All four L members only; all {recipe['required_rows_per_member']} cases; no B outcomes; not formal adoption.",
+            "scope": f"All {len(learning.as_json()['summaries'])} admitted L members only; all {recipe['required_rows_per_member']} cases; no B outcomes; not formal adoption.",
         }
     report["read_at_utc"] = datetime.now(timezone.utc).isoformat()
     report["source_pins"] = {

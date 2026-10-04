@@ -212,10 +212,14 @@ def test_new_panel_prelaunch_requires_exact_member_and_effective_role_bytes(
         fragment["system_search_measurement"] = copy.deepcopy(p)
         compiled.update(serving_slots=4, serving_slot_tokens=24576,
                         server_args=["-np", "4", "-c", "98304"], decoding_params={"max_tokens": 512})
-        if fault == "measurement-missing-runtime": del fragment["system_search_measurement"]
-        elif fault == "measurement-wrong-recipe": w.recipe["measurement_profile"]["queue_depth"] = 16
-        elif fault == "measurement-wrong-registration": registration["measurement_profile"] = {**p, "queue_depth": 16}
-        elif fault == "measurement-wrong-slots": compiled["serving_slots"] = 8
+        if fault == "measurement-missing-runtime":
+            del fragment["system_search_measurement"]
+        elif fault == "measurement-wrong-recipe":
+            w.recipe["measurement_profile"]["queue_depth"] = 16
+        elif fault == "measurement-wrong-registration":
+            registration["measurement_profile"] = {**p, "queue_depth": 16}
+        elif fault == "measurement-wrong-slots":
+            compiled["serving_slots"] = 8
         _write(base_path, compiled)
     registration["registration_sha256"] = content_hash(registration)
     if fault == "changed-registration":
@@ -243,3 +247,34 @@ def test_new_panel_prelaunch_requires_exact_member_and_effective_role_bytes(
         assert "system-text-policy-binding" in _kinds(result)
     else:
         assert "system-text-policy-binding" not in _kinds(result), result
+
+
+@pytest.mark.parametrize("fault", [None, "runtime-missing", "recipe-conflict", "slots-conflict"])
+def test_standalone_engineering_prelaunch_binds_its_measured_profile(bound, tmp_path, fault):
+    import shutil
+    from test_system_search_measurement import profile
+    compiled, binding, repo, data, _, _ = bound
+    w = World(tmp_path / "engineering-measured").build()
+    add_runtime_fragments(w)
+    shutil.copytree(repo / "configs", w.repo / "configs", dirs_exist_ok=True)
+    shutil.copytree(repo / "docs", w.repo / "docs", dirs_exist_ok=True)
+    shutil.copytree(data / "search", w.data / "search")
+    path = w.repo / "configs/experiment" / (EXPERIMENT + ".json")
+    fragment = json.loads(path.read_text())
+    cell = fragment["cells"][0]
+    cell["system_text_policy_binding"] = binding
+    fragment["system_search_measurement"] = profile()
+    compiled.update(serving_slots=4, serving_slot_tokens=24576,
+        server_args=["-np", "4", "-c", "98304"], decoding_params={"max_tokens": 512})
+    w.recipe["measurement_profile"] = profile()
+    if fault == "runtime-missing":
+        fragment.pop("system_search_measurement")
+    elif fault == "recipe-conflict":
+        w.recipe["measurement_profile"]["queue_depth"] = 16
+    elif fault == "slots-conflict":
+        compiled["serving_slots"] = 8
+    _write(w.repo / "configs/baseline" / (cell["baseline_fragment"] + ".json"), compiled)
+    _write(path, fragment)
+    _write(w.repo / "docs/readiness" / PACKAGE / "analysis-recipe-v1.json", w.recipe)
+    result = w.run(cells=[EXPERIMENT])
+    assert ("system-text-policy-binding" in _kinds(result)) is (fault is not None), result

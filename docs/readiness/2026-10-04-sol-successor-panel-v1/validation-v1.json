@@ -1,0 +1,64 @@
+{
+  "schema": "saea-sol-successor-panel-engineering-validation-v1",
+  "base_commit": "c9a473d61",
+  "integration_base_commit": "08290ed62",
+  "worktree": "/home/chao/saea-worktrees/codex-sol-successor-panel",
+  "execution": "WSL Ubuntu-24.04; PYTHONDONTWRITEBYTECODE=1; PYTHONPATH=src; Python -B",
+  "contacts_added": {"model": 0, "gpu": 0, "scorer": 0},
+  "actual_scientific_results_read": false,
+  "dispatch_or_queue_mutations": false,
+  "frozen_artifacts_modified": false,
+  "tests": {
+    "passed": 355,
+    "failed": 0,
+    "seconds": 48.14,
+    "suites": [
+      "tests/unit/test_system_successor_panel.py",
+      "tests/unit/test_system_text_panel_read.py",
+      "tests/unit/test_system_optimization.py",
+      "tests/unit/test_system_optimization_stage.py",
+      "tests/unit/test_system_text_policy_binding.py",
+      "tests/unit/test_system_search_measurement.py",
+      "tests/unit/test_system_text_pilot_read.py",
+      "tests/unit/test_system_text_search_cli.py"
+    ],
+    "new_successor_tests": 54,
+    "red_evidence": {
+      "omitted_source_entry": "1 failed, 48 passed: five source bindings reached task-result preflight; exact-six early guard then passed",
+      "standalone_measurement_entry": "valid registered standalone engineering profile refused because a nonexistent panel registration was compared; corrected recipe/effective comparison passed"
+    }
+  },
+  "coverage": {
+    "method": "Coverage.py branch run over the eight suites; executable lines added in git diff --unified=0 intersected with coverage executed/missing lines; arcs counted where source is a changed statement",
+    "changed_executable_statements": 179,
+    "covered_changed_statements": 179,
+    "changed_statement_percent": 100.0,
+    "changed_branch_arcs": 50,
+    "covered_changed_branch_arcs": 49,
+    "changed_branch_percent": 98.0,
+    "complete_selected_module_percent": 64,
+    "complete_module_note": "The focused suites leave unrelated legacy stage and prelaunch checks unexercised; this aggregate is distinct from changed-code coverage.",
+    "panel_reader_module_percent": 99,
+    "shared_pilot_module_percent": 100,
+    "optimization_module_percent": 87,
+    "changed_prelaunch_statements": "11/11",
+    "changed_prelaunch_branches": "2/2"
+  },
+  "offline_gates": {
+    "engineering_base_check": "PASS",
+    "harness_admission_check": "PASS (19 modules, 11 barred from default plans, 2 default plans)",
+    "ruff_changed_python_files": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "real_file_compatibility": {
+    "repo_root": "/home/chao/saea-worktrees/codex-cache-cost-audit",
+    "authority": "docs/readiness/2026-10-04-round9-successor-evaluation-v1/evaluation-authority-v1.json",
+    "authority_file_sha256": "08211ea11905761a56fd63cebf9386c041fe410bb0d725ada6f3c84304744df7",
+    "protocol": "docs/readiness/2026-10-04-slurp-four-node-proposer-round9-v1/protocol-proposals-v1.json",
+    "protocol_content_sha256": "17736da97999a03436f3bc139df4ef109a5f74cdd446df3ac68416401b062744",
+    "method": "load_optimization_panel resolves original pinned pool; load_successor_panel_authority validates original protocol, owner227, separate growth223 and feedback222",
+    "rows_passed": [20, 50, 100, 200],
+    "runtime_or_read_admission_granted": false
+  },
+  "handoff": "Root reviews and integrates serially. Family freeze, immutable scope/READ supplement, countersigned exposure and independent runtime gates remain necessary. No automatic scale or400 path exists in the successor CLI."
+}

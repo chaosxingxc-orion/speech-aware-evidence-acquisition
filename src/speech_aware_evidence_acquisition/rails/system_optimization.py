@@ -25,6 +25,10 @@ NODE_AUTHORITY = "docs/receipts/owner/2026-10-04-node-optimization-space.json"
 CONTEXT_SCOPES = (CONTEXT_SCOPE_SCHEMA, NODE_SCOPE_SCHEMA)
 PILOT = "pilot20-owner220"
 LEARNING_MEMBERS = {"L-parent", "L-parent-aa", "L-candidate-1", "L-candidate-2"}
+SUCCESSOR_MEMBERS = {f"{b}-{m}" for b in ("L", "B") for m in ("parent", "parent-aa", "candidate-2")}
+SUCCESSOR_EXCLUDED = {"L-candidate-1", "B-candidate-1"}
+SUCCESSOR_REGISTRATION = "saea-successor-system-panel-registration-v1"
+SUCCESSOR_SIZES = (20, 50, 100, 200)
 SELECTION_SCHEMA = "saea-exploratory-learning-selection-v1"
 BOOTSTRAP_SELECTION_SCHEMA = "saea-historical-seed-selection-v1"
 
@@ -221,20 +225,25 @@ def require_historical_bootstrap(value, *, feedback, parent, own, round_index, p
 def exploratory_selection(feedback, *, registration, binding, protocol, parents):
     """Record the root's provisional parent without posing as a formal retention."""
     d = feedback.as_json()
+    learning_members = learning_members_for_document(d)
+    if learning_members != LEARNING_MEMBERS:
+        require(registration.get("schema") == SUCCESSOR_REGISTRATION
+            and registration.get("registration_sha256") == d["registration_sha256"],
+            "successor retention must bind its exact qualified registration")
     own = {
         cid: v
         for cid, v in registration["member_bindings"].items()
-        if cid in LEARNING_MEMBERS
+        if cid in learning_members
     }
     active = [binding["parent_id"], *binding["complementary_ids"]]
-    bootstrap = protocol.get("historical_bootstrap")
+    bootstrap = protocol.get("historical_bootstrap") if learning_members == LEARNING_MEMBERS else None
     if bootstrap is not None:
         require(len(parents) == 1 and active == [content_hash(parents[0])],
                 "historical bootstrap retains only the explicit transitioned seed")
         require_historical_bootstrap(bootstrap, feedback=d, parent=parents[0], own=own,
                                      round_index=binding["next_round"], protocol=protocol)
     require(
-        set(own) == LEARNING_MEMBERS
+        set(own) == learning_members
         and 1 <= len(active) <= 2
         and len(set(active)) == len(active)
         and (bootstrap is not None or set(active) <= {v["bundle_id"] for v in own.values()}),
@@ -271,7 +280,8 @@ def exploratory_selection(feedback, *, registration, binding, protocol, parents)
     require(d.get("measurement_profile") == profile, "exploratory measurement profile differs")
     if profile is not None:
         from .system_search_measurement import measured_rows, measured_frontier
-        measured = measured_rows(d, ["L-parent", "L-candidate-1", "L-candidate-2"], own, profile=profile)
+        measured = measured_rows(d, [c for c in ("L-parent", "L-candidate-1", "L-candidate-2")
+            if c in learning_members], own, profile=profile)
         unique, repeats, seen = [], [], set()
         for row in measured:
             (repeats if row["bundle_id"] in seen else unique).append(row)
@@ -290,6 +300,10 @@ def exploratory_selection(feedback, *, registration, binding, protocol, parents)
 def require_exploratory_packet(packet, *, protocol=None):
     """Check the small-family commitment at packaging and again before transport."""
     d, s = packet.get("feedback", {}), packet.get("selection", {})
+    learning_members = learning_members_for_document(d)
+    if learning_members != LEARNING_MEMBERS:
+        require(s.get("member_bindings") == d["successor_bindings"],
+                "successor selection differs from the qualified own member bindings")
     bootstrap = s.get("schema") == BOOTSTRAP_SELECTION_SCHEMA
     if bootstrap:
         require(not packet.get("complementary_policies")
@@ -308,7 +322,8 @@ def require_exploratory_packet(packet, *, protocol=None):
         rows, read_id = scope["rows"], scope["read_id"]
         require(type(packet.get("round")) is int and packet["round"] > scope["proposal_round"],
                 "a panel can inform only a later prospectively allocated round")
-        require(d.get("learning_allowance_sha256") == scope["growth_owner_sha256"],
+        learning_owner_key = "learning_owner_sha256" if scope.get("evaluation_schema") == SUCCESSOR_REGISTRATION else "growth_owner_sha256"
+        require(d.get("learning_allowance_sha256") == scope[learning_owner_key],
                 "panel learning allowance differs")
         reference = d.get("reference", {})
         require(len(reference.get("sample_ids", [])) >= 400
@@ -324,10 +339,10 @@ def require_exploratory_packet(packet, *, protocol=None):
         "exact exploratory learning authority required",
     )
     require(
-        set(d.get("summaries", {})) == LEARNING_MEMBERS
-        and set(d["feedback"]["candidate_ids"]) == LEARNING_MEMBERS
-        and len(d["feedback"]["sources"]) == 4
-        and {v["candidate_id"] for v in d["feedback"]["sources"]} == LEARNING_MEMBERS,
+        set(d.get("summaries", {})) == learning_members
+        and set(d["feedback"]["candidate_ids"]) == learning_members
+        and len(d["feedback"]["sources"]) == len(learning_members)
+        and {v["candidate_id"] for v in d["feedback"]["sources"]} == learning_members,
         "exploratory feedback must contain every L member and no blind evidence",
     )
     groups = d["feedback"]["groups"]
@@ -335,8 +350,8 @@ def require_exploratory_packet(packet, *, protocol=None):
         len(groups) == len({g["sample_id"] for g in groups}) == rows
         and all(
             g["sample_id"].startswith("slurp:train:")
-            and len(g["members"]) == 4
-            and {m["candidate_id"] for m in g["members"]} == LEARNING_MEMBERS
+            and len(g["members"]) == len(learning_members)
+            and {m["candidate_id"] for m in g["members"]} == learning_members
             for g in groups
         ),
         "exploratory feedback must keep all registered complete L trajectories",
@@ -355,14 +370,15 @@ def require_exploratory_packet(packet, *, protocol=None):
         and s.get("feedback_sha256") == d.get("read_gate_family_sha256")
         and s.get("learning_feedback_sha256") == content_hash(d)
         and s.get("active_ids", [None])[0] == packet.get("parent_bundle_id")
-        and set(s.get("member_bindings", {})) == LEARNING_MEMBERS,
+        and set(s.get("member_bindings", {})) == learning_members,
         "exploratory selection binding differs",
     )
     if family != PILOT:
         require(all(
             all(source.get(k) == s["member_bindings"][source["candidate_id"]].get(k)
                 for k in ("run_id", "attempt_id", "config_hash"))
-            and source["run_id"] == panel_member_run_id(scope["proposal_round"], rows, source["candidate_id"])
+            and source["run_id"] == panel_member_run_id(scope["proposal_round"], rows, source["candidate_id"],
+                successor=scope.get("evaluation_schema") == SUCCESSOR_REGISTRATION)
             for source in d["feedback"]["sources"]),
             "panel learning sources differ from the observed selection")
     require(
@@ -440,34 +456,80 @@ def require_optimization_scope(packet, *, protocol=None):
 PANEL_SIZES = (20, 50, 100, 200, 400)
 
 
-def panel_identities(round_index, rows):
+def panel_identities(round_index, rows, *, successor=False):
     """Reserve fresh comparison/read identities without granting execution."""
     require(type(round_index) is int and round_index >= 4,
             "fixed-pool panel requires an extended proposal round")
     require(type(rows) is int and rows in PANEL_SIZES,
             "fixed-pool panel size is outside the reviewed ladder")
+    if successor:
+        require(rows in SUCCESSOR_SIZES, "successor panel stops before400")
+        return (f"fixed400-successor-round{round_index}-n{rows}-v1",
+                f"SAEA-SLURP-SYSTEM-TEXT-SUCCESSOR-FIXED400-ROUND{round_index}-N{rows}-READ-V1")
     return (
         f"fixed400-text-round{round_index}-n{rows}-v1",
         f"SAEA-SLURP-SYSTEM-TEXT-FIXED400-ROUND{round_index}-N{rows}-READ-V1",
     )
 
 
-def panel_member_run_id(round_index, rows, candidate_id):
+def panel_member_run_id(round_index, rows, candidate_id, *, successor=False):
     """Keep every candidate, parent and A/A separately bound to its panel."""
-    _, read_id = panel_identities(round_index, rows)
+    _, read_id = panel_identities(round_index, rows, successor=successor)
     require(candidate_id in {f"{b}-{m}" for b in ("L", "B")
             for m in ("parent", "parent-aa", "candidate-1", "candidate-2")},
             "unknown fixed-pool panel member")
     return read_id.removesuffix("READ-V1") + candidate_id.upper() + "-V1"
 
 
+def load_successor_panel_authority(pin, *, protocol, pool_ids, rows, repo_root):
+    """Resolve explicit owner227 evaluation scope without changing proposal custody."""
+    from .system_search_successor import OWNER227, SCHEMAS
+    d = json.loads(_read_pin(pin, repo_root))
+    require(set(d) == {"schema", "reviewer", "status", "owner227", "growth_owner_decision",
+        "learning_owner_decision", "proposal_protocol_sha256", "proposal_round", "pool_sample_ids_sha256",
+        "admitted_members", "excluded_members", "progressive_sizes", "new_proposal_opportunities",
+        "automatic_expansion", "independent_validation", "formal_adoption"}, "successor evaluation authority fields differ")
+    root = json.loads(_read_pin(d["owner227"], repo_root))
+    growth = json.loads(_read_pin(d["growth_owner_decision"], repo_root))
+    learning = json.loads(_read_pin(d["learning_owner_decision"], repo_root))
+    extension = protocol.get("allocation_extension", {})
+    require(d["schema"] == "saea-owner227-successor-panel-evaluation-v1"
+        and d["status"] == "approved" and d["reviewer"] == "ChatGPT root"
+        and d["owner227"].get("relpath") == OWNER227 and d["owner227"] == extension.get("owner")
+        and extension.get("schema") in SCHEMAS and root.get("decision_id") == 227 and root.get("status") == "approved"
+        and set(SUCCESSOR_SIZES) <= set(root.get("authorized_rows_per_member", []))
+        and d["growth_owner_decision"] != d["owner227"]
+        and growth.get("decision_id") == 223 and growth.get("status") == "approved"
+        and growth.get("stage_ladder") == list(PANEL_SIZES)
+        and learning.get("decision_id") == 222 and learning.get("status") == "approved"
+        and learning.get("family_id") == PILOT and learning.get("allow_learning_feedback") is True
+        and learning.get("recipient_branch") == "L" and learning.get("complete_family_required") is True
+        and learning.get("formal_adoption") is False,
+        "successor requires separate pinned owner227, growth223 and learning222 authority")
+    require(d["proposal_protocol_sha256"] == content_hash(protocol)
+        and type(d["proposal_round"]) is int and d["proposal_round"] == protocol.get("updates") == extension.get("round")
+        and d["pool_sample_ids_sha256"] == content_hash(pool_ids)
+        and d["admitted_members"] == sorted(SUCCESSOR_MEMBERS)
+        and d["excluded_members"] == sorted(SUCCESSOR_EXCLUDED)
+        and d["progressive_sizes"] == list(SUCCESSOR_SIZES) and rows in SUCCESSOR_SIZES
+        and d["new_proposal_opportunities"] == 0 and d["automatic_expansion"] is False
+        and d["independent_validation"] is False and d["formal_adoption"] is False,
+        "successor authority differs from exact protocol, pool, membership or bounded ladder")
+    return {"authority": d, "owner227": root, "learning": learning}, growth
+
+
 def require_panel_scope(document):
     """Validate shared source commitments without exporting blind identities."""
     scope = document.get("panel_scope", {})
-    family, read_id = panel_identities(scope.get("proposal_round"), scope.get("rows"))
-    require(set(scope) == {"family_id", "proposal_round", "rows", "read_id",
+    successor = scope.get("evaluation_schema") == SUCCESSOR_REGISTRATION
+    family, read_id = panel_identities(scope.get("proposal_round"), scope.get("rows"), successor=successor)
+    fields = {"family_id", "proposal_round", "rows", "read_id",
             "registration_sha256", "pool_sample_ids_sha256", "prefix_sample_ids_sha256",
-            "proposal_protocol_sha256", "pool_owner_sha256", "growth_owner_sha256"},
+            "proposal_protocol_sha256", "pool_owner_sha256", "growth_owner_sha256"}
+    if successor:
+        fields |= {"evaluation_schema", "evaluation_authority_sha256", "learning_owner_sha256",
+                   "root_custody_sha256", "custody_sha256", "root_bindings_sha256", "bindings_sha256"}
+    require(set(scope) == fields,
             "panel scope commitments differ")
     for key, value in scope.items():
         if key.endswith("sha256"):
@@ -484,3 +546,48 @@ def require_panel_scope(document):
             and content_hash(ids) == scope["prefix_sample_ids_sha256"],
             "panel feedback prefix differs")
     return scope
+
+
+def validate_successor_custody(custody, *, round_index, rows, own=False):
+    """Keep hash custody for every spent slot, with only own-L details in a projection."""
+    require(isinstance(custody, dict) and set(custody) == {"allocations", "exclusions"},
+            "successor custody fields differ")
+    branches = ("L",) if own else ("L", "B")
+    expected = {f"{b}-candidate-{s}" for b in branches for s in (1, 2)}
+    excluded = {f"{b}-candidate-1" for b in branches}
+    require(set(custody["allocations"]) == expected and set(custody["exclusions"]) == excluded,
+            "successor must retain every spent allocation and exact invalid exclusions")
+    for cid, a in custody["allocations"].items():
+        require(set(a) == {"input_sha256", "receipt_sha256", "import_sha256", "compilation_sha256", "status"},
+                "successor allocation custody fields differ")
+        for key in ("input_sha256", "receipt_sha256", "import_sha256"):
+            sha(a[key])
+        if cid in excluded:
+            e = custody["exclusions"][cid]
+            require(a["status"] == "invalid" and a["compilation_sha256"] is None
+                and set(e) == {"status", "run_id", "attempt_id", "import_sha256"}
+                and e["status"] == "invalid" and e["import_sha256"] == a["import_sha256"]
+                and e["run_id"] == panel_member_run_id(round_index, rows, cid, successor=True)
+                and isinstance(e["attempt_id"], str) and bool(e["attempt_id"]),
+                "successor invalid exclusion identity or compilation differs")
+        else:
+            require(a["status"] in {"provisional", "duplicate", "no-change"},
+                    "valid successor candidate cannot be excluded")
+            sha(a["compilation_sha256"])
+
+
+def learning_members_for_document(document):
+    """Recognize only the independently qualified successor projection or legacy L4."""
+    scope = document.get("panel_scope", {})
+    if scope.get("evaluation_schema") != SUCCESSOR_REGISTRATION:
+        require("successor_custody" not in document, "successor custody requires its explicit scope")
+        return LEARNING_MEMBERS
+    require_panel_scope(document)
+    custody = document.get("successor_custody", {})
+    validate_successor_custody(custody, round_index=scope["proposal_round"], rows=scope["rows"], own=True)
+    require(content_hash(custody) == scope["custody_sha256"], "own successor custody hash differs")
+    own = {c for c in SUCCESSOR_MEMBERS if c.startswith("L-")}
+    require(set(document.get("successor_bindings", {})) == own
+        and content_hash(document["successor_bindings"]) == scope["bindings_sha256"],
+        "own successor member bindings differ")
+    return own

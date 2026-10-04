@@ -36,18 +36,29 @@ from test_system_search_measurement import profile as measurement_profile
 UNSET = object()
 
 
-def fixture(tmp_path, rows=50, *, profile=UNSET):
-    archive, repo, seed, ext = allocation_fixture(tmp_path)
-    ext["owner"] = write_pin(
+def fixture(tmp_path, rows=50, *, profile=UNSET, successor=False):
+    if successor:
+        from test_system_search_successor import setup
+        from speech_aware_evidence_acquisition.rails.system_search_successor import register_successor
+        old, archive, repo, seed, ext, _ = setup(tmp_path)
+        ext["owner"] = write_pin(repo, ext["owner"]["relpath"], {
+            "decision_id": 227, "status": "approved", "authorized_rows_per_member": [4, 20, 50, 100, 200],
+        })
+        register_successor(old, archive, ext, repo_root=repo)
+    else:
+        archive, repo, seed, ext = allocation_fixture(tmp_path)
+    growth = write_pin(
         repo,
-        ext["owner"]["relpath"],
+        "growth.json" if successor else ext["owner"]["relpath"],
         {
             "decision_id": 223,
             "status": "approved",
             "stage_ladder": [20, 50, 100, 200, 400],
         },
     )
-    register_extension(archive, ext, repo_root=repo)
+    if not successor:
+        ext["owner"] = growth
+        register_extension(archive, ext, repo_root=repo)
     protocol, pool = pool_fixture(repo)
     protocol.update(
         updates=4,
@@ -82,7 +93,7 @@ def fixture(tmp_path, rows=50, *, profile=UNSET):
         for role in ("parent", "parent-aa", "candidate-1", "candidate-2"):
             cid = branch + "-" + role
             members[cid] = {
-                "run_id": panel_member_run_id(4, rows, cid),
+                "run_id": panel_member_run_id(4, rows, cid, successor=successor) if successor else panel_member_run_id(4, rows, cid),
                 "attempt_id": "attempt-" + cid.lower() + f"-{rows}",
                 "bundle_id": seed.bundle_id,
                 "config_hash": content_hash(cid),
@@ -134,16 +145,19 @@ def fixture(tmp_path, rows=50, *, profile=UNSET):
                 "evidence": [],
             }
             response = {
-                "raw_response": json.dumps(doc),
+                "raw_response": "" if successor and slot == 1 else json.dumps(doc),
                 "session_id": packet["session_id"],
                 "model_version": ext["model_version"],
                 "input_sha256": packet["input_sha256"],
-                "input_tokens": 100,
-                "output_tokens": 100,
+                "input_tokens": None if successor and slot == 1 else 100,
+                "output_tokens": None if successor and slot == 1 else 100,
             }
             archive.import_response(
                 branch=branch, round_index=4, slot=slot, receipt=response
             )
+            if successor and slot == 1:
+                members[cid].update(bundle_id=None, config_hash=None)
+                continue
             record = json.loads(
                 (archive.root / f"proposals/{branch}-4-{slot}.json").read_text()
             )
@@ -161,7 +175,24 @@ def fixture(tmp_path, rows=50, *, profile=UNSET):
                 configuration={"source_prefix": 20, "candidate": cid},
             )
             members[cid]["bundle_id"] = bundle.bundle_id
-    family, _ = panel_identities(4, rows)
+    family, _ = panel_identities(4, rows, successor=True) if successor else panel_identities(4, rows)
+    evaluation_pin = None
+    if successor:
+        learning_pin = write_pin(repo, "learning222.json", {
+            "decision_id": 222, "status": "approved", "family_id": "pilot20-owner220",
+            "allow_learning_feedback": True, "recipient_branch": "L", "complete_family_required": True,
+            "formal_adoption": False,
+        })
+        evaluation_pin = write_pin(repo, "successor-evaluation.json", {
+            "schema": "saea-owner227-successor-panel-evaluation-v1", "reviewer": "ChatGPT root",
+            "status": "approved", "owner227": ext["owner"], "growth_owner_decision": growth,
+            "learning_owner_decision": learning_pin, "proposal_protocol_sha256": content_hash(protocol),
+            "proposal_round": 4, "pool_sample_ids_sha256": content_hash(pool),
+            "admitted_members": sorted(set(members) - {"L-candidate-1", "B-candidate-1"}),
+            "excluded_members": ["B-candidate-1", "L-candidate-1"], "progressive_sizes": [20, 50, 100, 200],
+            "new_proposal_opportunities": 0, "automatic_expansion": False,
+            "independent_validation": False, "formal_adoption": False,
+        })
     review = {
         "schema": "saea-fixed400-panel-stage-review-v1",
         "reviewer": "ChatGPT root",
@@ -175,6 +206,10 @@ def fixture(tmp_path, rows=50, *, profile=UNSET):
         "rationale": "Synthetic reviewed preparation; no runtime authority or quality claim.",
     }
     review_pin = write_pin(repo, "review.json", review)
+    if successor:
+        review["evaluation_authority"] = evaluation_pin
+        review_pin = write_pin(repo, "review.json", review)
+        return archive, repo, tmp_path / "data", protocol, members, review_pin, pool, evaluation_pin
     return archive, repo, tmp_path / "data", protocol, members, review_pin, pool
 
 
