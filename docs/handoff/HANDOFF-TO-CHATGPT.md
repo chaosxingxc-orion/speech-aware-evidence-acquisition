@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Four deterministic system-skill candidates integrated, 2026-10-04T07:15:45.241666+00:00
+
+[Four-system skill package](../readiness/2026-10-04-context-diversity-initial4-sol-v1/SYSTEM-SKILL.md) now contains sixteen full English node texts, four supported assembly configurations, compact edits and retained history. Root reviewed and cherry-picked the authorized Sol commit710710581 as12b39d438. [Independent root audit](../receipts/continuation/2026-10-04-context-initial4-root-review.json) verifies all four final data-root policy bindings; all sixteen text hashes are distinct. Agent reports99 focused tests and base/harness/diff checks passing. No learner or runtime contact is implied.
+
+These are policy compilation templates: inherited R01C source/supply fields are not live UPDATE2 preparation. Prepare exact own supplies and current20 input bindings before capacity/structural admission. K4 distinct systems across N20 means80 candidate trajectories; controls/engineering/algorithm iterations are accounted separately, with no duplicate candidate multiplier. Keep temperature0/seed20260913, same400 assets, sequential execution, paused heartbeat and human before8x400. No quality or latency gain is established; Training-Free GRPO adaptation and GEPA implementation remain next work.
+
 ## Deterministic system-skill population amendment, 2026-10-04T07:07:19.130577+00:00
 
 The [latest direct owner instructions](../receipts/owner/2026-10-04-deterministic-context-rollouts.json) replace the next-GPU priority below with a fresh deterministic context population. K means distinct complete context systems, M is four nodes, and N means distinct inputs. Initialize K4/M4 with sixteen full English role texts; N20 gives eighty candidate trajectories before separately accounted comparators and engineering. Keep temperature0/seed20260913. GPT-6.1 Sol is authoring this initialization separately from historical Astra allocations.

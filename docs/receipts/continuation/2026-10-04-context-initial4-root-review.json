@@ -1,0 +1,78 @@
+{
+  "schema": "saea-root-context-initial4-review-v1",
+  "at_utc": "2026-10-04T07:15:45.241666+00:00",
+  "author_commit": "71071058151a4dcef75729cbbf71e9ea4e723411",
+  "integration_commit": "12b39d438",
+  "review": "Root read all sixteen full role texts, exact parser interfaces, candidate index, skill organization and budget. Independently verified all four final data-root bindings after cherry-pick.",
+  "binding_checks": [
+    {
+      "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+      "role_sha256": {
+        "perception": "8820b302bef1e56968bb1f54a8ee47dbef70c5da18a3f83dc7cfe5a8ad7dfd45",
+        "planner": "8cf1391f88ae9d15319f38bfe1339e03631001683cb64acab1b159fd04e38122",
+        "reviewer": "ade8ada541354866fb4154df270328cc11ddc3b172a44eefe1b720c730baa748",
+        "solver": "1577fda4e9c639246044aee6855c4d00de92e6504a595f37260b6fd07b244565"
+      },
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "node_context": {
+        "tool_schema_rendering": "per-role",
+        "reviewer_history_scope": "latest-solver-and-local-tools"
+      }
+    },
+    {
+      "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+      "role_sha256": {
+        "perception": "23d02fc929d948b65adbaa21fc0543bc08494e4a05414260936f479a593e1cb8",
+        "planner": "0255a5ad6118cba49fc4acb05ed12430730c621eaf4d5c33b3c1e92503d52d1a",
+        "reviewer": "016f497d3d99df7a69f148c86ca268c01a44c665ad922f5bfc0e3d071cdc44c4",
+        "solver": "59eb48e5f20f5c92886f11a6dea8445e28d3c40ab74a38b02b3dd1e0e00a0b3e"
+      },
+      "context_layout": {
+        "native_role_query_placement": null
+      },
+      "node_context": {
+        "tool_schema_rendering": "constant",
+        "reviewer_history_scope": "full"
+      }
+    },
+    {
+      "bundle_id": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+      "role_sha256": {
+        "perception": "f6a39175a449b2d08adc45b3b9b1b5e6bec979260b2b9ec4ea3c07c6a24684b2",
+        "planner": "c63879dc850a76d8a9ab010dbb5e21eaf8a44e9ca1e27872b605230d0db83062",
+        "reviewer": "35c2c88dc80432896db1aa7c1aa6122fdaee4cd18765ca1bde8bdcab4d36232c",
+        "solver": "86db2558a36fe0ec4f20c31e51b068abaa8c81dcbf6cd7811fc20895b4ff6321"
+      },
+      "context_layout": {
+        "native_role_query_placement": "before-speech-v1"
+      },
+      "node_context": {
+        "tool_schema_rendering": "constant",
+        "reviewer_history_scope": "latest-solver-and-local-tools"
+      }
+    },
+    {
+      "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+      "role_sha256": {
+        "perception": "401d59f2dafa616461265fcfcc86b2df287fec0f3108278f53c6274e4a06a08d",
+        "planner": "85e4f4feda1427bde3164e4676d1e2dc0447397a80a0efb7907ea309da55f486",
+        "reviewer": "8937feadab135981a169821fa5179ed99e8cef13deb6946ee46185e30b9d4c6f",
+        "solver": "6c8df9f0e6acd1ee42ce0fde1fe77cdf4f21b36b0ac3dd3b3890c76038688af4"
+      },
+      "context_layout": {
+        "native_role_query_placement": null
+      },
+      "node_context": {
+        "tool_schema_rendering": "per-role",
+        "reviewer_history_scope": "full"
+      }
+    }
+  ],
+  "agent_reported_tests": 99,
+  "new_runtime_contacts": 0,
+  "runtime_admitted": false,
+  "learners_implemented": false,
+  "next": "Prepare exact UPDATE2 execution bindings and registered baseline protocol, capacity and structural proof; retain all historical allocations."
+}
