@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Independent TF learner started from original family, 2026-10-04T11:17:16.103494+00:00
+
+[Worker launch](../receipts/continuation/2026-10-04-context-tf-worker-launch.json) pins Windows1044 and Linux671290/start46087929, frozen a403cad0b. The corrected shared external worker uses the independently prepared original80 candidate episodes; no GEPA child or trial outcomes. It is live qualifying sources before the first request. Each summarize/compare/experience/propose callback still requires exact hash-manifest admission and a fresh GPT-6.1 Sol subagent; no runtime dispatch or automatic restart.
+
+GEPA full trial remains in flight on frozen c41772055 and root READ unsigned; inspect operational metadata only until six valid completed scores/seals. Both algorithms preserve original counts and separate archives. Keep seed incumbent, N20, paused heartbeat, other-carrier holds and human-before8x400.
+
+
 ## GEPA first complete trial launched, 2026-10-04T11:09:49.957418+00:00
 
 [Exact launch](../receipts/continuation/2026-10-04-context-gepa-iteration1-n20-launch.json) pins frozen c41772055 and Windows SAEA-Batch-Driver epoch 2026-10-04T11:09:35Z. All six actual policy/supply/registration/runtime checks passed. Twenty unchanged inputs, four complete candidate systems plus seed/A/A:120 trajectories. Only the selected counterexample Perception child differs from the original population. Preserve fixed temperature0/seed20260913, sequential four-slot execution and full output reserve.

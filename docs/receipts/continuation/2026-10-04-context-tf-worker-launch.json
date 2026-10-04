@@ -1,0 +1,25 @@
+{
+  "schema": "saea-context-tf-worker-launch-v1",
+  "at_utc": "2026-10-04T11:17:16.103494+00:00",
+  "pid": 671290,
+  "start_ticks": 46087929,
+  "worker_commit": "a403cad0b51638f2a8903cbbc0a8873019bba9aa",
+  "archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-worker-v1.windows-launch.json",
+      "sha256": "0da9aee79384c4156dae0ad0339abe66de004555e4c36de35b97b2afb4053960"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-worker-admission-v1.json",
+      "sha256": "6a4c55765bcb7c3a7170e997f4f0dad3f7b5a7196cdf05101875bd7e8e8e6656"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/worker-start.json",
+      "sha256": "a73643c097e6b1d745158720e000edd07ff0e566e116fc0f51277f0f9df7b49c"
+    }
+  ],
+  "semantic_contacts_at_observation": 0,
+  "status": "Live source qualification before first semantic callback; no worker restart or runtime dispatch.",
+  "independence": "Original complete initial-family inputs only. Exclude GEPA child and trial outcomes."
+}
