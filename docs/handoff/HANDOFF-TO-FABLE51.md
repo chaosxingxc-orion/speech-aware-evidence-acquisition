@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Template-only rejected-trial conditioning prepared, 2026-10-04T17:30:27.870687+00:00
+
+[Prospective iteration2](../readiness/2026-10-04-template-tf-iteration2-v1/README.md) preserves original TF parents and zero active experience while adding separately requalified rejected-trial templates and aggregate feedback.199 tests pass,100% statement coverage across the three shared modules; engineering-base PASS. Original acceptance rules and archived decisions remain unchanged. This is an explicit own-history conditioning adaptation, not an unchanged upstream reproduction.
+
+[Real-file preparation](../receipts/continuation/2026-10-04-template-tf-iteration2-source-prepared.json) freshly requalified both complete six-member sources under exact new input/history READs:80 parent numeric rows plus80 rejected-trial numeric rows, separate cohorts, zero semantic cases. Restricted actor view79,286 bytes; no knowledge/source rosters/sample IDs. New archive context-template-tf-iteration2-v1 contains policies and the exact prior decision only, with no raw material index. Zero new model/scorer contacts. Worker freeze and exact per-capsule actor admission remain; child GPU evaluation still needs independent FIT/structural/family admission. Keep N20, formal seed, paused heartbeat, other-carrier holds and human-before8x400.
+
 ## TF iteration 1 complete; template-only consumption next, 2026-10-04T17:15:13.981714+00:00
 
 [Complete root report](../results/2026-10-04-context-tf-iteration1-n20.md) and [completion receipt](../receipts/continuation/2026-10-04-context-tf-iteration1-complete.json) supersede running snapshots. Six members finalized 20 rows each, all seals verified, one successful whole-member official score each and zero failed jobs. Driver ended17:04:33Z; exact root READ signed17:04:55.914570Z. Actual accounting:120 rows,612 generation contacts,612 FIT receipts,2448 FIT endpoints. No replay.

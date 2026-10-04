@@ -1,0 +1,16 @@
+{
+  "schema": "saea-template-rejected-history-validation-v1",
+  "at_utc": "2026-10-04T17:28:02.765130+00:00",
+  "tests_passed": 199,
+  "statement_coverage": {
+    "system_context_learning": 100,
+    "system_context_template_feedback": 100,
+    "system_context_exchange": 100
+  },
+  "engineering_base": "PASS",
+  "new_feature_red_observed": "Next-iteration experience callback failed with KeyError rejected_trial_feedback before implementation. Initial fixture source repinning was corrected before this red observation.",
+  "test_boundary": "Synthetic full iteration and capsule integration plus adversarial source/scope refusal. Complete-family source readers have their existing independent tests. No provider or GPU endpoint is called.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "benefit_established": false
+}

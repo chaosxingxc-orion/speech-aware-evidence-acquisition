@@ -111,6 +111,6 @@ def proposer_view(packet):
     policies = {c: {**p, "policy": _policy_view(p["policy"])} for c, p in packet["policies"].items()}
     keys = ("algorithm", "iteration", "family_id", "recipe", "protocol", "read_authority",
             "sampling", "measurement_profile", "family_commitment", "budget",
-            "feedback_profile", "reflection_task", "experience", "runtime_admission")
+            "feedback_profile", "reflection_task", "experience", "runtime_admission", "rejected_trial_feedback")
     return {"schema": "saea-template-proposer-view-v1", "source_input_sha256": packet["input_sha256"],
             **{k: packet[k] for k in keys if k in packet}, "policies": policies, "template_feedback": feedback}

@@ -402,15 +402,30 @@ def prepare_template_actor_capsule(request_path, *, request_sha256, instructions
                 if stage == "update_experience" else
                 {"input_sha256", "candidate_id", "algorithm", "iteration", "parent_bundle_id",
                  "component", "policy", "experience", "qualified_input"})
+    if stage == "update_experience" and "rejected_trial_feedback" in task:
+        expected.add("rejected_trial_feedback")
     require(set(task) == expected, "template task fields differ")
     view = task if stage == "update_experience" else task["qualified_input"]
     feedback = view["template_feedback"]
     profile = validate_template_profile(feedback["profile"])
     require(profile["examples_per_template"] == 0
             and all(t["examples"] == [] for t in feedback["templates"]), "aggregate-only capsule required")
-    policies = view["policies"]
-    require(len(policies) == 4, "complete four-system template view required")
-    policy_views = [p["policy"] for p in policies.values()]
+    views = [view]
+    if "rejected_trial_feedback" in view:
+        history = view["rejected_trial_feedback"]
+        require(set(history) == {"schema", "previous_decision_sha256", "status", "promoted_to_parent",
+                    "source_recipe", "family_commitment", "policies", "template_feedback"}
+                and history["schema"] == "saea-rejected-template-history-v1"
+                and history["status"] == "rejected" and history["promoted_to_parent"] is False,
+                "rejected history view differs")
+        sha(history["previous_decision_sha256"])
+        history_profile = validate_template_profile(history["template_feedback"]["profile"])
+        require(history_profile == profile
+                and all(t["examples"] == [] for t in history["template_feedback"]["templates"]),
+                "historical feedback must remain aggregate-only")
+        views.append(history)
+    require(all(len(v["policies"]) == 4 for v in views), "complete four-system template view required")
+    policy_views = [p["policy"] for v in views for p in v["policies"].values()]
     if stage == "propose":
         policy_views.append(task["policy"])
     for policy in policy_views:

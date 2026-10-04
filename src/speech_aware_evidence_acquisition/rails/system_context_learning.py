@@ -278,6 +278,11 @@ def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
                 "Evaluate complete-system quality, intent, reliability and mean/non-first sample latency; "
                 "do not infer causal node credit or promise positive gains from these aggregates.")
         packet["reflection_task"]["fidelity"] = "Prospective template-batch reflection study adaptation; not unchanged upstream reproduction."
+    if feedback_profile is not None and "rejected_trial_feedback" in registered_plan:
+        packet["rejected_trial_feedback"] = _rejected_template_history(archive,
+            registered_plan["rejected_trial_feedback"], root=Path(repo_root), algorithm=algorithm,
+            iteration=iteration, initial=(evidence, recipe, registration, protocol, candidates, controls, reference),
+            policies=policies, profile=feedback_profile)
     packet["input_sha256"] = content_hash(packet)
     for policy in policies.values():
         archive.store_policy(policy)
@@ -482,7 +487,78 @@ def _iteration_plan(protocol, recipe, root, algorithm, iteration, controls):
                 and transition["mode"] == "empty-template-phase-v1",
                 "explicit template-only phase transition required")
         sha(transition["previous_decision_sha256"])
+    if "rejected_trial_feedback" in plan:
+        history = plan["rejected_trial_feedback"]
+        require(algorithm == "tf-grpo-context-diversity" and iteration > 1
+                and plan.get("feedback_profile", {}).get("examples_per_template") == 0
+                and isinstance(history, dict)
+                and set(history) == {"mode", "previous_decision_sha256", "source"}
+                and history["mode"] == "previous-rejected-trial-aggregate-v1"
+                and isinstance(history["source"], dict)
+                and set(history["source"]) == {"bindings", "recipe_pin"},
+                "exact own rejected-trial aggregate scope required")
+        sha(history["previous_decision_sha256"])
     return pin, plan
+
+
+def _rejected_template_history(archive, spec, *, root, algorithm, iteration, initial, policies, profile):
+    """Requalify the immediately preceding rejected trial under a new exact READ.
+
+    This is conditioning evidence only. Never change accepted parents or import
+    the previous semantic experience/case payload. Original records stay intact.
+    """
+    previous_sha = spec["previous_decision_sha256"]
+    decisions = [json.loads(p.read_text()) for p in
+                 (archive.root / "context-learning/iterations").glob("*/decision.json")]
+    matches = [d for d in decisions if d.get("decision_sha256") == previous_sha]
+    require(len(matches) == 1, "exact rejected prior decision required")
+    d = matches[0]
+    _, base_recipe, _, base_protocol, candidates, controls, reference = initial
+    require(content_hash({k: v for k, v in d.items() if k != "decision_sha256"}) == previous_sha
+            and d["algorithm"] == algorithm and d["iteration"] == iteration - 1
+            and d["status"] == "rejected" and d["sample_ids"] == base_recipe["sample_ids"]
+            and d["reference_sha256"] == content_hash(reference), "rejected history decision scope differs")
+    source = spec["source"]
+    fresh = _qualified_feedback(source["bindings"], recipe_pin=source["recipe_pin"], repo_root=root)
+    e, recipe, registration, protocol, cs, ctl, frozen = fresh
+    require(protocol.get("rejected_trial_use") == {
+                "algorithm": algorithm, "iteration": iteration, "previous_decision_sha256": previous_sha}
+            and protocol["iteration"] == iteration
+            and cs == candidates and ctl == controls and recipe["sample_ids"] == base_recipe["sample_ids"]
+            and frozen == reference and protocol["sampling"] == base_protocol["sampling"]
+            and protocol["measurement_profile"] == base_protocol["measurement_profile"],
+            "prospective rejected-trial READ scope differs")
+    evaluations = [event for event in d["events"] if event["stage"] == "evaluate" and event["status"] == "completed"]
+    require(len(evaluations) == 1, "unique original complete evaluation required")
+    original_request = evaluations[0]["response"]["value"]
+    require(original_request["recipe_pin"] == d["trial_commitment"]["recipe"], "original trial recipe differs")
+    original = _qualified_feedback(original_request["bindings"],
+        recipe_pin=original_request["recipe_pin"], repo_root=root)
+    old_e, old_recipe, old_registration, _, _, _, _ = original
+    require(content_hash(old_e) == d["trial_commitment"]["family_sha256"]
+            and old_registration["registration_sha256"] == d["trial_commitment"]["registration_sha256"]
+            and recipe["run_ids"]["read"] != old_recipe["run_ids"]["read"]
+            and registration["member_bindings"] == old_registration["member_bindings"],
+            "rejected trial source changed or new READ missing")
+    trial_policies = {c: archive.load_policy(registration["member_bindings"][c]["bundle_id"]).as_json()
+                      for c in candidates}
+    fixed = ("seed_config_sha256", "construction_instruction", "supply", "knowledge", "construction_receipt")
+    require(all({k: trial_policies[c][k] for k in fixed} == {k: policies[c].as_json()[k] for k in fixed}
+                for c in candidates), "rejected history changed fixed supply/base")
+    groups = _candidate_groups(e, recipe, registration, candidates, reference)
+    packet = {"algorithm": algorithm, "iteration": iteration, "family_id": recipe["family_id"],
+        "family_commitment": {"sha256": content_hash(e), "registration_sha256": registration["registration_sha256"]},
+        "groups": groups, "business_measurements": measured_rows(e, candidates, registration["member_bindings"],
+            profile=protocol["measurement_profile"]), "official_summaries": e["summaries"],
+        "policies": {c: {"bundle_id": registration["member_bindings"][c]["bundle_id"], "policy": p}
+                     for c, p in trial_policies.items()}, "feedback_profile": profile}
+    packet["template_feedback"] = template_feedback(packet, profile)
+    packet["input_sha256"] = content_hash(packet)
+    view = proposer_view(packet)
+    return {"schema": "saea-rejected-template-history-v1", "previous_decision_sha256": previous_sha,
+        "status": "rejected", "promoted_to_parent": False, "source_recipe": source["recipe_pin"],
+        "family_commitment": packet["family_commitment"], "policies": view["policies"],
+        "template_feedback": view["template_feedback"]}
 
 
 def _load_iteration_state(archive, previous_sha, *, algorithm, iteration, ids, reference, repo_root):
@@ -555,6 +631,9 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
     initial = _qualified_feedback(bindings, recipe_pin=recipe_pin, repo_root=root)
     evidence, recipe, registration, protocol, candidates, controls, reference = initial
     plan_pin, plan = _iteration_plan(protocol, recipe, root, algorithm, iteration, controls)
+    if "rejected_trial_feedback" in plan:
+        require(plan["rejected_trial_feedback"]["previous_decision_sha256"] == previous_decision_sha256,
+                "rejected-trial plan must bind the exact previous state")
     groups = _candidate_groups(evidence, recipe, registration, candidates, reference)
     active = {c: policies[c].bundle_id for c in candidates}
     previous = _load_iteration_state(archive, previous_decision_sha256, algorithm=algorithm,
@@ -618,6 +697,9 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
     if "feedback_profile" in packet:
         decision["feedback_profile"] = packet["feedback_profile"]
         decision["fidelity"]["reflection"] = "template-batch-study-adaptation-v1"
+    if "rejected_trial_feedback" in packet:
+        decision["rejected_trial_feedback_sha256"] = content_hash(packet["rejected_trial_feedback"])
+        decision["fidelity"]["rejected_trial_feedback"] = "prospective-own-rejected-trial-aggregate-v1"
     if experience_transition is not None:
         decision["experience_transition"] = experience_transition
         decision["fidelity"]["experience_transition"] = "prospective-template-only-phase-reset"
@@ -691,6 +773,8 @@ def run_context_learning_iteration(archive, *, bindings, recipe_pin, repo_root,
                     task["template_feedback"] = view["template_feedback"]
                     if packet["feedback_profile"]["examples_per_template"] == 0:
                         task.update(policies=view["policies"], reflection_task=view["reflection_task"])
+                        if "rejected_trial_feedback" in view:
+                            task["rejected_trial_feedback"] = view["rejected_trial_feedback"]
                 else:
                     task["comparisons"] = comparisons
                 operations = invoke("update_experience", task)

@@ -1,0 +1,316 @@
+{
+  "schema": "saea-context-learning-iteration-plan-v1",
+  "algorithm": "tf-grpo-context-diversity",
+  "iteration": 2,
+  "input_family_id": "context-initial4-n20",
+  "sample_ids_sha256": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "selection_seed": 0,
+  "callback_caps": {
+    "summarize": 0,
+    "compare": 0,
+    "update_experience": 1,
+    "propose": 4,
+    "evaluate": 1
+  },
+  "evaluation_candidate_trajectories_cap": 80,
+  "evaluation_control_trajectories_cap": 40,
+  "acceptance": "strict-registered-utility-sum",
+  "automatic_next_iteration": false,
+  "feedback_profile": {
+    "example_sampling": "stratified-stable-hash-v1",
+    "examples_per_template": 0,
+    "phase": "template-only",
+    "schema": "saea-template-feedback-profile-v1",
+    "selection_seed": 20261004,
+    "semantic_comparisons": false,
+    "semantic_summaries": false
+  },
+  "rejected_trial_feedback": {
+    "mode": "previous-rejected-trial-aggregate-v1",
+    "previous_decision_sha256": "b48d737e08b29586fece8c75ad8273e1adda3aa13a105db64c5a27535a8eac09",
+    "source": {
+      "recipe_pin": {
+        "relpath": "docs/readiness/2026-10-04-template-tf-iteration2-v1/history-recipe-v1.json",
+        "sha256": "3ff7677851835fd454ed7c1255eb22e5c91dc9592822196d625031d59f890838"
+      },
+      "bindings": [
+        {
+          "artifact": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/counterexample-check/reward-links.json",
+            "sha256": "eea6e0fe5c9a94322cb213d45c23e37fc13a45a69bc04f14588c48c538aca092"
+          },
+          "candidate_id": "counterexample-check",
+          "config": {
+            "complete_score_receipt": {
+              "cell_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-counterexample-check-generation-v1",
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/counterexample-check/saved-score/complete-score-receipt.json",
+              "sha256": "3a2b4dc4d889cde3cb476d810e25f3972bad69eddfdac92a68d1124edeba1e09"
+            },
+            "construction_roster": {
+              "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+              "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+            },
+            "manifest": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-counterexample-check-generation-v1/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1.run-manifest.json",
+              "sha256": "08b77e2fcec1c72cf755d5466e800bb67018e314d8386fa38ed29fdad08fde84"
+            },
+            "projection": {
+              "aggregate_fields": [
+                "port_micro.slu_f1",
+                "port_micro.intent_accuracy"
+              ],
+              "per_sample_fields": [
+                "scenario_action_exact",
+                "scenario_exact",
+                "action_exact",
+                "slot_f1_exact_tp",
+                "slot_f1_exact_fp",
+                "slot_f1_exact_fn",
+                "slu_f1_word_tp",
+                "slu_f1_word_fp",
+                "slu_f1_word_fn",
+                "slu_f1_char_tp",
+                "slu_f1_char_fp",
+                "slu_f1_char_fn"
+              ],
+              "reward_rule_id": "context-initial4-n20-official-counts-v1",
+              "schema": "saea-reward-projection-v1",
+              "scorer": "slurp-slu-official-train"
+            },
+            "schema": "saea-reward-link-artifact-config-v1"
+          }
+        },
+        {
+          "artifact": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/coverage-ledger/reward-links.json",
+            "sha256": "a68f80c4e2eb017994c89866134a4a8407bd9b3afec6a175d805cb3fa19da182"
+          },
+          "candidate_id": "coverage-ledger",
+          "config": {
+            "complete_score_receipt": {
+              "cell_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-coverage-ledger-generation-v1",
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/coverage-ledger/saved-score/complete-score-receipt.json",
+              "sha256": "d6053d0b5b2cf75b475ce3807bd87a51c123f08b5d15c49e98724eb7bdd80c70"
+            },
+            "construction_roster": {
+              "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+              "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+            },
+            "manifest": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-coverage-ledger-generation-v1/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-V1.run-manifest.json",
+              "sha256": "ed3da6e156c9c598fbf4c2bf3fdf020f5ea4853dc4a84a6413636c887f24a16f"
+            },
+            "projection": {
+              "aggregate_fields": [
+                "port_micro.slu_f1",
+                "port_micro.intent_accuracy"
+              ],
+              "per_sample_fields": [
+                "scenario_action_exact",
+                "scenario_exact",
+                "action_exact",
+                "slot_f1_exact_tp",
+                "slot_f1_exact_fp",
+                "slot_f1_exact_fn",
+                "slu_f1_word_tp",
+                "slu_f1_word_fp",
+                "slu_f1_word_fn",
+                "slu_f1_char_tp",
+                "slu_f1_char_fp",
+                "slu_f1_char_fn"
+              ],
+              "reward_rule_id": "context-initial4-n20-official-counts-v1",
+              "schema": "saea-reward-projection-v1",
+              "scorer": "slurp-slu-official-train"
+            },
+            "schema": "saea-reward-link-artifact-config-v1"
+          }
+        },
+        {
+          "artifact": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/seed/reward-links.json",
+            "sha256": "fa0ed5e90fe5fac8e477ac8c059cd907fdf05c6b5035afaf8d327622b61cd82f"
+          },
+          "candidate_id": "seed",
+          "config": {
+            "complete_score_receipt": {
+              "cell_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-generation-v1",
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/seed/saved-score/complete-score-receipt.json",
+              "sha256": "8428d42299d86aa233d19863bd2de09f4e76c865fbb9c3431a91a5f7a65ab50d"
+            },
+            "construction_roster": {
+              "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+              "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+            },
+            "manifest": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-generation-v1/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-V1.run-manifest.json",
+              "sha256": "435a9349ecc7e93f3498be3feabd1533e3730d25dc67ffd79dbf4e0ae03b727e"
+            },
+            "projection": {
+              "aggregate_fields": [
+                "port_micro.slu_f1",
+                "port_micro.intent_accuracy"
+              ],
+              "per_sample_fields": [
+                "scenario_action_exact",
+                "scenario_exact",
+                "action_exact",
+                "slot_f1_exact_tp",
+                "slot_f1_exact_fp",
+                "slot_f1_exact_fn",
+                "slu_f1_word_tp",
+                "slu_f1_word_fp",
+                "slu_f1_word_fn",
+                "slu_f1_char_tp",
+                "slu_f1_char_fp",
+                "slu_f1_char_fn"
+              ],
+              "reward_rule_id": "context-initial4-n20-official-counts-v1",
+              "schema": "saea-reward-projection-v1",
+              "scorer": "slurp-slu-official-train"
+            },
+            "schema": "saea-reward-link-artifact-config-v1"
+          }
+        },
+        {
+          "artifact": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/seed-aa/reward-links.json",
+            "sha256": "9112e7e6fbd369b73e17540d21c44879e41cb060a7be93c3263c68c91d163b98"
+          },
+          "candidate_id": "seed-aa",
+          "config": {
+            "complete_score_receipt": {
+              "cell_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-aa-generation-v1",
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/seed-aa/saved-score/complete-score-receipt.json",
+              "sha256": "1ca25c53d7f8c63db92a83db54676b64d08ef40f416c8be99909809491cfb1c1"
+            },
+            "construction_roster": {
+              "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+              "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+            },
+            "manifest": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-aa-generation-v1/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-AA-V1.run-manifest.json",
+              "sha256": "f503239963b00003ac4a3eebf4b4ebac15f4bee51ac350fc162375f92cf8ac28"
+            },
+            "projection": {
+              "aggregate_fields": [
+                "port_micro.slu_f1",
+                "port_micro.intent_accuracy"
+              ],
+              "per_sample_fields": [
+                "scenario_action_exact",
+                "scenario_exact",
+                "action_exact",
+                "slot_f1_exact_tp",
+                "slot_f1_exact_fp",
+                "slot_f1_exact_fn",
+                "slu_f1_word_tp",
+                "slu_f1_word_fp",
+                "slu_f1_word_fn",
+                "slu_f1_char_tp",
+                "slu_f1_char_fp",
+                "slu_f1_char_fn"
+              ],
+              "reward_rule_id": "context-initial4-n20-official-counts-v1",
+              "schema": "saea-reward-projection-v1",
+              "scorer": "slurp-slu-official-train"
+            },
+            "schema": "saea-reward-link-artifact-config-v1"
+          }
+        },
+        {
+          "artifact": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/semantic-frame/reward-links.json",
+            "sha256": "f5efd3786b6329d69b7d2bdcec2a7126062eb8903e093fd6e5a9b2f2dab8d084"
+          },
+          "candidate_id": "semantic-frame",
+          "config": {
+            "complete_score_receipt": {
+              "cell_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-semantic-frame-generation-v1",
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/semantic-frame/saved-score/complete-score-receipt.json",
+              "sha256": "8a4f0821edadf273afbc1fafa927e560cf2f664ce6a13235ef3196bef99fecfe"
+            },
+            "construction_roster": {
+              "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+              "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+            },
+            "manifest": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-semantic-frame-generation-v1/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEMANTIC-FRAME-V1.run-manifest.json",
+              "sha256": "9406fec63254a97bc8ee46fdb41a7bad18af6fe0e78b2e0261271a4ae152a238"
+            },
+            "projection": {
+              "aggregate_fields": [
+                "port_micro.slu_f1",
+                "port_micro.intent_accuracy"
+              ],
+              "per_sample_fields": [
+                "scenario_action_exact",
+                "scenario_exact",
+                "action_exact",
+                "slot_f1_exact_tp",
+                "slot_f1_exact_fp",
+                "slot_f1_exact_fn",
+                "slu_f1_word_tp",
+                "slu_f1_word_fp",
+                "slu_f1_word_fn",
+                "slu_f1_char_tp",
+                "slu_f1_char_fp",
+                "slu_f1_char_fn"
+              ],
+              "reward_rule_id": "context-initial4-n20-official-counts-v1",
+              "schema": "saea-reward-projection-v1",
+              "scorer": "slurp-slu-official-train"
+            },
+            "schema": "saea-reward-link-artifact-config-v1"
+          }
+        },
+        {
+          "artifact": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/speech-evidence/reward-links.json",
+            "sha256": "7b4c1db44571740004d21b90c09f64489066d3e0a5a50d8d7c452bdc077db6ad"
+          },
+          "candidate_id": "speech-evidence",
+          "config": {
+            "complete_score_receipt": {
+              "cell_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-speech-evidence-generation-v1",
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/speech-evidence/saved-score/complete-score-receipt.json",
+              "sha256": "85d66ee5c6cb352d10e8f7aecd7f7b2f9401a771fdb33ce57e09bf68663744d6"
+            },
+            "construction_roster": {
+              "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+              "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+            },
+            "manifest": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-speech-evidence-generation-v1/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-V1.run-manifest.json",
+              "sha256": "d9fa95e068e23f3aae52d20b8f11082f2a5f2e412ded427b5e0b5a66d4466b30"
+            },
+            "projection": {
+              "aggregate_fields": [
+                "port_micro.slu_f1",
+                "port_micro.intent_accuracy"
+              ],
+              "per_sample_fields": [
+                "scenario_action_exact",
+                "scenario_exact",
+                "action_exact",
+                "slot_f1_exact_tp",
+                "slot_f1_exact_fp",
+                "slot_f1_exact_fn",
+                "slu_f1_word_tp",
+                "slu_f1_word_fp",
+                "slu_f1_word_fn",
+                "slu_f1_char_tp",
+                "slu_f1_char_fp",
+                "slu_f1_char_fn"
+              ],
+              "reward_rule_id": "context-initial4-n20-official-counts-v1",
+              "schema": "saea-reward-projection-v1",
+              "scorer": "slurp-slu-official-train"
+            },
+            "schema": "saea-reward-link-artifact-config-v1"
+          }
+        }
+      ]
+    }
+  }
+}
