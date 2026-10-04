@@ -1,0 +1,1349 @@
+{
+  "schema": "saea-context-tf-reflection-phase-complete-v1",
+  "at_utc": "2026-10-04T14:50:06.945915+00:00",
+  "algorithm": "tf-grpo-context-diversity",
+  "iteration": 1,
+  "callbacks": [
+    {
+      "identity": "0000-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0000-summarize/request.json",
+        "sha256": "50890053c0af9558ea45693f77fcb9b9d73dd41f8d824dffaec2fd27e6955b53"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0000-summarize/manifest.json",
+        "sha256": "ee6a9393ee78ebb437de84a354dd260cb98751c61bb4349a04fda8c1dcdd788f"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0000-summarize/original-response.json",
+        "sha256": "b3f553d1908a93a40ff61d4db351c6dee228a972f92632d3ef0ec8b0edba94a7"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0000-summarize/accepted.json",
+        "sha256": "e3d8e83145586319cdd93c9b928fcd8627a18964ba0946d1cc2ddb157b3e2230"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0000-summarize-completed.json",
+        "sha256": "c8748b3bc10b17be05b12469b0fb137662a74f66c0c23a2565cf7af4ab79792e"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0000-summarize-complete.json",
+        "sha256": "5d49fa601114f98cf62b202bc8e4d37b02f0b0c3c4d506ba29ef631dc909719f"
+      },
+      "callback_elapsed_seconds": 379.4152805840131,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0001-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0001-summarize/request.json",
+        "sha256": "18d0ae72e69e3e5a92511b84f4aaf1f723d532d5ecce0922f4e5f30a48d287ab"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0001-summarize/manifest.json",
+        "sha256": "20e24050ad42d07cfd4481c3cf4572f57cb7ebdbe787eca54a19f2b1f646a568"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0001-summarize/original-response.json",
+        "sha256": "2fbe96580bf53481890c8dd40ce3124c11e4c43e01213a319dda9dffb167c6c8"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0001-summarize/accepted.json",
+        "sha256": "e8d05f191a56fadc1ced8776bba4483074ff9056612c5efc63b93eeab98c2632"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0001-summarize-completed.json",
+        "sha256": "f6b900372420120f656a11a52b4ccec324b45d1715b156faeaec3ae4c99e696e"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0001-summarize-complete.json",
+        "sha256": "1a6ded5f982607078963d4e376a7dda42c9c6d5486119ab67343356e2bd3a6ae"
+      },
+      "callback_elapsed_seconds": 316.96240179403685,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0002-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0002-summarize/request.json",
+        "sha256": "726aab4b5f71e8bc1e4415e98901666be9c6bdea6c93cd17b07b1aff00d8406b"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0002-summarize/manifest.json",
+        "sha256": "c7e39c3ec0d3a8cac49fd76b4bc97b3baceb2edaded2d1a2a13e22666d5e3396"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0002-summarize/original-response.json",
+        "sha256": "2854ad409977209c0291a272cdb78d75d6a3136f76efe3111c58abc713506186"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0002-summarize/accepted.json",
+        "sha256": "72a5f6e147282a4bbb49fcd3cfdcf4c03d19c9e25b1325b9d69ad8d1ca10ba3f"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0002-summarize-completed.json",
+        "sha256": "59915374370346586f1099303452542e443ec996ce28f851c3b35faf59019d5b"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0002-summarize-complete.json",
+        "sha256": "d8415bd091aa2f4325b745ddc8ce4bb25edb58b5f9635ce9ddd3fba7df405259"
+      },
+      "callback_elapsed_seconds": 292.52171667001676,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0003-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0003-summarize/request.json",
+        "sha256": "d3736f66f0587a21402f6452bd041de8aa337ab2f574675197fd9dcc236ec67b"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0003-summarize/manifest.json",
+        "sha256": "cb2e515d9f97c41b0a7f8d533e00a5583b03ce4865200fa4e324c9ccc8f505e4"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0003-summarize/original-response.json",
+        "sha256": "41d123e5a95d03f9d401ea2b9f9dfa9b3684276adf568c7389af112c12182f6d"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0003-summarize/accepted.json",
+        "sha256": "d99298aa3efe5f97a546889166464c6e7701e942fc9108fa09b732a3a3ca2454"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0003-summarize-completed.json",
+        "sha256": "40faaba55ea33289cbe1ca2940fe47f7f5061b7af52b712f5dcc28731ec99672"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0003-summarize-complete.json",
+        "sha256": "491f301dd48666d0b7ccd394bb2f1cf3aff2689cdc14ec7981f48c04a8b83db9"
+      },
+      "callback_elapsed_seconds": 432.97834808798507,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0004-compare",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0004-compare/request.json",
+        "sha256": "4eee218bb2a35449ea41713eaabaaeedbb947382c9c71d14585df8c3103fee02"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0004-compare/manifest.json",
+        "sha256": "5938d0dfb98bb08f42ec00a03897ed52abc2e1e4f4264cf43afc5e81ad88b396"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0004-compare/original-response.json",
+        "sha256": "f109bde6effdb928a246bf0b5ff3eb7199d88c4a3c4ab430c7a7e7b6001cd8b3"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0004-compare/accepted.json",
+        "sha256": "0b6152c471e6f3a933525300fa41f651ac0fedc5f19a973c4a5623b5015a5835"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0004-compare-completed.json",
+        "sha256": "d79a87b60ad578240339b1a2273ec216c5d3e084ee62dca58cd39aca352aa2d1"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0004-compare-complete.json",
+        "sha256": "2d3c163c0f191ea67b73e4b4b089bd8c45db1d71898228b3bc79507b23b7800d"
+      },
+      "callback_elapsed_seconds": 156.36671567504527,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0005-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0005-summarize/request.json",
+        "sha256": "48d964f8c91f516ae4649814fbeec3d7eadc1caf69639d0278614a34b58dc98c"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0005-summarize/manifest.json",
+        "sha256": "074762e874cfc2955405d4107815d11fa3bbde0de23fbea5ebbee3053b491576"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0005-summarize/original-response.json",
+        "sha256": "50d9d388209c913fe6e71bcd8be66dcec9fc2b3a337fc94d65166bd4fbce4802"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0005-summarize/accepted.json",
+        "sha256": "ea521d53dc3405fabb997b921dca342df2cc3e92e8cd47d7e847e2e62dad1793"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0005-summarize-completed.json",
+        "sha256": "a165bc2b623c86f60c88f83e426c22b57ca775b41b9a2f417b9666b2a332be05"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0005-summarize-complete.json",
+        "sha256": "2f6af8f9b7ac9f4e34345970bfe9d199ff87f2a6ecd22df00c5b28b3b1e0492d"
+      },
+      "callback_elapsed_seconds": 432.8646724750288,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0006-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0006-summarize/request.json",
+        "sha256": "147fb71be031e729a0ae62ece500dda4b51ab72d8a44820037f554f60ab3e28c"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0006-summarize/manifest.json",
+        "sha256": "9211e55ffefdb9757575fb87bdd9e521bfc3de8dfd12eb7767897a7371eff201"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0006-summarize/original-response.json",
+        "sha256": "8b89e72460e8a6e1701e3a3b97022578f4b61c026379f7e28855c410e847caf8"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0006-summarize/accepted.json",
+        "sha256": "f2544f0a7be84a23e856426609ba45556ec72ecdf09492fef31963b654aa2cc9"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0006-summarize-completed.json",
+        "sha256": "895eee4f7be0d5d4f18bf6267dfc389236ca9dc6de2c226d65dc5deeecdd92bf"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0006-summarize-complete.json",
+        "sha256": "069e15c897e1374a30d6d2a6c972c3d7308ac762b70e4208eaa63b11c81290c2"
+      },
+      "callback_elapsed_seconds": 320.7992862709798,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0007-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0007-summarize/request.json",
+        "sha256": "60d28862d7db78b036ed4cddd0a621e4bb01310182c304ad87d1ebaf467a588c"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0007-summarize/manifest.json",
+        "sha256": "effb8f469f261573261db78c2e1202083d70b9f35be3fa181d6c8d6cba5335d7"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0007-summarize/original-response.json",
+        "sha256": "0342199a1bfe3136308a56326a432f54974a12c061e95836c32a680779069570"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0007-summarize/accepted.json",
+        "sha256": "3ce3be6bcd49228185bf2e882df91af3e948d922ce77250325ac9822d1a6dde1"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0007-summarize-completed.json",
+        "sha256": "e1cb8fd821cd5121f4b5e3c9c3c7faeef2d409833b8f6109c95b2ab81a89824e"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0007-summarize-complete.json",
+        "sha256": "cd4e92d2eeaa289b14ac4b0ef5a3fcd14ed495ad674c31a362bc1e31b0674201"
+      },
+      "callback_elapsed_seconds": 376.83222735498566,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0008-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0008-summarize/request.json",
+        "sha256": "c11f381bc2d83bf36f706bef6d0015680dc8ab018c9e4948c4dd31dd0a1d25bd"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0008-summarize/manifest.json",
+        "sha256": "12b9f306efd01daf5073f997b4e38e54c958bdaff534d7bf99a117a529bb8d86"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0008-summarize/original-response.json",
+        "sha256": "1e74739b1ca4485afa5a3e69ecc7a830a18487333bbd02121f653e80dac6786c"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0008-summarize/accepted.json",
+        "sha256": "2989cce9e753dad5973f3b134a30083fa18bd5966efd0dbf20e5bb41efd04b61"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0008-summarize-completed.json",
+        "sha256": "7654863e691d0f0b704889199a1a36f6c7afb7da1f45620b360eee008f8bd96d"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0008-summarize-complete.json",
+        "sha256": "d02cee171883140353ee1ef97f2fb58b22ee0d03495d50e585f7bde55f08772e"
+      },
+      "callback_elapsed_seconds": 282.9793114680215,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0009-compare",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0009-compare/request.json",
+        "sha256": "55b8dcd884675297225f920bbceadf2eea378b28279e2ee77b9ef1c81226d8a6"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0009-compare/manifest.json",
+        "sha256": "76b1b2ab20a23eada07bbde1877bbc1659d4bf25a3a0e239967addc458e50301"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0009-compare/original-response.json",
+        "sha256": "b69dbe90515edc9b744174cca2dd6403b2817eb21988990c6547ebc0cf87d2d3"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0009-compare/accepted.json",
+        "sha256": "ad82d15b5bd484483305f1b2c547f9102e92053846bf38969b821a49136cf7e9"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0009-compare-completed.json",
+        "sha256": "122e5398a3046877c340f54bd0932e47040cb3f792b0ec8fece4394757610889"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0009-compare-complete.json",
+        "sha256": "a39d11ffb1d380fd42c9695d5aa44c9696b9096e8c347b082a19db41cf170ccb"
+      },
+      "callback_elapsed_seconds": 154.38139687496005,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0010-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0010-summarize/request.json",
+        "sha256": "d9df730a0ac694593d06501a83f5c641e33c29ee8cde98f8568ca85ca4a85f43"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0010-summarize/manifest.json",
+        "sha256": "6589273a95f9bed5866b9d9a2a6f7ad89d425259c7657596c10ec93fefe23046"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0010-summarize/original-response.json",
+        "sha256": "1050116ccb2154f0ac86dd8ce77b00c96f1350feb25500a6266a33fcf0a81444"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0010-summarize/accepted.json",
+        "sha256": "b06e26a99d8ad25d67e178c8b3ddf76133e22500ab3b55dcf56616b377bbefac"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0010-summarize-completed.json",
+        "sha256": "17104fb1afe735da59df103bad738c80b78b3953d52606d87e27a0d104e0fa2a"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0010-summarize-complete.json",
+        "sha256": "35bad44166d2f103270d9d863f6271dcfc1918a85c59164dc0d85a22ac316300"
+      },
+      "callback_elapsed_seconds": 372.80419094400713,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0011-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0011-summarize/request.json",
+        "sha256": "a9e7614b5484c11234d32460fd91d39216eb261ef100283263b0825ba51a05b9"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0011-summarize/manifest.json",
+        "sha256": "24e21e82b986d92fcf7931b57c464f1aaf15dcb963c62a8e971ea7eaa997ba65"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0011-summarize/original-response.json",
+        "sha256": "b969241c11f08f2e69b782460c32598d35de9a62040ac4b4fa81b58e040412d4"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0011-summarize/accepted.json",
+        "sha256": "189952b841ff47ebc2541420015c73d69de8b4dfaf012108a757613af212b63a"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0011-summarize-completed.json",
+        "sha256": "6e12f50a4cf3d0c2b85ff1b601baac84390b1b6451df9a3e1a42dee6e83d860f"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0011-summarize-complete.json",
+        "sha256": "19f8fc10e46c2d6240ab9fde197b662681c22308b82e76ec2da78df59916b6f1"
+      },
+      "callback_elapsed_seconds": 290.71541951899417,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0012-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0012-summarize/request.json",
+        "sha256": "5782ee16496f6b1f61c32db74712eb994efe0ce9e7206264843fc4d9512830ab"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0012-summarize/manifest.json",
+        "sha256": "64677bf175ed9f543b41bd7c6270e305461c4bf1c531ed4ca58073af44fad88c"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0012-summarize/original-response.json",
+        "sha256": "4d71f430c371f49b40fa27748cd933f3a2511a8e5853a8a03b79b565bc2a7acf"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0012-summarize/accepted.json",
+        "sha256": "82596da5b91c90d765e4836e7a7363d355457024f49e9e66a059c58411ea7a3e"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0012-summarize-completed.json",
+        "sha256": "edee9e12f1216f04f6c99524ce35b754c9b2d31e4b7abab296d70daf1d21125d"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0012-summarize-complete.json",
+        "sha256": "754f893ce4ce05f5f7a47a94b8d280c44f6f8e3f2ab6eed9725c169f422ca773"
+      },
+      "callback_elapsed_seconds": 430.91248190402985,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0013-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0013-summarize/request.json",
+        "sha256": "bda35c2bfb373cbe7b793eacde38f7b94d5b2d0a5cef4c33f31cb42450777827"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0013-summarize/manifest.json",
+        "sha256": "46db949b6a894b0d78d335eb7b41bf5d10d5ad7e76fb6f76255375ccf8b2be55"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0013-summarize/original-response.json",
+        "sha256": "2d0d0954e90c0df3b5d9974480a5c05869e0456e0464858815d767432a496d64"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0013-summarize/accepted.json",
+        "sha256": "94bfa33face7973db18116ff583ff43da8326b44a5a2ab962868e876796d271f"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0013-summarize-completed.json",
+        "sha256": "d80e979f4bd0f8f300d5e4716ab2e34bda0b3a597b01e00110a19bb4ec4331c7"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0013-summarize-complete.json",
+        "sha256": "4570970648fae4a1b9711a304d2316b56181f9d50364fe908ddd4aba66dcd222"
+      },
+      "callback_elapsed_seconds": 259.3184380719904,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0014-compare",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0014-compare/request.json",
+        "sha256": "b3a500bb87816d44f960cf1002b60b4d2db03d7c9b64b16b2a625fac0edd70ea"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0014-compare/manifest.json",
+        "sha256": "8664843b9aafc75e5149c379bbea291b9ed12a4ab8a85e3f9e17eeac3375e5a4"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0014-compare/original-response.json",
+        "sha256": "8cd5f10d6834aa5ee796c872a87bfaa8e90f272650221424f8e30b665ab53a35"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0014-compare/accepted.json",
+        "sha256": "fb3fe5acb3278a1d3f9b82dcc7453be5f904187049999abc502c081cfb9fecab"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0014-compare-completed.json",
+        "sha256": "18ece9a4c9385d685b97894bb1770a23aabe4f4b394c12891d2f9078c0f5f902"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0014-compare-complete.json",
+        "sha256": "b8ad5370b15eab3e1a993948587d6ba71c040a8caf2c9403187b9d2004fa01a6"
+      },
+      "callback_elapsed_seconds": 226.57584695500555,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0015-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0015-summarize/request.json",
+        "sha256": "54e8d2941fa09d67b8fcc9e88f77a9a6b325d3e593ec3426420a9c9e58831431"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0015-summarize/manifest.json",
+        "sha256": "d8dfb9c457e3727f69867fe2a1629ea7db006e53defdc6cd2ca8a8dfde27d5dc"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0015-summarize/original-response.json",
+        "sha256": "fc09cb3654505f0040251286672c43aa0663b4acc6df3ca584d4eabfef821ed0"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0015-summarize/accepted.json",
+        "sha256": "fea8d648f1fa45cceec31b290c44fbcdef1315b57751cbf748cb0464eb895cb5"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0015-summarize-completed.json",
+        "sha256": "7fd6612d5b142680f45f364c32a6a78aafdc9f69ae631352715a582ff83f7264"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0015-summarize-complete.json",
+        "sha256": "06a69b5a6919ebf905d944351b2ee896eca61e71c69de24bb6cf29130430a83a"
+      },
+      "callback_elapsed_seconds": 366.85373355197953,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0016-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0016-summarize/request.json",
+        "sha256": "30ddc6180d4db5cb752532d90fd988aa2563064d7273c52135bd3c99538dc4ca"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0016-summarize/manifest.json",
+        "sha256": "f34ec286f68aa62962568ff816c9bf07d58fdda7d12df0dd0c0156ff38f91e46"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0016-summarize/original-response.json",
+        "sha256": "a874a5591fdcd64fcd255d9aeb181e3fec71a3a063511a589adc524abc6277d1"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0016-summarize/accepted.json",
+        "sha256": "acb86bed6df56989cc1ddb532c25a7aeb39b4f171d71fb53947662d747a3f219"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0016-summarize-completed.json",
+        "sha256": "f4fbf1c7f889cc1665aabe2fff305b95a6d3746f01e2af9c37ee1ec4d70d64ee"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0016-summarize-complete.json",
+        "sha256": "0842f57b8edc7cb93bceb2a2808c8e824639336cb93b447111b491e317a30bf6"
+      },
+      "callback_elapsed_seconds": 311.3140306319692,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0017-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0017-summarize/request.json",
+        "sha256": "b9117eb8ff0af41432a6f0819ab1648d5c0f996e0a89f2c8d9d4c22a232f8f75"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0017-summarize/manifest.json",
+        "sha256": "60d895eb8287b8ddd926385374472d48bd8546083ba1e9b81eb55ca0ef927d59"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0017-summarize/original-response.json",
+        "sha256": "9ca48dd7675b9ee979b3cefc1370856ea8d60d7f28e2ae14230edb5560a7b745"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0017-summarize/accepted.json",
+        "sha256": "9da244f5ade752078057afd7a298b5d45eb3b436a23b9ab6e678a809a8a762eb"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0017-summarize-completed.json",
+        "sha256": "703a596e3536dccf52b94f876d4ad0200dfa80517c56f45595056120667e06e5"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0017-summarize-complete.json",
+        "sha256": "c01db6e323790a64ff6b525e36e7396e6aaa21588d40aa3d52e6a52b9297d55f"
+      },
+      "callback_elapsed_seconds": 260.4960537980078,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0018-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0018-summarize/request.json",
+        "sha256": "78cd26a2d1ea7bb9e8ff28fbf3325dccfa3472126645b26dd84b04a18167e1ef"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0018-summarize/manifest.json",
+        "sha256": "bfbe466d40b3f91d8b1a48df76b78167cf6942d84047b51d2db85482f8bae5a4"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0018-summarize/original-response.json",
+        "sha256": "983f9d4d98520314c9225b16ee7bafd3fa8d03751d0dcf34a82e80db398e30be"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0018-summarize/accepted.json",
+        "sha256": "8c6e37efe5050579c10ddc1b0e23f35a69ea074af40c88fb2777dd9429ddd9b0"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0018-summarize-completed.json",
+        "sha256": "18caa8b455c1269a95ba0954586fa49ffe6577f9e168f0c795b6a6fb469b0f5f"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0018-summarize-complete.json",
+        "sha256": "92ce3a9e6ba1215876d13555fb2bbd6300322441ed7bbacaad3914cece03820d"
+      },
+      "callback_elapsed_seconds": 431.49060045398073,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0019-compare",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0019-compare/request.json",
+        "sha256": "df1384ca549f4b441c16af965ed825249c2a1a8ca1441a7e4e9f0ddd80b01aed"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0019-compare/manifest.json",
+        "sha256": "88ea6fcf71b6e6798a9ef5cdb5bb14bc04dfa07c81b78916a01aa5e40d4df6d1"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0019-compare/original-response.json",
+        "sha256": "3d5ded957d99b387b45eaab3f06776edbf33cf8cd15bb83bb4f70945b1487d3a"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0019-compare/accepted.json",
+        "sha256": "f852612711f33437b1abd3d8ef8045475e949ff1db7cf49e6879fc4fcdb7147d"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0019-compare-completed.json",
+        "sha256": "e58f0522b27dc22e26c151d1a5bf9aa4de5f3da7a3d86acc5938926d6f8865c5"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0019-compare-complete.json",
+        "sha256": "a7daf5114bf01bd32f933c397817606a77649a28bb5222b28b082384eeb0ae24"
+      },
+      "callback_elapsed_seconds": 160.32777392299613,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0020-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0020-summarize/request.json",
+        "sha256": "e50aed2d998240ddb7ef77da45000b3a98a0c4a145e34d7f0d3019de22909e19"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0020-summarize/manifest.json",
+        "sha256": "4fab4b4497fbf9f441625a794f625e70b96882e728713d8f5f17c43838608096"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0020-summarize/original-response.json",
+        "sha256": "7e2d3dd3f2aa442c4a7aa0815c5ae80a6ec4d0027c1eaf6e028dc1ddb2816c81"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0020-summarize/accepted.json",
+        "sha256": "f050f0a6e41efc257db6eeb66f98baad9fa26f28dfbfffac47c7e1832c35556b"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0020-summarize-completed.json",
+        "sha256": "65c49b78b63506318d641a16cd813dccac8146ffd8a708f593a18e4141455dff"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0020-summarize-complete.json",
+        "sha256": "fd4f3a6d88fcd52976f1a033aa552834c396f2842116049dd250c9de3aefafcf"
+      },
+      "callback_elapsed_seconds": 320.63703184504993,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0021-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0021-summarize/request.json",
+        "sha256": "d1d4c49bc6bd3af780a41c83cd83448bf0795d37d3ebe21a41ce3d0ef2f54f7a"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0021-summarize/manifest.json",
+        "sha256": "34109bd2aa4610b280b67fafa2c62ae2227959e1be5b56dce3ac220bf1c52e2d"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0021-summarize/original-response.json",
+        "sha256": "89b7432f68a1fbad8d9f6f2dbd937cb08ac915cb95e79be1f413a77ab7dd4de0"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0021-summarize/accepted.json",
+        "sha256": "725f0cdd50a28e63dfe978c2baddf472ba0a191a92b06a1cebf211b5e2fb814a"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0021-summarize-completed.json",
+        "sha256": "d1db62352f8949a0cfba8198c48f7bd93c53937089ea68f77fb624ce0c2e58db"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0021-summarize-complete.json",
+        "sha256": "a196b4e6e5daadde86ad6bffc5a967a009a06828c7224fc21d24abd89bdb517b"
+      },
+      "callback_elapsed_seconds": 302.60448478203034,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0022-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0022-summarize/request.json",
+        "sha256": "0e3fa33d275b5feb0c06221ff601adc1e00916f32bbe80d4b4bd58e29faee0f9"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0022-summarize/manifest.json",
+        "sha256": "d141a66cd2d2eca8677c51f800de982c1f81fe51aaad75fab75fbc2878cff779"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0022-summarize/original-response.json",
+        "sha256": "dae6eb220827a5f0ff611541f4a5896ab47adef8e4ee77bbb1e77355d8de409e"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0022-summarize/accepted.json",
+        "sha256": "29db01b3c78d98a8a55926addcfb61fb6dd07f6df656bf049cc0cc19fc4c1087"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0022-summarize-completed.json",
+        "sha256": "fbea9de362132831033dde520c07c60a081ad2e78691f66ce7cb1c4980c51185"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0022-summarize-complete.json",
+        "sha256": "b43a82b51c53e138babd49607b36c1de8fd924d6aae87b3b00913d9106ab8314"
+      },
+      "callback_elapsed_seconds": 288.7137550659827,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0023-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0023-summarize/request.json",
+        "sha256": "a89c4b0eeb63f26383810428d07000ab3b08f47abe080b4d6daa28cea9a328c7"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0023-summarize/manifest.json",
+        "sha256": "1156e018553cbb85bc97b12473681e8058570ab8ece5e8dd4e3b5703a71c03e5"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0023-summarize/original-response.json",
+        "sha256": "11bb3f1b464d7e8c7b90fb55f07343f65824a13e3b3dd59db5e19f08169dd600"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0023-summarize/accepted.json",
+        "sha256": "2a0372fabc30aca12980f858a3c566804c7e2cb549e80b07ccfbaadab584f0ae"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0023-summarize-completed.json",
+        "sha256": "e88f41ec138d93545319103b2d5c468080d2c1bda8589d45d9578cccb10a82c6"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0023-summarize-complete.json",
+        "sha256": "d11cb9606032c37018a666db7d5d0da72337fcd6fa19fbd124b9bf49b62db2f1"
+      },
+      "callback_elapsed_seconds": 315.25718792603584,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0024-compare",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0024-compare/request.json",
+        "sha256": "96c0ec6f0e177b120e7a7ac5792dac48b9799e4b664638fdab39d44cd54754c2"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0024-compare/manifest.json",
+        "sha256": "fd720443ee1322ead23ad75d2c2cfe755238f96391e8c72245ce8f88740a6f0a"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0024-compare/original-response.json",
+        "sha256": "51184a31d9efc9c3c367a5b5c2a0061abb6ca0a789eceafe34981e76b5a1a97a"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0024-compare/accepted.json",
+        "sha256": "e24dac0c5ec512475df233615a136f0548423eaa5438a71d96a8a159dc85468e"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0024-compare-completed.json",
+        "sha256": "5623403e9f93e0793aeb43adeaa5566c8e0d52891fb5bd62b4f349736df1fff7"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0024-compare-complete.json",
+        "sha256": "b3193eda0ce0adf92e5c3f0ce1b50b9a2d75e2e90952990cd22e7d4075152791"
+      },
+      "callback_elapsed_seconds": 154.59680854401086,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0025-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0025-summarize/request.json",
+        "sha256": "12963727685bc00b50bd4086f98558751ec34b41d012d02b178f8db98ce73369"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0025-summarize/manifest.json",
+        "sha256": "d6d2feb36f2101b4c40e202361382134776946e86c10dc00485d29b304c57e16"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0025-summarize/original-response.json",
+        "sha256": "3217d2f576c67090398a5db8552386821a9f721c7a58c7ab503bab1883d3c3b0"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0025-summarize/accepted.json",
+        "sha256": "431004142b089a1f96ea8aa09521bcda9da26f78ec21a874ad724523718124f6"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0025-summarize-completed.json",
+        "sha256": "969b1cb2713163122827753ebaed8fe1f5f917545f99cea8e8bdf5adcba3cad0"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0025-summarize-complete.json",
+        "sha256": "d99dcf2ac376071cd2030f288913d8e17306388b03ebfb7467a900e880b66a32"
+      },
+      "callback_elapsed_seconds": 296.6912886640057,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0026-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0026-summarize/request.json",
+        "sha256": "908211f55700350c2d107ae5209f04be2aecdb009ddd0b7c57017ac29cd1c58a"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0026-summarize/manifest.json",
+        "sha256": "30022351c0c1e1fe8a6213d0831af87749e7d588e52b3a0075e630fc589cbd9e"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0026-summarize/original-response.json",
+        "sha256": "e19e94b3d4a49eb338494efe2d3b9bf0b94c153eb0e8c30abd8bdabf85b2f143"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0026-summarize/accepted.json",
+        "sha256": "3fe3dc16fa99c24c253de5930d1d9b49f3d672ba057b316ed56c8bf8f5eb055e"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0026-summarize-completed.json",
+        "sha256": "269258dd49d88505c4f4dedab0c0ea9971ca8819dda95ab833513a38212ca87f"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0026-summarize-complete.json",
+        "sha256": "dcbc956d48bdf32c08a967be01031845737e845deb343085144b0dcd859ff94a"
+      },
+      "callback_elapsed_seconds": 327.6411180780269,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0027-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0027-summarize/request.json",
+        "sha256": "2bb8f076a0c02b8f27f97f17d82e59014c62f12955e5a5c158fa5ca31b4a0397"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0027-summarize/manifest.json",
+        "sha256": "a51149dfdc67fb1f2f4cf461873a6b8d93a4d1333d25c822f9ec92026d9b7a15"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0027-summarize/original-response.json",
+        "sha256": "be1087e879e293a1e3fef95b8b92490ad7760706e394b58885c568aaff797bbf"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0027-summarize/accepted.json",
+        "sha256": "7381e8b968f686c7aeaaff6670e58a9bcbff1b5718e36794b066adbe13659ac9"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0027-summarize-completed.json",
+        "sha256": "a4b309206b1cb2da91555aaa5cda2f7fa6c751a38ff82c40061c6d4137285365"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0027-summarize-complete.json",
+        "sha256": "4578153f878897674e8db9c192ae631dac218ad3ad0281b0d9e6a3916614ced0"
+      },
+      "callback_elapsed_seconds": 342.78181953402236,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0028-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0028-summarize/request.json",
+        "sha256": "b37d3a90d95a1febf0183d5b81ec1cd47cb85161d054987c2de98e0519f18d38"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0028-summarize/manifest.json",
+        "sha256": "b46fe5a5a95eafc137bdca328bd523bac63fa7492ffd3dcb779bbdbad81ff5dc"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0028-summarize/original-response.json",
+        "sha256": "6b62d662204aef35f6a58dd648106418b0f65a8600bc52be3f7fb9c6e9780630"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0028-summarize/accepted.json",
+        "sha256": "a7ac2652611bd0a6fc1856bec34cf0e2a2ed475cc578ff986b3517fa6fec319c"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0028-summarize-completed.json",
+        "sha256": "9160bd5dc7108beb7b660a13a2e6335f8a65bfc99d6663e87a1b69f80f85f3ec"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0028-summarize-complete.json",
+        "sha256": "35256eab57ad943df0a50602c4b374a55e5bc173ce421f1f8b97f4d85ae515a9"
+      },
+      "callback_elapsed_seconds": 312.9390338459634,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0029-compare",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0029-compare/request.json",
+        "sha256": "dd1323f621e8f633c64280c818406764345781364e172cbf087a5bda93b2a7c4"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0029-compare/manifest.json",
+        "sha256": "fe6869e07abc775fa1b817a8f2cf7b5a9860a27679a4723ecda74a0fe893ba8e"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0029-compare/original-response.json",
+        "sha256": "f67d33ba751282d98739243daa1a0cb8c7f982c4f3e4e1db28a6158c0048da5c"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0029-compare/accepted.json",
+        "sha256": "243f1a9d785ee61edd06bdfe9f8b6bd7bc355acc51bb96cd49ba739adf8411c4"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0029-compare-completed.json",
+        "sha256": "d38db7a9c19f0b410ae5cb26ba14544ce4ba597c06a56b310a88cc10e0b72738"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0029-compare-complete.json",
+        "sha256": "1184ca6d07aa00ed2cae00820f30c92703e6e4bf28f433019c79d1ee316a4b30"
+      },
+      "callback_elapsed_seconds": 303.3565388219431,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0030-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0030-summarize/request.json",
+        "sha256": "57ed490dda5e69624b265ce213a36558a820ae0bc68c006fc9275953cbcc0d18"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0030-summarize/manifest.json",
+        "sha256": "21411ee8c4e28a2d15cfed7b8562d92cf4be70bbd55d4bc86d01ba4e3e4616a9"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0030-summarize/original-response.json",
+        "sha256": "589dfabd19b808ca73fb7a3f71a561f114e4bd9b3cbdec7a04ca1126359ae010"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0030-summarize/accepted.json",
+        "sha256": "1c0a325232489269cebd447ce3757aae8b5c1155f66db89ab6d93148c96ad7f9"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0030-summarize-completed.json",
+        "sha256": "72a43281e2c180514f4a0743fde2c3d3634614b557e7b01609b3d16c3d1bb372"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0030-summarize-complete.json",
+        "sha256": "be4e137052a43d0c97a0ac6d7a79112885001780395366a9925756a8a9dd5f61"
+      },
+      "callback_elapsed_seconds": 377.29441769601544,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0031-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0031-summarize/request.json",
+        "sha256": "7857bb9ce21750a6ab536266300cad9d1819ace360cef2e10c4122c7e2a217a7"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0031-summarize/manifest.json",
+        "sha256": "83d6f12c1eb19ea6d9ce7d839e627fbccbb54ded81008c8c50b76d1ee05bb976"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0031-summarize/original-response.json",
+        "sha256": "8754ce0952084b8266e2063ba3a84c630c245439fb1e9ef2a29a234b441bb85d"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0031-summarize/accepted.json",
+        "sha256": "c5a329ee595f651688c50ab7b7d40ea355045c99c95a2a579608598482270c1d"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0031-summarize-completed.json",
+        "sha256": "3ca88d637c2167bc861c16444a2ff66f176acb3075f6d9ebb7789ee9128f3fc0"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0031-summarize-complete.json",
+        "sha256": "6b0cbc599be3383f226113669bce7fc87fe1c1e1491c549a67482d7da193f816"
+      },
+      "callback_elapsed_seconds": 369.249464833003,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0032-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0032-summarize/request.json",
+        "sha256": "4577ffdce65215f106afdbda69b499154a0a6008738646bb6dff56188da030ad"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0032-summarize/manifest.json",
+        "sha256": "ae89744dee2103c54ed83b26fb1cf3cb124471ce78ce83080baeea1b70fee300"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0032-summarize/original-response.json",
+        "sha256": "38c600bdf7f4959dacddbe1c049f81db62b36a722bf6d687d876fbf2e7179521"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0032-summarize/accepted.json",
+        "sha256": "b5b539ac192bf07372e198f4b3c071933625a19346f339252225707c293f2311"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0032-summarize-completed.json",
+        "sha256": "5db9933af838797fd255643c562f26e7a2285efe3a07e46eabcb35037747b9e7"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0032-summarize-complete.json",
+        "sha256": "e84a94f0ae99e6088d27afc625614bf5c385dcd1a6a64da868d0cced18e70d59"
+      },
+      "callback_elapsed_seconds": 419.29971669398947,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0033-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0033-summarize/request.json",
+        "sha256": "1c30433182e4936034c3ece4459faf2d564d93d50f880c4408f4e64ad5555c99"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0033-summarize/manifest.json",
+        "sha256": "d0f5834468be2739828ec91cb127e692b45582e3f1155b333c02007236106a56"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0033-summarize/original-response.json",
+        "sha256": "4571095aff2aa86fc8418bf4a871f77c56312ca0499d61b5f9735690cea44f5d"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0033-summarize/accepted.json",
+        "sha256": "5a647dc6f925853e7210199bfbd5b7980bf3f91e13c6ceef75d2efc1ac2a3cb9"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0033-summarize-completed.json",
+        "sha256": "9ee9771a7684026463ed6b8e3c9fc45396916ccd9f9b4ead5488dd75d447f910"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0033-summarize-complete.json",
+        "sha256": "6fe0fecd5df08ce200b1a7c2de123e05d7fafda8d8e93e8a079500badc17fdd5"
+      },
+      "callback_elapsed_seconds": 519.2549034510157,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0034-compare",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0034-compare/request.json",
+        "sha256": "eb6af02c19f58316d2388a8064bd71e96992593f3211e8425e3c5e0d7c8e1e70"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0034-compare/manifest.json",
+        "sha256": "b69405ac0cbc7164308f3ce641c476309793db604a6441d1c702c781d020a448"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0034-compare/original-response.json",
+        "sha256": "46870e2ceba81c5e752d2b0f21a7b91b9d2a03e3f884f1858ec6ad521676fae7"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0034-compare/accepted.json",
+        "sha256": "2cfc77f52cfd2d8ad570afd41e00ee04d9f2b7b139bb8657c183638750816e42"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0034-compare-completed.json",
+        "sha256": "f4ef788a5f7cc0265d8c6e28571a81beec5a2681c4b50da0a0f1e0443f01cb9b"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0034-compare-complete.json",
+        "sha256": "708320c8e4812be3592bf70a22bdea189979a70933e03b72996c01f3970c9b43"
+      },
+      "callback_elapsed_seconds": 192.60349745297572,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0035-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0035-summarize/request.json",
+        "sha256": "4bf54dd43511d3bbf38178a3d11e83ed8dcb12ac2e0453b8d0f5d883959f808e"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0035-summarize/manifest.json",
+        "sha256": "13a721e3380e83921e2f7079224a71caf627ff2062d1cf6dd95b5f84a43f7f7f"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0035-summarize/original-response.json",
+        "sha256": "d191da8860c040dec6b504c0b1e4b178aafe42773afb57170bacd37ed77a50d3"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0035-summarize/accepted.json",
+        "sha256": "8aecc9ecd185e93423cd52d9d5f296ed142539722f1aec73d7b43bc59e79e07a"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0035-summarize-completed.json",
+        "sha256": "a911bbdb9299038389c2afcac3b06681ed2582a8c9991cc9094452254eb2cb56"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0035-summarize-complete.json",
+        "sha256": "a671666275b1bee3dd919bb7d5c55cadaf1f65812d1cbc5a89027db10c079f96"
+      },
+      "callback_elapsed_seconds": 364.7709920820198,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0036-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0036-summarize/request.json",
+        "sha256": "e70b3b058f749a2ddf31e5d460c946dc0f296a62573257d99c20bf6e659de61c"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0036-summarize/manifest.json",
+        "sha256": "8c2ef1b903c5fc24e788ba4f9698bc072b1b50b6807ac4ba773d989fd4da5618"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0036-summarize/original-response.json",
+        "sha256": "e002c893d84366e033da62ee8d6319f17fb5902a06ffd5d4fa5195faf443ba71"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0036-summarize/accepted.json",
+        "sha256": "7cf0a9862b900e295747bcf40b636698198c1bf0c8c9315db0e336629a64d180"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0036-summarize-completed.json",
+        "sha256": "9a41b00e752cd5c0348bdf8d3aa1926ab842727ae4c8c19ee93ea1e40c50a453"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0036-summarize-complete.json",
+        "sha256": "adf2692b115bcea05974b130b895954d433b95c387e23da10605430a5825f05a"
+      },
+      "callback_elapsed_seconds": 306.8851643250091,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0037-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0037-summarize/request.json",
+        "sha256": "32197d334989ec9cea472eaf06bb7b6a94d5778ecd448bc164a156146942d4dc"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0037-summarize/manifest.json",
+        "sha256": "7a144f83ef4322788585e2ae4faa88e6260231a4a061937e3f5996003427092e"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0037-summarize/original-response.json",
+        "sha256": "7a2b3a7b32d8a3dcabf82306838ae2ba2d9538aa9b7cf5b6067fdf7367896a19"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0037-summarize/accepted.json",
+        "sha256": "7d0d9ba3ffa71c42e4955ea92dc1a2d46d5932f18d4751a64f1954082e7dede9"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0037-summarize-completed.json",
+        "sha256": "902701ab7bdcad2dc1e63390745ef73ad189ce489fe5fb366dcfa42cddf091af"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0037-summarize-complete.json",
+        "sha256": "4c3b3102eb889aab656b3d270fb49d839c97ef08ea64a66b2ec29e377b94d68f"
+      },
+      "callback_elapsed_seconds": 266.6166739119799,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0038-summarize",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0038-summarize/request.json",
+        "sha256": "7de779718438cee30d1a4d46c5b6da7daecfd9cd7700888d7b5df0866914c06d"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0038-summarize/manifest.json",
+        "sha256": "18f657059bc7f8a3f2ed43141987223164bffee3c2406a0c7400ac7c7a91c8f6"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0038-summarize/original-response.json",
+        "sha256": "a3331be865ce28303e4931b562a25b0a1bf5c0d560839e8779af29a0a94f939c"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0038-summarize/accepted.json",
+        "sha256": "e25e8431eb05970bc92b2bcf8c61d200a1724920901bea45166c3495c9d7932b"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0038-summarize-completed.json",
+        "sha256": "40949213df3e8ec3219c2d46e762b78102f0ef8b2570a8926a1f3ac15d780fc7"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0038-summarize-complete.json",
+        "sha256": "642b09e84eae65d70c3a04abaf579639a742ded54d4b24a4ad9ddaefb80de3c0"
+      },
+      "callback_elapsed_seconds": 254.60775422403822,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    },
+    {
+      "identity": "0039-compare",
+      "request": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0039-compare/request.json",
+        "sha256": "a0bf4d4ff068950262bed77cc487420e26a7d9f32e063e71b244cbe0b279d064"
+      },
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0039-compare/manifest.json",
+        "sha256": "4be197dc3788ad0b183c870023a02a28bedd2bfdfabdb3bc384fd296598173b2"
+      },
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0039-compare/original-response.json",
+        "sha256": "b9897e811e0414f0f401c930b07bc90506f501b58bcee73efd803ea83cbec2f2"
+      },
+      "accepted": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0039-compare/accepted.json",
+        "sha256": "9be9936e9739b2d77a4e0100db6b001cd16fe1a57588846962017f9a412fa2bd"
+      },
+      "completed_event": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0039-compare-completed.json",
+        "sha256": "d2b20b7f309e4196e0f4e628f11f9ad1738661b6fc9ed7631973df4e5be94249"
+      },
+      "root_receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-tf-0039-compare-complete.json",
+        "sha256": "4fefe179a17a7614769a5f5ff2efdfa70c1edce1eb61ecb608c81e65d4652352"
+      },
+      "callback_elapsed_seconds": 164.3673831539927,
+      "usage": {
+        "input_tokens": null,
+        "output_tokens": null,
+        "provider_contacts": null
+      }
+    }
+  ],
+  "stages": {
+    "summarize": {
+      "completed": 32,
+      "elapsed_seconds": 10944.503000538214,
+      "mean_seconds": 342.0157187668192
+    },
+    "compare": {
+      "completed": 8,
+      "elapsed_seconds": 1512.5759614009294,
+      "mean_seconds": 189.07199517511617
+    }
+  },
+  "scope": "All original registered nonconstant-group summaries and comparisons accepted unchanged. This is reflection completion, not a completed learning iteration, policy adoption or task-quality improvement.",
+  "timing_scope": "Original learner monotonic callback intervals include actor execution, orchestration and wait; not provider inference time or business sample latency.",
+  "provider_usage_known": false,
+  "runtime_dispatch": false,
+  "new_generation_or_scoring_contacts": 0,
+  "future_handoff_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/refresh-tf-handoff-v5.py",
+    "sha256": "1125856813af555f4ca9d9fbf98bc649aa28ecd4f3c7a2dcd14a7e1b248e1ead"
+  }
+}
