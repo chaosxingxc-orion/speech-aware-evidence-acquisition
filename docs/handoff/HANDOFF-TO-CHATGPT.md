@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Initial4 actual capacity running; learner boundary integrated, 2026-10-04T07:53:17.446167+00:00
+
+[Capacity launch](../receipts/continuation/2026-10-04-context-initial4-capacity-launch.json) is verified RUNNING through Windows SAEA-Context-Initial4-Capacity-Owner227 at07:51:36Z, original PID637952/start44906776. Frozen worker codex-context-initial4-capacity-v2 atcdce93551 passes all four runtime/registration/role/supply checks. First stable memory admission passed; the worker owns its lease and resource guard. Revalidate the handle, not this snapshot. Four nongenerative297-endpoint members,1188 ceiling total; no generation/scoring admitted. Preserve original consumed-flag refusal andcdce successor. No queue/STOP/service/cache change. Heartbeat stays PAUSED.
+
+[Reviewed learner boundary](../receipts/continuation/2026-10-04-context-learning-adapters-root-review.json) is integrated as117017bfe; root independently reran151 passing tests. It qualifies complete registered feedback, prepares deterministic-context TF semantic experience or separate GEPA component tasks and retains immutable updates. Actual reflection calls, GEPA scheduling/acceptance, evaluated updates and learning results remain unfinished. Do not label interface tests as a completed baseline. Active frozen capacity source is unchanged.
+
+Next inspect exact operational capacity receipts; after all pass, admit separate four-row structure proofs and N20K4 complete comparison with separately counted controls. Same400 sources, fixed0/20260913, independent full node prompts and supported assembly, sequential4slot/queue4; report quality/completion and all/non-first latency. Human before8x400 and separate carrier holds remain.
+
 ## Initial4 precontact ledger correction, 2026-10-04T07:44:29.905227+00:00
 
 The first clean frozen runtime check correctly refused a root preparation defect: the eight prospective exposure rows copied consumed=yes from the completed seed predecessor. No attempt/run directory or service contact exists. Root227 [disposition](../receipts/continuation/2026-10-04-context-initial4-precontact-ledger-disposition.json) corrects only these new rows to no in a successor checkout and preserves original993fd7908 source/logs. Full frozen runtime checks remain; no bypass, replay or automatic contact is authorized.

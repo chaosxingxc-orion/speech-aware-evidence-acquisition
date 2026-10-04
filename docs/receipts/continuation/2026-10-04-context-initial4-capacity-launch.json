@@ -1,0 +1,64 @@
+{
+  "schema": "saea-context-initial4-capacity-launch-v1",
+  "at_utc": "2026-10-04T07:53:17.446167+00:00",
+  "status": "RUNNING",
+  "windows_task": "SAEA-Context-Initial4-Capacity-Owner227",
+  "launch": {
+    "at_utc": "2026-10-04T07:51:36.417778+00:00",
+    "pid": 637952,
+    "registration_sha256": "12061b71baa6c03fff1e6e09713530547d8e9344dbd861f8c898899ac4dae75a",
+    "script_sha256": "94aaa6b0cce8188cd9b574d2fc7aaaa172a1b9966f9042aee4fa1e4fb994a861",
+    "source_commit": "cdce93551a7b82151f42c22f9e5451b147a7202a",
+    "worker": "/home/chao/saea-worktrees/codex-context-initial4-capacity-v2"
+  },
+  "verified_process": {
+    "pid": 637952,
+    "start_ticks": "44906776",
+    "cmdline": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-capacity-owner227-v1/launch-capacity-v1.py --registration /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-capacity-owner227-v1/registration-v1.json --sha256 12061b71baa6c03fff1e6e09713530547d8e9344dbd861f8c898899ac4dae75a "
+  },
+  "worker_frozen": true,
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-capacity-owner227-v1/registration-v1.json",
+    "sha256": "12061b71baa6c03fff1e6e09713530547d8e9344dbd861f8c898899ac4dae75a"
+  },
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-capacity-owner227-v1/frozen-check-v2.json",
+    "sha256": "d8653c2ab905c3a7c7fc3c33ac6f5ad80b68914d32b875d7951b41373f4c71bf"
+  },
+  "windows_wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-capacity-owner227-v1/launch-v1.ps1",
+    "sha256": "097e67b380eff86c24e6821597ce612f49fbe25e8661d289e5da9b6379046e9d"
+  },
+  "memory_wait": {
+    "elapsed_seconds": 21.956401413015556,
+    "exit_code": 0,
+    "interval_seconds": 10,
+    "observer_sha256": "9d61272c6f4756d2962ec934869ffea61d5e0d1b7adcd544f504abb36e69218c",
+    "running_floor_gib": 8.0,
+    "schema": "saea-precontact-memory-wait-v1",
+    "stable_samples": 3,
+    "start_gib": 12.5,
+    "status": "ready",
+    "stop_marker": "/home/chao/batch-STOP",
+    "wait_seconds": 600.0,
+    "worker_started": false
+  },
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-capacity-owner227-v1/launcher-start.json",
+      "sha256": "6928e33cb5c516dae802de49a813a061e4856040c6bd7cd6f9893d719f7af5f5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-capacity-owner227-v1/capacity-started.json",
+      "sha256": "c975a325104b1edda04e9609c83d6f6ddbb1bb5395316353669e7c6a1612ec7d"
+    }
+  ],
+  "members": 4,
+  "tokenizer_endpoint_cap": 1188,
+  "generation_contacts_admitted": 0,
+  "scorer_contacts_admitted": 0,
+  "controls_mutated": false,
+  "heartbeat": "PAUSED",
+  "claim": "Task is running under its own Windows-owned process and existing lease/memory guard. Capacity success is not yet established.",
+  "next": "Require all four actual FIT outcomes, then separately register structural4 per system and completeN20K4 family with controls. No quality or learning claim."
+}
