@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## GEPA child structural proof complete, 2026-10-04T11:01:22.120712+00:00
+
+[Exact completion](../receipts/continuation/2026-10-04-context-gepa-iteration1-structural-complete.json): four rows,22 model contacts,22 actual FIT receipts/88 endpoints. Six Reviewer handoffs are valid and visible; all four terminal deliveries retain Omni custody. Driver completed normally, engineering attempt intentionally remains OPENED with prepared score specification and no official score. Do not score/reseal or read task quality. Original sample and node timing are source-bound; this is not a speed or benefit comparison.
+
+Next register the fresh six-member120-trajectory N20 trial and full-family READ, then answer the original live GEPA evaluator callback with source bindings. TF stays independent; seed remains incumbent. Preserve original failures/frozen sources, paused heartbeat, other-carrier holds and human-before8x400.
+
+
 ## GEPA child four-row structural entry registered, 2026-10-04T10:48:20.2971386Z
 
 [Exact structural entry](../readiness/2026-10-04-context-gepa-iteration1-structural-entry-v1/README.md) binds the unchanged provisional child after its passed capacity recovery. Register four actual shared-runtime trajectories,52 generation contacts maximum and208 separate actual-request FIT endpoints,zero official scores. Own supply warm-verifies and the named registration gate has no blocking finding; the structural-only roster advisory does not authorize any quality read. Clean frozen runtime, actual-policy bytes, exact first4 source identity and live admission remain required before launch.

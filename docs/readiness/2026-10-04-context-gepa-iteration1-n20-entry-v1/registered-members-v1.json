@@ -1,0 +1,86 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "candidate_id": "seed",
+    "config_hash": "bc04463299ecb7af2d2c1497abfd8dfdc48fcd0075e1f2e8782429267ccbce84",
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-seed-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1/phase-supply-v1.json",
+      "sha256": "a4b3fd9e756c1a5621db0537c081c6169d8c0fa6b07cba81dd98b72609a43d5a"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "candidate_id": "seed-aa",
+    "config_hash": "c91e8671228a5f4bbcdd46000908e86ffa49b9579b610318e81fde1bd2da9d4a",
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1/phase-supply-v1.json",
+      "sha256": "b5583c43d60e5ff6cf6e876bdd217e042cb916e33320d4acd0c6fca587538d5d"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1",
+    "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+    "candidate_id": "speech-evidence",
+    "config_hash": "5fec43b9f84b667bf4d15453d27990b885906397e183e2b5bfd24a08edcfe0fc",
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1/phase-supply-v1.json",
+      "sha256": "8990553efd0f795293d3a042809683611d913d21bc932f5519f28121d302e23e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-generation-v1",
+    "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+    "candidate_id": "coverage-ledger",
+    "config_hash": "d8ebd9f551a89edab72fb7430bb06a88c8c8c203baa81678b7e98ebf0d2ba720",
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1/phase-supply-v1.json",
+      "sha256": "eae192f4f31db59882055e59e532d78ad217435cd5c843279fef5266eea2bdd5"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-generation-v1",
+    "bundle_id": "0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff",
+    "candidate_id": "counterexample-check",
+    "config_hash": "155c91760bbe4f725663a47534ccbfb7e1e3340cd29ffba6115723443a35d474",
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1/phase-supply-v1.json",
+      "sha256": "4e0bd889047ebd7804bf70ed73d279d4192bd8b1cfb19e70d76b8f8648243bdf"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-generation-v1",
+    "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+    "candidate_id": "semantic-frame",
+    "config_hash": "93acce201d287f20354fce40fbfb279101468436820df7f8dfba8057ed99c7d6",
+    "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-v1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1/phase-supply-v1.json",
+      "sha256": "5e9698973605e7c0d786f9e31e3eaaffe0e13954df6f6873fa5c0b9c9381f942"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1",
+    "status": "HELD",
+    "unchanged_selection": true
+  }
+]

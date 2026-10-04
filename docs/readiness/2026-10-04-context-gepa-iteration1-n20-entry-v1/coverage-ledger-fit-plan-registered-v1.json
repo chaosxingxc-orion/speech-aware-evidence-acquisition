@@ -1,0 +1,47 @@
+{
+  "cell": "slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-v1",
+  "composed_config_hash": "d8ebd9f551a89edab72fb7430bb06a88c8c8c203baa81678b7e98ebf0d2ba720",
+  "decision_receipt": {
+    "relpath": "coordination/context-gepa-iteration1-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "81d232122b0ebe7129ad3f7cab76b3fdbce61f45ccef83bc11f6b45569c0a871"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "ac5fabb082c032f0e273c53570e53ee99f864ba79a6848a92116d3f5a9dc6241",
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-baseline-gepa-iteration1-worker2-v1/policies/929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f.json",
+      "sha256": "690e45215e5229bdfe40dd096beece6240c264f6cd162d21a2f149eb644748c1"
+    },
+    "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1/phase-supply-v1.json",
+    "sha256": "eae192f4f31db59882055e59e532d78ad217435cd5c843279fef5266eea2bdd5"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

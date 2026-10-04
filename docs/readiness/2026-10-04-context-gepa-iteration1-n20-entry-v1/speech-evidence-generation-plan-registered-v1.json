@@ -1,0 +1,47 @@
+{
+  "cell": "slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-v1",
+  "composed_config_hash": "5fec43b9f84b667bf4d15453d27990b885906397e183e2b5bfd24a08edcfe0fc",
+  "decision_receipt": {
+    "relpath": "coordination/context-gepa-iteration1-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "81d232122b0ebe7129ad3f7cab76b3fdbce61f45ccef83bc11f6b45569c0a871"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "af64dd597e954bdd8f20bd392d48e29df6f56af70b90bf0f701ad84d80693391",
+    "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-baseline-gepa-iteration1-worker2-v1/policies/3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303.json",
+      "sha256": "5fa0d2c6c2a3bbd99463f91623e8d0a1a07454ce778f80768c079aa3b110745c"
+    },
+    "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1/phase-supply-v1.json",
+    "sha256": "8990553efd0f795293d3a042809683611d913d21bc932f5519f28121d302e23e"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

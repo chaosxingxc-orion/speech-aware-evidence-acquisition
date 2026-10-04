@@ -1,0 +1,32 @@
+{
+  "actual_fit_endpoint_cap": 208,
+  "at_utc": "2026-10-04T10:53:18.230399+00:00",
+  "authority": "root227 exact four-row structural entry",
+  "commit": "665101384fb608bf9767809a42f9859f5a025485",
+  "decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "e74def4959c654f0cdf1ccb75896f181e6692310cee4a5f464665ea94ae758f7"
+  },
+  "driver_epoch": "2026-10-04T10:51:17Z",
+  "driver_pid": 668435,
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-structural-owner227-v1/frozen-check-v1.json",
+    "sha256": "9fb17606a747dace759f7c9469ab59af3293fe3747167616fab21b8827ea19f3"
+  },
+  "generation_contact_cap": 52,
+  "next": "Complete root structural audit before separate whole-family N20 admission.",
+  "normal_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-structural-owner227-v1/driver-transition-v1.json",
+    "sha256": "5e00b721a46695dc52e83c6b2e02add0c187d97ab5ade9fad5af77e73372ee7a"
+  },
+  "official_scores": 0,
+  "read_scope": "Only exact complete engineering structural handoffs, request/response identity and native terminal custody plus numeric timing. No task quality or optimizer export.",
+  "rows": 4,
+  "schema": "saea-gepa-child-structural-launch-v1",
+  "start_ticks": 45960678,
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-structural-owner227-v1/windows-launch-proof-v1.json",
+    "sha256": "894a3fcbb659e308de459989df27f4e377f7135df5341e2500bbcd0d84596a79"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-gepa-iteration1-structural-v1"
+}

@@ -1,0 +1,70 @@
+{
+  "expected_members": {
+    "counterexample-check": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1",
+    "coverage-ledger": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1",
+    "seed": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1",
+    "seed-aa": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1",
+    "semantic-frame": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1",
+    "speech-evidence": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1"
+  },
+  "family_id": "context-gepa-iteration1-n20",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "member_bindings": {
+    "counterexample-check": {
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-generation-v1",
+      "bundle_id": "0e48a88cd23b2c67158c6dc818dfbf390bf5d4cd06c5c0026cb32fec94c334ff",
+      "config_hash": "155c91760bbe4f725663a47534ccbfb7e1e3340cd29ffba6115723443a35d474",
+      "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-counterexample-check-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1"
+    },
+    "coverage-ledger": {
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-generation-v1",
+      "bundle_id": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+      "config_hash": "d8ebd9f551a89edab72fb7430bb06a88c8c8c203baa81678b7e98ebf0d2ba720",
+      "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-coverage-ledger-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-COVERAGE-LEDGER-V1"
+    },
+    "seed": {
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "bc04463299ecb7af2d2c1497abfd8dfdc48fcd0075e1f2e8782429267ccbce84",
+      "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-seed-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-V1"
+    },
+    "seed-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "c91e8671228a5f4bbcdd46000908e86ffa49b9579b610318e81fde1bd2da9d4a",
+      "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-seed-aa-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEED-AA-V1"
+    },
+    "semantic-frame": {
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-generation-v1",
+      "bundle_id": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+      "config_hash": "93acce201d287f20354fce40fbfb279101468436820df7f8dfba8057ed99c7d6",
+      "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-semantic-frame-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SEMANTIC-FRAME-V1"
+    },
+    "speech-evidence": {
+      "attempt_id": "attempt-slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-generation-v1",
+      "bundle_id": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303",
+      "config_hash": "5fec43b9f84b667bf4d15453d27990b885906397e183e2b5bfd24a08edcfe0fc",
+      "experiment": "slurp-native-stage3-context-gepa-iteration1-n20-speech-evidence-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-SPEECH-EVIDENCE-V1"
+    }
+  },
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-04-context-gepa-iteration1-n20-entry-v1/protocol-v1.json",
+    "sha256": "5e336c974f2b08f88d2e7f5960fe8ccb999795a257104e7fb479727c5371859a"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-GEPA-ITERATION1-N20-READ-V1",
+  "registration_sha256": "ca9cdf7c7b2054cf743320d9150edde2a10830720ab1b3c29e08edf5c8ebd5bd",
+  "schema": "saea-context-learning-registration-v1"
+}

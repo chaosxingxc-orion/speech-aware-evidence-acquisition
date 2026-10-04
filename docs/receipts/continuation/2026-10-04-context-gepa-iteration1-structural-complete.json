@@ -1,0 +1,29 @@
+{
+  "actual_request_fit_receipts": 22,
+  "at_utc": "2026-10-04T11:01:22.120712+00:00",
+  "commit": "665101384fb608bf9767809a42f9859f5a025485",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-structural-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "78ba727525dbaf1c252900ae238788911b21e5692f4301af06752a0a5a8a6a46"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-structural-owner227-v1/root-sample-timing-v1.json",
+      "sha256": "9302afbe7ae8fc8f2743a9ab1389e52208dbe15360327bafcc38e9aaed15f521"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-structural-owner227-v1/root-node-timing-v1.json",
+      "sha256": "2e4f47d7e173713cceb608d1c532cd09e37c2fd6165c426036bfc712c0fe5545"
+    }
+  ],
+  "fit_endpoint_contacts": 88,
+  "model_contacts": 22,
+  "next": "Fresh complete six-member N20 GEPA evaluation and READ before returning source bindings to the original live learner. Keep TF independent, seed incumbent and heartbeat PAUSED.",
+  "official_scorer_contacts": 0,
+  "owner_decision": 227,
+  "rows": 4,
+  "schema": "saea-context-gepa-iteration1-structural-complete-v1",
+  "scope": "Structural routing, native answer custody, visible valid Reviewer handoffs and exact request FIT. No task quality read or learned benefit. Uncalled knowledge paths remain unobserved.",
+  "structural_pass": true,
+  "worker": "/home/chao/saea-worktrees/codex-context-gepa-iteration1-structural-v1"
+}

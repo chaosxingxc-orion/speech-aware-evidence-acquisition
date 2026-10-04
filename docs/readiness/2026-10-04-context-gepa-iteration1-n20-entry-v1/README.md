@@ -1,0 +1,5 @@
+# Exact GEPA iteration1 N20K4 evaluation entry
+
+Register six complete shared-runtime members: unchanged seed/A/A followed by four distinct full context systems. Same20 UPDATE2 inputs;80 candidate plus40 control trajectories. Reuse assets and own warm-verified supplies. The original unchanged systems and exact changed child have capacity and separate structural proofs. Temperature0/seed20260913, sequential4slot/queue4, standard official whole-member scoring once.
+
+Root227 permits this finite comparison after exact frozen/runtime/live checks. No callback/proposer contact, automatic expansion or independent-validation claim. Scientific READ remains unsigned until all six finalized, verified seals and unique successful scores with no failed jobs. The original reference is TRAIN only. This family evaluates the one original GEPA child. It is excluded from TF initial inputs. After the exact READ, answer the existing callback with source bindings only; no invented reward or next iteration. Preserve historical/frozen bytes, paused heartbeat and human-before8x400.

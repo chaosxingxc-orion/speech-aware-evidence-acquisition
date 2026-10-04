@@ -1,0 +1,62 @@
+{
+  "K": 4,
+  "M": [
+    "perception",
+    "solver",
+    "reviewer",
+    "planner"
+  ],
+  "N": 20,
+  "algorithms": [
+    "tf-grpo-context-diversity",
+    "gepa"
+  ],
+  "automatic_expansion": false,
+  "candidate_members": [
+    "speech-evidence",
+    "coverage-ledger",
+    "counterexample-check",
+    "semantic-frame"
+  ],
+  "control_members": [
+    "seed",
+    "seed-aa"
+  ],
+  "evaluation_only": true,
+  "evaluation_request": {
+    "relpath": "system-text-search/context-baseline-gepa-iteration1-worker2-v1/external-exchange/requests/0001-evaluate/request.json",
+    "sha256": "aa946b4f0e24decd0b70feecdc511eefca5baea801b939ced1996b5ed6b44aae"
+  },
+  "family_id": "context-gepa-iteration1-n20",
+  "fixed_roster": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/fixed400-source-v1.json",
+    "sha256": "1e1b284a21893973a207ac387b13d6627e64e1c550953c26744328937ef8d5bd"
+  },
+  "frozen_reference": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/original-reference-family-v1.json",
+    "sha256": "c037f1706f9365c47360a20ef87645781ca30fbe777e45d711b2a1068b778148"
+  },
+  "independent_validation": false,
+  "iteration": 1,
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-04-deterministic-context-rollouts.json",
+    "sha256": "95605fc5cad2d4e7ff1b5209014dff1d6dcc7ac640747ec727e732c61f99d272"
+  },
+  "sampling": {
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "schema": "saea-context-learning-protocol-v1",
+  "source_iteration_plan": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/gepa-iteration-plan-draft-v1.json",
+    "sha256": "18dd7b3396694cb3d9631399e23b80ff43d1c26ad03a33f4ad8a58c402c0a5f5"
+  }
+}
