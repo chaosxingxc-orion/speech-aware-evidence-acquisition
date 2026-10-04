@@ -84,7 +84,7 @@ def analyze_update(feedback, *, protocol, recipe, roster):
     return report
 
 
-def _describe_complete_cohort(d, *, ids, bindings, recipe, roster, branch_names=("L", "B")):
+def _describe_complete_cohort(d, *, ids, bindings, recipe, roster, branch_names=("L", "B"), comparison_groups=None):
     """Shared statistics only; callers enforce their separate admission and READ gates."""
     stage_name = d["family_id"]
     resampling = recipe["resampling"]
@@ -235,22 +235,28 @@ def _describe_complete_cohort(d, *, ids, bindings, recipe, roster, branch_names=
         }
         for cid in bindings
     }
-    require(branch_names in (("L", "B"), ("B",)), "invalid descriptive branch scope")
+    if comparison_groups is None:
+        require(branch_names in (("L", "B"), ("B",)), "invalid descriptive branch scope")
+        comparison_groups = {}
+        for branch in branch_names:
+            parent, aa = branch + "-parent", branch + "-parent-aa"
+            candidates = sorted(cid for cid in bindings
+                                if cid.startswith(branch + "-") and cid not in {parent, aa})
+            require(all(cid in {branch + "-candidate-1", branch + "-candidate-2"}
+                        for cid in candidates), "unexpected update slot")
+            comparison_groups[branch] = (parent, aa, candidates)
+    else:
+        require(isinstance(comparison_groups, dict) and comparison_groups,
+                "explicit comparison groups required")
+        declared = []
+        for parent, aa, candidates in comparison_groups.values():
+            selected = [parent, aa, *candidates]
+            require(len(selected) == len(set(selected)) and set(selected) <= set(bindings),
+                    "comparison group members differ")
+            declared.extend(selected)
+        require(set(declared) == set(bindings), "comparisons must cover every member")
     branches = {}
-    for branch in branch_names:
-        parent, aa = branch + "-parent", branch + "-parent-aa"
-        candidates = sorted(
-            cid
-            for cid in bindings
-            if cid.startswith(branch + "-") and cid not in {parent, aa}
-        )
-        require(
-            all(
-                cid in {branch + "-candidate-1", branch + "-candidate-2"}
-                for cid in candidates
-            ),
-            "unexpected update slot",
-        )
+    for branch, (parent, aa, candidates) in comparison_groups.items():
         pairs = {"same-request-null": (parent, aa)}
         for cid in candidates:
             suffix = cid.removeprefix(branch + "-")

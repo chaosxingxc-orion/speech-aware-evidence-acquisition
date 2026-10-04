@@ -1,0 +1,34 @@
+{
+  "schema": "saea-context-learning-reader-integration-v1",
+  "at_utc": "2026-10-04T09:01:57.105391+00:00",
+  "authority": "owner227 root",
+  "scope": "Analysis implementation of the six-member N20K4 family; no runtime or protocol estimator change.",
+  "supplement": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-entry-v1/analysis-supplement-v2.json",
+    "sha256": "2b43440d2542d025fcb2ad33fa2252039edabb1f6c08b09085aefb305994273a"
+  },
+  "predecessor": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-entry-v1/analysis-supplement-v1.json",
+    "sha256": "b3a143bc0d7d132c1d4fbdc8aa85e847a8fb50f252ebebbaa04acac0c1b24b57"
+  },
+  "tests": {
+    "focused_passed": 202,
+    "new_analyzer_statements": 21,
+    "new_analyzer_statement_coverage_percent": 100,
+    "engineering_base": "PASS",
+    "harness_admission": "PASS",
+    "ruff": "PASS"
+  },
+  "red_evidence": "Eight initial tests failed on missing new analyzer and unsupported new supplement schema before implementation.",
+  "real_admission_rehearsal": {
+    "source": "Exact current recipe, registration, protocol and successor supplement",
+    "result": "REFUSED at unsigned root READ before source_bindings or derivative creation",
+    "error": "READ row is not unambiguously root countersigned",
+    "official_score_or_task_quality_read": false
+  },
+  "implementation": "Extend the shared saved-score reader and common cohort statistics with explicit complete comparison groups. Validate pinned code, sources, metadata, all seals and fresh complete feedback. Retain all nine candidate/control contrasts, stratum weightings, answer changes and a separate measured quality/reliability/latency frontier. A/A is not a selectable duplicate.",
+  "custody": "Earlier incidental root log exposure remains recorded and excluded from optimizer input; this implementation did not use it for numerical rules or policy selection.",
+  "pending": "Wait for all six original workers and unique successful official scores, metadata qualification and exact root READ. Then read once, produce original node timing sidecars, interpret the complete family and prospectively admit separate TF/GEPA callbacks.",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0
+}

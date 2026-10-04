@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Six-member complete feedback reader integrated, 2026-10-04T09:01:57.105391+00:00
+
+[Reader integration](../receipts/continuation/2026-10-04-context-learning-reader-integration.json) extends the existing saved-score reader and cohort statistics to the exact seed/A/A plus four context systems.202 focused tests,base/harness/Ruff pass; the new21-statement analyzer has100% statement coverage. The real recipe and [analysis supplement v2](../readiness/2026-10-04-context-initial4-n20-entry-v1/analysis-supplement-v2.json) correctly refuse at unsigned READ before any source or output directory is opened. V2 only pins the implemented analysis; original estimator definitions and frozen execution are unchanged.
+
+At09:00Z the driver had completed the first seed and entered seed-aa; verify actual processes and all six operational members. No partial quality read or learning update. After complete qualification and exact root READ, reuse this reader for saved official results, then export source-bound node timing and prepare separate TF/GEPA inputs. Keep the prior incidental log exposure out of learner contexts. The heartbeat remainsPAUSED, frozen workerc6f5543b7 unchanged, other-carrier holds and human-before8x400 intact.
+
 ## Running-check source correction, 2026-10-04T08:52:57.356800+00:00
 
 Root accidentally exposed a partial seed trajectory by tailing the campaign log, whose OpenJiuwen state contains answers. [Exact incident/disposition](../receipts/continuation/2026-10-04-context-initial4-incidental-log-exposure.json) preserves the evidence and prohibits its use for quality or optimizer input. No score/gold/comparator feedback was read. Continue the frozen admitted family unchanged; use allowlisted operational metadata only during execution. Do not supply this root conversation to learner callbacks. Exact full-family READ remains unsigned and mandatory.

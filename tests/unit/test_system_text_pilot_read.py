@@ -409,7 +409,7 @@ def cli_fixture(tmp_path, monkeypatch, fixture_factory=None):
     monkeypatch.setattr(cli, "verify_bundle", verify)
 
     def reuse(path, *, job_id, verified_bundle):
-        assert len(calls["verify"]) == 8
+        assert len(calls["verify"]) == len(registration["member_bindings"])
         calls["reuse"].append(job_id)
         pin = save(path / "receipt.json", {"job_id": job_id})
         return SimpleNamespace(

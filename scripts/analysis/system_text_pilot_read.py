@@ -15,6 +15,10 @@ from pathlib import Path
 
 from speech_aware_evidence_acquisition.analysis import system_text_context as context
 from speech_aware_evidence_acquisition.analysis import system_text_panel as panel
+from speech_aware_evidence_acquisition.analysis import system_context_read as context_read
+from speech_aware_evidence_acquisition.rails import system_context_learning as context_learning
+from speech_aware_evidence_acquisition.rails.system_text_feedback import CompleteSystemFeedback
+from speech_aware_evidence_acquisition.rails.system_text_policy import canonical
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.analysis.system_text_pilot import (
     analyze_pilot,
@@ -56,7 +60,9 @@ def load_documents(recipe_pin, supplement_pin, root):
     require(
         supplement.get("schema")
         == (
-            "saea-system-panel-analysis-supplement-v1"
+            "saea-context-learning-analysis-supplement-v1"
+            if "context_learning_registration" in recipe
+            else "saea-system-panel-analysis-supplement-v1"
             if "system_panel_registration" in recipe
             else "saea-context-analysis-supplement-v1"
             if recipe.get("family_id") in context.READ_IDS
@@ -65,9 +71,19 @@ def load_documents(recipe_pin, supplement_pin, root):
         and supplement.get("recipe") == recipe_pin,
         "analysis supplement names another recipe",
     )
-    key = "system_panel_registration" if "system_panel_registration" in recipe else "pilot_registration"
+    key = ("context_learning_registration" if "context_learning_registration" in recipe else
+           "system_panel_registration" if "system_panel_registration" in recipe else "pilot_registration")
     registration = json.loads(_read_pin(recipe[key], root))
-    owner = json.loads(_read_pin(supplement["owner_decision"], root))
+    if key == "context_learning_registration":
+        require(not any(k in recipe for k in ("system_panel_registration", "pilot_registration")),
+                "context recipe cannot mix family registration types")
+        for source_pin in supplement.get("source_code", {}).values():
+            _read_pin(source_pin, root)
+        require(supplement.get("registration") == recipe[key], "context supplement registration differs")
+        owner = json.loads(_read_pin(registration["protocol"], root))
+        context_learning._validate_scope(recipe, registration, owner, root=root)
+    else:
+        owner = json.loads(_read_pin(supplement["owner_decision"], root))
     return recipe, registration, owner, supplement
 
 
@@ -154,6 +170,7 @@ def run(
         "read_registration": recipe_pin,
     }
     authority = CLI.require_read_registration(family, repo_root=repo_root)
+    is_learning_context = "context_learning_registration" in recipe
     is_context = recipe.get("family_id") in context.READ_IDS
     is_panel = "system_panel_registration" in recipe
     validate = panel.validate_registration if is_panel else (
@@ -178,7 +195,11 @@ def run(
             expected_learning = supplement["learning_owner_decision"] if "evaluation" in recovery_kwargs else supplement["growth_owner_decision"]
             require(learning_amendment_pin == expected_learning,
                     "panel learning export must use its exact approved growth authority")
-    validate(recipe, registration, owner, authority, **recovery_kwargs)
+    if is_learning_context:
+        require(learning_amendment_pin is None, "context baseline input uses its own qualification")
+        context_learning._validate_scope(recipe, registration, owner, root=repo_root)
+    else:
+        validate(recipe, registration, owner, authority, **recovery_kwargs)
     reference_pin = pin(reference_family_path) if is_panel and reference_family_path else None
     if is_context:
         require(
@@ -260,21 +281,28 @@ def run(
         bindings.append(
             {"candidate_id": cid, "config": config, "artifact": pin(artifact)}
         )
-    evidence = evidence_reader(
-        bindings,
-        recipe=recipe,
-        registration=registration,
-        owner=owner,
-        authority=authority,
-        **recovery_kwargs,
-    )
-    report = analyzer(
-        evidence,
-        recipe=recipe,
-        registration=registration,
-        roster=strata,
-        supplement=supplement,
-    )
+    if is_learning_context:
+        qualified = context_learning._qualified_feedback(bindings, recipe_pin=recipe_pin, repo_root=repo_root)
+        evidence = CompleteSystemFeedback(canonical(qualified[0]))
+        analyzer = context_read.analyze
+        report = analyzer(evidence, recipe=recipe, registration=registration,
+                          protocol=owner, roster=strata, supplement=supplement)
+    else:
+        evidence = evidence_reader(
+            bindings,
+            recipe=recipe,
+            registration=registration,
+            owner=owner,
+            authority=authority,
+            **recovery_kwargs,
+        )
+        report = analyzer(
+            evidence,
+            recipe=recipe,
+            registration=registration,
+            roster=strata,
+            supplement=supplement,
+        )
     require(
         CLI.require_read_registration(family, repo_root=repo_root) == authority,
         "root READ changed during pilot analysis",
