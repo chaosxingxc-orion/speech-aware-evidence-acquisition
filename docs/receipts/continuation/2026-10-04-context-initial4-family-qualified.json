@@ -1,0 +1,196 @@
+{
+  "schema": "saea-context-initial4-family-qualified-v1",
+  "recorded_at_utc": "2026-10-04T09:37:56.494239+00:00",
+  "status": "ALL_SIX_OPERATIONALLY_QUALIFIED",
+  "members": [
+    {
+      "member": "counterexample-check",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-COUNTEREXAMPLE-CHECK-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-counterexample-check-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-initial4-n20-counterexample-check-generation-v1/SAEA-SLURP-CONTEXT-INITIAL4-N20-COUNTEREXAMPLE-CHECK-V1.run-manifest.json",
+        "sha256": "f6c4d6f2d6fe5023f88439d0f8c5dc4d856ca7fb43a5c54599c420bbeb9967d8"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-initial4-n20-counterexample-check-generation-v1"
+    },
+    {
+      "member": "coverage-ledger",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-COVERAGE-LEDGER-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-coverage-ledger-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-initial4-n20-coverage-ledger-generation-v1/SAEA-SLURP-CONTEXT-INITIAL4-N20-COVERAGE-LEDGER-V1.run-manifest.json",
+        "sha256": "cd5ae77bbcb3402f0116d1eb37ddd4b501f01d95e3ab18fde935d6d81a25a427"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-initial4-n20-coverage-ledger-generation-v1"
+    },
+    {
+      "member": "seed",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-seed-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-V1/attempt-slurp-native-stage3-context-initial4-n20-seed-generation-v1/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-V1.run-manifest.json",
+        "sha256": "b6b4b21735107c8a2de431e69a80d244c7223ba5bd63b24e90e4cc707bb5348b"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-initial4-n20-seed-generation-v1"
+    },
+    {
+      "member": "seed-aa",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-seed-aa-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-initial4-n20-seed-aa-generation-v1/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-AA-V1.run-manifest.json",
+        "sha256": "ab4eec5bc0c9f46d1e12f4af8277eb16fc808f09c1916b6c8bbe6fe4c2f31ee7"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-initial4-n20-seed-aa-generation-v1"
+    },
+    {
+      "member": "semantic-frame",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SEMANTIC-FRAME-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-semantic-frame-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-initial4-n20-semantic-frame-generation-v1/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEMANTIC-FRAME-V1.run-manifest.json",
+        "sha256": "6b236e22e25872b95133fb6ab9d5a3614c834a17913038fce254c21982d6e29d"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-initial4-n20-semantic-frame-generation-v1"
+    },
+    {
+      "member": "speech-evidence",
+      "run_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-SPEECH-EVIDENCE-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-initial4-n20-speech-evidence-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-initial4-n20-speech-evidence-generation-v1/SAEA-SLURP-CONTEXT-INITIAL4-N20-SPEECH-EVIDENCE-V1.run-manifest.json",
+        "sha256": "48da9c62b04ef16df8ba26500b504e495a4626dfdd976093606680b11ed2e4a0"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-initial4-n20-speech-evidence-generation-v1"
+    }
+  ],
+  "attempt_observations": [
+    {
+      "member": "counterexample-check",
+      "state": "FINALIZED",
+      "calls": 125
+    },
+    {
+      "member": "coverage-ledger",
+      "state": "FINALIZED",
+      "calls": 104
+    },
+    {
+      "member": "seed",
+      "state": "FINALIZED",
+      "calls": 110
+    },
+    {
+      "member": "seed-aa",
+      "state": "FINALIZED",
+      "calls": 119
+    },
+    {
+      "member": "semantic-frame",
+      "state": "FINALIZED",
+      "calls": 98
+    },
+    {
+      "member": "speech-evidence",
+      "state": "FINALIZED",
+      "calls": 95
+    }
+  ],
+  "job_metadata_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-initial4-n20-counterexample-check-generation-v1/score-jobs.jsonl",
+      "sha256": "8d84a061601ab4a851847efee66aaa3a2ea1267c1c63429c7fec0dcc8f1e042d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-initial4-n20-counterexample-check-generation-v1/score-batch/batch-summary.json",
+      "sha256": "5a07b2efadafffa9b40d12746329f4c3ec38ad7c31817ad6e8fcd9f23c336ca7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-initial4-n20-coverage-ledger-generation-v1/score-jobs.jsonl",
+      "sha256": "cfe4969da7674e90129aa977e54aa1ac81bff9879974b0104c800c26c3e65c59"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-initial4-n20-coverage-ledger-generation-v1/score-batch/batch-summary.json",
+      "sha256": "8c2654bc47b98e316a2482f8689bf47f9c1aa00288e61d4ab4c4fe9353594c29"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-V1/attempt-slurp-native-stage3-context-initial4-n20-seed-generation-v1/score-jobs.jsonl",
+      "sha256": "c40b6c5c52001df773d50c31986e6adf478d0947201e33fc35c281293d2af46a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-V1/attempt-slurp-native-stage3-context-initial4-n20-seed-generation-v1/score-batch/batch-summary.json",
+      "sha256": "454897ac43fe7af96613816dd9fccde8700984c32f203a7e35ab340a1f8b1278"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-initial4-n20-seed-aa-generation-v1/score-jobs.jsonl",
+      "sha256": "b372ede87cdb253bb62b0885f5dda86652c7ebf0b7c46035eafb085f1ad3787d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-initial4-n20-seed-aa-generation-v1/score-batch/batch-summary.json",
+      "sha256": "cbcf567a1712ae4d5c49b9ed305db45c8855f2ccb5ccfb7c168d570825c96d78"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-initial4-n20-semantic-frame-generation-v1/score-jobs.jsonl",
+      "sha256": "b9169710d1b71eaf392fd99d0453a653d0d9d603c6514b9b490685c11aaef434"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-initial4-n20-semantic-frame-generation-v1/score-batch/batch-summary.json",
+      "sha256": "fd90fd67b2daa1df3d7225142351cba8752fe9a487f2ee333536eabeb8eb8c0e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-initial4-n20-speech-evidence-generation-v1/score-jobs.jsonl",
+      "sha256": "86252dd492cbf4259143f842c9cedf9bd3e43f1a867135b9a5fa33d187676eeb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-INITIAL4-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-initial4-n20-speech-evidence-generation-v1/score-batch/batch-summary.json",
+      "sha256": "1dfafd58eb861d72eb4e26ff3dd3473d4c082c2013a8354dfe63d8908ab94641"
+    }
+  ],
+  "script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/qualify-family-v1.py",
+    "sha256": "7bb2f3bf096d6ba281bd63e8f8f80580596a944c8b363993ce915999859d7c2f"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1",
+  "root_read_signed_by_this_script": false,
+  "quality_values_reported": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "root_countersignature_at_utc": "2026-10-04T09:38:30.934878+00:00",
+  "root_disposition": "Authorize exactly this complete-family read under owner227. Preserve all task bytes, scores, sources and prior incidents. No model/scorer call, adoption or expansion follows.",
+  "operational_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/family-qualified-v1.json",
+    "sha256": "16d9027c8c493c64dbb5284d9808f3ed452afea230886493c3e7d63f6b2c2240"
+  },
+  "driver_pid_647580_gone": true,
+  "stop_marker_absent": true
+}
