@@ -1,0 +1,50 @@
+{
+  "schema": "saea-context-tf-prospective-schema-alignment-v1",
+  "at_utc": "2026-10-04T12:18:51.184906+00:00",
+  "status": "MODEL-FREE PROSPECTIVE VALIDATION PASSED",
+  "authority": "owner227; existing original TF iteration1",
+  "old_instruction": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-update-proposal-instructions-v1.md",
+    "sha256": "9934faeaeb061c2b20c1a9ae09b5a649ac67c8124915aa4ec01452cc433a24c9"
+  },
+  "new_instruction": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-update-proposal-instructions-v2.md",
+    "sha256": "7a4e357c1345dde17f551e486c2d3ee0d7c1b34e2c27cb9a64c9b28f1c7915d2"
+  },
+  "old_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-structured-capsule-v1.py",
+    "sha256": "9b01ce181e67bbcb5dacef962575eba64f6df02ab97a1f6c15ee4c145d88f1fc"
+  },
+  "new_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/prepare-tf-structured-capsule-v2.py",
+    "sha256": "c1638bc0645be17940ee9ca28f69e408b02d9e3e75a260f221b1a36ca978b6ab"
+  },
+  "cases": [
+    {
+      "case": "valid-commitment",
+      "status": "no-change",
+      "error": null
+    },
+    {
+      "case": "source-address",
+      "status": "invalid",
+      "error": "update differs from optimizer input/evidence commitment"
+    },
+    {
+      "case": "missing-commitment",
+      "status": "invalid",
+      "error": "update differs from optimizer input/evidence commitment"
+    },
+    {
+      "case": "wrong-commitment",
+      "status": "invalid",
+      "error": "update differs from optimizer input/evidence commitment"
+    }
+  ],
+  "existing_actor_capsules_modified": false,
+  "frozen_sources_modified": false,
+  "callbacks_added": 0,
+  "model_contacts": 0,
+  "runtime_dispatch": false,
+  "notes": "Correct unused future proposal instructions to the already frozen exact input-hash commitment. Preserve v1. No repair or replacement of an existing response; actual worker retains validation authority."
+}
