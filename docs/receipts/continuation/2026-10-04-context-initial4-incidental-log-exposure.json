@@ -1,0 +1,17 @@
+{
+  "schema": "saea-root-incidental-log-exposure-v1",
+  "at_utc": "2026-10-04T08:52:57.356800+00:00",
+  "authority": "owner227 root",
+  "source": "/home/chao/batch-campaign-1-context-initial4-n20-seed-20261004T085123Z.log",
+  "trigger": "Root tailed the campaign log to verify launch. OpenJiuwen logs include workflow state and answer content; the returned text exposed a partial seed trajectory before full-family READ.",
+  "scope": "Root context only; no official score, gold label, comparator outcome or optimizer export was read. Do not use this observation as task-quality evidence.",
+  "disposition": "Preserve the log and this record. Continue the already frozen admitted family with unchanged policies, roster, ordering and scoring. Restrict subsequent running checks to allowlisted operational attempt/manifest/status/telemetry fields. Do not pass this root conversation or this incidental content to learner callbacks. Future optimization requires separately source-pinned complete-family evidence after exact READ.",
+  "not_authorized": "No partial analysis, READ countersignature, policy selection, retries or replacement.",
+  "read_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1",
+  "read_status": "UNSIGNED",
+  "operational_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/first-running-observation-v1.json",
+    "sha256": "83db30820b87cebf608a87d950ac86c10e7d2e098e7b856da99071463587194d"
+  },
+  "operational_state": "Seed OPENED with37 recorded model contacts at08:52:57Z; remaining five attempts not yet opened; STOP absent and original driver identity live."
+}

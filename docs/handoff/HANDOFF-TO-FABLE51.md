@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Running-check source correction, 2026-10-04T08:52:57.356800+00:00
+
+Root accidentally exposed a partial seed trajectory by tailing the campaign log, whose OpenJiuwen state contains answers. [Exact incident/disposition](../receipts/continuation/2026-10-04-context-initial4-incidental-log-exposure.json) preserves the evidence and prohibits its use for quality or optimizer input. No score/gold/comparator feedback was read. Continue the frozen admitted family unchanged; use allowlisted operational metadata only during execution. Do not supply this root conversation to learner callbacks. Exact full-family READ remains unsigned and mandatory.
+
 ## Initial N20K4 scientific driver launched, 2026-10-04T08:52:13.289197+00:00
 
 [Launch receipt](../receipts/continuation/2026-10-04-context-initial4-n20-launch.json): Windows SAEA-Batch-Driver epoch08:50:55Z, first guarded campaign08:51:23Z, frozen codex-context-initial4-n20-v1 atc6f5543b7. All six frozen registration/runtime checks passed. Normal transition archived the completed structural controls without STOP, recovery or service mutation. Three stable memory samples passed in21.89seconds. Driver PID647580/start45254813 and first campaign were independently observed; no attempt existed at08:51:45Z. Verify later admission/contacts rather than inferring them from task state.
