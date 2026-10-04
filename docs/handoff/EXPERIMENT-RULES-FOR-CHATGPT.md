@@ -1,5 +1,13 @@
 # Experiment rules for the ChatGPT side
 
+## Deterministic system-skill population amendment, 2026-10-04T07:07:19.130577+00:00
+
+The [latest direct owner instructions](../receipts/owner/2026-10-04-deterministic-context-rollouts.json) replace the next-GPU priority below with a fresh deterministic context population. K means distinct complete context systems, M is four nodes, and N means distinct inputs. Initialize K4/M4 with sixteen full English role texts; N20 gives eighty candidate trajectories before separately accounted comparators and engineering. Keep temperature0/seed20260913. GPT-6.1 Sol is authoring this initialization separately from historical Astra allocations.
+
+[Baseline mapping](../readiness/2026-10-04-deterministic-context-baselines-v1/README.md) distinguishes the required context-diversity adaptation of Training-Free GRPO from GEPA, and borrows SkillOpt versioned skill state/bounded edits/evaluated acceptance. Do not claim exact stochastic GRPO reproduction, held-out validation on the reused twenty inputs, a learned initialization or a completed learner implementation. Preserve full-node edit scope and actual compiler limitations.
+
+The requested input phases are20/80/160 and50/200/400, K separate. Reuse the same400 inputs and retain exposure. Old six-member round9 preparation is preserved, not dispatched under this amendment. New exact registration, supplies, capacity, structural proof and READ remain required. Keep sequential execution, paused heartbeat, zero paid spend, other-carrier holds and human review before8x400. No new population runtime contact occurred.
+
 ## GPT-6.1 Sol analysis channel amendment, 2026-10-04
 
 The human explicitly requests GPT-6.1 Sol subagent analysis; see [the exact receipt](../receipts/owner/2026-10-04-gpt61-sol-subagent-analysis.json). Permit this delegated engineering analysis despite the earlier root-only rule. Preserve old Astra responses and do not label the subagent a blind proposer or a matched-metering scientific allocation. Keep the same fixed400 sources, paused heartbeat, sequential execution, exact admission/read gates and human review before8x400.

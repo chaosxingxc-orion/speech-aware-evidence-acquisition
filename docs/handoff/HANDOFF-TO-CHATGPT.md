@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Deterministic system-skill population amendment, 2026-10-04T07:07:19.130577+00:00
+
+The [latest direct owner instructions](../receipts/owner/2026-10-04-deterministic-context-rollouts.json) replace the next-GPU priority below with a fresh deterministic context population. K means distinct complete context systems, M is four nodes, and N means distinct inputs. Initialize K4/M4 with sixteen full English role texts; N20 gives eighty candidate trajectories before separately accounted comparators and engineering. Keep temperature0/seed20260913. GPT-6.1 Sol is authoring this initialization separately from historical Astra allocations.
+
+[Baseline mapping](../readiness/2026-10-04-deterministic-context-baselines-v1/README.md) distinguishes the required context-diversity adaptation of Training-Free GRPO from GEPA, and borrows SkillOpt versioned skill state/bounded edits/evaluated acceptance. Do not claim exact stochastic GRPO reproduction, held-out validation on the reused twenty inputs, a learned initialization or a completed learner implementation. Preserve full-node edit scope and actual compiler limitations.
+
+The requested input phases are20/80/160 and50/200/400, K separate. Reuse the same400 inputs and retain exposure. Old six-member round9 preparation is preserved, not dispatched under this amendment. New exact registration, supplies, capacity, structural proof and READ remain required. Keep sequential execution, paused heartbeat, zero paid spend, other-carrier holds and human review before8x400. No new population runtime contact occurred.
+
 ## GPT-6.1 Sol successor implementation integrated, 2026-10-04T06:50:47.850693+00:00
 
 Root reviewed and serially integrated `fb532e5a9dc28713be159751de514726e7f9e3ff`. [Implementation and validation](../readiness/2026-10-04-sol-successor-panel-v1/README.md) record355 focused passing tests,100% changed executable statement coverage and98% changed branch coverage; selected-module aggregate64% is reported separately. Base,harness,lint and diff checks pass. The [root review](../receipts/continuation/2026-10-04-sol-successor-panel-integrated.json) independently validates real authority at20/50/100/200 and all six prepared standalone capacity/smoke role/profile bindings. These helpers are not full registration or actual FIT.

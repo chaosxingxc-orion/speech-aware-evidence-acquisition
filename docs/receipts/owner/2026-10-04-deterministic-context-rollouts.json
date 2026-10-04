@@ -1,0 +1,60 @@
+{
+  "schema": "saea-owner-deterministic-context-rollouts-v1",
+  "at_utc": "2026-10-04T07:07:19.130577+00:00",
+  "source": "Direct human instructions in the root conversation; this receipt supersedes contrary root interpretations, not immutable historical protocols.",
+  "owner_instructions_english": [
+    "Generate multiple contexts and context assembly strategies, with K equal to four or eight and M the number of nodes. Begin optimization on twenty inputs. Use Training-Free GRPO and GEPA as learning baselines before system and algorithm innovation.",
+    "K is the number of complete-system rollouts, and M is the number of nodes.",
+    "The four-by-twenty stage means eighty distinct inputs; K is set separately.",
+    "Keep the system stable with temperature zero and a fixed seed. Write multiple prompts: K times M prompts. Have the subagent optimize and adjust the prompts and assembly strategies.",
+    "You can also treat our current context engineering as a skill and refer to SkillOpt optimization."
+  ],
+  "resolved_contract": {
+    "N": "distinct inputs",
+    "K": "distinct complete prompt-and-assembly systems; one complete rollout per input per system",
+    "M": [
+      "perception",
+      "solver",
+      "reviewer",
+      "planner"
+    ],
+    "initial_N": 20,
+    "initial_K": 4,
+    "initial_full_role_text_count": 16,
+    "initial_candidate_trajectories": 80,
+    "temperature": 0,
+    "seed": 20260913,
+    "diversity_source": "different complete context policies, not stochastic sampling",
+    "requested_distinct_input_stages": [
+      20,
+      80,
+      160,
+      50,
+      200,
+      400
+    ],
+    "stage_interpretation": "Two block-size phases within the same existing four-hundred-input pool; fifty is not a new unseen pool. K is independent. Review each stage prospectively."
+  },
+  "implementation": "Use the existing SystemTextPolicyBundle and shared compiler/runtime. Preserve old thirty-three allocation records; new Sol initialization is separate and is not a blind or compute-matched historical proposal.",
+  "algorithm_labels": {
+    "training_free_grpo": "Explicit deterministic context-diversity adaptation; original same-policy stochastic sampling is not reproduced.",
+    "gepa": "Implement reflective component mutation and selection separately.",
+    "skillopt": "Reference versioned skill state, bounded edits and evaluated acceptance; do not silently create a hybrid baseline."
+  },
+  "runtime_admission": "Prepare exact policy identities, supplies, exposure, full-request capacity, structural proof and complete-family read before dispatch or learning feedback. No runtime admission is conferred by this record alone.",
+  "old_round9_preparation": "Preserved and paused as the next GPU priority; do not silently launch the prior six-member Astra panel under this new protocol.",
+  "retained": [
+    "same UPDATE2 four-hundred-input pool",
+    "fixed knowledge, audio, packets, queries and votes",
+    "Omni final-answer authority",
+    "sequential trajectories",
+    "four slots of 24576 with complete output reserves",
+    "mean all-sample and non-first-sample latency alongside official quality and reliable completion",
+    "cumulative exposure and separate learning/blind provenance",
+    "zero paid API spend",
+    "heartbeat PAUSED",
+    "human review before 8x400, without splitting to evade",
+    "separate other-carrier holds"
+  ],
+  "authoring_channel": "Explicitly requested GPT-6.1 Sol collaboration subagent; English role texts and repository records."
+}
