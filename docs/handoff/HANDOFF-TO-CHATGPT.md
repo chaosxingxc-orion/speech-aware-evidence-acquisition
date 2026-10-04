@@ -1,12 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-## TF semantic callbacks advancing independently, 2026-10-04T11:36:17.434179+00:00
+## TF semantic callbacks advancing independently, 2026-10-04T11:46:03.222508+00:00
 
-The first three original summarize responses (0000,0001,0002) are preserved and accepted unchanged; exact completion receipts are under docs/receipts/continuation. Callback0003-summarize is prospectively admitted to fresh GPT-6.1 Sol/high/no-history actor tf_iteration1_summary0003_sol with manifest cb2e515d9f97c41b0a7f8d533e00a5583b03ce4865200fa4e324c9ccc8f505e4. Its output is pending. Do not retry or replace spent callbacks. Original worker671290/start46087929 remains live; GEPA worker657258/start45657241 still waits for complete trial evidence.
+The four original summaries0000-0003 and first comparison0004 are preserved and accepted unchanged. Callback0005-summarize for the next nonconstant group is prospectively admitted to fresh GPT-6.1 Sol/high/no-history actor tf_iteration1_summary0005_sol with manifest074762e874cfc2955405d4107815d11fa3bbde0de23fbea5ebbee3053b491576; its response is pending. Completion/admission receipts remain under docs/receipts/continuation. Do not retry or replace opportunities. Original worker671290/start46087929 is live; GEPA worker657258/start45657241 waits for complete trial evidence.
 
-[Observed TF workload](../receipts/continuation/2026-10-04-context-tf-observed-workload.json) has eight nonconstant groups:32 summaries,8 comparisons,1 experience update and4 proposals if all stages complete. Twelve zero-variance groups skip semantic comparison according to the original algorithm; all80 complete source episodes remain preserved. Unknown provider/token counts stay null, no matched-compute or learned-benefit claim.
+[Observed TF workload](../receipts/continuation/2026-10-04-context-tf-observed-workload.json):eight nonconstant groups imply32 summaries,8 comparisons,1 experience update and4 proposals if all complete. Twelve zero-variance groups skip semantic comparison under the original algorithm; all80 complete source episodes remain preserved. Unknown provider/token counts stay null. No matched-compute or learned-benefit claim.
 
-GEPA trial driver670616/start46068063 is live at the fourth member. Seed,A/A,speech-evidence are FINALIZED; other members remain incomplete and exact READ stays unsigned. No partial quality read. Prepared root qualification/countersign/read and source-binding callback helpers exist in its coordination directory but are not executed. Keep paused heartbeat, seed incumbent, same immutable400 pool and separate carrier holds.
+GEPA driver670616/start46068063 is live at the fifth member. Seed,A/A,speech-evidence,coverage-ledger are FINALIZED; counterexample-check is OPENED,semantic-frame absent. Exact READ stays unsigned; no partial quality read. At11:41Z service telemetry was fresh and healthy,Windows free15.69GiB,STOP absent. Prepared qualification/countersign/read/source-binding helpers remain unexecuted.
+
+Future structured TF capsule and response helpers are prepared in the initial-family coordination directory, syntax-checked only and not dispatched. They scope experience updates to their original comparisons and proposals to the original qualified eighty-episode archive; exact per-request manifest admission is still required. Preserve the four node texts plus legal assembly as a versioned system skill; SkillOpt references do not add a third learner. Keep paused heartbeat,seed incumbent,same immutable400 pool and separate carrier holds.
 
 
 ## Independent TF learner started from original family, 2026-10-04T11:17:16.103494+00:00
