@@ -1,0 +1,131 @@
+{
+  "allocations_created": 0,
+  "bootstrap": {
+    "B_inputs": "New common four-node seed and the same scope/budget only. No feedback, historical outcomes or selected-parent information.",
+    "L_inputs": "Qualified round5 own-L projection and closed own-L history only, preserving all cumulative exposure and original policy identities. Audit the exact isolated input manifest before any proposal.",
+    "L_parent": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "L_parent_selection": "explicit behavior-preserving seed transition; no new score-based promotion",
+    "binding": {
+      "relpath": "docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/exploratory-learning-v1.json",
+      "sha256": "0bb0c356b975d64ad381663d43b2619021bf4f508215c50ecd21a43ce228fb22"
+    },
+    "historical_latency_selection": false,
+    "historical_policy_identity_rewrite": false,
+    "mode": "qualified-historical-own-L-prior-only",
+    "new_measurement_profile_applies_to": "new complete eight-member family only",
+    "preserve_original_initial_reference": true,
+    "reference_reestimation": false,
+    "root_combined_cache_or_test_export": false
+  },
+  "component_ablation_required": false,
+  "editable": [
+    "role_text.perception",
+    "role_text.solver",
+    "role_text.reviewer",
+    "role_text.planner",
+    "context_layout.native_role_query_placement",
+    "node_context.tool_schema_rendering",
+    "node_context.reviewer_history_scope"
+  ],
+  "fixed400_source": {
+    "relpath": "docs/readiness/2026-10-02-slurp-fixed400-context-postcall-v1/plan.json",
+    "sha256": "883a2db2b3e96c1447003c8cd5f06d4d3b970f8e71d81f21cfd175a73d538888"
+  },
+  "future_round": 9,
+  "future_sequence": "four-node-measured-successor3-owner227",
+  "heartbeat": "PAUSED",
+  "human_before": "8x400",
+  "joint_changes_allowed": true,
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "members": [
+    "L-parent",
+    "L-parent-aa",
+    "L-candidate-1",
+    "L-candidate-2",
+    "B-parent",
+    "B-parent-aa",
+    "B-candidate-1",
+    "B-candidate-2"
+  ],
+  "official_complete_score_cap": 8,
+  "owner": "root227",
+  "paid_api_spend": 0,
+  "prerequisites": [
+    "Implement and test explicit seed-transition successor custody; preserve all29 closed and3 HELD opportunities.",
+    "Implement and test historical own-L bootstrap without weakening measured-family profile equality or relabeling old evidence.",
+    "Freeze exact protocol, exposure rows, provider admission and isolated input manifests; rehearse actual request and continuation budgets.",
+    "Compile exact parents and candidates; register and complete maximum-request capacity and separate structural proof including the comparator.",
+    "Register all8 generation/FIT members and exact complete-family READ; check live resources before dispatch."
+  ],
+  "proposal_budget": {
+    "proposal_budget_profile": "subscription-metered-reject-v1",
+    "proposal_contact_cap": 4,
+    "proposal_continuation_limits": {
+      "provider_output_items_bytes": 4096,
+      "tool_result_bytes": 4096
+    },
+    "proposal_input_token_cap": 139264,
+    "proposal_output_token_cap": 4096
+  },
+  "proposal_model": "gpt-6-astra",
+  "prospective_slots": [
+    "L-9-1",
+    "B-9-1",
+    "L-9-2",
+    "B-9-2"
+  ],
+  "runtime_dispatch": false,
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "scale_review": [
+    20,
+    50,
+    100,
+    200
+  ],
+  "schedule": "sequential-trajectory",
+  "schema": "saea-four-node-search-design-v1",
+  "seed_bundle": {
+    "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+    "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+  },
+  "seed_bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+  "seed_transition": {
+    "relpath": "docs/readiness/2026-10-04-four-node-seed-transition-v1/seed-transition-v1.json",
+    "sha256": "105ea2cca6614a6f54af87fb7bac7cda879a3e78301f8646188c7831029c5592"
+  },
+  "source_roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-v1.json",
+    "sha256": "bf72abff34fe726b023c5172c4944f9c029fbd0a0de6313bb7873f06abf110f9"
+  },
+  "stable_gain_claim_at20": false,
+  "status": "prepared-not-admitted",
+  "trajectory_cap": 160
+}

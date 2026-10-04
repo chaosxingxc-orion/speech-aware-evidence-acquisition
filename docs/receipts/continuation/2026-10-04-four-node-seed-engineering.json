@@ -1,0 +1,47 @@
+{
+  "at_utc": "2026-10-04T01:30:58.598801+00:00",
+  "checks": {
+    "engineering_base": "PASS",
+    "experiment_handoff": "no errors; historical snapshot/local-edit warnings; not launch authority",
+    "handoff_freshness": "PASS",
+    "harness_admission": "PASS",
+    "ruff": "PASS"
+  },
+  "model_contacts_added": 0,
+  "new_function_statement_coverage": {
+    "missing": [],
+    "percent": 100,
+    "statements": 14
+  },
+  "policy_module_statement_coverage": {
+    "missing": [
+      60,
+      61,
+      336,
+      383,
+      384,
+      388,
+      412,
+      453
+    ],
+    "percent": 97.65,
+    "statements": 341
+  },
+  "proposal_allocations_added": 0,
+  "real_artifacts": {
+    "docs/readiness/2026-10-04-four-node-seed-transition-v1/README.md": "f0349e860d9253c891248b12874239b4eb688daf48db4c3a9c7e70b901bf3a28",
+    "docs/readiness/2026-10-04-four-node-seed-transition-v1/next-sequence-design-v1.json": "6797ba540d5014abfb130001c372a01a2d912052a5eac8b5933c12974e387e3d",
+    "docs/readiness/2026-10-04-four-node-seed-transition-v1/seed-binding-v1.json": "c3f190cc96b68c340dfdb654737b3699b787039f5475b7c3c1fee4b315484bfc",
+    "docs/readiness/2026-10-04-four-node-seed-transition-v1/seed-transition-v1.json": "105ea2cca6614a6f54af87fb7bac7cda879a3e78301f8646188c7831029c5592"
+  },
+  "schema": "saea-four-node-seed-engineering-v1",
+  "scorer_contacts_added": 0,
+  "source_base_commit": "e0ed8ce4f7abe6ec7d30e25573609128148618f3",
+  "status": "offline seed freeze complete; exact successor/bootstrap admission remains pending",
+  "tests": {
+    "initial_red_failures": 9,
+    "new_seed_tests": 11,
+    "passed": 106
+  },
+  "tokenizer_contacts_added": 0
+}

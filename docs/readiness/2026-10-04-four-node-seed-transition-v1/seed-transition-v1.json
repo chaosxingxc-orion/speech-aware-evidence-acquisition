@@ -1,0 +1,73 @@
+{
+  "at_utc": "2026-10-04T01:26:57.081677+00:00",
+  "authority": {
+    "relpath": "docs/receipts/owner/2026-10-04-node-optimization-space.json",
+    "sha256": "af96bf4f14456ec1e1bc6a13f6f0781dbf43be9181d883e121c9f97d08c90cf0"
+  },
+  "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+  "closed_allocations": 29,
+  "compiled_seed_config": {
+    "relpath": "configs/baseline/slurp-native-stage3-system-text-four-node-seed-v1.json",
+    "sha256": "24fbd06d87df717edefb8f887adf221adc8879ee2ffade2599775ae9b121486b"
+  },
+  "effective_other_configuration_equal": true,
+  "effective_role_bytes_equal": true,
+  "heartbeat": "PAUSED",
+  "held_allocations": [
+    "B-6-1",
+    "B-6-2",
+    "L-6-2"
+  ],
+  "model_contacts_added": 0,
+  "original_seed_config": {
+    "relpath": "configs/baseline/slurp-native-stage3-system-text-review-contract-seed-v1.json",
+    "sha256": "2d7596c9b3c91e50f9881d95d65b2d69d19e4d314416bd7b3e19b6abb37df512"
+  },
+  "parent_bundle_id": "d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15",
+  "predecessor_custody": {
+    "relpath": "system-text-search/four-node-seed-v1/predecessor-custody.json",
+    "sha256": "184f91c9fa9d7fa5399a7325e0cc205fbdc3fb35185d81b2bee88136c039d944"
+  },
+  "predecessor_protocol": {
+    "relpath": "docs/readiness/2026-10-03-slurp-proposer-typed-successor2-v1/protocol-proposals-v1.json",
+    "sha256": "2b9c3c847e8e42a4ce53cd18ea6ddd1c81340fea7e41058e7d5d9c85cf1b2aff"
+  },
+  "proposal_allocations_added": 0,
+  "reference_policy": "Preserve the qualified initial CONTROL2 reference. No historical feedback is reclassified as measured latency.",
+  "representation_differences": [
+    "Content-addressed role template addresses",
+    "Consumption module declaration for Perception and explicit node presentation",
+    "Explicit Reviewer full-history default"
+  ],
+  "root_only": true,
+  "runtime_admission": false,
+  "runtime_behavior_equivalence": "Offline bytes/configuration equivalence only; real request FIT and structural proof remain required.",
+  "schema": "saea-four-node-seed-transition-v1",
+  "scorer_contacts_added": 0,
+  "seed_bundle": {
+    "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+    "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+  },
+  "source_perception": {
+    "relpath": "configs/probes/slurp_native_role_perception_v3.txt",
+    "sha256": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2"
+  },
+  "status": "frozen-offline-seed",
+  "tokenizer_contacts_added": 0,
+  "verified_binding": {
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "context_layout": {
+      "native_role_query_placement": null
+    },
+    "node_context": {
+      "reviewer_history_scope": "full",
+      "tool_schema_rendering": "constant"
+    },
+    "role_sha256": {
+      "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+      "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+      "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+      "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+    }
+  }
+}

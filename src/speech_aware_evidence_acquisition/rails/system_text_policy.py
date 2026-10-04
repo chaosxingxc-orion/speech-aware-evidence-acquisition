@@ -194,6 +194,37 @@ class SystemTextPolicyBundle:
         return cls(canonical(d))
 
 
+def bind_four_node_seed(parent, baseline, *, repo_root):
+    """Expose the existing Perception instruction without changing a blind seed.
+
+    Return a new identity with explicit ancestry, never an in-place schema edit.
+    This pure preparation step grants no proposal allocation or runtime admission.
+    Compile both versions and compare effective role bytes before registration.
+    """
+    d = parent.as_json()
+    require(d["schema"] in (BUNDLE_SCHEMA, CONTEXT_BUNDLE_SCHEMA),
+            "seed transition requires a historical three-role policy")
+    require(content_hash(baseline) == d["seed_config_sha256"],
+            "seed configuration hash differs")
+    require(not d["optimizer_experience"]
+            and all(source["kind"] == "knowledge" for source in d["cumulative_sources"]),
+            "shared blind seed cannot contain optimization feedback or experience")
+    root = Path(repo_root).resolve()
+    template = baseline.get("phase_material", {}).get("perception", {}).get("instruction_template")
+    require(isinstance(template, str) and template, "Perception template is missing")
+    path = (root / "configs" / template).resolve()
+    require(path.is_relative_to(root / "configs"), "Perception template escaped configs")
+    d["role_text"]["perception"] = path.read_bytes().decode("utf-8")
+    episode = baseline.get("native_episode", {})
+    d.update(schema=NODE_BUNDLE_SCHEMA, parent_ids=[parent.bundle_id],
+             context_layout=d.get("context_layout", {
+                 CONTEXT_LAYOUT_FIELD: baseline.get(CONTEXT_LAYOUT_FIELD)}),
+             node_context={
+                 "tool_schema_rendering": episode.get("tool_schema_rendering", "per-role"),
+                 "reviewer_history_scope": episode.get("roles", {}).get("reviewer", {}).get("history_scope", "full")})
+    return SystemTextPolicyBundle.from_json(d, parents=[parent])
+
+
 @dataclass(frozen=True)
 class TextPolicyUpdateProposal:
     """A provisional joint edit. Validation never activates or repairs a proposal."""

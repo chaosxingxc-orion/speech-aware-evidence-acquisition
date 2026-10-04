@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Explicit four-node seed frozen, 2026-10-04T01:29:51.303168+00:00
+
+[Seed transition and next design](../readiness/2026-10-04-four-node-seed-transition-v1/README.md) freeze policy `ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572` with ancestry `d5f6798e5901e8a867537ccbe21b89980aea1d23562259e5eb0d8ea9c65d0b15`. All four actual role bytes and effective non-metadata configuration match the existing seed. Perception is now explicitly bound; no role is rewritten. Real knowledge/compiler/binding checks pass.106 focused tests pass, policy module98% statement coverage; transition function fully covered. Old29 closed and3 HELD allocations are preserved; no new allocation/contact/runtime mutation.
+
+The prepared next design uses four prospective round9 slots and a complete8x20 panel on the same fixed400 first20. Keep the original CONTROL2 utility reference. Qualified round5 own-L evidence is historical bootstrap only, never newly measured latency or a relabeled four-node outcome. B stays feedback-free. Next implement explicit seed-transition successor custody and historical bootstrap adapters, then pin exact protocol/inputs/budgets and register real FIT/structural/panel execution. Existing profile/read guards remain closed; design is not dispatch admission. Root-only, heartbeat PAUSED, human before8x400, other-carrier holds unchanged. Runtime status script observed the prior node-panel driver complete and fresh healthy idle telemetry; no fresh PID or Windows-memory proof was made here, so revalidate before launch.
+
+
 ## Measured latency and reliable completion connected to search, 2026-10-04T01:12:58.422090+00:00
 
 [Measured-latency package](../readiness/2026-10-04-system-search-measured-latency-v1/README.md) and [engineering evidence](../receipts/continuation/2026-10-04-system-search-measured-latency-engineering.json) close the preceding implementation gap for workflow latency. The opt-in v2 measurement profile is identical in protocol, registration and exact READ recipe. Complete pinned trace timing joins terminal cohorts and unique official scores; qualified L-only projection and both exploratory/formal selectors preserve it. Old profile-free request/selection behavior stays unchanged. Reject missing/mixed timing, rosters, sessions and scheduling envelopes. Preserve failed samples, reliability floor, A/A and repeated-policy custody; retain balanced non-dominated policies.
