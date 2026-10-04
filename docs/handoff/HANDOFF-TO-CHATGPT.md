@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## K16 abstract learning boundary audit, 2026-10-04
+
+[Model-free boundary audit](../receipts/continuation/2026-10-04-template-k16-learning-boundary-audit.json) and [continuation requirements](../readiness/2026-10-04-context-template-k16-learning-continuation-audit-v1.md) distinguish the running K16 evaluation from the legacy K4 learning iterator. The current evaluation-only protocol is correctly refused by the old iteration-plan validator before callbacks. Do not reinterpret320 candidate trajectories as80 or invoke old per-candidate semantic callbacks. A future single-batch K16 update needs prospective source, iteration and budget bindings after the complete root READ.
+
+The abstract-node projector retains full editable templates separately from anonymous structural output features, measured performance and official terminal feedback. Concrete task contents, entity values, knowledge, reasons and source lists stay outside learner input; full backend custody remains intact. All22 projector tests pass. Node correctness and causal contribution remain unmeasured; missing metrics remain null. No new actor allocation, runtime dispatch, partial result read or feedback export occurred in this audit. Preserve the exact active frozen N20 worker and its complete-family gates; heartbeat remains paused.
+
 ## K16 N20 full-system comparison launched, 2026-10-04T20:52:55.405387+00:00
 
 [Exact launch receipt](../receipts/continuation/2026-10-04-template-k16-n20-launch.json):Windows SAEA-Batch-Driver dispatched20:49:44Z, actual driver epoch2026-10-04T20:49:45Z, root Linux747661/start49451009. Frozen worker /home/chao/saea-worktrees/codex-context-template-k16-n20-v1 ata7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087. All18 frozen checks passed; original preflight Linux745824/exec77114 ended0. First seed is OPENED with real model contacts. Startup stable-memory wait passed21.905seconds/3 samples; dispatch Windows free18.48GiB. Revalidate all current PIDs, per-member metadata and telemetry; no rows inferred from service totals.

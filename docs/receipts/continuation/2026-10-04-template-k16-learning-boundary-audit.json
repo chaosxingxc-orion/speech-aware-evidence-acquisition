@@ -1,0 +1,18 @@
+{
+  "schema": "saea-k16-learning-continuation-boundary-audit-v1",
+  "at_utc": "2026-10-04T21:04:27.960912+00:00",
+  "source_commit": "d4f9aa0e94e7fade0845bfaaf5af2148be1b4122",
+  "source_module_sha256": "e3a4fa71e46d6147e3cf77b28e94917912b880601b777536961d1d0c5d32dcdf",
+  "protocol_sha256": "51d3ea4b85fd5ba467ab3fb245bd117c6b292cbc011d8b553878d93998799819",
+  "evaluation_only": true,
+  "legacy_iteration_rejection": {
+    "error_type": "PolicyError",
+    "reason": "exact prospective iteration plan required"
+  },
+  "actual_result_read": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "runtime_sources_changed": false,
+  "new_proposal_allocation": false,
+  "scope": "Current K16 evaluation remains admitted and unchanged. Legacy K4 learning budget is deliberately strict; do not loosen it in place or claim complete K16 learner-loop execution."
+}
