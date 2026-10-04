@@ -1,0 +1,20 @@
+{
+  "schema": "saea-context-tf-observed-workload-v1",
+  "at_utc": "2026-10-04T11:26:52.595554+00:00",
+  "input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/inputs/tf-grpo-context-diversity-1.json",
+    "sha256": "062e4c06bfc13c47a42a6d2b39562e6430c3b1a86325c9c1a8f296a7b5c43e57"
+  },
+  "distinct_inputs": 20,
+  "candidate_systems": 4,
+  "complete_source_episodes": 80,
+  "nonconstant_groups": 8,
+  "zero_variance_skips": 12,
+  "expected_semantic_callbacks_if_no_failure": {
+    "summarize": 32,
+    "compare": 8,
+    "update_experience": 1,
+    "propose": 4
+  },
+  "scope": "Apply the original registered zero-variation skip without dropping complete source material. Actual future callback completion is not guaranteed. No new allocation, policy, model contact or claim of matched total compute."
+}

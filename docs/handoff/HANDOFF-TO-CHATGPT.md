@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## TF semantic callbacks advancing independently, 2026-10-04T11:30:09.256751+00:00
+
+The first two original summarize responses (0000 and0001) are preserved and accepted unchanged; exact completion receipts are under docs/receipts/continuation. Callback0002-summarize is prospectively admitted to fresh GPT-6.1 Sol/high/no-history actor tf_iteration1_summary0002_sol with manifest c7e39c3ec0d3a8cac49fd76b4bc97b3baceb2edaded2d1a2a13e22666d5e3396. Its output is pending. Do not retry or replace spent callbacks. Original worker671290/start46087929 remains live; GEPA worker657258/start45657241 still waits for complete trial evidence.
+
+[Observed TF workload](../receipts/continuation/2026-10-04-context-tf-observed-workload.json) has eight nonconstant groups:32 summaries,8 comparisons,1 experience update and4 proposals if all stages complete. Twelve zero-variance groups skip semantic comparison according to the original algorithm; all80 complete source episodes remain preserved. Unknown provider/token counts stay null, no matched-compute or learned-benefit claim.
+
+GEPA trial driver670616/start46068063 is live at the third member. Seed/A/A are FINALIZED, other members remain incomplete; exact READ stays unsigned. No partial quality read. Prepared root qualification/countersign/read helpers exist in its coordination directory but are not executed. Keep paused heartbeat, seed incumbent, same immutable400 pool and separate carrier holds.
+
+
 ## Independent TF learner started from original family, 2026-10-04T11:17:16.103494+00:00
 
 [Worker launch](../receipts/continuation/2026-10-04-context-tf-worker-launch.json) pins Windows1044 and Linux671290/start46087929, frozen a403cad0b. The corrected shared external worker uses the independently prepared original80 candidate episodes; no GEPA child or trial outcomes. It is live qualifying sources before the first request. Each summarize/compare/experience/propose callback still requires exact hash-manifest admission and a fresh GPT-6.1 Sol subagent; no runtime dispatch or automatic restart.
