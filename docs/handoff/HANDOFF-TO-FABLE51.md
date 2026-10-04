@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K16 scientific frozen preflight live, 2026-10-04T20:38:58.232067+00:00
+
+[Exact live preflight](../receipts/continuation/2026-10-04-template-k16-n20-frozen-preflight-running.json):Linux745824/start49377434, exec77114, frozen /home/chao/saea-worktrees/codex-context-template-k16-n20-v1 ata7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087. The committed18-member registration, fixed estimators and complete64-row structural acceptance are serially integrated. Seed frozen PASS is observed. Continue this exact process; require all18 PASS and its frozen-check-v1.json before the prepared normal completed-structural-control transition and one Windows SAEA-Batch-Driver launch. No scientific model/scorer contact yet. Do not restart for observation timeout.
+
+Structural driver ended0 at20:29:56Z; waiter33701 ended0. Audit/timing/completion helpers ended0 with64 rows,292 generation/292 actual FIT/1168 endpoints,76 valid visible Reviewer handoffs and64 native terminal deliveries; no scoring or quality read. Preserve engineering attempts OPENED and frozen a024df8ae. Completed controls remain unchanged. All16 originals plus seed/A/A must complete360 trajectories before exact root READ; future learner source remains separately gated. Heartbeat PAUSED; formal seed and other-carrier holds remain.
+
 ## K16 structure accepted; eighteen-member comparison registered, 2026-10-04T20:36:11.327161+00:00
 
 [Complete structural acceptance](../receipts/continuation/2026-10-04-template-k16-structural-complete.json): all16 original branches completed4 rows each,64 total,292 generation contacts,292 actual-request FIT receipts/1168 endpoints. Driver ended normally at20:29:56Z. The v2 audit verifies all76 Reviewer handoffs valid/visible and64 native Omni terminal deliveries, exact request/FIT bodies, immutable sources and no official scorer entry. Node/sample timings are source-bound, descriptive four-row observations only; no second admission wave or quality claim. Preserve original frozen a024df8ae worker and intentional OPENED engineering attempts; never score/reseal them.

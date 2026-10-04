@@ -1,0 +1,22 @@
+{
+  "schema": "saea-template-k16-n20-frozen-preflight-running-v1",
+  "at_utc": "2026-10-04T20:38:58.232067+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-n20-v1",
+  "commit": "a7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087",
+  "process": {
+    "pid": 745824,
+    "start_ticks": "49377434",
+    "state": "R",
+    "command": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/frozen-check-v1.py "
+  },
+  "exec_session": 77114,
+  "member_count": 18,
+  "seed_pass_observed": true,
+  "scientific_model_contacts": 0,
+  "script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-n20-owner227-v1/frozen-check-v1.py",
+    "sha256": "18df0fb66e4254d315775301a5f9932258cd7b354d0d5ca82de19737333df52e"
+  },
+  "next": "Continue this exact original preflight; require all18 frozen-check PASS. Then run the prepared completed-structural transition and launch Windows SAEA-Batch-Driver once after live state/memory checks. Observation timeout is not failure; never restart for it.",
+  "controls": "Completed structural queue remains unchanged; no STOP reconciliation or scientific dispatch."
+}
