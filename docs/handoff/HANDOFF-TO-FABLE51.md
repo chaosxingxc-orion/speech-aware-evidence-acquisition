@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Frozen K16 capacity preflight live, 2026-10-04T18:55:56.802662+00:00
+
+The complete preparation is serially integrated at16cd42cd1ec4dc2e687222c295ba796c27de4d80. The clean frozen worker is `/home/chao/saea-worktrees/codex-context-template-k16-capacity-v1` at that commit. [Live preflight receipt](../receipts/continuation/2026-10-04-template-k16-frozen-preflight-running.json) pins Linux728587/start48772912 and exec session50199. It is running the16 member-specific registration/runtime, actual-policy-byte, graph equality and warm-supply checks. Branch01 has printed PASS. Continue this exact process; observation timeout is not failure. No capacity/model/scorer contact has been dispatched.
+
+When `context-template-k16-engineering-owner227-v1/frozen-check-v1.json` proves all16, run its finalize helper once, revalidate service/STOP/processes/memory, and launch the exact pinned Windows wrapper. Root capacity scope is4752 tokenizer endpoints, zero generation/scoring. Do not run the prepared structural helper until actual capacity completion; it requires16 successful capacities and registers64 unscored structural trajectories, at most832 generation contacts/3328 actual-request FIT endpoints. Do not run the scientific entry until structural acceptance; it registers the already prepared18x20 family. All original semantic/model artifacts and source versions remain immutable. Heartbeat PAUSED; seed incumbent; no new scientific conclusion.
+
 ## K16 preparation complete; capacity entry registered, 2026-10-04T18:52:14.825710+00:00
 
 All CPU preparation processes above have exited0; do not restart them. [Engineering preparation](../receipts/continuation/2026-10-04-template-k16-engineering-prepared.json) covers48 warm-verified graph/capacity/four-row structural configurations across all16 original policies. [Scientific preparation](../receipts/continuation/2026-10-04-template-k16-n20-prepared.json) covers all18 exact N20 members, unchanged formal seed/A/A and16 original branches,360 trajectories. Every selection output remains equal to its source; no data/knowledge rebuild or model/scorer contact. The same-family A/A identity and18 algorithm labels are checked. Scientific generation remains HELD.

@@ -1,0 +1,22 @@
+{
+  "schema": "saea-template-k16-frozen-preflight-running-v1",
+  "at_utc": "2026-10-04T18:55:56.802662+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-capacity-v1",
+  "commit": "16cd42cd1ec4dc2e687222c295ba796c27de4d80",
+  "live_process": {
+    "pid": 728587,
+    "start_ticks": "48772912",
+    "script": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/frozen-check-v1.py"
+  },
+  "exec_session": 50199,
+  "capacity_registration_preparation_exit": 0,
+  "model_tokenizer_scorer_contacts": 0,
+  "capacity_dispatch": false,
+  "status": "RUNNING model-free frozen checks; no retry on observation timeout",
+  "continuation": [
+    "Poll the same50199 session or revalidate this exact PID/start identity.",
+    "After frozen-check-v1.json confirms all16 pass, run finalize-capacity-registration-v1.py once.",
+    "Revalidate live service, no STOP/competing flight and Windows memory; launch the pinned Windows capacity wrapper exactly once.",
+    "Only after all16 actual capacities pass, use the prepared64-row structural entry; scientific18-member family remains HELD."
+  ]
+}
