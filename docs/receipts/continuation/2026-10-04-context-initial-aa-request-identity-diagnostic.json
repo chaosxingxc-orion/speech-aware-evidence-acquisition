@@ -1,0 +1,57 @@
+{
+  "schema": "saea-root-aa-request-identity-diagnostic-v1",
+  "at_utc": "2026-10-04T13:45:32.487809+00:00",
+  "status": "ROOT-ONLY POST-READ DIAGNOSTIC; ORIGINAL EXPERIMENTS UNCHANGED",
+  "authority": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-context-initial4-scientific-read.json",
+    "sha256": "a6d1b4096486b0845ee62664fa4ee3400e93ebaea0d41b1fc0ca4d59b105486c"
+  },
+  "audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/initial-aa-rendered-fit-audit-v1.json",
+    "sha256": "3669ef2e531979cc92b158b8b05832e1fb0fa60989ce06aaa654ab16236f6947"
+  },
+  "payload_audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/initial-aa-payload-audit-v1.json",
+    "sha256": "4328a39723d191141dc01726705b3a039fbe200311080ad8dab256eb606bc250"
+  },
+  "helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/audit-initial-aa-payload-v1.py",
+      "sha256": "ba56d1ebe148f8b8f8f990b8c850bdd8c0c8796e161036431346e7fcac78b00f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/audit-initial-aa-rendered-fit-v1.py",
+      "sha256": "511dda5a5b212b28a18c5149f4e97e59bad1b5a71be010cd589cc64d7cd8f136"
+    }
+  ],
+  "aggregate": {
+    "samples": 20,
+    "first_fit_body_equal": 9,
+    "first_fit_session_equal": 20,
+    "first_response_text_equal": 9,
+    "first_body_equal_but_text_different": 3,
+    "first_body_equal_same_slot_but_text_different": 3,
+    "samples_with_response_text_divergence": 19,
+    "first_response_divergence_roles": {
+      "solver": 1,
+      "reviewer": 7,
+      "perception": 11
+    },
+    "first_response_divergence_with_equal_fit_body": 8,
+    "first_response_divergence_with_equal_fit_body_same_slot": 8,
+    "final_text_equal": 16
+  },
+  "interpretation": "Eight inputs first diverge in normalized response text with equal recorded actual-request FIT body hash and slot ID. Fixed decoding does not establish observed text repeatability. Three of those cases occur at the first Perception contact. The request-body record is the capacity boundary, not a captured HTTP send; cache, concurrent batching and numerical causes remain unestablished.",
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "optimizer_export": false,
+  "policy_or_serving_change": false,
+  "new_experiment_admission": false,
+  "limits": [
+    "The FIT receipt records the actual request body prepared for capacity measurement. It is not a captured HTTP send body.",
+    "Same body hash and slot do not establish the same cache, concurrent batch, numerical state or exact serving history.",
+    "Normalized response text equality is not a new task-quality score or a complete tool-action equivalence claim.",
+    "Do not assign the unexplained difference specifically to prefix eviction, cache reuse, kernels, seed handling or batching without further evidence."
+  ]
+}

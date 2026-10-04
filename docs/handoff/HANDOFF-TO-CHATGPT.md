@@ -9,9 +9,9 @@ GEPA retained Perception child0e48a88cd for optimization because its registered 
 [Source-verified accounting](../receipts/continuation/2026-10-04-context-gepa-iteration1-contact-accounting.json):120 trajectories,651 generation contacts,651 actual-request FIT receipts,2604 FIT service endpoints,6 official scores. No replay or inferred service-total row count. No automatic next iteration, TF export or scale admission. TF continues independently from the original qualified family; expected idle GPU while its proposals are pending is not an outage.
 
 
-## TF semantic callbacks advancing independently, 2026-10-04T13:28:00.979529+00:00
+## TF semantic callbacks advancing independently, 2026-10-04T13:44:41.977411+00:00
 
-Accepted original callbacks: 0000-summarize, 0001-summarize, 0002-summarize, 0003-summarize, 0004-compare, 0005-summarize, 0006-summarize, 0007-summarize, 0008-summarize, 0009-compare, 0010-summarize, 0011-summarize, 0012-summarize, 0013-summarize, 0014-compare, 0015-summarize, 0016-summarize, 0017-summarize, 0018-summarize, 0019-compare, 0020-summarize, 0021-summarize, 0022-summarize, 0023-summarize, 0024-compare. Each is preserved and submitted unchanged; receipts remain under docs/receipts/continuation. Current 0025-summarize uses a fresh GPT-6.1 Sol/high/no-history actor and manifest d6d2feb36f2101b4c40e202361382134776946e86c10dc00485d29b304c57e16. Original response is pending. TF worker671290/start46087929 was revalidated live. Do not retry or replace opportunities. GEPA has completed and exited normally; do not restart its finished worker.
+Accepted original callbacks: 0000-summarize, 0001-summarize, 0002-summarize, 0003-summarize, 0004-compare, 0005-summarize, 0006-summarize, 0007-summarize, 0008-summarize, 0009-compare, 0010-summarize, 0011-summarize, 0012-summarize, 0013-summarize, 0014-compare, 0015-summarize, 0016-summarize, 0017-summarize, 0018-summarize, 0019-compare, 0020-summarize, 0021-summarize, 0022-summarize, 0023-summarize, 0024-compare, 0025-summarize, 0026-summarize, 0027-summarize. Each is preserved and submitted unchanged; receipts remain under docs/receipts/continuation. Current 0028-summarize uses a fresh GPT-6.1 Sol/high/no-history actor and manifest b46fe5a5a95eafc137bdca328bd523bac63fa7492ffd3dcb779bbdbad81ff5dc. Original response is pending. TF worker671290/start46087929 was revalidated live. Do not retry or replace opportunities. GEPA has completed and exited normally; do not restart its finished worker.
 
 [Observed TF workload](../receipts/continuation/2026-10-04-context-tf-observed-workload.json): eight nonconstant groups require32 summaries,8 comparisons,1 experience update and4 proposals if all complete. Twelve zero-variance groups skip semantic comparison; all80 original episodes are preserved. Exact per-callback scope remains the original family, with no GEPA/root/test export. Unknown provider/token usage stays null.
 
@@ -2455,3 +2455,8 @@ WSL2 `Ubuntu-24.04`, `/home/chao/.venvs/speechrl/bin/python`, English documents,
 plus one scorer, merge finished work into master promptly, keep both entry points short and current.
 When you land a result, my freshness check will fail until I refresh this file — that is the intended
 signal, not a conflict.
+
+
+## Root-only initial A/A identity diagnostic (2026-10-04)
+
+Source-pinned, no-contact post-read audit:19/20 inputs show some response-text divergence,16/20 retain identical final text. Eight first response-text divergences have equal original actual-request FIT body hashes and the same slot ID (three at first Perception). This narrows the observation to a same-recorded-body/slot case but does not isolate cache, batching or numerical causes; FIT is not an HTTP send capture. Receipt: `docs/receipts/continuation/2026-10-04-context-initial-aa-request-identity-diagnostic.json`. Root-only; no TF/GEPA export, new admission, score replay or source/serving change. Original report and frozen learning inputs remain unchanged.
