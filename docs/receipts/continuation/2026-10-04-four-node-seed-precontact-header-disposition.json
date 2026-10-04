@@ -1,0 +1,28 @@
+{
+  "schema": "saea-root-four-node-seed-precontact-header-disposition-v1",
+  "at_utc": "2026-10-04T03:30:08.030152+00:00",
+  "owner_decision": 227,
+  "status": "MODEL-FREE-REFUSAL-PRESERVED",
+  "failed_worker": "/home/chao/saea-worktrees/codex-four-node-seed-capacity-v1",
+  "failed_commit": "c72225424ca076bd8b563bf9fd7346c5c3c0a383",
+  "named_cause": "New exposure table used abbreviated headers. Runtime GateClosed requires speech carrier + split and speech audio seconds. The separate registration check did not enforce those table columns.",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/frozen-check-v1.py",
+      "sha256": "2f3448d36d21763259b7ffa21d6018876e26b884bcf25a63ba81d4f81db74638"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/frozen-runtime-v1.stderr.log",
+      "sha256": "ea021c2779ced65563596f72a946790f703e63f847da930d004afc6f8668cd8e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-seed-capacity-owner227-v1/frozen-runtime-v1.stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "tokenizer_contacts": 0,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "attempt_opened": false,
+  "disposition": "Correct only the mutable mainline table header to the established canonical column schema, preserve all row values and budgets. Freeze a new worker and repeat all model-free gates. No task, queue, STOP or serving mutation; conditional capacity admission is unchanged."
+}
