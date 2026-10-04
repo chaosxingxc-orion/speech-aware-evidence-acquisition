@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## GPT-6.1 Sol successor implementation integrated, 2026-10-04T06:50:47.850693+00:00
+
+Root reviewed and serially integrated `fb532e5a9dc28713be159751de514726e7f9e3ff`. [Implementation and validation](../readiness/2026-10-04-sol-successor-panel-v1/README.md) record355 focused passing tests,100% changed executable statement coverage and98% changed branch coverage; selected-module aggregate64% is reported separately. Base,harness,lint and diff checks pass. The [root review](../receipts/continuation/2026-10-04-sol-successor-panel-integrated.json) independently validates real authority at20/50/100/200 and all six prepared standalone capacity/smoke role/profile bindings. These helpers are not full registration or actual FIT.
+
+The opt-in successor requires the exact six members, preserves all four original allocations and both invalid spent slot1 records, and rejects400. Complete READ checks every admitted member, unique complete scores, seals and measured timing before own-L projection. Parent-first duplicate retention, legacy eight-member behavior, branch isolation and exact authority/source commitments are tested. No original protocol, response or scientific result was rewritten; no new model/tokenizer/scorer contact occurred.
+
+Next freeze the actual six-member20 family and acyclic source scope, register exact engineering exposure and frozen admission, then execute actual capacity and separate four-row structural proofs for parent/L9-2/B9-2 before comparison. All prepared cells remain HELD; no GPU launch, root READ or benefit claim follows from unit tests. Continue with the requested GPT-6.1 Sol analysis channel; preserve original Astra proposal provenance. Keep sequential same400 execution,paused heartbeat,no paid spend,human before8x400 and other-carrier holds.
+
 ## Successor engineering assets prepared; exact-family implementation active, 2026-10-04T06:31:08.198225+00:00
 
 Root prepared [three-policy engineering](../readiness/2026-10-04-round9-successor-engineering-v1/README.md) and [prospective evaluation authority](../readiness/2026-10-04-round9-successor-evaluation-v1/README.md). Six HELD capacity/smoke cells and three model-free graphs use unchanged UPDATE2 first20/first4 sources. All six own supplies warm-verify and have identical selected outputs to the retained seed supplies. Shared verification matches actual role bytes to parent/L9-2/B9-2 bundles, and graph/capacity request configuration equality includes the4-slot/queue4 measurement profile. Nine draft plans are prepared; zero model/tokenizer/scorer contacts. Base/harness/diff checks pass.

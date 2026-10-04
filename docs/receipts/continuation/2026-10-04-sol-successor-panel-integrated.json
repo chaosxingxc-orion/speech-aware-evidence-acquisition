@@ -1,0 +1,64 @@
+{
+  "schema": "saea-sol-successor-panel-root-review-v1",
+  "at_utc": "2026-10-04T06:50:47.850693+00:00",
+  "reviewer": "ChatGPT root",
+  "source_commit": "fb532e5a9dc28713be159751de514726e7f9e3ff",
+  "serially_integrated": true,
+  "requested_agent_model": "gpt-6.1-sol",
+  "focused_tests_passed": 355,
+  "review_findings_resolved": [
+    "Parent-first duplicate retention preserves historical comparator identity.",
+    "Missing admitted source is rejected before task results.",
+    "All six timing records are required before own-L projection.",
+    "Projected selection binds exact own policy and attempt identities."
+  ],
+  "real_authority_rows_passed": [
+    20,
+    50,
+    100,
+    200
+  ],
+  "real_prelaunch_binding_helpers": [
+    {
+      "experiment": "slurp-native-stage3-system-text-round9-parent-capacity-v1",
+      "status": "PASS"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-round9-parent-smoke-4-v1",
+      "status": "PASS"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-round9-l-candidate-2-capacity-v1",
+      "status": "PASS"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-round9-l-candidate-2-smoke-4-v1",
+      "status": "PASS"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-round9-b-candidate-2-capacity-v1",
+      "status": "PASS"
+    },
+    {
+      "experiment": "slurp-native-stage3-system-text-round9-b-candidate-2-smoke-4-v1",
+      "status": "PASS"
+    }
+  ],
+  "helper_scope": "Actual role binding and standalone measurement profile only; not full registration, runtime admission or capacity.",
+  "new_contacts": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "runtime_admission": false,
+  "scientific_results_read": false,
+  "remaining": [
+    "Freeze the exact prospective family and source scope.",
+    "Register engineering exposure and frozen runtime admission.",
+    "Run actual capacity then separate four-row structural proof for three policies.",
+    "Admit the exact six-member20 comparison only after structural acceptance."
+  ],
+  "heartbeat": "PAUSED",
+  "human_before": "8x400",
+  "other_carrier_holds": "unchanged"
+}
