@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## GEPA exact capacity recovery launched, 2026-10-04T10:43:25.284821+00:00
+
+[Launch evidence](../receipts/continuation/2026-10-04-context-gepa-capacity-recovery1-launch.json) pins frozen6bf07f6d3, Windows PID26064 and Linux PID666643/start45909244. This is the single fresh297-endpoint nongenerative recovery after the named scratch collision. Exact frozen policy/registration/runtime checks pass. Root archived only the failed dead-owner lock after healthy idle service/no competing processes; no STOP or queue changed. Original140 endpoints and all historical scratch remain preserved.
+
+The first successor checkout refused its uppercase carrier ledger label before any attempt/contact; exact lock-key metadata is corrected in a new frozen checkout. No policy, model or task outcome changed. Await actual capacity completion, then separately admit four-row structure and the full six-member N20 trial. Keep the original GEPA learner waiting and TF independent; do not synthesize callback reward. Heartbeat stays PAUSED; other-carrier holds and human-before8x400 remain.
+
+
 ## GEPA capacity collision preserved and one successor prepared, 2026-10-04T10:36:55.7652261Z
 
 [Root227 disposition](../receipts/continuation/2026-10-04-context-gepa-capacity-collision-disposition.json) preserves the exact failed capacity:140 endpoints (one props and139 tokenizer), zero generation/scoring. The rehearsal namespace used only the repeated parent leaf and collided with an immutable initial counterexample proof. The old worker, scratch, journal and dead-owner lease remain preserved; structural registration correctly refused this failure. Do not retry that identity or read task quality.

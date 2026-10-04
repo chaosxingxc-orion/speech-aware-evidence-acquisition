@@ -1,0 +1,38 @@
+{
+  "at_utc": "2026-10-04T10:43:25.284821+00:00",
+  "authority": "root227 exact recorded collision recovery",
+  "budget": {
+    "generation": 0,
+    "scoring": 0,
+    "tokenizer_endpoint_cap": 297
+  },
+  "commit": "6bf07f6d34aef18e31bfd25c6bdef9837ad70681",
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-capacity-recovery1-owner227-v1/frozen-check-v2.json",
+    "sha256": "5b16fe74db264be3e44285ba758173a17b29c11689049b2d9b8ef0d04b9fd981"
+  },
+  "lease_reconciliation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-capacity-recovery1-owner227-v1/lease-reconciliation-v1.json",
+    "sha256": "41bcd4efc7af7802e08339b0ce7244d9b79bbef57e253abb72e0dd5fa46cf1bf"
+  },
+  "linux_pid": 666643,
+  "notes": [
+    "The initial successor frozen preflight refused uppercase carrier metadata before any attempt or endpoint; exact lower-case lock key corrected in a new immutable checkout.",
+    "The current original GEPA learner remains waiting. No reward or successor source is fabricated.",
+    "Structural and complete N20 trial remain HELD. Paused heartbeat and human-before8x400 unchanged."
+  ],
+  "original_failed_endpoints": 140,
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-capacity-recovery1-owner227-v1/registration-v1.json",
+    "sha256": "ece8565a5ed21098ffaf196cddcc4a5cfc5ebbcbeacbe9681bb5a083bf4da754"
+  },
+  "schema": "saea-gepa-capacity-recovery-launch-v1",
+  "start_ticks": 45909244,
+  "status": "RUNNING-nongenerative-capacity-only",
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-gepa-iteration1-capacity-recovery1-owner227-v1/capacity-windows-v1.launch.json",
+    "sha256": "11b56d4be828a75262f9363281bdc70afe5f7daf802a7af09f9a8a9e298e0077"
+  },
+  "windows_pid": 26064,
+  "worker": "/home/chao/saea-worktrees/codex-context-gepa-iteration1-capacity-recovery1-v2"
+}
