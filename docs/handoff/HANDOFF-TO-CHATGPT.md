@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Baseline subagent stages prospectively separated, 2026-10-04T09:25:52.072184+00:00
+
+[Actor preparation](../readiness/2026-10-04-context-baseline-actors-v1/README.md) pins the original TF/GEPA callback allocations and the requested GPT-6.1 Sol channel. Use one fresh no-history actor per semantic callback, with a concrete stage-scoped input manifest before each spawn. Individual summaries cannot inherit other rollouts; comparison/experience/proposal stages receive their original algorithm tasks. Root alone handles complete GPU evaluation. Source READ, source export and exact per-request admission still precede contact; no real actor or learner worker was launched.
+
+The direct subagent route may lack provider usage. Preserve unknown values and do not claim compute matching or OS-enforced isolation from an allowed-file list. Historical L/B rules/allocations remain unchanged. The initial six-member GPU family continues;four members were FINALIZED with unique successful complete scores/zero failures, counterexample-check was OPENED and semantic-frame absent at this preparation. No partial scientific read. Keep the paused heartbeat and all owner boundaries.
+
 ## Full recorded context available to qualified learners, 2026-10-04T09:20:30.852460+00:00
 
 [Source material adapter](../readiness/2026-10-04-context-source-material-v1/README.md) reuses the complete-family READ gate and verified native trajectory export to publish full per-input phase, request, response, tool and terminal evidence. It preserves interrupted/failed visits and exact source hashes, excludes unrelated records and comparator material, and requalifies before publishing the final index.136 focused tests pass;50 adapter statements/six branches have100% coverage;base/harness pass. No real semantic source was opened and no model/scorer contact was added. Isolated actor admission remains separate; this is not an OS sandbox or a new optimizer.

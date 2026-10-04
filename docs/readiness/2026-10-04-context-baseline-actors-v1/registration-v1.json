@@ -1,0 +1,67 @@
+{
+  "schema": "saea-context-baseline-actor-registration-v1",
+  "recorded_at_utc": "2026-10-04T09:24:51.773473+00:00",
+  "authority": "owner227 bounded autonomous SLURP; direct GPT-6.1 Sol subagent and deterministic K-system amendments",
+  "status": "PROSPECTIVE; exact full-family READ and per-request material admission required",
+  "source_read_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1",
+  "source_recipe": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-entry-v1/analysis-recipe-v1.json",
+    "sha256": "649a2a1c6bb07c4bf7e77407c09c97e0e649dbff9808fb56965fa1ddd3598846"
+  },
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "paid_api_spend": 0,
+  "one_fresh_subagent_per_callback": true,
+  "reuse_completed_callback": false,
+  "automatic_retry": false,
+  "algorithms": {
+    "tf-grpo-context-diversity": {
+      "iteration_plan": {
+        "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/tf-grpo-context-diversity-iteration-plan-draft-v1.json",
+        "sha256": "145ac6019e3ec82f6cc6ddbb4efff77cdaa737a861fe59ac2ec4e7f12030731f"
+      },
+      "callback_caps": {
+        "compare": 20,
+        "evaluate": 1,
+        "propose": 4,
+        "summarize": 80,
+        "update_experience": 1
+      },
+      "maximum_subagent_spawns": 105,
+      "evaluation_candidate_cap": 80,
+      "evaluation_control_cap": 40,
+      "automatic_next_iteration": false
+    },
+    "gepa": {
+      "iteration_plan": {
+        "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/gepa-iteration-plan-draft-v1.json",
+        "sha256": "18dd7b3396694cb3d9631399e23b80ff43d1c26ad03a33f4ad8a58c402c0a5f5"
+      },
+      "callback_caps": {
+        "compare": 0,
+        "evaluate": 1,
+        "propose": 1,
+        "summarize": 0,
+        "update_experience": 0
+      },
+      "maximum_subagent_spawns": 1,
+      "evaluation_candidate_cap": 80,
+      "evaluation_control_cap": 40,
+      "automatic_next_iteration": false
+    }
+  },
+  "input_rule": "Exact original callback request plus stage-scoped material index and schema instructions; no root chat, logs, other algorithm history or test/milestone feedback. Prepare and hash a concrete allowed-file manifest before each spawn.",
+  "metering": "Record available actual usage. Unknown provider contacts/input/output tokens remain null; callback/agent counts are not token or provider-contact counts. No matched-compute claim.",
+  "historical_scope": "Historical L/B allocations and owner217 metering rejection remain unchanged. This newly registered two-baseline subagent sequence uses the directly requested channel with explicit unknown-metering disclosure; it is not a recovered or relabeled historical L/B proposal.",
+  "transport_bounds": {
+    "max_request_bytes": 16777216,
+    "max_response_bytes": 262144,
+    "response_wait_seconds": 21600,
+    "poll_seconds": 2,
+    "meaning": "Finite file transport/wait bounds, not server token limits or Omni FIT."
+  },
+  "human_boundary": "Return before8x400, including equivalent split campaigns.",
+  "runtime_dispatch_authority": false,
+  "root_evaluator_rule": "A changed policy waits for separate clean compile, actual FIT, structural proof and full120-trajectory trial admission; one generating family/one official scorer. Return only exact qualified bindings and recipe after trial READ."
+}
