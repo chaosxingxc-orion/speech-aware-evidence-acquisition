@@ -1,0 +1,19 @@
+{
+  "schema": "saea-context-tf-evaluation-response-v1",
+  "at_utc": "2026-10-04T17:06:41.614473+00:00",
+  "request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0045-evaluate/request.json",
+    "sha256": "8ab2bee31eca98a6ff144058ef47b653b3467493a479b07d4fb415e686b1b889"
+  },
+  "original_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0045-evaluate/original-response.json",
+    "sha256": "41571e414548318ea16ee429568acaa32dbdb47100b82add492e8bdfa2e0cf3b"
+  },
+  "response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0045-evaluate/response.json",
+    "sha256": "b32485fef4d86be40c5bf5fa91841dd89bd79eaf94cc8ab1bbf49f3bbb8caeeb"
+  },
+  "runtime_dispatch": false,
+  "numeric_reward_entered": false,
+  "next": "Wait for the same original worker to verify sources and decide under its registered rule; no restart or automatic next iteration."
+}

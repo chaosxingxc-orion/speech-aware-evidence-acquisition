@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## TF iteration 1 complete; template-only consumption next, 2026-10-04T17:15:13.981714+00:00
+
+[Complete root report](../results/2026-10-04-context-tf-iteration1-n20.md) and [completion receipt](../receipts/continuation/2026-10-04-context-tf-iteration1-complete.json) supersede running snapshots. Six members finalized 20 rows each, all seals verified, one successful whole-member official score each and zero failed jobs. Driver ended17:04:33Z; exact root READ signed17:04:55.914570Z. Actual accounting:120 rows,612 generation contacts,612 FIT receipts,2448 FIT endpoints. No replay.
+
+All four updated systems have lower same-trial F1 and higher mean sample latency than seed. Keep formal seed and N20. The original TF learner rejected the update (utility -14.428366880 to -18.345750975), retained its original four optimization parents and zero active experience entries, and exited0 at17:07:46.0838078Z. The nine proposed experience additions remain historical; no active reset was performed or needed. Preserve every spent callback and original response.
+
+Prioritize Solver/Reviewer evidence use and correction quality, then context/handoffs, Planner decisions and finally Perception presentation. Fewer calls and more accepted endings did not establish benefit. Next exact template-only protocol must prospectively admit qualified own-TF rejected-trial aggregate feedback without raw cases, source lists or knowledge edits. Existing READ is not a new optimizer-export authorization. GEPA remains separate; no new actor/runtime admission, scaling or stable-benefit claim. Heartbeat PAUSED; other-carrier holds and human-before8x400 remain.
+
 ## Template phase experience custody, 2026-10-04T16:56:01.688257+00:00
 
 [Root disposition](../receipts/continuation/2026-10-04-template-phase-experience-disposition.json) confirms 8 of9 original TF experience operations contain sample identifiers. Preserve all originals. The next zero-case TF phase may explicitly reset working textual experience using a plan bound to the exact prior decision, while retaining policies, numeric history and exposure.186 tests pass; no current worker/callback or runtime changed. Exact next parent/READ/admission waits for the original decision. Use read-family-v2.py with analysis-supplement-v2.json for current TF root analysis after full qualification; root-countersign-v2.py and submit-qualified-evaluation-v2.py remain the selected helpers. No partial quality read.
@@ -1784,7 +1792,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T12:11:42.238025+00:00
+Last refreshed: 2026-10-04T17:15:13.981714+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

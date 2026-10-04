@@ -1,0 +1,92 @@
+{
+  "schema": "saea-context-tf-iteration1-contact-accounting-v1",
+  "at_utc": "2026-10-04T17:06:39.638106+00:00",
+  "members": [
+    {
+      "member": "counterexample-check",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COUNTEREXAMPLE-CHECK-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 83,
+      "actual_request_fit_receipts": 83,
+      "fit_service_endpoints": 332,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-counterexample-check-generation-v1/flight-receipts.json",
+        "sha256": "5b4d816a6b4bcd617af07ab57679ed3952ba168483017e3e0ee80c8cbc1b9d7c"
+      }
+    },
+    {
+      "member": "coverage-ledger",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 86,
+      "actual_request_fit_receipts": 86,
+      "fit_service_endpoints": 344,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-coverage-ledger-generation-v1/flight-receipts.json",
+        "sha256": "443cd1dd6bcc97ba4e424b66c084c5faa239ce00609f494372cc74a8f66b1d2a"
+      }
+    },
+    {
+      "member": "seed",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 128,
+      "actual_request_fit_receipts": 128,
+      "fit_service_endpoints": 512,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-generation-v1/flight-receipts.json",
+        "sha256": "82a03a15b484209c116bc0e0a622351c996e40246ac1d4f1bf95d0bab5f904b2"
+      }
+    },
+    {
+      "member": "seed-aa",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-AA-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-AA-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 125,
+      "actual_request_fit_receipts": 125,
+      "fit_service_endpoints": 500,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-aa-generation-v1/flight-receipts.json",
+        "sha256": "40df6bc480149e08ad53a872d939f5059dec2e3a8dedfbb29b7e00ac8693573c"
+      }
+    },
+    {
+      "member": "semantic-frame",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEMANTIC-FRAME-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEMANTIC-FRAME-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 104,
+      "actual_request_fit_receipts": 104,
+      "fit_service_endpoints": 416,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEMANTIC-FRAME-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-semantic-frame-generation-v1/flight-receipts.json",
+        "sha256": "9fca086817b09cb9a942f98f2e696788dba0d1fe0127c6e7fcc225c17f22a15e"
+      }
+    },
+    {
+      "member": "speech-evidence",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-V1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-FIT-V1",
+      "rows": 20,
+      "generation_contacts": 86,
+      "actual_request_fit_receipts": 86,
+      "fit_service_endpoints": 344,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-V1/attempt-slurp-native-stage3-context-tf-iteration1-n20-speech-evidence-generation-v1/flight-receipts.json",
+        "sha256": "fbcb44ad1e86195bc77b4ec6f76ec129f5ce0c509646f989c1a316de7175c880"
+      }
+    }
+  ],
+  "totals": {
+    "rows": 120,
+    "generation_contacts": 612,
+    "actual_request_fit_receipts": 612,
+    "fit_service_endpoints": 2448
+  },
+  "service_total_inference": false,
+  "extra_contacts": 0
+}

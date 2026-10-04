@@ -1,0 +1,69 @@
+{
+  "schema": "saea-context-tf-iteration1-complete-v1",
+  "at_utc": "2026-10-04T17:15:13.981714+00:00",
+  "status": "complete_trial_and_original_learner_rejected",
+  "read_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1",
+  "all_members_finalized": 6,
+  "rows": 120,
+  "generation_contacts": 612,
+  "actual_fit_receipts": 612,
+  "fit_service_endpoints": 2448,
+  "official_successful_scores": 6,
+  "failed_score_jobs": 0,
+  "root_formal_incumbent": "seed",
+  "next_input_count": 20,
+  "original_learner_status": "rejected",
+  "utility_before": -14.428366880129548,
+  "utility_after": -18.34575097537332,
+  "active_experience_entries": 0,
+  "active_bundle_ids": {
+    "counterexample-check": "fd9183d44243005bf027af8b14316a5a2111fece88cd1838fde1ec2564bf2e09",
+    "coverage-ledger": "929b0e7ccbebebca16c968d8a20782a790cae547077870657c085d702379eb4f",
+    "semantic-frame": "612d7cc4ba6b46d145e3e20ce9e4afd0185617f622604c04099d13dc7a75e091",
+    "speech-evidence": "3de7e312b42632f7358f381bb27072459d4d19754f2c5bf73a341c667a686303"
+  },
+  "windows_exit": {
+    "error": null,
+    "exit_code": 0,
+    "automatic_retry": false,
+    "started_at_utc": "2026-10-04T11:13:00.1157031Z",
+    "schema": "saea-windows-context-worker-exit-v1",
+    "windows_pid": 1044,
+    "ended_at_utc": "2026-10-04T17:07:46.0838078Z"
+  },
+  "source_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/report.json",
+      "sha256": "620e3e12ff22bcf5066f621be5668dd378aff7437ba3b73901b1212c22169a4c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1/timing-summary.json",
+      "sha256": "e087ccd92e421a8963e676ddf21f0a6c07f0c8a149420cfb3f43404c80a5c9d8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/decision.json",
+      "sha256": "b7d7b23ffc667fd19bb651144b1ff67884891c0e483fb922da5d476aa1bb49b9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-worker-v1.windows-exit.json",
+      "sha256": "6317e1d966228e292e0b7e40d2a586385a2e4ac24d2c6b334f22c9a09524fdc3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/worker-exit.json",
+      "sha256": "d743c2363da797c73f4fc6830ee1e27c6820c44838b56fdd41976e257ed3845c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-n20-owner227-v1/root-read-authorization-v1.json",
+      "sha256": "79fbc842bb6c70358b8bd3d7feb6b67431d666cd71935a9064a4fc156fcac06d"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/results/2026-10-04-context-tf-iteration1-n20.md",
+      "sha256": "e11baf98ca871f7cda5a3d3b2d44fa3959d7bcfc7b8b5fc889a45e5ede291eee"
+    }
+  ],
+  "next_optimizer_export_authorized": false,
+  "contacts_added_by_record": 0,
+  "stable_benefit_established": false,
+  "automatic_scale": false,
+  "next": "Prospectively register template-only own-TF aggregate feedback, including rejected-trial history, without promoting rejected children or importing GEPA outcomes."
+}
