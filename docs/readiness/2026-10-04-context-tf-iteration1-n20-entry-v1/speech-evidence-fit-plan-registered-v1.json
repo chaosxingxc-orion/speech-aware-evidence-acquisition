@@ -1,0 +1,47 @@
+{
+  "cell": "slurp-native-stage3-context-tf-iteration1-n20-speech-evidence-v1",
+  "composed_config_hash": "036693042ab755ffb414b599388eb40e15873f86ace627edb680bab635948314",
+  "decision_receipt": {
+    "relpath": "coordination/context-tf-iteration1-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "e8a4553964ceab4b0c104b211ed9f03a5e04f6e0e7ecff6e8dcc73a8447ccef8"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-speech-evidence-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "c0e971367befdf47c96efed663662201a44b09e7a159c954e4726c86431e82a4",
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-tf-iteration1-n20-speech-evidence-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/1647b93e094719343c823cb0f4a691438603d2e04079923bb7fa6418bfca9577.json",
+      "sha256": "9891be199f804136d390ce508afc37ae55062e3dc913deb09c1510ceeb66d5b4"
+    },
+    "bundle_id": "1647b93e094719343c823cb0f4a691438603d2e04079923bb7fa6418bfca9577",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-V1/phase-supply-v1.json",
+    "sha256": "9ef7f9c76cd28c2777f707174df13bec521f9e066b02beeafe4ada36aef0598a"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

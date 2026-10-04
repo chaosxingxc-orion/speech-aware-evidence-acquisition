@@ -1,0 +1,70 @@
+{
+  "expected_members": {
+    "counterexample-check": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1",
+    "coverage-ledger": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-V1",
+    "seed": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-V1",
+    "seed-aa": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-AA-V1",
+    "semantic-frame": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEMANTIC-FRAME-V1",
+    "speech-evidence": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-V1"
+  },
+  "family_id": "context-tf-iteration1-n20",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "member_bindings": {
+    "counterexample-check": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-counterexample-check-generation-v1",
+      "bundle_id": "fac18294fae47670f61fad4899bede30c274e80b1fcb239c432c6e49f2267345",
+      "config_hash": "878ce6cf1f648ac46b9f7f870d65b89da7f78ffc9113fa68b0186d32d9c291c2",
+      "experiment": "slurp-native-stage3-context-tf-iteration1-n20-counterexample-check-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1"
+    },
+    "coverage-ledger": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-coverage-ledger-generation-v1",
+      "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+      "config_hash": "d01b586a113dcd6dc48216b41b757fe517fb9cb73a58a156b37629da947866b9",
+      "experiment": "slurp-native-stage3-context-tf-iteration1-n20-coverage-ledger-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-V1"
+    },
+    "seed": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "59a8cfe0fbf43df996a9cfee1ffa192b7d30e4b080e0a9a459a9d87b50f617bb",
+      "experiment": "slurp-native-stage3-context-tf-iteration1-n20-seed-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-V1"
+    },
+    "seed-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-aa-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "02e161eed950202bf77e158ee79e2f37bb6fa9c554fd6b4d90b7b2ffbf5b513a",
+      "experiment": "slurp-native-stage3-context-tf-iteration1-n20-seed-aa-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-AA-V1"
+    },
+    "semantic-frame": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-semantic-frame-generation-v1",
+      "bundle_id": "4c36e09b4b185dd3b126cf28e2d290a922b66777da5cc25f3cbba3df118e6df7",
+      "config_hash": "ee24b3c754a40364d23ca2e995629f9effe577a75b3a9202503ab4d0ce07da3e",
+      "experiment": "slurp-native-stage3-context-tf-iteration1-n20-semantic-frame-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEMANTIC-FRAME-V1"
+    },
+    "speech-evidence": {
+      "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-speech-evidence-generation-v1",
+      "bundle_id": "1647b93e094719343c823cb0f4a691438603d2e04079923bb7fa6418bfca9577",
+      "config_hash": "036693042ab755ffb414b599388eb40e15873f86ace627edb680bab635948314",
+      "experiment": "slurp-native-stage3-context-tf-iteration1-n20-speech-evidence-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SPEECH-EVIDENCE-V1"
+    }
+  },
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-04-context-tf-iteration1-n20-entry-v1/protocol-v1.json",
+    "sha256": "498d719646aeed8fe13ba599ac90f5c76dd0604e6b81ad479e50f1c627eb64e6"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1",
+  "registration_sha256": "9a0ddb5fb46a7d3875ac2c07aadd338ff3ec15aec2904b2a3358ec30f2b2469c",
+  "schema": "saea-context-learning-registration-v1"
+}

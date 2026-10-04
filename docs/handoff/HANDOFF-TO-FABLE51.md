@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## TF four-system structural proof complete, 2026-10-04T16:16:58.700522+00:00
+
+[Exact completion](../receipts/continuation/2026-10-04-context-tf-iteration1-structural-complete.json):16 rows,67 generation contacts,67 actual-request FIT receipts/268 endpoints. All17 Reviewer handoffs valid and visible; all16 terminal deliveries retain Omni custody. Driver completed normally16:15:35Z. Engineering attempts intentionally remain OPENED with completed generation and prepared score specs, no official scoring. Node/sample timing is source-bound; this is not a speed/quality comparison.
+
+Proceed with exact fresh six-member120-trajectory N20 TF evaluation and full-family READ before the original0045 callback. No new semantic reflection is due. Preserve independent GEPA history, formal seed,N20,paused heartbeat,other-carrier holds and human-before8x400.
+
+
 ## Prospective template-level feedback implemented, 2026-10-04T16:14:03.255840+00:00
 
 [Shared-base implementation](../readiness/2026-10-04-template-first-feedback-v1/README.md) adds a pinned optional template-only profile: all80 numeric candidate rows, at most12 source examples in the example profile, zero per-row summary/comparison callbacks, one TF batch experience update/four proposals; GEPA retains separate component selection. Full policies/complete evaluation, fixed knowledge and runtime boundaries remain.208 relevant tests pass; both modified modules have100% statement coverage; engineering-base check passes. No new-profile proposer/contact or efficiency/quality benefit is asserted. Register exact next plan and source-limited isolated capsules before use. Original live TF learner and frozen structural proof are unchanged.

@@ -13,9 +13,9 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Exact TF trial preparation; all four changed-child capacities/structures and full family registration/READ pending.",
+        "reason": "Root227 exact TF N20K4 evaluation after four child capacities/structures; frozen/runtime/live gates required.",
         "requirements": [],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COUNTEREXAMPLE-CHECK-V1",
       "system_text_policy_binding": {

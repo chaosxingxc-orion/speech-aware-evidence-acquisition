@@ -1,0 +1,29 @@
+{
+  "actual_request_fit_receipts": 67,
+  "at_utc": "2026-10-04T16:16:58.700522+00:00",
+  "commit": "e3bc294a05455abb624eaa1a54215415e9d97804",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-structural-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "dfe475a6ab51e2f90718a39967ed3dc7655c5d3a3398341d1cd842eb3c38a354"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-structural-owner227-v1/root-sample-timing-v1.json",
+      "sha256": "efa10bbc45c714d49c95d02b7e9d297d6b6b8a5054c03d72819a96d27bf88e94"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-structural-owner227-v1/root-node-timing-v1.json",
+      "sha256": "dbfb0c973b875ecd4bd1bc263dafb102435a571694cc735065ebeee4836983af"
+    }
+  ],
+  "fit_endpoint_contacts": 268,
+  "model_contacts": 67,
+  "next": "Fresh six-member N20 TF evaluation and exact complete-family READ before returning source bindings to the original live learner. No new semantic callbacks; new template-first profile is prospective. Keep seed incumbent and heartbeat PAUSED.",
+  "official_scorer_contacts": 0,
+  "owner_decision": 227,
+  "rows": 16,
+  "schema": "saea-context-tf-iteration1-structural-complete-v1",
+  "scope": "Structural routing, native answer custody,17 visible valid Reviewer handoffs and67 original request FIT body checks. No task quality read or learned benefit. Uncalled knowledge paths remain unobserved.",
+  "structural_pass": true,
+  "worker": "/home/chao/saea-worktrees/codex-context-tf-iteration1-structural-v1"
+}

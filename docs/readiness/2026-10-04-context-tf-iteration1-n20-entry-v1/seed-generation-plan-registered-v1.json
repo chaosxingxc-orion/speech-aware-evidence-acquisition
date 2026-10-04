@@ -1,0 +1,47 @@
+{
+  "cell": "slurp-native-stage3-context-tf-iteration1-n20-seed-v1",
+  "composed_config_hash": "59a8cfe0fbf43df996a9cfee1ffa192b7d30e4b080e0a9a459a9d87b50f617bb",
+  "decision_receipt": {
+    "relpath": "coordination/context-tf-iteration1-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "e8a4553964ceab4b0c104b211ed9f03a5e04f6e0e7ecff6e8dcc73a8447ccef8"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-seed-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "f93b7eb1b263c992fb97a9a27d4f643b47fca5801a91acb1027e78c395ab9649",
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-tf-iteration1-n20-seed-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-SEED-V1/phase-supply-v1.json",
+    "sha256": "434b385a971380a3d40d0e79d8cba4c4cd722beea674aefb8c53621ef3b9c085"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

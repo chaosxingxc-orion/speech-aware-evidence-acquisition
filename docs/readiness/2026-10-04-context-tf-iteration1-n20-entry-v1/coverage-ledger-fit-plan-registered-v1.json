@@ -1,0 +1,47 @@
+{
+  "cell": "slurp-native-stage3-context-tf-iteration1-n20-coverage-ledger-v1",
+  "composed_config_hash": "d01b586a113dcd6dc48216b41b757fe517fb9cb73a58a156b37629da947866b9",
+  "decision_receipt": {
+    "relpath": "coordination/context-tf-iteration1-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "e8a4553964ceab4b0c104b211ed9f03a5e04f6e0e7ecff6e8dcc73a8447ccef8"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-tf-iteration1-n20-coverage-ledger-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "9d1930a0c0d681b9744ce173b056dabca42159b43094b80f3b4fc4cd99083d2d",
+    "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-tf-iteration1-n20-coverage-ledger-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/policies/bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8.json",
+      "sha256": "d227c32d1908623d1cfbf73078f64645b841e9f67669da6b63fe96c40fa0a19b"
+    },
+    "bundle_id": "bd2deb9c84e634076656ba2b7ca7692d2ab52bd0607dfd6f6ec9e8aa42668dc8",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-COVERAGE-LEDGER-V1/phase-supply-v1.json",
+    "sha256": "54c673f0574aa1c07277984553b92e798c084b07e94fd9f3d8a416aceb063e99"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-N20-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}
