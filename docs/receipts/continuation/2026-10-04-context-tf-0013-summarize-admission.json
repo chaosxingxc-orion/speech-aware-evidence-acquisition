@@ -1,0 +1,18 @@
+{
+  "schema": "saea-context-tf-actor-admission-v1",
+  "at_utc": "2026-10-04T12:29:14.733713+00:00",
+  "status": "ROOT ADMITTED BEFORE SUBAGENT CONTACT",
+  "authority": "owner227 and registered original TF iteration1",
+  "run_id": "SAEA-SLURP-CONTEXT-TF-ITERATION1-0013-SUMMARIZE-V1",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/actor-capsules/0013-summarize/manifest.json",
+    "sha256": "46db949b6a894b0d78d335eb7b41bf5d10d5ad7e76fb6f76255375ccf8b2be55",
+    "bytes": 1985
+  },
+  "callback_cap": 1,
+  "model": "gpt-6.1-sol",
+  "fork_turns": "none",
+  "paid_api_spend": 0,
+  "usage": "Unknown provider/token counts remain null",
+  "runtime_dispatch": false
+}

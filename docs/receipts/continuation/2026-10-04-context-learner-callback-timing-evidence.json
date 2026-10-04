@@ -1,0 +1,130 @@
+{
+  "schema": "saea-context-learner-callback-timing-evidence-v1",
+  "at_utc": "2026-10-04T12:31:13.551666+00:00",
+  "status": "ROOT OPERATIONAL ACCOUNTING; TF INCOMPLETE",
+  "helper": {
+    "relpath": "coordination/context-initial4-n20-owner227-v1/learner-callback-timing-snapshot-v1.py",
+    "sha256": "08dbdf7bc2aaab7776a2fd4ea8e85299837d6c85839242ccb83c240423560c52"
+  },
+  "snapshots": [
+    {
+      "at_utc": "2026-10-04T12:31:13.352594+00:00",
+      "algorithm": "tf-grpo-context-diversity",
+      "stages": {
+        "summarize": {
+          "completed": 11,
+          "elapsed_seconds": 3929.7853370720986,
+          "mean_seconds": 357.25321246109985
+        },
+        "compare": {
+          "completed": 2,
+          "elapsed_seconds": 310.7481125500053,
+          "mean_seconds": 155.37405627500266
+        }
+      },
+      "reserved_count": 14,
+      "pending_reserved": [
+        "0013-summarize"
+      ],
+      "failed_events": [],
+      "timing_scope": "Original learner perf_counter callback interval, including actor, orchestration and wait. Not provider inference time, tokens, model contact count or business sample latency.",
+      "provider_usage_known": false,
+      "evidence_count": 13,
+      "sources": [
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0000-summarize-completed.json",
+          "sha256": "c8748b3bc10b17be05b12469b0fb137662a74f66c0c23a2565cf7af4ab79792e"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0001-summarize-completed.json",
+          "sha256": "f6b900372420120f656a11a52b4ccec324b45d1715b156faeaec3ae4c99e696e"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0002-summarize-completed.json",
+          "sha256": "59915374370346586f1099303452542e443ec996ce28f851c3b35faf59019d5b"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0003-summarize-completed.json",
+          "sha256": "40faaba55ea33289cbe1ca2940fe47f7f5061b7af52b712f5dcc28731ec99672"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0004-compare-completed.json",
+          "sha256": "d79a87b60ad578240339b1a2273ec216c5d3e084ee62dca58cd39aca352aa2d1"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0005-summarize-completed.json",
+          "sha256": "a165bc2b623c86f60c88f83e426c22b57ca775b41b9a2f417b9666b2a332be05"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0006-summarize-completed.json",
+          "sha256": "895eee4f7be0d5d4f18bf6267dfc389236ca9dc6de2c226d65dc5deeecdd92bf"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0007-summarize-completed.json",
+          "sha256": "e1cb8fd821cd5121f4b5e3c9c3c7faeef2d409833b8f6109c95b2ab81a89824e"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0008-summarize-completed.json",
+          "sha256": "7654863e691d0f0b704889199a1a36f6c7afb7da1f45620b360eee008f8bd96d"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0009-compare-completed.json",
+          "sha256": "122e5398a3046877c340f54bd0932e47040cb3f792b0ec8fece4394757610889"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0010-summarize-completed.json",
+          "sha256": "17104fb1afe735da59df103bad738c80b78b3953d52606d87e27a0d104e0fa2a"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0011-summarize-completed.json",
+          "sha256": "6e12f50a4cf3d0c2b85ff1b601baac84390b1b6451df9a3e1a42dee6e83d860f"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/context-learning/iterations/tf-grpo-context-diversity-1/events/0012-summarize-completed.json",
+          "sha256": "edee9e12f1216f04f6c99524ce35b754c9b2d31e4b7abab296d70daf1d21125d"
+        }
+      ]
+    },
+    {
+      "at_utc": "2026-10-04T12:31:13.504346+00:00",
+      "algorithm": "gepa",
+      "stages": {
+        "propose": {
+          "completed": 1,
+          "elapsed_seconds": 415.18192869401537,
+          "mean_seconds": 415.18192869401537
+        },
+        "evaluate": {
+          "completed": 1,
+          "elapsed_seconds": 6352.964419725002,
+          "mean_seconds": 6352.964419725002
+        }
+      },
+      "reserved_count": 2,
+      "pending_reserved": [],
+      "failed_events": [],
+      "timing_scope": "Original learner perf_counter callback interval, including actor, orchestration and wait. Not provider inference time, tokens, model contact count or business sample latency.",
+      "provider_usage_known": false,
+      "evidence_count": 2,
+      "sources": [
+        {
+          "relpath": "system-text-search/context-baseline-gepa-iteration1-worker2-v1/context-learning/iterations/gepa-1/events/0000-propose-completed.json",
+          "sha256": "87a2d86e06f0f9e13da4a4d000c0b2c03af8fa9d09b5b81b58ac258381802ecf"
+        },
+        {
+          "relpath": "system-text-search/context-baseline-gepa-iteration1-worker2-v1/context-learning/iterations/gepa-1/events/0001-evaluate-completed.json",
+          "sha256": "3e5a59086f11e539de7ec0ddb239853a80c2590dac0fa535dfa8ecd48287410d"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Use the existing learner monotonic callback measurements, not file timestamp differences.",
+    "Intervals include root orchestration, actor processing and response wait; evaluation includes capacity and structural preparation before the complete trial.",
+    "These are not provider inference times, measured token counts or business sample latency.",
+    "Do not claim equal compute or compare complete GEPA with incomplete TF as a final algorithm cost verdict.",
+    "No changes to actors, original responses, frozen workers, allocations or runtime policies. No optimizer export."
+  ],
+  "model_contacts_added": 0,
+  "runtime_dispatch": false
+}
