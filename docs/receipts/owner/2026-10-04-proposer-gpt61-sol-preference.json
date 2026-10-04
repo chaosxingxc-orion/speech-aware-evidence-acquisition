@@ -1,0 +1,26 @@
+{
+  "schema": "saea-owner-proposer-model-preference-v1",
+  "at_utc": "2026-10-04T05:57:03.936149+00:00",
+  "owner_instruction_english": "GPT-6.1 Sol is more appropriate for this task; the task is not especially complex and does not need Astra.",
+  "source": "Direct human message in the active root conversation following manual quota reset.",
+  "requested_model": "gpt-6.1-sol",
+  "scope": "Future proposer sequences, both learning and blind branches using the same pinned model.",
+  "existing_round9": "Preserve completed Astra outputs and spent allocations. Finish offline compilation; no replacement or replay.",
+  "catalogue": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/next-sol-model-catalogue.json",
+    "sha256": "8dcdf1d77438bb4b54e76d76e691e6fff0dae6c60fc6b877e141b1b4d46d2f23",
+    "models": [
+      "gpt-6-astra",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-5.6-luna",
+      "gpt-5.5"
+    ],
+    "model_contacts": 0
+  },
+  "availability": "Requested model is absent from the research application catalogue. Desktop availability does not establish research transport availability.",
+  "disposition": "Do not launch additional Astra proposals or silently substitute GPT-5.6 Sol. Pin GPT-6.1 Sol and revalidate isolated proposal transport and bounds when the research interface exposes it. Existing candidate engineering can continue.",
+  "paid_api_spend": 0,
+  "heartbeat": "PAUSED",
+  "root_only": true
+}

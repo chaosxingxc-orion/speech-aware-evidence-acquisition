@@ -1,5 +1,9 @@
 # Experiment rules for the ChatGPT side
 
+## GPT-6.1 Sol analysis channel amendment, 2026-10-04
+
+The human explicitly requests GPT-6.1 Sol subagent analysis; see [the exact receipt](../receipts/owner/2026-10-04-gpt61-sol-subagent-analysis.json). Permit this delegated engineering analysis despite the earlier root-only rule. Preserve old Astra responses and do not label the subagent a blind proposer or a matched-metering scientific allocation. Keep the same fixed400 sources, paused heartbeat, sequential execution, exact admission/read gates and human review before8x400.
+
 ## Full-node learning preparation priority, 2026-10-04
 
 The [later direct owner instruction](../receipts/owner/2026-10-04-node-optimization-space.json) concludes general cache/scheduler exploration and authorizes preparation of learning over complete independent node policies. It supersedes the older learning-priority hold below; it does not waive exact model exposure, complete-family READ, isolated L/B contexts, spent allocations or owner227 limits. Keep sequential trajectories and the heartbeat PAUSED. The [opt-in measured-latency profile](../readiness/2026-10-04-system-search-measured-latency-v1/README.md) measures admission-to-settled-workflow, not unmeasured business preparation/persistence. Freeze the four-node seed, protocol and timing scope before new contacts. Other-carrier holds remain separate.

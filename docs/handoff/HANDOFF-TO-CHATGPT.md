@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Round9 proposals compiled; GPT-6.1 Sol analysis authorized, 2026-10-04T06:01:16.256722+00:00
+
+[Completion and compilation](../receipts/continuation/2026-10-04-four-node-round9-final-two-complete.json) supersedes the live and quota-blocked snapshots below. The manually reset continuation completed normally at05:49:40Z; Windows exit0 and original process exited. L-9-2 and B-9-2 are both provisional and compiled through the shared exact-cohort path. Six actual contacts used27980 input/2476 output tokens with complete metering. L changes Planner evidence/revision handling; B changes Solver support/coverage and grounded revision. Both slot1 failures remain invalid/spent; all33 imports remain preserved. No replacement or replay.
+
+Compilation binds the same existing UPDATE2 first20 and the measured sequential4-slot/queue4 envelope, with zero new contacts. No activation, GPU comparison admission or benefit claim. Exact complete-family membership, per-member supply, FIT and structural qualification remain before execution; do not fabricate missing candidates to fill the historical8-member shape.
+
+The human requests [GPT-6.1 Sol](../receipts/owner/2026-10-04-proposer-gpt61-sol-preference.json). The research app catalogue exposes neither GPT-6.1 Sol nor GPT-6 Sol. The later explicit [subagent channel amendment](../receipts/owner/2026-10-04-gpt61-sol-subagent-analysis.json) therefore authorizes /root/gpt61_sol_engineering_review on gpt-6.1-sol for engineering analysis. This supersedes root-only for this delegation. It is not a blind proposer or a metering-equivalent formal allocation. No additional programmatic Astra proposals or silent5.6 fallback. Preserve independent L/B evidence and all historical model pins.
+
+Keep heartbeat PAUSED, same400 assets, sequential trajectories, zero paid API spend, human before8x400 and other-carrier holds. Availability is confirmed only for the completed requests; do not infer unlimited quota.
+
 ## Manual-reset continuation of final two proposals running, 2026-10-04T05:42:51.924543+00:00
 
 A later direct human message states that the quota was manually reset and asks to continue. [Exact admission](../receipts/continuation/2026-10-04-four-node-round9-final-two-root-admission.json) and [launch](../receipts/continuation/2026-10-04-four-node-round9-final-two-launch.json) supersede the prior hold for only L-9-2/B-9-2. L-9-1 and B-9-1 remain invalid/spent and are filtered out. No replacement or new allocation.

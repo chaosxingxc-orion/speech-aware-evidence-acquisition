@@ -1,0 +1,23 @@
+{
+  "schema": "saea-owner-analysis-channel-amendment-v1",
+  "at_utc": "2026-10-04T06:01:16.256722+00:00",
+  "owner_instruction_english": "Directly start a subagent to analyze rather than using programmatic model calls. I insist on GPT-6.1 Sol to analyze and solve the current problems.",
+  "source": "Direct human message after research catalogue limitation was explained.",
+  "requested_model": "gpt-6.1-sol",
+  "channel": "Codex collaboration subagent",
+  "spawned_task": "/root/gpt61_sol_engineering_review",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "scope": "Engineering and candidate analysis; next validation design. This supersedes the prior root-only restriction for the explicitly requested subagent.",
+  "initial_access": "Read-only code, handoffs and authorized proposal artifacts; no task quality/answers, model/scorer calls, frozen edits or dispatch.",
+  "scientific_accounting": "This is engineering assistance, not a registered blind proposer or a matched-cost L/B proposal contact. Preserve all prior model identities, responses and spent allocations. Prospectively register any later scientific use.",
+  "future_proposer_preference": "GPT-6.1 Sol. No automatic Astra or GPT-5.6 Sol fallback.",
+  "retained": [
+    "same UPDATE2 400 pool",
+    "sequential trajectories",
+    "heartbeat PAUSED",
+    "human before8x400",
+    "zero paid API spend",
+    "other-carrier holds"
+  ]
+}

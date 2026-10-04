@@ -1,0 +1,107 @@
+{
+  "schema": "saea-proposer-completion-and-compilation-v1",
+  "at_utc": "2026-10-04T06:01:16.256722+00:00",
+  "finished": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/execution-four-node-round9-final-two-v1/finished.json",
+    "sha256": "b9f45c7ad2a302b883d15ba0bf6a34c21e7040c338162579e38fe9ac246777f7"
+  },
+  "launcher_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/system-text-four-node-round9-final-two-owner227-v1/launcher-exit.json",
+    "sha256": "225f5221afc4a5e1d62efed28ffb179ce5969bb61137cd437cfa882fd19fba9a"
+  },
+  "windows_task": "SAEA-System-Text-Proposer-Four-Node-Round9-FinalTwo-Owner227",
+  "task_result": 0,
+  "original_pid621545_alive": false,
+  "source_commit": "8eafb9f601242d7310cb889656d30dc3cb9af214",
+  "members": {
+    "L-9-2": {
+      "outcome": {
+        "activation": "none",
+        "contacts": 3,
+        "input_tokens": 16605,
+        "output_tokens": 1369,
+        "status": "received"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/imports/L-9-2.json",
+        "sha256": "6177f0d09e07f33ddbdffffcb4cd7da1dccbad5eeb42b9855a6a3c8597463b84"
+      },
+      "proposal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/proposals/L-9-2.json",
+        "sha256": "2c4247bc558333a99dc19593fb8d2fdc12e16105d0d9b9a787a9c0699ffb7544"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/compilations/L-9-2.json",
+        "sha256": "523e05f5c18a3f0f568bb55776ebc71c08cef9f2e5eabf45c8893a94ef759511"
+      },
+      "configuration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-round9-candidate-compilation-v1/L-9-2.json",
+        "sha256": "098e6c2c3ff872d319750d4905e7549de70d33ff628e469035f1b2bc1bcba2f3"
+      },
+      "bundle_id": "e5e5b99c2c2d51488b440996639985c78a0bdfbbd4ff5729f9b455a70f2d4e1a",
+      "modified_role": "planner",
+      "runtime_admission": "separate-required"
+    },
+    "B-9-2": {
+      "outcome": {
+        "activation": "none",
+        "contacts": 3,
+        "input_tokens": 11375,
+        "output_tokens": 1107,
+        "status": "received"
+      },
+      "import": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/imports/B-9-2.json",
+        "sha256": "b71c77940452c9711b39c19293634856690d549c91d2598414fc26e89844d12e"
+      },
+      "proposal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/proposals/B-9-2.json",
+        "sha256": "2e112626fabeabbf31da15de568b981b34e33c6cc8fa000e1a50ef1fc6b924b7"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-measured-successor3-owner227/compilations/B-9-2.json",
+        "sha256": "61f6f8aabc81efe935ba0523b8af94105a5db4be095a5d8d869bf0a2e66f2158"
+      },
+      "configuration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/four-node-round9-candidate-compilation-v1/B-9-2.json",
+        "sha256": "100c7d9ae1e43ab7061ea7631e2d345d0562873d92d34f739df194576cb8a2d4"
+      },
+      "bundle_id": "72669981b95256cc54405beed448fc14cc9dccbc70105d93150469a018c39076",
+      "modified_role": "solver",
+      "runtime_admission": "separate-required"
+    }
+  },
+  "metering": {
+    "contacts": 6,
+    "input_tokens": 27980,
+    "output_tokens": 2476,
+    "complete": true,
+    "total_compute_matched": false
+  },
+  "closed_allocations": 33,
+  "preserved_invalid_spent": [
+    "L-9-1",
+    "B-9-1"
+  ],
+  "compilation": {
+    "contacts_added": 0,
+    "cohort": "same existing UPDATE2 first20",
+    "measurement": "sample-admission-to-settled-workflow-v1",
+    "schedule": "sequential-trajectory",
+    "slots": 4,
+    "queue_depth": 4,
+    "checks": [
+      "engineering_base_check PASS",
+      "harness_admission_check PASS",
+      "git diff --check PASS"
+    ]
+  },
+  "claims": {
+    "system_benefit": false,
+    "learning_gain": false,
+    "gpu_admission": false,
+    "policy_activation": false
+  },
+  "paid_api_spend": 0,
+  "next": "Preserve both compiled Astra candidates. Exact comparison membership, per-member supplies, FIT, structural proof and complete-family registration remain before GPU execution. Future analysis uses owner-requested GPT-6.1 Sol subagent channel; do not mix it into the historical blind proposer sequence."
+}
