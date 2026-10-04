@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## K16 update-two complete N20 supplies ready; capacity registration queued offline
+
+[Complete preparation](../receipts/continuation/2026-10-04-k16-update2-n20-preparation-complete.json) verifies all18 distinct runtime identities: unchanged seed/A/A and16 learned children,20 existing inputs each. Every own supply warm-verifies and preserves source selection contents. The exact preparation process/session76978 ended0; never rerun. All members remain HELD,with zero tokenizer,generation or scoring contacts.
+
+Child graph/capacity/structural preparation session42864 continues serially. [Bounded offline continuation](../receipts/continuation/2026-10-04-k16-update2-capacity-registration-wait.json), session93797, is already running: it verifies the exact preparation parent PID/start identities and all16 complete child receipts plus the completed N20 exit receipt, then runs prepare-capacity-entry-v1.py once. It performs model-free registration only. Do not invoke that registration separately or start a duplicate waiter. Inspect capacity-registration.stdout.log, stderr.log and capacity-registration-exit.json in coordination/context-template-k16-update2-capacity-owner227-v1 after completion.
+
+After successful registration, commit completed capacity/engineering files and freeze a new codex-context-template-k16-update2-capacity-v1 checkout. Run all16 frozen checks with the exact source environment,seal the capacity launch registration,then revalidate source/service/STOP/competing jobs/memory before a new Windows-owned capacity job. No current GPU dispatch. All full-family,abstract-only learning,formal-seed and other-carrier boundaries remain unchanged; heartbeat PAUSED.
+
 ## K16 update-two execution preparation progressing, 2026-10-04
 
 [Live preparation snapshot](../receipts/continuation/2026-10-04-k16-update2-preparation-progress.json) revalidates both model-free processes: root session42864 serially prepares16 graph/capacity/structural children; session76978 prepares the fresh18-member N20 supply envelopes. Both reuse existing selection bytes. Inspect those exact handles/logs and continue them; do not resubmit on an observation timeout. All new runtime cells remain HELD and no new tokenizer,generation or scorer contact occurred.
@@ -2023,7 +2031,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T23:42:12.353263+00:00
+Last refreshed: 2026-10-04T23:48:58.867990+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

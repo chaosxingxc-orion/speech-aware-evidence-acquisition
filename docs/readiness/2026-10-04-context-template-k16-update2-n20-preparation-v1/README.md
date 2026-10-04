@@ -1,0 +1,3 @@
+# K16 learned update-two template population complete N20 evaluation preparation
+
+Eighteen HELD members exactly bind the preserved isolated learned update-two response: seed/A/A and sixteen candidate systems. All sixteen original joint-system branches are evaluated together; seed/A/A remain unchanged. Every own supply warm-verifies and preserves original selection output. Same20 inputs,320 candidate plus40 control trajectories. This preparation adds no tokenizer/generation/scoring contact. All sixteen original-branch actual capacity/structural proofs, exact full-family registration, frozen runtime/live admission and unique official scores/root READ remain required. No adoption, automatic expansion or independent validation.

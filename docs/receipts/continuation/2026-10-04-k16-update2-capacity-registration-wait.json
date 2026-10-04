@@ -1,0 +1,15 @@
+{
+  "schema": "saea-k16-update2-capacity-registration-wait-v1",
+  "at_utc": "2026-10-04T23:44:45.038559+00:00",
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/prepare-capacity-after-supplies-v1.py",
+    "sha256": "26c9c16ed8a3d7bd204e0050bc129545d8d0b6dc2ab4b9e7a5c1fedb79646f2a"
+  },
+  "verified_parent_identities": {
+    "769849": "50393269",
+    "771472": "50423121"
+  },
+  "scope": "Bounded3600s wait for exact currently live offline parent identities and complete prepared artifacts, then model-free capacity registration only. Never dispatch tokenization/generation/scoring or retry.",
+  "runtime_dispatch": false,
+  "contacts_added": 0
+}

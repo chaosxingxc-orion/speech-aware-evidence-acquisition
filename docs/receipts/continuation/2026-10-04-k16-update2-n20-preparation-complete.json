@@ -1,0 +1,34 @@
+{
+  "schema": "saea-k16-update2-n20-preparation-complete-v1",
+  "at_utc": "2026-10-04T23:46:11.706613+00:00",
+  "members": 18,
+  "candidate_systems": 16,
+  "distinct_inputs_per_member": 20,
+  "candidate_trajectories": 320,
+  "control_trajectories": 40,
+  "member_artifact": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-update2-n20-preparation-v1/prepared-members-v1.json",
+    "sha256": "10b886bd0c250e89b575516bb98e7cb4f024160da8a02ece2452132712f80ce0"
+  },
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-owner227-v1/prepare-n20-v1.py",
+    "sha256": "351937fd36b137989855408019bffcbd95a6eba2621ad16781371c248e6bdf29"
+  },
+  "stdout": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-owner227-v1/n20-preparation.stdout.log",
+    "sha256": "cd1a456c59bec8c6f586d7774f9209ddc43ccfcb8c1d6f640a0e19a3d7309f08"
+  },
+  "stderr": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-owner227-v1/n20-preparation.stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "exit_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-owner227-v1/n20-preparation-exit.json",
+    "sha256": "16f20079fa37dfaed46435f21787daf9fd17b440548821ddb8a9423d6bda220d"
+  },
+  "all_supplies_warm_verified": true,
+  "all_source_selection_contents_unchanged": true,
+  "state": "HELD",
+  "model_tokenizer_scorer_contacts": 0,
+  "limitations": "Prepared supply identities do not admit any runtime experiment or establish quality, latency benefit or learned improvement."
+}
