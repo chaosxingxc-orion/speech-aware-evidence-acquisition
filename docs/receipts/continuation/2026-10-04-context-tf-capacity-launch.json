@@ -1,0 +1,37 @@
+{
+  "schema": "saea-context-tf-four-child-capacity-launch-v1",
+  "at_utc": "2026-10-04T15:45:52.904014+00:00",
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/capacity-windows-v1.launch.json",
+    "sha256": "06aa1ef2c1ea75a8d33d40d609b48e125a86a53610c2eea7be17ca5a16f3e386"
+  },
+  "linux_start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/capacity-started.json",
+    "sha256": "9e8637e18fc2c0b1116027cde35e8712cc0465ad9c346c33ce35a007082f868f"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/registration-v1.json",
+    "sha256": "9b79abdd2ea2eeefafb50f1a62cf1d7d324ffde2a5f48e207899aa87096032d4"
+  },
+  "frozen_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/frozen-check-v1.json",
+    "sha256": "41ee036aed90ccbb7e9364e6c47b0308a3d57f50f45da5e327529a000bb12f81"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-tf-iteration1-capacity-v1",
+  "commit": "b05a49fb17ac73f16bd51719360e4e34272b600d",
+  "pid": 699651,
+  "start_ticks": 47678591,
+  "windows_pid": 25240,
+  "windows_free_gib_at_launch": 14.922298431396484,
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints_per_member": 297,
+    "tokenizer_endpoints_total": 1188
+  },
+  "status": "LAUNCHED; observed live; per-member results pending",
+  "queue_controls_mutated": false,
+  "generation_or_scoring_authorized": false,
+  "failure": "Stop and preserve evidence; no automatic recovery.",
+  "scope": "Exact four original TF joint-system capacities only. No scientific quality or optimizer feedback. Original learner remains waiting0045-evaluate; structural and full N20 family remain HELD."
+}

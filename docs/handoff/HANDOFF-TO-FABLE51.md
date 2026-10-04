@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## TF four-child capacity launched, 2026-10-04T15:45:52.904014+00:00
+
+[Exact launch](../receipts/continuation/2026-10-04-context-tf-capacity-launch.json) records Windows25240 and the revalidated Linux worker, frozen b05a49fb1. All four frozen registration/runtime/role-byte checks passed. Windows free14.92GiB at launch; existing stable12.5GiB startup/8GiB running guards remain. Admit1188 tokenizer endpoints maximum, zero generation/scoring, no cache/geometry/queue/STOP mutation. Completion is not yet asserted. Preserve failure evidence; no automatic retry. Original TF worker waits0045-evaluate; all scientific members remain HELD and unread.
+
+
+## TF exact complete trial prepared and HELD, 2026-10-04T15:44:26.178790+00:00
+
+[Source-bound preparation](../receipts/continuation/2026-10-04-context-tf-n20-prepared.json) binds the original0045 evaluation request:four distinct complete runtime policies, with four different texts at every node, plus unchanged seed/A/A. Six own supplies preserve original selection output and warm-verify. Same20 inputs,120 complete trajectories planned. New labels pass targeted checks; no contacts added. Generation remains HELD until four actual child capacities, structural proofs and exact family/frozen/live admission. No quality read or adoption.
+
+
 ## TF four-child capacity registered, 2026-10-04T15:39:39.466224+00:00
 
 [Exact prepared capacity](../receipts/continuation/2026-10-04-context-tf-capacity-prepared.json) records four complete distinct original TF children and all16 full role texts. Every graph/capacity/structural preparation is complete and warm-verified. Root227 admits only1188 tokenizer endpoints total for four nongenerative capacity checks, conditional on clean frozen sources and current live gates. No new generation/scoring contacts, no candidate activation and no scientific feedback. The original learner waits at0045-evaluate. Four-row structural proofs and the complete120-trajectory family require separate admission. Preserve the original initial READ/source recipe while the learner is alive.

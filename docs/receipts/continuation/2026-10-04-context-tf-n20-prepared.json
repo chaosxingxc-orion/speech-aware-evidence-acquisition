@@ -1,0 +1,55 @@
+{
+  "schema": "saea-context-tf-complete-trial-prepared-v1",
+  "at_utc": "2026-10-04T15:44:26.178790+00:00",
+  "prepared_members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-tf-iteration1-n20-preparation-v1/prepared-members-v1.json",
+    "sha256": "d808e0f4a2e129c78da8bacea4b9488afb32762ee096cffe1ba27f5cd20f7a20"
+  },
+  "evaluation_request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1/external-exchange/requests/0045-evaluate/request.json",
+    "sha256": "8ab2bee31eca98a6ff144058ef47b653b3467493a479b07d4fb415e686b1b889"
+  },
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-tf-iteration1-engineering-owner227-v1/prepare-n20-v1.py",
+    "sha256": "9ceeb75e69ab6f423a90ae19a42c206b95f750ca090cd87c7e9aeacfd3d00fd8"
+  },
+  "targeted_algorithm_labels": "PASS for six exact new members",
+  "runtime_diversity": {
+    "distinct_runtime_policies": 4,
+    "distinct_texts_by_role": {
+      "perception": 4,
+      "solver": 4,
+      "reviewer": 4,
+      "planner": 4
+    },
+    "members": [
+      {
+        "candidate": "counterexample-check",
+        "runtime_fingerprint": "2f2d44d334d19aed45743c41c7fbe0b0b13829471fcad3f2989868eb3c09780c"
+      },
+      {
+        "candidate": "coverage-ledger",
+        "runtime_fingerprint": "c4674f7b4cf7fcbe2f513e2715fa0a5f5d8c7d2ca24c12af0ff916d98db2c580"
+      },
+      {
+        "candidate": "semantic-frame",
+        "runtime_fingerprint": "425014c3a168a1e8e0b6520cac2ae9653f69212476facc9bf4026417c973f3a7"
+      },
+      {
+        "candidate": "speech-evidence",
+        "runtime_fingerprint": "ac940c46b10ef121e8334484b50259be1cefa19ec4dad5f2657bb8115c68e3bc"
+      }
+    ],
+    "contacts": 0
+  },
+  "scope": {
+    "distinct_inputs": 20,
+    "candidate_systems": 4,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "total_trajectories": 120
+  },
+  "contacts_added": 0,
+  "admission": false,
+  "next": "Four exact child capacities and separate structural proofs, then full-family registration and frozen/live admission. No partial quality or optimizer read; original0045-evaluate callback waits."
+}

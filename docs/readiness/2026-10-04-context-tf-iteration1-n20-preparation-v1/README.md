@@ -1,0 +1,3 @@
+# TF iteration1 complete N20 evaluation preparation
+
+Six HELD members exactly bind the original waiting learner request: seed/A/A and four candidate systems. All four original provisional joint-system children are evaluated together; seed/A/A remain unchanged. Every own supply warm-verifies and preserves original selection output. Same20 inputs,80 candidate plus40 control trajectories. This preparation adds no tokenizer/generation/scoring contact. All four changed-child actual capacity/structural proofs, exact full-family registration, frozen runtime/live admission and unique official scores/root READ remain required. No adoption, automatic expansion or independent validation.
