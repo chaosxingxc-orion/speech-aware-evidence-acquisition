@@ -1,0 +1,70 @@
+{
+  "schema": "saea-round9-successor-proof-plan-index-v1",
+  "plans": [
+    {
+      "member": "parent",
+      "label": "capacity",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/parent-capacity-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-CAPACITY-FIT-V1",
+      "contact_cap": 297
+    },
+    {
+      "member": "parent",
+      "label": "smoke-4",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/parent-smoke-4-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-SMOKE-4-V1",
+      "contact_cap": 52
+    },
+    {
+      "member": "parent",
+      "label": "request-fit",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/parent-request-fit-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-SMOKE-4-FIT-V1",
+      "contact_cap": 208
+    },
+    {
+      "member": "l-candidate-2",
+      "label": "capacity",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/l-candidate-2-capacity-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-L-CANDIDATE-2-CAPACITY-FIT-V1",
+      "contact_cap": 297
+    },
+    {
+      "member": "l-candidate-2",
+      "label": "smoke-4",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/l-candidate-2-smoke-4-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-L-CANDIDATE-2-SMOKE-4-V1",
+      "contact_cap": 52
+    },
+    {
+      "member": "l-candidate-2",
+      "label": "request-fit",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/l-candidate-2-request-fit-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-L-CANDIDATE-2-SMOKE-4-FIT-V1",
+      "contact_cap": 208
+    },
+    {
+      "member": "b-candidate-2",
+      "label": "capacity",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/b-candidate-2-capacity-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-B-CANDIDATE-2-CAPACITY-FIT-V1",
+      "contact_cap": 297
+    },
+    {
+      "member": "b-candidate-2",
+      "label": "smoke-4",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/b-candidate-2-smoke-4-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-B-CANDIDATE-2-SMOKE-4-V1",
+      "contact_cap": 52
+    },
+    {
+      "member": "b-candidate-2",
+      "label": "request-fit",
+      "artifact": "docs/readiness/2026-10-04-round9-successor-engineering-v1/b-candidate-2-request-fit-plan-draft-v1.json",
+      "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-B-CANDIDATE-2-SMOKE-4-FIT-V1",
+      "contact_cap": 208
+    }
+  ],
+  "contacts_added": 0,
+  "status": "DRAFT-HELD-NOT-ADMITTED"
+}

@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-stage3-system-text-round9-l-candidate-2-smoke-4-v1",
+  "composed_config_hash": "a2c18a658382abef2cebbfc46e44ac61753e2891afa10e0f9757beb9ac327a56",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-round9-l-candidate-2-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 208,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "de0ed4b01d038bfb2ebe0b954d785962001df1969851835a1e57310ffe838559",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-L-CANDIDATE-2-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-round9-l-candidate-2-smoke-4-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-measured-successor3-owner227/policies/e5e5b99c2c2d51488b440996639985c78a0bdfbbd4ff5729f9b455a70f2d4e1a.json",
+      "sha256": "8c47c0f556236111ba4954a362df3822f309cb0ec31771e64bf490e4ae0a0228"
+    },
+    "bundle_id": "e5e5b99c2c2d51488b440996639985c78a0bdfbbd4ff5729f9b455a70f2d4e1a",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-L-CANDIDATE-2-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "5c2889b923b13e3de772027fbbd0f6a5c1e8b031ac3b8a2fd1abe72d69e46b67"
+  },
+  "schema": "saea-round9-successor-proof-plan-draft-v1",
+  "scientific_feedback": false,
+  "status": "DRAFT-HELD-NOT-ADMITTED"
+}

@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-stage3-system-text-round9-b-candidate-2-smoke-4-v1",
+  "composed_config_hash": "b8c0164646d82ab52ba8c1b1fd048b0098107ae69eb0a40ab6f1b541aa8c31fc",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-round9-b-candidate-2-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "c2029e76de85a38e1ee3b7ac6aa9e06363f0fdda5387791ee3352a000dcc01a5",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-B-CANDIDATE-2-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-round9-b-candidate-2-smoke-4-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-measured-successor3-owner227/policies/72669981b95256cc54405beed448fc14cc9dccbc70105d93150469a018c39076.json",
+      "sha256": "bd824ce6983941627abdd59c768ad1d67187c3f05f4f661b7e8c9980e44fff28"
+    },
+    "bundle_id": "72669981b95256cc54405beed448fc14cc9dccbc70105d93150469a018c39076",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-B-CANDIDATE-2-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "66e9a6fa3f1b60abf58fad777855b85ac9b26bfb6bae0732d9eb8fd4eca7be9c"
+  },
+  "schema": "saea-round9-successor-proof-plan-draft-v1",
+  "scientific_feedback": false,
+  "status": "DRAFT-HELD-NOT-ADMITTED"
+}

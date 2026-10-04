@@ -1,0 +1,20 @@
+[
+  {
+    "member": "parent",
+    "experiment": "slurp-native-stage3-system-text-round9-parent-graph-v1",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-PARENT-GRAPH-V1",
+    "contact_class": "model-free"
+  },
+  {
+    "member": "l-candidate-2",
+    "experiment": "slurp-native-stage3-system-text-round9-l-candidate-2-graph-v1",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-L-CANDIDATE-2-GRAPH-V1",
+    "contact_class": "model-free"
+  },
+  {
+    "member": "b-candidate-2",
+    "experiment": "slurp-native-stage3-system-text-round9-b-candidate-2-graph-v1",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-B-CANDIDATE-2-GRAPH-V1",
+    "contact_class": "model-free"
+  }
+]

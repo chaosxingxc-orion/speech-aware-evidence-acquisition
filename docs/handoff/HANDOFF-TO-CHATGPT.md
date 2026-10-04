@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Successor engineering assets prepared; exact-family implementation active, 2026-10-04T06:31:08.198225+00:00
+
+Root prepared [three-policy engineering](../readiness/2026-10-04-round9-successor-engineering-v1/README.md) and [prospective evaluation authority](../readiness/2026-10-04-round9-successor-evaluation-v1/README.md). Six HELD capacity/smoke cells and three model-free graphs use unchanged UPDATE2 first20/first4 sources. All six own supplies warm-verify and have identical selected outputs to the retained seed supplies. Shared verification matches actual role bytes to parent/L9-2/B9-2 bundles, and graph/capacity request configuration equality includes the4-slot/queue4 measurement profile. Nine draft plans are prepared; zero model/tokenizer/scorer contacts. Base/harness/diff checks pass.
+
+GPT-6.1 Sol is implementing opt-in exact successor membership, source authority, prelaunch, complete-family reading, own-L projection and measured retention in an isolated worktree. This is active engineering, not a verified GPU wait or dispatch. Preserve old eight-member schema and frozen round9 proposal protocol. The new family must account for all four allocations, exclude only invalid spent slot1 records, and admit both parent/A/A pairs plus the actual candidate2 policies. Separate root227 execution,223 growth,222 learning and224 pool pins; sizes20/50/100/200 only.
+
+The standalone structural prelaunch profile gate also needs its tested correction: compare recipe/effective profile without inventing a nonexistent panel registration. Acyclic prelaunch source scope must match READ supplement sources. Do not launch the held assets until exact registration/exposure, clean freeze, actual resource/serving checks and runtime admission pass. Keep paused heartbeat, no additional Astra proposals, same400 data/knowledge, sequential trajectories, zero paid API spend, human before8x400 and other-carrier holds.
+
 ## GPT-6.1 Sol analysis and measured-panel repair integrated, 2026-10-04T06:13:39.301435+00:00
 
 The explicitly requested gpt-6.1-sol subagent completed analysis and a narrowly scoped TDD repair, reviewed by root and serially integrated at676c369dfbd330ccd2953334384f6754bee547a7. [Design and handoff](../readiness/2026-10-04-sol-panel-measurement-fix-v1/README.md) and [validation](../readiness/2026-10-04-sol-panel-measurement-fix-v1/validation.json) record18 reproduced failures followed by197 passing focused tests. The actual freezer has100% statement/branch coverage; base,harness,lint and whitespace checks pass.

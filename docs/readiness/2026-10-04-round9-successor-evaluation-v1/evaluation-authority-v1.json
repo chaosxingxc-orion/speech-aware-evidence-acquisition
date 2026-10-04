@@ -1,0 +1,42 @@
+{
+  "admitted_members": [
+    "B-candidate-2",
+    "B-parent",
+    "B-parent-aa",
+    "L-candidate-2",
+    "L-parent",
+    "L-parent-aa"
+  ],
+  "automatic_expansion": false,
+  "excluded_members": [
+    "B-candidate-1",
+    "L-candidate-1"
+  ],
+  "formal_adoption": false,
+  "growth_owner_decision": {
+    "relpath": "docs/receipts/owner/2026-10-02-decision223-progressive-learning-ladder.json",
+    "sha256": "003710d4e8a017fc2c4a126197396ce3bac4d406edc86c7b38e7acc4023d1123"
+  },
+  "independent_validation": false,
+  "learning_owner_decision": {
+    "relpath": "docs/receipts/owner/2026-10-02-decision222-small-panel-learning.json",
+    "sha256": "0854f88dbf3fd38aa22ddc84168519e709d6c6abf222c56f5ce3b47298ebaf53"
+  },
+  "new_proposal_opportunities": 0,
+  "owner227": {
+    "relpath": "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json",
+    "sha256": "595bbcef3c269c1ce10d8d87ce789b8e107ded54015164806b43017766e76d88"
+  },
+  "pool_sample_ids_sha256": "3bcc104df2bbe75480905ee0b3141281f1e79347fd8160ff839092d4f966a41c",
+  "progressive_sizes": [
+    20,
+    50,
+    100,
+    200
+  ],
+  "proposal_protocol_sha256": "17736da97999a03436f3bc139df4ef109a5f74cdd446df3ac68416401b062744",
+  "proposal_round": 9,
+  "reviewer": "ChatGPT root",
+  "schema": "saea-owner227-successor-panel-evaluation-v1",
+  "status": "approved"
+}

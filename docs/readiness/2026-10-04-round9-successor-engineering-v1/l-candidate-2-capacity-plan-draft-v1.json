@@ -1,0 +1,43 @@
+{
+  "cell": "slurp-native-stage3-system-text-round9-l-candidate-2-capacity-v1",
+  "composed_config_hash": "5b416ecf7cbc22b59d6f2df9c88f53031dbd7571f520a026b5f058888735e508",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-system-text-round9-l-candidate-2-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "2e2eee6d3cc81c9596edf4b41967b58d6919e4954b3d2049c5590414ef90377c",
+    "run_id": "SAEA-SLURP-SYSTEM-TEXT-ROUND9-L-CANDIDATE-2-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-system-text-round9-l-candidate-2-capacity-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-measured-successor3-owner227/policies/e5e5b99c2c2d51488b440996639985c78a0bdfbbd4ff5729f9b455a70f2d4e1a.json",
+      "sha256": "8c47c0f556236111ba4954a362df3822f309cb0ec31771e64bf490e4ae0a0228"
+    },
+    "bundle_id": "e5e5b99c2c2d51488b440996639985c78a0bdfbbd4ff5729f9b455a70f2d4e1a",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-ROUND9-L-CANDIDATE-2-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "bb59f3411ca97b090dde4b0a0cfb5a1be52ac7b0dfcdfa2e8dc566de0cbb504d"
+  },
+  "schema": "saea-round9-successor-proof-plan-draft-v1",
+  "scientific_feedback": false,
+  "status": "DRAFT-HELD-NOT-ADMITTED"
+}

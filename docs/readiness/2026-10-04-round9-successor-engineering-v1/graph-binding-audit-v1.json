@@ -1,0 +1,155 @@
+{
+  "schema": "saea-round9-model-free-graph-binding-v1",
+  "at_utc": "2026-10-04T06:25:44.594661+00:00",
+  "members": [
+    {
+      "member": "parent",
+      "capacity_config_hash": "cde38dfb96bc24d57134f0639f787e4da1dba033a7c40b3ded2c0f86465ea87a",
+      "graph_config_hash": "3b319543cb16600b36ff1f526b2d388b63bad5985e1971efa70ca9d36477f9b9",
+      "capacity_rows": 20,
+      "graph_rows": 4,
+      "request_configuration_equality": {
+        "policy": true,
+        "native_episode": true,
+        "phase_material": true,
+        "phase_tools": true,
+        "knowledge_stores": true,
+        "native_prefix_slots": true,
+        "native_node_batch": true,
+        "native_node_pipeline": true,
+        "native_role_query_placement": true,
+        "system_search_measurement": true
+      },
+      "policy_binding": {
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        },
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "tool_schema_rendering": "constant",
+          "reviewer_history_scope": "full"
+        }
+      },
+      "rendered_role_sha256": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "measurement": {
+        "latency_scope": "sample-admission-to-settled-workflow-v1",
+        "minimum_reliable_completion_rate": 1.0,
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "schema": "saea-system-search-measurement-v2",
+        "slot_count": 4
+      }
+    },
+    {
+      "member": "l-candidate-2",
+      "capacity_config_hash": "5b416ecf7cbc22b59d6f2df9c88f53031dbd7571f520a026b5f058888735e508",
+      "graph_config_hash": "b6e708a0d2daf5ee565ce96a977a6d3ff457fa8a322f37f4574f2a5eadb65b05",
+      "capacity_rows": 20,
+      "graph_rows": 4,
+      "request_configuration_equality": {
+        "policy": true,
+        "native_episode": true,
+        "phase_material": true,
+        "phase_tools": true,
+        "knowledge_stores": true,
+        "native_prefix_slots": true,
+        "native_node_batch": true,
+        "native_node_pipeline": true,
+        "native_role_query_placement": true,
+        "system_search_measurement": true
+      },
+      "policy_binding": {
+        "bundle_id": "e5e5b99c2c2d51488b440996639985c78a0bdfbbd4ff5729f9b455a70f2d4e1a",
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "409063781cb6bb828849cf7b66a8935b0d8b7c2cb21d6c2b8a26c90bd24a9b46",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+        },
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "tool_schema_rendering": "constant",
+          "reviewer_history_scope": "full"
+        }
+      },
+      "rendered_role_sha256": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "planner": "409063781cb6bb828849cf7b66a8935b0d8b7c2cb21d6c2b8a26c90bd24a9b46",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "measurement": {
+        "latency_scope": "sample-admission-to-settled-workflow-v1",
+        "minimum_reliable_completion_rate": 1.0,
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "schema": "saea-system-search-measurement-v2",
+        "slot_count": 4
+      }
+    },
+    {
+      "member": "b-candidate-2",
+      "capacity_config_hash": "205830d2e716e44d417264e32ee475b9e4e1fa22f5bb4d3ae1d93a549a9062be",
+      "graph_config_hash": "cfae7f10f36d581d01f54eae25696c7f0cb3bdc6b375d6420cbd438f7c1ebcb3",
+      "capacity_rows": 20,
+      "graph_rows": 4,
+      "request_configuration_equality": {
+        "policy": true,
+        "native_episode": true,
+        "phase_material": true,
+        "phase_tools": true,
+        "knowledge_stores": true,
+        "native_prefix_slots": true,
+        "native_node_batch": true,
+        "native_node_pipeline": true,
+        "native_role_query_placement": true,
+        "system_search_measurement": true
+      },
+      "policy_binding": {
+        "bundle_id": "72669981b95256cc54405beed448fc14cc9dccbc70105d93150469a018c39076",
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "629ae2b671f43e9b184ec2c76ab19fa88cf7dd86832c32163f7d271b360feb62"
+        },
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "tool_schema_rendering": "constant",
+          "reviewer_history_scope": "full"
+        }
+      },
+      "rendered_role_sha256": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "solver": "629ae2b671f43e9b184ec2c76ab19fa88cf7dd86832c32163f7d271b360feb62"
+      },
+      "measurement": {
+        "latency_scope": "sample-admission-to-settled-workflow-v1",
+        "minimum_reliable_completion_rate": 1.0,
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "schema": "saea-system-search-measurement-v2",
+        "slot_count": 4
+      }
+    }
+  ],
+  "contacts_added": 0,
+  "runtime_admitted": false
+}
