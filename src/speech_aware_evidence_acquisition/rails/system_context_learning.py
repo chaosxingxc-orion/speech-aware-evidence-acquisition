@@ -57,18 +57,36 @@ def _validate_scope(recipe, registration, protocol, *, root):
     require(registration.get("registration_sha256") == content_hash(
         {k: v for k, v in registration.items() if k != "registration_sha256"}),
         "context registration hash differs")
+    # A prospective population amendment does not resize historical K4 protocols.
+    population = protocol.get("population_authorization")
+    expected_k, algorithms = 4, list(CONTEXT_LEARNING_ALGORITHMS)
+    if population is not None:
+        amendment = _load(population, root)
+        resolution = amendment.get("resolution", {})
+        expected = {"K": 16, "M": 4, "N": 20, "temperature": 0, "seed": 20260913,
+                    "candidate_trajectories": 320, "control_trajectories": 40,
+                    "total_scientific_trajectories": 360, "semantic_agents": 1,
+                    "semantic_batch_requests": 1, "fixed_knowledge": True, "case_free_learner": True}
+        require(amendment.get("schema") == "saea-owner-template-population-k16-v1"
+                and all(type(resolution.get(k)) is type(v) and resolution[k] == v
+                        for k, v in expected.items()), "exact prospective K16 owner scope required")
+        require(protocol.get("candidate_members") == [f"branch-{i:02d}" for i in range(1, 17)]
+                and protocol.get("control_members") == ["seed", "seed-aa"],
+                "K16 requires all ordered branches and both controls")
+        expected_k, algorithms = 16, ["tf-grpo-context-diversity"]
     owner = _load(protocol["owner"], root)
     contract = owner.get("resolved_contract", {})
     require(owner.get("schema") == "saea-owner-deterministic-context-rollouts-v1"
             and contract.get("initial_N") == protocol.get("N") == 20
-            and contract.get("initial_K") == protocol.get("K") == 4
+            and contract.get("initial_K") == 4
+            and type(protocol.get("K")) is int and protocol["K"] == expected_k
             and contract.get("M") == protocol.get("M") == ROLES
             and contract.get("temperature") == protocol.get("sampling", {}).get("temperature") == 0
             and type(protocol["sampling"]["temperature"]) in (int, float)
             and contract.get("seed") == protocol.get("sampling", {}).get("seed") == 20260913
             and type(protocol["sampling"]["seed"]) is int,
-            "exact deterministic N20/K4/four-role owner scope required")
-    require(protocol.get("algorithms") == list(CONTEXT_LEARNING_ALGORITHMS)
+            "exact deterministic N20/registered-K/four-role owner scope required")
+    require(protocol.get("algorithms") == algorithms
             and protocol.get("automatic_expansion") is False
             and protocol.get("independent_validation") is False
             and type(protocol.get("iteration")) is int and protocol["iteration"] > 0,
@@ -80,7 +98,7 @@ def _validate_scope(recipe, registration, protocol, *, root):
             and ids == pool[:20] and recipe.get("required_rows_per_member") == 20,
             "exact ordered same400 TRAIN prefix required")
     candidates, controls = protocol["candidate_members"], protocol["control_members"]
-    require(isinstance(candidates, list) and len(candidates) == len(set(candidates)) == 4
+    require(isinstance(candidates, list) and len(candidates) == len(set(candidates)) == expected_k
             and controls in ([], ["seed", "seed-aa"]) and not set(candidates).intersection(controls),
             "exact candidate K and separately declared controls required")
     bindings = registration["member_bindings"]
@@ -93,7 +111,7 @@ def _validate_scope(recipe, registration, protocol, *, root):
                 "registered member identity differs")
         sha(binding["config_hash"])
         sha(binding["bundle_id"])
-    require(len({bindings[c]["bundle_id"] for c in candidates}) == 4,
+    require(len({bindings[c]["bundle_id"] for c in candidates}) == expected_k,
             "K requires distinct complete-system bundles")
     if controls:
         require(bindings["seed"]["bundle_id"] == bindings["seed-aa"]["bundle_id"], "control seed/A/A differs")
@@ -201,6 +219,7 @@ def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
             "unknown context baseline/iteration")
     evidence, recipe, registration, protocol, candidates, controls, reference = _qualified_feedback(
         bindings, recipe_pin=recipe_pin, repo_root=repo_root)
+    require(algorithm in protocol["algorithms"], "optimizer algorithm is not registered for this family")
     require(iteration == protocol["iteration"] and set(policies) == set(candidates), "registered iteration/policies differ")
     for cid, policy in policies.items():
         SystemTextPolicyBundle.from_json(policy.as_json(), parents=[archive.load_policy(p)

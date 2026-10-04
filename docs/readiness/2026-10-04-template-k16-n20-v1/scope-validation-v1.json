@@ -1,0 +1,35 @@
+{
+  "schema": "saea-template-k16-scope-validation-v1",
+  "at_utc": "2026-10-04T18:43:49.314244+00:00",
+  "tests": {
+    "related_regressions": 138,
+    "scope_and_existing_context_coverage_run": 86,
+    "scope_function_statement_coverage_percent": 100,
+    "new_scope_tests": 21
+  },
+  "capacity_helpers": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/helper-validation-v1.json",
+    "sha256": "7d2eac620641d68fb5b2423ad2f8a4cc0b70807ac481396b3976b3007d506842"
+  },
+  "n20_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-engineering-owner227-v1/prepare-n20-v1.py",
+    "sha256": "46313cdde21bf96ba10f6433f3e749dfb50156a2080250dd0b5b89e4c45af6ba"
+  },
+  "n20_synthetic_checks": [
+    "source-to-branch naming",
+    "same-family seed/A/A reference",
+    "optional configuration additions/removals",
+    "reject different operational parent"
+  ],
+  "core": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+    "sha256": "e3a4fa71e46d6147e3cf77b28e94917912b880601b777536961d1d0c5d32dcdf"
+  },
+  "historical_K4_unchanged": true,
+  "new_K16_requires_exact_owner_pin": true,
+  "algorithms": [
+    "tf-grpo-context-diversity"
+  ],
+  "source_reference_and_fixed_roster_gates_retained": true,
+  "model_scorer_contacts": 0
+}
