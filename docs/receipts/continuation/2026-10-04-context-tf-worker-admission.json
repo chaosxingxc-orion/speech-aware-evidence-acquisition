@@ -1,0 +1,25 @@
+{
+  "schema": "saea-context-tf-worker-admission-v1",
+  "at_utc": "2026-10-04T11:12:43.675004+00:00",
+  "authority": "owner227 and registered two-baseline actor sequence",
+  "admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-initial4-n20-owner227-v1/tf-worker-admission-v1.json",
+    "sha256": "6a4c55765bcb7c3a7170e997f4f0dad3f7b5a7196cdf05101875bd7e8e8e6656"
+  },
+  "source_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-v2",
+  "prepared_archive": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-baseline-tf-grpo-context-diversity-iteration1-worker2-v1",
+  "initial_read_id": "SAEA-SLURP-CONTEXT-INITIAL4-N20-READ-V1",
+  "semantic_callbacks_admitted_now": 0,
+  "worker_adds_model_contacts": 0,
+  "per_request_admission_required": true,
+  "independence": "Original initial-family inputs only, no GEPA proposal/trial evidence. Each semantic callback uses fresh GPT-6.1 Sol with exact manifest and no root history.",
+  "callback_caps": {
+    "compare": 20,
+    "evaluate": 1,
+    "propose": 4,
+    "summarize": 80,
+    "update_experience": 1
+  },
+  "automatic_retry": false,
+  "runtime_dispatch": false
+}
