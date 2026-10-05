@@ -12,7 +12,7 @@
   },
   "implementation": {
     "relpath": "src/speech_aware_evidence_acquisition/analysis/abstract_population_registration.py",
-    "sha256": "16d3b3a4276d4ebedf58aada01fb842e07e0b56817561de3982a0ecf21e02ddf"
+    "sha256": "056ab81b6d5ed844562d7583d34b274e2692a8f8270e8904cb326ff05d14560c"
   },
   "helper": {
     "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/prepare-source-registration-v1.py",
