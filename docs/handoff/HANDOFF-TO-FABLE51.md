@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Exact-source future analysis preparation tested offline
+
+[Analysis environment engineering](../receipts/continuation/2026-10-05-k16-update2-analysis-environment-engineering.json) pins the future normal structural-to-scientific transition and prepare-analysis-environment-v1.py. Eight synthetic tests verify that only the exact root-signed READ row can be overlaid onto a fresh checkout of the registered scientific commit; unrelated ledger metadata/rows are never copied. The real missing-READ rehearsal returns HELD/75 before checkout creation or result access. This is not a real future analysis acceptance.
+
+After the future complete18-member root countersignature, use that helper to create codex-k16-update2-registered-analysis,then invoke read-family-registered-environment-v1.py with its own src on PYTHONPATH. The shared qualifier helper can then report the exact320-pair population utility and measured business outcomes without automatic adoption. Never read current partial results or use the editable working source for a registered estimator. Current structural preflight session66304 continues unchanged; no GPU job or heartbeat is active yet.
+
+
 ## Update-two structural worker frozen; existing preflight is running
 
 [Preflight start](../receipts/continuation/2026-10-05-k16-update2-structural-preflight-started.json) binds the clean codex-context-template-k16-update2-structural-v1 checkout toce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c. All64-row registration/evidence changes are serially integrated. Engineering-base and handoff-freshness checks passed. Existing root session66304 is performing all16 model-free frozen checks; revalidate the recorded process identity and per-member logs,never resubmit on timeout. No structural model contact yet.

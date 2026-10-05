@@ -1,0 +1,37 @@
+{
+  "schema": "saea-exact-analysis-environment-engineering-v1",
+  "at_utc": "2026-10-05T00:58:03.282517+00:00",
+  "helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/prepare-analysis-environment-v1.py",
+      "sha256": "fac9a1f1aecb14b981dcc6719e115e09772a015e7135920cb34b774b7e9e7e52"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/test_analysis_environment_v1.py",
+      "sha256": "a53d37d27e79c1658826ea2c8c67696c27900a871dcb2114c1dc040f05c41e77"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/transition-completed-driver-v1.py",
+      "sha256": "a24f4227e24676759d4660aff83b3ac485df5ad67ef4607b7cfc6913ba393bda"
+    }
+  ],
+  "synthetic_overlay_tests": 8,
+  "test_scope": "Exact signed READ row only, missing/duplicate/wrong identity, changed metadata, unsigned or missing root signature and duplicate overlay refusal. These tests do not establish real future checkout creation or scientific acceptance.",
+  "real_entry_rehearsal": {
+    "exit_code": 75,
+    "output": {
+      "status": "HELD",
+      "reason": "Exact root READ absent",
+      "result_reads": 0,
+      "model_contacts": 0
+    }
+  },
+  "model_contacts": 0,
+  "scientific_reads": 0,
+  "runtime_or_queue_mutation": false,
+  "next": "Use the prepared normal transition only after exact future structure completion and all18 frozen checks. Prepare the exact registered analysis checkout only after full scientific family completion and root countersignature.",
+  "source_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/analysis-environment-engineering-v1.json",
+    "sha256": "bfcd740e64dd72719cccc473438aed5c2ddc5d2d80c5ae32e660e8e1807a0cbd"
+  }
+}
