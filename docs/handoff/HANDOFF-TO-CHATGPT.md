@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update-two complete root analysis entry prepared prospectively
+
+[Root-read preparation](../receipts/continuation/2026-10-05-k16-update2-root-read-preparation.json) pins four thin existing-base helpers for whole-family qualification, exact root countersignature, registered-source analysis/timing and the learned-population utility comparison. No helper has read new scientific results. The new trial entry returns HELD before any result access when its exact analysis environment/READ is absent. Use a separate analysis checkout at the future exact scientific commit so editable source advances cannot invalidate registered estimators; never modify the frozen runtime worker.
+
+Future structural and N20 registration now use prepare-entry-v2.py in their respective update2 coordination directories. The only change from preserved v1 is the owner's15-minute job-scoped monitor lifecycle; runtime semantics/data/budgets remain fixed. Do not rerun completed capacity registration or the live frozen-check process. Actual capacity,64-row structural proof,complete360-row evaluation and root business review remain pending. No benefit or adoption is established.
+
+
 ## GPU job-scoped fifteen-minute monitoring owner amendment
 
 The [direct owner instruction](../receipts/owner/2026-10-05-gpu-job-scoped-fifteen-minute-monitor.json) requires a script-only heartbeat every15 minutes after each actual admitted GPU experiment launch, then deletion when that bound experiment ends. Root must bind the exact launch receipt/epoch/worker/member list on activation, cancel immediately when observing verified completion/failure with no remaining admitted worker/scorer, and create a new heartbeat for each subsequent launch. The heartbeat also deletes itself on verified termination. Remain quiet while healthy; report only new actionable changes. No monitoring subagents, dispatch/retry/control changes, scientific reads or frozen-source edits. This supersedes the older blanket paused-monitor instruction prospectively.
