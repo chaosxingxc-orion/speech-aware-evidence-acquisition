@@ -1562,7 +1562,41 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
         ))
 
 
-def _check_registered_supply_binding(report, baseline, index, package):
+def _check_declared_carrier_binding(report, document, run_id, ledger):
+    """Check the exact declared carrier token before the heavier runtime gate.
+
+    Reuse runtime ledger tokenization without case folding or substring matching.
+    Legacy plans without a carrier declaration retain their existing behavior.
+    Runtime still resolves the key against the authoritative dataset inventory and
+    rejects captions naming additional known carriers; this early check does not
+    replace execution-plan, scope, exposure or dataset-lock admission.
+    """
+    from speech_aware_evidence_acquisition.contracts.ledger import (
+        _CARRIER_CELL_TOKEN_SPLIT, _EXPOSURE_CARRIER_COLUMN,
+    )
+
+    plan = document.get("execution_plan")
+    if (run_id not in report.run_ids.values() or not isinstance(plan, dict)
+            or "carrier_lock_key" not in plan):
+        return
+    rows = ledger.get(run_id, [])
+    if len(rows) != 1:
+        return  # The existing missing/duplicate-row check already refuses this run.
+    carrier = plan["carrier_lock_key"]
+    caption = rows[0].get(_EXPOSURE_CARRIER_COLUMN, "")
+    tokens = [token for token in _CARRIER_CELL_TOKEN_SPLIT.split(caption) if token]
+    if (not isinstance(carrier, str) or not carrier or carrier.strip() != carrier
+            or tokens.count(carrier) != 1):
+        report.findings.append(Finding(
+            "registered-carrier-binding",
+            f"{run_id}: exposure carrier caption {caption!r} must contain the plan's "
+            f"exact nonempty carrier key {carrier!r} once; do not case-fold or use "
+            "a substring. Runtime dataset-lock admission remains required.",
+            run_id,
+        ))
+
+
+def _check_registered_supply_binding(report, baseline, index, package, ledger):
     """Refuse a plan that declares another member's prepared supply envelope.
 
     Legacy plans without this optional declaration retain their old behavior.
@@ -1578,6 +1612,7 @@ def _check_registered_supply_binding(report, baseline, index, package):
             continue
         plan = document.get("execution_plan")
         run_id = document.get("run_id") or (plan.get("run_id") if isinstance(plan, dict) else None)
+        _check_declared_carrier_binding(report, document, run_id, ledger)
         if run_id in report.run_ids.values() and "experiment_population" in (baseline or {}):
             try:
                 from speech_aware_evidence_acquisition.rails.experiment_population import (
@@ -1669,7 +1704,7 @@ def check_cell(
         ))
         return
     report.package = f"{READINESS.as_posix()}/{package}"
-    _check_registered_supply_binding(report, baseline, index, package)
+    _check_registered_supply_binding(report, baseline, index, package, ledger)
     _check_resume_replay_proof(report, cell, index, package)
     recipes = index.recipes(package)
     if not recipes:

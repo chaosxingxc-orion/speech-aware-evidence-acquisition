@@ -1198,3 +1198,66 @@ def test_invalid_attempt_identity_cannot_select_historical_artifacts(world: Worl
     _write(path, fragment)
     with pytest.raises(gate.FlightRegistrationCheckError, match="attempt"):
         world.run(cells=[EXPERIMENT])
+
+
+@pytest.mark.parametrize("run_id", [RUN, FIT])
+@pytest.mark.parametrize("caption,valid", [
+    ("slurp existing UPDATE2 first20", True),
+    ("slurp, TRAIN (discovery)", True),
+    ("SLURP existing UPDATE2 first20", False),
+    ("slurp-extra TRAIN", False),
+    ("prefix-slurp TRAIN", False),
+    ("earnings21-original TRAIN", False),
+    ("slurp; slurp TRAIN", False),
+    ("-", False),
+])
+def test_declared_carrier_token_is_checked_before_runtime(world, run_id, caption, valid):
+    world.rows[run_id]["speech carrier + split"] = caption
+    world.build()
+    filename = "generation-plan-registered-v1.json" if run_id == RUN else "fit-plan-registered-v1.json"
+    _write(world.repo / "docs/readiness" / PACKAGE / filename,
+           {"execution_plan": {"run_id": run_id, "carrier_lock_key": "slurp"}})
+    result = world.run(cells=[EXPERIMENT])
+    assert ("registered-carrier-binding" in _kinds(result)) is not valid
+    assert result["passed"] is valid
+
+
+@pytest.mark.parametrize("carrier", [None, "", " slurp ", 7, ["slurp"]])
+def test_declared_carrier_must_be_one_nonempty_string(world, carrier):
+    world.rows[RUN]["speech carrier + split"] = "slurp TRAIN"
+    world.build()
+    _write(world.repo / "docs/readiness" / PACKAGE / "generation-plan-registered-v1.json",
+           {"execution_plan": {"run_id": RUN, "carrier_lock_key": carrier}})
+    result = world.run(cells=[EXPERIMENT])
+    assert not result["passed"]
+    assert "registered-carrier-binding" in _kinds(result)
+
+
+def test_carrier_caption_does_not_change_legacy_report_only_status(world):
+    world.rows[RUN]["speech carrier + split"] = "SLURP historical caption"
+    world.rows[RUN]["consumed"] = "yes"
+    world.build()
+    _write(world.repo / "docs/readiness" / PACKAGE / "generation-plan-registered-v1.json",
+           {"execution_plan": {"run_id": RUN, "carrier_lock_key": "slurp"}})
+    result = world.run(cells=[EXPERIMENT])
+    assert "registered-carrier-binding" in _kinds(result)
+    assert result["passed"]
+
+
+@pytest.mark.parametrize("carrier", ["slurp", "audio2tool", "earnings21-original", "earnings22-original"])
+def test_declared_carrier_binding_is_carrier_independent(world, carrier):
+    world.rows[RUN]["speech carrier + split"] = carrier + " (discovery)"
+    world.build()
+    _write(world.repo / "docs/readiness" / PACKAGE / "generation-plan-registered-v1.json",
+           {"execution_plan": {"run_id": RUN, "carrier_lock_key": carrier}})
+    assert world.run(cells=[EXPERIMENT])["passed"]
+
+
+def test_missing_carrier_row_retains_the_original_missing_row_finding(world):
+    del world.rows[RUN]
+    world.build()
+    _write(world.repo / "docs/readiness" / PACKAGE / "generation-plan-registered-v1.json",
+           {"execution_plan": {"run_id": RUN, "carrier_lock_key": "slurp"}})
+    result = world.run(cells=[EXPERIMENT])
+    assert not result["passed"] and "missing-row" in _kinds(result)
+    assert "registered-carrier-binding" not in _kinds(result)
