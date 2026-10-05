@@ -1,0 +1,51 @@
+{
+  "schema": "saea-context-read-preflight-prepared-v1",
+  "at_utc": "2026-10-05T22:08:50Z",
+  "status": "VERIFIED_ISOLATED_PENDING_IDLE_INTEGRATION",
+  "prepared_commit": "e1dbb6b6861a078eeb6ec0eac226125a784140a9",
+  "prepared_worktree": "/home/chao/saea-worktrees/codex-registration-carrier-preflight-v1",
+  "problem": "Context analysis READ rows previously passed the prelaunch gate despite a scope that the unchanged offline reader correctly refused before quality access.",
+  "change": "For saea-context-learning-analysis-v1 only, require one model-free-check/discovery/zero-call READ registration naming the exact recipe. Keep unsigned READ rows before seal, other recipe contracts and historical report-only severity.",
+  "validation": {
+    "test_first": "14 failed and 2 passed before implementation",
+    "suite": "153 passed, 1 optional materialized-tree smoke skipped",
+    "real_current_cohort": "All six current member registration checks passed",
+    "coverage": {
+      "combined_statement_percent": 86.04651162790698,
+      "new_helper_statement_percent": 100.0,
+      "new_helper_missing_lines": []
+    },
+    "invocation_note": "pytest-cov is unavailable; original refused invocation preserved, standalone coverage.py used without installing dependencies."
+  },
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-read-scope-preflight-v1/test-first.stdout.log",
+      "sha256": "d7b58b356a5deaa59601c8e456b558a22c0cedb733d5bb668dbe77d78443831a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-read-scope-preflight-v1/tests-v2.stdout.log",
+      "sha256": "e5cfdca9f049bb155e59c88323e00b182911845983374aae0d2e9af597460c49"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-read-scope-preflight-v1/tests-v2.exit.json",
+      "sha256": "e89df0eae5ec7db81135aed16463968955c578bcc4f2ec43172eff351f080c17"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-read-scope-preflight-v1/real-current-cohort.stdout.json",
+      "sha256": "ceec3ec7eb08824980016b667d3028e6ea8b98644a8f187ef63bd9dd50cb9978"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-read-scope-preflight-v1/real-current-cohort.exit.json",
+      "sha256": "e89df0eae5ec7db81135aed16463968955c578bcc4f2ec43172eff351f080c17"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-read-scope-preflight-v1/coverage.json",
+      "sha256": "d8f9c62f6ae2aba926cea6589f01eaae134d6e867d77dd16205fa60571d2246a"
+    }
+  ],
+  "integration_rule": "Merge only at a verified idle cohort boundary because the live driver consumes the main operational checker. Keep the current frozen worker and READ authority unchanged.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "quality_read": false,
+  "runtime_controls_changed": false
+}

@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Context READ scope preflight verified in isolation
+
+[Prepared READ-scope repair](../receipts/continuation/2026-10-05-context-read-scope-preflight-prepared.json) is committed ate1dbb6b6861a078eeb6ec0eac226125a784140a9 in codex-registration-carrier-preflight-v1. The existing launch gate only required a READ row to exist, allowing the preserved original-a wrong-profile defect to reach the offline reader. For declared context-learning recipes, the new preflight requires exactly one zero-call model-free-check/discovery row naming the exact recipe. Draft signatures remain valid before seal; no READ is countersigned or consumed. Other recipe contracts and historical report-only handling remain unchanged.
+
+Test-first proof:14 failures before implementation; final153 passed and1 optional materialized-tree smoke skipped. Standalone coverage.py reports86.05percent for the checked module and100percent for the new helper. All six real current member registrations pass. No model/scorer contact, task-quality read, control change or source mutation in the running flight. Main operational checker remains unchanged until exact idle. Integrate serially only after the current remaining-b1 driver and children terminate; merge latest handoff evidence into the isolated branch first, then retain the two verified source/test changes.
+
+Current remaining-b1 remains live under driver54370/start_ticks56455731, epoch21:54:49Z. Seed and A/A are complete; branch09 is running at this checkpoint. STOP absent, service healthy. Continue the exact existing job and15-minute monitor; no duplicate dispatch or partial READ. Complete cohort review and remaining-b2 admission remain the next execution boundary.
+
 ## Complete-population source readiness and root cost diagnostic
 
 [Full-source readiness](../receipts/continuation/2026-10-05-partitioned-update3-full-source-readiness.json) binds actual original-a and remaining-b1 launch/frozen proofs, and the complete original-a saved family/root READ. Remaining-b1/b2 complete READs are still missing. The data-root readiness packet deliberately has a different schema and is not a registered source join; do not use it to export partial feedback or invent future hashes. After all complete READs, bind the real join through the existing all-source reader and strict-population trial qualifier described in the analysis guide.
@@ -2709,7 +2717,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T22:00:10Z
+Last refreshed: 2026-10-05T22:08:50Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
