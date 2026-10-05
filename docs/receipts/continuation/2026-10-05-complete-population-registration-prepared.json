@@ -1,0 +1,49 @@
+{
+  "schema": "saea-complete-population-registration-prepared-v1",
+  "at_utc": "2026-10-05T16:22:24.857773+00:00",
+  "status": "MODEL_FREE_PREPARATION_COMPLETE_CURRENT_SOURCE_JOIN_HELD",
+  "source_plan": {
+    "relpath": "docs/readiness/2026-10-05-context-update2-complete-source-join-v1/source-plan-v1.json",
+    "sha256": "e984a2a81e4f9f1d5badf63fe17a2e7cf2f04f8a0abd103c90be8177c2d3c418"
+  },
+  "projection_config": {
+    "relpath": "configs/experiments/slurp-context-template-update2-complete-source-join-v1.json",
+    "sha256": "3655493ee97dcb69dbb786e84b82e7c3e6ffb151e92f191a8f99c5c93f2106d4"
+  },
+  "implementation": {
+    "relpath": "src/speech_aware_evidence_acquisition/analysis/abstract_population_registration.py",
+    "sha256": "16d3b3a4276d4ebedf58aada01fb842e07e0b56817561de3982a0ecf21e02ddf"
+  },
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/prepare-source-registration-v1.py",
+    "sha256": "b8dda947d27bba02a364b625b4e40eb4b306112ade86f04e091251af2c42ccf8"
+  },
+  "tests": {
+    "new": 20,
+    "related_passed": 163,
+    "statements": 63,
+    "branches": 16,
+    "statement_coverage": 1.0,
+    "branch_coverage": 1.0,
+    "engineering_base": "PASS"
+  },
+  "real_incomplete_source_check": {
+    "status": "HELD_MISSING_COMPLETE_SOURCES",
+    "writes": 0,
+    "quality_read": false,
+    "learner_exported": false
+  },
+  "coverage_runner": "python -B -m coverage; pytest-cov is not installed",
+  "source_join_accounting": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "total_historical_trajectories": 440,
+    "new_runtime_allowance": false
+  },
+  "population_projection_executed": false,
+  "source_registration_materialized": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_admission": false,
+  "next": "Finish remaining-b2; qualify all six and exact root READ, then materialize all original source pins and run the complete abstract projection. Register a later learner packet separately."
+}

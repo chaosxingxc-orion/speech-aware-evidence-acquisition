@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete original template source join prepared
+
+[Source registration preparation](../receipts/continuation/2026-10-05-complete-population-registration-prepared.json): the shared model-free adapter materializes exact saved-family/backend pins only after every configured source scope, root READ, finalized attempt, seal and unique score qualifies. It returns documents in memory and rechecks all bytes/authority; no quality read, persistence, learner export or admission.20 new/163 related tests pass;63 statements/16 branches100% covered; engineering-base passes. The actual incomplete source returns HELD with zero writes.
+
+The projection-only config binds original-a K8, remaining-b1 K4 and remaining-b2 K4 on the same ordered20 inputs, preserving each own seed/A/A and frozen runtime. Its440 historical trajectories are accounting, never another GPU allowance. All16 templates remain required; no partial update or cross-cohort relative-return/frontier pooling. The current remaining-b2 epoch16:03:49Z remains active on frozen c7a01c05264adcd4b1fc7e3c91c611d3e891efa9; seed/A/A have finalized with unique successful scores, branch13 is generating, later branches are unstarted. No partial quality read.
+
+Root helpers in coordination/context-template-observe-boundary-n20-v1 are prepared for complete qualification, exact countersignature, shared family/timing read, then prepare-source-registration-v1.py (default no-write; --materialize only after every source qualifies). The current analysis supplement preserves existing methods and pins, recorded after launch and before quality. Keep the15-minute monitor until verified terminal; preserve observe-only boundaries, all other-carrier holds and human-before8x400. No new cache cleanup or restart.
+
+
 ## Remaining original template cohort is running
 
 [Verified launch](../receipts/continuation/2026-10-05-observe-boundary-cohort-launch.json): Windows SAEA-Batch-Driver epoch2026-10-05T16:03:49Z, first arm16:04:15Z, frozen /home/chao/saea-worktrees/codex-context-template-observe-boundary-n20-v2 at c7a01c05264adcd4b1fc7e3c91c611d3e891efa9. All six frozen registration/runtime/actual-policy/supply/config checks passed. Exact completed-b1 controls were preserved, no STOP/competing experiment was present, and actual guard acquisition succeeded. Seed is OPENED with real model contacts. GPU was98% with four busy slots at the initial operational check. Never infer rows from service or contact totals.
@@ -2452,7 +2461,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T15:26:42.700718Z
+Last refreshed: 2026-10-05T16:22:24.857773+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
