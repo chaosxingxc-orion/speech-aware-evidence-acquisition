@@ -1,5 +1,10 @@
 # Experiment rules for the ChatGPT side
 
+## Smaller cohorts and bounded cache reclamation
+
+Apply the [latest owner instruction](../receipts/owner/2026-10-05-smaller-cohorts-cache-boundary.json). Use the pinned successor config for smaller cohorts; derive K and budgets from it. Reclaim only clean WSL file cache after a complete cohort, after generation/scoring/preprocessing and competing coordinator work are idle, with before/after operational evidence. Preserve the resident model, KV state, data and frozen artifacts; do not issue global sync, restart WSL or delete files. This narrowly supersedes earlier no-cache-cleanup directions. Root coordinates the boundary; monitors gain no cleanup or recovery authority. Delegate the memory observer repair as requested and keep quality/reliability/sample latency as the learning objectives. The old stopped K8B remains preserved and unread. See [K4 preparation](../readiness/2026-10-05-slurp-context-template-k4-recovery1-v1/README.md); configuration and offline/live observer proof do not admit new GPU work.
+
+
 ## Configuration throughout new experiments
 
 Follow the [direct owner configuration instruction](../receipts/owner/2026-10-05-configured-experiment-lifecycle.json). Load one immutable experiment config; derive K/N/M, member lists, sampling and budgets, and carry the same file hash through all stages. Use [the configured lifecycle](../readiness/2026-10-05-configured-population-lifecycle-v1/README.md) for prospective preparation. Do not hardcode population counts in new launch or proposal scripts. A changed config requires new identities and admission. Retain historical frozen files/read contracts unchanged. Config validation does not grant GPU or READ authority.

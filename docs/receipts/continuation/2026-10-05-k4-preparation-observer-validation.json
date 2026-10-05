@@ -1,0 +1,86 @@
+{
+  "schema": "saea-k4-preparation-observer-validation-v1",
+  "recorded_at": "2026-10-05T13:26:49.493631+00:00",
+  "population_config": {
+    "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+    "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+  },
+  "accounting": {
+    "candidate_trajectories": 160,
+    "control_trajectories": 80,
+    "family_trajectories": 240,
+    "generation_contacts_cap": 3120,
+    "fit_endpoints_cap": 12480
+  },
+  "tests": {
+    "configuration_and_lifecycle": 292,
+    "observer_and_guard_agent_tests": 129,
+    "population_module_statement_and_branch_coverage_percent": 100
+  },
+  "probes": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8b-memory-observer-long-probe-v1",
+      "result": {
+        "schema": "saea-memory-observer-probe-result-v1",
+        "status": "completed",
+        "samples": 180,
+        "config": {
+          "schema": "saea-memory-observer-probe-v1",
+          "sample_count": 180,
+          "interval_seconds": 5.0,
+          "timeout_seconds": 8.0
+        },
+        "finished_at": 1791206737.83521,
+        "model_contacts": 0,
+        "scorer_contacts": 0,
+        "services_changed": false,
+        "experiment_recovery": false
+      },
+      "result_sha256": "9e7a159c99a1cd3fe0b40267a9d63e2e3bab6d127a4701273e7c6c9e8d418424",
+      "samples_sha256": "1c5496918815261c42f402acb888b8026576024bef8a3dc326d2a502715313a5",
+      "minimum_host_free_gib": 27.253597259521484,
+      "maximum_roundtrip_seconds": 0.6003260579891503,
+      "observer_pids": [
+        39884
+      ],
+      "freshness_modes": [
+        "historical-cross-clock"
+      ]
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k4-observer-causal-live-probe-v1",
+      "result": {
+        "schema": "saea-memory-observer-probe-result-v1",
+        "status": "completed",
+        "samples": 120,
+        "config": {
+          "schema": "saea-memory-observer-probe-v1",
+          "sample_count": 120,
+          "interval_seconds": 1.0,
+          "timeout_seconds": 8.0
+        },
+        "finished_at": 1791206765.7477238,
+        "model_contacts": 0,
+        "scorer_contacts": 0,
+        "services_changed": false,
+        "experiment_recovery": false
+      },
+      "result_sha256": "c0a0af1c13612af001af70df400684e917d2c7d4f6a9230ab623d90d05764f5c",
+      "samples_sha256": "a383eb640f36d411945507c10b8e19d15e2f21a9c523efb76a4e28b71a847bca",
+      "minimum_host_free_gib": 27.30874252319336,
+      "maximum_roundtrip_seconds": 0.3437015370000154,
+      "observer_pids": [
+        29988
+      ],
+      "freshness_modes": [
+        "request-causal-monotonic-v1"
+      ]
+    }
+  ],
+  "historical_failure_cause": "unestablished",
+  "gpu_dispatch": false,
+  "cache_reclaimed": false,
+  "queue_stop_or_failed_sources_changed": false,
+  "original_failed_family_read": "unsigned",
+  "next": "Prepare new config-bound identities, exact frozen admission and structural proof before bounded K4 GPU execution; coordinate clean-cache reclamation only after complete idle cohorts."
+}
