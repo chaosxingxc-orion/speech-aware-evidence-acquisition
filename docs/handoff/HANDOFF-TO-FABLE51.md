@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Both K8 partitions retain the complete original population
+
+[Source audit](../receipts/continuation/2026-10-05-two-k8-population-audit.json) verifies all16 original template bundle identities and bytes,all20 member request configurations except supply/identity metadata,and the same ordered20-input roster. Each panel contains eight candidates plus its own seed/A/A;400 trajectories across both. No model or task-result read occurred. All ten K8B members remain HELD with only check/prepare-supply and absent attempt/run directories. Its older preparation-era first-recovery wording is historical; use current post-observer K8A evidence and a fresh root disposition before B activation. Do not edit B policies from A outcomes. This audit does not admit B or establish improvement.
+
 ## K8A post-observer scientific panel launched; all ten frozen checks passed
 
 [Verified launch](../receipts/continuation/2026-10-05-k8a-post-observer-n20-launch.json): Windows SAEA-Batch-Driver epoch 2026-10-05T10:36:59Z, root PID 26402 / start ticks 52421279. Frozen codex-context-template-k8a-post-observer-n20-v1 is clean at 62ae52eebef86d4efad0b3bd138d93c4b0833c1c. Session 58767 completed all ten registration/runtime/policy/supply/decoding and exact 1040-endpoint FIT budget checks with exit 0. The first check ran before worktree creation finished and refused its initial clean/commit assertion with zero member checks or contacts; its logs remain preserved. Completed creation session 22570 preceded the successful separately named v2 checks. This is not a model or runtime incident.

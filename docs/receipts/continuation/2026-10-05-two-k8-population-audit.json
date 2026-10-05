@@ -1,0 +1,23 @@
+{
+  "schema": "saea-k8-partition-population-audit-v1",
+  "at_utc": "2026-10-05T10:43:10.372597+00:00",
+  "audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-update2-n20-owner227-v1/two-panel-preservation-audit-v1.json",
+    "sha256": "57be3ece2f5dda453772502d9f1a4650fa51baf4db9dc8fab4367098c89a2803"
+  },
+  "original_candidates_preserved": 16,
+  "controls": 4,
+  "inputs_per_member": 20,
+  "planned_trajectories": 400,
+  "checks": [
+    "Every policy bundle identity and bundle file hash matches its original K16 source.",
+    "Every baseline request configuration matches its original source after excluding only prepared supply envelope and FIT run/attempt identities.",
+    "Both exact ordered sample rosters match the original twenty input roster.",
+    "Every member retains the 1040 endpoint actual-request FIT budget; each panel has 200 trajectories and 2600 generation call budget.",
+    "K8B all ten cells remain held with only check/prepare-supply and absent attempt/run directories."
+  ],
+  "model_contacts": 0,
+  "task_results_read": false,
+  "activation": false,
+  "limits": "Metadata/source preservation audit only. Does not establish scientific benefit or release K8B. Its preparation-era first-recovery wording is historical: current K8A post-observer entry and any later B admission must use the latest root disposition and exact fresh gates."
+}
