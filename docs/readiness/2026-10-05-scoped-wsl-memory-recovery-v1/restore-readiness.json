@@ -1,0 +1,117 @@
+{
+  "schema": "saea-scoped-restart-readiness-v1",
+  "at_utc": "2026-10-05T06:29:43.357122+00:00",
+  "status": "PREPARED_ONLY_PENDING_OWNER_APPROVAL",
+  "snapshot_files": [
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session.json",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/owner-approved-clean-cache-reclaim-20261005-v1/pre-restart-readonly-snapshot/session.json",
+      "sha256": "caa27c2769c1970f933b02b1e7da7b2f77aeab790e645bfde84eafccb9d558da"
+    },
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session-receipt.json",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/owner-approved-clean-cache-reclaim-20261005-v1/pre-restart-readonly-snapshot/session-receipt.json",
+      "sha256": "3081a4fdc9d97fd9cdb1d0cad8b2ce1e1d4802ddf18a4f4211771b445ec20d16"
+    },
+    {
+      "source": "/home/chao/batch-queue.json",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/owner-approved-clean-cache-reclaim-20261005-v1/pre-restart-readonly-snapshot/batch-queue.json",
+      "sha256": "28ced50a85c0f3c8f0141eeee8fd6f8fbe56d40c92558bd82b5ba6d299f5f15f"
+    },
+    {
+      "source": "/home/chao/batch-status.jsonl",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/owner-approved-clean-cache-reclaim-20261005-v1/pre-restart-readonly-snapshot/batch-status.jsonl",
+      "sha256": "927e73c466fa11dc4c745c6d680eb1580cf7ac15fcf4c36d81848b8fd584d202"
+    },
+    {
+      "source": "/home/chao/batch-flight-repo.txt",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/owner-approved-clean-cache-reclaim-20261005-v1/pre-restart-readonly-snapshot/batch-flight-repo.txt",
+      "sha256": "f765be7802bb7eaaca477a800b3761ba2c880bcc2a0ab5551a66b428579d69d4"
+    },
+    {
+      "source": "/home/chao/batch-flight-commit.txt",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/owner-approved-clean-cache-reclaim-20261005-v1/pre-restart-readonly-snapshot/batch-flight-commit.txt",
+      "sha256": "0e14203bfb72ebe893ee6da9b47028cad5526d775fc77dca2aaeef7d7cfd60f9"
+    }
+  ],
+  "service_identity": {
+    "binary_path": "llama.cpp-featcache/build/bin/llama-server",
+    "binary_sha256": "d0b42ace8d8e02dc772a0e4a1e1667068b3ad799b1ca4c98c741cf89d58404f2",
+    "host": "127.0.0.1",
+    "model_files": [
+      {
+        "path": "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+        "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d"
+      }
+    ],
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "model_fragment_sha256": "3cce3c795a8d07a2bcfccc9f04c4d8d6b548b2ae104252a73eef0b464fe6c70a",
+    "model_root": "/home/chao",
+    "port": 8080,
+    "props_identity": {
+      "model_path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "slot_n_ctx": 24576,
+      "total_slots": 4
+    },
+    "runtime_receipt_relpath": "receipts/runtime-q4km-mmproj-free.json",
+    "runtime_receipt_sha256": "b061c8f53635916f6169acac75896048112a9fad5860db4bf7d1a51700e96e77",
+    "server_argv": [
+      "/home/chao/llama.cpp-featcache/build/bin/llama-server",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8080",
+      "-m",
+      "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+      "--no-mmproj",
+      "-c",
+      "98304",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0"
+    ],
+    "server_env": {
+      "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a"
+    },
+    "session_role": "inference"
+  },
+  "preserved_epoch": "2026-10-01T03:10:56.492238+00:00",
+  "restore_entry": "Windows SAEA-Serving -> scripts/flights/batch/serving_task_entry.sh -> shared serving_session.sh start q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+  "telemetry_entry": "Windows SAEA-Monitor -> scripts/flights/batch/serving_monitor_start.sh, interval ten seconds",
+  "registered_task_restart_counts": {
+    "SAEA-Serving": 0,
+    "SAEA-Monitor": 0
+  },
+  "required_preconditions": [
+    "Explicit human assent to the distribution restart.",
+    "No active flight, scorer, proposal process or other coordinator GPU task.",
+    "Existing Windows tasks must reach terminal state after the distribution termination before any single restore dispatch.",
+    "No unexpected listener or wrapper before invoking the existing serving entry, which contains historical orphan-reaping logic. Do not use that logic to kill an unexplained process."
+  ],
+  "required_postconditions": [
+    "A new serving receipt/epoch with original binary, GGUF and geometry identity; retain old receipt in the existing content-addressed archive.",
+    "Stable Windows available memory above twelve-and-a-half GiB, running floor eight GiB.",
+    "Live matching process and fresh current-epoch telemetry. HTTP health alone is insufficient evidence of GPU execution.",
+    "Read-only frozen admission against the restored service before new registered structural work; no re-generation or re-scoring of earlier attempts.",
+    "Old syscall processes gone and generation.guard available without deleting the lock file."
+  ],
+  "actions_taken": "Read-only inspection and byte-preserving metadata snapshots only. No restart, task mutation, control transition or model call."
+}
