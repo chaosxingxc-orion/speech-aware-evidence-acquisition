@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Configured remaining-b1 scientific cohort running
+
+[Actual remaining-b1 launch](../receipts/continuation/2026-10-05-partitioned-update3-remaining-b1-launch.json) uses Windows SAEA-Batch-Driver epoch2026-10-05T21:54:49Z, first arm21:55:14Z, frozen codex-partitioned-update3-remaining-b1-n20-v1 atf358b03074592b2a4c62c81272c678ef0f943a4b. All six independent frozen registration/runtime/supply/policy checks passed. Scope derives from the unchanged population config: four original candidates09-12 plus own seed/A/A,20 inputs each,120 trajectories,1560 generation/6240 FIT caps. No candidate was replaced or changed after the preceding cohort review.
+
+Root admission followed the complete original-a READ and live idle boundary. Prior own completed controls and48 step logs were archived by exact hashes; independent installed-byte verification passed before one Windows dispatch. Stable-memory wait passed20.37seconds. Startup free memory22.36GiB; after actual model work20.18GiB. At21:56Z the first attempt is OPENED, three busy slots, GPU69percent, fresh healthy telemetry. Driver54370/start_ticks56455731; revalidate live identities and actual state. No lock deletion, privileged launch, WSL restart or cache flush was needed.
+
+The job-specific slurp-update3-b1-15-min monitor is ACTIVE and must be deleted after verified exact terminal with no admitted worker/scorer/lease. No current-family quality read or countersignature. Use coordination/partitioned-update3-scientific-preparation-v1/review-cohort-v2.py with cohort remaining-b1, flight coordination remaining-b1-flight-v1 and this exact launch receipt after every member FINALIZED with verified seal and one unique complete official score, zero failed jobs. The READ profile is already corrected to model-free-check and remains unsigned. No partial optimizer export. After complete root review, separately admit remaining-b2 using the adjacent-cohort guide. All successor cohorts must complete before the configured whole-population retention decision. Preserve owner227 bounds and other-carrier holds.
+
 ## Original-a complete root review; unchanged adjacent cohort admitted
 
 [Complete original-a review](../receipts/continuation/2026-10-05-partitioned-update3-original-a-scientific-read.json) covers all10 finalized members,200 trajectories and1043 model contacts. Each has one unique successful official score and verified seal, with zero failed jobs. Exact driver epoch20:34:25Z ended normally21:38:28Z. The job monitor was deleted. The [English result report](../results/2026-10-05-partitioned-update3-original-a-n20.md) includes official pooled/equal-stratum quality, all strata and role/sample timing. No candidate exceeds either seed on pooled F1; branch01 is faster but lower-quality. No adoption or stable benefit. Full successor learning remains held until all three complete cohort READs.
@@ -2693,7 +2701,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T21:48:37Z
+Last refreshed: 2026-10-05T21:56:45Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
