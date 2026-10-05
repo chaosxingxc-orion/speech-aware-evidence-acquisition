@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Scientific K16 N20 worker frozen; all-member preflight is live
+
+[Preflight receipt](../receipts/continuation/2026-10-05-k16-update2-n20-frozen-check-started.json) binds clean codex-context-template-k16-update2-n20-v1 to6ede9f34e43dde5f0b26510480bc5cc7dc649bb3. Registration and complete structural evidence were serially integrated; engineering-base and handoff-freshness checks passed. Existing session63690 runs all18 frozen registration/runtime/policy/supply/decoding checks. Revalidate its recorded PID and inspect frozen-check-exit-v1.json plus frozen-check-v1.json. Never repeat because a tool observation expires. No scientific generation or scorer contact yet.
+
+After all18 pass, revalidate no STOP/flight/scorer and fresh service/resources. Then use transition-completed-recovery-driver-v1.py and the existing Windows SAEA-Batch-Driver, and create a new15-minute script-only monitor tied to the actual epoch. Old structural driver and reader are complete; its monitor was deleted. The exact18-member360-row READ remains unsigned until all independently finalize with verified seals and unique successful whole-member scores. No task-quality read, automatic proposal/scale or cross-carrier release. Memory floors remain8/12.5GiB; human before8x400.
+
 ## Exact eighteen-member K16 N20 evaluation registration complete
 
 [Registration completion](../receipts/continuation/2026-10-05-k16-update2-n20-registration-complete.json) records successful model-free preparation session40291, exit0. Never resubmit it. All18 own supply/config bindings and complete plans are registered:16 original learned policies plus unchanged seed/A/A,20 existing inputs each,360 trajectories. Only readiness fields changed in the18 existing configs. The analysis supplement is pinned prospectively, including full-population retention and separate quality, intent, reliability and measured latency. No new generation/scorer contact occurred; the exact SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-READ-V1 remains unsigned.

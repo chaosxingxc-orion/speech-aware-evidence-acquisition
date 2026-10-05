@@ -1,0 +1,18 @@
+{
+  "schema": "saea-k16-update2-n20-frozen-check-started-v1",
+  "at_utc": "2026-10-05T08:38:44.896658+00:00",
+  "session_id": 63690,
+  "process": {
+    "at_utc": "2026-10-05T08:37:53.857718+00:00",
+    "pid": 13120,
+    "proc_stat": "13120 (python3) R 13117 13120 13120 34819 13120 4194560 1858 0 0 0 1 0 0 0 20 0 1 0 51707569 17448960 3072 18446744073709551615 4325376 7352253 140733125422288 0 0 0 0 16781312 2 0 0 0 17 3 0 0 0 0 0 10653128 12216448 236580864 140733125424963 140733125426306 140733125426306 140733125427175 0\n",
+    "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-n20-v1",
+    "commit": "6ede9f34e43dde5f0b26510480bc5cc7dc649bb3"
+  },
+  "scope": "All eighteen exact frozen members; registration/runtime/request decoding/policy binding/prepared-supply checks only, zero model/scorer contacts.",
+  "state": "running",
+  "success_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/frozen-check-v1.json",
+  "terminal_receipt": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/frozen-check-exit-v1.json",
+  "next": "Do not resubmit while live. Only after every check passes and current live gates pass, use the exact completed-recovery transition and Windows driver dispatch. Create job-scoped15-minute monitor on actual GPU launch.",
+  "prior_goal_turn": "progress: complete sixteen-policy structural acceptance, preserved failed evidence, deleted terminal monitor, finished exact N20 registration and prospective analysis, serially integrated and froze worker."
+}

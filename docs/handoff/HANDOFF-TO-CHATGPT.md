@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Scientific K16 N20 worker frozen; all-member preflight is live
+
+[Preflight receipt](../receipts/continuation/2026-10-05-k16-update2-n20-frozen-check-started.json) binds clean codex-context-template-k16-update2-n20-v1 to6ede9f34e43dde5f0b26510480bc5cc7dc649bb3. Registration and complete structural evidence were serially integrated; engineering-base and handoff-freshness checks passed. Existing session63690 runs all18 frozen registration/runtime/policy/supply/decoding checks. Revalidate its recorded PID and inspect frozen-check-exit-v1.json plus frozen-check-v1.json. Never repeat because a tool observation expires. No scientific generation or scorer contact yet.
+
+After all18 pass, revalidate no STOP/flight/scorer and fresh service/resources. Then use transition-completed-recovery-driver-v1.py and the existing Windows SAEA-Batch-Driver, and create a new15-minute script-only monitor tied to the actual epoch. Old structural driver and reader are complete; its monitor was deleted. The exact18-member360-row READ remains unsigned until all independently finalize with verified seals and unique successful whole-member scores. No task-quality read, automatic proposal/scale or cross-carrier release. Memory floors remain8/12.5GiB; human before8x400.
+
 ## Exact eighteen-member K16 N20 evaluation registration complete
 
 [Registration completion](../receipts/continuation/2026-10-05-k16-update2-n20-registration-complete.json) records successful model-free preparation session40291, exit0. Never resubmit it. All18 own supply/config bindings and complete plans are registered:16 original learned policies plus unchanged seed/A/A,20 existing inputs each,360 trajectories. Only readiness fields changed in the18 existing configs. The analysis supplement is pinned prospectively, including full-population retention and separate quality, intent, reliability and measured latency. No new generation/scorer contact occurred; the exact SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-READ-V1 remains unsigned.
@@ -2176,7 +2182,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T08:34:56Z
+Last refreshed: 2026-10-05T08:38:44Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
