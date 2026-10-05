@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Configured update3 capacity launched
+
+[Actual launch](../receipts/continuation/2026-10-05-partitioned-update3-capacity-launch.json): Windows task SAEA-Partitioned-Update3-Capacity-Owner227-V1, epoch2026-10-05T18:30:02.602915+00:00, launcher22894 (revalidate PID), frozen codex-partitioned-update3-capacity-v1 at b691e86222adb55b77a0af97663d493b21efc2a9. All sixteen corrected frozen checks completed successfully (exec58357 terminal0). Final registration SHA25652ef55b006c2f04e9f0ece452a74f2d47fbfd3fb79ac2372e931c23444cd8451. Every member runs serially with exact297 endpoint cap,4752 total, zero generation/scoring. Full output/structural reserves remain fixed.
+
+Live prelaunch confirmed original service epoch15:52:00.740486Z/PID686/executable SHA, four idle slots, no STOP/flight metadata/competing generation or scorer, and actual kernel guard acquisition. Windows free24.96GiB; startup20GiB/running8GiB gates still run independently before each member. No cache write or restart. Job-scoped heartbeat slurp-update3-capacity-15m is ACTIVE; cancel at verified terminal with no live admitted child/lease. Inspect coordination/partitioned-update3-capacity-owner227-v2 capacity-started.json, per-member exits, capacity-finished.json and capacity-windows-v1.exit.json, not the old completed generation queue. Do not relaunch or poll terminal58357.
+
+After complete capacity success, use the prepared structural intent for separate registration/frozen proof and dispatch;64 rows/832 generation contacts/3328FIT endpoints are prepared but unadmitted. Scientific configured8/4/4 N20 remains held. No benefit or learning gain is established. Retain all frozen failures, fixed knowledge/data, separate cohorts, seed parent, owner227 boundaries and other-carrier holds.
+
 ## Configured structural intent ready while capacity preflight runs
 
 [Prepared intent](../receipts/continuation/2026-10-05-partitioned-update3-structural-intent-prepared.json) verifies every exact prepared child, role binding, source prefix and supply hash against the population configuration. Derived totals are64 structural trajectories,832 generation contacts and3328 separately registered FIT endpoints, with no scorer. This is not runtime admission. After actual capacities succeed, use intent-v1.json in docs/readiness/2026-10-05-partitioned-update3-structural-entry-v1 as the exact registration basis; keep serial per-member runtime preparation and preserve all no-change positions. Do not execute historical hardcoded K16 preparation helpers.
