@@ -1,0 +1,147 @@
+{
+  "schema": "saea-configured-scientific-launch-v1",
+  "at_utc": "2026-10-05T20:35:58.241558+00:00",
+  "status": "RUNNING",
+  "driver_epoch": "2026-10-05T20:34:25Z",
+  "first_arm_start": "2026-10-05T20:34:50Z",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update3-original-a-n20-v2",
+  "commit": "5f834db339a39123f922b7982f1ba54c24642c86",
+  "driver": {
+    "pid": 43522,
+    "start_ticks": "55977166",
+    "argv": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ]
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "cohort": "original-a",
+  "population_budget": {
+    "K": 8,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 160,
+    "control_trajectories": 40,
+    "family_trajectories": 200,
+    "fit_endpoints_cap": 10400,
+    "generation_contacts_cap": 2600
+  },
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-seed-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-seed-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-seed-aa-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-seed-aa-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-01-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-01-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-01-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-02-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-02-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-02-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-03-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-03-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-03-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-04-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-04-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-04-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-05-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-05-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-05-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-06-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-06-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-06-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-07-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-07-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-07-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-08-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-08-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-08-v1"
+    }
+  ],
+  "queue": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/queue-v1.json",
+    "sha256": "e5200c0e3569d8267e91fcf118e2ace9cd124adc0ee9a0a0d59f6ceb0a7920ee"
+  },
+  "frozen_proof": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/original-a-flight-v3/frozen-check-v1.json",
+    "sha256": "c79dde2ad0aace9066b311b1c19c829893be96aa97427267578b1a7fb5dcd9ee"
+  },
+  "control_transition": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/original-a-flight-v3/control-transition-complete-v1.json",
+    "sha256": "00e91597ebd67fd3db3778e689ceb416c1011ab24a4b90d8249db6a87e8afdf8"
+  },
+  "independent_installed_verification": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/original-a-flight-v3/installed-controls-verified-v1.json",
+    "sha256": "2a113f5e113fb1792654f51aaa9e6acc7d7e42914c166ff4ed2404f20a48af0c"
+  },
+  "root_admission": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/original-a-root-admission-v1.json",
+    "sha256": "b1c5c56dee18b92ec84c423a1b159d7abda44cd09ac699343b5701d8b0ae09d4"
+  },
+  "memory_wait": {
+    "elapsed_seconds": 20.34077872801572,
+    "exit_code": 0,
+    "interval_seconds": 10,
+    "observer_sha256": "852f8f4fb4cd63b7084b9fec9db63325baa2553e2f7e6637f61d8053a5e06c7b",
+    "running_floor_gib": 8.0,
+    "schema": "saea-precontact-memory-wait-v1",
+    "stable_samples": 3,
+    "start_gib": 20.0,
+    "status": "ready",
+    "stop_marker": "/home/chao/batch-STOP",
+    "wait_seconds": 600.0,
+    "worker_started": false
+  },
+  "windows_startup": {
+    "at_utc": "2026-10-05T20:34:06.4894382Z",
+    "free_gib": 22.634357452392578,
+    "batch_task_state": "Ready"
+  },
+  "monitor": {
+    "id": "slurp-update3-a-15-min",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "terminal_action": "Delete after exact terminal and absence of all admitted workers/scorer/lease."
+  },
+  "lock_disposition": "Guard was available; no flight.lock or STOP. No deletion, unlock, WSL restart or cache flush needed. Prior own completed structural controls and all overwritten step logs archived by exact hash before this launch.",
+  "preserved_precontact_issues": [
+    "First frozen worker ledger caption rejected uppercase carrier; corrected only unflown captions in a new frozen worker.",
+    "Second standalone proof helper had a namespace collision while writing evidence; all original logs preserved, new helper checked all members successfully, frozen runtime unchanged."
+  ],
+  "scientific_read_countersigned": false,
+  "quality_read": false,
+  "next": "Wait for exact complete original-a cohort seals and unique official scores before its root READ; retain separate 4/4 cohort boundaries, no partial successor learner export or benefit claim."
+}

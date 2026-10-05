@@ -1,5 +1,14 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Configured original-a scientific cohort running
+
+[Actual launch](../receipts/continuation/2026-10-05-partitioned-update3-original-a-launch.json): Windows SAEA-Batch-Driver epoch2026-10-05T20:34:25Z, first arm20:34:50Z, frozen codex-partitioned-update3-original-a-n20-v2 at5f834db339a39123f922b7982f1ba54c24642c86. All10 frozen registration/runtime/supply/policy checks passed. The first configured cohort contains8 original candidates plus own seed/A/A,20 inputs each,200 trajectories,2600 generation/10400FIT caps. Derive scope from the pinned config and queue. Three startup observations passed in20.34seconds; Windows free22.63GiB before dispatch. Revalidate actual state.
+
+The prior structural job and every root structural reader are terminal and accepted. Kernel guard was available; no STOP/flight.lock existed. No lock deletion, WSL restart or cache flush was needed. Prior own completed controls and53 control/log files were preserved before exact queue installation and independent installed-byte verification. The uppercase carrier-caption precontact refusal and standalone evidence-helper namespace failure are preserved; both occurred without model/scorer contacts. New frozen runtime has only the precise carrier caption correction, no policy change. Exec99705 frozen check is terminal0; do not restart it.
+
+Job-specific slurp-update3-a-15-min is ACTIVE; delete at verified terminal with no admitted worker/scorer/lease. Inspect every configured comparator and candidate operationally. Complete original-a READ remains unsigned until every member has a verified independent seal and one unique complete official score with no failed jobs. Later remaining-b1/b2 cohorts stay held for root boundary review; complete successor learning needs all registered cohorts, no partial export. Preserve fixed knowledge/data, spent actor positions, deterministic sampling, original failures, other-carrier holds and human review before8x400.
+
+
 ## Structural proof accepted; first configured scientific cohort admitted
 
 [Root structural acceptance](../receipts/continuation/2026-10-05-partitioned-update3-structural-accepted.json) verifies all16 members,64 rows,289 generation contacts,289 actual-request FIT receipts and1156 tokenizer endpoints. The driver completed20:18:09Z and all root structural/node/sample readers passed. Engineering remains intentionally OPENED and unscored. Four-row latency is descriptive, not a warm-wave or business-benefit proof. The structural monitor is deleted. Live kernel guard is available, flight.lock and STOP are absent; no deletion or WSL restart is required.

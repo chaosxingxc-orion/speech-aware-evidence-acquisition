@@ -1,0 +1,19 @@
+{
+  "at_utc": "2026-10-05T20:28:40.451108+00:00",
+  "status": "FROZEN_CHECK_RUNNING",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update3-original-a-n20-v2",
+  "commit": "5f834db339a39123f922b7982f1ba54c24642c86",
+  "coordination": "coordination/partitioned-update3-scientific-preparation-v1/original-a-flight-v3",
+  "exec_session": 99705,
+  "helper": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/original-a-flight-v3/frozen-check-v1.py",
+    "sha256": "46a795fe720ef0a98d41ca6b8e1cb6121a1ee27ffd5a8554954ac19c863bbda3"
+  },
+  "preserved_helper_incident": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/frozen-helper-name-collision-disposition-v1.json",
+    "sha256": "f8765397310e8c95ff5036dc80623b1bbd56b3b3971f2b0b473a93f2fa9c421a"
+  },
+  "scope": "All configured controls and candidates, isolated serial checks; zero model/scorer contacts. Do not restart this live check.",
+  "live_lock_observation": "Kernel generation guard available; flight.lock and STOP absent. No unlock/delete/WSL restart needed.",
+  "next": "At successful terminal verify exact frozen proof, live task/process/service/resource gates, archive own completed structural controls and apply only original-a queue. Verify installed bytes before starting Windows task once, then create 15-minute bound monitor."
+}
