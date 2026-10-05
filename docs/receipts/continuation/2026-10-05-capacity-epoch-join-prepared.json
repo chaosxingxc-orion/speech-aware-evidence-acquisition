@@ -1,0 +1,32 @@
+{
+  "schema": "saea-capacity-epoch-join-prepared-v1",
+  "at_utc": "2026-10-05T19:14:47.843544+00:00",
+  "status": "MODEL-FREE PREPARED; awaiting terminal complete capacity",
+  "module": "src/speech_aware_evidence_acquisition/rails/system_context_structural_entry.py",
+  "interface": "qualify_precontact_capacity_epochs",
+  "purpose": "Qualify every configured successful capacity member exactly once across explicitly disposed precontact failures. Preserve actual failed terminal statuses and epoch source hashes; do not synthesize a successful batch or erase failed evidence.",
+  "tests": {
+    "related_passed": 82,
+    "new_passed": 34,
+    "module_statement_branch_coverage_percent": 99,
+    "engineering_base": "PASS",
+    "related_including_population_config_passed": 125
+  },
+  "real_check": {
+    "exit_code": 2,
+    "status": "WAIT_FOR_COMPLETE_CAPACITY",
+    "written": false,
+    "runtime_admission": false
+  },
+  "helper_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/qualify-capacity-v2.py",
+      "sha256": "c7d5716785adf5d11b498b3d4b4aeda737f1f4312b6b7d6bccf3e9a333d212e5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/prepare-registration-v2.py",
+      "sha256": "b4243600cad1c74a2140cf1cbe1fbf04ddb69d57eab92ccd6ff5a972f11ed0c3"
+    }
+  ],
+  "scope": "No new model/tokenizer/scorer contacts, no activation of structural/scientific members. Frozen capacity worker unchanged. After capacity terminal, root must inspect live process/lease state, source pins and every member before running prospective registration."
+}

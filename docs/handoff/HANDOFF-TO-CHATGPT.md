@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Exact capacity epoch join prepared; traced continuation progressing
+
+[Prepared epoch qualifier](../receipts/continuation/2026-10-05-capacity-epoch-join-prepared.json) adds the explicit shared source join needed after precontact-only failures.34 new tests and125 related tests pass, module coverage99%, engineering-base PASS. It preserves each actual failed exit and completed-prefix identity, requires a decided exact suffix disposition, rejects changed workers/configuration/resources/budgets, and qualifies every configured capacity member exactly once. No synthetic successful batch is constructed; root review and runtime admission remain separate.
+
+Use coordination/partitioned-update3-structural-owner227-v1/qualify-capacity-v2.py and prepare-registration-v2.py after complete terminal capacity. V2 verifies all original/continuation source pins, original precontact failure receipts and absence of old lease/output artifacts before joining the exact recorded member successes. The original v1 helpers remain untouched and must not be used for this split family. A real model-free check returns WAIT_FOR_COMPLETE_CAPACITY with no review written and no runtime admission. The separately prepared structural intent and registration remain unexecuted.
+
+At2026-10-05T19:15Z, traced continuation has completed branches08/09/10/11 with exit0 and lease_exit0; together with original branches01-07 this is11/16 capacity members. Launcher27231/start_ticks55467944 is verified live; no failure/terminal receipt yet. Continue inspecting the exact current task, not restarting. The job-scoped15-minute monitor remains active. All frozen original workers, prior failures, successful proofs and controls remain preserved. No new generation/scoring or business-effect conclusion follows from capacity success.
+
+
 ## Traced remaining capacity continuation is running
 
 [Actual Windows launch](../receipts/continuation/2026-10-05-partitioned-update3-traced-capacity-launch.json): SAEA-Partitioned-Update3-Capacity-Traced2-Owner227, epoch2026-10-05T19:08:38.828939Z, launcher27231 (revalidate identity), frozen model worker b691e86222adb55b77a0af97663d493b21efc2a9. Read coordination/partitioned-update3-capacity-observer-traced-continuation2 operational receipts, not earlier terminal capacity tasks or the old generation queue. The first two startup samples are fresh and about24.9GiB; no timeout has recurred at this checkpoint. Do not infer completed capacity from this launch.
@@ -2581,7 +2590,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T19:09:38Z
+Last refreshed: 2026-10-05T19:15:34Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
