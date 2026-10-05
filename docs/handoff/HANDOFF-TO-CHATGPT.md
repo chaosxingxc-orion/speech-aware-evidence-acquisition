@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Frozen structural checks in progress
+
+[Actual frozen check](../receipts/continuation/2026-10-05-partitioned-update3-structural-frozen-started.json) uses clean /home/chao/saea-worktrees/codex-partitioned-update3-structural-v1 at535f45fd8728da08636ee8d06f93a0bd2bc13ae5. Exec73567/wrapperPID30995 is the existing live check; revalidate start ticks and poll it rather than starting another. Read coordination/partitioned-update3-structural-owner227-v1 frozen-v1 stdout/stderr/exit, each candidate frozen result and final frozen-check-v1.json. The first configured members pass; exact checkpoint list is in the receipt. No model/tokenizer/scorer contact or GPU launch.
+
+control-transition-plan-v1.json in the same coordination directory pins the unchanged old completed own B2 queue/status/worker/commit/done controls and18 existing per-step logs that the new driver can overwrite. It pins the exact new frozen queue and prospective archive directory. This is preparation only: no runtime control is changed, no STOP is cleared, and generation.guard is never deleted. After complete frozen proof, require old-byte equality, no active driver/generator/scorer/preprocessor/lease, no STOP/flight metadata, available kernel guard, healthy idle original serving process and current registered memory floors. Then preserve prior controls, install the exact new structural queue/worker/commit, start Windows SAEA-Batch-Driver once and create its15-minute monitor. No GPU monitor is active before launch.
+
+Do not change the frozen capacity or structural source directories. Scientific configured8/4/4 N20 and broader stages remain separately held; these64 rows are structural-only and never officially scored. Preserve all earlier failed evidence, closed lines, owner227 limits and other-carrier holds.
+
+
 ## Configured structural registration complete; freeze next
 
 [Complete registration](../receipts/continuation/2026-10-05-partitioned-update3-structural-registered.json): all16 configured structural members registered and warm-verified,64 rows with832 generation/3328FIT caps, no scoring. Exec62140 and preparationPID30034 are terminal exit0; do not poll/restart them. Every exact generation/FIT/read exposure row is registered, with root structural admission and exact capacity review pin. All16 registration gates, engineering-base, finite-completion, OpenJiuwen native reuse and derived-media confinement pass. Invocation-only errors (missing required output; relative PYTHONPATH) were corrected with original logs preserved and no model contacts.
@@ -2610,7 +2619,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T19:31:30Z
+Last refreshed: 2026-10-05T19:36:32Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

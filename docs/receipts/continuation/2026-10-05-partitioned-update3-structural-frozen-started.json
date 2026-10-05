@@ -1,0 +1,33 @@
+{
+  "at_utc": "2026-10-05T19:36:32.904242+00:00",
+  "status": "FROZEN CHECK IN PROGRESS",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update3-structural-v1",
+  "commit": "535f45fd8728da08636ee8d06f93a0bd2bc13ae5",
+  "wrapper_pid": 30995,
+  "start_ticks": "55611248",
+  "exec_session": 73567,
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/frozen-check-structural-v1.py",
+    "sha256": "18eec7ed0d309191fc75d0785cda715947b35a8449842608138562ff62946b9d"
+  },
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/frozen-started-v1.json",
+    "sha256": "11dd77cdaee1fa3c56132cd03ae0d120b99497f930c32d254061496a28ffc7f2"
+  },
+  "passed_candidates": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06"
+  ],
+  "control_transition_plan": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/control-transition-plan-v1.json",
+    "sha256": "b95a9afea0f011134642ea73a4212183f5a4cd451270af36327bda674c85bc66"
+  },
+  "runtime_controls_changed": false,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "next": "Poll exact frozen process/handle and per-member evidence; do not duplicate checks. Complete frozen proof and live checks before the normal own-control transition and Windows engineering launch."
+}
