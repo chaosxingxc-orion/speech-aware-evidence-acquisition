@@ -1,0 +1,20 @@
+{
+  "at_utc": "2026-10-05T21:59:40.070250+00:00",
+  "status": "TWO_COHORT_READS_STILL_REQUIRED",
+  "source_readiness": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/source-readiness-after-original-a-v1.json",
+    "sha256": "4d8e86bbdc0e32d224c4b96ac370efa940d575caae4a8b36d84ed6b4e1b9b925"
+  },
+  "root_cost_diagnostic": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/original-a-cost-diagnostic-v1.json",
+    "sha256": "f1ff2103172e215ff116b07e35acb6e4a3e904ed56b2c15318405d9328c212c2"
+  },
+  "diagnostic_note": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-complete-analysis-v1/original-a-cost-diagnostic.md",
+    "sha256": "c50bf8831671b3006a63d34aa3c0c372bafa952bf4f42a9f75eb7ca5e7a351b0"
+  },
+  "runtime_mutated": false,
+  "learner_exported": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0
+}

@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete-population source readiness and root cost diagnostic
+
+[Full-source readiness](../receipts/continuation/2026-10-05-partitioned-update3-full-source-readiness.json) binds actual original-a and remaining-b1 launch/frozen proofs, and the complete original-a saved family/root READ. Remaining-b1/b2 complete READs are still missing. The data-root readiness packet deliberately has a different schema and is not a registered source join; do not use it to export partial feedback or invent future hashes. After all complete READs, bind the real join through the existing all-source reader and strict-population trial qualifier described in the analysis guide.
+
+[Original-a cost decomposition](../readiness/2026-10-05-partitioned-update3-complete-analysis-v1/original-a-cost-diagnostic.md) uses only already root-qualified complete results, derives every denominator from actual timing counts and preserves all members. Seed Reviewer input reuse is96.85percent but decode totals16.05seconds per sample. Faster branch01 has fewer role visits/shorter Reviewer output and worse pooled F1; its Solver reuse is lower than seed. Branch04/07 have weaker text-role reuse and greater prefill cost. These are measured associations, not causal node credit, adoption or a reason to constrain all templates to common prefixes. No active-family quality, model/scorer contact, learner export or policy mutation.
+
+Remaining-b1 GPU job and its15-minute monitor continue under the latest launch receipt. Keep all configured candidates, fixed knowledge/data, complete-family READ gates and separate remaining-b2 boundary admission.
+
 ## Configured remaining-b1 scientific cohort running
 
 [Actual remaining-b1 launch](../receipts/continuation/2026-10-05-partitioned-update3-remaining-b1-launch.json) uses Windows SAEA-Batch-Driver epoch2026-10-05T21:54:49Z, first arm21:55:14Z, frozen codex-partitioned-update3-remaining-b1-n20-v1 atf358b03074592b2a4c62c81272c678ef0f943a4b. All six independent frozen registration/runtime/supply/policy checks passed. Scope derives from the unchanged population config: four original candidates09-12 plus own seed/A/A,20 inputs each,120 trajectories,1560 generation/6240 FIT caps. No candidate was replaced or changed after the preceding cohort review.
@@ -2701,7 +2709,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T21:56:45Z
+Last refreshed: 2026-10-05T22:00:10Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
