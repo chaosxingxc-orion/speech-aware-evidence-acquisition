@@ -1,0 +1,19 @@
+{
+  "schema": "saea-model-free-frozen-preflight-started-v1",
+  "at_utc": "2026-10-05T00:53:49.241062+00:00",
+  "status": "RUNNING",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+  "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c",
+  "session_id": 66304,
+  "process": {
+    "pid": 787221,
+    "start_ticks": "50866766",
+    "script": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/frozen-check-v1.py"
+  },
+  "helper_sha256": "f942e3438c80b9e27e11630f38f1a4e1df4e980e2294af67ced2e775583076ea",
+  "members": 16,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "monitor_status": "No active heartbeat; capacity monitor deleted and no new GPU experiment launched.",
+  "next": "Continue the exact existing preflight process. Do not restart on observation timeout. Only all16 successful checks and live gates allow the exact completed-driver transition and Windows SAEA-Batch-Driver structural launch, then create the15-minute job-scoped heartbeat."
+}

@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update-two structural worker frozen; existing preflight is running
+
+[Preflight start](../receipts/continuation/2026-10-05-k16-update2-structural-preflight-started.json) binds the clean codex-context-template-k16-update2-structural-v1 checkout toce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c. All64-row registration/evidence changes are serially integrated. Engineering-base and handoff-freshness checks passed. Existing root session66304 is performing all16 model-free frozen checks; revalidate the recorded process identity and per-member logs,never resubmit on timeout. No structural model contact yet.
+
+After all16 pass, revalidate current service,memory,STOP and competing processes,then use the prepared exact completed-driver transition and Windows SAEA-Batch-Driver launch. Create a new15-minute script monitor bound to that structural epoch. The completed capacity monitor was deleted. Keep all frozen workers and original responses immutable; source-bound structural acceptance remains separate from scientific evaluation and learning feedback.
+
+
 ## All update-two capacities passed; exact64-row structure registered
 
 [Capacity completion](../receipts/continuation/2026-10-04-template-k16-update2-capacity-complete.json) verifies all16 learned children,704 measured request forms and4752 tokenizer endpoints,zero generation/scoring. Each retains full512 output and2048 structural reserve; the minimum remaining margin is5461tokens. Windows wrapper ended0 at2026-10-05T00:45:56Z and both launcher processes exited. Root deleted automation slurp; monitor-cancelled-v1.json preserves the exact terminal bindings.
