@@ -31,3 +31,7 @@ Root must review actual execution/resource stability and completed analysis befo
 6. After all ten B members complete, require their unique official scores, verified seals and exact B root READ. Preserve per-panel comparisons; no pooled frontier, between-panel adaptation or automatic optimizer export.
 
 Keep the other-carrier holds and human-before8x400 boundary. This is preparation within the same existing twenty-input subset, not a new dataset or evidence of improvement.
+
+## Additional synthetic prerequisite checks
+
+Thirteen exact-guard cases passed; see `docs/receipts/continuation/2026-10-05-k8b-predecessor-guard-tests.json`. They cover a complete pinned review and missing/mismatched/failed/unsigned/stale predecessor variants, preserving all fixture hashes. They do not execute the mutation body or establish actual B admission. Keep the same prospective frozen/runtime checks.

@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K8B predecessor guard tested with synthetic complete and invalid records
+
+[Thirteen passing cases](../receipts/continuation/2026-10-05-k8b-predecessor-guard-tests.json) exercise the exact prepared v2 guard against isolated synthetic metadata. Complete pinned review passes without writes; missing review holds; missing/failing/duplicate/mutated/unfinalized members,wrong analysis path,unsigned READ,STOP,stale epoch,changed queue and between-panel policy changes refuse. All fixture hashes remain unchanged. No real task results,model calls,scorer calls or current controls were used. This tests prerequisites only;the registration body and exact B frozen/runtime admission still await complete A review. Current A continues on its unchanged frozen worker.
+
 ## K8B continuation helper prepared; no B admission or dispatch
 
 [Prepared successor](../receipts/continuation/2026-10-05-k8b-continuation-helper-prepared.json) binds the future prepare-admission-v2.py under coordination/context-template-k8b-admitted-n20-owner227-v1. It requires exact completed A qualification,root READ,source-bound complete analysis and root-stage-review-v1.json before writing registration/config/ledger changes. The missing-review test returned75 with all24 protected hashes unchanged and no new readiness/admission. This is only a negative prerequisite proof,not a full preparation/frozen/runtime acceptance. See docs/readiness/2026-10-05-k8b-continuation-preparation-v1/README.md for exact stage-review pins and ordered continuation. Do not execute superseded v1 or infer B admission from preparation. Current A worker,queue and all template bytes remain untouched.

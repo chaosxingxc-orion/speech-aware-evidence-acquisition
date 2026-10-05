@@ -1,0 +1,30 @@
+{
+  "schema": "saea-k8b-predecessor-guard-tests-v1",
+  "at_utc": "2026-10-05T11:04:51.976406+00:00",
+  "passed": 13,
+  "proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/predecessor-tests-v1.json",
+    "sha256": "7bfa6b05f1196b7a0d8c6b8a35d9d95a15aa945a4bcf8c5d1f0dfc2c579e2653"
+  },
+  "test_script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/test_predecessor_review_v1.py",
+    "sha256": "14d704c6c7eaf97e0372f84583ec5a5566c4f8246b527602ab970030d9160fa7"
+  },
+  "prepared_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/prepare-admission-v2.py",
+    "sha256": "216187205b047c6eb4255f25034dbd26253030eff4bcfb55f9d135dfe9681cf9"
+  },
+  "coverage_scope": [
+    "Complete pinned review passes prerequisite-only mode without writing files.",
+    "Missing review holds with exit75.",
+    "Missing member, failed score, duplicate successful score, changed manifest and unfinalized current attempt refuse.",
+    "Wrong analysis path, unsigned READ, STOP, stale driver epoch and changed queue refuse.",
+    "Between-panel policy update refuses.",
+    "All cases preserve every synthetic file hash."
+  ],
+  "limitations": "Execute only the exact precondition block with temporary synthetic metadata and a temporary /home/chao mapping. This does not execute or validate the later registration mutation body, actual frozen runtime checks, scoring, or model behavior. Current K8B remains HELD.",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "actual_task_results_read": false,
+  "actual_queue_changed": false
+}
