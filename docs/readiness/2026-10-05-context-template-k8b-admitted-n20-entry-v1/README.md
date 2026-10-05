@@ -1,0 +1,3 @@
+# Exact unchanged K8B admission
+
+Registered only after completed K8A and an exact root stage review. Preserve original branches09-16 and unchanged seed/A/A on the same20 ordered inputs. Ten members and200 trajectories. This preparation does not dispatch or alter controls. Freeze and pass all ten checks, then separately review live resources and the completed A control transition. Maintain20GiB startup/8GiB running,temperature0/fixedseed,4slots/queue4 and full output reserves. No policy update between panels or pooled frontier. Every member needs unique official scoring and the exact whole-family root READ. Create a new15-minute monitor only at GPU launch.

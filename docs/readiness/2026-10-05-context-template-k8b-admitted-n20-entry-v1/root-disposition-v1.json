@@ -1,0 +1,57 @@
+{
+  "at_utc": "2026-10-05T11:55:16.161487+00:00",
+  "authority": "Direct K8 partition and root227 after exact completed K8A root stage review",
+  "conditions": "All ten exact clean frozen registration/runtime/policy/supply/request-equivalence/FIT-budget checks and fresh original serving and memory gates precede a separate explicit root control transition and launch.",
+  "decision_id": "context-template-k8b-admitted-n20-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-SEED-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-SEED-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-SEED-AA-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-SEED-AA-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-09-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-09-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-10-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-10-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-11-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-11-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-12-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-12-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-13-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-13-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-14-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-14-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-15-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-15-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-16-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-16-FIT-V1"
+  ],
+  "failure": "Any failure stops and preserves evidence. No automatic retry, recovery, reseal, score replay or partial read.",
+  "limits": "Same20 inputs; no between-panel template adaptation, pooled frontier, automatic learner export or scale. Human before8x400 and other-carrier holds remain.",
+  "monitor": "Create new15-minute script heartbeat only after actual launch; delete at terminal.",
+  "observer_proof": {
+    "relpath": "docs/receipts/continuation/2026-10-05-observer-four-row-engineering-complete.json",
+    "sha256": "76c472d6fee792a352e136affa20922839b55211407bdf5ebef28e6846fc11dc"
+  },
+  "predecessor_stage_review": {
+    "relpath": "coordination/context-template-k8a-post-observer-n20-owner227-v1/root-stage-review-v1.json",
+    "sha256": "0903a78c9535685031fba65a6c9df7d80dd909daaa61cd8d11d4c9242f410607"
+  },
+  "preservation": "Original branches09-16 and seed/A/A policy bytes, fixed knowledge/data and original unused run identities are unchanged. Preserve all failed attempts and old controls. This is the second partition of one joint proposal population, not an independent search replication.",
+  "read": "All ten independently FINALIZED with verified seals, exactly one complete successful official score each and zero failures, then the exact root K8B READ.",
+  "resource_policy": {
+    "running_gib": 8,
+    "stable_samples": 3,
+    "start_wait_seconds": 600,
+    "startup_gib": 20
+  },
+  "schema": "saea-campaign-decision-v1",
+  "scope": {
+    "candidate_systems": 8,
+    "distinct_inputs": 20,
+    "generation_contact_cap": 2600,
+    "official_complete_score_jobs": 10,
+    "request_fit_endpoint_cap": 10400,
+    "total_trajectories": 200
+  },
+  "status": "decided"
+}

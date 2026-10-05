@@ -1,0 +1,41 @@
+{
+  "schema": "saea-k8b-registration-complete-v1",
+  "at_utc": "2026-10-05T12:02:14.671342+00:00",
+  "registration_complete": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/registration-complete-v1.json",
+    "sha256": "104a36a1076c7add5017fe78d59e12896331c97f4b5b0e9157ac20739a38063a"
+  },
+  "registration_log": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/registration-v1.stdout.log",
+    "sha256": "b3d850f0651dc465f1178fdd2308755f25e270def491374d0cfc0084874dc373"
+  },
+  "registration_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/registration-exit-v1.json",
+    "sha256": "566ea5a3adf86f0ceb78749faafd2f3de50ef299994cc89ac12034e67b25bfcc"
+  },
+  "registration_script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/prepare-admission-v2.py",
+    "sha256": "216187205b047c6eb4255f25034dbd26253030eff4bcfb55f9d135dfe9681cf9"
+  },
+  "request_equivalence": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k8b-admitted-n20-entry-v1/request-equivalence-v1.json",
+    "sha256": "b5347faf02389d3428a4a4c1a2a16877721effaa091a45021996d12e6b6e2312"
+  },
+  "frozen_check_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/frozen-check-preparation-v1.json",
+    "sha256": "dee2729d2af4c2165dadb31f98bbf0102761db92b058102a7d4b20592a024010"
+  },
+  "continuation_scripts": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/continuation-scripts-prepared-v1.json",
+    "sha256": "a502c532846b9b47553d84495d8e927b086984cab68c8d5fc381cd1a0e966f92"
+  },
+  "members": 10,
+  "trajectories": 200,
+  "generation_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "controls_unchanged": true,
+  "read_unsigned": true,
+  "next_action": "Serially integrate;create clean codex-context-template-k8b-admitted-n20-v1 and wait for checkout completion;pass all ten frozen checks with explicit expected commit. Then live gates and separately guarded completed-A transition before Windows launch and new15-minute monitor.",
+  "limits": "No between-panel policy adaptation,pooled frontier,half-population learner export,scale or other-carrier release."
+}

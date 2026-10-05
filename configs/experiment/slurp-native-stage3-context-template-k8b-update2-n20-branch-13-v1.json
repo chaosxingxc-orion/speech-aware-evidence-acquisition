@@ -3,7 +3,9 @@
     {
       "allowed_execution_stages": [
         "check",
-        "prepare-supply"
+        "prepare-supply",
+        "worker",
+        "campaign"
       ],
       "attempt_id": "attempt-slurp-native-stage3-context-template-k8b-update2-n20-branch-13-generation-v1",
       "baseline_fragment": "slurp-native-stage3-context-template-k8b-update2-n20-branch-13-v1",
@@ -11,16 +13,16 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Offline K8B preparation only; require complete K8A and root stage review, fresh admission and frozen checks before worker/campaign.",
+        "reason": "Exact unchanged K8B admitted after completed A and root stage review; per-member frozen checks still required.",
         "requirements": [
           {
             "kind": "preparation",
-            "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-13-V1/phase-supply-v1.json",
-            "sha256": "faefd905ef8c1a74ce0790df2060b17e0a0e552b560b5ab2b3560757b3166674",
+            "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-13-V1/phase-supply-v2.json",
+            "sha256": "c12a9f77e8b14b9c5a356c71ce13f01aeb12df3a0299b21410ae9e18b5fe67c5",
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-13-V1",
       "system_text_policy_binding": {

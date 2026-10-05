@@ -504,7 +504,7 @@
   "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
   "what_this_is": "HELD exact K16 learned update-two template population full-system evaluation member. Same ordered twenty UPDATE2 inputs, deterministic native Omni; complete-family READ required. No admission from preparation.",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-SEED-V1/phase-supply-v1.json",
-    "sha256": "428fa09a80cf82b8069e948909975e69ef487b79f8ee3fcf511ca01096ee80ef"
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-SEED-V1/phase-supply-v2.json",
+    "sha256": "d59e25e6fb96594179fddcbeb10034f425b2506aac154028516623c83746f792"
   }
 }

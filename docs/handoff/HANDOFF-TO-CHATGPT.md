@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Unchanged K8B registration complete; frozen checks and GPU launch pending
+
+[Registration receipt](../receipts/continuation/2026-10-05-k8b-registration-complete.json):exact prepared v2 completed0;all ten request/policy/supply-output equivalence checks passed with1040 FIT cap each. Original branches09-16 and own seed/A/A retain all unused run/attempt identities and same20 inputs,200 trajectories total. Only execution readiness and output-identical supply envelopes changed;old v1 supplies/ledger rows preserved. No generation,tokenizer,scorer contacts or control mutation. Exact B READ remains unsigned.
+
+Prepared frozen-check-v1.py and run-frozen-check-v1.py require a completed clean checkout and explicit SAEA_EXPECTED_COMMIT. Their syntax is checked but they have not run. Prepared transition-completed-k8a-v1.py checks exact completed A stage/epoch/pins,no STOP/lease/processes,healthy idle serving and20GiB memory before preserving normal completed controls;it is not executed. Root READ and node/sample timing helpers are prepared only. Freeze codex-context-template-k8b-admitted-n20-v1 after serial integration,wait for worktree creation,then pass all ten checks before live transition and one Windows launch. Create a fresh15-minute script monitor only at launch. No automatic recovery,between-panel updates,pooled frontier or optimizer export.
+
 ## K8A complete root read: tradeoffs observed, no stable adoption
 
 [Whole-family read](../receipts/continuation/2026-10-05-k8a-post-observer-scientific-read.json) and [scientific report](../results/2026-10-05-context-template-k8a-update2-n20.md):all ten members independently FINALIZED,200 trajectories,verified seals,one successful official score each and zero failures. Driver10:36:59Z completed11:47:12Z;no admitted processes or STOP remain. Exact root READ signed11:48:01Z and shared source-bound analysis completed. Monitor slurp-k8a-post-observer-15m deleted. Ten guards contain757 readings,min25.2829GiB,zero failures. Preserve controls/frozen sources.
@@ -2314,7 +2320,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T11:53:25.293262+00:00
+Last refreshed: 2026-10-05T12:02:14.671342+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
