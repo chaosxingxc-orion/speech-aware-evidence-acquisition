@@ -1,0 +1,34 @@
+{
+  "schema": "saea-partitioned-context-preparation-receipt-v1",
+  "input_sha256": "6ea92dad756a14c7e001dac6ef2503293e2ff8286721e4693ab5e19c49af3bd2",
+  "actor_content_sha256": "010ee8dcc86c2dc3890996df8a1de8b535a8fbbe39910ff45667ffeeb26ff297",
+  "actor_file_sha256": "82ef659cabf224dda9dec706105121c55e98ac5bddc41f73d3661ce720fb1876",
+  "actor_bytes": 543189,
+  "templates": 16,
+  "cohorts": [
+    "original-a",
+    "remaining-b1",
+    "remaining-b2"
+  ],
+  "historical_budget": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "family_trajectories": 440,
+    "generation_contacts_cap": 5720,
+    "fit_endpoints_cap": 22880
+  },
+  "actor_contacted": false,
+  "proposal_slots_reserved": 0,
+  "runtime_admission": false,
+  "at_utc": "2026-10-05T17:15:32.656460+00:00",
+  "tests": {
+    "related_passed": 193,
+    "new_tests": 26,
+    "new_module_statement_percent": 100,
+    "new_module_branch_percent": 100,
+    "engineering_base": "PASS"
+  },
+  "module_sha256": "9a9352b2fb1739ae01e407cdd7e59ec0415a7d3c4d8b596e66e500812fa30976",
+  "private_packet": "system-text-search/context-template-k16-v1/context-learning/inputs/partitioned-complete-update3-template-batch-v1.json",
+  "actor_view": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update3-v1/actor-view.json"
+}

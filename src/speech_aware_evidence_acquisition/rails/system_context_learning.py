@@ -447,12 +447,18 @@ def record_context_update(archive, *, input_sha256, update_id, proposal_document
     packet = matching[0]
     require(content_hash({k: v for k, v in packet.items() if k != "input_sha256"}) == input_sha256,
             "optimizer input hash differs")
+    partitioned = packet.get("schema") == "saea-partitioned-context-optimizer-input-v1"
+    if partitioned:
+        from .system_context_partitioned_learning import validate_partitioned_packet
+        validate_partitioned_packet(archive, packet)
     path = f"context-learning/updates/{packet['algorithm']}-{packet['iteration']}-{update_id}.json"
     require(not (archive.root / path).exists(), "update record already exists")
     record = {"schema": "saea-context-learning-update-record-v1", "input_sha256": input_sha256,
         "algorithm": packet["algorithm"], "iteration": packet["iteration"], "update_id": update_id,
         "raw_proposal": proposal_document, "experience_operations": experience_operations,
         "status": "invalid", "error": None, "runtime_admission": False}
+    if partitioned:
+        record["source_population"] = packet["source_population"]
     if "experiment_population" in packet:
         from .experiment_population import load_population_config, require_population_binding
         population = load_population_config(packet["experiment_population"], repo_root=archive.root)
@@ -471,8 +477,15 @@ def record_context_update(archive, *, input_sha256, update_id, proposal_document
         if packet["algorithm"] == "tf-grpo-context-diversity":
             require(p["component"] == "joint-system", "TF update must bind the joint-system task")
             operations = [] if experience_operations is None else experience_operations
-            require(any(g["semantic_advantage"] != "skip-zero-variation" for g in packet["groups"])
-                    or (not p["changes"] and not operations), "zero variation gives no semantic advantage")
+            if partitioned:
+                cohorts = packet["learner_view"]["population"]["cohorts"].values()
+                own = [c for c in cohorts if p["candidate_id"] in {t["candidate_id"] for t in c["templates"]}]
+                require(len(own) == 1, "one original source cohort per update required")
+                variation = any(len({m["terminal"]["utility"] for m in g["members"]}) > 1
+                                for g in own[0]["groups"])
+            else:
+                variation = any(g["semantic_advantage"] != "skip-zero-variation" for g in packet["groups"])
+            require(variation or (not p["changes"] and not operations), "zero variation gives no semantic advantage")
             record.update(experience_before=packet["experience"],
                           experience_after=apply_experience_operations(packet["experience"], operations))
         if packet["algorithm"] == "gepa":
@@ -490,8 +503,9 @@ def record_context_update(archive, *, input_sha256, update_id, proposal_document
             observed = archive.load_policy(entry["bundle_id"])
             require(observed.as_json() == entry["policy"], "observed policy bytes differ")
             observed_sources.extend(observed.as_json()["cumulative_sources"])
-        feedback_ids = sorted(set(packet["reference"]["sample_ids"]) |
-                              {g["sample_id"] for g in packet["groups"]})
+        feedback_ids = (packet["feedback_sample_ids"] if partitioned else
+                        sorted(set(packet["reference"]["sample_ids"]) |
+                               {g["sample_id"] for g in packet["groups"]}))
         exposed_ids = sorted(set(feedback_ids) |
                              {sid for source in observed_sources for sid in source["sample_ids"]})
         sources = observed_sources + [{"kind": "feedback", "sha256": input_sha256,
@@ -1011,6 +1025,9 @@ def _population_update_input(archive, input_sha256):
     packet = matches[0]
     require(content_hash({k: v for k, v in packet.items() if k != "input_sha256"}) == input_sha256,
             "optimizer input hash differs")
+    if packet.get("schema") == "saea-partitioned-context-optimizer-input-v1":
+        from .system_context_partitioned_learning import validate_partitioned_packet
+        return validate_partitioned_packet(archive, packet)
     require(packet.get("schema") == "saea-context-optimizer-input-v1"
             and packet.get("algorithm") == "tf-grpo-context-diversity"
             and type(packet.get("iteration")) is int and packet["iteration"] > 0,
@@ -1072,7 +1089,7 @@ def reserve_context_population_update(archive, *, input_sha256, actor_input_sha2
               "plan": plan, "candidate_ids": ids, "algorithm": packet["algorithm"],
               "iteration": packet["iteration"], "proposal_slots": len(ids),
               "semantic_batches": plan["semantic_batches"], "runtime_admission": False}
-    record.update({k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet})
+    record.update({k: packet[k] for k in ("experiment_population", "population_cohort", "source_population") if k in packet})
     archive._write(f"context-learning/populations/{plan['batch_id']}/reservation.json", record)
     return record
 
@@ -1091,17 +1108,17 @@ def record_context_population_update(archive, *, input_sha256, response_document
     reservation = json.loads(reservation_path.read_text())
     require(reservation.get("input_sha256") == input_sha256 and reservation.get("plan") == plan
             and reservation.get("candidate_ids") == ids and reservation.get("proposal_slots") == len(ids)
-            and all(reservation.get(k) == packet.get(k) for k in ("experiment_population", "population_cohort")),
+            and all(reservation.get(k) == packet.get(k) for k in ("experiment_population", "population_cohort", "source_population")),
             "exact population reservation required")
     sha(reservation.get("actor_input_sha256"))
     raw = {"schema": "saea-context-population-original-response-v1", "input_sha256": input_sha256,
            "response_sha256": content_hash(response_document), "response_document": response_document}
-    raw.update({k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet})
+    raw.update({k: packet[k] for k in ("experiment_population", "population_cohort", "source_population") if k in packet})
     archive._write(base + "/response.json", raw)
     result = {"schema": "saea-context-population-update-record-v1", "input_sha256": input_sha256,
               "response_sha256": raw["response_sha256"], "status": "recorded", "records": [],
               "usage": None, "runtime_admission": False}
-    result.update({k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet})
+    result.update({k: packet[k] for k in ("experiment_population", "population_cohort", "source_population") if k in packet})
     try:
         r = response_document
         require(isinstance(r, dict) and set(r) == {"schema", "input_sha256", "actor_input_sha256",
@@ -1205,7 +1222,7 @@ def context_population_actor_view(archive, *, input_sha256, source):
                       **{k: deepcopy(packet["policies"][cid]["policy"][k])
                          for k in ("role_text", "context_layout", "node_context")}} for cid in ids}
     return {"schema": "saea-context-population-actor-view-v1",
-            **{k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet},
+            **{k: packet[k] for k in ("experiment_population", "population_cohort", "source_population") if k in packet},
             "optimizer_input_sha256": input_sha256, "algorithm": packet["algorithm"],
             "iteration": packet["iteration"], "model": plan["model"],
             "reasoning_effort": plan["reasoning_effort"], "templates": templates,
@@ -1233,6 +1250,8 @@ def qualify_context_population_trial(archive, *, input_sha256, request, repo_roo
     historical K4 iterator. A root business review remains mandatory.
     """
     packet, plan, ids = _population_update_input(archive, input_sha256)
+    require(packet["schema"] == "saea-context-optimizer-input-v1",
+            "a partitioned update requires its own prospectively registered complete trial")
     root, data = Path(repo_root).resolve(), Path(data_root).resolve()
     require(isinstance(request, dict) and set(request) == {"bindings", "recipe_pin"},
             "evaluation requires source bindings, never caller-entered reward")
@@ -1301,7 +1320,7 @@ def qualify_context_population_trial(archive, *, input_sha256, request, repo_roo
     business = measured_rows(evidence, candidates, registration["member_bindings"],
                              profile=protocol["measurement_profile"])
     return {"schema": "saea-context-population-qualified-trial-v1",
-            **{k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet},
+            **{k: packet[k] for k in ("experiment_population", "population_cohort", "source_population") if k in packet},
             "input_sha256": input_sha256, "response_sha256": result["response_sha256"],
             "trial_commitment": {"recipe": request["recipe_pin"], "family_sha256": content_hash(evidence),
                                  "registration_sha256": registration["registration_sha256"]},

@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Multi-source template update input verified
+
+The complete historical8/4/4 population now enters the shared optimizer/archive through a partitioned input rather than a fictitious common family. [Actual preparation](../receipts/continuation/2026-10-05-partitioned-context-update3-input-prepared.json) freshly reverified all READs/seals/scores/native bindings, retained16 full templates and all320 abstract candidate episodes with each source's controls, and produced a543189-byte actor view. Private reference/current/cumulative exposure stays outside that view.193 related tests pass; the new module has100% statement/branch coverage; engineering-base passes. K/N, model and counts come from the pinned source config.
+
+The shared one-shot reservation and per-position compiler now accept this partitioned packet. Preserve every invalid/no-change position and every observed policy's cumulative exposure. No pooled relative rewards, global frontier, causal node score, actor contact, runtime admission or stable learning gain follows from preparation. The separate prospective actor admission must bind the full file capsule/output contract before reservation/contact. The single-family trial entry explicitly refuses this packet; register a complete partitioned successor trial separately. Keep N20, fixed knowledge, seed incumbent, observe-only cache boundaries, all carrier holds and human-before8x400. Exact next input:6ea92dad756a14c7e001dac6ef2503293e2ff8286721e4693ab5e19c49af3bd2.
+
 ## Remaining original cohort complete; full template feedback prepared
 
 This current checkpoint supersedes the earlier running/pending-source snapshots below. The owner-authorized lock disposition is complete: one scoped WSL termination removed the stuck root cache helper, the real generation guard was verified available, and the original service was restored. Do not repeat cache writes, bypass a guard, or restart automatically.

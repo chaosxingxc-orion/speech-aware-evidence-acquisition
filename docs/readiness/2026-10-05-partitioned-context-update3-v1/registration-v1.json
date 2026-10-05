@@ -1,0 +1,22 @@
+{
+  "schema": "saea-partitioned-context-update-registration-v1",
+  "status": "ROOT_REGISTERED",
+  "algorithm": "tf-grpo-context-diversity",
+  "iteration": 3,
+  "projection": {
+    "relpath": "docs/readiness/2026-10-05-context-update2-complete-source-join-v1/projection-registration-v1.json",
+    "sha256": "b236e97fc11959ab4621fdea15907920cf2cfe1daf1990c7a74d81ff94e0f1be"
+  },
+  "source_population": {
+    "relpath": "configs/experiments/slurp-context-template-update2-complete-source-join-v1.json",
+    "sha256": "3655493ee97dcb69dbb786e84b82e7c3e6ffb151e92f191a8f99c5c93f2106d4"
+  },
+  "population_update_plan": {
+    "schema": "saea-context-population-update-plan-v1",
+    "batch_id": "complete-update3-template-batch-v1",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "semantic_batches": 1,
+    "proposal_slots": 16
+  }
+}
