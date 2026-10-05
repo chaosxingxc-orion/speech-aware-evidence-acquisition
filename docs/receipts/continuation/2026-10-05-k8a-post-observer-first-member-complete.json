@@ -1,0 +1,44 @@
+{
+  "schema": "saea-k8a-first-complete-member-operational-v1",
+  "at_utc": "2026-10-05T10:47:15.184587+00:00",
+  "driver_epoch": "2026-10-05T10:36:59Z",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k8a-post-observer-n20-v1",
+  "commit": "62ae52eebef86d4efad0b3bd138d93c4b0833c1c",
+  "member": "seed",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1",
+  "state": "FINALIZED",
+  "model_contacts": 125,
+  "official_successful_scores": 1,
+  "failed_scores": 0,
+  "official_worker_elapsed_seconds": 273.1570010089781,
+  "metadata": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-generation-v1.json",
+      "sha256": "6d6e3d89c8ebd6f8103bd8fdc9c92e4861366515e14016004f748440c42e7199"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-generation-v1/score-batch/batch-summary.json",
+      "sha256": "91181c7239a207bdd08d450b140bf1af9691bcf1cbd382d9bcce20422c69247e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k8a-update2-n20-seed-post-observer-20261005T103727Z/events.jsonl",
+      "sha256": "98cd644a68ca56e05cf732d35098bee6ce9fffa9285af994aefb4fc1a2bcab9d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k8a-update2-n20-seed-post-observer-20261005T103727Z/finished.json",
+      "sha256": "777acfa0f18348b05faae20a2c7111ea8bbb349d3072522645dfa357227b5baa"
+    }
+  ],
+  "observer": {
+    "valid_samples": 99,
+    "minimum_windows_free_gib": 25.28286361694336,
+    "pid": 39896,
+    "first_read_seconds": 0.3771792179904878,
+    "nonfirst_mean_read_seconds": 0.0014043771798427844
+  },
+  "quality_read": false,
+  "task_outputs_read": false,
+  "independent_seal_reverification_performed": false,
+  "read_countersigned": false,
+  "scope": "One member completed normally through authoritative finalization. This proves the observer remained valid across its generation and scoring interval, not full-family completion, universal observer reliability, comparative speedup or scientific benefit. Root complete-family read remains held until all ten qualified members. Other nine proceed under the already launched queue; no new dispatch."
+}

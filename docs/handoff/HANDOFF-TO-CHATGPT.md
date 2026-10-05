@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## First K8A member completed generation and authoritative scoring
+
+[Operational receipt](../receipts/continuation/2026-10-05-k8a-post-observer-first-member-complete.json): new seed is FINALIZED with125 model contacts,one successful official finalize job and zero failed jobs. Its persistent guard finished normally after99 valid physical Windows reads from one observer PID,min25.2829GiB. The official worker took273.16seconds; no speedup claim. Driver epoch10:36:59Z continues to A/A with no new dispatch. All task outputs and quality remain unread; exact full-family READ stays unsigned. This is one successful generation-to-score lifecycle,not completion of the ten-member panel or stable scientific benefit. Monitor remains active;K8B held and all original templates unchanged.
+
 ## Both K8 partitions retain the complete original population
 
 [Source audit](../receipts/continuation/2026-10-05-two-k8-population-audit.json) verifies all16 original template bundle identities and bytes,all20 member request configurations except supply/identity metadata,and the same ordered20-input roster. Each panel contains eight candidates plus its own seed/A/A;400 trajectories across both. No model or task-result read occurred. All ten K8B members remain HELD with only check/prepare-supply and absent attempt/run directories. Its older preparation-era first-recovery wording is historical; use current post-observer K8A evidence and a fresh root disposition before B activation. Do not edit B policies from A outcomes. This audit does not admit B or establish improvement.
