@@ -1,0 +1,92 @@
+[
+  {
+    "member": "seed",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "seed-aa",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "branch-01",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-01-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-01-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "branch-02",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-02-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-02-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "branch-03",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-03-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-03-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "branch-04",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-04-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-04-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "branch-05",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-05-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-05-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "branch-06",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-06-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-06-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "branch-07",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-07-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-07-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  },
+  {
+    "member": "branch-08",
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-08-V1",
+    "nonidentity_request_config_unchanged": true,
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-08-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "required_fit_endpoints": 1040
+  }
+]

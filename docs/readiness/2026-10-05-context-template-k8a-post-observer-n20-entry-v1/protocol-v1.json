@@ -1,0 +1,101 @@
+{
+  "K": 8,
+  "M": [
+    "perception",
+    "solver",
+    "reviewer",
+    "planner"
+  ],
+  "N": 20,
+  "algorithms": [
+    "tf-grpo-context-diversity"
+  ],
+  "automatic_expansion": false,
+  "candidate_members": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08"
+  ],
+  "control_members": [
+    "seed",
+    "seed-aa"
+  ],
+  "evaluation_only": true,
+  "family_id": "context-template-k8a-update2-n20-post-observer",
+  "fixed_roster": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/fixed400-source-v1.json",
+    "sha256": "1e1b284a21893973a207ac387b13d6627e64e1c550953c26744328937ef8d5bd"
+  },
+  "frozen_reference": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/original-reference-family-v1.json",
+    "sha256": "c037f1706f9365c47360a20ef87645781ca30fbe777e45d711b2a1068b778148"
+  },
+  "independent_validation": false,
+  "iteration": 2,
+  "learning_update": {
+    "algorithm": "tf-grpo-context-diversity",
+    "historical_retention_intent": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-actor-v1/evaluation-intent-v1.json",
+      "sha256": "5671dadd6f69a35b49cf05fae29af40a85f07355391d721485f7c3b722b01141"
+    },
+    "iteration": 2,
+    "original_update_record": {
+      "relpath": "system-text-search/context-template-k16-v1/context-learning/populations/update-two/result.json",
+      "sha256": "1be110a92001a7d6262c8b4faeee493329b0e31c777b18fdf5ccb3df6cf83750"
+    },
+    "retention_intent": {
+      "relpath": "docs/receipts/owner/2026-10-05-template-k8-partition.json",
+      "sha256": "1de74a8ebd7564c2e3d66761cc16d18d919611eb5cf449afbe5b371391325a64"
+    },
+    "source_packet": {
+      "relpath": "system-text-search/context-template-k16-v1/context-learning/inputs/tf-grpo-context-diversity-population-2.json",
+      "sha256": "773b1303f61dc27b009ff70c0e9427c28f5f54eaf321eeb2bbfbf7db6b230fd1"
+    }
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "original_population_response": {
+    "relpath": "system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/original-response.json",
+    "sha256": "7c372a9a91f32400435a14709f54db3fc21099c04f49d4e470c0c79ddfd2618a"
+  },
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-04-deterministic-context-rollouts.json",
+    "sha256": "95605fc5cad2d4e7ff1b5209014dff1d6dcc7ac640747ec727e732c61f99d272"
+  },
+  "population_authorization": {
+    "relpath": "docs/receipts/owner/2026-10-04-template-population-k16.json",
+    "sha256": "c01ac2501e95e42d7e44f2888f683f888544b85d5cfc5ab94f12147668442acc"
+  },
+  "population_partition": {
+    "authorization": {
+      "relpath": "docs/receipts/owner/2026-10-05-template-k8-partition.json",
+      "sha256": "1de74a8ebd7564c2e3d66761cc16d18d919611eb5cf449afbe5b371391325a64"
+    },
+    "panel": "a",
+    "parent_registration": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-n20-entry-v1/registration-v1.json",
+      "sha256": "9d046cd6f01925e5d0a6a0e840e3068d8d132dee44b579d3140a1611b3f30fbc"
+    },
+    "schema": "saea-template-population-partition-v1"
+  },
+  "population_plan": {
+    "relpath": "docs/receipts/owner/2026-10-05-template-k8-partition.json",
+    "sha256": "1de74a8ebd7564c2e3d66761cc16d18d919611eb5cf449afbe5b371391325a64"
+  },
+  "sampling": {
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "schema": "saea-context-learning-protocol-v1"
+}

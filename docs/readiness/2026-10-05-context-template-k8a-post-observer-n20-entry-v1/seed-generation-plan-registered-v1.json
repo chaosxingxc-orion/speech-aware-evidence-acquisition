@@ -1,0 +1,47 @@
+{
+  "cell": "slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1",
+  "composed_config_hash": "b1939b8dc10801376d686844d83bdb3d0c80808988aaa205d0cf622db7775137",
+  "decision_receipt": {
+    "relpath": "coordination/context-template-k8a-post-observer-n20-owner227-v1/root-admission-v1.json",
+    "sha256": "bb18ffb3f19d8aaf4e4de2730f17591a3d4b30ef7b554ab2be3705e4d8f7305f"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "7c76e7b07e5b4674fcf349cbcb390e3b9b641875b7f9d4fe753a2d636b46af48",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1/phase-supply-v1.json",
+    "sha256": "8f46b93574beb295c421f8bf28d19e9bd2e73f721998ba6b9b2926a583b6031a"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227 after accepted engineering"
+}

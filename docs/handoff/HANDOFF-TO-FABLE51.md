@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## New K8A post-observer entry registered; no new GPU contact yet
+
+[Registration](../receipts/continuation/2026-10-05-k8a-post-observer-registration-complete.json):preparation session38745 completed0;all ten policy/request-configuration/supply-output equivalence checks and exact1040FIT endpoint checks passed. New seed run SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1 replaces only the failed119-contact seed in this prospective family;the other nine original K8A A/A/candidate identities remain unstarted and unchanged. All16 original learned templates preserved. Twenty existing inputs per member,200 total,2600 generation/10400FIT caps,ten complete official scores. No between-panel updates or pooled frontier.
+
+New plans and exact SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1 are in docs/readiness/2026-10-05-context-template-k8a-post-observer-n20-entry-v1. READ is unsigned. Eighteen unspent generation/FIT ledger rows were prospectively rebound with original rows preserved;old failed identities and READ remain untouched. Freeze codex-context-template-k8a-post-observer-n20-v1 and run its ten frozen checks once. Prepared qualification/countersignature/analysis scripts are not executed. After checks and live20/8GiB,service,no-worker/no-scorer/no-STOP/no-lease gates,perform only the prepared normal completed-engineering transition and Windows launch. Enable fresh15-minute script monitor at launch;delete at terminal. Any failure stops. K8B stays held;other-carrier holds and human-before8x400 remain.
+
+
 ## Persistent observer four-row GPU proof complete; K8 scientific entry remains prospective
 
 [Complete structural evidence](../receipts/continuation/2026-10-05-observer-four-row-engineering-complete.json):10:13:47Z driver completed10:15:36Z on frozenf479244c9914772f25d261f152bf729c141be143. Four original-seed samples,25 generation contacts,25 exact request FIT receipts/100 endpoints,seven valid visible Reviewer handoffs,four native Omni deliveries. Zero official scores/quality read/optimizer feedback; engineering attempt remains intentionally OPENED and must never be scored or resealed. Root structural,node and sample timing reads are complete,pinned and not to be duplicated.

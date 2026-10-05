@@ -1,0 +1,36 @@
+{
+  "schema": "saea-k8a-post-observer-registration-complete-v1",
+  "at_utc": "2026-10-05T10:25:48.320228+00:00",
+  "status": "REGISTERED_NOT_LAUNCHED",
+  "members": 10,
+  "rows_per_member": 20,
+  "total_trajectories": 200,
+  "candidate_systems": 8,
+  "seed_successor": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1",
+  "unstarted_originals_preserved": 9,
+  "contacts": 0,
+  "read_signed": false,
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/registration-complete-v1.json",
+      "sha256": "812d6ed6233e642aee093d0a1d6155ea74f986327259a4724acb903f650e9393"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/registration-exit-v1.json",
+      "sha256": "873981e6d690aacfba59aab0dcb25d405092165ace6daf57d06b52de290c0117"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/unstarted-ledger-supersession-v1.json",
+      "sha256": "1d831d592fdc5ef40dba40f38fbc0a8496dfbabf94fbb0440a22a5d21e41e835"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/reader-preparation-v1.json",
+      "sha256": "69515a1004df4515bfbbe3b037b49f2571789e2a01d46bd215ddbe7b54238a3c"
+    }
+  ],
+  "prerequisite": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-05-observer-four-row-engineering-complete.json",
+    "sha256": "76c472d6fee792a352e136affa20922839b55211407bdf5ebef28e6846fc11dc"
+  },
+  "next": "Freeze codex-context-template-k8a-post-observer-n20-v1 and run all ten exact model-free checks. Only after live resources/service and no competing processes pass,archive completed engineering controls and launch once via Windows. Preserve all failures; new exact READ stays unsigned. K8B held."
+}

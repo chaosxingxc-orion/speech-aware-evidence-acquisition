@@ -1,0 +1,58 @@
+{
+  "at_utc": "2026-10-05T10:21:46.420332+00:00",
+  "authority": "Direct K8 partition and root227 new entry after separately accepted four-row observer engineering",
+  "conditions": "Exact whole-family registration,clean frozen runtime/policy/supply/request-equivalence and FIT-cap checks; fresh original serving health and20/8GiB resources; normal completed engineering control archive only after no STOP/live worker/scorer/lease. One generating experiment and one scorer.",
+  "decision_id": "context-template-k8a-post-observer-n20-owner227-v1",
+  "diagnosis": "Prior K8A stopped on an unavailable Windows memory sample after last valid24.9198GiB. Internal historical timeout phase remains unknown. Persistent fresh transport passed model-free fault/lifecycle tests and a separately registered four-row GPU proof. No stale-value fallback or resource-floor weakening.",
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-01-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-01-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-02-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-02-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-03-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-03-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-04-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-04-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-05-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-05-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-06-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-06-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-07-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-07-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-08-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-08-FIT-V1"
+  ],
+  "failure": "Any failure stops the new entry and preserves all evidence for root diagnosis; no automatic retry,recovery,reseal,score replay or partial-family read.",
+  "limits": "Same existing UPDATE2 first20,T0/seed20260913,4slots/queue4,full output reserves. K8B stays held until complete K8A root review; no between-panel policy changes or pooled frontier. Human before8x400; other-carrier holds remain.",
+  "monitor": "New15-minute script heartbeat after actual GPU launch; delete at verified terminal with no admitted worker/scorer.",
+  "prerequisite": {
+    "relpath": "docs/receipts/continuation/2026-10-05-observer-four-row-engineering-complete.json",
+    "sha256": "76c472d6fee792a352e136affa20922839b55211407bdf5ebef28e6846fc11dc"
+  },
+  "preservation": "Keep original119-contact20-row seed OPENED,unread and never scored/resealed/retried. Use one new seed identity and the nine previously unstarted original K8A identities. All16 learned templates and fixed knowledge/data remain unchanged. Old family READ stays unsigned; both K8 panels are one partitioned proposal population,not independent search replications.",
+  "preserved_failed_seed": {
+    "relpath": "attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-generation-v1.json",
+    "sha256": "ebd4337d38a9eebbb2ff2cd71ce848f40a2b238b930e39ff9ffb3e92d90db658"
+  },
+  "read": "All10 independently FINALIZED with verified seals,exactly one successful complete official score each,zero failed jobs and exact new root READ. No partial score/quality or learner export.",
+  "resource_policy": {
+    "running_gib": 8,
+    "stable_samples": 3,
+    "start_wait_seconds": 600,
+    "startup_gib": 20
+  },
+  "schema": "saea-campaign-decision-v1",
+  "scope": {
+    "candidate_systems": 8,
+    "distinct_inputs": 20,
+    "generation_contact_cap": 2600,
+    "official_complete_score_jobs": 10,
+    "request_fit_endpoint_cap": 10400,
+    "total_trajectories": 200
+  },
+  "status": "decided"
+}
