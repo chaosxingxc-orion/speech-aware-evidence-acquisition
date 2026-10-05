@@ -1,0 +1,42 @@
+{
+  "schema": "saea-configured-partitioned-capacity-prepared-v1",
+  "at_utc": "2026-10-05T18:10:49.466811+00:00",
+  "status": "REGISTERED_NOT_DISPATCHED",
+  "members": 16,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "registered_members": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-capacity-entry-v2/registered-capacity-members-v1.json",
+    "sha256": "2dab583baebe6274a5bc31087fb2abe0fdecbe4aab02657a776f7b626087676a"
+  },
+  "root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/root-capacity-admission-v1.json",
+    "sha256": "9974e037773fadd270ad6c995144c75952a681369904d1b2cd4abe84e56b9317"
+  },
+  "registration_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/registration.exit.json",
+    "sha256": "cfc8ba1e44e0853883fd1acf6de531891e4f8b63e1bab579bda3b6c4847734e7"
+  },
+  "helper_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/helper-validation-v1.json",
+    "sha256": "af310fd25d3a56bd43a0f9d8c2100f4a834d93e6bbbddacd4dd125bb2776b859"
+  },
+  "tokenizer_endpoint_cap_total": 4752,
+  "generation_cap": 0,
+  "scorer_cap": 0,
+  "contacts_added": 0,
+  "checks": {
+    "engineering_base": "PASS",
+    "population_config": "PASS",
+    "finite_completion_policy": "PASS",
+    "new_engineering_algorithm_labels": "PASS; all 48 fragments",
+    "whole_repository_algorithm_labels": "FAIL: two pre-existing hash-pinned legacy capacity fragments have empty operators_used; also present at64d07c5e4. Preserved without rewriting or waiving them."
+  },
+  "algorithm_gate_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/algorithm-label-check-v1.json",
+    "sha256": "f3022876d5dc859ba6292ef09d5b388a51bb8bcf893d04a8e619867ff782682a"
+  },
+  "next": "Freeze the registered clean source and run every exact flight registration/runtime/actual-policy/supply check. Finalize pinned launch registration only on full success, then live resources/process/lease gates and a Windows-owned capacity task with its fifteen-minute script monitor. No structural/scientific generation from this record."
+}

@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Configured update3 capacity registration complete
+
+[Registration complete](../receipts/continuation/2026-10-05-partitioned-update3-capacity-prepared.json): all16 actual-policy-bound capacity members registered and warm-verified with separate serial processes; total4752 tokenizer endpoints, zero generation/scoring. Session39205 is terminal exit0 with durable outer/per-child receipts. No tokenizer/model/scorer contact or GPU launch has occurred. Preparation session9611 also ended successfully; do not poll or rerun either.
+
+Configured launch helpers have30 extracted admission checks across three population sizes. Member order, sampling, per-member caps, total caps and resources come from pinned config/registered plans; floors20GiB startup/8GiB running. Engineering-base, population config, finite completion and all48 new engineering algorithm labels pass. The global label check retains two pre-existing legacy capacity findings (empty operators_used), verified present at64d07c5e4; they are not new cells, not rewritten, and the global gate is not reported green.
+
+Next freeze clean codex-partitioned-update3-capacity-v1 at the integrated registration commit; run coordination/partitioned-update3-capacity-owner227-v2/frozen-check-v1.py with exact SAEA_EXPECTED_COMMIT and PYTHONDONTWRITEBYTECODE=1/python-B. This rechecks every registration/runtime/actual role/supply before contact. Only after success finalize-capacity-registration-v1.py, revalidate live service/processes/STOP/guards, launch the separate Windows-owned capacity task and create its job-scoped15-minute script monitor. Structural64-row proof and scientific configured8/4/4 N20 remain separately held. Keep all prior frozen workers/failed evidence and other-carrier holds.
+
 ## All update3 engineering supplies complete; capacity registration underway
 
 [Complete preparation](../receipts/continuation/2026-10-05-partitioned-update3-engineering-prepared.json): all configured16 candidates have graph, maximum-request capacity and four-row structural input supplies,48 total, prepared/warm-verified in separate serial processes. Actual role binding and original output selection equality passed throughout. This is model-free preparation, not actual capacity or structural proof. No new model/tokenizer/scorer contacts. The original preparation session9611 completed successfully.
