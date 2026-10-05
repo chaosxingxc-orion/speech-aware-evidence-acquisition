@@ -1,0 +1,25 @@
+{
+  "at_utc": "2026-10-05T20:45:54.652986+00:00",
+  "status": "PREPARED_HELD",
+  "helper": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/admit-cohort-v2.py",
+    "sha256": "9eccd4420ce40f52b65b4fcbd7a7b13204cd1c23f46d6a66dededc6a17e6a43a"
+  },
+  "refusal_test": {
+    "exit_code": 1,
+    "expected_refusal": true,
+    "reason": "Initial original-a-only root review cannot authorize the next cohort.",
+    "same_trial_copy_refused": true,
+    "later_admission_absent": true
+  },
+  "requirements": [
+    "Previous complete cohort exact root READ and qualification, complete source-bound timing output.",
+    "Recorded root boundary observation for adjacent config-derived next cohort, unchanged policy/config and idle generation/scoring/preprocessing, no STOP.",
+    "Fresh root structural review selecting only that next cohort, referencing the original accepted structural proof.",
+    "After admission: new frozen worker checks, live service/resources and exact control transition before any launch."
+  ],
+  "authority": "Owner227 reviewed continuation of the already registered original population; no expansion or new proposals.",
+  "runtime_admitted": false,
+  "contacts_added": 0,
+  "quality_read": false
+}

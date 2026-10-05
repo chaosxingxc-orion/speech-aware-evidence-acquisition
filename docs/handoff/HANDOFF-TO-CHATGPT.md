@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Adjacent cohort entry prepared; original-a advances normally
+
+[Prepared next-cohort entry](../receipts/continuation/2026-10-05-partitioned-update3-next-cohort-entry-prepared.json) adds only a thin root admission helper over existing prepared supplies/registration gates: data-root coordination/partitioned-update3-scientific-preparation-v1/admit-cohort-v2.py. It requires a new exact root boundary review after the preceding complete root READ, checks adjacency from the immutable population config, retains every original candidate/control, and refuses the earlier original-a-only authority. Both original-location and same-trial-copy refusal checks passed without creating a later admission. No runtime sources, controls, policies, proposal slots or budgets changed. Instructions are in the complete-analysis guide.
+
+At this checkpoint original-a seed is FINALIZED with134 recorded model contacts, one successful official score and zero failures; seed-aa is OPENED with123 contacts. Other candidates are not yet started. Driver epoch20:34:25Z remains live and no quality value has been read. Continue the exact job and its15-minute monitor; do not restart, score again or release later cohorts while this one is active. After all members finalize, use the prepared complete-family qualifier, exact root READ and source-bound timing reader, record the adjacent-cohort boundary review, then freeze/admit the next configured group. Full successor optimizer export still requires all configured cohorts.
+
+
 ## Complete-cohort analysis prepared while original-a runs
 
 [Prepared analysis](../receipts/continuation/2026-10-05-partitioned-update3-complete-analysis-prepared.json) pins all three unchanged cohort analysis supplements and the root-only config-driven helper at data-root coordination/partitioned-update3-scientific-preparation-v1/review-cohort-v2.py.109 shared reader, complete-source and retention tests pass. All three recipe/registration/protocol/source-pin checks pass. The actual incomplete original-a family returned WAIT/exit75 without quality or READ. V1 is preserved as that model-free wait proof; V2 additionally carries all requested first-admission, non-first, first-slot-count/remainder and throughput fields into the summary, using the unchanged shared timing reader.
