@@ -1,0 +1,37 @@
+{
+  "schema": "saea-k16-observer-recovery-read-preparation-v1",
+  "at_utc": "2026-10-05T07:24:35.558106+00:00",
+  "authority": "Owner227 complete structural-only acceptance",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+  "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0",
+  "helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/validate-coverage-v1.py",
+      "sha256": "616cbd2f9060a222cb63a2ada5ae2ee4b57e7237d11d25ba04d8db2b3116a4da"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/test_coverage_v1.py",
+      "sha256": "754fd7ae6a95cc04f8549d461264bbcb8d3d73a7b14c0db5f45545cfb3f9714a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/structural-audit-v3.py",
+      "sha256": "96d04423e58ac97077323fd28bda969cd270950665c2e9ceb8d82e9875facef5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/root-node-timing-v1.py",
+      "sha256": "317c01271dc0ba334e853b00f35b98c56b9b9fb040173c95fd8cfb0b81504bba"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/root-sample-timing-v1.py",
+      "sha256": "2a98bcc83471eb5375b62d818f368b39d4287580fd224e531b7a20ba5aba7744"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/reconcile-exact-incident-v1.py",
+      "sha256": "58378e16ff8b5ca3196e78cea2a89d5ca64d4440522c36d02f5d47c5d9a72ed0"
+    }
+  ],
+  "coverage_tests_passed": 9,
+  "future_acceptance": "Require normal completion of exactly six new queue entries, no STOP/active worker, plus exact sixteen-policy coverage. The first ten original manifests keep their original worker/source pins. The failed branch11 is excluded and preserved. All model-facing source code except host observation and diagnostics is byte-identical between workers. Verify every member actual request/FIT/body/handoff/native custody and zero scorer entry.",
+  "read_status": "No structural trace or quality read performed by these helpers. New audit remains unexecuted. All scientific reads remain held.",
+  "control_status": "Reconciliation script prepared only; it checks exact stopped epoch,control hashes,dead PIDs,guard availability,completed artifacts,unstarted successors and fresh idle service/memory before archiving the exact lease and STOP."
+}

@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Observer recovery v3: all six frozen checks passed
+
+[All six frozen checks](../receipts/continuation/2026-10-05-k16-observer-recovery-frozen-complete.json) passed with zero contacts on codex-context-template-k16-update2-observer-recovery1-v3 at7e57894a1. Existing session99173 ended0; never resubmit it. Earlier v1/v2 refusals were precontact registration omissions (measurement-profile recipe and explicit SLURP carrier label); both frozen sources and logs are preserved, no attempt was opened. Policies, supplies and runtime request configuration remained unchanged. [Prospective structural/control readers](../receipts/continuation/2026-10-05-k16-observer-recovery-reader-preparation.json) are pinned; nine exact-coverage refusal checks passed. No new trace/quality read occurred.
+
+Next apply reconcile-exact-incident-v1.py once under root227, after its exact stopped epoch/lease/process/service gates. It preserves old STOP/control/lease files and installs the six-member queue without dispatch. Then launch the existing Windows driver once and activate a fresh fifteen-minute job-scoped script monitor. Original source/outputs stay immutable. Combined structural acceptance still requires all16 policies and64 rows with per-member source proofs; the old whole-family reader and normal-success transition must not be used. N20 remains held until that acceptance. No further automatic recovery.
+
+
 ## Six-member observer recovery registered; freeze and checks next
 
 [Exact registration](../receipts/continuation/2026-10-05-k16-observer-recovery-registration.json) admits preparation of one branch11 observer-recovery1 four-row identity and five unstarted original branch12-16 identities. Own branch11 supply output bytes are unchanged; all six request/policy configuration comparisons passed. No model/tokenizer/scorer contact occurred. Combined coverage explicitly preserves original completed branches01-10 and binds the six successors,64 accepted rows across sixteen original policies if every detailed audit passes. Original failed branch11 remains eight additional charged contacts and is never a completed proof.
@@ -2138,7 +2145,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T07:16:05.176158+00:00
+Last refreshed: 2026-10-05T07:25:30.137893+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

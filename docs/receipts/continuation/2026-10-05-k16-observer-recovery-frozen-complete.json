@@ -1,0 +1,15 @@
+{
+  "schema": "saea-k16-observer-recovery-frozen-complete-v1",
+  "at_utc": "2026-10-05T07:25:30.129732+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+  "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0",
+  "all_six_passed": true,
+  "session": 99173,
+  "exit_code": 0,
+  "evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/frozen-check-v3.json",
+    "sha256": "ef5a8745b432f1b448e5c754822a03e4f6cd1ce0f0d524516b12bdcfb2a7c12e"
+  },
+  "contacts": 0,
+  "next": "Apply the exact root227 recorded stopped-control disposition,then revalidate and launch Windows-owned driver once. Create a new15-minute experiment monitor. No old worker/attempt restart."
+}
