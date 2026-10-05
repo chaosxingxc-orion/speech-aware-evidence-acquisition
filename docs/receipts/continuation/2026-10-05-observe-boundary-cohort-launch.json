@@ -1,0 +1,205 @@
+{
+  "schema": "saea-configured-cohort-launch-v1",
+  "at_utc": "2026-10-05T16:07:57.825720+00:00",
+  "driver_epoch": "2026-10-05T16:03:49Z",
+  "first_campaign_epoch": "2026-10-05T16:04:15Z",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-observe-boundary-n20-v2",
+  "commit": "c7a01c05264adcd4b1fc7e3c91c611d3e891efa9",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+    "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+  },
+  "population_budget": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "frozen_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/frozen-check-v3.json",
+    "sha256": "1d357394f9af9c2611fc40a7ae776eb666a30619c5c1eb071476233f1a7c6b3c"
+  },
+  "control_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/driver-transition-v1.json",
+    "sha256": "d3662b78be7bfa0629228a83a2bfd1a77c2a567a86b6a4b11462fe0f3109b9be"
+  },
+  "restoration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/restored-service-v1.json",
+    "sha256": "f5875ac8601a6627f99d4c460dd570804be244f71a8166bad5cd3706156db7a3"
+  },
+  "service_epoch": "2026-10-05T15:52:00.740486+00:00",
+  "live_processes": [
+    {
+      "pid": 2296,
+      "start_ticks": 54366621,
+      "args": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ]
+    },
+    {
+      "pid": 2432,
+      "start_ticks": 54369216,
+      "args": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.process_guard",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-context-template-observe-boundary-n20-v2",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--experiment",
+        "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-v1",
+        "--owner",
+        "chatgpt-root-owner227",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--receipt-dir",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-slurp-context-template-k4-observe-boundary-n20-v1-remaining-b2-seed-20261005T160415Z",
+        "--start-gib",
+        "20",
+        "--floor-gib",
+        "8"
+      ]
+    },
+    {
+      "pid": 2464,
+      "start_ticks": 54369329,
+      "args": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.cli",
+        "campaign",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-context-template-observe-boundary-n20-v2",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--owner",
+        "chatgpt-root-owner227",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--experiment",
+        "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-v1"
+      ]
+    }
+  ],
+  "members": [
+    {
+      "member": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-13-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-generation-v1",
+      "state": "ABSENT",
+      "calls": null,
+      "manifest_status": null,
+      "prepared_score_jobs": 0,
+      "successful_jobs": 0,
+      "failed_jobs": 0
+    },
+    {
+      "member": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-14-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-14-generation-v1",
+      "state": "ABSENT",
+      "calls": null,
+      "manifest_status": null,
+      "prepared_score_jobs": 0,
+      "successful_jobs": 0,
+      "failed_jobs": 0
+    },
+    {
+      "member": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-15-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-15-generation-v1",
+      "state": "ABSENT",
+      "calls": null,
+      "manifest_status": null,
+      "prepared_score_jobs": 0,
+      "successful_jobs": 0,
+      "failed_jobs": 0
+    },
+    {
+      "member": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-16-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-16-generation-v1",
+      "state": "ABSENT",
+      "calls": null,
+      "manifest_status": null,
+      "prepared_score_jobs": 0,
+      "successful_jobs": 0,
+      "failed_jobs": 0
+    },
+    {
+      "member": "seed",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-generation-v1",
+      "state": "OPENED",
+      "calls": 127,
+      "manifest_status": null,
+      "prepared_score_jobs": 0,
+      "successful_jobs": 0,
+      "failed_jobs": 0
+    },
+    {
+      "member": "seed-aa",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-aa-generation-v1",
+      "state": "ABSENT",
+      "calls": null,
+      "manifest_status": null,
+      "prepared_score_jobs": 0,
+      "successful_jobs": 0,
+      "failed_jobs": 0
+    }
+  ],
+  "quality_read": false,
+  "read_signed": false,
+  "windows_memory": {
+    "host_free_gb": 23.858081817626953,
+    "host_total_gb": 63.43492889404297,
+    "host_memory_error": null,
+    "sampled_at": 1791216477.855,
+    "observer_pid": 46008,
+    "sequence": 1,
+    "transport": "persistent-windows-physical-memory-v1",
+    "freshness": "request-causal-monotonic-v1",
+    "sample_elapsed_ms": 2.3891
+  },
+  "telemetry": {
+    "sampled_at": 1791216472.0683057,
+    "age_seconds": 5.795948505401611,
+    "server_ok": true,
+    "slots": {
+      "busy": 2,
+      "idle": 2,
+      "total": 4
+    },
+    "gpu": {
+      "clocks_sm_mhz": 180.0,
+      "memory_used_mib": 22988.0,
+      "power_watts": 95.21,
+      "pstate": "P2",
+      "utilization_percent": 87.0
+    }
+  },
+  "automation": {
+    "id": "slurp-observe-boundary-n20-15m",
+    "status": "ACTIVE",
+    "interval_minutes": 15
+  },
+  "boundary_mode": "observe-only",
+  "new_cache_write": false
+}

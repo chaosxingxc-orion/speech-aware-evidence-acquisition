@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Remaining original template cohort is running
+
+[Verified launch](../receipts/continuation/2026-10-05-observe-boundary-cohort-launch.json): Windows SAEA-Batch-Driver epoch2026-10-05T16:03:49Z, first arm16:04:15Z, frozen /home/chao/saea-worktrees/codex-context-template-observe-boundary-n20-v2 at c7a01c05264adcd4b1fc7e3c91c611d3e891efa9. All six frozen registration/runtime/actual-policy/supply/config checks passed. Exact completed-b1 controls were preserved, no STOP/competing experiment was present, and actual guard acquisition succeeded. Seed is OPENED with real model contacts. GPU was98% with four busy slots at the initial operational check. Never infer rows from service or contact totals.
+
+Six members are seed,seed-aa,branches13-16 on the same20 inputs,120 trajectories, governed by config eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e. Exact READ remains unsigned until all independently FINALIZED with verified seals,one unique successful complete official score each and zero failed jobs. No partial quality read/export. Inspect every member with coordination/context-template-observe-boundary-n20-v1/operational-members-v1.py. Automation slurp-observe-boundary-n20-15m is ACTIVE,script-only; delete at verified terminal exit.
+
+The first v1 frozen checkout preflight refused an uppercase carrier label before any attempt/contact. Original rows/checkout were preserved; correcting the exact slurp carrier key and creating clean v2 resolved the refusal without request/quality changes. Original cache session9059 is terminal exit1 after authorized termination, not successful cleanup. Service epoch15:52:00.740486Z retains exact model/binary/geometry. Boundary mode is observe-only: no global cache clear or automatic restart. Do not dispatch old b2 DRAFT identities. Preserve other-carrier holds and human-before8x400.
+
 ## Owner-authorized cache incident closed; observe-only cohort registered
 
 The human explicitly ordered lock release or direct restart and prompt experimentation. Root verified the live D-state helper owned the guard, preserved evidence and terminated only Ubuntu-24.04 once. [Restoration](../receipts/continuation/2026-10-05-cache-lock-restart-restored.json) confirms old PID absent, actual guard acquisition, healthy new service epoch2026-10-05T15:52:00.740486+00:00/PID686, identical binary/model/geometry, fresh telemetry and three Windows samples above24GiB. The old global cache write is interrupted, not successful. Do not wait for or invent its after receipt. No routine global cleanup or further automatic restart.
