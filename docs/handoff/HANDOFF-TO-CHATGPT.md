@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Two-K8 abstract feedback boundary prepared; no optimizer export
+
+[Model-free evidence](../receipts/continuation/2026-10-05-two-k8-abstract-feedback-prepared.json) and [integration requirements](../readiness/2026-10-05-two-k8-abstract-feedback-v1/README.md): the shared abstract-node module now validates both complete original eight-policy partitions, distinct cohorts, identical ordered inputs and frozen reference, and normalizes returns within each cohort only. The original single-K16 API remains strict. Tests pass141 with183/183 statements covered. No real source read,actor allocation,model/scorer contact,runtime change or admission.
+
+The source reader, qualified control summaries and prospective actor/trial integration remain required after full K8B READ. This pure representation function cannot validate actual seals, READ authority or hashes by itself. Do not flatten panels, compare standardized returns across cohorts, pool frontiers or export only A. Frozen K8B bb1c52c40 and its running12:09:18Z driver are untouched. Both seed controls are FINALIZED with125/122 contacts and one successful score each; branch09 is OPENED at the last operational check. No current-panel task quality was read.
+
 ## Unchanged K8B launched; current panel remains unread
 
 [Verified launch](../receipts/continuation/2026-10-05-k8b-admitted-n20-launch.json): Windows SAEA-Batch-Driver epoch2026-10-05T12:09:18Z, root PID38214/start ticks52974185, frozen codex-context-template-k8b-admitted-n20-v1 atbb1c52c4045623260682bd3e05d6e8eca07f88f3. All ten frozen checks passed with zero contacts. Normal completed K8A controls were preserved under /home/chao/batch-archive-20261005-complete-k8a-to-k8b after exact predecessor review, no STOP/lease/competing workers, healthy idle service and physical Windows memory28.2803GiB. No service restart or failed-attempt recovery occurred.
@@ -2328,7 +2334,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T12:16:30.352126+00:00
+Last refreshed: 2026-10-05T12:23:50.685158+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

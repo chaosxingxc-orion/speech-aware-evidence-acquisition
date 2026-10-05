@@ -181,15 +181,24 @@ def abstract_population_feedback(source, *, expected_bundles, expected_family_id
     official scores and source hashes. Returned relative returns are descriptive
     same-input preferences, never node credit, policy gradients or adoption.
     """
-    from copy import deepcopy
     import re
-    from ..rails.hashing import content_hash
-    from ..rails.system_text_feedback import paired_relative_returns
-
     ids = [f"branch-{i:02d}" for i in range(1, 17)]
     _require(isinstance(expected_bundles, dict) and list(expected_bundles) == ids
              and all(isinstance(v, str) and re.fullmatch(r"[a-f0-9]{64}", v)
                      for v in expected_bundles.values()), "all16 exact policy bindings required")
+    return _abstract_cohort_feedback(source, expected_bundles=expected_bundles,
+        expected_family_id=expected_family_id, expected_source_batch=expected_source_batch,
+        sample_count=sample_count, reference_f1=reference_f1)
+
+
+def _abstract_cohort_feedback(source, *, expected_bundles, expected_family_id,
+                              expected_source_batch, sample_count, reference_f1):
+    """Share projection validation after a public boundary fixes exact membership."""
+    from copy import deepcopy
+    from ..rails.hashing import content_hash
+    from ..rails.system_text_feedback import paired_relative_returns
+
+    ids = list(expected_bundles)
     _require(type(sample_count) is int and sample_count > 0, "positive input count required")
     _number(reference_f1, "finite frozen reference required")
     _require(reference_f1 <= 1, "frozen reference must use zero-to-one scale")
@@ -200,7 +209,7 @@ def abstract_population_feedback(source, *, expected_bundles, expected_family_id
              and type(source["reference_f1"]) in (int, float)
              and source["reference_f1"] == reference_f1, "exact source cohort/reference required")
     templates = source["templates"]
-    _require(isinstance(templates, list) and len(templates) == 16, "all16 original templates required")
+    _require(isinstance(templates, list) and len(templates) == len(ids), "all original cohort templates required")
     groups = [{"input_index": i, "members": []} for i in range(sample_count)]
     summaries = []
     for cid, template in zip(ids, templates, strict=True):
@@ -252,3 +261,63 @@ def abstract_population_feedback(source, *, expected_bundles, expected_family_id
             "templates": summaries, "groups": groups, "runtime_admission": False,
             "interpretation": "Same-input relative returns guide template search only; zero variance is zero. "
                               "Node correctness and causal contribution remain unmeasured."}
+
+
+def abstract_partitioned_population_feedback(sources, *, expected_partitions, sample_count):
+    """Project the complete original population as two separate K8 cohorts.
+
+    This is a pure representation boundary, not a source reader or authorization
+    gate. Its caller must verify both exact complete-family READs, seals, unique
+    official scores, source hashes, control records and ordered roster hashes.
+    Never use this function to export a partial family or create model authority.
+    Controls stay in their source-qualified family packages; no pooled frontier,
+    across-panel relative return or combined adoption decision is produced here.
+    """
+    import re
+    from ..rails.hashing import content_hash
+
+    panels = ("k8a", "k8b")
+    _exact_fields(sources, panels, "both exact source partitions required")
+    _exact_fields(expected_partitions, panels, "both exact partition contracts required")
+    contracts = ("expected_bundles", "expected_family_id", "expected_source_batch",
+                 "reference_f1", "sample_order_sha256")
+    cohorts = {}
+    for panel, first in zip(panels, (1, 9), strict=True):
+        contract, source = expected_partitions[panel], sources[panel]
+        _exact_fields(contract, contracts, "partition contract fields differ")
+        _exact_fields(source, ("source_batch", "family_id", "reference_f1", "templates",
+                               "sample_order_sha256"), "partition source fields differ")
+        ids = [f"branch-{i:02d}" for i in range(first, first + 8)]
+        bundles = contract["expected_bundles"]
+        _require(isinstance(bundles, dict) and list(bundles) == ids
+                 and all(isinstance(v, str) and re.fullmatch(r"[a-f0-9]{64}", v)
+                         for v in bundles.values()), "exact original eight policy bindings required")
+        roster = contract["sample_order_sha256"]
+        _require(isinstance(roster, str) and re.fullmatch(r"[a-f0-9]{64}", roster)
+                 and source["sample_order_sha256"] == roster, "exact ordered roster hash required")
+        _require(all(isinstance(contract[k], str) and bool(contract[k])
+                     for k in ("expected_family_id", "expected_source_batch")),
+                 "nonempty cohort identities required")
+        if panel == "k8b":
+            prior = expected_partitions["k8a"]
+            _require(all(contract[k] != prior[k] for k in ("expected_family_id", "expected_source_batch")),
+                     "distinct source cohort identities required")
+            _require(roster == prior["sample_order_sha256"]
+                     and contract["reference_f1"] == prior["reference_f1"],
+                     "same ordered inputs and frozen reference required")
+        result = _abstract_cohort_feedback(
+            {k: v for k, v in source.items() if k != "sample_order_sha256"},
+            **{k: v for k, v in contract.items() if k != "sample_order_sha256"},
+            sample_count=sample_count)
+        result.update(schema="saea-abstract-k8-cohort-feedback-v1",
+                      family_id=contract["expected_family_id"],
+                      source_batch=contract["expected_source_batch"],
+                      sample_order_sha256=roster, reference_f1=contract["reference_f1"],
+                      source_sha256=content_hash(source))
+        cohorts[panel] = result
+    return {"schema": "saea-abstract-two-k8-feedback-v1", "cohorts": cohorts,
+            "runtime_admission": False,
+            "interpretation": "Two separate source cohorts cover all original sixteen policies. "
+                              "Normalize each input within its own eight-policy cohort only. "
+                              "Do not compare standardized returns across cohorts, pool frontiers, "
+                              "infer independent replication or claim node credit."}

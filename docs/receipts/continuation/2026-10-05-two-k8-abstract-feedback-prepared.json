@@ -1,0 +1,26 @@
+{
+  "schema": "saea-two-k8-abstract-feedback-model-free-v1",
+  "at_utc": "2026-10-05T12:23:50.676880+00:00",
+  "status": "REPRESENTATION_PREPARED_NOT_SOURCE_ADMITTED",
+  "tests_passed": 141,
+  "coverage": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/two-k8-abstract-feedback-v1/coverage-v1.json",
+    "sha256": "05735d53fa4f17a04b3e20a0350bd54f179825f9ab60782ddecf0832997c7413"
+  },
+  "source": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_node_feedback.py",
+    "sha256": "2e0114e18d030868b0636b72ca92862b8265eea51fde61a9c2613b8c9c11e105"
+  },
+  "new_tests": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_abstract_partitioned_feedback.py",
+    "sha256": "ec3da93923a197d9e2566406cda6228fb0f58ba2a10a43e8634450807573e899"
+  },
+  "new_test_cases": 19,
+  "red_phase": "Missing new API ImportError before implementation; expected collection failure.",
+  "coverage_tool_note": "pytest-cov unavailable; use installed standalone coverage without package changes.",
+  "runtime_sources_modified": false,
+  "real_source_feedback_read": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "next_stage": "After exact K8B completion and root READ, prospectively register source-qualified two-cohort input and actor/trial integration. No partial or synthetic merged-family export."
+}
