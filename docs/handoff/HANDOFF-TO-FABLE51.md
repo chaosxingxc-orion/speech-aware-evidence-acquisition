@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Unchanged K8B launched; current panel remains unread
+
+[Verified launch](../receipts/continuation/2026-10-05-k8b-admitted-n20-launch.json): Windows SAEA-Batch-Driver epoch2026-10-05T12:09:18Z, root PID38214/start ticks52974185, frozen codex-context-template-k8b-admitted-n20-v1 atbb1c52c4045623260682bd3e05d6e8eca07f88f3. All ten frozen checks passed with zero contacts. Normal completed K8A controls were preserved under /home/chao/batch-archive-20261005-complete-k8a-to-k8b after exact predecessor review, no STOP/lease/competing workers, healthy idle service and physical Windows memory28.2803GiB. No service restart or failed-attempt recovery occurred.
+
+Run original branches09-16 plus unchanged seed/A/A on the same20 inputs:200 trajectories, one member at a time and four sample slots. All16 original candidate templates remain unchanged. The first seed is FINALIZED with125 model contacts,one successful official complete score and zero failed jobs; driver advances to A/A. Operational check leaves all eight candidate attempts absent. Fresh Windows free26.9464GiB; keep20GiB startup/8GiB running. No partial quality or task answers read. Exact SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-READ-V1 stays unsigned.
+
+Automation slurp-k8b-update2-15m is ACTIVE, script-only every15 minutes; delete at verified terminal with no admitted driver/worker/scorer. Use coordination/context-template-k8b-admitted-n20-owner227-v1/operational-members-v1.py for all ten members. Prepared qualify-family-v2.py and root-countersign-v2.py supersede only copied K8A receipt schema labels in preserved v1 helpers; execute only v2 after complete qualification. Analysis environment/read helpers remain v1 and unexecuted. Do not launch again, re-run the completed transition, edit frozen sources, replay scores, pool cross-panel frontiers or export a half-population to the learner. Other-carrier holds and human-before8x400 remain. Splitting K does not establish the old memory incident cause: the previous runtime also ran one member at a time.
+
 ## Unchanged K8B registration complete; frozen checks and GPU launch pending
 
 [Registration receipt](../receipts/continuation/2026-10-05-k8b-registration-complete.json):exact prepared v2 completed0;all ten request/policy/supply-output equivalence checks passed with1040 FIT cap each. Original branches09-16 and own seed/A/A retain all unused run/attempt identities and same20 inputs,200 trajectories total. Only execution readiness and output-identical supply envelopes changed;old v1 supplies/ledger rows preserved. No generation,tokenizer,scorer contacts or control mutation. Exact B READ remains unsigned.

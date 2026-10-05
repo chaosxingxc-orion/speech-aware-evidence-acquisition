@@ -1,0 +1,66 @@
+{
+  "schema": "saea-k8b-admitted-n20-live-launch-v1",
+  "at_utc": "2026-10-05T12:09:26.067634+00:00",
+  "driver_epoch": "2026-10-05T12:09:18Z",
+  "driver": {
+    "pid": 38214,
+    "parent_pid": 38213,
+    "start_ticks": "52974185",
+    "proc_stat": "38214 (bash) S 38213 38213 38213 34819 38213 4194304 1616 37614 0 85 0 0 29 13 20 0 1 0 52974185 5140480 864 18446744073709551615 99192378097664 99192379073325 140735186661824 0 0 0 2 4 65536 1 0 0 17 4 0 0 0 0 0 99192379296176 99192379344816 99193431359488 140735186664619 140735186664752 140735186664752 140735186665450 0\n",
+    "argv": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ]
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k8b-admitted-n20-v1",
+  "commit": "bb1c52c4045623260682bd3e05d6e8eca07f88f3",
+  "queue_sha256": "1891b027e41f198a745efffac5a78f25cd3d9db5534c3ac60920b3e5046e2bf2",
+  "members": 10,
+  "rows_per_member": 20,
+  "total_trajectories": 200,
+  "candidate_systems": 8,
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-READ-V1",
+  "read_countersigned": false,
+  "model_contacts_added_by_recorder": 0,
+  "memory_floors_gib": {
+    "running": 8,
+    "startup": 20
+  },
+  "scope": "Same original branches09-16 plus original unchanged seed/A/A. Actual full-request FIT and unique official whole-member scoring. No partial quality read, next proposal, automatic recovery or scale.",
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/frozen-check-v1.json",
+    "sha256": "0659b4a202a3165f712109faf62afeddc505295596e45fe8eeea162e12300a76"
+  },
+  "transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/driver-transition-v1.json",
+    "sha256": "4e6423ffb733f96ea0ae3663f8576ea77327362307fada3e5777200fc50ebc16"
+  },
+  "reader_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/reader-schema-preparation-v2.json",
+    "sha256": "441471489dfbc32916afb74fa3ae68173f1f1a1551d4d2b159082ebec55fb32a"
+  },
+  "operational_monitor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/operational-members-v1.py",
+    "sha256": "bc7f9b9666c63f829a6ba5b0171e514813c0d93fdc933767bd60d5b9815f8a45"
+  },
+  "live_launch_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/launch-receipt-v1.json",
+    "sha256": "3922aafc4f7fb0876d270e37e61c48298144ee834d25889fc52f657be0bb2c30"
+  },
+  "automation": {
+    "id": "slurp-k8b-update2-15m",
+    "interval_minutes": 15,
+    "status_at_launch": "ACTIVE",
+    "terminal_action": "Delete after verified terminal state with no admitted driver, worker or scorer."
+  },
+  "reader_rule": "Use only qualify-family-v2.py and root-countersign-v2.py after all ten members independently finalize with verified seals, exactly one successful complete official score each and zero failed jobs. Prepared analysis helpers remain version1. No partial-family quality read.",
+  "operational_observation": {
+    "at_utc": "2026-10-05T12:16:30.348196+00:00",
+    "seed": "FINALIZED;125 contacts;one successful official job;zero failed jobs",
+    "next_step": "seed-aa",
+    "eight_candidates": "ABSENT",
+    "windows_free_gib": 26.94638442993164,
+    "memory_sampled_at": 1791202507.223,
+    "quality_read": false
+  }
+}
