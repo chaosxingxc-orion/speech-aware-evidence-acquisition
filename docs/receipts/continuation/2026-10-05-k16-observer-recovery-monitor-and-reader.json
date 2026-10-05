@@ -1,0 +1,37 @@
+{
+  "schema": "saea-k16-observer-recovery-monitor-and-reader-v1",
+  "at_utc": "2026-10-05T07:31:18.503013+00:00",
+  "launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/launch-receipt-v1.json",
+    "sha256": "d97417d2e85f2741f2965d5e05e81c52d0f912a90b19917b5799807717a40ce3"
+  },
+  "control_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/control-disposition-complete-v1.json",
+    "sha256": "777310002a4948001582d93f99682efc1a22594c226e9a175f203c20d2631c29"
+  },
+  "reader_session": 81966,
+  "reader_pid": 9200,
+  "reader_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/root-audit-on-completion-v1.py",
+    "sha256": "9aa088cc36c86876f4814218408d07ed619ace1ad9fff13e4ab049d05e10dc82"
+  },
+  "reader_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/root-audit-wait-started-v1.json",
+    "sha256": "bb254ce87d27801bcf62fde4678330243a1fc49bc272cbac2cf9fc91c00ea77e"
+  },
+  "postacceptance_record_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/record-completion-v3.py",
+    "sha256": "98dfe2b777fca1237e83ed40a6604a659e073a1edee90cce23ed6d7d4030dabc"
+  },
+  "future_scientific_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/transition-completed-recovery-driver-v1.py",
+    "sha256": "96cf294a589cfda1db72c8e81c87a9c719dc7e5e6bf6393b2b509791874f163e"
+  },
+  "automation": {
+    "id": "slurp-15",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "delete_at": "Exact GPU experiment terminal with no active admitted worker/scorer"
+  },
+  "scope": "Reader waits on exact8695 start ticks/epoch/queue and runs three pinned combined structural/timing readers once after normal six-step completion. No model/scorer contact,task-quality read or automatic next dispatch. Root review and recording remain required."
+}

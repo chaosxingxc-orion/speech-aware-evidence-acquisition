@@ -1,0 +1,27 @@
+{
+  "schema": "saea-k16-observer-recovery-launch-v1",
+  "at_utc": "2026-10-05T07:28:05.641574+00:00",
+  "owner_decision": 227,
+  "driver_epoch": "2026-10-05T07:26:14Z",
+  "driver_pid": 8695,
+  "driver_proc_stat": "8695 (bash) S 8694 8694 8694 34819 8694 4194304 2523 181089 0 125 0 0 276 48 20 0 1 0 51543287 5140480 864 18446744073709551615 110521717043200 110521718018861 140732768738624 0 0 0 65536 4 65538 1 0 0 17 5 0 0 0 0 0 110521718241712 110521718290352 110522297835520 140732768742572 140732768742705 140732768742705 140732768743402 0\n",
+  "driver_parent_pid": 8694,
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+  "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0",
+  "queue_sha256": "e46fe1fc095d88b956d86969a9b615678127bbb0b95966dbb2ee107c73f5eaae",
+  "members": 6,
+  "rows": 24,
+  "combined_structural_target": {
+    "policies": 16,
+    "rows": 64,
+    "preserved_original_members": 10,
+    "excluded_failed_attempt_contacts": 8
+  },
+  "scope": "One unchanged branch11 observer recovery and five previously unstarted members. No scientific scoring or quality/learning read; exact combined structural acceptance pending.",
+  "memory_floors_gib": {
+    "running": 8,
+    "startup": 12.5
+  },
+  "service_epoch": "2026-10-05T06:32:57.058161+00:00",
+  "further_failure": "Stop and preserve; no automatic retry."
+}
