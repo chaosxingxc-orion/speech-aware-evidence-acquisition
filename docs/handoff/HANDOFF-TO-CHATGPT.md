@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Third template update actor dispatched
+
+[Root contact admission](../receipts/continuation/2026-10-05-partitioned-update3-proposer-admission.json) and [dispatch](../receipts/continuation/2026-10-05-partitioned-update3-proposer-dispatched.json) bind the complete three-file549995-byte capsule. One GPT-6.1 Sol/high fork-none actor, /root/partitioned_template_update3_sol, is generating the configured16 positions in one semantic opportunity. Shared reservation complete-update3-template-batch-v1 is immutable. This is fresh learning, not replacement of previous spent proposals. Original response pending at speechrl-data/system-text-search/context-template-k16-v1/partitioned-update3-v1/original-response-v1.json. Only those three capsule files are actor inputs; no shared history, raw task data or private custody. File allowlisting/context separation are not an OS sandbox or blind-comparator claim. Provider usage remains unknown unless authoritative evidence arrives.
+
+Root must preserve and hash the one original response before the shared compiler, enforce262144-byte output bound and retain invalid/no-change slots. No retry or post-response repair. Generated policies stay provisional. Register fresh per-member supplies, full-request capacity, structural checks and complete configured N20 trial before GPU launch. Historical440 source trajectories confer no runtime allowance. Keep fixed knowledge, source cohorts, seed incumbent, observe-only boundaries and human-before8x400; no stable gain is established.
+
 ## Multi-source template update input verified
 
 The complete historical8/4/4 population now enters the shared optimizer/archive through a partitioned input rather than a fictitious common family. [Actual preparation](../receipts/continuation/2026-10-05-partitioned-context-update3-input-prepared.json) freshly reverified all READs/seals/scores/native bindings, retained16 full templates and all320 abstract candidate episodes with each source's controls, and produced a543189-byte actor view. Private reference/current/cumulative exposure stays outside that view.193 related tests pass; the new module has100% statement/branch coverage; engineering-base passes. K/N, model and counts come from the pinned source config.

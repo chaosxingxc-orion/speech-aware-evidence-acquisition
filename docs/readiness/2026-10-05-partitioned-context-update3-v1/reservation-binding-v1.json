@@ -1,0 +1,44 @@
+{
+  "reservation": {
+    "schema": "saea-context-population-reservation-v1",
+    "input_sha256": "6ea92dad756a14c7e001dac6ef2503293e2ff8286721e4693ab5e19c49af3bd2",
+    "actor_input_sha256": "010ee8dcc86c2dc3890996df8a1de8b535a8fbbe39910ff45667ffeeb26ff297",
+    "plan": {
+      "batch_id": "complete-update3-template-batch-v1",
+      "model": "gpt-6.1-sol",
+      "proposal_slots": 16,
+      "reasoning_effort": "high",
+      "schema": "saea-context-population-update-plan-v1",
+      "semantic_batches": 1
+    },
+    "candidate_ids": [
+      "branch-01",
+      "branch-02",
+      "branch-03",
+      "branch-04",
+      "branch-05",
+      "branch-06",
+      "branch-07",
+      "branch-08",
+      "branch-09",
+      "branch-10",
+      "branch-11",
+      "branch-12",
+      "branch-13",
+      "branch-14",
+      "branch-15",
+      "branch-16"
+    ],
+    "algorithm": "tf-grpo-context-diversity",
+    "iteration": 3,
+    "proposal_slots": 16,
+    "semantic_batches": 1,
+    "runtime_admission": false,
+    "source_population": {
+      "relpath": "configs/experiments/slurp-context-template-update2-complete-source-join-v1.json",
+      "sha256": "3655493ee97dcb69dbb786e84b82e7c3e6ffb151e92f191a8f99c5c93f2106d4"
+    }
+  },
+  "manifest_sha256": "48bea826e2dc4146cb03a54ed07d879984925000ad8c0364bd6b805443750972",
+  "contacts_before_dispatch": 0
+}

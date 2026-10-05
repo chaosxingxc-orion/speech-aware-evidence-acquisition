@@ -1,0 +1,21 @@
+{
+  "schema": "saea-partitioned-context-proposer-dispatch-v1",
+  "recorded_at_utc": "2026-10-05T17:19:43.696097+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-PROPOSE-V1",
+  "agent": "/root/partitioned_template_update3_sol",
+  "requested_model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "batch_id": "complete-update3-template-batch-v1",
+  "input_sha256": "6ea92dad756a14c7e001dac6ef2503293e2ff8286721e4693ab5e19c49af3bd2",
+  "actor_input_sha256": "010ee8dcc86c2dc3890996df8a1de8b535a8fbbe39910ff45667ffeeb26ff297",
+  "manifest_sha256": "48bea826e2dc4146cb03a54ed07d879984925000ad8c0364bd6b805443750972",
+  "input_bytes": 549995,
+  "semantic_opportunities_reserved": 1,
+  "proposal_slots_reserved": 16,
+  "provider_contacts": null,
+  "provider_tokens": null,
+  "status": "DISPATCHED_ORIGINAL_RESPONSE_PENDING",
+  "runtime_admission": false,
+  "interpretation": "One user-requested independent-context learning actor. File allowlist is explicit; no claim of an OS security sandbox or a blind comparator. Preserve the one original response; do not retry or replace slots automatically."
+}
