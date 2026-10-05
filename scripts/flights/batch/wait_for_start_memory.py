@@ -20,7 +20,7 @@ from speech_aware_evidence_acquisition.core.flight.process_guard import (
     MemoryPolicy,
     _sample,
 )
-from speech_aware_evidence_acquisition.core.session.serving import read_host_memory
+from speech_aware_evidence_acquisition.core.session.windows_memory import WindowsMemoryObserver
 
 
 def wait_for_memory(
@@ -31,7 +31,7 @@ def wait_for_memory(
     stable_samples,
     *,
     floor_gib=10.0,
-    host_reader=read_host_memory,
+    host_reader=None,
     monotonic=time.monotonic,
     sleep=time.sleep,
 ):
@@ -48,6 +48,15 @@ def wait_for_memory(
         raise ValueError(
             "bounded wait and at least two consecutive observations are required"
         )
+    if host_reader is None:
+        # Reuse the owned transport used by the running-worker guard. Every
+        # measurement is fresh; observer failure still stops without reconnect.
+        with WindowsMemoryObserver() as observer:
+            return wait_for_memory(
+                receipt_dir, stop_marker, start_gib, wait_seconds, stable_samples,
+                floor_gib=floor_gib, host_reader=observer, monotonic=monotonic,
+                sleep=sleep,
+            )
     root = Path(receipt_dir)
     root.mkdir(parents=True, exist_ok=False)
     started = monotonic()

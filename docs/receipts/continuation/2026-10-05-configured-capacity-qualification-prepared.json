@@ -1,0 +1,21 @@
+{
+  "schema": "saea-configured-capacity-qualification-prepared-v1",
+  "at_utc": "2026-10-05T18:52:34.397887+00:00",
+  "tests": {
+    "new_cases": 48,
+    "related_passed": 91,
+    "statements": 49,
+    "branches": 6,
+    "coverage_percent": 100
+  },
+  "engineering_base_passed": true,
+  "module": "src/speech_aware_evidence_acquisition/rails/system_context_structural_entry.py",
+  "scope": "Complete successful single-epoch capacity families only; exact configured member/source/roster/budget/reserve qualification. Never grants runtime authority.",
+  "limitations": "The newly stopped update3 task requires an explicit completed-prefix plus uncontacted-suffix continuation source join. Do not coerce its failed original terminal into success, and do not run the prepared single-epoch structural registration helper unchanged.",
+  "helper_validation": {
+    "real_members": 16,
+    "actual_assertion_cases": 64,
+    "model_contacts": 0
+  },
+  "contacts_added": 0
+}

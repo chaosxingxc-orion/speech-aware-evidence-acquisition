@@ -1,0 +1,227 @@
+{
+  "schema": "saea-startup-observer-gap-disposition-v1",
+  "status": "decided",
+  "decision_id": "partitioned-update3-capacity-precontact-continuation1-owner227",
+  "at_utc": "2026-10-05T18:50:17.341055+00:00",
+  "authority": "Owner227 bounded root incident disposition, engineering and reviewed sub-8x400 continuation.",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-08-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-09-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-10-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-11-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-12-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-13-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-14-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-15-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-16-CAPACITY-FIT-V1"
+  ],
+  "completed_candidate_ids": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07"
+  ],
+  "eligible_candidate_ids": [
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "original_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/registration-v1.json",
+    "sha256": "52ef55b006c2f04e9f0ece452a74f2d47fbfd3fb79ac2372e931c23444cd8451"
+  },
+  "original_failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/capacity-failure.json",
+    "sha256": "f37a7fec4655fdc6e938491280d0e291f90f6bc0bb932b93ef476930b12a9292"
+  },
+  "original_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/capacity-finished.json",
+    "sha256": "6fc7046042cf5342547a135d46dc19a7ee6ae0a080ebad479ff9c044f3e23e35"
+  },
+  "original_windows_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/capacity-windows-v1.exit.json",
+    "sha256": "e1bf1b307a5586c1b7db7ebd4115ca28f78a401ca214944ea316616a2cfda4f7"
+  },
+  "precontact_observation_failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-08/memory-wait/finished.json",
+    "sha256": "2b9d8d126ecd4c188e9c6ba2f59c056e632bb7a09cb98c495198ad3fa44df481"
+  },
+  "scope": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoint_cap_total": 2673
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "change": "Use the shared persistent fresh Windows observer at startup as already used during guarded execution. Preserve thresholds, sample cadence, timeout, fail-closed behavior and original model worker bytes.",
+  "runtime_worker": "/home/chao/saea-worktrees/codex-partitioned-update3-capacity-v1",
+  "runtime_commit": "b691e86222adb55b77a0af97663d493b21efc2a9",
+  "observer_script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/wait-for-start-memory-v2.py",
+    "sha256": "852f8f4fb4cd63b7084b9fec9db63325baa2553e2f7e6637f61d8053a5e06c7b"
+  },
+  "live_observer_proof": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/startup-observer-proof-v1/events.jsonl",
+      "sha256": "e3acd3179b3f37a5274d1f71cb56cd427b29bd918039d10a8d8d04a4f4829eef"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/startup-observer-proof-v1/finished.json",
+      "sha256": "acaf9b67f816700e76bde767ac7e0b30993f4bd8b7f08db3eecb0bb2b8074443"
+    }
+  ],
+  "tests": {
+    "related_memory_tests_passed": 139,
+    "startup_wait_statement_and_branch_coverage_percent": 97
+  },
+  "conditions": "Revalidate all original frozen/pinned files, unused identities, service/process/STOP/lease/resources. Launch the exact remaining suffix once via a new Windows task; preserve failed original batch. No rerun of completed members, no new scientific generation, no scoring, no source or queue mutation, no cache clearing or WSL restart.",
+  "failure_disposition": "Any further failure stops this continuation and preserves evidence for root diagnosis; no automatic retry.",
+  "read_scope": "Operational capacity/structure only, not task quality. Completion must preserve the original failed epoch and exact successful member receipts from both epochs; never rewrite the original batch as successful.",
+  "original_completed_members": [
+    {
+      "at_utc": "2026-10-05T18:31:31.945423+00:00",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-01-capacity-fit-v1",
+      "exit_code": 0,
+      "label": "branch-01",
+      "lease_exit_code": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-01-CAPACITY-FIT-V1"
+    },
+    {
+      "at_utc": "2026-10-05T18:33:08.941232+00:00",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-02-capacity-fit-v1",
+      "exit_code": 0,
+      "label": "branch-02",
+      "lease_exit_code": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-02-CAPACITY-FIT-V1"
+    },
+    {
+      "at_utc": "2026-10-05T18:34:36.580969+00:00",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-03-capacity-fit-v1",
+      "exit_code": 0,
+      "label": "branch-03",
+      "lease_exit_code": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-03-CAPACITY-FIT-V1"
+    },
+    {
+      "at_utc": "2026-10-05T18:36:10.737137+00:00",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-04-capacity-fit-v1",
+      "exit_code": 0,
+      "label": "branch-04",
+      "lease_exit_code": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-04-CAPACITY-FIT-V1"
+    },
+    {
+      "at_utc": "2026-10-05T18:37:41.773473+00:00",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-05-capacity-fit-v1",
+      "exit_code": 0,
+      "label": "branch-05",
+      "lease_exit_code": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-05-CAPACITY-FIT-V1"
+    },
+    {
+      "at_utc": "2026-10-05T18:39:10.785232+00:00",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-06-capacity-fit-v1",
+      "exit_code": 0,
+      "label": "branch-06",
+      "lease_exit_code": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-06-CAPACITY-FIT-V1"
+    },
+    {
+      "at_utc": "2026-10-05T18:40:43.188652+00:00",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-07-capacity-fit-v1",
+      "exit_code": 0,
+      "label": "branch-07",
+      "lease_exit_code": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-07-CAPACITY-FIT-V1"
+    }
+  ],
+  "remaining_members": [
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-08-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-09-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-10-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-11-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-12-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-13-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-14-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-15-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-16-capacity-fit-v1",
+      "contact_cap": 297
+    }
+  ],
+  "original_completed_tokenizer_endpoints": 2079,
+  "root_runtime_dispatched": false,
+  "monitor_deleted": "slurp-update3-capacity-15m",
+  "underlying_timeout_cause": "Unestablished beyond the recorded eight-second one-shot Windows reader timeout; no observed resource-floor violation. Startup waiting had not been migrated to the persistent observer already used by run_guarded."
+}

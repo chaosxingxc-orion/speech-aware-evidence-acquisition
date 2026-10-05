@@ -286,3 +286,52 @@ def test_owner_eight_gib_floor_is_used_by_wait_not_old_ten(tmp_path):
         sleep=clock.sleep,
     )
     assert result["status"] == "ready" and result["running_floor_gib"] == 8
+
+
+@pytest.mark.parametrize("failure", [False, True])
+def test_default_wait_reuses_owned_fresh_windows_observer(tmp_path, monkeypatch, failure):
+    m=module(); clock=Clock(); instances=[]
+    class Observer:
+        def __init__(self): self.calls=0; self.closed=False; instances.append(self)
+        def __enter__(self): return self
+        def __exit__(self,*args): self.closed=True
+        def __call__(self):
+            self.calls+=1
+            return {"host_free_gb": None if failure else 20, "transport":"fresh-test-pipe", "observer_pid":123, "sequence":self.calls}
+    monkeypatch.setattr(m,"WindowsMemoryObserver",Observer,raising=False)
+    result=m.wait_for_memory(tmp_path/'receipt',tmp_path/'STOP',14.5,60,3,
+                             monotonic=clock.time,sleep=clock.sleep)
+    assert len(instances)==1 and instances[0].closed
+    assert instances[0].calls==(1 if failure else 3)
+    assert result['status']==('observation-failed' if failure else 'ready')
+    events=[json.loads(x) for x in (tmp_path/'receipt/events.jsonl').read_text().splitlines()]
+    samples=[x for x in events if x['event']=='sample']
+    assert [x['observer']['sequence'] for x in samples]==list(range(1,len(samples)+1))
+    assert all(x['observer']['transport']=='fresh-test-pipe' for x in samples)
+
+
+def test_invalid_policy_does_not_create_default_observer(tmp_path,monkeypatch):
+    m=module()
+    def forbidden(): raise AssertionError('Observer must not be created')
+    monkeypatch.setattr(m,'WindowsMemoryObserver',forbidden,raising=False)
+    with pytest.raises(ValueError):m.wait_for_memory(tmp_path/'receipt',tmp_path/'STOP',7,60,3)
+
+
+def test_explicit_reader_never_creates_default_observer(tmp_path,monkeypatch):
+    m=module(); clock=Clock()
+    def forbidden(): raise AssertionError('Observer must not be created')
+    monkeypatch.setattr(m,'WindowsMemoryObserver',forbidden,raising=False)
+    result=m.wait_for_memory(tmp_path/'receipt',tmp_path/'STOP',14.5,60,3,
+        host_reader=lambda:{'host_free_gb':20},monotonic=clock.time,sleep=clock.sleep)
+    assert result['status']=='ready'
+
+
+def test_default_observer_closed_if_receipt_already_exists(tmp_path,monkeypatch):
+    m=module(); closed=[]; (tmp_path/'receipt').mkdir()
+    class Observer:
+        def __enter__(self): return self
+        def __exit__(self,*args): closed.append(True)
+        def __call__(self): raise AssertionError('No read before receipt ownership')
+    monkeypatch.setattr(m,'WindowsMemoryObserver',Observer,raising=False)
+    with pytest.raises(FileExistsError):m.wait_for_memory(tmp_path/'receipt',tmp_path/'STOP',14.5,60,3)
+    assert closed==[True]
