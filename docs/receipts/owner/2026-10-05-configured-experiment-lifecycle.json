@@ -1,0 +1,17 @@
+{
+  "schema": "saea-owner-configured-experiment-lifecycle-v1",
+  "recorded_at": "2026-10-05T12:52:41.922082+00:00",
+  "instruction_english": "Do not hardcode experiment configuration such as K=8 or K=16 in scripts. Load a configuration and carry it through the entire experiment lifecycle.",
+  "resolution": {
+    "single_hash_pinned_configuration": true,
+    "dimensions_derived_from_explicit_rosters": true,
+    "stage_drift_refused": true,
+    "immutable_historical_runs_preserved": true,
+    "configuration_is_not_execution_authority": true
+  },
+  "prepared_configuration": {
+    "relpath": "configs/experiments/slurp-context-template-configured-continuation-v1.json",
+    "sha256": "2382188de80753c13d74afd617bab7fbd784ef3728a1692f03e4d694c43e82fc"
+  },
+  "runtime_admission": false
+}

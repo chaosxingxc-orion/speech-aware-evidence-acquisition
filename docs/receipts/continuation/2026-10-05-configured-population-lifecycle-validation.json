@@ -1,0 +1,174 @@
+{
+  "schema": "saea-configured-population-lifecycle-validation-v1",
+  "recorded_at": "2026-10-05T13:01:31.914408+00:00",
+  "base_commit": "1ca020a34f1c4f2c0c3c4b6df0630ef93b3042ae",
+  "configuration": {
+    "relpath": "configs/experiments/slurp-context-template-configured-continuation-v1.json",
+    "sha256": "2382188de80753c13d74afd617bab7fbd784ef3728a1692f03e4d694c43e82fc"
+  },
+  "tests": [
+    {
+      "name": "primary-related-regressions",
+      "passed": 429,
+      "seconds": 77.69
+    },
+    {
+      "name": "additional-and-updated-regressions",
+      "passed": 190,
+      "seconds": 12.3,
+      "overlaps_primary": true
+    }
+  ],
+  "coverage": {
+    "src/speech_aware_evidence_acquisition/analysis/abstract_node_feedback.py": {
+      "covered_lines": 179,
+      "num_statements": 185,
+      "percent_covered": 94.14225941422595,
+      "percent_covered_display": "94",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 96.75675675675676,
+      "percent_statements_covered_display": "97",
+      "num_branches": 54,
+      "num_partial_branches": 2,
+      "covered_branches": 46,
+      "missing_branches": 8,
+      "percent_branches_covered": 85.18518518518519,
+      "percent_branches_covered_display": "85"
+    },
+    "src/speech_aware_evidence_acquisition/rails/experiment_population.py": {
+      "covered_lines": 69,
+      "num_statements": 69,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 6,
+      "num_partial_branches": 0,
+      "covered_branches": 6,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_context_learning.py": {
+      "covered_lines": 695,
+      "num_statements": 733,
+      "percent_covered": 95.13812154696133,
+      "percent_covered_display": "95",
+      "missing_lines": 38,
+      "excluded_lines": 0,
+      "percent_statements_covered": 94.81582537517053,
+      "percent_statements_covered_display": "95",
+      "num_branches": 172,
+      "num_partial_branches": 6,
+      "covered_branches": 166,
+      "missing_branches": 6,
+      "percent_branches_covered": 96.51162790697674,
+      "percent_branches_covered_display": "97"
+    },
+    "src/speech_aware_evidence_acquisition/rails/template_population.py": {
+      "covered_lines": 46,
+      "num_statements": 46,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 6,
+      "num_partial_branches": 0,
+      "covered_branches": 6,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    }
+  },
+  "validation_files": {
+    "/home/chao/configured-population-validation-v1/coverage.json": "8b8b62073b69c1e8bebdb30d212c821ecfb1cb0ca5e5be8edf047eb0396c49dd",
+    "/home/chao/configured-population-validation-v1/openjiuwen_native_reuse_check.py.log": "a8c904cbfde59d6e9c217b893e6fca7bfd705a61681dec86557c3ec01a33f28c",
+    "/home/chao/configured-population-validation-v1/generated-derived-media-confinement.json": "9256a161d79a9904607aa65d6a7da2163b6104c62ba2f7201654f722d581bf3b",
+    "/home/chao/configured-population-validation-v1/tool_catalog_check.py.log": "b39a5893e8b19204570d667c39a4e6d1449975d4c4ea5021763e053f81dbb6cc",
+    "/home/chao/configured-population-validation-v1/native-reuse.json": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464",
+    "/home/chao/configured-population-validation-v1/generated-MANIFEST.sha256": "02908bfff88ecfcb3cd15739924f19a99dbdc1563d1e0b42ef4f157cc671a790",
+    "/home/chao/configured-population-validation-v1/experiment_handoff_check.py.log": "f4ba8d5850ad840d7740c4c5492237c7a71191ae49dad50955fc1d09f78003d3",
+    "/home/chao/configured-population-validation-v1/results_ledger_check.py.log": "15e516484f7c87940175d03438159dfd7ddd091cf7eba28e66de79a605283d75",
+    "/home/chao/configured-population-validation-v1/additional-gates.json": "73d87b8d6ace1288c77e5cef0f335dab7b17bebb542c223a21f62ecc7acf8a94",
+    "/home/chao/configured-population-validation-v1/additional-tests.log": "f2c8ed02691d732eaee9ec6d3fe329a9b6d6cfdd0e2d12e8f451f16119a6e089",
+    "/home/chao/configured-population-validation-v1/harness_admission_check.py.log": "a01606c9545c248349f478715d5ec5381d99ff8661f794803c6b8d0b76226378",
+    "/home/chao/configured-population-validation-v1/engineering_base_check.py.log": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0",
+    "/home/chao/configured-population-validation-v1/derived_media_confinement_check.py.log": "f1e6d990bf7205bd3f8c2d515c071e0612374e500b82cba979ade200be7bf22e",
+    "/home/chao/configured-population-validation-v1/gates.json": "841f0312a5815eb0ea27e0d63310b334385ad63abaaeaa708116e1d9a89cea0b",
+    "/home/chao/configured-population-validation-v1/stage3_algorithm_label_check.py.log": "4842db56d0e73594ce601e6628b0d63d1f8e9382634c4c6f47c210b63313080c",
+    "/home/chao/configured-population-validation-v1/tests.log": "7da8e085638f4c682ae128eb0de5ab0829ec85c400387c048fb16aba39c775cc",
+    "/home/chao/configured-population-validation-v1/finite_completion_policy_check.py.log": "332c3696b611e9ea53132ee6e244180d4cfc7e12926e90f11ca2924254edee46"
+  },
+  "gates": [
+    {
+      "check": "engineering_base_check.py",
+      "exit_code": 0,
+      "tail": "engineering base check: PASS\n"
+    },
+    {
+      "check": "harness_admission_check.py",
+      "exit_code": 0,
+      "tail": "harness admission check: PASS (19 module(s), 11 barred from every default plan, 2 default plan(s))\n"
+    },
+    {
+      "check": "stage3_algorithm_label_check.py",
+      "exit_code": 1,
+      "tail": "-stage3-system-text-native-capacity-recovery1-v1.json: stage3_algorithm.operators_used is empty; a cell labelled 'system-text-black-box-v1' states which of that algorithm's operators it exercises\nstage3 algorithm label check: FAIL: configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json: stage3_algorithm.operators_used is empty; a cell labelled 'system-text-black-box-v1' states which of that algorithm's operators it exercises\nstage3 algorithm label check: FAIL (2 finding(s); 600 Stage-3 cell(s) of 1050 experiment fragment(s); 4 allowlisted (pre-decision-101, flight-pinned))\n"
+    },
+    {
+      "check": "tool_catalog_check.py",
+      "exit_code": 0,
+      "tail": "tool catalog check: PASS (34 tools, 1 extra pin(s), 17 module(s) clean of framework clients)\n"
+    },
+    {
+      "check": "openjiuwen_native_reuse_check.py",
+      "exit_code": 0,
+      "tail": "Parser for .jpeg\n2026-10-05 05:59:49 | common | default_trace_id | INFO | Registered parser ImageParser for .webp\n2026-10-05 05:59:49 | common | default_trace_id | INFO | Registered parser ImageParser for .gif\n2026-10-05 05:59:49 | common | default_trace_id | INFO | Registered parser ImageParser for .jfif\n{\"proofs\": {\"advertised_tool_round_trip\": true, \"before_tool_call_rail_rejection\": true, \"global_fallback_is_not_authority\": true, \"max_iterations\": true, \"per_agent_visibility\": true, \"workflow_reviewer_then_solver\": true}, \"result_path\": \"/home/chao/configured-population-validation-v1/native-reuse.json\", \"result_sha256\": \"635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464\"}\n"
+    },
+    {
+      "check": "results_ledger_check.py",
+      "exit_code": 0,
+      "tail": " in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-NATIVE-EXEMPLARS-K20-INDEX-V1 has no row in this results ledger\nresults ledger check: finding: cross-check C: harness-admission entry SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1 has no row in this results ledger\nresults ledger check: finding: cross-check D: the umbrella page published-baselines.md is not reachable from this checkout, so the headline comparison was skipped\nresults ledger check: PASS (92 row(s), 147 run id(s) registered and closed, 299 cited path(s) present, 35 status word(s) re-parsed from the verdict's first line, 0 row(s) compared against the umbrella, 278 finding(s) reported)\n"
+    },
+    {
+      "check": "experiment_handoff_check.py",
+      "exit_code": 0,
+      "tail": "\"current_head\": \"1ca020a34f1c4f2c0c3c4b6df0630ef93b3042ae\",\n  \"dirty_file_counts\": {\n    \"tracked\": 8,\n    \"untracked\": 10,\n    \"staged\": 0,\n    \"unstaged\": 8,\n    \"total\": 18\n  },\n  \"warnings\": [\n    \"Current HEAD differs from the handoff snapshot; reconcile newer changes.\",\n    \"The working tree has local changes; preserve and reconcile them.\"\n  ],\n  \"errors\": [],\n  \"execution_authority\": \"NOT_EVALUATED\",\n  \"launch_allowed\": false,\n  \"request_id\": \"SAEA-HANDOFF-20260909-01\",\n  \"generation\": 170,\n  \"snapshot_commit\": \"3727565cdedd2b26414e55314009613b74fbf5b9\",\n  \"execution_owner\": \"Codex\",\n  \"owner_decision_path\": \"docs/superpowers/plans/experiment-handoff/OWNER-CONTINUATION-20260925.md\"\n}\n"
+    },
+    {
+      "check": "derived_media_confinement_check.py",
+      "exit_code": 0,
+      "tail": "slurp-speech-native-dev1000-tail2s       PASS  roots=1  binds=True\naudio2tool-calibration-400-tail2s        PASS  roots=1  binds=True\naudio2tool-calibration-400-16k           PASS  roots=1  binds=True\naudio2tool-calibration-400-16k-tail2s    PASS  roots=1  binds=True\nslurp-speech-native-dev1000              PASS  roots=0  binds=True\nreceipt /home/chao/saea-worktrees/codex-cache-cost-audit/docs/checks/speech-aware-evidence-acquisition/2026-09-07-derived-media-confinement/derived-media-confinement.json: PASS\n"
+    },
+    {
+      "check": "finite_completion_policy_check.py",
+      "exit_code": 0,
+      "tail": " scope: slurp-native-stage3-wsv1-fold-a-baseline-v1 (SAEA-SLURP-STAGE3-WSV1-FOLD-A-V1): finite_completion_scope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: scope: slurp-native-stage3-wsv1-fold-a-smoke-4-baseline-v1 (SAEA-SLURP-STAGE3-WSV1-FOLD-A-SMOKE-4-V1): finite_completion_scope='episode'; per-role completion caps: none\nnative episode failure-mode policy check: PASS (native_episode.finite_completion_policy='deliver-latest-or-abstain' and native_episode.react_exhaustion_policy='continue-without-answer'; 352 in-scope plan(s), 275 baseline(s) read; out of scope: 2 with no ledger row, 371 consumed, 0 naming no run id, 2 not-live cell(s) [superseded 2])\n"
+    },
+    {
+      "check": "handoff_freshness_check.py",
+      "exit_code": 0,
+      "note": "PASS at 2026-10-05T13:00:54Z"
+    }
+  ],
+  "baseline_findings": {
+    "stage3_algorithm_label_check.py": [
+      "slurp-native-stage3-system-text-native-capacity-v1",
+      "slurp-native-stage3-system-text-native-capacity-recovery1-v1"
+    ],
+    "verified_on_unchanged_master": true,
+    "reason": "Existing frozen capacity cells have empty operators_used; these records were not changed for the population configuration task."
+  },
+  "derived_media_check_note": "The checker generated new local report bytes. Saved those under validation_files and restored the original tracked receipt/manifest; historical evidence was not published over.",
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0
+  },
+  "runtime_admission": false,
+  "gpu_configuration_migration": false
+}

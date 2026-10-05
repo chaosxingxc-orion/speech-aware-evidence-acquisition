@@ -1,0 +1,110 @@
+{
+  "schema": "saea-k8b-observer-failure-v1",
+  "recorded_at": "2026-10-05T12:54:36.930592+00:00",
+  "driver_epoch": "2026-10-05T12:09:18Z",
+  "stopped_at": "2026-10-05T12:28:29Z",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-context-template-k8b-admitted-n20-v1",
+  "frozen_commit": "bb1c52c4045623260682bd3e05d6e8eca07f88f3",
+  "guard_finished": {
+    "command": [
+      "/home/chao/.venvs/speechrl/bin/python",
+      "-B",
+      "-m",
+      "speech_aware_evidence_acquisition.core.flight.cli",
+      "campaign",
+      "--repo-root",
+      "/home/chao/saea-worktrees/codex-context-template-k8b-admitted-n20-v1",
+      "--data-root",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "--runtime-root",
+      "/home/chao",
+      "--lock-path",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "--owner",
+      "chatgpt-root-owner227",
+      "--expected-session-id",
+      "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "--experiment",
+      "slurp-native-stage3-context-template-k8b-update2-n20-branch-10-v1"
+    ],
+    "exit_code": 125,
+    "identity": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8b-update2-n20-branch-10-generation-v1",
+      "repo_root": "/home/chao/saea-worktrees/codex-context-template-k8b-admitted-n20-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-10-V1",
+      "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "study_head": "bb1c52c4045623260682bd3e05d6e8eca07f88f3"
+    },
+    "pid": 40758,
+    "policy": {
+      "floor_gib": 8.0,
+      "interval_seconds": 5.0,
+      "read_timeout_seconds": 10.0,
+      "start_gib": 20.0,
+      "stop_grace_seconds": 5.0
+    },
+    "schema": "saea-flight-process-memory-guard-v1",
+    "status": "resource-stop",
+    "worker_returncode": -15
+  },
+  "last_valid_sample": {
+    "at": 1791203298.0054705,
+    "available_gib": 26.108104705810547,
+    "elapsed_seconds": 0.0013812510296702385,
+    "event": "running-sample",
+    "observer": {
+      "observer_pid": 45736,
+      "sampled_at": 1791203298.069,
+      "sequence": 44,
+      "transport": "persistent-windows-physical-memory-v1"
+    },
+    "reader_error": null,
+    "reason": null
+  },
+  "invalid_samples": [
+    {
+      "at": 1791203304.1548855,
+      "available_gib": null,
+      "elapsed_seconds": 0.0017660080920904875,
+      "event": "running-sample",
+      "observer": {},
+      "reader_error": "ValueError",
+      "reason": "windows-reading-unavailable"
+    }
+  ],
+  "minimum_valid_available_gib": 25.635162353515625,
+  "guard_sources": {
+    "coordination/process-guard/batch-campaign-4-context-template-k8b-update2-n20-branch-10-20261005T122445Z/events.jsonl": "8350fd74cf37f9bb314e2a3516936ea83ec1ab0cd5603ec9e9be5f621f44ba50",
+    "coordination/process-guard/batch-campaign-4-context-template-k8b-update2-n20-branch-10-20261005T122445Z/finished.json": "19287110d3244dfcc175e19774ceeffc1b36e0cd69232929296fb7366c6bf2cb"
+  },
+  "completed_members": [
+    "seed",
+    "seed-aa",
+    "branch-09"
+  ],
+  "incomplete_member": {
+    "id": "branch-10",
+    "attempt_state": "OPENED",
+    "model_contacts": 81,
+    "manifest": null,
+    "successful_scores": 0
+  },
+  "unstarted_members": [
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "classification": "Windows memory observer returned ValueError/unavailable; no observed physical-memory floor breach. Underlying reader cause is not yet established.",
+  "stop_and_failed_evidence_preserved": true,
+  "recovery_dispatched": false,
+  "root_read_signed": false,
+  "monitor": {
+    "id": "slurp-k8b-update2-15m",
+    "status": "deleted",
+    "reason": "experiment terminated, no admitted worker/scorer found"
+  },
+  "diagnostic_read_incident": "A broad error-keyword filter on the mixed campaign log accidentally surfaced runtime context/log fragments. Do not represent this as a metadata-only read. No scientific interpretation, optimizer export or full-family READ was performed. Exclude these fragments from any learner capsule; preserve the original log."
+}

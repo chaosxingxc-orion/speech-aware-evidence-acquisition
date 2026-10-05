@@ -26,7 +26,16 @@ def analyze(evidence, *, recipe, registration, protocol, roster, supplement):
     expected_k = 4
     require(protocol.get("population_partition") is None or population is not None,
             "partition requires original population authorization")
-    if population is not None:
+    if "experiment_population" in protocol:
+        pin = protocol["experiment_population"]
+        require(all(x.get("experiment_population") == pin
+                    and x.get("population_cohort") == protocol.get("population_cohort")
+                    and x.get("population_budget") == protocol.get("population_budget")
+                    for x in (recipe, registration)), "configured report bindings differ")
+        expected_k = protocol["population_budget"]["K"]
+        require(len(recipe["sample_ids"]) == protocol["population_budget"]["N"],
+                "configured report roster size differs")
+    elif population is not None:
         require(
             isinstance(population, dict)
             and isinstance(population.get("relpath"), str)
@@ -43,7 +52,7 @@ def analyze(evidence, *, recipe, registration, protocol, roster, supplement):
     require(
         type(protocol.get("K", 4)) is int
         and protocol.get("K", 4) == expected_k
-        and controls == ["seed", "seed-aa"]
+        and len(controls) == len(set(controls)) == 2
         and len(candidates) == len(set(candidates)) == expected_k
         and set(candidates + controls) == set(bindings),
         "complete context and control scope required",
@@ -81,7 +90,7 @@ def analyze(evidence, *, recipe, registration, protocol, roster, supplement):
         bindings=bindings,
         recipe={**recipe, "resampling": supplement["resampling"]},
         roster=roster,
-        comparison_groups={"context": ("seed", "seed-aa", candidates)},
+        comparison_groups={"context": (*controls, candidates)},
     )
     _attach_answer_changes(report, d, recipe["sample_ids"], set(bindings))
     # A/A is a separate null observation, never a second selectable copy of seed.
@@ -92,12 +101,14 @@ def analyze(evidence, *, recipe, registration, protocol, roster, supplement):
         automatic_expansion=False,
         measured_rows=rows,
         measured_frontier=measured_frontier(
-            [r for r in rows if r["candidate_id"] != "seed-aa"],
+            [r for r in rows if r["candidate_id"] != controls[1]],
             profile=recipe["measurement_profile"],
         ),
-        interpretation="Complete twenty-input deterministic context initialization. "
+        interpretation="Complete registered-input deterministic context initialization. "
         "Report whole-system quality, reliability and actual all/non-first sample latency. "
         "No stable benefit, learned improvement, node causal credit or independent validation. "
         "Real learner input requires a separately pinned fresh qualification.",
     )
+    report.update({k: protocol[k] for k in ("experiment_population", "population_cohort", "population_budget")
+                   if k in protocol})
     return report

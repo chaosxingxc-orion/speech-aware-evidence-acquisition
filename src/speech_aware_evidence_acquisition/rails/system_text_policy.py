@@ -454,6 +454,11 @@ def compile_system_text_policy(baseline, bundle, *, repo_root, output_root, enab
     """
     if not enabled:
         return copy.deepcopy(baseline)
+    if "experiment_population" in baseline:
+        from .experiment_population import load_population_config, require_population_binding
+        population = load_population_config(baseline["experiment_population"], repo_root=repo_root)
+        require_population_binding(population, baseline["experiment_population"],
+                                   baseline.get("population_cohort"), baseline)
     from . import consumption_module as cm
     d = bundle.as_json()
     require(content_hash(baseline) == d["seed_config_sha256"], "seed configuration hash differs")
@@ -500,6 +505,9 @@ def compile_system_text_policy(baseline, bundle, *, repo_root, output_root, enab
     result = cm.compile_module(block, cm.resolve_carrier_hooks(block["profile"], repo_root=Path(repo_root)),
                                repo_root=Path(repo_root)).apply_to(baseline)
     result["native_episode"]["consumption_module"] = block
+    if "experiment_population" in baseline:
+        require_population_binding(population, baseline["experiment_population"],
+                                   baseline["population_cohort"], result)
     cm.verify_declared_module(block, result, repo_root=Path(repo_root))
     if "context_layout" in d:
         placement = d["context_layout"][CONTEXT_LAYOUT_FIELD]

@@ -54,6 +54,11 @@ def population_candidates(protocol):
     This structural gate does not grant read authority. The caller must verify
     owner and parent-registration pins before accessing any result evidence.
     """
+    if "experiment_population" in protocol:
+        candidates = protocol.get("candidate_members")
+        require(isinstance(candidates, list) and candidates and len(candidates) == len(set(candidates)),
+                "configured candidate identities required")
+        return list(candidates)
     part = protocol.get("population_partition")
     if part is None:
         return [f"branch-{i:02d}" for i in range(1, 17)]
@@ -80,6 +85,8 @@ def _validate_scope(recipe, registration, protocol, *, root):
     require(registration.get("registration_sha256") == content_hash(
         {k: v for k, v in registration.items() if k != "registration_sha256"}),
         "context registration hash differs")
+    if any("experiment_population" in d for d in (recipe, registration, protocol)):
+        return _validate_configured_scope(recipe, registration, protocol, root=root)
     # A prospective population amendment does not resize historical K4 protocols.
     population = protocol.get("population_authorization")
     require(protocol.get("population_partition") is None or population is not None,
@@ -171,6 +178,55 @@ def _validate_scope(recipe, registration, protocol, *, root):
     validate_profile(profile)
     require(recipe.get("measurement_profile") == registration.get("measurement_profile") == profile
             and profile["slot_count"] == profile["queue_depth"] == 4, "registered measurement profile differs")
+    return candidates, controls
+
+
+def _validate_configured_scope(recipe, registration, protocol, *, root):
+    """Use one pinned config for every prospective stage; retain old scope readers."""
+    from .experiment_population import load_population_config, require_population_binding, population_accounting
+    pin = protocol.get("experiment_population")
+    config = load_population_config(pin, repo_root=root)
+    cohort_id = protocol.get("population_cohort")
+    cohort = require_population_binding(config, pin, cohort_id, recipe, registration, protocol)
+    budget = population_accounting(config, cohort_id)
+    require(all(d.get("population_budget") == budget for d in (recipe, registration, protocol)),
+            "configured population budget differs between stages")
+    candidates, controls, ids = (cohort[k] for k in ("candidate_ids", "control_ids", "sample_ids"))
+    require(protocol.get("candidate_members") == candidates and protocol.get("control_members") == controls
+            and protocol.get("K") == budget["K"] and type(protocol["K"]) is int
+            and protocol.get("N") == budget["N"] and type(protocol["N"]) is int
+            and protocol.get("M") == config["nodes"] and protocol.get("sampling") == config["sampling"],
+            "protocol differs from configured population, nodes or sampling")
+    # Configuration is not owner authority or permission to expand the dataset.
+    owner = _load(protocol["owner"], root)
+    require(owner.get("schema") == "saea-owner-deterministic-context-rollouts-v1",
+            "registered context owner source required")
+    require(protocol.get("automatic_expansion") is False and protocol.get("independent_validation") is False
+            and type(protocol.get("iteration")) is int and protocol["iteration"] > 0
+            and isinstance(protocol.get("algorithms"), list) and protocol["algorithms"]
+            and set(protocol["algorithms"]) <= set(CONTEXT_LEARNING_ALGORITHMS),
+            "bounded registered algorithms required")
+    pool = _load(protocol["fixed_roster"], root).get("sample_ids", [])
+    require(len(pool) == len(set(pool)) and all(s in pool for s in ids)
+            and recipe.get("sample_ids") == ids and recipe.get("required_rows_per_member") == len(ids),
+            "exact configured inputs from the registered pool required")
+    bindings = registration["member_bindings"]
+    members = registration["expected_members"]
+    require(set(bindings) == set(members) == set(candidates + controls)
+            and recipe.get("expected_members") == members
+            and len(set(members.values())) == len(members), "complete configured family required")
+    for cid, binding in bindings.items():
+        require(binding.get("run_id") == members[cid] and binding.get("attempt_id"), "member identity differs")
+        sha(binding["config_hash"])
+        sha(binding["bundle_id"])
+    require(len({bindings[c]["bundle_id"] for c in candidates}) == len(candidates), "distinct candidate policies required")
+    require(len({bindings[c]["bundle_id"] for c in controls}) == 1, "same-policy controls required")
+    require(recipe["run_ids"]["read"] == registration["read_id"], "configured READ differs")
+    profile = protocol.get("measurement_profile")
+    validate_profile(profile)
+    require(recipe.get("measurement_profile") == registration.get("measurement_profile") == profile
+            and all(profile.get(k) == config["execution"][k] for k in ("slot_count", "queue_depth", "schedule")),
+            "configured execution profile differs")
     return candidates, controls
 
 
@@ -303,6 +359,12 @@ def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
             "control_trajectories": len(groups) * len(controls), "family_trajectories": len(groups) * (len(candidates) + len(controls)),
             "minimum_initial_node_visits_if_complete": 4 * len(groups) * len(candidates)},
         "runtime_admission": False, "contacts_added": {"model": 0, "scorer": 0}}
+    if "experiment_population" in protocol:
+        from .experiment_population import load_population_config, population_accounting
+        config_pin = protocol["experiment_population"]
+        config = load_population_config(config_pin, repo_root=repo_root)
+        packet.update(experiment_population=config_pin, population_cohort=protocol["population_cohort"])
+        packet["budget"] = population_accounting(config, protocol["population_cohort"])
     if algorithm == "tf-grpo-context-diversity":
         require(candidate_id is None and component is None, "TF task uses the complete context-diversity group")
         packet["experience"] = apply_experience_operations({} if experiences is None else experiences, [])
@@ -354,6 +416,20 @@ def prepare_context_optimizer_input(archive, *, bindings, recipe_pin, repo_root,
             iteration=iteration, initial=(evidence, recipe, registration, protocol, candidates, controls, reference),
             policies=policies, profile=feedback_profile)
     packet["input_sha256"] = content_hash(packet)
+    if "experiment_population" in packet:
+        # Retain identical file bytes and the same relative pin in the private
+        # archive. Do not reserialize a config and silently change its identity.
+        config_pin = packet["experiment_population"]
+        raw = _read_pin(config_pin, repo_root)
+        destination = archive.root / config_pin["relpath"]
+        require(destination.resolve().is_relative_to(archive.root.resolve()),
+                "archived config escapes archive root")
+        if destination.exists():
+            require(destination.read_bytes() == raw, "archived experiment config differs")
+        else:
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            with destination.open("xb") as stream:
+                stream.write(raw)
     for policy in policies.values():
         archive.store_policy(policy)
     archive._write(f"context-learning/inputs/{algorithm}-{iteration}.json", packet)
@@ -377,6 +453,11 @@ def record_context_update(archive, *, input_sha256, update_id, proposal_document
         "algorithm": packet["algorithm"], "iteration": packet["iteration"], "update_id": update_id,
         "raw_proposal": proposal_document, "experience_operations": experience_operations,
         "status": "invalid", "error": None, "runtime_admission": False}
+    if "experiment_population" in packet:
+        from .experiment_population import load_population_config, require_population_binding
+        population = load_population_config(packet["experiment_population"], repo_root=archive.root)
+        require_population_binding(population, packet["experiment_population"], packet.get("population_cohort"), packet)
+        record.update({k: packet[k] for k in ("experiment_population", "population_cohort")})
     try:
         proposal = TextPolicyUpdateProposal.from_context_json(proposal_document)
         p = proposal.as_json()
@@ -935,24 +1016,36 @@ def _population_update_input(archive, input_sha256):
             and type(packet.get("iteration")) is int and packet["iteration"] > 0,
             "prospective TF population input required")
     plan = packet.get("population_update_plan")
+    require(isinstance(packet.get("policies"), dict) and packet["policies"], "configured policies required")
+    ids = list(packet["policies"])
+    require(all(isinstance(c, str) and c and c.isascii() for c in ids), "candidate identities required")
     require(isinstance(plan, dict) and set(plan) == {"schema", "batch_id", "model", "reasoning_effort",
             "semantic_batches", "proposal_slots"}
             and plan["schema"] == "saea-context-population-update-plan-v1"
             and isinstance(plan["batch_id"], str)
             and re.fullmatch(r"[a-z0-9][a-z0-9-]{0,63}", plan["batch_id"])
-            and plan["model"] == "gpt-6.1-sol" and plan["reasoning_effort"] == "high"
-            and type(plan["semantic_batches"]) is int and plan["semantic_batches"] == 1
-            and type(plan["proposal_slots"]) is int and plan["proposal_slots"] == 16,
-            "exact prospective single-batch population plan required")
-    ids = [f"branch-{i:02d}" for i in range(1, 17)]
-    require(isinstance(packet.get("policies"), dict) and list(packet["policies"]) == ids,
-            "all16 ordered original policies required")
+            and isinstance(plan["model"], str) and plan["model"]
+            and isinstance(plan["reasoning_effort"], str) and plan["reasoning_effort"]
+            and type(plan["semantic_batches"]) is int and plan["semantic_batches"] > 0
+            and type(plan["proposal_slots"]) is int and plan["proposal_slots"] == len(ids),
+            "exact configured population plan required")
     budget = packet.get("budget", {})
     n = budget.get("N")
-    require(type(n) is int and n > 0 and budget.get("K") == 16
-            and budget.get("candidate_trajectories") == 16*n
-            and budget.get("control_trajectories") == 2*n
-            and budget.get("family_trajectories") == 18*n, "exact population evaluation accounting required")
+    require(type(n) is int and n > 0 and type(budget.get("K")) is int and budget["K"] == len(ids)
+            and budget.get("candidate_trajectories") == len(ids)*n
+            and type(budget.get("control_trajectories")) is int and budget["control_trajectories"] >= n
+            and budget["control_trajectories"] % n == 0
+            and budget.get("family_trajectories") == len(ids)*n + budget["control_trajectories"],
+            "exact population evaluation accounting required")
+    if "experiment_population" in packet:
+        from .experiment_population import load_population_config, require_population_binding, population_accounting
+        config = load_population_config(packet["experiment_population"], repo_root=archive.root)
+        cohort = require_population_binding(config, packet["experiment_population"], packet.get("population_cohort"), packet)
+        require(ids == cohort["candidate_ids"]
+                and budget == population_accounting(config, cohort["cohort_id"])
+                and [g["sample_id"] for g in packet["groups"]] == cohort["sample_ids"]
+                and all(plan[k] == config["proposer"][k] for k in ("model", "reasoning_effort", "semantic_batches")),
+                "optimizer input differs from pinned population config")
     groups = packet.get("groups")
     require(isinstance(groups, list) and len(groups) == n
             and len({g["sample_id"] for g in groups}) == n
@@ -965,7 +1058,7 @@ def _population_update_input(archive, input_sha256):
 
 
 def reserve_context_population_update(archive, *, input_sha256, actor_input_sha256):
-    """Consume one registered semantic batch and all16 slots before actor contact.
+    """Consume the configured semantic batches and all slots before actor contact.
 
     The caller separately owns source qualification, prospective model admission
     and enforceable actor isolation. This reservation invokes no model or runtime.
@@ -977,8 +1070,9 @@ def reserve_context_population_update(archive, *, input_sha256, actor_input_sha2
     record = {"schema": "saea-context-population-reservation-v1", "input_sha256": input_sha256,
               "actor_input_sha256": actor_input_sha256,
               "plan": plan, "candidate_ids": ids, "algorithm": packet["algorithm"],
-              "iteration": packet["iteration"], "proposal_slots": 16,
-              "semantic_batches": 1, "runtime_admission": False}
+              "iteration": packet["iteration"], "proposal_slots": len(ids),
+              "semantic_batches": plan["semantic_batches"], "runtime_admission": False}
+    record.update({k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet})
     archive._write(f"context-learning/populations/{plan['batch_id']}/reservation.json", record)
     return record
 
@@ -996,15 +1090,18 @@ def record_context_population_update(archive, *, input_sha256, response_document
     require(reservation_path.is_file(), "population must be reserved before contact")
     reservation = json.loads(reservation_path.read_text())
     require(reservation.get("input_sha256") == input_sha256 and reservation.get("plan") == plan
-            and reservation.get("candidate_ids") == ids and reservation.get("proposal_slots") == 16,
+            and reservation.get("candidate_ids") == ids and reservation.get("proposal_slots") == len(ids)
+            and all(reservation.get(k) == packet.get(k) for k in ("experiment_population", "population_cohort")),
             "exact population reservation required")
     sha(reservation.get("actor_input_sha256"))
     raw = {"schema": "saea-context-population-original-response-v1", "input_sha256": input_sha256,
            "response_sha256": content_hash(response_document), "response_document": response_document}
+    raw.update({k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet})
     archive._write(base + "/response.json", raw)
     result = {"schema": "saea-context-population-update-record-v1", "input_sha256": input_sha256,
               "response_sha256": raw["response_sha256"], "status": "recorded", "records": [],
               "usage": None, "runtime_admission": False}
+    result.update({k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet})
     try:
         r = response_document
         require(isinstance(r, dict) and set(r) == {"schema", "input_sha256", "actor_input_sha256",
@@ -1018,8 +1115,8 @@ def record_context_population_update(archive, *, input_sha256, response_document
                 and set(r["usage"]) == {"provider_contacts", "input_tokens", "output_tokens"}
                 and all(v is None or type(v) is int and v >= 0 for v in r["usage"].values()),
                 "original provider usage differs")
-        require(isinstance(r["branches"], list) and len(r["branches"]) == 16,
-                "all16 original response positions required")
+        require(isinstance(r["branches"], list) and len(r["branches"]) == len(ids),
+                "all configured original response positions required")
     except ValueError as error:
         result.update(status="invalid-envelope", error=str(error),
                       records=[{"candidate_id": cid, "status": "invalid"} for cid in ids])
@@ -1108,15 +1205,16 @@ def context_population_actor_view(archive, *, input_sha256, source):
                       **{k: deepcopy(packet["policies"][cid]["policy"][k])
                          for k in ("role_text", "context_layout", "node_context")}} for cid in ids}
     return {"schema": "saea-context-population-actor-view-v1",
+            **{k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet},
             "optimizer_input_sha256": input_sha256, "algorithm": packet["algorithm"],
             "iteration": packet["iteration"], "model": plan["model"],
             "reasoning_effort": plan["reasoning_effort"], "templates": templates,
             "representation": deepcopy(FEEDBACK_SCHEMA), "feedback": feedback,
             "business_measurements": business,
-            "budget": {"M": 4, **{k: packet["budget"][k] for k in
+            "budget": {"M": packet["budget"].get("M", len(ROLES)), **{k: packet["budget"][k] for k in
                 ("N", "K", "candidate_trajectories", "control_trajectories", "family_trajectories")}},
             "runtime_admission": False,
-            "instructions": "Produce one original response containing all16 reserved template updates in order. "
+            "instructions": f"Produce one original response containing all {len(ids)} reserved template updates in order. "
                 "Optimize complete node instructions and supported assembly using abstract behavior and complete-system "
                 "quality, intent, reliability and measured sample latency. Keep knowledge, retrieval, data, interfaces "
                 "and decoding fixed. Never request concrete cases, source rosters or per-sample semantic summaries. "
@@ -1128,7 +1226,7 @@ def context_population_actor_view(archive, *, input_sha256, source):
 
 
 def qualify_context_population_trial(archive, *, input_sha256, request, repo_root, data_root):
-    """Qualify one complete K16 successor and describe its retention signal.
+    """Qualify one complete configured successor and describe its retention signal.
 
     Reuse complete-family READ/seal/score and measured-cost gates. This does
     not adopt a policy, dispatch a run, write optimizer state or resize the
@@ -1146,7 +1244,7 @@ def qualify_context_population_trial(archive, *, input_sha256, request, repo_roo
             == content_hash(raw.get("response_document"))
             and [x.get("candidate_id") for x in result.get("records", [])] == ids
             and all(x.get("status") == "provisional" for x in result["records"]),
-            "all sixteen preserved provisional updates required; other dispositions remain held")
+            "all configured provisional updates required; other dispositions remain held")
     expected = {row["candidate_id"]: row["bundle_id"] for row in result["records"]}
     old_recipe = _load(packet["recipe"], root)
     old_registration = _load(old_recipe["context_learning_registration"], root)
@@ -1154,6 +1252,14 @@ def qualify_context_population_trial(archive, *, input_sha256, request, repo_roo
             "original qualified registration differs")
     qualified = _qualified_feedback(request["bindings"], recipe_pin=request["recipe_pin"], repo_root=root)
     evidence, recipe, registration, protocol, candidates, controls, reference = qualified
+    if "experiment_population" in packet:
+        from .experiment_population import load_population_config, require_population_binding
+        population = load_population_config(packet["experiment_population"], repo_root=root)
+        cohort_config = require_population_binding(population, packet["experiment_population"],
+            packet["population_cohort"], protocol, recipe, registration, result, raw)
+        expected_controls = cohort_config["control_ids"]
+    else:
+        expected_controls = list(old_registration["member_bindings"].keys() - set(ids))
     update = protocol.get("learning_update")
     require(isinstance(update, dict) and update.get("algorithm") == packet["algorithm"]
             and update.get("iteration") == protocol.get("iteration") == packet["iteration"],
@@ -1162,7 +1268,7 @@ def qualify_context_population_trial(archive, *, input_sha256, request, repo_roo
             and _load(update["original_update_record"], data) == result,
             "registered trial must pin the exact optimizer input and original update record")
     require(recipe["family_id"] != packet["family_id"] and candidates == ids
-            and controls == ["seed", "seed-aa"]
+            and set(controls) == set(expected_controls)
             and recipe["sample_ids"] == [g["sample_id"] for g in packet["groups"]]
             and reference == packet["reference"]
             and protocol["frozen_reference"] == packet["frozen_reference"]
@@ -1184,10 +1290,10 @@ def qualify_context_population_trial(archive, *, input_sha256, request, repo_roo
     groups = _candidate_groups(evidence, recipe, registration, candidates, reference)
     totals = []
     for cohort in (packet["groups"], groups):
-        require(len(cohort) == 20
+        require(len(cohort) == packet["budget"]["N"]
                 and [g["sample_id"] for g in cohort] == recipe["sample_ids"]
                 and all([m["candidate_id"] for m in g["members"]] == ids for g in cohort),
-                "retain every ordered one of 320 candidate trajectories")
+                "retain every configured candidate trajectory in roster order")
         values = [m["utility"] for g in cohort for m in g["members"]]
         require(all(type(v) in (int, float) and math.isfinite(v) for v in values),
                 "finite qualified terminal utilities required")
@@ -1195,6 +1301,7 @@ def qualify_context_population_trial(archive, *, input_sha256, request, repo_roo
     business = measured_rows(evidence, candidates, registration["member_bindings"],
                              profile=protocol["measurement_profile"])
     return {"schema": "saea-context-population-qualified-trial-v1",
+            **{k: packet[k] for k in ("experiment_population", "population_cohort") if k in packet},
             "input_sha256": input_sha256, "response_sha256": result["response_sha256"],
             "trial_commitment": {"recipe": request["recipe_pin"], "family_sha256": content_hash(evidence),
                                  "registration_sha256": registration["registration_sha256"]},

@@ -1526,6 +1526,21 @@ def _check_system_text_binding(report, cell, baseline, recipe, repo_root, data_r
         if context:
             require(members[0]["config_hash"] == composed.config_hash,
                     "context member configuration differs from registration")
+            if "experiment_population" in protocol:
+                from speech_aware_evidence_acquisition.rails.experiment_population import (
+                    load_population_config, require_population_binding,
+                )
+                population_pin = protocol["experiment_population"]
+                population = load_population_config(population_pin, repo_root=repo_root)
+                cohort = require_population_binding(population, population_pin,
+                    protocol["population_cohort"], cell, effective)
+                require(all(effective.get("decoding_params", {}).get(k) == v
+                            for k, v in population["sampling"].items()),
+                        "runtime sampling differs from experiment population config")
+                limits = population["contact_limits"]
+                require(effective.get("native_contact_fit", {}).get("contact_cap") ==
+                        len(cohort["sample_ids"]) * limits["model_per_trajectory"] * limits["fit_endpoints_per_model_contact"],
+                        "runtime FIT cap differs from experiment population config")
         verify_system_text_binding(effective, binding, repo_root=repo_root, data_root=data_root)
         # Compare prospective measurement custody before spending model contacts.
         profile = recipe.get("measurement_profile")
@@ -1559,11 +1574,29 @@ def _check_registered_supply_binding(report, baseline, index, package):
             document = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, UnicodeError, json.JSONDecodeError):
             continue
-        if not isinstance(document, dict) or "prepared_phase_supply" not in document:
+        if not isinstance(document, dict):
             continue
         plan = document.get("execution_plan")
         run_id = document.get("run_id") or (plan.get("run_id") if isinstance(plan, dict) else None)
-        if run_id in report.run_ids.values() and document["prepared_phase_supply"] != expected:
+        if run_id in report.run_ids.values() and "experiment_population" in (baseline or {}):
+            try:
+                from speech_aware_evidence_acquisition.rails.experiment_population import (
+                    load_population_config, require_population_binding,
+                )
+                from speech_aware_evidence_acquisition.rails.system_text_policy import require
+                population_pin = baseline["experiment_population"]
+                population = load_population_config(population_pin, repo_root=index.repo_root)
+                cohort = require_population_binding(population, population_pin,
+                    baseline["population_cohort"], document)
+                cap = len(cohort["sample_ids"]) * population["contact_limits"]["model_per_trajectory"]
+                if run_id != report.run_ids["generation"]:
+                    cap *= population["contact_limits"]["fit_endpoints_per_model_contact"]
+                require(isinstance(plan, dict) and plan.get("planned_model_calls") == cap,
+                        "registered plan contact cap differs from config")
+            except (ValueError, KeyError, TypeError, OSError) as error:
+                report.findings.append(Finding("population-config-binding", f"{run_id}: {error}", run_id))
+        if (run_id in report.run_ids.values() and "prepared_phase_supply" in document
+                and document["prepared_phase_supply"] != expected):
             report.findings.append(Finding(
                 "registered-supply-binding",
                 f"{run_id}: {path.name} declares a prepared supply different from its cell baseline",

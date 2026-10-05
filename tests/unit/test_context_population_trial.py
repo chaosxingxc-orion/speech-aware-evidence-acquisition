@@ -7,7 +7,7 @@ from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyError
 from test_context_population_update import fixture, reserve, record
 
-def setup(tmp_path, monkeypatch):
+def setup(tmp_path, monkeypatch, configured=False):
     a, p, response = fixture(tmp_path)
     root = tmp_path / "repo"
     root.mkdir()
@@ -30,6 +30,14 @@ def setup(tmp_path, monkeypatch):
              business_measurements=[{"candidate_id":c,"mean_sample_seconds":1.} for c in p["policies"]])
     for group in p["groups"]:
         for m in group["members"]: m["utility"] = 1.
+    if configured:
+        from test_experiment_population_config import config
+        from speech_aware_evidence_acquisition.rails.experiment_population import population_accounting
+        cfg = config((len(p["policies"]),), len(p["groups"]))
+        cfg["cohorts"][0].update(candidate_ids=list(p["policies"]), sample_ids=[g["sample_id"] for g in p["groups"]])
+        ref = pin(a.root/"population.json", cfg, a.root)
+        pin(root/"population.json", cfg, root)
+        p.update(experiment_population=ref, population_cohort="cohort-0", budget=population_accounting(cfg,"cohort-0"))
     p["input_sha256"] = content_hash({k:v for k,v in p.items() if k!="input_sha256"})
     packet_path = a.root/"context-learning/inputs/population.json"
     packet_pin = pin(packet_path,p,data)
@@ -48,6 +56,9 @@ def setup(tmp_path, monkeypatch):
                 "frozen_reference":deepcopy(p["frozen_reference"]),"iteration":2,
                 "learning_update":{"algorithm":p["algorithm"],"iteration":2,
                     "source_packet":packet_pin,"original_update_record":result_pin}}
+    if configured:
+        for document in (recipe, registration, protocol):
+            document.update(experiment_population=ref, population_cohort="cohort-0")
     groups=deepcopy(p["groups"])
     for group in groups:
         for m in group["members"]:m["utility"]=2.
@@ -78,6 +89,17 @@ def test_full_320_pairing_reports_signal_without_automatic_adoption(tmp_path,mon
     assert out["formal_adoption"] is False and out["runtime_admission"] is False
     assert len(out["after_groups"])==20 and len(parts[-1])==1
     assert not (parts[0].root/"context-learning/populations/update-two/evaluation.json").exists()
+
+
+@pytest.mark.parametrize("drift", [False, True])
+def test_config_identity_survives_successor_qualification(tmp_path, monkeypatch, drift):
+    parts = setup(tmp_path, monkeypatch, configured=True)
+    if drift:
+        parts[5][3]["population_cohort"] = "different"
+        with pytest.raises(PolicyError): call(parts)
+    else:
+        report = call(parts)
+        assert report["experiment_population"] == parts[1]["experiment_population"]
 
 @pytest.mark.parametrize("utility",[1.,0.,-2.])
 def test_equal_or_lower_utility_never_signals_retention(tmp_path,monkeypatch,utility):

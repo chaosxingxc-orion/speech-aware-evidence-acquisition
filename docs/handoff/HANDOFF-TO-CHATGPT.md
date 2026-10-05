@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Configuration-driven continuation; K8B stopped on observer failure
+
+The [owner configuration directive](../receipts/owner/2026-10-05-configured-experiment-lifecycle.json) requires one pinned file throughout new experiments. [The implementation and stage contract](../readiness/2026-10-05-configured-population-lifecycle-v1/README.md) replace prospective hardcoded population sizing with explicit cohort/candidate/control/sample lists. The same pin reaches authoring, policy compilation, protocol/registration/recipe, runtime prelaunch and generation/FIT plans, archived optimizer input, reservations, updates, trial qualification and reports. Prepared config is two original K8 cohorts on the same20 inputs, with separate controls; 400 total trajectories are derived, not newly admitted. Preserve source cohorts. Configuration grants no contact, READ, recovery or scale authority. Historical exact readers remain compatibility-only; never retrofit frozen bytes.
+
+[The new operational failure](../receipts/continuation/2026-10-05-k8b-observer-failure.json) supersedes older RUNNING snapshots: driver12:09:18Z STOPPED12:28:29Z on branch10. Seed, seed-AA and branch09 are FINALIZED with125/122/98 contacts and one score each; branch10 is OPENED after81 contacts with no manifest or score, branches11-16 absent. Guard received windows-reading-unavailable / ValueError, last valid26.1081GiB, minimum valid25.6352GiB. This does not establish a floor breach or K-related memory exhaustion. The reader's underlying cause remains unestablished. Driver and admitted workers/scorer are gone, STOP and frozen bb1c52c40 remain unchanged. The15-minute slurp-k8b-update2-15m monitor was deleted after verified termination.
+
+A broad keyword filter on the mixed campaign log accidentally surfaced runtime context/log fragments during diagnosis; the failure receipt records this exposure. Do not call that a metadata-only read, interpret partial quality or export those fragments. The exact incomplete-family READ remains unsigned. Use only dedicated guard/attempt/status metadata for further operational inspection. Root must diagnose and record any prospective disposition under owner227 before recovery; no retry/reseal/score replay was performed. Complete the config integration without changing the failed worker or queue. Keep original templates and all evidence, same400 scope, other-carrier holds and human-before8x400.
+
 ## Two-K8 abstract feedback boundary prepared; no optimizer export
 
 [Model-free evidence](../receipts/continuation/2026-10-05-two-k8-abstract-feedback-prepared.json) and [integration requirements](../readiness/2026-10-05-two-k8-abstract-feedback-v1/README.md): the shared abstract-node module now validates both complete original eight-policy partitions, distinct cohorts, identical ordered inputs and frozen reference, and normalizes returns within each cohort only. The original single-K16 API remains strict. Tests pass141 with183/183 statements covered. No real source read,actor allocation,model/scorer contact,runtime change or admission.
@@ -2334,7 +2342,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T12:23:50.685158+00:00
+Last refreshed: 2026-10-05T13:00:32.691373+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

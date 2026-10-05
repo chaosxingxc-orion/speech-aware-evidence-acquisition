@@ -1,5 +1,9 @@
 # Experiment rules for the ChatGPT side
 
+## Configuration throughout new experiments
+
+Follow the [direct owner configuration instruction](../receipts/owner/2026-10-05-configured-experiment-lifecycle.json). Load one immutable experiment config; derive K/N/M, member lists, sampling and budgets, and carry the same file hash through all stages. Use [the configured lifecycle](../readiness/2026-10-05-configured-population-lifecycle-v1/README.md) for prospective preparation. Do not hardcode population counts in new launch or proposal scripts. A changed config requires new identities and admission. Retain historical frozen files/read contracts unchanged. Config validation does not grant GPU or READ authority.
+
 ## GPU job-scoped fifteen-minute monitoring owner amendment
 
 The [direct owner instruction](../receipts/owner/2026-10-05-gpu-job-scoped-fifteen-minute-monitor.json) requires a script-only heartbeat every15 minutes after each actual admitted GPU experiment launch, then deletion when that bound experiment ends. Root must bind the exact launch receipt/epoch/worker/member list on activation, cancel immediately when observing verified completion/failure with no remaining admitted worker/scorer, and create a new heartbeat for each subsequent launch. The heartbeat also deletes itself on verified termination. Remain quiet while healthy; report only new actionable changes. No monitoring subagents, dispatch/retry/control changes, scientific reads or frozen-source edits. This supersedes the older blanket paused-monitor instruction prospectively.
