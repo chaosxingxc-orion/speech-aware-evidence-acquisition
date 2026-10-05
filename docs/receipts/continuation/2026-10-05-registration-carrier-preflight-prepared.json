@@ -1,0 +1,37 @@
+{
+  "schema": "saea-registration-carrier-preflight-evidence-v1",
+  "recorded_at": "2026-10-05T20:59:32.884844+00:00",
+  "status": "VERIFIED_ISOLATED_PENDING_SERIAL_INTEGRATION",
+  "base_commit": "fb7d5376e",
+  "problem": "The lightweight registration gate previously accepted an uppercase carrier caption that the runtime exposure gate correctly rejected before contact.",
+  "change": "Reuse runtime exact tokenization to require the explicitly declared carrier key exactly once for generation and FIT registrations. Preserve legacy report-only handling and authoritative runtime dataset-lock gates.",
+  "validation": {
+    "red_run": "17 failed, 4 passed before implementation",
+    "initial_suite": "115 passed including optional materialized tree audit; before six final test additions",
+    "final_suite": "120 passed, 1 optional materialized tree smoke skipped with SPEECHRL_DATA_DIR unset",
+    "coverage_percent": 85.86723768736617,
+    "new_helper_statement_coverage_percent": 100,
+    "selected_real_cohort_members": 10,
+    "selected_real_cohort_exit_code": 0,
+    "diff_check": "passed",
+    "coverage_note": "Combined final synthetic suite and selected real cohort registration check. A pytest-cov invocation was refused because that plugin is not installed; standalone coverage.py was used."
+  },
+  "artifacts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/registration-carrier-preflight-v1/coverage.json",
+      "sha256": "14fdf6afdb2eb8e62c7351f6b216840a1eadfcc8f60cb8c3c7ebdda08d2de51c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/registration-carrier-preflight-v1/current-cohort-check.stdout.json",
+      "sha256": "77248da27dfea2a256f7fd1fa1ccc3119124953fb629160c97f3c33ec4c0e142"
+    }
+  ],
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "task_quality_read": false,
+  "runtime_controls_changed": false,
+  "active_worker_changed": false,
+  "integration_rule": "Do not merge the operational checker into the main checkout while the active driver uses it. Integrate serially at a verified idle cohort boundary.",
+  "prepared_commit": "3bd107cd8",
+  "prepared_worktree": "/home/chao/saea-worktrees/codex-registration-carrier-preflight-v1"
+}
