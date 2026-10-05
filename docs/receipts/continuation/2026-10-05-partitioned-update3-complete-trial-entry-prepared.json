@@ -1,0 +1,26 @@
+{
+  "at_utc": "2026-10-05T22:29:44.569361+00:00",
+  "status": "ROOT_COMPLETE_TRIAL_ENTRY_PREPARED",
+  "helper": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/complete-trial-entry-v1.py",
+    "sha256": "b9f7d1982d65dbc89ced27c833c56d8eb0cf262c843cd5da959361583c886fb9"
+  },
+  "incomplete_source_proof": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/complete-trial-entry-incomplete-proof-v1.json",
+    "sha256": "2d7f43f8f3913ec0cbc10455f80e373528cf6a01e9b2742f11d44b68e1e31ef1"
+  },
+  "operations": [
+    "check",
+    "register-sources",
+    "evaluate"
+  ],
+  "shared_readers": [
+    "analysis.abstract_population_sources.read_registered_population_sources",
+    "rails.system_context_partitioned_trial.qualify_partitioned_context_trial"
+  ],
+  "validation": "Actual missing remaining-b1/b2 READs refused with exit75 before quality or source registration. Successful complete-source evaluation remains pending all cohorts. No new algorithm or evaluator.",
+  "runtime_changed": false,
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "learner_exported": false
+}
