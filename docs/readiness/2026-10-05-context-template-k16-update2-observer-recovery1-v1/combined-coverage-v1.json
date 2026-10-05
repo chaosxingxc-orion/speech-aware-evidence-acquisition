@@ -370,7 +370,7 @@
         "smoke_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-OBSERVER-RECOVERY1-V1"
       },
       "state": "unflown-successor",
-      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v2"
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3"
     },
     {
       "branch": 12,
@@ -400,7 +400,7 @@
         "smoke_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1"
       },
       "state": "unflown-original",
-      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v2"
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3"
     },
     {
       "branch": 13,
@@ -430,7 +430,7 @@
         "smoke_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1"
       },
       "state": "unflown-original",
-      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v2"
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3"
     },
     {
       "branch": 14,
@@ -460,7 +460,7 @@
         "smoke_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1"
       },
       "state": "unflown-original",
-      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v2"
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3"
     },
     {
       "branch": 15,
@@ -490,7 +490,7 @@
         "smoke_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1"
       },
       "state": "unflown-original",
-      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v2"
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3"
     },
     {
       "branch": 16,
@@ -520,7 +520,7 @@
         "smoke_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1"
       },
       "state": "unflown-original",
-      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v2"
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3"
     }
   ],
   "required_policies": 16,

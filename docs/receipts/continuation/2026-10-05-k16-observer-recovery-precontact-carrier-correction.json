@@ -1,0 +1,11 @@
+{
+  "schema": "saea-precontact-carrier-label-correction-v1",
+  "at_utc": "2026-10-05T07:19:35.917881+00:00",
+  "authority": "root227",
+  "named_defect": "The new three ledger rows named Same UPDATE2 first4 but omitted the carrier label slurp. Registration passed; full runtime I2 refused ambiguous carrier metadata before model contact.",
+  "correction": "Add the exact slurp carrier to those three rows, leaving all dataset identities,plans,policy,supply,scope and budgets fixed. Preserve v2 frozen source and its original refusal.",
+  "contacts": 0,
+  "attempts_created": 0,
+  "successor_worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+  "frozen_check_sha256": "a65d0632c57785e52e097e03aad46a5fa45544878a9d56d6f47b059b021be1b2"
+}
