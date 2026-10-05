@@ -1,0 +1,47 @@
+{
+  "schema": "saea-root-incident-disposition-v1",
+  "at_utc": "2026-10-05T21:41:20.085342+00:00",
+  "authority": "owner227",
+  "status": "ROOT_DISPOSED_PRE_QUALITY_REGISTRATION_CORRECTION",
+  "incident": "The complete-cohort READ row inherited the generation execution profile. The existing shared reader correctly refused it before any quality/reference read or output directory creation. Generation and official scoring succeeded independently.",
+  "preserved": [
+    {
+      "relpath": "coordination/partitioned-update3-scientific-preparation-v1/read-scope-refusal-v1/ledger-before.md",
+      "sha256": "5bcad70217258bdc85a408aad6f5a410e532511253017cef25b40683bf5c303d"
+    },
+    {
+      "relpath": "coordination/partitioned-update3-scientific-preparation-v1/read-scope-refusal-v1/failure.json",
+      "sha256": "76ced9d608c600900e7b66d85cfb658e0528471af7115745be63159b7e714687"
+    },
+    {
+      "relpath": "coordination/partitioned-update3-scientific-preparation-v1/original-a-flight-v3/root-read-authorization-v1.json",
+      "sha256": "329c872921a6a6ab5f9d945715a9b9f41db4c980626787e764c15568a7d00a5f"
+    }
+  ],
+  "changes": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1",
+      "before": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1 | bounded-discovery-probe | Configured update3 complete-cohort READ | Official complete-system feedback | slurp existing UPDATE2 first20 | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | yes | 0 | 0 | 0 | Cumulative optimization exposure | docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/analysis-recipe-v1.json | REGISTERED BEFORE READ; root countersigned 2026-10-05T21:40:01.091738+00:00 under owner227 after all configured members FINALIZED with verified seals, unique complete official scores and no failed jobs. Qualification docs/receipts/continuation/2026-10-05-partitioned-update3-original-a-family-qualified.json. Complete-cohort root analysis only; no partial successor learner export or automatic scaling. |",
+      "before_execution_profile": "bounded-discovery-probe",
+      "after_execution_profile": "model-free-check"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1",
+      "before": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1 | bounded-discovery-probe | Configured update3 complete-cohort READ | Official complete-system feedback | slurp existing UPDATE2 first20 | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 0 | 0 | 0 | Cumulative optimization exposure | docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b1/analysis-recipe-v1.json | DRAFT; exact root READ unsigned until every admitted member qualifies. No partial successor optimizer export. |",
+      "before_execution_profile": "bounded-discovery-probe",
+      "after_execution_profile": "model-free-check"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1",
+      "before": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1 | bounded-discovery-probe | Configured update3 complete-cohort READ | Official complete-system feedback | slurp existing UPDATE2 first20 | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 0 | 0 | 0 | Cumulative optimization exposure | docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/analysis-recipe-v1.json | DRAFT; exact root READ unsigned until every admitted member qualifies. No partial successor optimizer export. |",
+      "before_execution_profile": "bounded-discovery-probe",
+      "after_execution_profile": "model-free-check"
+    }
+  ],
+  "disposition": "Correct only the execution-profile field of these three zero-contact READ rows. Retain exact recipe, members, roster, budgets and current root countersign; later READs remain unsigned. Permit one explicit continuation of original-a complete offline read after fresh operational qualification and unchanged shared READ-scope verification. Do not regenerate, rescore, reseal, change recipes or weaken the reader.",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "task_quality_read": false,
+  "frozen_worker_modified": false,
+  "later_cohorts_admitted": false
+}

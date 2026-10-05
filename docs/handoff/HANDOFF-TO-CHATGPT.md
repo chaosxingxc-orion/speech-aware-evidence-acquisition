@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Original-a complete root review; unchanged adjacent cohort admitted
+
+[Complete original-a review](../receipts/continuation/2026-10-05-partitioned-update3-original-a-scientific-read.json) covers all10 finalized members,200 trajectories and1043 model contacts. Each has one unique successful official score and verified seal, with zero failed jobs. Exact driver epoch20:34:25Z ended normally21:38:28Z. The job monitor was deleted. The [English result report](../results/2026-10-05-partitioned-update3-original-a-n20.md) includes official pooled/equal-stratum quality, all strata and role/sample timing. No candidate exceeds either seed on pooled F1; branch01 is faster but lower-quality. No adoption or stable benefit. Full successor learning remains held until all three complete cohort READs.
+
+The first offline READ entry refused before quality access because prospective zero-contact READ profiles were incorrectly registered as bounded-discovery-probe. [Root227 disposition](../receipts/continuation/2026-10-05-partitioned-update3-read-scope-disposition.json) preserves the exact refusal/ledger and corrects only the three READ profiles to model-free-check. Fresh qualification and the unchanged shared authority check passed; one explicit original-a continuation completed21:43:22Z without new contacts, scoring or resealing. Remaining READs stay unsigned. Original authorization and failed evidence remain immutable.
+
+Carrier-caption registration preflight repair c3cc80850 is now serially integrated after verified idle; the prior prepared-only handoff is superseded. No frozen runtime was edited. Root reviewed the complete cohort and current idle boundary, then admitted only unchanged remaining-b1 via the config-derived helper. All six registration gates pass. Freeze and verify every member before dispatch. Root admission and boundary evidence are in coordination/partitioned-update3-scientific-preparation-v1/remaining-b1-root-admission-v1.json and remaining-b1-root-boundary-review-v1.json. No policy replacement, new proposal allocation, optimizer export or scale expansion.
+
+The generation guard is available, STOP and flight.lock absent; no deletion, cache flush, privilege escalation or WSL restart is required. Keep the resident serving model. Preserve completed original-a controls until the exact fresh control transition. Owner227 bounds and all other-carrier holds remain.
+
 ## Carrier-caption preflight repair verified in isolation; GPU execution continues
 
 The [isolated registration repair](../receipts/continuation/2026-10-05-registration-carrier-preflight-prepared.json) is committed at3bd107cd8 in codex-registration-carrier-preflight-v1. It catches the previously preserved uppercase carrier-caption defect before the runtime gate, using the same exact tokenization and preserving authoritative runtime checks and legacy report-only behavior. Final synthetic tests:120 passed,1 optional materialized-data smoke skipped; the earlier115-test suite included that real-tree audit. All10 current member registration checks pass. Combined statement coverage is85.87percent, with100percent for the new helper. No model/scorer contacts or quality reads. This receipt is copied here for handoff only; code remains unmerged while the active driver consumes the main operational checker. At a verified idle boundary, integrate the two source/test files serially and reconcile this receipt with the prepared commit; do not overwrite the richer integration metadata blindly.
@@ -2683,7 +2693,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T19:36:32Z
+Last refreshed: 2026-10-05T21:48:37Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

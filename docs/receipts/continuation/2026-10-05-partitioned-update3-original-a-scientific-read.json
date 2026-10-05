@@ -1,0 +1,26 @@
+{
+  "at_utc": "2026-10-05T21:47:34.118644+00:00",
+  "status": "ROOT_COMPLETE_COHORT_READ",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1",
+  "report": {
+    "relpath": "docs/results/2026-10-05-partitioned-update3-original-a-n20.md",
+    "sha256": "3bb6b6a989806ef46ff4d0631293de048060a19299287d42d98af59542eec44a"
+  },
+  "source_report": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1/report.json",
+    "sha256": "6b59de7b5bad0ba05845a9dde479a113b5288b36510a84f71150953d5f9ed478"
+  },
+  "timing": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1/timing-summary.json",
+    "sha256": "d6bf69bad9430f89bdd2e286eea5c8a430625bd6c2fe6f8a1798aa6356c73db4"
+  },
+  "members": 10,
+  "trajectories": 200,
+  "model_contacts": 1043,
+  "learner_exported": false,
+  "adopted": false,
+  "next_action": "Review and admit unchanged remaining-b1 after live boundary verification.",
+  "job_monitor_deleted": "slurp-update3-a-15-min",
+  "registration_repair_integrated_commit": "c3cc8085004cfc91918c214ec20dd3425ad8db04",
+  "read_scope_disposition": "docs/receipts/continuation/2026-10-05-partitioned-update3-read-scope-disposition.json"
+}
