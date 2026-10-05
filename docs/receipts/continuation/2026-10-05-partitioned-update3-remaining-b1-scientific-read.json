@@ -1,0 +1,25 @@
+{
+  "at_utc": "2026-10-05T22:36:06.002736+00:00",
+  "status": "ROOT_COMPLETE_COHORT_READ",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1",
+  "report": {
+    "relpath": "docs/results/2026-10-05-partitioned-update3-remaining-b1-n20.md",
+    "sha256": "805dfa4c42ab61f47d892805e448e869b69454444a4757ced5ad9bb788279d0a"
+  },
+  "source_report": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1/report.json",
+    "sha256": "e33494504c6d5536d47bf840a66055d4f0f2a8639542d34f54e6ab9006d65187"
+  },
+  "timing": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1/timing-summary.json",
+    "sha256": "dec543061cbef74c255ed2f0e84574f7f52f1189328ba8c3577fe2fbeb0424fd"
+  },
+  "members": 6,
+  "trajectories": 120,
+  "model_contacts": 672,
+  "learner_exported": false,
+  "adopted": false,
+  "next_action": "Admit unchanged adjacent remaining-b2 after live boundary verification.",
+  "job_monitor_deleted": "slurp-update3-b1-15-min",
+  "registration_repair_integrated_commit": "056e023e3610e08f18977ccf5658b91b58d2ff39"
+}

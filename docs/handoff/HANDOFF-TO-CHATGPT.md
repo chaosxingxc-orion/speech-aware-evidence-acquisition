@@ -1,5 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Remaining-b1 complete root review; unchanged remaining-b2 admitted
+
+[Complete cohort review](../receipts/continuation/2026-10-05-partitioned-update3-remaining-b1-scientific-read.json) covers six independently finalized members,120 trajectories and672 model contacts with verified seals,one successful complete official score each and zero failed jobs. Driver epoch21:54:49Z ended normally22:33:10Z. The exact root READ and full timing export completed once; no scorer replay or new contacts. The job-specific slurp-update3-b1-15-min monitor is deleted. The [English result report](../results/2026-10-05-partitioned-update3-remaining-b1-n20.md) retains all strata,quality,intent,reliability,paired intervals and first/non-first/node timing.
+
+No candidate exceeds seed pooled F1. Branch09 is faster but lower-quality and lower-intent; branch10 raises intent but is slower with lower F1. Seed A/A differs by5.01 F1 percentage points. N20 remains exploratory: no stable benefit,formal adoption or learning-gain claim. All successor cohorts are required before population retention or optimizer export.
+
+After exact idle verification, the tested READ-scope preflight repair was serially integrated at056e023e3610e08f18977ccf5658b91b58d2ff39. Frozen b1 sources remain unchanged. Root recorded the adjacent boundary and admitted only unchanged remaining-b2 via the existing config-derived helper; all six registration gates pass. See data-root coordination/partitioned-update3-scientific-preparation-v1/remaining-b2-root-boundary-review-v1.json and remaining-b2-root-admission-v1.json. Freeze a clean new worker,verify every member and supply,then revalidate resources and exact controls before one Windows dispatch. No new policy,allocation,data rebuild or scale expansion. READ remains unsigned until complete.
+
+STOP and flight.lock are absent; guard is available. No cache flush,privileged launch,lock deletion or WSL restart. Preserve completed b1 controls until exact verified transition; owner227 bounds and other-carrier holds remain.
+
+
 ## Complete trial entry prepared with actual incomplete-source refusal
 
 [Prepared entry](../receipts/continuation/2026-10-05-partitioned-update3-complete-trial-entry-prepared.json) adds a root-only operational wrapper over existing all-source and strict-population readers. It derives cohort order from the pinned config and binds actual launch/frozen/root-READ/family sources. The real incomplete source set returned WAIT75 without quality, source registration or learner export. Successful full-source evaluation is still pending; no new algorithm or scoring path was added. After every cohort is complete and reviewed, use the analysis guide for separate check, source registration and evaluation operations. Preserve outputs; no silent replay.
