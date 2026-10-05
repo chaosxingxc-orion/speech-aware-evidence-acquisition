@@ -1,5 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Remaining original cohort complete; full template feedback prepared
+
+This current checkpoint supersedes the earlier running/pending-source snapshots below. The owner-authorized lock disposition is complete: one scoped WSL termination removed the stuck root cache helper, the real generation guard was verified available, and the original service was restored. Do not repeat cache writes, bypass a guard, or restart automatically.
+
+Windows SAEA-Batch-Driver epoch2026-10-05T16:03:49Z completed normally at16:43:09Z on frozen c7a01c05264adcd4b1fc7e3c91c611d3e891efa9. All six remaining-b2 members independently FINALIZED20 rows with verified seals, one unique successful complete official score each and zero failed jobs:120 trajectories,678 model contacts. Exact READ SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-V1-REMAINING-B2-READ-V1 is countersigned and read. The job-scoped slurp-observe-boundary-n20-15m automation was deleted. No score replay. Preserve frozen workers, outputs and completed controls; the retained service is expected to be idle.
+
+[Full scientific report](../results/2026-10-05-observe-boundary-b2-n20.md): retain seed and N20. Branch13 is faster but lower-quality/lower-intent versus seed; branch14 has higher intent and greater latency; seed descriptively dominates branches15/16. Seed/A/A F1 differs by12.3044 percentage points, so favorable A/A contrasts cannot establish improvement. No stable benefit, adoption or learning gain. Do not pool frontiers across sessions or call non-first samples controlled warm-cache measurements.
+
+[Complete feedback receipt](../receipts/continuation/2026-10-05-complete-template-feedback-qualified.json): all16 original templates are now bound to320 anonymous candidate trajectories plus measured controls from120 trajectories, in their original8/4/4 cohorts. Historical complete-source contacts total2417, excluding failed runs and engineering. The source registration and projection files are materialized. Output is speechrl-data/system-text-search/context-template-k16-v1/complete-update2-feedback-v1; learner-view and private-custody are separate, hashes verified. Full four-node editable templates, structural feedback, official terminal counts and actual first/non-first costs are retained. No raw task text, knowledge payload or source roster is exported. No actor contact, new proposal reservation or runtime admission occurred.
+
+Next: register a multi-source learning update that preserves each cohort's own controls and relative rewards, bind the complete editable templates and cumulative provenance, and distinguish TF context-diversity updates from GEPA selection/acceptance. Existing single-family actor APIs must not silently flatten these historical cohorts. Keep the next evaluation on the same20 inputs; configure K/N and all budgets, complete capacity/structural admission before a fresh GPU run, and create a new15-minute script monitor only at that launch. Other-carrier holds and the human-before8x400 boundary remain. No partial historical family reuse, test feedback or automatic scale expansion.
+
 ## Complete editable templates bound to partitioned feedback
 
 [Template-binding preparation](../receipts/continuation/2026-10-05-complete-template-feedback-binding-prepared.json) reuses the shared projection and SystemSearchArchive. Bind every evaluated bundle to its full four-node role_text/context_layout/node_context; verify common fixed knowledge/base and parent closure, keep cumulative exposure private, and recheck all sources/policies after assembly.5 additional/224 related tests pass;134 statements/30 branches100% covered; engineering-base passes. The actual16 archived policy closures and common fixed base also pass without task-quality access.
@@ -2477,7 +2489,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T16:35:56.111437+00:00
+Last refreshed: 2026-10-05T16:53:53Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

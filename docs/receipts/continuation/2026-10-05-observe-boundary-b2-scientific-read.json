@@ -1,0 +1,140 @@
+{
+  "schema": "saea-observe-boundary-b2-scientific-read-v1",
+  "at_utc": "2026-10-05T16:47:33.771608+00:00",
+  "status": "COMPLETE_ROOT_READ_SEED_RETAINED",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-V1-REMAINING-B2-READ-V1",
+  "qualified_members": 6,
+  "complete_trajectories": 120,
+  "model_contacts": 678,
+  "driver_epoch": "2026-10-05T16:03:49Z",
+  "driver_completed": "2026-10-05T16:43:09Z",
+  "read_authorization": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/root-read-authorization-v1.json",
+    "sha256": "1c4f25d8b41d1a07e83d758e6040e8b61926a08d0743e2f0d74226259b748b8a"
+  },
+  "report": {
+    "relpath": "docs/results/2026-10-05-observe-boundary-b2-n20.md",
+    "sha256": "e96519d9cacee0853288a81137cc39793e292e90d212ad8364f4e404d1802512"
+  },
+  "private_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-V1-REMAINING-B2-READ-V1/report.json",
+    "sha256": "2f4ba1c3b72600002019597fd6f45d49487d6d482dfa44e664fe80989de378ff"
+  },
+  "private_timing": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-V1-REMAINING-B2-READ-V1/timing-summary.json",
+    "sha256": "1e325e20f6a53ade5caf2df74411b553d51a02af0c0f9b10de4c4ac2c3fd16aa"
+  },
+  "measured_rows": [
+    {
+      "bundle_id": "9d4c492b2e24c0eba6fef7eacf474f846d81310e148a10c078bf8a7d48e4d630",
+      "candidate_id": "branch-13",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.65,
+      "mean_sample_seconds": 29.047719901149996,
+      "measurement_id": "755f7a2f5b9283cef05f73f50a15f17348c62f101710469acea14d7242a38587",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 104,
+      "non_first_mean_seconds": 28.417204507210528,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5567662565905096,
+      "timing_report_sha256": "ca0c8b783d6cdbf31c5c22b11c4bb999abd01584d2c8f8b581eb08faf360d160",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "1fb6df3bfff726525403687e42cba9f136d0d2db1e211b58777481ae93e62118",
+      "candidate_id": "branch-14",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.75,
+      "mean_sample_seconds": 44.79733766785,
+      "measurement_id": "755f7a2f5b9283cef05f73f50a15f17348c62f101710469acea14d7242a38587",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 95,
+      "non_first_mean_seconds": 45.733620600526315,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5626618232407157,
+      "timing_report_sha256": "3e0994ad52fc283c55fd0edca4bf4650719708909e613ab606a9819bcb847f54",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "3adce494be0ec509baa0caeb75a4c04aafc60ce839bd0eaaffb95f1768aaa6f2",
+      "candidate_id": "branch-15",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.65,
+      "mean_sample_seconds": 80.45093119035,
+      "measurement_id": "755f7a2f5b9283cef05f73f50a15f17348c62f101710469acea14d7242a38587",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 116,
+      "non_first_mean_seconds": 80.44624847936842,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.6017410514688478,
+      "timing_report_sha256": "15e84fe9b15ac995baf73e2ad45c411018b017b80ac7be41f0c64d2b4366001a",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "1d8271280453c117119652ffe5ee1577e1184aade2579b3394d9ad5631e6bedb",
+      "candidate_id": "branch-16",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.65,
+      "mean_sample_seconds": 71.03019094375,
+      "measurement_id": "755f7a2f5b9283cef05f73f50a15f17348c62f101710469acea14d7242a38587",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 104,
+      "non_first_mean_seconds": 70.68768332515789,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5462275948311797,
+      "timing_report_sha256": "3cf54eda604d022be2e284c4f2a57be09f3877a3c96416bb3a626004737babc3",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "candidate_id": "seed",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.7,
+      "mean_sample_seconds": 35.330735173200004,
+      "measurement_id": "755f7a2f5b9283cef05f73f50a15f17348c62f101710469acea14d7242a38587",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 128,
+      "non_first_mean_seconds": 34.240830622210524,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.6646884272997032,
+      "timing_report_sha256": "44f01a6976e0eb84efb4c5be2480777a6af47ef45aa42ca38138f424b02185e2",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "candidate_id": "seed-aa",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.7,
+      "mean_sample_seconds": 35.68577773015,
+      "measurement_id": "755f7a2f5b9283cef05f73f50a15f17348c62f101710469acea14d7242a38587",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 131,
+      "non_first_mean_seconds": 34.27704205915789,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5416442772702846,
+      "timing_report_sha256": "e78d65867006db1de5ebe9a45cda15e247e2a4851237698ac3ae2f6b452e22c6",
+      "tool_calls": 0
+    }
+  ],
+  "same_request_null": {
+    "ci_high": 0.005696068218872093,
+    "ci_level": 0.95,
+    "ci_low": -0.2980861244019139,
+    "n_replicates": 10000,
+    "point_estimate": -0.12304415002941849,
+    "seed": 20261001,
+    "sigma_hat": 0.07811878526960642
+  },
+  "formal_adoption": false,
+  "stable_benefit_established": false,
+  "learning_gain_established": false,
+  "monitor_deleted": "slurp-observe-boundary-n20-15m",
+  "automatic_expansion": false,
+  "next": "Complete original16 source projection and register bounded template-only learning onN20, preserving cohort-relative rewards and every control."
+}

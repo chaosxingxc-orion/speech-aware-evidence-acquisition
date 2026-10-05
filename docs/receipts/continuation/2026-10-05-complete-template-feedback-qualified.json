@@ -1,0 +1,37 @@
+{
+  "schema": "saea-complete-template-feedback-qualified-v1",
+  "created_at_utc": "2026-10-05T16:53:06.432365Z",
+  "status": "COMPLETE_PRIVATE_PREPARATION",
+  "output_directory": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/complete-update2-feedback-v1",
+  "source_receipt_sha256": "2659cf78dfefd104cd23545c4c106076a87d2cd3b7515e25b804a90fc05990f4",
+  "files": {
+    "learner-view.json": "66141131564cb862813744cd75160c4fb05fdcf5a65395a7572f923bc18e98fe",
+    "private-custody.json": "3f841d221fdb6280c8745a40aa4f4e38ad0f0973df7ff9733ac29292e0da27c2"
+  },
+  "cohorts": {
+    "original-a": {
+      "templates": 8,
+      "groups": 20,
+      "measured_members": 10
+    },
+    "remaining-b1": {
+      "templates": 4,
+      "groups": 20,
+      "measured_members": 6
+    },
+    "remaining-b2": {
+      "templates": 4,
+      "groups": 20,
+      "measured_members": 6
+    }
+  },
+  "candidate_trajectories": 320,
+  "control_trajectories": 120,
+  "historical_model_contacts": 2417,
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "actor_contacted": false,
+  "proposal_slots_reserved": 0,
+  "runtime_admission": false,
+  "interpretation": "Preserve independent cohort controls and within-cohort returns. Full editable templates and anonymous structural node feedback are prepared, not sent to an actor. No stable gain, formal adoption or matched-compute claim. Retain seed and N20. Register a multi-source learning input before a new update."
+}

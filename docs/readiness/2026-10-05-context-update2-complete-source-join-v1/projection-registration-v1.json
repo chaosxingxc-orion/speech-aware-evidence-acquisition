@@ -1,0 +1,23 @@
+{
+  "schema": "saea-abstract-population-projection-v1",
+  "status": "ROOT_REGISTERED",
+  "runtime_admission": false,
+  "source_join": {
+    "relpath": "docs/readiness/2026-10-05-context-update2-complete-source-join-v1/source-registration-v1.json",
+    "sha256": "6ffcddc3b257a2906bb76a174c61fe9d59a401470e808d3fa1b6f855297127b9"
+  },
+  "source_specifications": {
+    "original-a": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1/source-specifications.json",
+      "sha256": "0b7be3e168d5d104dbacdccdf03f211aa043c7040bd3a3e5d8ab0e0ed58380a0"
+    },
+    "remaining-b1": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1/source-specifications.json",
+      "sha256": "6b1299113da001dc6981f86a9dc594e3824d05ca491b33dd9dcc27a6882bf07e"
+    },
+    "remaining-b2": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-V1-REMAINING-B2-READ-V1/source-specifications.json",
+      "sha256": "08945c01ad97369d76ee3ab4abd373a7ec4bc29b0fc6b1206057a6db2c082c81"
+    }
+  }
+}

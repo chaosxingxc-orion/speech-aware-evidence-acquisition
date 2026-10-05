@@ -1,0 +1,57 @@
+{
+  "schema": "saea-abstract-population-source-registration-v1",
+  "status": "ROOT_REGISTERED",
+  "scope": "abstract-feedback-source-join-only",
+  "runtime_admission": false,
+  "projection_config": {
+    "relpath": "configs/experiments/slurp-context-template-update2-complete-source-join-v1.json",
+    "sha256": "3655493ee97dcb69dbb786e84b82e7c3e6ffb151e92f191a8f99c5c93f2106d4"
+  },
+  "families": [
+    {
+      "cohort_id": "original-a",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-context-template-k8a-post-observer-n20-entry-v1/analysis-recipe-v1.json",
+        "sha256": "bb71a7f5a2f1c8f2f4e57fef71ac96fed2bea987cbbd19990748e4fe0c06035f"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/frozen-check-v2.json",
+        "sha256": "bb697e938e85f39c1f29a0ad0b7f340626db06a17a4de1e67c6abbf5715c080e"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1/family.json",
+        "sha256": "043702b67105944cfc07befe64a65d2e4418675889ca079da88e6b161d3cc69d"
+      }
+    },
+    {
+      "cohort_id": "remaining-b1",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b1/analysis-recipe-v1.json",
+        "sha256": "a0f63bff1b9f0cdc9bc1a85dc9d0a884d7a495558b8e32e6ab4ae838a7e44584"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-b1-flight-v1/frozen-check-v2.json",
+        "sha256": "268ef50841aa72495b6e691d27e72be51d0fef3da3180a61c9da81a641eb0d4d"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1/family.json",
+        "sha256": "c9ccaa8c538b0f447d4d626a75b61caad304a6302261275ea41fede767ba5103"
+      }
+    },
+    {
+      "cohort_id": "remaining-b2",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-slurp-context-template-observe-boundary-n20-v1/analysis-recipe-v1.json",
+        "sha256": "e017dd1179091894f4eceac084a7c65fb74396b4de156c99c457080e099f1ad7"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/frozen-check-v3.json",
+        "sha256": "1d357394f9af9c2611fc40a7ae776eb666a30619c5c1eb071476233f1a7c6b3c"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-V1-REMAINING-B2-READ-V1/family.json",
+        "sha256": "2e7395bc74be0696e4ea5e8ff0c04b26ec6a9d57055cbe2dc97e26280a913196"
+      }
+    }
+  ]
+}
