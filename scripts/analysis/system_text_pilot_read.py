@@ -138,6 +138,92 @@ def source_bindings(registration, roster_pin, data_root):
     return result, metadata_pins
 
 
+def qualify_registered_context_family(*, recipe_pin, repo_root, data_root, frozen_check):
+    """Verify a whole configured family without scoring, signing or reporting quality.
+
+    Count members and rows from validated registration/configuration. Check every
+    attempt before reading score metadata or parsing sealed output bundles. This
+    metadata qualification never substitutes for the separate root READ.
+    """
+    repo_root, data_root = Path(repo_root).resolve(), Path(data_root).resolve()
+    recipe = json.loads(_read_pin(recipe_pin, repo_root))
+    registration_pin = recipe["context_learning_registration"]
+    registration = json.loads(_read_pin(registration_pin, repo_root))
+    protocol = json.loads(_read_pin(registration["protocol"], repo_root))
+    context_learning._validate_scope(recipe, registration, protocol, root=repo_root)
+    members = registration["member_bindings"]
+    frozen_members = frozen_check.get("members", [])
+    require(
+        frozen_check.get("passed") is True and frozen_check.get("contacts") == 0
+        and len(frozen_members) == len(members)
+        and {m["member"] for m in frozen_members} == set(members)
+        and all(m["config_hash"] == members[m["member"]]["config_hash"]
+                for m in frozen_members),
+        "qualification requires every exact frozen member/configuration",
+    )
+    attempt_paths, observed, attempt_pins = {}, [], []
+    for cid, member in members.items():
+        directory = (data_root / "attempts" / member["run_id"]).resolve()
+        path = (directory / (member["attempt_id"] + ".json")).resolve()
+        require(directory.parent == data_root / "attempts" and path.parent == directory,
+                "registered attempt escaped its operational directory")
+        attempt_paths[cid] = path
+        attempt = json.loads(path.read_text()) if path.exists() else {}
+        observed.append({"member": cid, "state": attempt.get("state", "ABSENT"),
+                         "calls": attempt.get("actual", {}).get("calls")})
+        if path.exists():
+            attempt_pins.append(pin(path))
+    if any(m["state"] != "FINALIZED" for m in observed):
+        return {"status": "WAIT", "members": observed, "quality_values_reported": False,
+                "root_read_signed_by_this_function": False}
+    roster_pin = recipe["analysis_roster"]
+    _read_pin(roster_pin, repo_root)
+    bindings, job_pins = source_bindings(
+        registration, pin(repo_root / roster_pin["relpath"]), data_root
+    )
+    require(len(bindings) == len(members)
+            and {b["candidate_id"] for b in bindings} == set(members),
+            "operational bindings omit or duplicate a registered member")
+    metadata = preflight_family(bindings, registration["expected_members"])
+    qualified = []
+    for binding, (_, job) in zip(bindings, metadata, strict=True):
+        cid = binding["candidate_id"]
+        member = members[cid]
+        manifest_pin = binding["config"]["manifest"]
+        require(pin(manifest_pin["path"]) == manifest_pin, "manifest changed before verification")
+        bundle = verify_bundle(Path(manifest_pin["path"]))
+        require(
+            bundle.attempt_state == "FINALIZED"
+            and len(bundle.outputs_rows) == recipe["required_rows_per_member"]
+            and bundle.split_ids == set(recipe["sample_ids"])
+            and bundle.manifest["run_id"] == member["run_id"]
+            and bundle.manifest["attempt"]["attempt_id"] == member["attempt_id"]
+            and bundle.manifest["config"]["config_hash"] == member["config_hash"]
+            and bundle.manifest["study_commit"] == frozen_check["commit"],
+            "verified family member differs from registered identity, rows or frozen source",
+        )
+        qualified.append({"member": cid, "run_id": member["run_id"],
+                          "attempt_id": member["attempt_id"], "state": "FINALIZED",
+                          "rows": len(bundle.outputs_rows), "verified_seal": True,
+                          "official_successful_jobs": 1, "failed_jobs": 0,
+                          "manifest": manifest_pin, "score_job_id": job["job_id"]})
+    require(all(pin(p["path"]) == p for p in job_pins + attempt_pins
+                + [m["manifest"] for m in qualified]),
+            "operational evidence changed during whole-family qualification")
+    _read_pin(recipe_pin, repo_root)
+    _read_pin(registration_pin, repo_root)
+    _read_pin(registration["protocol"], repo_root)
+    context_learning._validate_scope(recipe, registration, protocol, root=repo_root)
+    return {"schema": "saea-configured-family-qualified-v1",
+            "recorded_at_utc": datetime.now(timezone.utc).isoformat(),
+            "status": "ALL_MEMBERS_OPERATIONALLY_QUALIFIED", "members": qualified,
+            "attempt_observations": observed, "attempt_metadata_pins": attempt_pins,
+            "job_metadata_pins": job_pins, "read_id": registration["read_id"],
+            "recipe": recipe_pin, "frozen_commit": frozen_check["commit"],
+            "root_read_signed_by_this_function": False, "quality_values_reported": False,
+            "model_contacts_added": 0, "scorer_contacts_added": 0}
+
+
 def run(
     *,
     recipe_pin,

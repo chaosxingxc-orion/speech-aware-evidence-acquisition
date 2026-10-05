@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Config-driven complete-family qualification and analysis prepared
+
+[Preparation evidence](../receipts/continuation/2026-10-05-configured-family-read-prepared.json): the existing shared reader now qualifies all registered members/counts from validated config/recipe instead of a fixed K. It checks every attempt before score metadata or seal parsing, verifies all frozen identities and source pins, and never signs READ or reports quality. Twenty new gate tests and103 related tests pass; new function100% statement/branch coverage. Real incomplete b1 returns WAIT without score/output access. Engineering-base check passes.
+
+Both canonical K4 analysis supplements are pinned after b1 launch and before any current-family quality read; preserve that chronology. They retain existing recipe,roster,official projections,paired estimators,strata,original TRAIN reference and quality/intent/reliability/latency objectives. No frozen worker or runtime request changed. Root helpers under coordination/context-template-configured-k4-b1-flight-v1 are prepared for qualification,countersignature,shared complete read and node/sample timing. None has signed READ or read quality.
+
+The prepared cache-boundary-v1.py refuses absent complete root READ/stage review with zero operations. A positive execution still requires exact completed epoch/config/all member seals and scores,no live generation/scoring/preprocessing/other coordinator work,healthy idle service and explicit root stage review carrying service PID/start ticks/cmdline hash. Run its check-only path before one explicit root write of1 to the fixed clean-page-cache kernel control; no sync,KV reset,model/WSL restart or file deletion. Preserve before/after memory,service identity and maintenance cost. No cache operation yet.
+
+Current14:14:56Z driver and frozen d81d8cf8c remain active and unchanged. Script monitor slurp-configured-k4-b1-15m remains active until verified terminal exit. All task quality remains unread; b2 stays DRAFT. Retain separate cohorts and no partial learner export,other-carrier release or8x400 dispatch.
+
 ## Configured K4 first cohort launched
 
 [Verified launch](../receipts/continuation/2026-10-05-configured-k4-b1-launch.json): Windows SAEA-Batch-Driver epoch2026-10-05T14:14:56Z, first campaign14:15:26Z, frozen codex-context-template-configured-k4-b1-v2 at d81d8cf8c3e2e896ab3e0d24a93bd547b9261baa. All six frozen registration/runtime/actual-role/supply/config checks passed with zero contacts. Normal completed-engineering controls were preserved after exact prior epoch/queue/worker verification,no STOP/lease/active competitor,healthy idle service and26.03GiB Windows available. Startup stable-memory wait passed24.96seconds before actual generation.
