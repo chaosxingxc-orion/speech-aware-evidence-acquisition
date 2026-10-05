@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete trial entry prepared with actual incomplete-source refusal
+
+[Prepared entry](../receipts/continuation/2026-10-05-partitioned-update3-complete-trial-entry-prepared.json) adds a root-only operational wrapper over existing all-source and strict-population readers. It derives cohort order from the pinned config and binds actual launch/frozen/root-READ/family sources. The real incomplete source set returned WAIT75 without quality, source registration or learner export. Successful full-source evaluation is still pending; no new algorithm or scoring path was added. After every cohort is complete and reviewed, use the analysis guide for separate check, source registration and evaluation operations. Preserve outputs; no silent replay.
+
+Current remaining-b1 driver54370/start_ticks56455731 is live in its last branch12 at this checkpoint. Five members are FINALIZED; branch12 is OPENED and progressing. Do not integrate the prepared operational checker while it runs. Complete cohort qualification/root READ, idle integration and unchanged remaining-b2 admission remain next. No restart, lock removal or cache flush.
+
+
 ## Context READ scope preflight verified in isolation
 
 [Prepared READ-scope repair](../receipts/continuation/2026-10-05-context-read-scope-preflight-prepared.json) is committed ate1dbb6b6861a078eeb6ec0eac226125a784140a9 in codex-registration-carrier-preflight-v1. The existing launch gate only required a READ row to exist, allowing the preserved original-a wrong-profile defect to reach the offline reader. For declared context-learning recipes, the new preflight requires exactly one zero-call model-free-check/discovery row naming the exact recipe. Draft signatures remain valid before seal; no READ is countersigned or consumed. Other recipe contracts and historical report-only handling remain unchanged.
