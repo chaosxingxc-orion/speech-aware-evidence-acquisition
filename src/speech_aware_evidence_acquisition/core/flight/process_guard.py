@@ -95,6 +95,7 @@ def _sample(reader, policy):
         "available_gib": available if _finite(available) else None,
         "elapsed_seconds": elapsed,
         "reason": reason,
+        "reader_error": value.get("host_memory_error") if isinstance(value, Mapping) else error,
     }
 
 

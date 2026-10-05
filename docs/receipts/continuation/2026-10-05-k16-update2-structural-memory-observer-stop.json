@@ -1,0 +1,390 @@
+{
+  "schema": "saea-k16-structural-memory-observer-stop-v1",
+  "at_utc": "2026-10-05T07:01:50.114703+00:00",
+  "driver_epoch": "2026-10-05T06:36:25Z",
+  "stopped_at": "2026-10-05T06:59:30Z",
+  "worker_commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c",
+  "completed_steps": 10,
+  "failed_step": 11,
+  "remaining_unstarted": [
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "guard_result": {
+    "command": [
+      "/home/chao/.venvs/speechrl/bin/python",
+      "-B",
+      "-m",
+      "speech_aware_evidence_acquisition.core.flight.cli",
+      "worker",
+      "--repo-root",
+      "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "--data-root",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "--runtime-root",
+      "/home/chao",
+      "--lock-path",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "--owner",
+      "chatgpt-root-owner227",
+      "--expected-session-id",
+      "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "--experiment",
+      "slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-v1",
+      "--cell",
+      "slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-v1",
+      "--lease-token-file",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-v1.worker-lease.json"
+    ],
+    "exit_code": 125,
+    "identity": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-generation-v1",
+      "repo_root": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-V1",
+      "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "study_head": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    "pid": 5623,
+    "policy": {
+      "floor_gib": 8.0,
+      "interval_seconds": 5.0,
+      "read_timeout_seconds": 10.0,
+      "start_gib": 12.5,
+      "stop_grace_seconds": 5.0
+    },
+    "schema": "saea-flight-process-memory-guard-v1",
+    "status": "resource-stop",
+    "worker_returncode": -15
+  },
+  "guard_observations": [
+    {
+      "at": 1791183509.5785487,
+      "available_gib": 26.988502502441406,
+      "elapsed_seconds": 0.5473120950045995,
+      "event": "start-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183509.5791333,
+      "event": "worker-start",
+      "pid": 5623
+    },
+    {
+      "at": 1791183510.1050012,
+      "available_gib": 26.988990783691406,
+      "elapsed_seconds": 0.5255363950273022,
+      "event": "running-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183515.6251216,
+      "available_gib": 26.700653076171875,
+      "elapsed_seconds": 0.5193577670142986,
+      "event": "running-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183521.1467807,
+      "available_gib": 26.61225128173828,
+      "elapsed_seconds": 0.5211965880007483,
+      "event": "running-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183526.648001,
+      "available_gib": 26.610694885253906,
+      "elapsed_seconds": 0.500687712978106,
+      "event": "running-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183532.2649574,
+      "available_gib": 26.565677642822266,
+      "elapsed_seconds": 0.6160116270184517,
+      "event": "running-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183537.7908251,
+      "available_gib": 25.595195770263672,
+      "elapsed_seconds": 0.5253507900051773,
+      "event": "running-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183543.8978379,
+      "available_gib": 25.28112030029297,
+      "elapsed_seconds": 1.106619849044364,
+      "event": "running-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183549.8578415,
+      "available_gib": 25.325748443603516,
+      "elapsed_seconds": 0.957009878999088,
+      "event": "running-sample",
+      "reason": null
+    },
+    {
+      "at": 1791183565.06936,
+      "available_gib": null,
+      "elapsed_seconds": 8.072388506028801,
+      "event": "running-sample",
+      "reason": "windows-reading-unavailable"
+    },
+    {
+      "at": 1791183565.0747085,
+      "event": "stop-owned-group",
+      "pid": 5623,
+      "signal": "SIGTERM"
+    },
+    {
+      "at": 1791183570.0802789,
+      "event": "stop-owned-group",
+      "pid": 5623,
+      "signal": "SIGKILL"
+    },
+    {
+      "at": 1791183570.1182866,
+      "event": "finished",
+      "exit_code": 125,
+      "pid": 5623,
+      "status": "resource-stop",
+      "worker_returncode": -15
+    }
+  ],
+  "members": [
+    {
+      "branch": 1,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-01-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-01-smoke-4-generation-v1.json",
+        "sha256": "b5878dc8b1f871fc0f5f27153d5fb429d116bacdf2080c08f197c49232dd010e"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 47.09825,
+        "calls": 22
+      }
+    },
+    {
+      "branch": 2,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-02-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-02-smoke-4-generation-v1.json",
+        "sha256": "8eb53cf011d8d6cc3af9f7366fc8aeca658d9f7cbe2f079dc4403dbefa1fdc94"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 34.811749999999996,
+        "calls": 16
+      }
+    },
+    {
+      "branch": 3,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-03-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-03-smoke-4-generation-v1.json",
+        "sha256": "93d65e2be00883a59eccabb451393562c464d38df7a53052fde9ef500764d653"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 53.6255,
+        "calls": 25
+      }
+    },
+    {
+      "branch": 4,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-04-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-04-smoke-4-generation-v1.json",
+        "sha256": "193212d99cca74ff065e5f1433452ad70600250b3b87bdb88551a79d37ae6f48"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 42.106812500000004,
+        "calls": 19
+      }
+    },
+    {
+      "branch": 5,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-05-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-05-smoke-4-generation-v1.json",
+        "sha256": "b227cddf08d7c1a89111985b38a7d03b2db70bef539b9c59395c4d25410936e4"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 42.49081250000001,
+        "calls": 19
+      }
+    },
+    {
+      "branch": 6,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-06-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-06-smoke-4-generation-v1.json",
+        "sha256": "dbbc83cbf20a949850be099491493c405a423b6d4d23e2faa21d6c3e3cf03117"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 34.811749999999996,
+        "calls": 16
+      }
+    },
+    {
+      "branch": 7,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-07-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-07-smoke-4-generation-v1.json",
+        "sha256": "2a683a859e13a69293533f186f0b07390c27e89a759dd29b4c6c04da1cb41a15"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 41.339,
+        "calls": 19
+      }
+    },
+    {
+      "branch": 8,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-08-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-08-smoke-4-generation-v1.json",
+        "sha256": "61bb47112d5319b613eaaab1c888baadc394b2e5b3e79914acb5e15eb18b6f25"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 34.811749999999996,
+        "calls": 16
+      }
+    },
+    {
+      "branch": 9,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-09-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-09-smoke-4-generation-v1.json",
+        "sha256": "4782c102f5155a46d57e32990bbea1810f425a52b30f031b711a5a6ae3f9b3f9"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 34.811749999999996,
+        "calls": 16
+      }
+    },
+    {
+      "branch": 10,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-10-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-10-smoke-4-generation-v1.json",
+        "sha256": "5da76f011b86a5c28e417a3a09279211fe7c1cac9fa9ad75ad2853cd339e6ad9"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 34.811749999999996,
+        "calls": 16
+      }
+    },
+    {
+      "branch": 11,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-generation-v1",
+      "attempt_exists": true,
+      "attempt_pin": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-V1/attempt-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-generation-v1.json",
+        "sha256": "99b76327c19191fb56d08b1fc4664f7312727b1be6b5ebf72989c5fb20dc8050"
+      },
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 17.405874999999998,
+        "calls": 8
+      }
+    },
+    {
+      "branch": 12,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-12-smoke-4-generation-v1",
+      "attempt_exists": false
+    },
+    {
+      "branch": 13,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-13-smoke-4-generation-v1",
+      "attempt_exists": false
+    },
+    {
+      "branch": 14,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-14-smoke-4-generation-v1",
+      "attempt_exists": false
+    },
+    {
+      "branch": 15,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-15-smoke-4-generation-v1",
+      "attempt_exists": false
+    },
+    {
+      "branch": 16,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-16-smoke-4-generation-v1",
+      "attempt_exists": false
+    }
+  ],
+  "live_experiment_processes": [],
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/smoke-11-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-v1-20261005T065827Z/events.jsonl",
+      "sha256": "bcf626b9cc94282e9401d5ee95f1160b12da9a0674f725675d2b5e29b7392528"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/smoke-11-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-v1-20261005T065827Z/finished.json",
+      "sha256": "98ddcf9578885e9d5e503ddf25f46736ea83b2c0c99961b1b7adcc8a31196af0"
+    },
+    {
+      "path": "/home/chao/batch-STOP",
+      "sha256": "38bcd5f44c7372168de01f66e0918905c48a2291d388810382681d1431398ca1"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "d02eecf1f5014fcd226e355905895d1be0dd241a14eaa0b50e133dd421421ad3"
+    },
+    {
+      "path": "/home/chao/batch-smoke-11-worker.log",
+      "sha256": "30d8692ddf0931db7751671f0a62f1c18b51e06b55fb62358a37e2416f0ad6c2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/root-audit-wait-failure-v1.json",
+      "sha256": "7a62d5dd284b7cbc6edee5d4c166342ae1bc089f8ac360ad1632d47818ed6f9b"
+    }
+  ],
+  "interpretation": "The Windows-memory observation became unavailable after8.072seconds; the guard terminated its owned worker group. The last valid observation was25.325748GiB. This is a named observation failure, not evidence of an actual memory-floor violation. The original reader discarded detailed failure reasons, so timeout is consistent with the8second cap but not established. No task-quality read or complete-family acceptance.",
+  "monitor": {
+    "id": "slurp-15",
+    "deleted": true,
+    "reason": "Verified terminal failed experiment without live admitted worker/scorer"
+  },
+  "disposition": "Preserve STOP, lease, all attempts and frozen sources. Diagnose and test the observer before separately recording any root227 continuation; do not replay or replace proposals."
+}

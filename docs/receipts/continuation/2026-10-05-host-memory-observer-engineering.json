@@ -1,0 +1,36 @@
+{
+  "schema": "saea-memory-observer-engineering-v1",
+  "at_utc": "2026-10-05T07:08:14.277391+00:00",
+  "authority": "Owner227 root bounded engineering and incident disposition",
+  "incident": "2026-10-05-k16-update2-structural-memory-observer-stop.json",
+  "change": "Use the Windows .NET ComputerInfo physical-memory API in the existing single bounded PowerShell observation instead of CIM. Preserve GiB conversion,8second reader timeout,10second guard freshness,8GiB running and12.5GiB startup. Record categorized observation failures without raw command output. Never substitute VM memory or a stale host observation.",
+  "tests": {
+    "passed": 184,
+    "new_tests": 14,
+    "process_guard_statement_coverage_percent": 94.35897435897436,
+    "changed_reader_and_sample_functions_statement_coverage_percent": 100,
+    "whole_serving_module_statement_coverage_percent": 76.86335403726709,
+    "scope": "Shared serving/guard/resource tests plus missing,invalid,nonfinite,timeout,OS/subprocess error cases. Coverage is statements, not branches."
+  },
+  "live_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/memory-observer-live-proof-v1.json",
+    "sha256": "64dafabfab35a63a7b10e8fcbfe8ca2649d5a00655d8c8de879ce320ce597945"
+  },
+  "live_samples": 30,
+  "median_seconds": 0.33414715601247735,
+  "max_seconds": 0.41304007900180295,
+  "coverage": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/memory-observer-coverage.json",
+    "sha256": "6d7661e3b64aa65cf63bdbcbff02bb798fbb13570d7a4117eb8f4e17dcff5476"
+  },
+  "model_contacts": 0,
+  "historical_cause_limit": "The original eight-second observation failure discarded its underlying reason. The named component is the Windows interop observer; CIM or process timeout is not proven retrospectively.",
+  "root_disposition": {
+    "status": "prepare-one-bounded-successor-after-proofs",
+    "completed_members": "Preserve first ten completed engineering members without regeneration, scoring or resealing. Their detailed structural acceptance remains pending exact complete coverage.",
+    "failed_member": "Preserve branch11 original attempt, eight charged contacts, traces, lease and STOP. Prepare one separately registered four-row observer-recovery1 identity with identical policy,inputs and model request semantics; no proposal replacement.",
+    "unstarted_members": "Prepare branches12 through16 under a clean corrected observer checkout, retaining their original unspent identities and fixed model policy.",
+    "acceptance": "Prospectively register a combined sixteen-policy structural coverage map with each exact source/attempt, including the unique branch11 successor. Verify source differences are limited to the observer/diagnostic behavior and registration. Complete-family structural audit precedes N20 registration.",
+    "continuation": "No dispatch, STOP/lease reconciliation or new contacts at this record. Prove frozen checks and root-record exact control disposition before continuation. A second failure stops this recovery."
+  }
+}

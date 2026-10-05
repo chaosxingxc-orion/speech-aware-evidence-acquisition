@@ -823,26 +823,27 @@ def read_gpu_occupancy(*, run: Callable[..., object] | None = None) -> dict[str,
 # side again.
 # ---------------------------------------------------------------------------
 
-#: Win32_OperatingSystem reports memory in KiB; ``vmmemWSL``'s working set in
+#: The physical-memory wire fields report memory in KiB; ``vmmemWSL``'s working set in
 #: bytes. Both are converted to GiB here (binary, matching this module's other
 #: size fields such as ``GPU_IDLE_MEMORY_MIB``), so "GB" below always means
 #: GiB.
 _KIB_PER_GIB = 1024.0 * 1024.0
 _BYTES_PER_GIB = 1024.0**3
 
-#: ONE ``powershell.exe`` interop call answers both Windows-side questions:
-#: the host's own total/free memory (``Win32_OperatingSystem``, in KiB) and
-#: the WSL VM's own footprint on the host (``vmmemWSL``'s working set, in
-#: bytes) -- a second call would double the timeout budget for no reason,
-#: since both come from the same trusted process on the same host.
+#: Query physical memory through the Windows .NET ComputerInfo API. Avoid a
+#: WMI/CIM round trip on every five-second guard sample. Keep one bounded
+#: interop process and the historical KiB wire fields; never reuse old values.
 _HOST_MEMORY_POWERSHELL_SCRIPT = (
-    "$os = Get-CimInstance Win32_OperatingSystem | "
-    "Select-Object TotalVisibleMemorySize, FreePhysicalMemory; "
+    "$ErrorActionPreference='Stop'; "
+    "Add-Type -AssemblyName Microsoft.VisualBasic; "
+    "$memoryInfo = New-Object Microsoft.VisualBasic.Devices.ComputerInfo; "
+    "$totalKiB = $memoryInfo.TotalPhysicalMemory / 1024; "
+    "$freeKiB = $memoryInfo.AvailablePhysicalMemory / 1024; "
     "$vmmemWs = Get-Process -Name 'vmmem*' -ErrorAction SilentlyContinue | "
     "Select-Object -First 1 -ExpandProperty WorkingSet64; "
     "[PSCustomObject]@{"
-    "TotalVisibleMemorySize=$os.TotalVisibleMemorySize;"
-    "FreePhysicalMemory=$os.FreePhysicalMemory;"
+    "TotalVisibleMemorySize=$totalKiB;"
+    "FreePhysicalMemory=$freeKiB;"
     "VmmemWorkingSet64=$vmmemWs"
     "} | ConvertTo-Json -Compress"
 )
@@ -874,7 +875,9 @@ def _powershell_executable() -> str:
     return "powershell.exe"
 
 
-def _read_windows_memory(*, run: Callable[..., object]) -> dict[str, float | None] | None:
+def _read_windows_memory(
+    *, run: Callable[..., object], errors: list[str] | None = None
+) -> dict[str, float | None] | None:
     """Windows total/free GB and the ``vmmemWSL`` working set GB, via the ONE
     interop call above, or ``None`` when the interop is unavailable -- no
     ``powershell.exe`` on PATH, a non-zero exit, a timeout, or output that is
@@ -884,6 +887,11 @@ def _read_windows_memory(*, run: Callable[..., object]) -> dict[str, float | Non
     """
 
     import subprocess  # noqa: PLC0415 (CLI-only)
+
+    def fail(reason):
+        if errors is not None:
+            errors.append(reason)
+        return None
 
     try:
         completed = run(
@@ -898,27 +906,33 @@ def _read_windows_memory(*, run: Callable[..., object]) -> dict[str, float | Non
             text=True,
             timeout=_HOST_MEMORY_POWERSHELL_TIMEOUT_SECONDS,
         )
-    except (OSError, subprocess.SubprocessError):
-        return None
+    except subprocess.TimeoutExpired:
+        return fail("timeout")
+    except OSError as error:
+        return fail("os-error:" + type(error).__name__)
+    except subprocess.SubprocessError:
+        return fail("subprocess-error")
     returncode = getattr(completed, "returncode", None)
-    if not isinstance(returncode, int) or returncode != 0:
-        return None
+    if isinstance(returncode, bool) or not isinstance(returncode, int) or returncode != 0:
+        return fail("exit-nonzero")
     try:
         parsed = json.loads(str(getattr(completed, "stdout", "") or "").strip())
     except json.JSONDecodeError:
-        return None
+        return fail("invalid-json")
     if not isinstance(parsed, Mapping):
-        return None
+        return fail("not-object")
 
     def _field(key: str) -> float | None:
         value = parsed.get(key)
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             return None
-        return float(value)
+        return float(value) if math.isfinite(value) and value >= 0 else None
 
     total_kib = _field("TotalVisibleMemorySize")
     free_kib = _field("FreePhysicalMemory")
     vmmem_bytes = _field("VmmemWorkingSet64")
+    if free_kib is None:
+        fail("invalid-free-memory")
     return {
         "host_total_gb": (total_kib / _KIB_PER_GIB) if total_kib is not None else None,
         "host_free_gb": (free_kib / _KIB_PER_GIB) if free_kib is not None else None,
@@ -980,7 +994,10 @@ def read_host_memory(
 
     import subprocess  # noqa: PLC0415 (CLI-only)
 
-    windows = _read_windows_memory(run=run if run is not None else subprocess.run)
+    errors: list[str] = []
+    windows = _read_windows_memory(
+        run=run if run is not None else subprocess.run, errors=errors
+    )
     vm = _read_vm_memory(Path(meminfo_path))
     if windows is not None and vm is not None:
         source = "windows+vm"
@@ -997,6 +1014,7 @@ def read_host_memory(
         "vm_total_gb": vm.get("vm_total_gb") if vm else None,
         "vm_available_gb": vm.get("vm_available_gb") if vm else None,
         "host_memory_source": source,
+        "host_memory_error": errors[0] if errors else None,
     }
 
 

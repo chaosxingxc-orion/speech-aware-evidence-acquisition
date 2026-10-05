@@ -925,6 +925,7 @@ def test_read_host_memory_is_unavailable_when_neither_side_answers(tmp_path):
         "vm_total_gb": None,
         "vm_available_gb": None,
         "host_memory_source": "unavailable",
+        "host_memory_error": "os-error:FileNotFoundError",
     }
 
 
@@ -940,7 +941,7 @@ def test_read_host_memory_passes_the_pinned_timeout_and_command_shape(tmp_path):
     argv = calls[0]["argv"]
     assert argv[0].endswith("powershell.exe")
     assert "-NoProfile" in argv and "-NonInteractive" in argv
-    assert "Get-CimInstance" in argv[-1] and "Get-Process" in argv[-1]
+    assert "Microsoft.VisualBasic.Devices.ComputerInfo" in argv[-1] and "Get-Process" in argv[-1]
     assert calls[0]["kwargs"]["timeout"] == 8
 
 
@@ -1444,6 +1445,7 @@ _UNAVAILABLE_HOST_MEMORY = {
     "vm_total_gb": None,
     "vm_available_gb": None,
     "host_memory_source": "unavailable",
+    "host_memory_error": "os-error:FileNotFoundError",
 }
 
 
