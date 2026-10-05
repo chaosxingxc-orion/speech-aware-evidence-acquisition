@@ -1,0 +1,85 @@
+{
+  "at_utc": "2026-10-05T19:44:10.961570+00:00",
+  "authority": "Root227 recorded disposition of own no-contact operational error",
+  "cause": "The command used check-only/default installer instead of --apply, then started the old completed queue.",
+  "old_prefix_hash_verified": true,
+  "new_epoch_events": [
+    {
+      "at": "2026-10-05T19:42:55Z",
+      "event": "driver-start",
+      "detail": {
+        "flight_commit": "c7a01c05264adcd4b1fc7e3c91c611d3e891efa9",
+        "queue": "/home/chao/batch-queue.json"
+      }
+    },
+    {
+      "at": "2026-10-05T19:42:56Z",
+      "event": "step-skip-done",
+      "detail": {
+        "step": 1,
+        "short": "slurp-context-template-k4-observe-boundary-n20-v1-remaining-b2-seed"
+      }
+    },
+    {
+      "at": "2026-10-05T19:42:56Z",
+      "event": "step-skip-done",
+      "detail": {
+        "step": 2,
+        "short": "slurp-context-template-k4-observe-boundary-n20-v1-remaining-b2-seed-aa"
+      }
+    },
+    {
+      "at": "2026-10-05T19:42:57Z",
+      "event": "step-skip-done",
+      "detail": {
+        "step": 3,
+        "short": "slurp-context-template-k4-observe-boundary-n20-v1-remaining-b2-branch-13"
+      }
+    },
+    {
+      "at": "2026-10-05T19:42:57Z",
+      "event": "step-skip-done",
+      "detail": {
+        "step": 4,
+        "short": "slurp-context-template-k4-observe-boundary-n20-v1-remaining-b2-branch-14"
+      }
+    },
+    {
+      "at": "2026-10-05T19:42:58Z",
+      "event": "step-skip-done",
+      "detail": {
+        "step": 5,
+        "short": "slurp-context-template-k4-observe-boundary-n20-v1-remaining-b2-branch-15"
+      }
+    },
+    {
+      "at": "2026-10-05T19:42:58Z",
+      "event": "step-skip-done",
+      "detail": {
+        "step": 6,
+        "short": "slurp-context-template-k4-observe-boundary-n20-v1-remaining-b2-branch-16"
+      }
+    },
+    {
+      "at": "2026-10-05T19:42:58Z",
+      "event": "driver-done",
+      "detail": {
+        "steps": 6
+      }
+    }
+  ],
+  "all_old_steps_skipped": true,
+  "new_model_contacts": 0,
+  "new_score_jobs": 0,
+  "original_done_backups": [
+    {
+      "path": "/home/chao/batch-done.20261005T194255Z.bak",
+      "sha256": "d3c12feba52892ae2a46d2be90a75bacb42c045d771a05705d6f68b3ae56d754"
+    }
+  ],
+  "own_STOP": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/empty-old-queue-launch-v1/batch-STOP",
+    "sha256": "842d1c3e7c858b9c15f57d9d762a39b1f50ce7da1f0014e4ef8180747af425cb"
+  },
+  "disposition": "Preserve exact no-op epoch and own protective STOP, remove only that exact STOP after no live driver/flight/lease and guard verification. Supersede transition pins to the now-appended old operational log; install with --apply, verify queue and worker bytes before any start."
+}
