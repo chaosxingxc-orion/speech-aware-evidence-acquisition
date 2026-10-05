@@ -1,0 +1,20 @@
+{
+  "schema": "saea-precontact-registration-correction-v1",
+  "at_utc": "2026-10-05T07:18:06.192195+00:00",
+  "authority": "Root227 precontact registration correction",
+  "refused_worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v1",
+  "commit": "23b2367abe467b3ecfec2de8998261fbe1d62ce0",
+  "contacts": 0,
+  "attempts_created": 0,
+  "named_defect": "New structural analysis recipes omitted measurement_profile although their generation/FIT plans and runtime contained the unchanged registered profile. The existing registration gate refused before runtime check.",
+  "correction": "Copy the exact existing plan measurement_profile to each of the six recipes. No config,policy,input,request,budget or queue-member change. Preserve original refusal logs and frozen checkout; use a new clean v2 checkout and v2 check logs.",
+  "recipe_profiles_all_equal": true,
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/frozen-check-v2.py",
+    "sha256": "1135d36905024ddba11d030d54f626190bc0689b788ff0cef746120ebfe64016"
+  },
+  "combined_coverage": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/combined-coverage-v1.json",
+    "sha256": "36957b634b640d6b2337206830849e4cb6ae72b2d1b95d9008bf96c970355404"
+  }
+}
