@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Multi-cohort source gate tested; cache maintenance remains HELD
+
+[Source-join preparation](../receipts/continuation/2026-10-05-abstract-source-join-prepared.json) reuses existing readers to require all configured scopes/READs/attempts before any seal qualification, then every complete seal/unique score before quality reads.24 new and96 related tests pass;73 statements/14 branches100% covered; engineering-base passes. Rechecks refuse changed source/config/authority/metadata. This returns private evidence only. Actual K8A/K4/K4 join, abstract projection and next actor/trial registration remain unexecuted until b2 completes. No new allocation, model contact or partial learner export. Existing pinned analysis implementation files remain unchanged.
+
+[Root cache disposition](../receipts/continuation/2026-10-05-cache-boundary-held-disposition.json): original PID61283/start53995152/session9059 remains live in D beyond the ten-minute observation boundary, holding generation.guard. Delegated diagnosis supports a filesystem lock/lifecycle wait, not a memory deficit; exact filesystem/holder remains unknown. Status BOUNDARY_MAINTENANCE_HELD_KERNEL_WAIT. Preserve the original call and before receipt; do not repeat, claim completion, bypass guard, restart WSL/model, sync or launch b2. Revalidate the same live handle and exact after receipt on continuation. B1 remains scientifically complete and monitor deleted. B2 remains unadmitted; continue independent model-free learning integration while this external kernel operation is pending.
+
 ## Configured K4 b1 complete and read; one cache-boundary call pending
 
 [Complete scientific read](../receipts/continuation/2026-10-05-configured-k4-b1-scientific-read.json) and [all-strata result](../results/2026-10-05-configured-k4-b1-n20.md): six members independently FINALIZED20 each, verified seals, one unique complete official score each, zero failures;120 trajectories/660 model contacts. Driver14:14:56Z completed14:53:52Z. Exact b1 READ is root countersigned and complete. Monitor slurp-configured-k4-b1-15m was deleted. Guard evidence contains413 valid samples, minimum23.1887GiB and zero errors. Preserve frozen d81d8cf8c and every score/output.
@@ -2412,7 +2418,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T15:09:02.201724Z
+Last refreshed: 2026-10-05T15:21:00.574615Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

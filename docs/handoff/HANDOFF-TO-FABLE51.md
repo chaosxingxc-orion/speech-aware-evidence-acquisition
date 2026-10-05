@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Multi-cohort source gate tested; cache maintenance remains HELD
+
+[Source-join preparation](../receipts/continuation/2026-10-05-abstract-source-join-prepared.json) reuses existing readers to require all configured scopes/READs/attempts before any seal qualification, then every complete seal/unique score before quality reads.24 new and96 related tests pass;73 statements/14 branches100% covered; engineering-base passes. Rechecks refuse changed source/config/authority/metadata. This returns private evidence only. Actual K8A/K4/K4 join, abstract projection and next actor/trial registration remain unexecuted until b2 completes. No new allocation, model contact or partial learner export. Existing pinned analysis implementation files remain unchanged.
+
+[Root cache disposition](../receipts/continuation/2026-10-05-cache-boundary-held-disposition.json): original PID61283/start53995152/session9059 remains live in D beyond the ten-minute observation boundary, holding generation.guard. Delegated diagnosis supports a filesystem lock/lifecycle wait, not a memory deficit; exact filesystem/holder remains unknown. Status BOUNDARY_MAINTENANCE_HELD_KERNEL_WAIT. Preserve the original call and before receipt; do not repeat, claim completion, bypass guard, restart WSL/model, sync or launch b2. Revalidate the same live handle and exact after receipt on continuation. B1 remains scientifically complete and monitor deleted. B2 remains unadmitted; continue independent model-free learning integration while this external kernel operation is pending.
+
 ## Configured K4 b1 complete and read; one cache-boundary call pending
 
 [Complete scientific read](../receipts/continuation/2026-10-05-configured-k4-b1-scientific-read.json) and [all-strata result](../results/2026-10-05-configured-k4-b1-n20.md): six members independently FINALIZED20 each, verified seals, one unique complete official score each, zero failures;120 trajectories/660 model contacts. Driver14:14:56Z completed14:53:52Z. Exact b1 READ is root countersigned and complete. Monitor slurp-configured-k4-b1-15m was deleted. Guard evidence contains413 valid samples, minimum23.1887GiB and zero errors. Preserve frozen d81d8cf8c and every score/output.

@@ -1,0 +1,22 @@
+{
+  "schema": "saea-cache-boundary-root-held-disposition-v1",
+  "at_utc": "2026-10-05T15:21:00.574615+00:00",
+  "authority": "Root owner227 bounded engineering disposition",
+  "status": "BOUNDARY_MAINTENANCE_HELD_KERNEL_WAIT",
+  "pid": 61283,
+  "start_ticks": 53995152,
+  "pending_receipt": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-05-configured-k4-cache-boundary-pending.json",
+    "sha256": "7272472d637d234f0e1e65f80b301ab53a559e96021c03d5d1f5c83f850b372d"
+  },
+  "observation": "The original one-shot kernel write remains live in uninterruptible D state beyond the ten-minute observation boundary, retaining generation.guard. No after receipt exists.",
+  "diagnosis": "The delegated read-only investigation confirmed syscall write to drop_caches and stack super_lock/iterate_supers/drop_caches_sysctl_handler. A filesystem locking/lifecycle wait is supported; exact filesystem/holder is unestablished. No observed memory-floor breach.",
+  "disposition": "Keep the existing operation and guard. No repeated cache write, userspace timeout presented as cancellation, service/WSL restart, host-setting change, global sync or next-cohort launch. Revalidate this same PID/start identity/session9059 and exact after receipt on continuation.",
+  "other_work": "Continue model-free population-feedback integration. No partial family export or actor reservation.",
+  "external_sources": [
+    "https://raw.githubusercontent.com/microsoft/WSL2-Linux-Kernel/linux-msft-wsl-6.6.87.2/fs/drop_caches.c",
+    "https://raw.githubusercontent.com/microsoft/WSL2-Linux-Kernel/linux-msft-wsl-6.6.87.2/fs/super.c"
+  ],
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0
+}

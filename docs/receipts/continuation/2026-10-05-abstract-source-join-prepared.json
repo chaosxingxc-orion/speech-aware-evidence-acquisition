@@ -1,0 +1,26 @@
+{
+  "schema": "saea-abstract-source-join-preparation-v1",
+  "at_utc": "2026-10-05T15:21:00.574615+00:00",
+  "implementation": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_population_sources.py",
+    "sha256": "1fcd62c3b265d97c8b1ebd92d7bd9999821c934b6df9df7edfcc1485accac365"
+  },
+  "tests": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_abstract_population_sources.py",
+    "sha256": "950eeea15b1d87566fce2bba35b6ea8b19d84911c4425716d30c460d56ed0bd8"
+  },
+  "related_tests_passed": 96,
+  "new_tests_passed": 24,
+  "coverage": {
+    "statements": 73,
+    "covered_statements": 73,
+    "branches": 14,
+    "covered_branches": 14
+  },
+  "engineering_base": "PASS",
+  "real_complete_join_executed": false,
+  "learner_exported": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "remaining": "Source-bound abstract projection and actor/trial integration after all actual source cohorts complete; no partial export."
+}
