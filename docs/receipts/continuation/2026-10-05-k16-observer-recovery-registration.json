@@ -1,0 +1,26 @@
+{
+  "schema": "saea-k16-observer-recovery-registration-v1",
+  "at_utc": "2026-10-05T07:16:05.167244+00:00",
+  "owner_decision": 227,
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/registration-complete-v1.json",
+    "sha256": "4e27ac9fcc2ad66351f456095ec89dfb780fbfaa7b1b13e5b92a14a6fa1a83f2"
+  },
+  "queue": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/queue-v1.json",
+    "sha256": "e46fe1fc095d88b956d86969a9b615678127bbb0b95966dbb2ee107c73f5eaae"
+  },
+  "combined_coverage": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/combined-coverage-v1.json",
+    "sha256": "22d8a01f492f80330cf76420e534e10e4074ac9656c988ad50b10735ce257a26"
+  },
+  "frozen_check_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/frozen-check-v1.py",
+    "sha256": "073bc02ccaeb6204c2f636fc97106c4c732ed9c9b0fa074c36117aee937166e3"
+  },
+  "members": 6,
+  "rows": 24,
+  "model_contacts": 0,
+  "scope": "One unchanged branch11 recovery plus five unstarted originals; preserve first ten and all failed evidence. Clean-source/live checks and exact root control disposition remain before dispatch.",
+  "future_worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v1"
+}

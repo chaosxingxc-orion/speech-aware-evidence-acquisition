@@ -1,0 +1,140 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-observer-recovery1-generation-v1",
+    "branch": 11,
+    "bundle_id": "2b0529b090d1b7c53d48f70a080e5b6d393ae4dd07e42c87f2c14fec9839e4a1",
+    "config_hash": "8b18023057cee5ae98043013d011b80a0157b1b92418a6ba0394c3f0474e9e8e",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-observer-recovery1-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-11-graph-v1",
+    "label": "branch-11",
+    "plan": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-11-generation-plan-registered-v1.json",
+      "sha256": "34f779501625ab11ade9d67e0838dc1abdfa8d0baa467191ff2bc05be24595d8"
+    },
+    "policy_and_request_config_unchanged": true,
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-OBSERVER-RECOVERY1-V1/phase-supply-v1.json",
+      "sha256": "b30f970bb9b9f936884fd86f54b111899f9e4e30c8ea7b42d59ce9d6b5d47303"
+    },
+    "recipe": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-11-analysis-recipe-v1.json",
+      "sha256": "db8c30fcc726268d200d357b49c691fb25da655658be8f4f92c833cd94895b29"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-OBSERVER-RECOVERY1-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-12-smoke-4-generation-v1",
+    "branch": 12,
+    "bundle_id": "ef7b53be7de080ca4ed67cc86e5c0f6fdbbfb28035100d6aabfd131fbae4aa39",
+    "config_hash": "dafbb3052ac49c325030263ad1963925a75ed57b1531e2df48d9435a495d44cf",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-12-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-12-graph-v1",
+    "label": "branch-12",
+    "plan": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-12-generation-plan-registered-v1.json",
+      "sha256": "36ac8dda9e9866b6988b6715b9d93f18ef1b5cd02c8927160c21c454df841997"
+    },
+    "policy_and_request_config_unchanged": true,
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "73092831be056435b5cfbc1c9b3c084fb73b0f95b2766db42e6f71bc64115e08"
+    },
+    "recipe": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-12-analysis-recipe-v1.json",
+      "sha256": "2200393e12ae314603dc8619f43f735217826431bd27daee2db23b059d13e857"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-13-smoke-4-generation-v1",
+    "branch": 13,
+    "bundle_id": "9d4c492b2e24c0eba6fef7eacf474f846d81310e148a10c078bf8a7d48e4d630",
+    "config_hash": "23e077901ffecae3e14c1639370852efa1565ac0df2bc89d60fec48314d9b890",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-13-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-13-graph-v1",
+    "label": "branch-13",
+    "plan": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-13-generation-plan-registered-v1.json",
+      "sha256": "e9ac4e39d17ffe953744adee1137b8bea7d66b43d466ac1d625f837cafb3496c"
+    },
+    "policy_and_request_config_unchanged": true,
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "4898c727bf21d7cede87b6f90150a5a9095b3dd41f6d13ea83a0bd51574e28f5"
+    },
+    "recipe": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-13-analysis-recipe-v1.json",
+      "sha256": "c9c8dddc5a8aacce73a6d181856632de409d9fba0261c4f8216a7e832c18d48c"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-14-smoke-4-generation-v1",
+    "branch": 14,
+    "bundle_id": "1fb6df3bfff726525403687e42cba9f136d0d2db1e211b58777481ae93e62118",
+    "config_hash": "a8a7b19415a4c2d74d316ed629cb9c345875e641b64408db2546297eb445bd79",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-14-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-14-graph-v1",
+    "label": "branch-14",
+    "plan": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-14-generation-plan-registered-v1.json",
+      "sha256": "3e598d15873cae6be8ddf9a9cbdb35a7ae967467b5160820987ff129fe4452f3"
+    },
+    "policy_and_request_config_unchanged": true,
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "ea7c1934b85b935a70a09137d469bb24a9a40bdbf938b5cf4fde7b81433bad00"
+    },
+    "recipe": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-14-analysis-recipe-v1.json",
+      "sha256": "a48acfd7bff9399e0fe3da5043ae06d4b3937706c7d1882d7fd077ff7338415e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-15-smoke-4-generation-v1",
+    "branch": 15,
+    "bundle_id": "3adce494be0ec509baa0caeb75a4c04aafc60ce839bd0eaaffb95f1768aaa6f2",
+    "config_hash": "662dc623dcd4b0b2c1b26187f0adf933fb11762d53156302e3ae9088f0dc5bb1",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-15-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-15-graph-v1",
+    "label": "branch-15",
+    "plan": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-15-generation-plan-registered-v1.json",
+      "sha256": "4b1fbc76aa123d869e8b1a2c36edf001ee2fe5828d149ecabec04b7084c42599"
+    },
+    "policy_and_request_config_unchanged": true,
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "5c7decb8a421ed10c477581ec2b078934da65cffb43b93c295606fa407d99b0d"
+    },
+    "recipe": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-15-analysis-recipe-v1.json",
+      "sha256": "8ee0085a612de3f7fa29b324d8102387303bc7ecec076b1ec2dfd36b969b7922"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-16-smoke-4-generation-v1",
+    "branch": 16,
+    "bundle_id": "1d8271280453c117119652ffe5ee1577e1184aade2579b3394d9ad5631e6bedb",
+    "config_hash": "f7c059d45bd009d9fcbee3d1dfc368b9ac61b79fdf1b0c1301b217ad08ba8f7c",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-16-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-16-graph-v1",
+    "label": "branch-16",
+    "plan": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-16-generation-plan-registered-v1.json",
+      "sha256": "ff8f2e8bd1be659ec71642177c6d961a313a96c9e8fc2fb98a537c4c7aa9a26f"
+    },
+    "policy_and_request_config_unchanged": true,
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "2105fb17233c5b5aa1a532904b4bb03dc354bdb8539cc5d5614c46783310cdcf"
+    },
+    "recipe": {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-context-template-k16-update2-observer-recovery1-v1/branch-16-analysis-recipe-v1.json",
+      "sha256": "08b4c70b3386beb8e819cbbd4db4b9912093ebb2c48f0918c1008bf4ba7ff1e1"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1"
+  }
+]

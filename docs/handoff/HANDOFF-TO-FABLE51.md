@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Six-member observer recovery registered; freeze and checks next
+
+[Exact registration](../receipts/continuation/2026-10-05-k16-observer-recovery-registration.json) admits preparation of one branch11 observer-recovery1 four-row identity and five unstarted original branch12-16 identities. Own branch11 supply output bytes are unchanged; all six request/policy configuration comparisons passed. No model/tokenizer/scorer contact occurred. Combined coverage explicitly preserves original completed branches01-10 and binds the six successors,64 accepted rows across sixteen original policies if every detailed audit passes. Original failed branch11 remains eight additional charged contacts and is never a completed proof.
+
+Freeze codex-context-template-k16-update2-observer-recovery1-v1,then run the registered six-member frozen check once. It also refuses any production-source difference beyond the two observer/diagnostic modules. STOP and old lease remain preserved; no control reconciliation or dispatch yet. A separate root disposition must verify exact dead processes, preserved evidence and current service before moving old controls. The original whole-family reader and normal-success transition are obsolete for this stopped epoch. No GPU monitor is active until new launch.
+
+
 ## Structural run stopped on unavailable host-memory observation; observer repair validated
 
 [Incident evidence](../receipts/continuation/2026-10-05-k16-update2-structural-memory-observer-stop.json) supersedes the running snapshot. Driver epoch2026-10-05T06:36:25Z ended at06:59:30Z on branch11: the Windows-memory observation returned unavailable after8.072seconds, so the process guard terminated its own worker. Last valid host memory was25.325748GiB; no measured floor violation is established. The original observer discarded its exact underlying error, so do not claim a confirmed CIM timeout. Ten engineering members completed4rows each; branch11 has8 charged model contacts and no completed acceptance; branches12-16 remain absent. Original worker, STOP, lease, traces and controls are preserved. Root reader58967 ended1 on STOP without structural/quality read. No driver/worker/scorer remains. The job-scoped automation slurp-15 was deleted after terminal verification.
