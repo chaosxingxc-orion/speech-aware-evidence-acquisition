@@ -30,10 +30,13 @@ while ($true) {
     $line=$pending.Result;
     if ($null -eq $line -or $line -eq 'STOP') { break };
     $q=ConvertFrom-Json $line;
+    $watch=[System.Diagnostics.Stopwatch]::StartNew();
     $free=$info.AvailablePhysicalMemory;
     $total=$info.TotalPhysicalMemory;
+    $watch.Stop();
     [Console]::Out.WriteLine(([PSCustomObject]@{
         nonce=$q.nonce; sequence=$q.sequence;
+        sample_elapsed_ms=$watch.Elapsed.TotalMilliseconds;
         sampled_at=[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds();
         available_bytes=$free; total_bytes=$total; observer_pid=$PID
     } | ConvertTo-Json -Compress));
@@ -167,7 +170,7 @@ class WindowsMemoryObserver:
                 # nonce contents or exception text from the transport.
                 if isinstance(value, dict):
                     self._diagnostics.update({k: value[k] for k in
-                        ('sequence', 'available_bytes', 'total_bytes', 'observer_pid')
+                        ('sequence', 'available_bytes', 'total_bytes', 'observer_pid', 'sample_elapsed_ms')
                         if _number(value.get(k))})
                     if _number(value.get('sampled_at')):
                         self._diagnostics['windows_sampled_at'] = value['sampled_at']/1000
@@ -176,15 +179,22 @@ class WindowsMemoryObserver:
                     type(value.get('sequence')) is not int,
                     value.get('sequence') != self._sequence,
                     not all(_number(value.get(k)) for k in
-                            ('sampled_at','available_bytes','total_bytes')),
+                            ('sampled_at','available_bytes','total_bytes','sample_elapsed_ms')),
                     type(value.get('observer_pid')) is not int,
                 )):
                     self._diagnostics['failure_code'] = 'response-identity-or-type'
                     raise ValueError('invalid observer response')
                 sampled = value['sampled_at']/1000
+                # A matching unpredictable request nonce establishes causality:
+                # this owned script samples physical memory only after reading
+                # that request. Receipt before the WSL monotonic deadline bounds
+                # its age by the roundtrip. Windows Stopwatch independently
+                # bounds read duration without comparing independent wallclocks.
+                # One millisecond covers elapsed-time serialization precision;
+                # it never extends the WSL deadline. Wall time is diagnostic only.
                 checks = (
-                    ('cross-clock-freshness', wall_start-1 <= sampled <= finished+1
-                     and -1 <= finished-sampled <= 1),
+                    ('request-causal-freshness', 0 <= value['sample_elapsed_ms']
+                     <= min(self._timeout, self._diagnostics['roundtrip_seconds'])*1000+1),
                     ('roundtrip-deadline', time.monotonic()-started <= self._timeout),
                     ('physical-memory-range', 0 <= value['available_bytes'] <= value['total_bytes']
                      and value['total_bytes'] > 0),
@@ -201,7 +211,9 @@ class WindowsMemoryObserver:
                         'host_memory_error': None, 'sampled_at': sampled,
                         'observer_pid': self._observer_pid,
                         'sequence': self._sequence,
-                        'transport': 'persistent-windows-physical-memory-v1'}
+                        'transport': 'persistent-windows-physical-memory-v1',
+                        'freshness': 'request-causal-monotonic-v1',
+                        'sample_elapsed_ms': value['sample_elapsed_ms']}
             except (OSError, ValueError, TypeError) as error:
                 self._failure = 'timeout' if isinstance(error, TimeoutError) else type(error).__name__
                 self._diagnostics.setdefault('failure_code', 'invalid-json' if isinstance(error, json.JSONDecodeError)

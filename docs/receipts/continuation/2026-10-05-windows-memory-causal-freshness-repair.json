@@ -1,0 +1,37 @@
+{
+  "schema": "saea-windows-memory-causal-freshness-repair-v1",
+  "recorded_at": "2026-10-05T13:19:02.432549+00:00",
+  "base_commit": "5ede5be796b4b6d3a85bf8d0bc7558fa23c4bd4b",
+  "branch": "codex/memory-observer-repair",
+  "established_defect": "Independent Windows/WSL wallclock comparison can reject request-causal fresh observations.",
+  "historical_incident_cause": "Unestablished; the discarded rejected response prevents exact attribution.",
+  "validation": {
+    "tests_first": {
+      "failed": 11,
+      "passed": 31
+    },
+    "final_tests_passed": 129,
+    "observer_branch_coverage_percent": 95,
+    "guard_branch_coverage_percent": 93,
+    "diff_check": "passed"
+  },
+  "original_source_probe_snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8b-memory-observer-long-probe-v1",
+    "reads": 85,
+    "errors": 0,
+    "pid": 44809,
+    "start_ticks": "53338932",
+    "result_exists": false,
+    "samples_sha256_snapshot": "1ee615bfc3b55b7a6b9cd7d5cb82e6fc55ef21e00784a20cf76837faf811120b",
+    "untouched": true
+  },
+  "freshness_proof": "Owned script samples after nonce/sequence request; receive before unchanged WSL monotonic deadline bounds age; Windows Stopwatch bounds same-clock query duration.",
+  "live_repaired_source_probe": "Not launched; remains required before prospective adoption.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "gpu_contacts": 0,
+  "recovery_dispatched": false,
+  "floor_changes": false,
+  "frozen_worker_changed": false,
+  "global_handoffs_changed": false
+}
