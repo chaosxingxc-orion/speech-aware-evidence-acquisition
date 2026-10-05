@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## GPU job-scoped fifteen-minute monitoring owner amendment
+
+The [direct owner instruction](../receipts/owner/2026-10-05-gpu-job-scoped-fifteen-minute-monitor.json) requires a script-only heartbeat every15 minutes after each actual admitted GPU experiment launch, then deletion when that bound experiment ends. Root must bind the exact launch receipt/epoch/worker/member list on activation, cancel immediately when observing verified completion/failure with no remaining admitted worker/scorer, and create a new heartbeat for each subsequent launch. The heartbeat also deletes itself on verified termination. Remain quiet while healthy; report only new actionable changes. No monitoring subagents, dispatch/retry/control changes, scientific reads or frozen-source edits. This supersedes the older blanket paused-monitor instruction prospectively.
+
+Current automation slurp has been updated to15 minutes but remains PAUSED because update-two has not launched GPU work. All16 child preparations and all18 N20 supplies are complete. Capacity code/registration is committed and serially integrated at29a796c398c4869d22439ef5ad09c465df5ad2fa. The new frozen capacity checkout is codex-context-template-k16-update2-capacity-v1. Existing model-free frozen-check session61060 is running; inspect its exact logs and completion, never restart it. After all16 checks pass, finalize-capacity-registration-v1.py seals the launch inputs; revalidate live gates, launch the Windows-owned job, record the launch receipt, then activate the15-minute heartbeat with those exact bindings. Capacity is nongenerative; its metadata is separate from the old completed generation queue. No new model/scorer contact at this amendment.
+
+
 ## K16 update-two preparation complete; freeze before capacity
 
 [Complete preparation](../receipts/continuation/2026-10-04-k16-update2-engineering-preparation-complete.json) records all16 children/48 engineering cells plus the separately completed18 N20 supplies. Sessions42864,76978 and93797 ended0. Exact16 capacity members are registered,warm-verified and ready for clean frozen checks; no tokenizer,generation or scoring contact occurred. Do not rerun preparation or registration.

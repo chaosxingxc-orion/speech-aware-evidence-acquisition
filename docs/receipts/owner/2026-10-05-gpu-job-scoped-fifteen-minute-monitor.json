@@ -1,0 +1,31 @@
+{
+  "schema": "saea-owner-gpu-job-monitor-lifecycle-v1",
+  "at_utc": "2026-10-05T00:08:14.445853+00:00",
+  "source": "Direct human instruction in the root chat",
+  "directive_english": "After every GPU experiment launch, start a scheduled task every fifteen minutes to inspect normal operation using scripts. Cancel the scheduled task when the experiment ends.",
+  "supersedes": "Earlier indefinite paused thirty-minute SLURP heartbeat policy for future GPU jobs only.",
+  "interval_minutes": 15,
+  "activate_after": "Actual admitted GPU job launch with exact launch receipt, epoch, worker and full member list.",
+  "cancel_when": "The bound experiment reaches a verified terminal operational state and no admitted worker or scorer remains active. Root deletes immediately when observing completion; a heartbeat that observes termination deletes itself.",
+  "method": "Read-only operational scripts; no monitoring subagents.",
+  "healthy_notifications": false,
+  "forbidden": [
+    "Dispatch or retry experiments",
+    "Clear STOP or reconcile controls",
+    "Read task answers or scientific quality",
+    "Change sources, geometry, scoring or READ authorization"
+  ],
+  "current_automation": {
+    "id": "slurp",
+    "interval_minutes": 15,
+    "status": "PAUSED",
+    "reason": "Update-two capacity worker is undergoing model-free frozen checks; no new GPU job has launched."
+  },
+  "current_preflight": {
+    "session": 61060,
+    "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-capacity-v1",
+    "commit": "29a796c398c4869d22439ef5ad09c465df5ad2fa",
+    "coordination": "coordination/context-template-k16-update2-capacity-owner227-v1",
+    "state": "Running; inspect existing process and logs, never resubmit."
+  }
+}
