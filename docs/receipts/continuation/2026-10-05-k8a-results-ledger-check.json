@@ -1,0 +1,20 @@
+{
+  "before_findings": 277,
+  "after_findings": 278,
+  "new_research_findings": 0,
+  "layout_only_difference": [
+    "results ledger check: finding: cross-check D: the umbrella page published-baselines.md is not reachable from this checkout, so the headline comparison was skipped"
+  ],
+  "passed_with_existing_findings": true,
+  "limitation": "Isolated checkout cannot run the umbrella headline comparison; main checkout covered35 rows. Neither check proves the full research objective.",
+  "logs": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/results-ledger-before-v1.log",
+      "sha256": "c70eb63749bc7b0cf45f61d2077567aa241e7727f7ae25e1a1a4f4d6166c1328"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/results-ledger-after-v1.log",
+      "sha256": "15e516484f7c87940175d03438159dfd7ddd091cf7eba28e66de79a605283d75"
+    }
+  ]
+}

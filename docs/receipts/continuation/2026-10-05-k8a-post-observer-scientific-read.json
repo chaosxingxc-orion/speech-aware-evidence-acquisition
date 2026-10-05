@@ -1,0 +1,177 @@
+{
+  "schema": "saea-k8a-post-observer-root-read-complete-v1",
+  "recorded_at_utc": "2026-10-05T11:52:28.881054+00:00",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1",
+  "authorization": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/root-read-authorization-v1.json",
+    "sha256": "f43b95422da87f4ace608d45b1a8c05b3b1e1aa490394cba91e57bea7d69aed3"
+  },
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/family-qualified-v1.json",
+    "sha256": "dfff7ab933a9ea39175f7ce2c89f5a04f19074bfcb7cc9dfed41baa3169bced9"
+  },
+  "analysis_family": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1/family.json",
+    "sha256": "043702b67105944cfc07befe64a65d2e4418675889ca079da88e6b161d3cc69d"
+  },
+  "analysis_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1/report.json",
+    "sha256": "8ad1ff43ef9332ace8f2f60b04728296ce294854e2caca1905f47fa9db3c9610"
+  },
+  "timing_summary": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1/timing-summary.json",
+    "sha256": "8e95b087e9005b0f2e234a791889784bb02f2deb1e4294f3d8877c62292d64d7"
+  },
+  "scientific_report": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/results/2026-10-05-context-template-k8a-update2-n20.md",
+    "sha256": "6dba78955277bf2718a5202cf318d11108cdaa7926d44cd0671f5c9be976c209"
+  },
+  "resource_observations": {
+    "members": [
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k8a-update2-n20-seed-post-observer-20261005T103727Z/finished.json",
+          "sha256": "777acfa0f18348b05faae20a2c7111ea8bbb349d3072522645dfa357227b5baa"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k8a-update2-n20-seed-post-observer-20261005T103727Z/events.jsonl",
+          "sha256": "98cd644a68ca56e05cf732d35098bee6ce9fffa9285af994aefb4fc1a2bcab9d"
+        },
+        "readings": 99,
+        "minimum_free_gib": 25.28286361694336
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-08-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-10-context-template-k8a-update2-n20-branch-08-20261005T113931Z/finished.json",
+          "sha256": "597a815352b2e89173e586df510474347cab6abe50496c2a32a06680cdf68ba0"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-10-context-template-k8a-update2-n20-branch-08-20261005T113931Z/events.jsonl",
+          "sha256": "544fc755c4e2722f2d8941e27321e073361bfba5c398fdcdb0dc3bc10558f6f5"
+        },
+        "readings": 89,
+        "minimum_free_gib": 26.678550720214844
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-2-context-template-k8a-update2-n20-seed-aa-20261005T104622Z/finished.json",
+          "sha256": "d4054a7e2021f0431ad75ffb8e116b0be28f7bcd66271da31522de9931467591"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-2-context-template-k8a-update2-n20-seed-aa-20261005T104622Z/events.jsonl",
+          "sha256": "53c9ce1a6ab2cd330a4b7135604f28b4a77a1b04ceea69316f627be1694ec95e"
+        },
+        "readings": 54,
+        "minimum_free_gib": 26.180774688720703
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-01-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-3-context-template-k8a-update2-n20-branch-01-20261005T105134Z/finished.json",
+          "sha256": "4ebcdb4cf70c6fe19931f970790fe4cf13b39fd6f3a693f2e106579ab4b0e369"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-3-context-template-k8a-update2-n20-branch-01-20261005T105134Z/events.jsonl",
+          "sha256": "44ed1716791c5a010c10f6f2375cd2715b0c70a232951da4bba4149899739fc7"
+        },
+        "readings": 47,
+        "minimum_free_gib": 25.559688568115234
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-02-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-4-context-template-k8a-update2-n20-branch-02-20261005T105613Z/finished.json",
+          "sha256": "97f6aa5ee00a52caf56da88977284cbea395837460965ac26603dffb8e87f828"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-4-context-template-k8a-update2-n20-branch-02-20261005T105613Z/events.jsonl",
+          "sha256": "3d5496baf85995baa249efb5191cead6ad201916c6766021cf6d987cfa657c29"
+        },
+        "readings": 67,
+        "minimum_free_gib": 26.25942611694336
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-03-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-5-context-template-k8a-update2-n20-branch-03-20261005T110229Z/finished.json",
+          "sha256": "2890092ccd92d6b3f751156141a0a707ca8c23eaea0165801ed820e0b0d85a2a"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-5-context-template-k8a-update2-n20-branch-03-20261005T110229Z/events.jsonl",
+          "sha256": "fc66a14b219372e627d6724958052b6cf3c33ab0c82050d5e800ce164c9d6cdb"
+        },
+        "readings": 95,
+        "minimum_free_gib": 26.481525421142578
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-04-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-6-context-template-k8a-update2-n20-branch-04-20261005T111109Z/finished.json",
+          "sha256": "dc98b86ee4a8a4907a1ebeeba4ff19e5de8dffe40b0c5459c15a7f20b1501bc9"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-6-context-template-k8a-update2-n20-branch-04-20261005T111109Z/events.jsonl",
+          "sha256": "db4971be8e0646c16db9b885412ad70bf385e1fa72b89fc654d1d069b666cb5a"
+        },
+        "readings": 94,
+        "minimum_free_gib": 26.330909729003906
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-05-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-7-context-template-k8a-update2-n20-branch-05-20261005T111941Z/finished.json",
+          "sha256": "51e0e85fd6356ae3e9ef9942f909cfc9c268b31718dfdbe8fbaced47eb8aa8cc"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-7-context-template-k8a-update2-n20-branch-05-20261005T111941Z/events.jsonl",
+          "sha256": "316c82394d8200cdd0323e6733f542a47e00d95380fd8af456c0225e13336c4c"
+        },
+        "readings": 48,
+        "minimum_free_gib": 26.33450698852539
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-06-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-8-context-template-k8a-update2-n20-branch-06-20261005T112421Z/finished.json",
+          "sha256": "7d7f9e778fa68ad37ceacfdc4c9b4cffb28aedb73721befec22bfe5bfa64f6ef"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-8-context-template-k8a-update2-n20-branch-06-20261005T112421Z/events.jsonl",
+          "sha256": "f75744bc7d925eed1f3febe387ce774e8d120002c240eb94753232495b3fc61b"
+        },
+        "readings": 65,
+        "minimum_free_gib": 26.31951904296875
+      },
+      {
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-07-V1",
+        "finished": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-9-context-template-k8a-update2-n20-branch-07-20261005T113028Z/finished.json",
+          "sha256": "cc8e95a4c2f0528cfba23d8953c706f6c977680201f5e9adafe823f77554d97d"
+        },
+        "events": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-9-context-template-k8a-update2-n20-branch-07-20261005T113028Z/events.jsonl",
+          "sha256": "3ebda9c7addeb587cd334fdcf8738ab549cb471ba90394db7c239dce42e63e7b"
+        },
+        "readings": 99,
+        "minimum_free_gib": 26.65725326538086
+      }
+    ],
+    "readings": 757,
+    "minimum_free_gib": 25.28286361694336,
+    "failures": 0
+  },
+  "official_score_successes": 10,
+  "official_score_failures": 0,
+  "trajectories": 200,
+  "model_contacts_added_by_analysis": 0,
+  "scorer_contacts_added_by_analysis": 0,
+  "automation_deleted": "slurp-k8a-post-observer-15m",
+  "formal_parent": "seed",
+  "adopted_policy": null,
+  "stable_benefit": false,
+  "learning_gain_established": false,
+  "next_decision": "Prepare unchanged K8B;no between-panel updates or optimizer export."
+}

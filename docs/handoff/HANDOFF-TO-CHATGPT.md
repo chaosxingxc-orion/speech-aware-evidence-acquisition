@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## K8A complete root read: tradeoffs observed, no stable adoption
+
+[Whole-family read](../receipts/continuation/2026-10-05-k8a-post-observer-scientific-read.json) and [scientific report](../results/2026-10-05-context-template-k8a-update2-n20.md):all ten members independently FINALIZED,200 trajectories,verified seals,one successful official score each and zero failures. Driver10:36:59Z completed11:47:12Z;no admitted processes or STOP remain. Exact root READ signed11:48:01Z and shared source-bound analysis completed. Monitor slurp-k8a-post-observer-15m deleted. Ten guards contain757 readings,min25.2829GiB,zero failures. Preserve controls/frozen sources.
+
+Branch08 F1 63.8668% versus seed55.4795% and A/A59.5867%;intent55% versus70%,non-first latency65.326s versus33.175s/34.467s. Both F1 contrast intervals cross zero. Branch01 is faster26.338s but lower F1 51.3422%/intent65%. All deliveries reliable;no stable benefit,adoption or learning-gain claim. Full tables include every stratum,all ten members and four nodes. Lower reuse and longer decoding both accompany slower candidates;do not infer cache eviction causality or require common-prefix text. Retain seed as formal parent.
+
+Root stage review in A coordination/root-stage-review-v1.json admits prospective unchanged K8B preparation,not dispatch. Exact prerequisite-only check passed with zero writes. Prepared B frozen-check-v1.py/run-frozen-check-v1.py under coordination/context-template-k8b-admitted-n20-owner227-v1 have syntax checks only;require completed clean checkout and explicit expected commit. Next run prepared admission-v2 once with durable capture,serially integrate,freeze,pass all ten exact checks and fresh20/8GiB/live-service/no-worker/no-STOP gates,then perform normal completed-control transition and a new15-minute monitor at actual launch. Preserve original branches09-16;no between-panel updates,pooled frontier,half-population learner export or automatic scale. Other-carrier holds and human-before8x400 remain.
+
 ## Eight completed K8A members retain measured memory headroom
 
 [Operational evidence](../receipts/continuation/2026-10-05-k8a-eight-member-resource-stability.json) pins569 physical Windows readings across the first eight completed guards. Minimum25.2829GiB;zero reader errors,complete sequences and one persistent observer per member. All eight exited normally. Signed cross-host timestamp offsets remain within the existing one-second tolerance. Per-member minima show no progressive depletion;this does not establish the old K16 incident cause or a causal benefit from splitting K. The original runtime also executed one member at a time. The remaining two members and full-family READ are pending;no quality or task answers were read. Keep20GiB startup/8GiB running,unchanged policies and existing exact driver/monitor. Historical completed guard records are not live health.
@@ -2306,7 +2314,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T11:35:37.771200+00:00
+Last refreshed: 2026-10-05T11:53:25.293262+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

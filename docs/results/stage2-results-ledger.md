@@ -1921,3 +1921,7 @@ Both four-row workers completed normally with53 model contacts and212 actual FIT
 ## 2026-10-04: K16 template N20 population - EXPLORATORY, NO ADOPTION
 
 All18 members finalized/sealed/scored once,360 trajectories; exact root READ complete. Highest candidate SLU60.8061% versus seed60.7229%,difference+0.0833pp CI95[-13.9759,11.3793]; non-first latency65.722s versus34.703s. Faster branch09 reaches26.999s but SLU56.3068%. All deliver reliably,which does not establish correctness. Retain seed andN20; no stable benefit or learned successor demonstrated. [All18 members,13 strata,both weightings and node/sample costs](2026-10-04-context-template-k16-n20.md). Complete abstract feedback is separately admitted; no concrete-content learner export,automatic expansion or held-carrier release.
+
+## 2026-10-05: context-template K8A update-two N20
+
+Complete200 trajectories,ten unique successful official scores,verified seals and exact root READ. See `docs/results/2026-10-05-context-template-k8a-update2-n20.md` and `docs/receipts/continuation/2026-10-05-k8a-post-observer-scientific-read.json`. Status: COMPLETE_EXPLORATORY_TRADEOFFS_NO_STABLE_ADOPTION. Branch08 F1 improves descriptively but intent declines and non-first latency approximately doubles;confidence intervals cross zero. Seed remains formal parent. Original unchanged K8B preparation is reviewed,not yet dispatched. No automatic expansion or learner export.
