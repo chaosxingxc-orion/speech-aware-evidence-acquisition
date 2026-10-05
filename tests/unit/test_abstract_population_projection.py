@@ -332,3 +332,43 @@ def test_source_change_during_template_binding_refuses_return(with_archive, monk
     monkeypatch.setattr(s.archive, "load_policy", changed)
     with pytest.raises(PolicyError):
         template_run(s)
+
+
+def test_real_measurement_join_uses_actual_admission_order_not_anonymous_roster(setup, monkeypatch):
+    from speech_aware_evidence_acquisition.rails.system_search_measurement import measured_rows
+    from speech_aware_evidence_acquisition.analysis.system_cache_cost import summarize_sample_execution_timing
+    from test_system_search_measurement import profile
+    s = setup
+    monkeypatch.setattr(subject.learning, "measured_rows", measured_rows)
+    original = subject.learning._candidate_groups
+    def groups(*args, **kwargs):
+        result = original(*args, **kwargs)
+        for index, group in enumerate(result):
+            for member in group["members"]:
+                member["execution"]["wall_time_seconds"] = 2. if index == 0 else 10.
+        return result
+    monkeypatch.setattr(subject.learning, "_candidate_groups", groups)
+    for cohort in s.cfg["cohorts"]:
+        family = s.joined["private_families"][cohort["cohort_id"]]
+        evidence, protocol = family[0], family[3]
+        measurement = profile()
+        protocol["measurement_profile"] = measurement
+        evidence["measurement_profile"] = measurement
+        evidence["feedback"] = {"groups": [{"sample_id": sid} for sid in cohort["sample_ids"]]}
+        order = list(reversed(cohort["sample_ids"]))
+        records = [{"schema": "saea-sample-execution-timing-v1", "sample_id": sid,
+                    "execution_unit_id": None, "admission_index": index, "expected_samples": len(order),
+                    "slot_count": 4, "queue_depth": 4, "batch_started_ns": 0,
+                    "admitted_ns": index*1000000000,
+                    "finished_ns": (index + (10 if index == 0 else 2))*1000000000,
+                    "status": "completed", "error_type": None} for index, sid in enumerate(order)]
+        report = summarize_sample_execution_timing(records, expected_sample_ids=order)
+        for summary in evidence["summaries"].values():
+            summary.update(sample_timing=deepcopy(report), timing_session_sha256="b"*64,
+                           intent=1., reliable_completion_rate=1., model_calls=4, tool_calls=0)
+    out = run(s)
+    for rows in out["learner_view"]["business_measurements"].values():
+        assert all(r["first_sample_seconds"] == 10. and r["non_first_mean_seconds"] == 2.
+                   and r["mean_sample_seconds"] == 6. for r in rows)
+    for cohort in out["learner_view"]["population"]["cohorts"].values():
+        assert all(m["terminal"]["sample_seconds"] == 2. for m in cohort["groups"][0]["members"])
