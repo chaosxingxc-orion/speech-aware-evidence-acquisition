@@ -98,7 +98,8 @@ def _sample(reader, policy):
         "reader_error": value.get("host_memory_error") if isinstance(value, Mapping) else error,
         "reader_diagnostics": value.get("host_memory_diagnostics", {}) if isinstance(value, Mapping) else {},
         "observer": {key: value[key] for key in
-                     ("transport", "observer_pid", "sequence", "sampled_at")
+                     ("transport", "observer_pid", "sequence", "sampled_at",
+                      "freshness", "sample_elapsed_ms")
                      if key in value} if isinstance(value, Mapping) else {},
     }
 

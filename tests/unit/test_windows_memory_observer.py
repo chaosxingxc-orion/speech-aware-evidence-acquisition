@@ -19,7 +19,8 @@ for line in sys.stdin:
     if line.strip() == 'STOP': break
     q=json.loads(line)
     value=dict(nonce=q['nonce'],sequence=q['sequence'],sampled_at=time.time()*1000,
-               available_bytes=20*1024**3,total_bytes=64*1024**3,observer_pid=os.getpid())
+               available_bytes=20*1024**3,total_bytes=64*1024**3,observer_pid=os.getpid(),
+               sample_elapsed_ms=0.01)
     CHANGE
     print(json.dumps(value),flush=True)
 """.replace("    CHANGE", "    " + change)
@@ -47,8 +48,8 @@ def test_fresh_reads_reuse_one_process_and_close_it():
 
 @pytest.mark.parametrize('change', [
     "value['nonce']='wrong'", "value['sequence']-=1",
-    "value['sequence']=True", "value['sampled_at']-=20000",
-    "value['sampled_at']+=20000", "value['sampled_at']=float('nan')",
+    "value['sequence']=True", "value['sample_elapsed_ms']=-1",
+    "value['sample_elapsed_ms']=20000", "value.pop('sample_elapsed_ms')", "value['sampled_at']=float('nan')",
     "value['available_bytes']=-1", "value['available_bytes']=True",
     "value['available_bytes']=100*1024**3", "value['total_bytes']=0",
     "value['observer_pid']=0", "value=[]", "value.pop('total_bytes')",
@@ -138,7 +139,7 @@ def test_default_guard_owns_observer_on_success_and_refusal(tmp_path, monkeypatc
 
 @pytest.mark.parametrize('change,code', [
     ("value['nonce']='PRIVATE_NONCE'", 'response-identity-or-type'),
-    ("value['sampled_at']-=20000", 'cross-clock-freshness'),
+    ("value['sample_elapsed_ms']=-1", 'request-causal-freshness'),
     ("value['available_bytes']=-1", 'physical-memory-range'),
     ("value['observer_pid']=0", 'observer-process-identity'),
     ("print('PRIVATE_BROKEN_JSON',flush=True);sys.exit(0)", 'invalid-json'),
@@ -158,12 +159,51 @@ def test_failures_preserve_bounded_diagnostics_without_raw_response(change, code
 
 def test_guard_receipt_keeps_clock_diagnostics(tmp_path, monkeypatch):
     from speech_aware_evidence_acquisition.core.flight import process_guard as guard
-    observer, _ = fixture_observer("value['sampled_at']-=20000 if q['sequence']>1 else 0")
+    observer, _ = fixture_observer("value['sample_elapsed_ms']=-1 if q['sequence']>1 else .01")
     monkeypatch.setattr(guard, 'WindowsMemoryObserver', lambda: observer)
     result = guard.run_guarded([sys.executable,'-B','-c','import time;time.sleep(20)'],
                               tmp_path/'guard',guard.MemoryPolicy(20,8,.01,1,.01))
     assert result.status == 'resource-stop'
     events = [json.loads(x) for x in (tmp_path/'guard/events.jsonl').read_text().splitlines()]
     failed = next(e for e in events if e.get('reason') == 'windows-reading-unavailable')
-    assert failed['reader_diagnostics']['failure_code'] == 'cross-clock-freshness'
-    assert failed['reader_diagnostics']['windows_sampled_at'] < failed['reader_diagnostics']['wall_start']-10
+    assert failed['reader_diagnostics']['failure_code'] == 'request-causal-freshness'
+    assert failed['reader_diagnostics']['sample_elapsed_ms'] == -1
+
+
+@pytest.mark.parametrize('offset', [-86400000, 86400000])
+def test_independent_wallclock_offset_does_not_reject_causally_fresh_sample(offset):
+    observer, _ = fixture_observer(f"value['sampled_at']+={offset}")
+    with observer:
+        assert observer()['host_free_gb'] == 20
+        assert observer()['sequence'] == 2
+
+
+@pytest.mark.parametrize('elapsed', [True, float('nan'), float('inf'), 1000])
+def test_invalid_or_impossible_same_clock_elapsed_fails_closed(elapsed):
+    expression = repr(elapsed) if isinstance(elapsed, (bool, int)) else f"float('{elapsed}')"
+    observer, _ = fixture_observer(f"value['sample_elapsed_ms']={expression}")
+    with observer:
+        assert observer()['host_free_gb'] is None
+        assert observer()['host_free_gb'] is None
+
+
+def test_windows_script_samples_after_request_and_uses_same_clock_duration():
+    from speech_aware_evidence_acquisition.core.session.windows_memory import SCRIPT
+    positions = [SCRIPT.index(token) for token in (
+        '$q=ConvertFrom-Json $line', 'Stopwatch]::StartNew()',
+        '$free=$info.AvailablePhysicalMemory', '$total=$info.TotalPhysicalMemory',
+        '$watch.Stop()', '[Console]::Out.WriteLine')]
+    assert positions == sorted(positions)
+    assert 'sample_elapsed_ms=$watch.Elapsed.TotalMilliseconds' in SCRIPT
+
+
+def test_guard_receipt_preserves_causal_freshness_proof(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.flight import process_guard as guard
+    observer, _ = fixture_observer("value['sampled_at']-=86400000")
+    monkeypatch.setattr(guard, 'WindowsMemoryObserver', lambda: observer)
+    result = guard.run_guarded([sys.executable, '-B', '-c', 'pass'],
+                              tmp_path/'guard', guard.MemoryPolicy(20,8,.01))
+    assert result.status == 'completed'
+    events = [json.loads(x) for x in (tmp_path/'guard/events.jsonl').read_text().splitlines()]
+    assert events[0]['observer']['freshness'] == 'request-causal-monotonic-v1'
+    assert events[0]['observer']['sample_elapsed_ms'] == .01
