@@ -1,0 +1,36 @@
+{
+  "schema": "saea-observer-four-row-engineering-live-launch-v1",
+  "at_utc": "2026-10-05T10:14:16.405687+00:00",
+  "driver_epoch": "2026-10-05T10:13:47Z",
+  "driver": {
+    "pid": 23609,
+    "parent_pid": 23608,
+    "start_ticks": "52282066",
+    "proc_stat": "23609 (bash) S 23608 23608 23608 34820 23608 4194304 2523 168099 0 130 0 1 242 49 20 0 1 0 52282066 5140480 864 18446744073709551615 102328905949184 102328906924845 140721528523072 0 0 0 65536 4 65538 1 0 0 17 7 0 0 0 0 0 102328907147696 102328907196336 102329156612096 140721528523947 140721528524080 140721528524080 140721528524778 0\n",
+    "argv": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ]
+  },
+  "worker": "/home/chao/saea-worktrees/codex-memory-observer-fitcap-recovery1-v1",
+  "commit": "f479244c9914772f25d261f152bf729c141be143",
+  "queue_sha256": "730d89804d84d9e927a7f9c9e7ca62cd0c414c00f55426026544c8265db0948a",
+  "members": 1,
+  "rows_per_member": 4,
+  "total_trajectories": 4,
+  "candidate_systems": 0,
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-STRUCTURE-V1",
+  "structural_read_registered": true,
+  "official_scores": 0,
+  "model_contacts_added_by_recorder": 0,
+  "memory_floors_gib": {
+    "running": 8,
+    "startup": 20
+  },
+  "scope": "One fresh original-seed four-row engineering with unchanged runtime policy and persistent Windows observer. Actual request FIT; no official scoring or task quality. Preserve failed K8A; K8B held.",
+  "automation": {
+    "id": "slurp-observer-recovery-15m",
+    "status": "ACTIVE",
+    "delete_at_terminal": true
+  }
+}

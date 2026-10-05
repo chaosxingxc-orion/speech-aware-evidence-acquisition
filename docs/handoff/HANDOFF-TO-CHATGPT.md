@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Corrected four-row observer engineering recovery launched
+
+[Verified launch](../receipts/continuation/2026-10-05-observer-fitcap-recovery-launch.json):Windows driver epoch2026-10-05T10:13:47Z,PID23609,frozen codex-memory-observer-fitcap-recovery1-v1 atf479244c9914772f25d261f152bf729c141be143. Registration/runtime/seed-policy/supply/decoding and explicit four-row native FIT cap208 equality passed. Model-free proof refuses original cap1040. Only source changes from old K8A remain the persistent observer and guard; role/data/knowledge unchanged. The exact zero-contact engineering10:04:55Z STOP,queue,logs,FIFO and stale lease were archived under batch-archive-20261005-observer-zero-contact-fit-cap-stop and the recovery coordination preserved-original-lease after dead identities were verified. Do not repeat reconciliation or dispatch.
+
+Run SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-V1 with matching lower-case generation attempt. Four rows,52generation/208FIT maximum,zero official scores,20/8GiB floors. Automation slurp-observer-recovery-15m active,script-only;delete at verified terminal/no admitted processes. Root may execute the pinned structural/node/sample-timing scripts only after exact complete worker. Intentional OPENED engineering state is not scientific completion. Any further failure stops. K8A scientific failure remains unread;K8B held. No automatic scientific recovery,proposal,scale or quality read.
+
+
 ## Observer engineering stopped before contacts on root FIT-budget mismatch
 
 [Exact incident](../receipts/continuation/2026-10-05-observer-engineering-fit-budget-stop.json):10:04:55Z driver stopped10:05:58Z; seed attempt OPENED with zero calls,zero FIT/scorer contacts. Root copied N20 contact_cap1040 into a four-row proof whose registered cap is208. Runtime refused before first request; the model-free preflight missed this equality. Persistent observer remained healthy through eight readings,min25.4087GiB;this is not a memory shortage or observer failure. Its worker exited1. Automation was deleted after no admitted driver/worker/scorer remains.
