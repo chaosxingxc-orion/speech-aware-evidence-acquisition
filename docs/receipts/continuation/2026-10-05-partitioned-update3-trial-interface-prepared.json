@@ -1,0 +1,32 @@
+{
+  "schema": "saea-partitioned-context-trial-interface-prepared-v1",
+  "at_utc": "2026-10-05T17:56:58.461482+00:00",
+  "authority": 227,
+  "contract": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-context-update3-v1/trial-contract-v1.json",
+    "sha256": "77b9d93a5fe789d69b2f50e2ddd1d488064555e84fa44e105e60b071c5fc6d9d"
+  },
+  "implementation": {
+    "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_partitioned_trial.py",
+    "sha256": "89c198bb52c9d79ade70cdf72811a5445f0be9219c2eada9a65d7724379bbbfc"
+  },
+  "tests": {
+    "relpath": "tests/unit/test_partitioned_context_trial.py",
+    "sha256": "d2d7db67d42f0242fe90c715ade477d7e0c143336adfc495c45423f2bf9df618"
+  },
+  "validation": {
+    "new_cases": 32,
+    "related_passed": 186,
+    "statement_coverage_percent": 100,
+    "branch_coverage_percent": 100,
+    "engineering_base": "PASS"
+  },
+  "actual_trial_read": false,
+  "runtime_admission": false,
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "scorer": 0
+  },
+  "interpretation": "Prospective result gate only. Require the new exact complete-family READ for every configured cohort, all seals/unique successful scores, exact original children and unchanged controls, fresh identities, same rosters/reference/envelope, and this contract pin in every protocol. Requalify both source joins after cost measurement. Return separate cohort outcomes and strict raw-utility-sum signal for root review; never auto-adopt, pool standardized returns or infer efficacy."
+}

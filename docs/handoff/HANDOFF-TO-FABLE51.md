@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Partitioned successor acceptance interface prepared
+
+[Prepared and tested interface](../receipts/continuation/2026-10-05-partitioned-update3-trial-interface-prepared.json) closes the missing complete-successor acceptance path.32 new/186 related tests pass;100% statement/branch coverage and engineering-base pass. The new root-registered trial-contract-v1.json binds the exact packet, original update record, configured successor population and unchanged branches08/15. Carry its pin as learning_trial_contract in every prospective cohort protocol.
+
+The wrapper uses existing complete-source READ/seal/score and measured-cost readers, preserves separate cohorts and controls, verifies exact child/parent identities and common frozen reference, and requalifies sources after measurement. It returns a strict raw-utility-sum root-review signal only; no auto-adoption, pooled standardized rewards, dispatch or efficacy claim. No actual trial read/contact occurred.
+
+Serial model-free engineering preparation remains live as exec9611/driver13749; ten candidates have completed at the latest poll. Poll that exact process and inspect durable exits; do not duplicate it. After all configured candidates finish, integrate their prepared configs/receipts, register/freeze exact capacity and structural proofs, then admit scientific cohorts. Keep all existing data/knowledge fixed, observe-only resource boundaries, other-carrier holds and human-before8x400.
+
 ## Third template update preserved and operationally compiled
 
 [Original completion](../receipts/continuation/2026-10-05-partitioned-update3-proposer-complete.json) records one GPT-6.1 Sol original169747-byte response:14 provisional and2 no-change positions, all16 spent. Provider contact/token usage remains unavailable. No repair, replacement, retry or efficacy claim. [Operational compilation](../receipts/continuation/2026-10-05-partitioned-update3-compiled.json) binds every position to its actually evaluated update2 parent and verifies all role bytes, layout and context settings. Root227 keeps branches08/15 unchanged in their original positions, with new cumulative-provenance identities; they are not omitted or replaced. Knowledge/data remain fixed; all positions stay provisional.

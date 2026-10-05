@@ -17,3 +17,11 @@ The output is a private optimizer packet and an actor-view file, initially unres
 The original response is complete:14 provisional and2 no-change positions, all16 spent. Preserve its exact bytes; no replacements. See the proposer-complete, no-change-disposition and compiled receipts dated2026-10-05. Each prospective operational graph applies the shared policy delta to that candidate's evaluated update2 graph and verifies actual role bytes. No-change successors have unchanged content with new provenance-addressed paths. All fixed knowledge/base fields are unchanged.
 
 Config-driven engineering preparation runs serially with separate child processes; its live handle and logs are in the engineering-preparation-started receipt. Preparation grants no contacts or runtime admission. Finish and verify every child before exact capacity/frozen-source registration. Keep generation and tokenizer budgets separate; retain complete source cohorts and every no-change position.
+
+## Complete successor acceptance interface
+
+Use `rails.system_context_partitioned_trial.qualify_partitioned_context_trial` with the pinned `trial-contract-v1.json` and an exact registered complete successor source join. Every prospective cohort protocol must carry `learning_trial_contract` equal to that contract pin and iteration3. The contract binds the immutable source packet, original update record, configured candidate positions and explicitly retained no-change branches08/15. It grants no GPU or result-read authority.
+
+The shared source reader independently requires every cohort READ/attempt/seal/unique complete official score before any new family quality is read. The wrapper requalifies original feedback, validates exact new children/unchanged controls, ordered inputs, frozen reference, sampling and measured-cost envelope, and rechecks both source joins after measurement. Keep all cohort outcomes separate. Use the strict total of unstandardized terminal utilities only as the previously registered root-review retention signal; no automatic next update, adoption, common scientific frontier or efficacy claim. Invalid positions stay held.
+
+32 new cases and186 related cases pass. The new interface has100% statement/branch coverage. No actual successor trial has been read or launched by this preparation.
