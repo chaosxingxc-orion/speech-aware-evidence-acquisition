@@ -1,0 +1,57 @@
+{
+  "schema": "saea-abstract-population-source-registration-v1",
+  "status": "ROOT_REGISTERED",
+  "scope": "abstract-feedback-source-join-only",
+  "runtime_admission": false,
+  "projection_config": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "families": [
+    {
+      "cohort_id": "original-a",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/analysis-recipe-v1.json",
+        "sha256": "b3251bf22e7299f5bfb89bc74dae9a46ddc857f14e882f5e2aa5b8f1f27597fa"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/original-a-flight-v3/frozen-check-v1.json",
+        "sha256": "c79dde2ad0aace9066b311b1c19c829893be96aa97427267578b1a7fb5dcd9ee"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1/family.json",
+        "sha256": "7cace503524593d3efb57c63e95cb548a5ca12d80d18240b2709294ee18489f3"
+      }
+    },
+    {
+      "cohort_id": "remaining-b1",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b1/analysis-recipe-v1.json",
+        "sha256": "cb7046d9b07d7b048df1f75bb38a9ddc88ecee0133b5108f285b51f9024cab73"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/remaining-b1-flight-v1/frozen-check-v1.json",
+        "sha256": "38eef3f83342032a3b29ea83920a98cf3e88634f0917cd20a5ea4cabcd337b94"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1/family.json",
+        "sha256": "3e08240ce6e3a8be157ea658b70188ae2127452380c101d6e72717378d9d117d"
+      }
+    },
+    {
+      "cohort_id": "remaining-b2",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/analysis-recipe-v1.json",
+        "sha256": "c290c724b986390d5ab73ce9673d8591aac6cca71e49793a955681b8f155d465"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/remaining-b2-flight-v1/frozen-check-v1.json",
+        "sha256": "9b822edf557875af82b4d3c468f44725674e96dad077a01fb282fd951e88443f"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1/family.json",
+        "sha256": "911d41e17d931657e7a0614923d5c04a34c5ac5baa5a6968a1e94169810b8ec1"
+      }
+    }
+  ]
+}

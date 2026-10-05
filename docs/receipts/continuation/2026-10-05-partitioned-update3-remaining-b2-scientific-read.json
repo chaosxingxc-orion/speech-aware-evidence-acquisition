@@ -1,0 +1,25 @@
+{
+  "at_utc": "2026-10-05T23:19:46.895759+00:00",
+  "status": "ROOT_COMPLETE_COHORT_READ",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1",
+  "report": {
+    "relpath": "docs/results/2026-10-05-partitioned-update3-remaining-b2-n20.md",
+    "sha256": "15883d09f3c14b4fb792ab9e9754e075a757cd5bc1281f502c40eebcf9e5e8fc"
+  },
+  "source_report": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1/report.json",
+    "sha256": "5e03535ca22c4054f72ab7b90b56d8fb29b2a1b6e652246aefe99b84f539fb38"
+  },
+  "timing": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1/timing-summary.json",
+    "sha256": "1bebee463f9e5533b6a9c13a2af265c2c9a1d85698a25a2f99b1bd58ec79f232"
+  },
+  "members": 6,
+  "trajectories": 120,
+  "model_contacts": 654,
+  "learner_exported": false,
+  "adopted": false,
+  "next_action": "Qualify the complete original prospective trial, retaining all16 positions and separate cohorts.",
+  "job_monitor_deleted": "slurp-update3-b2-15-min",
+  "driver_done": "2026-10-05T23:16:19Z"
+}
