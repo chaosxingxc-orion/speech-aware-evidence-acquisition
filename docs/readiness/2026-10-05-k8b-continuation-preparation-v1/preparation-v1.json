@@ -1,0 +1,44 @@
+{
+  "schema": "saea-k8b-continuation-preparation-v1",
+  "at_utc": "2026-10-05T11:00:09.319469+00:00",
+  "state": "PREPARED_NOT_ADMITTED",
+  "preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/prepare-admission-v2.py",
+    "sha256": "216187205b047c6eb4255f25034dbd26253030eff4bcfb55f9d135dfe9681cf9"
+  },
+  "helper_pins": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/prepared-helper-final-pins-v1.json",
+    "sha256": "125776d56533694ae4edd2159f5971e7f4834e409090f3c0a96cb4648352290f"
+  },
+  "negative_prerequisite_test": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8b-admitted-n20-owner227-v1/prerequisite-refusal-proof-v1.json",
+    "sha256": "c242970d5c178d40220b4979b41514392fdf356279422acce24393ac21a40384"
+  },
+  "scope": "Future exact unchanged ten-member K8B registration after the complete A root read and explicit stage review. This is a prepared orchestration helper, not an executed registration, full frozen check or dispatch.",
+  "expected_members": [
+    "seed",
+    "seed-aa",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "rows_per_member": 20,
+  "total_trajectories": 200,
+  "required_predecessor_read": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1",
+  "mutation_checks": {
+    "held_without_root_review": true,
+    "protected_file_hashes_unchanged": 24,
+    "new_readiness_absent": true,
+    "new_admission_absent": true
+  },
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "queue_changes": false,
+  "policies_changed": false,
+  "read_countersigned": false
+}

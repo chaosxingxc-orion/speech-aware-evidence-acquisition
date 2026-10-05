@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K8B continuation helper prepared; no B admission or dispatch
+
+[Prepared successor](../receipts/continuation/2026-10-05-k8b-continuation-helper-prepared.json) binds the future prepare-admission-v2.py under coordination/context-template-k8b-admitted-n20-owner227-v1. It requires exact completed A qualification,root READ,source-bound complete analysis and root-stage-review-v1.json before writing registration/config/ledger changes. The missing-review test returned75 with all24 protected hashes unchanged and no new readiness/admission. This is only a negative prerequisite proof,not a full preparation/frozen/runtime acceptance. See docs/readiness/2026-10-05-k8b-continuation-preparation-v1/README.md for exact stage-review pins and ordered continuation. Do not execute superseded v1 or infer B admission from preparation. Current A worker,queue and all template bytes remain untouched.
+
 ## Both controls complete; separate finalizer cost from sample latency
 
 [Operational timing](../receipts/continuation/2026-10-05-k8a-operational-cost-observation.json): seed and A/A are independently FINALIZED with one successful official job each and zero failures;125 and131 model contacts. Their official worker totals are273.157 and43.839seconds. These include verification,gates,scoring and finalization,not isolated evaluator or model time. A separate import-only measurement took0.818seconds with no model/scorer invocation or task read; it cannot retroactively attribute the first worker's delay. No cache or speedup conclusion follows from two observations. Keep this batch overhead separate from admission-to-settled sample latency and node prefill/decode timings in the eventual complete-family report.
