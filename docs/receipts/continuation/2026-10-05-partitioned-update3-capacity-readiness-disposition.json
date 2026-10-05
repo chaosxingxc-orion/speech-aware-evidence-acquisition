@@ -1,0 +1,17 @@
+{
+  "schema": "saea-model-free-capacity-registration-disposition-v1",
+  "at_utc": "2026-10-05T18:05:14.270849+00:00",
+  "authority": 227,
+  "original_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v1",
+  "successor_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2",
+  "observed": "First candidate registration stopped before any runtime/model/tokenizer/scorer contact: full composed config and protocol hashes include cell readiness, while supply preparation explicitly excludes readiness.",
+  "diagnosis": "Restoring only the original held readiness in the current composed dictionary exactly recovers the prepared configuration hash. The helper assertion incorrectly demanded equality across the intended admission transition.",
+  "proof": {
+    "prepared_hash": "fca5f4fe950c258002c5df61727307831c2250f9542a8d698372c1d94ac04769",
+    "ready_hash": "0be6c35f103aa76ba62ae2d7b38fcb27cdc2d12618e7267af52bff2b64cdb4f4",
+    "restored_only_readiness_hash": "fca5f4fe950c258002c5df61727307831c2250f9542a8d698372c1d94ac04769"
+  },
+  "disposition": "Preserve v1 helpers/logs/decision and exact first ready document. Restore the mutable precontact cell to its held metadata. Use a separately captured v2 registration, assert exact whole configuration equality modulo only readiness, unchanged nonprotocol plan fields and original warm supply identity. No proposal, prompt, data, budget or geometry changes.",
+  "generation_tokenizer_scorer_contacts": 0,
+  "runtime_dispatch": false
+}

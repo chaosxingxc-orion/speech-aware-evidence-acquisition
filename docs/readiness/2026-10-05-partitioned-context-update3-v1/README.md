@@ -25,3 +25,7 @@ Use `rails.system_context_partitioned_trial.qualify_partitioned_context_trial` w
 The shared source reader independently requires every cohort READ/attempt/seal/unique complete official score before any new family quality is read. The wrapper requalifies original feedback, validates exact new children/unchanged controls, ordered inputs, frozen reference, sampling and measured-cost envelope, and rechecks both source joins after measurement. Keep all cohort outcomes separate. Use the strict total of unstandardized terminal utilities only as the previously registered root-review retention signal; no automatic next update, adoption, common scientific frontier or efficacy claim. Invalid positions stay held.
 
 32 new cases and186 related cases pass. The new interface has100% statement/branch coverage. No actual successor trial has been read or launched by this preparation.
+
+## Engineering input preparation complete
+
+All configured candidates now have three own graph/capacity/structural supplies prepared and warm-verified with identical source selections. The complete receipt binds every per-candidate preparation. Actual tokenizer capacity and structural generation remain unexecuted. Capacity registration is a separately captured v2 model-free operation; see the readiness-disposition receipt for the preserved v1 metadata-only assertion failure. No proposals or task results were replaced.
