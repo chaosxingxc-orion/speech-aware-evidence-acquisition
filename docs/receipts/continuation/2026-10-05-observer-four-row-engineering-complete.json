@@ -1,0 +1,152 @@
+{
+  "schema": "saea-observer-four-row-engineering-complete-v1",
+  "at_utc": "2026-10-05T10:18:08.939476+00:00",
+  "driver_epoch": "2026-10-05T10:13:47Z",
+  "driver_completed_at": "2026-10-05T10:15:36Z",
+  "worker": "/home/chao/saea-worktrees/codex-memory-observer-fitcap-recovery1-v1",
+  "commit": "f479244c9914772f25d261f152bf729c141be143",
+  "engineering_acceptance": true,
+  "rows": 4,
+  "model_contacts": 25,
+  "actual_fit_receipts": 25,
+  "fit_endpoint_contacts": 100,
+  "official_scorer_contacts": 0,
+  "reviewer_handoffs_valid_visible": 7,
+  "omni_terminal_deliveries": 4,
+  "guard": {
+    "observer_windows_pid": 22744,
+    "count": 15,
+    "minimum_windows_available_gib": 25.292774200439453,
+    "first_seconds": 0.397248933033552,
+    "nonfirst_mean_seconds": 0.0013664494285226933,
+    "maximum_seconds": 0.397248933033552,
+    "all_fresh": true,
+    "exit_code": 0
+  },
+  "observer_exit": {
+    "observer_pid": 22744,
+    "alive": false,
+    "checked_at": "2026-10-05T10:17:02.0169919+00:00"
+  },
+  "sample_timing": {
+    "schema": "saea-system-sample-timing-v1",
+    "available": true,
+    "samples": [
+      {
+        "sample_id": "slurp:train:003560:audio-1501686037",
+        "admission_index": 0,
+        "status": "completed",
+        "error_type": null,
+        "elapsed_seconds": 22.252455714,
+        "admission_wait_seconds": 5.4098e-05,
+        "timing_record_sha256": "a27c18c0b99649f062f318cb063496fc5a6d69c33f692a782960c4f068d3dfb3"
+      },
+      {
+        "sample_id": "slurp:train:005407:audio-1502374837",
+        "admission_index": 1,
+        "status": "completed",
+        "error_type": null,
+        "elapsed_seconds": 28.708242405,
+        "admission_wait_seconds": 0.38067277,
+        "timing_record_sha256": "4ee4834c56cb01f4a02928855069792c813ef1e003d6c5c109da5ca182ab4987"
+      },
+      {
+        "sample_id": "slurp:train:005513:audio-1494513310",
+        "admission_index": 2,
+        "status": "completed",
+        "error_type": null,
+        "elapsed_seconds": 29.4635017,
+        "admission_wait_seconds": 0.385072041,
+        "timing_record_sha256": "5f17df996b57a4dbc370dff4e7ee0fcee71b63ae4ee9f65d77de0bd627de8659"
+      },
+      {
+        "sample_id": "slurp:train:011838:audio-1490369500",
+        "admission_index": 3,
+        "status": "completed",
+        "error_type": null,
+        "elapsed_seconds": 29.476851162,
+        "admission_wait_seconds": 0.3884732,
+        "timing_record_sha256": "6b2d715d70cb2420bb72f126a14dc83944469785348bf31c49efe757fb1a0b59"
+      }
+    ],
+    "all_samples": {
+      "count": 4,
+      "mean_seconds": 27.47526274525,
+      "p50_seconds": 29.0858720525,
+      "p95_seconds": 29.476851162
+    },
+    "first_admitted_sample": {
+      "sample_id": "slurp:train:003560:audio-1501686037",
+      "admission_index": 0,
+      "status": "completed",
+      "error_type": null,
+      "elapsed_seconds": 22.252455714,
+      "admission_wait_seconds": 5.4098e-05,
+      "timing_record_sha256": "a27c18c0b99649f062f318cb063496fc5a6d69c33f692a782960c4f068d3dfb3"
+    },
+    "excluding_first": {
+      "count": 3,
+      "mean_seconds": 29.21619842233333,
+      "p50_seconds": 29.4635017,
+      "p95_seconds": 29.476851162
+    },
+    "first_slot_count_admissions": {
+      "count": 4,
+      "mean_seconds": 27.47526274525,
+      "p50_seconds": 29.0858720525,
+      "p95_seconds": 29.476851162
+    },
+    "after_first_slot_count_admissions": {
+      "count": 0,
+      "mean_seconds": null,
+      "p50_seconds": null,
+      "p95_seconds": null
+    },
+    "admission_wait": {
+      "count": 4,
+      "mean_seconds": 0.28856802724999997,
+      "p50_seconds": 0.3828724055,
+      "p95_seconds": 0.3884732
+    },
+    "batch_dispatch_wall_seconds": 29.865324362,
+    "batch_dispatch_wall_seconds_per_sample": 7.4663310905,
+    "completed_samples": 4,
+    "failed_samples": 0,
+    "eligible_for_efficiency_comparison": true,
+    "slot_count": 4,
+    "queue_depth": 4,
+    "first_sample_rule": "First admitted roster member, regardless of finish order; exclude exactly this member from the separately reported remaining-sample mean.",
+    "cold_start_limit": "First slot-count admissions are a diagnostic group, not a proven cold wave; the remaining samples are not guaranteed warm. No slow-sample trimming.",
+    "timing_scope": "Monotonic admission-to-settled-workflow wall time includes internal model/tool waits, FIT and cleanup. Pre-admission wait is separate. Roster preparation, final persistence and official scoring are excluded. Batch wall per sample measures throughput, not individual latency.",
+    "quality_constraint": "Executor completion does not establish answer correctness or reliability. Compare official task quality and delivery reliability alongside latency; cache reuse is diagnostic only.",
+    "content_sha256": "787ad784a05fe4556e9567c99c9d91c7b15375dc0042020177375e9a8380220a"
+  },
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "da11b45e4c59a7847ed86d0e9a83e1dc6042f184d99358c6325d0a0c99e3259d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/root-node-timing-v1.json",
+      "sha256": "6c33f94a34e57ef3e76e93faa0022b0d3c6477ec5d0ad8c6241661aee63f5951"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/root-sample-timing-v1.json",
+      "sha256": "70e16586721c9b5fb6ae0ec98b133417769672adb3e82b17c7d26322f6f4ee6d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/guard-observation-summary-v1.json",
+      "sha256": "ffc8107c7aa4bbdeb7e8429fc56b204425941162aadc52640f2ad8fd38fc0a4e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/observer-exit-v1.json",
+      "sha256": "165cc83579785d782473e1a6062964f0a9c1b71024ceaa1aad21b3b69212f77d"
+    }
+  ],
+  "automation": {
+    "id": "slurp-observer-recovery-15m",
+    "status": "DELETED after driver terminal and absent admitted processes"
+  },
+  "scope": "One four-row structural proof of unchanged seed through the persistent observer. No task-quality read,official scoring,stable memory-reliability guarantee,speedup claim,scientific benefit or optimizer feedback. Engineering OPENED lifecycle is intentional; do not score/reseal.",
+  "next": "Root may review a fresh scientific K8A entry after this proof,with a new failed-seed successor identity,original eight candidate policies and all unstarted members preserved. No scoring or partial read of failed119-contact20-row seed. Exact complete10-member registration,new READ,clean frozen gates and explicit no-contact completed-control transition required before dispatch. K8B stays held until K8A root review; do not update its policies between panels. No automatic scale."
+}
