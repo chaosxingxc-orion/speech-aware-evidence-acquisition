@@ -1,0 +1,39 @@
+{
+  "schema": "saea-precontact-helper-disposition-v1",
+  "utc": "2026-10-05T18:15:36.329678+00:00",
+  "authority": "owner227",
+  "original_exit": {
+    "exit_code": 1,
+    "utc": "2026-10-05T18:14:56.350290+00:00"
+  },
+  "cause": "The frozen-check helper shadowed the imported gc module with a CampaignCell variable, failing at gc.collect after the first member checks.",
+  "fix": "Rename the local graph cell only; use new helper and new output paths. Preserve original code and all logs.",
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "frozen_worker_changed": false,
+  "validation": "AST parse passes; gc has no assignment target; collect call retained.",
+  "next": "Run corrected model-free frozen check once; no runtime dispatch until every member passes.",
+  "source_receipts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/frozen-check-v1.py",
+      "sha256": "a1c8c8c4822e80f6db22b92bddbb49c3a0d9ca8388723fc72b79388978f60e59"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/frozen-check.stderr.log",
+      "sha256": "eab9aadf208f05c14e9f0776889c4256e06c736858461b81208f2af6acec4a39"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/frozen-check.exit.json",
+      "sha256": "fef758b423d779de27d550e0884f84e71e6443cf987f8cc09f25435cfac049c4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/frozen-check-v2.py",
+      "sha256": "f5a18682a8879839bb8c5da74b7e625d40236006e7f347ca228107cb6b56916d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/finalize-capacity-registration-v2.py",
+      "sha256": "a8e495246e110bf7b1af2f4cca5493b2c662b682f0c12c02f98e57d6d2235037"
+    }
+  ]
+}

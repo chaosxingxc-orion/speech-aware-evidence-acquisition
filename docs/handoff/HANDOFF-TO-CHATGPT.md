@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Frozen update3 preflight in progress
+
+The registered capacity worker is frozen at b691e86222adb55b77a0af97663d493b21efc2a9 in /home/chao/saea-worktrees/codex-partitioned-update3-capacity-v1. Original model-free frozen checking stopped after the first member because the helper shadowed Python gc with a CampaignCell. [Root227 disposition](../receipts/continuation/2026-10-05-partitioned-update3-frozen-helper-disposition.json) preserves original code/logs and renames that local variable in frozen-check-v2.py, using separate v2 output files. No model/tokenizer/scorer contacts or frozen source edits occurred.
+
+Corrected check is running as exec58357 through coordination/partitioned-update3-capacity-owner227-v2/frozen-check-v2.py. Poll that exact handle or inspect frozen-check-v2.exit.json; never duplicate it. Only after all configured members pass, run finalize-capacity-registration-v2.py (the v1 finalizer points at the old receipt), revalidate current service/STOP/lease/memory, and launch the registered Windows capacity task with a job-scoped fifteen-minute monitor. Structural/scientific work remains held. Live service was healthy idle and Windows free23.668GiB at18:14Z; revalidate rather than trusting this snapshot.
+
 ## Configured update3 capacity registration complete
 
 [Registration complete](../receipts/continuation/2026-10-05-partitioned-update3-capacity-prepared.json): all16 actual-policy-bound capacity members registered and warm-verified with separate serial processes; total4752 tokenizer endpoints, zero generation/scoring. Session39205 is terminal exit0 with durable outer/per-child receipts. No tokenizer/model/scorer contact or GPU launch has occurred. Preparation session9611 also ended successfully; do not poll or rerun either.
