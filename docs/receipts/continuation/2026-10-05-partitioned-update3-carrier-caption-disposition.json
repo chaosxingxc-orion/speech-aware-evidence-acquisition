@@ -1,0 +1,248 @@
+{
+  "at_utc": "2026-10-05T20:25:48.602945+00:00",
+  "authority": "Root227 precontact metadata correction",
+  "cause": "The prospective exposure carrier caption used uppercase SLURP, which the exact lower-case carrier-key gate rejects. The registration checker did not exercise this runtime gate.",
+  "failed_worker": "/home/chao/saea-worktrees/codex-partitioned-update3-original-a-n20-v1",
+  "failed_commit": "45808f730",
+  "failed_check": "original-a-flight-v1/frozen-v1.exit.json",
+  "disposition": "Preserve failed worker/check/logs. Correct only unconsumed prospective ledger carrier captions to exact slurp. Freeze a new identical-policy worker and check all members. No attempt/model/tokenizer/scorer contact, retry, queue/STOP change or restart occurred.",
+  "changed_rows": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-AA-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-AA-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-01-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-01-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-02-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-02-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-03-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-03-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-04-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-04-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-05-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-05-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-06-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-06-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-07-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-07-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-08-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-08-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-SEED-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-SEED-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-SEED-AA-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-SEED-AA-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-09-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-09-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-10-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-10-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-11-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-11-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-12-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-12-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-SEED-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-SEED-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-SEED-AA-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-SEED-AA-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-13-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-13-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-14-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-14-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-15-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-15-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-16-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-16-FIT-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1",
+      "old": "SLURP existing UPDATE2 first20",
+      "new": "slurp existing UPDATE2 first20"
+    }
+  ],
+  "model_contacts": 0,
+  "scientific_quality_read": false
+}
