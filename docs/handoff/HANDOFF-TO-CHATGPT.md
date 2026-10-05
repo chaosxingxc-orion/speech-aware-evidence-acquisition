@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete update3 rejected by its registered learning criterion
+
+[Root retention decision](../receipts/continuation/2026-10-05-partitioned-update3-root-retention.json) supersedes the live offline-reader snapshots below. The exact corrected continuation exited0 at2026-10-05T23:50:05.047158Z; PID68643/session42477 are terminal. Complete qualification covers all16 candidate positions and320 candidate trajectories across three independently controlled cohorts. Whole-population utility decreases from-56.15925390968045 to-59.5941577658888. Reject the whole update and retain the before-population as search parents; seed remains formal incumbent. No optimizer-state mutation,learner export,new GPU admission or model/scorer contact occurs in this decision.
+
+Preserve every evaluated child and no-change08/15. Candidate mean latency improves55.144s to47.767s while quality/intent changes are mixed; no stable business/learning gain follows. See [root interpretation and next protocol](../readiness/2026-10-05-partitioned-trial-requalification-v1/root-decision.md). Prospectively prepare abstract rejected-trial history without activating rejected policies,keep N20/fixed assets/configuration-derived bounds,and retain human review before8x400 and other-carrier holds. The440-trajectory GPU sequence is complete and its monitor deleted. No unlock,restart or cache flush is needed.
+
+
 ## Corrected offline whole-trial continuation is live
 
 [Actual continuation](../receipts/continuation/2026-10-05-partitioned-trial-continuation1-started.json) started under the tested correction at08dd3d1de71e5cae3819e180bd058e2e69a0a806, serially integrated in main. Existing child PID68643/start_ticks57054640, tool session42477, runs the unchanged complete-trial-entry-v1.py evaluate exactly once under root227 disposition. Revalidate the live identity; collect its existing stdout/stderr/exit capture at coordination/partitioned-update3-scientific-preparation-v1/trial-requalification-continuation1. Do not start another reader because an observation interval expires. This replaces the old failed PID66917/session42624 snapshot. The old refusal is preserved.
@@ -2766,7 +2773,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T23:36:23Z
+Last refreshed: 2026-10-05T23:52:21.840596+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

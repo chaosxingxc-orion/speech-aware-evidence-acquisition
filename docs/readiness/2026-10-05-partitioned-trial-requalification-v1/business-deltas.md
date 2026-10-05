@@ -24,3 +24,18 @@ These are descriptive before/after point estimates from all complete root READs.
 Candidate mean sample time averages55.144seconds before and47.767seconds after across equal-size positions. Calls fall1664to1598. All reliable completion rates are1.0. These descriptive aggregates are not one pooled official F1 or common frontier. No-change positions08/15 remain in the table and show nonzero observed variation; fixed temperature and seed do not establish bitwise reproducibility.
 
 All source report hashes and control measurements are retained in data-root coordination/partitioned-update3-scientific-preparation-v1/update3-business-deltas-v1.json.
+
+## Joint assembly example: branch16
+
+The recorded original proposal jointly changes Solver,Reviewer and Planner text plus native_role_query_placement to the supported default. It does not change Perception role text, knowledge or data. The system-level before/after observation moves F1 from54.6228percent to60.7339percent with intent unchanged65percent, mean latency71.030to26.583seconds and non-first latency70.688to25.947seconds. Both quality and efficiency move favorably against this branch's historical parent point estimate, but this does not demonstrate a stable advantage over the seed or isolate one causal component.
+
+| Node | Contacts before / after | Input reuse before / after % | Mean prefill before / after ms | Mean decode before / after ms |
+|---|---|---|---|---|
+| perception | 20 / 20 | 62.73 / 62.68 | 1268.09 / 707.40 | 14435.23 / 4412.25 |
+| planner | 28 / 26 | 20.59 / 89.52 | 4919.64 / 605.98 | 406.81 / 151.84 |
+| reviewer | 28 / 26 | 21.38 / 93.32 | 4863.43 / 471.63 | 14500.57 / 4133.43 |
+| solver | 28 / 26 | 21.37 / 48.52 | 5787.68 / 2976.20 | 5053.07 / 3819.65 |
+
+The contact reduction alone is modest; lower measured prefill and decode accompany the faster complete trajectories. Multiple context fields changed together and unchanged-policy controls vary, so do not attribute the difference solely to cache reuse, fewer visits or a role text. Preserve independent node contexts and supported assembly freedom; quality, intent, reliability and actual mean/non-first latency remain the objectives.
+
+All sixteen change dispositions are preserved in data-root coordination/partitioned-update3-scientific-preparation-v1/update3-template-change-diagnostic-v1.json. This is root analysis, not a learner export or retention decision.

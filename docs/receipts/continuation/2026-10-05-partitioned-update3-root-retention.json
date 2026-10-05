@@ -1,0 +1,53 @@
+{
+  "schema": "saea-partitioned-context-root-retention-v1",
+  "recorded_at_utc": "2026-10-05T23:52:21.840596+00:00",
+  "owner_authority": 227,
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/complete-trial-qualified-v1.json",
+    "sha256": "3678ed13b5850447e0f512b934627f4988cadf5779fa6e70e3b12044c713cd46"
+  },
+  "continuation_exit": {
+    "at_utc": "2026-10-05T23:50:05.047158+00:00",
+    "exit_code": 0,
+    "result_exists": true,
+    "stdout_sha256": "400527d5cca7f007d171c51c58b7890ed9c3b06f00aa36cd6992cf82e42b4588",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "contacts_added": 0
+  },
+  "criterion": "strict-population-utility-sum",
+  "utility_before": -56.15925390968045,
+  "utility_after": -59.5941577658888,
+  "utility_delta": -3.4349038562083507,
+  "decision": "REJECT_WHOLE_UPDATE_RETAIN_BEFORE_POPULATION",
+  "formal_incumbent": "unchanged seed",
+  "cohorts": {
+    "original-a": {
+      "before": -33.29178512555497,
+      "after": -36.6017600995545
+    },
+    "remaining-b1": {
+      "before": -14.50996521745102,
+      "after": -15.480497677738764
+    },
+    "remaining-b2": {
+      "before": -8.35750356667446,
+      "after": -7.511899988595539
+    }
+  },
+  "preserve_all_candidates": true,
+  "preserve_no_change_positions": [
+    "branch-08",
+    "branch-15"
+  ],
+  "optimizer_state_mutated": false,
+  "new_learner_export": false,
+  "new_runtime_admission": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "next": "Prepare a prospectively registered abstract-only template learner protocol that retains the rejected trial as history without activating its policies. Keep N20, fixed knowledge/data and original parent identities. Do not change the historical acceptance rule or cherry-pick a replacement population.",
+  "limits": [
+    "No stable business improvement or learning advantage established.",
+    "No pooled cross-cohort frontier or official F1 invented.",
+    "Human decision remains required before 8x400; other-carrier holds remain."
+  ]
+}
