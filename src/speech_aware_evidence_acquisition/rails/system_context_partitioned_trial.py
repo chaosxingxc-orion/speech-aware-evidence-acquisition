@@ -148,3 +148,88 @@ def qualify_partitioned_context_trial(archive, *, input_sha256, contract_pin, re
         'runtime_admission':False,'automatic_next_iteration':False,'contacts_added':{'model':0,'scorer':0},
         'interpretation':'Complete reused-input optimization signal, not efficacy, causal node credit, '
                          'a pooled scientific frontier or formal policy adoption.'}
+
+
+def prepare_rejected_context_history(archive, *, registration_pin, repo_root, data_root):
+    """Requalify an entire rejected trial as history while retaining original parents.
+
+    Return an in-memory abstract observation and private exposure custody. Never
+    activate children, persist optimizer state, reserve a proposal, or export to an
+    actor. A future update must separately bind both this history and its parents.
+    """
+    from copy import deepcopy
+    from ..analysis.abstract_population_sources import _external
+
+    root, data = Path(repo_root).resolve(), Path(data_root).resolve()
+    registration = json.loads(_read_pin(registration_pin, root))
+    require(set(registration) == {'schema', 'status', 'input_sha256', 'trial_contract',
+            'root_decision', 'successor_projection', 'runtime_admission'}
+            and registration['schema'] == 'saea-rejected-context-history-registration-v1'
+            and registration['status'] == 'ROOT_REGISTERED'
+            and registration['runtime_admission'] is False,
+            'registered history-only preparation required')
+    decision = json.loads(_read_pin(registration['root_decision'], root))
+    require(decision.get('schema') == 'saea-partitioned-context-root-retention-v1'
+            and decision.get('decision') == 'REJECT_WHOLE_UPDATE_RETAIN_BEFORE_POPULATION'
+            and decision.get('preserve_all_candidates') is True
+            and decision.get('new_runtime_admission') is False
+            and decision.get('new_learner_export') is False,
+            'explicit root rejection with no activation required')
+    saved = _external(decision['qualification'], data)
+    qualified = qualify_partitioned_context_trial(archive,
+        input_sha256=registration['input_sha256'], contract_pin=registration['trial_contract'],
+        request={'source_registration_pin': saved['trial_sources']}, repo_root=root, data_root=data)
+    require(qualified == saved and qualified['utility_increased'] is False
+            and all(decision.get(k) == qualified[k] for k in
+                    ('criterion', 'utility_before', 'utility_after')),
+            'complete rejected trial and original root decision must agree')
+    packet, _, ids = learning._population_update_input(archive, registration['input_sha256'])
+    config = load_population_config(packet['source_population'], repo_root=root)
+    contract = json.loads(_read_pin(registration['trial_contract'], root))
+    original = json.loads(_read_pin(contract['original_update_record'], data))
+    expected = {r['candidate_id']: r['bundle_id'] for r in original['records']}
+    projected = project_registered_population(projection_pin=registration['successor_projection'],
+        repo_root=root, data_root=data, policy_archive=archive)
+    custody, view = projected['private_custody'], projected['learner_view']
+    require(custody['source_join'] == qualified['trial_sources']
+            and custody['projection_registration'] == registration['successor_projection'],
+            'history must project the exact complete rejected successor sources')
+    require(list(view['templates']) == [c['cohort_id'] for c in config['cohorts']],
+            'every rejected source cohort required')
+    exposures = set(packet['feedback_sample_ids'])
+    documents = {}
+    for cohort in config['cohorts']:
+        templates = view['templates'][cohort['cohort_id']]
+        require(list(templates) == cohort['candidate_ids'], 'every rejected candidate required')
+        for cid, template in templates.items():
+            document = archive.load_policy(expected[cid]).as_json()
+            require(template == {'bundle_id': expected[cid], **{k: document[k]
+                    for k in ('role_text', 'context_layout', 'node_context')}},
+                    'history templates must match the evaluated rejected policies')
+            documents[expected[cid]] = document
+            for source in document['cumulative_sources']:
+                exposures.update(source['sample_ids'])
+    # Repeat immutable bindings after potentially long native-source projection.
+    for key, value in ((registration_pin, registration), (registration['root_decision'], decision),
+                       (registration['trial_contract'], contract)):
+        require(json.loads(_read_pin(key, root)) == value, 'history authority changed during preparation')
+    require(_external(decision['qualification'], data) == saved
+            and json.loads(_read_pin(contract['original_update_record'], data)) == original,
+            'history qualification or original proposal changed')
+    for bundle, document in documents.items():
+        require(archive.load_policy(bundle).as_json() == document, 'history policy changed')
+    current, _, _ = learning._population_update_input(archive, registration['input_sha256'])
+    require(current == packet, 'active parents changed during history preparation')
+    return {'schema': 'saea-rejected-context-learning-history-v1',
+        'active_parent_bundle_ids': {cid: packet['policies'][cid]['bundle_id'] for cid in ids},
+        'learner_history': {'disposition': 'rejected-retain-before-population',
+            'criterion': qualified['criterion'], 'utility_before': qualified['utility_before'],
+            'utility_after': qualified['utility_after'], 'observation': deepcopy(view),
+            'instructions': 'These evaluated policies are rejected historical attempts, not active parents. '
+                'Use every adverse, favorable and no-change observation without retroactive selection. '
+                'Keep source cohorts and their control pairs separate; node causal credit is unmeasured.'},
+        'private_custody': {'registration': registration_pin,
+            'qualification': decision['qualification'], 'source_projection': deepcopy(custody),
+            'feedback_sample_ids': sorted(exposures), 'parent_input_sha256': packet['input_sha256']},
+        'runtime_admission': False, 'learner_exported': False,
+        'contacts_added': {'model': 0, 'scorer': 0}}

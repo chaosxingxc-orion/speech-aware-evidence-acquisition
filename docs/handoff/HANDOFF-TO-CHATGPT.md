@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Rejected-trial history preparation registered; real-source proof pending
+
+[History readiness](../readiness/2026-10-05-rejected-template-history-v1/README.md) extends the shared complete-trial reader with an in-memory history interface. It requalifies the entire rejected trial and separately projects all rejected templates/abstract outcomes while returning the original active parent identities. Private exposure remains separate.144 related tests pass; changed module coverage is100percent statement/branch. No model/scorer contacts,actor export,optimizer mutation or runtime admission. Exact history/projection registrations bind all three completed update3 cohorts. Real-source preparation remains pending until an actual launched reader succeeds.
+
+The existing v1 optimizer packet still requires separate prospective integration for companion history; do not send this preparation directly to a proposer. Preserve the root rejection and before-population,then bind history and cumulative exposure in a tested next protocol. Keep N20 and all prior scope boundaries.
+
+
 ## Complete update3 rejected by its registered learning criterion
 
 [Root retention decision](../receipts/continuation/2026-10-05-partitioned-update3-root-retention.json) supersedes the live offline-reader snapshots below. The exact corrected continuation exited0 at2026-10-05T23:50:05.047158Z; PID68643/session42477 are terminal. Complete qualification covers all16 candidate positions and320 candidate trajectories across three independently controlled cohorts. Whole-population utility decreases from-56.15925390968045 to-59.5941577658888. Reject the whole update and retain the before-population as search parents; seed remains formal incumbent. No optimizer-state mutation,learner export,new GPU admission or model/scorer contact occurs in this decision.
@@ -2773,7 +2780,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T23:52:21.840596+00:00
+Last refreshed: 2026-10-05T23:59:09.761866+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

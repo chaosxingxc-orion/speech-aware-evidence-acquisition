@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Rejected-trial history preparation registered; real-source proof pending
+
+[History readiness](../readiness/2026-10-05-rejected-template-history-v1/README.md) extends the shared complete-trial reader with an in-memory history interface. It requalifies the entire rejected trial and separately projects all rejected templates/abstract outcomes while returning the original active parent identities. Private exposure remains separate.144 related tests pass; changed module coverage is100percent statement/branch. No model/scorer contacts,actor export,optimizer mutation or runtime admission. Exact history/projection registrations bind all three completed update3 cohorts. Real-source preparation remains pending until an actual launched reader succeeds.
+
+The existing v1 optimizer packet still requires separate prospective integration for companion history; do not send this preparation directly to a proposer. Preserve the root rejection and before-population,then bind history and cumulative exposure in a tested next protocol. Keep N20 and all prior scope boundaries.
+
+
 ## Complete update3 rejected by its registered learning criterion
 
 [Root retention decision](../receipts/continuation/2026-10-05-partitioned-update3-root-retention.json) supersedes the live offline-reader snapshots below. The exact corrected continuation exited0 at2026-10-05T23:50:05.047158Z; PID68643/session42477 are terminal. Complete qualification covers all16 candidate positions and320 candidate trajectories across three independently controlled cohorts. Whole-population utility decreases from-56.15925390968045 to-59.5941577658888. Reject the whole update and retain the before-population as search parents; seed remains formal incumbent. No optimizer-state mutation,learner export,new GPU admission or model/scorer contact occurs in this decision.
