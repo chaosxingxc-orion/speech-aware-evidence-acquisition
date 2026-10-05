@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update-two capacity is running with job-scoped fifteen-minute monitoring
+
+[Launch receipt](../receipts/continuation/2026-10-05-k16-update2-capacity-launch.json) binds all16 learned children to the clean frozen29a796c398c4869d22439ef5ad09c465df5ad2fa worker codex-context-template-k16-update2-capacity-v1. Every model-free frozen check passed; session61060 ended0 and must never be restarted. Sealed launch registration SHA2569120ea8ce5b8a8aee85de7f11ac168b3c3a408d25f13adb631443dc63c13d1f6. Windows hidden wrapper PID26152 started00:20:38Z; WSL launcher PID781717 epoch2026-10-05T00:20:39.075665Z. Revalidate actual identities. Launch free memory17.18GiB; each child also enforces stable12.5GiB startup/8GiB running.
+
+Inspect coordination/context-template-k16-update2-capacity-owner227-v1 exact started/finished/failure,per-child exit,Windows exit and memory receipts. This capacity has297 tokenizer endpoints per child,4752total and zero generation/scoring. The old batch queue is the completed initial K16 scientific family and must not be mistaken for this job. Preserve all sources/controls and stop on failure; no retry.
+
+Automation slurp is now ACTIVE every15 minutes, bound only to this capacity epoch. Use read-only scripts and no monitoring agents; remain quiet while healthy. At verified terminal completion/failure with no live admitted worker, delete that automation. For a subsequent real structural/scientific launch create a new15-minute heartbeat with its exact receipt and members. Do not restore the old blanket pause. Capacity success alone permits preparation via structural prepare-entry-v2.py,not automatic dispatch. All64 structural rows and360 scientific trajectories remain unflown; no learned improvement or adoption is established.
+
+
 ## Update-two complete root analysis entry prepared prospectively
 
 [Root-read preparation](../receipts/continuation/2026-10-05-k16-update2-root-read-preparation.json) pins four thin existing-base helpers for whole-family qualification, exact root countersignature, registered-source analysis/timing and the learned-population utility comparison. No helper has read new scientific results. The new trial entry returns HELD before any result access when its exact analysis environment/READ is absent. Use a separate analysis checkout at the future exact scientific commit so editable source advances cannot invalidate registered estimators; never modify the frozen runtime worker.

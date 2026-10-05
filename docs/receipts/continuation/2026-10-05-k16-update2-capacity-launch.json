@@ -1,0 +1,127 @@
+{
+  "schema": "saea-k16-update2-capacity-launch-v1",
+  "at_utc": "2026-10-05T00:21:54.794886+00:00",
+  "status": "RUNNING",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-capacity-v1",
+  "source_commit": "29a796c398c4869d22439ef5ad09c465df5ad2fa",
+  "capacity_epoch": "2026-10-05T00:20:39.075665+00:00",
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/windows-launch-v1.json",
+    "sha256": "7c5d419cf392a4b5ac9943e6c61e9220921efbd116b221cae0411895a819094f"
+  },
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/capacity-started.json",
+    "sha256": "4a99014f0908b0c7790ff8c2944af35aed46ecbbee64371fb9f0cf7f624748e1"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/registration-v1.json",
+    "sha256": "9120ea8ce5b8a8aee85de7f11ac168b3c3a408d25f13adb631443dc63c13d1f6"
+  },
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/frozen-check-v1.json",
+    "sha256": "914dd71d74b96fb29f81fcc22ad2adfed23099316a624fe6fb733ed3c2ece7ce"
+  },
+  "live_process": {
+    "pid": 781717,
+    "command": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/launch-capacity-v1.py --registration /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/registration-v1.json --sha256 9120ea8ce5b8a8aee85de7f11ac168b3c3a408d25f13adb631443dc63c13d1f6 ",
+    "start_ticks": "50678024"
+  },
+  "members": [
+    {
+      "label": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-01-capacity-fit-v1"
+    },
+    {
+      "label": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-02-capacity-fit-v1"
+    },
+    {
+      "label": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-03-capacity-fit-v1"
+    },
+    {
+      "label": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-04-capacity-fit-v1"
+    },
+    {
+      "label": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-05-capacity-fit-v1"
+    },
+    {
+      "label": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-06-capacity-fit-v1"
+    },
+    {
+      "label": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-07-capacity-fit-v1"
+    },
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-08-capacity-fit-v1"
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-09-capacity-fit-v1"
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-10-capacity-fit-v1"
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-11-capacity-fit-v1"
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-12-capacity-fit-v1"
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-13-capacity-fit-v1"
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-14-capacity-fit-v1"
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-15-capacity-fit-v1"
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-16-capacity-fit-v1"
+    }
+  ],
+  "budgets": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoints_per_member": 297,
+    "tokenizer_endpoints_total": 4752
+  },
+  "windows_free_gib_at_launch": 17.178897857666016,
+  "monitor": {
+    "automation_id": "slurp",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "bound_to": "This exact capacity epoch only",
+    "cancel": "Delete after terminal capacity/Windows receipts and no live admitted child. Root creates a fresh monitor for the next job."
+  },
+  "next": "On success only, cancel monitor then use structural prepare-entry-v2.py for separately admitted64-row engineering. Current18-member scientific supplies remain HELD.",
+  "limits": "Nongenerative capacity only; no task quality, optimizer feedback, adoption or automatic retry."
+}
