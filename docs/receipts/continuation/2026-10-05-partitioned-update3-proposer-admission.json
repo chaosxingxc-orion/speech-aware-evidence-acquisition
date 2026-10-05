@@ -1,0 +1,21 @@
+{
+  "schema": "saea-partitioned-context-proposer-admission-v1",
+  "at_utc": "2026-10-05T17:16:44.051460+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-PROPOSE-V1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT",
+  "authority": "Owner227 and the explicit GPT-6.1 Sol whole-population abstract-template learning direction",
+  "plan": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-partitioned-context-update3-v1/actor-plan-v1.json",
+    "sha256": "757cef86e108bbd197c7a372e6d0c279530751b73002f6107972ef6e8db2f68e",
+    "bytes": 2480
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update3-v1/actor-capsule-v1/manifest.json",
+    "sha256": "48bea826e2dc4146cb03a54ed07d879984925000ad8c0364bd6b805443750972",
+    "bytes": 1338
+  },
+  "semantic_opportunities": 1,
+  "design_slots": 16,
+  "runtime_dispatch": false,
+  "paid_api_spend": 0
+}

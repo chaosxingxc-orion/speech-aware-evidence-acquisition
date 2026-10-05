@@ -1,0 +1,48 @@
+{
+  "schema": "saea-context-partitioned-update-actor-plan-v1",
+  "status": "ROOT-ADMITTED-BEFORE-CONTACT",
+  "at_utc": "2026-10-05T17:16:44.051460+00:00",
+  "root_authority": 227,
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-PROPOSE-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "split_role": "discovery",
+  "split_identity_hash": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "source_population": {
+    "relpath": "configs/experiments/slurp-context-template-update2-complete-source-join-v1.json",
+    "sha256": "3655493ee97dcb69dbb786e84b82e7c3e6ffb151e92f191a8f99c5c93f2106d4"
+  },
+  "source_registration": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-partitioned-context-update3-v1/registration-v1.json",
+    "sha256": "ef641f9902e70059d413289d9518159caddf9faca432dcba39a0b27f0812daed",
+    "bytes": 845
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update3-v1/actor-capsule-v1/manifest.json",
+    "sha256": "48bea826e2dc4146cb03a54ed07d879984925000ad8c0364bd6b805443750972",
+    "bytes": 1338
+  },
+  "source_packet": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/inputs/partitioned-complete-update3-template-batch-v1.json",
+    "sha256": "b11a96293ecc917673185e4624904e00b5d93c67f652117bedf050cf3830cf85",
+    "bytes": 53099667
+  },
+  "output_contract": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update3-v1/actor-capsule-v1/output-contract.json",
+    "sha256": "0d1a07cda5776743504ebe1ea3de21ed470fea11acadb62c17faed92ce131946",
+    "bytes": 5468
+  },
+  "target_iteration": 3,
+  "semantic_opportunities": 1,
+  "design_slots": 16,
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "max_input_bytes": 589824,
+  "max_output_bytes": 262144,
+  "paid_api_spend": 0,
+  "original_usage_null_when_unavailable": true,
+  "no_matched_compute_claim": true,
+  "no_automatic_retry_or_replacement": true,
+  "runtime_admission": false,
+  "scope": "One complete partitioned template-only update. Preserve independent cohort controls and all spent historical slots. New children require separately registered FIT, structural proof and complete N20 trials; no automatic scaling."
+}
