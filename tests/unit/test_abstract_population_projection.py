@@ -24,13 +24,13 @@ def setup(tmp_path, monkeypatch):
     for cohort in cfg["cohorts"]:
         tag = cohort["cohort_id"]
         candidates, controls = cohort["candidate_ids"], cohort["control_ids"]
-        members = {cid: {"bundle_id": str(index + 1) * 64} for index, cid in enumerate(candidates)}
+        members = {cid: {"bundle_id": str(index + 1) * 64} for index, cid in enumerate(candidates + controls)}
         recipe = {"family_id": "family-" + tag, "sample_ids": cohort["sample_ids"]}
         reg = {"member_bindings": members, "expected_members": {cid: cid for cid in candidates + controls}}
         reg["protocol"] = pin(root, tag + "-protocol.json", {})
         recipe["context_learning_registration"] = pin(root, tag + "-registration.json", reg)
-        evidence = {"summaries": {cid: {"slu_f1": 50.0, "intent_accuracy": 100.0} for cid in candidates}}
-        private[tag] = (evidence, recipe, reg, {}, candidates, controls, {"f1": .5})
+        evidence = {"summaries": {cid: {"slu_f1": .5, "intent_accuracy": 1.0, "sample_timing": {"first_admitted_sample": {"elapsed_seconds": 2.0}}} for cid in candidates + controls}}
+        private[tag] = (evidence, recipe, reg, {"measurement_profile": {}}, candidates, controls, {"f1": .5})
         bindings, backend = [], {}
         for cid in candidates + controls:
             mp = pin(data, tag + "/" + cid + "/manifest.json", {}, True)
@@ -69,6 +69,15 @@ def setup(tmp_path, monkeypatch):
                   "abstained": False, "wall_time_seconds": 2., "model_calls": 2}}
                 for cid in candidates]} for sid in recipe["sample_ids"]]
     monkeypatch.setattr(subject.learning, "_candidate_groups", groups)
+    def measured(evidence, ids, bindings, **kwargs):
+        calls.append("measurement-all")
+        return [{"candidate_id": cid, "bundle_id": bindings[cid]["bundle_id"],
+                 "slu_f1": .5, "intent": 1., "reliable_completion_rate": 1.,
+                 "mean_sample_seconds": 2., "non_first_mean_seconds": 2.,
+                 "model_calls": 4, "tool_calls": 0, "eligible": True,
+                 "timing_report_sha256": "d"*64, "private_note": "PRIVATE_MEASUREMENT"}
+                for cid in ids]
+    monkeypatch.setattr(subject.learning, "measured_rows", measured)
     def verify(**kwargs):
         mp = str(kwargs["manifest_path"])
         calls.append("trace:" + mp)
@@ -178,3 +187,50 @@ def test_native_source_verifier_refusal_is_not_normalized(setup, monkeypatch):
     def refuse(**kwargs): raise ValueError("frozen source seal differs")
     monkeypatch.setattr(subject, "verify_native_episode_source", refuse)
     with pytest.raises(ValueError, match="seal differs"): run(setup)
+
+
+def test_measured_first_nonfirst_and_controls_are_in_learner_view(setup):
+    out = run(setup)
+    rows = out["learner_view"]["business_measurements"]
+    for cohort in setup.cfg["cohorts"]:
+        actual = rows[cohort["cohort_id"]]
+        assert [r["candidate_id"] for r in actual] == cohort["candidate_ids"] + cohort["control_ids"]
+        assert all(r["first_sample_seconds"] == r["non_first_mean_seconds"] == 2 for r in actual)
+        assert all(r["slu_f1"] == .5 for r in actual)
+        assert [r["is_control"] for r in actual] == [False]*len(cohort["candidate_ids"]) + [True]*len(cohort["control_ids"])
+    assert "PRIVATE_MEASUREMENT" not in json.dumps(out["learner_view"])
+    first_trace = next(i for i, x in enumerate(setup.calls) if x.startswith("trace:"))
+    assert setup.calls[:first_trace].count("measurement-all") == len(setup.cfg["cohorts"])
+
+
+@pytest.mark.parametrize("fault", ["missing", "order", "bundle", "quality", "mean", "calls", "reliability", "first", "nonfirst"])
+def test_measurement_mismatch_rejects_complete_projection(setup, monkeypatch, fault):
+    original = subject.learning.measured_rows
+    def changed(*args, **kwargs):
+        rows = original(*args, **kwargs)
+        if fault == "missing": rows.pop()
+        elif fault == "order": rows.reverse()
+        elif fault == "bundle": rows[0]["bundle_id"] = "f"*64
+        elif fault == "quality": rows[0]["slu_f1"] = .7
+        elif fault == "mean": rows[0]["mean_sample_seconds"] = 9.
+        elif fault == "calls": rows[0]["model_calls"] = 5
+        elif fault == "reliability": rows[0]["reliable_completion_rate"] = .5
+        elif fault == "first":
+            args[0]["summaries"][rows[0]["candidate_id"]]["sample_timing"]["first_admitted_sample"]["elapsed_seconds"] = 9.
+        else: rows[0]["non_first_mean_seconds"] = 3.
+        return rows
+    monkeypatch.setattr(subject.learning, "measured_rows", changed)
+    with pytest.raises(PolicyError):
+        run(setup)
+
+
+def test_last_family_measurement_failure_opens_no_native_trace(setup, monkeypatch):
+    original = subject.learning.measured_rows
+    def changed(*args, **kwargs):
+        if args[1][0] == setup.cfg["cohorts"][-1]["candidate_ids"][0]:
+            raise PolicyError("missing actual admission-order measurements")
+        return original(*args, **kwargs)
+    monkeypatch.setattr(subject.learning, "measured_rows", changed)
+    with pytest.raises(PolicyError):
+        run(setup)
+    assert not any(x.startswith("trace:") for x in setup.calls)

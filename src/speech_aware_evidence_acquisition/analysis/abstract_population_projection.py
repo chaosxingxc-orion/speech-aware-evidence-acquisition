@@ -7,6 +7,7 @@ neither publishes that representation nor allocates proposals or runtime work.
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 
 from .abstract_population_sources import read_registered_population_sources, _external, _reader
@@ -44,6 +45,7 @@ def project_registered_population(*, projection_pin, repo_root, data_root):
             and set(request["source_specifications"]) == set(tags)
             and list(joined["private_families"]) == tags, "all configured source backends required")
     external_pins, prepared, authorities, repo_pins = [], [], [], []
+    business = {}
     reader = _reader(root)
     for entry, cohort in zip(manifest["families"], config["cohorts"], strict=True):
         tag = cohort["cohort_id"]
@@ -78,6 +80,24 @@ def project_registered_population(*, projection_pin, repo_root, data_root):
         authorities.append((spec, reader.CLI.require_read_registration(spec, repo_root=root)))
         groups = learning._candidate_groups(evidence, recipe, reg, candidates, reference)
         require([g["sample_id"] for g in groups] == cohort["sample_ids"], "ordered reward roster differs")
+        measured = learning.measured_rows(evidence, candidates + controls, reg["member_bindings"],
+                                          profile=family[3]["measurement_profile"])
+        require([row["candidate_id"] for row in measured] == candidates + controls,
+                "complete ordered measured objectives required")
+        numeric = ("slu_f1", "intent", "reliable_completion_rate", "mean_sample_seconds",
+                   "non_first_mean_seconds", "model_calls", "tool_calls")
+        business[tag] = []
+        for row in measured:
+            cid = row["candidate_id"]
+            require(row["bundle_id"] == reg["member_bindings"][cid]["bundle_id"],
+                    "measured policy identity differs")
+            summary = evidence["summaries"][cid]
+            first_seconds = summary["sample_timing"]["first_admitted_sample"]["elapsed_seconds"]
+            require(type(first_seconds) in (int, float) and math.isfinite(first_seconds) and first_seconds >= 0,
+                    "measured first sample latency required")
+            business[tag].append({"candidate_id": cid, "bundle_id": row["bundle_id"],
+                                  **{key: row[key] for key in numeric}, "eligible": row["eligible"],
+                                  "first_sample_seconds": first_seconds, "is_control": cid in controls})
         prepared.append((cohort, family, by_id, backend, groups))
 
     def recheck():
@@ -127,6 +147,22 @@ def project_registered_population(*, projection_pin, repo_root, data_root):
                         and len(contacts) == execution["model_calls"], "complete native contact/reward accounting differs")
                 rows.append({"input_index": ordinal, **abstract})
             summary = evidence["summaries"][cid]
+            measured = next(row for row in business[tag] if row["candidate_id"] == cid)
+            seconds = [row["terminal"]["sample_seconds"] for row in rows]
+            require(measured["slu_f1"] == summary["slu_f1"]
+                    and measured["intent"] == summary.get("intent_accuracy", summary.get("intent"))
+                    and measured["model_calls"] == sum(len(row["nodes"]) for row in rows)
+                    and math.isclose(measured["reliable_completion_rate"],
+                        sum(row["terminal"]["reliable"] for row in rows) / len(rows), abs_tol=1e-12)
+                    and math.isclose(measured["mean_sample_seconds"], math.fsum(seconds) / len(seconds),
+                                     abs_tol=1e-10, rel_tol=1e-12),
+                    "measured objectives differ from complete abstract episodes")
+            require(any(math.isclose(measured["first_sample_seconds"], value,
+                                     abs_tol=1e-10, rel_tol=1e-12) for value in seconds)
+                    and math.isclose(measured["non_first_mean_seconds"],
+                        (math.fsum(seconds) - measured["first_sample_seconds"]) / (len(seconds) - 1),
+                        abs_tol=1e-10, rel_tol=1e-12),
+                    "actual first/non-first sample measurement differs")
             templates.append({"candidate_id": cid, "bundle_id": reg["member_bindings"][cid]["bundle_id"],
                 "official_summary": {"slu_f1": summary["slu_f1"],
                                      "intent": summary.get("intent_accuracy", summary.get("intent"))}, "samples": rows})
@@ -143,7 +179,8 @@ def project_registered_population(*, projection_pin, repo_root, data_root):
     population = abstract_partitioned_population_feedback(views, expected_partitions=contracts, population_config=config)
     recheck()
     return {"learner_view": {"schema": "saea-abstract-population-learning-view-v1",
-                            "representation": FEEDBACK_SCHEMA, "population": population},
+                            "representation": FEEDBACK_SCHEMA, "population": population,
+                            "business_measurements": business},
             "private_custody": {"projection_registration": projection_pin,
                                 "source_join": request["source_join"], "sources": custody},
             "learner_exported": False, "runtime_admission": False, "model_contacts": 0, "scorer_contacts": 0}

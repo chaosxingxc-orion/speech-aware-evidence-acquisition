@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Measured business objectives retained in abstract feedback
+
+[Measured projection preparation](../receipts/continuation/2026-10-05-abstract-population-measured-objectives-prepared.json) closes the first/non-first latency export gap. The same shared measured_rows verifier qualifies every member including controls before native trace projection; candidate quality/calls/reliability and all/first/non-first latency are cross-checked against complete anonymous episodes. Export only allowlisted metrics per source cohort; do not pool sessions/frontiers, label non-first as warm, or assign causal node quality.11 additional/199 related tests pass;113 statements/22 branches100% covered; engineering-base passes. No real learner export, actor allocation or runtime change.
+
+Existing TF/GEPA single-family actor APIs cannot silently flatten the historical8/4/4 source join into a simultaneous16-member group. Complete all sources, retain their independent control/A/A pairs and within-cohort returns, then bind full templates in a prospectively registered actor input; keep TF context-diversity and GEPA selection/acceptance contracts distinct. The original source join remains pending current b2 completion. Seed/A/A/branches13/14 have successful finalized metadata;branch15 is running and16 unstarted. Exact root READ remains unsigned. Preserve active frozen c7a01c05264adcd4b1fc7e3c91c611d3e891efa9,15-minute script monitor,observe-only boundary and all other holds.
+
+
 ## Complete original template source join prepared
 
 [Source registration preparation](../receipts/continuation/2026-10-05-complete-population-registration-prepared.json): the shared model-free adapter materializes exact saved-family/backend pins only after every configured source scope, root READ, finalized attempt, seal and unique score qualifies. It returns documents in memory and rechecks all bytes/authority; no quality read, persistence, learner export or admission.20 new/163 related tests pass;63 statements/16 branches100% covered; engineering-base passes. The actual incomplete source returns HELD with zero writes.

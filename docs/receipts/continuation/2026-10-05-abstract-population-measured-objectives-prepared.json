@@ -1,0 +1,27 @@
+{
+  "schema": "saea-abstract-population-measured-objectives-prepared-v1",
+  "at_utc": "2026-10-05T16:29:52.163205+00:00",
+  "status": "PREPARED_BEFORE_COMPLETE_POPULATION_READ",
+  "implementation": {
+    "relpath": "src/speech_aware_evidence_acquisition/analysis/abstract_population_projection.py",
+    "sha256": "04381b4a3342eed53341f9c65af10ed9f69208e055bc34afc8a132767fc6c366"
+  },
+  "change": "Reuse measured_rows for every complete family including its control and A/A before native traces. Export allowlisted per-cohort measured objectives, actual first admission latency and non-first mean; cross-check candidate means, reliability, quality, calls and first/non-first arithmetic against complete anonymous episodes.",
+  "tests": {
+    "new": 11,
+    "related_passed": 199,
+    "statements": 113,
+    "branches": 22,
+    "statement_coverage": 1.0,
+    "branch_coverage": 1.0,
+    "engineering_base": "PASS"
+  },
+  "private_fields_exported": false,
+  "node_causal_credit": false,
+  "cross_cohort_frontier": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_admission": false,
+  "learner_exported": false,
+  "remaining": "Complete all original sources and exact READs, materialize qualified source registrations, then bind complete editable templates plus the partitioned feedback into a prospectively registered learner input. Keep TF context-diversity and GEPA algorithm/acceptance contracts distinct."
+}
