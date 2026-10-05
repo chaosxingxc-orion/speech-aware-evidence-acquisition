@@ -188,3 +188,61 @@ def test_read_change_after_measurement_is_requalified(trial,monkeypatch):
         return result
     monkeypatch.setattr(subject,'read_registered_population_sources',changed)
     with pytest.raises(PolicyError,match='READ changed'):run(trial)
+
+
+@pytest.mark.parametrize("changed_source", ["before", "after", "both"])
+def test_fresh_operational_observation_time_does_not_change_trial_identity(trial, monkeypatch, changed_source):
+    original = subject.read_registered_population_sources
+    calls = {}
+    def observed(**kwargs):
+        key = kwargs["source_registration_pin"]["relpath"]
+        calls[key] = calls.get(key, 0) + 1
+        result = original(**kwargs)
+        side = "after" if kwargs["source_registration_pin"] == trial.request["source_registration_pin"] else "before"
+        for q in result["qualifications"].values():
+            q["schema"] = "saea-configured-family-qualified-v1"
+            tick = calls[key] if changed_source in (side, "both") else 1
+            q["recorded_at_utc"] = f"2026-10-05T23:00:0{tick}+00:00"
+        return result
+    monkeypatch.setattr(subject, "read_registered_population_sources", observed)
+    out = run(trial)
+    assert out["utility_before"] == out["utility_after"]
+    assert out["formal_adoption"] is False
+
+
+@pytest.mark.parametrize("field", ["schema", "read_id", "recipe", "members", "attempt_metadata_pins",
+    "job_metadata_pins", "frozen_commit", "status", "unknown_observation", "private_feedback"])
+def test_requalification_still_refuses_every_non_observation_change(trial, monkeypatch, field):
+    original = subject.read_registered_population_sources
+    calls = {}
+    def observed(**kwargs):
+        key = kwargs["source_registration_pin"]["relpath"]
+        calls[key] = calls.get(key, 0) + 1
+        result = original(**kwargs)
+        for q in result["qualifications"].values():
+            q["schema"] = "saea-configured-family-qualified-v1"
+            q["recorded_at_utc"] = f"2026-10-05T23:00:0{calls[key]}+00:00"
+        if kwargs["source_registration_pin"] == trial.request["source_registration_pin"] and calls[key] > 1:
+            if field == "private_feedback":
+                result["private_families"]["cohort-1"][0]["recorded_at_utc"] = "changed-source-field"
+            else:
+                result["qualifications"]["cohort-1"][field] = "changed"
+        return result
+    monkeypatch.setattr(subject, "read_registered_population_sources", observed)
+    with pytest.raises(PolicyError, match="source qualification or READ changed"):
+        run(trial)
+
+
+def test_unknown_qualification_schema_does_not_get_timestamp_exemption(trial, monkeypatch):
+    original = subject.read_registered_population_sources
+    calls = {}
+    def observed(**kwargs):
+        key = kwargs["source_registration_pin"]["relpath"]
+        calls[key] = calls.get(key, 0) + 1
+        result = original(**kwargs)
+        for q in result["qualifications"].values():
+            q.update(schema="unrecognized-qualification", recorded_at_utc=str(calls[key]))
+        return result
+    monkeypatch.setattr(subject, "read_registered_population_sources", observed)
+    with pytest.raises(PolicyError, match="source qualification or READ changed"):
+        run(trial)

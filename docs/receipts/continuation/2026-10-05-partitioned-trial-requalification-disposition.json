@@ -1,0 +1,46 @@
+{
+  "schema": "saea-root-offline-analysis-disposition-v1",
+  "at_utc": "2026-10-05T23:34:06.222084+00:00",
+  "status": "ROOT_AUTHORIZED_ONE_OFFLINE_CONTINUATION",
+  "root_authority": 227,
+  "failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/trial-requalification-refusal-v1/failure.json",
+    "sha256": "c00a4ca1e78873a5b50986e3eed0b7e7d79848b881b8c5c633bfbfa8255d6d1c"
+  },
+  "diagnostic": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/trial-requalification-refusal-v1/same-source-requalification.json",
+    "sha256": "cbe274310544766a5a96f3363d35a5e38c7a990bc66ed447eabad05e230d3edc"
+  },
+  "validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/trial-requalification-refusal-v1/validation-v1.json",
+    "sha256": "1325a2a03fd826cd0108d020f3da50b25075dba24b6ce36fadf53ee8c70a9457"
+  },
+  "failure_cause": "Fresh operational qualifications record a new recorded_at_utc timestamp. Whole-dictionary equality rejected unchanged evidence solely because the observation time differs. Real metadata requalification differed only in that field; test-first before/after/both-source reproductions fail on the old implementation.",
+  "correction": "Compare all source fields exactly except recorded_at_utc on the known saea-configured-family-qualified-v1 operational receipt. Retain repeated READ, attempt, seal, job and source verification. Unknown schemas and all other fields remain strict.",
+  "source": {
+    "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_partitioned_trial.py",
+    "sha256": "45847baeb9f713c6a977c3c658601774f097078ee81cfd240ccef14f119e6501"
+  },
+  "tests": {
+    "relpath": "tests/unit/test_partitioned_context_trial.py",
+    "sha256": "41714bcf48f02c568976ec523cd4060ae0baf4e991f5aaf3735795021ef0eff7"
+  },
+  "entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/complete-trial-entry-v1.py",
+    "sha256": "b9f7d1982d65dbc89ced27c833c56d8eb0cf262c843cd5da959361583c886fb9"
+  },
+  "source_registration": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-complete-analysis-v1/successor-source-registration-v1.json",
+    "sha256": "4c71ac497deda3298b4bc99ec18b9aa0192c40f9e3947d41856176092840d62c"
+  },
+  "continuation_count": 1,
+  "output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/complete-trial-qualified-v1.json",
+  "require_output_absent_before_invocation": true,
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "generation_or_score_replay": false,
+  "frozen_source_changes": false,
+  "new_learner_export": false,
+  "runtime_admission": false,
+  "on_further_failure": "Preserve evidence and stop for named diagnosis; no automatic repeat."
+}

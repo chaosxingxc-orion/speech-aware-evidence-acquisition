@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Whole-trial offline refusal diagnosed; one tested continuation authorized
+
+[Root227 disposition](../receipts/continuation/2026-10-05-partitioned-trial-requalification-disposition.json) supersedes the prior live-analysis status below. The first complete-trial evaluation exited1 with no exclusive result because refreshed operational receipts have different recorded_at_utc values. Two real metadata qualifications differ only in that field; three regression tests reproduce the old refusal. The correction excludes only that field for the known operational schema while preserving every other source/READ/score comparison and all repeated source gates.132 related tests pass with100percent changed-module statement/branch coverage. All frozen experiments,official scores,READs and original failure evidence remain unchanged.
+
+One separately logged offline continuation is authorized after serial integration and source-pin verification; no model/scorer contacts,partial learner export,policy adoption or GPU dispatch. Preserve original complete-trial-entry-v1.py and its absent exclusive output. Capture stdout/stderr/exit under coordination/partitioned-update3-scientific-preparation-v1/trial-requalification-continuation1. On another failure,stop and diagnose. Root still must read the complete utility result before the next iteration. See the [descriptive complete-position deltas](../readiness/2026-10-05-partitioned-trial-requalification-v1/business-deltas.md); faster average latency alone does not prove quality gain.
+
 ## Partitioned update3 GPU sequence complete; full-trial qualification running
 
 [Remaining-b2 complete review](../receipts/continuation/2026-10-05-partitioned-update3-remaining-b2-scientific-read.json) covers six independently finalized members,120 trajectories,654 model contacts, verified seals and one unique complete official score each with zero failed jobs. Driver epoch22:42:07Z ended normally2026-10-05T23:16:19Z; exact terminal/process/guard checks passed before root countersignature and one complete READ. The job-specific slurp-update3-b2-15-min monitor is deleted. No lock deletion,cache flush,privileged launch,WSL restart,new model contact or score replay was needed. Preserve all completed controls and frozen workers.
@@ -2754,7 +2760,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T23:25:43Z
+Last refreshed: 2026-10-05T23:34:06Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -16,6 +16,23 @@ from .system_context_partitioned_learning import SCHEMA
 from .system_text_policy import _read_pin, require
 
 
+def _source_identity(source):
+    """Compare evidence exactly, excluding only a fresh verifier's wall-clock stamp.
+
+    The complete source reader has already rechecked all READ authority, pins,
+    seals and official jobs. Its known operational receipt records a new time
+    on each read; that observation time is not an experiment source identity.
+    Unknown schemas and every other field remain part of strict equality.
+    """
+    qualifications = {
+        tag: {key: value for key, value in receipt.items()
+              if not (receipt.get("schema") == "saea-configured-family-qualified-v1"
+                      and key == "recorded_at_utc")}
+        for tag, receipt in source["qualifications"].items()
+    }
+    return {**source, "qualifications": qualifications}
+
+
 def qualify_partitioned_context_trial(archive, *, input_sha256, contract_pin, request,
                                      repo_root, data_root):
     """Return a root-review signal only for the exact complete prospective trial.
@@ -119,7 +136,8 @@ def qualify_partitioned_context_trial(archive, *, input_sha256, contract_pin, re
     for original_join,source_pin in ((before,projected['private_custody']['source_join']),
                                      (after,request['source_registration_pin'])):
         fresh=read_registered_population_sources(source_registration_pin=source_pin,repo_root=root,data_root=data)
-        require(fresh==original_join,'source qualification or READ changed during measurement')
+        require(_source_identity(fresh)==_source_identity(original_join),
+                'source qualification or READ changed during measurement')
     total_before,total_after=map(math.fsum,totals)
     return {'schema':'saea-partitioned-context-qualified-trial-v1','contract':contract_pin,
         'trial_sources':request['source_registration_pin'],'input_sha256':input_sha256,
