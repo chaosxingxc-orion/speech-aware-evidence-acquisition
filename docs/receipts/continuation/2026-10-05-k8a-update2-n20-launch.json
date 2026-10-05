@@ -1,0 +1,49 @@
+{
+  "schema": "saea-k8a-update2-n20-launched-v1",
+  "at_utc": "2026-10-05T09:29:03.907580+00:00",
+  "driver_epoch": "2026-10-05T09:29:01Z",
+  "driver": {
+    "pid": 18390,
+    "parent_pid": 18389,
+    "start_ticks": "52013786",
+    "proc_stat": "18390 (bash) S 18389 18389 18389 34819 18389 4194304 1613 37292 0 80 0 0 31 12 20 0 1 0 52013786 5140480 864 18446744073709551615 105932942831616 105932943807277 140729280125856 0 0 0 2 4 65536 1 0 0 17 5 0 0 0 0 0 105932944030128 105932944078768 105933909610496 140729280130219 140729280130352 140729280130352 140729280131050 0\n",
+    "argv": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ]
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k8a-update2-n20-v1",
+  "commit": "82c2f4603cdb959f616b4a5fdad15949b803b7be",
+  "queue_sha256": "4e4c52eb9ae31d66644346fc9ce3b3db7e253901f4814ad569382836ebe489fc",
+  "members": 10,
+  "rows_per_member": 20,
+  "total_trajectories": 200,
+  "candidate_systems": 8,
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-READ-V1",
+  "read_countersigned": false,
+  "model_contacts_added_by_recorder": 0,
+  "memory_floors_gib": {
+    "running": 8,
+    "startup": 20
+  },
+  "scope": "Same original branches01-08 plus fresh unchanged seed/A/A. Actual full-request FIT and unique official whole-member scoring. No partial quality read, next proposal, automatic recovery or scale.",
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-update2-n20-owner227-v1/frozen-check-v1.json",
+    "sha256": "3b2827a803b237f04279e286d9f20ffbea98d1ce9b1b1691ba7a8addc483efda"
+  },
+  "original_live_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-update2-n20-owner227-v1/launch-receipt-v1.json",
+    "sha256": "bcc52a2cb0461200b3abec3910b25ebd687a627ca0d3156551e46b86a59117dd"
+  },
+  "control_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-update2-n20-owner227-v1/control-disposition-before-v1.json",
+    "sha256": "05df7bcda3ba9eafc09a30d156cb5115eb8a3c447d9e14fb1c7c0460aeec3679"
+  },
+  "transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-update2-n20-owner227-v1/driver-transition-v1.json",
+    "sha256": "6569e461b1f15fc688e1ea43aa7102e17df8855be8d443704dbc62831aa4a55a"
+  },
+  "automation_id": "slurp-k8a-15m",
+  "automation_status": "ACTIVE",
+  "panel_b": "HELD pending independent registration and root stage review; templates09-16 preserved unchanged"
+}
