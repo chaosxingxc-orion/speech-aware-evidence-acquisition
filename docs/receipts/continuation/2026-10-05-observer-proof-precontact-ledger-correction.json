@@ -1,0 +1,11 @@
+{
+  "schema": "saea-observer-proof-precontact-ledger-correction-v1",
+  "at_utc": "2026-10-05T10:01:56.430253+00:00",
+  "original_worker": "/home/chao/saea-worktrees/codex-memory-observer-engineering-v1",
+  "original_commit": "92252d116",
+  "contacts": 0,
+  "attempts_absent": true,
+  "failure": "Runtime check refused a ledger carrier label that lacked the exact slurp lock key. This is metadata only, before every model/tokenizer/scorer contact.",
+  "correction": "Add slurp to exactly three new generation/FIT/structural-read carrier labels. No run,policy,supply,protocol,budget or runtime source changed. Preserve original frozen checkout and refusal; freeze a clean successor.",
+  "stderr_sha256": "ed3894ca798d4e1f036ce3b0fe4af72b3c079cfdd430840b8f31b72ab34098a1"
+}

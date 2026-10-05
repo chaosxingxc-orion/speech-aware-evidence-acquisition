@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Observer proof precontact ledger correction
+
+Frozen92252d116 runtime check refused three new ledger carrier labels missing the exact slurp key; zero contacts and no attempt. Preserve its frozen checkout and refusal logs. Only the three carrier labels are corrected in a clean successor; policy,supply,protocol,budget and runtime code remain identical. Re-run model-free frozen checks from codex-memory-observer-engineering-v2 before any control transition.
+
 ## Persistent observer tested; fresh four-row seed proof registered, not launched
 
 [Engineering receipt](../receipts/continuation/2026-10-05-persistent-memory-observer-engineering.json):102 tests pass,observer95percent and existing guard94percent statement coverage. Real production guard supervised a harmless75-second timer with16 fresh reads and one stable Windows observer PID; nonfirst mean0.00142seconds. Observer exit independently verified. No GPU/model/scorer contacts in these tests. Historical query timeout did not reproduce and its internal phase remains unknown.
