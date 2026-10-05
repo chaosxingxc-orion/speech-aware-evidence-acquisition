@@ -1,0 +1,26 @@
+{
+  "schema": "saea-structural-completion-reader-entry-v1",
+  "at_utc": "2026-10-05T06:43:40.713995+00:00",
+  "root_exec_session": 58967,
+  "started": {
+    "at_utc": "2026-10-05T06:42:43.607259+00:00",
+    "pid": 2459,
+    "proc_stat": "2459 (python3) R 2454 2459 2459 34820 2459 4194560 2132 0 0 0 2 0 0 0 20 0 1 0 51299486 23281664 4128 18446744073709551615 4325376 7352253 140727323642336 0 0 0 0 16781312 2 0 0 0 17 3 0 0 0 0 0 10653128 12216448 358891520 140727323647083 140727323647252 140727323647252 140727323647975 0\n",
+    "driver_pid": 1070,
+    "driver_start_ticks": "51264026",
+    "driver_epoch": "2026-10-05T06:36:25Z",
+    "helper_hashes": {
+      "structural-audit-v2.py": "390d75efb89fa30c0ed8732c0a28754c12756be8c64340ca7d91c9fdfd3d6427",
+      "root-node-timing-v1.py": "c395d89c9dad25c6e7dac08aa35e61801764a86c0c70baba722783260a70d8da",
+      "root-sample-timing-v1.py": "bd1df596c67e03dbbc7525d3a6ea11c5e6a76d13bba8a17d288007c4c5ad3745"
+    },
+    "predicate_tests_passed": 9,
+    "scope": "Wait for exact full engineering family; run pinned structural and numeric timing readers once. No task-quality read, scoring, dispatch, recovery, source edits or ledger adoption.",
+    "timeout_seconds": 7200
+  },
+  "entry_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/root-audit-on-completion-v1.py",
+  "entry_sha256": "bf1d6d0ed03f7cf6e84bf4f7aa71d46fedf5ba12efb8c18ef510bd051a212d35",
+  "status": "Waiting on exact live driver1070, then bounded complete-family structural and numeric readers only. No result has been read by this waiter while generation is active.",
+  "monitor_id": "slurp-15",
+  "no_duplicate_entry": true
+}

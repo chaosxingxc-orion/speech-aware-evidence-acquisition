@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete-family structural reader attached to current live experiment
+
+[One-shot reader entry](../receipts/continuation/2026-10-05-k16-structural-completion-reader-started.json) records root session58967 and its live waiter PID. Nine synthetic boundary tests passed. It is bound to the exact current driver1070 start ticks,epoch and queue hash; after all16 steps terminate normally and no worker/scorer/lease remains,it invokes the already prepared structural-audit-v2.py and two numeric timing readers once,with frozen-source PYTHONPATH and pinned helper hashes. STOP,changed epoch,missing terminal proof or helper failure ends the entry without retry. This is not a monitoring subagent,task-quality read,scorer or dispatcher. Do not invoke those readers separately while the waiter is live. Check root-audit-wait-completed-v1.json or failure-v1.json before root review/ledger recording. The15-minute experiment monitor remains slurp-15 and must be deleted when the GPU experiment is verified terminal.
+
+
 ## Update-two64-row structural experiment launched; fifteen-minute monitor active
 
 [Exact launch receipt](../receipts/continuation/2026-10-05-k16-update2-structural-launch.json) binds Windows SAEA-Batch-Driver epoch2026-10-05T06:36:25Z,PID1070 to frozen ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c at codex-context-template-k16-update2-structural-v1. All16 original learned policies run4 engineering inputs each,64total,zero official scoring. Inspect every member in the exact queue. Startup stable-memory gate and registration passed; first attempt OPENED. New service epoch2026-10-05T06:32:57.058161Z has the original identity. Revalidate live progress; do not infer task completion from serving totals.
