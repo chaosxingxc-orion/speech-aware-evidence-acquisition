@@ -1,0 +1,14 @@
+{
+  "at_utc": "2026-10-05T14:09:36.245025+00:00",
+  "schema": "saea-precontact-carrier-label-correction-v1",
+  "authority": "owner227",
+  "cause": "Known carrier lock key is case-sensitive slurp. Prepared new scientific ledger used uppercase SLURP; registration passed but runtime I2 refused first seed before any model touch.",
+  "affected_rows": 26,
+  "correction": "Use exact existing slurp lock key in new cohort ledger carrier columns, including both READ registrations. No runtime source, policy, supply or config change.",
+  "preserve": "Original frozen19e65d44d and gate outputs remain immutable. New attempts absent.",
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "old_rows_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-b1-flight-v1/precontact-carrier-rows-preserved-v1.json",
+  "frozen_successor_required": true
+}
