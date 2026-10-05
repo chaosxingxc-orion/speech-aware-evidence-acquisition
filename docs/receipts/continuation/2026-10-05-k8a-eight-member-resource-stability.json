@@ -1,0 +1,193 @@
+{
+  "schema": "saea-k8a-completed-member-resource-observation-v1",
+  "recorded_at_utc": "2026-10-05T11:35:11.773748+00:00",
+  "driver_epoch": "2026-10-05T10:36:59Z",
+  "frozen_commit": "62ae52eebef86d4efad0b3bd138d93c4b0833c1c",
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1",
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k8a-update2-n20-seed-post-observer-20261005T103727Z/finished.json",
+        "sha256": "777acfa0f18348b05faae20a2c7111ea8bbb349d3072522645dfa357227b5baa"
+      },
+      "events": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k8a-update2-n20-seed-post-observer-20261005T103727Z/events.jsonl",
+        "sha256": "98cd644a68ca56e05cf732d35098bee6ce9fffa9285af994aefb4fc1a2bcab9d"
+      },
+      "readings": 99,
+      "minimum_free_gib": 25.28286361694336,
+      "maximum_free_gib": 28.379093170166016,
+      "observer_pid": 39896,
+      "sequences_complete": true,
+      "event_minus_windows_sample_timestamp_seconds": {
+        "minimum": -0.0666501522064209,
+        "maximum": 0.13881778717041016
+      },
+      "reader_errors": 0,
+      "normal_exit": true
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1",
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-2-context-template-k8a-update2-n20-seed-aa-20261005T104622Z/finished.json",
+        "sha256": "d4054a7e2021f0431ad75ffb8e116b0be28f7bcd66271da31522de9931467591"
+      },
+      "events": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-2-context-template-k8a-update2-n20-seed-aa-20261005T104622Z/events.jsonl",
+        "sha256": "53c9ce1a6ab2cd330a4b7135604f28b4a77a1b04ceea69316f627be1694ec95e"
+      },
+      "readings": 54,
+      "minimum_free_gib": 26.180774688720703,
+      "maximum_free_gib": 29.071269989013672,
+      "observer_pid": 40292,
+      "sequences_complete": true,
+      "event_minus_windows_sample_timestamp_seconds": {
+        "minimum": -0.24011516571044922,
+        "maximum": 0.3506290912628174
+      },
+      "reader_errors": 0,
+      "normal_exit": true
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-01-V1",
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-3-context-template-k8a-update2-n20-branch-01-20261005T105134Z/finished.json",
+        "sha256": "4ebcdb4cf70c6fe19931f970790fe4cf13b39fd6f3a693f2e106579ab4b0e369"
+      },
+      "events": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-3-context-template-k8a-update2-n20-branch-01-20261005T105134Z/events.jsonl",
+        "sha256": "44ed1716791c5a010c10f6f2375cd2715b0c70a232951da4bba4149899739fc7"
+      },
+      "readings": 47,
+      "minimum_free_gib": 25.559688568115234,
+      "maximum_free_gib": 28.86962127685547,
+      "observer_pid": 37496,
+      "sequences_complete": true,
+      "event_minus_windows_sample_timestamp_seconds": {
+        "minimum": -0.08757543563842773,
+        "maximum": 0.1451704502105713
+      },
+      "reader_errors": 0,
+      "normal_exit": true
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-02-V1",
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-4-context-template-k8a-update2-n20-branch-02-20261005T105613Z/finished.json",
+        "sha256": "97f6aa5ee00a52caf56da88977284cbea395837460965ac26603dffb8e87f828"
+      },
+      "events": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-4-context-template-k8a-update2-n20-branch-02-20261005T105613Z/events.jsonl",
+        "sha256": "3d5496baf85995baa249efb5191cead6ad201916c6766021cf6d987cfa657c29"
+      },
+      "readings": 67,
+      "minimum_free_gib": 26.25942611694336,
+      "maximum_free_gib": 29.05126190185547,
+      "observer_pid": 45784,
+      "sequences_complete": true,
+      "event_minus_windows_sample_timestamp_seconds": {
+        "minimum": -0.17243123054504395,
+        "maximum": 0.1893448829650879
+      },
+      "reader_errors": 0,
+      "normal_exit": true
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-03-V1",
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-5-context-template-k8a-update2-n20-branch-03-20261005T110229Z/finished.json",
+        "sha256": "2890092ccd92d6b3f751156141a0a707ca8c23eaea0165801ed820e0b0d85a2a"
+      },
+      "events": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-5-context-template-k8a-update2-n20-branch-03-20261005T110229Z/events.jsonl",
+        "sha256": "fc66a14b219372e627d6724958052b6cf3c33ab0c82050d5e800ce164c9d6cdb"
+      },
+      "readings": 95,
+      "minimum_free_gib": 26.481525421142578,
+      "maximum_free_gib": 28.92620086669922,
+      "observer_pid": 7948,
+      "sequences_complete": true,
+      "event_minus_windows_sample_timestamp_seconds": {
+        "minimum": -0.09249544143676758,
+        "maximum": 0.15044760704040527
+      },
+      "reader_errors": 0,
+      "normal_exit": true
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-04-V1",
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-6-context-template-k8a-update2-n20-branch-04-20261005T111109Z/finished.json",
+        "sha256": "dc98b86ee4a8a4907a1ebeeba4ff19e5de8dffe40b0c5459c15a7f20b1501bc9"
+      },
+      "events": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-6-context-template-k8a-update2-n20-branch-04-20261005T111109Z/events.jsonl",
+        "sha256": "db4971be8e0646c16db9b885412ad70bf385e1fa72b89fc654d1d069b666cb5a"
+      },
+      "readings": 94,
+      "minimum_free_gib": 26.330909729003906,
+      "maximum_free_gib": 28.862747192382812,
+      "observer_pid": 41428,
+      "sequences_complete": true,
+      "event_minus_windows_sample_timestamp_seconds": {
+        "minimum": -0.19447970390319824,
+        "maximum": 0.15912580490112305
+      },
+      "reader_errors": 0,
+      "normal_exit": true
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-05-V1",
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-7-context-template-k8a-update2-n20-branch-05-20261005T111941Z/finished.json",
+        "sha256": "51e0e85fd6356ae3e9ef9942f909cfc9c268b31718dfdbe8fbaced47eb8aa8cc"
+      },
+      "events": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-7-context-template-k8a-update2-n20-branch-05-20261005T111941Z/events.jsonl",
+        "sha256": "316c82394d8200cdd0323e6733f542a47e00d95380fd8af456c0225e13336c4c"
+      },
+      "readings": 48,
+      "minimum_free_gib": 26.33450698852539,
+      "maximum_free_gib": 28.611244201660156,
+      "observer_pid": 21488,
+      "sequences_complete": true,
+      "event_minus_windows_sample_timestamp_seconds": {
+        "minimum": -0.1257936954498291,
+        "maximum": 0.1235816478729248
+      },
+      "reader_errors": 0,
+      "normal_exit": true
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-06-V1",
+      "finished": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-8-context-template-k8a-update2-n20-branch-06-20261005T112421Z/finished.json",
+        "sha256": "7d7f9e778fa68ad37ceacfdc4c9b4cffb28aedb73721befec22bfe5bfa64f6ef"
+      },
+      "events": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-8-context-template-k8a-update2-n20-branch-06-20261005T112421Z/events.jsonl",
+        "sha256": "f75744bc7d925eed1f3febe387ce774e8d120002c240eb94753232495b3fc61b"
+      },
+      "readings": 65,
+      "minimum_free_gib": 26.31951904296875,
+      "maximum_free_gib": 28.573867797851562,
+      "observer_pid": 7148,
+      "sequences_complete": true,
+      "event_minus_windows_sample_timestamp_seconds": {
+        "minimum": -0.16667628288269043,
+        "maximum": 0.5217595100402832
+      },
+      "reader_errors": 0,
+      "normal_exit": true
+    }
+  ],
+  "completed_guards": 8,
+  "total_readings": 569,
+  "minimum_free_gib": 25.28286361694336,
+  "scope": "Operational memory evidence for the first eight completed members only. Remaining members and whole-family READ are pending; no task answers, quality values or scientific feedback were read. Historical data is not live health.",
+  "interpretation": "All samples exceeded the unchanged8GiB running floor. One observer per member,complete sequences,zero read errors. Per-member minima show no progressive depletion. This does not establish the old K16 incident cause or a causal memory benefit from splitting K;the original runtime also ran one member at a time.",
+  "clock_note": "Retain signed Windows-versus-WSL timestamp offsets;do not assume nonnegative age. All offsets fall within the existing observer one-second skew tolerance. The first read-only aggregation refused an overly strict nonnegative-age assertion before any file writes;no runtime failure or policy change occurred.",
+  "contacts_added": 0,
+  "configuration_changed": false,
+  "root_read_signed": false
+}

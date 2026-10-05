@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Eight completed K8A members retain measured memory headroom
+
+[Operational evidence](../receipts/continuation/2026-10-05-k8a-eight-member-resource-stability.json) pins569 physical Windows readings across the first eight completed guards. Minimum25.2829GiB;zero reader errors,complete sequences and one persistent observer per member. All eight exited normally. Signed cross-host timestamp offsets remain within the existing one-second tolerance. Per-member minima show no progressive depletion;this does not establish the old K16 incident cause or a causal benefit from splitting K. The original runtime also executed one member at a time. The remaining two members and full-family READ are pending;no quality or task answers were read. Keep20GiB startup/8GiB running,unchanged policies and existing exact driver/monitor. Historical completed guard records are not live health.
+
 ## K8B predecessor guard tested with synthetic complete and invalid records
 
 [Thirteen passing cases](../receipts/continuation/2026-10-05-k8b-predecessor-guard-tests.json) exercise the exact prepared v2 guard against isolated synthetic metadata. Complete pinned review passes without writes; missing review holds; missing/failing/duplicate/mutated/unfinalized members,wrong analysis path,unsigned READ,STOP,stale epoch,changed queue and between-panel policy changes refuse. All fixture hashes remain unchanged. No real task results,model calls,scorer calls or current controls were used. This tests prerequisites only;the registration body and exact B frozen/runtime admission still await complete A review. Current A continues on its unchanged frozen worker.

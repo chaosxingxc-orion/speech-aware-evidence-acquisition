@@ -1,5 +1,9 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Eight completed K8A members retain measured memory headroom
+
+[Operational evidence](../receipts/continuation/2026-10-05-k8a-eight-member-resource-stability.json) pins569 physical Windows readings across the first eight completed guards. Minimum25.2829GiB;zero reader errors,complete sequences and one persistent observer per member. All eight exited normally. Signed cross-host timestamp offsets remain within the existing one-second tolerance. Per-member minima show no progressive depletion;this does not establish the old K16 incident cause or a causal benefit from splitting K. The original runtime also executed one member at a time. The remaining two members and full-family READ are pending;no quality or task answers were read. Keep20GiB startup/8GiB running,unchanged policies and existing exact driver/monitor. Historical completed guard records are not live health.
+
 ## K8B predecessor guard tested with synthetic complete and invalid records
 
 [Thirteen passing cases](../receipts/continuation/2026-10-05-k8b-predecessor-guard-tests.json) exercise the exact prepared v2 guard against isolated synthetic metadata. Complete pinned review passes without writes; missing review holds; missing/failing/duplicate/mutated/unfinalized members,wrong analysis path,unsigned READ,STOP,stale epoch,changed queue and between-panel policy changes refuse. All fixture hashes remain unchanged. No real task results,model calls,scorer calls or current controls were used. This tests prerequisites only;the registration body and exact B frozen/runtime admission still await complete A review. Current A continues on its unchanged frozen worker.
@@ -2302,7 +2306,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T09:00:54Z
+Last refreshed: 2026-10-05T11:35:37.771200+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
