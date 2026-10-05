@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner conditional four-GiB reserve review
+
+[Current memory inspection](../receipts/continuation/2026-10-05-owner-memory-review-conditional-four-gib.json) records the owner instruction to permit a four-GiB reserve only if the current footprint is established as necessary. That condition is not satisfied: Windows has about9.96GiB available,15.69GiB compression and23.69GiB WSL working set,while Linux reports32.59GiB file cache and the model process about1.88GiB RSS. These accounting views overlap and must not be added. No large residual experiment worker was found. Preserve existing8/12.5GiB gates; no cache flush,host-setting change,service restart or generation was performed. The registered structural run remains unstarted; GPU execution readiness remains unverified despite healthy HTTP.
+
+
 ## Current prelaunch resource diagnosis
 
 [Read-only operational diagnosis](../receipts/continuation/2026-10-05-k16-update2-resource-diagnosis.json) confirms the original server reports is_sleeping=false, four24576-token slots and live HTTP health, while GPU memory has changed substantially. This does not prove a CUDA failure or native model unload; the cause remains unestablished. Linux file-cache availability is not Windows free memory and cannot substitute for the12.5GiB startup gate. All16 structural frozen checks are complete; no structural generation or control transition has occurred. Keep the resource hold, existing queue and immutable evidence. Do not flush caches, alter host settings, restart the service or add diagnostic model contacts. Preserve first-sample versus subsequent-sample timing when the registered structural run is eventually admitted. No GPU experiment heartbeat is active.

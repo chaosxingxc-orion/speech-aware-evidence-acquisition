@@ -1,0 +1,45 @@
+{
+  "schema": "saea-owner-conditional-memory-review-v1",
+  "at_utc": "2026-10-05T06:20:06.746637+00:00",
+  "owner_instruction_english": "Inspect current memory use and explain any needed optimization or treatment. If the current footprint is established as necessary, relax all memory reserve constraints to four GiB.",
+  "condition_satisfied": false,
+  "reason": "A substantial part of observed Linux memory is reclaimable file cache. The complete current host footprint has not been established as necessary for experiment execution. No large residual experiment process was identified.",
+  "windows": {
+    "physical_total_gib": 63.435,
+    "available_gib": 9.957,
+    "vmmem_working_set_gib": 23.686,
+    "vmmem_private_commit_gib": 62.634,
+    "memory_compression_working_set_gib": 15.686,
+    "committed_bytes": 92909674496,
+    "commit_limit_bytes": 101500153856,
+    "instant_pages_input_per_second": 0,
+    "instant_pages_output_per_second": 0
+  },
+  "wsl": {
+    "mem_total_kib": 45199480,
+    "mem_available_kib": 42276352,
+    "file_cached_kib": 34171716,
+    "buffers_kib": 1121584,
+    "reclaimable_slab_kib": 1981640,
+    "anonymous_kib": 1663680,
+    "swap_used_kib": 771700,
+    "model_pid": 942,
+    "model_rss_kib": 1967608,
+    "model_pss_kib": 1965167,
+    "model_swap_kib": 699888
+  },
+  "interpretation": [
+    "Windows working set, private commit, compression and Linux guest accounting are different views and must not be added as independent physical allocations.",
+    "The instantaneous paging counters are zero; this does not prove that future generation will be free of paging or decompression latency.",
+    "The main memory treatment opportunity is reclaimable WSL cache, not killing a large forgotten experiment worker. Returning guest cache to Windows has not been tested.",
+    "The GPU query still reports zero used MiB while HTTP health is okay; actual GPU execution readiness remains unverified."
+  ],
+  "actions": [
+    "Keep existing eight GiB running and twelve-and-a-half GiB startup floors because the owner condition is not established.",
+    "Do not flush caches, change host settings, kill unrelated processes, restart serving, dispatch generation or alter immutable configurations in this inspection.",
+    "Report the cache/compression evidence and recommend resolving reclaimable memory before accepting a smaller reserve. A future authorized cache-reclamation action must preserve running sources and result bytes and verify Windows memory recovery rather than treating guest MemAvailable as host headroom."
+  ],
+  "tool_limit": "fincore is unavailable; no package installed or file-residency claim made.",
+  "model_contacts": 0,
+  "scorer_contacts": 0
+}
