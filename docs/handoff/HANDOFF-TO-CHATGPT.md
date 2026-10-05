@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## All update-two capacities passed; exact64-row structure registered
+
+[Capacity completion](../receipts/continuation/2026-10-04-template-k16-update2-capacity-complete.json) verifies all16 learned children,704 measured request forms and4752 tokenizer endpoints,zero generation/scoring. Each retains full512 output and2048 structural reserve; the minimum remaining margin is5461tokens. Windows wrapper ended0 at2026-10-05T00:45:56Z and both launcher processes exited. Root deleted automation slurp; monitor-cancelled-v1.json preserves the exact terminal bindings.
+
+[Structural registration](../receipts/continuation/2026-10-05-k16-update2-structural-registration.json) completed successfully through prepare-entry-v2.py; session58749 ended0 and must not be restarted. Exactly16 original learned policies,4 existing inputs each,64 rows,at most832 generation/3328 separately registered FIT endpoints,zero official scores. Registration is not dispatch: clean new codex-context-template-k16-update2-structural-v1 freeze,all16 frozen checks and current live gates remain required. Use the prepared exact completed-driver transition only after validation; preserve the completed initial K16 queue and capacity evidence.
+
+No monitor is active while preparing. Create a new15-minute script-only heartbeat after actual structural GPU launch and delete it at verified terminal completion/failure with no remaining admitted worker. Structural results are control/handoff/native custody/timing only; intentional worker-only OPENED attempts must never be scored/resealed or exported as learning evidence. All360 scientific trajectories remain unflown. Full-family READ and abstract-only future feedback remain mandatory; no benefit/adoption or cross-carrier release is established.
+
+
 ## Update-two capacity is running with job-scoped fifteen-minute monitoring
 
 [Launch receipt](../receipts/continuation/2026-10-05-k16-update2-capacity-launch.json) binds all16 learned children to the clean frozen29a796c398c4869d22439ef5ad09c465df5ad2fa worker codex-context-template-k16-update2-capacity-v1. Every model-free frozen check passed; session61060 ended0 and must never be restarted. Sealed launch registration SHA2569120ea8ce5b8a8aee85de7f11ac168b3c3a408d25f13adb631443dc63c13d1f6. Windows hidden wrapper PID26152 started00:20:38Z; WSL launcher PID781717 epoch2026-10-05T00:20:39.075665Z. Revalidate actual identities. Launch free memory17.18GiB; each child also enforces stable12.5GiB startup/8GiB running.
@@ -2062,7 +2071,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T23:59:54.753247+00:00
+Last refreshed: 2026-10-05T00:51:44.739506+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

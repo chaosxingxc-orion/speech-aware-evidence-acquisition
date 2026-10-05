@@ -1,0 +1,322 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-01-smoke-4-generation-v1",
+    "bundle_id": "0136f4381cf70905ad70fb648b639da884df9c8e0fbde75786d1b3efdf84898d",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-01-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-01-graph-v1",
+    "label": "branch-01",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-01-generation-plan-registered-v1.json",
+      "sha256": "89e8625c64fb211791ff3384ff37b9112098cb389d0cac629dfac53a1a3661c7"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "3d2e66f710f1a2f041056004643d25b6a78db33d7e097dcb948ed228f8ac7f0f"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-01-analysis-recipe-v1.json",
+      "sha256": "0d1a7b54a6165c8026e477d5379ebab2dd1aaabb0d40768b4ccfbbedf4b73125"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-02-smoke-4-generation-v1",
+    "bundle_id": "958345cb641172ffc5b52ca01cc1dcf61d678f44a0e7a690f889071a732f2a99",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-02-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-02-graph-v1",
+    "label": "branch-02",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-02-generation-plan-registered-v1.json",
+      "sha256": "0deb30c1b79a67b266043521f0710b0a066baceae1f7964a7f548fc2978d9940"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "866b0b34c331fd49564b2724cfe7f0b35762d6e0ffdedb6b2b2765d8ced553bc"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-02-analysis-recipe-v1.json",
+      "sha256": "55002315786b9c998232dc6959201576f83050257cd74afa3f9ab7e39ff9f17f"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-03-smoke-4-generation-v1",
+    "bundle_id": "a1390d6298351f2ba374ff0512f855efd5746ce8fdd51f20e2b42c2112e56568",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-03-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-03-graph-v1",
+    "label": "branch-03",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-03-generation-plan-registered-v1.json",
+      "sha256": "a6c9b8c00f139e3b8d42710ef18c57d7927c0bc7a2d1c0b97bcb0bd7d491246e"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "cfd676f80193952adacce8db2b79dba6bab8196576a6ec687723a17a221c1223"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-03-analysis-recipe-v1.json",
+      "sha256": "1b99436f8c05241c698d2f51fcce19440f5950f5524e2cce4d0f20a99630fee9"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-04-smoke-4-generation-v1",
+    "bundle_id": "a9b61b9a7c37b8610a497aebf2ef9996543f9308726b93d3438481e1d4c96709",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-04-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-04-graph-v1",
+    "label": "branch-04",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-04-generation-plan-registered-v1.json",
+      "sha256": "d7a397314efba8e53ff231b26d21deb84a2af0c75738e134648c0ef464163ca7"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "de023034c5567dcd4c490692d8c65d67f487e71812c6fae698535b6b7f768180"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-04-analysis-recipe-v1.json",
+      "sha256": "f1825535a8ac5d81578dacff60e0d15f8c3118636420f9d59db71a87ef3037c2"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-05-smoke-4-generation-v1",
+    "bundle_id": "b17788c067a7bff3ba7753215e72af1e4b303e7c86aeb712105cb3137394c1b6",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-05-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-05-graph-v1",
+    "label": "branch-05",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-05-generation-plan-registered-v1.json",
+      "sha256": "4b9297120a93bb67e009f8366e2d1a21ff086cdda6758a4805a4cfa83f7d9ce6"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "5bbac2eba1c8e5301b54e64d094f0f8e7e3ff6d90254fc2463bcdf46477c289c"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-05-analysis-recipe-v1.json",
+      "sha256": "89698cda72fb0284266e7a5d2aa56a331796eb06cb892a7f3bad58ace5148d53"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-06-smoke-4-generation-v1",
+    "bundle_id": "98327a8b6b932e40021ad3e0175e79e8844c529b2464f888116277752705228c",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-06-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-06-graph-v1",
+    "label": "branch-06",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-06-generation-plan-registered-v1.json",
+      "sha256": "ab3f7bf41a2e34e7677c25f1748ba5ed5ab21d91b420ca9b2ad3de9e7c78b921"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "c85a232e837bcfb8c74dff4c2817a81dc14140ff0d6e617f6ad71c02d7e6ec67"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-06-analysis-recipe-v1.json",
+      "sha256": "23594fe2ddda28b686e36763c8181d6942e5d2822689565433f86d69e7c6d4d0"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-07-smoke-4-generation-v1",
+    "bundle_id": "ce29134403c3214d9a8875d07a03cb00f68b94cd32b33ab8bcd147a8f9580ddd",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-07-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-07-graph-v1",
+    "label": "branch-07",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-07-generation-plan-registered-v1.json",
+      "sha256": "5477b3f5d254be21d406b89e70681b2440fd4f0dd76daa508e8e1e9e6ad61f20"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "528d0ceb23bef702ad2cc6e60ff006a13e87a357b9753a25ed3a6ce2b4ce92a3"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-07-analysis-recipe-v1.json",
+      "sha256": "3c69c19e40abcc055da3985410e3e29abfeeb7611e2e79962ed27f769f183c19"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-08-smoke-4-generation-v1",
+    "bundle_id": "43e117be0bec8bb84c5065421dea92cf5e91a8a7f250ae73f8eac3ce52462c2d",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-08-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-08-graph-v1",
+    "label": "branch-08",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-08-generation-plan-registered-v1.json",
+      "sha256": "ae5da1a595d5d571ef4fb027dac3aec7f550bb6a6dbe17da98515dec2b8805f8"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "4cff6a707647008e3d5c4bb8cc0814b3fb7fa6201485acbcc38f1ab7de8ecd83"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-08-analysis-recipe-v1.json",
+      "sha256": "8f416e49079d66d040af9693b97f7d6cc1b3d96c3cf7dfc6432796e6a7bc66a5"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-09-smoke-4-generation-v1",
+    "bundle_id": "8804f1140915d928bc4d79b2995bf155276a601955c8700bc9239564d65c6cb2",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-09-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-09-graph-v1",
+    "label": "branch-09",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-09-generation-plan-registered-v1.json",
+      "sha256": "f657ff1cf38595f065dfb5615ecd32c387687b96f24bee92c950441e58dcd910"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "9465b9625c16ffbc820ff0ec1ae9d8af765c8f9ba9c682e54cf3a5c21230b1a4"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-09-analysis-recipe-v1.json",
+      "sha256": "5de994a34936f006b6d5c1a2656ea1cb59ad3e4914cf2640efc8aed30754ce06"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-10-smoke-4-generation-v1",
+    "bundle_id": "6509be9140a46531cd00b0a96fa56d6fb48ee32104c5ecc4c30c21a666ad11ae",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-10-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-10-graph-v1",
+    "label": "branch-10",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-10-generation-plan-registered-v1.json",
+      "sha256": "7b3f8dfa3ab69c58aa0f7b6a1fb617c14c2eae92302586a7a022f38484a9039d"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "602c0645fa59cc04ddaf0b4a78ceaab8a4fabe480d6a40f6f1e3d62ba2a36d68"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-10-analysis-recipe-v1.json",
+      "sha256": "e44aa5a4d242b9adfdcb83799212f5d5fb83b1b9b32564e9ebfe03fe18b40f90"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-generation-v1",
+    "bundle_id": "2b0529b090d1b7c53d48f70a080e5b6d393ae4dd07e42c87f2c14fec9839e4a1",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-11-graph-v1",
+    "label": "branch-11",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-11-generation-plan-registered-v1.json",
+      "sha256": "64900bf999e9a14b9ae135349da9a439901313777bc4033338e9953fdd7cea3e"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "dab0861b2554b1b4f46ce4edbf49b58470a8cbd002efe1e5d224e8d195ffabb7"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-11-analysis-recipe-v1.json",
+      "sha256": "b1fd4d0f34964cb01385d1f351a843e4a4ccf4bf0e8ef326116bd7b35f43b088"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-12-smoke-4-generation-v1",
+    "bundle_id": "ef7b53be7de080ca4ed67cc86e5c0f6fdbbfb28035100d6aabfd131fbae4aa39",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-12-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-12-graph-v1",
+    "label": "branch-12",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-12-generation-plan-registered-v1.json",
+      "sha256": "ea3ce1394100614c3708a801e3f61dbf278567a57722a688781fcdf676e332c9"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "73092831be056435b5cfbc1c9b3c084fb73b0f95b2766db42e6f71bc64115e08"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-12-analysis-recipe-v1.json",
+      "sha256": "cba7f8121d356d9ad78ae5060faf15e02ef784365e86d057087604c377b9f619"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-13-smoke-4-generation-v1",
+    "bundle_id": "9d4c492b2e24c0eba6fef7eacf474f846d81310e148a10c078bf8a7d48e4d630",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-13-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-13-graph-v1",
+    "label": "branch-13",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-13-generation-plan-registered-v1.json",
+      "sha256": "a3d6807fcafda9045e399aadfbc8b0a814af34cf5f0ea6747532cedfc7340619"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "4898c727bf21d7cede87b6f90150a5a9095b3dd41f6d13ea83a0bd51574e28f5"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-13-analysis-recipe-v1.json",
+      "sha256": "c0d228292ea31f8a214ace95ab553a670da118afcd86950e8305a04fc0d5f5df"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-14-smoke-4-generation-v1",
+    "bundle_id": "1fb6df3bfff726525403687e42cba9f136d0d2db1e211b58777481ae93e62118",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-14-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-14-graph-v1",
+    "label": "branch-14",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-14-generation-plan-registered-v1.json",
+      "sha256": "018c99dfede4ead9666091058cb2dd7320d8f0fba2de67e05c963655d58ccc5b"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "ea7c1934b85b935a70a09137d469bb24a9a40bdbf938b5cf4fde7b81433bad00"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-14-analysis-recipe-v1.json",
+      "sha256": "6d34b379b21b0f1918062ade3ce98c366a0e2d7b39b0e94bd51c070d7dcf7c8b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-15-smoke-4-generation-v1",
+    "bundle_id": "3adce494be0ec509baa0caeb75a4c04aafc60ce839bd0eaaffb95f1768aaa6f2",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-15-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-15-graph-v1",
+    "label": "branch-15",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-15-generation-plan-registered-v1.json",
+      "sha256": "667accee09cbe5c4c35a69e98885537569cde69c03b35951193e858fe4ed87e3"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "5c7decb8a421ed10c477581ec2b078934da65cffb43b93c295606fa407d99b0d"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-15-analysis-recipe-v1.json",
+      "sha256": "d68526df104869cf85eeb7022d88ae1e3446a8343f9d042d9b1836bf9eaf4afa"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-16-smoke-4-generation-v1",
+    "bundle_id": "1d8271280453c117119652ffe5ee1577e1184aade2579b3394d9ad5631e6bedb",
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-16-smoke-4-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-16-graph-v1",
+    "label": "branch-16",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-16-generation-plan-registered-v1.json",
+      "sha256": "6dfad92ec4746a31ca4ac83960eaa089394d6ba4f485692c64309072e255fc79"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "2105fb17233c5b5aa1a532904b4bb03dc354bdb8539cc5d5614c46783310cdcf"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-16-analysis-recipe-v1.json",
+      "sha256": "8d779af36e4b4829e71a97ad1023fde8d9ec83afa801a1ecf6577b52a67c0347"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1"
+  }
+]

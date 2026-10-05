@@ -1,0 +1,40 @@
+{
+  "schema": "saea-k16-update2-structural-registration-v1",
+  "at_utc": "2026-10-05T00:51:44.739506+00:00",
+  "status": "REGISTERED; FROZEN CHECKS AND LIVE ADMISSION PENDING",
+  "capacity_completion": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-04-template-k16-update2-capacity-complete.json",
+    "sha256": "5e2ae232b6d2ad05641d44101882fdd4f19dcf0e826e6e2a5a7d5324f76e6664"
+  },
+  "capacity_monitor_cancellation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/monitor-cancelled-v1.json",
+    "sha256": "5fce4e3c9386700f7e2f9487008d6a4f302bc44612b20761edef0467a99f85b9"
+  },
+  "registration_completion": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/registration-exit-v2.json",
+    "sha256": "8906a17ad87cf2ef21599ddea9e888e65371270aff748a65fab150221e772341"
+  },
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/prepare-entry-v2.py",
+    "sha256": "e0d35c3671f65971874e2ac50abdcba43304695890f4343bff223656d81c9fca"
+  },
+  "members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/registered-members-v1.json",
+    "sha256": "1b1aea081e666dc4a2bc114147c51ef42fc7b29bcee233c21b33ad3f137525db"
+  },
+  "queue": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/queue-v1.json",
+    "sha256": "0a2a898e6292891a4f249b2f5cab8800e5fdde8122852b874e5c0ce5f97f8569"
+  },
+  "scope": {
+    "systems": 16,
+    "rows_per_system": 4,
+    "rows": 64,
+    "generation_contact_cap": 832,
+    "fit_endpoint_cap": 3328,
+    "official_score_jobs": 0
+  },
+  "current_monitor": "None; capacity monitor slurp deleted. Create a new15-minute job-scoped script monitor only after actual structural launch.",
+  "next": "Commit completed registration and English handoff, freeze a new clean structural worker, run every frozen check, revalidate current service/resources/STOP/processes, normally archive only the exact completed prior controls, and launch the independently admitted structure.",
+  "limits": "No structural generation contact yet, no scoring, no scientific quality read or optimizer feedback. All eighteen N20 scientific members remain held."
+}

@@ -1,0 +1,173 @@
+{
+  "at_utc": "2026-10-05T00:47:17.483785+00:00",
+  "capacity_passed": true,
+  "generation_contacts": 0,
+  "limits": "Reachable graph with longest legal supplied knowledge and bounded role replies; not an exhaustive arbitrary-text guarantee. Actual request FIT remains mandatory for every generation contact.",
+  "members": [
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-01/request-fit-v1.json",
+        "sha256": "9984be6825ab1a118be7f32c37ae1dc9ad5f4e28b9882bd405cb01d71db9bebb"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5464,
+      "system_id": "branch-01"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-02/request-fit-v1.json",
+        "sha256": "31cdb2348b4152bd85ab6259c7b72f710dabac4755085d2354485ed45537a00b"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5465,
+      "system_id": "branch-02"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-03/request-fit-v1.json",
+        "sha256": "19a1d791d0a50021ec15312c4fb2d4862126214d4c4783533661b21c57a4c09a"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5461,
+      "system_id": "branch-03"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-04/request-fit-v1.json",
+        "sha256": "e9a9b532e2187017176435eb0389cb70ee5bddb96229a3684b15d1be929dce87"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5481,
+      "system_id": "branch-04"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-05/request-fit-v1.json",
+        "sha256": "a188eec05d51a0574d3a983bc68fdfcf20129e8a0e0cb35f4af1dc145b8ac3a1"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5480,
+      "system_id": "branch-05"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-06/request-fit-v1.json",
+        "sha256": "caefc43fd5ea252841562d43572912789735eff0c38a24e3b15caaff90d698cb"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5463,
+      "system_id": "branch-06"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-07/request-fit-v1.json",
+        "sha256": "bbd348338a0a61198e5404755c94db9f19136187ee25343c0e82fc693e284ed6"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5472,
+      "system_id": "branch-07"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-08/request-fit-v1.json",
+        "sha256": "e37d6a442d7e14edd25ae29c7db935e25ee1d157956c3704a18f6ef94d81d063"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5476,
+      "system_id": "branch-08"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-09/request-fit-v1.json",
+        "sha256": "15bbcebb72021fee4470ee6764e31428138f73ce44e875ac95c5fd8cc0ac398c"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5481,
+      "system_id": "branch-09"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-10/request-fit-v1.json",
+        "sha256": "00a9e5d115a8eae03f9c5d3bd492910783b5a6fb1431ba48060ca01a6c9eb613"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5465,
+      "system_id": "branch-10"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-11/request-fit-v1.json",
+        "sha256": "e0e34235201cc42daedb34916cf6fcef5c82c3f939165d8b07f5dbde4f1f54d3"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5468,
+      "system_id": "branch-11"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-12/request-fit-v1.json",
+        "sha256": "91316983864f9cbc35547bf0f79ef489e0051318089ca2466d9728d45b71a13f"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5477,
+      "system_id": "branch-12"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-13/request-fit-v1.json",
+        "sha256": "ca38702e214a464911795364f6a4f05ec3f88494d328ca7ae4a59282fa3a36dc"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5484,
+      "system_id": "branch-13"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-14/request-fit-v1.json",
+        "sha256": "5c9c6ce79a313bb2560a1630bcbc04dab098f0f93e2e8cd4efb9acbfa60f0e8d"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5469,
+      "system_id": "branch-14"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-15/request-fit-v1.json",
+        "sha256": "e76d3f767c17971b000d157bea1b0b49ebfa925dedeed3d7fc2f622c971f4802"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5465,
+      "system_id": "branch-15"
+    },
+    {
+      "artifact": {
+        "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/branch-16/request-fit-v1.json",
+        "sha256": "59b966a829263d9084ce78a7ee70ab9b3dbd5540d0a3c6530d035a187d13356e"
+      },
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_full_output_and_structural_reserve": 5469,
+      "system_id": "branch-16"
+    }
+  ],
+  "read_scope": "Registered structural-only capacity read; no task quality or optimizer feedback.",
+  "schema": "saea-context-template-k16-capacity-complete-v1",
+  "scorer_contacts": 0,
+  "source_commit": "29a796c398c4869d22439ef5ad09c465df5ad2fa",
+  "tokenizer_endpoints": 4752
+}
