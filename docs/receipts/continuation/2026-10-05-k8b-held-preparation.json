@@ -1,0 +1,111 @@
+{
+  "schema": "saea-k8b-held-preparation-v1",
+  "at_utc": "2026-10-05T09:43:41.834527+00:00",
+  "members": [
+    {
+      "member": "branch-09",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "branch-10",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "branch-11",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "branch-12",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "branch-13",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "branch-14",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "branch-15",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "branch-16",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "seed",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    },
+    {
+      "member": "seed-aa",
+      "blocked_modes": [
+        "worker",
+        "campaign"
+      ],
+      "readiness": "held",
+      "attempt_absent": true
+    }
+  ],
+  "registration": {
+    "relpath": "docs/readiness/2026-10-05-context-template-k8b-update2-n20-entry-v1/registration-v1.json",
+    "sha256": "a6d31fff029235b7f58201817fe2df15bd0f90e231b75a8a16f28d2e90853e92"
+  },
+  "equivalence": {
+    "relpath": "docs/readiness/2026-10-05-context-template-k8b-update2-n20-entry-v1/request-equivalence-v1.json",
+    "sha256": "9c408867aff8c7a40d54ef65f05f7425ddfe73cd6e9cd52aa6b5f349eec126d6"
+  },
+  "registration_gate_exit": 1,
+  "registration_gate_expected_refusal": true,
+  "generation_contacts": 0,
+  "fit_contacts": 0,
+  "dispatch_authorized": false,
+  "authority": "Direct owner K8 split; preparation only",
+  "conditions": "K8A has now stopped on observer timeout. Neither B nor another scientific recovery may dispatch around this failure. Fix observer and complete separately registered four-row engineering before new root disposition. Preserve every original template and all failed bytes."
+}

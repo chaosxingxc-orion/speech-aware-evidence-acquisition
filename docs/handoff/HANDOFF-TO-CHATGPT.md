@@ -1,5 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Memory observer idle diagnosis complete; production fix still pending
+
+[Model-free diagnosis](../receipts/continuation/2026-10-05-memory-observer-model-free-diagnosis.json):90 independent-process reads and120 persistent nonce/sequence-bound fresh reads passed with zero contacts. Historical timeout did not reproduce; its internal phase remains unknown. Persistent prototype first read0.343seconds,nonfirst mean0.00119seconds,max0.00885seconds; owned observer exited0. Idle proof is not loaded runtime acceptance. Next add tested bounded persistent transport to the existing process guard,then separately registered four-row engineering. Do not launch another scientific recovery or bypass via K8B. Failed controls remain preserved; no GPU monitor active.
+
+## K8A stopped after a Windows-memory observation timeout; no further recovery
+
+[Exact incident](../receipts/continuation/2026-10-05-k8a-observer-timeout-stop.json) supersedes launch. Driver09:29:01Z stopped09:35:56Z; guard18587 terminated its owned group after the .NET Windows-memory interop read timed out in8.071seconds. Last valid memory24.9198GiB; no measured floor violation. Exact internal timeout phase remains unestablished. No driver,worker,core.driver scorer or owned group remains. Automation slurp-k8a-15m was deleted.
+
+Seed generated20 distinct rows with119 charged model contacts,COMPLETED generation manifest,but attempt remains OPENED and score-batch has no output metadata. Do not infer evaluation-function entry or successful scoring. Other nine members are absent. Preserve frozen82c2f4603,STOP,queue,status,lease,all outputs and unsigned READ. No retry,reseal,scorer replay,regeneration or task-quality read. This is a second scientific-flight failure; do not register another scientific recovery. First diagnose observer reliability with model-free evidence and prove a fix through separately registered four-row engineering before a later flight.
+
+K8B preparation session80649 finished model-free at09:38:27Z; all ten policies/supply outputs remain original. Its decision/ledger stay held/DRAFT and cells permit only check/prepare-supply,never worker/campaign. All20 actual worker/campaign admission checks refuse as expected; zero contacts. No dispatch around K8A failure. Keep all sixteen original templates,same20 inputs,originalT0/seed,20GiB startup/8GiB running floors,other-carrier holds and human-before8x400. No global cache flush,restart or host-setting investigation. The specific memory-query command timing is in scope for observer diagnosis.
+
 ## K8A GPU experiment launched; fifteen-minute monitor active
 
 [Actual launch](../receipts/continuation/2026-10-05-k8a-update2-n20-launch.json):Windows SAEA-Batch-Driver epoch2026-10-05T09:29:01Z,PID18390,start ticks52013786. Frozen codex-context-template-k8a-update2-n20-v1 remains82c2f4603cdb959f616b4a5fdad15949b803b7be. All10 frozen registration/runtime/policy/supply/decoding checks passed; session90795 ended0. Do not duplicate. Exact original08:53 K16 stopped controls and stale lease were preserved under batch-archive-20261005-k16-n20-memory-stop-to-k8a and the new coordination preserved-original-lease before installing this queue. All old attempts/source bytes remain unchanged and unread. No service restart or cache flush.

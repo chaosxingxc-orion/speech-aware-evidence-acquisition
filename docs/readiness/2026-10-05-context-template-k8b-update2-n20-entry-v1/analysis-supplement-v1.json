@@ -1,0 +1,110 @@
+{
+  "comparisons": {
+    "calibration": "same-chain seed-aa versus seed; report candidate contrasts against seed-aa as well",
+    "primary": [
+      "branch-09 versus seed",
+      "branch-10 versus seed",
+      "branch-11 versus seed",
+      "branch-12 versus seed",
+      "branch-13 versus seed",
+      "branch-14 versus seed",
+      "branch-15 versus seed",
+      "branch-16 versus seed"
+    ],
+    "required": "Retain every member, stratum, failure, abstention and adverse change; descriptive paired uncertainty only, no small-panel efficacy claim.",
+    "weightings": [
+      "natural-mixture",
+      "equal-stratum"
+    ]
+  },
+  "efficiency": "Actual mean/all and non-first sample wall time, per-node prefill/decode/transport, first4/rest diagnostic, throughput separately. Same observed admission order across members; do not relabel non-first warm.",
+  "frontier": "Same-cohort nondominated official quality, intent, reliability and measured latency; separate from algorithm retention.",
+  "implementation_amendment": "Retain the existing paired estimators, official score projection and measured-cost frontier for the exact16 learned update-two candidates plus unchanged seed/A/A. No branch filtering.",
+  "launch_worker_policy": "Prospective root reader pins before scientific dispatch. Keep all frozen runtime and source bytes immutable.",
+  "learning_retention_intent": {
+    "relpath": "docs/receipts/owner/2026-10-05-template-k8-partition.json",
+    "sha256": "1de74a8ebd7564c2e3d66761cc16d18d919611eb5cf449afbe5b371391325a64"
+  },
+  "output_boundary": "Root complete K8 panel interpretation only. No K16 retention or learner export from a half population. Preserve both panel identities and separate same-panel frontiers.",
+  "predecessor": {
+    "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-n20-entry-v1/analysis-supplement-v1.json",
+    "sha256": "0b79b351e25067c753824ef775fef09fcf301e2c5c2494d7bd12e75ae0851b53"
+  },
+  "projection": {
+    "aggregate_fields": [
+      "port_micro.slu_f1",
+      "port_micro.intent_accuracy"
+    ],
+    "per_sample_fields": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slot_f1_exact_tp",
+      "slot_f1_exact_fp",
+      "slot_f1_exact_fn",
+      "slu_f1_word_tp",
+      "slu_f1_word_fp",
+      "slu_f1_word_fn",
+      "slu_f1_char_tp",
+      "slu_f1_char_fp",
+      "slu_f1_char_fn"
+    ],
+    "reward_rule_id": "context-initial4-n20-official-counts-v1",
+    "schema": "saea-reward-projection-v1",
+    "scorer": "slurp-slu-official-train"
+  },
+  "quality": "Official pooled SLU-F1; separate intent accuracy, reliable completion, failure and abstention rates.",
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-05-context-template-k8b-update2-n20-entry-v1/analysis-recipe-v1.json",
+    "sha256": "dcdeb8a679cfe8d989cb124b89e4985ea69dcafb75a286fb0effec5bec8663da"
+  },
+  "recorded_at_utc": "2026-10-05T09:38:27.290279+00:00",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-05-context-template-k8b-update2-n20-entry-v1/registration-v1.json",
+    "sha256": "a6d31fff029235b7f58201817fe2df15bd0f90e231b75a8a16f28d2e90853e92"
+  },
+  "repairs_and_damage": "Between complete systems, a whole answer is exact when intent is correct and official exact-entity FP=FN=0; empty correct entities count as correct. This association does not establish a within-trajectory or node causal effect. Separate source-verified role diagnostics are required to explain a mechanism.",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "confidence": 0.95,
+    "seed": 20261001,
+    "unit": "paired utterance; keep all recording variants together"
+  },
+  "reward": "Frozen original TRAIN reference utility after exact complete-family READ. Future learner views contain templates, abstract structural features, measured costs and numeric terminal counts only; no concrete utterance/entity/knowledge/source roster.",
+  "schema": "saea-context-learning-analysis-supplement-v1",
+  "source_code": {
+    "scripts/analysis/system_text_pilot_read.py": {
+      "relpath": "scripts/analysis/system_text_pilot_read.py",
+      "sha256": "53ee150c86e80af85b89b0940ec226830e7a974dc9771ccc3558d0fb738b0842"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_context_read.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_context_read.py",
+      "sha256": "5b0dc67fd480e83ed330c8ff29a687a22bdcc3c9472c37b535b45f4b7d912892"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_text_update.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_text_update.py",
+      "sha256": "602c77693ebf5a52bb677e57229ce007ca25cdbde02b49a74b1fe16db2de200a"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_context_learning.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+      "sha256": "a71a35400a46a55232a7bd3abe049b533679db57271efae3d8a7bc41739066a5"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_search_measurement.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_measurement.py",
+      "sha256": "dcea023512c2de81e12fc59c10e6610bfea8232723b3e1fb06daa62d75fefb6b"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py",
+      "sha256": "3ebf16b43103474b39f9cfe618c0b36ced76d78a6d8dc2427cd3f50e8290a2ec"
+    }
+  },
+  "status": "DRAFT PREPARATION ONLY; REQUIRE FRESH ADMISSION AFTER COMPLETE K8A REVIEW",
+  "stratum_metadata": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+  }
+}

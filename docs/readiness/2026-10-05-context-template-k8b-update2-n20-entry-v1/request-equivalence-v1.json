@@ -1,0 +1,222 @@
+[
+  {
+    "member": "seed",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-SEED-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-SEED-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "seed-aa",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-SEED-AA-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-SEED-AA-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "branch-09",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-09-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-09-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "branch-10",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-10-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-10-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "branch-11",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-11-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-11-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "branch-12",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-12-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-12-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "branch-13",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-13-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-13-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "branch-14",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-14-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-14-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "branch-15",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-15-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-15-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  },
+  {
+    "member": "branch-16",
+    "new_family_budget": {
+      "candidate_trajectories": 160,
+      "complete_system_trajectories": 200,
+      "control_trajectories": 40,
+      "generation_calls_cap": 2600,
+      "official_complete_scoring_jobs": 10
+    },
+    "new_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K8B-UPDATE2-N20-BRANCH-16-V1",
+    "nonidentity_request_config_unchanged": true,
+    "old_family_budget": {
+      "candidate_trajectories": 80,
+      "complete_system_trajectories": 120,
+      "control_trajectories": 40,
+      "generation_calls_cap": 1560,
+      "official_complete_scoring_jobs": 6
+    },
+    "original_run": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-16-V1",
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "at_utc": "2026-10-05T09:34:15.037063+00:00",
+  "authority": "Direct K8 owner amendment and owner227 first scientific recovery disposition",
+  "conditions": "Preparation only. PanelA must complete and root must review it before a new admission and frozen binding. All10 exact clean frozen registration/runtime/policy/supply checks; fresh healthy original service; recorded control reconciliation; stable20GiB startup and8GiB running. No service restart, cache flush or diagnostic generation.",
+  "decision_id": "context-template-k8b-update2-n20-owner227-v1",
+  "diagnosis": "Valid host-memory readings fell from12.632911682GiB to5.608306885GiB, a7.024604797GiB decline. Startup headroom was insufficient for the observed working-set growth; exact allocation attribution remains unproven.",
+  "eligible_run_ids": [],
+  "failure": "Any further failure stops this scientific recovery. Preserve evidence; no second recovery, retry, reseal or score replay. Prove a needed fix on separately registered four-row engineering before any later flight.",
+  "incident": {
+    "relpath": "docs/receipts/continuation/2026-10-05-k16-update2-n20-running-memory-stop.json",
+    "sha256": "f3cfadd144515257bf9649f8e3840f99e5318f31183e0d4f7a622be6542e135a"
+  },
+  "limits": "Same UPDATE2 pool, original branches09-16, temperature0 and seed20260913; other-carrier holds and human-before8x400 remain.",
+  "metadata_correction": "Supersede stale K4/K16 aggregate metadata with exact K8 panel budgets:200 trajectories,2600 generation contacts,10400 tokenizer endpoints and10 complete official jobs per panel. Across two panels:400 trajectories,including80 fresh controls. Preserve original templates and verify unchanged request fields and supply outputs.",
+  "monitor": "Create15-minute script-only heartbeat after actual launch and delete at verified terminal.",
+  "preservation": "Preserve failed seed four contacts, all original frozen bytes, outputs, STOP and lease until exact dead-process control archival. Use fresh K8 panel identities, preserve unused K16 identities and original policy lineage. Each panel has fresh seed/A/A; no template changes between panels. Old family READ stays unsigned.",
+  "read": "All10 independently FINALIZED, verified seals, exactly one successful complete official score each and zero failed jobs; then exact root READ. No partial quality or optimizer export.",
+  "resource_policy": {
+    "rationale": "Twelve GiB headroom above the unchanged8GiB floor exceeds the observed7.025GiB decline by4.975GiB; still measured at every launch and while running.",
+    "running_floor_gib": 8,
+    "stable_samples": 3,
+    "start_wait_seconds": 600,
+    "startup_floor_gib": 20
+  },
+  "schema": "saea-campaign-decision-v1",
+  "scope": {
+    "additional_preserved_failed_generation_contacts": 4,
+    "candidate_systems": 8,
+    "distinct_inputs": 20,
+    "generation_contact_cap": 2600,
+    "official_complete_score_jobs": 10,
+    "request_fit_endpoint_cap": 10400,
+    "total_trajectories": 200
+  },
+  "status": "held"
+}

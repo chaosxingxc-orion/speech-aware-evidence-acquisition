@@ -1,0 +1,70 @@
+{
+  "schema": "saea-memory-observer-model-free-diagnosis-v1",
+  "at_utc": "2026-10-05T09:50:50.556404+00:00",
+  "contacts": 0,
+  "independent_process_probe": {
+    "at_utc": "2026-10-05T09:43:08.680546+00:00",
+    "contacts": 0,
+    "variants": {
+      "original": {
+        "samples": 30,
+        "errors": [],
+        "maximum_seconds": 0.7217229300295003,
+        "mean_seconds": 0.37749174047494305
+      },
+      "instrumented": {
+        "samples": 30,
+        "errors": [],
+        "maximum_seconds": 1.3024900799500756,
+        "mean_seconds": 0.4286075977880197
+      },
+      "physical-only": {
+        "samples": 30,
+        "errors": [],
+        "maximum_seconds": 0.40907919500023127,
+        "mean_seconds": 0.33804453428989895
+      }
+    },
+    "interpretation": "A successful idle replay does not explain the historical timeout or prove reliability under workload. Phase markers only locate any newly reproduced timeout; do not infer a historical internal phase."
+  },
+  "persistent_prototype": {
+    "at_utc": "2026-10-05T09:47:06.338516+00:00",
+    "contacts": 0,
+    "samples": 120,
+    "transport": "One Windows process; per-request nonce and sequence; each response freshly queries physical memory; no historical fallback",
+    "observer_windows_pid": 39124,
+    "observer_exit": 0,
+    "first_seconds": 0.342914379958529,
+    "nonfirst_mean_seconds": 0.0011851536819296536,
+    "nonfirst_max_seconds": 0.00884798396145925,
+    "minimum_available_gib": 28.290939331054688,
+    "scope": "Idle model-free transport proof only. Not a runtime fix,stress proof or proof of the historical timeout cause. Production tests and separate four-row engineering remain required."
+  },
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8a-memory-observer-diagnosis-v1/probe.py",
+      "sha256": "247cb73489c077f335196035c9deba3fe94e92de14c9d97a4fbdd645242ffa01"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8a-memory-observer-diagnosis-v1/samples.jsonl",
+      "sha256": "888565459a813735f61cedecea9c9afff758cebd67e9a8fe22f10cd83098afd5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8a-memory-observer-diagnosis-v1/completed.json",
+      "sha256": "4a7704ee591acae632587782d18f923a226556ebec2fc962dc5fe2dfa69593d4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8a-memory-observer-diagnosis-v1/persistent-probe.py",
+      "sha256": "0bd07a85fc08d94105defb0bdfdac22cd5dd6bfbd6636c66d36263f50943a3bf"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8a-memory-observer-diagnosis-v1/persistent-samples.jsonl",
+      "sha256": "a2a777945e6fadfa3172608d45079ea7e2f765fb4df0528b33dd58474779c51e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8a-memory-observer-diagnosis-v1/persistent-completed.json",
+      "sha256": "e7201955974186e2a781e3b4db0ac485d5199c19932ead32d692c27a71912ee4"
+    }
+  ],
+  "interpretation": "Idle probes did not reproduce or locate the historical timeout. Persistent transport removes repeated process startup from noninitial samples; this is a prospective transport rationale, not a proven historical cause or loaded-runtime fix. No stale fallback, floor change, model request, control reconciliation or GPU admission. Production implementation, fault tests and separately registered four-row engineering remain required."
+}

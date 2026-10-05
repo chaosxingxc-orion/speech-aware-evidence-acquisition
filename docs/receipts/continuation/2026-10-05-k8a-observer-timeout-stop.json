@@ -1,0 +1,211 @@
+{
+  "active_worker_scorer_processes": [],
+  "at_utc": "2026-10-05T09:39:58.642579+00:00",
+  "automation": {
+    "id": "slurp-k8a-15m",
+    "status": "DELETED after verified terminal"
+  },
+  "commit": "82c2f4603cdb959f616b4a5fdad15949b803b7be",
+  "complete_official_score_metadata": 0,
+  "completed_generation_rows": 20,
+  "diagnosis": "The current .NET Windows-memory interop command timed out after8.071seconds. Last valid Windows free memory24.9198GiB; no observed floor violation. The precise internal phase causing timeout is not established. Separate from the prior measured5.6083GiB floor incident.",
+  "driver_epoch": "2026-10-05T09:29:01Z",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k8a-update2-n20-seed-20261005T092926Z/events.jsonl",
+      "sha256": "45c0165b2e74f2f39a2e2b03a4497dfeaf84c7838d88278d1867f220b6a0be8d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k8a-update2-n20-seed-20261005T092926Z/finished.json",
+      "sha256": "4d730758cceab6abe110c454eb093d795ded3eb5612938d549c95328ec1f2d3f"
+    },
+    {
+      "path": "/home/chao/batch-STOP",
+      "sha256": "ffa5e90b89eeedb4e1a12286fc288043cfd0515c258d25e84b31986b7f101894"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "272e86b659301b903035648908e6029c34b2086fdcf5fe17ad9c3927f8e3b630"
+    }
+  ],
+  "failed_samples": [
+    {
+      "at": 1791192950.9516993,
+      "available_gib": null,
+      "elapsed_seconds": 8.071133587043732,
+      "event": "running-sample",
+      "reader_error": "timeout",
+      "reason": "windows-reading-unavailable"
+    }
+  ],
+  "generation_contacts_charged": 119,
+  "guard_finished": {
+    "command": [
+      "/home/chao/.venvs/speechrl/bin/python",
+      "-B",
+      "-m",
+      "speech_aware_evidence_acquisition.core.flight.cli",
+      "campaign",
+      "--repo-root",
+      "/home/chao/saea-worktrees/codex-context-template-k8a-update2-n20-v1",
+      "--data-root",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "--runtime-root",
+      "/home/chao",
+      "--lock-path",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "--owner",
+      "chatgpt-root-owner227",
+      "--expected-session-id",
+      "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "--experiment",
+      "slurp-native-stage3-context-template-k8a-update2-n20-seed-v1"
+    ],
+    "exit_code": 125,
+    "identity": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-generation-v1",
+      "repo_root": "/home/chao/saea-worktrees/codex-context-template-k8a-update2-n20-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-V1",
+      "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "study_head": "82c2f4603cdb959f616b4a5fdad15949b803b7be"
+    },
+    "pid": 18587,
+    "policy": {
+      "floor_gib": 8.0,
+      "interval_seconds": 5.0,
+      "read_timeout_seconds": 10.0,
+      "start_gib": 20.0,
+      "stop_grace_seconds": 5.0
+    },
+    "schema": "saea-flight-process-memory-guard-v1",
+    "status": "resource-stop",
+    "worker_returncode": -15
+  },
+  "last_valid_sample": {
+    "at": 1791192937.8799732,
+    "available_gib": 24.9197998046875,
+    "elapsed_seconds": 0.49241010000696406,
+    "event": "running-sample",
+    "reader_error": null,
+    "reason": null
+  },
+  "members": [
+    {
+      "actual_calls": 119,
+      "attempt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-generation-v1.json",
+        "sha256": "ebd4337d38a9eebbb2ff2cd71ce848f40a2b238b930e39ff9ffb3e92d90db658"
+      },
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-generation-v1",
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-generation-v1/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-V1.run-manifest.json",
+        "sha256": "2456ef1a1e62f64aedaffba84cd3f7a93783b3f5bad79c62cb482dc82121f150"
+      },
+      "manifest_status": "COMPLETED",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-V1",
+      "score_batch_files": [],
+      "state": "OPENED"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-branch-01-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-01-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-branch-02-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-02-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-branch-03-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-03-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-branch-04-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-04-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-branch-05-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-05-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-branch-06-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-06-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-branch-07-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-07-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    },
+    {
+      "actual_calls": null,
+      "attempt": null,
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k8a-update2-n20-branch-08-generation-v1",
+      "manifest": null,
+      "manifest_status": null,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-08-V1",
+      "score_batch_files": [],
+      "state": "ABSENT"
+    }
+  ],
+  "minimum_valid_available_gib": 24.747081756591797,
+  "next": "Diagnose/fix observer reliability with model-free evidence, then separately registered four-row engineering before considering any new scientific flight. K8B remains preparation-only and cannot fly around this stop.",
+  "preservation": "Keep STOP,queue,status,lease,original frozen sources,completed generation and incomplete scoring state unchanged. No second scientific recovery,scorer replay,reseal,regeneration or partial quality read.",
+  "quality_read": false,
+  "read_signed": false,
+  "schema": "saea-k8a-windows-memory-observer-timeout-v1",
+  "scorer_entry": "Not established by the available empty score-batch output; do not infer the evaluation function was or was not entered.",
+  "stopped_at": "2026-10-05T09:35:56Z",
+  "unique_generation_inputs": 20,
+  "valid_samples": 67,
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k8a-update2-n20-v1"
+}
