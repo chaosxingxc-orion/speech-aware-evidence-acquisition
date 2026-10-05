@@ -1,0 +1,12 @@
+{
+  "schema": "saea-precontact-metadata-correction-v1",
+  "at_utc": "2026-10-05T15:58:35.795404+00:00",
+  "authority": "Owner227 and direct owner instruction to resolve lock/restart and resume experiments",
+  "failure": "Frozen runtime preflight rejected upper-case SLURP in the exposure carrier column. No attempt or contact occurred.",
+  "correction": "Use the exact existing slurp dataset-lock key on the new generation/FIT/READ rows. Preserve every original row and frozen checkout. No runtime request, source, budget or policy changes.",
+  "old_worker": "/home/chao/saea-worktrees/codex-context-template-observe-boundary-n20-v1",
+  "new_frozen_worker_required": true,
+  "rows": 13,
+  "model_contacts": 0,
+  "scorer_contacts": 0
+}
