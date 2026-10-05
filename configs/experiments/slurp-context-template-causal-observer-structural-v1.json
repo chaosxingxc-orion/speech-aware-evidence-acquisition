@@ -1,0 +1,38 @@
+{
+  "schema": "saea-context-observer-structural-config-v1",
+  "experiment_id": "slurp-native-stage3-context-template-causal-observer-smoke-v1",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-V1",
+  "attempt_id": "attempt-slurp-native-stage3-context-template-causal-observer-smoke-generation-v1",
+  "source_experiment": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-v1",
+  "source_experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+    "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "sampling": {
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "execution": {
+    "slot_count": 4,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory"
+  },
+  "contact_limits": {
+    "model_per_trajectory": 13,
+    "fit_endpoints_per_model_contact": 4
+  },
+  "resource_policy": {
+    "process_floor_gib": 8,
+    "process_start_gib": 20,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600
+  },
+  "score_jobs": 0,
+  "task_quality_read": false
+}

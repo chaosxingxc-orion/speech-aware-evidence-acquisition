@@ -1,0 +1,176 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-seed-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "candidate_id": "seed",
+    "config_hash": "3ddf509982c799f371eeb75b2167553996de6a15be629c40329d9366fc5cc48d",
+    "experiment": "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-seed-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+      "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+    },
+    "population_budget": {
+      "K": 4,
+      "M": 4,
+      "N": 20,
+      "candidate_trajectories": 80,
+      "control_trajectories": 40,
+      "family_trajectories": 120,
+      "fit_endpoints_cap": 6240,
+      "generation_contacts_cap": 1560
+    },
+    "population_cohort": "remaining-b1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-SEED-V1/phase-supply-v1.json",
+      "sha256": "d0218802562fa1aa5762a234edc9725c5cfe0fda3cb2cdb79f66c2946b6c5066"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-SEED-V1",
+    "status": "PREPARED_DRAFT",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-seed-aa-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "candidate_id": "seed-aa",
+    "config_hash": "f152de63fd292a94fe1142704aa4da6f902826f278882cd20758b6d7012fc31a",
+    "experiment": "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-seed-aa-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+      "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+    },
+    "population_budget": {
+      "K": 4,
+      "M": 4,
+      "N": 20,
+      "candidate_trajectories": 80,
+      "control_trajectories": 40,
+      "family_trajectories": 120,
+      "fit_endpoints_cap": 6240,
+      "generation_contacts_cap": 1560
+    },
+    "population_cohort": "remaining-b1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-SEED-AA-V1/phase-supply-v1.json",
+      "sha256": "1a7510f8b9a0b4a04a0a77ae5c1fba43a9db6297a57ed0163273037ba494545b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-SEED-AA-V1",
+    "status": "PREPARED_DRAFT",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-09-generation-v1",
+    "bundle_id": "8804f1140915d928bc4d79b2995bf155276a601955c8700bc9239564d65c6cb2",
+    "candidate_id": "branch-09",
+    "config_hash": "e08acd40cd133c2def702aa0521b4f5e2f917b06bc50b822a30bb8c22f1ab135",
+    "experiment": "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-09-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+      "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+    },
+    "population_budget": {
+      "K": 4,
+      "M": 4,
+      "N": 20,
+      "candidate_trajectories": 80,
+      "control_trajectories": 40,
+      "family_trajectories": 120,
+      "fit_endpoints_cap": 6240,
+      "generation_contacts_cap": 1560
+    },
+    "population_cohort": "remaining-b1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-09-V1/phase-supply-v1.json",
+      "sha256": "d6d9a7e2951604729daff2711275f10531184e0449eac715b506d14e69a1fb19"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-09-V1",
+    "status": "PREPARED_DRAFT",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-10-generation-v1",
+    "bundle_id": "6509be9140a46531cd00b0a96fa56d6fb48ee32104c5ecc4c30c21a666ad11ae",
+    "candidate_id": "branch-10",
+    "config_hash": "e0f00434c1366b8a7d24fb53e0f43ac1d5f609c82505fd59de8d120413e97e8d",
+    "experiment": "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-10-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+      "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+    },
+    "population_budget": {
+      "K": 4,
+      "M": 4,
+      "N": 20,
+      "candidate_trajectories": 80,
+      "control_trajectories": 40,
+      "family_trajectories": 120,
+      "fit_endpoints_cap": 6240,
+      "generation_contacts_cap": 1560
+    },
+    "population_cohort": "remaining-b1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-10-V1/phase-supply-v1.json",
+      "sha256": "dfd663d3762d913a9f12c1187db28bbb2a9ed72adc4f4dc6aef33d3e711a7d6c"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-10-V1",
+    "status": "PREPARED_DRAFT",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-11-generation-v1",
+    "bundle_id": "2b0529b090d1b7c53d48f70a080e5b6d393ae4dd07e42c87f2c14fec9839e4a1",
+    "candidate_id": "branch-11",
+    "config_hash": "797829ba7186c91a9576d7d6de0892b9ab5fb7844d09633ab062a1f2409de39d",
+    "experiment": "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-11-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+      "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+    },
+    "population_budget": {
+      "K": 4,
+      "M": 4,
+      "N": 20,
+      "candidate_trajectories": 80,
+      "control_trajectories": 40,
+      "family_trajectories": 120,
+      "fit_endpoints_cap": 6240,
+      "generation_contacts_cap": 1560
+    },
+    "population_cohort": "remaining-b1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-11-V1/phase-supply-v1.json",
+      "sha256": "f9550c0d6cfee6c6980ec4632c772d6d3210d0e75800d996321e9fe5accbdf54"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-11-V1",
+    "status": "PREPARED_DRAFT",
+    "unchanged_selection": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-12-generation-v1",
+    "bundle_id": "ef7b53be7de080ca4ed67cc86e5c0f6fdbbfb28035100d6aabfd131fbae4aa39",
+    "candidate_id": "branch-12",
+    "config_hash": "639828f78bd8b948735e7d6b31829bf060fd0e0e0ba0833fe38a7ef533d83b9d",
+    "experiment": "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-12-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+      "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+    },
+    "population_budget": {
+      "K": 4,
+      "M": 4,
+      "N": 20,
+      "candidate_trajectories": 80,
+      "control_trajectories": 40,
+      "family_trajectories": 120,
+      "fit_endpoints_cap": 6240,
+      "generation_contacts_cap": 1560
+    },
+    "population_cohort": "remaining-b1",
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-12-V1/phase-supply-v1.json",
+      "sha256": "c6e0a2f305c785a3ccb6ac41e592fc4ed34d2ab655a0a3f0c811b050f906b04d"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-12-V1",
+    "status": "PREPARED_DRAFT",
+    "unchanged_selection": true
+  }
+]

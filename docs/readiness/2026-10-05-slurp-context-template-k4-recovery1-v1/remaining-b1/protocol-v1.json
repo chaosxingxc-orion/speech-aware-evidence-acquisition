@@ -1,0 +1,104 @@
+{
+  "K": 4,
+  "M": [
+    "perception",
+    "solver",
+    "reviewer",
+    "planner"
+  ],
+  "N": 20,
+  "algorithms": [
+    "tf-grpo-context-diversity"
+  ],
+  "automatic_expansion": false,
+  "boundary_maintenance": {
+    "global_sync": false,
+    "mode": "root-coordinated-clean-page-cache",
+    "preserve_model_service": true,
+    "record_before_after": true,
+    "require_generation_scoring_preprocessing_idle": true,
+    "when": "after-complete-cohort"
+  },
+  "candidate_members": [
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12"
+  ],
+  "control_members": [
+    "seed",
+    "seed-aa"
+  ],
+  "evaluation_only": true,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+    "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+  },
+  "family_id": "slurp-context-template-k4-recovery1-n20-v1-remaining-b1",
+  "fixed_roster": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/fixed400-source-v1.json",
+    "sha256": "1e1b284a21893973a207ac387b13d6627e64e1c550953c26744328937ef8d5bd"
+  },
+  "frozen_reference": {
+    "relpath": "docs/readiness/2026-10-04-context-initial4-n20-protocol-draft-v1/original-reference-family-v1.json",
+    "sha256": "c037f1706f9365c47360a20ef87645781ca30fbe777e45d711b2a1068b778148"
+  },
+  "independent_validation": false,
+  "iteration": 2,
+  "learning_update": {
+    "algorithm": "tf-grpo-context-diversity",
+    "historical_retention_intent": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-actor-v1/evaluation-intent-v1.json",
+      "sha256": "5671dadd6f69a35b49cf05fae29af40a85f07355391d721485f7c3b722b01141"
+    },
+    "iteration": 2,
+    "original_update_record": {
+      "relpath": "system-text-search/context-template-k16-v1/context-learning/populations/update-two/result.json",
+      "sha256": "1be110a92001a7d6262c8b4faeee493329b0e31c777b18fdf5ccb3df6cf83750"
+    },
+    "retention_intent": {
+      "relpath": "docs/receipts/owner/2026-10-05-template-k8-partition.json",
+      "sha256": "1de74a8ebd7564c2e3d66761cc16d18d919611eb5cf449afbe5b371391325a64"
+    },
+    "source_packet": {
+      "relpath": "system-text-search/context-template-k16-v1/context-learning/inputs/tf-grpo-context-diversity-population-2.json",
+      "sha256": "773b1303f61dc27b009ff70c0e9427c28f5f54eaf321eeb2bbfbf7db6b230fd1"
+    }
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "original_population_response": {
+    "relpath": "system-text-search/context-template-k16-v1/learning-update2/actor-capsule-v1/original-response.json",
+    "sha256": "7c372a9a91f32400435a14709f54db3fc21099c04f49d4e470c0c79ddfd2618a"
+  },
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-04-deterministic-context-rollouts.json",
+    "sha256": "95605fc5cad2d4e7ff1b5209014dff1d6dcc7ac640747ec727e732c61f99d272"
+  },
+  "population_authorization": {
+    "relpath": "docs/receipts/owner/2026-10-05-smaller-cohorts-cache-boundary.json",
+    "sha256": "40ff6d5bfe3290808c73e67371a31bb239c6f2fe73523c45cbf81b3b1ec51124"
+  },
+  "population_budget": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "population_cohort": "remaining-b1",
+  "sampling": {
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "schema": "saea-context-learning-protocol-v1"
+}

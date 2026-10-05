@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-context-template-causal-observer-smoke-v1",
+  "composed_config_hash": "4bd8dc4e12285ca81caf197105f90333ff8138d1ed017092b83f3de424dc9859",
+  "decision_receipt": {
+    "relpath": "coordination/context-template-causal-observer-engineering-v1/root-admission-v1.json",
+    "sha256": "07779728a5dcd73276551a2aae8586dc73446b428a5ee997fd92d75be7368d2e"
+  },
+  "engineering_configuration": {
+    "relpath": "configs/experiments/slurp-context-template-causal-observer-structural-v1.json",
+    "sha256": "1fc2c0dc42c66ae3f2f8aebae56cb5e927c00bcd92e30a3f45f923e3375eddef"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-causal-observer-smoke-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 208,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "1fc98cfb65c16e19aa8e05b4c7d67ee554dcfc757d46e6eff6db1d50695a51a2",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-causal-observer-smoke-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-V1/phase-supply-v1.json",
+    "sha256": "114aec9e1fdf3020705951ac42d578e77c527c5260bdfefe1810199270a920af"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-STRUCTURE-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227; exact frozen checks and live transition required"
+}

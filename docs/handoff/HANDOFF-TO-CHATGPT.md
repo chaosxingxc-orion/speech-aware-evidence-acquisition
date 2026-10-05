@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Both configured K4 cohorts materialized; fresh structural worker registered
+
+[Preparation evidence](../receipts/continuation/2026-10-05-configured-k4-materialization.json): all twelve members of remaining-b1/b2 are materialized, policy-role checked and supply-output-equivalent/warm-verified with zero model/tokenizer/scorer contacts. Use the canonical flat packages 2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b1 and the corresponding remaining-b2. Both scientific cohorts and READ rows remain DRAFT. All twelve registration gates show only expected missing root countersignature/decision plus inherited tuning-roster advisories. Preserve original nested preparation copies; do not use them for launch. A duplicate top-level pin was corrected in mutable model-free preparation before any contact; original helper and failure receipt are preserved.
+
+[Separate engineering package](../readiness/2026-10-05-context-template-causal-observer-engineering-v1/README.md) is now ROOT COUNTERSIGNED under227 for unchanged seed on existing four engineering inputs,52 generation contacts/208 FIT endpoints,zero scores and structural-only read; all dimensions derive from its pinned config. Its registration gate passes. Freeze a clean codex-context-template-causal-observer-engineering-v1 checkout, pass exact frozen runtime/config/policy/supply checks, then separately revalidate and archive only the exact stopped K8B controls before one Windows-owned launch and15-minute monitor. No control transition, cache reclamation or new GPU contact has occurred. The old K8B worker, completed outputs/scores, OPENED branch10 and unsigned READ remain untouched.
+
+After engineering acceptance, admit one canonical K4 cohort, preserving all unchanged templates and exact config binding. Do not launch the two cohorts concurrently. Cache reclamation stays at complete idle cohort boundaries. Root records quality/intent/reliability and first/non-first latency after complete-family READ; no partial feedback export. Other-carrier holds and human-before8x400 remain.
+
+
 ## Configured K4 continuation prepared; observer repair passes live checks
 
 [The latest owner instruction](../receipts/owner/2026-10-05-smaller-cohorts-cache-boundary.json) prioritizes smaller K, complete-cohort WSL cache reclamation, delegated base repair and learning-driven business quality. [Prepared K4 configuration and member blueprints](../readiness/2026-10-05-slurp-context-template-k4-recovery1-v1/README.md) retain unchanged original branches09-12 and13-16 in two cohorts, same20 inputs plus own seed/A/A each:120 trajectories per cohort,240 total. All twelve prospective member identities are HELD. Carry the exact configuration pin through every stage; no runtime admission or generation/FIT plan is implied by blueprints.
@@ -2357,7 +2366,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T13:27:43.521201+00:00
+Last refreshed: 2026-10-05T13:45:51.444744+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

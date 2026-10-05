@@ -1,0 +1,29 @@
+{
+  "at_utc": "2026-10-05T13:44:09.156189+00:00",
+  "authority": "Root227 bounded engineering and latest smaller-K/delegated-repair owner directive",
+  "conditions": "Exact clean frozen worker, config/source/role/supply/sampling/FIT-cap checks and registration gate. Before a separate one-time root transition, revalidate exact old stopped epoch, no remaining generation/scoring or other coordinator activity, original healthy idle service and declared startup/running resource floors. Archive only exact old control files with before/after hashes; never mutate old attempt bytes.",
+  "decision_id": "context-template-causal-observer-engineering-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-FIT-V1"
+  ],
+  "engineering_configuration": {
+    "relpath": "configs/experiments/slurp-context-template-causal-observer-structural-v1.json",
+    "sha256": "1fc2c0dc42c66ae3f2f8aebae56cb5e927c00bcd92e30a3f45f923e3375eddef"
+  },
+  "failure": "Stop and preserve on any new failure; diagnose and record a separate root disposition before any later action.",
+  "monitor": "Create a script-only15-minute heartbeat after actual GPU launch and delete after terminal worker/driver exit.",
+  "preservation": "Preserve failed K8B worker, attempts, completed members, scores, original queue/status/STOP and all earlier evidence. No old attempt retry, reseal, score replay or partial quality read.",
+  "purpose": "Prove the repaired request-causal physical-memory observer through unchanged seed native GPU execution before prospective configured K4 cohorts. Historical rejected response is unavailable; do not claim the exact old cause.",
+  "read_scope": "Operational observer freshness/identity,structural role/control handoff,terminal Omni custody,actual request FIT and node/sample timing. No official scoring,task quality,proposal or learner export.",
+  "schema": "saea-campaign-decision-v1",
+  "scientific_families": "Both new configured K4 families remain DRAFT pending accepted structural proof and exact root admission. No cached-file reclamation at the current partial failed cohort.",
+  "scope": {
+    "fit_endpoints": 208,
+    "generation_contacts": 52,
+    "official_scores": 0,
+    "rows": 4,
+    "systems": 1
+  },
+  "status": "decided"
+}

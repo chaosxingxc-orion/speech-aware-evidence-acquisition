@@ -1,0 +1,62 @@
+[
+  {
+    "member": "seed",
+    "nonidentity_request_config_unchanged": true,
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "source": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-k8b-update2-n20-seed-v1.json",
+      "sha256": "764fda50514903666d7b3ef7fb5954e7efcee722cd6620aa707ff21ab621cfa8"
+    }
+  },
+  {
+    "member": "seed-aa",
+    "nonidentity_request_config_unchanged": true,
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "source": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-k8b-update2-n20-seed-aa-v1.json",
+      "sha256": "09d30ed2aa94c631fcb5e9db23f7f9ae21d3084d841452f5b5d0d10261b35a64"
+    }
+  },
+  {
+    "member": "branch-13",
+    "nonidentity_request_config_unchanged": true,
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "source": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-k8b-update2-n20-branch-13-v1.json",
+      "sha256": "464e319921eee65ab796287c5122bf9a92e7c172d99f04ef60beda5555c34a5c"
+    }
+  },
+  {
+    "member": "branch-14",
+    "nonidentity_request_config_unchanged": true,
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "source": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-k8b-update2-n20-branch-14-v1.json",
+      "sha256": "b1d9ba5405c4b1667196d8978d247843bc373df473b561b732a8ee8d834ec357"
+    }
+  },
+  {
+    "member": "branch-15",
+    "nonidentity_request_config_unchanged": true,
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "source": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-k8b-update2-n20-branch-15-v1.json",
+      "sha256": "ca801f0448f1464096b8902a6dd32df603be663fa02ffdf06c895c65e8e3107b"
+    }
+  },
+  {
+    "member": "branch-16",
+    "nonidentity_request_config_unchanged": true,
+    "policy_unchanged": true,
+    "prepared_output_unchanged": true,
+    "source": {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-k8b-update2-n20-branch-16-v1.json",
+      "sha256": "f8912a55cfa14684ef7aea35e02d1b9e460a92abcca0fe754695ee8bead81cc8"
+    }
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-causal-observer-smoke-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "experiment": "slurp-native-stage3-context-template-causal-observer-smoke-v1",
+    "label": "seed",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-05-context-template-causal-observer-engineering-v1/generation-plan-registered-v1.json",
+      "sha256": "cc5fac38ef7360645900cd4d9edb13ccba98201dd8e130f4ee9599ac537286bd"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-V1/phase-supply-v1.json",
+      "sha256": "114aec9e1fdf3020705951ac42d578e77c527c5260bdfefe1810199270a920af"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-05-context-template-causal-observer-engineering-v1/analysis-recipe-v1.json",
+      "sha256": "e9a93aa37cbc5aed47ce8efa4e45f1bf2a6599d8ade500804bfac008b10a4bce"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-V1"
+  }
+]

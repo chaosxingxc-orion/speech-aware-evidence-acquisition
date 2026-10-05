@@ -1,0 +1,65 @@
+{
+  "schema": "saea-configured-k4-materialization-v1",
+  "at": "2026-10-05T13:45:51.434768+00:00",
+  "configuration": {
+    "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+    "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+  },
+  "prepared_members": 12,
+  "cohorts": [
+    {
+      "cohort": "remaining-b1",
+      "canonical_package": "docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b1"
+    },
+    {
+      "cohort": "remaining-b2",
+      "canonical_package": "docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b2"
+    }
+  ],
+  "all_original_policy_and_supply_outputs_unchanged": true,
+  "all_supplies_warm_verified": true,
+  "registered_model_and_fit_rows": "DRAFT",
+  "scientific_read": "DRAFT",
+  "draft_gate_cells": 12,
+  "remaining_gate_reasons": [
+    "row-not-countersigned",
+    "no-decision-receipt"
+  ],
+  "inherited_advisories": [
+    "tuning-roster-unverified"
+  ],
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "old_controls_unchanged": true,
+  "preparation_correction": "Shared composition refused duplicate top-level config keys before any contact. Keep config in baseline effective values and nested cell. Original helper/log/partial documents preserved; v2 completed. Canonical flat packages match existing registration resolver; nested preparation copies are retained.",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-recovery1-v1/preparation-exit-v1.json",
+      "sha256": "042f72ed70e9fcc14ae8b44c8e361758e4705061b798acb54d0edf4cbd56c693"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-recovery1-v1/model-free-composition-correction-v1.json",
+      "sha256": "9de263237fed971abf1170138e2e75e273593704d5586f9cbab114a475152cbb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-recovery1-v1/preparation-exit-v2.json",
+      "sha256": "bf48ec3c35d38bcfd1824ce8283277cb4a2ab79cd0a5bd7662bddfe99f8b744a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-recovery1-v1/preparation-complete-v1.json",
+      "sha256": "20c999cf7c2e4eec19352d4132b8f23de116e9446b635861c1b8d0546fa91fe1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-recovery1-v1/canonical-packages-v1.json",
+      "sha256": "b86374505a7002d1825124f8fe9e4d98dc378448eab477b40736f10e22a695b2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-recovery1-v1/draft-registration-check-v1.json",
+      "sha256": "91870f2c6d9d336e2d5dc0e16d20211aa6e7da01d63d7ffb58e87c571cce5eda"
+    }
+  ],
+  "engineering_package": "docs/readiness/2026-10-05-context-template-causal-observer-engineering-v1",
+  "engineering_registration": "ROOT COUNTERSIGNED, registration gate passed; frozen/live checks and exact control transition pending",
+  "gpu_dispatch": false
+}
