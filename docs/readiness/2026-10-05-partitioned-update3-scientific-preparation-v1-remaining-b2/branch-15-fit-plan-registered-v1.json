@@ -1,0 +1,58 @@
+{
+  "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-15-v1",
+  "composed_config_hash": "57f3052863b956263ed7961c08c2213a3cc88b568db97b89a5c394e3e419b368",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-15-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "fce03c97f51bb8da4418e1d34e8d7f9d6383feac58fff82d8dac9c0068c6fc19",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-15-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-15-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-template-k16-v1/policies/c4a982ce5e7eec900eaf47e916ce265c4689d6c6d2a76e05c98d6ee6ad9a02ef.json",
+      "sha256": "e0a6e3ce191c75896ad57e5a6fd73b0d63de96d1504f81e4875d75be6155190c"
+    },
+    "bundle_id": "c4a982ce5e7eec900eaf47e916ce265c4689d6c6d2a76e05c98d6ee6ad9a02ef",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_budget": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "population_cohort": "remaining-b2",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-15-V1/phase-supply-v1.json",
+    "sha256": "7fcbe6be8d095548b8557e911b92ace7de689175bdfad093c6c30d3a4dd4e350"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "DRAFT; zero contacts; complete structural acceptance and root runtime admission pending"
+}

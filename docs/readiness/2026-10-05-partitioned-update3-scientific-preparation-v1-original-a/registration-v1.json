@@ -1,0 +1,117 @@
+{
+  "expected_members": {
+    "branch-01": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-01-V1",
+    "branch-02": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-02-V1",
+    "branch-03": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-03-V1",
+    "branch-04": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-04-V1",
+    "branch-05": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-05-V1",
+    "branch-06": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-06-V1",
+    "branch-07": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-07-V1",
+    "branch-08": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-08-V1",
+    "seed": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-V1",
+    "seed-aa": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-AA-V1"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "family_id": "slurp-context-template-partitioned-update3-n20-v1-original-a",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "member_bindings": {
+    "branch-01": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-01-generation-v1",
+      "bundle_id": "5b037701efb82dc6c64e66da3c2a8a30c1550bc9282952df4fca684b4e44d93e",
+      "config_hash": "8f4535054360c9ef1df9f28a0c2aff49fe5f80f94aa5ed599f1008c4a24b4d3a",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-01-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-01-V1"
+    },
+    "branch-02": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-02-generation-v1",
+      "bundle_id": "55ace9a36a6f3e723741de0afd5ccc3fcced32da1416f76a750d93b2a0373f36",
+      "config_hash": "36b1e5742244c8ca37fc71fc00b59009b5a0acbf659f7cf83358888dc87415bf",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-02-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-02-V1"
+    },
+    "branch-03": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-03-generation-v1",
+      "bundle_id": "c22d957d52baac26ac7c325acb2bb8c0d06864918f4cccbe39d571ef9ee25951",
+      "config_hash": "3451d9f81b481eeb27f7f3df51c0b94c79ab7c28a2a2a294debee0a5985a1a76",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-03-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-03-V1"
+    },
+    "branch-04": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-04-generation-v1",
+      "bundle_id": "84f152a8ceea115b0810986fdeec1a9e141eb27d646e1142b4f75c71ee752307",
+      "config_hash": "91f7ec9861a847c61752f4135863b630d034545b4578bc92057511c9ec38e31c",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-04-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-04-V1"
+    },
+    "branch-05": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-05-generation-v1",
+      "bundle_id": "60c3ea5bbe8fbdede45f9afb10f5a9896b955cbda27929e6d98177048bcb7951",
+      "config_hash": "d45eb5d284e4195e4bda11560835f6f80b8e44fe751219509fa3d175c07cd24c",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-05-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-05-V1"
+    },
+    "branch-06": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-06-generation-v1",
+      "bundle_id": "6afde0f3dabdb3990b5796f7ffde0589583769e08e312d88dc82e67a0d1886ef",
+      "config_hash": "50fa36e5ce67677ec714df15827f7964dd3d4fd8d88cb843c63c5bf10329cbe4",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-06-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-06-V1"
+    },
+    "branch-07": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-07-generation-v1",
+      "bundle_id": "a07f37a3bbe634979da778284099b8b52a335260a3d9bee7cdfc91354323b66c",
+      "config_hash": "e0da02d7c0faa9ad2924517159c8b736aee70252a06935037f51e688bfc2e8bf",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-07-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-07-V1"
+    },
+    "branch-08": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-08-generation-v1",
+      "bundle_id": "1c07b19b36a78c7b48b81ecc275b0cac229dd98a26f506ccd8854a8b99774788",
+      "config_hash": "58a1a0553243be35b1551d9eef25effc351e6c50e94c57ce29bb241b88120520",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-branch-08-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-BRANCH-08-V1"
+    },
+    "seed": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-seed-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "639bd95e69b8226d0c061b74a42ba658bc6fda91dddb7adf5b624521f7e3baac",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-seed-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-V1"
+    },
+    "seed-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-original-a-seed-aa-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "039e7b03183d0139581a26d314ca3c26c9d87f6ed75532182323c49cb7fef1e1",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-original-a-seed-aa-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-ORIGINAL-A-SEED-AA-V1"
+    }
+  },
+  "population_budget": {
+    "K": 8,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 160,
+    "control_trajectories": 40,
+    "family_trajectories": 200,
+    "fit_endpoints_cap": 10400,
+    "generation_contacts_cap": 2600
+  },
+  "population_cohort": "original-a",
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/protocol-v1.json",
+    "sha256": "9ba60355ba7925ef1f9245ac979d06a44f31ce6437283728d73e3857c3bb32b0"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1",
+  "registration_sha256": "33d9d0b7c6e1d283bd7b8405bf5f3665c769f44d31f4dfb3aaed166702d2165a",
+  "schema": "saea-context-learning-registration-v1"
+}

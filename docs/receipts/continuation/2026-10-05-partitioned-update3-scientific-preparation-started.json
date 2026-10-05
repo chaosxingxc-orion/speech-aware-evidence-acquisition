@@ -1,0 +1,55 @@
+{
+  "at_utc": "2026-10-05T20:02:50.822662+00:00",
+  "blueprint": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1/planned-members-v1.json",
+    "sha256": "b8e8861b4aadb57b10e790f96364bb1f3df2e1fec696a224b5b2e9129c85acd2"
+  },
+  "original_preparation_exit": {
+    "at_utc": "2026-10-05T19:56:54.873442+00:00",
+    "exit_code": 1,
+    "completed": [
+      "original-a-seed",
+      "original-a-seed-aa",
+      "original-a-branch-01",
+      "original-a-branch-02"
+    ]
+  },
+  "continuation_process": {
+    "at_utc": "2026-10-05T19:59:56.439687+00:00",
+    "pid": 36632,
+    "start_ticks": "55772736",
+    "model_contacts": 0
+  },
+  "continuation_exec_session": 23932,
+  "preserved_complete_prefix": [
+    "original-a-seed",
+    "original-a-seed-aa",
+    "original-a-branch-01",
+    "original-a-branch-02"
+  ],
+  "observed_successful_suffix_members": [
+    "original-a-branch-03",
+    "original-a-branch-04",
+    "original-a-branch-05",
+    "original-a-branch-06"
+  ],
+  "structural_audit_process": {
+    "at_utc": "2026-10-05T20:01:35.583077+00:00",
+    "pid": 36944,
+    "start_ticks": "55782481",
+    "driver_pid": 33260,
+    "driver_start_ticks": "55683368",
+    "driver_epoch": "2026-10-05T19:44:49Z",
+    "helpers": {
+      "structural-audit-v1.py": "659046bd45b07aaa5de33dc4fe1b1571e3accf2af53358d6b2f2f2f9259168ac",
+      "root-node-timing-v1.py": "1a310e475ab40b94a6a6ceba5b7fda8ea1e469e2dfc9ae6484e62ad0b62d7f89",
+      "root-sample-timing-v1.py": "69876833e330597fe09a888f809733de03cca66ee1b12e4f8f02e9011996903a"
+    },
+    "predicate_tests_passed": 9,
+    "scope": "Exact completed engineering structural and numeric timing only; no task quality, scoring, retry, dispatch, ledger acceptance or learning update."
+  },
+  "structural_audit_exec_session": 85636,
+  "scientific_runtime_admission": false,
+  "model_contacts_added_by_preparation": 0,
+  "next": "Poll existing preparation and structural audit handles. Do not restart. After complete preparation run finalize-draft-registration-v2.py, which explicitly joins preserved v1 partial success with v2 suffix. Complete structural root review before scientific admission. Commit coherent preparation only after all workers finish; do not freeze partial preparation."
+}

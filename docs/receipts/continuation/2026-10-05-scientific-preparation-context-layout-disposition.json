@@ -1,0 +1,37 @@
+{
+  "at_utc": "2026-10-05T19:59:56.315349+00:00",
+  "authority": "Root227 model-free preparation correction",
+  "failure": "v1 rejected the already approved native_role_query_placement context-layout change before creating branch03 files or contacts.",
+  "affected_existing_children": [
+    "branch-03",
+    "branch-16"
+  ],
+  "correction": "Permit only the compiled context-layout value; verify it against the exact original compilation actual_binding. Other fixed fields remain equal. Do not change any candidate policy.",
+  "completed_prefix": [
+    {
+      "member": "original-a-seed",
+      "preserved_preparation_sha256": "e3bf0e4bbd14b1084b72b130cb7c4a87cf9d5b5093fd54a8f9945d74a91f6661"
+    },
+    {
+      "member": "original-a-seed-aa",
+      "preserved_preparation_sha256": "fdab57914e4852e9dbbe6af7ad59d7c82336371a5a6e8dbd4c4ddc960d03a053"
+    },
+    {
+      "member": "original-a-branch-01",
+      "preserved_preparation_sha256": "047dd05ad4dfe29a3f4cfd688bbe419782776493f2c176735635df6f1661e265"
+    },
+    {
+      "member": "original-a-branch-02",
+      "preserved_preparation_sha256": "6c2a5f006131091ff8b389907e2c15bbd2f5aad7d578ea461351ab575dd971f5"
+    }
+  ],
+  "all_configured_members_fixed_field_checks": 22,
+  "fixed_field_mutations_rejected": 6,
+  "original_exit_sha256": "5f77001641e685ace59deed38ced0fc15d4d177b15d08d72fbac2827ffd3ca3a",
+  "original_script_sha256": "be0dd40a5a2cac47a8c391260fbba49d21b813832dd669bbb089f90f19794f35",
+  "corrected_script_sha256": "bd8f8a5e4af4955a1fef6e1ee2e8d5342c4ce0885c3387d366dcd01a78ca4748",
+  "contacts_added": 0,
+  "runtime_controls_changed": false,
+  "continue_only_unprepared_suffix": true,
+  "failure_policy": "Stop and preserve any further preparation failure; no automatic retry."
+}

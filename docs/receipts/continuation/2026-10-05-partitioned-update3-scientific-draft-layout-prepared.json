@@ -1,0 +1,21 @@
+{
+  "at_utc": "2026-10-05T20:06:28.702449+00:00",
+  "review": {
+    "at_utc": "2026-10-05T20:04:14.143702+00:00",
+    "reason": "Existing flight registration gate resolves docs/readiness/<package> and direct analysis-recipe/plan-registered files. Prepare canonical flat cohort packages directly; do not repeat the historical nested-package mismatch.",
+    "unexecuted_predecessors": [
+      "finalize-draft-registration-v1.py",
+      "finalize-draft-registration-v2.py"
+    ],
+    "selected_helper": "finalize-draft-registration-v3.py",
+    "sha256": "ec459a6b37bc85d08d0a08f73e80823489b1046c85da4777375c60f2fb4d0a1a",
+    "writes_to_runtime_controls": false,
+    "contacts": 0
+  },
+  "next_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/finalize-draft-registration-v3.py",
+    "sha256": "ec459a6b37bc85d08d0a08f73e80823489b1046c85da4777375c60f2fb4d0a1a"
+  },
+  "scope": "Model-free draft registration only after the exact complete preparation prefix/suffix join. No runtime control, model contact or scientific READ.",
+  "runtime_admission": false
+}

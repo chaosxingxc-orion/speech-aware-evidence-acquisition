@@ -1,0 +1,138 @@
+{
+  "at_utc": "2026-10-05T20:13:03.964751+00:00",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "learning_trial_contract": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-context-update3-v1/trial-contract-v1.json",
+    "sha256": "77b9d93a5fe789d69b2f50e2ddd1d488064555e84fa44e105e60b071c5fc6d9d"
+  },
+  "totals": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "family_trajectories": 440,
+    "fit_endpoints_cap": 22880,
+    "generation_contacts_cap": 5720
+  },
+  "member_count": 22,
+  "packages": [
+    {
+      "cohort": "original-a",
+      "protocol": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/protocol-v1.json",
+        "sha256": "9ba60355ba7925ef1f9245ac979d06a44f31ce6437283728d73e3857c3bb32b0"
+      },
+      "queue": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/queue-v1.json",
+        "sha256": "e5200c0e3569d8267e91fcf118e2ace9cd124adc0ee9a0a0d59f6ceb0a7920ee"
+      },
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/analysis-recipe-v1.json",
+        "sha256": "b3251bf22e7299f5bfb89bc74dae9a46ddc857f14e882f5e2aa5b8f1f27597fa"
+      },
+      "registration": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/registration-v1.json",
+        "sha256": "73896b46d07fc824981807dfa762774c6a10d088ecc69f8a652064ffd66e3ca3"
+      }
+    },
+    {
+      "cohort": "remaining-b1",
+      "protocol": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b1/protocol-v1.json",
+        "sha256": "19a36bf76455f0b5f6f05c2343ce18650940e9eb7a2e1071f01a361adcd4571e"
+      },
+      "queue": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b1/queue-v1.json",
+        "sha256": "88d8ba9a4b051d1a3454006466d5c59ce58cafd21114ecb1c89374e89f395cda"
+      },
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b1/analysis-recipe-v1.json",
+        "sha256": "cb7046d9b07d7b048df1f75bb38a9ddc88ecee0133b5108f285b51f9024cab73"
+      },
+      "registration": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b1/registration-v1.json",
+        "sha256": "430099167e8e8aa4a0b493cbc91c59d3518fc47a8ed8959d9e3062dfe1339261"
+      }
+    },
+    {
+      "cohort": "remaining-b2",
+      "protocol": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/protocol-v1.json",
+        "sha256": "294bccba425c3bb4a5dba2d811b211f3ee641fe08f5607c616f71b62188c442d"
+      },
+      "queue": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/queue-v1.json",
+        "sha256": "83429979d8cbf7c150008855df6970fb34f3947d056b02765c015d4a6c69392e"
+      },
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/analysis-recipe-v1.json",
+        "sha256": "c290c724b986390d5ab73ce9673d8591aac6cca71e49793a955681b8f155d465"
+      },
+      "registration": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/registration-v1.json",
+        "sha256": "526f3dff6e09c7e1eb05bd5c9c995c14df53059af2a9078f3c9f0c8bc0d0eb41"
+      }
+    }
+  ],
+  "actual_role_and_supply_checks": "All configured members prepared and warm-verified with exact policy binding, deterministic sampling, geometry and unchanged original selection output.",
+  "original_failed_preparation": {
+    "at_utc": "2026-10-05T19:56:54.873442+00:00",
+    "exit_code": 1,
+    "completed": [
+      "original-a-seed",
+      "original-a-seed-aa",
+      "original-a-branch-01",
+      "original-a-branch-02"
+    ]
+  },
+  "remaining_preparation": {
+    "at_utc": "2026-10-05T20:11:25.074638+00:00",
+    "exit_code": 0,
+    "completed": [
+      "original-a-branch-03",
+      "original-a-branch-04",
+      "original-a-branch-05",
+      "original-a-branch-06",
+      "original-a-branch-07",
+      "original-a-branch-08",
+      "remaining-b1-seed",
+      "remaining-b1-seed-aa",
+      "remaining-b1-branch-09",
+      "remaining-b1-branch-10",
+      "remaining-b1-branch-11",
+      "remaining-b1-branch-12",
+      "remaining-b2-seed",
+      "remaining-b2-seed-aa",
+      "remaining-b2-branch-13",
+      "remaining-b2-branch-14",
+      "remaining-b2-branch-15",
+      "remaining-b2-branch-16"
+    ]
+  },
+  "draft_gate_expected_blocks": {
+    "row-not-countersigned": 44,
+    "no-decision-receipt": 44
+  },
+  "draft_gate_advisories": {
+    "tuning-roster-unverified": 66
+  },
+  "advisory_disposition": "Retain inherited tuning-roster-unverified notices; this deliberately reuses exposed optimization inputs and makes no independent-validation claim. No disjointness assertion is invented.",
+  "base_gates": {
+    "at_utc": "2026-10-05T20:12:26.553054+00:00",
+    "results": [
+      {
+        "gate": "engineering_base_check.py",
+        "exit_code": 0
+      },
+      {
+        "gate": "finite_completion_policy_check.py",
+        "exit_code": 0
+      }
+    ]
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_admission": false,
+  "next": "Complete current structural acceptance, then record exact root cohort admission and remove only the authorized DRAFT barriers, check and freeze the complete family before actual launch. Preserve complete configured successor trial across separate cohorts."
+}

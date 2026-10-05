@@ -1,0 +1,131 @@
+{
+  "actual_policy_binding": {
+    "bundle_id": "32159521faeeedc64e266ded14a343d7ba5274bee0c1bc50bfd44f23f7ca9213",
+    "context_layout": {
+      "native_role_query_placement": null
+    },
+    "node_context": {
+      "reviewer_history_scope": "full",
+      "tool_schema_rendering": "constant"
+    },
+    "role_sha256": {
+      "perception": "834119924d2982cc6131967904e54f18f031e4028b0ec61ec8ea84682205430c",
+      "planner": "d881935115684a8410a8c2f03f17e4514cdbc8cf0fa847a5f09fff0ed6172725",
+      "reviewer": "2f8ee6133a2803ababdb579da727d3f0e1df5ef299c829ca7e17d26538a742e1",
+      "solver": "409681247044cec8b0f65f28a6542b7c6f6164c6362e772516c32adab0ff1062"
+    }
+  },
+  "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b1-branch-09-generation-v1",
+  "bundle_id": "32159521faeeedc64e266ded14a343d7ba5274bee0c1bc50bfd44f23f7ca9213",
+  "compilation": {
+    "relpath": "system-text-search/context-template-k16-v1/partitioned-update3-v1/compiled-members/branch-09.json",
+    "sha256": "9124b226be9b2e7e13c4461ee3132757fca4ea37ac854d72e1f74b9d71bc2e04"
+  },
+  "config_hash": "6455ca95608d122d6ea835523994eb185cf4982226a4669dde24e2a01ff3cc7b",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b1-branch-09-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "02a875b2578ae1593d2821dff2fafe6dcda734db0ddc443ed493497bb7c0e940",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-09-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_rows": 20,
+  "experiment": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b1-branch-09-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "fit_endpoints_cap": 1040,
+  "fit_execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b1-branch-09-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "02a875b2578ae1593d2821dff2fafe6dcda734db0ddc443ed493497bb7c0e940",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-09-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "generation_cap": 260,
+  "graph_experiment": "slurp-native-stage3-context-template-partitioned-update3-branch-09-graph-v1",
+  "iteration": 3,
+  "learning_trial_contract": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-context-update3-v1/trial-contract-v1.json",
+    "sha256": "77b9d93a5fe789d69b2f50e2ddd1d488064555e84fa44e105e60b071c5fc6d9d"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "member": "branch-09",
+  "model_contacts": 0,
+  "policy_baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update3-branch-09-graph-v1.json",
+    "sha256": "9997ec421a72ef64990b01c64aeea92c7bfea2764ae2bd8de8c9ab77d67d8888"
+  },
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-template-k16-v1/policies/32159521faeeedc64e266ded14a343d7ba5274bee0c1bc50bfd44f23f7ca9213.json",
+      "sha256": "d78a4a0355e11ea3944a238eda5435928717b4460abb7d2b7a1a98120891893b"
+    },
+    "bundle_id": "32159521faeeedc64e266ded14a343d7ba5274bee0c1bc50bfd44f23f7ca9213",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_cohort": "remaining-b1",
+  "prepared_graph": {
+    "relpath": "docs/readiness/2026-10-05-context-template-partitioned-update3-branch-09-engineering-v1/prepared-members-v1.json",
+    "sha256": "434f26f2bab027d40bf9dfe79bd917261d2186ef3059d36270f1dee0eaff58f7"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-09-V1/phase-supply-v1.json",
+    "sha256": "acfc28cbfce42e0e3405084a4ee6ce3b769b21b31ee11744c213e631b410adff"
+  },
+  "proposal_disposition": "provisional",
+  "proposed_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b1-branch-09-generation-v1",
+  "proposed_experiment_stem": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b1-branch-09-v1",
+  "proposed_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-09-V1",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B1-BRANCH-09-V1",
+  "runtime_admission": false,
+  "scorer_contacts": 0,
+  "source_baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-09-v1.json",
+    "sha256": "53d661b8fbe6381de8142af83b5b7d21abae47d26731f6a335ec723b9c1e0688"
+  },
+  "source_binding": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-09-generation-v1",
+    "bundle_id": "8804f1140915d928bc4d79b2995bf155276a601955c8700bc9239564d65c6cb2",
+    "config_hash": "e08acd40cd133c2def702aa0521b4f5e2f917b06bc50b822a30bb8c22f1ab135",
+    "experiment": "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-09-v1",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-09-V1"
+  },
+  "source_experiment": {
+    "relpath": "configs/experiment/slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-09-v1.json",
+    "sha256": "82cae097f5b1bddedcdb1571ba45a04c6cb7c314d89dc3cf564785eb02d28a94"
+  },
+  "source_protocol": {
+    "relpath": "docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b1/protocol-v1.json",
+    "sha256": "8ef73451161f5efa3af81a5778bdc6bc38095dd97c5efea4033f67957f63fda0"
+  },
+  "source_registration": {
+    "relpath": "docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b1/registration-v1.json",
+    "sha256": "57c40c9b9bb78ceb36d2914a3977ca636486823e2e9823b415da3b712f069b52"
+  },
+  "status": "PREPARED_DRAFT",
+  "unchanged_source_selection": true,
+  "warm_verified": true
+}
