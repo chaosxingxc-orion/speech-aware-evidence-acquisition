@@ -1,0 +1,193 @@
+{
+  "at_utc": "2026-10-05T14:17:11.841297+00:00",
+  "automation": {
+    "id": "slurp-configured-k4-b1-15m",
+    "interval_minutes": 15,
+    "status": "ACTIVE"
+  },
+  "cache_reclaimed": false,
+  "commit": "d81d8cf8c3e2e896ab3e0d24a93bd547b9261baa",
+  "driver_epoch": "2026-10-05T14:14:56Z",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+    "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+  },
+  "first_campaign_epoch": "2026-10-05T14:15:26Z",
+  "frozen_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-b1-flight-v1/frozen-check-v2.json",
+    "sha256": "268ef50841aa72495b6e691d27e72be51d0fef3da3180a61c9da81a641eb0d4d"
+  },
+  "gpu_memory_mib": null,
+  "live_processes": [
+    {
+      "args": [
+        "bash",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+      ],
+      "pid": 55522,
+      "start_ticks": 53722484
+    },
+    {
+      "args": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.process_guard",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-context-template-configured-k4-b1-v2",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--experiment",
+        "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-seed-v1",
+        "--owner",
+        "chatgpt-root-owner227",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--receipt-dir",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-slurp-context-template-k4-recovery1-n20-v1-remaining-b1-seed-20261005T141526Z",
+        "--start-gib",
+        "20",
+        "--floor-gib",
+        "8"
+      ],
+      "pid": 55654,
+      "start_ticks": 53725442
+    },
+    {
+      "args": [
+        "/home/chao/.venvs/speechrl/bin/python",
+        "-B",
+        "-m",
+        "speech_aware_evidence_acquisition.core.flight.cli",
+        "campaign",
+        "--repo-root",
+        "/home/chao/saea-worktrees/codex-context-template-configured-k4-b1-v2",
+        "--data-root",
+        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "--runtime-root",
+        "/home/chao",
+        "--lock-path",
+        "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+        "--owner",
+        "chatgpt-root-owner227",
+        "--expected-session-id",
+        "serving-slurp-native-candidate-five-train-a-np4-v1",
+        "--experiment",
+        "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-seed-v1"
+      ],
+      "pid": 55686,
+      "start_ticks": 53725553
+    }
+  ],
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-09-generation-v1",
+      "calls": null,
+      "failed_jobs": 0,
+      "manifest_status": null,
+      "member": "branch-09",
+      "prepared_score_jobs": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-09-V1",
+      "state": "ABSENT",
+      "successful_jobs": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-10-generation-v1",
+      "calls": null,
+      "failed_jobs": 0,
+      "manifest_status": null,
+      "member": "branch-10",
+      "prepared_score_jobs": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-10-V1",
+      "state": "ABSENT",
+      "successful_jobs": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-11-generation-v1",
+      "calls": null,
+      "failed_jobs": 0,
+      "manifest_status": null,
+      "member": "branch-11",
+      "prepared_score_jobs": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-11-V1",
+      "state": "ABSENT",
+      "successful_jobs": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-12-generation-v1",
+      "calls": null,
+      "failed_jobs": 0,
+      "manifest_status": null,
+      "member": "branch-12",
+      "prepared_score_jobs": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-12-V1",
+      "state": "ABSENT",
+      "successful_jobs": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-seed-generation-v1",
+      "calls": 55,
+      "failed_jobs": 0,
+      "manifest_status": null,
+      "member": "seed",
+      "prepared_score_jobs": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-SEED-V1",
+      "state": "OPENED",
+      "successful_jobs": 0
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-seed-aa-generation-v1",
+      "calls": null,
+      "failed_jobs": 0,
+      "manifest_status": null,
+      "member": "seed-aa",
+      "prepared_score_jobs": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-SEED-AA-V1",
+      "state": "ABSENT",
+      "successful_jobs": 0
+    }
+  ],
+  "next": "Complete exact b1 family before root READ/analysis and all-idle clean file cache maintenance; b2 remains DRAFT. Preserve separate cohorts and original templates.",
+  "population_budget": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "population_cohort": "remaining-b1",
+  "quality_read": false,
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1",
+  "root_read_signed": false,
+  "schema": "saea-configured-k4-cohort-launch-v1",
+  "server_ok": true,
+  "slots": {
+    "busy": 4,
+    "idle": 0,
+    "total": 4
+  },
+  "telemetry_age_seconds": 10.666938066482544,
+  "transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-b1-flight-v1/driver-transition-v1.json",
+    "sha256": "8d11e93f943a2c46afc00e4292772d185e6842d9508e0ab4d0504637696ebdb4"
+  },
+  "windows_memory": {
+    "freshness": "request-causal-monotonic-v1",
+    "host_free_gb": 23.663982391357422,
+    "host_memory_error": null,
+    "host_total_gb": 63.43492889404297,
+    "observer_pid": 540,
+    "sample_elapsed_ms": 2.6376,
+    "sampled_at": 1791209831.661,
+    "sequence": 1,
+    "transport": "persistent-windows-physical-memory-v1"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-template-configured-k4-b1-v2"
+}
