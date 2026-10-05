@@ -1,0 +1,64 @@
+{
+  "status": "ROOT_ACCEPTED_STRUCTURAL_ONLY",
+  "at_utc": "2026-10-05T20:23:30.931963+00:00",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "eligible_scientific_cohorts": [
+    "original-a"
+  ],
+  "structural_acceptance": {
+    "relpath": "coordination/partitioned-update3-structural-owner227-v1/structural-acceptance-v1.json",
+    "sha256": "fbd2d02a3fc4eaa5563c7cfb8de658a0695a258960b00e3f95aecc3e5bde6c97"
+  },
+  "structural_run_ids": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-01-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-02-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-03-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-04-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-05-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-06-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-07-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-08-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-09-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-10-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-11-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-12-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-13-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-14-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-15-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-16-SMOKE-4-V1"
+  ],
+  "scientific_quality_read": false,
+  "model_contacts_added": 0,
+  "evidence": [
+    {
+      "relpath": "coordination/partitioned-update3-structural-owner227-v1/root-audit-complete-v1.json",
+      "sha256": "14b2e19a937260084c6713a1bc48bb32750b265d98ab871b7638585e5bb17901"
+    },
+    {
+      "relpath": "coordination/partitioned-update3-structural-owner227-v1/terminal-operational-proof-v1.json",
+      "sha256": "f9cd3f479b3392c4f95659c152be5ae9788f69f61df172700fa254e21da270e3"
+    },
+    {
+      "relpath": "coordination/partitioned-update3-structural-owner227-v1/root-node-timing-v1.json",
+      "sha256": "b2a7e5cb3609aaaffeedf650b3c4356dac0fb65cb94cc3b8f4368badde61e3b6"
+    },
+    {
+      "relpath": "coordination/partitioned-update3-structural-owner227-v1/root-sample-timing-v1.json",
+      "sha256": "ae7390914f57ebe6acd4a584d2e73833269bc9da8397e686875222163a21f410"
+    }
+  ],
+  "interpretation": "All configured structural members passed control, handoff, original request/FIT binding and native terminal-custody checks. Engineering attempts remain intentionally OPENED and unscored. Admit only the first configured scientific cohort after frozen/live checks.",
+  "timing_limits": "Four rows per member cover the first slot admissions only; excluding the first row is not a proven warm second wave. Some offline preparation overlapped. These timings are descriptive and establish neither task benefit nor causal cache/speedup claims.",
+  "retained_defects": "Finite completion/revision-limit dispositions and non-strict raw outputs remain traceable for complete scientific analysis; no candidate is silently repaired or replaced.",
+  "other_cohorts": "Separately held for root boundary review; no partial successor optimizer export.",
+  "schema": "saea-root-structural-completion-v1",
+  "total_rows": 64,
+  "model_contacts": 289,
+  "official_scorer_contacts": 0,
+  "runtime_dispatched": false,
+  "lock_disposition": "Live kernel guard available; no flight.lock or STOP. No lock deletion or WSL restart needed.",
+  "monitor": "Job-specific structural monitor deleted after terminal proof."
+}

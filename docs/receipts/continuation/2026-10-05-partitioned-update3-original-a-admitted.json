@@ -1,0 +1,14 @@
+{
+  "at_utc": "2026-10-05T20:24:16.006348+00:00",
+  "status": "FIRST_CONFIGURED_COHORT_ADMITTED_PENDING_FROZEN_LIVE_GATES",
+  "admission": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/original-a-root-admission-v1.json",
+    "sha256": "b1c5c56dee18b92ec84c423a1b159d7abda44cd09ac699343b5701d8b0ae09d4"
+  },
+  "registration_gate_exit": {
+    "at_utc": "2026-10-05T20:23:46.823482+00:00",
+    "exit_code": 0
+  },
+  "runtime_dispatched": false,
+  "other_cohorts": "Held for independent boundary review; no partial successor optimizer export."
+}

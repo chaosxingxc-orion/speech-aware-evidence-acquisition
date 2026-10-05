@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Structural proof accepted; first configured scientific cohort admitted
+
+[Root structural acceptance](../receipts/continuation/2026-10-05-partitioned-update3-structural-accepted.json) verifies all16 members,64 rows,289 generation contacts,289 actual-request FIT receipts and1156 tokenizer endpoints. The driver completed20:18:09Z and all root structural/node/sample readers passed. Engineering remains intentionally OPENED and unscored. Four-row latency is descriptive, not a warm-wave or business-benefit proof. The structural monitor is deleted. Live kernel guard is available, flight.lock and STOP are absent; no deletion or WSL restart is required.
+
+[First cohort admission](../receipts/continuation/2026-10-05-partitioned-update3-original-a-admitted.json) countersigns only original-a generation/FIT plans after complete structural review; all10 registration gates pass. Freeze a new clean worker and check every seed/A/A/candidate and supply, then apply the exact queue only after live admission. The cohort has8 configured candidates plus own seed/A/A,20 inputs each. Later4/4 cohorts remain separately held, all READ rows unsigned and no partial learner export. The configured trial totals remain22 members/440 trajectories. K/N/budgets derive from the pinned population config.
+
+
 ## Complete scientific successor preparation; structural job still running
 
 [Complete preparation](../receipts/continuation/2026-10-05-partitioned-update3-scientific-prepared.json) verifies all22 prospective members, with16 original candidates plus three own seed/A/A pairs,440 trajectories and5720 generation/22880FIT caps from the same pinned config. Actual role bytes, deterministic sampling, geometry and unchanged supply outputs were checked for every member. The original preparation v1 failed before branch03 due to an overly strict context-layout comparison; its four successes remain preserved and v2 completed the exact remaining18. Exec23932 is terminal0; do not poll or restart it.
