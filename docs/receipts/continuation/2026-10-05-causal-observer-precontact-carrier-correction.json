@@ -1,0 +1,26 @@
+{
+  "schema": "saea-causal-observer-precontact-carrier-correction-v1",
+  "at": "2026-10-05T13:49:20.088048+00:00",
+  "cause": "The exposure speech carrier + split field did not name the slurp carrier key; the shared runtime I2 gate rejected model-free preflight.",
+  "root_disposition": "Correct the new engineering ledger carrier metadata only, preserve the original frozen checkout and failed check evidence, and freeze a successor for another model-free check. No existing attempt is retried.",
+  "original_worker": "/home/chao/saea-worktrees/codex-context-template-causal-observer-engineering-v1",
+  "original_commit": "358baca8a",
+  "changed_rows": [
+    {
+      "original": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-V1 | bounded-discovery-probe | Causal observer structural proof generation | Shared native Omni/tokenizer | Same existing engineering inputs | discovery | 002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961 | no | 52 | 1500 | 1.0 | Cumulative exposure; old failed family preserved | docs/readiness/2026-10-05-context-template-causal-observer-engineering-v1/generation-plan-registered-v1.json | ROOT COUNTERSIGNED BEFORE CONTACT under owner227; decision coordination/context-template-causal-observer-engineering-v1/root-admission-v1.json SHA256 07779728a5dcd73276551a2aae8586dc73446b428a5ee997fd92d75be7368d2e. Protocol 1fc98cfb65c16e19aa8e05b4c7d67ee554dcfc757d46e6eff6db1d50695a51a2; config 4bd8dc4e12285ca81caf197105f90333ff8138d1ed017092b83f3de424dc9859. Structural proof only; exact frozen/live checks before dispatch. |",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-V1"
+    },
+    {
+      "original": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-FIT-V1 | bounded-discovery-probe | Causal observer structural proof fit | Shared native Omni/tokenizer | Same existing engineering inputs | discovery | 002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961 | no | 208 | 1500 | 1.0 | Cumulative exposure; old failed family preserved | docs/readiness/2026-10-05-context-template-causal-observer-engineering-v1/fit-plan-registered-v1.json | ROOT COUNTERSIGNED BEFORE CONTACT under owner227; decision coordination/context-template-causal-observer-engineering-v1/root-admission-v1.json SHA256 07779728a5dcd73276551a2aae8586dc73446b428a5ee997fd92d75be7368d2e. Protocol 1fc98cfb65c16e19aa8e05b4c7d67ee554dcfc757d46e6eff6db1d50695a51a2; config 4bd8dc4e12285ca81caf197105f90333ff8138d1ed017092b83f3de424dc9859. Structural proof only; exact frozen/live checks before dispatch. |",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-FIT-V1"
+    },
+    {
+      "original": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-STRUCTURE-V1 | model-free-check | Structural-only observer read | Saved structural metadata | Same existing engineering inputs | discovery | 002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961 | no | 0 | 0 | 0 | No task-quality read | docs/readiness/2026-10-05-context-template-causal-observer-engineering-v1/analysis-recipe-v1.json | ROOT COUNTERSIGNED structural-only after complete exact engineering worker; no task quality, official scoring or optimizer export. |",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-STRUCTURE-V1"
+    }
+  ],
+  "model_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "controls_changed": false
+}
