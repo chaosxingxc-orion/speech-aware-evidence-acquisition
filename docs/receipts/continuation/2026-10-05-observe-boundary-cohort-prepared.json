@@ -1,0 +1,43 @@
+{
+  "schema": "saea-configured-successor-preparation-v1",
+  "at_utc": "2026-10-05T15:57:08.631537+00:00",
+  "status": "ROOT_REGISTERED_FROZEN_CHECKS_PENDING",
+  "configuration": {
+    "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+    "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+  },
+  "population_budget": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "members": [
+    "seed",
+    "seed-aa",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/preparation-complete-v1.json",
+    "sha256": "b9d9ff16c8bac418d66d8318ec137afd68b351e35ede7fc0fa8648f62a4bc64c"
+  },
+  "admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/root-admission-v1.json",
+    "sha256": "45fcee09fb2d0a441c94de7111096ebf4e5677a9e9277cbe0ae15c20cc3a752f"
+  },
+  "registration_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/registration-complete-v1.json",
+    "sha256": "07b4155c317d3483b818d00f5ad5b3280497fd80e39667f1737ecbe290d45158"
+  },
+  "policy_knowledge_prepared_outputs_unchanged": true,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "read_signed": false
+}

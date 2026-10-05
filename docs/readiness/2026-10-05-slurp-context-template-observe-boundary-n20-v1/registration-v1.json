@@ -1,0 +1,85 @@
+{
+  "expected_members": {
+    "branch-13": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-13-V1",
+    "branch-14": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-14-V1",
+    "branch-15": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-15-V1",
+    "branch-16": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-16-V1",
+    "seed": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-V1",
+    "seed-aa": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-AA-V1"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+    "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+  },
+  "family_id": "slurp-context-template-k4-observe-boundary-n20-v1-remaining-b2",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "member_bindings": {
+    "branch-13": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-generation-v1",
+      "bundle_id": "9d4c492b2e24c0eba6fef7eacf474f846d81310e148a10c078bf8a7d48e4d630",
+      "config_hash": "593ee5fc5db2b51d030ee64f6ed22b8b5d67a2b155f1155b88761173c177d585",
+      "experiment": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-13-V1"
+    },
+    "branch-14": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-14-generation-v1",
+      "bundle_id": "1fb6df3bfff726525403687e42cba9f136d0d2db1e211b58777481ae93e62118",
+      "config_hash": "ed2b8be274392bd06f22c0cae19c1b79b6337df646f89d906ea1ddc2971bce0a",
+      "experiment": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-14-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-14-V1"
+    },
+    "branch-15": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-15-generation-v1",
+      "bundle_id": "3adce494be0ec509baa0caeb75a4c04aafc60ce839bd0eaaffb95f1768aaa6f2",
+      "config_hash": "065e081121a1823b8227f2e2091c7b218eddf588e78526e17d255cd166c006b0",
+      "experiment": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-15-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-15-V1"
+    },
+    "branch-16": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-16-generation-v1",
+      "bundle_id": "1d8271280453c117119652ffe5ee1577e1184aade2579b3394d9ad5631e6bedb",
+      "config_hash": "3acda32000b1198b479a55bb29e4f3ec077819d966df58e373583e0214c727d6",
+      "experiment": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-16-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-16-V1"
+    },
+    "seed": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "faf2d320695c3e0c4f81a74b16d9e680397ec27d9d360dc0028fa6be35e557e4",
+      "experiment": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-V1"
+    },
+    "seed-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-aa-generation-v1",
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "config_hash": "71896f25c214631dbcfe6795cc535b33c1bcf26f8b4f2847a7971901f46d1e0d",
+      "experiment": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-aa-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-AA-V1"
+    }
+  },
+  "population_budget": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "population_cohort": "remaining-b2",
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-05-slurp-context-template-observe-boundary-n20-v1/protocol-v1.json",
+    "sha256": "91bc106be7a4836075d19a9c4ba1b3bf480d79a7bcbba9f52b1e28d8eb0f0705"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-V1-REMAINING-B2-READ-V1",
+  "registration_sha256": "28b772d2cae6b4e5cfa07b0493c02aa9d1ea65eedc27fe4281fd9b3e2a1a5b38",
+  "schema": "saea-context-learning-registration-v1"
+}

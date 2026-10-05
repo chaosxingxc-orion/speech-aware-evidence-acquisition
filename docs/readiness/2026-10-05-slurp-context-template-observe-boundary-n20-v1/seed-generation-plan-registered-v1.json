@@ -1,0 +1,62 @@
+{
+  "cell": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-v1",
+  "composed_config_hash": "faf2d320695c3e0c4f81a74b16d9e680397ec27d9d360dc0028fa6be35e557e4",
+  "decision_receipt": {
+    "relpath": "coordination/context-template-observe-boundary-n20-v1/root-admission-v1.json",
+    "sha256": "45fcee09fb2d0a441c94de7111096ebf4e5677a9e9277cbe0ae15c20cc3a752f"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "cb19a2c7b258bc58325f634756516b4cb0659bc66c38569907e6a6b877e0a10b",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+    "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_budget": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "population_cohort": "remaining-b2",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-V1/phase-supply-v1.json",
+    "sha256": "5cc56e5b9ca316bd95a79b3e67a84b01877719a85d219ae6b6ffc1459d7fe98e"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-V1-REMAINING-B2-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227; exact frozen/live checks required"
+}

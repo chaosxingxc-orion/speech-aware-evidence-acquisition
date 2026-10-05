@@ -1,0 +1,65 @@
+{
+  "schema": "saea-explicit-owner-incident-disposition-v1",
+  "at_utc": "2026-10-05T15:50:44.977285+00:00",
+  "status": "APPROVED_BEFORE_ACTION",
+  "owner_instruction_english": "Release the lock if it is ours; otherwise restart directly and begin experiments as soon as possible.",
+  "decision": "The lock belongs to our live helper, but that helper is blocked in an uninterruptible kernel cache write. Do not delete or bypass its lock. Use the explicitly authorized fallback: terminate Ubuntu-24.04 once and restore the existing serving and telemetry tasks once. Resume the unchanged remaining template cohort under the prospective observe-only configuration after normal admission.",
+  "old_boot_id": "4cea3fef-9018-4b09-a383-50fbb5705f49",
+  "cache_process": {
+    "pid": 61283,
+    "start_ticks": 53995152,
+    "state": "D"
+  },
+  "active_experiment_processes": [],
+  "preserved_files": [
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/monitor.jsonl",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/monitor.jsonl",
+      "sha256": "a4cd9f402d9008552f0fac268f35b38c0ffc823e4e9fcf652ac6f672d98fcf89"
+    },
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/monitor.log",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/monitor.log",
+      "sha256": "b98fbd77b514bb6f281962dc77b404ab804c5d550063549dfdc07da4dd05a529"
+    },
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/server.log",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/server.log",
+      "sha256": "ccc52429ab1eb913ddd9a8d3033095f94e2cbf0f83edaf5ead945a8750a327ae"
+    },
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session-receipt.json",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/session-receipt.json",
+      "sha256": "7ebad202d127e83f379a3320625c25d624f4494c58874e3565f0afe6e8b9cc3f"
+    },
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session.json",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/session.json",
+      "sha256": "927236af69ad298390aaaa101f9874c4178de9096601c34f1934e1836ffa78c0"
+    },
+    {
+      "source": "/home/chao/batch-status.jsonl",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/batch-status.jsonl",
+      "sha256": "cb64037e3ecc47aa288da400944c70e4c17bb8d6fbc34b2da34ee7c07354b5b5"
+    },
+    {
+      "source": "/home/chao/batch-queue.json",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/batch-queue.json",
+      "sha256": "7da96079a8d02062ad1f3c9ffdba1c3bc23c6887ec38fde28a6684e06670cca3"
+    },
+    {
+      "source": "/home/chao/batch-flight-repo.txt",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/batch-flight-repo.txt",
+      "sha256": "e22b510653665493741e3a79c11c070228eb26782c835c4a5872d45a6e9c3820"
+    },
+    {
+      "source": "/home/chao/batch-flight-commit.txt",
+      "snapshot": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/approved-pre-termination-evidence/batch-flight-commit.txt",
+      "sha256": "c700e7ead997abea0550b88162cdaeed3286730de3126b68b7baf09f56a78856"
+    }
+  ],
+  "restart_limit": 1,
+  "no_global_cache_cleanup": true,
+  "generation_or_scoring_replay": false,
+  "other_carrier_holds_preserved": true
+}

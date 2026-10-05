@@ -1,0 +1,38 @@
+{
+  "schema": "saea-scoped-restart-restored-v1",
+  "at_utc": "2026-10-05T15:54:34.479093+00:00",
+  "status": "RESTORED_AND_GUARD_AVAILABLE",
+  "old_epoch": "2026-10-05T06:32:57.058161+00:00",
+  "new_epoch": "2026-10-05T15:52:00.740486+00:00",
+  "serving_process": {
+    "pid": 686,
+    "start_ticks": 54296559,
+    "cmdline_sha256": "bdcdef8623e00dddea2ceed5bfffa49628d18ec6c8fe66e6908394ea082dec30"
+  },
+  "binary_and_models_unchanged": true,
+  "geometry_unchanged": true,
+  "windows_memory": [
+    {
+      "at_utc": "2026-10-05T15:53:17.4016951Z",
+      "free_gib": 24.961
+    },
+    {
+      "at_utc": "2026-10-05T15:53:27.5552417Z",
+      "free_gib": 24.409
+    },
+    {
+      "at_utc": "2026-10-05T15:53:37.6516697Z",
+      "free_gib": 24.143
+    }
+  ],
+  "telemetry_age_seconds": 1.7008278369903564,
+  "gpu_used_mib": 22966.0,
+  "generation_guard_available": true,
+  "distribution_terminations": 1,
+  "serving_task_dispatches": 1,
+  "monitor_task_dispatches": 1,
+  "cache_operation_disposition": "Interrupted by explicitly authorized distro termination; no normal after receipt, no repeated cache write.",
+  "new_generation_contacts": 0,
+  "new_scorer_contacts": 0,
+  "note": "Ubuntu process namespace was recreated; kernel boot_id alone need not change for a distribution-only restart. Old PID absence, new service epoch and actual guard acquisition were verified."
+}

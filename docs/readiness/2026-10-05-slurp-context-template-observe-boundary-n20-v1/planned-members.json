@@ -1,0 +1,125 @@
+{
+  "members": [
+    {
+      "expected_rows": 20,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+        "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+      },
+      "fit_endpoints_cap": 1040,
+      "generation_cap": 260,
+      "member": "seed",
+      "population_cohort": "remaining-b2",
+      "proposed_attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-generation-v1",
+      "proposed_experiment_stem": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-v1",
+      "proposed_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-V1",
+      "runtime_admission": false,
+      "source_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b2-seed-v1.json",
+        "sha256": "42a7ffe6a6b1713d029b6449dd0c7d23056b53527caaef766a628524b1329e6d"
+      },
+      "state": "HELD"
+    },
+    {
+      "expected_rows": 20,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+        "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+      },
+      "fit_endpoints_cap": 1040,
+      "generation_cap": 260,
+      "member": "seed-aa",
+      "population_cohort": "remaining-b2",
+      "proposed_attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-aa-generation-v1",
+      "proposed_experiment_stem": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-seed-aa-v1",
+      "proposed_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-SEED-AA-V1",
+      "runtime_admission": false,
+      "source_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b2-seed-aa-v1.json",
+        "sha256": "d04e70770884a3ba64c31085db3ee8230976042ad21c3220d4a1aeee13f73904"
+      },
+      "state": "HELD"
+    },
+    {
+      "expected_rows": 20,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+        "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+      },
+      "fit_endpoints_cap": 1040,
+      "generation_cap": 260,
+      "member": "branch-13",
+      "population_cohort": "remaining-b2",
+      "proposed_attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-generation-v1",
+      "proposed_experiment_stem": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-v1",
+      "proposed_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-13-V1",
+      "runtime_admission": false,
+      "source_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b2-branch-13-v1.json",
+        "sha256": "3b2acacc6c44fad149ffbfcf4bc42004dfab3913875c5852c8d030604849903b"
+      },
+      "state": "HELD"
+    },
+    {
+      "expected_rows": 20,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+        "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+      },
+      "fit_endpoints_cap": 1040,
+      "generation_cap": 260,
+      "member": "branch-14",
+      "population_cohort": "remaining-b2",
+      "proposed_attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-14-generation-v1",
+      "proposed_experiment_stem": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-14-v1",
+      "proposed_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-14-V1",
+      "runtime_admission": false,
+      "source_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b2-branch-14-v1.json",
+        "sha256": "1ed8cdbda16bdb0004987af66bef115edfba18a00c6ff8189a2193be6da16cf8"
+      },
+      "state": "HELD"
+    },
+    {
+      "expected_rows": 20,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+        "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+      },
+      "fit_endpoints_cap": 1040,
+      "generation_cap": 260,
+      "member": "branch-15",
+      "population_cohort": "remaining-b2",
+      "proposed_attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-15-generation-v1",
+      "proposed_experiment_stem": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-15-v1",
+      "proposed_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-15-V1",
+      "runtime_admission": false,
+      "source_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b2-branch-15-v1.json",
+        "sha256": "1a3627c79a7685c065840542d717296c239e052eec00f85de08284ef8fbeac82"
+      },
+      "state": "HELD"
+    },
+    {
+      "expected_rows": 20,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+        "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+      },
+      "fit_endpoints_cap": 1040,
+      "generation_cap": 260,
+      "member": "branch-16",
+      "population_cohort": "remaining-b2",
+      "proposed_attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-16-generation-v1",
+      "proposed_experiment_stem": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-16-v1",
+      "proposed_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-16-V1",
+      "runtime_admission": false,
+      "source_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b2-branch-16-v1.json",
+        "sha256": "f6b2472680c109fc540863e2f4c3b63b9dbbb00da0f66609e188a9f804b81e7c"
+      },
+      "state": "HELD"
+    }
+  ],
+  "schema": "saea-configured-population-member-blueprint-v1"
+}

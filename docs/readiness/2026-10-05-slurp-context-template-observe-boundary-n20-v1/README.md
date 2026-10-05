@@ -1,0 +1,9 @@
+# Observation-only boundary continuation
+
+Root registration is complete; frozen and live checks still gate dispatch. Reuse unchanged original branches13-16 plus seed/A/A on the exact same20 inputs. All counts, sampling and budgets derive from the pinned population config in registration-v1.json. No knowledge/data/template reconstruction or new proposal allocation occurs. Every supply was rebound to the new execution identity and warm-verified; original output bytes and nonidentity request configuration are unchanged.
+
+The explicit owner lock-release/restart instruction authorized one Ubuntu-24.04 termination after the root-owned cache helper remained blocked in the kernel. Preserve the original cache operation as interrupted, not normally completed. The exact model/binary/geometry were restored; the new serving epoch and actual free guard are documented in the restoration receipt. Old completed b1 results and frozen worker remain unchanged. No cache-after receipt was manufactured.
+
+This successor uses observe-only boundary maintenance. Record resources and retain normal admission/runtime memory guards. Do not invoke global drop_caches, reset KV, or restart the service automatically after a cohort. Existing old b2 DRAFT identities are superseded without execution; never dispatch both sets. The new exposure plans are separately root countersigned. The exact READ remains unsigned until all six members independently finalize with verified seals, one successful complete official score each and zero failed jobs.
+
+Run one shared-runtime experiment and one official scorer. Start a bound15-minute script monitor at actual launch, delete it on terminal completion/failure. Keep all source cohorts separate for the later complete-population abstract learner projection. Retain temperature0/fixed seed, unchanged measurement scope, first/non-first latency reporting and human-before8x400. Other-carrier holds remain unchanged.
