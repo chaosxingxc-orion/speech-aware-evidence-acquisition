@@ -1,5 +1,10 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Structural checks complete; prelaunch resource hold
+
+[Prelaunch resource evidence](../receipts/continuation/2026-10-05-k16-update2-prelaunch-resource-hold.json) supersedes the earlier running-preflight snapshot. All sixteen frozen structural checks passed; session66304 completed and must not be restarted. Structural generation has not launched. Windows free memory was5.858GiB and later7.46GiB, below8GiB running and12.5GiB startup floors. The idle server reports healthy HTTP and fresh telemetry but zero GPU memory; current GPU readiness needs revalidation and its cause is unestablished. Preserve controls and frozen sources; no cache flush, host-setting changes or automatic restart. No heartbeat is active while no experiment runs. After the next admitted launch create its own fifteen-minute script monitor, then delete it at verified termination.
+
+
 ## Exact-source future analysis preparation tested offline
 
 [Analysis environment engineering](../receipts/continuation/2026-10-05-k16-update2-analysis-environment-engineering.json) pins the future normal structural-to-scientific transition and prepare-analysis-environment-v1.py. Eight synthetic tests verify that only the exact root-signed READ row can be overlaid onto a fresh checkout of the registered scientific commit; unrelated ledger metadata/rows are never copied. The real missing-READ rehearsal returns HELD/75 before checkout creation or result access. This is not a real future analysis acceptance.

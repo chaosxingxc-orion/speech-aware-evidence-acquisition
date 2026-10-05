@@ -1,0 +1,1288 @@
+{
+  "schema": "saea-prelaunch-resource-hold-v1",
+  "at_utc": "2026-10-05T05:48:47.200938+00:00",
+  "structural_frozen_check": {
+    "at_utc": "2026-10-05T05:40:39.057035+00:00",
+    "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c",
+    "contacts": 0,
+    "members": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-01-smoke-4-generation-v1",
+        "bundle_id": "0136f4381cf70905ad70fb648b639da884df9c8e0fbde75786d1b3efdf84898d",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-01-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-01-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-01-frozen-registration-v1.stdout.json",
+              "sha256": "7c474bb13fc56e0451a8c6f30c26d83cebba6ee7a25ecca6c5ed24ebe2ecd346"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-01-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-01-frozen-runtime-v1.stdout.json",
+              "sha256": "0e6f7e853f7f8b7e83222dff116779472ab2a56b6cfb922ba650e9a80683d044"
+            }
+          }
+        ],
+        "composed_config_hash": "5f81b1293af0748e1f110f646a203556a3f50a2056ed780e9ed3ac922ea03de4",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-01-graph-v1",
+        "label": "branch-01",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-01-generation-plan-registered-v1.json",
+          "sha256": "89e8625c64fb211791ff3384ff37b9112098cb389d0cac629dfac53a1a3661c7"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "0136f4381cf70905ad70fb648b639da884df9c8e0fbde75786d1b3efdf84898d",
+          "context_layout": {
+            "native_role_query_placement": null
+          },
+          "node_context": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "constant"
+          },
+          "role_sha256": {
+            "perception": "9c2d7d240b545f57d41cedfe0b706f832c433352aeea01baaf62929be98e5d4b",
+            "planner": "4d13786e491ecbc6e355f4690b9d7f66ec34fd7ecf40fb9a38bf667a3657cc79",
+            "reviewer": "4b81598aa5096cefc3b25a435a58a3e81135853af91dace36056e2cdaf0db422",
+            "solver": "bbe4f85e05d9b667577c68215f0ab5f11e278fe5c532c0ec89272f760e2b1411"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-01-analysis-recipe-v1.json",
+          "sha256": "0d1a7b54a6165c8026e477d5379ebab2dd1aaabb0d40768b4ccfbbedf4b73125"
+        },
+        "role_text_hashes": {
+          "perception": "a61027c53d99d87c3fd8cd7e5d11f4c9155d077f526f7891f993bd340a3b9c1b",
+          "planner": "3a548bb9092bfd5e4f32df8b9633dcacce5253db8436ff9e7655d047f499e60d",
+          "reviewer": "b0beed96eced501cc3107249251be33d0d2c168451a9ba7190e52c3f18b6b5ec",
+          "solver": "ab6d31657aba57fa7ae3fe616dfc0342b7129b58bb6360e1ef44abfca2370bbd"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-02-smoke-4-generation-v1",
+        "bundle_id": "958345cb641172ffc5b52ca01cc1dcf61d678f44a0e7a690f889071a732f2a99",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-02-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-02-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-02-frozen-registration-v1.stdout.json",
+              "sha256": "24f131a6892fe9c945084616d50670cdacda2fd39b3117654322a546bf45c815"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-02-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-02-frozen-runtime-v1.stdout.json",
+              "sha256": "a565a8a811365f8b78c3193ce4caf9ec91b7c6e7563c608013c4c88479fcb326"
+            }
+          }
+        ],
+        "composed_config_hash": "6870d253be425aa812c5d97740576cba03c32510519bace5dce236208580a3e1",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-02-graph-v1",
+        "label": "branch-02",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-02-generation-plan-registered-v1.json",
+          "sha256": "0deb30c1b79a67b266043521f0710b0a066baceae1f7964a7f548fc2978d9940"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "958345cb641172ffc5b52ca01cc1dcf61d678f44a0e7a690f889071a732f2a99",
+          "context_layout": {
+            "native_role_query_placement": null
+          },
+          "node_context": {
+            "reviewer_history_scope": "latest-solver-and-local-tools",
+            "tool_schema_rendering": "per-role"
+          },
+          "role_sha256": {
+            "perception": "9c2d7d240b545f57d41cedfe0b706f832c433352aeea01baaf62929be98e5d4b",
+            "planner": "f7355a861a83f8e8683a72e6c3a695d3514d756dc2d1a3c5f584d7d95050cb5b",
+            "reviewer": "4345f546d419c15a464fe6595d562067c6c936bdd4faae9c27bf3060d5d23791",
+            "solver": "705a7ed1d4bdf6fa97c4bc26b4fc71971c590d8a213091ee6b220f46e938046d"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-02-analysis-recipe-v1.json",
+          "sha256": "55002315786b9c998232dc6959201576f83050257cd74afa3f9ab7e39ff9f17f"
+        },
+        "role_text_hashes": {
+          "perception": "a61027c53d99d87c3fd8cd7e5d11f4c9155d077f526f7891f993bd340a3b9c1b",
+          "planner": "82fe4f2dd72f43fb7416a26c0b1944a00cc3c7f5cc17633048ea4b75d2f8001f",
+          "reviewer": "3f772ae65b5f59e1cf6283e197171920afb96bd8a44f7eef537e68d3bea84a79",
+          "solver": "9eca6e7245b67324850dfd81c7b5dddca7b92752359d3d97a5c8e1f47f49226f"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-03-smoke-4-generation-v1",
+        "bundle_id": "a1390d6298351f2ba374ff0512f855efd5746ce8fdd51f20e2b42c2112e56568",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-03-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-03-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-03-frozen-registration-v1.stdout.json",
+              "sha256": "69e81539b38d6e11ba88dd6d404399ae6d3f5e49914a2960de66058f5b7f9610"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-03-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-03-frozen-runtime-v1.stdout.json",
+              "sha256": "817acc3fc797b65c6826060fa1bef6f77d479c3c1d2f0f89276b5527f5b8f098"
+            }
+          }
+        ],
+        "composed_config_hash": "ac9a4495b089654aa45c542bb9a534568f1af0f085b0373548ca9df384cc9f2c",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-03-graph-v1",
+        "label": "branch-03",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-03-generation-plan-registered-v1.json",
+          "sha256": "a6c9b8c00f139e3b8d42710ef18c57d7927c0bc7a2d1c0b97bcb0bd7d491246e"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "a1390d6298351f2ba374ff0512f855efd5746ce8fdd51f20e2b42c2112e56568",
+          "context_layout": {
+            "native_role_query_placement": "before-speech-v1"
+          },
+          "node_context": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "per-role"
+          },
+          "role_sha256": {
+            "perception": "9c2d7d240b545f57d41cedfe0b706f832c433352aeea01baaf62929be98e5d4b",
+            "planner": "1f9286c9fba0cc1b788ae5363bffb4778393eeb96a65efa218f5f20da032db19",
+            "reviewer": "1c2eb0b5131caf01598abf7ee29241574ae24eb0bbb6437445293b98ad452dd5",
+            "solver": "f17ddbb5defc5a2f837c11243806955962bb444c709499c2b21dab80d848c239"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-03-analysis-recipe-v1.json",
+          "sha256": "1b99436f8c05241c698d2f51fcce19440f5950f5524e2cce4d0f20a99630fee9"
+        },
+        "role_text_hashes": {
+          "perception": "a61027c53d99d87c3fd8cd7e5d11f4c9155d077f526f7891f993bd340a3b9c1b",
+          "planner": "a8dee25ced0245b8ae12db8770174edbffc99d2e42543fd6980446e7a3d80087",
+          "reviewer": "99410f50589fb854940c5797629e84921a4388e91339491a50003c4c03543e70",
+          "solver": "0b5dc3eb858c90e9b7e88c374fcf3e3233f06daca43c3ccdb8e8ca0c6467a471"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-04-smoke-4-generation-v1",
+        "bundle_id": "a9b61b9a7c37b8610a497aebf2ef9996543f9308726b93d3438481e1d4c96709",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-04-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-04-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-04-frozen-registration-v1.stdout.json",
+              "sha256": "9b5e840d1aab567ee63e2441706c2caa5fe83f3cd49613b276bb94938bc5b412"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-04-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-04-frozen-runtime-v1.stdout.json",
+              "sha256": "e098282a16bd787d74f5d059399540212c868d12044338931c9ec27556722713"
+            }
+          }
+        ],
+        "composed_config_hash": "c4b137c34133828e52f45b26b391314f52ee7be64797b8abf79c70ba20ba0178",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-04-graph-v1",
+        "label": "branch-04",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-04-generation-plan-registered-v1.json",
+          "sha256": "d7a397314efba8e53ff231b26d21deb84a2af0c75738e134648c0ef464163ca7"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "a9b61b9a7c37b8610a497aebf2ef9996543f9308726b93d3438481e1d4c96709",
+          "context_layout": {
+            "native_role_query_placement": "before-speech-v1"
+          },
+          "node_context": {
+            "reviewer_history_scope": "latest-solver-and-local-tools",
+            "tool_schema_rendering": "constant"
+          },
+          "role_sha256": {
+            "perception": "9c2d7d240b545f57d41cedfe0b706f832c433352aeea01baaf62929be98e5d4b",
+            "planner": "606755685749693cae167328b536ac13e2a16a92a3f62a069c4a02110f9f1f2c",
+            "reviewer": "da5c867f1b8b62d1e9fb77f23f9011d0fdd06c17298ed9018199a174f27b60e2",
+            "solver": "3c1408fa9d61d8a2de322c75d2299da86053d156bf038225d699416eaf7f10ee"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-04-analysis-recipe-v1.json",
+          "sha256": "f1825535a8ac5d81578dacff60e0d15f8c3118636420f9d59db71a87ef3037c2"
+        },
+        "role_text_hashes": {
+          "perception": "a61027c53d99d87c3fd8cd7e5d11f4c9155d077f526f7891f993bd340a3b9c1b",
+          "planner": "efda4948a7d7d991f105baae798f79edc30d66ac817fa04eac18bf6337d3a644",
+          "reviewer": "e002297bc9d2a3c9244c9dd66dd0edff66e192472df0ede14161ef51fbd4ddbe",
+          "solver": "a001fd8c7b873c56484b7aead2876e55ac6227f114b3ddc932340752ac3574a3"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-05-smoke-4-generation-v1",
+        "bundle_id": "b17788c067a7bff3ba7753215e72af1e4b303e7c86aeb712105cb3137394c1b6",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-05-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-05-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-05-frozen-registration-v1.stdout.json",
+              "sha256": "bac2cb7ba31c65261efb23b6c481a5ce70900a629538596a87724e4a7596f31c"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-05-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-05-frozen-runtime-v1.stdout.json",
+              "sha256": "fba6ff9659e93132a49e385feda55979979cabf123d4fcb446350f0d3c8f26f4"
+            }
+          }
+        ],
+        "composed_config_hash": "d6cfba21da467b9faed6aa62901e3aa03f660b5f4ecec9f4884ba79ce5268838",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-05-graph-v1",
+        "label": "branch-05",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-05-generation-plan-registered-v1.json",
+          "sha256": "4b9297120a93bb67e009f8366e2d1a21ff086cdda6758a4805a4cfa83f7d9ce6"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "b17788c067a7bff3ba7753215e72af1e4b303e7c86aeb712105cb3137394c1b6",
+          "context_layout": {
+            "native_role_query_placement": null
+          },
+          "node_context": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "constant"
+          },
+          "role_sha256": {
+            "perception": "ffb4d457fb7e334fa5cae6a374abd6d9873ede5e6914ff30052566ace4dde4cf",
+            "planner": "36f61d1d95a5f13dd8bfc62f5a25e0f837a7c3e6d9eb7cfe33412545dc831ab3",
+            "reviewer": "fcd0fa9e65b5a96496c01a101cb4a3fc47242f6c6d07598d9792e67b48cc63a4",
+            "solver": "cd8237311330a5795032d3e1b8659b493a50770c66e824437a888fc8ac32c82e"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-05-analysis-recipe-v1.json",
+          "sha256": "89698cda72fb0284266e7a5d2aa56a331796eb06cb892a7f3bad58ace5148d53"
+        },
+        "role_text_hashes": {
+          "perception": "56755d69636fe964722278bc61a7119ab74da4213be35e42629d1eee54d1616b",
+          "planner": "df2bfbf9e5b189a41e23df9bd780d300f64c791ee7132eaff2a68752178774ca",
+          "reviewer": "ee5ee750db5ce77aca13dd914f075fab492f556fc074be1b5e3df192710bf35a",
+          "solver": "9c2f841986b874936faa2a89f63a53b967ca5d1e83cd6a740fa4639d57e125a6"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-06-smoke-4-generation-v1",
+        "bundle_id": "98327a8b6b932e40021ad3e0175e79e8844c529b2464f888116277752705228c",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-06-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-06-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-06-frozen-registration-v1.stdout.json",
+              "sha256": "7e5d7e1c9484442893a652a05e4ddf42ca0830f924838a0e721f051034bc2dd1"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-06-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-06-frozen-runtime-v1.stdout.json",
+              "sha256": "9270b7ca4d0226c7df3565e6672a2135f38ff9453955944455402cb4dc295ada"
+            }
+          }
+        ],
+        "composed_config_hash": "a68713486d1af58ee25bc7617122aac86f2eb56d42e041200279b62842da1bb8",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-06-graph-v1",
+        "label": "branch-06",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-06-generation-plan-registered-v1.json",
+          "sha256": "ab3f7bf41a2e34e7677c25f1748ba5ed5ab21d91b420ca9b2ad3de9e7c78b921"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "98327a8b6b932e40021ad3e0175e79e8844c529b2464f888116277752705228c",
+          "context_layout": {
+            "native_role_query_placement": null
+          },
+          "node_context": {
+            "reviewer_history_scope": "latest-solver-and-local-tools",
+            "tool_schema_rendering": "per-role"
+          },
+          "role_sha256": {
+            "perception": "ffb4d457fb7e334fa5cae6a374abd6d9873ede5e6914ff30052566ace4dde4cf",
+            "planner": "03481266c5a4398f1563dd1f1a85d9cd30aadff9946a402047efe759a3b22d07",
+            "reviewer": "4e472b41f17c9c7de48f135092b9e9835d97dd87174675f736aab1a08a4a13e9",
+            "solver": "1ec227e897787cc366f3ec8add951c30c60f00b847857c790465c7535f6ebb59"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-06-analysis-recipe-v1.json",
+          "sha256": "23594fe2ddda28b686e36763c8181d6942e5d2822689565433f86d69e7c6d4d0"
+        },
+        "role_text_hashes": {
+          "perception": "56755d69636fe964722278bc61a7119ab74da4213be35e42629d1eee54d1616b",
+          "planner": "befc8b882544b69017ba3a3640bd94a2039f25dd408b4c4acfb46686b5881249",
+          "reviewer": "d3e58cb64b83e429ba6cf33857a822279ba9645476f38388c97316386a51571e",
+          "solver": "4225fdbef184be47f4de6e50b6a3475969b24696d8a2fd5d9414cf9804e5bef4"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-07-smoke-4-generation-v1",
+        "bundle_id": "ce29134403c3214d9a8875d07a03cb00f68b94cd32b33ab8bcd147a8f9580ddd",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-07-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-07-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-07-frozen-registration-v1.stdout.json",
+              "sha256": "5a430ebf013b9315b903bcce861adf02958777ccdd68e99f5ef2ee85c30a6a83"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-07-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-07-frozen-runtime-v1.stdout.json",
+              "sha256": "750623301ef4f824cecc07238bf9de178378916cbed7eafb1760ba8a9e6a0c43"
+            }
+          }
+        ],
+        "composed_config_hash": "e200b808c895cbbacd0c772e2bbe28df821c65453aba8bfe8908b86edecac4f4",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-07-graph-v1",
+        "label": "branch-07",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-07-generation-plan-registered-v1.json",
+          "sha256": "5477b3f5d254be21d406b89e70681b2440fd4f0dd76daa508e8e1e9e6ad61f20"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "ce29134403c3214d9a8875d07a03cb00f68b94cd32b33ab8bcd147a8f9580ddd",
+          "context_layout": {
+            "native_role_query_placement": "before-speech-v1"
+          },
+          "node_context": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "per-role"
+          },
+          "role_sha256": {
+            "perception": "ffb4d457fb7e334fa5cae6a374abd6d9873ede5e6914ff30052566ace4dde4cf",
+            "planner": "f2357ca103796623fed4d906e51b5896964046e2832e3e8869479bd9e96c2541",
+            "reviewer": "bdd243c543abdbac1b8f8af4ebd7f347d6d2732eda50dada2cbf4bcc98627102",
+            "solver": "552cf845b8de93e587abe648c30d8cb009a163d9718dabaf69eda1e67f1fdd5f"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-07-analysis-recipe-v1.json",
+          "sha256": "3c69c19e40abcc055da3985410e3e29abfeeb7611e2e79962ed27f769f183c19"
+        },
+        "role_text_hashes": {
+          "perception": "56755d69636fe964722278bc61a7119ab74da4213be35e42629d1eee54d1616b",
+          "planner": "423a30f1c3eba644dc6d7a3579013780bfdefb66bf3ebe0e3fdf23825199c8f8",
+          "reviewer": "2e99000bba4e64b4196d9ae0731012a99af1f37dd1a564494c1826b6a6fd8b1a",
+          "solver": "eccb8e834360a69a91abc4e2db396586b1ab3dcbd489617e0b3295bab8dd4a11"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-08-smoke-4-generation-v1",
+        "bundle_id": "43e117be0bec8bb84c5065421dea92cf5e91a8a7f250ae73f8eac3ce52462c2d",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-08-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-08-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-08-frozen-registration-v1.stdout.json",
+              "sha256": "898fbf1bc4d84a4ac368e152187ae7dcc326b633af0fb139d76b55af7c9db36c"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-08-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-08-frozen-runtime-v1.stdout.json",
+              "sha256": "d9d7d14fdc0fd2ebc4e24c5091faf3b14c58a71147fac4c6394e150cd4d31680"
+            }
+          }
+        ],
+        "composed_config_hash": "b1c52d24336399b63416f49f6c059044535e9023bd0052c8c6847f4b7b31ff67",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-08-graph-v1",
+        "label": "branch-08",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-08-generation-plan-registered-v1.json",
+          "sha256": "ae5da1a595d5d571ef4fb027dac3aec7f550bb6a6dbe17da98515dec2b8805f8"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "43e117be0bec8bb84c5065421dea92cf5e91a8a7f250ae73f8eac3ce52462c2d",
+          "context_layout": {
+            "native_role_query_placement": "before-speech-v1"
+          },
+          "node_context": {
+            "reviewer_history_scope": "latest-solver-and-local-tools",
+            "tool_schema_rendering": "constant"
+          },
+          "role_sha256": {
+            "perception": "ffb4d457fb7e334fa5cae6a374abd6d9873ede5e6914ff30052566ace4dde4cf",
+            "planner": "9edfe3649aecd2f37f935700a8e4a6f5613bb8e53d18b01fa053429239608bf7",
+            "reviewer": "24378c7e7ba53f082d3664190e28240cd0d47a1fb10225b4fa58aef4de69b37c",
+            "solver": "33c39da91cb0e7d3ee18f8fe6b49cd83527f7c9fdbbf425a9c7b29fcf15afc8c"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-08-analysis-recipe-v1.json",
+          "sha256": "8f416e49079d66d040af9693b97f7d6cc1b3d96c3cf7dfc6432796e6a7bc66a5"
+        },
+        "role_text_hashes": {
+          "perception": "56755d69636fe964722278bc61a7119ab74da4213be35e42629d1eee54d1616b",
+          "planner": "a6982bd632fd10f74987bcff9f9603c5a4670a4f4470411bc90d65f6a66bb73c",
+          "reviewer": "001f64a43b3b37d22003cd6689504498c0ffcc8793b9c7d4a746c0e931ebeee6",
+          "solver": "804aabf6e13e2aef6069176ac833356b15edb8708b74a7981cc27d3cee0856b7"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-09-smoke-4-generation-v1",
+        "bundle_id": "8804f1140915d928bc4d79b2995bf155276a601955c8700bc9239564d65c6cb2",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-09-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-09-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-09-frozen-registration-v1.stdout.json",
+              "sha256": "e2336da7bce8dfa7e8eae666739c873888ee108dd035b2042b7d2d8d0df0c428"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-09-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-09-frozen-runtime-v1.stdout.json",
+              "sha256": "1fed4a83b9bba2008ea62a364f7373e8a52f5138ed28b740b39a670a743b6fa3"
+            }
+          }
+        ],
+        "composed_config_hash": "7d65af07da1d96d8a171ab077088acc838083361b52ca4acad86eaccde61eb91",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-09-graph-v1",
+        "label": "branch-09",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-09-generation-plan-registered-v1.json",
+          "sha256": "f657ff1cf38595f065dfb5615ecd32c387687b96f24bee92c950441e58dcd910"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "8804f1140915d928bc4d79b2995bf155276a601955c8700bc9239564d65c6cb2",
+          "context_layout": {
+            "native_role_query_placement": null
+          },
+          "node_context": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "constant"
+          },
+          "role_sha256": {
+            "perception": "edd3badd3ee3f9b2bf3cb363c8ed611322b5e45de9c4189775a3020b9e75380b",
+            "planner": "d3915c09071466ba4b3b1252d06bdf8cd8d8c25e3f8da7d38b5f4f4bf30e1293",
+            "reviewer": "e380dfa215ffcd7e080b45afa4ff9a72d7390b0d37f04ce791c8e92650b7ed58",
+            "solver": "b3206567ab78a62a8f440a0639d74e4f9ef986f5b8c2270dd02f47a24bb587f5"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-09-analysis-recipe-v1.json",
+          "sha256": "5de994a34936f006b6d5c1a2656ea1cb59ad3e4914cf2640efc8aed30754ce06"
+        },
+        "role_text_hashes": {
+          "perception": "48affefeea9ceea3d9f9fdc054dfc1a034322f049716e248ac11fcb098f0725d",
+          "planner": "9d12f864005c2128b8d44a85e9d2c46134baae964179a2d9ca640b72080b5fa1",
+          "reviewer": "050a4713b876a303c28baa8c0b92fdd31ca5550060cfafe310a1fed1a6657138",
+          "solver": "ecd047fad48238a1f2ce5c5c263cb24043a123f4bd9ea2a7a49ca8850a560846"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-10-smoke-4-generation-v1",
+        "bundle_id": "6509be9140a46531cd00b0a96fa56d6fb48ee32104c5ecc4c30c21a666ad11ae",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-10-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-10-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-10-frozen-registration-v1.stdout.json",
+              "sha256": "cac1b5a9b46f0fb18aa886532a82d14014addcd2f9358cd690ba4372f09fc4ab"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-10-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-10-frozen-runtime-v1.stdout.json",
+              "sha256": "6211c0d693cb83695d4fdd80f8896d29155747a3aa023218afbb9a3f516e9186"
+            }
+          }
+        ],
+        "composed_config_hash": "44c492b03d61a7a7c60a7ac550ee1dea9407eb6ff5c3eb798358115b94854aa1",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-10-graph-v1",
+        "label": "branch-10",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-10-generation-plan-registered-v1.json",
+          "sha256": "7b3f8dfa3ab69c58aa0f7b6a1fb617c14c2eae92302586a7a022f38484a9039d"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "6509be9140a46531cd00b0a96fa56d6fb48ee32104c5ecc4c30c21a666ad11ae",
+          "context_layout": {
+            "native_role_query_placement": null
+          },
+          "node_context": {
+            "reviewer_history_scope": "latest-solver-and-local-tools",
+            "tool_schema_rendering": "per-role"
+          },
+          "role_sha256": {
+            "perception": "edd3badd3ee3f9b2bf3cb363c8ed611322b5e45de9c4189775a3020b9e75380b",
+            "planner": "410f105655843296197f84eb7cce7225f640068dfd9707f4d020abb6ca52c608",
+            "reviewer": "7aede17a37eaf74011245d081aac8af4b4b86f536c8bd16dc7e3510994624b10",
+            "solver": "9e3ff39d4e815d51f858427e6cc2c78d50e5aca28ce867c47652111cd31d2c5d"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-10-analysis-recipe-v1.json",
+          "sha256": "e44aa5a4d242b9adfdcb83799212f5d5fb83b1b9b32564e9ebfe03fe18b40f90"
+        },
+        "role_text_hashes": {
+          "perception": "48affefeea9ceea3d9f9fdc054dfc1a034322f049716e248ac11fcb098f0725d",
+          "planner": "d0ca499a58424876bac49afee6f94becc306626ba4a8a186b128c1398681960a",
+          "reviewer": "7d327b6b75dc6390198f79e364a9b46cef82d79829347d72a7111eca3933f4fb",
+          "solver": "4cf9f7cfeba3fd71fdddcab8979aff020607199abbbb386258bb5f5fb1cb6a20"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-generation-v1",
+        "bundle_id": "2b0529b090d1b7c53d48f70a080e5b6d393ae4dd07e42c87f2c14fec9839e4a1",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-11-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-11-frozen-registration-v1.stdout.json",
+              "sha256": "e0a4ff61b71fea0ae7647c43648fe2b425f658449674d52cba20d0104d3dd002"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-11-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-11-frozen-runtime-v1.stdout.json",
+              "sha256": "05653b118a748cdf568f26864a9830bcc432817c04aaafc402ad4eafa16563ca"
+            }
+          }
+        ],
+        "composed_config_hash": "b55d20f6ea9349deecb4b9ec9720607d82fc6c75493760889fee59de026aaf62",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-11-graph-v1",
+        "label": "branch-11",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-11-generation-plan-registered-v1.json",
+          "sha256": "64900bf999e9a14b9ae135349da9a439901313777bc4033338e9953fdd7cea3e"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "2b0529b090d1b7c53d48f70a080e5b6d393ae4dd07e42c87f2c14fec9839e4a1",
+          "context_layout": {
+            "native_role_query_placement": "before-speech-v1"
+          },
+          "node_context": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "per-role"
+          },
+          "role_sha256": {
+            "perception": "edd3badd3ee3f9b2bf3cb363c8ed611322b5e45de9c4189775a3020b9e75380b",
+            "planner": "90d2e80806c72905d9d43d5eb6ba11c981e7ec05bacdead1b68e5adceb552fd2",
+            "reviewer": "3506e3d637cdcbf4f03e154f559642edac39471f09eb0efddf3b263b760f6992",
+            "solver": "2e0b5a157f7542c02d17fab1d6b08a9d62e6cbcf2b58e1002e38da05fd868096"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-11-analysis-recipe-v1.json",
+          "sha256": "b1fd4d0f34964cb01385d1f351a843e4a4ccf4bf0e8ef326116bd7b35f43b088"
+        },
+        "role_text_hashes": {
+          "perception": "48affefeea9ceea3d9f9fdc054dfc1a034322f049716e248ac11fcb098f0725d",
+          "planner": "beb671ff35ab3a2f212a392cb595a433bb9853e285b1c2757353f1a105fc691c",
+          "reviewer": "47756aaa035166f89b85b3f4175d99b3ffbaf0c54df6307dc5676db308a1118b",
+          "solver": "0fa5229a515cf06d7f69764e041a6ff35cabc1bc452d29a75399427d09d19037"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-12-smoke-4-generation-v1",
+        "bundle_id": "ef7b53be7de080ca4ed67cc86e5c0f6fdbbfb28035100d6aabfd131fbae4aa39",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-12-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-12-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-12-frozen-registration-v1.stdout.json",
+              "sha256": "c0d15658358a5a97350d10edcbdb1dc55e5e5534db3742cc48a763185ff4e536"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-12-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-12-frozen-runtime-v1.stdout.json",
+              "sha256": "75d1be342b5cc2ea0302db799cf4e3815872b591d3a58ce7a3c73ab9cb0feebd"
+            }
+          }
+        ],
+        "composed_config_hash": "dafbb3052ac49c325030263ad1963925a75ed57b1531e2df48d9435a495d44cf",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-12-graph-v1",
+        "label": "branch-12",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-12-generation-plan-registered-v1.json",
+          "sha256": "ea3ce1394100614c3708a801e3f61dbf278567a57722a688781fcdf676e332c9"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "ef7b53be7de080ca4ed67cc86e5c0f6fdbbfb28035100d6aabfd131fbae4aa39",
+          "context_layout": {
+            "native_role_query_placement": "before-speech-v1"
+          },
+          "node_context": {
+            "reviewer_history_scope": "latest-solver-and-local-tools",
+            "tool_schema_rendering": "constant"
+          },
+          "role_sha256": {
+            "perception": "edd3badd3ee3f9b2bf3cb363c8ed611322b5e45de9c4189775a3020b9e75380b",
+            "planner": "62b54728bf588c52d4fb72cc0e36d6fbc41595669d3b1b58e1351fc6d2449fd5",
+            "reviewer": "625d8a343ce4698181f642e0df9694f4148905f624267b2b9645025f2f671917",
+            "solver": "24afd9ff2f271c79a285f94f1da9fd6fdbb26d00b403fc24f08fe9b7239bb332"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-12-analysis-recipe-v1.json",
+          "sha256": "cba7f8121d356d9ad78ae5060faf15e02ef784365e86d057087604c377b9f619"
+        },
+        "role_text_hashes": {
+          "perception": "48affefeea9ceea3d9f9fdc054dfc1a034322f049716e248ac11fcb098f0725d",
+          "planner": "30e5217a266d8acb7cd328e2220b7e56432db5643f21578bcbcbb15b0d0eb94a",
+          "reviewer": "be4a08e1d6ec7907d010c610fcc4a2f4f0dde136a1273809ce83fe42264ede52",
+          "solver": "8b6bdc00a7c61545010f5207c3ad44bfd824b4687746d91ed545884f814903a8"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-13-smoke-4-generation-v1",
+        "bundle_id": "9d4c492b2e24c0eba6fef7eacf474f846d81310e148a10c078bf8a7d48e4d630",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-13-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-13-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-13-frozen-registration-v1.stdout.json",
+              "sha256": "a939967d9e83443a37a1cded656ba4118fb024e292c9c91c44909abf6b3ccbb8"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-13-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-13-frozen-runtime-v1.stdout.json",
+              "sha256": "487c3a8e5ac0932ea560b076a0b871f590551e25498b000c0aad5f3ab5793e59"
+            }
+          }
+        ],
+        "composed_config_hash": "23e077901ffecae3e14c1639370852efa1565ac0df2bc89d60fec48314d9b890",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-13-graph-v1",
+        "label": "branch-13",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-13-generation-plan-registered-v1.json",
+          "sha256": "a3d6807fcafda9045e399aadfbc8b0a814af34cf5f0ea6747532cedfc7340619"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "9d4c492b2e24c0eba6fef7eacf474f846d81310e148a10c078bf8a7d48e4d630",
+          "context_layout": {
+            "native_role_query_placement": null
+          },
+          "node_context": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "constant"
+          },
+          "role_sha256": {
+            "perception": "9586bda15737f3521dfbcd80a4424aaf916080c06f65b801e21dfc226028a5c5",
+            "planner": "75161a06e903e4249162c39eca04bc1f49cb28007383ac9b19140f545bd4753b",
+            "reviewer": "3edf409a7f7cf52f678f826d875009ea6d4ae97d76731a1a8440a3b574aefe6f",
+            "solver": "62b01018300ba81325838b048d73738094c9f9320f3e4cfe9b1c23b9c2c8f691"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-13-analysis-recipe-v1.json",
+          "sha256": "c0d228292ea31f8a214ace95ab553a670da118afcd86950e8305a04fc0d5f5df"
+        },
+        "role_text_hashes": {
+          "perception": "b23c24a0c30e55735f88af460ae2890faf6f464e45c4534306a8360c9f103fdb",
+          "planner": "dc3117487a8fc1644a452395c5d26361be79eecd7bede22929c5d407a9b336c0",
+          "reviewer": "aeae94a9acad16918fce2a46d3dd62df7e6e7c7de8bb08baae2dc174395f0546",
+          "solver": "88742bc28bf2171a552ce0da9ef7223ec8b5a84b8913f7d5b1306ce0a597d834"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-14-smoke-4-generation-v1",
+        "bundle_id": "1fb6df3bfff726525403687e42cba9f136d0d2db1e211b58777481ae93e62118",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-14-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-14-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-14-frozen-registration-v1.stdout.json",
+              "sha256": "de30f9ed6962cd0397f23daee7e58839c37b0de6f030167c0ff81e75ee0f46e3"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-14-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-14-frozen-runtime-v1.stdout.json",
+              "sha256": "23510a18b4b86419c08676c9d682afc10e188d10cfdcb17326c9778ad94d7935"
+            }
+          }
+        ],
+        "composed_config_hash": "a8a7b19415a4c2d74d316ed629cb9c345875e641b64408db2546297eb445bd79",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-14-graph-v1",
+        "label": "branch-14",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-14-generation-plan-registered-v1.json",
+          "sha256": "018c99dfede4ead9666091058cb2dd7320d8f0fba2de67e05c963655d58ccc5b"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "1fb6df3bfff726525403687e42cba9f136d0d2db1e211b58777481ae93e62118",
+          "context_layout": {
+            "native_role_query_placement": null
+          },
+          "node_context": {
+            "reviewer_history_scope": "latest-solver-and-local-tools",
+            "tool_schema_rendering": "per-role"
+          },
+          "role_sha256": {
+            "perception": "9586bda15737f3521dfbcd80a4424aaf916080c06f65b801e21dfc226028a5c5",
+            "planner": "e1a9825d0f4b43b060cddc0456c41dcbda1046e249c1f3f45f84229454d54dfa",
+            "reviewer": "988ea84333a96921a81b44b16ec6631b028de32764776988873b05c3b3aa78e1",
+            "solver": "cc721ee1a2a656ec900fa340773bc5c7538f93e7d0baf2f786787cc2c8e9aa46"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-14-analysis-recipe-v1.json",
+          "sha256": "6d34b379b21b0f1918062ade3ce98c366a0e2d7b39b0e94bd51c070d7dcf7c8b"
+        },
+        "role_text_hashes": {
+          "perception": "b23c24a0c30e55735f88af460ae2890faf6f464e45c4534306a8360c9f103fdb",
+          "planner": "4a6d9dba24ffa2505005c7381d87dce9077e8712582279f9f0be889faa833e18",
+          "reviewer": "ddc9a981f17b457d5390b574bd16d901096ffe1fd48ee1e0b543e177ad570f69",
+          "solver": "8c034620804c0b381be0b0f3aebc86a2e655e9e3a03c5e5722cfcab0df64e228"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-15-smoke-4-generation-v1",
+        "bundle_id": "3adce494be0ec509baa0caeb75a4c04aafc60ce839bd0eaaffb95f1768aaa6f2",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-15-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-15-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-15-frozen-registration-v1.stdout.json",
+              "sha256": "5e290ca95840f5b50851197841feabe29a77c777404c1f1629d7f0c95000fdf1"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-15-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-15-frozen-runtime-v1.stdout.json",
+              "sha256": "31ba52521b9c5e0b92748a455efa688576d6d0d1852838e2c0a3c12788ce7ba6"
+            }
+          }
+        ],
+        "composed_config_hash": "662dc623dcd4b0b2c1b26187f0adf933fb11762d53156302e3ae9088f0dc5bb1",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-15-graph-v1",
+        "label": "branch-15",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-15-generation-plan-registered-v1.json",
+          "sha256": "667accee09cbe5c4c35a69e98885537569cde69c03b35951193e858fe4ed87e3"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "3adce494be0ec509baa0caeb75a4c04aafc60ce839bd0eaaffb95f1768aaa6f2",
+          "context_layout": {
+            "native_role_query_placement": "before-speech-v1"
+          },
+          "node_context": {
+            "reviewer_history_scope": "full",
+            "tool_schema_rendering": "per-role"
+          },
+          "role_sha256": {
+            "perception": "9586bda15737f3521dfbcd80a4424aaf916080c06f65b801e21dfc226028a5c5",
+            "planner": "66b1adf280eb4e6647070d44de97755dde4ef4780517a911b69234c56191a4a7",
+            "reviewer": "7e63bcba8645c3e5e5b394ffe8ae5d6e321244fb9b46a1afbfd360e3689970f8",
+            "solver": "b414febb64c4b6cdc9673d660afb4dbe660c37308db1f9ef5e0810d02ea9100e"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-15-analysis-recipe-v1.json",
+          "sha256": "d68526df104869cf85eeb7022d88ae1e3446a8343f9d042d9b1836bf9eaf4afa"
+        },
+        "role_text_hashes": {
+          "perception": "b23c24a0c30e55735f88af460ae2890faf6f464e45c4534306a8360c9f103fdb",
+          "planner": "47f81352ee9c158ecd441457ce7820d6ec562473abd6f081c65212cb68c33ca2",
+          "reviewer": "797b667459656a255342a3fb7cae66d6635accb1536f26d4c212104ab2aa9d21",
+          "solver": "0559a63c49a19a270d91f2fc11cb98e42781f81d7353bbdb399b0cf2cede9fa9"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-16-smoke-4-generation-v1",
+        "bundle_id": "1d8271280453c117119652ffe5ee1577e1184aade2579b3394d9ad5631e6bedb",
+        "capacity": "slurp-native-stage3-context-template-k16-update2-branch-16-smoke-4-v1",
+        "checks": [
+          {
+            "exit_code": 0,
+            "kind": "registration",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-16-frozen-registration-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-16-frozen-registration-v1.stdout.json",
+              "sha256": "c844a3ac5758f6ba3f048a53c3d47c85a120368ff507af27bcb4b5404f65c116"
+            }
+          },
+          {
+            "exit_code": 0,
+            "kind": "runtime",
+            "stderr": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-16-frozen-runtime-v1.stderr.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout": {
+              "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-structural-owner227-v1/branch-16-frozen-runtime-v1.stdout.json",
+              "sha256": "612f45c6c696d36a3c71fc85c780f6274b6c97599a38272eca1bd95dbe091612"
+            }
+          }
+        ],
+        "composed_config_hash": "f7c059d45bd009d9fcbee3d1dfc368b9ac61b79fdf1b0c1301b217ad08ba8f7c",
+        "configuration_equality": {
+          "knowledge_stores": true,
+          "native_episode": true,
+          "native_node_batch": true,
+          "native_node_context": true,
+          "native_node_pipeline": true,
+          "native_prefix_slots": true,
+          "native_role_query_placement": true,
+          "phase_material": true,
+          "phase_tools": true,
+          "policy": true,
+          "system_search_measurement": true
+        },
+        "graph": "slurp-native-stage3-context-template-k16-update2-branch-16-graph-v1",
+        "label": "branch-16",
+        "plan": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-16-generation-plan-registered-v1.json",
+          "sha256": "6dfad92ec4746a31ca4ac83960eaa089394d6ba4f485692c64309072e255fc79"
+        },
+        "policy_binding_verified": {
+          "bundle_id": "1d8271280453c117119652ffe5ee1577e1184aade2579b3394d9ad5631e6bedb",
+          "context_layout": {
+            "native_role_query_placement": "before-speech-v1"
+          },
+          "node_context": {
+            "reviewer_history_scope": "latest-solver-and-local-tools",
+            "tool_schema_rendering": "constant"
+          },
+          "role_sha256": {
+            "perception": "9586bda15737f3521dfbcd80a4424aaf916080c06f65b801e21dfc226028a5c5",
+            "planner": "15b8efce105f666914f49f6ea1a6a3f57db8bedd180db62132082b42cea6d1a5",
+            "reviewer": "6ece3428fb46d470f3d3795bf8ca2f1d5028fce025a0ab7d5547ed6b4979fd50",
+            "solver": "79f5c67a7b89ae9e7e7febbb65cf46bac86cec02d1bd7a5c3b6ea9211a48898b"
+          }
+        },
+        "read_recipe": {
+          "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-structural-entry-v1/branch-16-analysis-recipe-v1.json",
+          "sha256": "8d779af36e4b4829e71a97ad1023fde8d9ec83afa801a1ecf6577b52a67c0347"
+        },
+        "role_text_hashes": {
+          "perception": "b23c24a0c30e55735f88af460ae2890faf6f464e45c4534306a8360c9f103fdb",
+          "planner": "f700b0188d269b1aebbbc4eff132c47fc64fbd387ad0a173aec8ab6c980cf50c",
+          "reviewer": "1ae9490cc1a81ec9c5b543d9b42b6d60e7e18dec5e6bd31923ce7f602b57deee",
+          "solver": "01945b310efb1fbcd0eee5ac4e1baa1e53978d0ed9063e9a67a3ff3465f9a3f3"
+        },
+        "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1"
+      }
+    ],
+    "passed": true,
+    "schema": "saea-context-template-k16-update2-structural-frozen-check-v1",
+    "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1"
+  },
+  "state": "HELD before structural dispatch",
+  "windows_free_gib_observed": [
+    {
+      "at_utc": "2026-10-05T05:43:57Z",
+      "value": 5.858
+    },
+    {
+      "at_utc": "2026-10-05T05:47:59.7295471Z",
+      "value": 7.46
+    }
+  ],
+  "running_floor_gib": 8,
+  "startup_floor_gib": 12.5,
+  "operational_status": {
+    "prior_scientific_queue": "complete, eighteen members",
+    "server_ok": true,
+    "telemetry_age_seconds": 2.206,
+    "slots_busy": 0,
+    "slots_total": 4,
+    "gpu_memory_used_mib": 0,
+    "gpu_utilization_percent": 0
+  },
+  "interpretation": "Windows free memory is below the configured floor. Earlier WSL memory accounting showed substantial reclaimable file cache; no large residual experiment process was identified. Healthy idle HTTP status does not establish current GPU residency or generation readiness. The cause of zero reported GPU memory is not established.",
+  "actions": "Preserve all frozen sources, controls and completed evidence. Do not dispatch, flush caches, change host settings or restart the service. Revalidate resources and GPU readiness before admission.",
+  "structural_generation_contacts": 0,
+  "monitor": "No experiment is active; the completed capacity heartbeat was deleted. Create a fresh fifteen-minute script heartbeat only after the next actual admitted launch."
+}
