@@ -47,6 +47,11 @@ artifacts column points at; else the decision receipt's antecedents; else the pa
     that READ run id has its own exposure-ledger row. It may still be a DRAFT until the seal
     (the read row is countersigned after the seal and before any number is read), but it must
     exist.
+context-read-scope / context-read-row-duplicate
+    A declared saea-context-learning-analysis-v1 recipe must already have one
+    zero-call, model-free-check, discovery READ row naming that exact recipe.
+    This matches the existing offline reader scope without signing or reading it.
+    Other recipe schemas and historical report-only handling remain unchanged.
 
 For a cell that declares ``resume_from`` (owner ruling after the COMP-1 resume attempt 3 seal
 abort -- a four-row smoke cannot see seal-time checks on kept rows):
@@ -1757,6 +1762,48 @@ def check_cell(
         ))
         return
     report.read_row_countersigned = any(is_countersigned(row) for row in read_rows)
+    _check_context_read_scope(report, recipe, read_rows)
+
+
+def _check_context_read_scope(
+    report: CellReport, recipe: dict[str, Any], read_rows: list[dict[str, str]],
+) -> None:
+    """Match the context reader's offline scope without authorizing a READ.
+
+    Draft READ signatures are intentional before sealing. Only the declared
+    context-learning recipe uses this contract; other readers keep their own
+    scope checks. Historical findings retain the caller's report-only severity.
+    """
+    if recipe.get("schema") != "saea-context-learning-analysis-v1":
+        return
+    if len(read_rows) != 1:
+        report.findings.append(Finding(
+            "context-read-row-duplicate",
+            "The context reader requires exactly one READ registration.",
+            report.read_run_id,
+        ))
+        return
+    row = read_rows[0]
+    expected = {
+        "execution profile": "model-free-check",
+        "split role": "discovery",
+        "calls": "0",
+        ARTIFACTS_COLUMN: report.recipe,
+    }
+    mismatches = [
+        key for key, value in expected.items()
+        if (row.get(key, "").strip("`") if key == ARTIFACTS_COLUMN
+            else row.get(key)) != value
+    ]
+    if mismatches:
+        report.findings.append(Finding(
+            "context-read-scope",
+            "Context READ registration differs from its zero-contact offline "
+            "reader contract: " + ", ".join(mismatches)
+            + ". Correct the prospective registration; root READ countersignature "
+            "still waits for the complete sealed family.",
+            report.read_run_id,
+        ))
 
 
 # --------------------------------------------------------------------------

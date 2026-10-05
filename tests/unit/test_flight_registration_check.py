@@ -1261,3 +1261,71 @@ def test_missing_carrier_row_retains_the_original_missing_row_finding(world):
     result = world.run(cells=[EXPERIMENT])
     assert not result["passed"] and "missing-row" in _kinds(result)
     assert "registered-carrier-binding" not in _kinds(result)
+
+
+# A zero-contact context READ must be runnable under the existing offline reader.
+def _context_read_scope(world):
+    world.recipe["schema"] = "saea-context-learning-analysis-v1"
+    world.rows[READ].update({
+        "execution profile": "model-free-check", "split role": "discovery", "calls": "0",
+        "artifacts": f"docs/readiness/{PACKAGE}/analysis-recipe-v1.json",
+    })
+
+
+def test_context_read_scope_allows_unsigned_zero_contact_discovery(world):
+    _context_read_scope(world)
+    result = world.build().run(cells=[EXPERIMENT])
+    assert result["passed"]
+    assert result["cells"][0]["read_row_countersigned"] is False
+
+
+@pytest.mark.parametrize("field,value", [
+    ("execution profile", "bounded-discovery-probe"),
+    ("execution profile", "baseline-reproduction"),
+    ("execution profile", "paper-scale-confirmatory"),
+    ("execution profile", None),
+    ("split role", "dev"),
+    ("split role", "construction"),
+    ("split role", "final-report"),
+    ("split role", None),
+    ("calls", "1"),
+    ("calls", "0.0"),
+    ("calls", None),
+    ("artifacts", "docs/readiness/another/analysis-recipe-v1.json"),
+])
+def test_context_read_scope_rejected_before_runtime(world, field, value):
+    _context_read_scope(world)
+    if value is None:
+        world.rows[READ].pop(field)
+    else:
+        world.rows[READ][field] = value
+    result = world.build().run(cells=[EXPERIMENT])
+    assert not result["passed"]
+    assert "context-read-scope" in _kinds(result)
+
+
+def test_context_read_scope_rejects_duplicate_read_registration(world):
+    _context_read_scope(world)
+    world.build()
+    path = world.repo / gate.EXPOSURE_LEDGER
+    path.write_text(_ledger_text([*world.rows.values(), dict(world.rows[READ])]))
+    result = world.run(cells=[EXPERIMENT])
+    assert not result["passed"]
+    assert "context-read-row-duplicate" in _kinds(result)
+
+
+def test_context_read_scope_preserves_historical_report_only_behavior(world):
+    _context_read_scope(world)
+    world.rows[READ]["execution profile"] = "bounded-discovery-probe"
+    world.build()
+    _write(world.data / "runs" / RUN / "historical.json", {})
+    result = world.run(cells=[EXPERIMENT])
+    assert result["passed"]
+    assert "context-read-scope" in _kinds(result)
+
+
+def test_context_read_scope_does_not_reinterpret_other_recipe_schemas(world):
+    # The synthetic legacy recipe does not declare the context reader contract.
+    result = world.build().run(cells=[EXPERIMENT])
+    assert result["passed"]
+    assert "context-read-scope" not in _kinds(result)
