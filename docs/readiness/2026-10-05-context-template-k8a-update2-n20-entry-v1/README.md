@@ -1,0 +1,7 @@
+# K8A exact panel registration
+
+Evaluate original branches01-08, unchanged, with fresh seed/A/A on the same20 inputs. Ten members and200 complete trajectories. The two K8 panels jointly preserve all16 original learned proposals. No policy update between panels. These are partitions of one joint proposal population, not independent search replications.
+
+Reuse fixed assets and own output-identical supply envelopes; retain T0/seed20260913,4slots/queue4 and full output reserves. K is not concurrent flight count. Require20GiB stable startup and8GiB running memory. Preserve original failed K16 seed four contacts and its unsigned READ; no retry/reseal/scoring. This is the first bounded scientific recovery. Any further failure stops and requires diagnosis/four-row proof; no second automatic recovery.
+
+All10 frozen registration/runtime checks and exact root control disposition precede dispatch. Each panel requires its own ten finalized members, verified seals, unique successful official whole-member scores, zero failed jobs and exact root READ. PanelB remains held until root review of completedA resources and execution; do not changeB policies based onA results. Report each same-panel quality/cost frontier separately. No cross-panel pooled frontier, optimizer export, formal adoption, automatic expansion or8x400. Create15-minute script monitor only at actual launch and delete at terminal.

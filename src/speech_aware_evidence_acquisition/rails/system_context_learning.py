@@ -48,6 +48,29 @@ def _load(pin, root):
     return json.loads(_read_pin(pin, root))
 
 
+def population_candidates(protocol):
+    """Return the exact prospective population or explicitly partitioned half.
+
+    This structural gate does not grant read authority. The caller must verify
+    owner and parent-registration pins before accessing any result evidence.
+    """
+    part = protocol.get("population_partition")
+    if part is None:
+        return [f"branch-{i:02d}" for i in range(1, 17)]
+    require(isinstance(part, dict)
+            and part.get("schema") == "saea-template-population-partition-v1"
+            and part.get("panel") in ("a", "b")
+            and protocol.get("population_authorization") is not None,
+            "exact prospective K8 partition required")
+    for key in ("authorization", "parent_registration"):
+        value = part.get(key)
+        require(isinstance(value, dict) and isinstance(value.get("relpath"), str)
+                and bool(value["relpath"]), "partition owner and parent pins required")
+        sha(value.get("sha256"))
+    start = 1 if part["panel"] == "a" else 9
+    return [f"branch-{i:02d}" for i in range(start, start + 8)]
+
+
 def _validate_scope(recipe, registration, protocol, *, root):
     require(recipe.get("schema") == "saea-context-learning-analysis-v1"
             and registration.get("schema") == REGISTRATION_SCHEMA
@@ -59,6 +82,8 @@ def _validate_scope(recipe, registration, protocol, *, root):
         "context registration hash differs")
     # A prospective population amendment does not resize historical K4 protocols.
     population = protocol.get("population_authorization")
+    require(protocol.get("population_partition") is None or population is not None,
+            "partition requires original population authorization")
     expected_k, algorithms = 4, list(CONTEXT_LEARNING_ALGORITHMS)
     if population is not None:
         amendment = _load(population, root)
@@ -70,10 +95,36 @@ def _validate_scope(recipe, registration, protocol, *, root):
         require(amendment.get("schema") == "saea-owner-template-population-k16-v1"
                 and all(type(resolution.get(k)) is type(v) and resolution[k] == v
                         for k, v in expected.items()), "exact prospective K16 owner scope required")
-        require(protocol.get("candidate_members") == [f"branch-{i:02d}" for i in range(1, 17)]
+        candidates = population_candidates(protocol)
+        require(protocol.get("candidate_members") == candidates
                 and protocol.get("control_members") == ["seed", "seed-aa"],
-                "K16 requires all ordered branches and both controls")
-        expected_k, algorithms = 16, ["tf-grpo-context-diversity"]
+                "population requires all ordered registered branches and both controls")
+        expected_k, algorithms = len(candidates), ["tf-grpo-context-diversity"]
+        if expected_k == 8:
+            part = protocol["population_partition"]
+            split = _load(part["authorization"], root)
+            expected_split = {"K": 8, "N": 20, "panels": 2,
+                              "candidate_trajectories": 320, "control_trajectories": 80,
+                              "total_scientific_trajectories": 400,
+                              "preserve_all_original_templates": True,
+                              "independent_panel_controls": True,
+                              "no_between_panel_policy_update": True}
+            resolution = split.get("resolution", {})
+            require(split.get("schema") == "saea-owner-template-k8-partition-v1"
+                    and all(type(resolution.get(k)) is type(v) and resolution[k] == v
+                            for k, v in expected_split.items()),
+                    "exact prospective two-panel K8 owner scope required")
+            parent = _load(part["parent_registration"], root)
+            require(parent.get("schema") == REGISTRATION_SCHEMA
+                    and parent.get("registration_sha256") == content_hash(
+                        {k: v for k, v in parent.items() if k != "registration_sha256"})
+                    and set(parent.get("member_bindings", {})) ==
+                        {"seed", "seed-aa", *[f"branch-{i:02d}" for i in range(1, 17)]},
+                    "complete original K16 registration required")
+            require(all(registration["member_bindings"][c]["bundle_id"] ==
+                        parent["member_bindings"][c]["bundle_id"]
+                        for c in candidates + ["seed", "seed-aa"]),
+                    "partition must preserve original templates and controls")
     owner = _load(protocol["owner"], root)
     contract = owner.get("resolved_contract", {})
     require(owner.get("schema") == "saea-owner-deterministic-context-rollouts-v1"

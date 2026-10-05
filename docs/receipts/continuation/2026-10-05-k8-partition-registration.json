@@ -1,0 +1,76 @@
+{
+  "at_utc": "2026-10-05T09:21:34.015060+00:00",
+  "equivalence": {
+    "relpath": "docs/readiness/2026-10-05-context-template-k8a-update2-n20-entry-v1/request-equivalence-v1.json",
+    "sha256": "eb928e4929d42f9ab4c0f2edc3186eaa68b55ae882d6999c6efec5afae610434"
+  },
+  "held_original_unstarted_runs": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-SEED-AA-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-01-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-02-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-03-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-04-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-05-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-06-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-07-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-08-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-09-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-10-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-11-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-12-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-13-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-14-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-15-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-16-V1"
+  ],
+  "next": "Freeze K8A after serial integration; ten exact checks then recorded dead-process control archival and Windows dispatch. No second recovery on failure.",
+  "owner": {
+    "relpath": "docs/receipts/owner/2026-10-05-template-k8-partition.json",
+    "sha256": "1de74a8ebd7564c2e3d66761cc16d18d919611eb5cf449afbe5b371391325a64"
+  },
+  "panel_a": {
+    "contacts": 0,
+    "controls": 2,
+    "inputs": 20,
+    "status": "Prepared; freeze and exact runtime checks pending",
+    "templates": 8,
+    "trajectories": 200
+  },
+  "panel_b": {
+    "branches": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "controls": 2,
+    "inputs": 20,
+    "status": "Partition fixed; separate registration/frozen checks/stage review pending; no contact",
+    "templates": 8,
+    "trajectories": 200
+  },
+  "preservation": "Old K16 seed4 contacts and failed controls unchanged. Unexecuted K16 recovery helper superseded. No cache reclaim, WSL restart, live dispatch, score or task-quality read occurred.",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-05-context-template-k8a-update2-n20-entry-v1/registration-v1.json",
+    "sha256": "09f0eb1097c9d13b8d7901345d7ffd89566089369de3520168eba942a7fe4c61"
+  },
+  "runtime": {
+    "concurrent_experiments": 1,
+    "queue_depth": 4,
+    "running_memory_gib": 8,
+    "slots": 4,
+    "startup_memory_gib": 20
+  },
+  "schema": "saea-k8-partition-engineering-and-registration-v1",
+  "tests": {
+    "learning_module_statement_coverage_percent": 90.18126888217523,
+    "new_scope_helper_statement_coverage_percent": 100,
+    "passed": 263,
+    "red_phase": "Two exact-K8 success cases failed before implementation; historical scope rejection tests remained green.",
+    "reporter_statement_coverage_percent": 100
+  }
+}

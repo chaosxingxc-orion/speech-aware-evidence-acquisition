@@ -1,0 +1,42 @@
+{
+  "at_utc": "2026-10-05T09:15:36.622860+00:00",
+  "complete_english_translation": "I suspect that computing16 experiment groups simultaneously consumes too much memory. Consider reducing K and run with K=8. The current16 experiment groups can be treated as two K=8 experiments.",
+  "execution": "Run panelA first, review full family and resources, then panelB with unchanged policies and its own fresh seed/A/A. No combined cross-panel Pareto frontier or independent-search replication claim. Preserve T0/seed20260913 and existing assets.",
+  "limits": "Same20-input optimization roster, all cumulative exposure retained. No new proposals, no automatic scale, human before8x400; other-carrier holds remain.",
+  "operational_fact": "The driver runs one member campaign synchronously. The failed first seed had four contacts; every candidate was absent. No16-way experimental concurrency is established. K is the number of template systems, not simultaneous GPU slots.",
+  "panels": {
+    "a": [
+      "branch-01",
+      "branch-02",
+      "branch-03",
+      "branch-04",
+      "branch-05",
+      "branch-06",
+      "branch-07",
+      "branch-08"
+    ],
+    "b": [
+      "branch-09",
+      "branch-10",
+      "branch-11",
+      "branch-12",
+      "branch-13",
+      "branch-14",
+      "branch-15",
+      "branch-16"
+    ]
+  },
+  "resolution": {
+    "K": 8,
+    "N": 20,
+    "candidate_trajectories": 320,
+    "control_trajectories": 80,
+    "independent_panel_controls": true,
+    "no_between_panel_policy_update": true,
+    "panels": 2,
+    "preserve_all_original_templates": true,
+    "total_scientific_trajectories": 400
+  },
+  "schema": "saea-owner-template-k8-partition-v1",
+  "source": "Direct owner message in this task following the restart confirmation; original message remains in the conversation."
+}

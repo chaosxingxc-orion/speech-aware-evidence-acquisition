@@ -4,7 +4,7 @@ This module does not authorize reads, run a scorer or choose a learned policy.
 The CLI and optimizer entry independently enforce complete source custody.
 """
 
-from ..rails.system_context_learning import FEEDBACK_SCHEMA
+from ..rails.system_context_learning import FEEDBACK_SCHEMA, population_candidates
 from ..rails.system_search_measurement import measured_rows, measured_frontier
 from ..rails.system_text_feedback import CompleteSystemFeedback
 from ..rails.system_text_policy import require
@@ -24,6 +24,8 @@ def analyze(evidence, *, recipe, registration, protocol, roster, supplement):
     # This pure reporter still rejects silent resizing and incomplete populations.
     population = protocol.get("population_authorization")
     expected_k = 4
+    require(protocol.get("population_partition") is None or population is not None,
+            "partition requires original population authorization")
     if population is not None:
         require(
             isinstance(population, dict)
@@ -34,10 +36,10 @@ def analyze(evidence, *, recipe, registration, protocol, roster, supplement):
             and all(c in "0123456789abcdef" for c in population["sha256"])
             and protocol.get("N") == 20
             and protocol.get("algorithms") == ["tf-grpo-context-diversity"]
-            and candidates == [f"branch-{i:02d}" for i in range(1, 17)],
-            "exact prospective K16 report scope required",
+            and candidates == population_candidates(protocol),
+            "exact prospective population report scope required",
         )
-        expected_k = 16
+        expected_k = len(population_candidates(protocol))
     require(
         type(protocol.get("K", 4)) is int
         and protocol.get("K", 4) == expected_k

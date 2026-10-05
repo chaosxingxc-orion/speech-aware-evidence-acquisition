@@ -13,9 +13,9 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Root227 exact TF N20K16 evaluation after sixteen original-branch capacities/structures; frozen/runtime/live gates required.",
+        "reason": "Direct owner K8 split supersedes this unstarted K16 member. Preserve original frozen source and proposal; only separately registered K8 identities may be admitted.",
         "requirements": [],
-        "state": "ready"
+        "state": "held"
       },
       "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-13-V1",
       "system_text_policy_binding": {

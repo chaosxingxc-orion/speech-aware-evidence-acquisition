@@ -1,0 +1,62 @@
+{
+  "analysis_roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-analysis-v1.json",
+    "sha256": "885aee3bcaf47d2d09391174347ac50830b1f69e158a8bcc6eb25067acacfbe6"
+  },
+  "context_learning_registration": {
+    "relpath": "docs/readiness/2026-10-05-context-template-k8a-update2-n20-entry-v1/registration-v1.json",
+    "sha256": "09f0eb1097c9d13b8d7901345d7ffd89566089369de3520168eba942a7fe4c61"
+  },
+  "expected_members": {
+    "branch-01": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-01-V1",
+    "branch-02": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-02-V1",
+    "branch-03": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-03-V1",
+    "branch-04": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-04-V1",
+    "branch-05": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-05-V1",
+    "branch-06": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-06-V1",
+    "branch-07": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-07-V1",
+    "branch-08": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-BRANCH-08-V1",
+    "seed": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-V1",
+    "seed-aa": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1"
+  },
+  "family_id": "context-template-k8a-update2-n20",
+  "latency": "Report actual all-sample and non-first admission-to-settled workflow mean; retain original admission order separately from analysis roster order, require same order across members.",
+  "limits": "K8A same20 optimization panel. Keep panelB policies unchanged; no partial-family read, cross-panel frontier, independent-search replication claim, automatic learner export or scale.",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "primary": "Official pooled SLU-F1, intent and reliable completion; descriptive paired same-cohort comparison with seed/A/A.",
+  "read_gate": "Only after all ten members independently FINALIZED, verified seals, exactly one official successful complete score each, zero failed jobs, and exact K8A root READ.",
+  "required_rows_per_member": 20,
+  "run_ids": {
+    "read": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-READ-V1"
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "schema": "saea-context-learning-analysis-v1"
+}
