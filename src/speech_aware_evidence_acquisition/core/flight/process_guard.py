@@ -21,7 +21,7 @@ import threading
 import time
 from collections.abc import Mapping
 
-from ..session.serving import read_host_memory
+from ..session.windows_memory import WindowsMemoryObserver
 
 
 class FlightProcessGuardError(ValueError):
@@ -96,6 +96,9 @@ def _sample(reader, policy):
         "elapsed_seconds": elapsed,
         "reason": reason,
         "reader_error": value.get("host_memory_error") if isinstance(value, Mapping) else error,
+        "observer": {key: value[key] for key in
+                     ("transport", "observer_pid", "sequence", "sampled_at")
+                     if key in value} if isinstance(value, Mapping) else {},
     }
 
 
@@ -129,9 +132,18 @@ def _stop_owned(process, policy, emit):
 
 
 def run_guarded(
-    command, receipt_dir, policy, *, host_reader=read_host_memory, identity=None
+    command, receipt_dir, policy, *, host_reader=None, identity=None
 ):
     """Execute once, preserve exit status, and stop only this private group."""
+    if host_reader is None:
+        with WindowsMemoryObserver() as observer:
+            return _run_guarded(command, receipt_dir, policy,
+                                host_reader=observer, identity=identity)
+    return _run_guarded(command, receipt_dir, policy,
+                        host_reader=host_reader, identity=identity)
+
+
+def _run_guarded(command, receipt_dir, policy, *, host_reader, identity):
     if (
         os.name != "posix"
         or not command

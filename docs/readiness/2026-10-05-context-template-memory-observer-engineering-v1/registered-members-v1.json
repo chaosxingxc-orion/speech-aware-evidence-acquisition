@@ -1,0 +1,21 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "experiment": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-v1",
+    "label": "seed",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-05-context-template-memory-observer-engineering-v1/generation-plan-registered-v1.json",
+      "sha256": "e821672462b29b1a42f6ce524d209045cdbe4ebea7e3902b06eb20d9123efe5e"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "fb37979742f3a1c1f5f63b84f8b3b0b9bc519357d7656540166d8c956001acd7"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-05-context-template-memory-observer-engineering-v1/analysis-recipe-v1.json",
+      "sha256": "901585fcb9768e52a8d475b4991236ca9993b348034b5b02b96966cfe39c65d2"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-V1"
+  }
+]

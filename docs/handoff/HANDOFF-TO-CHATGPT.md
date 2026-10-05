@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Persistent observer tested; fresh four-row seed proof registered, not launched
+
+[Engineering receipt](../receipts/continuation/2026-10-05-persistent-memory-observer-engineering.json):102 tests pass,observer95percent and existing guard94percent statement coverage. Real production guard supervised a harmless75-second timer with16 fresh reads and one stable Windows observer PID; nonfirst mean0.00142seconds. Observer exit independently verified. No GPU/model/scorer contacts in these tests. Historical query timeout did not reproduce and its internal phase remains unknown.
+
+The existing guard now owns a persistent physical-memory transport with fresh nonce/sequence/timestamp/PID validation; no cached measurement,reconnection or VM fallback. Keep8-second inner deadline,existing outer bound,20GiB startup and8GiB running. Do not restart service or telemetry. A new exact original-seed four-row proof is registered in docs/readiness/2026-10-05-context-template-memory-observer-engineering-v1;52 generation contacts,208 actual FIT endpoints,zero official scores. Freeze,pass exact source/registration/runtime/policy checks,then record disposition for the exact stopped09:29:01Z K8A controls before dispatch. Create15-minute script monitor at launch,delete at terminal. Structural/timing only after completion. This is not another scientific recovery; preserve failed K8A119 contacts,20 unsealed rows,STOP/lease until exact disposition,and unsigned READ. K8B remains held. No quality read,replay,retry or automatic scientific admission.
+
+
 ## Memory observer idle diagnosis complete; production fix still pending
 
 [Model-free diagnosis](../receipts/continuation/2026-10-05-memory-observer-model-free-diagnosis.json):90 independent-process reads and120 persistent nonce/sequence-bound fresh reads passed with zero contacts. Historical timeout did not reproduce; its internal phase remains unknown. Persistent prototype first read0.343seconds,nonfirst mean0.00119seconds,max0.00885seconds; owned observer exited0. Idle proof is not loaded runtime acceptance. Next add tested bounded persistent transport to the existing process guard,then separately registered four-row engineering. Do not launch another scientific recovery or bypass via K8B. Failed controls remain preserved; no GPU monitor active.

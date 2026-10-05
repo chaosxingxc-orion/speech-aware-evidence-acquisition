@@ -1,0 +1,23 @@
+{
+  "at_utc": "2026-10-05T09:58:46.347385+00:00",
+  "authority": "Root227 bounded engineering after second scientific failure; direct owner K8 partition remains fixed",
+  "conditions": "Tested guard,exact clean frozen worker,registration and source/role/supply/decoding checks,healthy original service,no other generator/scorer,explicit archive of exact failed controls,stable20GiB startup/8GiB running. One fresh engineering attempt only; failure stops.",
+  "decision_id": "context-template-memory-observer-engineering-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FIT-V1"
+  ],
+  "monitor": "Activate15-minute script monitor only after actual launch and delete at terminal.",
+  "preservation": "Preserve failed K8A seed119 contacts,20 generated rows,OPENED attempt,unfinished scorer,original STOP/lease/queue and all frozen sources. Never retry,reseal,score or read its task quality. K8B stays held.",
+  "purpose": "Prove the persistent Windows physical-memory observer through unchanged seed native GPU execution. Root structural acceptance only; this is not a second scientific recovery.",
+  "read_scope": "Operational observer freshness/identity,structural role/control handoff,terminal Omni custody,actual request FIT and node/sample timing. No official scoring,task quality,proposal or learner export.",
+  "schema": "saea-campaign-decision-v1",
+  "scope": {
+    "fit_endpoints": 208,
+    "generation_contacts": 52,
+    "official_scores": 0,
+    "rows": 4,
+    "systems": 1
+  },
+  "status": "decided"
+}

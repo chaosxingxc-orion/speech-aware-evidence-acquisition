@@ -1,0 +1,48 @@
+{
+  "schema": "saea-persistent-memory-observer-engineering-v1",
+  "at_utc": "2026-10-05T09:59:37.860738+00:00",
+  "tests": {
+    "passed": 102,
+    "scope": "Freshness/nonce/sequence/identity/invalid-memory/timeout/late-start cleanup and guarded custody,plus K8 population partition",
+    "coverage": {
+      "covered_lines": 295,
+      "num_statements": 312,
+      "percent_covered": 94.55128205128206,
+      "percent_covered_display": "95",
+      "missing_lines": 17,
+      "excluded_lines": 0,
+      "percent_statements_covered": 94.55128205128206,
+      "percent_statements_covered_display": "95"
+    },
+    "coverage_pin": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8a-memory-observer-diagnosis-v1/production-coverage.json",
+      "sha256": "7eb4105b0ac21eb40016da79470aeb16d1398869f27c2a3bbec831cc64d16a7d"
+    }
+  },
+  "live_model_free_proof": {
+    "at_utc": "2026-10-05T09:55:17.638818+00:00",
+    "status": "PASS",
+    "contacts": 0,
+    "observations": 16,
+    "observer_windows_pid": 37480,
+    "first_seconds": 0.3511031739762984,
+    "nonfirst_mean_seconds": 0.001421661259761701,
+    "maximum_seconds": 0.3511031739762984,
+    "minimum_available_gib": 28.306556701660156,
+    "scope": "Production guard with a harmless timer, not a GPU or scorer proof. Explicit Windows PID exit verification follows."
+  },
+  "windows_observer_exit": {
+    "observer_pid": 37480,
+    "alive": false,
+    "checked_at": "2026-10-05T09:59:37.6376704+00:00"
+  },
+  "contacts": 0,
+  "scope": "Persistent transport in the existing process guard only. Every sample freshly queries Windows physical memory; nonce/sequence/timestamp/PID checked. Failure latches closed; no restart/reconnect/stale/VM fallback. Keep8-second inner deadline,existing outer guard and8GiB floor. Existing serving telemetry is not restarted. Historical timeout internal phase remains unestablished.",
+  "next": {
+    "registration": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-engineering-owner227-v1/registration-complete-v1.json",
+      "sha256": "a9309f243e2210cabad758b5e76ee67b5ce86732473df3410207e552f55415fc"
+    },
+    "status": "One fresh four-row original-seed engineering registered,not launched. Frozen registration/runtime gates and exact incident-control disposition remain. No second scientific recovery; K8B held."
+  }
+}
