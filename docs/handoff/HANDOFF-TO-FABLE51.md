@@ -1,5 +1,14 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Final configured remaining-b2 scientific cohort running
+
+[Actual launch](../receipts/continuation/2026-10-05-partitioned-update3-remaining-b2-launch.json) binds Windows SAEA-Batch-Driver epoch2026-10-05T22:42:07Z, first arm22:42:32Z, frozen codex-partitioned-update3-remaining-b2-n20-v1 atafa8de1c512b2b761236641231d95061c94a11a6. All six frozen registration/runtime/supply/policy checks passed. The unchanged config defines candidates13-16 plus seed/A/A,20 inputs each,120 trajectories,1560 generation/6240 FIT caps. Original branch15 no-change remains included. Stable-memory wait passed20.41seconds. Startup free20.91GiB; first live observation19.84GiB,healthy service,GPU93percent,four busy slots and fresh telemetry. Driver61999/start_ticks56736199; revalidate actual identities.
+
+Prior completed remaining-b1 controls and overwritten logs were preserved by exact hashes after terminal/root READ and available guard. Independent installed-control verification passed before one launch. No STOP or lock deletion,cache flush,privileged launch or WSL restart. The job-specific slurp-update3-b2-15-min monitor is ACTIVE; delete it at exact terminal with no admitted worker/scorer/lease. Preserve the current frozen sources and queue.
+
+After all six members finalize with verified seals,one unique successful complete official score each and no failed jobs,use review-cohort-v2.py with remaining-b2, coordination/partitioned-update3-scientific-preparation-v1/remaining-b2-flight-v1 and this launch receipt. Exact READ stays unsigned until those gates and terminal process checks pass. Then root-review the entire cohort,run complete-trial-entry-v1.py check,explicitly bind the actual full-source registration and qualify the whole trial through the shared reader. No partial learner export,policy adoption or automatic next iteration. N20 is optimization evidence only; retain quality/reliability/sample latency and all failed/adverse/no-change cases. Other-carrier holds and human-before8x400 remain.
+
+
 ## Remaining-b1 complete root review; unchanged remaining-b2 admitted
 
 [Complete cohort review](../receipts/continuation/2026-10-05-partitioned-update3-remaining-b1-scientific-read.json) covers six independently finalized members,120 trajectories and672 model contacts with verified seals,one successful complete official score each and zero failed jobs. Driver epoch21:54:49Z ended normally22:33:10Z. The exact root READ and full timing export completed once; no scorer replay or new contacts. The job-specific slurp-update3-b1-15-min monitor is deleted. The [English result report](../results/2026-10-05-partitioned-update3-remaining-b1-n20.md) retains all strata,quality,intent,reliability,paired intervals and first/non-first/node timing.

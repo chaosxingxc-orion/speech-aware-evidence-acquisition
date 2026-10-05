@@ -1,0 +1,119 @@
+{
+  "schema": "saea-configured-scientific-launch-v1",
+  "at_utc": "2026-10-05T22:43:21.368106+00:00",
+  "status": "RUNNING",
+  "driver_epoch": "2026-10-05T22:42:07Z",
+  "first_arm_start": "2026-10-05T22:42:32Z",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update3-remaining-b2-n20-v1",
+  "commit": "afa8de1c512b2b761236641231d95061c94a11a6",
+  "driver": {
+    "pid": 61999,
+    "start_ticks": "56736199",
+    "argv": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ]
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "cohort": "remaining-b2",
+  "population_budget": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-seed-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-seed-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-seed-aa-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-seed-aa-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-13-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-13-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-13-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-14-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-14-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-14-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-15-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-15-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-15-v1"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-REMAINING-B2-BRANCH-16-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-16-generation-v1",
+      "expected_rows": 20,
+      "cell": "slurp-native-stage3-context-template-partitioned-update3-n20-remaining-b2-branch-16-v1"
+    }
+  ],
+  "queue": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/queue-v1.json",
+    "sha256": "83429979d8cbf7c150008855df6970fb34f3947d056b02765c015d4a6c69392e"
+  },
+  "frozen_proof": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/remaining-b2-flight-v1/frozen-check-v1.json",
+    "sha256": "9b822edf557875af82b4d3c468f44725674e96dad077a01fb282fd951e88443f"
+  },
+  "control_transition": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/remaining-b2-flight-v1/control-transition-complete-v1.json",
+    "sha256": "06fb37f6264531aa68bd768b1e1891f2ffbbbff0f2698e1a31eb8dc24f7cf6cd"
+  },
+  "independent_installed_verification": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/remaining-b2-flight-v1/installed-controls-verified-v1.json",
+    "sha256": "3fe1c689a8af1b918c5dc60f868183cd4a43171a7673379423fc019b9443943d"
+  },
+  "root_admission": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/remaining-b2-root-admission-v1.json",
+    "sha256": "53374a7ba5fc657228118229a855d2c7c07b47649f0d4fe991c5cf67a9b65034"
+  },
+  "memory_wait": {
+    "elapsed_seconds": 20.414184921071865,
+    "exit_code": 0,
+    "interval_seconds": 10,
+    "observer_sha256": "852f8f4fb4cd63b7084b9fec9db63325baa2553e2f7e6637f61d8053a5e06c7b",
+    "running_floor_gib": 8.0,
+    "schema": "saea-precontact-memory-wait-v1",
+    "stable_samples": 3,
+    "start_gib": 20.0,
+    "status": "ready",
+    "stop_marker": "/home/chao/batch-STOP",
+    "wait_seconds": 600.0,
+    "worker_started": false
+  },
+  "windows_startup": {
+    "batch_task_state": "Ready",
+    "free_gib": 20.907512664794922,
+    "at_utc": "2026-10-05T22:41:50.0053286Z"
+  },
+  "monitor": {
+    "id": "slurp-update3-b2-15-min",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "terminal_action": "Delete after exact terminal and absence of all admitted worker/scorer/lease processes."
+  },
+  "lock_disposition": "Kernel guard was available and STOP/flight.lock absent. No lock deletion, WSL restart, privileged launch or cache flush. Prior completed own controls and overwritten step logs are preserved by exact hashes.",
+  "scientific_read_countersigned": false,
+  "quality_read": false,
+  "next": "Complete all remaining-b2 members and exact root READ; then root-register the real complete source join and qualify whole-population retention. No automatic next iteration or partial learner export."
+}
