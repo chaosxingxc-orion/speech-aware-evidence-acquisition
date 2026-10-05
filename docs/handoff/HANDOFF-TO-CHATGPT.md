@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Partitioned update3 GPU sequence complete; full-trial qualification running
+
+[Remaining-b2 complete review](../receipts/continuation/2026-10-05-partitioned-update3-remaining-b2-scientific-read.json) covers six independently finalized members,120 trajectories,654 model contacts, verified seals and one unique complete official score each with zero failed jobs. Driver epoch22:42:07Z ended normally2026-10-05T23:16:19Z; exact terminal/process/guard checks passed before root countersignature and one complete READ. The job-specific slurp-update3-b2-15-min monitor is deleted. No lock deletion,cache flush,privileged launch,WSL restart,new model contact or score replay was needed. Preserve all completed controls and frozen workers.
+
+[Root report](../results/2026-10-05-partitioned-update3-remaining-b2-n20.md) retains all strata,paired intervals and first/non-first/node timing. Branches13/16 are about21-22percent faster than seed,with F1 above seed but below A/A and intent5pp lower. Seed A/A differs8.15 F1pp. No stable benefit,formal adoption or learning-gain claim follows. Across the configured successor sequence,22 members completed440 trajectories and2369 model contacts; all16 positions,including original no-change08/15,remain preserved.
+
+All three actual cohort READs passed complete-source readiness. Root registered the exact [source join](../readiness/2026-10-05-partitioned-update3-complete-analysis-v1/successor-source-registration-v1.json); this is analysis-only and grants no runtime authority. The existing complete-trial-entry-v1.py evaluate is running once under data-root coordination/partitioned-update3-scientific-preparation-v1, PID66917, tool session42624. Revalidate process and collect that existing call; do not dispatch a duplicate evaluation. It verifies before/after sources and may take several minutes for repeated large source reads. At the current observation CPU/I/O counters advance and Windows retains20.53GiB. Its exclusive output is complete-trial-qualified-v1.json. Root must personally interpret the complete result,then record the retention decision and prospective next learner protocol; no successor export/adoption/next GPU job has occurred.
+
+Keep the resident serving model. Current GPU queue is complete,STOP absent and service healthy idle. Subsequent GPU launch requires exact new configuration/admission and its own15-minute monitor. Keep fixed data/knowledge,separate cohorts,abstract-only learner inputs,spent allocations,other-carrier holds and the human-before8x400 boundary. This is reused-input optimization,not independent validation.
+
 ## Final configured remaining-b2 scientific cohort running
 
 [Actual launch](../receipts/continuation/2026-10-05-partitioned-update3-remaining-b2-launch.json) binds Windows SAEA-Batch-Driver epoch2026-10-05T22:42:07Z, first arm22:42:32Z, frozen codex-partitioned-update3-remaining-b2-n20-v1 atafa8de1c512b2b761236641231d95061c94a11a6. All six frozen registration/runtime/supply/policy checks passed. The unchanged config defines candidates13-16 plus seed/A/A,20 inputs each,120 trajectories,1560 generation/6240 FIT caps. Original branch15 no-change remains included. Stable-memory wait passed20.41seconds. Startup free20.91GiB; first live observation19.84GiB,healthy service,GPU93percent,four busy slots and fresh telemetry. Driver61999/start_ticks56736199; revalidate actual identities.
@@ -2744,7 +2754,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T22:08:50Z
+Last refreshed: 2026-10-05T23:25:43Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
