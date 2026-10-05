@@ -27,11 +27,29 @@ def validate_population_config(document):
     Their single source is this document. The supported role set and deterministic
     sampling are executor/research constraints, not proposed population sizes.
     """
-    _fields(document, ("schema", "experiment_id", "nodes", "sampling", "execution",
-                       "proposer", "contact_limits", "cohorts"), "population config fields differ")
-    require(document["schema"] == "saea-experiment-population-config-v1"
+    require(isinstance(document, dict), "population config must be an object")
+    version = document.get("schema")
+    fields = ("schema", "experiment_id", "nodes", "sampling", "execution",
+              "proposer", "contact_limits", "cohorts")
+    if version == "saea-experiment-population-config-v2":
+        fields += ("boundary_maintenance",)
+    _fields(document, fields, "population config fields differ")
+    require(version in ("saea-experiment-population-config-v1", "saea-experiment-population-config-v2")
             and isinstance(document["experiment_id"], str) and document["experiment_id"]
             and document["experiment_id"].isascii(), "population config identity differs")
+    if version == "saea-experiment-population-config-v2":
+        maintenance = document["boundary_maintenance"]
+        required = {
+            "mode": "root-coordinated-clean-page-cache",
+            "when": "after-complete-cohort",
+            "require_generation_scoring_preprocessing_idle": True,
+            "preserve_model_service": True,
+            "global_sync": False,
+            "record_before_after": True,
+        }
+        _fields(maintenance, required, "boundary maintenance fields differ")
+        require(all(type(maintenance[k]) is type(v) and maintenance[k] == v
+                    for k, v in required.items()), "unsupported boundary maintenance policy")
     require(_names(document["nodes"])
             and set(document["nodes"]) == {"perception", "solver", "reviewer", "planner"},
             "configured nodes must resolve to the implemented complete system")
@@ -119,7 +137,9 @@ def population_stage_spec(pin, *, repo_root, cohort_id):
     cohort = require_population_binding(config, pin, cohort_id, binding)
     budget = population_accounting(config, cohort_id)
     model_cap = budget["N"] * config["contact_limits"]["model_per_trajectory"]
-    return {**binding, "population_budget": budget,
+    maintenance = ({"boundary_maintenance": deepcopy(config["boundary_maintenance"])}
+                   if "boundary_maintenance" in config else {})
+    return {**binding, **maintenance, "population_budget": budget,
             "candidate_members": cohort["candidate_ids"], "control_members": cohort["control_ids"],
             "sample_ids": cohort["sample_ids"], "K": budget["K"], "N": budget["N"],
             "M": config["nodes"], "sampling": config["sampling"],

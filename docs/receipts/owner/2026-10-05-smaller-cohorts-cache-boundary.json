@@ -1,0 +1,22 @@
+{
+  "schema": "saea-owner-smaller-cohorts-and-cache-boundary-v1",
+  "recorded_at": "2026-10-05T13:22:39.162896+00:00",
+  "instruction_english": "Reduce K, clear WSL cache after completing each K cohort, focus on learning algorithm business improvement, and delegate the engineering-base repair to one subagent.",
+  "root_resolution": {
+    "configured_candidate_count_per_cohort": 4,
+    "retain_all_original_candidates": true,
+    "reclaim_only_clean_file_cache_at_complete_idle_cohort_boundary": true,
+    "preserve_other_coordinators_and_model_service": true,
+    "no_global_sync": true,
+    "repair_delegate": "memory_observer_repair",
+    "repair_model": "gpt-6.1-sol"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-k4-recovery1-n20-v1.json",
+    "sha256": "3f72f10195fffc7c5cea623f6896cdde6ff5593f233ec52da181df2cca0f5fd1"
+  },
+  "preparation_only": true,
+  "gpu_dispatch": false,
+  "cache_reclaimed": false,
+  "old_failed_family_read_unsigned": true
+}

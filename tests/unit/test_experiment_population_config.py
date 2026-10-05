@@ -4,7 +4,7 @@ import json
 import pytest
 from speech_aware_evidence_acquisition.rails.experiment_population import (
     load_population_config, population_accounting, validate_population_config,
-    require_population_binding,
+    require_population_binding, population_stage_spec,
 )
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyError
@@ -84,3 +84,49 @@ def test_any_stage_drift_is_rejected(tmp_path, fault):
     elif fault == "wrong_cohort": artifact["population_cohort"] = "cohort-1"
     else: cohort = "absent"
     with pytest.raises(PolicyError): require_population_binding(d, ref, cohort, artifact)
+
+
+def boundary_config():
+    d = config((4, 4), 20)
+    d["schema"] = "saea-experiment-population-config-v2"
+    d["boundary_maintenance"] = {
+        "mode": "root-coordinated-clean-page-cache",
+        "when": "after-complete-cohort",
+        "require_generation_scoring_preprocessing_idle": True,
+        "preserve_model_service": True,
+        "global_sync": False,
+        "record_before_after": True,
+    }
+    return d
+
+
+def test_boundary_policy_is_pinned_and_preserved_in_stage_spec(tmp_path):
+    d = boundary_config()
+    ref = pin(tmp_path, "population.json", d)
+    stage = population_stage_spec(ref, repo_root=tmp_path, cohort_id="cohort-0")
+    assert stage["K"] == 4
+    assert stage["population_budget"]["family_trajectories"] == 120
+    assert stage["boundary_maintenance"] == d["boundary_maintenance"]
+    assert stage["runtime_admission"] is False
+    assert population_accounting(d)["family_trajectories"] == 240
+
+
+@pytest.mark.parametrize("field,value", [
+    ("mode", "restart-wsl"), ("when", "after-every-sample"),
+    ("require_generation_scoring_preprocessing_idle", False),
+    ("preserve_model_service", False), ("global_sync", True),
+    ("record_before_after", False), ("extra", True),
+])
+def test_refuse_unbounded_boundary_maintenance(field, value):
+    d = boundary_config()
+    d["boundary_maintenance"][field] = value
+    with pytest.raises(PolicyError): validate_population_config(d)
+
+
+def test_v1_cannot_silently_gain_maintenance_and_v2_requires_it():
+    d = boundary_config()
+    d["schema"] = "saea-experiment-population-config-v1"
+    with pytest.raises(PolicyError): validate_population_config(d)
+    d["schema"] = "saea-experiment-population-config-v2"
+    d.pop("boundary_maintenance")
+    with pytest.raises(PolicyError): validate_population_config(d)
