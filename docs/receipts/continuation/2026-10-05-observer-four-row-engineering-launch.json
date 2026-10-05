@@ -1,0 +1,50 @@
+{
+  "schema": "saea-observer-four-row-engineering-live-launch-v1",
+  "at_utc": "2026-10-05T10:04:55.622330+00:00",
+  "driver_epoch": "2026-10-05T10:04:55Z",
+  "driver": {
+    "pid": 22438,
+    "parent_pid": 22437,
+    "start_ticks": "52228541",
+    "proc_stat": "22438 (bash) S 22437 22437 22437 34819 22437 4194304 635 8185 0 85 0 0 6 6 20 0 1 0 52228541 5140480 864 18446744073709551615 95692501798912 95692502774573 140726746440960 0 0 0 2 4 65536 1 0 0 17 4 0 0 0 0 0 95692502997424 95692503046064 95693089746944 140726746447019 140726746447152 140726746447152 140726746447850 0\n",
+    "argv": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ]
+  },
+  "worker": "/home/chao/saea-worktrees/codex-memory-observer-engineering-v2",
+  "commit": "1b87ab05fe79b31c0d1bcce47052a9de3c3b9ecb",
+  "queue_sha256": "356a9282aa72c251652762d579e4f80727d5c80eb4d668972a87dc0ed6124c81",
+  "members": 1,
+  "rows_per_member": 4,
+  "total_trajectories": 4,
+  "candidate_systems": 0,
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-STRUCTURE-V1",
+  "structural_read_registered": true,
+  "official_scores": 0,
+  "model_contacts_added_by_recorder": 0,
+  "memory_floors_gib": {
+    "running": 8,
+    "startup": 20
+  },
+  "scope": "One fresh original-seed four-row engineering with unchanged runtime policy and persistent Windows observer. Actual request FIT; no official scoring or task quality. Preserve failed K8A; K8B held.",
+  "automation": {
+    "id": "slurp-observer-proof-15m",
+    "status": "ACTIVE",
+    "delete_at_terminal": true
+  },
+  "analysis_scripts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-engineering-owner227-v1/structural-audit-v1.py",
+      "sha256": "c2fba95cbc31a35ed4d84e51c404d81674bf4253a9bffda3068dc065ee424597"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-engineering-owner227-v1/root-node-timing-v1.py",
+      "sha256": "8b2a8bfe5123d78535b1b3d7646953b2b2d5204dd08226e3e425f6cf9aecb1ad"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-engineering-owner227-v1/root-sample-timing-v1.py",
+      "sha256": "f32ae3960911a47f0f8593ec05ea45fb2e062814b3b8374860a9ac8ec9a374f9"
+    }
+  ]
+}

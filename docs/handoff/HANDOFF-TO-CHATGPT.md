@@ -1,5 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Observer engineering stopped before contacts on root FIT-budget mismatch
+
+[Exact incident](../receipts/continuation/2026-10-05-observer-engineering-fit-budget-stop.json):10:04:55Z driver stopped10:05:58Z; seed attempt OPENED with zero calls,zero FIT/scorer contacts. Root copied N20 contact_cap1040 into a four-row proof whose registered cap is208. Runtime refused before first request; the model-free preflight missed this equality. Persistent observer remained healthy through eight readings,min25.4087GiB;this is not a memory shortage or observer failure. Its worker exited1. Automation was deleted after no admitted driver/worker/scorer remains.
+
+Preserve frozen1b87ab05f,zero-contact attempt,STOP,lease and all logs. One root227 fresh four-row engineering recovery corrects only FIT cap208 plus identities; add explicit model-free budget equality to its frozen check. No policy,data,knowledge,decoding,geometry or memory-floor change. Any further failure stops. Scientific K8A/B remain held;no quality read,retry,reseal or scorer replay.
+
+
+## Fresh four-row memory-observer proof launched
+
+[Verified launch](../receipts/continuation/2026-10-05-observer-four-row-engineering-launch.json):Windows SAEA-Batch-Driver epoch2026-10-05T10:04:55Z,PID22438,start ticks52228541. Frozen codex-memory-observer-engineering-v2 at1b87ab05fe79b31c0d1bcce47052a9de3c3b9ecb passed registration/runtime/policy/supply/decoding checks. Original92252d116 precontact carrier-label refusal is preserved; no contact occurred there. Exact failed K8A controls were archived under batch-archive-20261005-k8a-observer-stop-to-four-row-proof only after absent driver/worker/core.driver/ownedPGID and healthy idle service. Its lease was already absent; no lease deletion. Failed119-contact20-row attempt unchanged and unread.
+
+Run only SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-V1,attempt-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-generation-v1. Four original seed inputs,52 generation/208 actualFIT cap,no official scorer. Windows observer is persistent but every value freshly queried and validated;20/8GiB floors. Automation slurp-observer-proof-15m is active every15minutes,script-only;delete at verified terminal/no admitted processes. After exact completion,root may run the pinned structural and numeric timing scripts in its coordination directory. Expected OPENED engineering state plus completed generation/prepared score spec is intentional;never finalize,score or read task quality. Any new failure stops. K8A scientific READ remains unsigned; K8B stays held pending later review. No scientific recovery or scale from this launch.
+
+
 ## Observer proof precontact ledger correction
 
 Frozen92252d116 runtime check refused three new ledger carrier labels missing the exact slurp key; zero contacts and no attempt. Preserve its frozen checkout and refusal logs. Only the three carrier labels are corrected in a clean successor; policy,supply,protocol,budget and runtime code remain identical. Re-run model-free frozen checks from codex-memory-observer-engineering-v2 before any control transition.

@@ -1,0 +1,48 @@
+{
+  "cell": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-v1",
+  "composed_config_hash": "e2ea3704420fe9b53e6651e5cac10135ab55afbbea984b8cab0a6167bb5e1a4f",
+  "decision_receipt": {
+    "relpath": "coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/root-admission-v1.json",
+    "sha256": "33ab23bd8f2ecf457a2e4cd85ea01fc2540a7a5cd91b502e730fd3c88516f4ea"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "0eb29bd0d83905a6dd2927f98dd3ab2e395eac7ee837c2d69cea4978c2eb6988",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-v1",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-V1/phase-supply-v1.json",
+    "sha256": "cf6126d451511320958dc938ae71bee03356544fb10794b50d86b993996ebdca"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-STRUCTURE-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

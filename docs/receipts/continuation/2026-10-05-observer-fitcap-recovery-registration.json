@@ -1,0 +1,29 @@
+{
+  "at_utc": "2026-10-05T10:11:19.879572+00:00",
+  "status": "REGISTERED_NOT_LAUNCHED",
+  "authority": "Root227 one engineering recovery from zero-contact FIT budget mismatch",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/registration-complete-v1.json",
+    "sha256": "6682e1c4482d92036fa4f2a27618f6cd14fa0cc80c47cfa23640e0e53bed4f0f"
+  },
+  "frozen_check_script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/frozen-check-v1.py",
+    "sha256": "3c3898c1908bb56747e792582acf861534a61874983378aebb4cdf165d45c59e"
+  },
+  "analysis_scripts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/structural-audit-v1.py",
+      "sha256": "57d0774f6593a498ad04c0c0f51cd01b71949185f8088738ccc3ca39cac0e91d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/root-node-timing-v1.py",
+      "sha256": "4f4d82b4bbd8dfab37ca813894740ad3e2ccbd650688fbe8e67f99bb280a92c7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-memory-observer-fitcap-recovery1-owner227-v1/root-sample-timing-v1.py",
+      "sha256": "d99e6531b039cefeb1a6f75dd755af03c75016bc642e7b906a794b7e1e8416e3"
+    }
+  ],
+  "contacts": 0,
+  "scope": "Correct only four-row native FIT cap to208 and fresh identities. Preserve original seed and all frozen/failed scientific and engineering evidence. Actual runtime cap arithmetic and FIT plan equality explicitly checked before launch; original1040 must fail. No second engineering recovery or scientific dispatch."
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "saea-observer-engineering-precontact-fit-budget-stop-v1",
+  "at_utc": "2026-10-05T10:10:03.833145+00:00",
+  "epoch": "2026-10-05T10:04:55Z",
+  "stopped_at": "2026-10-05T10:05:58Z",
+  "worker": "/home/chao/saea-worktrees/codex-memory-observer-engineering-v2",
+  "commit": "1b87ab05fe79b31c0d1bcce47052a9de3c3b9ecb",
+  "attempt": {
+    "actual": {
+      "audio_seconds": 0.0,
+      "calls": 0
+    },
+    "attempt_id": "attempt-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "reserved": {
+      "audio_seconds": 1500.0,
+      "calls": 52
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-V1",
+    "schema": "saea-attempt-v1",
+    "state": "OPENED"
+  },
+  "fit_attempt_absent": true,
+  "generation_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "cause": "Root copied N20 seed baseline to a four-row proof but failed to reduce native_contact_fit.contact_cap from1040 to208. Registered FIT plan was208. Shared runtime gate refused before first tokenizer/model contact. Preflight did not enforce this runtime budget equality.",
+  "observer": {
+    "valid_samples": 8,
+    "all_valid": true,
+    "minimum_available_gib": 25.408729553222656,
+    "windows_pid": 31112
+  },
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/smoke-1-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-v1-20261005T100524Z/events.jsonl",
+      "sha256": "50b44f6ac979a9e2344059442d2789aebc1ececdf387cd64d2da1a784df7dbe6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/smoke-1-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-v1-20261005T100524Z/finished.json",
+      "sha256": "8c1d29bff570c9e6135c9090c290a95845ec235789868fa9759012015537e7d3"
+    },
+    {
+      "path": "/home/chao/batch-smoke-1-worker.log",
+      "sha256": "70fa4562368a33ae818e1b2b970fef1728272a520af599103e379eb86d46afa2"
+    },
+    {
+      "path": "/home/chao/batch-STOP",
+      "sha256": "1b2bf7d042afd1d2c60eeb21f27e41370244fdb59e5f1eeca676b80521a372bf"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "401a521c86469db58638a2a2dbee26af959d6c95eaa4a8b8532c5123f1255937"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/locks/flight.lock",
+      "sha256": "0ab6282b49a474a69ff84308ceb3b1cf8d0d5a563bc983b4c12097a5669f616c"
+    }
+  ],
+  "disposition": "Preserve all original frozen bytes,zero-contact OPENED attempt,STOP,lease and logs. Root227 authorizes exactly one new four-row engineering identity with unchanged seed policy/assets and corrected208 endpoint cap plus explicit model-free budget arithmetic check. Any further engineering failure stops; no silent replay. K8 scientific families stay held.",
+  "automation": "slurp-observer-proof-15m deleted after terminal and absent admitted driver/worker/scorer"
+}

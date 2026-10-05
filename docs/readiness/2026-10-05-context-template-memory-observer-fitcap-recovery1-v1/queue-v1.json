@@ -1,0 +1,26 @@
+[
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-v1",
+    "contacts_per_row": 4,
+    "expected_rows": 4,
+    "experiment": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-v1",
+    "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-generation-v1",
+    "kind": "engineering",
+    "notool": false,
+    "order": 1,
+    "owner": "chatgpt-root-owner227",
+    "process_floor_gib": 8,
+    "process_start_gib": 20,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-V1",
+    "short": "context-template-memory-observer-seed-fitcap-recovery1",
+    "smoke_attempt_id": "attempt-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-generation-v1",
+    "smoke_cell": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-v1",
+    "smoke_experiment": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-v1",
+    "smoke_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-V1"
+  }
+]

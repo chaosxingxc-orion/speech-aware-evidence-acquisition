@@ -1,0 +1,21 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-generation-v1",
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "experiment": "slurp-native-stage3-context-template-memory-observer-seed-smoke-4-fitcap-recovery1-v1",
+    "label": "seed",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-05-context-template-memory-observer-fitcap-recovery1-v1/generation-plan-registered-v1.json",
+      "sha256": "02b1c7928425ef1e47986dee8a3a9c58b2c850b31dafac5a9abbf648c851955b"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-V1/phase-supply-v1.json",
+      "sha256": "cf6126d451511320958dc938ae71bee03356544fb10794b50d86b993996ebdca"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-05-context-template-memory-observer-fitcap-recovery1-v1/analysis-recipe-v1.json",
+      "sha256": "df2636600c1de9e6b90aab4dd5cfca25d32f03efee1c086c332eab1b4cf51dd5"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-MEMORY-OBSERVER-SEED-SMOKE-4-FITCAP-RECOVERY1-V1"
+  }
+]
