@@ -1,5 +1,10 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Current prelaunch resource diagnosis
+
+[Read-only operational diagnosis](../receipts/continuation/2026-10-05-k16-update2-resource-diagnosis.json) confirms the original server reports is_sleeping=false, four24576-token slots and live HTTP health, while GPU memory has changed substantially. This does not prove a CUDA failure or native model unload; the cause remains unestablished. Linux file-cache availability is not Windows free memory and cannot substitute for the12.5GiB startup gate. All16 structural frozen checks are complete; no structural generation or control transition has occurred. Keep the resource hold, existing queue and immutable evidence. Do not flush caches, alter host settings, restart the service or add diagnostic model contacts. Preserve first-sample versus subsequent-sample timing when the registered structural run is eventually admitted. No GPU experiment heartbeat is active.
+
+
 ## Structural checks complete; prelaunch resource hold
 
 [Prelaunch resource evidence](../receipts/continuation/2026-10-05-k16-update2-prelaunch-resource-hold.json) supersedes the earlier running-preflight snapshot. All sixteen frozen structural checks passed; session66304 completed and must not be restarted. Structural generation has not launched. Windows free memory was5.858GiB and later7.46GiB, below8GiB running and12.5GiB startup floors. The idle server reports healthy HTTP and fresh telemetry but zero GPU memory; current GPU readiness needs revalidation and its cause is unestablished. Preserve controls and frozen sources; no cache flush, host-setting changes or automatic restart. No heartbeat is active while no experiment runs. After the next admitted launch create its own fifteen-minute script monitor, then delete it at verified termination.

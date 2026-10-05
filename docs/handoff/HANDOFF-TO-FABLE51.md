@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Current prelaunch resource diagnosis
+
+[Read-only operational diagnosis](../receipts/continuation/2026-10-05-k16-update2-resource-diagnosis.json) confirms the original server reports is_sleeping=false, four24576-token slots and live HTTP health, while GPU memory has changed substantially. This does not prove a CUDA failure or native model unload; the cause remains unestablished. Linux file-cache availability is not Windows free memory and cannot substitute for the12.5GiB startup gate. All16 structural frozen checks are complete; no structural generation or control transition has occurred. Keep the resource hold, existing queue and immutable evidence. Do not flush caches, alter host settings, restart the service or add diagnostic model contacts. Preserve first-sample versus subsequent-sample timing when the registered structural run is eventually admitted. No GPU experiment heartbeat is active.
+
+
 ## Exact-source future analysis preparation tested offline
 
 [Analysis environment engineering](../receipts/continuation/2026-10-05-k16-update2-analysis-environment-engineering.json) pins the future normal structural-to-scientific transition and prepare-analysis-environment-v1.py. Eight synthetic tests verify that only the exact root-signed READ row can be overlaid onto a fresh checkout of the registered scientific commit; unrelated ledger metadata/rows are never copied. The real missing-READ rehearsal returns HELD/75 before checkout creation or result access. This is not a real future analysis acceptance.

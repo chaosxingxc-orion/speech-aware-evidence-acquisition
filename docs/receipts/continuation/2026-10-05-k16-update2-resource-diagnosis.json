@@ -1,0 +1,70 @@
+{
+  "schema": "saea-prelaunch-resource-diagnosis-v1",
+  "at_utc": "2026-10-05T05:51:50.924711+00:00",
+  "parent_receipt": "docs/receipts/continuation/2026-10-05-k16-update2-prelaunch-resource-hold.json",
+  "service_metadata": {
+    "pid": 942,
+    "is_sleeping": false,
+    "total_slots": 4,
+    "slot_n_ctx": 24576,
+    "build_info": "b8-04ccc72a2"
+  },
+  "last_above_20000_mib": {
+    "at_utc": "2026-10-05T01:04:03.199072+00:00",
+    "gpu_memory_used_mib": 22976.0,
+    "server_ok": true,
+    "slots": {
+      "busy": 0,
+      "idle": 4,
+      "total": 4
+    }
+  },
+  "first_lower_sample_after_that": {
+    "at_utc": "2026-10-05T05:37:32.820766+00:00",
+    "gpu_memory_used_mib": 0.0,
+    "server_ok": true,
+    "slots": {
+      "busy": 0,
+      "idle": 4,
+      "total": 4
+    }
+  },
+  "last_positive_sample": {
+    "at_utc": "2026-10-05T05:40:45.931036+00:00",
+    "gpu_memory_used_mib": 76.0,
+    "server_ok": true,
+    "slots": {
+      "busy": 0,
+      "idle": 4,
+      "total": 4
+    }
+  },
+  "first_zero_sample_since": {
+    "at_utc": "2026-10-05T05:40:56.727272+00:00",
+    "gpu_memory_used_mib": 0.0,
+    "server_ok": true,
+    "slots": {
+      "busy": 0,
+      "idle": 4,
+      "total": 4
+    }
+  },
+  "consecutive_zero_samples": 59,
+  "wsl_meminfo_kib": {
+    "MemTotal": 45199480,
+    "MemFree": 5588252,
+    "MemAvailable": 42264244,
+    "Buffers": 1120600,
+    "Cached": 34171708,
+    "SwapTotal": 16777216,
+    "SwapFree": 16005516,
+    "AnonPages": 1674152,
+    "SReclaimable": 1981648
+  },
+  "interpretation": "The server does not report its native sleeping state. HTTP health, process survival and configured GPU offload do not prove current GPU execution readiness. Reclaimable Linux file cache is substantial; no large residual experiment process was found in the scoped process inspection. The cause of the changed GPU memory observation remains unknown.",
+  "disposition": "Keep the structural run unstarted until the existing Windows memory gate is satisfied. Preserve sources and controls. No cache flushing, host-setting investigation, process termination, service restart or extra model-contact diagnostic is authorized or performed by this diagnosis. The first registered structural requests, once admitted, must prove real execution; preserve first-sample latency separately.",
+  "new_generation_contacts": 0,
+  "new_tokenizer_contacts": 0,
+  "official_scorer_contacts": 0,
+  "automatic_monitor": "Absent because no experiment is running."
+}
