@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete editable templates bound to partitioned feedback
+
+[Template-binding preparation](../receipts/continuation/2026-10-05-complete-template-feedback-binding-prepared.json) reuses the shared projection and SystemSearchArchive. Bind every evaluated bundle to its full four-node role_text/context_layout/node_context; verify common fixed knowledge/base and parent closure, keep cumulative exposure private, and recheck all sources/policies after assembly.5 additional/224 related tests pass;134 statements/30 branches100% covered; engineering-base passes. The actual16 archived policy closures and common fixed base also pass without task-quality access.
+
+The root helper coordination/context-template-observe-boundary-n20-v1/project-complete-population-v1.py pins this implementation. Its default rehearsal returns HELD_UNREGISTERED_COMPLETE_SOURCE with zero writes/quality access. After complete b2 qualification/root READ/shared analysis, run prepare-source-registration-v1.py --materialize, then project-complete-population-v1.py --execute. Output is separate learner-view/private-custody under system-text-search/context-template-k16-v1/complete-update2-feedback-v1. It reserves no proposals or actor contacts. Register the subsequent multi-source actor/update protocol separately; never flatten8/4/4 historical groups into a simultaneous16-way reward normalization.
+
+Current b2 generation remains on frozen c7a01c05264adcd4b1fc7e3c91c611d3e891efa9/driver16:03:49Z,with no quality read. Keep15-minute monitoring until verified terminal,observe-only boundaries,other-carrier holds and human-before8x400. No global cache cleanup or restart.
+
+
 ## Measured business objectives retained in abstract feedback
 
 [Measured projection preparation](../receipts/continuation/2026-10-05-abstract-population-measured-objectives-prepared.json) closes the first/non-first latency export gap. The same shared measured_rows verifier qualifies every member including controls before native trace projection; candidate quality/calls/reliability and all/first/non-first latency are cross-checked against complete anonymous episodes. Export only allowlisted metrics per source cohort; do not pool sessions/frontiers, label non-first as warm, or assign causal node quality.11 additional/199 related tests pass;113 statements/22 branches100% covered; engineering-base passes. No real learner export, actor allocation or runtime change.
@@ -2468,7 +2477,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T16:29:52.163205+00:00
+Last refreshed: 2026-10-05T16:35:56.111437+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

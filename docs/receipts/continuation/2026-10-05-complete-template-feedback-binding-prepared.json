@@ -1,0 +1,50 @@
+{
+  "schema": "saea-complete-template-feedback-binding-prepared-v1",
+  "at_utc": "2026-10-05T16:35:56.111437+00:00",
+  "status": "PREPARED_COMPLETE_SOURCE_GATE_HELD",
+  "implementation": {
+    "relpath": "src/speech_aware_evidence_acquisition/analysis/abstract_population_projection.py",
+    "sha256": "5e1937f88081a90c05344043835968c973c9aecbf54acd3eba8a22d6d584e392"
+  },
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/project-complete-population-v1.py",
+    "sha256": "eeeedc1e1d79275bca5fb8b3ff5cddd72484d0b6296cd597e4421b105e530347"
+  },
+  "tests": {
+    "new": 5,
+    "related_passed": 224,
+    "statements": 134,
+    "branches": 30,
+    "statement_coverage": 1.0,
+    "branch_coverage": 1.0,
+    "engineering_base": "PASS"
+  },
+  "actual_policy_audit": {
+    "count": 16,
+    "parent_closures_valid": true,
+    "same_fixed_knowledge_and_base": true,
+    "quality_read": false
+  },
+  "negative_helper_rehearsal": {
+    "status": "HELD_UNREGISTERED_COMPLETE_SOURCE",
+    "writes": 0,
+    "quality_read": false,
+    "learner_exported": false
+  },
+  "exported_template_fields": [
+    "bundle_id",
+    "role_text",
+    "context_layout",
+    "node_context"
+  ],
+  "private_policy_fields": [
+    "parent_ids",
+    "cumulative_sources"
+  ],
+  "runtime_knowledge_or_experience_exported": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "proposal_slots_reserved": 0,
+  "runtime_admission": false,
+  "next": "Complete current family, exact root READ, prepare-source-registration-v1.py --materialize, then project-complete-population-v1.py --execute. Keep resulting learner/private files separate. A prospective actor/update protocol and reservation remain required."
+}

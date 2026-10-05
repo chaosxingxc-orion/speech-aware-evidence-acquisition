@@ -234,3 +234,101 @@ def test_last_family_measurement_failure_opens_no_native_trace(setup, monkeypatc
     with pytest.raises(PolicyError):
         run(setup)
     assert not any(x.startswith("trace:") for x in setup.calls)
+
+
+@pytest.fixture
+def with_archive(setup):
+    from test_system_text_policy import seed_document
+    from speech_aware_evidence_acquisition.rails.system_search_archive import SystemSearchArchive
+    from speech_aware_evidence_acquisition.rails.system_text_policy import SystemTextPolicyBundle
+    s = setup
+    s.archive = SystemSearchArchive(s.data / "archive")
+    for cohort in s.cfg["cohorts"]:
+        reg = s.joined["private_families"][cohort["cohort_id"]][2]
+        for cid in cohort["candidate_ids"]:
+            doc = seed_document()
+            doc.update(schema="saea-system-text-policy-bundle-v3",
+                       context_layout={"native_role_query_placement": None},
+                       node_context={"tool_schema_rendering": "constant", "reviewer_history_scope": "full"})
+            doc["role_text"]["perception"] = "Preserve observed speech evidence."
+            doc["role_text"]["solver"] = "Use evidence carefully under template " + cid + "."
+            doc["cumulative_sources"].append({"kind": "feedback", "sha256": "e"*64,
+                                              "sample_ids": ["slurp:train:PRIVATE_EXPOSURE"]})
+            policy = SystemTextPolicyBundle.from_json(doc)
+            s.archive.store_policy(policy)
+            reg["member_bindings"][cid]["bundle_id"] = policy.bundle_id
+    return s
+
+
+def template_run(s):
+    return subject.project_registered_population(
+        projection_pin=s.pin, repo_root=s.root, data_root=s.data, policy_archive=s.archive)
+
+
+def test_complete_templates_bind_exact_feedback_without_knowledge_or_exposure(with_archive):
+    s = with_archive
+    before = sorted(str(p) for p in s.archive.root.rglob("*"))
+    out = template_run(s)
+    for cohort in s.cfg["cohorts"]:
+        tag = cohort["cohort_id"]
+        templates = out["learner_view"]["templates"][tag]
+        assert list(templates) == cohort["candidate_ids"]
+        for summary in out["learner_view"]["population"]["cohorts"][tag]["templates"]:
+            cid = summary["candidate_id"]
+            entry = templates[cid]
+            assert entry["bundle_id"] == summary["bundle_id"]
+            assert set(entry) == {"bundle_id", "role_text", "context_layout", "node_context"}
+            assert set(entry["role_text"]) == {"perception", "solver", "reviewer", "planner"}
+            assert entry["role_text"]["solver"] == "Use evidence carefully under template " + cid + "."
+    exported = json.dumps(out["learner_view"])
+    for text in ("PRIVATE_EXPOSURE", "slurp:train:", "construction_instruction", "source_indices", "optimizer_experience"):
+        assert text not in exported
+    assert "PRIVATE_EXPOSURE" in json.dumps(out["private_custody"]["policy_provenance"])
+    assert sorted(str(p) for p in s.archive.root.rglob("*")) == before
+
+
+def test_missing_evaluated_policy_refuses_entire_template_view(with_archive):
+    s = with_archive
+    cohort = s.cfg["cohorts"][-1]
+    bundle = s.joined["private_families"][cohort["cohort_id"]][2]["member_bindings"][cohort["candidate_ids"][-1]]["bundle_id"]
+    (s.archive.root / "policies" / (bundle + ".json")).unlink()
+    with pytest.raises(FileNotFoundError):
+        template_run(s)
+
+
+def test_template_view_refuses_different_fixed_base(with_archive):
+    from speech_aware_evidence_acquisition.rails.system_text_policy import SystemTextPolicyBundle
+    s = with_archive; cohort = s.cfg["cohorts"][-1]
+    binding = s.joined["private_families"][cohort["cohort_id"]][2]["member_bindings"][cohort["candidate_ids"][-1]]
+    doc = s.archive.load_policy(binding["bundle_id"]).as_json()
+    doc["construction_instruction"] += " Changed construction."
+    replacement = SystemTextPolicyBundle.from_json(doc)
+    s.archive.store_policy(replacement); binding["bundle_id"] = replacement.bundle_id
+    with pytest.raises(PolicyError, match="fixed"):
+        template_run(s)
+
+
+def test_policy_mutation_during_binding_refuses_return(with_archive, monkeypatch):
+    s = with_archive; original = s.archive.load_policy
+    seen = []
+    def changed(bundle, **kwargs):
+        policy = original(bundle, **kwargs)
+        if not kwargs:
+            seen.append(bundle)
+            if len(seen) == sum(len(c["candidate_ids"]) for c in s.cfg["cohorts"]):
+                (s.archive.root / "policies" / (seen[0] + ".json")).write_text("{}")
+        return policy
+    monkeypatch.setattr(s.archive, "load_policy", changed)
+    with pytest.raises(PolicyError):
+        template_run(s)
+
+
+def test_source_change_during_template_binding_refuses_return(with_archive, monkeypatch):
+    s = with_archive; original = s.archive.load_policy
+    def changed(bundle, **kwargs):
+        policy = original(bundle, **kwargs)
+        (s.root / "projection.json").write_text("{}")
+        return policy
+    monkeypatch.setattr(s.archive, "load_policy", changed)
+    with pytest.raises(PolicyError):
+        template_run(s)

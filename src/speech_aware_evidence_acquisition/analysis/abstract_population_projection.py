@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import math
+from copy import deepcopy
 from pathlib import Path
 
 from .abstract_population_sources import read_registered_population_sources, _external, _reader
@@ -17,10 +18,10 @@ from .system_cache_cost import export_system_node_timing
 from ..rails import system_context_learning as learning
 from ..rails.experiment_population import load_population_config
 from ..rails.hashing import content_hash
-from ..rails.system_text_policy import _read_pin, require
+from ..rails.system_text_policy import _read_pin, require, NODE_BUNDLE_SCHEMA
 
 
-def project_registered_population(*, projection_pin, repo_root, data_root):
+def project_registered_population(*, projection_pin, repo_root, data_root, policy_archive=None):
     """Bind native outputs/costs to qualified official rewards, then erase contents.
 
     Qualify the complete source join before opening any native episode. Validate
@@ -177,10 +178,37 @@ def project_registered_population(*, projection_pin, repo_root, data_root):
                          "expected_family_id": recipe["family_id"], "expected_source_batch": tag,
                          "reference_f1": reference["f1"], "sample_order_sha256": roster_hash}
     population = abstract_partitioned_population_feedback(views, expected_partitions=contracts, population_config=config)
+    template_view, policy_provenance, loaded_policies = {}, [], {}
+    if policy_archive is not None:
+        fixed = ("seed_config_sha256", "construction_instruction", "supply", "knowledge", "construction_receipt")
+        fixed_hash = None
+        for cohort in config["cohorts"]:
+            tag = cohort["cohort_id"]
+            template_view[tag] = {}
+            for summary in population["cohorts"][tag]["templates"]:
+                cid, bundle_id = summary["candidate_id"], summary["bundle_id"]
+                policy = policy_archive.load_policy(bundle_id)
+                document = policy.as_json()
+                require(policy.bundle_id == bundle_id and document["schema"] == NODE_BUNDLE_SCHEMA,
+                        "exact complete evaluated node policy required")
+                current_fixed = content_hash({key: document[key] for key in fixed})
+                require(fixed_hash is None or fixed_hash == current_fixed,
+                        "all template sources must preserve the same fixed knowledge and base")
+                fixed_hash = current_fixed
+                loaded_policies[bundle_id] = document
+                template_view[tag][cid] = {"bundle_id": bundle_id,
+                    **{key: deepcopy(document[key]) for key in ("role_text", "context_layout", "node_context")}}
+                policy_provenance.append({"cohort_id": tag, "candidate_id": cid, "bundle_id": bundle_id,
+                    "parent_ids": document["parent_ids"], "cumulative_sources": document["cumulative_sources"]})
+        for bundle_id, document in loaded_policies.items():
+            require(policy_archive.load_policy(bundle_id).as_json() == document,
+                    "archived template changed during complete view assembly")
     recheck()
     return {"learner_view": {"schema": "saea-abstract-population-learning-view-v1",
                             "representation": FEEDBACK_SCHEMA, "population": population,
-                            "business_measurements": business},
+                            "business_measurements": business,
+                            **({"templates": template_view} if policy_archive is not None else {})},
             "private_custody": {"projection_registration": projection_pin,
-                                "source_join": request["source_join"], "sources": custody},
+                                "source_join": request["source_join"], "sources": custody,
+                                **({"policy_provenance": policy_provenance} if policy_archive is not None else {})},
             "learner_exported": False, "runtime_admission": False, "model_contacts": 0, "scorer_contacts": 0}
