@@ -1,0 +1,35 @@
+{
+  "schema": "saea-partitioned-context-evaluation-intent-v1",
+  "status": "PROSPECTIVE_RULES_NO_RUNTIME_ADMISSION",
+  "authority": 227,
+  "source_population": {
+    "relpath": "configs/experiments/slurp-context-template-update2-complete-source-join-v1.json",
+    "sha256": "3655493ee97dcb69dbb786e84b82e7c3e6ffb151e92f191a8f99c5c93f2106d4"
+  },
+  "trial_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "budget": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "family_trajectories": 440,
+    "generation_contacts_cap": 5720,
+    "fit_endpoints_cap": 22880
+  },
+  "source_input_sha256": "6ea92dad756a14c7e001dac6ef2503293e2ff8286721e4693ab5e19c49af3bd2",
+  "incumbent": "seed",
+  "automatic_expansion": false,
+  "runtime_admission": false,
+  "rules": [
+    "Preserve all configured proposal positions and all original response dispositions. A provisional child is not an adopted system.",
+    "Bind every admitted child to the exact original response, same candidate parent, cumulative source exposure and immutable compile receipt. Any invalid or no-change fallback needs an explicit root disposition before runtime; do not replace proposals or discard inconvenient slots.",
+    "Reuse the same immutable inputs, packets, queries, votes and current knowledge. Prepare fresh supply identities for this exact config; preserve deterministic sampling and the shared sequential executor.",
+    "Qualify actual-request capacity and four-row structural behavior for changed policies before scientific generation. Use one generating experiment and one official scorer. Create a15-minute script-only monitor at actual GPU launch and delete it at terminal completion.",
+    "Each configured cohort retains its own seed/A/A and fresh exact complete-family READ. No incomplete cohort or partial whole-population feedback reaches the learner. Do not replay or reseal old results.",
+    "Use strict increase in sum of frozen-reference terminal utility across every configured candidate/input as the TF optimization retention signal. Compare complete previous and successor populations only; never reinterpret this as causal node credit or a common scientific frontier.",
+    "Also report official aggregate F1, intent, completion, mean/first/non-first latency, all strata and within-cohort control uncertainty. Root may hold a utility-increasing batch for business/resource regression. Formal benefit requires existing measurement/replication rules, not this N20 retention signal.",
+    "Preserve separate cohort frontiers; no pooling of standardized relative returns. GEPA retains its separately registered selection and component-mutation baseline. No matched-total-compute or generalization claim.",
+    "Boundary maintenance observes resources only; no global cache clear or automatic WSL restart. Keep other-carrier holds and return to the human before8x400 or equivalent split work."
+  ]
+}
