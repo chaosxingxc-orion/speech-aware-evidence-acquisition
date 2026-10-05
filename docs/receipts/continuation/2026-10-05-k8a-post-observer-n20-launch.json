@@ -1,0 +1,57 @@
+{
+  "schema": "saea-k8a-post-observer-n20-launched-v1",
+  "at_utc": "2026-10-05T10:37:06.464892+00:00",
+  "driver_epoch": "2026-10-05T10:36:59Z",
+  "driver": {
+    "pid": 26402,
+    "parent_pid": 26401,
+    "start_ticks": "52421279",
+    "proc_stat": "26402 (bash) S 26401 26401 26401 34819 26401 4194304 1635 37711 0 89 1 0 36 12 20 0 1 0 52421279 5140480 864 18446744073709551615 103448748572672 103448749548333 140737255753536 0 0 0 2 4 65536 1 0 0 17 3 0 0 0 0 0 103448749771184 103448749819824 103448959725568 140737255759019 140737255759152 140737255759152 140737255759850 0\n",
+    "argv": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ]
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k8a-post-observer-n20-v1",
+  "commit": "62ae52eebef86d4efad0b3bd138d93c4b0833c1c",
+  "queue_sha256": "c09ce1953eee7592e70565fd09e5a1db413a2b0f9bd848dfeda06a2f75b413cd",
+  "members": 10,
+  "rows_per_member": 20,
+  "total_trajectories": 200,
+  "candidate_systems": 8,
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-POST-OBSERVER-READ-V1",
+  "read_countersigned": false,
+  "model_contacts_added_by_recorder": 0,
+  "memory_floors_gib": {
+    "running": 8,
+    "startup": 20
+  },
+  "scope": "Same original branches01-08 plus fresh unchanged seed/A/A. Actual full-request FIT and unique official whole-member scoring. No partial quality read, next proposal, automatic recovery or scale.",
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/frozen-check-v2.json",
+    "sha256": "bb697e938e85f39c1f29a0ad0b7f340626db06a17a4de1e67c6abbf5715c080e"
+  },
+  "precontact_check_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/precontact-check-order-disposition-v1.json",
+    "sha256": "55a32de122eace06a7ce90f97fa40441b6861ee7eed1998d96632d0cdddd95ce"
+  },
+  "transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/driver-transition-v1.json",
+    "sha256": "0e15a66c7db68a587e1f48d622c1b230ab538eee86ec0b107dccd282c7ded5ed"
+  },
+  "reader_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/reader-preparation-v2.json",
+    "sha256": "71b64ac4f81339a467e31072d2fe14710e3ae8829ace4bea70704ac3751526cc"
+  },
+  "operational_monitor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/operational-members-v1.py",
+    "sha256": "af41813b2ceddb40725534d8e2b82f15e5a7dfb052e05f857c89445b53e07e03"
+  },
+  "automation": {
+    "id": "slurp-k8a-post-observer-15m",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "delete_at_verified_terminal": true
+  },
+  "scientific_quality_read": false
+}
