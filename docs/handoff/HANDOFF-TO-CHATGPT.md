@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update-two64-row structural experiment launched; fifteen-minute monitor active
+
+[Exact launch receipt](../receipts/continuation/2026-10-05-k16-update2-structural-launch.json) binds Windows SAEA-Batch-Driver epoch2026-10-05T06:36:25Z,PID1070 to frozen ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c at codex-context-template-k16-update2-structural-v1. All16 original learned policies run4 engineering inputs each,64total,zero official scoring. Inspect every member in the exact queue. Startup stable-memory gate and registration passed; first attempt OPENED. New service epoch2026-10-05T06:32:57.058161Z has the original identity. Revalidate live progress; do not infer task completion from serving totals.
+
+Automation slurp-15 is ACTIVE every15minutes using scripts only,with terminal self-deletion; root also deletes it immediately on verified experiment termination. Intentional engineering OPENED attempts must never be scored,re-sealed or treated as scientific feedback. No benefit or actual structural acceptance follows merely from launch. The360-row successor scientific experiment remains unflown. Original completed queues and pre-restart evidence are preserved; memory floors remain8/12.5GiB.
+
+
 ## Owner-approved Ubuntu restart completed; original serving identity restored
 
 [Explicit approval and termination](../receipts/continuation/2026-10-05-owner-approved-wsl-restart.json) supersede the pending restart hold. Only Ubuntu-24.04 was terminated once; old cache syscall session93079 ended1 as an interrupted operation,not successful cache completion. Original service logs,receipts and controls were preserved. [Restoration verification](../receipts/continuation/2026-10-05-wsl-restart-service-restored.json) confirms the new serving epoch2026-10-05T06:32:57.058161Z,PID655,exact original binary/GGUF/argv identity,four24576-token slots,fresh healthy idle telemetry and22954MiB GPU residency. Windows free memory is stable at27.86-27.89GiB; retain8/12.5GiB floors. Generation.guard is available; no queue/STOP changes or generation yet. Frozen structural runtime check session78177 completed successfully with exit0 and verified prepared artifacts; never resubmit. Proceed with the already prepared exact completed-driver transition and64-row structural launch,then create a fresh15-minute script heartbeat.

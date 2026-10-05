@@ -1,0 +1,130 @@
+{
+  "schema": "saea-k16-update2-structural-launch-v1",
+  "at_utc": "2026-10-05T06:38:15.990778+00:00",
+  "windows_dispatch": {
+    "schema": "saea-windows-structural-dispatch-v1",
+    "at_utc": "2026-10-05T06:36:22.2492970Z",
+    "task": "SAEA-Batch-Driver",
+    "dispatch_count": 1,
+    "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+    "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c",
+    "members": 16,
+    "rows_per_member": 4,
+    "total_rows": 64,
+    "official_scores": 0,
+    "windows_free_gib": 28.013446807861328,
+    "serving_epoch": "2026-10-05T06:32:57.058161+00:00"
+  },
+  "driver_epoch": "2026-10-05T06:36:25Z",
+  "driver_pid": 1070,
+  "driver_proc_stat": "1070 (bash) S 1069 1069 1069 34819 1069 4194304 2847 1658250 0 1671 0 1 4638 809 20 0 1 0 51264026 5668864 960 18446744073709551615 98496340389888 98496341365549 140729421204288 0 0 0 2 4 65536 1 0 0 17 3 0 0 0 0 0 98496341588400 98496341637040 98497271685120 140729421208748 140729421208881 140729421208881 140729421209578 0\n",
+  "members": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-01-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-02-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-03-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-04-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-05-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-06-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-07-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-08-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-09-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-10-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-12-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-13-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-14-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-15-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-branch-16-smoke-4-generation-v1",
+      "rows": 4
+    }
+  ],
+  "engineering_only": true,
+  "rows_total": 64,
+  "official_scores": 0,
+  "frozen_source": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+  "serving_epoch": "2026-10-05T06:32:57.058161+00:00",
+  "post_restore_check": {
+    "schema": "saea-post-restore-frozen-check-v1",
+    "at_utc": "2026-10-05T06:36:03.702074+00:00",
+    "session": 78177,
+    "exit_code": 0,
+    "frozen_commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c",
+    "member": "slurp-native-stage3-context-template-k16-update2-branch-01-smoke-4-v1",
+    "prepared_artifacts_ok": true,
+    "scientific_readiness": "ready",
+    "generation_authorized_by_check": false,
+    "note": "Read-only admission check; actual-request FIT remains the separate runtime prerequisite. Preserve completed all-sixteen measured capacity evidence; do not equate heuristic token estimates with measured FIT.",
+    "generation_contacts": 0
+  },
+  "monitor": {
+    "id": "slurp-15",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "method": "Read-only operational scripts; no subagents",
+    "cancel_when": "Verified terminal state and no remaining admitted worker or scorer"
+  },
+  "acceptance": "All sixteen structural inspections must pass; worker-only OPENED lifecycle is intentional. Do not run official scoring, scientific-quality reads or reseals. No system benefit is claimed by launch."
+}
