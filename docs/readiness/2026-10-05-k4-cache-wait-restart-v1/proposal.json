@@ -1,0 +1,84 @@
+{
+  "schema": "saea-scoped-cache-wait-restart-readiness-v1",
+  "at_utc": "2026-10-05T15:25:33.628392+00:00",
+  "status": "PREPARED_ONLY_PENDING_HUMAN_APPROVAL",
+  "distribution": "Ubuntu-24.04",
+  "reason": "Second live cache syscall waits in kernel superblock handling beyond observation bound. Its userspace process and generation guard cannot be treated as safely cancelled. Earlier owner confirmation authorized one distribution termination and was consumed at06:32Z.",
+  "previous_one_shot_approval": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-05-owner-approved-wsl-restart.json",
+    "sha256": "39e6605437de3bda39f3ddf44b11565593cfbafe0bf54f61552ac644a7cc8a62"
+  },
+  "snapshot_files": [
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session.json",
+      "snapshot": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/pre-restart-readonly-snapshot/session.json",
+        "sha256": "927236af69ad298390aaaa101f9874c4178de9096601c34f1934e1836ffa78c0"
+      }
+    },
+    {
+      "source": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1/session-receipt.json",
+      "snapshot": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/pre-restart-readonly-snapshot/session-receipt.json",
+        "sha256": "7ebad202d127e83f379a3320625c25d624f4494c58874e3565f0afe6e8b9cc3f"
+      }
+    },
+    {
+      "source": "/home/chao/batch-queue.json",
+      "snapshot": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/pre-restart-readonly-snapshot/batch-queue.json",
+        "sha256": "7da96079a8d02062ad1f3c9ffdba1c3bc23c6887ec38fde28a6684e06670cca3"
+      }
+    },
+    {
+      "source": "/home/chao/batch-status.jsonl",
+      "snapshot": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/pre-restart-readonly-snapshot/batch-status.jsonl",
+        "sha256": "cb64037e3ecc47aa288da400944c70e4c17bb8d6fbc34b2da34ee7c07354b5b5"
+      }
+    },
+    {
+      "source": "/home/chao/batch-flight-repo.txt",
+      "snapshot": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/pre-restart-readonly-snapshot/batch-flight-repo.txt",
+        "sha256": "e22b510653665493741e3a79c11c070228eb26782c835c4a5872d45a6e9c3820"
+      }
+    },
+    {
+      "source": "/home/chao/batch-flight-commit.txt",
+      "snapshot": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/pre-restart-readonly-snapshot/batch-flight-commit.txt",
+        "sha256": "c700e7ead997abea0550b88162cdaeed3286730de3126b68b7baf09f56a78856"
+      }
+    }
+  ],
+  "blocked_process": {
+    "pid": 61283,
+    "start_ticks": 53995152,
+    "cmdline_sha256": "b316da838be44eca324633070caf287f8eb94a1dfdcfba0191cce2421f49ebae"
+  },
+  "current_boot_id": "4cea3fef-9018-4b09-a383-50fbb5705f49",
+  "active_generation_or_scorer": [],
+  "scope": [
+    "One termination of Ubuntu-24.04 only, no Windows reboot or host settings.",
+    "Preserve final serving/session/log/control evidence before termination; verify no unrelated coordinator work is active immediately before action.",
+    "Observe the existing serving/telemetry tasks reaching terminal, then one restore dispatch per original Windows task SAEA-Serving and SAEA-Monitor.",
+    "Restore exact pinned binary/GGUF and four24576 decoder-only geometry; verify new service identity, stable20GiB startup memory and8GiB running floor, current telemetry and guard release.",
+    "Classify the old cache operation as interrupted by approved termination, never as normal success; retain before-only receipt. No re-generation/re-scoring of b1.",
+    "Use a prospective root disposition for unchanged b2 admission after restored-service checks; do not fabricate a cache-after receipt to satisfy the old helper."
+  ],
+  "not_authorized_yet": [
+    "distribution termination",
+    "task restart",
+    "next GPU launch"
+  ],
+  "cache_policy_note": "Do not repeat global drop_caches on this boot or automatically after the next cohort. Prepare an owned-file cache reclamation mechanism with bounded measurement and separate source preservation before using it; preserve the owner intent of reducing file-cache residency without assuming every global syscall will finish.",
+  "data_readiness": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/restart-readiness-v1.json",
+    "sha256": "dadb59baf5d61cb3e57c2aa59642ed7aa848e0f3f6332a2fd2ab70307f66413d"
+  },
+  "windows_task_snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/configured-k4-cache-wait-restart-v1/windows-task-snapshot-v1.json",
+    "sha256": "e0b11cc66edbf9dd1fcd0501ea7db6a2256188dde465b1e920466f7b45ce69cb"
+  }
+}

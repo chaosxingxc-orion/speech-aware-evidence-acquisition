@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## One-distribution recovery prepared; explicit owner reply pending
+
+The pending global file-cache syscall has not returned. Root prepared [the exact recovery proposal](../readiness/2026-10-05-k4-cache-wait-restart-v1/proposal.json), preserved six session/control snapshots and read-only Windows task actions/restart policies. The earlier direct WSL restart approval explicitly allowed one termination and was consumed at06:32Z; do not reuse it. The human has now been asked for one Ubuntu-24.04-only termination/restoration. No answer has arrived at this stamp. Do not act on elapsed time or this prepared package.
+
+If explicitly approved, first revalidate current PID/start and absence of other coordinator work, preserve final serving/log evidence, then terminate only that distribution once. Observe old tasks terminal, restore original SAEA-Serving/SAEA-Monitor once each, verify binary/GGUF/geometry/new epoch and original20/8GiB floors, preserve interrupted cache evidence, and register a new explicit b2 disposition rather than fabricate cache completion. Never replay b1. No Windows reboot/settings. Do not invoke global drop_caches again automatically; prepare and validate bounded owned-file reclamation to honor the cache-memory intent. Continue source-join preparation while the ruling is pending; no model/scorer contacts.
+
 ## Multi-cohort source gate tested; cache maintenance remains HELD
 
 [Source-join preparation](../receipts/continuation/2026-10-05-abstract-source-join-prepared.json) reuses existing readers to require all configured scopes/READs/attempts before any seal qualification, then every complete seal/unique score before quality reads.24 new and96 related tests pass;73 statements/14 branches100% covered; engineering-base passes. Rechecks refuse changed source/config/authority/metadata. This returns private evidence only. Actual K8A/K4/K4 join, abstract projection and next actor/trial registration remain unexecuted until b2 completes. No new allocation, model contact or partial learner export. Existing pinned analysis implementation files remain unchanged.
@@ -2418,7 +2424,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T15:21:00.574615Z
+Last refreshed: 2026-10-05T15:26:42.700718Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
