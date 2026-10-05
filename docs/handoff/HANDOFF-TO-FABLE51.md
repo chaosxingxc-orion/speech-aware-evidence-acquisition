@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K8B observer diagnostics prepared; no recovery dispatch
+
+[Diagnostic evidence](../receipts/continuation/2026-10-05-k8b-observer-diagnostics-prepared.json) and [bounded probe](../readiness/2026-10-05-k8b-observer-diagnostics-v1/README.md):94 tests pass, observer95% and guard93% branch-aware coverage. Add numeric failure classification while retaining all freshness, process identity, stop and memory constraints. No reconnect/retry/fallback. A150-read idle reproduction passed; cross-clock offsets varied, but the original ValueError cause remains unestablished. Prepare a180-read/5-second probe using its exact pinned config; verify the new live handle/started receipt before waiting. This CPU-only diagnosis adds no model/scorer contacts, does not reactivate GPU monitoring and grants no recovery dispatch. Preserve the stopped B family and its unsigned READ.
+
 ## Configuration-driven continuation; K8B stopped on observer failure
 
 The [owner configuration directive](../receipts/owner/2026-10-05-configured-experiment-lifecycle.json) requires one pinned file throughout new experiments. [The implementation and stage contract](../readiness/2026-10-05-configured-population-lifecycle-v1/README.md) replace prospective hardcoded population sizing with explicit cohort/candidate/control/sample lists. The same pin reaches authoring, policy compilation, protocol/registration/recipe, runtime prelaunch and generation/FIT plans, archived optimizer input, reservations, updates, trial qualification and reports. Prepared config is two original K8 cohorts on the same20 inputs, with separate controls; 400 total trajectories are derived, not newly admitted. Preserve source cohorts. Configuration grants no contact, READ, recovery or scale authority. Historical exact readers remain compatibility-only; never retrofit frozen bytes.

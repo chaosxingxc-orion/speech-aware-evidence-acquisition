@@ -58,6 +58,7 @@ class WindowsMemoryObserver:
         self._closed = threading.Event()
         self._process = None
         self._failure = None
+        self._diagnostics = {}
         self._sequence = 0
         self._observer_pid = None
 
@@ -136,10 +137,12 @@ class WindowsMemoryObserver:
                     raise OSError('observer EOF')
                 response.extend(chunk)
                 if len(response) > 4096:
+                    self._diagnostics['failure_code'] = 'oversized-response'
                     raise ValueError('oversized observer response')
                 if b'\n' in response:
                     line, extra = response.split(b'\n', 1)
                     if extra or pending:
+                        self._diagnostics['failure_code'] = 'unsolicited-response'
                         raise ValueError('unsolicited observer response')
                     return json.loads(line)
 
@@ -147,14 +150,27 @@ class WindowsMemoryObserver:
         with self._request:
             if self._closed.is_set() or self._failure:
                 return {'host_free_gb': None,
-                        'host_memory_error': self._failure or 'closed'}
+                        'host_memory_error': self._failure or 'closed',
+                        'host_memory_diagnostics': dict(self._diagnostics)}
             started, wall_start = time.monotonic(), time.time()
+            self._diagnostics = {'wall_start': wall_start}
             try:
                 process = self._start()
                 self._sequence += 1
                 request = {'nonce': secrets.token_hex(16), 'sequence': self._sequence}
                 value = self._exchange(process, request, started+self._timeout)
                 finished = time.time()
+                self._diagnostics.update(wall_end=finished,
+                    roundtrip_seconds=time.monotonic()-started,
+                    expected_sequence=self._sequence)
+                # Record bounded numeric metadata only. Never persist raw JSON,
+                # nonce contents or exception text from the transport.
+                if isinstance(value, dict):
+                    self._diagnostics.update({k: value[k] for k in
+                        ('sequence', 'available_bytes', 'total_bytes', 'observer_pid')
+                        if _number(value.get(k))})
+                    if _number(value.get('sampled_at')):
+                        self._diagnostics['windows_sampled_at'] = value['sampled_at']/1000
                 if not isinstance(value, dict) or any((
                     value.get('nonce') != request['nonce'],
                     type(value.get('sequence')) is not int,
@@ -163,17 +179,22 @@ class WindowsMemoryObserver:
                             ('sampled_at','available_bytes','total_bytes')),
                     type(value.get('observer_pid')) is not int,
                 )):
+                    self._diagnostics['failure_code'] = 'response-identity-or-type'
                     raise ValueError('invalid observer response')
                 sampled = value['sampled_at']/1000
-                if not (
-                    wall_start-1 <= sampled <= finished+1
-                    and -1 <= finished-sampled <= 1
-                    and time.monotonic()-started <= self._timeout
-                    and 0 <= value['available_bytes'] <= value['total_bytes']
-                    and value['total_bytes'] > 0 and value['observer_pid'] > 0
-                    and self._observer_pid in (None, value['observer_pid'])
-                ):
-                    raise ValueError('stale or inconsistent observer response')
+                checks = (
+                    ('cross-clock-freshness', wall_start-1 <= sampled <= finished+1
+                     and -1 <= finished-sampled <= 1),
+                    ('roundtrip-deadline', time.monotonic()-started <= self._timeout),
+                    ('physical-memory-range', 0 <= value['available_bytes'] <= value['total_bytes']
+                     and value['total_bytes'] > 0),
+                    ('observer-process-identity', value['observer_pid'] > 0
+                     and self._observer_pid in (None, value['observer_pid'])),
+                )
+                for code, valid in checks:
+                    if not valid:
+                        self._diagnostics['failure_code'] = code
+                        raise ValueError('stale or inconsistent observer response')
                 self._observer_pid = value['observer_pid']
                 return {'host_free_gb': value['available_bytes']/1024**3,
                         'host_total_gb': value['total_bytes']/1024**3,
@@ -183,4 +204,9 @@ class WindowsMemoryObserver:
                         'transport': 'persistent-windows-physical-memory-v1'}
             except (OSError, ValueError, TypeError) as error:
                 self._failure = 'timeout' if isinstance(error, TimeoutError) else type(error).__name__
-                return {'host_free_gb': None, 'host_memory_error': self._failure}
+                self._diagnostics.setdefault('failure_code', 'invalid-json' if isinstance(error, json.JSONDecodeError)
+                                             else 'transport-'+self._failure)
+                self._diagnostics.setdefault('roundtrip_seconds', time.monotonic()-started)
+                self._diagnostics.setdefault('wall_end', time.time())
+                return {'host_free_gb': None, 'host_memory_error': self._failure,
+                        'host_memory_diagnostics': dict(self._diagnostics)}

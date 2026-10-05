@@ -1,0 +1,6 @@
+{
+  "schema": "saea-memory-observer-probe-v1",
+  "sample_count": 180,
+  "interval_seconds": 5.0,
+  "timeout_seconds": 8.0
+}

@@ -134,3 +134,36 @@ def test_default_guard_owns_observer_on_success_and_refusal(tmp_path, monkeypatc
                               guard.MemoryPolicy(20,8, .01))
         assert r.status == ('completed' if reading==20 else 'start-refused')
         assert calls == ['closed']
+
+
+@pytest.mark.parametrize('change,code', [
+    ("value['nonce']='PRIVATE_NONCE'", 'response-identity-or-type'),
+    ("value['sampled_at']-=20000", 'cross-clock-freshness'),
+    ("value['available_bytes']=-1", 'physical-memory-range'),
+    ("value['observer_pid']=0", 'observer-process-identity'),
+    ("print('PRIVATE_BROKEN_JSON',flush=True);sys.exit(0)", 'invalid-json'),
+])
+def test_failures_preserve_bounded_diagnostics_without_raw_response(change, code):
+    observer, children = fixture_observer(change)
+    with observer:
+        value = observer()
+        assert value['host_free_gb'] is None
+        diagnostic = value['host_memory_diagnostics']
+        assert diagnostic['failure_code'] == code
+        assert diagnostic['roundtrip_seconds'] >= 0
+        assert 'PRIVATE' not in json.dumps(value)
+        assert observer()['host_memory_diagnostics'] == diagnostic
+    assert children[0].poll() is not None
+
+
+def test_guard_receipt_keeps_clock_diagnostics(tmp_path, monkeypatch):
+    from speech_aware_evidence_acquisition.core.flight import process_guard as guard
+    observer, _ = fixture_observer("value['sampled_at']-=20000 if q['sequence']>1 else 0")
+    monkeypatch.setattr(guard, 'WindowsMemoryObserver', lambda: observer)
+    result = guard.run_guarded([sys.executable,'-B','-c','import time;time.sleep(20)'],
+                              tmp_path/'guard',guard.MemoryPolicy(20,8,.01,1,.01))
+    assert result.status == 'resource-stop'
+    events = [json.loads(x) for x in (tmp_path/'guard/events.jsonl').read_text().splitlines()]
+    failed = next(e for e in events if e.get('reason') == 'windows-reading-unavailable')
+    assert failed['reader_diagnostics']['failure_code'] == 'cross-clock-freshness'
+    assert failed['reader_diagnostics']['windows_sampled_at'] < failed['reader_diagnostics']['wall_start']-10

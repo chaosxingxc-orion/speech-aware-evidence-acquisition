@@ -1,0 +1,62 @@
+{
+  "schema": "saea-k8b-observer-diagnostic-preparation-v1",
+  "recorded_at": "2026-10-05T13:09:08.341177+00:00",
+  "root_disposition": "Under owner227, diagnose the stopped campaign with bounded read-only physical-memory observations and improve failure classification. No failed-attempt recovery or GPU dispatch is admitted by this receipt.",
+  "historical_cause": "ValueError detail unavailable; the original cause remains unestablished.",
+  "reproduction": {
+    "samples": 150,
+    "failed": false,
+    "minimum_windows_free_gib": 27.757083892822266,
+    "minimum_cross_clock_offset_seconds": -0.6903016567230225,
+    "maximum_cross_clock_offset_seconds": 0.5172650814056396,
+    "interpretation": "Cross-clock offsets vary; this passing idle probe does not prove the old failure cause or resource stability under generation."
+  },
+  "validation": {
+    "tests_passed": 94,
+    "coverage": {
+      "src/speech_aware_evidence_acquisition/core/flight/process_guard.py": {
+        "covered_lines": 189,
+        "num_statements": 200,
+        "percent_covered": 92.91044776119404,
+        "percent_covered_display": "93",
+        "missing_lines": 11,
+        "excluded_lines": 0,
+        "percent_statements_covered": 94.5,
+        "percent_statements_covered_display": "94",
+        "num_branches": 68,
+        "num_partial_branches": 6,
+        "covered_branches": 60,
+        "missing_branches": 8,
+        "percent_branches_covered": 88.23529411764706,
+        "percent_branches_covered_display": "88"
+      },
+      "src/speech_aware_evidence_acquisition/core/session/windows_memory.py": {
+        "covered_lines": 122,
+        "num_statements": 128,
+        "percent_covered": 95.29411764705883,
+        "percent_covered_display": "95",
+        "missing_lines": 6,
+        "excluded_lines": 0,
+        "percent_statements_covered": 95.3125,
+        "percent_statements_covered_display": "95",
+        "num_branches": 42,
+        "num_partial_branches": 2,
+        "covered_branches": 40,
+        "missing_branches": 2,
+        "percent_branches_covered": 95.23809523809524,
+        "percent_branches_covered_display": "95"
+      }
+    }
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "guard_semantics_changed": false,
+  "memory_floor_changed": false,
+  "retry_or_reconnect_added": false,
+  "sources": {
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8b-memory-observer-diagnostics-validation-v1/tests.log": "a31a61218ebefb6a42959cf37a4110369dc7cef57514dbbaaa6b29a20406d983",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8b-memory-observer-diagnostics-validation-v1/coverage.json": "5abd1a0be747f062d424fc53d786b355c213f8cac5358332048550514ff5a0e6",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8b-memory-observer-diagnosis-v1/samples.jsonl": "06abfc87089969a03dfbb88984a8d752a196e67dacc0d93044960868d71021f0",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/k8b-memory-observer-diagnosis-v1/result.json": "df2960a578ce5ce261fccb6a3cd39c1563706407fb8aa8670efe54e8a4274f4e"
+  }
+}
