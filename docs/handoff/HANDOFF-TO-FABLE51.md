@@ -1,5 +1,12 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Traced remaining capacity continuation is running
+
+[Actual Windows launch](../receipts/continuation/2026-10-05-partitioned-update3-traced-capacity-launch.json): SAEA-Partitioned-Update3-Capacity-Traced2-Owner227, epoch2026-10-05T19:08:38.828939Z, launcher27231 (revalidate identity), frozen model worker b691e86222adb55b77a0af97663d493b21efc2a9. Read coordination/partitioned-update3-capacity-observer-traced-continuation2 operational receipts, not earlier terminal capacity tasks or the old generation queue. The first two startup samples are fresh and about24.9GiB; no timeout has recurred at this checkpoint. Do not infer completed capacity from this launch.
+
+Job-scoped slurp-update3-traced-capacity-15m is ACTIVE. At verified terminal, confirm no live admitted child/lease then delete it. No automatic retry, lock/STOP reconciliation, cache write, source edit or WSL restart. Only nine original unused FITs are admitted; structural/scientific generation remains held. Preserve the first seven successes and both failed precontact epochs, with their exact independent evidence. The source join must explicitly handle these epochs before structural registration. No stable business benefit or learning gain is established.
+
+
 ## Second precontact observation failure preserved; traced startup proof complete
 
 The continuation1 capacity task exited1 at2026-10-05T18:54:31Z before its first lease, tokenizer, generation or scorer contact. Its first fresh Windows observation timed out at8seconds with no response. Preserve coordination/partitioned-update3-capacity-precontact-continuation1 and all original evidence. Seven original capacity members remain successful; the remaining nine identities are unused. This is not evidence of an occupied lock, OOM or a memory-floor violation. No GPU monitor was bound to continuation1 because it was already terminal at first verification; the original capacity monitor was deleted.

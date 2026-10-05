@@ -1,0 +1,27 @@
+{
+  "schema": "saea-traced-capacity-actual-launch-v1",
+  "at_utc": "2026-10-05T19:09:38.747785+00:00",
+  "windows_task": "SAEA-Partitioned-Update3-Capacity-Traced2-Owner227",
+  "actual_epoch": "2026-10-05T19:08:38.828939+00:00",
+  "launcher_pid": 27231,
+  "launcher_start_ticks": "55467944",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/registration-v1.json",
+    "sha256": "6b5cfab1fcb68d0bbc4e13bfd8ea5116c398fc737a294a2320a53781af075d95"
+  },
+  "disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/root-capacity-admission-v1.json",
+    "sha256": "02114e0147ed41d484d11088d21c32097c570af35591d190b27a404001baabcd"
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/live-prelaunch-v1.json",
+    "sha256": "13497585f873db9dcb330d165ba2d0d772c1a905e3e13515e818fd11dfb4bf39"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update3-capacity-v1",
+  "worker_commit": "b691e86222adb55b77a0af97663d493b21efc2a9",
+  "monitor_id": "slurp-update3-traced-capacity-15m",
+  "monitor_cadence_minutes": 15,
+  "scope": "Nine original unused capacity identities only; 2673 tokenizer endpoints cap; no new generation/scoring. Seven original successes preserved.",
+  "underlying_timeout_cause": "Unestablished. Proven phase tracing localizes any recurrence; no automatic retry or resource-policy weakening.",
+  "worker_restart_or_cache_write": false
+}
