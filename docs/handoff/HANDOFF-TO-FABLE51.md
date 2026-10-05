@@ -1,5 +1,9 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## K8A frozen checks in progress
+
+[Exact frozen entry](../receipts/continuation/2026-10-05-k8a-frozen-check-started.json) binds clean codex-context-template-k8a-update2-n20-v1 at82c2f4603cdb959f616b4a5fdad15949b803b7be. Existing session90795 runs ten checks with durable start/stdout/stderr/exit in coordination/context-template-k8a-update2-n20-owner227-v1. Do not duplicate. Source registration is serially integrated;263 relevant tests and engineering-base/freshness passed. Original failed K16 STOP,queue,lease and all outputs remain preserved. No GPU experiment or monitor is live. After all ten pass, record exact incident control disposition and fresh20/8GiB service/resource checks before Windows dispatch. K8B remains prospective and held.
+
 ## Direct owner K8 split: first panel prepared, no GPU dispatch yet
 
 [Owner amendment](../receipts/owner/2026-10-05-template-k8-partition.json) prospectively splits the original sixteen learned templates into K8A branches01-08 and K8B branches09-16. Each has its own seed/A/A and same20 inputs:200 trajectories per panel,400 total. Preserve all original policy bytes; do not adapt panelB from panelA outcomes. These are two evaluation panels of one joint proposal population, not independent searches. No cross-panel pooled frontier or old K16 retention/learner export.

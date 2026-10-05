@@ -1,0 +1,14 @@
+{
+  "schema": "saea-k8a-frozen-check-started-v1",
+  "at_utc": "2026-10-05T09:24:00.976135+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k8a-update2-n20-v1",
+  "commit": "82c2f4603cdb959f616b4a5fdad15949b803b7be",
+  "check_session": 90795,
+  "started": {
+    "at_utc": "2026-10-05T09:22:41.940670+00:00",
+    "pid": 17435
+  },
+  "script_sha256": "fffb9e64490faf8ab55afa88e2a07fae097435e4556761424ecb8bd09a221cd0",
+  "members": 10,
+  "scope": "All ten exact registration/runtime/policy/supply/decoding checks; no GPU/model/scorer contact. Inspect durable exit and result; never repeat a live check. Original STOP and lease remain untouched."
+}
