@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete-population abstract projection integrated offline
+
+[Projection preparation](../receipts/continuation/2026-10-05-abstract-population-projection-prepared.json) and [interface contract](../readiness/2026-10-05-abstract-population-projection-v1/README.md): the shared-source adapter now connects complete-family qualification to source-verified native node outputs/timing and official terminal rewards, then to anonymous partitioned feedback.19 new/159 related tests pass;96 statements and20 branches100% covered; engineering-base passes. Keep full policy text binding separate, private custody outside learner inputs, and every original source cohort present. No raw task/knowledge text or per-sample semantic summary call is exported. No actual projection, actor allocation, learning update or model/scorer contact occurred.
+
+The prior turn made concrete progress with the observation-only boundary configuration; this turn implemented the missing feedback adapter. The same cache helper PID61283/start53995152 is still live in D and actual generation.guard acquisition is still refused. Do not confuse service health with dispatch availability. Remaining-b2 stays unadmitted/incomplete; no partial source export or GPU retry. No restart/cache-write/lock bypass was performed. Keep the latest owner direction to prioritize learning and avoid routine global cache cleanup.
+
 ## Owner prioritizes learning; retire prospective global cache cleanup
 
 The latest direct owner message asks whether root privileges help and prioritizes learning without repeated WSL restarts. [Current verification and prospective change](../receipts/continuation/2026-10-05-observe-only-boundary-prepared.json): the cache helper already runs as root, remains in an uninterruptible kernel wait, and still owns generation.guard; a real nonblocking acquisition was refused. The model is healthy and idle; Windows available memory was42.231GiB at15:33:27Z. This is a maintenance-lock obstruction, not demonstrated memory exhaustion or an inference-service failure. No restart is authorized by this new message; the earlier restart proposal has not been approved. Do not request the same approval repeatedly or infer consent.

@@ -1,0 +1,30 @@
+{
+  "schema": "saea-model-free-preparation-v1",
+  "at_utc": "2026-10-05T15:45:38.169341+00:00",
+  "status": "PREPARED_NOT_EXPORTED",
+  "implementation": "analysis.abstract_population_projection.project_registered_population",
+  "validation": {
+    "new_tests": 19,
+    "related_tests_passed": 159,
+    "statements_covered": 96,
+    "statements_total": 96,
+    "branches_covered": 20,
+    "branches_total": 20,
+    "engineering_base": "PASS"
+  },
+  "source_custody": "All configured source families qualify before trace projection; private custody is returned separately from the anonymous learner view. No actual population export or policy update has occurred.",
+  "runtime": {
+    "cache_pid": 61283,
+    "start_ticks": 53995152,
+    "process_state": "D",
+    "generation_guard_available": false,
+    "restart": false,
+    "cache_write": false
+  },
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "semantic_summary": 0
+  },
+  "goal_turn_classification": "Progress: implemented and tested the complete-source-to-abstract-feedback adapter; additionally revalidated the specific live cache process. Previous turn progressed with the observation-only configuration."
+}
