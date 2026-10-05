@@ -1,0 +1,51 @@
+{
+  "actual_request_fit_receipts": 22,
+  "at_utc": "2026-10-05T14:04:57.668479+00:00",
+  "cache_reclamation": false,
+  "commit": "e9f93eab85ca3f1d9c69885fa11dbbc71818617d",
+  "driver_done": "2026-10-05T13:57:29Z",
+  "driver_epoch": "2026-10-05T13:55:42Z",
+  "guard_acceptance": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-causal-observer-engineering-v1/guard-acceptance-v1.json",
+    "sha256": "c3afcb2fe7f5c2c5bda066ea3e3f4f9f7f9c8210de4cca5bb6569471b2d22ca2"
+  },
+  "guard_summary": {
+    "at_utc": "2026-10-05T14:04:57.668479+00:00",
+    "errors": 0,
+    "events": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/smoke-1-slurp-native-stage3-context-template-causal-observer-smoke-v1-20261005T135610Z/events.jsonl",
+      "sha256": "a4249f26cdc799ee92168ee7d09832f602fdec450e46f2eb5f7ece250b5eef68"
+    },
+    "finished": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/smoke-1-slurp-native-stage3-context-template-causal-observer-smoke-v1-20261005T135610Z/finished.json",
+      "sha256": "d9a3ffe269e61bed0cc2d0956a20518b3853d5029e086f7c879d2d88ed8545a1"
+    },
+    "freshness": "request-causal-monotonic-v1",
+    "historical_failure_cause": "unestablished",
+    "maximum_round_trip_seconds": 0.30705053196288645,
+    "minimum_windows_available_gib": 23.65939712524414,
+    "observer_pid": 2792,
+    "observer_process_absent_at_root_windows_check": true,
+    "passed": true,
+    "samples": 14,
+    "schema": "saea-causal-observer-live-acceptance-v1",
+    "sequence_complete": true
+  },
+  "lifecycle": "Intentional OPENED engineering attempt with COMPLETED generation; never score, reseal or restart.",
+  "model_contacts": 22,
+  "monitor": "slurp-causal-observer-15m deleted after verified terminal exit.",
+  "next": "Root may register remaining-b1 only, freeze/check before separate live transition; b2 remains DRAFT.",
+  "official_scores": 0,
+  "omni_deliveries": 4,
+  "quality_read": false,
+  "reviewer_handoffs_valid_visible": 6,
+  "rows": 4,
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-CAUSAL-OBSERVER-SMOKE-V1",
+  "schema": "saea-causal-observer-engineering-complete-v1",
+  "structural_acceptance": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-causal-observer-engineering-v1/structural-acceptance-v1.json",
+    "sha256": "f8dc804c0f1454f161aec1c1b852777d06f3b2a61130a3542feb2dd17836b9e1"
+  },
+  "tokenizer_endpoints": 88,
+  "worker": "/home/chao/saea-worktrees/codex-context-template-causal-observer-engineering-v2"
+}

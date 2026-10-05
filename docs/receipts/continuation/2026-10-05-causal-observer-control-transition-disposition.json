@@ -1,0 +1,24 @@
+{
+  "at_utc": "2026-10-05T14:04:57.668479+00:00",
+  "authority": "owner227",
+  "cause": "Cross-filesystem rename returned EXDEV after old controls were archived, before new queue/pins were installed. Root incorrectly issued a dependent task start without checking transition exit.",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-causal-observer-engineering-v1/partial-transition-disposition-v1.json",
+      "sha256": "4106e9917b50dd83d8ae5696ff9087e03229884b0516269ec8e3fd6ed9693a34"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-causal-observer-engineering-v1/transition-complete-v1.json",
+      "sha256": "ce0a9015fed4958d793a06a1216bb893c5212b9f6837a9ceb6d5270311121237"
+    }
+  ],
+  "old_archive": "/home/chao/batch-archive-20261005-k8b-to-causal-observer",
+  "old_outputs_immutable": true,
+  "outcome": "Entry refused absent worker pin/queue before driver-start or new attempt. No model/scorer contacts; old failed worker was not resumed.",
+  "premature_archive": "/home/chao/batch-archive-20261005-causal-observer-partial-transition-precontact",
+  "premature_epoch": "2026-10-05T13:53:44Z",
+  "prevention": "Check dependent mutation exit and completed receipt before a separate launch call.",
+  "repair": "Preserve premature STOP/status/logs and original failed transition. Verify all old hashes, dead workers, exact new frozen check and live gates. Move exact stale lease within its original filesystem, install and verify all controls, then issue a separate task start.",
+  "schema": "saea-root-control-transition-disposition-v1",
+  "successful_epoch": "2026-10-05T13:55:42Z"
+}

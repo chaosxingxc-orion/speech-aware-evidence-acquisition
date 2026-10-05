@@ -1,6 +1,10 @@
 {
   "cell": "slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-12-v1",
   "composed_config_hash": "639828f78bd8b948735e7d6b31829bf060fd0e0e0ba0833fe38a7ef533d83b9d",
+  "decision_receipt": {
+    "relpath": "coordination/context-template-configured-k4-recovery1-v1/remaining-b1-root-admission-v1.json",
+    "sha256": "20dff1f2465831881e5def24b98523f5ba54b783164b2be5a85d3369055f8082"
+  },
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-context-template-k4-recovery1-n20-remaining-b1-branch-12-generation-v1",
     "carrier_lock_key": "slurp",
@@ -54,5 +58,5 @@
   },
   "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1",
   "schema": "saea-registered-generation-plan-v1",
-  "status": "DRAFT; zero contacts; root admission pending structural proof"
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227; exact frozen and live gates required"
 }

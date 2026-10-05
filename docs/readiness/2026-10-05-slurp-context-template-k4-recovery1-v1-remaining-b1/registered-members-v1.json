@@ -25,7 +25,7 @@
       "sha256": "d0218802562fa1aa5762a234edc9725c5cfe0fda3cb2cdb79f66c2946b6c5066"
     },
     "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-SEED-V1",
-    "status": "PREPARED_DRAFT",
+    "status": "ROOT_REGISTERED_FROZEN_CHECKS_PENDING",
     "unchanged_selection": true
   },
   {
@@ -54,7 +54,7 @@
       "sha256": "1a7510f8b9a0b4a04a0a77ae5c1fba43a9db6297a57ed0163273037ba494545b"
     },
     "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-SEED-AA-V1",
-    "status": "PREPARED_DRAFT",
+    "status": "ROOT_REGISTERED_FROZEN_CHECKS_PENDING",
     "unchanged_selection": true
   },
   {
@@ -83,7 +83,7 @@
       "sha256": "d6d9a7e2951604729daff2711275f10531184e0449eac715b506d14e69a1fb19"
     },
     "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-09-V1",
-    "status": "PREPARED_DRAFT",
+    "status": "ROOT_REGISTERED_FROZEN_CHECKS_PENDING",
     "unchanged_selection": true
   },
   {
@@ -112,7 +112,7 @@
       "sha256": "dfd663d3762d913a9f12c1187db28bbb2a9ed72adc4f4dc6aef33d3e711a7d6c"
     },
     "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-10-V1",
-    "status": "PREPARED_DRAFT",
+    "status": "ROOT_REGISTERED_FROZEN_CHECKS_PENDING",
     "unchanged_selection": true
   },
   {
@@ -141,7 +141,7 @@
       "sha256": "f9550c0d6cfee6c6980ec4632c772d6d3210d0e75800d996321e9fe5accbdf54"
     },
     "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-11-V1",
-    "status": "PREPARED_DRAFT",
+    "status": "ROOT_REGISTERED_FROZEN_CHECKS_PENDING",
     "unchanged_selection": true
   },
   {
@@ -170,7 +170,7 @@
       "sha256": "c6e0a2f305c785a3ccb6ac41e592fc4ed34d2ab655a0a3f0c811b050f906b04d"
     },
     "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B1-BRANCH-12-V1",
-    "status": "PREPARED_DRAFT",
+    "status": "ROOT_REGISTERED_FROZEN_CHECKS_PENDING",
     "unchanged_selection": true
   }
 ]
