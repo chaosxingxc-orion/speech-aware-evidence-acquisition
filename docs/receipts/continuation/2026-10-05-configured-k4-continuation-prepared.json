@@ -1,0 +1,26 @@
+{
+  "active_b1": "Unchanged driver14:14:56Z/frozen d81d8cf8c",
+  "at_utc": "2026-10-05T14:41:39.028244+00:00",
+  "b2_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-b2-flight-v1/prepare-admission-v1.py",
+    "sha256": "eb9c727fafd77c33a1d4b2a6add137e5a4cfe4e0ba0bef4cbdfcb6560b06e24e"
+  },
+  "b2_status": "DRAFT, no contacts or dispatch",
+  "cache_operations": 0,
+  "helper_execution_scope": "Only the initial missing-prerequisite branch ran. Full registration body remains unexecuted and must not be described as validated admission.",
+  "mixed_cohort_validation": {
+    "limitation": "Pure representation validation does not prove full-family source authorization or create a prospective optimizer reservation. Source-bound multi-family input and actor/trial admission remain required after all cohorts finish.",
+    "production_projection_changed": false,
+    "real_feedback_exported": false,
+    "specific_new_proof": "Synthetic8/4/4 population preserves all16 original candidate IDs,normalizes only within each cohort,leaves other cohort feedback unchanged when one cohort changes,and rejects a missing source partition.",
+    "tests_passed": 21
+  },
+  "negative_guard": {
+    "model_contacts": 0,
+    "reason": "Complete b1 root review and cache-boundary receipts required",
+    "status": "HELD",
+    "writes": 0
+  },
+  "quality_read": false,
+  "schema": "saea-configured-continuation-feedback-proof-v1"
+}

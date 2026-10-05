@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Mixed cohort representation verified; next unchanged K4 admission helper prepared
+
+[Evidence](../receipts/continuation/2026-10-05-configured-k4-continuation-prepared.json):21 partition-feedback tests pass,including the exact8/4/4 shape. The existing config-driven pure projection retains all16 candidates,normalizes returns only within each source cohort,keeps other cohorts unchanged when one source changes,and rejects a missing cohort. No real feedback export or actor reservation. A source-bound multi-family optimizer input remains required after all admitted cohorts qualify; this test does not supply that authority.
+
+The next-cohort helper coordination/context-template-configured-k4-b2-flight-v1/prepare-admission-v1.py is prepared. Its negative branch returns HELD with zero writes/contacts until b1 has complete root READ,stage review and before/after cache receipts. The registration body has not executed. A later root stage-review-v1.json must carry decision continue-unchanged-original-population,next_cohort remaining-b2,cache_boundary_authorized true,the exact b1 root-read-authorization pin,population config pin,and serving_process PID/start_ticks/cmdline hash. Use that only after genuine complete review and live idle/resource checks. Run the prepared b1 cache helper check-only before any explicit one-shot root cache action,then consider b2 admission,frozen checks and a separate launch.
+
+Current b1 remains on its unchanged driver14:14:56Z/frozen d81d8cf8c. Seed,A/A,branch09 andbranch10 are independently FINALIZED with one successful official score each and zero failures;branch11 is running andbranch12 absent at this checkpoint. No task quality or partial optimizer evidence was read. Monitor remains active; cache untouched. Preserve all holds and human-before8x400.
+
 ## Config-driven complete-family qualification and analysis prepared
 
 [Preparation evidence](../receipts/continuation/2026-10-05-configured-family-read-prepared.json): the existing shared reader now qualifies all registered members/counts from validated config/recipe instead of a fixed K. It checks every attempt before score metadata or seal parsing, verifies all frozen identities and source pins, and never signs READ or reports quality. Twenty new gate tests and103 related tests pass; new function100% statement/branch coverage. Real incomplete b1 returns WAIT without score/output access. Engineering-base check passes.

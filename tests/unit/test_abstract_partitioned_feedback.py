@@ -124,3 +124,49 @@ def test_asymmetric_configured_cohorts_have_no_eight_candidate_assumption():
         expected[new]["expected_bundles"] = {c:expected[new]["expected_bundles"][c] for c in cohort["candidate_ids"]}
     result = abstract_partitioned_population_feedback(sources, expected_partitions=expected, population_config=configured)
     assert [len(c["groups"][0]["members"]) for c in result["cohorts"].values()] == [3, 5]
+
+
+def test_eight_four_four_preserves_every_original_template_and_local_returns():
+    """A smaller continuation must neither lose candidates nor pool rewards."""
+    sources, expected = fixture()
+    configured = population_config()
+    second_source, second_contract = sources.pop("k8b"), expected.pop("k8b")
+    original_ids = list(expected["k8a"]["expected_bundles"]) + list(second_contract["expected_bundles"])
+    old_cohort = configured["cohorts"].pop()
+    for name, start, stop in (("remaining-b1", 0, 4), ("remaining-b2", 4, 8)):
+        cohort = deepcopy(old_cohort)
+        cohort.update(cohort_id=name, candidate_ids=old_cohort["candidate_ids"][start:stop])
+        configured["cohorts"].append(cohort)
+        source, contract = deepcopy(second_source), deepcopy(second_contract)
+        source.update(family_id=name+"-family", source_batch=name+"-batch",
+                      templates=source["templates"][start:stop])
+        contract.update(expected_family_id=source["family_id"],
+                        expected_source_batch=source["source_batch"],
+                        expected_bundles={cid:contract["expected_bundles"][cid]
+                                          for cid in cohort["candidate_ids"]})
+        sources[name], expected[name] = source, contract
+    result = abstract_partitioned_population_feedback(
+        sources, expected_partitions=expected, population_config=configured)
+    cohorts = result["cohorts"]
+    assert [len(c["templates"]) for c in cohorts.values()] == [8, 4, 4]
+    assert [t["candidate_id"] for c in cohorts.values() for t in c["templates"]] == original_ids
+    for c in cohorts.values():
+        for group in c["groups"]:
+            assert abs(sum(m["relative_return"] for m in group["members"])) < 1e-12
+    # A change in one cohort must not change either other cohort's returns.
+    changed = deepcopy(sources)
+    sample = changed["remaining-b2"]["templates"][0]["samples"][1]
+    counts = sample["terminal"]["official_counts"]
+    for axis in ("word", "char"):
+        counts[f"slu_f1_{axis}_fp"] += 100
+    from speech_aware_evidence_acquisition.analysis.abstract_node_feedback import feedback_utility
+    sample["terminal"]["utility"] = feedback_utility(counts, .5)
+    after = abstract_partitioned_population_feedback(
+        changed, expected_partitions=expected, population_config=configured)
+    assert after["cohorts"]["k8a"] == cohorts["k8a"]
+    assert after["cohorts"]["remaining-b1"] == cohorts["remaining-b1"]
+    assert after["cohorts"]["remaining-b2"]["groups"] != cohorts["remaining-b2"]["groups"]
+    with pytest.raises(ValueError, match="configured source partitions"):
+        abstract_partitioned_population_feedback(
+            {k:v for k,v in sources.items() if k != "remaining-b2"},
+            expected_partitions=expected, population_config=configured)
