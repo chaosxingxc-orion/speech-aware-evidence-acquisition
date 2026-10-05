@@ -1,0 +1,856 @@
+{
+  "schema": "saea-k16-update2-n20-running-memory-stop-v1",
+  "at_utc": "2026-10-05T08:58:27.226872+00:00",
+  "authority": "root227",
+  "driver_epoch": "2026-10-05T08:53:13Z",
+  "stop_at_utc": "2026-10-05T08:54:29Z",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-n20-v1",
+  "commit": "6ede9f34e43dde5f0b26510480bc5cc7dc649bb3",
+  "minimum_valid_windows_free_gib": 5.608306884765625,
+  "minimum_read_elapsed_seconds": 0.5434992859954946,
+  "reader_error": null,
+  "worker_exit": {
+    "command": [
+      "/home/chao/.venvs/speechrl/bin/python",
+      "-B",
+      "-m",
+      "speech_aware_evidence_acquisition.core.flight.cli",
+      "campaign",
+      "--repo-root",
+      "/home/chao/saea-worktrees/codex-context-template-k16-update2-n20-v1",
+      "--data-root",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "--runtime-root",
+      "/home/chao",
+      "--lock-path",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "--owner",
+      "chatgpt-root-owner227",
+      "--expected-session-id",
+      "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "--experiment",
+      "slurp-native-stage3-context-template-k16-update2-n20-seed-v1"
+    ],
+    "exit_code": 125,
+    "identity": {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-seed-generation-v1",
+      "repo_root": "/home/chao/saea-worktrees/codex-context-template-k16-update2-n20-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-SEED-V1",
+      "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "study_head": "6ede9f34e43dde5f0b26510480bc5cc7dc649bb3"
+    },
+    "pid": 15138,
+    "policy": {
+      "floor_gib": 8.0,
+      "interval_seconds": 5.0,
+      "read_timeout_seconds": 10.0,
+      "start_gib": 12.5,
+      "stop_grace_seconds": 5.0
+    },
+    "schema": "saea-flight-process-memory-guard-v1",
+    "status": "resource-stop",
+    "worker_returncode": -15
+  },
+  "members": [
+    {
+      "candidate_id": "seed",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-seed-generation-v1",
+      "state": "OPENED",
+      "actual": {
+        "audio_seconds": 6.527687500000001,
+        "calls": 4
+      }
+    },
+    {
+      "candidate_id": "seed-aa",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-seed-aa-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-01-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-01-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-02-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-02-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-03-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-03-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-04-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-04-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-05-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-05-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-06-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-06-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-07-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-07-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-08-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-08-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-09-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-09-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-10-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-10-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-11-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-11-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-12-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-12-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-13-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-13-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-14-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-14-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-15-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-15-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    },
+    {
+      "candidate_id": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-BRANCH-16-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-k16-update2-n20-branch-16-generation-v1",
+      "state": "ABSENT",
+      "actual": null
+    }
+  ],
+  "new_generation_contacts_charged": 4,
+  "scientific_read_signed": false,
+  "quality_read": false,
+  "automation": "slurp-k16-15",
+  "automation_status": "deleted after verified terminal and no active admitted worker/scorer",
+  "live_memory_after_stop": {
+    "host_total_gb": 63.43492889404297,
+    "host_free_gb": 30.32575225830078,
+    "vmmem_ws_gb": 19.481700897216797,
+    "vm_total_gb": 43.10558319091797,
+    "vm_available_gb": 41.0970458984375,
+    "host_memory_source": "windows+vm",
+    "host_memory_error": null
+  },
+  "model_file_residency_after_stop": {
+    "path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf",
+    "bytes": 18557053952,
+    "resident_bytes": 18557054976,
+    "resident_gib": 17.282604217529297,
+    "method": "read-only PROT_NONE mapping and mincore; no file-content read, cache advice or discard"
+  },
+  "telemetry_window": [
+    {
+      "sampled_at": 1791190285.2871463,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.42,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.935497283935547,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.14382553100586,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.365734100341797
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190295.8454657,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.38,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.942699432373047,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.141117095947266,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.365802764892578
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190306.3868775,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.38,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.940200805664062,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.1416130065918,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.365859985351562
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190316.942157,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.4,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.855255126953125,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.0892448425293,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.36947250366211
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190327.5263183,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.35,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.83767318725586,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.08702087402344,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.37054443359375
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190338.0778053,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.39,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.908592224121094,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.13827896118164,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.36661148071289
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190349.2002437,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.32,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.868587493896484,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.137939453125,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.366214752197266
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190360.7339354,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.47,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.686992645263672,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.138031005859375,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.367542266845703
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190371.6293774,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.47,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.645648956298828,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.13383102416992,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.36774444580078
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190382.6494973,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.39,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.663402557373047,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.13747024536133,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.36648178100586
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190393.342161,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.47,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.57999038696289,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.13385772705078,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.369834899902344
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190403.8739357,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.42,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.606773376464844,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.09431457519531,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.365245819091797
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190414.4377482,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.38,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.63580322265625,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.094547271728516,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.36441421508789
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190425.0794911,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.5,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 12.386356353759766,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 40.583499908447266,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 28.600658416748047
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190435.6694865,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.56,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 10.762226104736328,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 39.453025817871094,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 30.196762084960938
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190446.2623599,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.66,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 10.925941467285156,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 39.37396240234375,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 29.943572998046875
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190456.8364935,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 15.0,
+        "power_watts": 5.63,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 9.567451477050781,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 39.138729095458984,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 31.236614227294922
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190473.6401966,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 1515.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 22.48,
+        "pstate": "P4",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 6.205696105957031,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.13819122314453,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 42.33978271484375
+      },
+      "slots": {
+        "busy": 1,
+        "idle": 3,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190484.2160473,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 5.75,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 8.624053955078125,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.138458251953125,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 40.370635986328125
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190494.8243518,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 5.69,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 9.560009002685547,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.136356353759766,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 40.370704650878906
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190505.3969889,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 5.62,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 9.558189392089844,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.13481140136719,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 40.37078094482422
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190515.950932,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 5.63,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 9.551021575927734,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.1383171081543,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 40.37024688720703
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190526.5420835,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 5.57,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 9.5487060546875,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.13788604736328,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 40.36571502685547
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190537.1007094,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 5.5,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 9.549514770507812,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.14115524291992,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 40.35254669189453
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190548.1316247,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 5.48,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 11.29654312133789,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.136329650878906,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 38.61749267578125
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    },
+    {
+      "sampled_at": 1791190558.6815195,
+      "server_ok": true,
+      "gpu": {
+        "clocks_sm_mhz": 180.0,
+        "memory_used_mib": 22990.0,
+        "power_watts": 5.5,
+        "pstate": "P8",
+        "utilization_percent": 0.0
+      },
+      "host_memory": {
+        "host_free_gb": 15.306621551513672,
+        "host_memory_source": "windows+vm",
+        "host_total_gb": 63.43492889404297,
+        "vm_available_gb": 41.13569641113281,
+        "vm_total_gb": 43.10558319091797,
+        "vmmem_ws_gb": 34.60871887207031
+      },
+      "slots": {
+        "busy": 0,
+        "idle": 4,
+        "total": 4
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k16-update2-n20-seed-20261005T085339Z/events.jsonl",
+      "sha256": "227cf3e99bf103b24832fa6a9ddecee6f81277161b1d05c15b1b9155964a66d8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/process-guard/batch-campaign-1-context-template-k16-update2-n20-seed-20261005T085339Z/finished.json",
+      "sha256": "af6aa2d8303975f217f2819f787f78f719e3671dca4fc2f39bcd82631e34ad41"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-n20-owner227-v1/launch-receipt-v1.json",
+      "sha256": "85a762b1d718a499ea60040d026f3b4b21001ac6fdbf5a492df20567b185ea69"
+    },
+    {
+      "path": "/home/chao/batch-status.jsonl",
+      "sha256": "c39c2eeda1262c9434cd29098aadfa246a4ce3d836d687695ea472e3a8b2feff"
+    },
+    {
+      "path": "/home/chao/batch-STOP",
+      "sha256": "7f3fbef53a5c057a28514e16da4b167f3f0b6aff87fad68916f5c60c62756cf9"
+    }
+  ],
+  "disposition": "Preserve STOP,queue,status,original frozen source and incomplete seed. No retry,reseal,score,partial quality read or source edit. All seventeen successors remain unstarted. Diagnose startup working set and cache contribution before any separately registered recovery; no automatic resource-floor relaxation.",
+  "interpretation": "Observed real floor breach, unlike previous unavailable-reader incident. Rapid GPU-residency restoration coincided with first registered requests, but does not alone establish a causal memory allocation breakdown. File cache and VM available memory are not Windows free memory and overlapping figures must not be summed."
+}

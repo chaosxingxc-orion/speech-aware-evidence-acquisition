@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## N20 scientific entry stopped on a measured Windows-memory floor breach
+
+[Launch](../receipts/continuation/2026-10-05-k16-update2-n20-launch.json) and [incident](../receipts/continuation/2026-10-05-k16-update2-n20-running-memory-stop.json) supersede the preflight/running snapshot. All18 frozen checks passed; session63690 ended0. Frozen codex-context-template-k16-update2-n20-v1 remains6ede9f34e43dde5f0b26510480bc5cc7dc649bb3. Windows driver epoch2026-10-05T08:53:13Z,PID14941 stopped08:54:29Z on the first seed. Startup stable observation passed and the worker began at12.6329GiB available; a valid0.5435second read later measured5.6083GiB,below the8GiB running floor. No observer error occurred. The owned worker15138 was stopped; driver/worker/scorer are absent. Root deleted automation slurp-k16-15.
+
+The seed attempt remains OPENED with4 charged generation contacts and no complete manifest. All17 other members remain ABSENT. Preserve original STOP,queue,status,worker,leases and every incomplete output. Do not retry,reseal,score or read task quality. The original complete-family READ remains unsigned. The64-row structural proof is still valid and intentionally unscored; this failed scientific entry does not negate its structural scope or establish task quality.
+
+Root-only read-only diagnosis observes idle GPU memory15MiB before dispatch and22990MiB after first registered requests. The restored residency coincides with the memory drop but does not prove its allocation breakdown,cache eviction or CUDA failure. Windows free memory subsequently recovered to30.33GiB without intervention. A read-only mincore check found17.28GiB resident pages for the exact decoder GGUF; this neither evicted nor read file contents. Do not add overlapping VM/cache/Windows figures. The conditional4GiB relaxation is not justified by this evidence; retain existing running protection and do not repeat global cache reclaim or restart.
+
+Next diagnose the observed startup working-set/headroom mismatch and prepare a separately registered bounded root227 recovery. A prospective higher startup headroom can preserve8GiB protection; it must be explicit and verified,not a silent retry. Preserve the failed seed identity and use a fresh seed identity if admitted; retain the seventeen unstarted candidates and exact policies,inputs,knowledge,decoding and full-family read contract. No recovery registration,STOP reconciliation or new GPU dispatch is authorized by this incident record alone. No GPU monitor is active while stopped. Keep other-carrier holds and human-before8x400.
+
 ## Scientific K16 N20 worker frozen; all-member preflight is live
 
 [Preflight receipt](../receipts/continuation/2026-10-05-k16-update2-n20-frozen-check-started.json) binds clean codex-context-template-k16-update2-n20-v1 to6ede9f34e43dde5f0b26510480bc5cc7dc649bb3. Registration and complete structural evidence were serially integrated; engineering-base and handoff-freshness checks passed. Existing session63690 runs all18 frozen registration/runtime/policy/supply/decoding checks. Revalidate its recorded PID and inspect frozen-check-exit-v1.json plus frozen-check-v1.json. Never repeat because a tool observation expires. No scientific generation or scorer contact yet.
@@ -2182,7 +2192,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T08:38:44Z
+Last refreshed: 2026-10-05T09:00:54Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

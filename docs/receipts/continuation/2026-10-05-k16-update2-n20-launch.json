@@ -1,0 +1,32 @@
+{
+  "schema": "saea-k16-update2-n20-live-launch-v1",
+  "at_utc": "2026-10-05T08:53:22.371763+00:00",
+  "driver_epoch": "2026-10-05T08:53:13Z",
+  "driver": {
+    "pid": 14941,
+    "parent_pid": 14940,
+    "start_ticks": "51799346",
+    "proc_stat": "14941 (bash) S 14940 14940 14940 34819 14940 4194304 1612 37332 0 92 0 0 29 14 20 0 1 0 51799346 5140480 864 18446744073709551615 108649201344512 108649202320173 140732506746272 0 0 0 2 4 65536 1 0 0 17 5 0 0 0 0 0 108649202543024 108649202591664 108649984417792 140732506750123 140732506750256 140732506750256 140732506750954 0\n",
+    "argv": [
+      "bash",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/batch_driver.sh"
+    ]
+  },
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-n20-v1",
+  "commit": "6ede9f34e43dde5f0b26510480bc5cc7dc649bb3",
+  "queue_sha256": "5e95ac2b8da67c1eb7db3f2a8682d6472fb6a7b90501d2d5e57d0b496179eaf9",
+  "members": 18,
+  "rows_per_member": 20,
+  "total_trajectories": 360,
+  "candidate_systems": 16,
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-READ-V1",
+  "read_countersigned": false,
+  "model_contacts_added_by_recorder": 0,
+  "memory_floors_gib": {
+    "running": 8,
+    "startup": 12.5
+  },
+  "scope": "Same original sixteen learned branches plus fresh unchanged seed/A/A. Actual full-request FIT and unique official whole-member scoring. No partial quality read, next proposal, automatic recovery or scale.",
+  "automation_id": "slurp-k16-15",
+  "automation_terminal_status": "deleted after resource stop"
+}
