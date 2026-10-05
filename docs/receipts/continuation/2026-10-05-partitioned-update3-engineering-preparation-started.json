@@ -1,0 +1,30 @@
+{
+  "schema": "saea-partitioned-update-engineering-preparation-started-v1",
+  "at_utc": "2026-10-05T17:45:25.423256+00:00",
+  "population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "process_pid_at_observation": 13749,
+  "exec_session_id": 9611,
+  "driver": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/prepare-partitioned-update3-population-v1.py",
+    "sha256": "5a2b7bd76fb59f663703167df14fa72b717228f34c2e9a65e5c78393499cb0d9"
+  },
+  "logs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/partitioned-update3-preparation-v1",
+  "status": "RUNNING_MODEL_FREE_SERIAL_PREPARATION",
+  "completed_before_launch": [
+    "branch-01"
+  ],
+  "generation_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_admission": false,
+  "windows_available_gib_observation": 24.333,
+  "windows_observed_at_utc": "2026-10-05T17:44:07.0357754Z",
+  "checks": {
+    "engineering_base": "PASS",
+    "partitioned_learning_and_population_config_tests": 69
+  },
+  "next": "Poll the exact session; inspect durable per-child exit/stdout/stderr records. Do not rerun the population driver. On complete preparation, serially integrate all prepared configs and supplies, then register/freeze exact separate capacity and engineering before any GPU contacts."
+}

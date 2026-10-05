@@ -1,0 +1,110 @@
+{
+  "schema": "saea-partitioned-proposer-completion-v1",
+  "recorded_at_utc": "2026-10-05T17:38:11.024496+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-PROPOSE-V1",
+  "agent": "/root/partitioned_template_update3_sol",
+  "requested_model": "gpt-6.1-sol",
+  "original": {
+    "schema": "saea-partitioned-original-response-bytes-v1",
+    "at_utc": "2026-10-05T17:31:45.074388+00:00",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update3-v1/original-response-v1.json",
+    "sha256": "cfe7a1dbe6a3f908f1698c1a67408a6f21514ce401ff9c3fd2212ccc5c85f6bd",
+    "bytes": 169747,
+    "output_limit": 262144
+  },
+  "compile_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update3-v1/compile-receipt-v1.json",
+    "sha256": "bdda2d5d5ee71482b6dfc0e8da71b7cd56f6d6bc3a59377c8a30ea916b8e5a2c"
+  },
+  "positions": [
+    {
+      "candidate_id": "branch-01",
+      "status": "provisional",
+      "bundle_id": "5b037701efb82dc6c64e66da3c2a8a30c1550bc9282952df4fca684b4e44d93e"
+    },
+    {
+      "candidate_id": "branch-02",
+      "status": "provisional",
+      "bundle_id": "55ace9a36a6f3e723741de0afd5ccc3fcced32da1416f76a750d93b2a0373f36"
+    },
+    {
+      "candidate_id": "branch-03",
+      "status": "provisional",
+      "bundle_id": "c22d957d52baac26ac7c325acb2bb8c0d06864918f4cccbe39d571ef9ee25951"
+    },
+    {
+      "candidate_id": "branch-04",
+      "status": "provisional",
+      "bundle_id": "84f152a8ceea115b0810986fdeec1a9e141eb27d646e1142b4f75c71ee752307"
+    },
+    {
+      "candidate_id": "branch-05",
+      "status": "provisional",
+      "bundle_id": "60c3ea5bbe8fbdede45f9afb10f5a9896b955cbda27929e6d98177048bcb7951"
+    },
+    {
+      "candidate_id": "branch-06",
+      "status": "provisional",
+      "bundle_id": "6afde0f3dabdb3990b5796f7ffde0589583769e08e312d88dc82e67a0d1886ef"
+    },
+    {
+      "candidate_id": "branch-07",
+      "status": "provisional",
+      "bundle_id": "a07f37a3bbe634979da778284099b8b52a335260a3d9bee7cdfc91354323b66c"
+    },
+    {
+      "candidate_id": "branch-08",
+      "status": "no-change",
+      "bundle_id": "1c07b19b36a78c7b48b81ecc275b0cac229dd98a26f506ccd8854a8b99774788"
+    },
+    {
+      "candidate_id": "branch-09",
+      "status": "provisional",
+      "bundle_id": "32159521faeeedc64e266ded14a343d7ba5274bee0c1bc50bfd44f23f7ca9213"
+    },
+    {
+      "candidate_id": "branch-10",
+      "status": "provisional",
+      "bundle_id": "5f855b7b0da078048c58b930c2f5108e220a3983254f1c4efb725caef9169aae"
+    },
+    {
+      "candidate_id": "branch-11",
+      "status": "provisional",
+      "bundle_id": "d5278877ab7b235e9621e1c4371e5aad0c50b749e311a1dcd63b38594440b9e9"
+    },
+    {
+      "candidate_id": "branch-12",
+      "status": "provisional",
+      "bundle_id": "78783d701ad3fd89c7a8789d15ab35ce07656c0e9e2df5f889eb3370953c2f32"
+    },
+    {
+      "candidate_id": "branch-13",
+      "status": "provisional",
+      "bundle_id": "acc94ffc9da2a45acc2b48625eb0d20459a6ee5096e988c3174d99e7fc3e0f67"
+    },
+    {
+      "candidate_id": "branch-14",
+      "status": "provisional",
+      "bundle_id": "c86197b2fd9701e475e6a495f8c2de405cceb59062d24e60120749c7022aec50"
+    },
+    {
+      "candidate_id": "branch-15",
+      "status": "no-change",
+      "bundle_id": "c4a982ce5e7eec900eaf47e916ce265c4689d6c6d2a76e05c98d6ee6ad9a02ef"
+    },
+    {
+      "candidate_id": "branch-16",
+      "status": "provisional",
+      "bundle_id": "c6c868ac6933b98b98f2976814228c51b367f5fd30ee437352aca79c3ab8dcdb"
+    }
+  ],
+  "semantic_opportunities_spent": 1,
+  "proposal_slots_spent": 16,
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "runtime_admission": false,
+  "interpretation": "Preserve the exact original response. All positions spent; no repair, retry, replacement or improvement claim. Actual provider contacts and tokens are unavailable. Operational compilation and engineering remain separate."
+}

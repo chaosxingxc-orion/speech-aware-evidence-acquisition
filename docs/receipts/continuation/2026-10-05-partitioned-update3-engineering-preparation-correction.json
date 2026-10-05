@@ -1,0 +1,16 @@
+{
+  "schema": "saea-model-free-preparation-check-correction-v1",
+  "at_utc": "2026-10-05T17:40:33.096342+00:00",
+  "authority": 227,
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/prepare-partitioned-update3-engineering-v1.py",
+    "sha256": "b30f06ae02000330090557b16c10aab3fc58158af5effb6a7a6d212389d66074"
+  },
+  "successor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/prepare-partitioned-update3-engineering-v2.py",
+    "sha256": "463dbe6a38ce7d23e1d610ddac7c27db8f467e029145528d10ccd2030ae4758a"
+  },
+  "cause": "Preparation assertion incorrectly applied scientific generation calls per trajectory to the non-generating graph/capacity engineering stages. Refused before any runtime construction, preparation or model/tool contact.",
+  "correction": "Validate the inherited smoke generation cap against the configured per-trajectory cap. Retain separate inherited graph/capacity budgets and explicitly require zero generation trajectories/calls. Scientific budgets remain unchanged.",
+  "runtime_admission": false
+}

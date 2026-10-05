@@ -1,0 +1,17 @@
+{
+  "schema": "saea-root-model-free-compilation-disposition-v1",
+  "at_utc": "2026-10-05T17:39:04.640278+00:00",
+  "authority": 227,
+  "cause": "Root helper incorrectly treated provenance-addressed role-file paths as changed runtime content for a no-change proposal. The shared compiler correctly gives the cumulative-provenance successor a new bundle directory.",
+  "failure": "v1 stopped at branch-08 before its baseline publication; first seven compiled records are preserved. No model/tokenizer/scorer contact or scientific attempt.",
+  "original_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/compile-partitioned-update3-v1.py",
+    "sha256": "975bbbccd9a2831ed459acc97d2bb9d1f4db01e41a7740a6262ee4fef6020aa2"
+  },
+  "successor_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-observe-boundary-n20-v1/compile-partitioned-update3-v2.py",
+    "sha256": "b7ea953ab71f4d003d16e471dac0e69c53e7cf87817dfeec0ecbbb2bdc512f74"
+  },
+  "decision": "Verify all existing outputs exactly before reuse. Compare editable policy fields for proposal change status; for no-change require all actual role bytes equal and full graph equal after only the exact bundle-directory substitution. No proposal repair, source mutation or replacement.",
+  "runtime_admission": false
+}
