@@ -1,0 +1,23 @@
+{
+  "schema": "saea-configured-read-profile-correction-v1",
+  "at_utc": "2026-10-05T14:55:32.584189+00:00",
+  "authority": "Root owner227 bounded engineering disposition",
+  "cause": "New model-free READ ledger rows were incorrectly authored with the generation execution profile bounded-discovery-probe. The existing reader refused before opening any current-family quality or reference.",
+  "correction": "Use the existing required model-free-check profile for zero-contact READ only. Preserve recipe,registration,protocol,roster,member identities,seals,scores and frozen runtime bytes.",
+  "changes": [
+    {
+      "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1",
+      "before": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1 | bounded-discovery-probe | Configured complete-family root read | Official sealed system feedback | slurp existing UPDATE2 ordered inputs | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | yes | 0 | 0 | 0 | Cumulative optimization exposure | docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b1/analysis-recipe-v1.json | REGISTERED BEFORE READ; root countersigned 2026-10-05T14:54:36.017606+00:00 under owner227 after every configured member independently FINALIZED with verified seal and exactly one complete successful official score and zero failed jobs. Qualification docs/receipts/continuation/2026-10-05-configured-k4-b1-family-qualified.json. Complete-cohort descriptive root analysis only; no partial population optimizer export or automatic scaling. |",
+      "after": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1 | model-free-check | Configured complete-family root read | Official sealed system feedback | slurp existing UPDATE2 ordered inputs | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | yes | 0 | 0 | 0 | Cumulative optimization exposure | docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b1/analysis-recipe-v1.json | REGISTERED BEFORE READ; root countersigned 2026-10-05T14:54:36.017606+00:00 under owner227 after every configured member independently FINALIZED with verified seal and exactly one complete successful official score and zero failed jobs. Qualification docs/receipts/continuation/2026-10-05-configured-k4-b1-family-qualified.json. Complete-cohort descriptive root analysis only; no partial population optimizer export or automatic scaling. |"
+    },
+    {
+      "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B2-READ-V1",
+      "before": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B2-READ-V1 | bounded-discovery-probe | Configured complete-family root read | Official sealed system feedback | slurp existing UPDATE2 ordered inputs | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 0 | 0 | 0 | Cumulative optimization exposure | docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b2/analysis-recipe-v1.json | DRAFT; exact root READ unsigned until every configured member qualifies. |",
+      "after": "| 2026-10-05 | SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B2-READ-V1 | model-free-check | Configured complete-family root read | Official sealed system feedback | slurp existing UPDATE2 ordered inputs | discovery | d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011 | no | 0 | 0 | 0 | Cumulative optimization exposure | docs/readiness/2026-10-05-slurp-context-template-k4-recovery1-v1-remaining-b2/analysis-recipe-v1.json | DRAFT; exact root READ unsigned until every configured member qualifies. |"
+    }
+  ],
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "quality_read_before_correction": false,
+  "original_read_authorization_preserved": true
+}

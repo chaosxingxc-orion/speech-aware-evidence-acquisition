@@ -1,0 +1,127 @@
+{
+  "schema": "saea-configured-k4-complete-root-read-v1",
+  "at_utc": "2026-10-05T14:59:21.596276+00:00",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1",
+  "stage_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-b1-flight-v1/root-stage-review-v1.json",
+    "sha256": "baa0f0476eaa29db834df3a2aa3dd056730830dbbfd25be8496c922c24bd8ee7"
+  },
+  "report": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/results/2026-10-05-configured-k4-b1-n20.md",
+    "sha256": "6bae2e07565f085a26057e125794f9cee6327a21b673e7d80baf95a528fa6fb2"
+  },
+  "qualification": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-05-configured-k4-b1-family-qualified.json",
+    "sha256": "bfaef1090e4481b69e9b8bc96e74ae58a7e69818ffbd7e61fca6b7f7e727d76f"
+  },
+  "analysis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-V1-REMAINING-B1-READ-V1/report.json",
+    "sha256": "41fcac3925dfdba0bf2a4fdd9619865f125676024c393bb2536122c059215671"
+  },
+  "guard": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-configured-k4-b1-flight-v1/guard-acceptance-v1.json",
+    "sha256": "78153d3f04c7c33fda3e2e483d05c0565c41ec78b8cf801165d040a27a89aa80"
+  },
+  "members": [
+    {
+      "bundle_id": "8804f1140915d928bc4d79b2995bf155276a601955c8700bc9239564d65c6cb2",
+      "candidate_id": "branch-09",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.75,
+      "mean_sample_seconds": 27.389133075350003,
+      "measurement_id": "ad4e581ccb0eff529d9a963f5e046a19dc624f9ab7729f2c6c38f80680ad147a",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 95,
+      "non_first_mean_seconds": 27.364903203842108,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5365873633348348,
+      "timing_report_sha256": "cc8651711b3b97364ec8faffb31e1052f72d6677633da84c8ce987e6851073b5",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "6509be9140a46531cd00b0a96fa56d6fb48ee32104c5ecc4c30c21a666ad11ae",
+      "candidate_id": "branch-10",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.8,
+      "mean_sample_seconds": 41.5462145205,
+      "measurement_id": "ad4e581ccb0eff529d9a963f5e046a19dc624f9ab7729f2c6c38f80680ad147a",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 95,
+      "non_first_mean_seconds": 42.23819052105264,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.531117641098389,
+      "timing_report_sha256": "d9bbc7438e7f38eda74a155a0480cf195bc31f0a670c6674cbcbc6f4c74b80dd",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "2b0529b090d1b7c53d48f70a080e5b6d393ae4dd07e42c87f2c14fec9839e4a1",
+      "candidate_id": "branch-11",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.7,
+      "mean_sample_seconds": 79.61359933610001,
+      "measurement_id": "ad4e581ccb0eff529d9a963f5e046a19dc624f9ab7729f2c6c38f80680ad147a",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 119,
+      "non_first_mean_seconds": 80.08501792231579,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5716232483136116,
+      "timing_report_sha256": "95e9f0332628ffba7eed6424e7c69d6c5e02c5eead6c7747fe75c5b8f556f780",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "ef7b53be7de080ca4ed67cc86e5c0f6fdbbfb28035100d6aabfd131fbae4aa39",
+      "candidate_id": "branch-12",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.55,
+      "mean_sample_seconds": 76.33035428585,
+      "measurement_id": "ad4e581ccb0eff529d9a963f5e046a19dc624f9ab7729f2c6c38f80680ad147a",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 113,
+      "non_first_mean_seconds": 78.31546719178948,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5472655515880473,
+      "timing_report_sha256": "cf7aad710877e9b37a0d4ca28acb3dff105754d19630b48d3801aaf709ea8ac4",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "candidate_id": "seed",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.7,
+      "mean_sample_seconds": 32.0206866992,
+      "measurement_id": "ad4e581ccb0eff529d9a963f5e046a19dc624f9ab7729f2c6c38f80680ad147a",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 119,
+      "non_first_mean_seconds": 30.362531208421053,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5925925925925927,
+      "timing_report_sha256": "7d98a654d8283df9163e85502bda08aeb08e6f0d06c615e3e0604610bc5d5f40",
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "candidate_id": "seed-aa",
+      "cohort_id": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "eligible": true,
+      "intent": 0.7,
+      "mean_sample_seconds": 31.70573333295,
+      "measurement_id": "ad4e581ccb0eff529d9a963f5e046a19dc624f9ab7729f2c6c38f80680ad147a",
+      "measurement_profile_sha256": "e59225796c9f8d6694ba1e840b64063f5ab77d9e4d97fb9cadf0183f2ffe198f",
+      "model_calls": 119,
+      "non_first_mean_seconds": 30.343908211947365,
+      "reliable_completion_rate": 1.0,
+      "slu_f1": 0.5855018587360594,
+      "timing_report_sha256": "90234baca06acf46dc5bc24d327b0cbb5a12eb332eef760b006508402e82cb52",
+      "tool_calls": 0
+    }
+  ],
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "monitor_deleted": "slurp-configured-k4-b1-15m",
+  "cache_operations_so_far": 0
+}

@@ -1925,3 +1925,7 @@ All18 members finalized/sealed/scored once,360 trajectories; exact root READ com
 ## 2026-10-05: context-template K8A update-two N20
 
 Complete200 trajectories,ten unique successful official scores,verified seals and exact root READ. See `docs/results/2026-10-05-context-template-k8a-update2-n20.md` and `docs/receipts/continuation/2026-10-05-k8a-post-observer-scientific-read.json`. Status: COMPLETE_EXPLORATORY_TRADEOFFS_NO_STABLE_ADOPTION. Branch08 F1 improves descriptively but intent declines and non-first latency approximately doubles;confidence intervals cross zero. Seed remains formal parent. Original unchanged K8B preparation is reviewed,not yet dispatched. No automatic expansion or learner export.
+
+## 2026-10-05: configured K4 remaining-b1 N20 - COMPLETE EXPLORATORY, NO ADOPTION
+
+All six members finalized/sealed/scored once,120 trajectories,660 contacts and exact root READ complete. [Full quality, all strata, paired intervals, node/sample timing](2026-10-05-configured-k4-b1-n20.md). Branch09 is faster and higher-intent but lower-F1; branch10 is higher-intent but lower-F1/slower. Seed dominates branch11/12 by observed business objectives. All F1 intervals cross zero. Retain seed; no stable gain, global frontier or partial population learner export. Root reviews unchanged remaining-b2 after complete-cohort cache maintenance and fresh admission. One authorized kernel cache write is pending; do not repeat or launch around it. Other-carrier holds and human-before8x400 remain.
