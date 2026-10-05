@@ -1,0 +1,40 @@
+{
+  "schema": "saea-partial-cache-reclaim-lock-wait-v1",
+  "at_utc": "2026-10-05T06:27:25.142915+00:00",
+  "authorization": {
+    "schema": "saea-owner-scoped-cache-reclaim-v1",
+    "at_utc": "2026-10-05T06:22:30.532724+00:00",
+    "authority": "Direct owner assent to the immediately preceding recommendation to resolve WSL reclaimable file cache before relaxing memory reserves.",
+    "scope": "One clean page-cache reclaim in Ubuntu-24.04 while no experiment or scorer is active.",
+    "operation": "Write 1 to /proc/sys/vm/drop_caches once. No sync, no slab reclaim, no persistent setting, no process termination and no service restart.",
+    "active_experiment_processes": [],
+    "windows_before_available_gib": 9.875,
+    "prior_restriction": "This exact owner-approved operation supersedes the earlier no-cache-flush instruction only for this one occurrence. It grants no recurring monitor permission.",
+    "memory_floor_change": false
+  },
+  "current_meminfo": "MemTotal:       45199480 kB\nMemFree:        41198540 kB\nMemAvailable:   42270656 kB\nBuffers:            1680 kB\nCached:           438324 kB\nSwapCached:         5360 kB\nActive:           547380 kB\nInactive:        1574136 kB\nActive(anon):     240236 kB\nInactive(anon):  1562180 kB\nActive(file):     307144 kB\nInactive(file):    11956 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:      16777216 kB\nSwapFree:       16005516 kB\nDirty:               232 kB\nWriteback:             0 kB\nAnonPages:       1677808 kB\nMapped:           427736 kB\nShmem:            120880 kB\nKReclaimable:    1230100 kB\nSlab:            1523892 kB\nSReclaimable:    1230100 kB\nSUnreclaim:       293792 kB\nKernelStack:        6192 kB\nPageTables:         9796 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    39376956 kB\nCommitted_AS:    3205436 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:       36052 kB\nVmallocChunk:          0 kB\nPercpu:            14400 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:       64512 kB\nDirectMap2M:     8323072 kB\nDirectMap1G:    47185920 kB\n",
+  "windows_at_062622": {
+    "available_gib": 19.902,
+    "wsl_working_set_gib": 8.573,
+    "compression_working_set_gib": 17.51
+  },
+  "cache_reclaim_pid": 791452,
+  "exec_session": 93079,
+  "operation_complete": false,
+  "outcome": "Memory recovery observed, but the single cache-reclaim syscall is still live and blocked. Do not repeat it or call it completed.",
+  "waiting_processes": [
+    {
+      "pid": 310214,
+      "status": "Name:\tpython\nUmask:\t0022\nState:\tD (disk sleep)\nTgid:\t310214\nNgid:\t0\nPid:\t310214\nPPid:\t310209\nTracerPid:\t0\nUid:\t0\t0\t0\t0\nGid:\t0\t0\t0\t0\nFDSize:\t64\nGroups:\t0 \nNStgid:\t310214\nNSpid:\t310214\nNSpgid:\t310214\nNSsid:\t310214\nKthread:\t0\nVmPeak:\t   22576 kB\nVmSize:\t   22488 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   15744 kB\nVmRSS:\t   14784 kB\nRssAnon:\t    5952 kB\nRssFile:\t    8832 kB\nRssShmem:\t       0 kB\nVmData:\t    6852 kB\nVmStk:\t     132 kB\nVmExe:\t    2956 kB\nVmLib:\t    5788 kB\nVmPTE:\t      80 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t2/176521\nSigPnd:\t0000000000000100\nShdPnd:\t0000000000004000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t000001ffffffffff\nCapEff:\t000001ffffffffff\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\tffffff\nCpus_allowed_list:\t0-23\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t213\nnonvoluntary_ctxt_switches:\t0\n",
+      "stat": "310214 (python) D 310209 310214 310214 34816 310214 4194560 1951 0 0 0 1 0 0 0 20 0 1 0 29429352 23027712 3696 18446744073709551615 4325376 7352253 140724698422480 0 0 256 0 16781312 2 1 0 0 17 4 0 0 0 0 0 10653128 12216448 658894848 140724698426628 140724698426671 140724698426671 140724698427346 15\n",
+      "stack": "[<0>] super_lock+0xd8/0x130\n[<0>] iterate_supers+0x70/0x100\n[<0>] ksys_sync+0x46/0xb0\n[<0>] __do_sys_sync+0x12/0x20\n[<0>] x64_sys_call+0x1fdb/0x2020\n[<0>] do_syscall_64+0x5a/0xb0\n[<0>] entry_SYSCALL_64_after_hwframe+0x78/0xe2\n"
+    },
+    {
+      "pid": 791452,
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tD (disk sleep)\nTgid:\t791452\nNgid:\t0\nPid:\t791452\nPPid:\t791451\nTracerPid:\t0\nUid:\t0\t0\t0\t0\nGid:\t0\t0\t0\t0\nFDSize:\t64\nGroups:\t0 \nNStgid:\t791452\nNSpid:\t791452\nNSpgid:\t791452\nNSsid:\t791452\nKthread:\t0\nVmPeak:\t   26780 kB\nVmSize:\t   26780 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   19968 kB\nVmRSS:\t   19968 kB\nRssAnon:\t    9216 kB\nRssFile:\t   10752 kB\nRssShmem:\t       0 kB\nVmData:\t    9944 kB\nVmStk:\t     132 kB\nVmExe:\t    2956 kB\nVmLib:\t    6456 kB\nVmPTE:\t      88 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t2/176521\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t000001ffffffffff\nCapEff:\t000001ffffffffff\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\tffffff\nCpus_allowed_list:\t0-23\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t105\nnonvoluntary_ctxt_switches:\t1155\n",
+      "stat": "791452 (python3) D 791451 791452 791452 34821 791452 4194560 2824 0 0 0 2 2042 0 0 20 0 1 0 51186419 27422720 4992 18446744073709551615 4325376 7352253 140724765802384 0 0 0 0 16781312 2 1 0 0 17 4 0 0 0 0 0 10653128 12216448 615751680 140724765810950 140724765814045 140724765814045 140724765814759 0\n",
+      "stack": "[<0>] super_lock+0xd8/0x130\n[<0>] iterate_supers+0x70/0x100\n[<0>] drop_caches_sysctl_handler+0x66/0xd0\n[<0>] proc_sys_call_handler+0x1b3/0x2d0\n[<0>] proc_sys_write+0x17/0x20\n[<0>] vfs_write+0x2dc/0x400\n[<0>] ksys_write+0x6b/0xf0\n[<0>] __x64_sys_write+0x1d/0x30\n[<0>] x64_sys_call+0x162f/0x2020\n[<0>] do_syscall_64+0x5a/0xb0\n[<0>] entry_SYSCALL_64_after_hwframe+0x78/0xe2\n"
+    }
+  ],
+  "root_disposition": "Keep the next structural launch on hold while the cache operation owns generation.guard. Never retry the cache operation, force-close foreign process handles, thaw filesystems or infer a failed GPU from HTTP health. Prepare a controlled Ubuntu-24.04 restart for separate owner approval; do not execute it under the narrower cache-reclaim assent."
+}

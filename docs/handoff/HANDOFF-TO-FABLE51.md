@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner-approved cache reclaim recovered memory but remains blocked
+
+[Partial operation evidence](../receipts/continuation/2026-10-05-clean-cache-reclaim-partial-lock-wait.json) records one owner-approved clean-page-cache reclaim, with no sync,slab reclaim or persistent configuration change. Windows available memory rose from9.875 to19.902GiB; Linux file cache fell from32.6GiB to about0.4GiB. Thus the conditional4GiB reserve is unnecessary. However PID791452/session93079 remains live in D state at super_lock inside drop_caches; historical PID310214 also waits at super_lock inside sync. The lock holder is unknown. Do not retry,claim completion or dispatch while generation.guard remains owned. [A scoped Ubuntu restart proposal](../readiness/2026-10-05-scoped-wsl-memory-recovery-v1/proposal.json) is pending owner approval because it stops all distribution processes; preserve all frozen sources and exact serving receipts. No restart,control cleanup or GPU experiment launch has occurred.
+
+
 ## Owner conditional four-GiB reserve review
 
 [Current memory inspection](../receipts/continuation/2026-10-05-owner-memory-review-conditional-four-gib.json) records the owner instruction to permit a four-GiB reserve only if the current footprint is established as necessary. That condition is not satisfied: Windows has about9.96GiB available,15.69GiB compression and23.69GiB WSL working set,while Linux reports32.59GiB file cache and the model process about1.88GiB RSS. These accounting views overlap and must not be added. No large residual experiment worker was found. Preserve existing8/12.5GiB gates; no cache flush,host-setting change,service restart or generation was performed. The registered structural run remains unstarted; GPU execution readiness remains unverified despite healthy HTTP.

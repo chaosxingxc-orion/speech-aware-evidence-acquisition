@@ -1,0 +1,24 @@
+{
+  "schema": "saea-proposed-scoped-wsl-restart-v1",
+  "status": "PENDING_OWNER_APPROVAL",
+  "reason": "The approved one-shot clean-cache reclaim recovered host memory but remains in D state at super_lock. A pre-existing sync process also waits at super_lock. The lock holder is unestablished. Do not claim the sync process caused the wait.",
+  "scope": "Ubuntu-24.04 only, not Windows and not all WSL distributions.",
+  "before_action": [
+    "Revalidate no generation, scorer, proposal task or other coordinator GPU work is active. If any exists, do not restart.",
+    "Preserve the cache authorization, exact two waiting process identities and stacks, queue/status/STOP state, current session receipt and service geometry.",
+    "Preserve every frozen worker, attempt, model/data/result file and original failed evidence."
+  ],
+  "proposed_action": [
+    "After explicit owner assent and final no-active-work verification, terminate Ubuntu-24.04 once. This necessarily stops the resident inference server and telemetry and all remaining processes in this distribution.",
+    "Start Ubuntu-24.04 and restore the same registered inference geometry through the existing Windows-owned serving lifecycle; record a new serving epoch and preserve the previous receipt.",
+    "Treat vanished process ownership and any stale lease/control artifact explicitly; do not delete or clear them blindly.",
+    "Verify stable Windows memory, real registered GPU execution and source/session bindings before admitting the structural experiment."
+  ],
+  "constraints": [
+    "No Windows reboot, power changes, persistent memory changes or automatic retry.",
+    "Do not relax 8 GiB running or 12.5 GiB startup floors; observed recovery makes the conditional 4 GiB amendment unnecessary.",
+    "Do not recreate data or proposals or replay scoring.",
+    "No heartbeat until an actual new GPU experiment launch; then the owner fifteen-minute lifecycle applies."
+  ],
+  "currently_authorized": false
+}
