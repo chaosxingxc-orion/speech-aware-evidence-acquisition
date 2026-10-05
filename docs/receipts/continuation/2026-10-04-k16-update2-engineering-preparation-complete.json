@@ -1,0 +1,21 @@
+{
+  "schema": "saea-k16-update2-engineering-preparation-complete-v1",
+  "at_utc": "2026-10-04T23:59:54.753247+00:00",
+  "children": 16,
+  "prepared_cells": 48,
+  "scientific_members_prepared_separately": 18,
+  "capacity_members_registered": 16,
+  "registration_members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/registered-capacity-members-v1.json",
+    "sha256": "1bd4a4b1a66ceb467bc402f60e96c5d2e65e1bc851e45f93e6a6cd9c3056e703"
+  },
+  "capacity_registration_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-capacity-owner227-v1/capacity-registration-exit.json",
+    "sha256": "d4a405439b4bf44a91615b047fda33f06cc398fde55bac8a4f1afdfc625cf583"
+  },
+  "status": "READY FOR CLEAN FROZEN MODEL-FREE CHECKS; NO DISPATCH",
+  "contacts_added": 0,
+  "original_bytes_preserved": true,
+  "knowledge_selection_unchanged": true,
+  "allowed_gpu_stage": "No generation/scoring admission. Conditional nongenerative capacities require exact frozen/live gate first."
+}

@@ -1074,3 +1074,84 @@ def context_population_actor_view(archive, *, input_sha256, source):
                 "Archived free-form experience is not included in this template-only view; materialize proposed "
                 "improvements as explicit template/assembly edits. Any proposed experience operations remain offline "
                 "and require evaluated retention. No candidate is adopted merely because it is proposed."}
+
+
+def qualify_context_population_trial(archive, *, input_sha256, request, repo_root, data_root):
+    """Qualify one complete K16 successor and describe its retention signal.
+
+    Reuse complete-family READ/seal/score and measured-cost gates. This does
+    not adopt a policy, dispatch a run, write optimizer state or resize the
+    historical K4 iterator. A root business review remains mandatory.
+    """
+    packet, plan, ids = _population_update_input(archive, input_sha256)
+    root, data = Path(repo_root).resolve(), Path(data_root).resolve()
+    require(isinstance(request, dict) and set(request) == {"bindings", "recipe_pin"},
+            "evaluation requires source bindings, never caller-entered reward")
+    base = archive.root / "context-learning" / "populations" / plan["batch_id"]
+    result = json.loads((base / "result.json").read_text())
+    raw = json.loads((base / "response.json").read_text())
+    require(result.get("status") == "recorded" and result.get("input_sha256") == input_sha256
+            and result.get("response_sha256") == raw.get("response_sha256")
+            == content_hash(raw.get("response_document"))
+            and [x.get("candidate_id") for x in result.get("records", [])] == ids
+            and all(x.get("status") == "provisional" for x in result["records"]),
+            "all sixteen preserved provisional updates required; other dispositions remain held")
+    expected = {row["candidate_id"]: row["bundle_id"] for row in result["records"]}
+    old_recipe = _load(packet["recipe"], root)
+    old_registration = _load(old_recipe["context_learning_registration"], root)
+    require(old_registration["registration_sha256"] == packet["family_commitment"]["registration_sha256"],
+            "original qualified registration differs")
+    qualified = _qualified_feedback(request["bindings"], recipe_pin=request["recipe_pin"], repo_root=root)
+    evidence, recipe, registration, protocol, candidates, controls, reference = qualified
+    update = protocol.get("learning_update")
+    require(isinstance(update, dict) and update.get("algorithm") == packet["algorithm"]
+            and update.get("iteration") == protocol.get("iteration") == packet["iteration"],
+            "prospective population update identity differs")
+    require(_load(update["source_packet"], data) == packet
+            and _load(update["original_update_record"], data) == result,
+            "registered trial must pin the exact optimizer input and original update record")
+    require(recipe["family_id"] != packet["family_id"] and candidates == ids
+            and controls == ["seed", "seed-aa"]
+            and recipe["sample_ids"] == [g["sample_id"] for g in packet["groups"]]
+            and reference == packet["reference"]
+            and protocol["frozen_reference"] == packet["frozen_reference"]
+            and protocol["sampling"] == packet["sampling"]
+            and protocol["measurement_profile"] == packet["measurement_profile"],
+            "successor family roster, reference, sampling or measurement envelope differs")
+    require(set(registration["member_bindings"]) == set(ids + controls)
+            == set(old_registration["member_bindings"]),
+            "both complete candidate/control families required")
+    for cid, binding in registration["member_bindings"].items():
+        previous = old_registration["member_bindings"][cid]
+        require(binding["bundle_id"] == expected.get(cid, previous["bundle_id"])
+                and binding["run_id"] != previous["run_id"]
+                and binding["attempt_id"] != previous["attempt_id"],
+                "trial must use exact original children, unchanged controls and fresh attempts")
+        if cid in ids:
+            require(previous["bundle_id"] == packet["policies"][cid]["bundle_id"],
+                    "source policy ancestry differs")
+    groups = _candidate_groups(evidence, recipe, registration, candidates, reference)
+    totals = []
+    for cohort in (packet["groups"], groups):
+        require(len(cohort) == 20
+                and [g["sample_id"] for g in cohort] == recipe["sample_ids"]
+                and all([m["candidate_id"] for m in g["members"]] == ids for g in cohort),
+                "retain every ordered one of 320 candidate trajectories")
+        values = [m["utility"] for g in cohort for m in g["members"]]
+        require(all(type(v) in (int, float) and math.isfinite(v) for v in values),
+                "finite qualified terminal utilities required")
+        totals.append(math.fsum(values))
+    business = measured_rows(evidence, candidates, registration["member_bindings"],
+                             profile=protocol["measurement_profile"])
+    return {"schema": "saea-context-population-qualified-trial-v1",
+            "input_sha256": input_sha256, "response_sha256": result["response_sha256"],
+            "trial_commitment": {"recipe": request["recipe_pin"], "family_sha256": content_hash(evidence),
+                                 "registration_sha256": registration["registration_sha256"]},
+            "before_groups": packet["groups"], "after_groups": groups,
+            "business_before": packet["business_measurements"], "business_after": business,
+            "utility_before": totals[0], "utility_after": totals[1],
+            "utility_increased": totals[1] > totals[0], "criterion": "strict-population-utility-sum",
+            "root_review_required": True, "formal_adoption": False, "runtime_admission": False,
+            "automatic_next_iteration": False, "contacts_added": {"model": 0, "scorer": 0},
+            "interpretation": "Optimization retention signal across separate complete batches on the same "
+                              "roster; no common scientific frontier, causal node credit or efficacy claim."}

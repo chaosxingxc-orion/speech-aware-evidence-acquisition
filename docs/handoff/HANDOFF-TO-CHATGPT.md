@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## K16 update-two preparation complete; freeze before capacity
+
+[Complete preparation](../receipts/continuation/2026-10-04-k16-update2-engineering-preparation-complete.json) records all16 children/48 engineering cells plus the separately completed18 N20 supplies. Sessions42864,76978 and93797 ended0. Exact16 capacity members are registered,warm-verified and ready for clean frozen checks; no tokenizer,generation or scoring contact occurred. Do not rerun preparation or registration.
+
+[Qualified population-trial interface](../receipts/continuation/2026-10-04-k16-population-trial-qualification-engineering.json) adds qualify_context_population_trial to the existing shared learner. It requires the original16 archived provisional updates, exact prospectively pinned source/update record, complete shared READ/seal/unique-score custody,same20 roster/reference/controls/sampling/measurement and320 matched trajectories. It reports strict utility-sum increase and actual business costs without adopting,dispatching,writing learning state or resizing the old K4 iterator. All303 related tests pass; module and new-interface statement coverage100percent. Real successor qualification remains unexecuted.
+
+Freeze the new capacity checkout, run all16 frozen checks and seal the exact launch registration before Windows-owned capacity dispatch. Afterwards use the prepared update2 structural and N20 entries with their separate gates. The new trial interface requires the exact learning_update pins already included by the prospective N20 helper. Keep full original histories,abstract-only learner,formal seed,paused heartbeat,other-carrier holds and human-before8x400.
+
 ## K16 update-two complete N20 supplies ready; capacity registration queued offline
 
 [Complete preparation](../receipts/continuation/2026-10-04-k16-update2-n20-preparation-complete.json) verifies all18 distinct runtime identities: unchanged seed/A/A and16 learned children,20 existing inputs each. Every own supply warm-verifies and preserves source selection contents. The exact preparation process/session76978 ended0; never rerun. All members remain HELD,with zero tokenizer,generation or scoring contacts.
@@ -2031,7 +2039,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-04T23:48:58.867990+00:00
+Last refreshed: 2026-10-04T23:59:54.753247+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

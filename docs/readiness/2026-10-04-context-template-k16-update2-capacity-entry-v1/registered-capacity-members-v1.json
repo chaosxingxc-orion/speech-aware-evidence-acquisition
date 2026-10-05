@@ -1,0 +1,290 @@
+[
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-01-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-01-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-01-capacity-fit-plan-registered-v1.json",
+      "sha256": "3439078b3543135c891ffe6fced025e3dc972b8dd9bf7e43ff1686046668d4f4"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-01-capacity-analysis-recipe-v1.json",
+      "sha256": "369085d09ff183afcaf7dbc7dd2c3854aab24177f3c710b8cb8194d9e0b3db1e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-CAPACITY-FIT-V1",
+    "system_id": "branch-01"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-02-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-02-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-02-capacity-fit-plan-registered-v1.json",
+      "sha256": "53cdaf463b123f81065fba08861091016f127567cc10766159be0fa4332298a6"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-02-capacity-analysis-recipe-v1.json",
+      "sha256": "d77a33756315cb720bd61e8646cd2e6381d777a0d7d1a7d948cd3f66c7276403"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-CAPACITY-FIT-V1",
+    "system_id": "branch-02"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-03-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-03-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-03-capacity-fit-plan-registered-v1.json",
+      "sha256": "d8ee9c24bf3601c18d0ada9c7a3453f076f562e395c495e4024e3eb6bca62e4b"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-03-capacity-analysis-recipe-v1.json",
+      "sha256": "a20d58f01402e9a11e6c06db63d1d4ba71b70eef8b7e7d0fe6f2a38ceb624f9b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-CAPACITY-FIT-V1",
+    "system_id": "branch-03"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-04-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-04-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-04-capacity-fit-plan-registered-v1.json",
+      "sha256": "6491cb7345cdb3b73c2fb7e04f255ab2350a4efb3a263e1884da175bda63e4da"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-04-capacity-analysis-recipe-v1.json",
+      "sha256": "8e925123aa554f291924420a125a7cabde2df064fa0fa943d0021bcf838002d3"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-CAPACITY-FIT-V1",
+    "system_id": "branch-04"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-05-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-05-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-05-capacity-fit-plan-registered-v1.json",
+      "sha256": "89adc029dd86cd304cca8bd963b9a57a36ee6d9cbc714990815a312f00372b36"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-05-capacity-analysis-recipe-v1.json",
+      "sha256": "02d89b89889822f871ed1b2b90cbf23f7986621d620deda6c30303ba6d8b3d12"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-CAPACITY-FIT-V1",
+    "system_id": "branch-05"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-06-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-06-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-06-capacity-fit-plan-registered-v1.json",
+      "sha256": "fba7d3f1ed1f1926b6d0329a826ede27388c5084810511d40965e5cbe09e0bb3"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-06-capacity-analysis-recipe-v1.json",
+      "sha256": "8f3f3d9bb81ebd8d3cdf63de4a026b3b89e60297068da5a232689cc837bdfab1"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-CAPACITY-FIT-V1",
+    "system_id": "branch-06"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-07-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-07-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-07-capacity-fit-plan-registered-v1.json",
+      "sha256": "09024aae1aabe98b8c3d6740a0fcd4021020a969b58404857e0095e536da1876"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-07-capacity-analysis-recipe-v1.json",
+      "sha256": "62f92b1cfee1f9c7c06af7b4ed152fe940d396b631e7b2f0bc725eb6057072e9"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-CAPACITY-FIT-V1",
+    "system_id": "branch-07"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-08-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-08-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-08-capacity-fit-plan-registered-v1.json",
+      "sha256": "5dc17a807d5a2f988bb774b80237d6631c2bedca8970946d28f1e503281c61c8"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-08-capacity-analysis-recipe-v1.json",
+      "sha256": "9c70a1726efa3774555ef2df9a04f6c90ab89ac9d195a6e2f8c96f6586149d3e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-CAPACITY-FIT-V1",
+    "system_id": "branch-08"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-09-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-09-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-09-capacity-fit-plan-registered-v1.json",
+      "sha256": "9e297a3b8bc9cd36e92719b7c41b161b889a8da331151773fca111841f1a4a9e"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-09-capacity-analysis-recipe-v1.json",
+      "sha256": "6e6295de3cd327da965a9975f301b8ceb62848cfee08ad8f6b374bb2973775d5"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-CAPACITY-FIT-V1",
+    "system_id": "branch-09"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-10-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-10-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-10-capacity-fit-plan-registered-v1.json",
+      "sha256": "b7165832dc8d1cab946152938de8db4a85695179e8d17bbd27cdbcb7666d0929"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-10-capacity-analysis-recipe-v1.json",
+      "sha256": "34b047a2449aeba60103defabbceb9908e40d01c971d327d75cc048d11ad288d"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-CAPACITY-FIT-V1",
+    "system_id": "branch-10"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-11-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-11-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-11-capacity-fit-plan-registered-v1.json",
+      "sha256": "16d7f2604a39e565dbae36b1c45d6571953deee13f9f4c0a8fb6493c5f334cd3"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-11-capacity-analysis-recipe-v1.json",
+      "sha256": "0aeca843bcd6272dc8be8ceaeda00d84619e481364bde140f6d62305b87ee7a6"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-CAPACITY-FIT-V1",
+    "system_id": "branch-11"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-12-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-12-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-12-capacity-fit-plan-registered-v1.json",
+      "sha256": "92df19fc9c5629e28646932e6519f4cb0b56128a272e6ae15636c306e6c939a0"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-12-capacity-analysis-recipe-v1.json",
+      "sha256": "bc4f4fb900755fd578243b4bd0afa80fa6662f87b0cf05d3f1b90d1f2dec26d5"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-CAPACITY-FIT-V1",
+    "system_id": "branch-12"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-13-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-13-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-13-capacity-fit-plan-registered-v1.json",
+      "sha256": "70f1201ce74fd666ccaf91d7905ea97c373449988acbf14436f2d29e0f4a3c1b"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-13-capacity-analysis-recipe-v1.json",
+      "sha256": "7bbfe7fded8b0695f13a14c4ef420e568c874541a39c429270c8957edc2935f2"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-CAPACITY-FIT-V1",
+    "system_id": "branch-13"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-14-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-14-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-14-capacity-fit-plan-registered-v1.json",
+      "sha256": "070365f2e60b6b484657d2664139bba612e7d70d9e8fc419fbe4c63a2d992b52"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-14-capacity-analysis-recipe-v1.json",
+      "sha256": "8e5eb635e3e4197a8fca55ac00cde4ca7490f278b15113cd0d823d3617923f30"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-CAPACITY-FIT-V1",
+    "system_id": "branch-14"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-15-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-15-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-15-capacity-fit-plan-registered-v1.json",
+      "sha256": "ec041c3f15605c963e423618716c7334d29de861fe21a1812fec71038cda3ee7"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-15-capacity-analysis-recipe-v1.json",
+      "sha256": "db2af699dfc654b296b4f6946638bf3519a1a23c192db4d41f5a72aa03b5b20e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-CAPACITY-FIT-V1",
+    "system_id": "branch-15"
+  },
+  {
+    "decision": {
+      "relpath": "coordination/context-template-k16-update2-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "2436239363e203bea51c7360e1c6066d5fb86d10c567230f7d06f5f004578f75"
+    },
+    "experiment": "slurp-native-stage3-context-template-k16-update2-branch-16-capacity-v1",
+    "graph": "slurp-native-stage3-context-template-k16-update2-branch-16-graph-v1",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-16-capacity-fit-plan-registered-v1.json",
+      "sha256": "4801fc6ad6b9c2ee9ae66bd0e785319301f1ae588c702d1e9c437cc35ef81c3c"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-04-context-template-k16-update2-capacity-entry-v1/branch-16-capacity-analysis-recipe-v1.json",
+      "sha256": "60f2e89a5ff46b83a5a2064a63471a02fa619bcae20308522cf0f80c84578cef"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-CAPACITY-FIT-V1",
+    "system_id": "branch-16"
+  }
+]

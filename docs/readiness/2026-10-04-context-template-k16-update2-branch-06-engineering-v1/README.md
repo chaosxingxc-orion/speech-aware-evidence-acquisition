@@ -1,0 +1,3 @@
+# K16 learned update2 template population branch-06 engineering preparation
+
+Prepare only the original proposed update2 complete-system child through the shared runtime. All three configurations bind its exact four-node policy and own warm-verified supplies. Knowledge selection outputs are byte-content equal to the corresponding original preparations; no audio, packet, query, vote or knowledge rebuild. No model, tokenizer or scorer contact. Graph, maximum-request capacity and four-row structural cells remain HELD pending their exact prospective registration, frozen runtime and live admission. Engineering is not task-quality evidence. The complete scientific N20 family remains separately required; preserve the original learner, responses and spent opportunities.

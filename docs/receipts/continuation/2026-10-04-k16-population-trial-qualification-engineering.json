@@ -1,0 +1,23 @@
+{
+  "schema": "saea-k16-population-trial-qualification-engineering-v1",
+  "at_utc": "2026-10-04T23:59:54.753247+00:00",
+  "source": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+    "sha256": "d951f61db65ed55a6629c31482e5ff9215feb74d1d9ae2c7c62ef7721e6fba8c"
+  },
+  "tests": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_context_population_trial.py",
+    "sha256": "22fe509887379fd2e0cdec99dd59f2214f965ed93a0bdaedce1cb02350f7e505"
+  },
+  "new_tests": 26,
+  "related_tests": 303,
+  "module_statement_coverage": 1.0,
+  "module_statements": 640,
+  "new_function_statement_coverage": 1.0,
+  "new_function_statements": 33,
+  "engineering_base_check": "PASS",
+  "tdd": "The new test failed for the absent interface before implementation. All tests now pass.",
+  "scope": "Exact original16 updates, complete fresh18-member family and shared READ/seal/unique-score qualification. Require same20 cohort,reference,controls,sampling,measurement and320 trajectories. Return strict population-utility signal and actual business costs; no automatic adoption,state write,dispatch or legacy K4 resize.",
+  "limitations": "Synthetic tests prove the new boundary and existing integration. Real learned successor evaluation remains pending. Statement coverage is not branch coverage or evidence of efficacy.",
+  "contacts_added": 0
+}
