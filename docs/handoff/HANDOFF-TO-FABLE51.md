@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner-approved Ubuntu restart completed; original serving identity restored
+
+[Explicit approval and termination](../receipts/continuation/2026-10-05-owner-approved-wsl-restart.json) supersede the pending restart hold. Only Ubuntu-24.04 was terminated once; old cache syscall session93079 ended1 as an interrupted operation,not successful cache completion. Original service logs,receipts and controls were preserved. [Restoration verification](../receipts/continuation/2026-10-05-wsl-restart-service-restored.json) confirms the new serving epoch2026-10-05T06:32:57.058161Z,PID655,exact original binary/GGUF/argv identity,four24576-token slots,fresh healthy idle telemetry and22954MiB GPU residency. Windows free memory is stable at27.86-27.89GiB; retain8/12.5GiB floors. Generation.guard is available; no queue/STOP changes or generation yet. Frozen structural runtime check session78177 completed successfully with exit0 and verified prepared artifacts; never resubmit. Proceed with the already prepared exact completed-driver transition and64-row structural launch,then create a fresh15-minute script heartbeat.
+
+
 ## Owner-approved cache reclaim recovered memory but remains blocked
 
 [Partial operation evidence](../receipts/continuation/2026-10-05-clean-cache-reclaim-partial-lock-wait.json) records one owner-approved clean-page-cache reclaim, with no sync,slab reclaim or persistent configuration change. Windows available memory rose from9.875 to19.902GiB; Linux file cache fell from32.6GiB to about0.4GiB. Thus the conditional4GiB reserve is unnecessary. However PID791452/session93079 remains live in D state at super_lock inside drop_caches; historical PID310214 also waits at super_lock inside sync. The lock holder is unknown. Do not retry,claim completion or dispatch while generation.guard remains owned. [A scoped Ubuntu restart proposal](../readiness/2026-10-05-scoped-wsl-memory-recovery-v1/proposal.json) is pending owner approval because it stops all distribution processes; preserve all frozen sources and exact serving receipts. No restart,control cleanup or GPU experiment launch has occurred.

@@ -1,0 +1,42 @@
+{
+  "schema": "saea-owner-approved-wsl-restart-v1",
+  "at_utc": "2026-10-05T06:33:43.940792+00:00",
+  "approval": {
+    "schema": "saea-owner-scoped-wsl-restart-approval-v1",
+    "at_utc": "2026-10-05T06:32:05.3115689Z",
+    "source": "Direct owner message confirming restart in the root chat",
+    "status": "APPROVED",
+    "distribution": "Ubuntu-24.04",
+    "scope": "One distribution termination and restoration of the original registered serving geometry; preserve original evidence and experiments.",
+    "no_active_experiment_or_scorer": true,
+    "windows_reboot": false,
+    "memory_floor_change": false
+  },
+  "termination": {
+    "at_utc": "2026-10-05T06:32:41.4391180Z",
+    "distribution_termination_exit": 0,
+    "cache_exec_session": 93079,
+    "cache_exec_terminal_exit": 1,
+    "cache_operation": "Interrupted by explicitly approved distribution termination, not completed normally",
+    "new_boot_id": "4cea3fef-9018-4b09-a383-50fbb5705f49",
+    "windows_free_gib_after_termination": 35.017,
+    "old_serving_tasks": "Ready",
+    "active_model_worker_or_scorer": false,
+    "STOP_present": false,
+    "flight_lock_present": false
+  },
+  "restore_dispatch": {
+    "at_utc": "2026-10-05T06:32:41.6683915Z",
+    "task": "SAEA-Serving",
+    "dispatch_count": 1,
+    "action": "Restore same registered geometry after owner-approved distribution restart"
+  },
+  "status": "Restoration in progress. Inspect the existing SAEA-Serving task and new server PID655; never resubmit while live.",
+  "preserved_evidence": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/owner-approved-clean-cache-reclaim-20261005-v1/pre-termination-serving-evidence",
+  "memory_floors_gib": {
+    "running": 8,
+    "startup": 12.5
+  },
+  "generation_contacts": 0,
+  "scoring_contacts": 0
+}

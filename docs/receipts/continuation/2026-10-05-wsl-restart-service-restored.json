@@ -1,0 +1,32 @@
+{
+  "schema": "saea-restored-service-verification-v1",
+  "at_utc": "2026-10-05T06:34:45.792335+00:00",
+  "old_epoch": "2026-10-01T03:10:56.492238+00:00",
+  "new_epoch": "2026-10-05T06:32:57.058161+00:00",
+  "pid": 655,
+  "identity_matches_old": true,
+  "argv_model_and_binary_match": true,
+  "slots": 4,
+  "slot_n_ctx": 24576,
+  "gpu_used_mib": 22954.0,
+  "telemetry_age_seconds": 0.36356663703918457,
+  "generation_guard_available": true,
+  "windows_memory_samples": [
+    {
+      "at_utc": "2026-10-05T06:33:56.4531203Z",
+      "free_gib": 27.893
+    },
+    {
+      "at_utc": "2026-10-05T06:34:06.5545405Z",
+      "free_gib": 27.86
+    },
+    {
+      "at_utc": "2026-10-05T06:34:16.6591151Z",
+      "free_gib": 27.883
+    }
+  ],
+  "new_session_receipt_sha256": "7ebad202d127e83f379a3320625c25d624f4494c58874e3565f0afe6e8b9cc3f",
+  "old_receipt_preserved_at": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/owner-approved-clean-cache-reclaim-20261005-v1/pre-termination-serving-evidence/session-receipt.json",
+  "generation_contacts": 0,
+  "note": "GPU residency restored; actual generation will be demonstrated only by registered structural work."
+}
