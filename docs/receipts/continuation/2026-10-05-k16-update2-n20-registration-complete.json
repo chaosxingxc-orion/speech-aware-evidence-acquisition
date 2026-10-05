@@ -1,0 +1,26 @@
+{
+  "schema": "saea-k16-update2-n20-registration-complete-v1",
+  "at_utc": "2026-10-05T08:34:56.248694+00:00",
+  "authority": "owner227",
+  "members": 18,
+  "rows_per_member": 20,
+  "total_trajectories": 360,
+  "candidate_count": 16,
+  "controls": [
+    "seed",
+    "seed-aa"
+  ],
+  "temperature": 0,
+  "seed": 20260913,
+  "contacts_during_registration": 0,
+  "all_existing_configuration_changes_only_readiness": true,
+  "preparation_session": 40291,
+  "preparation_exit_code": 0,
+  "complete_structural_evidence": "docs/receipts/continuation/2026-10-04-template-k16-update2-structural-complete.json",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-READ-V1",
+  "read_countersigned": false,
+  "registration_sha256": "9d046cd6f01925e5d0a6a0e840e3068d8d132dee44b579d3140a1611b3f30fbc",
+  "analysis_supplement_sha256": "0b79b351e25067c753824ef775fef09fcf301e2c5c2494d7bd12e75ae0851b53",
+  "scope": "Exact all-sixteen learned update-two population plus unchanged seed/A/A. Same existing20 inputs, fixed knowledge/assets. No partial quality read, proposal replacement, automatic next update or expansion.",
+  "next": "Serial integration, clean frozen worker, all eighteen frozen checks, then current live gates and exact completed-recovery control transition before dispatch."
+}

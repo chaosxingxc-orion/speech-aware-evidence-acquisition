@@ -1,0 +1,115 @@
+{
+  "schema": "saea-template-k16-structural-complete-v1",
+  "at_utc": "2026-10-05T07:42:00.444753+00:00",
+  "owner_decision": 227,
+  "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+  "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0",
+  "member_sources": [
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-01-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-02-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-03-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-04-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-05-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-06-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-07-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-08-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-09-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-10-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1",
+      "commit": "ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-11-SMOKE-4-OBSERVER-RECOVERY1-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+      "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-12-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+      "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-13-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+      "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-14-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+      "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-15-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+      "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0"
+    },
+    {
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-BRANCH-16-SMOKE-4-V1",
+      "worker": "/home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3",
+      "commit": "7e57894a15bff71ab61939f815f1463220c4c3d0"
+    }
+  ],
+  "excluded_failed_attempt": "attempt-slurp-native-stage3-context-template-k16-update2-branch-11-smoke-4-generation-v1",
+  "additional_failed_generation_contacts": 8,
+  "rows": 64,
+  "members": 16,
+  "model_contacts": 304,
+  "actual_request_fit_receipts": 304,
+  "fit_endpoint_contacts": 1216,
+  "official_scorer_contacts": 0,
+  "scorer_entry_metadata_verified": true,
+  "structural_pass": true,
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/structural-acceptance-v1.json",
+      "sha256": "7ab20469454266547eb796d63b278f433cc8e0a0462b1318515f641ed96fab99"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/root-sample-timing-v1.json",
+      "sha256": "ac1944106aabc1f61af515d49999eef60e66140846024405bf7c1c06c350de7c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k16-update2-observer-recovery1-owner227-v1/root-node-timing-v1.json",
+      "sha256": "9fbfa609b0540fff9dc795c633c0dc1875efcd36de7b30e36d99e34603d7ca7c"
+    }
+  ],
+  "scope": "All four roles, exact request FIT and valid visible Reviewer/Planner handoffs with native Omni terminal custody. Structural/timing evidence only. Uncalled knowledge paths are unobserved, not proven. No task-quality read or optimizer export.",
+  "next": "Register the exact18-member360-trajectory N20 scientific family. Its READ stays unsigned until complete independent seals and unique successful whole-member scores. No old K4 callback or automatic proposal/scale."
+}

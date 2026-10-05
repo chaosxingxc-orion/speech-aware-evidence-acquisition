@@ -1,5 +1,27 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Exact eighteen-member K16 N20 evaluation registration complete
+
+[Registration completion](../receipts/continuation/2026-10-05-k16-update2-n20-registration-complete.json) records successful model-free preparation session40291, exit0. Never resubmit it. All18 own supply/config bindings and complete plans are registered:16 original learned policies plus unchanged seed/A/A,20 existing inputs each,360 trajectories. Only readiness fields changed in the18 existing configs. The analysis supplement is pinned prospectively, including full-population retention and separate quality, intent, reliability and measured latency. No new generation/scorer contact occurred; the exact SAEA-SLURP-CONTEXT-TEMPLATE-K16-UPDATE2-N20-READ-V1 remains unsigned.
+
+The sixteen-policy64-row structural acceptance is complete;304 successful generation contacts and1216 FIT endpoints, plus8 excluded original failed contacts preserved separately. All engineering attempts remain intentionally unscored. No stable benefit or learning gain is established. The old job-scoped monitor was deleted after terminal verification.
+
+Next freeze codex-context-template-k16-update2-n20-v1 after serial integration and run all18 frozen checks once. Then revalidate resources/service/competing processes and use transition-completed-recovery-driver-v1.py, followed by Windows SAEA-Batch-Driver and a fresh15-minute script monitor. No duplicate preparation, old transition, partial READ or automatic expansion. Keep all assets and frozen sources,8/12.5GiB floors, other-carrier holds and human-before8x400.
+
+## Exact N20 registration continuing after interrupted model-free preparation
+
+[Continuation evidence](../receipts/continuation/2026-10-05-k16-n20-preparation-continuation.json): old tool session42768 is absent and there is no corresponding live process. Nine partial registration files exist; no new attempt or run exists. The unavailable terminal exit cannot establish a runtime/model failure. Root227 preserves every existing file and resumes the exact same offline registration through prepare-entry-v3.py, with equality-only reuse of existing JSON and the original admission timestamp. Three synthetic checks prove create, equal reuse and differing-file refusal. No policy, input, budget, identity, STOP or runtime request changed.
+
+Current durable wrapper session40291 is running; inspect prepare-entry-v3-started.json, stdout/stderr and exit.json in coordination/context-template-k16-update2-n20-owner227-v1. Do not duplicate it. The previous structural16-member64-row acceptance is complete. No GPU experiment or heartbeat is currently active. After complete registration, pin the analysis supplement, serially integrate and freeze the exact eighteen-member family, then pass all frozen checks before any control transition or dispatch. No partial quality read or automatic scale.
+
+## All sixteen learned-template structural proofs accepted; N20 preparation started
+
+[Complete structural record](../receipts/continuation/2026-10-04-template-k16-update2-structural-complete.json) and [root review](../receipts/continuation/2026-10-05-k16-complete-structural-root-review.json) verify64 accepted rows across all16 original learned policies,304 generation contacts,304 actual-request FIT receipts and1216 tokenizer endpoints. Every role/control handoff is valid and visible; native Omni terminal custody is preserved. There was no official scoring or task-quality read. The old failed branch11 and its8 additional contacts remain preserved and excluded. Engineering attempts retain intentional OPENED lifecycle; never score or reseal them.
+
+The six-member recovery driver8695 completed normally; root reader81966 ended0 after all three pinned audits. No admitted worker/scorer remains. Root deleted slurp-15. Numeric node and sample timing is preserved, but four engineering samples do not measure subsequent-batch throughput. Keep first sample, non-first samples and first-four versus later admissions separate in N20.
+
+The exact18-member360-trajectory scientific preparation is now running as session42768 through prepare-entry-v2.py. Do not resubmit it. Complete preparation, prospectively pin analysis, serially integrate, freeze codex-context-template-k16-update2-n20-v1 and pass all18 frozen checks before the prepared completed-recovery transition and Windows dispatch. No scientific contact or READ is authorized by this structural result alone. Create a fresh15-minute script monitor after launch and delete at terminal. Maintain8GiB running/12.5GiB startup floors, original service identity, fixed assets, other-carrier holds and human-before8x400.
+
 ## Observer recovery GPU batch launched; exact reader and fifteen-minute monitor active
 
 [Actual launch](../receipts/continuation/2026-10-05-k16-observer-recovery-launch.json): Windows SAEA-Batch-Driver epoch2026-10-05T07:26:14Z,root driverPID8695,frozen codex-context-template-k16-update2-observer-recovery1-v3 at7e57894a15bff71ab61939f815f1463220c4c3d0. Revalidate all identities. The exact original failed controls and stale lease were archived under root227 after verified dead processes,clean frozen checks,unchanged completed manifests,fresh idle service and sufficient Windows memory. Original attempts/sources were not altered. Branch11 observer-recovery1 completed4rows25contacts with basic inspector pass; remaining original branches12-16 continue. This is operational progress,not full structural acceptance or quality evidence.
@@ -2154,7 +2176,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T07:31:18.516091+00:00
+Last refreshed: 2026-10-05T08:34:56Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,0 +1,133 @@
+{
+  "schema": "saea-k16-complete-structural-root-review-v1",
+  "at_utc": "2026-10-05T07:43:18.499317+00:00",
+  "prior_goal_turn": "verified wait on live driver8695 and reader9200/session81966",
+  "structural_receipt": "docs/receipts/continuation/2026-10-04-template-k16-update2-structural-complete.json",
+  "all_members_passed": true,
+  "rows": 64,
+  "members": 16,
+  "generation_contacts": 304,
+  "fit_endpoints": 1216,
+  "official_score_contacts": 0,
+  "task_quality_read": false,
+  "failed_attempt_preserved_and_excluded": true,
+  "additional_failed_generation_contacts": 8,
+  "root_reader_exit_code": 0,
+  "automation_deleted": "slurp-15",
+  "sample_timing": [
+    {
+      "branch": 1,
+      "mean_seconds": 31.4583003715,
+      "first_seconds": 33.437380264,
+      "nonfirst_mean_seconds": 30.798607074,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 2,
+      "mean_seconds": 27.725279509,
+      "first_seconds": 21.643449965,
+      "nonfirst_mean_seconds": 29.752556023666667,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 3,
+      "mean_seconds": 72.47372570275,
+      "first_seconds": 79.004574299,
+      "nonfirst_mean_seconds": 70.29677617066666,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 4,
+      "mean_seconds": 45.885668674,
+      "first_seconds": 40.003045795,
+      "nonfirst_mean_seconds": 47.846542967000005,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 5,
+      "mean_seconds": 22.4479578945,
+      "first_seconds": 20.82627114,
+      "nonfirst_mean_seconds": 22.988520146,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 6,
+      "mean_seconds": 27.41403585475,
+      "first_seconds": 22.975163295,
+      "nonfirst_mean_seconds": 28.893660041333334,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 7,
+      "mean_seconds": 49.47719742075,
+      "first_seconds": 42.023207375,
+      "nonfirst_mean_seconds": 51.96186076933333,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 8,
+      "mean_seconds": 39.96252391675,
+      "first_seconds": 34.156315948,
+      "nonfirst_mean_seconds": 41.897926573,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 9,
+      "mean_seconds": 21.30599065875,
+      "first_seconds": 20.537453531,
+      "nonfirst_mean_seconds": 21.562169701333335,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 10,
+      "mean_seconds": 28.59291775625,
+      "first_seconds": 22.133131894,
+      "nonfirst_mean_seconds": 30.746179710333333,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 11,
+      "mean_seconds": 69.8983904885,
+      "first_seconds": 83.61964324,
+      "nonfirst_mean_seconds": 65.32463957133334,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 12,
+      "mean_seconds": 47.4377065035,
+      "first_seconds": 37.2952603,
+      "nonfirst_mean_seconds": 50.81852190466666,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 13,
+      "mean_seconds": 21.7369717315,
+      "first_seconds": 20.954639512,
+      "nonfirst_mean_seconds": 21.997749138,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 14,
+      "mean_seconds": 29.454785976,
+      "first_seconds": 23.63057488,
+      "nonfirst_mean_seconds": 31.39618967466667,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 15,
+      "mean_seconds": 64.81475148425,
+      "first_seconds": 72.696868943,
+      "nonfirst_mean_seconds": 62.18737899800001,
+      "after_first_four_count": 0
+    },
+    {
+      "branch": 16,
+      "mean_seconds": 56.99340748425,
+      "first_seconds": 66.926637806,
+      "nonfirst_mean_seconds": 53.68233071033333,
+      "after_first_four_count": 0
+    }
+  ],
+  "timing_limit": "Four inputs per member occupy the first slot-count admissions only. Non-first sample timing is recorded, but there are no subsequent-batch samples and no warmed-throughput or quality claim. Full N20 will retain both distinctions.",
+  "next": "Prepare and freeze the unchanged eighteen-member360-trajectory scientific evaluation; exact full-family READ remains unsigned."
+}
