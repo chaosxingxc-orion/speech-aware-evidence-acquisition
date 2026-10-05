@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Configured structural intent ready while capacity preflight runs
+
+[Prepared intent](../receipts/continuation/2026-10-05-partitioned-update3-structural-intent-prepared.json) verifies every exact prepared child, role binding, source prefix and supply hash against the population configuration. Derived totals are64 structural trajectories,832 generation contacts and3328 separately registered FIT endpoints, with no scorer. This is not runtime admission. After actual capacities succeed, use intent-v1.json in docs/readiness/2026-10-05-partitioned-update3-structural-entry-v1 as the exact registration basis; keep serial per-member runtime preparation and preserve all no-change positions. Do not execute historical hardcoded K16 preparation helpers.
+
+Corrected capacity frozen-check exec58357 remains the existing live handle; inspect its v2 logs/exit and do not duplicate. The Windows capacity wrapper capacity-windows-v1.ps1 is prepared and syntax-checked in coordination/partitioned-update3-capacity-owner227-v2, with a mandatory exact RegistrationSha parameter, exclusive start/exit receipts and no retry. No scheduled task or model contact has been started by that wrapper. Finish frozen-check-v2, finalize-capacity-registration-v2, verify live service/STOP/guard/resources, then bind the exact registration hash and launch once. The capacity worker remains frozen at b691e8622 regardless of later documentation commits.
+
 ## Frozen update3 preflight in progress
 
 The registered capacity worker is frozen at b691e86222adb55b77a0af97663d493b21efc2a9 in /home/chao/saea-worktrees/codex-partitioned-update3-capacity-v1. Original model-free frozen checking stopped after the first member because the helper shadowed Python gc with a CampaignCell. [Root227 disposition](../receipts/continuation/2026-10-05-partitioned-update3-frozen-helper-disposition.json) preserves original code/logs and renames that local variable in frozen-check-v2.py, using separate v2 output files. No model/tokenizer/scorer contacts or frozen source edits occurred.

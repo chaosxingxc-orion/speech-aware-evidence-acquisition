@@ -1,0 +1,25 @@
+{
+  "schema": "saea-configured-structural-preparation-v1",
+  "at_utc": "2026-10-05T18:23:12.725553+00:00",
+  "intent": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-structural-entry-v1/intent-v1.json",
+    "sha256": "604ef7b293862a2871b173c7593d35c599e7d99af51074c44e561a16af12e5d7"
+  },
+  "totals": {
+    "fit_endpoint_contacts_cap": 3328,
+    "generation_contacts_cap": 832,
+    "official_score_jobs": 0,
+    "structural_trajectories": 64,
+    "systems": 16
+  },
+  "verified": [
+    "Exact pinned population candidate order",
+    "Each held prepared composed configuration hash",
+    "Actual role bytes and bundle binding for every member",
+    "Same prepared supply hash and existing first-input prefix",
+    "Sampling, execution geometry and separate generation/FIT limits derived from configuration"
+  ],
+  "capacity_prerequisite": "Pending complete configured capacity family; no capacity success is inferred.",
+  "runtime_admission": false,
+  "contacts_added": 0
+}
