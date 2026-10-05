@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Both controls complete; separate finalizer cost from sample latency
+
+[Operational timing](../receipts/continuation/2026-10-05-k8a-operational-cost-observation.json): seed and A/A are independently FINALIZED with one successful official job each and zero failures;125 and131 model contacts. Their official worker totals are273.157 and43.839seconds. These include verification,gates,scoring and finalization,not isolated evaluator or model time. A separate import-only measurement took0.818seconds with no model/scorer invocation or task read; it cannot retroactively attribute the first worker's delay. No cache or speedup conclusion follows from two observations. Keep this batch overhead separate from admission-to-settled sample latency and node prefill/decode timings in the eventual complete-family report.
+
+Driver10:36:59Z has advanced to branch01 under the original queue. Frozen62ae52eeb and all16 template policies remain unchanged. No new GPU dispatch,score replay,quality read or READ signature. Continue all ten members;15-minute monitor remains active;K8B held until exact complete A review. No implementation change is needed from the current operational timing evidence alone.
+
 ## First K8A member completed generation and authoritative scoring
 
 [Operational receipt](../receipts/continuation/2026-10-05-k8a-post-observer-first-member-complete.json): new seed is FINALIZED with125 model contacts,one successful official finalize job and zero failed jobs. Its persistent guard finished normally after99 valid physical Windows reads from one observer PID,min25.2829GiB. The official worker took273.16seconds; no speedup claim. Driver epoch10:36:59Z continues to A/A with no new dispatch. All task outputs and quality remain unread; exact full-family READ stays unsigned. This is one successful generation-to-score lifecycle,not completion of the ten-member panel or stable scientific benefit. Monitor remains active;K8B held and all original templates unchanged.

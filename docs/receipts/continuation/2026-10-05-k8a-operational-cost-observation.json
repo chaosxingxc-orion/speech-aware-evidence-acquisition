@@ -1,0 +1,67 @@
+{
+  "schema": "saea-operational-finalizer-cost-observation-v1",
+  "at_utc": "2026-10-05T10:52:19.842150+00:00",
+  "members": [
+    {
+      "member": "seed",
+      "state": "FINALIZED",
+      "model_contacts": 125,
+      "official_worker_elapsed_seconds": 273.1570010089781,
+      "successful_jobs": 1,
+      "failed_jobs": 0,
+      "attempt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-generation-v1.json",
+        "sha256": "6d6e3d89c8ebd6f8103bd8fdc9c92e4861366515e14016004f748440c42e7199"
+      },
+      "batch_summary": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-POST-OBSERVER-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-generation-v1/score-batch/batch-summary.json",
+        "sha256": "91181c7239a207bdd08d450b140bf1af9691bcf1cbd382d9bcce20422c69247e"
+      }
+    },
+    {
+      "member": "seed-aa",
+      "state": "FINALIZED",
+      "model_contacts": 131,
+      "official_worker_elapsed_seconds": 43.83944052294828,
+      "successful_jobs": 1,
+      "failed_jobs": 0,
+      "attempt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-generation-v1.json",
+        "sha256": "3288eb22c0b4daf1585c5c1508583f840bc9674fc7ef1da7bd7f25ebc18f3b50"
+      },
+      "batch_summary": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-K8A-UPDATE2-N20-SEED-AA-V1/attempt-slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-generation-v1/score-batch/batch-summary.json",
+        "sha256": "2e07983f608dc917f1da2983c8ca1c7ff7db5f23a01063eb3da4fada57c7dd57"
+      }
+    }
+  ],
+  "driver_import_only": {
+    "elapsed_seconds": 0.8183270120061934,
+    "scope": "Module import only, no CLI main, scorer evaluation, output read or model request.",
+    "receipt": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/driver-import-complete-v1.json",
+      "sha256": "f665a43a75b5346f57a2311223224a3df52212a6ad3e549b618232e81d84b14c"
+    },
+    "script": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/measure-driver-import-v1.py",
+      "sha256": "6a01c3759b3bbe8c5677ebfa7df894ea50a759c452617199e35d5a07d7506e1d"
+    },
+    "trace": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-k8a-post-observer-n20-owner227-v1/driver-import-v1.stderr.log",
+      "sha256": "ee228240931cbe0377907feaec7cf47837add5141c3c258016330d946121e6b3"
+    }
+  },
+  "interpretation": [
+    "The official worker elapsed time includes process startup, bundle verification, source gates, evaluator work and finalization. It is not isolated evaluate.py time.",
+    "The first observed member took273.157seconds; A/A took43.839seconds. Both completed normally. Two observations do not identify the cause or prove cache benefit.",
+    "The separate import-only measurement took0.818seconds. It is a later isolated observation and cannot retroactively decompose the first process.",
+    "Report campaign wall time and finalizer cost separately from registered sample-admission-to-settled-workflow latency. Do not add overlapping sample latencies or attribute this cost to prefix cache.",
+    "After the exact full-family READ, compare all-sample and non-first sample latency, node prefill/decode/cache diagnostics, task quality, reliable completion and batch overhead."
+  ],
+  "new_model_contacts_by_diagnostics": 0,
+  "scorer_replays": 0,
+  "quality_read": false,
+  "task_outputs_read": false,
+  "runtime_changes": false,
+  "limits": "Operational timing evidence only; current frozen worker and all candidate policies remain unchanged. No optimizer export or partial-family benefit claim."
+}
