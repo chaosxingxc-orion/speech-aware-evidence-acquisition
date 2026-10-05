@@ -1,0 +1,13 @@
+# Complete configured update3 analysis
+
+Use the unchanged shared official reader and the three cohort-specific analysis supplements. Candidate/control counts, names, inputs and sampling derive from the pinned population config. Preserve all members, failures, abstentions, adverse changes, strata and natural/equal-stratum views. All thresholds, reward reference and estimators are unchanged.
+
+The root-only helper is `coordination/partitioned-update3-scientific-preparation-v1/review-cohort-v2.py` under the data root. Supply `qualify`, `countersign` or `read`, plus `--cohort`, `--flight-coordination` (data-root relative) and `--launch-receipt` (repo-root relative). The current original-a coordination is `coordination/partitioned-update3-scientific-preparation-v1/original-a-flight-v3`; launch receipt is `docs/receipts/continuation/2026-10-05-partitioned-update3-original-a-launch.json`. Run with python -B and explicit repository PYTHONPATH.
+
+Qualification first checks every attempt, then verifies every independent seal and unique successful complete score. WAIT returns exit75 without task-quality reporting or READ authorization. The live incomplete cohort passed this refusal check. Root countersign additionally requires the exact terminal driver epoch/queue, no active worker/scorer/lease or STOP, available guard and fresh unchanged qualification. It never scores, dispatches, unlocks or retries. Only then may root run the complete read. Preserve any partial/failed read output and diagnose; never replay silently.
+
+Report each node's measured prefill/decode/transport and each sample's admission-to-settled duration. Include original mean, first admitted sample, non-first mean, first slot-count admissions and remainder, and separate batch throughput. These groups diagnose reuse; they do not establish cold/warm cache state by themselves. Retain official quality, intent and reliable delivery alongside latency. Do not change the frozen runtime or selectively omit slow/failed samples.
+
+The source-join plan is prospective and intentionally cannot pass the registered source-reader schema. Construct the real source registration only after all configured cohort READs and actual frozen/saved-family hashes exist. Use the shared partitioned trial qualifier to compare all original and successor candidates. Do not export partial feedback, pool cohort-normalized returns, replace no-change positions or infer stable system benefit from N20. The later cohorts remain held for separate boundary review.
+
+Validation: all three scope/source-pin checks pass;109 shared reader/source-join/retention tests pass; the actual incomplete family returns WAIT and no root READ. No model/scorer contact or scientific quality read was added.

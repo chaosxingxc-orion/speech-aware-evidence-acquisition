@@ -1,0 +1,54 @@
+{
+  "schema": "saea-prospective-complete-trial-source-plan-v1",
+  "status": "PREPARED_NOT_QUALIFIED",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "trial_contract": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-context-update3-v1/trial-contract-v1.json",
+    "sha256": "77b9d93a5fe789d69b2f50e2ddd1d488064555e84fa44e105e60b071c5fc6d9d"
+  },
+  "cohorts": [
+    {
+      "cohort_id": "original-a",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/analysis-recipe-v1.json",
+        "sha256": "b3251bf22e7299f5bfb89bc74dae9a46ddc857f14e882f5e2aa5b8f1f27597fa"
+      },
+      "required_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1",
+      "expected_saved_family_relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-ORIGINAL-A-READ-V1/family.json",
+      "frozen_proof": "Bind actual separately admitted launch worker and successful frozen check after that cohort admission. No placeholder hash.",
+      "complete_read_required": true
+    },
+    {
+      "cohort_id": "remaining-b1",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b1/analysis-recipe-v1.json",
+        "sha256": "cb7046d9b07d7b048df1f75bb38a9ddc88ecee0133b5108f285b51f9024cab73"
+      },
+      "required_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1",
+      "expected_saved_family_relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B1-READ-V1/family.json",
+      "frozen_proof": "Bind actual separately admitted launch worker and successful frozen check after that cohort admission. No placeholder hash.",
+      "complete_read_required": true
+    },
+    {
+      "cohort_id": "remaining-b2",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/analysis-recipe-v1.json",
+        "sha256": "c290c724b986390d5ab73ce9673d8591aac6cca71e49793a955681b8f155d465"
+      },
+      "required_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1",
+      "expected_saved_family_relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-N20-V1-REMAINING-B2-READ-V1/family.json",
+      "frozen_proof": "Bind actual separately admitted launch worker and successful frozen check after that cohort admission. No placeholder hash.",
+      "complete_read_required": true
+    }
+  ],
+  "source_join_reader": "analysis.abstract_population_sources.read_registered_population_sources",
+  "retention_reader": "rails.system_context_partitioned_trial.qualify_partitioned_context_trial",
+  "requirement": "Before constructing ROOT_REGISTERED source join, bind actual complete READ authority, verified family manifests and saved family/frozen-proof hashes for every configured cohort. This plan is not accepted as a source registration.",
+  "comparison": "Preserve cohort-local normalized returns and cost/quality fronts. Strict population utility sum is only the registered optimization-retention signal, not a pooled frontier, causal node credit, independent validation or formal adoption.",
+  "new_model_contacts": 0,
+  "learner_exported": false,
+  "runtime_admission": false
+}

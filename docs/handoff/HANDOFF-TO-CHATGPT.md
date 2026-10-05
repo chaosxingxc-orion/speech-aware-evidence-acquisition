@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete-cohort analysis prepared while original-a runs
+
+[Prepared analysis](../receipts/continuation/2026-10-05-partitioned-update3-complete-analysis-prepared.json) pins all three unchanged cohort analysis supplements and the root-only config-driven helper at data-root coordination/partitioned-update3-scientific-preparation-v1/review-cohort-v2.py.109 shared reader, complete-source and retention tests pass. All three recipe/registration/protocol/source-pin checks pass. The actual incomplete original-a family returned WAIT/exit75 without quality or READ. V1 is preserved as that model-free wait proof; V2 additionally carries all requested first-admission, non-first, first-slot-count/remainder and throughput fields into the summary, using the unchanged shared timing reader.
+
+Use the [analysis guide](../readiness/2026-10-05-partitioned-update3-complete-analysis-v1/README.md) for qualify, root countersign and complete read. No automatic countersign or quality read has run. Read every seal/unique score only after all configured attempts finalize; then require exact driver terminal and absence of live worker/scorer/lease before signing the cohort READ. The prospective successor source-join plan deliberately lacks fabricated future hashes and is not accepted as a registered source join. Build the real join only after all configured cohort READs and actual frozen/saved-family artifacts exist; no partial learner export.
+
+Current job remains original-a driver43522/start_ticks55977166, epoch20:34:25Z, frozen5f834db33; revalidate identities. At this checkpoint first generation manifest is COMPLETED, attempt OPENED, and finalizer child44183 is live beneath campaign43690. This is expected scoring lifecycle, not a failed or complete family. No score value was read. Other cohorts stay held for root boundary review, resident serving continues, and slurp-update3-a-15-min remains active until verified job terminal.
+
+
 ## Configured original-a scientific cohort running
 
 [Actual launch](../receipts/continuation/2026-10-05-partitioned-update3-original-a-launch.json): Windows SAEA-Batch-Driver epoch2026-10-05T20:34:25Z, first arm20:34:50Z, frozen codex-partitioned-update3-original-a-n20-v2 at5f834db339a39123f922b7982f1ba54c24642c86. All10 frozen registration/runtime/supply/policy checks passed. The first configured cohort contains8 original candidates plus own seed/A/A,20 inputs each,200 trajectories,2600 generation/10400FIT caps. Derive scope from the pinned config and queue. Three startup observations passed in20.34seconds; Windows free22.63GiB before dispatch. Revalidate actual state.

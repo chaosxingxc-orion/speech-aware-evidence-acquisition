@@ -1,0 +1,55 @@
+{
+  "at_utc": "2026-10-05T20:41:33.585815+00:00",
+  "status": "MODEL_FREE_ANALYSIS_READY",
+  "supplements": [
+    {
+      "cohort": "original-a",
+      "supplement": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-original-a/analysis-supplement-v1.json",
+        "sha256": "94cc430de5c737f8a4537be100a99e771e3926a96c7cbe62a22872087e97ef16"
+      }
+    },
+    {
+      "cohort": "remaining-b1",
+      "supplement": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b1/analysis-supplement-v1.json",
+        "sha256": "3e35beeda509eff097f01883b8446cdaae56d5a8ed92b4a557de7eafa222b68c"
+      }
+    },
+    {
+      "cohort": "remaining-b2",
+      "supplement": {
+        "relpath": "docs/readiness/2026-10-05-partitioned-update3-scientific-preparation-v1-remaining-b2/analysis-supplement-v1.json",
+        "sha256": "7bae0633df48dc18f68e8637ddd4860306087915b0357510b1cb42f7daf4daf2"
+      }
+    }
+  ],
+  "root_review_helper": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/review-cohort-v2.py",
+    "sha256": "30dce72e0730334c4fd184475fe4fb39d97e8587cf846e8c17d426f5189fad1e"
+  },
+  "original_helper_wait_proof": {
+    "relpath": "coordination/partitioned-update3-scientific-preparation-v1/analysis-live-wait-check-v1.json",
+    "sha256": "ad4a6f2734b414f48fe8caa3a7e2d5178d1221368f918baca2ffa0fadf8a7e3a"
+  },
+  "tests": {
+    "count": 109,
+    "exit": {
+      "relpath": "coordination/partitioned-update3-scientific-preparation-v1/analysis-reader-tests-v1.exit.json",
+      "sha256": "6696514340b24a1d1e34a856c4147ecb5733f1ead752b5b1d3692f43d14271ae"
+    },
+    "stdout": {
+      "relpath": "coordination/partitioned-update3-scientific-preparation-v1/analysis-reader-tests-v1.stdout.log",
+      "sha256": "b7f51921a5bfd0124b4c85579750704d4cd8b4ff99a46f219084644b45e42171"
+    }
+  },
+  "source_join_plan": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "7139e84650403dedfe79ae16312b390be0db13e43522d5d8820ead60ccf59ba3"
+  },
+  "new_contacts": 0,
+  "quality_read": false,
+  "READ_signed": false,
+  "runtime_changed": false,
+  "timing": "Full-node timing plus original all-sample, first admission, non-first, first slot-count group, remainder and throughput. Never call the remainder guaranteed warm."
+}
