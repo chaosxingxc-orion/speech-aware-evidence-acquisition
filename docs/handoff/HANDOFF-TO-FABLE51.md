@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner prioritizes learning; retire prospective global cache cleanup
+
+The latest direct owner message asks whether root privileges help and prioritizes learning without repeated WSL restarts. [Current verification and prospective change](../receipts/continuation/2026-10-05-observe-only-boundary-prepared.json): the cache helper already runs as root, remains in an uninterruptible kernel wait, and still owns generation.guard; a real nonblocking acquisition was refused. The model is healthy and idle; Windows available memory was42.231GiB at15:33:27Z. This is a maintenance-lock obstruction, not demonstrated memory exhaustion or an inference-service failure. No restart is authorized by this new message; the earlier restart proposal has not been approved. Do not request the same approval repeatedly or infer consent.
+
+Configuration schema v3 supports observe-only boundaries and rejects global-cleanup/restart modes. A separately named successor config retains only the unchanged remaining-b2 candidates13-16, seed/A/A, same20 inputs, geometry, sampling and budgets.67 related tests and engineering-base pass. It is DRAFT, not activated or rebound into old runtime identities. Keep historical v1/v2 contracts and frozen bytes unchanged. Preserve normal resource admission guards and the real concurrency lock; observation-only does not authorize ignoring a pending kernel operation. No new cache write, restart, model/scorer contact, lock deletion or bypass occurred.
+
+B1 remains complete. Prioritize the remaining original template cohort, then complete-population abstract feedback and learning. Do not add a cache optimization campaign. Actual remaining-b2 launch still requires the current shared guard to become genuinely available, an exact incident disposition, successor bindings and frozen admission. Preserve the pending call and its missing after receipt honestly; never manufacture maintenance completion. Other carrier holds and human-before8x400 remain.
+
 ## One-distribution recovery prepared; explicit owner reply pending
 
 The pending global file-cache syscall has not returned. Root prepared [the exact recovery proposal](../readiness/2026-10-05-k4-cache-wait-restart-v1/proposal.json), preserved six session/control snapshots and read-only Windows task actions/restart policies. The earlier direct WSL restart approval explicitly allowed one termination and was consumed at06:32Z; do not reuse it. The human has now been asked for one Ubuntu-24.04-only termination/restoration. No answer has arrived at this stamp. Do not act on elapsed time or this prepared package.

@@ -130,3 +130,40 @@ def test_v1_cannot_silently_gain_maintenance_and_v2_requires_it():
     d["schema"] = "saea-experiment-population-config-v2"
     d.pop("boundary_maintenance")
     with pytest.raises(PolicyError): validate_population_config(d)
+
+
+def test_observe_only_boundary_survives_config_to_stage(tmp_path):
+    d = boundary_config()
+    d["schema"] = "saea-experiment-population-config-v3"
+    d["boundary_maintenance"]["mode"] = "observe-only"
+    ref = pin(tmp_path, "population.json", d)
+    stage = population_stage_spec(ref, repo_root=tmp_path, cohort_id="cohort-1")
+    assert stage["boundary_maintenance"] == d["boundary_maintenance"]
+    assert stage["population_budget"] == population_accounting(boundary_config(), "cohort-1")
+    assert stage["runtime_admission"] is False
+    assert stage["experiment_population"] == ref
+
+
+@pytest.mark.parametrize("version,mode", [
+    ("v2", "observe-only"), ("v3", "root-coordinated-clean-page-cache"),
+    ("v3", "restart-wsl"), ("v3", "drop-caches"),
+])
+def test_maintenance_modes_cannot_change_historical_schema(version, mode):
+    d = boundary_config()
+    d["schema"] = "saea-experiment-population-config-" + version
+    d["boundary_maintenance"]["mode"] = mode
+    with pytest.raises(PolicyError): validate_population_config(d)
+
+
+@pytest.mark.parametrize("field,value", [
+    ("global_sync", True), ("preserve_model_service", False),
+    ("require_generation_scoring_preprocessing_idle", False),
+    ("record_before_after", False), ("when", "during-generation"),
+    ("restart", True), ("global_sync", 0),
+])
+def test_observe_only_refuses_mutating_or_ambiguous_policy(field, value):
+    d = boundary_config()
+    d["schema"] = "saea-experiment-population-config-v3"
+    d["boundary_maintenance"]["mode"] = "observe-only"
+    d["boundary_maintenance"][field] = value
+    with pytest.raises(PolicyError): validate_population_config(d)

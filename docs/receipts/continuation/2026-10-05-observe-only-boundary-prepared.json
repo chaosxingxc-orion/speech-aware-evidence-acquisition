@@ -1,0 +1,38 @@
+{
+  "schema": "saea-root-continuation-receipt-v1",
+  "at_utc": "2026-10-05T15:34:29.773023+00:00",
+  "status": "PROSPECTIVE_OBSERVE_ONLY_CONFIG_PREPARED_CURRENT_LOCK_HELD",
+  "owner_source": "Latest direct human message in this thread, 2026-10-05, after the one-distribution restart proposal",
+  "owner_instruction_english": "Check whether WSL should run with root privileges. Avoid repeated WSL restarts; if experiments can run normally, do not spend further effort on this issue. Prioritize learning and iteration.",
+  "ruling": "Do not restart WSL under this message. Retire automatic global page-cache reclamation for prospective cohorts. Preserve the pending kernel call and the shared generation guard; do not bypass or claim completion.",
+  "observations": {
+    "cache_helper_pid": 61283,
+    "start_ticks": 53995152,
+    "state": "D",
+    "already_root": true,
+    "generation_guard_available": false,
+    "health": {
+      "status": "ok"
+    },
+    "cache_after_receipt_exists": false,
+    "windows_available_gib_at_153327Z": 42.231,
+    "telemetry_fresh_at_153327Z": true,
+    "completed_b1_trajectories": 120
+  },
+  "prospective_config": {
+    "relpath": "configs/experiments/slurp-context-template-k4-observe-boundary-n20-v1.json",
+    "sha256": "eec0f91774985e3fe1b0194629753d8dc732dbaad4700e8edcad7d05575b0e3e"
+  },
+  "config_status": "DRAFT_NOT_RUNTIME_ADMITTED",
+  "validation": {
+    "tests_passed": 67,
+    "engineering_base": "PASS",
+    "red_test_observed_before_implementation": true
+  },
+  "runtime_contacts": 0,
+  "scorer_contacts": 0,
+  "cache_writes": 0,
+  "restarts": 0,
+  "lock_bypass": false,
+  "next": "Rebind and qualify remaining-b2 against the successor config only after the real generation guard becomes available and a recorded incident disposition closes the current wait. Preserve all source families until the complete abstract learning export is qualified."
+}

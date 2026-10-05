@@ -24,6 +24,8 @@ def validate_population_config(document):
     """Validate structure and implemented capabilities, not an experiment allowance.
 
     Candidate counts, cohort counts, sample counts and budgets have no defaults.
+    Version 3 records boundary resources without cache writes or restarts.
+    Historical version 2 retains its exact maintenance contract.
     Their single source is this document. The supported role set and deterministic
     sampling are executor/research constraints, not proposed population sizes.
     """
@@ -31,16 +33,18 @@ def validate_population_config(document):
     version = document.get("schema")
     fields = ("schema", "experiment_id", "nodes", "sampling", "execution",
               "proposer", "contact_limits", "cohorts")
-    if version == "saea-experiment-population-config-v2":
+    if version in ("saea-experiment-population-config-v2", "saea-experiment-population-config-v3"):
         fields += ("boundary_maintenance",)
     _fields(document, fields, "population config fields differ")
-    require(version in ("saea-experiment-population-config-v1", "saea-experiment-population-config-v2")
+    require(version in ("saea-experiment-population-config-v1", "saea-experiment-population-config-v2",
+                        "saea-experiment-population-config-v3")
             and isinstance(document["experiment_id"], str) and document["experiment_id"]
             and document["experiment_id"].isascii(), "population config identity differs")
-    if version == "saea-experiment-population-config-v2":
+    if version in ("saea-experiment-population-config-v2", "saea-experiment-population-config-v3"):
         maintenance = document["boundary_maintenance"]
         required = {
-            "mode": "root-coordinated-clean-page-cache",
+            "mode": ("observe-only" if version == "saea-experiment-population-config-v3"
+                     else "root-coordinated-clean-page-cache"),
             "when": "after-complete-cohort",
             "require_generation_scoring_preprocessing_idle": True,
             "preserve_model_service": True,
