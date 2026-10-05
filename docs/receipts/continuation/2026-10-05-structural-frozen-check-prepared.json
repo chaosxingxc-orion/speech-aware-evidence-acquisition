@@ -1,0 +1,12 @@
+{
+  "at_utc": "2026-10-05T19:18:47.263927+00:00",
+  "status": "PREPARED NOT EXECUTED",
+  "authority": "Owner227 bounded engineering preparation; not runtime dispatch",
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/frozen-check-structural-v1.py",
+    "sha256": "18eec7ed0d309191fc75d0785cda715947b35a8449842608138562ff62946b9d"
+  },
+  "scope": "Read configured population and registered structural members, preserve their exact order, run each frozen registration/runtime/role-byte/graph-equivalence/supply verification in a separate serial process. No K/N membership hardcode. No new model/scorer contacts.",
+  "validation": "Python syntax only so far; actual frozen checks must run after completed capacity epoch review and structural registration. Do not equate helper preparation with successful flight admission.",
+  "next": "Qualify complete actual capacity epochs, run prepare-registration-v2 once, integrate registered records, create a clean pinned structural worker, then run this helper with explicit worker/commit/receipt-root. Revalidate live service/resources/STOP/lease before any Windows generation launch."
+}

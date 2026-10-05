@@ -1,0 +1,431 @@
+{
+  "schema": "saea-precontact-capacity-epochs-review-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "members": [
+    {
+      "candidate_id": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-01-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-01-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5535,
+      "capacity_output_sha256": "75f2e1fe310815b63961a15bf88dcb2cb1f895119864e1f6a203e8f97d22928e"
+    },
+    {
+      "candidate_id": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-02-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-02-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5531,
+      "capacity_output_sha256": "a1b8e52fd3fd920c185a5c462aaed51ae3c566cd0a5f208718ba6091c490952d"
+    },
+    {
+      "candidate_id": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-03-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-03-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5532,
+      "capacity_output_sha256": "3d301ff719c8145b9f37ef054bc55699668370f2d5816fa7bc72eb82254676c9"
+    },
+    {
+      "candidate_id": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-04-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-04-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5541,
+      "capacity_output_sha256": "2036b740c876b6adacf98dd0c879064b8fdd8d99cd02a60f72b7e9d6f4db0415"
+    },
+    {
+      "candidate_id": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-05-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-05-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5534,
+      "capacity_output_sha256": "853b16c52e997c1cc794401822b5df26f4f1727479a7a2d6c108901c6b6aee15"
+    },
+    {
+      "candidate_id": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-06-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-06-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5531,
+      "capacity_output_sha256": "146a6e0aeb08c4e4fcfaa81b7cea097991644b7ab70e840ba9b82dab658e3801"
+    },
+    {
+      "candidate_id": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-07-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-07-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5536,
+      "capacity_output_sha256": "bb431982243d927b502d618622767b14a93f85028e4489e0889960d45d6aaae2"
+    },
+    {
+      "candidate_id": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-08-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5476,
+      "capacity_output_sha256": "17a3a93d08155df2521e84316dce87c893cf7356ce185cfdbe07bb7d1ba77b50"
+    },
+    {
+      "candidate_id": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-09-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5538,
+      "capacity_output_sha256": "5ab2aae7767497a120d05791638cd7aba0c8e6c820dfb131222781b66c4675e0"
+    },
+    {
+      "candidate_id": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-10-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5532,
+      "capacity_output_sha256": "f0b22a64a1503ba2d7fb6c3170a1ecfded096682bbd9323fd282cde80b17c42d"
+    },
+    {
+      "candidate_id": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-11-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5538,
+      "capacity_output_sha256": "12af1ca51431e0a2c3ed095598b5fda2eca8b9b5c62b27991e4e62b46522b8dc"
+    },
+    {
+      "candidate_id": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-12-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5539,
+      "capacity_output_sha256": "2feaf71abe215b126051098650fd8f465eef4ad42dc100c76d730a10ddcadeb1"
+    },
+    {
+      "candidate_id": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-13-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5541,
+      "capacity_output_sha256": "ac87e0fc783be34ae80342db5d66a8fd061c48c739107c8bf1299598c3368351"
+    },
+    {
+      "candidate_id": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-14-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5536,
+      "capacity_output_sha256": "a4d0990a214c966c04ad1136f4cc5af758ea6fc761f57442b825e887d7c7414f"
+    },
+    {
+      "candidate_id": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-15-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5465,
+      "capacity_output_sha256": "18208ceffb809a4f62f0c53817b594e5ffc7979261de1b23b8e2577574bc6099"
+    },
+    {
+      "candidate_id": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE3-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update3-branch-16-capacity-fit-v1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5541,
+      "capacity_output_sha256": "b88fdd6f321377f1f9c5904fc8692d90b72a1d2ab761111aef684266d129b5b7"
+    }
+  ],
+  "tokenizer_endpoints": 4752,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "root_review_required": true,
+  "runtime_admission": false,
+  "epochs": [
+    {
+      "epoch_id": "2026-10-05T18:30:02.602915+00:00",
+      "exit_code": 1,
+      "completed_candidate_ids": [
+        "branch-01",
+        "branch-02",
+        "branch-03",
+        "branch-04",
+        "branch-05",
+        "branch-06",
+        "branch-07"
+      ],
+      "evidence_sha256": "158f4130890181ed11bd32ad8d4160df463bbdeeda79df296e83c94400f99a0e"
+    },
+    {
+      "epoch_id": "2026-10-05T18:54:17.493170+00:00",
+      "exit_code": 1,
+      "completed_candidate_ids": [],
+      "evidence_sha256": "5b1e84fdeb418ea9e617c2fd2cf6140ee5519dc1f2425caa8c0fb596b49a719e"
+    },
+    {
+      "epoch_id": "2026-10-05T19:08:38.828939+00:00",
+      "exit_code": 0,
+      "completed_candidate_ids": [
+        "branch-08",
+        "branch-09",
+        "branch-10",
+        "branch-11",
+        "branch-12",
+        "branch-13",
+        "branch-14",
+        "branch-15",
+        "branch-16"
+      ],
+      "evidence_sha256": "f8fe832d1ba9a276e48f6e5220519584069cf3686db0f8f8f4d4573217c41aff"
+    }
+  ],
+  "member_source_epochs": {
+    "branch-01": "2026-10-05T18:30:02.602915+00:00",
+    "branch-02": "2026-10-05T18:30:02.602915+00:00",
+    "branch-03": "2026-10-05T18:30:02.602915+00:00",
+    "branch-04": "2026-10-05T18:30:02.602915+00:00",
+    "branch-05": "2026-10-05T18:30:02.602915+00:00",
+    "branch-06": "2026-10-05T18:30:02.602915+00:00",
+    "branch-07": "2026-10-05T18:30:02.602915+00:00",
+    "branch-08": "2026-10-05T19:08:38.828939+00:00",
+    "branch-09": "2026-10-05T19:08:38.828939+00:00",
+    "branch-10": "2026-10-05T19:08:38.828939+00:00",
+    "branch-11": "2026-10-05T19:08:38.828939+00:00",
+    "branch-12": "2026-10-05T19:08:38.828939+00:00",
+    "branch-13": "2026-10-05T19:08:38.828939+00:00",
+    "branch-14": "2026-10-05T19:08:38.828939+00:00",
+    "branch-15": "2026-10-05T19:08:38.828939+00:00",
+    "branch-16": "2026-10-05T19:08:38.828939+00:00"
+  },
+  "at_utc": "2026-10-05T19:23:45.238936+00:00",
+  "intent": {
+    "relpath": "docs/readiness/2026-10-05-partitioned-update3-structural-entry-v1/intent-v1.json",
+    "sha256": "604ef7b293862a2871b173c7593d35c599e7d99af51074c44e561a16af12e5d7"
+  },
+  "source_receipts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/registration-v1.json",
+      "sha256": "52ef55b006c2f04e9f0ece452a74f2d47fbfd3fb79ac2372e931c23444cd8451"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/capacity-started.json",
+      "sha256": "5a47e755fe69c752b80485763cdc8f911909a6a5185843c44628bf1c830f2107"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/capacity-finished.json",
+      "sha256": "6fc7046042cf5342547a135d46dc19a7ee6ae0a080ebad479ff9c044f3e23e35"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/capacity-windows-v1.exit.json",
+      "sha256": "e1bf1b307a5586c1b7db7ebd4115ca28f78a401ca214944ea316616a2cfda4f7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-01-capacity-exit.json",
+      "sha256": "0f075bb0773f7d50eeba8e60a22ee2a2b82ee0665bfcabd31ad09588a988439b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-01/request-fit-v1.json",
+      "sha256": "548492fe7207f78621d5494e1dc8765f00d9eaec47749ad8e34b778490013e66"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-02-capacity-exit.json",
+      "sha256": "e13309eab0eaed18e0e495cd6835254abe01258384ac7d73332a05584e6dc5a8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-02/request-fit-v1.json",
+      "sha256": "fb7671c86b47797290f7177f8cca9be7f9f52ae64d20d959b3064e56a6c6f043"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-03-capacity-exit.json",
+      "sha256": "0c6980314ca37dfe7bc4685547e4e73c21a9b8d6c718a0a4f179f4a4aae4fbc2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-03/request-fit-v1.json",
+      "sha256": "b607dd8821da5766604a3d1adb3ebd23c3a93cc66cbf20548a4f0210a7dc1eb5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-04-capacity-exit.json",
+      "sha256": "1e6f942f016958b3266fa3b076aecfb0b5eb96eb30886f7d1f35194718c607c4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-04/request-fit-v1.json",
+      "sha256": "d16df1cba692d49d6e5698eeb4a6c4be0f4b3cafc9416f4fde91b1299ffff6f3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-05-capacity-exit.json",
+      "sha256": "52441fc0a9d0bec50fbc90f4a50bc4cac955a77369fd64b6c884dcded27a81ea"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-05/request-fit-v1.json",
+      "sha256": "b617f9ef7260a4352db785f51e3ad35ff51679375682efc1cc602dc8b254c070"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-06-capacity-exit.json",
+      "sha256": "4a0c100a0edcf04031d4da65408c59abe38030a28c3a5a67c0bf9f571ba9db74"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-06/request-fit-v1.json",
+      "sha256": "5d7220a3b7c8a3fb4d2b275473dce5c0b9c1687914b5cb0431408046945f8c1f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-07-capacity-exit.json",
+      "sha256": "8d0359c02a2d663e6e371f96ba129868a74938b7a9d62ab714045136c9451ba4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-07/request-fit-v1.json",
+      "sha256": "7796bc4175279c763e4abe712a29468419117959367e54422cb312c8e22dbd32"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-08/memory-wait/finished.json",
+      "sha256": "2b9d8d126ecd4c188e9c6ba2f59c056e632bb7a09cb98c495198ad3fa44df481"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/capacity-failure.json",
+      "sha256": "f37a7fec4655fdc6e938491280d0e291f90f6bc0bb932b93ef476930b12a9292"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-owner227-v2/branch-08/memory-wait/events.jsonl",
+      "sha256": "be3a1408bf05e56e18903d3a65d1c4e59ec23a9c5a842737a55c3ce92f17c073"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/registration-v2.json",
+      "sha256": "3bc8cc0c223b8120ef69be24fb97ad44fe3b0f3bb5cbaa45894783630dc06e96"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/capacity-started.json",
+      "sha256": "13c8f22298de758b8ec0d8bc3781e80fb4f4b713d9a67f4403cb30ec65fdf17e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/capacity-finished.json",
+      "sha256": "05cdecfac3e68d9c89d75fa1c24a580b7280a6593aaab7d8500695798eb2c4a5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/capacity-windows-v1.exit.json",
+      "sha256": "de1ff7e7fca9939e2fa1a04543cc6e19282b6704ad06c332504b4a3eb244ff41"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/root-capacity-admission-v1.json",
+      "sha256": "ef52eec0b2a4947097c874fd1627166fc9a36789ad9b5fde6dc7c8946a82afa5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/branch-08/memory-wait/finished.json",
+      "sha256": "c27394ac86f5eaea78b09a3b046f5f19c9497b7db5b975eaaf2e5b9be1721243"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/capacity-failure.json",
+      "sha256": "919917f14b81e94897af2bbe1ec3e789ee9ad92537428453437cc4ca99a27c4f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/branch-08/memory-wait/events.jsonl",
+      "sha256": "d0b1e7fe3f1807f89a378a3189c9103912c09dea883fbcb71c23bb2035b4e4f8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/registration-v1.json",
+      "sha256": "6b5cfab1fcb68d0bbc4e13bfd8ea5116c398fc737a294a2320a53781af075d95"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/capacity-started.json",
+      "sha256": "c70bc275924dd4b910132bf32ac53aa82cc3bca64134640a58f96a1095929d49"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/capacity-finished.json",
+      "sha256": "ec2493561ae6b3aad22593e32b6eb6bfbc8c08e5ff92b82c95cd237f6c93962e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/capacity-windows-v1.exit.json",
+      "sha256": "b916544c75574f4964b7737ec0427406379d80ff789bf1c4303cb72a46663273"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/root-capacity-admission-v1.json",
+      "sha256": "02114e0147ed41d484d11088d21c32097c570af35591d190b27a404001baabcd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-08-capacity-exit.json",
+      "sha256": "0214a361569b48f35ba110e6e135f2c023fae7d8c562696db98f5183663e856a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-08/request-fit-v1.json",
+      "sha256": "90af7d76e5a7d37d899c50fbf09426365e1fa1f31e1b2fdf0afb3e2984c919ca"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-09-capacity-exit.json",
+      "sha256": "f89044e4f88d2d29d0a3cede63c49ff7528feecf501710eb074390314b0fb53d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-09/request-fit-v1.json",
+      "sha256": "12d47568d626aac6c71bec0031d71f391ee26da3b23734cd68260897ac21f22d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-10-capacity-exit.json",
+      "sha256": "aadce4faaa5d6ccf3698febb8b0fe6d5f78667204be61af79a2241bc9fcaa7cf"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-10/request-fit-v1.json",
+      "sha256": "0cf770ae4ba50f5c97eb3b9c150ff3ecc745034aaa3b95b1da2aa23a140f0ac4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-11-capacity-exit.json",
+      "sha256": "66ba0bdf87738adba323d65582ae2bc98b7e2930798868837d0ae89c5e644b85"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-11/request-fit-v1.json",
+      "sha256": "b3bf9a5425a5f07118d3bddb82452e5a9b10a4c0f603a961f08d8fe1f20b7d7d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-12-capacity-exit.json",
+      "sha256": "6a8db8919b9a431e603e9fb0f1f412f97d57615dcec064f151011aa2e6a19ef2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-12/request-fit-v1.json",
+      "sha256": "f79cb38440c6f58067cc56176f9a0a4a6f19fc8b5d3c8cc66f36732434b64794"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-13-capacity-exit.json",
+      "sha256": "f40f7d8f8615ec3816a6d667b02802514cd01c63204479cf61e33eff1a31bed8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-13/request-fit-v1.json",
+      "sha256": "0daee070048229d1f94a01ce46c96f20ceb47e452522ff6b2022b55d097077bf"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-14-capacity-exit.json",
+      "sha256": "26e92a6319890ac1b414605619b8e359163d7aaccac1a3eee9557d3186812166"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-14/request-fit-v1.json",
+      "sha256": "91dcc74026c1c1aa0258d76bb04f2db054888b9ee79ad43ceed9b3b9bc2425f3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-15-capacity-exit.json",
+      "sha256": "4505b8e3258bbe5abe947ec45b3c52d7a6c586231d03af400f44ee95208eaa48"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-15/request-fit-v1.json",
+      "sha256": "285f97adf0429026ed7667e00c3a70454d9009972ccfb0ad7750c0a7510c0325"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-16-capacity-exit.json",
+      "sha256": "7ac1ca5136e0b352c638c7915426159930ad0aba8ecd2b958049207f314f7b7e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/branch-16/request-fit-v1.json",
+      "sha256": "9ae00dc24c8122e802894b3a0e2ed2d311e120a078a440a55056acfe66f15a5d"
+    }
+  ],
+  "scope": "Exact root-admitted precontact source join; all failed exits preserved; registered structural capacity read only. Actual runtime request FIT remains mandatory.",
+  "read_authority": "Owner227 and exact registered per-member structural-only recipes"
+}

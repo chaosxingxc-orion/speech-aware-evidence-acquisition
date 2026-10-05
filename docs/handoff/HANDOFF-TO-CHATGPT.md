@@ -1,5 +1,25 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Configured structural registration complete; freeze next
+
+[Complete registration](../receipts/continuation/2026-10-05-partitioned-update3-structural-registered.json): all16 configured structural members registered and warm-verified,64 rows with832 generation/3328FIT caps, no scoring. Exec62140 and preparationPID30034 are terminal exit0; do not poll/restart them. Every exact generation/FIT/read exposure row is registered, with root structural admission and exact capacity review pin. All16 registration gates, engineering-base, finite-completion, OpenJiuwen native reuse and derived-media confinement pass. Invocation-only errors (missing required output; relative PYTHONPATH) were corrected with original logs preserved and no model contacts.
+
+Freeze a clean codex-partitioned-update3-structural-v1 checkout at this complete integration commit. Run coordination/partitioned-update3-structural-owner227-v1/frozen-check-structural-v1.py with explicit --worker, --commit and --receipt-root, source PYTHONPATH pointing at the frozen worker, python-B. It derives all member/order/row/budget/sampling values from the population and registered members, and uses one serial child per member. Actual frozen checks and live admission are still pending. The old completed generation queue and serving session remain unchanged; no GPU worker or new monitor is running.
+
+After full frozen proof, revalidate no active driver/generator/scorer/lease/STOP, preserve completed own prior controls, and install the exact registered structural queue and frozen identity for the Windows-owned shared batch driver. Only then dispatch and create a job-specific15-minute monitor. Structural reads are operational only; no official scoring, quality read or learning update. Scientific configured8/4/4 N20 remains held until this structural acceptance. Preserve all existing failed epochs and sources, owner227 bounds and other-carrier holds.
+
+
+## All configured capacity members complete; structural registration running
+
+[Qualified full capacity source join](../receipts/continuation/2026-10-05-partitioned-update3-capacity-complete.json) verifies16 members,704 measured complete requests,4752 tokenizer endpoints and minimum remaining context margin5465 tokens after512 output/2048 structural reserves. Generation/scoring contacts are zero. Original failed epoch exits1/1 remain explicit; the traced remaining epoch exited0 at2026-10-05T19:22:03Z. Launcher27231 is absent, no admitted worker/lease or flight metadata remains, STOP is absent and the kernel generation guard is available. slurp-update3-traced-capacity-15m was deleted; no GPU monitor is active now.
+
+The v2 source-check helper mistakenly parsed a pinned JSONL event stream as one JSON object and stopped before writing any review or registration. [Preserved model-free correction](../receipts/continuation/2026-10-05-capacity-review-jsonl-pin-correction.json) uses qualify-capacity-v3.py to verify that list's raw file hashes. Structured terminal/decision semantics remain validated. The actual full-family check then passed; no capacity contact or score was replayed.
+
+[Structural registration start](../receipts/continuation/2026-10-05-partitioned-update3-capacity-closed-structural-started.json) is live as exec62140, wrapperPID30034 (revalidate start ticks in receipt), through coordination/partitioned-update3-structural-owner227-v1/run-registration-v1.py -> prepare-registration-v3.py. First three per-member preparations have passed at this checkpoint. Poll this exact handle and its durable registration-v1 stdout/stderr/exit files; do not start another preparation. It serially registers all configured64 structural rows/832 generation/3328FIT budgets. Root admission is scoped to structural evidence, with zero scoring or quality feedback. No GPU generation has started.
+
+After registration completes, verify all registration/runtime/supply/binding gates, then commit and serially integrate the complete coherent records. Do not commit midway through preparation. Create a clean structural worker at the resulting exact commit and run the [prepared serial frozen checker](../receipts/continuation/2026-10-05-structural-frozen-check-prepared.json) with explicit worker/commit/receipt-root. Actual frozen checks remain pending. Only after live controls/service/resource admission launch Windows structural workers through the shared harness and bind a new15-minute job monitor. Scientific configured8/4/4 N20 remains separately held. No stable benefit or learning gain is established; preserve owner227 and all other-carrier holds.
+
+
 ## Exact capacity epoch join prepared; traced continuation progressing
 
 [Prepared epoch qualifier](../receipts/continuation/2026-10-05-capacity-epoch-join-prepared.json) adds the explicit shared source join needed after precontact-only failures.34 new tests and125 related tests pass, module coverage99%, engineering-base PASS. It preserves each actual failed exit and completed-prefix identity, requires a decided exact suffix disposition, rejects changed workers/configuration/resources/budgets, and qualifies every configured capacity member exactly once. No synthetic successful batch is constructed; root review and runtime admission remain separate.
@@ -2590,7 +2610,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T19:15:34Z
+Last refreshed: 2026-10-05T19:31:30Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,0 +1,64 @@
+{
+  "at_utc": "2026-10-05T19:31:30.562188+00:00",
+  "status": "REGISTERED; FROZEN AND LIVE ADMISSION PENDING",
+  "population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update3-n20-v1.json",
+    "sha256": "b4b9450e5c22fd70b74650e54ff6c3be73072352a497fdd4f1084d1da516bb18"
+  },
+  "totals": {
+    "fit_endpoint_contacts_cap": 3328,
+    "generation_contacts_cap": 832,
+    "official_score_jobs": 0,
+    "structural_trajectories": 64,
+    "systems": 16
+  },
+  "registration": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-partitioned-update3-structural-entry-v1/registered-members-v1.json",
+    "sha256": "1495fa1689a0e483372eacbc41442da28f68e58ccf211a327a3f52c144c8994d"
+  },
+  "queue": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-05-partitioned-update3-structural-entry-v1/queue-v1.json",
+    "sha256": "6cfe52b1bdd0d2863e403c4e3869d033b9ab351586011994afd5496c4f7f2cca"
+  },
+  "root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/root-admission-v1.json",
+    "sha256": "9239aa67f4b3d64513e54e20fcf1d2230aad5a00205f9956e4851bad13b40fe5"
+  },
+  "capacity_review": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-05-partitioned-update3-capacity-complete.json",
+    "sha256": "ad22e75d26b7a838a75ac2dfbd8be3d2c06661bc460d05d3b98f160e443f862f"
+  },
+  "gates": {
+    "all_configured_registration_checks": "PASS",
+    "engineering_base": "PASS",
+    "finite_completion_policy": "PASS",
+    "openjiuwen_native_reuse": "PASS",
+    "derived_media_confinement": "PASS"
+  },
+  "gate_evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/openjiuwen-native-proof-v1.json",
+      "sha256": "635d25008a5d87610958b46e50e7df9e9636b5faa7e2d1f6161d5d539b9ef464"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/derived-media-proof-v1/derived-media-confinement.json",
+      "sha256": "567f4fe4632bf36ff5b1a7e7ee0f2bfa84cf881cba733083e39f875ff42058a1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/engineering_base_check.py.stdout.log",
+      "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/finite_completion_policy_check.py.stdout.log",
+      "sha256": "3aba8cb87e85ed78b131100726e44dafa0af6526491a359099651fb19213c8cb"
+    }
+  ],
+  "invocation_corrections": "Initial OpenJiuwen invocation omitted required --output; initial derived-media invocation used relative PYTHONPATH, refused before checking. Original stdout/stderr retained; corrected invocations passed with explicit output and absolute source path. No runtime/model retry.",
+  "preparation_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/registration-v1.exit.json",
+    "sha256": "89a8f7de5df2ddfd9ef14b5a19a81b23be634f63b625e94e443bb9f2290796fd"
+  },
+  "model_contacts": 0,
+  "runtime_dispatched": false,
+  "next": "Integrate complete registered source; clean frozen structural worker; all registered runtime/role/supply checks; actual live gates; separate Windows engineering launch and job-scoped monitor."
+}

@@ -1,0 +1,42 @@
+{
+  "at_utc": "2026-10-05T19:25:42.555376+00:00",
+  "status": "CAPACITY COMPLETE; STRUCTURAL REGISTRATION IN PROGRESS",
+  "capacity": {
+    "members": 16,
+    "tokenizer_endpoints": 4752,
+    "measured_requests": 704,
+    "minimum_margin_after_structural_reserve": 5465,
+    "original_epoch_exits": [
+      1,
+      1,
+      0
+    ],
+    "generation_contacts": 0,
+    "scorer_contacts": 0
+  },
+  "terminal": {
+    "launcher_absent": true,
+    "flight_metadata_absent": true,
+    "kernel_guard_available": true,
+    "STOP_absent": true,
+    "windows_exit": {
+      "started_utc": "2026-10-05T19:08:38.7103601Z",
+      "ended_utc": "2026-10-05T19:22:03.3009777Z",
+      "exit_code": 0,
+      "error": null,
+      "windows_pid": 25656,
+      "registration_sha256": "6b5cfab1fcb68d0bbc4e13bfd8ea5116c398fc737a294a2320a53781af075d95",
+      "automatic_retry": false
+    }
+  },
+  "monitor_deleted": "slurp-update3-traced-capacity-15m",
+  "structural_registration": {
+    "pid": 30034,
+    "start_ticks": "55557347",
+    "exec_session": 62140,
+    "helper": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/prepare-registration-v3.py",
+    "generation_contacts": 0,
+    "runtime_dispatched": false,
+    "status": "Use exact current process/handle; do not duplicate preparation."
+  }
+}

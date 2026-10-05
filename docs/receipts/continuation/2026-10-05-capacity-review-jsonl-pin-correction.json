@@ -1,0 +1,27 @@
+{
+  "at_utc": "2026-10-05T19:23:04.679903+00:00",
+  "status": "MODEL-FREE HELPER CORRECTION",
+  "authority": "Root227 bounded engineering",
+  "named_component": "qualify-capacity-v2.checked: attempted to parse pinned events.jsonl as one JSON document",
+  "effect": "Review stopped before writing a review or structural registration. Actual capacity already complete; no runtime retry or contact.",
+  "correction": "v3 verifies raw SHA256 for the previous continuation evidence list; it does not parse JSONL as JSON. Structured disposition/terminal documents retain JSON parsing and semantic checks. Original v2 is preserved.",
+  "proof": {
+    "original_jsonl_parse_rejected": true,
+    "actual_jsonl_records": 2,
+    "actual_raw_pin": "d0b1e7fe3f1807f89a378a3189c9103912c09dea883fbcb71c23bb2035b4e4f8",
+    "wrong_raw_hash_rejected": true
+  },
+  "helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/qualify-capacity-v3.py",
+      "sha256": "1d861635768d26beaeb346ff7514939d39561f4d61215119a994fb11b2903d17"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/prepare-registration-v3.py",
+      "sha256": "e8edfb6820a8ead92c20411720c20d6c1db2c4a9acde02dc8f4b87a1433bc2f3"
+    }
+  ],
+  "runtime_contacts": 0,
+  "monitor_deleted": "slurp-update3-traced-capacity-15m",
+  "terminal_process_check": "Capacity launcher and all admitted children absent; no flight.lock/STOP; kernel generation.guard acquired and released normally."
+}
