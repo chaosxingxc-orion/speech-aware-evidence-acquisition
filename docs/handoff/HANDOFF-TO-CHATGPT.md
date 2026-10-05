@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Second precontact observation failure preserved; traced startup proof complete
+
+The continuation1 capacity task exited1 at2026-10-05T18:54:31Z before its first lease, tokenizer, generation or scorer contact. Its first fresh Windows observation timed out at8seconds with no response. Preserve coordination/partitioned-update3-capacity-precontact-continuation1 and all original evidence. Seven original capacity members remain successful; the remaining nine identities are unused. This is not evidence of an occupied lock, OOM or a memory-floor violation. No GPU monitor was bound to continuation1 because it was already terminal at first verification; the original capacity monitor was deleted.
+
+[Root227 traced observation disposition](../receipts/continuation/2026-10-05-partitioned-update3-traced-observer-disposition.json) preserves both failed epochs. A Windows background diagnostic passed four fresh observations, then three exact registration-check/nested-subprocess/startup-wait trials passed nine fresh observations. These use the original observer nonce/sequence protocol with stderr-only phase timestamps. The intermittent timeout cause remains unestablished; do not claim it fixed. No diagnostic made model/tokenizer/scorer contacts.
+
+Exactly one separately recorded traced continuation is prepared in coordination/partitioned-update3-capacity-observer-traced-continuation2, registration-v1.json SHA2566b5cfab1fcb68d0bbc4e13bfd8ea5116c398fc737a294a2320a53781af075d95. The proven tracing helper adds durable startup/assembly/API/request/sample phases without changing the original memory function,8second bound,20GiB startup/8GiB running thresholds or10second cadence. Frozen model worker remains b691e86222adb55b77a0af97663d493b21efc2a9. Only the original nine unused members are eligible,2673 tokenizer endpoints cap; no seven-success replay, generation, scoring, WSL restart or cache clearing. Any failure stops without retry. Before dispatch, revalidate live gates and start a job-scoped15-minute monitor; cancel at verified terminal. Prepared structural/scientific work remains held and the old single-epoch qualifier must not be used to relabel failed epochs successful.
+
+
 ## Capacity startup observer incident and bounded continuation prepared
 
 [Root227 disposition](../receipts/continuation/2026-10-05-partitioned-update3-startup-observer-disposition.json): capacity task ended18:41:16Z/Windows exit1. First seven members passed2079 tokenizer endpoints, zero generation/scoring. Branch08's third startup sample timed out at8seconds after two readings21.29/21.34GiB. No branch08-16 lease token or attempt exists. This is an observation failure, not observed OOM or a resource-floor violation. Original source, task, exits and completed FIT outputs are immutable. STOP is absent and the kernel guard is available. Job monitor slurp-update3-capacity-15m was deleted after terminal/process verification.
@@ -2565,7 +2574,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T16:54:42Z
+Last refreshed: 2026-10-05T19:06:23Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

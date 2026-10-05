@@ -1,0 +1,47 @@
+{
+  "schema": "saea-precontact-observer-traced-continuation-v1",
+  "at_utc": "2026-10-05T19:05:11.553140+00:00",
+  "authority": "Owner227 bounded engineering and explicit root incident disposition",
+  "previous_continuation": {
+    "status": "FAILED-PRECONTACT",
+    "epoch": "2026-10-05T18:54:17.493170Z",
+    "finished": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/capacity-finished.json",
+      "sha256": "05cdecfac3e68d9c89d75fa1c24a580b7280a6593aaab7d8500695798eb2c4a5"
+    },
+    "failure": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-precontact-continuation1/capacity-failure.json",
+      "sha256": "919917f14b81e94897af2bbe1ec3e789ee9ad92537428453437cc4ca99a27c4f"
+    },
+    "generation_contacts": 0,
+    "tokenizer_contacts": 0,
+    "scorer_contacts": 0
+  },
+  "diagnostics": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-startup-observer-background-proof1/proof-finished.json",
+      "sha256": "8808b61da6a67c68ac53e81444747b1f9cf21c63ce8cb9cad4f683c3ed2b4ea0"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-startup-observer-nested-proof1/finished.json",
+      "sha256": "34d99a40db0d5a2565af63ea73c35266ec40334b2520b8abb5e89e38dd2871b6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-startup-observer-nested-proof1/observe-v1.py",
+      "sha256": "8ca08ad5feff7255573db186fca7dc71f3515e2e4f3476efdfbb047fcbe09ad9"
+    }
+  ],
+  "underlying_cause": "Unestablished. Interactive proof, direct background proof and three exact nested model-free startup trials passed. Phase logging improves localization; successful checks do not establish resolution of the intermittent failure.",
+  "disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/root-capacity-admission-v1.json",
+    "sha256": "02114e0147ed41d484d11088d21c32097c570af35591d190b27a404001baabcd"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-capacity-observer-traced-continuation2/registration-v1.json",
+    "sha256": "6b5cfab1fcb68d0bbc4e13bfd8ea5116c398fc737a294a2320a53781af075d95"
+  },
+  "model_worker_unchanged": "b691e86222adb55b77a0af97663d493b21efc2a9",
+  "scope": "Original seven successful FITs preserved; exactly nine unused FIT identities, 2673 endpoints cap; zero generation/scoring. Traced observation once, fail closed, no reconnect or automatic retry.",
+  "runtime_dispatched": false,
+  "monitor": "Previous capacity monitor deleted; continuation1 ended before monitor binding and made no GPU contacts. New monitor only on actual continuation2 launch."
+}
