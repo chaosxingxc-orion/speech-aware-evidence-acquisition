@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Corrected offline whole-trial continuation is live
+
+[Actual continuation](../receipts/continuation/2026-10-05-partitioned-trial-continuation1-started.json) started under the tested correction at08dd3d1de71e5cae3819e180bd058e2e69a0a806, serially integrated in main. Existing child PID68643/start_ticks57054640, tool session42477, runs the unchanged complete-trial-entry-v1.py evaluate exactly once under root227 disposition. Revalidate the live identity; collect its existing stdout/stderr/exit capture at coordination/partitioned-update3-scientific-preparation-v1/trial-requalification-continuation1. Do not start another reader because an observation interval expires. This replaces the old failed PID66917/session42624 snapshot. The old refusal is preserved.
+
+No GPU work, scoring, resealing or new learner export occurs. The complete-trial-qualified-v1.json output is exclusive and did not exist at launch. Root must read the final success result before prospective retention/update; on a further failure preserve evidence and diagnose. All440 successor trajectories and all official scores remain complete and unchanged; their15-minute GPU monitor is deleted. Goal remains active and stable system benefit/cross-carrier completion remain unproven.
+
 ## Whole-trial offline refusal diagnosed; one tested continuation authorized
 
 [Root227 disposition](../receipts/continuation/2026-10-05-partitioned-trial-requalification-disposition.json) supersedes the prior live-analysis status below. The first complete-trial evaluation exited1 with no exclusive result because refreshed operational receipts have different recorded_at_utc values. Two real metadata qualifications differ only in that field; three regression tests reproduce the old refusal. The correction excludes only that field for the known operational schema while preserving every other source/READ/score comparison and all repeated source gates.132 related tests pass with100percent changed-module statement/branch coverage. All frozen experiments,official scores,READs and original failure evidence remain unchanged.
@@ -2760,7 +2766,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-05T23:34:06Z
+Last refreshed: 2026-10-05T23:36:23Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

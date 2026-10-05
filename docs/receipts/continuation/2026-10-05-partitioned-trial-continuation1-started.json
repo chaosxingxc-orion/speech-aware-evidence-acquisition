@@ -1,0 +1,27 @@
+{
+  "schema": "saea-offline-trial-continuation-start-v1",
+  "at_utc": "2026-10-05T23:36:23.458738+00:00",
+  "status": "RUNNING",
+  "start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/trial-requalification-continuation1/started.json",
+    "sha256": "32ea141ef223922911733056f4157151fe3cfb401bbda48553263a7a3c943c86"
+  },
+  "pid": 68643,
+  "start_ticks": 57054640,
+  "tool_session": 42477,
+  "source_commit": "08dd3d1de71e5cae3819e180bd058e2e69a0a806",
+  "wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/run-trial-requalification-continuation1.py",
+    "sha256": "68abd0968104812d64c6da5b08321066415f44c096d30668f3b4eda632ab3162"
+  },
+  "disposition": {
+    "relpath": "docs/receipts/continuation/2026-10-05-partitioned-trial-requalification-disposition.json",
+    "sha256": "87479da05805df889c1a08d96459ead37de364d8c3b3af5f253a4b75a7f4128f"
+  },
+  "logs": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/trial-requalification-continuation1",
+  "result": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-scientific-preparation-v1/complete-trial-qualified-v1.json",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "runtime_admission": false,
+  "learner_exported": false
+}
