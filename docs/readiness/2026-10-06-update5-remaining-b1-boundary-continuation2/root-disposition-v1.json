@@ -1,0 +1,130 @@
+{
+  "schema": "saea-root-member-boundary-disposition-v1",
+  "at_utc": "2026-10-06T14:20:54.830352+00:00",
+  "authority": "owner227",
+  "status": "decided",
+  "incident": "The original outer-process cause remains unestablished. BoundaryContinuation1 then failed in precontact evidence validation: Windows PowerShell5 normal paths of265 and287 characters fail, while identical extended-length paths match WSL SHA256. No branch-11/12 attempt or model/scorer contact occurred.",
+  "original_task": "SAEA-Update5-Aggregate-RemainingB1-Scientific-V1",
+  "original_launch_epoch": "2026-10-06T13:44:45.4108975+00:00",
+  "observed_task_result": 2147943467,
+  "original_worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1",
+  "original_commit": "efae9a68410cbd84ddf2339eec48e8f1465cdf2a",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/registration-v1.json",
+    "sha256": "dd1b5d625716d6cf80c023f3cbab5d41bd37520fff373803b048f64ebce3bfeb"
+  },
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/boundary-qualified-v1.json",
+    "sha256": "84323da81f6be7983b83bb1d7dfa76accd58cc26c8bfa8871dd695b46d33fd0d"
+  },
+  "completed_members": [
+    "seed",
+    "seed-aa",
+    "branch-09",
+    "branch-10"
+  ],
+  "pending_members": [
+    "branch-11",
+    "branch-12"
+  ],
+  "authorized_members": [
+    {
+      "label": "branch-11",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-11-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-REMAINING-B1-BRANCH-11-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-11-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-REMAINING-B1-BRANCH-11-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+        "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+      }
+    },
+    {
+      "label": "branch-12",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-12-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-REMAINING-B1-BRANCH-12-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-12-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-REMAINING-B1-BRANCH-12-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+        "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+      }
+    }
+  ],
+  "continuation_limit": 1,
+  "new_task": "SAEA-Update5-Aggregate-RemainingB1-BoundaryContinuation2",
+  "new_coordination_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2",
+  "scope": "Continue only the two never-started members with their original identities, immutable worker, policies, input roster, shared campaign/scorer and remaining original budgets. No regeneration, retry, reseal, score replay or new allocation.",
+  "conditions": [
+    "Fresh original-task terminal/no owner or observer processes; no admitted WSL process, STOP or flight lease; generation guard available.",
+    "Verify every original source and completed operational evidence hash, exact original worker/registration and pending attempt/run/unit absence.",
+    "Use original startup/running resource guards and one-shot exclusive receipts; any further failure stops this continuation.",
+    "Preserve original missing outer receipts as missing; never synthesize original success. A new source-bound terminal verifier must explicitly join original completed-prefix evidence and the real successor task terminal before exact full-family READ."
+  ],
+  "quality_read_authorized": false,
+  "learner_export_authorized": false,
+  "next_cohort_admitted": false,
+  "monitor": "Original monitor deleted after verified terminal/no admitted processes. Create a new exact 15-minute monitor only after actual continuation launch.",
+  "unchanged": {
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "resource_policy": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 20,
+      "wait_seconds": 600
+    },
+    "budget": {
+      "generation_contacts": 1560,
+      "fit_endpoint_contacts": 6240,
+      "official_score_jobs": 6
+    }
+  },
+  "verification": {
+    "boundary_tests": 9,
+    "existing_launcher_tests": 6,
+    "path_tests": 2,
+    "new_path_module_statement_coverage_percent": 100,
+    "native_four_file_proof": true,
+    "new_model_contacts": 0,
+    "new_scorer_contacts": 0
+  },
+  "supersedes": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-update5-remaining-b1-boundary-continuation1/root-disposition-v1.json",
+    "sha256": "58305f69841df76bb769c5a432ab3a537c62caa0d536d27cc827cf8efddf6897"
+  },
+  "prior_continuation_task": "SAEA-Update5-Aggregate-RemainingB1-BoundaryContinuation1",
+  "prior_capture_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/capture-exit.json",
+    "sha256": "e68ee8617388fb161b0157c88db069ace917f5f59d14bc2cf0125156fc2e297b"
+  },
+  "prior_failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/scientific-windows-failure.json",
+    "sha256": "a2e0ec04323a8c8cb2e240c7521e17844a09ecc1b9338c03626cacec49d8aa56"
+  },
+  "failure_translation": {
+    "source": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/scientific-windows-failure.json",
+      "sha256": "a2e0ec04323a8c8cb2e240c7521e17844a09ecc1b9338c03626cacec49d8aa56"
+    },
+    "english_message": "The named native Windows E-drive seed attempt metadata path could not be found. The later controlled comparison establishes a Windows PowerShell5 normal-path length limitation, not missing WSL evidence or a model failure."
+  },
+  "diagnostic": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/path-length-diagnostic-v2.jsonl",
+    "sha256": "a467fadc5c162f9bc4b8d082ca865c3f2e350f1bacaa47bad6eed340a9d2a52f"
+  },
+  "four_file_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/four-file-proof-v1.json",
+    "sha256": "68ffbc0b0784c1cb7fb2e7cdcc6a9f33973340ac174de232e830ee077e8d9886"
+  },
+  "engineering_disposition": "This is a precontact host path conversion fix only. Four real evidence-file rows are verified through the actual Windows PowerShell5 hash operation with independent WSL SHA256. Existing request-level capacity and four-trajectory structural proofs remain unchanged; no model request/prompt/knowledge/runtime code changes or replacement of a spent attempt occur."
+}

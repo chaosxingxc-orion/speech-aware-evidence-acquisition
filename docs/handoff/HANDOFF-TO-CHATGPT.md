@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 boundary continuation precontact path refusal (2026-10-06)
+
+BoundaryContinuation1 exited1 before scientific-started or any new member/contact.
+Its original failure, independent stderr and capture-exit receipts are preserved.
+The named component is Windows PowerShell5 MAX_PATH handling in new outer evidence
+verification: normal native paths of265/287 characters fail; extended-length paths
+match WSL hashes. The earlier symbolic-link hypothesis was disproved. This does not
+explain the separate original coordinator termination, whose cause is unestablished.
+
+Root227 recorded [the exact precontact correction](../readiness/2026-10-06-update5-remaining-b1-boundary-continuation2/root-disposition-v1.json).
+Four real evidence-file rows pass the actual PowerShell5 operation;11 boundary/path
+unit tests pass, new path module coverage100percent. Only the new host verifier path
+representation changes. The original worker, all requests/identities and budgets
+remain fixed. Branch-11/12 are still unstarted; prior four members remain FINALIZED.
+The clean continuation2 package is prepared but not launched. Fresh gates and actual
+new task launch remain. No monitor is active for either terminated task; start one
+only for actual new runtime. No quality read, learner export, rescore or next-stage
+admission occurred. Exact full-family READ remains unsigned.
+
 ## Update5 remaining-b1 outer process exit; bounded tail continuation prepared (2026-10-06)
 
 The original Windows task is terminal Ready with result2147943467. Its owner,
@@ -4604,7 +4623,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T14:15:12.742294+00:00
+Last refreshed: 2026-10-06T14:21:21.161598+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

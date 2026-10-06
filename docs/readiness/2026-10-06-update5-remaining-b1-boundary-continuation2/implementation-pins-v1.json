@@ -1,0 +1,50 @@
+{
+  "schema": "saea-boundary-continuation-implementation-v2",
+  "root_disposition_sha256": "5c488c479baa14aeb318d8c1885868b6fd5a762b6378278381d9fd007b07bf19",
+  "files": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/boundary_continuation_v1.py",
+      "sha256": "388d45680d3d906443090f30cbcc8bdbb6634197ff077bd58a0ebcded14400b2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/test_boundary_continuation_v1.py",
+      "sha256": "9c0f52b24b38f5467a002ce519b89391a04839f8e74faad21486d516b10805a6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/windows_evidence_path_v1.py",
+      "sha256": "633909ca191a9d139233883a1bef598ea4e113b2dd2e3e6a736de36f8a622c7e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/test_windows_evidence_path_v1.py",
+      "sha256": "469ac2c4cb42feab2b3f781fbdc8892b386e83bfcdd31a9b241fc2f981a34780"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/prelaunch-v1.py",
+      "sha256": "3c3224fb90891311ea50ec8f60dc330a5781fe846af3760330631363bdad8157"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/continuation-windows-v1.ps1",
+      "sha256": "24f94aa349ea78cb841a25bb0d86e0e15ac1786fe7bf074bd1325dbebb43142d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/capture-windows-v1.ps1",
+      "sha256": "deddb8a1c2e6a990cb182aebfb92339751c23f63fc0721a5565e6e8ae9b3e119"
+    }
+  ],
+  "native_four_file_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/four-file-proof-v1.json",
+    "sha256": "68ffbc0b0784c1cb7fb2e7cdcc6a9f33973340ac174de232e830ee077e8d9886"
+  },
+  "original_capture_tests": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/capture-test-0/capture-exit.json",
+      "sha256": "b5dfe2dbbc46a711f1875e268c6f3b92e5a6ae23def7275249a5787cc586b5a1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/capture-test-7/capture-exit.json",
+      "sha256": "1c88ae6b49e8e65e3790b2e6004b15550b270ef0ca2e1026209d404d72df9c10"
+    }
+  ],
+  "model_requests_changed": false,
+  "new_model_contacts": 0
+}

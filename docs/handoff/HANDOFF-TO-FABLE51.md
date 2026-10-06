@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 boundary continuation precontact path refusal (2026-10-06)
+
+BoundaryContinuation1 exited1 before scientific-started or any new member/contact.
+Its original failure, independent stderr and capture-exit receipts are preserved.
+The named component is Windows PowerShell5 MAX_PATH handling in new outer evidence
+verification: normal native paths of265/287 characters fail; extended-length paths
+match WSL hashes. The earlier symbolic-link hypothesis was disproved. This does not
+explain the separate original coordinator termination, whose cause is unestablished.
+
+Root227 recorded [the exact precontact correction](../readiness/2026-10-06-update5-remaining-b1-boundary-continuation2/root-disposition-v1.json).
+Four real evidence-file rows pass the actual PowerShell5 operation;11 boundary/path
+unit tests pass, new path module coverage100percent. Only the new host verifier path
+representation changes. The original worker, all requests/identities and budgets
+remain fixed. Branch-11/12 are still unstarted; prior four members remain FINALIZED.
+The clean continuation2 package is prepared but not launched. Fresh gates and actual
+new task launch remain. No monitor is active for either terminated task; start one
+only for actual new runtime. No quality read, learner export, rescore or next-stage
+admission occurred. Exact full-family READ remains unsigned.
+
 ## Update5 remaining-b1 outer process exit; bounded tail continuation prepared (2026-10-06)
 
 The original Windows task is terminal Ready with result2147943467. Its owner,
