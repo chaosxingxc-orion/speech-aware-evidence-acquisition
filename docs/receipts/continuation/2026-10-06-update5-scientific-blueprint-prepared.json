@@ -1,0 +1,38 @@
+{
+  "schema": "saea-root-scientific-blueprint-prepared-v1",
+  "at_utc": "2026-10-06T11:16:17.810505+00:00",
+  "status": "PREPARED_HELD_NO_ADMISSION",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "trial_contract": {
+    "relpath": "docs/readiness/2026-10-06-update4-aggregate-continuation-v1/trial-contract-v1.json",
+    "sha256": "4f37e1f7383340716a01536ce89b87409daef8fbf43598fedc023213a004091b"
+  },
+  "blueprint": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update5-aggregate-scientific-preparation-v1/planned-members-v1.json",
+    "sha256": "d57a0adc16d847e43e36cb41c20b06f01406a26acab5f29ef9dd23ea9bcc7d55"
+  },
+  "exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/blueprint-v1.exit.json",
+    "sha256": "2317576c8032f93e303c47bd64d6ce04a863ccd534037fd9901f328b90c4a37d"
+  },
+  "source_builder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/build-scientific-blueprint-v2.py",
+    "sha256": "762bba717c49a96e4d2dd7af946bdd72e1d503b83823c2e53a85d2f9658001a5"
+  },
+  "member_count": 22,
+  "totals": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "family_trajectories": 440,
+    "fit_endpoints_cap": 22880,
+    "generation_contacts_cap": 5720
+  },
+  "verification": "All configured candidates and same-cohort controls bound to immutable source identities; original no-change dispositions retained; prospective runs/attempts/prepared supplies absent. Existing input pool reused. No current structural outputs or task quality consumed.",
+  "model_contacts_added": 0,
+  "official_score_contacts_added": 0,
+  "runtime_admission": false,
+  "next": "Wait for complete structural acceptance. Then exact per-member supply preparation, trial/generation/FIT/READ registration and frozen/live admission remain required."
+}

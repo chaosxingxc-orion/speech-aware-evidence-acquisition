@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 scientific blueprint prepared; structural job continues (2026-10-06)
+
+Model-free scientific blueprint preparation completed11:15:04Z exit0 with no model
+or scoring contact. All16 candidates and six own-cohort seed/A/A controls are
+prospectively bound:22 members,320 candidate+120 control=440 trajectories on the
+same reused20 inputs, configured8+4+4 candidate cohorts. Original no-change08/15
+remain included. All proposed members remain HELD, with no new run/attempt/supply.
+See [blueprint evidence](../receipts/continuation/2026-10-06-update5-scientific-blueprint-prepared.json)
+and readiness/2026-10-06-partitioned-update5-aggregate-scientific-preparation-v1.
+The original unused builder is preserved; v2 corrects only the structural metadata
+path to the actual registered mailbox package. No current structural result was read.
+
+Structural recovery1 below continues through its exact Windows job and monitor.
+First member exited0 with successful lease release; next worker verified live.
+Wait for complete structural-only acceptance before member supply preparation and
+scientific admission. Blueprint preparation is not permission to dispatch, score,
+read partial quality, replace proposals or claim learning benefit. Exact full-family
+trial rules, source exposure, K-record aggregate feedback and shared executor remain.
+
 ## Update5 structural recovery1 is running (2026-10-06)
 
 Exact Windows task SAEA-Update5-Aggregate-Structural-Recovery1 launched at
