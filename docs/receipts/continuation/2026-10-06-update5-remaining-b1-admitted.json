@@ -1,0 +1,41 @@
+{
+  "schema": "saea-configured-adjacent-cohort-admission-v1",
+  "at_utc": "2026-10-06T13:39:01.455246+00:00",
+  "cohort": "remaining-b1",
+  "root_review": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/original-a-root-complete-review-v1.json",
+    "sha256": "5258323db9e75c3d8046acb776e1f06b37fd234f120ae2b553f781bfbdb65532"
+  },
+  "admission": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-root-admission-v1.json",
+    "sha256": "0f62d5aa4f4b104f32f700d4cd29b2ab0fea9cc1629cd5730d9c31d4b5e4f09e"
+  },
+  "gate": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-admitted-gate.stdout.json",
+    "sha256": "5cd9fc80cf196a641ea649f8c24ce58cd0ed60e18cb7f2812fe1c68bfefef857"
+  },
+  "gate_exit": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-admitted-gate.exit.json",
+    "sha256": "8e2d4da59869764cc0ea8f06ca08804c44c8ba81a4f1850f4fd0fa0449d2799c"
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "scope": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "runtime_dispatched": false,
+  "frozen_live_checks_pending": true,
+  "selection_made": false
+}

@@ -1,5 +1,34 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 first cohort complete; adjacent cohort admitted (2026-10-06)
+
+The original-a Windows job ended 13:29:25.4112695Z with exit 0. All ten
+members independently finalized 200 trajectories, verified seals and one unique
+successful official complete score each, with zero failed jobs. Root verified
+Windows/WSL and observer termination, absent STOP/lease, countersigned the exact
+READ and completed business, timing, process and paired diagnostics. The exact
+15-minute original-a monitor is deleted. Frozen worker 2e26372d remains unchanged.
+See [complete review](../results/2026-10-06-slurp-update5-original-a-complete-review.md)
+and [receipt](../receipts/continuation/2026-10-06-update5-original-a-complete-review.json).
+
+All eight candidate SLU-F1 point estimates are below seed 62.50% and A/A 60.31%.
+Reliable completion is 100%. Process statistics expose high false alarms and
+harmful revisions; valid handoffs and delivered intent cards do not prove useful
+criticism, semantic consumption or sufficient entity support. Raw retrieval-pool
+and entity support remain unavailable. Keep every negative/no-change result.
+This is one complete cohort, not the complete K16 trial; no learning selection,
+new proposal, adoption, sample expansion or learner export occurred.
+
+Root227 reviewed the complete cohort and admitted only remaining-b1, the unchanged
+four candidates 09-12 plus seed/A/A, on the same 20 inputs (120 trajectories).
+Its registration gate passed; see [admission](../receipts/continuation/2026-10-06-update5-remaining-b1-admitted.json).
+The prepared remaining-b1-flight-v1 checker needs a new clean worker/identity and
+all-member frozen proof before registration finalization, fresh live/resource
+checks and a new Windows job. No next GPU dispatch has occurred. Use unchanged
+20 GiB startup / 8 GiB running policy, observe-only boundaries, no cache flushing.
+Remaining-b2 still requires adjacent complete root review. Full-population learning
+retention and aggregate N times K export wait for all configured cohorts.
+
 ## Update5 remaining launch entries statically prepared (2026-10-06)
 
 Both remaining-b1 and remaining-b2 launch directories now exist at
@@ -4508,7 +4537,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T11:21:56.624937+00:00
+Last refreshed: 2026-10-06T13:39:01.455246+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

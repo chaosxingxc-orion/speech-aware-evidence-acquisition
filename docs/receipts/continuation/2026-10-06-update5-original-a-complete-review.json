@@ -1,0 +1,54 @@
+{
+  "schema": "saea-update5-complete-cohort-root-review-v1",
+  "at_utc": "2026-10-06T13:37:28.230614+00:00",
+  "cohort": "original-a",
+  "status": "COMPLETE_COHORT_ROOT_REVIEWED",
+  "worker_commit": "2e26372dc5e25245a68c4c2df8cff2a54d350ea2",
+  "finished": {
+    "relpath": "coordination/partitioned-update5-aggregate-original-a-scientific-v1/scientific-finished.json",
+    "sha256": "9b2eb44dc5f42370f0eb6a9b2d671c8da5936a36545158f835a116640fc3b650"
+  },
+  "root_authorization": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/original-a-flight-v1/root-read-authorization-v1.json",
+    "sha256": "cdf9f1797d55742f1220f1d365052f84217ed1dbc95762c5c838fa69b159693a"
+  },
+  "analysis": {
+    "report.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-ORIGINAL-A-READ-V1/report.json",
+      "sha256": "347464d5764896a4ad9467714d8a50cf20b0536278e36f526e56379126b22b74"
+    },
+    "timing-summary.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-ORIGINAL-A-READ-V1/timing-summary.json",
+      "sha256": "381e750ddf9a445847bc0db53f8aeef17443a0633a50f5bfdb10e6536aeedf86"
+    },
+    "process-metrics-v1.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-ORIGINAL-A-READ-V1/process-metrics-v1.json",
+      "sha256": "df8bd70a1875c4887b5e0034cac299cf47fe9aa881af45ee05b455248ca8d012"
+    },
+    "business-process-cost-v1.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-ORIGINAL-A-READ-V1/business-process-cost-v1.json",
+      "sha256": "334bba7cc488923becf4b50514dbd3a1e84d6547968a8f4f92b56c172f6a1182"
+    },
+    "paired-process-diagnostics-v1.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-ORIGINAL-A-READ-V1/paired-process-diagnostics-v1.json",
+      "sha256": "ac41951a9cf0553f193e256808a3e1016d1ded8528572ddcf1f568eff7ece4e7"
+    }
+  },
+  "root_review": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/original-a-root-complete-review-v1.json",
+    "sha256": "5258323db9e75c3d8046acb776e1f06b37fd234f120ae2b553f781bfbdb65532"
+  },
+  "report": {
+    "relpath": "docs/results/2026-10-06-slurp-update5-original-a-complete-review.md",
+    "sha256": "2f21a8f33004edde279a4249b3b7d4ebd8261493b27de134a6b53765e6d3c36a"
+  },
+  "monitor": {
+    "id": "slurp-update5-original-a-scientific-monitor",
+    "status": "deleted-after-verified-terminal"
+  },
+  "learning_selection_made": false,
+  "learner_exported": false,
+  "next_cohort": "remaining-b1",
+  "runtime_dispatched": false,
+  "new_model_or_scorer_contacts": 0
+}
