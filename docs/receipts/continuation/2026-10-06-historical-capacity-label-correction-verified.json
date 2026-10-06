@@ -1,0 +1,41 @@
+{
+  "at_utc": "2026-10-06T12:14:29.232975+00:00",
+  "authority": "owner227",
+  "contacts": 0,
+  "correction": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-historical-capacity-algorithm-label-correction.json",
+    "sha256": "d11b742025050037cd2a132754a10a17295689d6afc3829e5f0193e410f58c95"
+  },
+  "coverage": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/historical-label-verification-v1/coverage-final.json",
+    "sha256": "b2041e5f34b1fd0de4ada7fc326bcf59504eb98ce273b96d45b654ac408679dc"
+  },
+  "engineering_base_gate": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/historical-label-verification-v1/engineering_base_check.py.stdout.log",
+    "sha256": "613643e59993d175182a9ef3f2f7c74c4a14444ed4067d2031c456c53f2d0bd0"
+  },
+  "git_reference_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/historical-label-verification-v1/git-reference-observation.json",
+    "sha256": "14218ca125cd37f7e895bd598655a210d2e0e92ddb292dcddb0526c840400e56"
+  },
+  "global_label_gate": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/historical-label-verification-v1/label-gate-final.stdout.json",
+    "sha256": "c5461498fdb71a396f47d1783822727c9e5fb15dc393b255a197ac507b1c74e0"
+  },
+  "implementation": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/scripts/checks/stage3_algorithm_label_check.py",
+    "sha256": "fd50e16bae4e2a8419b3d2f456bcee39c218a1d5358ac61b55fc65534d00fb3e"
+  },
+  "next": "Integrate all prepared source and records, freeze exact first-cohort scientific worker, execute every-member frozen checks, then seal Windows registration and perform separate live launch admission.",
+  "original_fragments_unchanged": true,
+  "runtime_admission_added": false,
+  "schema": "saea-historical-label-metadata-verification-v1",
+  "scope": "Disclose exact historical metadata corrections; both fragment and disposition hashes must match. Corrected labels still use the strict registry. No generic allowance for empty operators, no runtime resolver change, no old run release or quality read.",
+  "statement_coverage_percent": 92.3076923076923,
+  "status": "VERIFIED; CURRENT_GLOBAL_GATE_PASS",
+  "tests": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/historical-label-verification-v1/tests-final.exit.json",
+    "sha256": "158e2b51468c9ebcbe735e7a92e49b1a6bb8283bea436b8e135d92eb56a60705"
+  },
+  "tests_passed": 61
+}

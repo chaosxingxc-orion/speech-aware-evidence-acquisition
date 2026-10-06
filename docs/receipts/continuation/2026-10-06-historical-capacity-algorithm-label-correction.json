@@ -1,0 +1,53 @@
+{
+  "at_utc": "2026-10-06T12:10:53.193271+00:00",
+  "authority": "owner227",
+  "corrections": {
+    "slurp-native-stage3-system-text-native-capacity-recovery1-v1": {
+      "corrected_label": {
+        "id": "none",
+        "note": "Tokenizer-only native graph capacity verification exercises no training-free learning operator.",
+        "operators_used": []
+      },
+      "evidence": {
+        "allowed_execution_stages": [
+          "check",
+          "prompt-fit"
+        ],
+        "generation_calls_cap": 0,
+        "official_complete_scoring_jobs": 0
+      },
+      "fragment_sha256": "61efa82978b64e71bc148bde6f2e1cf7d135a301c83cceedba3b488bc7403c23",
+      "original_label": {
+        "id": "system-text-black-box-v1",
+        "note": "Structural capacity of the actual native graph. No learning or quality read.",
+        "operators_used": []
+      }
+    },
+    "slurp-native-stage3-system-text-native-capacity-v1": {
+      "corrected_label": {
+        "id": "none",
+        "note": "Tokenizer-only native graph capacity verification exercises no training-free learning operator.",
+        "operators_used": []
+      },
+      "evidence": {
+        "allowed_execution_stages": [
+          "check",
+          "prompt-fit"
+        ],
+        "generation_calls_cap": 0,
+        "official_complete_scoring_jobs": 0
+      },
+      "fragment_sha256": "3e907901e3a857c4523adefd54ad91cdbeef4a1802e2bd1836d377c08f3c28e2",
+      "original_label": {
+        "id": "system-text-black-box-v1",
+        "note": "Structural capacity of the actual native graph. No learning or quality read.",
+        "operators_used": []
+      }
+    }
+  },
+  "reason": "Two immutable capacity fragments used their surrounding search family as an algorithm label although capacity exercises no learning operator. Supersede only the catalogue interpretation using exact fragment/receipt hashes. Preserve original fragments, protocols, plans, runs and results. Do not authorize contact, rerun or read, and do not relax registry validation for any other cell.",
+  "runtime_admission": false,
+  "schema": "saea-historical-algorithm-metadata-correction-v1",
+  "scope": "historical-metadata-only",
+  "status": "decided"
+}

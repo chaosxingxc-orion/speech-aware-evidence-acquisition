@@ -1,5 +1,27 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Historical label findings resolved without changing frozen fragments (2026-10-06)
+
+The two old tokenizer-capacity cells now have an exact hash-pinned catalogue
+correction to algorithm none, because their registered generation/scoring budgets
+are zero and their allowed stages are check/prompt-fit. Original fragments and
+all historical data remain unchanged. The check discloses the original label and
+correction source; it rejects changed fragments/receipts, invalid labels and any
+runtime scope. No runtime resolver or admission is changed. See
+[verified correction](../receipts/continuation/2026-10-06-historical-capacity-label-correction-verified.json).
+
+All61 related tests pass; check statement coverage92percent. The full algorithm
+label gate and engineering-base gate pass. Previous failures remain preserved.
+A Git automatic-maintenance run reported a transient packed-refs read error after
+creating commit e252ac8b6; current show-ref parsing and HEAD object checks succeed.
+No manual Git metadata reconstruction/deletion or maintenance replay occurred.
+The original cause remains unestablished. Use serial integration; preserve evidence.
+
+The22 prepared scientific members and corrected first-cohort registration remain
+unchanged. Integrate and freeze the exact original-a worker, then run the prepared
+all-member frozen checks before Windows registration/live admission. No scientific
+GPU job, monitor or READ is active. Preserve all existing trial and scope bounds.
+
 ## Update5 full preparation and first registration complete; label debt open (2026-10-06)
 
 The original serial preparer completed11:59:56Z exit0. All22 members have their

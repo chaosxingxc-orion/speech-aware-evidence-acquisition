@@ -64,6 +64,11 @@ easily as a fragment can, and neither is allowed. A cell leaves the allowlist
 the next time it is re-pinned (``scripts/flights/repin_cell.py``), which is
 the only path that recomputes a package's dependent hashes in one cycle.
 
+Exact historical metadata corrections are separately hash-pinned to both the
+original fragment and a root disposition. They are disclosed in the table and
+JSON, retain the original label, and grant no runtime admission. The corrected
+label still passes the same registry validator. Never rewrite frozen fragments.
+
 Exit 0 prints the table (cell -> algorithm id). Exit 1 prints one message per
 offending cell.
 
@@ -75,6 +80,7 @@ Flags: ``--repo-root``, ``--json``.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -139,6 +145,43 @@ ALLOWLIST: dict[str, tuple[str, str]] = {
         "operator, and its label is prose in that note.",
     ),
 }
+
+
+# Exact historical catalogue errata never change runtime fragments or admission.
+# Any byte change requires a new prospective correction instead of a broad exemption.
+METADATA_CORRECTIONS: dict[str, dict[str, str]] = {'slurp-native-stage3-system-text-native-capacity-v1': {'fragment_sha256': '3e907901e3a857c4523adefd54ad91cdbeef4a1802e2bd1836d377c08f3c28e2',
+                                                        'receipt_relpath': 'docs/receipts/continuation/2026-10-06-historical-capacity-algorithm-label-correction.json',
+                                                        'receipt_sha256': 'd11b742025050037cd2a132754a10a17295689d6afc3829e5f0193e410f58c95'},
+ 'slurp-native-stage3-system-text-native-capacity-recovery1-v1': {'fragment_sha256': '61efa82978b64e71bc148bde6f2e1cf7d135a301c83cceedba3b488bc7403c23',
+                                                                  'receipt_relpath': 'docs/receipts/continuation/2026-10-06-historical-capacity-algorithm-label-correction.json',
+                                                                  'receipt_sha256': 'd11b742025050037cd2a132754a10a17295689d6afc3829e5f0193e410f58c95'}}
+
+
+def _metadata_label(repo_root: Path, path: Path, document: Any) -> tuple[object, dict | None]:
+    """Resolve only pinned catalogue metadata; preserve strict label validation."""
+    binding = METADATA_CORRECTIONS.get(path.stem)
+    if binding is None:
+        return document.get("stage3_algorithm") if isinstance(document, dict) else None, None
+    receipt_path = repo_root / binding["receipt_relpath"]
+    if hashlib.sha256(path.read_bytes()).hexdigest() != binding["fragment_sha256"]:
+        raise ValueError("Historical fragment bytes differ from the exact correction")
+    receipt_bytes = receipt_path.read_bytes()
+    if hashlib.sha256(receipt_bytes).hexdigest() != binding["receipt_sha256"]:
+        raise ValueError("Historical correction receipt hash differs")
+    receipt = json.loads(receipt_bytes)
+    if (receipt["schema"] != "saea-historical-algorithm-metadata-correction-v1"
+            or receipt["authority"] != "owner227" or receipt["status"] != "decided"
+            or receipt["scope"] != "historical-metadata-only"
+            or receipt["runtime_admission"] is not False):
+        raise ValueError("Historical correction has no exact metadata-only disposition")
+    correction = receipt["corrections"][path.stem]
+    if (correction["fragment_sha256"] != binding["fragment_sha256"]
+            or correction["original_label"] != document.get("stage3_algorithm")):
+        raise ValueError("Historical correction does not bind the original label")
+    return correction["corrected_label"], {
+        **binding, "original_label": correction["original_label"],
+        "runtime_admission": False,
+    }
 
 
 class Stage3AlgorithmLabelCheckError(RuntimeError):
@@ -226,7 +269,11 @@ def evaluate(repo_root: Path) -> dict[str, Any]:
             )
             continue
 
-        label = registry.label_of(document)
+        try:
+            label, correction = _metadata_label(repo_root, path, document)
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            violations.append({"cell": stem, "kind": "invalid-metadata-correction", "message": str(error)})
+            continue
         if label is None:
             violations.append(
                 {
@@ -254,8 +301,9 @@ def evaluate(repo_root: Path) -> dict[str, Any]:
                 "in_scope_because": why,
                 "algorithm_id": record.id,
                 "operators_used": list(used),
-                "source": "fragment",
-                "reason": None,
+                "source": "hash-pinned-metadata-correction" if correction else "fragment",
+                "reason": "Pinned historical catalogue correction; no runtime admission." if correction else None,
+                **({"metadata_correction": correction} if correction else {}),
             }
         )
 
@@ -313,6 +361,8 @@ def main(argv: list[str] | None = None) -> int:
     for row in data["stage3_cells"]:
         operators = ", ".join(row["operators_used"]) or "-"
         marker = " [allowlisted, prose]" if row["source"] == "allowlist-prose" else ""
+        if row["source"] == "hash-pinned-metadata-correction":
+            marker = " [hash-pinned historical correction]"
         print(f"  {row['cell']:<{width}}  {row['algorithm_id']}  ({operators}){marker}")
     print(f"stage3 algorithm label check: PASS ({summary})")
     return 0
