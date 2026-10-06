@@ -1,0 +1,31 @@
+{
+  "schema": "saea-original-template-proposal-received-v1",
+  "at_utc": "2026-10-06T09:34:54.626043+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-PROPOSE-V1",
+  "agent": "/root/aggregate_template_update5_sol",
+  "requested_model": "gpt-6.1-sol",
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/original-response-v1.json",
+    "sha256": "d271861c890b1f0862eee396c00c7573b043a3e4a85e1c3431ecbd9ffb459eb8",
+    "bytes": 126811
+  },
+  "actor_read_summary": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/read-summary-v1.json",
+    "sha256": "1a8f31454e51b7bdec317c8b8b22c577d973076b1b8fb18efcc1895c5f5ef262",
+    "bytes": 4707
+  },
+  "original_positions": 16,
+  "no_change_positions": [
+    "branch-08",
+    "branch-15"
+  ],
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "validation_status": "Original bytes and input identities verified; shared compiler is running. No policy acceptance claimed.",
+  "runtime_admission": false,
+  "is_blind_comparator": false,
+  "no_replacement_requested": true
+}

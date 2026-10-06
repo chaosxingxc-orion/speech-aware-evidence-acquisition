@@ -1,5 +1,23 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 original proposal received; shared compilation running (2026-10-06)
+
+The isolated actor completed one original16-position response:126811 bytes,
+SHA256d271861c890b1f0862eee396c00c7573b043a3e4a85e1c3431ecbd9ffb459eb8.
+All48 aggregate records and full editable template passages were inspected;
+cost detail limitations are explicit in the read summary. Original08/15 are
+no-change and stay spent. Requested model is GPT-6.1 Sol/high; provider metering
+is unavailable and remains null. No replacement or feedback repair was requested.
+See [received evidence](../receipts/continuation/2026-10-06-update5-aggregate-original-received.json).
+
+Shared record_context_population_update is running via the prepared record-original-v1.py
+under coordination/partitioned-update5-aggregate-preparation-v1. Revalidate
+record-original.started.json PID and record-original.exit.json, then inspect the
+preserved compile-receipt-v1.json; no operational compile until all original positions
+are provisional/no-change without errors. Original bytes stay immutable. Next use
+the already pinned operational compiler, then prepare member supplies serially.
+No GPU contact, policy adoption, stable gain or scale admission has occurred.
+
 ## Update5 downstream helpers ready; original actor still pending (2026-10-06)
 
 See [prepared helpers](../receipts/continuation/2026-10-06-update5-downstream-helpers-prepared.json).
@@ -3892,7 +3910,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T09:27:33.212532+00:00
+Last refreshed: 2026-10-06T09:36:02.054462+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
