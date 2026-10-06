@@ -1,5 +1,23 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete process-to-continuation bridge prepared (2026-10-06)
+
+The new thin adapter reuses complete process validation and the existing registered
+continuation/backfill schema. It preserves every candidate/control and private
+source row, then exposes only the existing abstract numeric feedback to the actor.
+All69 focused tests pass, including shared continuation integration; the new module
+has100percent statement coverage and engineering-base passes. Actual premature
+prepare refused with WAIT75 before reading quality or creating a process output.
+
+After all three process READs and whole-trial qualification, first prepare the
+complete root process feedback, then use continuation-process-bridge-entry-v1.py
+with the pinned continuation-process-bridge-plan-v1.json in the complete-analysis
+package. It requalifies sources, rechecks private pins and verifies identical
+numeric feedback before creating immutable bridge records for root review.
+No automatic actor export, retention change, new proposal/contact or runtime
+mutation occurs. The full real path remains pending; remaining-b2 stays running.
+[Evidence](../receipts/continuation/2026-10-06-continuation-process-bridge-prepared.json).
+
 ## Multi-round rejected-history continuation verified (2026-10-06)
 
 The shared v2 continuation now supports further sequential registered iterations,

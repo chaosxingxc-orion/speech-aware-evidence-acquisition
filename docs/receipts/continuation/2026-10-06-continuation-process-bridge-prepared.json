@@ -1,0 +1,40 @@
+{
+  "schema": "saea-continuation-process-bridge-engineering-v1",
+  "at_utc": "2026-10-06T08:09:48.129990+00:00",
+  "status": "PREPARED_WAIT_COMPLETE_TRIAL",
+  "plan": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/continuation-process-bridge-plan-v1.json",
+    "sha256": "d4435c9ed40a004294106ceaf6d2f22a3614c0b15575e8377583cc0f232602b3"
+  },
+  "entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/continuation-process-bridge-entry-v1.py",
+    "sha256": "47ec6c5f6e5d62a45498ffdce43eacd7f50a0cb88e899cf0390acc05522d7f59"
+  },
+  "incomplete_actual_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/continuation-process-bridge-premature-check-v1.json",
+    "sha256": "26af5c1e80003a61172b82212320ad2305ba23dc7a656a4bff7f59e709612e06"
+  },
+  "validation": {
+    "tests_passed": 69,
+    "new_module_statement_coverage_percent": 100,
+    "covered_statements": 17,
+    "test_first": "Module-not-found collection failure preceded implementation.",
+    "engineering_base_check": "PASS",
+    "actual_incomplete_prepare_exit": 75,
+    "integration": "Complete synthetic cohort reports passed the existing registered continuation and exact abstract actor projection; duplicate/missing members, wrong source/score, partial trial, unsealed and edited metrics refused."
+  },
+  "scope": "Reuse the existing backfill/continuation schemas and compiler; independently requalify complete source families and reproduce the exact prepared numeric process feedback. Full private rows remain outside the actor.",
+  "pending": [
+    "All remaining-b2 sources and root process READ",
+    "Whole-trial qualification and root retain/reject decision",
+    "Real complete bridge execution and explicit root review",
+    "Prospective optimizer registration and exact next actor admission"
+  ],
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "learner_exported": false,
+  "runtime_changed": false,
+  "selection_rule_changed": false
+}
