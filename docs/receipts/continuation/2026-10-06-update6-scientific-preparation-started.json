@@ -1,0 +1,39 @@
+{
+  "schema": "saea-model-free-preparation-live-checkpoint-v1",
+  "at_utc": "2026-10-06T19:34:04.242840+00:00",
+  "status": "RUNNING_ORIGINAL_SERIAL_PREPARATION",
+  "pid": 233331,
+  "start_ticks": "64103766",
+  "command": [
+    "/home/chao/.venvs/speechrl/bin/python",
+    "-B",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/serial_prepare_v1.py",
+    "--execute"
+  ],
+  "exec_session_id": 84840,
+  "completed_members": [
+    {
+      "exit_code": 0,
+      "member": "original-a-branch-01"
+    },
+    {
+      "exit_code": 0,
+      "member": "original-a-seed-aa"
+    },
+    {
+      "exit_code": 0,
+      "member": "original-a-seed"
+    }
+  ],
+  "prepared_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/serial_prepare_v1.py",
+    "sha256": "e02012c4e40ac73d57a7935ecb6b743bf04a36f7b198b8c304d629145e3f05cd"
+  },
+  "structural_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/root-structural-review-v1.json",
+    "sha256": "58cee37e38598e283d6fb7bc5b1bc6e90f466969729f353b98794d4f31df9927"
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "next": "Poll original exec session84840 or original PID/start ticks. On complete all members, run finalize-draft-registration-v2.py then prepare-analysis-plans-v1.py; do not restart on observation timeout. No scientific launch yet."
+}

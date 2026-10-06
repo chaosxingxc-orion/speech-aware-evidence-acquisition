@@ -2,6 +2,14 @@
 
 ## Update6 complete structural acceptance (2026-10-06)
 
+The original serial preparation process is PID233331/start_ticks64103766, exec
+session84840, revalidated2026-10-06T19:34:04.242840Z with the first3 members complete
+and no failures. [Original preparation identity](../receipts/continuation/2026-10-06-update6-scientific-preparation-started.json).
+Root structural review is sealed in the same coordination directory as
+root-structural-review-v1.json, SHA25658cee37e38598e283d6fb7bc5b1bc6e90f466969729f353b98794d4f31df9927.
+Only original-a is eligible for separate admission after complete preparation/drafts;
+later cohorts still require prior complete-cohort review. No scientific launch occurred.
+
 The original Windows task finished2026-10-06T19:29:58.4516020+00:00 with all16
 member/observer exits0. Root verified native Windows and WSL process identities absent,
 exact frozen source/registration pins and no STOP/flight lock. The bound15-minute
@@ -5244,7 +5252,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T19:32:39.410268+00:00
+Last refreshed: 2026-10-06T19:34:22.396367+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

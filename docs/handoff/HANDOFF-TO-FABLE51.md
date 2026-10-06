@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:32:39.410268+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:34:22.396367+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -38,6 +38,14 @@ the Update6 proposer is complete.
 ### Actual work to resume
 
 ## Update6 complete structural acceptance (2026-10-06)
+
+The original serial preparation process is PID233331/start_ticks64103766, exec
+session84840, revalidated2026-10-06T19:34:04.242840Z with the first3 members complete
+and no failures. [Original preparation identity](../receipts/continuation/2026-10-06-update6-scientific-preparation-started.json).
+Root structural review is sealed in the same coordination directory as
+root-structural-review-v1.json, SHA25658cee37e38598e283d6fb7bc5b1bc6e90f466969729f353b98794d4f31df9927.
+Only original-a is eligible for separate admission after complete preparation/drafts;
+later cohorts still require prior complete-cohort review. No scientific launch occurred.
 
 The original Windows task finished2026-10-06T19:29:58.4516020+00:00 with all16
 member/observer exits0. Root verified native Windows and WSL process identities absent,
