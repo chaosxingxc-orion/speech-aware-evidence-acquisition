@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Scientific draft finalizer proven in isolation (2026-10-06)
+
+The finalizer successor is prepared under coordination/partitioned-update4-process-
+scientific-preparation-epochs-v1/finalize-draft-registration-v1.py. It reuses the
+previous complete-cohort registration path with the current exact blueprint,
+original actor response, trial and successful one-shot preparation receipts.
+[Proof](../receipts/continuation/2026-10-06-update4-scientific-draft-finalizer-prepared.json):
+real premature invocation exits75 before writes; an isolated fixture using actual
+pinned configuration/protocol/owner/roster files and synthetic preparation receipts
+constructs all3 packages/22 members through the shared scope verifier. A repeated
+invocation refuses. Statement coverage99percent of76 statements; the remaining
+wait line is exercised separately. This is not real member preparation/admission.
+Scientific drafts retain20GiB startup/8GiB running policy; the18GiB structural-only
+amendment does not transfer. Actual frozen/source/live checks and admission remain.
+
+Current structural task continues normally: branches01-08 completed with exit0,
+branch09 parent109918 was verified live at04:45Z. Revalidate all identities.
+After complete structural acceptance, run the prepared serial member entry once,
+then this draft finalizer and offline gates. Preserve any failure rather than rerun.
+No scientific results or quality have been read; no new task contact from preparation.
+
 ## Scientific serial preparation tested; structural family continues (2026-10-06)
 
 At04:39Z the source rehearsal verified148 exact source pins for all22 prospective
