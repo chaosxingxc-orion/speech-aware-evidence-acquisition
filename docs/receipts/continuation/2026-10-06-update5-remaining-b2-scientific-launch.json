@@ -1,0 +1,77 @@
+{
+  "cohort": "remaining-b2",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b2-scientific-v1",
+  "commit": "1f163a1bac3a35d6a908659ee326b8d2dab56fde",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "frozen_proof": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b2-flight-v1/frozen-check-v1.json",
+    "sha256": "b67256488ad70da5805841b87521f7d674f6301ec47843b761e285ade4c44e17"
+  },
+  "registration": {
+    "relpath": "coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/registration-v1.json",
+    "sha256": "385018ada47f01c0ae150bdd1c55738102c9ae7063fa38d001ef1ddec5342c47"
+  },
+  "windows_task": "SAEA-Update5-Aggregate-RemainingB2-Scientific-V1",
+  "launch_epoch": "2026-10-06T15:11:03.6612753+00:00",
+  "schema": "saea-scientific-launch-v1",
+  "at_utc": "2026-10-06T15:13:14.459693+00:00",
+  "status": "RUNNING",
+  "authority": "owner227",
+  "capture_epoch": "2026-10-06T15:11:03.1049870+00:00",
+  "capture_owner_pid": 19772,
+  "scientific_owner_pid": 29728,
+  "members": [
+    "seed",
+    "seed-aa",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "trajectories": 120,
+  "evidence": [
+    {
+      "relpath": "coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/capture-started.json",
+      "sha256": "3b6a936de1c240946cf20779f7abe4b96b0da776466c5a2fdfdb40e5be384c1b"
+    },
+    {
+      "relpath": "coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/scientific-started.json",
+      "sha256": "56083f48754c21eac106e6cef76de22ebc58518cd39fdfe7fd46ac7b16e647c1"
+    },
+    {
+      "relpath": "coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/live-prelaunch-v1.json",
+      "sha256": "65d2e361fa9aad5515c01e28421a0bc8d0585d9137122eaf38d2ec2bb3b5c4af"
+    },
+    {
+      "relpath": "coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/windows-task.xml",
+      "sha256": "8c621c3ab4c9a56e2c88ed2a6e63cacd33305e89ebd2982724f06c51cd0436ca"
+    },
+    {
+      "relpath": "coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/capture-windows-v1.ps1",
+      "sha256": "315ba31c82a7de87fe1bfa24e868a93e0fac3873cf0963675ac51e6336ef3608"
+    }
+  ],
+  "root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b2-root-admission-v1.json",
+    "sha256": "9bf0e5a07ab8b2843e2f843ba272267787655842315e62ef26f1568f873faa72"
+  },
+  "monitor_id": "slurp-update5-remaining-b2-monitor",
+  "read_countersigned": false,
+  "learner_exported": false,
+  "last_observation": {
+    "at_utc": "2026-10-06T15:12:26.709622Z",
+    "member": "seed",
+    "state": "OPENED",
+    "contacts": 15,
+    "launcher_pid": 194884,
+    "campaign_pid": 195007,
+    "gpu_mib": 22976,
+    "gpu_utilization_percent": 91,
+    "telemetry_age_seconds": 8.378435134887695,
+    "service_health": "ok",
+    "stop_present": false
+  }
+}

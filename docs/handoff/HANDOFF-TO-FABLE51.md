@@ -1,5 +1,62 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 final remaining-b2 cohort running (2026-10-06)
+
+Windows task SAEA-Update5-Aggregate-RemainingB2-Scientific-V1 launched with capture
+at15:11:03.1049870Z and scientific coordinator at15:11:03.6612753Z. The clean frozen
+worker codex-partitioned-update5-aggregate-remaining-b2-scientific-v1 remains at
+1f163a1bac3a35d6a908659ee326b8d2dab56fde. Six model-free frozen member checks passed.
+Registration385018ada47f01c0ae150bdd1c55738102c9ae7063fa38d001ef1ddec5342c47 binds
+seed,seed-aa,branch-13/14/15/16,20 rows each and120 trajectories, unchanged policies.
+Actual live admission observed22.41GiB free Windows memory and the exact healthy idle
+service epoch2026-10-05T15:52:00.740486Z. At15:12:26Z seed was OPENED with15 contacts,
+launcher194884/campaign195007 live, GPU22976MiB/91percent, STOP absent. Revalidate.
+
+[Actual launch](../receipts/continuation/2026-10-06-update5-remaining-b2-scientific-launch.json)
+and separate read binding preserve source hashes. Exact15-minute script monitor:
+slurp-update5-remaining-b2-monitor. Delete it after actual task termination and no
+admitted workers/scorer/lease/owned observers. No monitor dispatch/retry/read authority.
+An independent outer capture wrapper preserves stdout/stderr/child exit. All sources,
+requests, prepared supplies and original proposal positions remain frozen.
+
+This is the last original cohort of Update5 K16, not a new template iteration. Root
+read original-a and remaining-b1 completely; neither showed a candidate above both
+own controls. Do not export partial learner feedback or change retention. Complete
+this exact family, verify unique scores/seals and root READ, run business/process
+analysis, then qualify the complete K16 trial before learning selection. Astra's
+human-requested proposer-design work remains prospective and separate. Other-carrier
+holds and human review before8x400 remain.
+
+## Update5 remaining-b1 complete and read; final cohort admitted (2026-10-06)
+
+The actual tail completed14:54:38.6516106Z with exit0. All six members independently
+FINALIZED20 rows, verified seals, one unique successful complete official score each,
+zero failed jobs;690 generation contacts total. Root countersigned the exact original
+READ at14:56Z after a tested explicit original-prefix/new-tail terminal join and fresh
+native/WSL/lock observations. Preserve original abnormal outer exit2147943467 and the
+absent branch-10 host exits; no fake original success, regeneration or score replay.
+The exact15-minute tail monitor was deleted after terminal verification.
+
+[Complete root review](../results/2026-10-06-slurp-update5-remaining-b1-complete-review.md)
+reports seed56.7376percent F1, AA56.2814 and candidates45.5142-55.4623, all below both
+controls. Reliable completion is100percent. Low-alarm candidates09/10 miss errors and
+have no eligible entity repair; high-detection11/12 have high false alarms. These are
+noncausal descriptive process rates. No benefit, adoption or partial learner export.
+Delivered intent cards20/20 do not establish complete semantic entity support.
+
+Root reviewed the full business/process evidence and admitted only unchanged adjacent
+remaining-b2: original four candidates13-16 plus own seed/A/A,120 trajectories on the
+same20 inputs. Registration gate passed; clean worker freeze and fresh live gates remain.
+See [admission](../receipts/continuation/2026-10-06-update5-remaining-b2-admission.json).
+Whole K16 evaluation and retention remain incomplete. No N expansion or policy edit.
+
+The human separately requested GPT-6 Astra to improve the proposer prompt and address
+homogeneous templates. One explicitly requested isolated design subagent is examining
+qualified historical48 aggregate records and current templates. It must not consume
+unfinished Update5 as learner feedback or alter current candidates. Future prompt changes
+require prospective versioning; other-carrier holds and human boundary before8x400 remain.
+
+
 ## Update5 single-root pristine tail prepared and tested (2026-10-06)
 
 The two pending scientific identities remain ABSENT; four original members remain

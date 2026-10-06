@@ -1,5 +1,32 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 final remaining-b2 cohort running (2026-10-06)
+
+Windows task SAEA-Update5-Aggregate-RemainingB2-Scientific-V1 launched with capture
+at15:11:03.1049870Z and scientific coordinator at15:11:03.6612753Z. The clean frozen
+worker codex-partitioned-update5-aggregate-remaining-b2-scientific-v1 remains at
+1f163a1bac3a35d6a908659ee326b8d2dab56fde. Six model-free frozen member checks passed.
+Registration385018ada47f01c0ae150bdd1c55738102c9ae7063fa38d001ef1ddec5342c47 binds
+seed,seed-aa,branch-13/14/15/16,20 rows each and120 trajectories, unchanged policies.
+Actual live admission observed22.41GiB free Windows memory and the exact healthy idle
+service epoch2026-10-05T15:52:00.740486Z. At15:12:26Z seed was OPENED with15 contacts,
+launcher194884/campaign195007 live, GPU22976MiB/91percent, STOP absent. Revalidate.
+
+[Actual launch](../receipts/continuation/2026-10-06-update5-remaining-b2-scientific-launch.json)
+and separate read binding preserve source hashes. Exact15-minute script monitor:
+slurp-update5-remaining-b2-monitor. Delete it after actual task termination and no
+admitted workers/scorer/lease/owned observers. No monitor dispatch/retry/read authority.
+An independent outer capture wrapper preserves stdout/stderr/child exit. All sources,
+requests, prepared supplies and original proposal positions remain frozen.
+
+This is the last original cohort of Update5 K16, not a new template iteration. Root
+read original-a and remaining-b1 completely; neither showed a candidate above both
+own controls. Do not export partial learner feedback or change retention. Complete
+this exact family, verify unique scores/seals and root READ, run business/process
+analysis, then qualify the complete K16 trial before learning selection. Astra's
+human-requested proposer-design work remains prospective and separate. Other-carrier
+holds and human review before8x400 remain.
+
 ## Update5 remaining-b1 complete and read; final cohort admitted (2026-10-06)
 
 The actual tail completed14:54:38.6516106Z with exit0. All six members independently
@@ -4723,7 +4750,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T15:04:30.147256+00:00
+Last refreshed: 2026-10-06T15:13:14.459693+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
