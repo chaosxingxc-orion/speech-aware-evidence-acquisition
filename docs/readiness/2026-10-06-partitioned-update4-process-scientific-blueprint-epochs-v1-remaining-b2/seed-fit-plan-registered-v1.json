@@ -1,6 +1,10 @@
 {
   "cell": "slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b2-seed-v1",
   "composed_config_hash": "580127b412c7b56aeb9a7d00fa823baab0b3e1e1efe014b16f9802254e6030cf",
+  "decision_receipt": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b2-root-admission-v1.json",
+    "sha256": "37eb0f8cc168391fe53a7b9fe1700365217980746786fb2a3a5d10ebc7362289"
+  },
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b2-seed-fit-v1",
     "carrier_lock_key": "slurp",
@@ -54,5 +58,5 @@
   },
   "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1",
   "schema": "saea-registered-generation-plan-v1",
-  "status": "DRAFT; zero contacts; complete structural acceptance and root runtime admission pending"
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
 }

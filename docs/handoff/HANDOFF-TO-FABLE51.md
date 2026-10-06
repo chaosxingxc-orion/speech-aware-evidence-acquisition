@@ -1,5 +1,31 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update4 remaining-b1 complete; adjacent remaining-b2 admitted (2026-10-06)
+
+All six remaining-b1 members independently finalized20 rows with verified seals,
+one complete official score each and zero failed jobs:120 trajectories and666 model
+contacts. Windows terminated normally at07:36:22Z; native and WSL checks found no
+bound workers/scorer/observer. Its15-minute heartbeat was deleted. Exact root READ,
+source-bound process metrics, balanced presentation and all nine paired process
+contrasts completed without new model/scorer contacts.
+
+Seed and A/A both score59.402percent SLU-F1, but review detection differs5/8 versus8/8
+and calls122 versus128. Terminal equality does not establish internal determinism.
+No candidate exceeds seed. Branch11 detects12/12 erroneous drafts yet raw-model
+entity revisions repair one and harm three. All gold-intent cards are present20/20;
+initial candidate coverage is17/20. Raw retrieval-pool and semantic slot support
+remain unknown. Report quality/reliability, process repair/harm, then latency/cost.
+The reusedN20 results do not establish stable benefit or causal node contribution.
+
+[Complete review](../results/2026-10-06-slurp-update4-remaining-b1-process-diagnostics.md)
+and [receipt](../receipts/continuation/2026-10-06-partitioned-update4-process-remaining-b1-complete-read.json)
+preserve all evidence. Root227 admitted only unchanged adjacent remaining-b2
+(seed, seed-aa, branches13-16) to finish the registered population. Its clean frozen
+checks, exact registration and fresh live gates remain before dispatch. No partial
+trial selection or learner export. Boundary maintenance remains observe-only with
+no cache flush, global sync, restart or frozen-source edit. Other carriers stay held.
+See [admission](../receipts/continuation/2026-10-06-partitioned-update4-process-remaining-b2-admitted.json).
+
 ## Paired process diagnostics verified on complete original-a (2026-10-06)
 
 All17 configured candidate-control and control-control comparisons completed after

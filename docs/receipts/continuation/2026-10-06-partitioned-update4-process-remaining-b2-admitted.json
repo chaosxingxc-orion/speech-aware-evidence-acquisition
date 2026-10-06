@@ -1,0 +1,30 @@
+{
+  "schema": "saea-configured-cohort-admission-evidence-v1",
+  "at_utc": "2026-10-06T07:47:22.581478+00:00",
+  "cohort": "remaining-b2",
+  "status": "ADMITTED_NOT_DISPATCHED",
+  "root_admission": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b2-root-admission-v1.json",
+    "sha256": "37eb0f8cc168391fe53a7b9fe1700365217980746786fb2a3a5d10ebc7362289"
+  },
+  "prior_complete_review": "docs/receipts/continuation/2026-10-06-partitioned-update4-process-remaining-b1-complete-read.json",
+  "scope": {
+    "K": 4,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 80,
+    "control_trajectories": 40,
+    "family_trajectories": 120,
+    "fit_endpoints_cap": 6240,
+    "generation_contacts_cap": 1560
+  },
+  "pending": [
+    "clean frozen checks for every member",
+    "bound registration",
+    "fresh service/process/STOP/resource checks",
+    "Windows-owned launch"
+  ],
+  "additional_model_contacts": 0,
+  "learner_exported": false,
+  "whole_trial_complete": false
+}

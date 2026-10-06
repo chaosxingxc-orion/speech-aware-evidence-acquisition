@@ -1,0 +1,215 @@
+{
+  "schema": "saea-configured-family-qualified-v1",
+  "recorded_at_utc": "2026-10-06T07:37:38.566369+00:00",
+  "status": "ALL_MEMBERS_OPERATIONALLY_QUALIFIED",
+  "members": [
+    {
+      "member": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-09-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-09-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-09-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-09-generation-v1/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-09-V1.run-manifest.json",
+        "sha256": "fc8d3814537c2dda94692f3798b1cee6fbc550ecb1aae23ad4729abf9b235d6b"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-09-generation-v1"
+    },
+    {
+      "member": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-10-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-10-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-10-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-10-generation-v1/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-10-V1.run-manifest.json",
+        "sha256": "b9c272a01ca0b01e0468f400b473b8d3fc7c551f8ef4ba005894ff14ab09f08f"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-10-generation-v1"
+    },
+    {
+      "member": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-11-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-11-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-11-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-11-generation-v1/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-11-V1.run-manifest.json",
+        "sha256": "7cb7cd227c0a83bd09c109016a0c8e9627c6d1ed769f3cbe7f20d31b70e7bc33"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-11-generation-v1"
+    },
+    {
+      "member": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-12-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-12-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-12-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-12-generation-v1/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-12-V1.run-manifest.json",
+        "sha256": "a647471cebb08b8914a7dcf4c61196f9ba2e53daff48b95aecd018f19d0b5283"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-12-generation-v1"
+    },
+    {
+      "member": "seed",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-generation-v1/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-V1.run-manifest.json",
+        "sha256": "c642be44afdb41c3fb774840a45ab863f74695b45021a5d1ed0b4539f144a017"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-generation-v1"
+    },
+    {
+      "member": "seed-aa",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-aa-generation-v1",
+      "state": "FINALIZED",
+      "rows": 20,
+      "verified_seal": true,
+      "official_successful_jobs": 1,
+      "failed_jobs": 0,
+      "manifest": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-AA-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-aa-generation-v1/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-AA-V1.run-manifest.json",
+        "sha256": "f2e9b418105eac96ca9e7da0378ca383861a8a4e02a0e731fc010059bb8b2fd4"
+      },
+      "score_job_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-aa-generation-v1"
+    }
+  ],
+  "attempt_observations": [
+    {
+      "member": "branch-09",
+      "state": "FINALIZED",
+      "calls": 107
+    },
+    {
+      "member": "branch-10",
+      "state": "FINALIZED",
+      "calls": 92
+    },
+    {
+      "member": "branch-11",
+      "state": "FINALIZED",
+      "calls": 119
+    },
+    {
+      "member": "branch-12",
+      "state": "FINALIZED",
+      "calls": 98
+    },
+    {
+      "member": "seed",
+      "state": "FINALIZED",
+      "calls": 122
+    },
+    {
+      "member": "seed-aa",
+      "state": "FINALIZED",
+      "calls": 128
+    }
+  ],
+  "attempt_metadata_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-09-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-09-generation-v1.json",
+      "sha256": "b0e5eeac5054fdc0eb0208ab485c93936ff99a26c0ac74278b2478c95a3e5ad3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-10-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-10-generation-v1.json",
+      "sha256": "104548a16deeb34c6e7dc5821d8ccd5c119c0ad2fea8d8f9a135980f1b834a28"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-11-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-11-generation-v1.json",
+      "sha256": "60f54b720707d52324ed23079d6df01f233b2bfa05d6f7ac8a0304ee48c21fff"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-12-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-12-generation-v1.json",
+      "sha256": "ef939194651b9853d2bfa7a2219a0b5dcab7cf2b6f89292149f79397e4e8d41b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-generation-v1.json",
+      "sha256": "902ee67e5106427750d1c812300543cb47337c8d5703b239a933feec69c830a7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-AA-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-aa-generation-v1.json",
+      "sha256": "1b8cc1a3e1e078729a0fd6381a714449d72e6db2dad4b54e0cea56b41b4baa3e"
+    }
+  ],
+  "job_metadata_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-09-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-09-generation-v1/score-jobs.jsonl",
+      "sha256": "3d0a6542b0d819c2f2aca65db3b7c67adffe1d60e09e4d0647102d2f9caf6ba8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-09-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-09-generation-v1/score-batch/batch-summary.json",
+      "sha256": "3c54a830656e70c8b7dfffae25b4108d47114f7112b67ec3849c5d8d225c9309"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-10-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-10-generation-v1/score-jobs.jsonl",
+      "sha256": "5682fc690dbf7de938d0ee20aadef1f3b037de2a4a4df4c91472470978f2bbc0"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-10-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-10-generation-v1/score-batch/batch-summary.json",
+      "sha256": "d0ea7f16ce4f03ddb6b78c5778740360c0beeade08f4d32d6926f0a477a3553a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-11-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-11-generation-v1/score-jobs.jsonl",
+      "sha256": "fd6437cabd11a9836468f1256e4eae3afcc7c40515a8ff8186549f5d9231d29b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-11-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-11-generation-v1/score-batch/batch-summary.json",
+      "sha256": "dc5b137da469eced644a8f04f5eccfa724d53309e00aa6fed551b728d9d30aaa"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-12-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-12-generation-v1/score-jobs.jsonl",
+      "sha256": "430dee4b15a02afbf4e57464c231d9bfe7fb05096f5784a6db0c45bdcc72df4f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-BRANCH-12-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-branch-12-generation-v1/score-batch/batch-summary.json",
+      "sha256": "728695b4f6c67338375f439ccb90e83294c3745dc09f135f83810c85860cb03f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-generation-v1/score-jobs.jsonl",
+      "sha256": "f973ea2dfec589e034b75e251b9fc03fffcf95f443d855970059b545b22af5a4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-generation-v1/score-batch/batch-summary.json",
+      "sha256": "ebdbcee367644a94d0166584573c787cf25d24f36c47c80f899b5fe2b1e6e7ae"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-AA-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-aa-generation-v1/score-jobs.jsonl",
+      "sha256": "a046dc6a2f1586c30c50ea4070f222b6c8b7ac2602e4031ea994c8d20c42e3bf"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-REMAINING-B1-SEED-AA-V1/attempt-slurp-native-stage3-context-template-partitioned-update4-process-n20-remaining-b1-seed-aa-generation-v1/score-batch/batch-summary.json",
+      "sha256": "318c90583df135d6c212209d5195bd341b90f16a4d1dcebb048df019200c0412"
+    }
+  ],
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1",
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-scientific-blueprint-epochs-v1-remaining-b1/analysis-recipe-v1.json",
+    "sha256": "7d6e31c627e205e03746a785a3d4e54356c68720ba6a7426fe06788b1b7ed240"
+  },
+  "frozen_commit": "6d8dca0dfcc8d2b7fe7108e65e280453a3eaf2a4",
+  "root_read_signed_by_this_function": false,
+  "quality_values_reported": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0
+}

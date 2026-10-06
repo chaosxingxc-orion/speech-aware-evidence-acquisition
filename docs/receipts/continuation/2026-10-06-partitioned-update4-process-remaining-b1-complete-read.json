@@ -1,0 +1,64 @@
+{
+  "schema": "saea-configured-cohort-root-complete-read-v1",
+  "at_utc": "2026-10-06T07:43:32.441618+00:00",
+  "cohort": "remaining-b1",
+  "status": "COMPLETE_ROOT_REVIEWED",
+  "worker": "/home/chao/saea-worktrees/codex-update4-remaining-b1-scientific-v1",
+  "commit": "6d8dca0dfcc8d2b7fe7108e65e280453a3eaf2a4",
+  "members": 6,
+  "trajectories": 120,
+  "unique_reused_inputs": 20,
+  "model_contacts": 666,
+  "official_successful_scores": 6,
+  "official_failed_scores": 0,
+  "root_authorization": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b1-flight-v1/root-read-authorization-v1.json",
+    "sha256": "a12831aca1dda5eafa0ba034f065c41f2d1c33124928ad299e78bc6c56286f15"
+  },
+  "outputs": {
+    "report.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/report.json",
+      "sha256": "4d66fe4d89d124f6080c3ccc1801555f1e848b1f58e08aedd90a02008594ead1"
+    },
+    "process-metrics-v1.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/process-metrics-v1.json",
+      "sha256": "2bbd61aaa617efa1ab9774006a87ffcbc89410f5a293e23c0fda17170019ef9c"
+    },
+    "business-process-cost-v1.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/business-process-cost-v1.json",
+      "sha256": "85d6bae76a7560ac2f084db4b4606678f0673e182e7985b449a534b3f01ae530"
+    },
+    "paired-process-diagnostics-v1.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/paired-process-diagnostics-v1.json",
+      "sha256": "7d0b203fecef853057665866176bc7dd8ea77015922ec1e8d942cae85dac2ff9"
+    },
+    "timing-summary.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/timing-summary.json",
+      "sha256": "d9b82f93370e66f73a591a22b2eac8c2d4f0914972dfda84409d5f258e6995f2"
+    }
+  },
+  "boundary_review": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b1-root-boundary-review-v1.json",
+    "sha256": "bfc38e8021b180aec2688bd4a22175ca39eb0c2274741f6767269b5486615dea"
+  },
+  "continuation_review": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b1-root-continuation-review-v1.json",
+    "sha256": "0f7becaa18a7d4313ca02c5e620ff11e27eb80aa27e8dc72ef536744997f4ca1"
+  },
+  "interpretation": "Continue only adjacent remaining-b2 unchanged to complete every original registered proposal; no partial-trial retention or learner export. All six members completed20 rows with verified seals and unique successful complete scores, zero failed jobs. Seed and A/A both score59.402percent SLU-F1 and70percent intent; candidate SLU-F1 ranges51.738 to58.784percent and none exceeds seed. Between-system full-answer changes show zero newly correct inputs and3-5 newly incorrect inputs per candidate. All gold-intent cards are present20/20 but initial candidate coverage is17/20. Branch11 detects12/12 erroneous drafts but alarms6/7 observed correct drafts with one unknown, repairs one raw-model entity answer and harms three; branch12 alarms7/7 correct drafts. Branch10 avoids observed false alarms but misses8/13 errors and shows no raw-model entity repair. The seed/A/A terminal scores agree while their review detection is5/8 versus8/8 and calls122 versus128, so terminal equality does not prove identical internal behavior. Preserve unknowns and descriptive paired intervals. Raw recall-pool and semantic slot support remain unmeasured. Quality, reliability and repair/harm lead; latency is secondary. This reusedN20 trial does not establish stable benefit.",
+  "monitor": {
+    "id": "slurp-update4-remaining-b1-scientific-monitor",
+    "status": "DELETED",
+    "native_terminal": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b1-windows-terminal-v1.json",
+      "sha256": "b6daee68909e3304ca06832ac94d3aeab2adc51f370e6c957c8239de286ace9e"
+    }
+  },
+  "additional_analysis_contacts": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "learner_exported": false,
+  "formal_adoption": false,
+  "whole_trial_complete": false
+}
