@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Frozen capacity checks running from integrated source (2026-10-06)
+
+Completed original proposal compilation,all48 engineering supplies,all16 capacity
+registrations and readiness evidence were serially integrated at94190872a21c2b49f45917c85dc9629ecab994db.
+[The clean frozen checker](../receipts/continuation/2026-10-06-partitioned-update4-process-frozen-check-started.json)
+started02:08:07Z in codex-partitioned-update4-process-capacity-v1. Revalidated
+PID88748/tool session46462 runs the exact frozen-check-v2.py once. Collect its
+stdout/stderr/exit under data-root coordination/partitioned-update4-process-capacity-owner227-v1;
+never relaunch merely because polling times out. Source edits stay outside this worker.
+
+No actual tokenizer/generation/scorer contact or GPU task has started. On all-member
+success finalize-capacity-registration-v2.py binds the complete launch inputs;
+then root must revalidate actual service epoch/processes,STOP/leases and20GiB-start/
+8GiB-running guards before a Windows-owned capacity launch. Activate the15-minute
+script monitor only for that actual job. Structural generation and scientific
+families remain separately held. No stable benefit or policy adoption is claimed.
+
 ## Complete capacity registration ready for frozen verification (2026-10-06)
 
 [Registered capacity readiness](../receipts/continuation/2026-10-06-partitioned-update4-process-capacity-prepared.json)

@@ -1,0 +1,22 @@
+{
+  "schema": "saea-frozen-capacity-model-free-check-started-v1",
+  "at_utc": "2026-10-06T02:08:51.004631+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+  "commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+  "pid": 88748,
+  "start_ticks": "57957631",
+  "tool_session": 46462,
+  "start_capture": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/frozen-check-v2.started.json",
+    "sha256": "3364a0d1c2fcba2f81df7fcc837ed86bbacf51b3c475fb77f512d9f357aa54b3"
+  },
+  "capture_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1",
+  "capture_prefix": "frozen-check-v2",
+  "source_script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/frozen-check-v2.py",
+    "sha256": "636b6f779bb158af2feeacbda693b2d41dce8155510ad5301d2136db75dd9722"
+  },
+  "model_tokenizer_scorer_contacts": 0,
+  "runtime_dispatch": false,
+  "next": "Collect this exact check; on complete success finalize its pinned launch registration and revalidate live serving, process, STOP and memory gates. Actual capacity then requires Windows-owned launch and job-scoped fifteen-minute monitor. Do not relaunch on an observation timeout."
+}
