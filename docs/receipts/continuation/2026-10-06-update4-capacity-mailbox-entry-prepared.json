@@ -1,0 +1,48 @@
+{
+  "at_utc": "2026-10-06T03:04:01.348762+00:00",
+  "status": "PREPARED_NOT_LAUNCHED",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/registration-v1.json",
+    "sha256": "32c09a0ff64d4031f1b472aecd9152ad5225ae51175aa529c8d092b1916fca16"
+  },
+  "helper_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/helper-validation-v1.json",
+    "sha256": "b27a6bfae58304cce25043b093948980bcf74669b0076990799c2a6123293ab0"
+  },
+  "windows_wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/capacity-windows-v1.ps1",
+    "sha256": "7109afbca274f9a5569198525d2407e2156c74706e817e6e4de44bf6a065de2c"
+  },
+  "root_disposition": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-capacity-mailbox-entry-disposition.json",
+    "sha256": "74354c7b6f7333b4eb937b70ba6e015d2eea0ac98ca394361899890816d9e876"
+  },
+  "unchanged_frozen_worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+  "worker_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+  "member_count": 16,
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-01": 297,
+      "branch-02": 297,
+      "branch-03": 297,
+      "branch-04": 297,
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 4752
+  },
+  "contacts_added": 0,
+  "next": "Serially integrate records, revalidate/archive only exact dead own lease, check live service/resources, then launch Windows-owned entry once."
+}

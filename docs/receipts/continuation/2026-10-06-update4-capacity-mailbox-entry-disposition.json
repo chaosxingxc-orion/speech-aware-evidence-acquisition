@@ -1,0 +1,59 @@
+{
+  "schema": "saea-root-bounded-observer-entry-disposition-v1",
+  "at_utc": "2026-10-06T03:01:08.338232+00:00",
+  "status": "ROOT227_NEW_BOUNDED_ENTRY_AFTER_QUALIFIED_REPAIR",
+  "authority": "Owner227 autonomous bounded engineering and evidence-backed incident disposition",
+  "finding": "Two old pipe-observer launch envelopes stopped before a capacity worker or attempt existed. Reuse of that transport failed in the real leased child. The new Windows-owned request/response transport passed shared leased-envelope success and sampler-loss proofs. Underlying old pipe cause remains unestablished.",
+  "prior_failure": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-capacity-continuation-observer-stop.json",
+    "sha256": "ed14453894f0cea54f9d3ebebbc4a4d5a096272af310fabf463e3736c29a236b"
+  },
+  "qualified_transport": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-windows-mailbox-envelope-qualified.json",
+    "sha256": "a807fd4e472c253b76570517b866e549cc7bede69c81a1890b1168381d67633d"
+  },
+  "scope": "One explicitly recorded new Windows-owned observer entry for the complete unchanged unspent capacity family. Preserve both stopped launch envelopes. No prior capacity worker, attempt, tokenizer endpoint or output exists; no model/scorer replay or extra allocation.",
+  "boundaries": {
+    "policies_and_knowledge": "unchanged",
+    "worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+    "worker_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+    "population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+      "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+    },
+    "budget": {
+      "generation_contacts": 0,
+      "scorer_contacts": 0,
+      "tokenizer_endpoint_caps": {
+        "branch-01": 297,
+        "branch-02": 297,
+        "branch-03": 297,
+        "branch-04": 297,
+        "branch-05": 297,
+        "branch-06": 297,
+        "branch-07": 297,
+        "branch-08": 297,
+        "branch-09": 297,
+        "branch-10": 297,
+        "branch-11": 297,
+        "branch-12": 297,
+        "branch-13": 297,
+        "branch-14": 297,
+        "branch-15": 297,
+        "branch-16": 297
+      },
+      "tokenizer_endpoints_total": 4752
+    },
+    "resource_policy": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 20,
+      "wait_seconds": 600
+    },
+    "structural_or_scientific_admission": false,
+    "automatic_retry": false
+  },
+  "control_disposition": "Revalidate all prior capacity identities absent and old launcher/lease PIDs gone; require STOP absent and free shared kernel guard. Archive only exact continuation1 flight.lock with preserved token matching its worker-token, run, attempt, owner, session and study_head. Keep generation.guard inode, old worker-token and all original evidence. No other coordinator controls may change.",
+  "future_failure": "Stop and preserve. No automatic replay or reconnect; root must inspect the exact new cause before a future different registered entry."
+}

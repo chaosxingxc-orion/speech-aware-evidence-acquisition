@@ -1,5 +1,22 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Fresh mailbox capacity entry prepared; launch checks pending (2026-10-06)
+
+[Root disposition](../receipts/continuation/2026-10-06-update4-capacity-mailbox-entry-disposition.json)
+and [prepared registration](../receipts/continuation/2026-10-06-update4-capacity-mailbox-entry-prepared.json)
+bind the new Windows-owned per-member observer lifecycle. All164 pins verify;
+wrong registration SHA is refused before any start receipt. All16 exact attempt
+JSON files and run roots remain absent. Frozen94190872 policies, supplies,
+requests and4752 original tokenizer endpoint allowance are unchanged; no new
+proposal or task/scorer contact occurred. Registration SHA is
+32c09a0ff64d4031f1b472aecd9152ad5225ae51175aa529c8d092b1916fca16.
+
+Next serially integrate, revalidate/archive only the exact dead continuation1
+lease under the recorded root disposition, verify live service/STOP/resources,
+then launch this Windows-owned job once and enable its15-minute script monitor.
+Do not resume either old launch or use its old structural qualifier. Any new
+failure stops; structural/scientific work remains separately held.
+
 ## Windows-owned memory transport qualified without task contacts (2026-10-06)
 
 [The opt-in mailbox observer](../readiness/2026-10-06-windows-owned-memory-observer-v1/README.md)
@@ -3118,7 +3135,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T02:58:05.284205+00:00
+Last refreshed: 2026-10-06T03:04:20.241895+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
