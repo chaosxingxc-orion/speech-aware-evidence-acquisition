@@ -1,0 +1,54 @@
+{
+  "schema": "saea-update6-complete-cohort-root-review-v1",
+  "at_utc": "2026-10-06T21:28:36.245981+00:00",
+  "cohort": "original-a",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1",
+  "members": 10,
+  "trajectories": 200,
+  "model_contacts": 1061,
+  "official_scores": 10,
+  "failed_score_jobs": 0,
+  "qualification": {
+    "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-flight-v1/family-qualified-v1.json",
+    "sha256": "881cdd83d8295fbc0d02ba55a34980fdf69e5e168453e43f7c66d38230413d08"
+  },
+  "authorization": {
+    "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-flight-v1/root-read-authorization-v1.json",
+    "sha256": "700a56c13f2279a0ee68097a86e79c18c2c920ae91bed143f2f9e0e5b7496327"
+  },
+  "native_successor_exit": {
+    "relpath": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/owner-process-exit.json",
+    "sha256": "63c9c3e2a5dad453583fd8e12d647005cd6d3ca2af52107c78b71ee0555ffaa8"
+  },
+  "root_review": {
+    "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-complete-root-review-v1.json",
+    "sha256": "8f73c3679d3e9ef1ce75d2146bb52945762de6c961fff39dceddc8d7e031f6cf"
+  },
+  "analysis": {
+    "report.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1/report.json",
+      "sha256": "b418940b62b490e5424871f60347de6b462579f560a6447b1fd997bcf931c9fe"
+    },
+    "process-metrics-v1.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1/process-metrics-v1.json",
+      "sha256": "5c80d7e5ede1b59bdf14d6fc2d260f6feb76d13c2d586a1c9736a385fb2265ed"
+    },
+    "business-process-cost-v1.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1/business-process-cost-v1.json",
+      "sha256": "6816c065b1fb1110c2573dc36a93a7ad183e07f87cb87c005ae69192f3f347e5"
+    },
+    "timing-summary.json": {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1/timing-summary.json",
+      "sha256": "7e7f442e3a0d17313be9bb8e2a3366c6610a48a13a6a5c1e074ab84677607afe"
+    }
+  },
+  "report": {
+    "relpath": "docs/results/2026-10-06-update6-original-a-complete-review.md",
+    "sha256": "d6c8190d7b7167a9cc87eb44cbc11c541f5e6be1a0cad5e7a4bc175fc431a01c"
+  },
+  "monitor_deleted": "slurp-update6-suffix-continuation-monitor",
+  "formal_adoption": false,
+  "complete_trial_retention_pending": true,
+  "learner_exported": false,
+  "new_generation_or_scoring_contacts_for_read": 0
+}

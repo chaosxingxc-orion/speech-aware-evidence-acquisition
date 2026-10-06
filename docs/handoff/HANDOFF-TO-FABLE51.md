@@ -1,5 +1,35 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update6 original-a complete; remaining-b1 admitted for frozen checks (2026-10-06)
+
+All10 original-a members independently FINALIZED20 rows with verified seals, one
+successful complete official score each and zero failed jobs:200 trajectories,
+1061 recorded model contacts. Untouched suffix owner completed21:22:33Z/native exit0.
+Root verified the exact cross-epoch chain, preserved original failed owner/missing
+native branch03 exits, signed the exact READ and completed business/process/timing
+analysis. No score replay or regeneration. Monitor
+slurp-update6-suffix-continuation-monitor is DELETED; no generation is currently active.
+[Complete review](../results/2026-10-06-update6-original-a-complete-review.md).
+
+Seed/A/A F1 is65.5414/53.8980percent; candidates50.6396 to58.1272percent, all reliability1.
+All candidate-minus-A/A F1 intervals include zero. Reviewers03/07 alarm on every
+observable incorrect AND correct draft; entity revision repairs0, harms1/2. Intent
+cards are delivered20/20 but initial candidate coverage is17/20 except branch08 at18/20.
+No stable benefit, formal adoption or whole-Update6 retention conclusion; raw pool
+and semantic slot support remain unavailable. No partial learner export. Other
+cohorts are still required for the original16-position trial.
+
+Root complete review in coordination/partitioned-update6-diversity-scientific-preparation-v1/
+original-a-complete-root-review-v1.json permits only remaining-b1 unchanged. Its six
+GEN/FIT pairs now pass root admission and registration check; no dispatch yet. Freeze
+a new clean remaining-b1 worker, save its identity, run all six frozen member checks,
+then use prospective finalize-registration-v2.py to bind v2 owner plus independent
+native capture. Keep20GiB startup/8GiB running, observe-only boundary maintenance,
+exact config-derived members and unchanged N20/data/knowledge/sampling. Revalidate
+live service/guards and use hidden native supervisor, then bind a fresh15minute
+monitor after actual launch. remaining-b2 stays DRAFT until its adjacent full review.
+Active parents remain Update2; no proposal, experience or acceptance-rule changes.
+
 ## Historical aggregate selection audit completed (2026-10-06)
 
 A root-only audit of the already admitted64-record aggregate capsule reproduces
