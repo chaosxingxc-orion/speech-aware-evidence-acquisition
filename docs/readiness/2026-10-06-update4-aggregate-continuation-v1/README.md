@@ -26,3 +26,18 @@ coordination/update5-aggregate-input-preparation-v2/prepare-next-input-v2.py.
 Verify terminal metadata before use. The aggregate-only actor-output-contract-draft-v1.json
 is not contact admission. It derives K from the plan and orders business/process/cost
 priorities without per-input data, sources or knowledge content.
+
+## Aggregate input and downstream preparation
+
+The corrected offline input completed and root verified48 aggregate records, three
+observed K16 populations,1,062,767 bytes and35554 private cumulative exposure IDs.
+The isolated GPT-6.1 Sol actor is dispatched under its exact admission/reservation.
+Do not reread raw history into the actor or replace spent slots.
+
+Prospective evaluation keeps the same configured8/4/4 cohorts and reused20 inputs.
+The pinned record-original, operational compile and member-engineering helpers are
+prepared in coordination/partitioned-update5-aggregate-preparation-v1. A scientific
+blueprint helper now uses the existing shared multi-round lineage resolver rather
+than a one-parent assumption. Syntax checks pass; no successor runtime execution
+is established. Actor completion, original-byte preservation, shared compilation,
+full-request capacity, structural proof and scientific admission remain sequential.

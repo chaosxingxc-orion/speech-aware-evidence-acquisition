@@ -1,5 +1,18 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 downstream helpers ready; original actor still pending (2026-10-06)
+
+See [prepared helpers](../receipts/continuation/2026-10-06-update5-downstream-helpers-prepared.json).
+The pinned record-original-v1.py preserves one emitted response before shared
+compilation; compile-original-population-v1.py binds original parents and actual
+role bytes; prepare-engineering-member-v1.py reuses unchanged assets. All derive
+positions from the prospective config. The scientific blueprint uses existing
+context_packet_lineage for all validated continuations, avoiding a one-parent
+assumption. Scripts are only prepared and syntax checked, not runtime-admitted.
+Do not invoke record-original until /root/aggregate_template_update5_sol reports
+its original response. Preserve rejected/no-change positions and stop on invalid
+compilation without actor feedback repair. No GPU job or heartbeat is active.
+
 ## Aggregate learner dispatched; evaluation base prepared (2026-10-06)
 
 Reservation completed normally before contact. The fresh fork-none GPT-6.1 Sol/high

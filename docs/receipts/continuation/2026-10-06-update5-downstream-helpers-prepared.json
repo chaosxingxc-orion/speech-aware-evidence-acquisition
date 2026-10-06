@@ -1,0 +1,14 @@
+{
+  "schema": "saea-prospective-downstream-helper-preparation-v1",
+  "at_utc": "2026-10-06T09:27:33.212532+00:00",
+  "status": "PREPARED_WAIT_ORIGINAL_RESPONSE",
+  "preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-preparation-v1/downstream-helpers-prepared-v1.json",
+    "sha256": "b6ac9d4d792b217488719fc89559931b8517c399ea14a4603dd66b57df9845c4"
+  },
+  "source_policy": "Derive candidates, stages, rosters and limits from the exact prospective population config; preserve all original positions.",
+  "lineage": "Scientific blueprint reuses context_packet_lineage to resolve the validated original active parent across all continuations. No source/measurement gate weakened.",
+  "validation": "Python syntax checked; shared lineage already covered by multi-round continuation/trial tests. No operational runtime execution claimed.",
+  "contacts_added": 0,
+  "runtime_admission": false
+}
