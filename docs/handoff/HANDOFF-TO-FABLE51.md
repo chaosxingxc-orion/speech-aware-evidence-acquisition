@@ -1,5 +1,30 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 structural recovery1 is running (2026-10-06)
+
+Exact Windows task SAEA-Update5-Aggregate-Structural-Recovery1 launched at
+2026-10-06T11:11:51.1151240+00:00 from the unchanged frozen structural worker
+/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-structural-v1 at
+edc736481e62e24d5e1d33e4e01a2041e1fd3245. Registration SHA256
+7f92cef36bb7bfd41afb5034faa54eb5817cf8b7a65e78b421c3e7725ccf8b7a.
+Current coordination is partitioned-update5-aggregate-structural-precontact-recovery1,
+not the original failed directory and not the stale batch queue. See
+[actual launch](../receipts/continuation/2026-10-06-update5-structural-recovery1-launch.json).
+
+The first stable memory gate passed20.252seconds/3samples; root verified the actual
+shared worker PID164905, lease and entry live. Revalidate every PID. Prelaunch
+Windows free24.225GiB, service healthy idle4, no STOP/competing runtime, epoch
+2026-10-05T15:52:00.740486+00:00. Original resource policy20GiB startup/8GiB running.
+All16 configured four-row members execute serially; max832 generation/3328 FIT
+endpoints; no official scoring. Monitor slurp-update5-structural-recovery-monitor
+is ACTIVE every15minutes, script-only; delete after exact terminal and no remaining
+admitted workers/lease/observers. Keep healthy checks quiet. Another failure stops
+for root evidence/diagnosis; no automatic second continuation. Preserve the original
+11:07 log collision and all frozen bytes. Engineering OPENED attempts with complete
+generation/inert score specs are intentional. Whole-family structural audit only
+after exact terminal identity/epoch capture; never read quality or score these runs.
+Scientific N20 remains unadmitted pending complete structural acceptance.
+
 ## Update5 structural precontact stop; one root disposition prepared (2026-10-06)
 
 The first structural Windows task launched11:07:48Z and ended exit1 at11:08:01Z.

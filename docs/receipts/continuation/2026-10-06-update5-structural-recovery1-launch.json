@@ -1,0 +1,144 @@
+{
+  "schema": "saea-root-structural-recovery-launch-v1",
+  "at_utc": "2026-10-06T11:13:15.855359+00:00",
+  "task_name": "SAEA-Update5-Aggregate-Structural-Recovery1",
+  "launch_epoch": "2026-10-06T11:11:51.1151240+00:00",
+  "windows_owner_pid": 41020,
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/registration-v1.json",
+    "sha256": "7f92cef36bb7bfd41afb5034faa54eb5817cf8b7a65e78b421c3e7725ccf8b7a"
+  },
+  "root_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/root-precontact-disposition-v1.json",
+    "sha256": "5caaca5d9c23b20d97babe2a42fb51b7daacce3e2a705d1b9724fbe9e1568357"
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/live-prelaunch-v1.json",
+    "sha256": "2d1b7d9f64348aa51a96a90d8d75eeef8df460107e580a90c9d4d19e1f1e5932"
+  },
+  "start_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/structural-started.json",
+    "sha256": "8414c1b492974042057558a0c1ab59e15f8a64640ff8d89b2c263f469a9e3016"
+  },
+  "first_memory_gate": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/branch-01/memory-wait/finished.json",
+    "sha256": "45c7a1270d1faa5a9b30fcdef4c5db24306ea3255b9db97679d8e6681b075bc5"
+  },
+  "first_worker_identity": {
+    "pid": 164905,
+    "start_ticks": "61166066",
+    "cmdline_sha256": "a7329b9db9fcc3db6107b3e16c4f38743bca78c7ec3297390aa9ca9934799332"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-structural-v1",
+  "worker_commit": "edc736481e62e24d5e1d33e4e01a2041e1fd3245",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "members": [
+    {
+      "label": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-smoke-4-generation-v1",
+      "rows": 4
+    }
+  ],
+  "budget": {
+    "generation_contacts": 832,
+    "fit_endpoint_contacts": 3328,
+    "official_score_jobs": 0
+  },
+  "monitor_id": "slurp-update5-structural-recovery-monitor",
+  "monitor_interval_minutes": 15,
+  "scope": "Structural-only worker execution. No official scoring, scientific quality read or optimizer export. Original failed precontact task preserved; no second automatic continuation."
+}
