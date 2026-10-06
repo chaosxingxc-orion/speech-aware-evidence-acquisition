@@ -1,5 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Historical N20 resource evidence complete (2026-10-06)
+
+The next scientific admission now has complete historical operational evidence
+from all22 update3 N20 members including every comparator. All guards completed
+exit0 with zero reader errors; maximum sampled available-memory decline3.11071GiB,
+minimum historical available19.17324GiB,maximum sampling gap6.10314seconds.
+[Exact audit](../receipts/continuation/2026-10-06-update4-scientific-historical-resource-evidence.json)
+binds both source files for every member and preserves old worker identities.
+This is historical host availability, not peak worker RSS or a guarantee about
+unseen peaks. Observer transport/process wrapper differs from the current job.
+No task quality was read and no resource policy, host setting or cache changed.
+Scientific20GiB startup/8GiB floor remains unchanged; any later change needs an
+exact root227 disposition using live evidence, not automatic structural inheritance.
+
 ## Scientific draft finalizer proven in isolation (2026-10-06)
 
 The finalizer successor is prepared under coordination/partitioned-update4-process-

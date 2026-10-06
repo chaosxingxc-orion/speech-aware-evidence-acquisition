@@ -1,0 +1,37 @@
+{
+  "schema": "saea-scientific-resource-evidence-v1",
+  "at_utc": "2026-10-06T04:51:09.337111+00:00",
+  "status": "HISTORICAL_EVIDENCE_ONLY",
+  "audit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/historical-n20-memory-v1.json",
+    "sha256": "2ec35b2047b806aadf637030df328861e3c2683cfeb778c9677b928ba7d4a60b"
+  },
+  "reader": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/audit_historical_n20_memory_v1.py",
+    "sha256": "b619d40557ddcb07221e5ceea182360eeb9ecdcb41068a437fee1e1bae4b76a4"
+  },
+  "summary": {
+    "all_exited_zero": true,
+    "maximum_sample_gap_seconds": 6.103139162063599,
+    "maximum_sampled_decline_from_start_gib": 3.110706329345703,
+    "members": 22,
+    "minimum_observed_available_gib": 19.173236846923828,
+    "reader_errors": 0
+  },
+  "limitations": [
+    "Historical available host memory includes unrelated processes and caching.",
+    "Sampled differences are not worker peak RSS, causal allocation or bounds on unseen peaks.",
+    "Old observer transport and process wrapper differ from the new mailbox entry.",
+    "No automatic startup-floor change, cache action or admission follows."
+  ],
+  "current_scientific_policy": {
+    "start_gib": 20,
+    "floor_gib": 8,
+    "changed": false
+  },
+  "use": "If prospective N20 admission encounters a startup resource mismatch, root may assess this complete same-size historical evidence together with the actual new structural job and live resource readings. Do not transfer the structural-only18GiB amendment automatically. Preserve any future refusal and record a separate exact disposition.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "task_quality_read": false,
+  "runtime_admission": false
+}
