@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T16:38:34.968719+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T16:52:39.953671+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -31,7 +31,8 @@ The root numeric process projection is complete at
 SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
 The last GPU task is terminal and its fifteen-minute monitor was deleted. No new GPU
-flight or proposal contact has been admitted. Expected service idleness is intentional.
+flight is admitted; the separately admitted Update6 proposer is now running. Expected
+GPU service idleness is intentional.
 
 ### Actual work to resume
 
@@ -45,8 +46,10 @@ The exposure row and [root admission](../receipts/continuation/2026-10-06-partit
 bind the exact manifest, final output contract, full aggregate input and future config.
 Final capsule: `system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2`.
 Manifest SHA256: `cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865`.
-Reservation exited0 at16:37:21.906568Z with zero model contacts. Actor dispatch is next;
-no actor is live yet at this checkpoint. Use exactly one original response and no replacements.
+Reservation exited0 at16:37:21.906568Z with zero model contacts. The actor is now
+running as /root/aggregate_template_update6_sol, GPT-6.1 Sol/high, fork-none. It verified
+capsule hashes and reported full-template/aggregate inspection. Use exactly one original
+response and no replacements; wait for original file and actual agent terminal state.
 
 ### Exact continuation sequence
 
@@ -91,6 +94,17 @@ and postprocessing transitions separate. Human review is required before8x400 wi
 splitting to evade it. Owner227 covers bounded SLURP engineering and recorded dispositions.
 Audio2Tool/E21 retain their separate holds and E22 has no GPU admission; shared model-free
 compatibility does not establish their complete real-system acceptance.
+
+
+### Prospective algorithm research
+
+The owner asks to improve training-free learning and avoid local search traps. The
+[source-pinned roadmap](../readiness/2026-10-06-system-evolution-algorithm-roadmap-v1/README.md)
+separates immutable evidence, bounded active policies and revisable optimizer experience.
+SkillOpt/TF-GRPO/GEPA/ACE/DGM were inspected as references, not installed or executed.
+Do not send this root-only research to the already admitted actor, replace its frozen
+inputs or change historical acceptance. Next algorithm changes need prospective config,
+identity and comparison rules. Current Update6 remains the original aggregate protocol.
 
 <!-- current-engineering-handoff:end -->
 

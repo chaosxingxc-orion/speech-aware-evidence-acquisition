@@ -1,0 +1,69 @@
+{
+  "schema": "saea-read-only-reference-source-audit-v1",
+  "at_utc": "2026-10-06T16:49:45.861160+00:00",
+  "sources": [
+    {
+      "repo": "microsoft/SkillOpt",
+      "commit": "32deaeb50f92fc2f3a225bbf67d3eb3a604ce8b6",
+      "path": "skillopt/optimizer/select.py",
+      "url": "https://raw.githubusercontent.com/microsoft/SkillOpt/32deaeb50f92fc2f3a225bbf67d3eb3a604ce8b6/skillopt/optimizer/select.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-source-audit-v1/microsoft__SkillOpt__skillopt__optimizer__select.py",
+      "sha256": "e675ebfe4c79627c944e6aa90de6542f85deaf948054c1cfe1b8876ec8442dab",
+      "bytes": 162,
+      "status": "FETCHED_NOT_EXECUTED"
+    },
+    {
+      "repo": "microsoft/SkillOpt",
+      "commit": "32deaeb50f92fc2f3a225bbf67d3eb3a604ce8b6",
+      "path": "skillopt/engine/trainer.py",
+      "url": "https://raw.githubusercontent.com/microsoft/SkillOpt/32deaeb50f92fc2f3a225bbf67d3eb3a604ce8b6/skillopt/engine/trainer.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-source-audit-v1/microsoft__SkillOpt__skillopt__engine__trainer.py",
+      "sha256": "1f135ebe8c90306c1d1801edc16becd5862e8d7ba5e2b6f0986b8001086b2560",
+      "bytes": 120644,
+      "status": "FETCHED_NOT_EXECUTED"
+    },
+    {
+      "repo": "gepa-ai/gepa",
+      "commit": "fb1ed589fd83372caef499cffc2c73173d3b096b",
+      "path": "src/gepa/strategies/candidate_selector.py",
+      "url": "https://raw.githubusercontent.com/gepa-ai/gepa/fb1ed589fd83372caef499cffc2c73173d3b096b/src/gepa/strategies/candidate_selector.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-source-audit-v1/gepa-ai__gepa__src__gepa__strategies__candidate_selector.py",
+      "sha256": "c2565e251d0cdc00d7548dde7fd0316190c97a64bc130ea86ea6e2fc8a232cfd",
+      "bytes": 3033,
+      "status": "FETCHED_NOT_EXECUTED"
+    },
+    {
+      "repo": "TencentCloudADP/youtu-agent",
+      "commit": "c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d",
+      "path": "utu/practice/experience_updater.py",
+      "url": "https://raw.githubusercontent.com/TencentCloudADP/youtu-agent/c2caa539f4c95ae1c39ed24dc8a99cb3651e1d5d/utu/practice/experience_updater.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-source-audit-v1/TencentCloudADP__youtu-agent__utu__practice__experience_updater.py",
+      "sha256": "301d4a51136f6c0da620f1f2042d59316af494cee4b4c3329338ba1a1b937d04",
+      "bytes": 16069,
+      "status": "FETCHED_NOT_EXECUTED"
+    },
+    {
+      "repo": "jennyzzt/dgm",
+      "commit": "a565fd2d1dca504ef5104a7cc0f3bdc4ab9b4fd2",
+      "path": "DGM_outer.py",
+      "url": "https://raw.githubusercontent.com/jennyzzt/dgm/a565fd2d1dca504ef5104a7cc0f3bdc4ab9b4fd2/DGM_outer.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-source-audit-v1/jennyzzt__dgm__DGM_outer.py",
+      "sha256": "239bc76f0e1b78210b8f7b3757b1082f6ca07db3537d6af50a45bf97709795ed",
+      "bytes": 15699,
+      "status": "FETCHED_NOT_EXECUTED"
+    },
+    {
+      "repo": "ace-agent/ace",
+      "commit": "82709de050e1db6e6ef2f07bcb0393560b94992a",
+      "date": "2026-08-24T18:49:59Z",
+      "url": "https://raw.githubusercontent.com/ace-agent/ace/82709de050e1db6e6ef2f07bcb0393560b94992a/playbook_utils.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-source-audit-v1/ace__playbook_utils.py",
+      "sha256": "c67943f06cb0ee747be04d0599216e40d6c00e0cdf96ddc6af38fc26143e3a07",
+      "bytes": 13707,
+      "executed": false
+    }
+  ],
+  "runtime_contacts": 0,
+  "third_party_code_executed": false,
+  "scope": "Read-only source evidence for prospective algorithm research; no code execution or admission."
+}

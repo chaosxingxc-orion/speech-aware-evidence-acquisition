@@ -1,0 +1,24 @@
+{
+  "schema": "saea-context-proposer-dispatch-receipt-v1",
+  "at_utc": "2026-10-06T16:52:39.953671+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-PROPOSE-V1",
+  "agent": "/root/aggregate_template_update6_sol",
+  "configured_model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "status": "DISPATCHED_ORIGINAL_PENDING",
+  "manifest_sha256": "cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865",
+  "reservation_reused": true,
+  "replacement": false,
+  "runtime_admission": false,
+  "provider_usage": null,
+  "note": "Actor verified all capsule pins and reported inspection in progress; output is pending. Public algorithm research is root-only and not sent to this actor.",
+  "mechanical_interface_clarification": {
+    "at_utc": "2026-10-06T16:53:24.040602+00:00",
+    "source": "src/speech_aware_evidence_acquisition/rails/system_text_policy.py",
+    "source_sha256": "f95128a0fcacee65cf07d6f437097121dcf728285e0703821dac9972ca5ac6f2",
+    "TEXT_CHARACTER_CAP": 32768,
+    "reason": "Actor found symbolic constant without numeric expansion in pinned documents; root supplied existing compiler value only. No task/result evidence or policy change.",
+    "record_in_actor_read_summary": true
+  }
+}
