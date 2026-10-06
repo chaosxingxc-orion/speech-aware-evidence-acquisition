@@ -1,0 +1,26 @@
+{
+  "schema": "saea-configured-capacity-frozen-check-start-v1",
+  "at_utc": "2026-10-06T10:12:22.716335+00:00",
+  "status": "MODEL_FREE_FROZEN_CHECK_RUNNING",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-capacity-v1",
+  "commit": "a9a2831b20b2b0f9a4f6f8616199f5337b72b789",
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/frozen-check-started-v1.json",
+    "sha256": "3499478f21f35da9a9552b744ba767be9d059d63883d8474069a120ab5c46411"
+  },
+  "pid": 154239,
+  "start_ticks": "60808900",
+  "child": "154240      44 /home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/frozen-check-v1.py",
+  "runner": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/run-frozen-check-v1.py",
+    "sha256": "32368da662eef7052c69c32a92b4b9a59b2f5930e12264098620707c187546f1"
+  },
+  "checker": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/frozen-check-v1.py",
+    "sha256": "8128997410cc298b2ecd385c9f4756c1c1f12bef3131aed4a29e51688de6bb98"
+  },
+  "terminal_expected": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/frozen-check-v1.exit.json",
+  "contacts_added": 0,
+  "runtime_dispatched": false,
+  "next": "Observe the exact original process. Require exit0 and complete frozen-check-v1.json before finalizing the new mailbox registration. Fresh live guards and Windows task admission remain mandatory."
+}

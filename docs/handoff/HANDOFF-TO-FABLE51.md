@@ -1,5 +1,23 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 capacity source frozen; complete offline checks running (2026-10-06)
+
+The capacity registration is integrated at a9a2831b20b2b0f9a4f6f8616199f5337b72b789.
+The clean detached worker is
+/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-capacity-v1.
+The bound run-frozen-check-v1.py is now running with that exact expected commit;
+see [frozen check start](../receipts/continuation/2026-10-06-update5-capacity-frozen-check-started.json).
+Use its PID/start ticks and actual child identity, together with
+coordination/partitioned-update5-aggregate-capacity-owner227-v1/frozen-check-v1.exit.json.
+Never duplicate the checker or modify the frozen worker.
+
+After original exit0, verify all configured labels in frozen-check-v1.json, then
+run the already prepared finalize-capacity-registration-v1.py. Check fresh service,
+STOP/lock/process identities and memory before installing/launching the exact
+Windows-owned capacity task. Create a fifteen-minute script monitor only on actual
+launch and delete it at verified terminal completion. No GPU/tokenizer/scorer
+contact has occurred for update5; structural and scientific work remains held.
+
 ## Update5 capacity registration complete; freeze next (2026-10-06)
 
 All16 configured capacity members registered with original exit0 and no contacts.
