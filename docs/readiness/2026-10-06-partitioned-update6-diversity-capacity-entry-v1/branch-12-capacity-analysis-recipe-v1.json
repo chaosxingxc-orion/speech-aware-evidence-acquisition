@@ -1,0 +1,23 @@
+{
+  "allowed_read": "Capacity/source/endpoint accounting only; no task quality or optimizer feedback.",
+  "expected_rows": 20,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "run_ids": {
+    "capacity": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-12-CAPACITY-FIT-V1",
+    "read": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-12-CAPACITY-STRUCTURE-V1"
+  },
+  "schema": "saea-system-text-engineering-analysis-v1",
+  "score_jobs": 0,
+  "status": "ROOT COUNTERSIGNED structural-only capacity read under owner227"
+}

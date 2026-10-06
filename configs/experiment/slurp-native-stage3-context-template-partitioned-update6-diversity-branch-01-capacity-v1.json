@@ -12,9 +12,9 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Exact configured partitioned update6 child engineering preparation; registration and frozen/live admission pending.",
+        "reason": "Root227 nongenerative capacity only; frozen and live admission mandatory.",
         "requirements": [],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-01-CAPACITY-FIT-V1",
       "system_text_policy_binding": {

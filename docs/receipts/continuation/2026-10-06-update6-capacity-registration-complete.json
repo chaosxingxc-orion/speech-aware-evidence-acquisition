@@ -1,0 +1,94 @@
+{
+  "schema": "saea-capacity-registration-root-reviewed-v1",
+  "at_utc": "2026-10-06T17:54:58.853385+00:00",
+  "status": "COMPLETE_ROOT_VERIFIED",
+  "members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update6-diversity-capacity-entry-v1/registered-capacity-members-v1.json",
+    "sha256": "ef5e5ae3b489f585b9c4935f4dd4b5b1ed51b799650c7fb7cb54405219560dc8"
+  },
+  "population": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/root-capacity-admission-v1.json",
+    "sha256": "7461bf9bba5d52363fe2ea89a9b17cb9fd51c91d5059f01677fab44b10d4dd7e"
+  },
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/registration-started-v1.json",
+    "sha256": "79b586b31cf05923a4ec6d020fa6a0ce6b0358773bca077f5e1f4ca978f40d42"
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/registration-v1.exit.json",
+    "sha256": "2c2028b5c095b60dffd59724613f7f746b259d1bb2624560cdb6ec227e5f1989"
+  },
+  "configs": [
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-01-capacity-v1.json",
+      "sha256": "1f330b98c83c827c2a3cbf13560179501999e863ae6d8104972962df365838a1"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-02-capacity-v1.json",
+      "sha256": "249dfe1d3fcabfbba6a79c0c57410308438c6357d7b9219fc22b21515630c3e9"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-03-capacity-v1.json",
+      "sha256": "7f261dcbc9775a6c86d42c6993c531abeb39eeeb549bffcd1253e20dca54dc2a"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-04-capacity-v1.json",
+      "sha256": "9ea751ce7041b22d40fc0bea734699e46b06e1ec6ac7e2df73b292a6720475a0"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-05-capacity-v1.json",
+      "sha256": "2475b5d1379598bc22280f78808772c348c416db5bd83733635b6b7ac2b518d4"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-06-capacity-v1.json",
+      "sha256": "768dbaff775b36ea9f5e01e1ff0bfdc52e5ac24436b6ceb5c44e5e493e79d230"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-07-capacity-v1.json",
+      "sha256": "0ee34b9f5d110291277db6c4a45f767ae35e736d6b128fcbfc7f02b4acd354e8"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-08-capacity-v1.json",
+      "sha256": "705c60736b209e673510789c0be7a1de99d18ebce9115946ad06d962f963b426"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-09-capacity-v1.json",
+      "sha256": "c71004fb1bffb90846766e223a1bfc60fb4e442cce326bd6140190e4afbb01e3"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-10-capacity-v1.json",
+      "sha256": "c2188501f36c12532a9b424701ff6c431ae3f271671dd1952c439e606d87b94d"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-11-capacity-v1.json",
+      "sha256": "f230160e4ff4f97cb76ff1f55048f000d4737b0290291d72f6ae45f93dc14058"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-12-capacity-v1.json",
+      "sha256": "1d5dd374eaa1aaecc23baebd537fb57aae891ba8c9a1d9c521e456460a7290d8"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-13-capacity-v1.json",
+      "sha256": "8dae1b5c054988fe132a9b7bb9f0180affdd4b32c61b2fc673f72ebfaee60879"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-14-capacity-v1.json",
+      "sha256": "5742e954d71392de4a57c4fdb82c917782fd3b9a44b06a2947d8fa0295e717b4"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-15-capacity-v1.json",
+      "sha256": "59522a9a566a040dc91a8892bce7ef17a8e8b56c294e85ddd12fffe012c28b21"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-16-capacity-v1.json",
+      "sha256": "9a8c058d32f77ee81949cfd81ac9bba5901c38cd909efd9aafd3d385edbf4980"
+    }
+  ],
+  "model_tokenizer_scorer_contacts": 0,
+  "runtime_dispatched": false,
+  "remaining": "Offline checks, clean frozen checkout, complete frozen checks, live resource/service checks and Windows launch."
+}
