@@ -1,0 +1,70 @@
+{
+  "schema": "saea-template-proposer-design-package-v1",
+  "status": "DESIGN-ONLY-NOT-ADMITTED",
+  "base_commit": "9d40499d208da84b10fb8333adbe32f377a19fec",
+  "prompt_version": "aggregate-template-diversity-targeting-v2",
+  "prompt_files": [
+    "generator-system-prompt.md",
+    "generator-task-prompt.md",
+    "branch-design-matrix.md",
+    "validation-protocol.md"
+  ],
+  "wire_description": "wire-contract-v2.json",
+  "root_only_files": [
+    "README.md",
+    "diagnosis.md",
+    "static-audit.json",
+    "audit_static.py",
+    "verify_contract.py",
+    "compatibility-check.json"
+  ],
+  "files": {
+    "README.md": {
+      "sha256": "a4b0e4593fd9ec1c69b8570a45cff0f7248d68cf4035d3d12fd391265ad5b411",
+      "bytes": 8131
+    },
+    "audit_static.py": {
+      "sha256": "7ea28064b38d35caac40960722cd209e8fdd5fe76649172293ce6358ab36a4b6",
+      "bytes": 6432
+    },
+    "branch-design-matrix.md": {
+      "sha256": "5da1ab53bc4773edd7c1691af6951d83142f2cafc274771c41813dd82450461a",
+      "bytes": 11400
+    },
+    "compatibility-check.json": {
+      "sha256": "e2949f3711c2328d5ac10e575f1c1d85337d9e90df7f4f2bc57a1f2f0c1cf4e2",
+      "bytes": 778
+    },
+    "diagnosis.md": {
+      "sha256": "b9c9b29997d38749b422cd4ff841948ab3f32a4f8d57fd094f45670230542bf9",
+      "bytes": 10205
+    },
+    "generator-system-prompt.md": {
+      "sha256": "178d1ae40a63a0a385bff63ff0b56b1c49293ca3491ddd71b7beccdb2e0b2675",
+      "bytes": 7339
+    },
+    "generator-task-prompt.md": {
+      "sha256": "968a93a24d95aa37fd828032ab20257214eec3d3e044542a1128e2d71640e0d4",
+      "bytes": 8471
+    },
+    "static-audit.json": {
+      "sha256": "81824859cfe9c276d5d1be1a9ea95d0d16fbc4c93cf0788f7fde387f78618d05",
+      "bytes": 24357
+    },
+    "validation-protocol.md": {
+      "sha256": "ba7fae4ae627ab248435c0bfa0ea3141d5dc552c4db1d14406d177fead696a64",
+      "bytes": 8684
+    },
+    "verify_contract.py": {
+      "sha256": "eeda55a0b7690edeab739af8a01941db88553fd1d20625d612edfa01eb403449",
+      "bytes": 3650
+    },
+    "wire-contract-v2.json": {
+      "sha256": "224dd3cdd1899abb63717bf50876bc3c2485f64a9fb509bc111c2726e502a951",
+      "bytes": 2985
+    }
+  },
+  "new_model_contacts": 0,
+  "new_populations": 0,
+  "runtime_admission": false
+}

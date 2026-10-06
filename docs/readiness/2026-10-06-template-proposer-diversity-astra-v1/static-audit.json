@@ -1,0 +1,836 @@
+{
+  "schema": "saea-template-proposer-static-audit-v1",
+  "source_pins": {
+    "actor-capsule-v1/manifest.json": "0875fa089670b28ac7824d8a1f74937577e79f949906dd6c119290d2d7638793",
+    "actor-capsule-v1/actor-input.json": "6e376dab0142b79a826a779792a2308c88d6c581b7ef7d9cba4c6670b8f77d45",
+    "actor-capsule-v1/output-contract.json": "32f8558dbd5e3b6eab12442a8c6f769782f3b0fe263a6529972dffa113d566c4",
+    "original-response-v1.json": "d271861c890b1f0862eee396c00c7573b043a3e4a85e1c3431ecbd9ffb459eb8"
+  },
+  "experiment_config": {
+    "path": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "K": 16,
+  "M": 4,
+  "N": 20,
+  "T": 3,
+  "aggregate_records": 48,
+  "method": "Lowercase alphanumeric word 5-gram set Jaccard. Common paragraph removal deletes exact double-newline paragraphs present in >=ceil(.75*K) candidates for that node; it removes recurring semantics too, not just schemas. Diagnostic only.",
+  "populations": {
+    "2": {
+      "candidate_count": 16,
+      "unique_complete_systems": 16,
+      "assemblies": [
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 4
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 4
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 4
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 4
+        }
+      ],
+      "roles": {
+        "perception": {
+          "unique_exact_texts": 4,
+          "characters": {
+            "min": 1133,
+            "median": 1146.0,
+            "max": 1199
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.38235294117647056,
+            "median": 0.39565217391304347,
+            "max": 1.0
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.0072992700729927005,
+            "median": 0.027777777777777776,
+            "max": 1.0
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5625501218286305
+        },
+        "solver": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3008,
+            "median": 3114.5,
+            "max": 3232
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.39739884393063585,
+            "median": 0.5044864925385071,
+            "max": 0.6184668989547039
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.01015228426395939,
+            "median": 0.1130952380952381,
+            "max": 0.2785234899328859
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5935289271051469
+        },
+        "reviewer": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3966,
+            "median": 4052.0,
+            "max": 4087
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.5073170731707317,
+            "median": 0.5320417311152499,
+            "max": 0.7576642335766424
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.08470588235294117,
+            "median": 0.1128453006825309,
+            "max": 0.468013468013468
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.6236714999305348
+        },
+        "planner": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3994,
+            "median": 4059.5,
+            "max": 4127
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.6303763440860215,
+            "median": 0.6745473537604457,
+            "max": 0.8384615384615385
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.10963455149501661,
+            "median": 0.17843866171003717,
+            "max": 0.5296803652968036
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.7282160594364262
+        }
+      }
+    },
+    "3": {
+      "candidate_count": 16,
+      "unique_complete_systems": 16,
+      "assemblies": [
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 1
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 3
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 2
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 4
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 1
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 1
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 4
+        }
+      ],
+      "roles": {
+        "perception": {
+          "unique_exact_texts": 10,
+          "characters": {
+            "min": 1090,
+            "median": 1146.0,
+            "max": 1199
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.3677685950413223,
+            "median": 0.4,
+            "max": 1.0
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.0,
+            "median": 0.03571428571428571,
+            "max": 1.0
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5626341867869651
+        },
+        "solver": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 2671,
+            "median": 2761.5,
+            "max": 3129
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.2772133526850508,
+            "median": 0.4962316343350267,
+            "max": 0.6129707112970711
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.011111111111111112,
+            "median": 0.1326356570259009,
+            "max": 0.30210772833723654
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5520699361161459
+        },
+        "reviewer": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3303,
+            "median": 3380.0,
+            "max": 4077
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.3114754098360656,
+            "median": 0.5076455459434183,
+            "max": 0.6916376306620209
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.009074410163339383,
+            "median": 0.12464589235127478,
+            "max": 0.38144329896907214
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5670172701414643
+        },
+        "planner": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3644,
+            "median": 3711.0,
+            "max": 4103
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.3997584541062802,
+            "median": 0.6057509340516118,
+            "max": 0.7443365695792881
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.01126126126126126,
+            "median": 0.1449788296601889,
+            "max": 0.4166666666666667
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.6599299970954914
+        }
+      }
+    },
+    "4": {
+      "candidate_count": 16,
+      "unique_complete_systems": 16,
+      "assemblies": [
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 4
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 3
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 4
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 1
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 4
+        }
+      ],
+      "roles": {
+        "perception": {
+          "unique_exact_texts": 7,
+          "characters": {
+            "min": 1133,
+            "median": 1148.0,
+            "max": 1332
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.337037037037037,
+            "median": 0.3875,
+            "max": 1.0
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.0,
+            "median": 0.024242424242424242,
+            "max": 1.0
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5549657220465856
+        },
+        "solver": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3046,
+            "median": 3208.5,
+            "max": 3344
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.39481268011527376,
+            "median": 0.48824685534591195,
+            "max": 0.6219512195121951
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.00980392156862745,
+            "median": 0.1069422150882825,
+            "max": 0.2842465753424658
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5769599275211303
+        },
+        "reviewer": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 4030,
+            "median": 4164.5,
+            "max": 4235
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.43821510297482835,
+            "median": 0.5255304247701209,
+            "max": 0.7287899860917941
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.008247422680412371,
+            "median": 0.12251461084139893,
+            "max": 0.4350453172205438
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.6070941277781436
+        },
+        "planner": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 4015,
+            "median": 4393.5,
+            "max": 4456
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.5349112426035503,
+            "median": 0.6081329381108282,
+            "max": 0.7793696275071633
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.03980099502487562,
+            "median": 0.1474950560316414,
+            "max": 0.4251968503937008
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.6800036522939626
+        }
+      }
+    },
+    "5-proposed-only": {
+      "candidate_count": 16,
+      "unique_complete_systems": 16,
+      "assemblies": [
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 1
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 3
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": "before-speech-v1"
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 3
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "full",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 4
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "constant"
+            }
+          },
+          "count": 1
+        },
+        {
+          "settings": {
+            "context_layout": {
+              "native_role_query_placement": null
+            },
+            "node_context": {
+              "reviewer_history_scope": "latest-solver-and-local-tools",
+              "tool_schema_rendering": "per-role"
+            }
+          },
+          "count": 4
+        }
+      ],
+      "roles": {
+        "perception": {
+          "unique_exact_texts": 7,
+          "characters": {
+            "min": 1133,
+            "median": 1148.0,
+            "max": 1343
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.3345724907063197,
+            "median": 0.39565217391304347,
+            "max": 1.0
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.0,
+            "median": 0.024305555555555552,
+            "max": 1.0
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5554911315716872
+        },
+        "solver": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3046,
+            "median": 3100.5,
+            "max": 3232
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.41185185185185186,
+            "median": 0.4670384858044164,
+            "max": 0.6193078324225865
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.010638297872340425,
+            "median": 0.052787739621765264,
+            "max": 0.2631578947368421
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.5927673834136578
+        },
+        "reviewer": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3817,
+            "median": 3863.5,
+            "max": 4084
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.46691176470588236,
+            "median": 0.5268610621426513,
+            "max": 0.7691107644305772
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.00468384074941452,
+            "median": 0.07003902832918377,
+            "max": 0.44664031620553357
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.6431036797699985
+        },
+        "planner": {
+          "unique_exact_texts": 16,
+          "characters": {
+            "min": 3994,
+            "median": 4110.0,
+            "max": 4306
+          },
+          "raw_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.5518987341772152,
+            "median": 0.6067291423793986,
+            "max": 0.8330781010719756
+          },
+          "common_paragraph_removed_pairwise_5gram_jaccard": {
+            "pairs": 120,
+            "min": 0.005813953488372093,
+            "median": 0.07610831047520202,
+            "max": 0.5176991150442478
+          },
+          "common_paragraph_count": 2,
+          "common_paragraph_threshold_candidates": 12,
+          "common_paragraph_character_fraction_mean": 0.7186738791048743
+        }
+      }
+    }
+  },
+  "proposal_changes": [
+    {
+      "candidate_id": "branch-01",
+      "changed_roles": [
+        "solver"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-02",
+      "changed_roles": [
+        "reviewer",
+        "planner"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-03",
+      "changed_roles": [
+        "reviewer",
+        "planner"
+      ],
+      "changed_assembly_fields": [
+        "node_context"
+      ],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-04",
+      "changed_roles": [
+        "perception",
+        "solver"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-05",
+      "changed_roles": [
+        "perception",
+        "solver",
+        "reviewer"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-06",
+      "changed_roles": [
+        "reviewer",
+        "planner"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-07",
+      "changed_roles": [
+        "solver",
+        "reviewer",
+        "planner"
+      ],
+      "changed_assembly_fields": [
+        "node_context"
+      ],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-08",
+      "changed_roles": [],
+      "changed_assembly_fields": [],
+      "no_change": true
+    },
+    {
+      "candidate_id": "branch-09",
+      "changed_roles": [
+        "solver",
+        "reviewer"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-10",
+      "changed_roles": [
+        "solver",
+        "reviewer"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-11",
+      "changed_roles": [
+        "reviewer",
+        "planner"
+      ],
+      "changed_assembly_fields": [
+        "node_context"
+      ],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-12",
+      "changed_roles": [
+        "perception",
+        "solver",
+        "planner"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-13",
+      "changed_roles": [
+        "solver",
+        "reviewer"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-14",
+      "changed_roles": [
+        "solver",
+        "reviewer"
+      ],
+      "changed_assembly_fields": [],
+      "no_change": false
+    },
+    {
+      "candidate_id": "branch-15",
+      "changed_roles": [],
+      "changed_assembly_fields": [],
+      "no_change": true
+    },
+    {
+      "candidate_id": "branch-16",
+      "changed_roles": [
+        "solver",
+        "reviewer",
+        "planner"
+      ],
+      "changed_assembly_fields": [
+        "context_layout"
+      ],
+      "no_change": false
+    }
+  ]
+}
