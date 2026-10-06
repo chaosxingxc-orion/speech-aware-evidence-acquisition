@@ -1,5 +1,30 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Frozen checks complete; structural prelaunch resource disposition (2026-10-06)
+
+All16 frozen structural checks passed at04:17:51.830150Z; session24027 exited0.
+The immutable worker remains /home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1
+at988ec3d9446b462c47f0312fc002e21bb5f95352. Final launch registration SHA
+0b19802b2999e574d7b4c14e0c2b690931b98601028a5414ab8d2d81697e5bfa exists
+in coordination/partitioned-update4-process-structural-epochs-v1, but was NOT launched.
+Live prelaunch refused19.41265GiB below its20GiB start requirement; no attempts,
+worker, new STOP or task generation exists. Preserve the registration and snapshot.
+
+[Root227 disposition](../receipts/continuation/2026-10-06-update4-structural-startup-resource-disposition.json)
+approves a separately versioned exact four-row structural entry at18GiB startup,
+unchanged8GiB running floor, stable samples and continuous observer. Prior16
+same-runtime four-row workers had maximum sampled available-memory decline3.06066GiB;
+this is operational evidence, not an unseen-peak guarantee. Scientific resource
+policy is unchanged. Prepare and machine-verify the exact external operational
+amendment, preserve all current plans/pins and revalidate live gates before launch.
+No cache/restart/service/host change. No heartbeat is active; create one only on launch.
+
+[Scientific member-entry preparation](../receipts/continuation/2026-10-06-update4-scientific-member-entry-prepared.json)
+is also held: its successor helper uses the qualified scientific blueprint and
+requires an exact root structural acceptance binding before any new member writes.
+Premature invocation exited75; all22 proposed runs/experiments remain absent.
+Do not run the old scientific preparation helper against obsolete structural paths.
+
 ## Structural followthrough prepared while frozen checks run (2026-10-06)
 
 The exact parent104028/session24027 is still live and at least six member frozen
@@ -3296,7 +3321,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T04:08:30.117749+00:00
+Last refreshed: 2026-10-06T04:22:12.395942+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

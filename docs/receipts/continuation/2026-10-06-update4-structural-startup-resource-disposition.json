@@ -1,0 +1,76 @@
+{
+  "schema": "saea-root-structural-startup-resource-disposition-v1",
+  "at_utc": "2026-10-06T04:22:12.395942+00:00",
+  "status": "decided",
+  "authority": "Owner227 root bounded engineering and resource disposition",
+  "original_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/registration-v1.json",
+    "sha256": "0b19802b2999e574d7b4c14e0c2b690931b98601028a5414ab8d2d81697e5bfa"
+  },
+  "prelaunch_refusal": {
+    "observed_at": "2026-10-06T04:19:04.9617701+00:00",
+    "observed_free_gib": 19.412654876708984,
+    "required_start_gib": 20,
+    "tool_chunk": "26431a",
+    "condition": "Fresh memory below registered startup guard",
+    "runtime_dispatched": false,
+    "attempts_absent": true,
+    "model_contacts": 0
+  },
+  "historical_generation_resource_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/prior-structural-memory-audit-v1.json",
+    "sha256": "9f0f4a538faa43d5b9f7b63e96121de0b4fffccfeee1959a04321664b484a181",
+    "same_runtime_four_row_members": 16,
+    "maximum_sampled_decline_gib": 3.060657501220703,
+    "limitations": "Historical same-runtime four-row generation with different templates, observer transport and overall host memory. Available-memory deltas are not peak RSS, a cache-causality proof or a guarantee for update4. No task answers or quality were read."
+  },
+  "resource_policy_amendment": {
+    "scope": "exact-update4-four-row-structural-family-only",
+    "previous": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 20,
+      "wait_seconds": 600
+    },
+    "next": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 18,
+      "wait_seconds": 600
+    },
+    "reason": "At18GiB startup the observed3.06066GiB prior same-runtime structural decline leaves about6.94GiB above the unchanged8GiB running floor. Retain fresh stable-sample admission, continuous observation and fail-closed stop on floor/observer failure. Historical sampled deltas do not guarantee unseen peaks."
+  },
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-01-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-02-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-03-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-04-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-05-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-06-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-07-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-08-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-09-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-10-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-11-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-12-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-13-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-14-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-15-SMOKE-4-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-16-SMOKE-4-V1"
+  ],
+  "worker": "/home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1",
+  "worker_commit": "988ec3d9446b462c47f0312fc002e21bb5f95352",
+  "scientific_inputs_changed": false,
+  "budget": {
+    "generation_contacts": 832,
+    "fit_endpoint_contacts": 3328,
+    "official_score_jobs": 0
+  },
+  "preserve": "Original20GiB registration, root admission, live-memory snapshot and all frozen source/request/supply pins. No previous task attempt exists. No cache flush, host settings, WSL restart or service change.",
+  "next": "Prepare a separately versioned Windows entry/registration with the same members, worker, requests, input selections and budgets. Machine-check this exact operational resource amendment; do not edit frozen plans or bypass admission silently. Live checks and fresh observer admission precede dispatch.",
+  "scientific_generation_resource_policy_changed": false,
+  "launch_status": "NOT_PREPARED_OR_DISPATCHED",
+  "failure_policy": "Any new execution failure stops and preserves evidence for diagnosis; no automatic retry."
+}

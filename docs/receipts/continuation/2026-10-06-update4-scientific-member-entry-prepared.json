@@ -1,0 +1,19 @@
+{
+  "at_utc": "2026-10-06T04:14:13.817221+00:00",
+  "status": "PREPARED_HELD_NO_MEMBER_PREPARATION",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-v1/prepare-member-v2.py",
+    "sha256": "748fa04c23ffa118318a4e22195714d2d99dada5e34f5e28467d2600e9532741"
+  },
+  "successor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/prepare-member-v1.py",
+    "sha256": "b287bd0975401b7a33ca356c630e29fc112e148d8d3700f797bf35b1fd07692d"
+  },
+  "delta": "Use the qualified scientific blueprint and require a root-bound complete structural acceptance before any prospective member file writes. Fixed assets, source exclusions, policy binding, config-derived budgets and unchanged-output supply re-pin path are preserved.",
+  "premature_exit": 75,
+  "premature_stdout": "{\"status\": \"WAIT_ROOT_STRUCTURAL_ACCEPTANCE_BINDING\", \"model_contacts\": 0, \"prepared\": false}\n",
+  "all_proposed_runs_and_experiments_absent": true,
+  "runtime_admission": false,
+  "model_contacts": 0,
+  "limitations": "Positive path requires the actual complete structural proof and root binding; not yet executed or proven."
+}
