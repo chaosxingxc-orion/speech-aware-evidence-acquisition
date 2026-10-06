@@ -1,0 +1,70 @@
+{
+  "all_current_labels": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/carrier-caption-precontact-disposition-v1/current-population-algorithm-labels-v1.json",
+    "sha256": "97454a6832bd8a6b5879dd4db70a66b390fbb42e92a8f62d7c005fff271c3b62"
+  },
+  "at_utc": "2026-10-06T12:06:08.754594+00:00",
+  "authority": "owner227",
+  "base_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/model-free-base-checks-v1/complete.json",
+    "sha256": "568955d1600d04f4c93286228cc77af28f370ddc45240a66b273fa8e20c48bc8"
+  },
+  "caption_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/carrier-caption-precontact-disposition-v1/root-disposition-v1.json",
+    "sha256": "064947eb5307b03d9b931678286780f6181386506bec56642c0f95afd472c9e5"
+  },
+  "caption_recheck": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/carrier-caption-precontact-disposition-v1/registration-recheck-v1.stdout.json",
+    "sha256": "469193dbbc0ebd97cc114b0d6adf7218403f2baa2b1f2a03ac12c65e4d2aef66"
+  },
+  "draft_finalizer_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/draft-finalizer-v2.exit.json",
+    "sha256": "5b430e6283e5d3dae496c016bdf92269914aacf40b82ffa93e0607d215f2a870"
+  },
+  "draft_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/draft-registration-complete-v1.json",
+    "sha256": "dc95f2f7d9a49ab8b3e09c0eab5b5211fa1c5165d9fbf8b06b1908031e76ccab"
+  },
+  "first_cohort_root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/original-a-root-admission-v1.json",
+    "sha256": "a6a7eb643c0b2ad37ca53d4302ae988bbadb867a8d41c046d81a1efe2fdb0189"
+  },
+  "members": 22,
+  "model_contacts": 0,
+  "next": "Resolve historical label metadata, integrate complete prepared configuration and records, create clean frozen first-cohort worker, execute every-member frozen checks, then finalize and live-admit Windows launch. Later cohorts and all READs remain separately held.",
+  "original_admission_failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/original-a-admitted-gate.stdout.json",
+    "sha256": "bae70bc188ff1bfeeac5da37ca3e1aad53f6cec7b508943c9ed27f477ab3f8d5"
+  },
+  "runtime_dispatched": false,
+  "schema": "saea-configured-scientific-preparation-qualified-v1",
+  "scientific_read": false,
+  "scorer_contacts": 0,
+  "serial_complete": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/serial-preparation-v1/complete.json",
+    "sha256": "bcd85ddb706f7b92da85b44b01d85c7062b4c989babd0289e96ca31d7384bc18"
+  },
+  "serial_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/serial-entry-v1.exit.json",
+    "sha256": "4bb56f5f813c22baf9019528758b41715dbabf74acf7a9b0b021f4ce1cfcd753"
+  },
+  "status": "COMPLETE_PREPARATION_AND_FIRST_COHORT_REGISTRATION; GLOBAL_HISTORICAL_LABEL_FINDINGS_OPEN",
+  "totals": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "family_trajectories": 440,
+    "fit_endpoints_cap": 22880,
+    "generation_contacts_cap": 5720
+  },
+  "unresolved": [
+    {
+      "cause": "Both committed immutable capacity fragments identify system-text-black-box-v1 but exercise zero algorithm operators. Global label check rejects empty operators for a non-none algorithm. These bytes are unchanged by current work; current22 scientific labels pass the same registry validator.",
+      "cells": [
+        "slurp-native-stage3-system-text-native-capacity-v1",
+        "slurp-native-stage3-system-text-native-capacity-recovery1-v1"
+      ],
+      "disposition": "Preserve old pinned fragments/results and original failed gate. Resolve historical metadata classification prospectively with executable verification before claiming the global gate passes or freezing the next scientific worker.",
+      "kind": "historical-algorithm-label"
+    }
+  ]
+}

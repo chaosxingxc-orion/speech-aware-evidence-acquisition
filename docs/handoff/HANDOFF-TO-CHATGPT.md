@@ -1,5 +1,32 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 full preparation and first registration complete; label debt open (2026-10-06)
+
+The original serial preparer completed11:59:56Z exit0. All22 members have their
+own warm-verified supply, exact template binding and unchanged source selection;
+all scientific attempts/runs remain absent. Draft protocols, registration, shared
+READ scopes and exposure rows are complete for configured8+4+4 cohorts:320
+candidate and120 control trajectories on the same20 inputs. No contacts occurred.
+See [qualified preparation and open findings](../receipts/continuation/2026-10-06-update5-scientific-preparation-qualified.json).
+
+First-cohort admission originally failed the strict exposure carrier check because
+the draft writer used display name SLURP instead of exact plan carrier_lock_key
+slurp. Root227 preserved the failed gate and full prior ledger, corrected only44
+unconsumed generation/FIT captions across this population, then ran a separate
+original-a gate: all10 members pass. Policies, plans, config/supply identities,
+rosters, budgets and old outputs are unchanged. Do not rerun the already consumed
+admission helper; retain its failure and use the successful separate recheck.
+
+Engineering-base, finite-completion and measurement-floor checks pass. All22 new
+algorithm labels pass the registry validator, but the global algorithm-label check
+reports two unchanged historical native-capacity fragments with a non-none label
+and empty operators. Preserve their pinned bytes; resolve this historical metadata
+classification with explicit verification before claiming full gate success or
+freezing/dispatching the scientific worker. No automatic GPU launch or new monitor.
+The previous structural monitor remains deleted. After resolution, integrate/freeze
+the exact first cohort, run every-member frozen checks, and bind/live-admit a new
+Windows launch. Other cohorts and complete scientific READ remain held.
+
 ## Update5 first-cohort structural review bound (2026-10-06)
 
 Root revalidated the full structural acceptance, original successful audit exit,
