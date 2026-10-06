@@ -1,0 +1,50 @@
+{
+  "schema": "saea-root-original-template-population-received-v1",
+  "at_utc": "2026-10-06T17:11:22.356266+00:00",
+  "actor": "/root/aggregate_template_update6_sol",
+  "actor_terminal": true,
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/original-response-v1.json",
+    "sha256": "e5251d2c9864254c49028f3aed821f1e1612a3c0670cd3a3e70db6ba14ee78a1",
+    "bytes": 153517
+  },
+  "actor_read_summary": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/read-summary-v1.json",
+    "sha256": "3072833082935efbb59fa60e2f88d30f4345b180ec37cfdc4e13dab94b14cc04",
+    "bytes": 22404
+  },
+  "configured_slots": 16,
+  "changed_slots": 14,
+  "no_change_slots": [
+    "branch-08",
+    "branch-15"
+  ],
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "read_limitations": "All 64 records output-feature summaries, visits, missing/interrupted counts and action aggregates inspected. Per-role cost token observed/unknown counts, sums/means and latency means inspected. Detailed secondary cost min/max/standard-deviation and reuse/evaluated token vectors were not all semantically inspected.",
+  "mechanism_diversity": "Actor reports nine primary families; this is a design diagnostic, not independent behavior or quality evidence.",
+  "original_preemission_note": "Actor corrected only a no-change equality assertion that included provenance bundle IDs; proposal payload hash stayed unchanged and the original response was exclusive-created once.",
+  "recording": {
+    "session_id": 78224,
+    "pid": 207627,
+    "start_ticks": "63274423",
+    "entry": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/record-original-v1.py",
+      "sha256": "84c21a7b8d0b9077c67777a97412621c731e0eb559e5e9c267762d023d5f6840",
+      "bytes": 4068
+    },
+    "started": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/record-original.started.json",
+      "sha256": "4bc093be801bd2a147277929d39e0d57b8c9b923b7125b967385ed91d1c0c66b",
+      "bytes": 95677
+    },
+    "status": "RUNNING_SOURCE_REQUALIFICATION_AND_SHARED_RECORDING"
+  },
+  "original_bytes_preserved": true,
+  "replacement": false,
+  "new_gpu_admission": false,
+  "business_result": null
+}

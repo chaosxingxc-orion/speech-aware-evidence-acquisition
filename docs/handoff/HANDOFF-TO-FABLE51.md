@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T16:58:19.400766+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T17:11:22.356266+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -31,7 +31,7 @@ The root numeric process projection is complete at
 SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
 The last GPU task is terminal and its fifteen-minute monitor was deleted. No new GPU
-flight is admitted; the separately admitted Update6 proposer is now running. Expected
+flight is admitted; the separately admitted Update6 proposer completed. Expected
 GPU service idleness is intentional.
 
 ### Actual work to resume
@@ -46,11 +46,13 @@ The exposure row and [root admission](../receipts/continuation/2026-10-06-partit
 bind the exact manifest, final output contract, full aggregate input and future config.
 Final capsule: `system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2`.
 Manifest SHA256: `cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865`.
-Reservation exited0 at16:37:21.906568Z with zero model contacts. The actor is now
-running as /root/aggregate_template_update6_sol, GPT-6.1 Sol/high, fork-none. It verified
-capsule hashes and completed all64 records and full-template inspection. It is producing
-the original response. Use exactly one original
-response and no replacements; wait for original file and actual agent terminal state.
+Reservation exited0 at16:37:21.906568Z with zero model contacts. The actor
+/root/aggregate_template_update6_sol is complete. Original response153517 bytes, SHA256
+e5251d2c9864254c49028f3aed821f1e1612a3c0670cd3a3e70db6ba14ee78a1;16 positions
+with14 edits and no-change08/15. Preserve partial inspection of secondary cost ranges
+and null usage. Shared original recording runs as PID207627, exec session78224, with
+exclusive started/exit logs under coordination/partitioned-update6-diversity-preparation-v1.
+Verify the live identity and terminal receipt; never restart from timeout. No GPU admission.
 
 ### Exact continuation sequence
 
@@ -59,7 +61,7 @@ response and no replacements; wait for original file and actual agent terminal s
 3. Completed: root recorded `docs/receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json` using schema `saea-complete-process-backfill-reviewed-v1`, status `COMPLETE_ROOT_REVIEWED`. Reuse the exact verified bridge registration/result pins; do not replay scores.
 4. Completed: root verified the registered offline input preparation in `coordination/update6-aggregate-input-preparation-v1/prepare-next-input-v1.py` using those verified receipts. Its plan is [next-input-plan-v1.json](../readiness/2026-10-06-update5-complete-continuation-v1/next-input-plan-v1.json), SHA256 `e0607df7b145ef31361ef75065c81bc0a7ccda256ca990555945edd63fb8c6e9`. The operation is `prepare --plan-sha256 <exact hash>`. Use `PYTHONDONTWRITEBYTECODE=1`, Python `-B`, the project venv and the root checkout's `src` on PYTHONPATH.
 5. Verify exactly K aggregate records per complete observed population and T*K in historical input. Keep complete node templates/assembly, business/process/cost metrics, denominators, missingness, uncertainty and separate control references. Keep private source lists, raw cases/answers/gold/knowledge outside the actor.
-6. Completed before contact: exact prompt/interface, actual config, original-output contract, model/effort, source manifest, reservation and exposure admission are bound. Dispatch the one admitted actor using its final allowlist. GPT-6.1 Sol/high remains the single population generator. Do not dispatch merely because input preparation completed.
+6. Completed before contact: exact prompt/interface, actual config, original-output contract, model/effort, source manifest, reservation and exposure admission are bound. Completed: the one GPT-6.1 Sol/high actor emitted its original response and stopped. Do not dispatch again. Shared original recording is in progress as identified above; wait for its terminal receipt before operational compilation.
 7. Only after proposal compilation and separate registered full-request capacity/structural proof may root admit the next bounded GPU experiment. Derive K/N/M/member order/sampling/budgets from one immutable config throughout. Current preparation retains N20; no expansion or hidden budget increase.
 
 ### Changed interfaces and verified limits
@@ -108,8 +110,11 @@ inputs or change historical acceptance. Next algorithm changes need prospective 
 identity and comparison rules. Current Update6 remains the original aggregate protocol.
 
 
-Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. They have not run.
-Wait for actor completion; preserve original bytes before shared recording/compilation.
+Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. Original recording is now running; operational compilation and downstream preparation
+have not run. Preserve original bytes and wait for the shared recorder terminal result.
+
+
+Latest authority: [original response receipt](../receipts/continuation/2026-10-06-update6-original-proposal-received.json). Declared mechanism diversity does not establish business benefit.
 
 <!-- current-engineering-handoff:end -->
 
