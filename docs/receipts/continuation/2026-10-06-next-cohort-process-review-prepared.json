@@ -1,0 +1,50 @@
+{
+  "schema": "saea-next-cohort-business-process-review-prepared-v1",
+  "at_utc": "2026-10-06T06:13:39.247134+00:00",
+  "status": "PREPARED_NO_NEXT_COHORT_ADMITTED",
+  "helpers": {
+    "admit-next-cohort-v1.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/admit-next-cohort-v1.py",
+      "sha256": "1e4a71c903b61e68a0a4af060140745d71a9a58d4b98a4649ed9855cf1660f0c"
+    },
+    "admit-next-cohort-v2.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/admit-next-cohort-v2.py",
+      "sha256": "f7abdc3eac099b42e270cc49029008fe0b830b22545d704f4d294633a6fc9e6d"
+    },
+    "next_stage_review_v1.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/next_stage_review_v1.py",
+      "sha256": "cccb50d5a17189a7af899478bd791fd8c168ba547e20c69e5fa19fc5b8241375"
+    },
+    "test_next_stage_review_v1.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/test_next_stage_review_v1.py",
+      "sha256": "3c18de9992a3e387b4161de22e4235206ed038e97f3327dd4195f09100f670f2"
+    }
+  },
+  "actual_refusal": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/next-stage-v2-premature-refusal-v1.json",
+    "sha256": "af290fbf1e061da3b51cd65e362761967a5444841dfa8ecf7bd09c4388e7c93e"
+  },
+  "verification": {
+    "test_methods": 2,
+    "negative_subcases": 16,
+    "statement_coverage_percent": 100,
+    "covered_statements": 13,
+    "actual_refusal": "Prior structural-only original-a review refused before ledger/admission mutation. No quality read or new contact.",
+    "success_limit": "Actual complete-review continuation cannot be exercised until the first complete family root READ, process diagnostics and balanced presentation exist."
+  },
+  "change": "V2 preserves V1 and adds exact prior business/process/presentation pins and root scientific review to the existing terminal, seal, score, structural and idle-boundary gates. Require one exact adjacent cohort, unchanged registered trial and no partial learning selection.",
+  "root_review_required_fields": {
+    "status": "ROOT_REVIEWED_COMPLETE_COHORT_CONTINUATION",
+    "scientific_quality_read": true,
+    "learning_selection_made": false,
+    "disposition": "CONTINUE_REGISTERED_TRIAL_UNCHANGED",
+    "previous_business_report": "Exact prior READ report.json pin",
+    "previous_process_report": "Exact prior READ process-metrics-v1.json pin",
+    "previous_presentation": "Exact prior READ business-process-cost-v1.json pin",
+    "rationale": "Root-authored actual business/process and operational rationale, only after the completed read."
+  },
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "runtime_changed": false,
+  "policy_changed": false
+}

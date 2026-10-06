@@ -73,7 +73,7 @@ any quality read. The existing learning dependency has only the prospectively
 registered optimizer packet-v2 dispatch addition; the source difference is
 explicitly documented rather than silently replacing historical pins.
 
-Use admit-next-cohort-v1.py only after an adjacent prior cohort's complete root
+Use admit-next-cohort-v2.py only after an adjacent prior cohort's complete root
 READ and fresh reviewed idle boundary. The current original-a-only review was
 actually rejected for remaining-b1, without mutation. Both later cohorts remain
 DRAFT. See the continuation receipt for test evidence and immutable helper pins.
@@ -114,3 +114,20 @@ The same new renderer and existing process/attribution suite pass65 tests, with
 100percent statement coverage of the60-statement renderer. The actual premature
 entry returns WAIT75 before quality/reference loading. Full current-cohort output
 is pending; no adoption decision, estimator or runtime policy changed.
+
+## Next-cohort root business/process review
+
+The unused admit-next-cohort-v1.py remains preserved. V2 additionally requires
+the previous exact READ report.json, process-metrics-v1.json and
+business-process-cost-v1.json, all pinned from that READ output directory.
+The root receipt must describe the actual completed scientific review, not label
+it structural-only. Use status ROOT_REVIEWED_COMPLETE_COHORT_CONTINUATION,
+scientific_quality_read true, learning_selection_made false and disposition
+CONTINUE_REGISTERED_TRIAL_UNCHANGED, with a substantive root rationale. Retain
+all previous structural, complete seal/score, idle boundary and frozen/live gates.
+This is one adjacent registered cohort, not adoption or partial-trial learning.
+
+Two pure test methods plus sixteen negative cases cover all thirteen validator
+statements. The actual old structural-only review was refused before changing
+the ledger or creating admission. Both later cohorts remain DRAFT. See
+docs/receipts/continuation/2026-10-06-next-cohort-process-review-prepared.json.

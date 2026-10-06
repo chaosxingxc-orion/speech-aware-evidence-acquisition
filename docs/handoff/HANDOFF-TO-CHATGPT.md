@@ -1,5 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Next stage requires complete business and process review (2026-10-06)
+
+Use the prepared admit-next-cohort-v2.py after the current exact complete root
+READ and process/presentation outputs. V1 is preserved. V2 binds prior official
+business results, process metrics and the balanced presentation; root review
+must explicitly continue one adjacent unchanged registered cohort without partial
+learning selection. Existing terminal, structural, seal/score and idle gates remain.
+[Evidence](../receipts/continuation/2026-10-06-next-cohort-process-review-prepared.json).
+
+Two test methods/sixteen negative cases pass with100percent validator statement
+coverage. The actual old structural-only review was refused before any ledger
+or admission mutation. No later cohort is admitted and the running job is unchanged.
+
 ## Balanced business/process/cost presentation prepared (2026-10-06)
 
 The new pure report joins all same-cohort members only after complete root READ
