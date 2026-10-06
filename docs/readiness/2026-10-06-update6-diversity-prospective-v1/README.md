@@ -38,3 +38,27 @@ dispatch-helpers-validation-v1.json SHA256 f55cc796f6aa292634c6b6440655f79d94f81
 The full current engineering preparation must complete before registration. Clean frozen
 source, model-free frozen checks, fresh service/resource checks and exact launch admission
 remain mandatory. No new contact or runtime admission follows from prepared helpers.
+
+## Complete-preparation verifier and structural helpers
+
+The prepared verifier at data/coordination/partitioned-update6-diversity-preparation-v1/verify-complete-engineering-v1.py
+(SHA256 f590f61b1af3708db917f1c5e8dd239d167275dd88afb293261e7b65fee45260) has been parsed, not executed.
+It refuses incomplete or failed members, checks original process absence and every
+child exit/source/log pin, independently verifies composed role bindings and config hashes,
+checks exact source-selection equality, and confirms held state with no attempt or run.
+Its full-family receipt must exist before the capacity registrar can proceed.
+
+Corrected structural runtime/audit helpers are prepared at
+data/coordination/partitioned-update6-diversity-structural-mailbox-v1.
+The helper source proof is helpers-prepared-v1.json SHA256 b1f0e69b88de6f55ac822eceebf20237fe7f2b55c8278824dbe3f5d90548826d;
+Windows parsing proof is dispatch-helpers-validation-v1.json SHA256 625b2e9bc8742b072e4bba5468f2703ea1ef1242d3b9b36326460edbbee71d10.
+The runtime-registration filename fix is retained. Prior incident disposition is not
+inherited as current authority. Structural intent, exact capacity review pins, admission,
+frozen checks and launch registration remain pending; no helper was executed.
+
+The compiled main snapshot e018bbf1d1f8ba0d9faeedb45f82a210a1954b87 passes engineering-base,
+Stage-3 algorithm-label and finite-completion-policy gates. The exact proof is
+data/coordination/partitioned-update6-diversity-preparation-v1/compiled-main-checks-v1.json
+SHA256 f2a3cf93c39ee5c02ca50dc59cbef93b930848d1697071599bae1bd19f09d8ec. These checks cover the
+integrated original policies and existing main configuration; they do not qualify partial
+engineering preparations or authorize runtime contacts.

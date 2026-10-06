@@ -16,6 +16,12 @@ but has not executed. Source-pinned reuse, Python AST and Windows PowerShell par
 see the prospective Update6 README for both exact validation hashes. No new capacity, generation, scorer or GPU admission.
 
 
+The complete-preparation audit entry and corrected structural runtime/audit helpers are prepared,
+not executed. See the prospective Update6 README for exact proof hashes. Compiled main
+snapshot e018bbf1d1f8ba0d9faeedb45f82a210a1954b87 passes engineering-base, Stage-3 algorithm-label
+and finite-completion-policy gates. This does not qualify partial engineering preparation
+or grant any runtime contact. Engineering preparation remains the same live serial process.
+
 ## Update6 original recording verified; operational compilation running (2026-10-06)
 
 The shared recorder exited0 at17:17:52.479103Z. Root verified original bytes, all
@@ -4973,7 +4979,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T17:30:29.268096+00:00
+Last refreshed: 2026-10-06T17:40:31.464999+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

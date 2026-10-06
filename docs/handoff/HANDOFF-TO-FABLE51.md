@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T17:30:29.268096+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T17:40:31.464999+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -112,6 +112,13 @@ Offline Update6 downstream entries are prepared under external coordination/part
 
 
 Latest authority: [operational compilation review](../receipts/continuation/2026-10-06-update6-operational-compilation-reviewed.json). Declared mechanism diversity does not establish business benefit.
+
+
+The complete-preparation audit entry and corrected structural runtime/audit helpers are prepared,
+not executed. See the prospective Update6 README for exact proof hashes. Compiled main
+snapshot e018bbf1d1f8ba0d9faeedb45f82a210a1954b87 passes engineering-base, Stage-3 algorithm-label
+and finite-completion-policy gates. This does not qualify partial engineering preparation
+or grant any runtime contact. Engineering preparation remains the same live serial process.
 
 <!-- current-engineering-handoff:end -->
 
