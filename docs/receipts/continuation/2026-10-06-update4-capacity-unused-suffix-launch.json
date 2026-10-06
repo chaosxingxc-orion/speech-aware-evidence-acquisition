@@ -1,0 +1,68 @@
+{
+  "schema": "saea-capacity-unused-suffix-launch-v1",
+  "at_utc": "2026-10-06T03:34:25.712851+00:00",
+  "status": "RUNNING",
+  "windows_task": "SAEA-Update4-Capacity-Unused-Suffix-V1",
+  "launch": {
+    "windows_owner_pid": 39480,
+    "at_utc": "2026-10-06T03:33:17.6122529+00:00",
+    "scorer_contacts": 0,
+    "worker_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+    "worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+    "registration_sha256": "903ecab19ab32998fa2569396faa7a5f84a9cf955d6b4abc026e24eaab937390",
+    "generation_contacts": 0
+  },
+  "launch_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-capacity-unused-suffix-v1/capacity-started.json",
+    "sha256": "47605cde69e650019305112e4be8b929dc9c99fdeb08c725c4066370e0ac975e"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-capacity-unused-suffix-v1/registration-v1.json",
+    "sha256": "903ecab19ab32998fa2569396faa7a5f84a9cf955d6b4abc026e24eaab937390"
+  },
+  "source_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+  "first_parent_pid": 98206,
+  "first_parent_cmdline_sha256": "b3e58196a1efdb1b9992ae6c149665ca577bbfebef77b4c2a2bf62ca27b3ae12",
+  "prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-capacity-unused-suffix-v1/live-prelaunch-v1.json",
+    "sha256": "30e3e81d629a1a317902125fe2000592fc41e2268f03ea16a02e8f09557e073b"
+  },
+  "control_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-capacity-unused-suffix-v1/control-disposition-v1.json",
+    "sha256": "80735e4cb27ca51af24e83677d24ed149062d04a8415d739fc26c9a70e591953"
+  },
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 3564
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 18,
+    "wait_seconds": 600
+  },
+  "heartbeat": {
+    "id": "slurp-update4-unused-capacity-suffix-monitor",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "delete_at_verified_terminal": true
+  },
+  "scope": "Original unused capacity identities only. Completed prefix and failed epoch preserved. No task generation or scoring; full-family structural/scientific admission remains held."
+}

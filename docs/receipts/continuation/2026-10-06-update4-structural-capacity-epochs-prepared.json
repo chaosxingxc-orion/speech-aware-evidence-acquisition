@@ -1,0 +1,81 @@
+{
+  "schema": "saea-structural-capacity-epoch-successor-preparation-v1",
+  "at_utc": "2026-10-06T03:37:09.220771+00:00",
+  "status": "PREPARED_NOT_ADMITTED",
+  "intent": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update4-process-structural-epochs-v1/intent-v1.json",
+    "sha256": "b094164ab771218241d74bafc2552f6311e480ee823d1678b3b37b707deb6ba6"
+  },
+  "helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/broker.ps1",
+      "sha256": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/continuous-observer-v1.py",
+      "sha256": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/finalize-launch-registration-v1.py",
+      "sha256": "86632f676f1e3cdb72dfba0b11f472ece8bf4c3d25808643d6e4b7d9581d79a2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/frozen-check-structural-v1.py",
+      "sha256": "e2f498a92f2238ad9dbddfa15284c17354e579766ead7dd7597b7aa70c31c0d3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/guarded-child-v1.py",
+      "sha256": "8455cdd02936451cf4940b0f268f1b79982cf4a70587b06d5f4c94c2887dbb66"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/intent-pin.json",
+      "sha256": "5a97546cb346c951701f13270f2cb9981d03ec63a90e2de0f93db7c12bdf1005"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/launch-member-v1.py",
+      "sha256": "ac95509f1b189b4724d148f7b6bb4a3d296d89318a30d30e758b24bbb31c94b8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/prepare-registration-v1.py",
+      "sha256": "da1c9fe90e0163a9b1119646b2da649e5600d8cc0427a3ad4c18add65c0bd65f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/qualify-capacity-v1.py",
+      "sha256": "3dbc47e9c107a515ca736be480dac86f9511c72d96681496cfc21bbe5726c588"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/register-member-v1.py",
+      "sha256": "50b54deb61f8ee371cf2616d2be79191e0a625683963ccfe11161c8134afee06"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/run-registration-v1.py",
+      "sha256": "e89ee419e387278b223ea2224112b71fefc38b1ff37fb8e1551f3f5077d74eb8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/structural-windows-v1.ps1",
+      "sha256": "02847a1050c181924461adf4096b8037ad8791cf39561fa49591f1698e86baf5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/windows_memory_mailbox.py",
+      "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+    }
+  ],
+  "capacity_readiness": "The premature qualifier returned WAIT_FOR_COMPLETE_CAPACITY_EPOCHS and wrote no review. The remaining capacity job is still running.",
+  "validation": {
+    "python_ast": true,
+    "observer_source_byte_equality": true,
+    "shared_epoch_and_family_tests_passed": 96,
+    "shared_module_statement_coverage_percent": 99,
+    "runtime_structural_execution_proven": false
+  },
+  "scientific_inputs_changed": false,
+  "structural_resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "runtime_contacts": 0,
+  "limitations": "Source-bound terminal/parent/lease/observer joins remain to be exercised against the real complete family. Registration and frozen checks are deliberately not executed before full capacity qualification."
+}

@@ -1,5 +1,28 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Exact unused capacity suffix launched with fresh Windows observer (2026-10-06)
+
+Windows task SAEA-Update4-Capacity-Unused-Suffix-V1 launched03:33:17.6122529Z.
+Frozen94190872 and all request bytes remain unchanged. Its exact registration
+SHA903ecab19ab32998fa2569396faa7a5f84a9cf955d6b4abc026e24eaab937390
+contains only branch05-16 and3564 remaining tokenizer endpoints. Preserve the
+first four unique proofs (1188 endpoints) and predecessor exit1; never rerun them.
+[Launch and bindings](../receipts/continuation/2026-10-06-update4-capacity-unused-suffix-launch.json).
+
+Startup18GiB/running8GiB is capacity-only; initial fresh Windows memory19.79GiB.
+Initial Windows owner39480 and WSL parent98206 were live; revalidate identities.
+The exact old branch05 lease was archived under root227 after matching token,
+owner/run/attempt/session/source and free kernel-guard checks; no other controls
+changed. New heartbeat slurp-update4-unused-capacity-suffix-monitor is ACTIVE
+at15minutes and must be deleted at verified terminal. No cache/restart/host action.
+
+All original members remain required in a source-bound multi-epoch capacity join.
+[The successor structural intent and helpers](../readiness/2026-10-06-partitioned-update4-process-structural-epochs-v1/README.md)
+are prepared; the premature qualifier returned WAIT without a review or admission.
+Structural generation retains20GiB startup/8GiB running.
+The old full-epoch qualifier cannot qualify the preserved failed batch. Structural
+and scientific generation remain held pending complete evidence and new binding.
+
 ## Mailbox capacity stopped at branch05 startup; preserve four completed proofs (2026-10-06)
 
 The03:06:10Z entry ended03:24:02Z with outer exit1. Branches01-04 each passed
