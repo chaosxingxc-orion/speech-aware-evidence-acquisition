@@ -1,5 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Prospective bounded parent selector: offline only (2026-10-06)
+
+[Prototype and scope](../readiness/2026-10-06-system-evolution-parent-selector-v1/README.md)
+reuse the measured Pareto frontier and create-only SystemSearchArchive. Configured
+capacity retains a quality-first anchor, rotates other frontier parents by prior use,
+and permits separately bounded eligible dominated exploration. Preserve the full
+frontier, every exclusion reason and all historical evidence. Unknown/raw-content
+fields, mixed measurement domains and duplicate identities are rejected. No proposal
+allocation, active-policy change, formal adoption or learner export is granted.
+62 related tests pass; new module66/66 statements covered; engineering-base PASS.
+Current remaining-b2 READ source hashes remain unchanged. No current algorithm calls
+this interface. Source-qualified integration, configured proposal scheduling and an
+explicit algorithm comparison remain before any real use; no benefit is established.
+
 ## Update6 final remaining-b2 cohort RUNNING (2026-10-06)
 
 Windows task SAEA-Update6-Diversity-RemainingB2-Scientific-V1 launched at

@@ -1,0 +1,25 @@
+{
+  "schema": "saea-offline-parent-selector-proof-v1",
+  "at_utc": "2026-10-06T22:27:08.410181+00:00",
+  "status": "MODEL_FREE_PROTOTYPE_ONLY",
+  "tests_passed": 62,
+  "new_module_statements": 66,
+  "covered_statements": 66,
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_parent_selection.py",
+      "sha256": "030ecd4959ac709d2db1531787898b410de0a20acf8ed6a2d54e54aaaec3a90a"
+    },
+    {
+      "relpath": "tests/unit/test_system_search_parent_selection.py",
+      "sha256": "8fb430c3681150af0495c99852ca2f0c897c7a73235d8c1528d36c5f5fcc6b30"
+    }
+  ],
+  "existing_active_read_source_pins_unchanged": true,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "actor_contacts": 0,
+  "runtime_changed": false,
+  "admitted": false,
+  "business_benefit_established": false
+}
