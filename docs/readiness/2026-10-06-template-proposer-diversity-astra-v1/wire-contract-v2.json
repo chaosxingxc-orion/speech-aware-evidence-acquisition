@@ -1,0 +1,84 @@
+{
+  "schema": "saea-template-proposer-wire-contract-description-v2",
+  "status": "PROSPECTIVE-NOT-ADMITTED",
+  "prompt_version": "aggregate-template-diversity-targeting-v2",
+  "wire_contract": {
+    "response_fields": [
+      "schema",
+      "input_sha256",
+      "actor_input_sha256",
+      "model",
+      "reasoning_effort",
+      "usage",
+      "branches"
+    ],
+    "response_schema": "saea-context-population-update-response-v1",
+    "branch_fields": [
+      "candidate_id",
+      "proposal",
+      "experience_operations"
+    ],
+    "proposal_fields": [
+      "schema",
+      "algorithm",
+      "iteration",
+      "candidate_id",
+      "component",
+      "parent_ids",
+      "changes",
+      "rationale",
+      "hypotheses",
+      "evidence"
+    ],
+    "proposal_schema": "saea-context-policy-update-proposal-v1",
+    "algorithm": "tf-grpo-context-diversity",
+    "component": "joint-system",
+    "editable": {
+      "role_text": [
+        "perception",
+        "solver",
+        "reviewer",
+        "planner"
+      ],
+      "context_layout": {
+        "native_role_query_placement": [
+          null,
+          "before-speech-v1"
+        ]
+      },
+      "node_context": {
+        "tool_schema_rendering": [
+          "constant",
+          "per-role"
+        ],
+        "reviewer_history_scope": [
+          "full",
+          "latest-solver-and-local-tools"
+        ]
+      }
+    }
+  },
+  "dynamic_bindings": {
+    "candidate_order": "Admitted aggregate actor input candidate_order; exactly configured K in order.",
+    "iteration": "Admitted aggregate actor input iteration.",
+    "parent_ids": "Singleton active-parent template.bundle_id for each configured position.",
+    "input_sha256": "Admitted aggregate actor input optimizer_input_sha256.",
+    "actor_input_sha256": "Externally supplied canonical content hash, never the file-byte hash.",
+    "model_reasoning_effort": "Admitted proposal plan values, not this design authors model.",
+    "N_M_sampling_native_limits": "Pinned compact interface description derived from admitted immutable config.",
+    "max_original_output_bytes": "Admitted output contract.",
+    "text_character_cap": "Pinned shared compiler interface TEXT_CHARACTER_CAP.",
+    "history_count": "T complete authorized populations times configured K; N means unique task inputs.",
+    "usage": "Authoritative provider_contacts/input_tokens/output_tokens, or null.",
+    "experience_operations": "Empty list for every branch.",
+    "evidence": "Singleton input_sha256 list."
+  },
+  "diversity_guidance": {
+    "min_primary_families": "min(changed_positions, 6)",
+    "max_primary_family_positions": "max(1, ceil(changed_positions/3))",
+    "focused_edit_target": "min(changed_positions, 2), subject to handoff feasibility",
+    "assembly_combination_target": "min(changed_positions, 3), subject to mechanism compatibility",
+    "after_emission": "Report shortfalls; never regenerate, replace, drop or expand slots."
+  },
+  "runtime_admission": false
+}

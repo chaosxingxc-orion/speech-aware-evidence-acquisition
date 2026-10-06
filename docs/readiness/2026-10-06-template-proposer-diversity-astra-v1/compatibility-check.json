@@ -1,0 +1,17 @@
+{
+  "schema": "saea-proposer-contract-compatibility-check-v1",
+  "status": "PASS",
+  "existing_original_proposals_validated": 16,
+  "legal_assembly_combinations_validated": 8,
+  "invalid_synthetic_edit_surfaces_rejected": 6,
+  "wire_fields_equal_to_existing_contract": true,
+  "current_text_character_cap": 32768,
+  "compiler_source": {
+    "path": "src/speech_aware_evidence_acquisition/rails/system_text_policy.py",
+    "sha256": "f95128a0fcacee65cf07d6f437097121dcf728285e0703821dac9972ca5ac6f2"
+  },
+  "new_proposals_generated": 0,
+  "new_policy_bundles_compiled": 0,
+  "model_contacts": 0,
+  "limitation": "Actual shared proposal parser and field validators exercised; future original response, bundle compilation, capacity and runtime compatibility are not yet proven."
+}
