@@ -1,5 +1,19 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Structural followthrough prepared while frozen checks run (2026-10-06)
+
+The exact parent104028/session24027 is still live and at least six member frozen
+proofs passed. Continue that process; no launch or retry on an observation timeout.
+[Source-bound helper preparation](../receipts/continuation/2026-10-06-update4-structural-followthrough-prepared.json)
+adds live-prelaunch-v1.py and structural-audit-v1.py under the existing structural
+coordination directory. The live checker also refuses a still-running frozen checker.
+The audit binds actual Windows registration/start/terminal and independent member,
+lease, observer, guard and complete manifest records, then retains the previous
+source/request/FIT/rendered-body/handoff/Omni-custody/unscored verification.
+Its premature check exited2 without reading task outputs or writing acceptance.
+Neither helper is yet runtime-verified. Frozen worker988ec3d94 remains untouched.
+Do not use the old batch-driver-specific structural audit on this Windows-owned job.
+
 ## Update4 frozen structural checks running (2026-10-06)
 
 Registration and capacity evidence were serially integrated at988ec3d9446b462c47f0312fc002e21bb5f95352.

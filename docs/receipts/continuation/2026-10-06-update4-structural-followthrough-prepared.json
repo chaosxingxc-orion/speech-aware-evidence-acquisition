@@ -1,0 +1,59 @@
+{
+  "schema": "saea-structural-followthrough-preparation-v1",
+  "at_utc": "2026-10-06T04:12:12.774984+00:00",
+  "helpers": [
+    {
+      "at_utc": "2026-10-06T04:09:45.512330+00:00",
+      "status": "PREPARED_NOT_EXECUTED",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-capacity-unused-suffix-v1/live-prelaunch-v1.py",
+        "sha256": "b4455c7e0cf6e31ac2f540b960ea6604ff8798259edc93138f43501672cf4565"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/live-prelaunch-v1.py",
+        "sha256": "ab2408ec749f4e6d00e7b056955e419ff66bbb1863c3fc8f093396a239ec71e4"
+      },
+      "delta": "Describe structural launch and also refuse a still-running frozen structural checker. All source identity, idle-slot, guard, STOP, fresh-memory and telemetry checks unchanged.",
+      "model_contacts": 0,
+      "validation": "Python AST parsed; exact live execution remains after launch registration and completed frozen checks."
+    },
+    {
+      "at_utc": "2026-10-06T04:11:32.414040+00:00",
+      "status": "PREPARED_NOT_RUNTIME_VERIFIED",
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update3-structural-owner227-v1/structural-audit-v1.py",
+        "sha256": "659046bd45b07aaa5de33dc4fe1b1571e3accf2af53358d6b2f2f2f9259168ac"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/structural-audit-v1.py",
+        "sha256": "dbb155e19a29eac8744ca8f355ab09cd11603d8ea0a83e8b750d5e7734897ce3"
+      },
+      "delta": "Use exact Windows-owned structural epoch and complete-family member/lease/observer/guard/manifest preflight instead of the old batch-driver queue. The existing role/request/FIT/rendered-body/normalizer/Omni-custody and unscored structural checks remain intact.",
+      "premature_exit": 2,
+      "premature_stdout": "{\"status\": \"WAIT_FOR_COMPLETE_STRUCTURAL_FAMILY\", \"written\": false, \"task_quality_read\": false}\n",
+      "acceptance_written": false,
+      "model_contacts": 0,
+      "task_quality_read": false,
+      "limitations": "Must still execute against the real successful complete structural family; syntactic and premature refusal checks do not establish runtime acceptance."
+    }
+  ],
+  "frozen_validation": {
+    "parent_pid": 104028,
+    "unified_exec_session": 24027,
+    "worker": "/home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1",
+    "commit": "988ec3d9446b462c47f0312fc002e21bb5f95352",
+    "verified_complete_members": [
+      "branch-01",
+      "branch-02",
+      "branch-03",
+      "branch-04",
+      "branch-05",
+      "branch-06",
+      "branch-07"
+    ],
+    "still_running": true
+  },
+  "runtime_dispatched": false,
+  "model_contacts": 0,
+  "next": "Wait for exact frozen checker terminal. Finalize launch registration only if all members pass, then exact live checks and Windows task. Prepared audit refuses until the complete terminal structural family; root structural-only interpretation remains required."
+}
