@@ -1,0 +1,277 @@
+{
+  "at_utc": "2026-10-06T03:07:20.333737+00:00",
+  "status": "RUNNING",
+  "windows_task": "SAEA-Update4-Capacity-Windows-Mailbox-Entry1",
+  "epoch": "2026-10-06T03:06:10.0522159+00:00",
+  "windows_owner_pid": 42120,
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/registration-v1.json",
+    "sha256": "32c09a0ff64d4031f1b472aecd9152ad5225ae51175aa529c8d092b1916fca16"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+  "worker_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "configured_members": [
+    {
+      "label": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-01-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-01-capacity-fit-v1"
+    },
+    {
+      "label": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-02-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-02-capacity-fit-v1"
+    },
+    {
+      "label": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-03-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-03-capacity-fit-v1"
+    },
+    {
+      "label": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-04-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-04-capacity-fit-v1"
+    },
+    {
+      "label": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-05-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-05-capacity-fit-v1"
+    },
+    {
+      "label": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-06-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-06-capacity-fit-v1"
+    },
+    {
+      "label": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-07-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-07-capacity-fit-v1"
+    },
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-08-capacity-fit-v1"
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-09-capacity-fit-v1"
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-10-capacity-fit-v1"
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-11-capacity-fit-v1"
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-12-capacity-fit-v1"
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-13-capacity-fit-v1"
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-14-capacity-fit-v1"
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-15-capacity-fit-v1"
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-16-capacity-fit-v1"
+    }
+  ],
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-01": 297,
+      "branch-02": 297,
+      "branch-03": 297,
+      "branch-04": 297,
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 4752
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "initial_actual_capacity_worker": {
+    "pid": 94905,
+    "cmdline": "/home/chao/.venvs/speechrl/bin/python -B /home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1/scripts/native_graph_capacity.py --repo-root /home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1 --data-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data --runtime-root /home/chao --lock-path /mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json --experiment slurp-native-stage3-context-template-partitioned-update4-process-branch-01-capacity-v1 --graph-experiment slurp-native-stage3-context-template-partitioned-update4-process-branch-01-graph-v1 --expected-session-id serving-slurp-native-candidate-five-train-a-np4-v1 --contact-cap 297 --lease-token-file /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-01/worker-token.json --output /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-01/request-fit-v1.json ",
+    "start_ticks": "58302881"
+  },
+  "initial_startup_wait": {
+    "elapsed_seconds": 20.159317029989325,
+    "exit_code": 0,
+    "interval_seconds": 10,
+    "observer_sha256": "852f8f4fb4cd63b7084b9fec9db63325baa2553e2f7e6637f61d8053a5e06c7b",
+    "running_floor_gib": 8,
+    "schema": "saea-precontact-memory-wait-v1",
+    "stable_samples": 3,
+    "start_gib": 20,
+    "status": "ready",
+    "stop_marker": "/home/chao/batch-STOP",
+    "wait_seconds": 600,
+    "worker_started": false
+  },
+  "monitor": {
+    "id": "slurp-update4-mailbox-capacity-monitor",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "delete_on_terminal": true
+  },
+  "control_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/control-disposition-v1.json",
+    "sha256": "92d814143fe94c2fe04b8f059b9c9743f09c111056e1d25d2d8ea024c8d74360"
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/live-prelaunch-v1.json",
+    "sha256": "7caf71acd5f7c4bc678ca75affa985007a581acc246cabafa89928cbaa97a5c0"
+  },
+  "scope": "Nongenerative registered capacity only. No structural/scientific admission, quality reading or policy update.",
+  "initial_operational_members": [
+    {
+      "label": "branch-01",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-02",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-03",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-04",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-05",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-06",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-07",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-08",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-09",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-10",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-11",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-12",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-13",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-14",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-15",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    },
+    {
+      "label": "branch-16",
+      "attempt_exists": false,
+      "state": null,
+      "contacts": null,
+      "fit_result_exists": false
+    }
+  ]
+}

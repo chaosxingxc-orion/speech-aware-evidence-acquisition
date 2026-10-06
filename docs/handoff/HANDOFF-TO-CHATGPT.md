@@ -1,5 +1,29 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Actual mailbox capacity job running (2026-10-06)
+
+[The new exact launch](../receipts/continuation/2026-10-06-update4-capacity-mailbox-entry-launch.json)
+started through Windows task SAEA-Update4-Capacity-Windows-Mailbox-Entry1 at
+03:06:10.0522159Z. Initial Windows ownerPID42120 and first native workerPID94905
+were revalidated; always check live identities. Frozen94190872 remains unchanged.
+Branch01 has now completed its actual registered capacity worker and released
+its lease normally at03:07:39Z. Continue the one existing configured sequence;
+never relaunch on an observation timeout. Read every member's exact operational
+records under coordination/partitioned-update4-process-capacity-mailbox-entry1.
+
+The bound15-minute heartbeat slurp-update4-mailbox-capacity-monitor is ACTIVE;
+delete it at verified terminal with no remaining admitted worker. Original
+continuation1 metadata was narrowly archived under the recorded disposition;
+its token, bytes and stable generation.guard are preserved. A prelaunch-only
+cross-clock age refusal was corrected separately; actual admission still uses
+fresh request-causal monotonic observations,20GiB start/8GiB running and600second
+wait. No threshold relaxation, model request change or quality read occurred.
+
+All16 exact capacity members must succeed before root whole-family capacity
+review. Structural generation and scientific N20 remain separately HELD. The
+old structural qualifier is pinned to the original failed epoch; prepare a new
+exact intent/qualifier instead of pretending the failed family succeeded.
+
 ## Fresh mailbox capacity entry prepared; launch checks pending (2026-10-06)
 
 [Root disposition](../receipts/continuation/2026-10-06-update4-capacity-mailbox-entry-disposition.json)
@@ -3135,7 +3159,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T03:04:20.241895+00:00
+Last refreshed: 2026-10-06T03:08:16.801019+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Actual mailbox capacity job running (2026-10-06)
+
+[The new exact launch](../receipts/continuation/2026-10-06-update4-capacity-mailbox-entry-launch.json)
+started through Windows task SAEA-Update4-Capacity-Windows-Mailbox-Entry1 at
+03:06:10.0522159Z. Initial Windows ownerPID42120 and first native workerPID94905
+were revalidated; always check live identities. Frozen94190872 remains unchanged.
+Branch01 has now completed its actual registered capacity worker and released
+its lease normally at03:07:39Z. Continue the one existing configured sequence;
+never relaunch on an observation timeout. Read every member's exact operational
+records under coordination/partitioned-update4-process-capacity-mailbox-entry1.
+
+The bound15-minute heartbeat slurp-update4-mailbox-capacity-monitor is ACTIVE;
+delete it at verified terminal with no remaining admitted worker. Original
+continuation1 metadata was narrowly archived under the recorded disposition;
+its token, bytes and stable generation.guard are preserved. A prelaunch-only
+cross-clock age refusal was corrected separately; actual admission still uses
+fresh request-causal monotonic observations,20GiB start/8GiB running and600second
+wait. No threshold relaxation, model request change or quality read occurred.
+
+All16 exact capacity members must succeed before root whole-family capacity
+review. Structural generation and scientific N20 remain separately HELD. The
+old structural qualifier is pinned to the original failed epoch; prepare a new
+exact intent/qualifier instead of pretending the failed family succeeded.
+
 ## Fresh mailbox capacity entry prepared; launch checks pending (2026-10-06)
 
 [Root disposition](../receipts/continuation/2026-10-06-update4-capacity-mailbox-entry-disposition.json)
