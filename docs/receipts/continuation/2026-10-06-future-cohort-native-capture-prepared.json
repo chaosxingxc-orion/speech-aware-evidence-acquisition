@@ -1,0 +1,70 @@
+{
+  "schema": "saea-prospective-full-owner-capture-preparation-v1",
+  "at_utc": "2026-10-06T21:06:29.551077+00:00",
+  "status": "PREPARED_NOT_ADMITTED",
+  "files": [
+    {
+      "cohort": "remaining-b1",
+      "original_owner": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/scientific-windows-v1.ps1",
+        "sha256": "2eba28e1fe1c9664477df9a4369254e317a5f12ab0137a836e3f74ef6fab5e1c"
+      },
+      "original_finalizer": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/finalize-registration-v1.py",
+        "sha256": "c1ae6bfb2f08a0c4a2fe4c19a9ab1095e09defa4e6ae5b625756adacdbd4f131"
+      },
+      "new_owner": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/scientific-windows-v2.ps1",
+        "sha256": "38ed082e6434867e00e7230e2977a017a9394a50c09d716176745cdfd7aaec63"
+      },
+      "capture": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/scientific_full_owner_capture.cmd",
+        "sha256": "01f0945e02ce7a3d01acd6467afcf0cb3d2a10c626ba91574ea9c8b18831632e"
+      },
+      "new_finalizer": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/finalize-registration-v2.py",
+        "sha256": "1ffa20c549c166672642ef2ecec2db4098dbe7a54623c96c33c85c3368cd286b"
+      }
+    },
+    {
+      "cohort": "remaining-b2",
+      "original_owner": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/scientific-windows-v1.ps1",
+        "sha256": "3bfa7a7f6b0cf732fc06fa756e04dad315913f1d180a43072aef2201b8133a10"
+      },
+      "original_finalizer": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/finalize-registration-v1.py",
+        "sha256": "5e85d5961d6f8dbf73678c5723b43651db352dcb689300ea054c7c05c1203657"
+      },
+      "new_owner": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/scientific-windows-v2.ps1",
+        "sha256": "8f36ce1828b96b0ab1ef4ecd63cdde6934e05e7c62c7f96def8b9c7a79db09ca"
+      },
+      "capture": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/scientific_full_owner_capture.cmd",
+        "sha256": "01f0945e02ce7a3d01acd6467afcf0cb3d2a10c626ba91574ea9c8b18831632e"
+      },
+      "new_finalizer": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/finalize-registration-v2.py",
+        "sha256": "cc50c235eea01d70e44ab20cbfa88a1c7fef5a40e60ff69b4974cf194cc6a785"
+      }
+    }
+  ],
+  "test": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-full-owner-capture-proof-green-v2/receipt.json",
+    "sha256": "8024d51ac49d484394e52a9eac4d6706bd175de82a7b3f46db3f4c01ad92c087"
+  },
+  "capture_source": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/scripts/flights/batch/scientific_full_owner_capture.cmd",
+    "sha256": "01f0945e02ce7a3d01acd6467afcf0cb3d2a10c626ba91574ea9c8b18831632e"
+  },
+  "test_source": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/windows/test_scientific_full_owner_capture.ps1",
+    "sha256": "e554d6cce462ae01e4bab9f0481a00e7490e50ad0b5043ddd5f72d1222cb5125"
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "scheduled_tasks_created": 0,
+  "limitations": "Independent capture survives inner child exit while the outer supervisor survives. It does not guarantee a receipt after host or outer-supervisor termination. No original incident cause is inferred. Actual next-cohort admission, frozen checks, native hidden wrapper and launch binding remain required.",
+  "next_action": "After exact prior-cohort root review, use the prospective v2 finalizer to pin the owner and capture. Launch through a hidden native supervisor with registration SHA and original receipt root; require capture exit0 and matching registration SHA in addition to normal complete-family qualification before READ."
+}

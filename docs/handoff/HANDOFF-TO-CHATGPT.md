@@ -1,5 +1,25 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Future Update6 cohorts have independent native exit capture prepared (2026-10-06)
+
+The current suffix job is unchanged. For the unadmitted remaining-b1 and remaining-b2,
+prospective scientific-windows-v2.ps1 only adds explicit native module imports;
+scientific_full_owner_capture.cmd independently retains stdout/stderr/native exit.
+Native hidden synthetic children prove success0 and abrupt exit23 propagation,
+repeat refusal, preserved streams, and refusal on pre-existing stdout/stderr alone.
+No model/scorer contacts or new scheduled tasks occurred. Engineering-base passes.
+[Preparation receipt](../receipts/continuation/2026-10-06-future-cohort-native-capture-prepared.json).
+
+After prior complete-cohort business/process review, use each prospective
+finalize-registration-v2.py to pin the v2 owner and capture in its new registration.
+Keep original v1 files immutable. The actual hidden supervisor and registration-hash
+binding remain to be prepared after frozen checks; no admission or dispatch follows
+from this preparation. Before READ require independent native exit0 matching that
+registration in addition to the original complete-family and terminal checks.
+Capture can survive inner-child termination while its supervisor survives; host or
+outer-supervisor termination can still lose receipts. Original failure cause remains
+unestablished. No task/policy/knowledge/budget/quality rule is changed.
+
 ## Update6 continued root READ entries prepared; job still running (2026-10-06)
 
 The exact suffix job is still running at ownerPID39980; branch-04 was OPENED with
