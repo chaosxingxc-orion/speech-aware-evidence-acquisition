@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T18:06:21.300991+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T18:18:27.616115+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -30,11 +30,29 @@ The root numeric process projection is complete at
 `coordination/partitioned-update5-aggregate-scientific-preparation-v1/complete-root-process-feedback-v1.json`,
 SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
-The last GPU task is terminal and its fifteen-minute monitor was deleted. No new GPU
-flight is admitted; the separately admitted Update6 proposer completed. Expected
-GPU service idleness is intentional.
+The previous GPU task is terminal and its monitor was deleted. Update6 nongenerative
+capacity is now running; its exact active task/epoch/monitor are recorded below.
+Structural and scientific generation remain held; the Update6 proposer is complete.
 
 ### Actual work to resume
+
+
+## Update6 nongenerative capacity launched (2026-10-06)
+
+All16 frozen checks completed successfully at18:14:30.611241Z. Root verified every
+check log hash, the absent checker PID and the unchanged clean worker. Final registration
+SHA256 223a30e5f0ac9605aa26364649fb919bf9cbc2bb3ffb1ff1dfd30f18bceb1b10.
+Windows task SAEA-Update6-Diversity-Capacity-V1 started 2026-10-06T18:16:49.2262073+00:00,
+owner PID24912 (revalidate creation identity), frozen
+/home/chao/saea-worktrees/codex-partitioned-update6-diversity-capacity-v1 at de6b4dac5bd783891b45e1f4c9ebd0a80b2460d0.
+[Launch receipt](../receipts/continuation/2026-10-06-update6-diversity-capacity-launch.json).
+Live service was healthy/idle with4 slots and24.90GiB Windows free memory; registered
+20GiB startup/8GiB running guards remain mandatory. Maximum4752 tokenizer endpoints,
+zero generation/scoring. Inspect every configured member and original terminal; no retry.
+The job-scoped fifteen-minute script monitor slurp-update6-capacity-monitor is ACTIVE;
+delete on verified completion/failure and no remaining owned workers/observers.
+Structural intent now pins this exact capacity registration but remains NOT ADMITTED.
+No scientific result, policy adoption or algorithm change follows from these checks.
 
 All offline history/process/input readers are complete; original PIDs201319,202274 and
 204560 are absent. Root verified their exact completion and source hashes. The next
@@ -59,7 +77,7 @@ and null usage. Shared original recording exited0 at17:17:52.479103Z; root verif
 3. Completed: root recorded `docs/receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json` using schema `saea-complete-process-backfill-reviewed-v1`, status `COMPLETE_ROOT_REVIEWED`. Reuse the exact verified bridge registration/result pins; do not replay scores.
 4. Completed: root verified the registered offline input preparation in `coordination/update6-aggregate-input-preparation-v1/prepare-next-input-v1.py` using those verified receipts. Its plan is [next-input-plan-v1.json](../readiness/2026-10-06-update5-complete-continuation-v1/next-input-plan-v1.json), SHA256 `e0607df7b145ef31361ef75065c81bc0a7ccda256ca990555945edd63fb8c6e9`. The operation is `prepare --plan-sha256 <exact hash>`. Use `PYTHONDONTWRITEBYTECODE=1`, Python `-B`, the project venv and the root checkout's `src` on PYTHONPATH.
 5. Verify exactly K aggregate records per complete observed population and T*K in historical input. Keep complete node templates/assembly, business/process/cost metrics, denominators, missingness, uncertainty and separate control references. Keep private source lists, raw cases/answers/gold/knowledge outside the actor.
-6. Completed before contact: exact prompt/interface, actual config, original-output contract, model/effort, source manifest, reservation and exposure admission are bound. Completed: the one GPT-6.1 Sol/high actor emitted its original response and stopped. Do not dispatch again. Shared original recording is complete and verified. Operational compilation is complete and root verified. Engineering preparation and independent root verification are complete. The capacity registrar exited0 at17:53:54.539427Z. Root verified all16 registrations and exact config/plan/recipe/decision pins, unique exposure rows and no runtime attempts; original PID215837 is absent. All eleven offline gates pass. Clean frozen codex-partitioned-update6-diversity-capacity-v1 is at de6b4dac5bd783891b45e1f4c9ebd0a80b2460d0; model-free checks run as PID217048, start ticks63571483, exec session34341, started18:00:49.565269Z. Verify all configured checks and terminal before finalizing registration; no restart from polling timeout. Do not rerun registration.
+6. Completed before contact: exact prompt/interface, actual config, original-output contract, model/effort, source manifest, reservation and exposure admission are bound. Completed: the one GPT-6.1 Sol/high actor emitted its original response and stopped. Do not dispatch again. Shared original recording is complete and verified. Operational compilation is complete and root verified. Engineering preparation and independent root verification are complete. The capacity registrar exited0 at17:53:54.539427Z. Root verified all16 registrations and exact config/plan/recipe/decision pins, unique exposure rows and no runtime attempts; original PID215837 is absent. All eleven offline gates pass. Clean frozen codex-partitioned-update6-diversity-capacity-v1 is at de6b4dac5bd783891b45e1f4c9ebd0a80b2460d0; all16 model-free frozen checks completed18:14:30.611241Z. Root verified all logs and original PID absence, finalized capacity registration and launched the exact Windows task18:16:49.2262073Z. Capacity is running; inspect every admitted member and its terminal receipts. Do not rerun registration/checks or dispatch a second task.
 7. Only after proposal compilation and separate registered full-request capacity/structural proof may root admit the next bounded GPU experiment. Derive K/N/M/member order/sampling/budgets from one immutable config throughout. Current preparation retains N20; no expansion or hidden budget increase.
 
 ### Changed interfaces and verified limits
@@ -108,14 +126,14 @@ inputs or change historical acceptance. Next algorithm changes need prospective 
 identity and comparison rules. Current Update6 remains the original aggregate protocol.
 
 
-Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. Original recording and operational compilation are complete and root verified. Serial engineering preparation is complete and independently verified. The capacity registrar completed under coordination/partitioned-update6-diversity-capacity-owner227-v1; its frozen checker is running as identified above; actual dispatch helpers have not run. Source pins match the previous successful capacity entry; Python AST and PowerShell parser checks pass. Exact proof hashes are in the prospective Update6 README. Preserve original bytes and all partial preparations; no contacts or admission follow from this preparation.
+Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. Original recording and operational compilation are complete and root verified. Serial engineering preparation is complete and independently verified. The capacity registrar completed under coordination/partitioned-update6-diversity-capacity-owner227-v1; its frozen checker completed successfully; exact Windows capacity dispatch is running as identified above. Source pins match the previous successful capacity entry; Python AST and PowerShell parser checks pass. Exact proof hashes are in the prospective Update6 README. Preserve original bytes and all partial preparations; no contacts or admission follow from this preparation.
 
 
 Latest authority: [operational compilation review](../receipts/continuation/2026-10-06-update6-operational-compilation-reviewed.json). Declared mechanism diversity does not establish business benefit.
 
 
-The complete-preparation audit exited0; corrected structural runtime/audit helpers remain prepared,
-not executed. See the prospective Update6 README for exact proof hashes. Compiled main
+The complete-preparation audit exited0; corrected structural runtime/audit and control helpers remain prepared,
+not executed. The structural intent pins capacity registration223a30e5f0ac9605aa26364649fb919bf9cbc2bb3ffb1ff1dfd30f18bceb1b10; control-preparation-v1.json SHA256 ed249b8cd267733ad0007e6ef2cd61cfdb96882fda3959c3c070ac71bf3f41f8 binds seven future helpers. Wait for whole capacity qualification before using them. See the prospective Update6 README for exact proof hashes. Compiled main
 snapshot e018bbf1d1f8ba0d9faeedb45f82a210a1954b87 passes engineering-base, Stage-3 algorithm-label
 and finite-completion-policy gates. This does not qualify partial engineering preparation
 or grant any runtime contact. The original serial process is terminal; do not restart it or its completed verification.

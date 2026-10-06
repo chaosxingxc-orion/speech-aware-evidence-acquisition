@@ -1,5 +1,23 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 nongenerative capacity launched (2026-10-06)
+
+All16 frozen checks completed successfully at18:14:30.611241Z. Root verified every
+check log hash, the absent checker PID and the unchanged clean worker. Final registration
+SHA256 223a30e5f0ac9605aa26364649fb919bf9cbc2bb3ffb1ff1dfd30f18bceb1b10.
+Windows task SAEA-Update6-Diversity-Capacity-V1 started 2026-10-06T18:16:49.2262073+00:00,
+owner PID24912 (revalidate creation identity), frozen
+/home/chao/saea-worktrees/codex-partitioned-update6-diversity-capacity-v1 at de6b4dac5bd783891b45e1f4c9ebd0a80b2460d0.
+[Launch receipt](../receipts/continuation/2026-10-06-update6-diversity-capacity-launch.json).
+Live service was healthy/idle with4 slots and24.90GiB Windows free memory; registered
+20GiB startup/8GiB running guards remain mandatory. Maximum4752 tokenizer endpoints,
+zero generation/scoring. Inspect every configured member and original terminal; no retry.
+The job-scoped fifteen-minute script monitor slurp-update6-capacity-monitor is ACTIVE;
+delete on verified completion/failure and no remaining owned workers/observers.
+Structural intent now pins this exact capacity registration but remains NOT ADMITTED.
+No scientific result, policy adoption or algorithm change follows from these checks.
+
+
 ## Update6 frozen capacity checks running; structural blueprint prepared (2026-10-06)
 
 The clean worker /home/chao/saea-worktrees/codex-partitioned-update6-diversity-capacity-v1

@@ -1,0 +1,89 @@
+{
+  "at_utc": "2026-10-06T18:18:27.616115+00:00",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-01": 297,
+      "branch-02": 297,
+      "branch-03": 297,
+      "branch-04": 297,
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 4752
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "frozen_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/frozen-check-v1.json",
+    "sha256": "f58d1033026bdffefd753e6d07ab5bcf4227d6e200cf31ea9c7a79bc551f579f"
+  },
+  "frozen_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/frozen-check-v1.exit.json",
+    "sha256": "5a2990ebda0cc548d9a6fe77ce84f8780b72345d99060219c705e3213985fde2"
+  },
+  "launch_epoch": "2026-10-06T18:16:49.2262073+00:00",
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/live-prelaunch-v1.json",
+    "sha256": "de8566a807ed056d937a0e8e471a2a782d8d17c13c51527f10031853af9d3c9c"
+  },
+  "member_ids": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "monitor": {
+    "automation_id": "slurp-update6-capacity-monitor",
+    "interval_minutes": 15,
+    "status": "ACTIVE",
+    "termination": "Delete on verified terminal with no owned worker/observer."
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/registration-v1.json",
+    "sha256": "223a30e5f0ac9605aa26364649fb919bf9cbc2bb3ffb1ff1dfd30f18bceb1b10"
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "schema": "saea-configured-capacity-launch-v1",
+  "scope": "Nongenerative complete-request capacity only. Structural/scientific generation remains held. No quality read or adoption.",
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/capacity-started.json",
+    "sha256": "f890441a1162988b733e4116378fcc40c233af942f2c771bcdfc81113f537c21"
+  },
+  "status": "RUNNING",
+  "task_name": "SAEA-Update6-Diversity-Capacity-V1",
+  "windows_owner_pid": 24912,
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-capacity-v1",
+  "worker_commit": "de6b4dac5bd783891b45e1f4c9ebd0a80b2460d0"
+}
