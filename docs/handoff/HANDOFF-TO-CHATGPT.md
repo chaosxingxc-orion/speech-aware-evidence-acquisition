@@ -1,5 +1,58 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 whole-population rejection; complete history preparation (2026-10-06)
+
+The original whole-trial reader completed with exit0 and qualified all original sources.
+Registered utility is -56.15925390968045 before and -69.32902959938615 after: the strict
+population rule rejects Update5. Root recorded retention of the unchanged formal seed
+and active Update2 parents, preserving every candidate and the08/15 no-change positions.
+Branch16 remains an uncertain favorable historical lead, not a newly activated policy.
+See [complete business/process review](../results/2026-10-06-slurp-update5-whole-population-retention.md)
+and [retention](../receipts/continuation/2026-10-06-partitioned-update5-root-retention.json).
+
+All22 members,440 trajectories and2438 measured model contacts are accounted for;
+all three exact root READs completed. The final GPU monitor has been deleted.
+Complete process projection and registered rejected-history preparation are now running
+offline in their exclusive coordination roots. Check actual processes/terminal receipts
+before advancing; no model, scorer, new proposal or GPU contact is added. The next actor
+must receive exactly K complete aggregate records per observed population, including
+negative and no-change history, and the prospectively bound proposer-v2 instruction.
+No new actor allocation or runtime admission follows from these preparations.
+
+## Update5 GPU complete; full-population retention qualification running (2026-10-06)
+
+The final remaining-b2 coordinator exited normally at15:44:43.8435933Z. All six
+members independently FINALIZED20 rows with verified seals, one unique successful
+complete official score each and zero failed jobs. Root verified native and WSL
+termination, countersigned the exact READ and completed business/process analysis.
+The exact GPU monitor slurp-update5-remaining-b2-monitor was deleted. Preserve every
+frozen worker, original failure/continuation receipt, generation and official score.
+No generation or scorer is active for this completed cohort.
+
+[Complete review](../results/2026-10-06-slurp-update5-remaining-b2-complete-review.md)
+reports branch16 F1 60.9161percent versus seed59.4021 and AA58.5468; the paired
+intervals cross zero. Its eligible entity repair is0/2, so do not attribute the terminal
+point difference to useful reflection. Branch15 detects12/12 erroneous drafts but has
+7/7 known false alarms and damages2/6 eligible correct drafts. Intent-card availability
+does not establish semantic entity support. Keep business, process and cost separate.
+
+All three original Update5 cohorts now have complete exact root READs:22 scientific
+members and440 complete trajectories, including320 candidate trajectories for K16.
+The complete source join is registered. The original strict-population-utility-sum
+qualification is running offline in complete-trial-entry-v1.py evaluate, WSL PID199724
+at the checkpoint below. Revalidate actual process identity and exclusive output before
+continuing; do not restart because a read-only observation times out. This operation
+adds no model or scorer contacts. No whole-population retention or new learner export
+has been made yet. Do not activate branch16 from a favorable point estimate.
+
+The next projection/process registrations are prepared in
+[the continuation package](../readiness/2026-10-06-update5-complete-continuation-v1/README.md).
+After qualification, apply the original rule, preserve all candidate/no-change history,
+and prepare exactly K aggregate records per complete observed population. The requested
+Astra proposer-v2 design is integrated but not yet used for a new proposal. GPT-6.1 Sol
+remains the generator. No new GPU admission or N expansion follows from preparation.
+Other-carrier holds, fixed assets, owner227 bounds and human review before8x400 remain.
+
 ## Proposer v2 independently verified and integration prepared (2026-10-06)
 
 The requested Astra design package is complete and serially integrated at ff06c9a1a.
@@ -4776,7 +4829,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T15:22:10.404493+00:00
+Last refreshed: 2026-10-06T16:08:33.702992+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

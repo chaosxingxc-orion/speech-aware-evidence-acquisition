@@ -1,0 +1,47 @@
+{
+  "schema": "saea-partitioned-context-root-retention-v1",
+  "recorded_at_utc": "2026-10-06T16:04:26.361552+00:00",
+  "owner_authority": 227,
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/complete-trial-qualified-v1.json",
+    "sha256": "e5395077df370921cc3919e3b3d2b84d1f0ea40e7e01b6a2ab4f8edfd0618f7f"
+  },
+  "criterion": "strict-population-utility-sum",
+  "utility_before": -56.15925390968045,
+  "utility_after": -69.32902959938615,
+  "utility_delta": -13.169775689705695,
+  "decision": "REJECT_WHOLE_UPDATE_RETAIN_BEFORE_POPULATION",
+  "formal_incumbent": "unchanged seed",
+  "active_search_population": "unchanged update2 parents",
+  "cohorts": {
+    "original-a": {
+      "before": -33.29178512555497,
+      "after": -32.9975436543487
+    },
+    "remaining-b1": {
+      "before": -14.50996521745102,
+      "after": -23.959046654148075
+    },
+    "remaining-b2": {
+      "before": -8.35750356667446,
+      "after": -12.37243929088937
+    }
+  },
+  "preserve_all_candidates": true,
+  "preserve_no_change_positions": [
+    "branch-08",
+    "branch-15"
+  ],
+  "optimizer_state_mutated": false,
+  "new_learner_export": false,
+  "new_runtime_admission": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "next": "Prepare all complete rejected Update5 history and process records, then register a new aggregate-template-records-v1 continuation using prospectively pinned proposer v2. Keep current N20, fixed assets and GPT-6.1 Sol. Preserve branch16 as a favorable uncertain historical lead without activating it.",
+  "limits": [
+    "No stable business improvement or learning advantage established.",
+    "Cross-flight point differences and repeated no-change variability are not causal template effects.",
+    "Retain cohort-local baselines/A/A and all source identities. No pooled F1 or normalized-return frontier.",
+    "Human review before 8x400; other-carrier holds remain."
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "saea-complete-cohort-root-review-v1",
+  "at_utc": "2026-10-06T15:51:51.164360+00:00",
+  "cohort": "remaining-b2",
+  "status": "COMPLETE_ROOT_REVIEWED",
+  "members": 6,
+  "trajectories": 120,
+  "model_contacts": 666,
+  "source_reports": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B2-READ-V1/report.json",
+      "sha256": "e9dcd4c3f3ec8711f26f8c6dca6f1004b156c75f5c91ca203c7b52d9ad9368df"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B2-READ-V1/timing-summary.json",
+      "sha256": "fe2aaac54f5008da71493ca644e896feadd197b6edd924a330dc403b05b3a3ce"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B2-READ-V1/process-metrics-v1.json",
+      "sha256": "e8d2a7b5deb5888b38e013d850d8a6a4c1daf3379e9a508f55ee2b74da66e417"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B2-READ-V1/business-process-cost-v1.json",
+      "sha256": "1d5c51b7fe089bf9dbba9e52a123e4dd230c071e7381910745f4c2f9297a4ab2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B2-READ-V1/paired-process-diagnostics-v1.json",
+      "sha256": "80dcbb69bc69bd0c79c76b1cc804a41b00f864713b459e2cf5b88a568d8e5259"
+    }
+  ],
+  "root_report": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/results/2026-10-06-slurp-update5-remaining-b2-complete-review.md",
+    "sha256": "cdb7790e47882c8f0ff57ba2eddd04e5ea872f460b90ccf6dcca19bb2eb767b4"
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/scientific-finished.json",
+    "sha256": "0aceda02a010edfb1e95c3e9b63f875c29912f788ebbcd056dddb9d025de6da7"
+  },
+  "terminal_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/root-windows-terminal-observation-v1.json",
+    "sha256": "6b840c064dbe5bc0e726bd2bd93b2b98b96e74d984926b64986b4bf07ac44835"
+  },
+  "monitor_id": "slurp-update5-remaining-b2-monitor",
+  "monitor_deleted": true,
+  "formal_adoption": false,
+  "stable_benefit_established": false,
+  "learner_exported": false,
+  "runtime_admission": false,
+  "root_next_action": "Qualify the original whole K16 trial before selecting or registering subsequent learning."
+}
