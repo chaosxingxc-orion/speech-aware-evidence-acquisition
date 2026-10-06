@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T18:18:27.616115+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T18:26:51.471154+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -35,6 +35,18 @@ capacity is now running; its exact active task/epoch/monitor are recorded below.
 Structural and scientific generation remain held; the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 scientific blueprint verified; capacity remains running (2026-10-06)
+
+Root verified the completed model-free scientific blueprint, exact source/config/policy
+pins, every candidate/control binding and original PID absence. All22 configured
+members remain:320 candidate plus120 control trajectories,440 total. No new source
+inputs, knowledge, replacement proposals or scale increase. The trial contract preserves
+strict-population-utility-sum and both no-change positions. No scientific admission.
+[Blueprint verification](../receipts/continuation/2026-10-06-update6-scientific-blueprint-verified.json).
+Capacity remains the original Windows task/epoch below. The next action is complete
+capacity qualification followed by the prepared structural registrar. Scientific supply
+preparation and runtime admission still require complete structural acceptance.
 
 
 ## Update6 nongenerative capacity launched (2026-10-06)

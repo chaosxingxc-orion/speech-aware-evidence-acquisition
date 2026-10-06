@@ -1,0 +1,52 @@
+{
+  "all_source_bindings_verified": true,
+  "at_utc": "2026-10-06T18:26:51.471154+00:00",
+  "blueprint": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-scientific-preparation-v1/planned-members-v1.json",
+    "sha256": "8b368745b493e3e6c2bc9cf26b635e820cffa7c49a339120093f28b9f41ceed7"
+  },
+  "logs": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/blueprint-v1.stdout.log",
+      "sha256": "bb8e10dff3187af009fac499a7955930c96612527bfffc8888400abb3517176a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/blueprint-v1.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "member_count": 22,
+  "model_tokenizer_scorer_contacts": 0,
+  "next": "Wait for complete capacity qualification, then register/freeze/execute the structural family and obtain full structural acceptance before scientific member preparation/admission.",
+  "original_process_absent": true,
+  "population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "runtime_admission": false,
+  "schema": "saea-scientific-blueprint-root-verification-v1",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/build-scientific-blueprint-v1.py",
+    "sha256": "c20b2cc2fc58802627194c8d9cf775b6fac769989f9d0092cc3404794c846fa7"
+  },
+  "source_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/blueprint-entry-prepared-v1.json",
+    "sha256": "47e81112e7d3c8723496a1133a7610336596f0a7db00c15992e9ca7095a21a17"
+  },
+  "status": "PREPARED_NOT_ADMITTED",
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/blueprint-v1.exit.json",
+    "sha256": "cd334e2cc74c2112ba8f5d7a391db0b1bcb0ad8bdcb649330224dc0ad0ec90cb"
+  },
+  "totals": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "family_trajectories": 440,
+    "fit_endpoints_cap": 22880,
+    "generation_contacts_cap": 5720
+  },
+  "trial_contract": {
+    "relpath": "docs/readiness/2026-10-06-update6-diversity-prospective-v1/trial-contract-v1.json",
+    "sha256": "bca55466567c6776094a246b91a2201c0796357df1b94bf3d4f96d1e0156ef85"
+  }
+}

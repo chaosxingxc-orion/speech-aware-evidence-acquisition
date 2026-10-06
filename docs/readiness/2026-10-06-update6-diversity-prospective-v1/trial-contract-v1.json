@@ -1,0 +1,24 @@
+{
+  "algorithm": "tf-grpo-context-diversity",
+  "criterion": "strict-population-utility-sum",
+  "iteration": 6,
+  "no_change_candidates": [
+    "branch-08",
+    "branch-15"
+  ],
+  "original_update_record": {
+    "relpath": "system-text-search/context-template-k16-v1/context-learning/populations/complete-update6-aggregate-diversity-v2/result.json",
+    "sha256": "e6d7eae0925d3e13a367dc1480c24873480df7d5074b8ca02f6fe517d870f1ad"
+  },
+  "runtime_admission": false,
+  "schema": "saea-partitioned-context-trial-contract-v1",
+  "source_packet": {
+    "relpath": "system-text-search/context-template-k16-v1/context-learning/inputs/partitioned-complete-update6-aggregate-diversity-v2.json",
+    "sha256": "e5b1d7c9882f79fb28febfd9dd0e75af4c4a1b9204a45bb703b8b5128bc6ee9c"
+  },
+  "status": "ROOT_REGISTERED",
+  "trial_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  }
+}

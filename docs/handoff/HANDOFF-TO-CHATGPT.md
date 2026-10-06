@@ -1,5 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 scientific blueprint verified; capacity remains running (2026-10-06)
+
+Root verified the completed model-free scientific blueprint, exact source/config/policy
+pins, every candidate/control binding and original PID absence. All22 configured
+members remain:320 candidate plus120 control trajectories,440 total. No new source
+inputs, knowledge, replacement proposals or scale increase. The trial contract preserves
+strict-population-utility-sum and both no-change positions. No scientific admission.
+[Blueprint verification](../receipts/continuation/2026-10-06-update6-scientific-blueprint-verified.json).
+Capacity remains the original Windows task/epoch below. The next action is complete
+capacity qualification followed by the prepared structural registrar. Scientific supply
+preparation and runtime admission still require complete structural acceptance.
+
+
 ## Update6 nongenerative capacity launched (2026-10-06)
 
 All16 frozen checks completed successfully at18:14:30.611241Z. Root verified every
