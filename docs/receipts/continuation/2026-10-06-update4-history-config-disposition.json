@@ -1,0 +1,19 @@
+{
+  "schema": "saea-root-offline-preparation-disposition-v1",
+  "at_utc": "2026-10-06T00:55:03.761542+00:00",
+  "authority": "owner227",
+  "original_worker": "/home/chao/saea-worktrees/codex-context-update4-process-prep",
+  "original_commit": "a3af791f63c3050e0cd764950c67f6127e5303ac",
+  "exit_at_utc": "2026-10-06T00:52:05.982838+00:00",
+  "exit_code": 1,
+  "capture": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v1",
+  "named_cause": "The history replay incorrectly rebuilt successor feedback with the parent configuration identity. The real source configurations differ in schema, experiment_id and boundary_maintenance, while cohorts/nodes/sampling/execution/proposer/contact_limits are equal.",
+  "correction": "Resolve the pinned historical source join and its own configuration, validate its full feedback with the existing validator, and independently enforce comparable scope. Preserve parent configuration and every original identity.",
+  "evidence": "New distinct-configuration regression failed before the fix and passes after.95 affected projection/continuation/learning/trial tests pass.",
+  "disposition": "Exactly one offline continuation of the unchanged registered preparation from a fresh fixed worker with separate capture. No source edits, proposal reservation, replacement or GPU/scorer dispatch. Stop and diagnose any further failure.",
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "runtime_admission": false
+}

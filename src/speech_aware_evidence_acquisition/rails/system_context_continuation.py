@@ -8,9 +8,10 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from types import SimpleNamespace
 from ..analysis.abstract_population_sources import _external
 from ..analysis.abstract_process_feedback import project_process_feedback
-from .experiment_population import load_population_config
+from .experiment_population import load_population_config, population_accounting
 from .hashing import content_hash
 from .system_text_policy import _read_pin, require
 
@@ -23,7 +24,7 @@ def _identity(packet):
     return packet
 
 
-def _history(archive, parent, history):
+def _history(archive, parent, history, root):
     from .system_context_partitioned_learning import validate_partitioned_packet
     require(history.get("schema") == "saea-rejected-context-learning-history-v1"
             and history.get("runtime_admission") is False and history.get("learner_exported") is False
@@ -47,7 +48,15 @@ def _history(archive, parent, history):
     # Validate historical templates and numeric episodes through the same v1 gate.
     observed["schema"] = "saea-partitioned-context-optimizer-input-v1"
     for k in ("continuation_evidence", "parent_input_sha256"): observed.pop(k, None)
-    validate_partitioned_packet(archive, _identity(observed))
+    join = json.loads(_read_pin(history["private_custody"]["source_projection"]["source_join"], root))
+    historical_config = load_population_config(join["projection_config"], repo_root=root)
+    active_config = load_population_config(parent["source_population"], repo_root=archive.root)
+    require(all(historical_config[k] == active_config[k] for k in
+                ("cohorts", "nodes", "sampling", "execution", "proposer", "contact_limits")),
+            "historical and active comparison scope differs")
+    observed["source_population"] = join["projection_config"]
+    observed["budget"] = population_accounting(historical_config)
+    validate_partitioned_packet(SimpleNamespace(root=root, load_policy=archive.load_policy), _identity(observed))
     return {k:deepcopy(h[k]) for k in ("disposition", "criterion", "utility_before", "utility_after", "observation")}
 
 
@@ -125,7 +134,7 @@ def prepare_context_continuation(archive, *, registration_pin, repo_root, data_r
             and all(r.get("runtime_admission") is False and r.get("learner_exported") is False for r in (hr,pr)),
             "complete root-reviewed history and process receipts required")
     history = _external(hr["output"], data)
-    rejected = _history(archive, parent, history)
+    rejected = _history(archive, parent, history, root)
     feedback_ids = sorted(set(parent["feedback_sample_ids"]) | set(history["private_custody"]["feedback_sample_ids"]))
     source_pins = {"history":hr["output"], "process":pr["result"]}
     history_source_join = history["private_custody"]["source_projection"]["source_join"]

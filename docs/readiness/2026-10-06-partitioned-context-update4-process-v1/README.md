@@ -50,3 +50,15 @@ invalid/no-change. Future generation uses separately frozen, config-derived smal
 cohorts with actual FIT, structural proof, exact full-family READ and job-bound monitoring.
 Stay on the sameN20 pool while diagnosing consumption. Human review remains required
 before8x400. No new held-carrier release follows.
+
+## Historical configuration identity correction
+
+The first real-file preparation exited before archive input creation or proposal
+reservation. Its legacy replay path incorrectly used the active-parent config for
+the rejected successor observation. Resolve the historical source join's exact
+configuration instead. The two schemas/experiment IDs/boundary-maintenance records
+remain distinct; require equal cohort rosters, roles, sampling, execution geometry,
+proposer and contact limits. A regression with different historical experiment
+identity demonstrates the correction without relaxing metric or parent custody.
+The original worker and capture remain immutable. Root disposition records one
+separately captured offline continuation with unchanged registration and script.

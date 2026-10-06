@@ -17,11 +17,12 @@ from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyErr
 @pytest.fixture
 def continuation(ready):
     s=ready; s.parent=prepare(s)
+    source_pin=pin(s.root,"history-sources.json",{"projection_config":s.parent["source_population"]})
     s.history={'schema':'saea-rejected-context-learning-history-v1',
         'active_parent_bundle_ids':{cid:p['bundle_id'] for cid,p in s.parent['policies'].items()},
         'learner_history':{'disposition':'rejected-retain-before-population','criterion':'strict-population-utility-sum',
             'utility_before':10.,'utility_after':9.,'observation':deepcopy(s.parent['learner_view']),'instructions':'History only.'},
-        'private_custody':{'source_projection':{'source_join':{'relpath':'sources.json','sha256':'b'*64}},'parent_input_sha256':s.parent['input_sha256'],
+        'private_custody':{'source_projection':{'source_join':source_pin},'parent_input_sha256':s.parent['input_sha256'],
             'feedback_sample_ids':sorted(s.parent['feedback_sample_ids']+['slurp:train:PRIVATE_HISTORY'])},
         'runtime_admission':False,'learner_exported':False,'contacts_added':{'model':0,'scorer':0}}
     template=fixture()[0]['families']['part']['a']
@@ -41,7 +42,7 @@ def continuation(ready):
             family[mid]=a;members.append({'member_id':mid,'score_result':{'sha256':'a'*64}})
         s.process['families'][c['cohort_id']]=family
         cohorts.append({'cohort_id':c['cohort_id'],'members':members})
-    s.process_reg={'schema':'saea-slurp-process-backfill-v1','status':'ROOT_REGISTERED','cohorts':cohorts,'source_registration':{'relpath':'sources.json','sha256':'b'*64}}
+    s.process_reg={'schema':'saea-slurp-process-backfill-v1','status':'ROOT_REGISTERED','cohorts':cohorts,'source_registration':source_pin}
     s.process_reg_pin=pin(s.root,'process-reg.json',s.process_reg)
     s.process['registration_sha256']=s.process_reg_pin['sha256']
     hpin=pin(s.data,'history-private.json',s.history,True)
@@ -114,3 +115,24 @@ def test_modified_feedback_cannot_be_rehashed_into_actor_input(continuation):
     ev=json.loads(ep.read_text());ev['process_feedback']['cohorts']['cohort-0']['members']['candidate-0']['rates']['review_false_alarm']['value']=0
     ep.write_text(json.dumps(ev))
     with pytest.raises(PolicyError):partitioned.partitioned_context_actor_view(s.archive,input_sha256=p['input_sha256'])
+
+
+def test_history_validates_its_own_configuration_identity(continuation):
+    s=continuation
+    cfg=deepcopy(s.cfg);cfg['experiment_id']='different-evaluated-successor'
+    cfgpin=pin(s.root,'successor-config.json',cfg)
+    joinpin=pin(s.root,'history-sources.json',{'projection_config':cfgpin})
+    s.history['private_custody']['source_projection']['source_join']=joinpin
+    s.history['learner_history']['observation']['population']['population_config_sha256']=content_hash(cfg)
+    s.hreceipt['output']=pin(s.data,'history-private.json',s.history,True)
+    s.reg['history_completion']=pin(s.root,'history-complete.json',s.hreceipt)
+    s.process_reg['source_registration']=joinpin
+    s.reg['process_registration']=pin(s.root,'process-reg.json',s.process_reg)
+    s.process['registration_sha256']=s.reg['process_registration']['sha256']
+    s.preceipt['result']=pin(s.data,'process-private.json',s.process,True)
+    s.reg['process_completion']=pin(s.root,'process-complete.json',s.preceipt)
+    s.regpin=pin(s.root,'continuation.json',s.reg)
+    packet=run(s)
+    assert packet['source_population']==s.parent['source_population']
+    view=partitioned.partitioned_context_actor_view(s.archive,input_sha256=packet['input_sha256'])
+    assert view['rejected_history']['observation']['population']['population_config_sha256']==content_hash(cfg)
