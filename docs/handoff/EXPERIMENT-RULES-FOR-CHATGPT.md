@@ -1,5 +1,17 @@
 # Experiment rules for the ChatGPT side
 
+## Process metrics and balanced reporting, owner direction 2026-10-06
+
+Use the [source-bound metric contract](../readiness/2026-10-06-slurp-process-metrics-v1/README.md)
+for prospective root diagnostics. Report official business quality/reliability first,
+intermediate support/review/revision statistics second, and cost including latency third.
+Compute gold-dependent diagnostics offline only after complete-family qualification and
+exact root READ. Retain missingness, denominators, strata and uncertainty. Do not infer
+correct criticism from any alarm on an erroneous input, causal contribution from transitions,
+or semantic use from context visibility. Keep the fixed-knowledge consumption scope.
+No runtime gold, arbitrary mixed reward, historical acceptance-rule change or automatic
+learner export follows. Version abstract aggregate learning feedback prospectively.
+
 ## Smaller cohorts and bounded cache reclamation
 
 Apply the [latest owner instruction](../receipts/owner/2026-10-05-smaller-cohorts-cache-boundary.json). Use the pinned successor config for smaller cohorts; derive K and budgets from it. Reclaim only clean WSL file cache after a complete cohort, after generation/scoring/preprocessing and competing coordinator work are idle, with before/after operational evidence. Preserve the resident model, KV state, data and frozen artifacts; do not issue global sync, restart WSL or delete files. This narrowly supersedes earlier no-cache-cleanup directions. Root coordinates the boundary; monitors gain no cleanup or recovery authority. Delegate the memory observer repair as requested and keep quality/reliability/sample latency as the learning objectives. The old stopped K8B remains preserved and unread. See [K4 preparation](../readiness/2026-10-05-slurp-context-template-k4-recovery1-v1/README.md); configuration and offline/live observer proof do not admit new GPU work.

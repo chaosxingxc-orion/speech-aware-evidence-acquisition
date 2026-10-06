@@ -1,0 +1,52 @@
+{
+  "schema": "saea-process-metrics-preparation-v1",
+  "recorded_at_utc": "2026-10-06T00:14:13.696375+00:00",
+  "owner_direction": "Add intermediate statistical diagnostics for actual recall/support, review error detection and revision outcomes. Treat latency as one process metric, not the central objective.",
+  "status": "implemented-and-synthetic-source-verified; real-cohort-backfill-pending",
+  "worktree": "/home/chao/saea-worktrees/codex-process-metrics-v1",
+  "base_commit": "23b451010",
+  "implemented": [
+    "abstract rates with denominators, missingness bounds and Wilson intervals",
+    "scenario strata and empty-gold false fills",
+    "first-draft-bound review alarms and handoff visibility",
+    "repair, harm and full transition tables",
+    "optional existing actual initial intent request/state/supply source join"
+  ],
+  "not_claimed": [
+    "semantic correctness of criticism",
+    "causal node contribution",
+    "raw retrieval pool or slot-value source coverage",
+    "real-cohort metric values",
+    "business improvement",
+    "learner integration"
+  ],
+  "validation": {
+    "related_tests_passed": 142,
+    "new_module_statement_coverage_percent": 100,
+    "new_module_branch_coverage_percent": 100,
+    "engineering_base_check": "PASS",
+    "git_diff_check": "PASS",
+    "expected_test_first_failures_observed": true
+  },
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "distribution": "root-only; exact complete-family qualification and root READ required by caller",
+  "future_use": "Prospectively version anonymous numeric learner projection after complete offline backfill; preserve historical retention rules and fixed runtime assets.",
+  "readiness": "docs/readiness/2026-10-06-slurp-process-metrics-v1/README.md",
+  "files": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py",
+      "sha256": "f968e1d32a98de952ae7b90b240ed8d2553a6dadff47c6c45f81c8d47f548bfb"
+    },
+    {
+      "path": "tests/unit/test_slurp_process_metrics.py",
+      "sha256": "afe5574bd22379794000b201f4d362dfa6e6e2f084701c1fb17ce79b8c230122"
+    },
+    {
+      "path": "docs/readiness/2026-10-06-slurp-process-metrics-v1/README.md",
+      "sha256": "ff29898ab024353ec4294a14e84fc006010ea337479c38676aa789afabe46efd"
+    }
+  ]
+}

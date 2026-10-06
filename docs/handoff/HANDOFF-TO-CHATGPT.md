@@ -1,5 +1,31 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Process diagnostics implemented; real-cohort backfill pending
+
+The owner requests intermediate statistical monitoring and a balanced reporting order.
+[Metric contract](../readiness/2026-10-06-slurp-process-metrics-v1/README.md) and
+[preparation receipt](../receipts/continuation/2026-10-06-slurp-process-metrics-prepared.json)
+add a root-only offline interface over existing source/delivery/score joins. It reports
+first-draft review detection/alarm precision/false alarms/misses, handoff visibility,
+revision repair/damage, transition tables, scenario strata, empty-gold false fills,
+denominators, unknowns, missing-data bounds and descriptive Wilson intervals. The optional
+intent-support adapter verifies actual initial request/state/supply sources. Raw retrieval
+pool and slot-content coverage need their own actual-source projections; absent evidence
+is unavailable, not zero. Criticism truth and causal contribution are not established.
+
+142 related tests pass; the new module has100percent statement/branch coverage.
+Engineering base and diff checks pass. No model/scorer contacts, official score replay,
+new scientific result, policy adoption, GPU admission or learner export occurred. Next,
+register and backfill entire already qualified cohorts, preserve all members/strata and
+compare business quality first, process diagnostics second, cost third. Prospectively bind
+abstract numeric aggregates to the learner; never export gold content or expanded sources.
+Historical selection criteria and the rejected update3 retention remain unchanged.
+
+The earlier rejected-history reader remains a separate existing process; collect its
+original completion rather than relaunching it. Its frozen Python sources were not changed:
+this work used the isolated codex-process-metrics-v1 checkout. Preserve N20, fixed assets,
+configuration-derived bounds, other-carrier holds and human review before8x400.
+
 ## Actual rejected-history source preparation is running
 
 [One offline launch](../receipts/continuation/2026-10-06-rejected-history-preparation-started.json) runs the registered history reader from64adf5ce6c72ae3d5d89a5798c613d1e79d25973. PID70821/start_ticks57197638,tool session62916 were revalidated live with advancing CPU/I/O and empty stderr. Collect this existing process through coordination/rejected-context-history-v1/exit.json,stdout.log and stderr.log; do not relaunch after an observation timeout. The exclusive result is history-private-v1.json. Reader source hashes are checked before output. No GPU/model/scorer contacts or actor export.
