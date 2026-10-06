@@ -35,6 +35,7 @@ foreach ($source in $plan.windows_pinned_files) {
  if ((Get-FileHash -LiteralPath $source.path -Algorithm SHA256).Hash.ToLower() -cne $source.sha256) { throw 'Pinned continuation source differs' }
 }
 # This preflight verifies immutable pins, fresh native identities and every untouched member.
+& $plan.windows_original_observer -PlanPath $PlanPath -OutputPath $plan.windows_native_observation_path
 & wsl.exe -d Ubuntu-24.04 -- env PYTHONDONTWRITEBYTECODE=1 /home/chao/.venvs/speechrl/bin/python -B $plan.linux_preflight --plan $plan.linux_plan --sha256 $PlanSHA
 if ($LASTEXITCODE -ne 0) { throw 'Continuation preflight refused before contacts' }
 $encoding=New-Object Text.UTF8Encoding($false)

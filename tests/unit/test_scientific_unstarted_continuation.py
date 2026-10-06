@@ -175,3 +175,35 @@ def test_terminal_rejects_changed_or_incomplete_provenance(fault):
     if fault=='bad_missing_native_exit':plan['missing_native_exit_members']=[]
     if fault=='unknown_missing_member':plan['missing_native_exit_members']=['m9']
     with pytest.raises(ValueError):terminal_decide(values)
+
+
+
+def test_observe_actual_operational_files_and_refuse_tampering(tmp_path):
+    import hashlib,json
+    reg,_,_=fixture(3,1)
+    job=tmp_path/'job';job.mkdir();data=tmp_path/'data';data.mkdir()
+    m=reg['members'][0];unit=job/m['label'];unit.mkdir()
+    ap=data/'attempts'/m['run_id']/(m['attempt_id']+'.json');ap.parent.mkdir(parents=True)
+    ap.write_text(json.dumps({'state':'FINALIZED'}))
+    run=data/'runs'/m['run_id']/m['attempt_id'];(run/'score-batch').mkdir(parents=True)
+    summary=run/'score-batch/batch-summary.json';summary.write_text(json.dumps({'succeeded':1,'failed':0}))
+    (run/'score-jobs.jsonl').write_text(json.dumps({'job_id':m['attempt_id']})+'\n')
+    op={'state':'FINALIZED','successful_score_jobs':1,'failed_score_jobs':0,'prepared_score_jobs':1,
+        'attempt_sha256':hashlib.sha256(ap.read_bytes()).hexdigest(),
+        'score_batch_sha256':hashlib.sha256(summary.read_bytes()).hexdigest(),'quality_read':False}
+    (unit/'operational-complete.json').write_text(json.dumps(op))
+    (unit/'scientific-started.json').write_text('{}')
+    for name in ['scientific-finished.json','campaign-exit.json','inspect-exit.json']:
+        (unit/name).write_text(json.dumps({'exit_code':0}))
+    observed,pins=module.observe_members(registration=reg,data_root=data,job_root=job)
+    assert observed['m0']['attempt_state']=='FINALIZED'
+    assert observed['m1']['attempt_present'] is False
+    assert pins and all(len(p['sha256'])==64 for p in pins)
+    ap.write_text(json.dumps({'state':'OPENED'}))
+    with pytest.raises(ValueError):module.observe_members(registration=reg,data_root=data,job_root=job)
+
+
+def test_observe_rejects_path_escape(tmp_path):
+    reg,_,_=fixture();reg['members'][0]['run_id']='../escape'
+    with pytest.raises(ValueError):
+        module.observe_members(registration=reg,data_root=tmp_path/'data',job_root=tmp_path/'job')

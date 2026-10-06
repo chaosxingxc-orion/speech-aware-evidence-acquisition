@@ -1,0 +1,74 @@
+{
+  "schema": "saea-root-unstarted-suffix-continuation-disposition-v1",
+  "at_utc": "2026-10-06T20:46:47.578070+00:00",
+  "authority": "owner227",
+  "status": "APPROVED_CONDITIONAL_ON_FRESH_PRELAUNCH",
+  "continuation_plan": {
+    "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/continuation-plan-v1.json",
+    "sha256": "1ecaa8dd99080ff12239e8b89f6fb7ebea89ff18e2096de940bf04d750200f89"
+  },
+  "original_failed_owner_result": 2147943467,
+  "original_failure_cause": "Unestablished; no attribution to memory or the separate native module test issue",
+  "admitted_scope": "Exactly one first execution of original branch-04 through branch-08; original identities, full registration, worker, templates, configuration, data, budgets and scoring unchanged",
+  "preserved_prefix": [
+    "seed",
+    "seed-aa",
+    "branch-01",
+    "branch-02",
+    "branch-03"
+  ],
+  "generation_cap": 1300,
+  "fit_endpoint_cap": 5200,
+  "official_score_jobs": 5,
+  "missing_original_native_exits": [
+    "branch-03"
+  ],
+  "exception_scope": "Retain the missing native Windows exit receipts as missing. Original branch-03 child finished exit0 with campaign/inspection exit0 and unique successful official score; bound processes settled. Full-family seal/score verification and exact root READ still required. Do not synthesize an original native exit or a normal-success outer terminal.",
+  "runtime_source": "Original frozen worker at c947d67b24e5f2dd5e69c2ad3e0bf58b60822be0 remains clean and unchanged; continuation changes operational ownership and evidence only",
+  "read_contract": "Use unchanged whole-family qualifier; separately qualify the actual successor native task terminal for the untouched suffix, then qualify_continued_terminal for unchanged original prefix, failed owner and missing-native-exit disposition. Exact root READ remains unsigned until all gates pass. No quality or learner export during continuation.",
+  "tests": {
+    "python_passed": 114,
+    "continuation_module_statement_coverage_percent": 100,
+    "windows_partition_cases": 10,
+    "native_exit_capture_cases": [
+      0,
+      23
+    ],
+    "replay_refused": true,
+    "real_model_free_preflight": "PASS",
+    "engineering_base": "PASS"
+  },
+  "evidence": [
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/rehearsal-preflight-v1.json",
+      "sha256": "710a8bd0608cbe715f1dc6a14402956aac029d666415fdbd0f47a32fea658ba3"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/tests-exit.json",
+      "sha256": "c2998ea18d762b576fe52dd7bc2f5aeb90ac9c7a40f475cda2329c5b30a23825"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/native-partition-proof-v1/receipt.json",
+      "sha256": "81e981cd0adc13e984fb0e21c94c52c320ab81da503b108208106e4c72cff098"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/capture-synthetic-v1/receipt.json",
+      "sha256": "5a293f659f2708034c18455172f88630eeecae97fc512f1134b4e19e0de1d62a"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/live-prelaunch-v1.py",
+      "sha256": "f594b1c91924024ac2e5fc847e57467d3062a60fc577493f52e2207e39736148"
+    }
+  ],
+  "failure_policy": "Any further failure stops; preserve evidence, no automatic retry or replacement. Apply required structural proof before any later recovery.",
+  "startup_policy": {
+    "start_gib": 20,
+    "floor_gib": 8,
+    "stable_samples": 3,
+    "interval_seconds": 10,
+    "wait_seconds": 600
+  },
+  "model_contacts_by_preparation": 0,
+  "scorer_contacts_by_preparation": 0,
+  "quality_read": false
+}

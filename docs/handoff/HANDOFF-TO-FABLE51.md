@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T20:40:04.295550+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T20:46:47.578070+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -37,6 +37,33 @@ branch-03 child completed and all original processes are now gone, as detailed b
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 exact untouched suffix continuation admitted conditionally (2026-10-06)
+
+Root227 approves one first execution of original branch-04 through branch-08 after
+fresh prelaunch checks. Preserve seed,seed-aa,branch-01,branch-02,branch-03 and all
+original sources/scores. Original registration and frozen c947d67b2 worker stay
+unchanged. Remaining caps are1300 generation/5200 FIT endpoints and5 unique complete
+official scores; no new candidates, allocations, dataset or scoring replay.
+
+New coordination is coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1.
+The immutable continuation-plan-v1.json SHA256 is
+1ecaa8dd99080ff12239e8b89f6fb7ebea89ff18e2096de940bf04d750200f89.
+Prospective task:SAEA-Update6-OriginalA-Suffix-Continuation1-V1. It is not launched yet.
+Real-file/native-process preflight passes without model/scorer calls. Python tests
+pass114, continuation-module statement coverage100percent, native partition cases10;
+independent native exit capture proves codes0/23 and refuses replay. Original synthetic
+failures remain preserved and do not establish the original owner exit cause.
+
+Use the pinned suffix owner through scientific_owner_capture.cmd, with separate owner
+stdout/stderr/native-exit receipts. Its own start-time preflight revalidates original
+process absence, immutable prefix metadata, all untouched suffix members and frozen
+source. Original memory guards remain20GiB startup/8GiB running. Perform fresh service
+and memory checks before launch, then activate a new exact job-scoped monitor.
+Root READ must preserve original failure/missing branch-03 native exits and combine
+unchanged full-family qualification with standard suffix-terminal and explicit
+cross-epoch verification. Do not fabricate old receipts or read partial quality.
+[Root disposition](../receipts/continuation/2026-10-06-update6-original-a-suffix-continuation-disposition.json).
 
 ## Update6 suffix owner and terminal components prepared (2026-10-06)
 

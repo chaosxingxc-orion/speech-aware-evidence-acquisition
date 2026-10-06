@@ -139,3 +139,64 @@ def qualify_continued_terminal(*, registration, settlement, plan, current_member
             "original_task_result": prior["original_task_result"],
             "missing_original_native_exits": missing,
             "suffix_terminal": suffix_terminal, "read_authorized": False}
+
+
+
+def observe_members(*, registration, data_root, job_root):
+    """Read operational metadata only and bind every observed byte hash."""
+    from pathlib import Path
+    import hashlib
+    import json
+    import re
+    data_root, job_root = Path(data_root), Path(job_root)
+    pins, members = [], {}
+    def read(path):
+        raw = path.read_bytes()
+        pins.append({"path": str(path), "sha256": hashlib.sha256(raw).hexdigest()})
+        return json.loads(raw)
+    def digest(path):
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    for member in registration["members"]:
+        for key in ("label", "run_id", "attempt_id"):
+            require(re.fullmatch(r"[A-Za-z0-9_-]+", member[key]) is not None,
+                    "Unsafe registered execution identity")
+        label = member["label"]
+        unit = job_root / label
+        attempt_path = data_root / "attempts" / member["run_id"] / (member["attempt_id"] + ".json")
+        run = data_root / "runs" / member["run_id"] / member["attempt_id"]
+        attempt = read(attempt_path) if attempt_path.exists() else {}
+        op_path = unit / "operational-complete.json"
+        op = read(op_path) if op_path.exists() else {}
+        if op:
+            summary_path = run / "score-batch/batch-summary.json"
+            require(digest(attempt_path) == op["attempt_sha256"]
+                    and digest(summary_path) == op["score_batch_sha256"],
+                    "Operational completion pins changed")
+            summary = read(summary_path)
+            jobs_path = run / "score-jobs.jsonl"
+            raw = jobs_path.read_bytes()
+            jobs = [json.loads(line) for line in raw.splitlines() if line.strip()]
+            pins.append({"path": str(jobs_path), "sha256": hashlib.sha256(raw).hexdigest()})
+            require(summary["succeeded"] == op["successful_score_jobs"]
+                    and summary["failed"] == op["failed_score_jobs"]
+                    and len(jobs) == op["prepared_score_jobs"] == 1
+                    and jobs[0]["job_id"] == member["attempt_id"]
+                    and op["quality_read"] is False,
+                    "Official score metadata differs")
+        item = {key: member[key] for key in ("label", "run_id", "attempt_id")}
+        item.update(attempt_present=attempt_path.exists(), run_present=run.parent.exists(),
+                    unit_present=unit.exists(), attempt_state=attempt.get("state"),
+                    started=(unit / "scientific-started.json").exists(),
+                    failure_present=(unit / "scientific-failure.json").exists(),
+                    successful_scores=op.get("successful_score_jobs", 0),
+                    prepared_scores=op.get("prepared_score_jobs", 0),
+                    failed_scores=op.get("failed_score_jobs", 0))
+        for key, filename in (("finished_exit", "scientific-finished.json"),
+                              ("campaign_exit", "campaign-exit.json"),
+                              ("inspection_exit", "inspect-exit.json")):
+            path = unit / filename
+            item[key] = read(path)["exit_code"] if path.exists() else None
+        members[label] = item
+    require(all(digest(Path(item["path"])) == item["sha256"] for item in pins),
+            "Operational metadata changed during observation")
+    return members, pins
