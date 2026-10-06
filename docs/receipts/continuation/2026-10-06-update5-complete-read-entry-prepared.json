@@ -1,0 +1,37 @@
+{
+  "schema": "saea-update5-complete-cohort-read-entry-prepared-v1",
+  "at_utc": "2026-10-06T12:29:47.103690+00:00",
+  "status": "PREPARED_NOT_COUNTERSIGNED",
+  "source_manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/scientific-read-entry-preparation-v1.json",
+    "sha256": "ed3d3abfc051f700bb9c9d6e5e27972f8cee798311d6a856b3d1c2ac33e37ff1"
+  },
+  "tests": {
+    "passed": 73,
+    "subtests_passed": 30,
+    "stdout": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/read-entry-tests-v1.stdout.log",
+      "sha256": "eff5d25fbb44e02aa648ba09b05f055628b6155f957b3d525cf92c2c286cffa5"
+    },
+    "exit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/read-entry-tests-v1.exit.json",
+      "sha256": "71a2473faa640784d191bf422d5857c7dfed9f019f5e0ff7ab2e1944b5fddbeb"
+    },
+    "real_incomplete_family": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/scientific-read-incomplete-v1.stdout.log",
+      "sha256": "aad7e523b7890fba5f610aaaf844b4c4b8b74814f5633811826e6ca5bd8dd5b0"
+    },
+    "real_incomplete_exit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/scientific-read-incomplete-v1.exit.json",
+      "sha256": "2ad87a949f60ec369cef111d2a0e052234dafd93379112d75256af4dc0d03e13"
+    }
+  },
+  "compatibility": "Reuse unchanged shared official reader, terminal verifier, statistical estimators and aggregate learner projection. Thin cohort entry differs from previous tested entry only in new qualification receipt filename prefix; all model/runtime bytes remain frozen. The additive source-addressed launch binding normalizes actual launch metadata without replacing the original receipt.",
+  "source_dependencies": "All eight shared source pins in the preceding supplement remain identical. Add the existing tested aggregate-template-learning module pin. No estimator, reward reference, population retention or runtime policy changes.",
+  "statistical_scope": "Derive all three cohort members from the experiment config. Keep every candidate and control, same-cohort natural/equal-stratum comparisons and original paired-bootstrap settings. Process statistics are source-bound after complete READ; support not measured stays unknown. Full population learner export remains held.",
+  "runtime_changed": false,
+  "quality_read": false,
+  "read_countersigned": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0
+}

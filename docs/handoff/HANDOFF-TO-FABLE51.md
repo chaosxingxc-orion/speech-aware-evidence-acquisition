@@ -1,5 +1,33 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 complete-cohort analysis entry prepared (2026-10-06)
+
+The first scientific job remains the sole running experiment. Additive statistical
+supplements for all three configured cohorts are pinned before any quality read;
+all eight preceding shared reader/estimator/source dependencies remain byte-identical.
+The terminal verifier/Windows collector are reused unchanged; the thin read entry
+changes only its output receipt prefix. See
+[read-entry verification](../receipts/continuation/2026-10-06-update5-complete-read-entry-prepared.json).
+
+All73 focused tests and30 subtests pass. A real premature qualify call returned
+WAIT75 with no quality values or READ mutation. Preserve that observation; it is
+expected waiting, not an experiment failure. The exact launch is normalized by
+2026-10-06-update5-original-a-scientific-read-binding.json, which grants no READ.
+The original launch receipt and frozen worker remain immutable.
+
+After actual terminal, use coordination/partitioned-update5-aggregate-scientific-preparation-v1/
+review-scientific-cohort-v1.py with cohort original-a, flight-coordination
+coordination/partitioned-update5-aggregate-scientific-preparation-v1/original-a-flight-v1
+and launch-receipt docs/receipts/continuation/2026-10-06-update5-original-a-scientific-read-binding.json.
+First qualify all members, then collect a fresh exact Windows terminal observation
+with observe-scientific-windows-terminal-v1.ps1. Root must verify the terminal and
+all seals/scores before countersign; read only afterward. Countersign requires the
+observation within60seconds and no STOP/lease/admitted worker. Never reuse a stale
+observation or replay an existing analysis output. Delete the bound monitor only
+after verified job/process termination. No partial learner export or next-cohort
+admission follows from preparation. Process source joining and complete-population
+retention still require their exact qualified sources and root review.
+
 ## Update5 first scientific cohort launched (2026-10-06)
 
 The complete original model-free frozen check ended12:21:41Z exit0 with all10

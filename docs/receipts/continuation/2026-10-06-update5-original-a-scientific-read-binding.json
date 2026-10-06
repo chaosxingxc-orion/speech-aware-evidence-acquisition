@@ -1,0 +1,26 @@
+{
+  "schema": "saea-scientific-launch-read-binding-v1",
+  "status": "BINDING_ONLY_NOT_READ_AUTHORIZATION",
+  "at_utc": "2026-10-06T12:28:17.791234+00:00",
+  "original_launch": {
+    "relpath": "docs/receipts/continuation/2026-10-06-update5-original-a-scientific-launch.json",
+    "sha256": "7c0bca434728cfd7e29f87f6769afb20b05b7bf1f9a760c387475f1d953d722c"
+  },
+  "cohort": "original-a",
+  "commit": "2e26372dc5e25245a68c4c2df8cff2a54d350ea2",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-original-a-scientific-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "frozen_proof": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/original-a-flight-v1/frozen-check-v1.json",
+    "sha256": "89406a46be98e4a23d5686f290370ffc1eec6bb6f46070c0b1a685f90e8b4fab"
+  },
+  "registration": {
+    "relpath": "coordination/partitioned-update5-aggregate-original-a-scientific-v1/registration-v1.json",
+    "sha256": "4f333ca84ae7ab99ee9e7a61b9864dcf704eff500d9c37586405b4b63c649bab"
+  },
+  "windows_task": "SAEA-Update5-Aggregate-OriginalA-Scientific-V1",
+  "launch_epoch": "2026-10-06T12:22:44.0038559+00:00"
+}
