@@ -1,0 +1,36 @@
+{
+  "schema": "saea-complete-trial-process-preparation-receipt-v1",
+  "at_utc": "2026-10-06T23:25:23.213566+00:00",
+  "status": "COMPLETE_ROOT_PROCESS_FEEDBACK_PREPARED",
+  "complete_trial": {
+    "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/complete-trial-qualified-v1.json",
+    "sha256": "826b6ff8298ffde4941e356936a4f68cf19e70a7416a0c50618183f20cd05b25"
+  },
+  "root_retention": {
+    "relpath": "docs/receipts/continuation/2026-10-06-partitioned-update6-root-retention.json",
+    "sha256": "ee056c6ab66bfbe2ceec5a8ab982222f21a77bec417d99d77038421fa3fe73f6"
+  },
+  "process_feedback": {
+    "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/complete-root-process-feedback-v1.json",
+    "sha256": "275931ca094078384efd970adc1d01d3acb9f67ed5b4a1e60ed4ae49c7eb5863"
+  },
+  "source_counts": {
+    "original-a": {
+      "candidates": 8,
+      "controls": 2
+    },
+    "remaining-b1": {
+      "candidates": 4,
+      "controls": 2
+    },
+    "remaining-b2": {
+      "candidates": 4,
+      "controls": 2
+    }
+  },
+  "learner_exported": false,
+  "model_contacts_added": 0,
+  "official_scorer_contacts_added": 0,
+  "runtime_admission": false,
+  "scope": "All16 candidate numeric summaries and six controls across three qualified cohorts; prospective actor capsule and proposal admission remain separate."
+}

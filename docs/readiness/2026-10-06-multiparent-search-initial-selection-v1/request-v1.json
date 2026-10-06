@@ -1,0 +1,28 @@
+{
+  "schema": "saea-qualified-parent-selection-request-v1",
+  "status": "ROOT_REGISTERED",
+  "source_registration": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-complete-analysis-v1/successor-source-registration-v1.json",
+    "sha256": "282117de823e53401f81f1e7c02d7a4a115ac32cc91676650d044a0d70e7a0da"
+  },
+  "cohort_id": "original-a",
+  "selection_config": {
+    "schema": "saea-search-parent-selection-config-v1",
+    "frontier_capacity": 3,
+    "exploration_capacity": 1,
+    "selection_seed": 20261006,
+    "iteration": 1
+  },
+  "usage_counts": {
+    "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef": 0,
+    "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d": 0,
+    "32ded0981413c61c2b36a25f7311d7e2db89ad8b13767370240b6f5376c6ab3d": 0,
+    "71d71fc49f473a78827c0ad92ea292a8857572c83970f570f6751490765453e8": 0,
+    "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d": 0,
+    "19557dbb72089a88e4fb2ab3b37228d7c03140ee879e87fa48e9542ec346a2ac": 0,
+    "2ca6e39ee170f4bc74d317a22401280beee3ec4c294172a89f97b95e24e9a279": 0,
+    "b1b63127980bcbdfd2a8f303e5950539df17d99dcca5ea6bad10aeca633aa7cf": 0,
+    "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572": 0
+  },
+  "replicate_rule": "designated-control-then-registered-order"
+}

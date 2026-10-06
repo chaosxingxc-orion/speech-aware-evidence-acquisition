@@ -1,0 +1,42 @@
+{
+  "schema": "saea-prospective-algorithm-contrast-config-proof-v1",
+  "at_utc": "2026-10-06T23:24:45.527762+00:00",
+  "status": "PREPARED_NO_CONTACT_ADMISSION",
+  "basis": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "source_cohort_rule": "largest registered source cohort; retain every candidate identity in that cohort",
+  "configs": {
+    "fixed-parent": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "multi-parent": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    }
+  },
+  "derived_budgets": {
+    "fixed-parent": {
+      "candidate_trajectories": 160,
+      "control_trajectories": 40,
+      "family_trajectories": 200,
+      "generation_contacts_cap": 2600,
+      "fit_endpoints_cap": 10400
+    },
+    "multi-parent": {
+      "candidate_trajectories": 160,
+      "control_trajectories": 40,
+      "family_trajectories": 200,
+      "generation_contacts_cap": 2600,
+      "fit_endpoints_cap": 10400
+    }
+  },
+  "algorithm_factor": "configured fixed-parent continuation versus source-qualified bounded multi-parent selection",
+  "proposal_allocations_granted": false,
+  "runtime_admission": false,
+  "learner_exported": false,
+  "contacts_added": 0,
+  "preparation_note": "Initial host-Python import refused missing regex before any file creation or contact; used the registered speechrl environment."
+}

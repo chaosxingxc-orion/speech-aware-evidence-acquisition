@@ -1,5 +1,49 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete Update6 process projection prepared (2026-10-06)
+
+The original complete-process-feedback v2 prepare entry exited0 at23:23:31Z. All16
+candidate numeric summaries and six controls retain denominators, intervals, missing
+conditioning and separate raw-model/postprocessing transitions. Its source-bound
+[receipt](../receipts/continuation/2026-10-06-update6-complete-process-feedback-prepared.json)
+records zero new model/scorer contacts and no learner export. The original whole-trial
+qualification and root rejection are complete; neither analysis process remains live.
+The separately prepared initial parent-selection process may still be running; inspect
+its exact original handle/exit. New source-qualified parent planning is private and
+cannot change Update6 retention or allocate a proposal.
+
+The [next matched-size contrast](../readiness/2026-10-06-system-context-algorithm-contrast-n20-v1/README.md)
+has two validated immutable population configs, eachK8/N20/M4 plus seed/A/A:200
+trajectories per arm,400 total. Counts derive from the largest source cohort and the
+same config loader. These are preparation only; algorithms, analysis, actor capsule,
+reservation/response integration and actual admission remain pending. No GPU launch.
+
+
+## Update6 whole-trial qualification complete: reject update (2026-10-06)
+
+Original complete-trial entry exited0 at23:17:27Z. It requalified the exact historical
+parents, all three successor cohorts, root READs, unique scores and unchanged lineage.
+Registered strict-population-utility-sum is-56.15925390968045 before versus
+-66.71616742532431 after, delta-10.556913515643863. Root rejects the whole update;
+formal seed and Update2 active parents remain. Preserve16 positions including08/15
+no-change.22 scored members,440 trajectories (320 candidate/120 controls),2381 contacts.
+No stable business benefit or feedback-learning gain is established.
+
+[Whole report](../results/2026-10-06-slurp-update6-whole-population-retention.md) includes
+cohort-local business outcomes and references every complete strata/process/cost report.
+[Root decision](../receipts/continuation/2026-10-06-partitioned-update6-root-retention.json)
+binds the original qualification. The create-only complete-process-feedback v2 prepare
+entry is currently running from the already pinned plan; follow its exact original
+process/exit, never restart because observation expires. No actor export has occurred.
+
+Root separately registered [initial multi-parent selection](../readiness/2026-10-06-multiparent-search-initial-selection-v1/README.md)
+for future private algorithm planning over the largest qualified cohort (original-a),
+without mixing cohort scores. Initial usage is zero only because no earlier qualified
+selection record exists. That source-qualified adapter is running; it grants no old
+parent activation, new proposal allowance or runtime authority. Actual algorithm and
+reservation/input/response integration remain before any new candidate generation.
+
+
 ## Qualified proposal planning prepared without contacts (2026-10-06)
 
 [Configuration-to-source integration](../readiness/2026-10-06-qualified-parent-proposals-v1/README.md)

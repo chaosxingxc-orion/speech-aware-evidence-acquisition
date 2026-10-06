@@ -1,0 +1,47 @@
+{
+  "schema": "saea-partitioned-context-root-retention-v1",
+  "recorded_at_utc": "2026-10-06T23:19:08.815029+00:00",
+  "owner_authority": 227,
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/complete-trial-qualified-v1.json",
+    "sha256": "826b6ff8298ffde4941e356936a4f68cf19e70a7416a0c50618183f20cd05b25"
+  },
+  "criterion": "strict-population-utility-sum",
+  "utility_before": -56.15925390968045,
+  "utility_after": -66.71616742532431,
+  "utility_delta": -10.556913515643863,
+  "decision": "REJECT_WHOLE_UPDATE_RETAIN_BEFORE_POPULATION",
+  "formal_incumbent": "unchanged seed",
+  "active_search_population": "unchanged update2 parents",
+  "cohorts": {
+    "original-a": {
+      "before": -33.29178512555497,
+      "after": -30.8848801627011
+    },
+    "remaining-b1": {
+      "before": -14.50996521745102,
+      "after": -16.275857042840396
+    },
+    "remaining-b2": {
+      "before": -8.35750356667446,
+      "after": -19.555430219782814
+    }
+  },
+  "preserve_all_candidates": true,
+  "preserve_no_change_positions": [
+    "branch-08",
+    "branch-15"
+  ],
+  "optimizer_state_mutated": false,
+  "new_learner_export": false,
+  "new_runtime_admission": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "next": "Finish qualified aggregate/process history preparation. Prospectively register an explicitly named same-budget multi-parent search comparison; do not silently replace the current acceptance rule or spent proposals.",
+  "limits": [
+    "No stable business improvement or learning advantage established.",
+    "Before/after reused-input utilities are the registered search criterion, not causal template effects or a pooled F1 frontier.",
+    "Keep each cohort and its contemporaneous seed/A/A separate. Repeated no-change variation remains evidence.",
+    "Human review before8x400; other-carrier holds remain."
+  ]
+}
