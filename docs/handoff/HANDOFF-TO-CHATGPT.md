@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 process and whole-population join prepared (2026-10-06)
+
+The current GPU cohort remains in flight; no partial task quality was read.
+Prepared source-bound process and complete-trial helpers reuse the previous shared
+implementations with current paths only. See
+[process/trial verification](../receipts/continuation/2026-10-06-update5-process-trial-entry-prepared.json)
+and readiness/2026-10-06-partitioned-update5-aggregate-complete-analysis-v1/README.md.
+All75 tests and18 subtests pass. Actual process, whole-trial and feedback entries
+all returned WAIT75 before reference loading, quality read, source-join writing or
+learner export. This is expected incomplete-family waiting, not failure.
+
+After each exact root READ, the prepared process-complete-cohort-v2.py requalifies
+all members/sources before offline TRAIN diagnostics. After all configured cohorts,
+complete-trial-entry-v1.py registers the source join and evaluates the unchanged
+strict-population-utility-sum contract; complete-process-feedback-entry-v2.py then
+prepares root-only numeric joins. The readiness plans pin current sources and
+ordered recipe/read IDs. Do not silently replay an existing output or reinterpret
+private per-input diagnostics as actor input. The eventual aggregate learner view
+contains K records per observed complete population and retains rejected/no-change
+history. No automatic proposal, adoption, scaling or other-carrier release follows.
+
 ## Update5 complete-cohort analysis entry prepared (2026-10-06)
 
 The first scientific job remains the sole running experiment. Additive statistical

@@ -1,0 +1,87 @@
+{
+  "schema": "saea-update5-process-trial-entry-prepared-v1",
+  "at_utc": "2026-10-06T12:34:02.380513+00:00",
+  "status": "PREPARED_WAITING_FOR_COMPLETE_SOURCES",
+  "preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process-trial-entry-preparation-v1.json",
+    "sha256": "7d91d3c150abd26e6fe162a683e04a7610217b47c970a6130e063c534398110b"
+  },
+  "verification": [
+    {
+      "name": "process-source-tests-v1",
+      "expected_exit": 0,
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process-source-tests-v1.exit.json",
+        "sha256": "dffdfe20bad3fcd9ab1ee590a9135e8d5f6e7f3a1db31cd49a78c3647b4534cc"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process-source-tests-v1.stdout.log",
+        "sha256": "08b4165b5729fdb15a8540af2c6caa28deebb8e24a5234f5081958d556b0e1cd"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process-source-tests-v1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "process-premature-refusal-v1",
+      "expected_exit": 75,
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process-premature-refusal-v1.exit.json",
+        "sha256": "ca8b51c957b08e5c195ef3823768a9bde86a3ffb3624a1899beea904da46425f"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process-premature-refusal-v1.stdout.log",
+        "sha256": "9e133a4ace73bcd4ad1640246ee7d974e153710e988f9cf5e9341ddb2056551c"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process-premature-refusal-v1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "trial-premature-refusal-v1",
+      "expected_exit": 75,
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/trial-premature-refusal-v1.exit.json",
+        "sha256": "3ce0b5028a072af7301653099b59f548c1100b4a1f516f14da61e98b0536c72d"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/trial-premature-refusal-v1.stdout.log",
+        "sha256": "ee5472528842161735bb21eedee46761c669586c056cb69cc28c7598c5f8b692"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/trial-premature-refusal-v1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "feedback-premature-refusal-v1",
+      "expected_exit": 75,
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/feedback-premature-refusal-v1.exit.json",
+        "sha256": "cfc975d579e9fe79b916ddcfce35fb7aea2ff7ff4d0456d303a8555201ab3bbc"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/feedback-premature-refusal-v1.stdout.log",
+        "sha256": "a19a4001d8ffb1a10d26269c3febdebb6a97b1593e3fe3e0d905a06b0b830f0b"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/feedback-premature-refusal-v1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "tests_passed": 75,
+  "subtests_passed": 18,
+  "compatibility": "Seven thin helpers reuse the preceding tested shared process source gates, readers and trial evaluator. Only current coordination/readiness/launch-binding paths change. No new metric, reward or estimator; no historical acceptance change.",
+  "learned_unit": "One complete candidate template system evaluated on its cohort roster. Export K aggregate records only after all configured cohorts qualify and complete-population retention is evaluated.",
+  "scope": "Root-only process evidence retains audit rows privately. Learner receives the existing aggregate-template-records-v1 projection, never the private per-input join.",
+  "references_loaded": false,
+  "quality_read": false,
+  "root_read_signed": false,
+  "learner_exported": false,
+  "runtime_changed": false,
+  "model_contacts": 0,
+  "official_scorer_contacts": 0
+}

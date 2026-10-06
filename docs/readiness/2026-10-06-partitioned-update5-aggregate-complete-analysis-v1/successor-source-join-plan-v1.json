@@ -1,0 +1,51 @@
+{
+  "schema": "saea-prospective-complete-trial-source-plan-v1",
+  "status": "PREPARED_NOT_QUALIFIED",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "trial_contract": {
+    "relpath": "docs/readiness/2026-10-06-update4-aggregate-continuation-v1/trial-contract-v1.json",
+    "sha256": "4f37e1f7383340716a01536ce89b87409daef8fbf43598fedc023213a004091b"
+  },
+  "cohorts": [
+    {
+      "cohort_id": "original-a",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-scientific-preparation-v1-original-a/analysis-recipe-v1.json",
+        "sha256": "4e5cfe2752c3d331c9564cbe9e4f85d0696f34a1f75679d60f38ab1afb0ebfbb"
+      },
+      "required_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-ORIGINAL-A-READ-V1",
+      "expected_saved_family_relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-ORIGINAL-A-READ-V1/family.json",
+      "complete_read_required": true
+    },
+    {
+      "cohort_id": "remaining-b1",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-scientific-preparation-v1-remaining-b1/analysis-recipe-v1.json",
+        "sha256": "11cdcf72eeddbfe58976c2d6986d1fa45fd020bc43b7ffa1b9b2f91471ead389"
+      },
+      "required_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B1-READ-V1",
+      "expected_saved_family_relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B1-READ-V1/family.json",
+      "complete_read_required": true
+    },
+    {
+      "cohort_id": "remaining-b2",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-scientific-preparation-v1-remaining-b2/analysis-recipe-v1.json",
+        "sha256": "9829004fa8b7eb73f6979d98a79cffdb8212cba85d21fbdf129740dd57527570"
+      },
+      "required_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B2-READ-V1",
+      "expected_saved_family_relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B2-READ-V1/family.json",
+      "complete_read_required": true
+    }
+  ],
+  "requirement": "Bind every exact actual launch, frozen proof, complete family qualification, root READ and saved family before constructing the shared source registration. No partial retention or learner export.",
+  "source_join_reader": "analysis.abstract_population_sources.read_registered_population_sources",
+  "retention_reader": "rails.system_context_partitioned_trial.qualify_partitioned_context_trial",
+  "comparison": "Preserve registered strict-population utility sum and cohort-local paired comparisons. No pooled standardized frontier, node causal credit or stable benefit claim from reused N20.",
+  "new_model_contacts": 0,
+  "learner_exported": false,
+  "runtime_admission": false
+}

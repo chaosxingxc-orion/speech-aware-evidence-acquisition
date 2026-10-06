@@ -1,0 +1,54 @@
+{
+  "schema": "saea-prospective-cohort-process-analysis-v1",
+  "status": "PROSPECTIVE_ROOT_DIAGNOSTICS_ONLY",
+  "at_utc": "2026-10-06T12:32:34.351302+00:00",
+  "complete_trial_source_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "d369f9fe2e39f66f33aa80c190f8eb9cf7fe85c48c9fae1c6f471a60f7e4ff12"
+  },
+  "gold_split": "train",
+  "lock": {
+    "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+    "sha256": "3fd1b571b81adb46264339b6993b61bbeeebd33413edd761b9017572889a072c"
+  },
+  "train_metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/slurp/metadata/train.jsonl",
+    "sha256": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e"
+  },
+  "intent_support_specification": {
+    "schema": "saea-initial-intent-support-projection-v1",
+    "policy_id": "initial-perception-request-intent-value-id-suffix-v1",
+    "store_id": "intent-boundaries",
+    "value_id_prefix": "intent-boundary:"
+  },
+  "source_code": {
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/scripts/analysis/system_text_pilot_read.py": "2ca75f606a176e799572ef4dca6f6d003acc3a396238a0587324e149b5a3ce22",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process_source_gate_v1.py": "2bc28a4a3583a9b9e68b7ac25070448f3b6a3220b7e866e2b2720958e9fbbb2f",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py": "74708299dcd896ed087fb867a93d31e8a3d5120a17ac09109deec5b0a379a1d9",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/slurp_solver_stage_attribution.py": "a8085cdf1ef992519b75c9bb77a2d932c3425e54125d0a2f70c83bdc6b59942a",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/native_intent_support.py": "1b0aeb95066c96b5126faa1935007d810e594d3741b489798f8a810464eba323",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/review_findings.py": "b71b9d5b7595ab5d36805ea672ee37bcd5d3734c557e6f775e9a904e684509dc",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/native_episode_source.py": "62202302f15f9d461999549462f7264d24b96e01e6fb992605a3632f006aeb1f",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/native_episode_diagnostics.py": "1146a0b2bb377053aea326df23d68d1dca7686b7129fbbb4f50627cc1cb20f44",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/system_context_read.py": "1d54d89974ff535217b0a6cfac830e3e55a7945ceb3aef2e365bba690fc41cf6",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/process-complete-cohort-v2.py": "9bec298dcd784b6c68dda31ba91e921277a3c8533379226b84ce501140e6512a",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/diagnostic_pins_v1.py": "2931edf9ba768aa32500f143e18381ce8536e50185d25db12fca5da55e51ef7c"
+  },
+  "scope": "Each exact complete root-read cohort, keeping all members and missingness. No partial population optimizer export, selection or runtime change.",
+  "output": "Exclusive process-metrics-v1.json in each exact completed READ analysis directory.",
+  "metrics_contract": {
+    "relpath": "docs/readiness/2026-10-06-slurp-process-metrics-v1/README.md",
+    "sha256": "1e65a0f67bdde23fd276b913676d690b2b7105dbaee35c04074be96100f347b7"
+  },
+  "reporting_priority": [
+    "official business quality/reliability",
+    "support/review/repair/harm",
+    "latency/cost"
+  ],
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "predecessor": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/process-analysis-plan-v2.json",
+    "sha256": "3800966caf7ab5af623d893fa404a18c7822abf80761c3c232bd542d4fe3fd7f"
+  }
+}
