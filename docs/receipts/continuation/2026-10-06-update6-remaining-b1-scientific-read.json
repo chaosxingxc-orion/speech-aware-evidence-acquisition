@@ -1,0 +1,57 @@
+{
+  "schema": "saea-complete-cohort-root-review-receipt-v1",
+  "at_utc": "2026-10-06T22:14:35.644153+00:00",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B1-READ-V1",
+  "status": "COMPLETE_ROOT_REVIEW",
+  "root_report": {
+    "relpath": "docs/results/2026-10-06-update6-remaining-b1-complete-review.md",
+    "sha256": "86ea2f58e02d884a8510742be00610658ea7caeb915c995f846bcfd13497e1ad"
+  },
+  "root_review": {
+    "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b1-complete-root-review-v1.json",
+    "sha256": "48f0452b5c0eb86527b56b76e1e0a018fa2cd3de86ed86bbc9c7494d7e6a2ac1"
+  },
+  "source_pins": [
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B1-READ-V1/report.json",
+      "sha256": "548cd59d4396a93b1a6a1cac733198092e7b11fbfa5f2c9e34d5e2c7915e30ca"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B1-READ-V1/process-metrics-v1.json",
+      "sha256": "19d71fe408652ceba3db6ca7f2be365b3c060ffa27b4ee932b5f5997d346dfb3"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B1-READ-V1/business-process-cost-v1.json",
+      "sha256": "c63b4c45181e72651683ffc19b09d043a2b00a7a814f78216cad7a7c2ccd9926"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B1-READ-V1/paired-process-diagnostics-v1.json",
+      "sha256": "c5a181ac4529b64649f31e5c6e120f5b938e48971e4ac1851dad77989957deb1"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B1-READ-V1/timing-summary.json",
+      "sha256": "eac0bbba667f1342d47f3c379072e7b5958cbc71787a2f5ddcf98c07b7f6c282"
+    },
+    {
+      "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b1-flight-v1/native-owner-read-proof-v1.json",
+      "sha256": "253e437373773120b8cac95a41bbb78177f3da0ca7aa6b5ec3808489a088638a"
+    },
+    {
+      "relpath": "coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/owner-process-exit.json",
+      "sha256": "426420aa86f62feeb8596528c4d258359bd5a9c54e87ee303fda48a4b7a34efd"
+    }
+  ],
+  "trajectories": 120,
+  "model_contacts": 648,
+  "official_score_jobs": 6,
+  "failed_score_jobs": 0,
+  "monitor": {
+    "id": "slurp-update6-remaining-b1-monitor",
+    "status": "DELETED_AFTER_TERMINAL"
+  },
+  "stable_benefit_established": false,
+  "learner_exported": false,
+  "whole_trial_selected": false,
+  "next_cohort": "remaining-b2",
+  "next_dispatch_requires_frozen_live_checks": true
+}

@@ -1,5 +1,31 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 remaining-b1 complete; remaining-b2 admitted pending frozen/live checks (2026-10-06)
+
+All six members finalized20 rows each, verified seals, one successful official score
+each and zero failed jobs.648 model contacts; no scoring replay. Independent native
+owner capture exit0 and terminal process checks passed; exact remaining-b1 READ was
+countersigned through the new capture prerequisite. Root business/process/timing
+and nine paired process contrasts completed. The bound15minute monitor is deleted.
+
+[Complete review](../results/2026-10-06-update6-remaining-b1-complete-review.md):
+seed/AA F1 .658436/.635177; candidates09-12 .506396/.531118/.546228/.578949.
+All reliable completion1.0; no candidate improves F1 against either control.
+Candidate10 intent.75 versus.70 controls does not offset its lower F1. Candidate11
+alarms on9/9 known entity-correct drafts (one unknown); alarm is not semantic criticism
+or full-task correctness. Candidate raw model revisions show zero full-answer repairs,
+with one harm each11/12. No stable benefit, formal adoption or partial learner export.
+Keep seed formal incumbent, Update2 active parents and whole-trial acceptance unchanged.
+
+Root reviewed the complete business/process evidence and idle boundary (Windows22.09GiB,
+no STOP/flight/generation/scoring/preprocessing, service healthy). Configured observe-only
+maintenance performed no cache/host change. Remaining-b2 registration was admitted after
+this review; six fresh frozen checks, native capture registration and live gates must
+pass before Windows launch. This completes the existing16-position N20 trial; no new
+proposal, scale or algorithm change. Source receipts and complete root review are in
+coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b1-*
+and docs/receipts/continuation/2026-10-06-update6-remaining-b1-scientific-read.json.
+
 ## Measurement prerequisite for the next algorithm contrast (2026-10-06)
 
 [Prospective note](../readiness/2026-10-06-system-evolution-algorithm-roadmap-v1/measurement-prerequisite.md)
