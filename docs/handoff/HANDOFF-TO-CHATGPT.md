@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Process-aware update4 proposer dispatched (2026-10-06)
+
+One isolated GPT-6.1 Sol/high actor, /root/partitioned_template_update4_sol, is
+dispatched against the pinned allowlisted process-aware capsule. All configured16
+positions were prospectively reserved as one semantic opportunity. Preserve its
+original output without compiler-guided repair/replacement. No response completion
+or gain is claimed yet. The exact precontact admission is
+docs/receipts/continuation/2026-10-06-partitioned-update4-process-proposer-admission.json.
+
+The shared successor trial now resolves the original active-parent projection for
+v2 packets and rechecks both parent authority and continuation evidence after
+measurement.74 tests pass,100percent statement/branch coverage; no GPU/scorer
+contacts. The update4 runtime config is HELD pending original response, compilation,
+trial contract, capacity and structural proof. Preserve exact historical cohorts
+and controls, fixed assets and the human-before8x400 boundary.
+
 ## Process-aware learning packet complete (2026-10-06)
 
 [The new offline preparation](../receipts/continuation/2026-10-06-update4-process-preparation-complete.json)

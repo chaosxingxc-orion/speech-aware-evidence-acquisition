@@ -1,0 +1,32 @@
+{
+  "schema": "saea-process-continuation-trial-prepared-v1",
+  "at_utc": "2026-10-06T01:17:55.642051+00:00",
+  "change": "Resolve v2 active-parent evaluation through the immutable original v1 parent projection, not the v2 continuation registration or rejected historical policy.",
+  "validation": {
+    "test_first_failure": "KeyError: projection at the old trial entry for a real v2 prepared packet.",
+    "tests_passed": 74,
+    "module_statement_branch_coverage_percent": 100,
+    "engineering_base": "PASS",
+    "diff": "PASS"
+  },
+  "negative_proofs": [
+    "Reject changed original source qualification during measurement.",
+    "Reject changed parent projection registration.",
+    "Reject changed continuation evidence.",
+    "Retain every existing complete-family, score, ancestry and immutable response requirement."
+  ],
+  "proposer": {
+    "task": "/root/partitioned_template_update4_sol",
+    "model": "gpt-6.1-sol",
+    "fork_turns": "none",
+    "status": "DISPATCHED",
+    "reservation_batch": "complete-update4-process-history-v2"
+  },
+  "runtime_population": {
+    "configuration": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "status": "HELD",
+    "interpretation": "Cohorts, ordered inputs, K values, roles, sampling and limits copied from the complete prior configured trial. No hardcoded runtime population. Bind response and trial contract before preparation."
+  },
+  "new_runtime_admission": false,
+  "new_model_scorer_contacts_by_test": 0
+}

@@ -16,7 +16,14 @@ from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyErr
 
 @pytest.fixture
 def continuation(ready):
-    s=ready; s.parent=prepare(s)
+    s=ready
+    for tag, family in s.joined['private_families'].items():
+        _, recipe, reg, protocol, _, _, _ = family
+        recipe['run_ids'] = {'read': tag+'-old-read'}
+        protocol.update(sampling=s.cfg['sampling'], frozen_reference={'sha256':'a'*64})
+        for cid, binding in reg['member_bindings'].items():
+            binding.update(run_id=tag+'-'+cid, attempt_id=tag+'-attempt-'+cid)
+    s.parent=prepare(s)
     source_pin=pin(s.root,"history-sources.json",{"projection_config":s.parent["source_population"]})
     s.history={'schema':'saea-rejected-context-learning-history-v1',
         'active_parent_bundle_ids':{cid:p['bundle_id'] for cid,p in s.parent['policies'].items()},

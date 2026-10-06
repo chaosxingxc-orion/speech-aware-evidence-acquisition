@@ -78,10 +78,16 @@ def qualify_partitioned_context_trial(archive, *, input_sha256, contract_pin, re
     require(cfg['cohorts']==oldcfg['cohorts'] and cfg['sampling']==oldcfg['sampling']
             and cfg['nodes']==oldcfg['nodes'] and cfg['execution']==oldcfg['execution'],
             'successor must retain every configured input, position and execution envelope')
-    initial=json.loads(_read_pin(packet['registration'],root))
+    # A continuation binds additional rejected history/process evidence. Its
+    # active-parent observation still belongs to the original registered projection.
+    parent_packet = packet
+    if packet['schema'] == 'saea-partitioned-context-optimizer-input-v2':
+        parent_packet, _, _ = learning._population_update_input(archive, packet['parent_input_sha256'])
+        require(parent_packet['schema'] == SCHEMA, 'original v1 parent projection required')
+    initial=json.loads(_read_pin(parent_packet['registration'],root))
     projected=project_registered_population(projection_pin=initial['projection'],repo_root=root,
                                           data_root=data,policy_archive=archive)
-    require(content_hash(projected['private_custody'])==packet['source_commitment']
+    require(content_hash(projected['private_custody'])==parent_packet['source_commitment']
             and projected['learner_view']==packet['learner_view'],'original complete feedback changed')
     before=read_registered_population_sources(source_registration_pin=projected['private_custody']['source_join'],
                                               repo_root=root,data_root=data)
@@ -138,6 +144,10 @@ def qualify_partitioned_context_trial(archive, *, input_sha256, contract_pin, re
         fresh=read_registered_population_sources(source_registration_pin=source_pin,repo_root=root,data_root=data)
         require(_source_identity(fresh)==_source_identity(original_join),
                 'source qualification or READ changed during measurement')
+    require(json.loads(_read_pin(parent_packet['registration'], root)) == initial,
+            'active-parent projection registration changed')
+    current, _, _ = learning._population_update_input(archive, input_sha256)
+    require(current == packet, 'optimizer continuation or active-parent evidence changed')
     total_before,total_after=map(math.fsum,totals)
     return {'schema':'saea-partitioned-context-qualified-trial-v1','contract':contract_pin,
         'trial_sources':request['source_registration_pin'],'input_sha256':input_sha256,
