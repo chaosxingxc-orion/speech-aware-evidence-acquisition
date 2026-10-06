@@ -234,3 +234,18 @@ def test_optional_actual_intent_supply_keeps_missing_stage_unknown(monkeypatch):
 def test_support_adapter_refuses_undeclared_configuration():
     from speech_aware_evidence_acquisition.analysis.slurp_process_metrics import _intent_support
     with pytest.raises(ValueError): _intent_support(None, (), {})
+
+
+def test_process_metrics_separates_model_revision_from_postprocessing(monkeypatch):
+    from test_slurp_solver_stage_attribution import _normalised_source
+    source, ref = _normalised_source(monkeypatch)
+    report = build_slurp_process_metrics(source, reference_records=(ref,),
+        official_final_rows=(_saved_row(ref, source.output_rows[ref.sample_id]["text"]),),
+        reference_binding_sha256="d"*64, official_score_result_sha256="e"*64,
+        legal_slot_types=("city",))
+    stages = report["delivery_stages"]
+    assert stages["model_revision"]["entity"]["wrong_to_correct"] == 0
+    assert stages["postprocessing"]["entity"]["wrong_to_correct"] == 1
+    assert stages["postprocessing_repair_rate"]["value"] == 1
+    assert stages["postprocessing_harm_rate"]["value"] is None
+    assert stages["rows"][0]["model_revision_completed"] is False

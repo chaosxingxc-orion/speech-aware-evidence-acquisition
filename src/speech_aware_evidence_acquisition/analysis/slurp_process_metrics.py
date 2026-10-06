@@ -195,6 +195,7 @@ def build_slurp_process_metrics(source, *, reference_records, official_final_row
         custody.append({"sample_id": ref.sample_id, **scored["source"],
                         "first_draft_review": review["source"] if review else None})
     report = aggregate_process_metrics(rows)
+    report["delivery_stages"] = _delivery_stages(stage["samples"])
     report.update(source=stage["source"], inventory_sha256=audit["inventory_sha256"],
                   rows=rows, custody=custody,
                   recall_status="unavailable-until-actual-source-projection",
@@ -236,4 +237,38 @@ def _intent_support(source, references, configuration):
         "raw_retrieval_pool_status": "unavailable",
         "entity_type_value_support_status": "requires-separately-verified-actual-content-projection",
         "samples": rows,
+    }
+
+
+def _delivery_stages(samples):
+    """Separate descriptive raw-model transitions from deterministic postprocessing."""
+    model_rows, post_rows, rows = [], [], []
+    for sample in samples:
+        metrics = sample["metrics"]
+        draft, raw, final = (metrics[key] for key in ("draft", "pre_delivery", "final"))
+        def correctness(value, axis):
+            if value is None or (axis == "entity" and not value["parsed"]):
+                return None
+            return bool(value[axis+"_exact"]) if value["parsed"] else False
+        model, post = {}, {}
+        for axis in ("entity", "full"):
+            model["draft_"+axis+"_correct"] = correctness(draft, axis)
+            model["final_"+axis+"_correct"] = correctness(raw, axis)
+            post["draft_"+axis+"_correct"] = correctness(raw, axis)
+            post["final_"+axis+"_correct"] = correctness(final, axis)
+        model_rows.append(model)
+        post_rows.append(post)
+        rows.append({"sample_id": sample["sample_id"],
+                     "model_revision_completed": sample["revision"]["completed_solver_revision"],
+                     "model": model, "postprocessing": post})
+    return {
+        "model_revision": {axis: _transitions(model_rows, axis) for axis in ("entity", "full")},
+        "postprocessing": {axis: _transitions(post_rows, axis) for axis in ("entity", "full")},
+        "postprocessing_repair_rate": rate(r["final_entity_correct"] for r in post_rows
+                                            if r["draft_entity_correct"] is False),
+        "postprocessing_harm_rate": rate(None if r["final_entity_correct"] is None else
+                                          not r["final_entity_correct"] for r in post_rows
+                                          if r["draft_entity_correct"] is True),
+        "rows": rows,
+        "semantics": "Initial raw Solver to selected raw Solver, then selected raw Solver to final delivery; associations, not causal credit. Unparsed entity states stay unknown.",
     }

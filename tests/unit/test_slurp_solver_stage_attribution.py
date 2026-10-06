@@ -575,3 +575,56 @@ def test_malformed_roster_members_raise_attribution_error(references, official):
             reference_binding_sha256="d" * 64,
             official_score_result_sha256="e" * 64,
         )
+
+
+def _normalised_source(monkeypatch):
+    from speech_aware_evidence_acquisition.rails import slurp_projection_v3 as v3
+    from speech_aware_evidence_acquisition.rails.delivery_normalisers import SlurpProjectionV3DeliveryNormaliser
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import legal_intent_inventory
+    monkeypatch.setattr(v3, "_default_legal_intent_inventory", lambda: legal_intent_inventory({"weather": ("query",)}))
+    sid = "slurp:devel:normalised"
+    raw = _answer("weather", "query", ("city", "PARIS"))
+    result = SlurpProjectionV3DeliveryNormaliser()(raw)
+    assert result.text != raw
+    source = _source({sid: [raw]})
+    phase = source.phase_results[sid]
+    phase["native_episode_receipt"]["deliver_normaliser"] = dict(result.receipt)
+    phase["final_response_text"] = result.text
+    phase["final_response_sha256"] = _sha(result.text)
+    source.output_rows[sid].update(text=result.text, carrier_lock_key="slurp")
+    return source, _reference(sid)
+
+
+def test_registered_postprocessing_has_separate_custody_and_effect(monkeypatch):
+    source, ref = _normalised_source(monkeypatch)
+    report = build_slurp_solver_stage_attribution(
+        source, reference_records=[ref],
+        official_final_rows=[_saved_row(ref, source.output_rows[ref.sample_id]["text"])],
+        reference_binding_sha256="d" * 64, official_score_result_sha256="e" * 64,
+    )
+    row = report["samples"][0]
+    assert row["revision"]["completed_solver_revision"] is False
+    assert row["metrics"]["pre_delivery"]["entity_exact"] == 0
+    assert row["metrics"]["final"]["entity_exact"] == 1
+    assert row["postprocessing_transitions"]["entity_exact"] == "save"
+    assert row["source"]["final_delivery"]["normalisation"]["normaliser_id"] == "saea-deliver-normalise-v3"
+
+
+@pytest.mark.parametrize("mutation", ["missing", "input", "output", "carrier", "rule", "text"])
+def test_postprocessing_does_not_relax_custody(monkeypatch, mutation):
+    source, ref = _normalised_source(monkeypatch)
+    episode = source.phase_results[ref.sample_id]["native_episode_receipt"]
+    block = episode["deliver_normaliser"]
+    if mutation == "missing":
+        del episode["deliver_normaliser"]
+    elif mutation == "text":
+        source.output_rows[ref.sample_id]["text"] = _answer("weather", "query")
+    else:
+        field = {"input": "input_sha256", "output": "output_sha256", "carrier": "carrier_lock_key", "rule": "normaliser_id"}[mutation]
+        block[field] = "0" * 64
+    with pytest.raises(SlurpSolverStageAttributionError):
+        build_slurp_solver_stage_attribution(
+            source, reference_records=[ref],
+            official_final_rows=[_saved_row(ref, source.output_rows[ref.sample_id]["text"])],
+            reference_binding_sha256="d" * 64, official_score_result_sha256="e" * 64,
+        )

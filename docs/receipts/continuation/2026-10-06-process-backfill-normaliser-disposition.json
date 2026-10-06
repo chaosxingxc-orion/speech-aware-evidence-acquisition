@@ -1,0 +1,26 @@
+{
+  "schema": "saea-root-offline-diagnostic-disposition-v1",
+  "at_utc": "2026-10-06T00:33:23.627704+00:00",
+  "authority": "owner227 bounded engineering and root incident disposition",
+  "original_worker": "/home/chao/saea-worktrees/codex-process-metrics-v1",
+  "original_commit": "7f80d2f98100cd405fade516e997538e9cfefb2d",
+  "original_exit": "2026-10-06T00:25:50.138638+00:00",
+  "exit_code": 1,
+  "root_cause": "Legacy Solver-stage attribution required raw selected response bytes to equal final delivered bytes, ignoring the registered deterministic delivery normaliser already verified by shared source custody.",
+  "evidence": "Four of twenty first-member rows differ at raw/delivery; all four recorded normaliser input/output hashes and final contact identities agree. No task text or quality inference was needed.",
+  "correction": "Reuse shared I7n normalisation verifier; retain strict raw equality without a normaliser; separately report raw model and postprocessing transitions.",
+  "verification": {
+    "tests": 189,
+    "process_module_coverage_percent": 100,
+    "stage_module_branch_inclusive_coverage_percent": 84,
+    "combined_coverage_percent": 91,
+    "tests_first_failure_observed": true
+  },
+  "disposition": "Exactly one complete offline backfill continuation in a new frozen worker using the unchanged registered reader, scope and output destination with separate capture. Preserve all failed bytes. Any further refusal stops for diagnosis.",
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "runtime_changes": false,
+  "learner_exported": false
+}

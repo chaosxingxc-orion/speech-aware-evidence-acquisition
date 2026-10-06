@@ -112,3 +112,14 @@ is root-only; the statistical reducer does not grant scientific READ authority.
 These steps preserve fixed assets, immutable experiment config, temperature/seed,
 complete-family READ, existing model/score custody, other-carrier holds and the human
 review boundary before 8x400.
+
+## Delivery normalisation compatibility correction
+
+The first complete backfill stopped before any report publication because the
+legacy draft/final attribution helper required raw response bytes to equal delivery.
+Reuse the existing I7n verifier to replay the registered deterministic normaliser
+against the pinned response and exact final bytes. Missing or inconsistent receipts
+still fail closed. Preserve both raw and delivered hashes. Report initial raw Solver
+versus selected raw Solver separately from selected raw Solver versus final delivery.
+These transitions are descriptive and do not establish causal Reviewer contribution.
+All original task outputs, scores and failed diagnostic logs remain unchanged.

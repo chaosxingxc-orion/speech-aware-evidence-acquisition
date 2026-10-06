@@ -254,8 +254,6 @@ def _delivery_selection(
         raise SlurpSolverStageAttributionError(str(error)) from error
     if (
         selected.status != "completed"
-        or selected.response_text != final_text
-        or selected.response_text_sha256 != hashlib.sha256(final_text.encode()).hexdigest()
         or selected.request_id != delivery.final_contact.get("request_id")
     ):
         raise SlurpSolverStageAttributionError(
@@ -263,6 +261,27 @@ def _delivery_selection(
         )
     source_json = selected.source_json()
     source_json["delivery_kind"] = delivery.kind
+    normalisation = episode.get("deliver_normaliser")
+    if normalisation is not None:
+        from ..core.bundle import BundleError
+        from ..core.bundle.outputs import _verify_delivery_normalisation
+
+        block = _mapping(normalisation, "delivery normalisation")
+        response = _mapping(source.bundle.trace_records.get(
+            f"{selected.request_id}/response"), "delivered response")
+        try:
+            _verify_delivery_normalisation(output, block, response)
+        except BundleError as error:
+            raise SlurpSolverStageAttributionError(
+                f"delivery normalisation custody failed: {error}"
+            ) from error
+        source_json["normalisation"] = {key: block[key] for key in (
+            "normaliser_id", "carrier_lock_key", "input_sha256", "output_sha256")}
+    elif (selected.response_text != final_text or
+          selected.response_text_sha256 != hashlib.sha256(final_text.encode()).hexdigest()):
+        raise SlurpSolverStageAttributionError(
+            "delivered Solver selection differs from shared delivery semantics")
+    source_json["delivered_text_sha256"] = hashlib.sha256(final_text.encode()).hexdigest()
     return final_text, selected, source_json
 
 
@@ -329,6 +348,8 @@ def build_slurp_solver_stage_attribution(
         final_text, delivered, final_source = _delivery_selection(
             source, sample_id, episode, visits
         )
+        pre_delivery_metrics = (None if delivered is None else
+                                _diagnostic_score(reference, str(delivered.response_text)))
         final_metrics = _diagnostic_score(reference, final_text)
         _validate_saved_final(sample_id, saved, final_metrics)
         draft_metrics = (
@@ -375,7 +396,13 @@ def build_slurp_solver_stage_attribution(
                     "delivered_solver_revision": delivered_solver_revision,
                     "response_changed": response_changed,
                 },
-                "metrics": {"draft": draft_metrics, "final": final_metrics},
+                "metrics": {"draft": draft_metrics, "final": final_metrics,
+                            "pre_delivery": pre_delivery_metrics},
+                "postprocessing_transitions": {
+                    field: _transition(None if pre_delivery_metrics is None else
+                                       int(pre_delivery_metrics[field]), int(final_metrics[field]))
+                    for field in ("intent_exact", "entity_exact", "full_exact")
+                },
                 "transitions": transitions,
             }
         )

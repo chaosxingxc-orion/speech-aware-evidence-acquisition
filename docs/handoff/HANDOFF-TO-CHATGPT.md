@@ -1,5 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Process diagnostic compatibility disposition (2026-10-06)
+
+The original offline backfill PID73510/session40562 exited1 at00:25:50Z;
+its running snapshot below is historical. All family qualification passed;
+no complete diagnostic output was created. The failure is the legacy raw-versus-
+normalised delivery equality check, not a task or official scoring failure.
+[Root disposition](../receipts/continuation/2026-10-06-process-backfill-normaliser-disposition.json)
+preserves the worker/logs and permits one full offline continuation from a newly
+frozen corrected worker. Shared normaliser custody is reused, with separate raw
+model and postprocessing transition diagnostics.189 tests pass. No model/scorer
+contacts, policy adoption, learner export or new GPU admission.
+
+
 ## Complete process metric backfill is running
 
 [One registered offline reader](../receipts/continuation/2026-10-06-slurp-process-metrics-backfill-started.json)
