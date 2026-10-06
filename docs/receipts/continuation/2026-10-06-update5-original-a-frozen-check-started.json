@@ -1,0 +1,18 @@
+{
+  "at_utc": "2026-10-06T12:16:20.950867+00:00",
+  "cohort": "original-a",
+  "commit": "2e26372dc5e25245a68c4c2df8cff2a54d350ea2",
+  "model_contacts": 0,
+  "next": "Inspect the original exit.json and complete ordered frozen-check-v1.json. Never duplicate a live checker or continue after a failed member. On complete success finalize the prepared Windows registration, validate current service/process/memory gates, launch separately and create a15-minute script monitor.",
+  "original_start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/original-a-flight-v1/started-v1.json",
+    "sha256": "8e051b73219ec392f37e062ef5cab40f0430a0cef483541edb3288b4d73e82c6"
+  },
+  "pid": 173619,
+  "runtime_dispatched": false,
+  "schema": "saea-scientific-cohort-frozen-check-started-v1",
+  "scorer_contacts": 0,
+  "start_ticks": "61538611",
+  "status": "RUNNING_MODEL_FREE_FROZEN_CHECK",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-original-a-scientific-v1"
+}

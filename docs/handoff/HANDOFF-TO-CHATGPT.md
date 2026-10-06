@@ -1,5 +1,25 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 first scientific worker frozen; checks running (2026-10-06)
+
+All prepared source and historical metadata correction are integrated at
+2e26372dc5e25245a68c4c2df8cff2a54d350ea2. A clean detached first-cohort worker is frozen at
+/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-original-a-scientific-v1.
+The model-free all-member checker started 2026-10-06T12:15:31.329399+00:00; PID173619,
+start_ticks61538611 was verified live. See
+[frozen-check start](../receipts/continuation/2026-10-06-update5-original-a-frozen-check-started.json).
+
+Observe the original coordination/partitioned-update5-aggregate-scientific-preparation-v1/
+original-a-flight-v1/exit.json and complete frozen-check-v1.json; do not duplicate a
+live process or infer termination from observation timeout. Verify all configured
+seed/A/A/candidate members and original gate output hashes. On complete success,
+run the prepared finalizer in partitioned-update5-aggregate-original-a-scientific-v1
+against this exact identity, then separately revalidate live startup conditions and
+launch the Windows-owned scientific job. Create a15-minute script-only monitor
+after actual launch and delete at verified terminal. No GPU job or READ is active.
+Keep the unchanged20GiB startup/8GiB running policy, fixed existing20-input roster,
+all original candidates, complete-cohort scoring and complete-population retention.
+
 ## Historical label findings resolved without changing frozen fragments (2026-10-06)
 
 The two old tokenizer-capacity cells now have an exact hash-pinned catalogue
