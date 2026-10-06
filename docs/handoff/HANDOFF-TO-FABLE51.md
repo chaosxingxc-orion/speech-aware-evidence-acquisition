@@ -1,5 +1,19 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 structural registration complete; freeze next (2026-10-06)
+
+All16 configured original structural members completed model-free registration at
+10:54:22Z. The original registrar exited0 and is absent. Root verified ordered
+member identities, configured64 rows /832 generation cap /3328 actual-FIT endpoint
+cap, plan/recipe/supply hashes, and absence of all prospective attempts. No GPU
+or scorer contact was added. See [registration completion](../receipts/continuation/2026-10-06-update5-structural-registration-complete.json).
+
+Next freeze the integrated source, run the prepared durable run-frozen-check-v1.py
+with exact worker/commit, then finalize the Windows structural registration only
+if EVERY member passes. No structural dispatch or scientific N20 admission yet.
+The old capacity monitor is deleted; create a new15-minute monitor only after
+an actual separate structural launch. Preserve original frozen capacity bytes.
+
 ## Update5 capacity complete; structural registration running (2026-10-06)
 
 The entire configured16-member nongenerative capacity family passed root review:
