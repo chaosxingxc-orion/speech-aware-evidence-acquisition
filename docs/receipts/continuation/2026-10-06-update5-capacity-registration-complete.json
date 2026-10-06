@@ -1,0 +1,32 @@
+{
+  "schema": "saea-capacity-registration-root-completion-v1",
+  "at_utc": "2026-10-06T10:10:13.950907+00:00",
+  "status": "COMPLETE_MODEL_FREE_REGISTRATION",
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-started-v1.json",
+    "sha256": "b7956dba5f1637cef491b22bd9ca50912f2a59e51661be45e9160e73c5df45d1"
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-v1.exit.json",
+    "sha256": "d1e6df795d37dae9fc490e757722b1a33fc91af550e5d072128f8b66ac6a57a3"
+  },
+  "registered_members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/registered-capacity-members-v1.json",
+    "sha256": "c455c3540502e303b9d591dba98cea12e0f60c2b2d31d58adc37cc2af1129c43"
+  },
+  "root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+    "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+  },
+  "population": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "members": 16,
+  "tokenizer_endpoint_cap_total": 4752,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "contacts_added": 0,
+  "runtime_dispatched": false,
+  "verification": "Exact configured member order, successful original exits, plan/recipe hashes, per-member budgets, nongenerative stages and absence of runs/attempts verified. Actual frozen/live checks remain required."
+}

@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 capacity registration complete; freeze next (2026-10-06)
+
+All16 configured capacity members registered with original exit0 and no contacts.
+Root verified exact ordered membership, plan/recipe hashes, budgets, prompt-fit-only
+stages and absence of attempts/runs. The total tokenizer cap is4752; generation
+and scorer contacts remain zero. See [registration completion](../receipts/continuation/2026-10-06-update5-capacity-registration-complete.json).
+
+Serially integrate this complete registration and freeze a clean
+/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-capacity-v1 checkout.
+Use the prepared run-frozen-check-v1.py under
+coordination/partitioned-update5-aggregate-capacity-owner227-v1 with the exact
+SAEA_EXPECTED_COMMIT. It captures frozen-check-started-v1.json,
+frozen-check-v1.stdout.log, frozen-check-v1.stderr.log and frozen-check-v1.exit.json;
+the successful checker publishes frozen-check-v1.json. Do not duplicate a live
+checker. Only after complete verified frozen checks may the prepared finalizer
+bind the new mailbox registration. Fresh live gates and Windows-owned launch
+remain pending; no GPU job or heartbeat is active. All structural/scientific
+members remain held and no business improvement is established.
+
 ## Update5 capacity registration is running (2026-10-06)
 
 All16 engineering supplies are complete and serially integrated at9a063d0f7.

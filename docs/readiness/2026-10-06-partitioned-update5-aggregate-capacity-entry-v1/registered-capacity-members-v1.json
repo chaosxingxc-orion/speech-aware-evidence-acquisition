@@ -1,0 +1,418 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-01-capacity-fit-plan-registered-v1.json",
+      "sha256": "0d796d578882621b9482a448a90021534f9cb4241fa340a35ee88804e1afc909"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-01-capacity-analysis-recipe-v1.json",
+      "sha256": "b38f6f85889412b94e3c2a5877ae1eadc0051aebd96c0699607bbce144f79305"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-CAPACITY-FIT-V1",
+    "system_id": "branch-01"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-02-capacity-fit-plan-registered-v1.json",
+      "sha256": "6fb409e9bbfaaf9c6f66f272be0cc9361683806e79a606d1309c7b2da2381d1c"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-02-capacity-analysis-recipe-v1.json",
+      "sha256": "594bed1905acc19fcc7a46c06fbd34df6c1aa4d71544dfca038d5336754ef21b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-CAPACITY-FIT-V1",
+    "system_id": "branch-02"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-03-capacity-fit-plan-registered-v1.json",
+      "sha256": "b281967d745ff889adf071820ed464d6744b7f0ea2c7774de0159a82acd729d7"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-03-capacity-analysis-recipe-v1.json",
+      "sha256": "0e9ad65e53618861f3b33629ace45b06eea4c20ea7eb4a9f5e27df32a643d62e"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-CAPACITY-FIT-V1",
+    "system_id": "branch-03"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-04-capacity-fit-plan-registered-v1.json",
+      "sha256": "07b85ad7d85826a32ad86d7b4a94e74c97c3b9c9eff2531e0543e074cacc8d81"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-04-capacity-analysis-recipe-v1.json",
+      "sha256": "db3b122a005dd76f9f3e08e323ed93a03ea957738b49fb189a533a53332aef46"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-CAPACITY-FIT-V1",
+    "system_id": "branch-04"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-05-capacity-fit-plan-registered-v1.json",
+      "sha256": "43b9e2c7d8b01deb64ce9a9497de29043624927eb6d011c3c937793434f7b96e"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-05-capacity-analysis-recipe-v1.json",
+      "sha256": "1af6eaf4e47618eeb6bee292838af2daef31053c431c713858911ad2f8e2aaf9"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-CAPACITY-FIT-V1",
+    "system_id": "branch-05"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-06-capacity-fit-plan-registered-v1.json",
+      "sha256": "c78b90cff230260a20a1a203c02709952e16f621cd749a8576c87b480a466843"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-06-capacity-analysis-recipe-v1.json",
+      "sha256": "9ff316bbc20a25d7d7ed99436f9f830ef105c164b4642aa79918501e3c881351"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-CAPACITY-FIT-V1",
+    "system_id": "branch-06"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-07-capacity-fit-plan-registered-v1.json",
+      "sha256": "99d36ff4a85d2eb6c8163a38bdb408694d19366f3eb130765399d03e3b025bfd"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-07-capacity-analysis-recipe-v1.json",
+      "sha256": "80f00872358ea111c3a43eaa913d403b40f585a29ecd81b25dd4ce634d07dcc4"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-CAPACITY-FIT-V1",
+    "system_id": "branch-07"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-08-capacity-fit-plan-registered-v1.json",
+      "sha256": "d08023f248da4ce58e22afe2f4a7d1f81129eb9f3f168cb1c783e813efc23f09"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-08-capacity-analysis-recipe-v1.json",
+      "sha256": "393af1ec78eb7bb25a9355cb16f08d939f5be21d907f1664d40253715dae11fa"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-CAPACITY-FIT-V1",
+    "system_id": "branch-08"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-09-capacity-fit-plan-registered-v1.json",
+      "sha256": "e7eb1fdaba8c601056363078917887ea4834a00c6a5817e7b7462ecf19ab73e6"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-09-capacity-analysis-recipe-v1.json",
+      "sha256": "71338346cc7c81599638975d43b77ef44094491b765a5afb4108762c8a0e4ffe"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-CAPACITY-FIT-V1",
+    "system_id": "branch-09"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-10-capacity-fit-plan-registered-v1.json",
+      "sha256": "cfba9263eca60c23ff5e3645117c66cfd385f6c7dd7391f8f4b9845d94d87e1a"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-10-capacity-analysis-recipe-v1.json",
+      "sha256": "f38584a4c9d80e211dae447b18ce3f93215aa7fdbc5865937e1242af5387178f"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-CAPACITY-FIT-V1",
+    "system_id": "branch-10"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-11-capacity-fit-plan-registered-v1.json",
+      "sha256": "e697a44b5444c18b45d8ecc70e17eb6719d57dae5d6b3fc8131aab9301b12cfb"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-11-capacity-analysis-recipe-v1.json",
+      "sha256": "031fd2a878aa0b8a94c549c763798c9142beb9aab9532874f0394a9544ba4bf4"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-CAPACITY-FIT-V1",
+    "system_id": "branch-11"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-12-capacity-fit-plan-registered-v1.json",
+      "sha256": "4530784de5e58cc8c45a107a8a52f1a062feac73a6d22b12fcecfd4470801b33"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-12-capacity-analysis-recipe-v1.json",
+      "sha256": "3990ffca6d130168c0b7d19934082b1eae02ab6fc0548d72dd86ec851a15f8a6"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-CAPACITY-FIT-V1",
+    "system_id": "branch-12"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-13-capacity-fit-plan-registered-v1.json",
+      "sha256": "66f8ed238792a149ea7e854ea83fd853228572997626e15eb1a043cd8e8f14e1"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-13-capacity-analysis-recipe-v1.json",
+      "sha256": "c3fe0c556994b75051240ebc2d22f0313a048effe9a081cea30caab45716cbc0"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-CAPACITY-FIT-V1",
+    "system_id": "branch-13"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-14-capacity-fit-plan-registered-v1.json",
+      "sha256": "46049681e9a47e0112af67f4d445a7b6dbacf49582d855186ad367c2fc2071f7"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-14-capacity-analysis-recipe-v1.json",
+      "sha256": "3e007891a70ed05b7c1c2679fda7a2f80a13f7f3df1a5d8c912026884a8c8a31"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-CAPACITY-FIT-V1",
+    "system_id": "branch-14"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-15-capacity-fit-plan-registered-v1.json",
+      "sha256": "1f1918c8bb6428d293f8bd924963132a240da4a1d915c0670f21b736dd5c90b9"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-15-capacity-analysis-recipe-v1.json",
+      "sha256": "e18f0607c14590b0f6d6b657a39d3981b61d49c7208e8531d94abae91e9cd62b"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-CAPACITY-FIT-V1",
+    "system_id": "branch-15"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-capacity-fit-v1",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-16-capacity-fit-plan-registered-v1.json",
+      "sha256": "b105b44674ce9b6be370f4016d88057ebb5897cfb23e1f5d15a32ef451f44ac0"
+    },
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-capacity-entry-v1/branch-16-capacity-analysis-recipe-v1.json",
+      "sha256": "272f6b7f8d9519b5bd4139f1c8c1c7c8c8f6d8c3f9c8b23cf646457b64585783"
+    },
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-CAPACITY-FIT-V1",
+    "system_id": "branch-16"
+  }
+]

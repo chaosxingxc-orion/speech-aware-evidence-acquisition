@@ -1,0 +1,53 @@
+{
+  "at_utc": "2026-10-06T10:05:38.655659+00:00",
+  "cell": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-capacity-v1",
+  "composed_config_hash": "587fdc69fc4656592de47e355d5c3e09ed60c616ef2a55cd21ebbe03e4cc017f",
+  "decision_receipt": {
+    "relpath": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-capacity-admission-v1.json",
+    "sha256": "41f8baefcb315f4649841cb2de96b885e53ebfbcff3eea6e1ec1e23be9601b9f"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 297,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "99a5bb2d6f4ad17a393d7b401ade7a7cc333e55a7d5010a4192805e86ef8735b",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-capacity-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-template-k16-v1/policies/a74730b67cf649521e5cac63e327638413537d2a5c5d0441b36cb7c460e32ddb.json",
+      "sha256": "42568ee3c6153cf48186d6e56fa630cb2c1aa0416092b13b4287e4a7a8814540"
+    },
+    "bundle_id": "a74730b67cf649521e5cac63e327638413537d2a5c5d0441b36cb7c460e32ddb",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "7bcfffbc822aa5b32e1e320363ae1c4aca08446495cf90c58221d5994630fec2"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

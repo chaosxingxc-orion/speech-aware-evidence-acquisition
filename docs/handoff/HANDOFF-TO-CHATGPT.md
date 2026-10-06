@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 capacity registration complete; freeze next (2026-10-06)
+
+All16 configured capacity members registered with original exit0 and no contacts.
+Root verified exact ordered membership, plan/recipe hashes, budgets, prompt-fit-only
+stages and absence of attempts/runs. The total tokenizer cap is4752; generation
+and scorer contacts remain zero. See [registration completion](../receipts/continuation/2026-10-06-update5-capacity-registration-complete.json).
+
+Serially integrate this complete registration and freeze a clean
+/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-capacity-v1 checkout.
+Use the prepared run-frozen-check-v1.py under
+coordination/partitioned-update5-aggregate-capacity-owner227-v1 with the exact
+SAEA_EXPECTED_COMMIT. It captures frozen-check-started-v1.json,
+frozen-check-v1.stdout.log, frozen-check-v1.stderr.log and frozen-check-v1.exit.json;
+the successful checker publishes frozen-check-v1.json. Do not duplicate a live
+checker. Only after complete verified frozen checks may the prepared finalizer
+bind the new mailbox registration. Fresh live gates and Windows-owned launch
+remain pending; no GPU job or heartbeat is active. All structural/scientific
+members remain held and no business improvement is established.
+
 ## Update5 capacity registration is running (2026-10-06)
 
 All16 engineering supplies are complete and serially integrated at9a063d0f7.
@@ -3989,7 +4008,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T10:06:33.890212+00:00
+Last refreshed: 2026-10-06T10:10:38.799570+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
