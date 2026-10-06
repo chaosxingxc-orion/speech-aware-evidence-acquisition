@@ -1,0 +1,104 @@
+{
+  "schema": "saea-capacity-unused-suffix-prepared-v1",
+  "at_utc": "2026-10-06T03:32:29.851824+00:00",
+  "status": "ROOT_ADMITTED_PENDING_LIVE_GATES",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-capacity-unused-suffix-v1/registration-v1.json",
+    "sha256": "903ecab19ab32998fa2569396faa7a5f84a9cf955d6b4abc026e24eaab937390"
+  },
+  "validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-capacity-unused-suffix-v1/helper-validation-v1.json",
+    "sha256": "f6352f1b24c7cabbd2b68269031c9c9c967268b4ee5a91d8d8d8509c71bb550e"
+  },
+  "members": [
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 3564
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 18,
+    "wait_seconds": 600
+  },
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+  "worker_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+  "completed_sources": [
+    {
+      "candidate_id": "branch-01",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-01/request-fit-v1.json",
+        "sha256": "48156cefde63eddbfca29ecdd7cc0879b504eb53a0227197b1c1ed84c2028493"
+      },
+      "terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-01-capacity-exit.json",
+        "sha256": "059f4e63daecd1625b33eac9731e567ed0acd5beb5a5944308cb9900a531509e"
+      }
+    },
+    {
+      "candidate_id": "branch-02",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-02/request-fit-v1.json",
+        "sha256": "bf1beba5787b0ae7cd72001c0c8ed37d2d28126edc09d5e5485ed5534ea66ee1"
+      },
+      "terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-02-capacity-exit.json",
+        "sha256": "1ae0349daad103d615936ed19826c03df93bfc77c14fa904599bc2e050ef4519"
+      }
+    },
+    {
+      "candidate_id": "branch-03",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-03/request-fit-v1.json",
+        "sha256": "904b136dabf6cad1f40eedb834bd6d5d484d77107b0815dba28d13cf44f3e30b"
+      },
+      "terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-03-capacity-exit.json",
+        "sha256": "94b173177c845ea2ccaf115b7091caf9db4ff2c1e592530c5aac990e8ebc1174"
+      }
+    },
+    {
+      "candidate_id": "branch-04",
+      "receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-04/request-fit-v1.json",
+        "sha256": "6db53e6fa9ba598c0bf99a65ce8ccf3141f79a60deb0142df53548ca2cd203ac"
+      },
+      "terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-04-capacity-exit.json",
+        "sha256": "ff30aaf706ded3c48d54882ff90add33ae0f26a06f21344630be1a63c928006c"
+      }
+    }
+  ],
+  "parent_changes": "Derive exact unused suffix from original configured population and root disposition; validate immutable prefix bindings; add a no-contact validation-only path. Model worker and request bytes unchanged.",
+  "admission": "Root227 admits one Windows-owned launch of this registered suffix only after fresh service/resource/no-competing-flight checks and exact dead lease archival under the existing disposition. Any failure stops. No completed FIT retry, structural generation, scoring or scientific read.",
+  "contacts_added": 0
+}
