@@ -1,0 +1,43 @@
+{
+  "at_utc": "2026-10-06T03:09:33.993369+00:00",
+  "status": "PREPARED_NOT_ADMITTED",
+  "intent": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-structural-mailbox-v1/intent-v1.json",
+    "sha256": "98b45918a2e7fcec1e645aaca3c53c4145b4ec6676364846927adf0012aea8eb"
+  },
+  "totals": {
+    "fit_endpoint_contacts_cap": 3328,
+    "generation_contacts_cap": 832,
+    "official_score_jobs": 0,
+    "structural_trajectories": 64,
+    "systems": 16
+  },
+  "capacity_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/registration-v1.json",
+    "sha256": "32c09a0ff64d4031f1b472aecd9152ad5225ae51175aa529c8d092b1916fca16"
+  },
+  "helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/frozen-check-structural-v1.py",
+      "sha256": "36c784d34bdf6f5b626bcc1ecfc3f026c09aaead96279d4a30effe0232835ff8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/prepare-registration-v1.py",
+      "sha256": "accce2f8aa315e946ba0e13e923cd0b2925a870acfa05e98e587c236e27d7f34"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/qualify-capacity-v1.py",
+      "sha256": "429264c4728aefb4bf5eaee69834596077c756b474121983641062fe629d9b9e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/register-member-v1.py",
+      "sha256": "2df04399c6bc367cce2d0db349d707921dec9f738931ed9af2f44892a2c303c5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/run-registration-v1.py",
+      "sha256": "e89ee419e387278b223ea2224112b71fefc38b1ff37fb8e1551f3f5077d74eb8"
+    }
+  ],
+  "contacts_added": 0,
+  "next": "Wait for complete original launched mailbox capacity family, root capture terminal task identity, then exact whole-family qualification before structural registration."
+}

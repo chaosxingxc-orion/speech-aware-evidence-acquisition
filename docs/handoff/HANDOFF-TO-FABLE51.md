@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Mailbox capacity progressing; successor structural intent remains held (2026-10-06)
+
+The exact03:06:10Z Windows-owned capacity entry remains live. At2026-10-06T03:13:35.144401+00:00,
+3 members had completed with worker/lease/observer exits zero and
+branch-04 had revalidated live parent identities. Branch03's
+startup wait recovered under unchanged guards after50.26seconds, then its actual
+capacity passed. No observer timeout, cache action, WSL restart or threshold
+change occurred. [Operational checkpoint](../receipts/continuation/2026-10-06-update4-mailbox-capacity-live-progress.json).
+
+[Successor structural preparation](../receipts/continuation/2026-10-06-update4-mailbox-structural-prepared.json)
+binds this exact new capacity epoch and the actual raw member/lease/Windows exits.
+Its premature qualifier correctly returns WAIT without writing a review, changing
+readiness or dispatching. Original64 structural trajectories, policies and supplies
+remain held. All16 capacity members must complete before root review; the15-minute
+script heartbeat remains ACTIVE until verified terminal. Keep monitoring the same
+job, preserve completed unique FITs and never restart on a polling timeout.
+
 ## Actual mailbox capacity job running (2026-10-06)
 
 [The new exact launch](../receipts/continuation/2026-10-06-update4-capacity-mailbox-entry-launch.json)
