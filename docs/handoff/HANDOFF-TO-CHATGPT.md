@@ -1,5 +1,32 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 remaining-b1 scientific cohort RUNNING (2026-10-06)
+
+Windows task SAEA-Update6-Diversity-RemainingB1-Scientific-V1 launched at
+2026-10-06T21:36:10.2099844+00:00. Owner PID45856 created21:36:09.8450580Z;
+hidden supervisor36692 and native capture28888. Revalidate identities. Frozen worker
+/home/chao/saea-worktrees/codex-partitioned-update6-diversity-remaining-b1-v1 is at
+445f0ce444707d345eed944beed808655f58a5be. All six frozen checks passed before launch.
+Seed launcher249656 passed the20.162second/three-sample startup memory wait.
+Prelaunch Windows free22.503GiB, service healthy with4 idle slots, no STOP or competing
+flight; registered20GiB startup/8GiB running guards remain in force.
+
+Exact members are seed, seed-aa and branches09-12, each20 trajectories;120 total.
+Registration in coordination/partitioned-update6-diversity-remaining-b1-scientific-v1
+has SHA530143990f92bb9ccdb69446f6edb7c72a32534b22843567cdaeee352a9dda2d.
+Independent native capture retains stdout/stderr/owner exit; hidden wrapper and task
+are pinned in the [launch receipt](../receipts/continuation/2026-10-06-update6-remaining-b1-scientific-launch.json).
+New slurp-update6-remaining-b1-monitor is ACTIVE every15minutes; delete after verified
+terminal and absence of all bound workers/scorers/observers. No quality read or READ
+countersignature yet. Keep original-a completed evidence and old failed owner immutable.
+
+Follow every member, qualify the complete family, additionally require native
+owner-process-exit.json exit0 bound to registration, then exact cohort root READ and
+registered process/business/timing analysis. No partial learner export, acceptance
+change, new proposal or scale change. remaining-b2 remains DRAFT for adjacent review.
+Boundary maintenance is observe-only. Current algorithm roadmap is prospective only.
+
+
 ## Update6 original-a complete; remaining-b1 admitted for frozen checks (2026-10-06)
 
 All10 original-a members independently FINALIZED20 rows with verified seals, one
@@ -5565,7 +5592,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T21:30:14.464068+00:00
+Last refreshed: 2026-10-06T21:40:32.012996+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,0 +1,31 @@
+{
+  "schema": "saea-scientific-launch-read-binding-v1",
+  "status": "BINDING_ONLY_NOT_READ_AUTHORIZATION",
+  "at_utc": "2026-10-06T21:37:53.218420+00:00",
+  "original_launch": {
+    "relpath": "docs/receipts/continuation/2026-10-06-update6-remaining-b1-scientific-launch.json",
+    "sha256": "31c445ed1db344ad5843aaf709ec00a49114ac4c907189098c48b9989453c11a"
+  },
+  "cohort": "remaining-b1",
+  "commit": "445f0ce444707d345eed944beed808655f58a5be",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-remaining-b1-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "frozen_proof": {
+    "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b1-flight-v1/frozen-check-v1.json",
+    "sha256": "435df211ef04043dd9bd3f0a4f4fc29774c215ba250fa9189600c384927c756a"
+  },
+  "registration": {
+    "relpath": "coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/registration-v1.json",
+    "sha256": "530143990f92bb9ccdb69446f6edb7c72a32534b22843567cdaeee352a9dda2d"
+  },
+  "windows_task": "SAEA-Update6-Diversity-RemainingB1-Scientific-V1",
+  "launch_epoch": "2026-10-06T21:36:10.2099844+00:00",
+  "additional_native_terminal_requirement": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/owner-process-exit.json",
+    "exit_code": 0,
+    "registration_sha256": "530143990f92bb9ccdb69446f6edb7c72a32534b22843567cdaeee352a9dda2d"
+  }
+}
