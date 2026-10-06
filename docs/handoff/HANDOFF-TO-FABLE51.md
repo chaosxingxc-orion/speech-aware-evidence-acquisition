@@ -1,5 +1,17 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Qualified proposal planning prepared without contacts (2026-10-06)
+
+[Configuration-to-source integration](../readiness/2026-10-06-qualified-parent-proposals-v1/README.md)
+rebuilds the archived parent decision from complete original sources, binds the target
+population file and all proposal modes, and rechecks source authority before recording.
+No copied selection, changed source/target, missing slot or overwrite is accepted.
+209 related tests pass;161/161 combined module statements covered; engineering-base PASS.
+No actual parent/actor selection, allocation, export, runtime or historical-rule change.
+Current Update6 analysis bytes stay unchanged. Parent usage continuity, actual proposal
+reservation/response integration and new algorithm registration remain before use.
+
+
 ## Update6 remaining-b2 complete; whole-trial evaluation in progress (2026-10-06)
 
 All six members independently FINALIZED20 rows with verified seals, exactly one

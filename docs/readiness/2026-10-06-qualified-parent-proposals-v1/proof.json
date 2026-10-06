@@ -1,0 +1,43 @@
+{
+  "schema": "saea-qualified-parent-proposal-engineering-proof-v1",
+  "at_utc": "2026-10-06T23:16:52.977135+00:00",
+  "source_base_commit": "4271c86dd1e020bbe9bf8389b5020cd495831be3",
+  "test_count": 209,
+  "failures": 0,
+  "coverage": {
+    "statements": 161,
+    "covered": 161,
+    "percent": 100
+  },
+  "red_before_green": [
+    "Missing prepare_qualified_parent_proposal_plan interface",
+    "Source authority removed during planning was not rechecked before archive write"
+  ],
+  "engineering_base": "PASS",
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_parent_selection.py",
+      "sha256": "ae411dad8a7a822a6df095c798c705746fd5ac94993878449f2d3e4d485be82e"
+    },
+    {
+      "relpath": "tests/unit/test_qualified_parent_proposals.py",
+      "sha256": "e1e089dde6132d42be691099cbfb36a456d98f798e00faa1fca3abc90d1d9cca"
+    },
+    {
+      "relpath": "tests/unit/test_qualified_parent_selection.py",
+      "sha256": "0bb1880ebf136ed18f2be15905251810b801bd4d64c2e463c3af41030e2ebeb1"
+    },
+    {
+      "relpath": "tests/unit/test_system_search_parent_selection.py",
+      "sha256": "dedbfeb2c2f1e76c677587a3986a060b1c97b303349e4030695b96480b8a8214"
+    }
+  ],
+  "contacts_added": {
+    "model": 0,
+    "tokenizer": 0,
+    "official_scorer": 0
+  },
+  "runtime_admission": false,
+  "learner_exported": false,
+  "current_update6_acceptance_changed": false
+}

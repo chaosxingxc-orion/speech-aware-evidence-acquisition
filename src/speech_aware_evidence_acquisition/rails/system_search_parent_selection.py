@@ -200,7 +200,7 @@ def plan_parent_proposals(configuration, *, selection):
 
 
 
-def prepare_qualified_parent_selection(archive, *, request_pin, repo_root, data_root):
+def _qualified_parent_selection(archive, *, request_pin, repo_root, data_root):
     """Requalify an entire population before private, cohort-local parent planning.
 
     Preserve every replicate; the declared first control then candidate order
@@ -265,6 +265,67 @@ def prepare_qualified_parent_selection(archive, *, request_pin, repo_root, data_
         "scope": "Qualified private root planning only; no historical acceptance change or actor input."}
     # The declared A/A remains a replicate even when it has the best observed score.
     record["record_sha256"] = content_hash(record)
-    archive._write("context-learning/qualified-parent-selection/"
-        + f"{request['selection_config']['iteration']}-{content_hash(request['cohort_id'])}.json", record)
     return record
+
+
+def prepare_qualified_parent_selection(archive, *, request_pin, repo_root, data_root):
+    """Persist one fully qualified parent decision without contact authority."""
+    record = _qualified_parent_selection(archive, request_pin=request_pin,
+        repo_root=repo_root, data_root=data_root)
+    archive._write("context-learning/qualified-parent-selection/"
+        + f"{record['selection']['configuration']['iteration']}-{content_hash(record['cohort_id'])}.json", record)
+    return record
+
+
+def prepare_qualified_parent_proposal_plan(archive, *, configuration_pin, repo_root, data_root):
+    """Bind the immutable experiment config to freshly requalified selected parents.
+
+    This root planning artifact grants no proposal reservation or actor access.
+    Preserve the existing reservation and exact algorithm registration boundaries.
+    A copied self-hashed selection cannot bypass original complete-family sources.
+    """
+    import json
+    from pathlib import Path
+    from ..analysis.abstract_population_sources import _external
+    from .experiment_population import load_population_config
+    from .system_search_archive import SystemSearchArchive
+    from .system_text_policy import _read_pin
+
+    require(isinstance(archive, SystemSearchArchive), "shared SystemSearchArchive required")
+    root, data = Path(repo_root).resolve(), Path(data_root).resolve()
+    configuration = json.loads(_read_pin(configuration_pin, root))
+    require(set(configuration) == {"schema", "status", "experiment_population", "selection_record", "modes"}
+        and configuration["schema"] == "saea-qualified-parent-proposal-config-v1"
+        and configuration["status"] == "ROOT_REGISTERED",
+        "exact registered qualified proposal configuration required")
+    population = load_population_config(configuration["experiment_population"], repo_root=root)
+    saved = _external(configuration["selection_record"], data)
+    require(saved.get("schema") == "saea-qualified-parent-selection-record-v2"
+        and saved.get("record_sha256") == content_hash({k: v for k, v in saved.items() if k != "record_sha256"}),
+        "qualified parent selection record identity differs")
+    expected_path = archive.root / "context-learning/qualified-parent-selection" / (
+        f"{saved['selection']['configuration']['iteration']}-{content_hash(saved['cohort_id'])}.json")
+    require(Path(configuration["selection_record"]["path"]).resolve() == expected_path.resolve(),
+        "selection must come from the declared shared archive")
+    fresh = _qualified_parent_selection(archive, request_pin=saved["request"],
+        repo_root=root, data_root=data)
+    require(saved == fresh, "parent record differs from requalified complete source")
+    plan = plan_parent_proposals({"schema": "saea-parent-proposal-plan-config-v1",
+        "experiment_population": population, "parent_selection_sha256": saved["selection"]["selection_sha256"],
+        "modes": configuration["modes"]}, selection=fresh["selection"])
+    require(json.loads(_read_pin(configuration_pin, root)) == configuration
+        and load_population_config(configuration["experiment_population"], repo_root=root) == population
+        and _external(configuration["selection_record"], data) == saved,
+        "qualified proposal inputs changed during planning")
+    require(_qualified_parent_selection(archive, request_pin=saved["request"],
+        repo_root=root, data_root=data) == saved,
+        "parent authority or complete source changed during planning")
+    result = {"schema": "saea-qualified-parent-proposal-plan-v1",
+        "configuration": configuration_pin, "experiment_population": configuration["experiment_population"],
+        "selection_record": configuration["selection_record"],
+        "source_identity_sha256": saved["source_identity_sha256"], "plan": plan,
+        "proposal_allocation_granted": False, "learner_exported": False, "runtime_admission": False,
+        "scope": "Source-qualified root planning only; exact algorithm and reservation admission remain required."}
+    result["record_sha256"] = content_hash(result)
+    archive._write("context-learning/qualified-parent-proposals/" + content_hash(configuration_pin) + ".json", result)
+    return result
