@@ -1,0 +1,995 @@
+{
+  "schema": "saea-template-population-prospective-edit-audit-v1",
+  "at_utc": "2026-10-06T03:47:26.779595+00:00",
+  "source_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/original-response-v1.json",
+    "sha256": "334f34878df2ae5fa27226342e7571173172203e1932318659737dbc6c205b76"
+  },
+  "population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "summary": {
+    "per_node_changed_systems": {
+      "perception": 3,
+      "solver": 14,
+      "reviewer": 14,
+      "planner": 14
+    },
+    "per_node_exact_append_only_systems": {
+      "perception": 0,
+      "solver": 0,
+      "reviewer": 0,
+      "planner": 0
+    },
+    "no_change_candidates": [
+      "branch-08",
+      "branch-15"
+    ],
+    "changed_context_layouts": 1,
+    "changed_node_contexts": 0
+  },
+  "members": [
+    {
+      "candidate_id": "branch-01",
+      "cohort_id": "original-a",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/0136f4381cf70905ad70fb648b639da884df9c8e0fbde75786d1b3efdf84898d.json",
+        "sha256": "6d2c68eb27bc1d956dd26f243e0096f38d84391f0160a819002ffe98a13ee24d"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/9f4baef004185417fdb677bb0559b92bd5e24a47fd8c47196ca31c5c72656c1a.json",
+        "sha256": "45b6f9f0746902c01784381041db0512040da5b9fc41b7cc4f0bfbb56ef7c043"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-01.json",
+        "sha256": "bfd392e42682f45017c2f70c615e482657cec9f89b19bc50e71ca67b3865dbff"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1199,
+          "child_characters": 1199,
+          "character_delta": 0,
+          "shared_leading_characters": 1199,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3211,
+          "child_characters": 3344,
+          "character_delta": 133,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4084,
+          "child_characters": 4209,
+          "character_delta": 125,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4051,
+          "child_characters": 4420,
+          "character_delta": 369,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent trails both original-a controls in quality. Its rejected counterpart improved intent but had zero observed raw entity repairs and two unknown draft entity judgments. Test initial evidence separation and an actionable current-state handoff without attributing node correctness.",
+      "hypotheses": [
+        "Separate presence, legal role and scope decisions improve initial official quality without sacrificing intent or validity.",
+        "Anchored verification permits useful repair while preserving supported content."
+      ]
+    },
+    {
+      "candidate_id": "branch-02",
+      "cohort_id": "original-a",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/958345cb641172ffc5b52ca01cc1dcf61d678f44a0e7a690f889071a732f2a99.json",
+        "sha256": "688a40a48393e7e466e06966de18ae390fb499ab6776f747c5e80b1a90ec0832"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/d812bc25685e2e232b9a31d284d41bc284d47a10d15cdbeee6aae46129aee3da.json",
+        "sha256": "a893a808f0627630153f0980187941fd9388fc9a57a7750703f2e7108770465e"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-02.json",
+        "sha256": "2ae209d2b31c3321bbf4cb81c5b3fe6c76f1e5b35961f618499436bc97feddd6"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1199,
+          "child_characters": 1199,
+          "character_delta": 0,
+          "shared_leading_characters": 1199,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3232,
+          "child_characters": 3250,
+          "character_delta": 18,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4065,
+          "child_characters": 4235,
+          "character_delta": 170,
+          "shared_leading_characters": 1701,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4118,
+          "child_characters": 4456,
+          "character_delta": 338,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent is below both original-a controls. The rejected counterpart had zero observed raw repairs despite alarms and false alarms in 2/7 known correct entity drafts. Test discriminative local repair and preservation rather than higher review volume.",
+      "hypotheses": [
+        "Criterion-based local revision improves repair yield without damaging unrelated assignments.",
+        "Initial presence and legal-applicability checks reduce unsupported fills while preserving expressed arguments."
+      ]
+    },
+    {
+      "candidate_id": "branch-03",
+      "cohort_id": "original-a",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/a1390d6298351f2ba374ff0512f855efd5746ce8fdd51f20e2b42c2112e56568.json",
+        "sha256": "87a2bb16f2524f2a7c55ab5f5da2f34deb6356d48a5c3e34f6beb29d48567f07"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/fc443a1d099a0176ca4d263981c3acd5ed0eb30efa9e82ec41c7134ae5aac0d1.json",
+        "sha256": "567581c3c9886b33cb2f44e988feb3967b16a3799f863d84546863064aeb4dd3"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-03.json",
+        "sha256": "e26e4ac69d78e86d55efbf777b66e8016e2e648fb86faa971a3efd08e06c6129"
+      },
+      "roles": {
+        "perception": {
+          "changed": true,
+          "parent_characters": 1199,
+          "child_characters": 1332,
+          "character_delta": 133,
+          "shared_leading_characters": 43,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3223,
+          "child_characters": 3230,
+          "character_delta": 7,
+          "shared_leading_characters": 1281,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4049,
+          "child_characters": 4164,
+          "character_delta": 115,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4094,
+          "child_characters": 4404,
+          "character_delta": 310,
+          "shared_leading_characters": 2205,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent trails both original-a controls. Its rejected counterpart preserved validity but had no observed raw entity/full repairs. Initial card support was complete while measured candidate coverage was 17/20. Test supported operation alternatives and distinct presence/assignment decisions.",
+      "hypotheses": [
+        "Preserving genuine original-operation alternatives improves intent opportunity without padding candidates.",
+        "Separate coverage and support passes improve quality without treating classification uncertainty as absence."
+      ]
+    },
+    {
+      "candidate_id": "branch-04",
+      "cohort_id": "original-a",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/a9b61b9a7c37b8610a497aebf2ef9996543f9308726b93d3438481e1d4c96709.json",
+        "sha256": "c3a59d5430bea1a0d4e62a35bc56ec2c09da695c56b0fecbaa185d1a9bc4eff0"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/05e767761ec5c4f821a1893f59e54c50eb0e1642422706b77e2491ebd462583d.json",
+        "sha256": "a2e14bee0019160636ef369dc42ebb42549c20091722f33a9d0a55b95c18e824"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-04.json",
+        "sha256": "2f163d16c5d75fd43c5d7b9c42b56712e8aed1a2c70fdf71a5ee0ce5a41d5c45"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1199,
+          "child_characters": 1199,
+          "character_delta": 0,
+          "shared_leading_characters": 1199,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3072,
+          "child_characters": 3105,
+          "character_delta": 33,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4019,
+          "child_characters": 4124,
+          "character_delta": 105,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 3994,
+          "child_characters": 4355,
+          "character_delta": 361,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent has an intent deficit against both original-a controls. The rejected counterpart had one raw full-answer harm and one unavailable final entity judgment. Test an explicit operation handoff and dependency-limited repair while protecting representation.",
+      "hypotheses": [
+        "Separating operation limitations from completed checks improves intent-directed routing.",
+        "Evidence-dependent repair reduces raw full-answer damage while preserving valid output."
+      ]
+    },
+    {
+      "candidate_id": "branch-05",
+      "cohort_id": "original-a",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/b17788c067a7bff3ba7753215e72af1e4b303e7c86aeb712105cb3137394c1b6.json",
+        "sha256": "ec35354f8d88bebe8f549eff4f5c6510d0a7afefddebdedaa100ff0cacecc878"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/fee1f7c9426f5b4300ce2ebd190db3cbee23f29d92f6c99f3cf1cf502bafa9a3.json",
+        "sha256": "b4808e863a5f1d89f820b58f8bb4fa6c91eacf0fae97c977e8888730bce98014"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-05.json",
+        "sha256": "86060d239df2f8b7a5d9898f5ba9cd97cf4399f59bf4f0c4eeaaf781aafebed2"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1148,
+          "child_characters": 1148,
+          "character_delta": 0,
+          "shared_leading_characters": 1148,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3103,
+          "child_characters": 3168,
+          "character_delta": 65,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4000,
+          "child_characters": 4165,
+          "character_delta": 165,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4028,
+          "child_characters": 4338,
+          "character_delta": 310,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent trails both original-a controls in quality and intent. The rejected counterpart had unknown draft/final entity judgments and no raw repairs. Test relation-based initial applicability and complete reconstruction rather than broader criticism.",
+      "hypotheses": [
+        "Argument-role applicability reduces unsupported fills while retaining coverage outside familiar examples.",
+        "Local relation repair improves quality without losing unrelated mentions or strict validity."
+      ]
+    },
+    {
+      "candidate_id": "branch-06",
+      "cohort_id": "original-a",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/98327a8b6b932e40021ad3e0175e79e8844c529b2464f888116277752705228c.json",
+        "sha256": "b1d441925dbb1d316cf812b58a3bb3ca4abcc37a38ef99fd3faa69c6d210c55d"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/512bf73ec8484f6df24642cc306a61f5e908b3958ab36500c2250e337cac2192.json",
+        "sha256": "d7a66e9e0b67cbd5dd9f8666450cc84018cc9c97c43674d8ebbc6f84f6dc1b91"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-06.json",
+        "sha256": "640da3a1dc8bf6cddb0b81cbfb32b2df654cfe3593263ec5111f6e437a64fd5e"
+      },
+      "roles": {
+        "perception": {
+          "changed": true,
+          "parent_characters": 1148,
+          "child_characters": 1202,
+          "character_delta": 54,
+          "shared_leading_characters": 20,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3190,
+          "child_characters": 3244,
+          "character_delta": 54,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4082,
+          "child_characters": 4179,
+          "character_delta": 97,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4127,
+          "child_characters": 4428,
+          "character_delta": 301,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent is below both original-a controls. Its rejected counterpart detected 4/13 known entity errors, missed 9/13 and had no raw repairs. Test an independent speech-first audit while preserving supported operation and entities.",
+      "hypotheses": [
+        "Independent coverage review improves detection of real omissions without maximizing alarm frequency.",
+        "Evidence-based revision preserves correct content while converting grounded concerns into useful repair."
+      ]
+    },
+    {
+      "candidate_id": "branch-07",
+      "cohort_id": "original-a",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/ce29134403c3214d9a8875d07a03cb00f68b94cd32b33ab8bcd147a8f9580ddd.json",
+        "sha256": "6e8ece7afd16f07517cfeade4b227834de51fac397e29760a2d03e2fe3074598"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/7030790bfdbfd94b30f9d85d5907ee141d45547da80cefff9e54931ea35c775f.json",
+        "sha256": "5c4ed6d75458a63d162418f879c0e4d5f07097eaf49e40d528f1bc4fe17ad80b"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-07.json",
+        "sha256": "5f30dbfd5e83d2cb5ca9ed310bc84c47e17214ba8d29e2eaf801095b79254615"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1148,
+          "child_characters": 1148,
+          "character_delta": 0,
+          "shared_leading_characters": 1148,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3117,
+          "child_characters": 3208,
+          "character_delta": 91,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4087,
+          "child_characters": 4181,
+          "character_delta": 94,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4061,
+          "child_characters": 4396,
+          "character_delta": 335,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The rejected counterpart detected all 11 known entity errors but alarmed on all 9 known correct entity drafts and produced three raw entity harms with no raw repairs. These rates do not describe the active parent. Test presence-preserving selective repair without suppressing grounded omissions.",
+      "hypotheses": [
+        "A discriminating current criterion reduces damaging revisions while retaining detection of genuine discrepancies.",
+        "Separating reassignment from deletion protects supported spoken content and official quality."
+      ]
+    },
+    {
+      "candidate_id": "branch-08",
+      "cohort_id": "original-a",
+      "status": "no-change",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/43e117be0bec8bb84c5065421dea92cf5e91a8a7f250ae73f8eac3ce52462c2d.json",
+        "sha256": "d9a4a681a2b36513b2bd2485c643f7bca46fcc72a2c77053c135d881bd98d41a"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/935aaf3cfe17cd7859a669c9d4f711ffa7808fdd33bd58da8823c2aa890731a5.json",
+        "sha256": "e29c0a45366888758309bb00145210bf0fd32a737c6d9028c06a5d45367ffb8d"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-08.json",
+        "sha256": "e5109b19cd5b0962586f632b5e88d4f00721a0d87c9e0b605eeeb4056f4e6ae0"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1148,
+          "child_characters": 1148,
+          "character_delta": 0,
+          "shared_leading_characters": 1148,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": false,
+          "parent_characters": 3046,
+          "child_characters": 3046,
+          "character_delta": 0,
+          "shared_leading_characters": 3046,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": false,
+          "parent_characters": 4030,
+          "child_characters": 4030,
+          "character_delta": 0,
+          "shared_leading_characters": 4030,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": false,
+          "parent_characters": 4015,
+          "child_characters": 4015,
+          "character_delta": 0,
+          "shared_leading_characters": 4015,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "Retain the active relation/attachment strategy unchanged. It exceeds both original-a controls in quality but has an intent deficit; the identical rejected-history template varied in quality and intent. Preserve this useful strategy without treating either draw as stable benefit.",
+      "hypotheses": [
+        "An unchanged relation/attachment position preserves diversity while other positions test process improvements."
+      ]
+    },
+    {
+      "candidate_id": "branch-09",
+      "cohort_id": "remaining-b1",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/8804f1140915d928bc4d79b2995bf155276a601955c8700bc9239564d65c6cb2.json",
+        "sha256": "73996f4ce5569a937d6754a51cc8836c7363c7eda0a06d2ad064a9b7d10b6738"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/f489379c05ecbc394a721eacae1fb11170829cd13684a028e27f19a88b92a06e.json",
+        "sha256": "1d1884ba6a7c23c24011828fe7d49b005618c13ebd2a4bfb8aac03ef9717675f"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-09.json",
+        "sha256": "2417d7364dfebce33573863ac45acf6edd47dff7d92bfb82efa60209cd715c9f"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1133,
+          "child_characters": 1133,
+          "character_delta": 0,
+          "shared_leading_characters": 1133,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3008,
+          "child_characters": 3269,
+          "character_delta": 261,
+          "shared_leading_characters": 1314,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4011,
+          "child_characters": 4047,
+          "character_delta": 36,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4003,
+          "child_characters": 4371,
+          "character_delta": 368,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent exceeds both remaining-b1 controls in intent but trails them in quality. Its rejected counterpart lost intent and had 15/20 raw draft parsing and 17/20 final parsing. Test complete initial serialization and direct representation repair while retaining current Perception.",
+      "hypotheses": [
+        "Complete internal construction and strict serialization improve raw validity without reducing intent.",
+        "Representation reconstruction preserves supported entities instead of empty or partial fallback."
+      ]
+    },
+    {
+      "candidate_id": "branch-10",
+      "cohort_id": "remaining-b1",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/6509be9140a46531cd00b0a96fa56d6fb48ee32104c5ecc4c30c21a666ad11ae.json",
+        "sha256": "0b87aa1b16347c9737a0edf686b3957b66ad11fe141823a2e1c0efccf1f79f6f"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/91c84d701f30501949e3fe282dbad160befcc704080e87e428c038948ba91f01.json",
+        "sha256": "bde8f46ea85f4de2a0cb85d403f8e8d61a01c41f6208f39b7b93a0a96c0125f8"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-10.json",
+        "sha256": "d1ae1544e6adc560d16c75ab89e494d1db71fda32a6e0338647380ce49c136ab"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1133,
+          "child_characters": 1133,
+          "character_delta": 0,
+          "shared_leading_characters": 1133,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3139,
+          "child_characters": 3324,
+          "character_delta": 185,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4057,
+          "child_characters": 4203,
+          "character_delta": 146,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4117,
+          "child_characters": 4430,
+          "character_delta": 313,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent has the highest remaining-b1 intent but trails both controls in quality. Its rejected counterpart had no raw repairs despite error alarms. Test initial legal applicability and criterion-specific repair while retaining current operation generation.",
+      "hypotheses": [
+        "Independent slot applicability improves entity quality while retaining supported intent choices.",
+        "Operative-clause handoffs improve useful repair without changing supported operation decisions."
+      ]
+    },
+    {
+      "candidate_id": "branch-11",
+      "cohort_id": "remaining-b1",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/2b0529b090d1b7c53d48f70a080e5b6d393ae4dd07e42c87f2c14fec9839e4a1.json",
+        "sha256": "5f70e0b5531ea57308c4e391f9f7955e942557a833373ae894a4300dda45ee58"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/8246c0ee25c82bb4470c51b823b748099e0c36a5db6bf27f8b86f07387c8b5bb.json",
+        "sha256": "1f4efc2cb19f9fa8b0ffa06a94b73b9e1481ca3d906254e97f4a557aaec6d9b6"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-11.json",
+        "sha256": "ccb1562a4b68afc3d2c89ee82bfbd6b12c0bccbacd11c1fea6aa9c571fa5fd5f"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1133,
+          "child_characters": 1133,
+          "character_delta": 0,
+          "shared_leading_characters": 1133,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3142,
+          "child_characters": 3109,
+          "character_delta": -33,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4079,
+          "child_characters": 4234,
+          "character_delta": 155,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4077,
+          "child_characters": 4391,
+          "character_delta": 314,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent is below both remaining-b1 controls in quality. The rejected counterpart alarmed on 8/9 known correct entity drafts and had raw full-answer net damage of two. Keep active full history and test current-state verification rather than adopting the rejected local-history change.",
+      "hypotheses": [
+        "Fresh current-state review reduces stale concerns while retaining concrete omission detection.",
+        "Criterion verification and preservation reduce raw-model damage and improve official quality."
+      ]
+    },
+    {
+      "candidate_id": "branch-12",
+      "cohort_id": "remaining-b1",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/ef7b53be7de080ca4ed67cc86e5c0f6fdbbfb28035100d6aabfd131fbae4aa39.json",
+        "sha256": "223ec6bec9374ee99c0e12a21e5aa56a76e1a9c5e2362b12eb586400033212df"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/cd67527717a28d6599e0ae1a71888b23ae3190a80e78b5b4ba6b969e10a8984f.json",
+        "sha256": "acbfa908f9ab1aae1da5d721c2a6ece275a4709b28d82e09a7086a1a43809511"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-12.json",
+        "sha256": "8409829a067da4c5027f0df42e9124c0bfd0737431fe1098b5df29a7ca9a9697"
+      },
+      "roles": {
+        "perception": {
+          "changed": true,
+          "parent_characters": 1133,
+          "child_characters": 1222,
+          "character_delta": 89,
+          "shared_leading_characters": 29,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3035,
+          "child_characters": 3209,
+          "character_delta": 174,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 3976,
+          "child_characters": 4117,
+          "character_delta": 141,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4002,
+          "child_characters": 4345,
+          "character_delta": 343,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent has quality and intent deficits against both remaining-b1 controls. Its rejected rewrite improved raw parsing but reduced official quality and incurred raw full-answer damage. Test completeness and operation opportunity without equating format repair with semantic improvement.",
+      "hypotheses": [
+        "Supported operation alternatives and complete mention coverage improve intent and entity quality together.",
+        "Separating reconstruction from semantic repair protects validity without empty fallback or unrelated damage."
+      ]
+    },
+    {
+      "candidate_id": "branch-13",
+      "cohort_id": "remaining-b2",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/9d4c492b2e24c0eba6fef7eacf474f846d81310e148a10c078bf8a7d48e4d630.json",
+        "sha256": "07fea6c0f77dd2447a368ec1bd2009cef2ee03ea409179c061198df83bd8d5f5"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/9432ab150cf32aef9c07ca080646c72203525111e61229804b5615d0038f1e0f.json",
+        "sha256": "9e9dcc620499cce80e1f07f7b7c23deb0a974a50334e9989cf39d35855c03281"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-13.json",
+        "sha256": "cbc7b7e6ae43542648baa7061765b95928dd7c8469eff029a94484d0b2ebfad5"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1144,
+          "child_characters": 1144,
+          "character_delta": 0,
+          "shared_leading_characters": 1144,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3052,
+          "child_characters": 3166,
+          "character_delta": 114,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 3966,
+          "child_characters": 4123,
+          "character_delta": 157,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4027,
+          "child_characters": 4358,
+          "character_delta": 331,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent's remaining-b2 seed/A/A quality contrasts differ widely. Its rejected counterpart improved headline quality but had no raw entity/full repairs and a parsing gap. Test rule-governed initial spans and preservation without inferring stable benefit or raw repair.",
+      "hypotheses": [
+        "Applicable scope rules improve initial official quality without cosmetic filler editing.",
+        "Complete phrase coverage and support preserve intent and validity during local scope repair."
+      ]
+    },
+    {
+      "candidate_id": "branch-14",
+      "cohort_id": "remaining-b2",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/1fb6df3bfff726525403687e42cba9f136d0d2db1e211b58777481ae93e62118.json",
+        "sha256": "de726271f40ad190b464fe8f78dedb21515d5a8291fd923e41a49b1164db42ad"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/0e096ea90bc96beff1c5786a93bd1495ef4815499ba2b6c8f0f0f2466e4eff31.json",
+        "sha256": "5d56bdc417aae7df58011383c2b873e2658c48c1725e75c261947e57ec4f0372"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-14.json",
+        "sha256": "6f56a2210c21a48b50a38d870188f14f9dcaad4d77ca0171324401b231172b03"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1144,
+          "child_characters": 1144,
+          "character_delta": 0,
+          "shared_leading_characters": 1144,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3112,
+          "child_characters": 3327,
+          "character_delta": 215,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 4055,
+          "child_characters": 4175,
+          "character_delta": 120,
+          "shared_leading_characters": 1689,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4125,
+          "child_characters": 4437,
+          "character_delta": 312,
+          "shared_leading_characters": 2216,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The active parent exceeds both remaining-b2 controls in intent but has uncertain quality relative to their wide spread. The rejected counterpart lost quality and had no raw repairs despite alarms. Test decision-specific pair repair while protecting supported operation.",
+      "hypotheses": [
+        "Separating dependent from unaffected type/span decisions improves entity quality without reducing intent.",
+        "Current-pair verification protects correct assignments while permitting justified role or scope repair."
+      ]
+    },
+    {
+      "candidate_id": "branch-15",
+      "cohort_id": "remaining-b2",
+      "status": "no-change",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/3adce494be0ec509baa0caeb75a4c04aafc60ce839bd0eaaffb95f1768aaa6f2.json",
+        "sha256": "0e744d2a53a4e4be48b9411b342ce00f34fff65e683817f2ea9d2f6b7a5d6187"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/899e5673819ea628162229b4a8bf7a4c69ed1bff94437b1f92237822edc7c63d.json",
+        "sha256": "a597647c5c34098b9d0c687f72cf2b71c854308430a3b75e5f58911eff0d794e"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-15.json",
+        "sha256": "d7aea08139fe2372ecf6d4093eb92b1d3a678d4a4a22673a83ce57f923fe121e"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1144,
+          "child_characters": 1144,
+          "character_delta": 0,
+          "shared_leading_characters": 1144,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": false,
+          "parent_characters": 3129,
+          "child_characters": 3129,
+          "character_delta": 0,
+          "shared_leading_characters": 3129,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": false,
+          "parent_characters": 4077,
+          "child_characters": 4077,
+          "character_delta": 0,
+          "shared_leading_characters": 4077,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": false,
+          "parent_characters": 4103,
+          "child_characters": 4103,
+          "character_delta": 0,
+          "shared_leading_characters": 4103,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": false,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "Retain the active scope-first full-history strategy unchanged. Its identical historical template had lower quality and observed raw damage with substantial false alarms, while remaining-b2 controls also vary widely. Historical diagnostics do not guarantee active behavior; avoid unsupported corrective attribution.",
+      "hypotheses": [
+        "An unchanged scope-first position preserves diversity and exposes variability without claiming stable benefit."
+      ]
+    },
+    {
+      "candidate_id": "branch-16",
+      "cohort_id": "remaining-b2",
+      "status": "provisional",
+      "parent": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/1d8271280453c117119652ffe5ee1577e1184aade2579b3394d9ad5631e6bedb.json",
+        "sha256": "cc7a51a8fa8f6bed222bc621e84cb5ca8299a9b19fcc92d4aeb463ef7292cc57"
+      },
+      "child": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/policies/3542d28a5d1e07048315cc65aec3f15b2615f6e0bda2bf03d2c509f72f99d82f.json",
+        "sha256": "59ffebabb8bbd97843bd76c2b43b8ce1a9f0187f0ef470a99bba6eb793222a89"
+      },
+      "compilation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-16.json",
+        "sha256": "058a7ae05c7e47d1d88bcd7c5bb9213db3931801151373a4cf5600fbb9ddd6f5"
+      },
+      "roles": {
+        "perception": {
+          "changed": false,
+          "parent_characters": 1144,
+          "child_characters": 1144,
+          "character_delta": 0,
+          "shared_leading_characters": 1144,
+          "exact_append_only": false
+        },
+        "solver": {
+          "changed": true,
+          "parent_characters": 3031,
+          "child_characters": 3155,
+          "character_delta": 124,
+          "shared_leading_characters": 1273,
+          "exact_append_only": false
+        },
+        "reviewer": {
+          "changed": true,
+          "parent_characters": 3968,
+          "child_characters": 4113,
+          "character_delta": 145,
+          "shared_leading_characters": 1700,
+          "exact_append_only": false
+        },
+        "planner": {
+          "changed": true,
+          "parent_characters": 4058,
+          "child_characters": 4406,
+          "character_delta": 348,
+          "shared_leading_characters": 2196,
+          "exact_append_only": false
+        }
+      },
+      "context_layout_changed": true,
+      "node_context_changed": false,
+      "knowledge_unchanged": true,
+      "supply_unchanged": true,
+      "rationale": "The rejected counterpart changed query placement and had mixed remaining-b2 control contrasts with no raw semantic repairs. Test initial scope/support decisions and default query placement jointly from the active parent. Latency is secondary; historical cost change proves no quality gain.",
+      "hypotheses": [
+        "Rule-governed initial extraction and local criterion review protect quality, intent and strict validity.",
+        "Default role-query placement reduces cost only if complete-system quality and reliability are maintained."
+      ]
+    }
+  ],
+  "scope": "Root-only descriptive prospective template edit audit. Character counts are not tokenizer costs, semantic diversity, executed behaviour or quality results. Hypotheses are the original proposer statements, not verified conclusions. No learner export or changed policy.",
+  "model_contacts": 0,
+  "runtime_admission": false
+}
