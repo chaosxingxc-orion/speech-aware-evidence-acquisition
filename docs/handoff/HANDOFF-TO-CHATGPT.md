@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 history complete; Update6 input preparation running (2026-10-06)
+
+History preparation exited0 at16:27:51.356581Z. Root verified all pinned reader sources,
+original PID absence, empty stderr and exact log/output hashes, and recorded
+[the complete history receipt](../receipts/continuation/2026-10-06-update5-rejected-history-complete.json).
+All sixteen active parents remain, rejected Update5 is retained as history and cumulative
+exposure stays35554 source identities privately. This does not mean a larger task roster.
+Process bridge was already complete and root-reviewed. No model/scorer contacts added.
+
+The registered Update6 aggregate input preparation started16:30:21.523122Z, PID204560,
+under data/coordination/update6-aggregate-input-preparation-v1. Exact command uses
+prepare-next-input-v1.py prepare with plan SHA256
+e0607df7b145ef31361ef75065c81bc0a7ccda256ca990555945edd63fb8c6e9.
+Revalidate live process and exclusive complete/exit receipts; no restart from timeouts.
+The input is not yet certified. No actor reservation, new original proposal or GPU contact
+has occurred. Next bind the complete aggregate capsule, exact Update6 config and the
+prospective Astra prompt/native-interface before one admitted GPT-6.1 Sol opportunity.
+Fable's current engineering handoff is synchronized in place.
+
 ## Update6 exact prospective configuration prepared (2026-10-06)
 
 The exact next configuration is
@@ -4873,7 +4892,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T16:24:24.983079+00:00
+Last refreshed: 2026-10-06T16:32:41.139248+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

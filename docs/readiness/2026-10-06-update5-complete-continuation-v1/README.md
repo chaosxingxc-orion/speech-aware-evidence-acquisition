@@ -42,3 +42,10 @@ source/output pins and all10/6/6 source member counts. The completion receipt is
 `docs/receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json`.
 History preparation remains live; do not execute the next input entry until its
 separate completion receipt is verified and registered.
+
+History completion: the registered history reader exited0 and root verified source,
+registration, log and output hashes plus original PID absence. The root receipt is
+`docs/receipts/continuation/2026-10-06-update5-rejected-history-complete.json`.
+The next registered aggregate input preparation is now running from
+`coordination/update6-aggregate-input-preparation-v1`; observe its exclusive completion
+and exit before actor capsule admission. No new proposal or GPU contact has occurred.
