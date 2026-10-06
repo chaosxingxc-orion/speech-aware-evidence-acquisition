@@ -1,0 +1,29 @@
+{
+  "schema": "saea-complete-process-backfill-reviewed-v1",
+  "at_utc": "2026-10-06T00:39:36.097028+00:00",
+  "completed_at_utc": "2026-10-06T00:37:54.261519+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-process-metrics-continuation1",
+  "worker_commit": "3cf531b84ee32c29089c6b7379ab39cb28520912",
+  "result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-process-metrics-backfill-v1/complete-process-metrics-v1.json",
+    "sha256": "2d99287303138bcb1b503701d1cd843c155857dc9038d2bb313e61dab3005e8e"
+  },
+  "members": 22,
+  "trajectories": 440,
+  "unique_inputs": 20,
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "learner_exported": false,
+  "runtime_admission": false,
+  "status": "COMPLETE_ROOT_REVIEWED",
+  "original_trial_disposition": "rejected-retain-before-population",
+  "limitations": [
+    "Own-intent card presence does not establish semantic use or slot-value coverage.",
+    "Alarms on wrong drafts do not prove semantically correct criticism.",
+    "Repeated N20 trajectories are not independent observations.",
+    "No causal attribution or stable improvement claim."
+  ],
+  "report": "docs/results/2026-10-06-slurp-update3-process-diagnostics.md"
+}
