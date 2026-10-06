@@ -1,0 +1,82 @@
+{
+  "recorded_at_utc": "2026-10-06T14:43:34.916175+00:00",
+  "status": "RUNNING",
+  "authority": "owner227",
+  "task": "SAEA-Update5-Aggregate-RemainingB1-TailV1",
+  "capture_started": {
+    "registration_sha256": "205fbde30fa4a59e2a9421d8801fdfbf1f999b0ee207e546fc3b18fc2a842a25",
+    "pid": 11288,
+    "at_utc": "2026-10-06T14:36:33.6391624+00:00"
+  },
+  "scientific_started": {
+    "windows_owner_pid": 15940,
+    "at_utc": "2026-10-06T14:36:35.1923550+00:00",
+    "official_score_jobs_expected": 2,
+    "worker_commit": "efae9a68410cbd84ddf2339eec48e8f1465cdf2a",
+    "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1",
+    "registration_sha256": "205fbde30fa4a59e2a9421d8801fdfbf1f999b0ee207e546fc3b18fc2a842a25"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/registration-v1.json",
+    "sha256": "205fbde30fa4a59e2a9421d8801fdfbf1f999b0ee207e546fc3b18fc2a842a25"
+  },
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/prelaunch-proof-v1.json",
+      "sha256": "3c23532828e03bc0fbe7e9c05d9e1078f9219f943f8c1b31799c842bce96ab07"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/entry-pins-v1.json",
+      "sha256": "5adfdd8fe773a6f40537a90f6f0690572613ab2926180e55f47605828988e0cd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/prior-windows-terminal-v1.json",
+      "sha256": "85b9899e1092d490129c774277d6bb4d30e798b6adc24d89e92c5f49f8405f9b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/capture-started.json",
+      "sha256": "048cfd7407134dcde8fe8653d54d52200a2b66f707b7fbf13155686d22c62be8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/scientific-started.json",
+      "sha256": "7e6bb0e44bc40ddb070db13b7bdd23a5a78323473a3844bec0cf6a93d77b035e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/windows-task.xml",
+      "sha256": "cff4455b7cfb90daabadf3985d3989afa04ee668e5d831193726247449597239"
+    }
+  ],
+  "dispatch_members": [
+    "branch-11",
+    "branch-12"
+  ],
+  "preserved_finalized_members": [
+    "seed",
+    "seed-aa",
+    "branch-09",
+    "branch-10"
+  ],
+  "scientific_family_members": 6,
+  "trajectories_per_member": 20,
+  "scientific_configuration_unchanged": true,
+  "regenerated_or_rescored_prefix": false,
+  "monitor_id": "slurp-update5-b1-tail-monitor",
+  "last_observation": {
+    "at_utc": "2026-10-06T14:42:35.078042Z",
+    "finalized_members": 4,
+    "active_member": "branch-11",
+    "active_model_contacts": 91,
+    "live_launcher_pid": 190690,
+    "live_campaign_pid": 190775,
+    "service_health": "ok",
+    "telemetry_age_seconds": 2.4519641399383545,
+    "gpu_memory_mib": 22976,
+    "gpu_utilization_percent": 98,
+    "stop_present": false
+  },
+  "read_status": "UNSIGNED; require all six independent finalizations and a tested explicit original-prefix/new-tail terminal join. Never fabricate missing original outer exit receipts.",
+  "scientific_quality_read": false,
+  "next_cohort_admitted": false,
+  "original_outer_exit_cause": "unestablished",
+  "preservation": "Preserve original coordinator evidence and both precontact failures; no frozen source changes."
+}

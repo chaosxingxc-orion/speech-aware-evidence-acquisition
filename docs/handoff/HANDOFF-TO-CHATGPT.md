@@ -1,5 +1,30 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 single-root tail launched (2026-10-06)
+
+The actual Windows task SAEA-Update5-Aggregate-RemainingB1-TailV1 started at
+14:36:33.6391624Z; its scientific coordinator started at14:36:35.1923550Z.
+This supersedes the prepared-only snapshot below. The unchanged frozen worker
+remains efae9a684; the exact new registration SHA256 is
+205fbde30fa4a59e2a9421d8801fdfbf1f999b0ee207e546fc3b18fc2a842a25.
+Only previously unstarted branch-11/12 are dispatched. The four original members
+remain independently FINALIZED,20 rows and one successful official score each.
+
+At14:42:35Z branch-11 was OPENED with91 model contacts; launcher190690 and
+campaign190775 were live with exact source-bound arguments. Service health was ok,
+telemetry age2.45seconds, GPU22976MiB/98percent and STOP absent. Contacts are not
+completed rows. Revalidate live state before acting. The job-bound15-minute monitor
+is slurp-update5-b1-tail-monitor; delete it only after actual terminal verification.
+
+[Actual launch evidence](../receipts/continuation/2026-10-06-update5-remaining-b1-tail-launch.json)
+binds registration, guards, source pins and actual capture/coordinator receipts.
+The original outer termination cause remains unestablished; both named precontact
+entry defects and all original bytes remain preserved. Full-family READ is unsigned.
+Complete and test the explicit multi-epoch terminal join before scientific reading;
+do not fabricate old exits, replay scores, export partial learner feedback or admit
+remaining-b2 from this progress observation. Root227 covers this bounded continuation;
+no additional human decision is pending. Other carrier holds remain unchanged.
+
 ## Update5 single-root pristine tail prepared and tested (2026-10-06)
 
 The two pending scientific identities remain ABSENT; four original members remain
@@ -4669,7 +4694,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T14:35:36.275321+00:00
+Last refreshed: 2026-10-06T14:43:34.916175+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
