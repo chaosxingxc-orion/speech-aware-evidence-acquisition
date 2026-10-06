@@ -1,5 +1,19 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Historical support-source availability audited (2026-10-06)
+
+All22 already root-read update3 members were audited across440 trace records,
+with hashes checked against original manifests and prepared supply outputs.
+The examined surfaces preserve selected bootstrap values and actual requests,
+but no explicit raw recall-score/ranked-pool record or direct prepared-recall
+binding. [Evidence](../receipts/continuation/2026-10-06-slurp-support-source-availability.json).
+This does not prove every possible upstream artifact absent. Do not substitute
+recomputed retrieval for observed as-flown recall or card presence for semantic
+slot support. A source-bound replay may be a separate labelled diagnostic;
+future direct instrumentation must preserve behavior and be prospectively pinned.
+No new gold/quality values, model/scorer contacts, runtime edits or learner export.
+The live first update4 cohort remains governed by its actual launch below.
+
 ## Complete scientific read and next-stage gates prepared (2026-10-06)
 
 The actual original-a task remains independent and running; no relaunch or

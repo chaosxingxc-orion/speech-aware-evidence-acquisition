@@ -1,0 +1,20 @@
+{
+  "schema": "saea-slurp-support-source-availability-continuation-v1",
+  "at_utc": "2026-10-06T05:53:15.843603+00:00",
+  "status": "COMPLETE_METADATA_AUDIT",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-process-support-source-audit-v1/complete-v1.json",
+    "sha256": "996620a01fb68865239b21dbc90446e36e550692e34f29d7270f34edfc5e0dd2"
+  },
+  "members": 22,
+  "trajectory_records": 440,
+  "finding": "All22 audited members retain selected bootstrap values and actual request traces but no explicit raw recall-score/ranked-pool artifact in the examined surfaces. Frozen query/facet inputs permit reconstruction, which must be labelled replay rather than observed as-flown recall.",
+  "limits": "This audit does not prove absence of every possible archived upstream artifact, measure semantic coverage, or establish knowledge sufficiency. Slot-type/value support remains a separate source-content projection.",
+  "new_contacts": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "runtime_changed": false,
+  "learner_exported": false,
+  "next": "Do not label deterministic reconstruction as observed as-flown raw recall. A later optional projection must bind original inputs, exact recorded selected-output anchors and its replay semantics. Future direct instrumentation must preserve selection behavior and receive its own frozen config/source identity."
+}
