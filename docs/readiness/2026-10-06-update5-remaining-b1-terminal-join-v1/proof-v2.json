@@ -1,0 +1,33 @@
+{
+  "at_utc": "2026-10-06T14:57:11.662795+00:00",
+  "status": "ACTUAL_TERMINAL_JOIN_VERIFIED; EXACT_ROOT_READ_COUNTERSIGNED",
+  "read_plan": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/terminal-join-v2/read-plan-v2.json",
+    "sha256": "a5a352977affa7facaa83bb1bbb2ddc6445a38b327b27df6e394bb6e527ecc7e"
+  },
+  "supersedes": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-update5-remaining-b1-terminal-join-v1/proof-v1.json",
+    "sha256": "c7f507cbc72f75cf411b1a34a06c82468e0e9fb48be5902f0899e97a09d58897"
+  },
+  "tests": {
+    "test_methods_passed": 4,
+    "adversarial_subtests": true,
+    "pure_join_statement_coverage_percent": 100
+  },
+  "actual_operational_rehearsal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/terminal-join-v2/terminal-rehearsal-v1.json",
+    "sha256": "f5d0d7c1a581a139550a817cc8ceb8cd1714686cc7f22c1579b377a95c62dfdb"
+  },
+  "native_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/terminal-join-v2/terminal-read-observation-v1.json",
+    "sha256": "d969dd70aa2b4ff32b2e262fabf03df4b26ca7490896b82a294d314b16c93da1"
+  },
+  "read_authorization": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-flight-v1/root-read-authorization-v1.json",
+    "sha256": "bc806228a7a60dd21a6c1af17457a57eb8f3411037812d7d57fb35e48ce6ddd9"
+  },
+  "unchanged_full_family_qualifier": true,
+  "model_or_scorer_contacts_added": 0,
+  "known_exception": "Preserve original2147943467 outer exit and absent branch-10 Windows/wsl exit receipts; source-bound successful worker/campaign/inspection/observer plus finalized sealed unique-score qualification establish prefix completion. Never synthesize original outer success.",
+  "read_entry_contract_correction": "Prepared v1 expected a nonexistent capture-exit registration field. V2 binds actual capture-start registration and capture-exit child PID separately. No runtime attempt, score or quality replay."
+}

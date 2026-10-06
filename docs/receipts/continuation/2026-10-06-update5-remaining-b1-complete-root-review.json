@@ -1,0 +1,43 @@
+{
+  "at_utc": "2026-10-06T15:02:06.155281+00:00",
+  "status": "COMPLETE_ROOT_REVIEW_NO_ADOPTION",
+  "members": 6,
+  "trajectories": 120,
+  "model_contacts": 690,
+  "read_authorization": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-flight-v1/root-read-authorization-v1.json",
+    "sha256": "bc806228a7a60dd21a6c1af17457a57eb8f3411037812d7d57fb35e48ce6ddd9"
+  },
+  "report": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/results/2026-10-06-slurp-update5-remaining-b1-complete-review.md",
+    "sha256": "2bcd5da6576b3b173cb317d1ebf50c50d513976a1adad461a4384b7f1c2f63fa"
+  },
+  "sources": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B1-READ-V1/report.json",
+      "sha256": "736ecd85782f44d8174740db983913132a0046b30aac5dcbbe40890e79dbe0a1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B1-READ-V1/process-metrics-v1.json",
+      "sha256": "dbfe9d9f805b63cd0a685bbad3f07048ae73a3eb2049db8cbb028077287fbc3f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B1-READ-V1/business-process-cost-v1.json",
+      "sha256": "07e62a37b2382a45130b3125705f5512cb20a3f9c9f5b12f0e3ee330d8540580"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B1-READ-V1/paired-process-diagnostics-v1.json",
+      "sha256": "3be097013b79566df71753dcc13a2b8063b8d2be136887f009a28f763f573c09"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B1-READ-V1/timing-summary.json",
+      "sha256": "de8545c22ce0148727f78d2b1b0fe39b828cd333158ff92db53d14a6a7910d86"
+    }
+  ],
+  "monitor_deleted": "slurp-update5-b1-tail-monitor",
+  "new_model_or_scorer_contacts_for_analysis": 0,
+  "partial_learning_export": false,
+  "formal_incumbent": "seed",
+  "eligible_next": "remaining-b2 unchanged; frozen/live gates required",
+  "whole_K16_conclusion": null
+}

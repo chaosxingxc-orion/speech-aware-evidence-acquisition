@@ -1,0 +1,20 @@
+{
+  "at_utc": "2026-10-06T15:04:30.147256+00:00",
+  "status": "ADMITTED_PENDING_FREEZE_AND_LIVE_GATES",
+  "cohort": "remaining-b2",
+  "root_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-root-complete-review-v1.json",
+    "sha256": "8e85bde68bb4dac0162eafff000ae66f78e116393ecd28458bb1cec48d4d48f1"
+  },
+  "admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b2-root-admission-v1.json",
+    "sha256": "9bf0e5a07ab8b2843e2f843ba272267787655842315e62ef26f1568f873faa72"
+  },
+  "registration_gate": {
+    "at_utc": "2026-10-06T15:03:24.595074+00:00",
+    "exit_code": 0
+  },
+  "model_contacts_added": 0,
+  "runtime_dispatched": false,
+  "changes_to_original_candidate_policies": false
+}
