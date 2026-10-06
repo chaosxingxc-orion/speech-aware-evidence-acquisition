@@ -22,3 +22,19 @@ per-member supply-preparation entries are prepared under external coordination/p
 is writing. Wait for actual actor completion and pin its immutable original bytes.
 Record every spent position; any invalid proposal holds downstream preparation rather
 than triggering a replacement. Capacity, structural and scientific contacts remain HELD.
+
+## Prepared capacity dispatch helpers
+
+The prospective entry at data/coordination/partitioned-update6-diversity-capacity-owner227-v1
+contains the capacity registrar, frozen checker, durable wrappers, live checker, Windows
+owner, mailbox observer and guarded capacity child. All reused runtime sources match
+the exact registration of the successful previous capacity task. Only prospective
+experiment/worker paths and wrapper child hashes change; generic observers and guards
+remain byte-identical. Python AST and Windows PowerShell parsing pass without executing
+any launcher. Frozen-check and runtime-registration logs use distinct names.
+
+Evidence: helper-validation-v1.json SHA256 29dd8b4e5e2671cdafda3456e1c191dac18353ea2b5f2f777053bb2dd37b472b;
+dispatch-helpers-validation-v1.json SHA256 f55cc796f6aa292634c6b6440655f79d94f819438e0c8050ccd3b770258abc1c.
+The full current engineering preparation must complete before registration. Clean frozen
+source, model-free frozen checks, fresh service/resource checks and exact launch admission
+remain mandatory. No new contact or runtime admission follows from prepared helpers.

@@ -11,8 +11,9 @@ exec session25670, under external coordination/partitioned-update6-diversity-pre
 It prepares graph, capacity and smoke configurations for every configured candidate using
 shared runtime and immutable source selection. Verify each member exit and the outer
 terminal receipt before declaring completion. Do not rerun partial or failed preparation.
-A capacity registration entry is prepared under coordination/partitioned-update6-diversity-capacity-owner227-v1
-but has not executed. No new capacity, generation, scorer or GPU admission.
+The complete capacity dispatch helper set is prepared under coordination/partitioned-update6-diversity-capacity-owner227-v1
+but has not executed. Source-pinned reuse, Python AST and Windows PowerShell parsing passed;
+see the prospective Update6 README for both exact validation hashes. No new capacity, generation, scorer or GPU admission.
 
 
 ## Update6 original recording verified; operational compilation running (2026-10-06)
@@ -4972,7 +4973,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T17:25:48.503445+00:00
+Last refreshed: 2026-10-06T17:30:29.268096+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T17:25:48.503445+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T17:30:29.268096+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -108,7 +108,7 @@ inputs or change historical acceptance. Next algorithm changes need prospective 
 identity and comparison rules. Current Update6 remains the original aggregate protocol.
 
 
-Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. Original recording and operational compilation are complete and root verified. Serial engineering preparation is running. The exact future capacity registration entry is prepared under coordination/partitioned-update6-diversity-capacity-owner227-v1 but has not run. Preserve original bytes and all partial preparations; no contacts or admission follow from this preparation.
+Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. Original recording and operational compilation are complete and root verified. Serial engineering preparation is running. The full future capacity dispatch helper set is prepared under coordination/partitioned-update6-diversity-capacity-owner227-v1 but has not run. Source pins match the previous successful capacity entry; Python AST and PowerShell parser checks pass. Exact proof hashes are in the prospective Update6 README. Preserve original bytes and all partial preparations; no contacts or admission follow from this preparation.
 
 
 Latest authority: [operational compilation review](../receipts/continuation/2026-10-06-update6-operational-compilation-reviewed.json). Declared mechanism diversity does not establish business benefit.
