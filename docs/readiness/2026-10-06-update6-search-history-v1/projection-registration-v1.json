@@ -1,0 +1,23 @@
+{
+  "schema": "saea-abstract-population-projection-v1",
+  "status": "ROOT_REGISTERED",
+  "runtime_admission": false,
+  "source_join": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-complete-analysis-v1/successor-source-registration-v1.json",
+    "sha256": "282117de823e53401f81f1e7c02d7a4a115ac32cc91676650d044a0d70e7a0da"
+  },
+  "source_specifications": {
+    "original-a": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1/source-specifications.json",
+      "sha256": "50310128bcb34ff68304a66556aaeaaad15c9e41587c678a465f5998c82855e4"
+    },
+    "remaining-b1": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B1-READ-V1/source-specifications.json",
+      "sha256": "4556bd2352d10bf14a0283ef3e768d45e80134b58e970f615b1a243c1028a21f"
+    },
+    "remaining-b2": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1/source-specifications.json",
+      "sha256": "f0644c2995eccb17a96113aa61c3252595d7d01493c7b3456ae71bd91d347e2a"
+    }
+  }
+}

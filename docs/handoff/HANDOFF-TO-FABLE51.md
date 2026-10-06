@@ -1,5 +1,32 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Aggregate history adapter tested; actual Update6 history still preparing (2026-10-06)
+
+The [aggregate evidence adapter](../readiness/2026-10-06-aggregate-search-feedback-v1/README.md)
+now keeps original population counts independent of next search K and parent selection.
+It reuses complete source/READ qualification and numeric projectors, checks private
+source pins and rechecks authority before create-only storage.104 related tests pass;
+new module statement coverage100percent; engineering-base PASS. No actor export,
+actual new proposal allocation, GPU launch or claimed algorithm improvement.
+
+The old aggregate input was read-only verified as64 records forUpdate2 throughUpdate5.
+Do not trim those histories when preparing aK8 comparison. Actual Update6 rejected
+history is still preparing through the original unified session24745, PID266046,
+started23:47:21Z, entry coordination/update6-rejected-search-history-v1/prepare-v1.py.
+At the latest process check (457 seconds after launch) the exact process was live, CPU-active, with empty stdout/stderr and no
+exit receipt. This is not evidence of failure. Inspect that process and durable exit;
+never restart it on observation timeout. The separate history inspection/session94428
+ended successfully. Preserve old Update6 rejection and active parents.
+
+Next bind successful history completion plus the complete process receipt into an
+actual aggregate record, then complete exact matched parent-plan/actor/analysis
+registration. Fixed-parent and multi-parent arms must see the same aggregate evidence;
+current source records do not grant model contacts. Keep business/process/cost order,
+fixed knowledge/pool, cumulative exposure and human-before8x400. The current research
+roadmap already records SkillOpt/GEPA/Training-Free GRPO/DGM and newer meta-optimizer
+references; do not treat archive retention or diverse prose as proven learning.
+
+
 ## Qualified parent plan complete; search recording integrated offline (2026-10-06)
 
 The original proposal-plan process/session76919 exited0 at23:39:43Z; it is terminal.

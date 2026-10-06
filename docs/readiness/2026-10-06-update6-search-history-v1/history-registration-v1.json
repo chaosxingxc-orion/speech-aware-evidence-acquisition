@@ -1,0 +1,18 @@
+{
+  "schema": "saea-rejected-context-history-registration-v1",
+  "status": "ROOT_REGISTERED",
+  "input_sha256": "61b3a6d8cee5ef756f3d56c773be19fb2ef116aa1b0d83715b254179da2bcd73",
+  "trial_contract": {
+    "relpath": "docs/readiness/2026-10-06-update6-diversity-prospective-v1/trial-contract-v1.json",
+    "sha256": "bca55466567c6776094a246b91a2201c0796357df1b94bf3d4f96d1e0156ef85"
+  },
+  "root_decision": {
+    "relpath": "docs/receipts/continuation/2026-10-06-partitioned-update6-root-retention.json",
+    "sha256": "ee056c6ab66bfbe2ceec5a8ab982222f21a77bec417d99d77038421fa3fe73f6"
+  },
+  "successor_projection": {
+    "relpath": "docs/readiness/2026-10-06-update6-search-history-v1/projection-registration-v1.json",
+    "sha256": "041d3be94a70d4d455256799cdf7ef9a1b9ab65cad40e3532fb1ceaee71e31eb"
+  },
+  "runtime_admission": false
+}
