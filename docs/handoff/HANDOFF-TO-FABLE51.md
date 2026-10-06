@@ -1,5 +1,27 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Algorithm-reference continuation: meta-policy versus search policy (2026-10-06)
+
+The [roadmap supplement](../readiness/2026-10-06-system-evolution-algorithm-roadmap-v1/README.md#latest-meta-optimizer-references-and-implementation-limits)
+adds primary-source SePO and HyperAgents checks with pinned source hashes in
+meta-source-audit.json. SePO's official implementation is not released in the
+inspected repository. HyperAgents' inspected selector chooses uniformly among
+eligible parents despite computing score/child metadata. Do not infer behavior
+from unused calculations or import arbitrary code evolution into template search.
+
+Prioritize a matched fixed-parent/multi-parent comparison, then revisable optimizer
+experience or meta-prompt improvement as separately registered algorithm factors.
+Astra's more diverse proposer prompt is a candidate meta-policy, not a proved
+learning algorithm. Preserve aggregate K-record feedback, immutable history,
+bounded active guidance and the same fixed knowledge/pool. Distinguish proposal
+collapse, A/A ambiguity and measured stagnation; none establishes a local optimum
+by itself. No new actor/GPU/scorer contact or admission follows this source review.
+
+The original proposal-plan process was revalidated live at23:36:26Z (PID264149,
+original unified session76919); stdout/stderr and exit were still empty/absent.
+Follow that exact process rather than restarting it. No new GPU monitor is needed.
+
+
 ## Initial multi-parent selection complete; proposal mapping in progress (2026-10-06)
 
 The root-only first qualified selection ended23:27:36Z with exit0 after complete

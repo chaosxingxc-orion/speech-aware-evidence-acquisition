@@ -1,0 +1,38 @@
+{
+  "schema": "saea-read-only-reference-source-audit-v1",
+  "at_utc": "2026-10-06T23:36:19.389672+00:00",
+  "sources": [
+    {
+      "repo": "taowangcheng/SePO",
+      "commit": "83083782a9487ef61962d933fc72abbe95f9fa76",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/taowangcheng/SePO/83083782a9487ef61962d933fc72abbe95f9fa76/README.md",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-meta-source-audit-v1/taowangcheng__SePO__README.md",
+      "sha256": "f93bb1b923b7dd3c87fde777ee7110a03adf57e6a02aecd094bc26fc3d01483f",
+      "bytes": 1345,
+      "executed": false
+    },
+    {
+      "repo": "facebookresearch/HyperAgents",
+      "commit": "59a68f672dfb92c74aeb7e61535d776fb36e172d",
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/facebookresearch/HyperAgents/59a68f672dfb92c74aeb7e61535d776fb36e172d/README.md",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-meta-source-audit-v1/facebookresearch__HyperAgents__README.md",
+      "sha256": "d4b72ab8e622f58d963cc8b93cc71246dcfe50c7d798d835a042c4c847e1e9fa",
+      "bytes": 3277,
+      "executed": false
+    },
+    {
+      "repo": "facebookresearch/HyperAgents",
+      "commit": "59a68f672dfb92c74aeb7e61535d776fb36e172d",
+      "path": "select_next_parent.py",
+      "url": "https://raw.githubusercontent.com/facebookresearch/HyperAgents/59a68f672dfb92c74aeb7e61535d776fb36e172d/select_next_parent.py",
+      "local_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-system-evolution-meta-source-audit-v1/facebookresearch__HyperAgents__select_next_parent.py",
+      "sha256": "78b992380472ef222a12ac0e1facb3fbd13bebcf77595918738525569e03db83",
+      "bytes": 1844,
+      "executed": false
+    }
+  ],
+  "runtime_contacts": 0,
+  "third_party_code_executed": false
+}

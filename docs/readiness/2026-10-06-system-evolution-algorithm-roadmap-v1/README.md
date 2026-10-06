@@ -166,3 +166,85 @@ Do not calculate proposal efficiency from serving request totals.
 This document is an algorithm roadmap, not an admission of any new algorithm contact,
 budget, candidate, dataset, model, carrier or GPU run. Shared runtime/adapter/provider/
 controller, official scorer and Omni answer authority remain the execution foundation.
+
+
+## Latest meta-optimizer references and implementation limits
+
+Primary pages and source files were rechecked on 2026-10-06. This is a targeted
+continuation of the existing survey, not an exhaustive latest-method ranking.
+See meta-source-audit.json for the additional immutable source pins. No external
+optimizer code was executed and no research model contact was made.
+
+- [SePO paper](https://arxiv.org/abs/2606.04465), submitted 2026-06-03, optimizes the
+  prompt-generating agent's own system prompt, then uses that evolved optimizer on
+  target tasks. Its archive preserves possible stepping stones. The inspected
+  [official repository](https://github.com/taowangcheng/SePO/tree/83083782a9487ef61962d933fc72abbe95f9fa76)
+  contains README/assets and states that code release preparation is in progress.
+  Treat its algorithm as a paper reference, not a runnable reproduced baseline.
+- [HyperAgents paper](https://arxiv.org/abs/2603.19461), submitted 2026-03-19, makes
+  both the task agent and its modification procedure editable. The inspected
+  [parent selector](https://github.com/facebookresearch/HyperAgents/blob/59a68f672dfb92c74aeb7e61535d776fb36e172d/select_next_parent.py)
+  filters eligible evaluated parents and computes score/child-count metadata, but
+  actually returns uniform random.choice over eligible parents. Do not describe
+  this implementation as score-weighted or descendant-count-weighted selection.
+  Its executable code evolution exceeds our template-only scope; borrow only the
+  distinction between optimizing task behavior and optimizing the proposal rule.
+- [SkillOpt's current official overview](https://github.com/microsoft/SkillOpt)
+  describes bounded edits, rejected-edit memory and held-out acceptance in the
+  default paper-style path. Its 2026-07-02 v0.2.0 notes separate experimental
+  controls from conservative CLI defaults. Keep our earlier pinned code audit;
+  do not equate a project headline with a mandatory behavior of every code path.
+- [GEPA's official overview](https://github.com/gepa-ai/gepa) supports broader text
+  artifact optimization and diagnostic side information. Our aggregate-only
+  representation is an explicit adaptation: it does not reproduce its default
+  full-trajectory reflection or task-instance Pareto coverage.
+
+Our inference: the Astra-authored diversity prompt is a candidate meta-policy,
+not evidence that the meta-policy learned. Credit a meta-policy only after its
+resulting candidate systems are evaluated under matched search/evaluation budgets.
+Freeze the proposal rule during a search comparison. In a later registered
+comparison, vary that rule while holding parent selection, model, data, feedback
+representation and actual allowance accounting comparable. Include both the
+meta-optimization cost and the cost of evaluating its generated task policies.
+Do not approve a generator because its prose appears more diverse.
+
+## Sequential algorithm questions and stagnation diagnostics
+
+Keep the first prospective comparison focused on fixed-parent versus bounded
+multi-parent search. Test revisable experience and meta-prompt evolution later if
+this leaves an unresolved question. Do not silently change current configs or
+old whole-population acceptance. These are research priorities, not extra runs.
+
+Use three observable distinctions when progress stalls:
+
+1. Proposal collapse: exact duplicates, no-change rate, parent concentration,
+   declared mechanism coverage, and observed process-profile similarity.
+2. Evaluation ambiguity: same-policy A/A variation, paired uncertainty, sample
+   denominators, and unresolved runtime reproducibility. Weakly separated scores
+   do not establish a local optimum.
+3. Search stagnation: no qualified business improvement over a prospectively
+   configured complete-round window, after accounting for uncertainty and cost.
+   Respond by reallocating existing future slots to eligible historical parents,
+   recombination or broader joint edits. Do not silently add contacts or slots.
+
+Mechanism tags can include evidence-preserving Solver behavior, selective Reviewer
+criticism, revision restraint, and explicit handoff ownership. These tags describe
+hypotheses; aggregate behavior and complete-system scores test them. Lexical
+novelty or higher alarm rates alone are not progress. A high-risk exploration
+candidate can be a search parent under bounded rules without becoming deployed.
+
+Retain the owner's exact K-record aggregate input per evaluated population and
+all historical population records. A bounded active parent/experience state can
+coexist with immutable history. Store corroborating and contradicting record IDs
+for experience; retire guidance from active use without deleting evidence.
+Do not expose concrete examples, task knowledge, source inventories, gold or raw
+trajectories to the learner as a shortcut to reproducing another paper.
+
+For every subsequent algorithm comparison, report official task quality and
+intent/reliability first, detection/false-alarm/repair/damage statistics second,
+then measured latency and total search cost. Separate best observed search score
+from qualified adopted performance. Any repeated pool remains optimization data;
+small-panel improvements and behavior diversity do not prove generalization or
+escape from all local optima. A feedback-free control remains necessary for the
+later feedback-specific learning claim; two feedback-aware selectors test search
+strategy, not that claim.
