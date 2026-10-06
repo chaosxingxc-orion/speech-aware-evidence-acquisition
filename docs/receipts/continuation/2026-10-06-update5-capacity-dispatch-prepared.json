@@ -1,0 +1,38 @@
+{
+  "schema": "saea-capacity-dispatch-preparation-root-review-v1",
+  "at_utc": "2026-10-06T09:54:28.180828+00:00",
+  "status": "PREPARED_PENDING_ENGINEERING_COMPLETION",
+  "helper_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/helper-validation-v1.json",
+    "sha256": "20f6eafe5fd41eca423c946bd0c1dd32ca881a1d4ca3987d019c14a6df1f1ca4"
+  },
+  "dispatch_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/dispatch-helpers-prepared-v1.json",
+    "sha256": "a9fa2eb355a08c67cda5b8cd52fb9b51f87971947b1bdc3370403f99c1aa1135"
+  },
+  "dispatch_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/dispatch-helpers-validation-v1.json",
+    "sha256": "4308add431413d8bad852c4972c33716b7d36a56c0b12fb55b822fb1f96bf0a0"
+  },
+  "checks": "Python AST and PowerShell parser validation passed; reuse working mailbox launch and continuous guard. No dynamic validation or admission is claimed.",
+  "engineering_observation": {
+    "pid": 146639,
+    "start_ticks": "60641504",
+    "child_process": "149851      51 /home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-preparation-v1/prepare-engineering-member-v1.py branch-09",
+    "completed_members": [
+      "branch-01",
+      "branch-02",
+      "branch-03",
+      "branch-04",
+      "branch-05",
+      "branch-06",
+      "branch-07",
+      "branch-08"
+    ],
+    "failed_members": [],
+    "overall_exit_present": false
+  },
+  "contacts": 0,
+  "runtime_admission": false,
+  "next": "After exact engineering terminal success, verify all configured member supplies, write engineering-prepared receipt, serially integrate, execute prepared capacity registrar, freeze/check, finalize registration, revalidate live state and launch the exact Windows job with a fifteen-minute monitor."
+}

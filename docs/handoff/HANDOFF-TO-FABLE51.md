@@ -1,5 +1,26 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 capacity entry prepared; serial supplies still live (2026-10-06)
+
+The new nongenerative entry is prepared under
+coordination/partitioned-update5-aggregate-capacity-owner227-v1. See
+[helper preparation](../receipts/continuation/2026-10-06-update5-capacity-helpers-prepared.json)
+and [dispatch preparation](../receipts/continuation/2026-10-06-update5-capacity-dispatch-prepared.json).
+The registrar and frozen checker bind new update5 identities. The launcher,
+continuous guard and mailbox implementation reuse the previous working entry.
+The prospective finalizer pins the mailbox implementation and Windows driver;
+Python AST and PowerShell parse validation pass. Nothing was dispatched or
+registered for live contact. Do not reuse old failure or admission receipts.
+
+The original serial engineering preparation remains live with verified PID/start
+identity and a live child. Its terminal receipt is still absent. Observe the same
+process, never duplicate it. After all configured members complete, verify every
+prepared supply and actual role binding, write the engineering-prepared receipt,
+serially integrate, run the prepared registrar, freeze and check all members,
+then finalize a fresh mailbox registration. Fresh live guards and an exact
+Windows-owned launch remain necessary before any tokenizer contact. No GPU job
+or heartbeat is active; structural/scientific evaluation remains separately held.
+
 ## Update5 proposal and operational compilation complete; supplies preparing (2026-10-06)
 
 All16 original positions passed the shared compiler:14 provisional and no-change08/15,

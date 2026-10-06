@@ -1,0 +1,94 @@
+{
+  "schema": "saea-capacity-entry-helpers-prepared-v1",
+  "at_utc": "2026-10-06T09:52:52.564490+00:00",
+  "status": "PREPARED_NOT_EXECUTED",
+  "population": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "files": [
+    {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/prepare-capacity-entry-v1.py",
+        "sha256": "e1d07f47ac63cefeeb00169114ec01c1688c45f221313ac423557d65de3c116f"
+      },
+      "prepared": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/prepare-capacity-entry-v1.py",
+        "sha256": "40a2c5cad214301aca185d662269eb92c1b3b8fb28d8793d5637e545ce888c3e"
+      },
+      "change": "Prospective update5 identities only; frozen check receipt version starts at v1."
+    },
+    {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/frozen-check-v2.py",
+        "sha256": "636b6f779bb158af2feeacbda693b2d41dce8155510ad5301d2136db75dd9722"
+      },
+      "prepared": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/frozen-check-v1.py",
+        "sha256": "8128997410cc298b2ecd385c9f4756c1c1f12bef3131aed4a29e51688de6bb98"
+      },
+      "change": "Prospective update5 identities only; frozen check receipt version starts at v1."
+    },
+    {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/launch-member-v1.py",
+        "sha256": "565cd857048d9ae264d695157b0abf753913f56fe3cd573c3c0391f5f344a432"
+      },
+      "prepared": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/launch-member-v1.py",
+        "sha256": "565cd857048d9ae264d695157b0abf753913f56fe3cd573c3c0391f5f344a432"
+      },
+      "change": "Byte-identical working mailbox entry; registration supplies all experiment identities."
+    },
+    {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/guarded-child-v1.py",
+        "sha256": "050dc7dcbfc4b4213b7453b45e160c2c4ec8b0acd3aa463c9bc716658edc6b10"
+      },
+      "prepared": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/guarded-child-v1.py",
+        "sha256": "050dc7dcbfc4b4213b7453b45e160c2c4ec8b0acd3aa463c9bc716658edc6b10"
+      },
+      "change": "Byte-identical working mailbox entry; registration supplies all experiment identities."
+    },
+    {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/continuous-observer-v1.py",
+        "sha256": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630"
+      },
+      "prepared": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/continuous-observer-v1.py",
+        "sha256": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630"
+      },
+      "change": "Byte-identical working mailbox entry; registration supplies all experiment identities."
+    },
+    {
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/windows_memory_mailbox.py",
+        "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+      },
+      "prepared": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/windows_memory_mailbox.py",
+        "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+      },
+      "change": "Byte-identical working mailbox entry; registration supplies all experiment identities."
+    }
+  ],
+  "checks": [
+    "All Python sources parsed with ast.parse without creating bytecode.",
+    "Mailbox launcher, guard, continuous observer and mailbox implementation are byte-identical to the previous working entry.",
+    "Prospective registrar and frozen checker bind update5 only."
+  ],
+  "requirements": [
+    "Wait for complete current engineering preparation and verified terminal exit.",
+    "Write complete engineering receipt and serially integrate prepared member files.",
+    "Run capacity registration, freeze clean worker and verify all configured members.",
+    "Finalize a fresh registration binding the mailbox observer implementation and Windows driver before live admission."
+  ],
+  "contacts": 0,
+  "runtime_admission": false,
+  "external_record": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/helper-validation-v1.json",
+    "sha256": "20f6eafe5fd41eca423c946bd0c1dd32ca881a1d4ca3987d019c14a6df1f1ca4"
+  }
+}
