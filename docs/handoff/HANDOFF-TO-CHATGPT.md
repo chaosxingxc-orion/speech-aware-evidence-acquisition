@@ -1,5 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Current shared-base carrier regression verified (2026-10-06)
+
+The shared runner and FlightRuntime differ from the October2 carrier proof. Root ran
+five focused existing test modules against current source06fcabff3:89 passed,zero
+failures/errors/skips. Original process is absent and source/log/JUnit hashes are verified.
+[Regression receipt](../receipts/continuation/2026-10-06-cross-carrier-native-regression.json).
+This is synthetic Audio2Tool/E21/E22 adapter, native branch and terminal-custody evidence;
+no actual model/tokenizer/official scorer or dataset contact, new admission or quality read.
+The full goal still requires actual carrier execution and qualification; these tests do
+not release held carriers. Update6 capacity remains the same original Windows task.
+
+
 ## Update6 scientific blueprint verified; capacity remains running (2026-10-06)
 
 Root verified the completed model-free scientific blueprint, exact source/config/policy

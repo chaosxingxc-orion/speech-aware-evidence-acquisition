@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T18:26:51.471154+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T18:37:48.944499+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -112,6 +112,17 @@ this proposer improvement. Each role may use its own reasoning structure and ful
 common-prefix similarity is not a search objective. Keep valid native output contracts.
 
 ### Verification, boundaries and unresolved requirements
+
+## Current shared-base carrier regression verified (2026-10-06)
+
+The shared runner and FlightRuntime differ from the October2 carrier proof. Root ran
+five focused existing test modules against current source06fcabff3:89 passed,zero
+failures/errors/skips. Original process is absent and source/log/JUnit hashes are verified.
+[Regression receipt](../receipts/continuation/2026-10-06-cross-carrier-native-regression.json).
+This is synthetic Audio2Tool/E21/E22 adapter, native branch and terminal-custody evidence;
+no actual model/tokenizer/official scorer or dataset contact, new admission or quality read.
+The full goal still requires actual carrier execution and qualification; these tests do
+not release held carriers. Update6 capacity remains the same original Windows task.
 
 Root verified complete-source bindings, original retention-rule agreement, JSON plans,
 whitespace checks and the handoff freshness gate. This continuation changes evidence and

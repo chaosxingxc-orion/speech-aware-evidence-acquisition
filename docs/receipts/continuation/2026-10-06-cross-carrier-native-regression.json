@@ -1,0 +1,76 @@
+{
+  "at_utc": "2026-10-06T18:37:48.944499+00:00",
+  "counts": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 89
+  },
+  "dataset_rows_read": 0,
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-cross-carrier-native-regression-v1/started.json",
+      "sha256": "e66c09d1c2d0778af369e7a8981b8c30ff0d7ce94fdbdb04bdb18257b92a5b5b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-cross-carrier-native-regression-v1/exit.json",
+      "sha256": "a8b7dc6f5eb3b596f46725372b373ff2fb45e6048db042b30a3b127ea0d0535a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-cross-carrier-native-regression-v1/junit.xml",
+      "sha256": "ec1cb0c52604839bdf0bf96e92cceafd6b1d6c3aa8f0ee9724d713cf56135511"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-cross-carrier-native-regression-v1/stdout.log",
+      "sha256": "1aed250c8404171369b45f47194c906c830f7a38b61e25ae6583509ff140baea"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/2026-10-06-cross-carrier-native-regression-v1/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "external_model_tokenizer_official_scorer_contacts": 0,
+  "gpu_admission_added": false,
+  "mutations_to_other_carrier_sources_queues_services": false,
+  "not_proven": [
+    "Real model inference and actual request capacity for the new carrier path",
+    "End-to-end actual carrier attempt finalization and official scoring",
+    "Task-quality benefit or transfer of SLURP text-learning policies",
+    "Reopening held carriers or any new E22 flight admission"
+  ],
+  "original_process_absent": true,
+  "reason": "Shared runner and FlightRuntime source hashes differ from the October2 synthetic engineering proof. Revalidate focused existing tests without claiming real carrier execution.",
+  "schema": "saea-current-cross-carrier-offline-regression-v1",
+  "scope": "Synthetic Audio2Tool/Earnings role branches, adapter plumbing, native terminal custody and E22 consumption contracts on the current shared base.",
+  "source_commit": "06fcabff3e4f83abd404abac9e045a8ba55da57d",
+  "sources": [
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_earnings_native_branch_integration.py",
+      "sha256": "af3b468ba5e1540ed79c815bc00849a407e8226c088e50bd27aac12d3d40480f"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_audio2tool_native_episode_integration.py",
+      "sha256": "d0fd0fcab47dde71249eb1e6ff94b2f46cf2108e5742bf8818ada14968f4d7d2"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_audio2tool_native_branch_integration.py",
+      "sha256": "e5e7be5688cd6f56f854dc14eedde5871fabe5e6e7229428ec5c79b96d5a3846"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_earnings22_consumption_profile.py",
+      "sha256": "798046a476895958ba744453d26fa6a7538f7dd2bd3bbe476debb83700852efc"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/tests/unit/test_earnings22_runtime_adapter.py",
+      "sha256": "7e522aa61b6f863df212b7774af24bdc506f04dc8f5eaca337c9c98d0d6787b2"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "d571888abaa1dc9479f1d6a48915b860ed7730c66328c4690a2e94da80b44f36"
+    },
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "e51b7b2746f738c5840eea2d858feab0421e9676afe3f2f09ebb6dcb1f8ed075"
+    }
+  ]
+}
