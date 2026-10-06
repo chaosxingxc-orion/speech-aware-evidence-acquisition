@@ -1,5 +1,27 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Qualified parent plan complete; search recording integrated offline (2026-10-06)
+
+The original proposal-plan process/session76919 exited0 at23:39:43Z; it is terminal.
+The [completion receipt](../receipts/continuation/2026-10-06-multiparent-proposal-plan-complete.json)
+binds eight configured positions: four local,two recombination,two exploration.
+All four actual selected parent bundles passed a read-only fixed-substrate check.
+Do not restart this completed process or infer contact authority from its record.
+
+The [new recording seam](../readiness/2026-10-06-configured-search-update-recording-v1/README.md)
+uses separate aggregate-search algorithm/schema identities and the shared archive,
+policy materializer and compiler. Config controls counts/budgets. Every invalid or
+no-change position remains spent; two-parent lineage preserves both exposures.
+276 related tests pass; new recording coverage100percent/shared policy92percent;
+engineering-base PASS. No actual proposal slot, model/scorer contact or GPU launch.
+
+The next required step is a source-qualified aggregate-history/actor-input adapter,
+exact parent-plan binding, separate prospective analysis/acceptance registration
+and actual contact admission. A registration hash in the storage seam is not READ
+qualification. Preserve Update6 rejection and old baseline interfaces. No scientific
+benefit or carrier release follows from these model-free tests.
+
+
 ## Algorithm-reference continuation: meta-policy versus search policy (2026-10-06)
 
 The [roadmap supplement](../readiness/2026-10-06-system-evolution-algorithm-roadmap-v1/README.md#latest-meta-optimizer-references-and-implementation-limits)

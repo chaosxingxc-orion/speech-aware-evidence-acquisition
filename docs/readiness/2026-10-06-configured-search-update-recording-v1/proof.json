@@ -1,0 +1,58 @@
+{
+  "schema": "saea-offline-engineering-proof-v1",
+  "at_utc": "2026-10-06T23:44:00.439447+00:00",
+  "test_files": [
+    "test_system_search_learning.py",
+    "test_system_text_policy.py",
+    "test_system_text_policy_binding.py",
+    "test_system_context_learning.py",
+    "test_system_context_proposals.py",
+    "test_system_context_iteration.py",
+    "test_qualified_parent_proposals.py",
+    "test_node_context_policy.py",
+    "test_system_search_archive.py"
+  ],
+  "tests_passed": 276,
+  "new_search_recording_tests": 35,
+  "tests_failed": 0,
+  "tests_skipped": 0,
+  "coverage": {
+    "system_search_learning": {
+      "statements": 73,
+      "missed": 0,
+      "percent": 100
+    },
+    "system_text_policy": {
+      "statements": 412,
+      "missed": 34,
+      "percent": 92
+    }
+  },
+  "red_evidence": [
+    "Initial test collection refused missing system_search_learning module.",
+    "Cross-slot fixed-substrate test failed before a population-wide compatibility fence was added."
+  ],
+  "engineering_base_check": "PASS",
+  "git_diff_check": "PASS",
+  "actual_plan_receipt": "docs/receipts/continuation/2026-10-06-multiparent-proposal-plan-complete.json",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "actual_proposal_slots_reserved": 0,
+  "scope": "Synthetic configured reservation/response/materialization/compilation tests and actual-parent read-only compatibility. Source-qualified input export and live contact registration are not implemented by this storage layer.",
+  "additional_checks": {
+    "harness_admission": "PASS",
+    "results_ledger": "PASS_WITH_278_REPORTED_FINDINGS_AND_UMBRELLA_COMPARISON_SKIPPED",
+    "tool_catalog": "PASS",
+    "experiment_handoff": "NO_ERRORS_SNAPSHOT_AND_DIRTY_TREE_WARNINGS_NO_LAUNCH_AUTHORITY",
+    "openjiuwen_native_reuse": "PASS_SIX_SYNTHETIC_PROOFS",
+    "derived_media_confinement": "PASS_NEW_OUTPUT_PRESERVED_HISTORICAL_FILES_RESTORED",
+    "stage3_algorithm_label": "PASS",
+    "finite_completion_policy": "PASS",
+    "stage3_effect_floor": "PASS_ZERO_BLOCKING_18_ADVISORIES",
+    "handoff_freshness": "PASS"
+  },
+  "check_notes": [
+    "The initial native reuse check omitted required --output and exited 2 before proof execution; the corrected invocation completed without model contacts.",
+    "The confinement check writes its legacy default output path. Preserve its new output in this readiness directory and restore the two previously clean historical receipt files byte-for-byte from HEAD; do not commit a historical receipt rewrite."
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "schema": "saea-qualified-search-plan-completion-v1",
+  "at_utc": "2026-10-06T23:42:30.228071+00:00",
+  "exit": {
+    "exit_code": 0,
+    "at_utc": "2026-10-06T23:39:43.376951+00:00"
+  },
+  "original_session": 76919,
+  "implementation_commit": "df4fd14a5",
+  "configuration": {
+    "relpath": "docs/readiness/2026-10-06-system-context-algorithm-contrast-n20-v1/multi-parent-proposal-config-v1.json",
+    "sha256": "ebc3b139525eddd23336d2f6d12ab0f7792d23b6fbfde290e504c980386536d0"
+  },
+  "record": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/qualified-parent-proposals/9d058056a9a90e9ba91c9f685cae702593715982ebac9234a00ec52f28227f56.json",
+    "sha256": "14bf60a4b74559269c445b4c0b15c71655ebfca2b1317d3b776edf05bbb177fa"
+  },
+  "record_sha256": "cc1d4caeb51d4878b2aafd6e15be917e1052fe40605bbc5974a343678f5a3a27",
+  "plan_sha256": "c8f9c32b045858591cade99a98e7c885356830dc14bf179d9d445c63629a4a4d",
+  "mode_counts": {
+    "local": 4,
+    "recombine": 2,
+    "explore": 2
+  },
+  "slots": [
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-01",
+      "mode": "local",
+      "parent_bundle_ids": [
+        "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-02",
+      "mode": "local",
+      "parent_bundle_ids": [
+        "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-03",
+      "mode": "local",
+      "parent_bundle_ids": [
+        "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-04",
+      "mode": "recombine",
+      "parent_bundle_ids": [
+        "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-05",
+      "mode": "recombine",
+      "parent_bundle_ids": [
+        "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef",
+        "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-06",
+      "mode": "explore",
+      "parent_bundle_ids": [
+        "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-07",
+      "mode": "explore",
+      "parent_bundle_ids": [
+        "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-08",
+      "mode": "local",
+      "parent_bundle_ids": [
+        "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572"
+      ]
+    }
+  ],
+  "actual_parent_substrate_compatible": true,
+  "parent_ids": [
+    "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef",
+    "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d",
+    "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d"
+  ],
+  "learner_exported": false,
+  "proposal_allocation_granted": false,
+  "runtime_admission": false,
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "scope": "Completed root planning and model-free actual-parent compatibility; source-qualified aggregate input and contact admission remain before proposals."
+}

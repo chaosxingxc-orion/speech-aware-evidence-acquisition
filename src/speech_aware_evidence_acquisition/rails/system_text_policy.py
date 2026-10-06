@@ -24,6 +24,8 @@ PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v1"
 CONTEXT_PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v2"
 NODE_PROPOSAL_SCHEMA = "saea-text-policy-update-proposal-v3"
 CONTEXT_LEARNING_PROPOSAL_SCHEMA = "saea-context-policy-update-proposal-v1"
+SEARCH_PROPOSAL_SCHEMA = "saea-search-policy-update-proposal-v1"
+SEARCH_ALGORITHMS = ("fixed-parent-aggregate-v1", "bounded-multiparent-aggregate-v1")
 TEXT_CHARACTER_CAP = 32768
 PROPOSAL_KEYS = frozenset({"schema", "branch", "round", "slot", "parent_ids",
                            "changes", "rationale", "hypotheses", "evidence"})
@@ -394,6 +396,38 @@ class TextPolicyUpdateProposal:
         return cls(canonical(d))
 
 
+    @classmethod
+    def from_search_json(cls, d):
+        """Validate the separately named aggregate search without baseline aliases."""
+        fields = {"schema", "algorithm", "iteration", "candidate_id", "mode",
+                  "parent_ids", "changes", "rationale", "hypotheses", "evidence"}
+        require(isinstance(d, dict) and set(d) == fields and d["schema"] == SEARCH_PROPOSAL_SCHEMA,
+                "search proposal fields differ")
+        require(d["algorithm"] in SEARCH_ALGORITHMS
+                and type(d["iteration"]) is int and d["iteration"] > 0,
+                "search algorithm/iteration differs")
+        _text(d["candidate_id"])
+        modes = {"fixed"} if d["algorithm"] == "fixed-parent-aggregate-v1" else {"local", "recombine", "explore"}
+        require(isinstance(d["mode"], str) and d["mode"] in modes, "search mode differs")
+        parents = d["parent_ids"]
+        require(isinstance(parents, list) and len(parents) == (2 if d["mode"] == "recombine" else 1),
+                "search parent count differs")
+        for parent in parents:
+            sha(parent)
+        require(len(set(parents)) == len(parents), "duplicate search parent")
+        _context_changes(d["changes"])
+        _text(d["rationale"])
+        require(isinstance(d["hypotheses"], list) and isinstance(d["evidence"], list),
+                "invalid search hypothesis/evidence index")
+        for hypothesis in d["hypotheses"]:
+            _text(hypothesis)
+        for evidence in d["evidence"]:
+            sha(evidence)
+        require(len(set(d["evidence"])) == len(d["evidence"]), "duplicate search evidence")
+        reject_non_latin_scripts(d)
+        return cls(canonical(d))
+
+
 def _read_pin(pin, root):
     _pin(pin)
     path = (Path(root) / pin["relpath"]).resolve()
@@ -401,6 +435,16 @@ def _read_pin(pin, root):
     raw = path.read_bytes()
     require(hashlib.sha256(raw).hexdigest() == pin["sha256"], "artifact hash mismatch")
     return raw
+
+
+def require_search_parent_compatibility(parents):
+    """Require identical frozen substrate for explicit template recombination."""
+    require(bool(parents), "search parents required")
+    documents = [p.as_json() for p in parents]
+    fixed = BUNDLE_KEYS - {"parent_ids", "role_text", "cumulative_sources"}
+    require(all(d["schema"] == NODE_BUNDLE_SCHEMA for d in documents)
+            and all(all(d[k] == documents[0][k] for k in fixed) for d in documents),
+            "search parents differ in fixed system substrate")
 
 
 def apply_text_proposal(proposal, *, parents, added_sources, knowledge=None, construction_receipt=None,
@@ -412,9 +456,14 @@ def apply_text_proposal(proposal, *, parents, added_sources, knowledge=None, con
     """
     p = proposal.as_json()
     require(parents and p["parent_ids"] == [b.bundle_id for b in parents], "proposal parent binding differs")
+    if p["schema"] == SEARCH_PROPOSAL_SCHEMA:
+        TextPolicyUpdateProposal.from_search_json(p)
+        require(knowledge is None and construction_receipt is None and optimizer_experience is None,
+                "search updates cannot override fixed knowledge or optimizer experience")
+        require_search_parent_compatibility(parents)
     d = parents[0].as_json()
     changes = p["changes"]
-    if p["schema"] in (NODE_PROPOSAL_SCHEMA, CONTEXT_LEARNING_PROPOSAL_SCHEMA):
+    if p["schema"] in (NODE_PROPOSAL_SCHEMA, CONTEXT_LEARNING_PROPOSAL_SCHEMA, SEARCH_PROPOSAL_SCHEMA):
         require(d["schema"] == NODE_BUNDLE_SCHEMA,
                 "node proposals require an explicitly frozen four-role parent")
     if "node_context" in changes:
@@ -429,7 +478,7 @@ def apply_text_proposal(proposal, *, parents, added_sources, knowledge=None, con
     if "role_text" in changes:
         require(isinstance(changes["role_text"], dict)
                 and set(changes["role_text"]) <= (
-                    {"perception", "solver", "reviewer", "planner"} if p["schema"] in (NODE_PROPOSAL_SCHEMA, CONTEXT_LEARNING_PROPOSAL_SCHEMA)
+                    {"perception", "solver", "reviewer", "planner"} if p["schema"] in (NODE_PROPOSAL_SCHEMA, CONTEXT_LEARNING_PROPOSAL_SCHEMA, SEARCH_PROPOSAL_SCHEMA)
                     else {"solver", "reviewer", "planner"}), "unknown role text")
         d["role_text"].update(changes["role_text"])
     for key in ("construction_instruction", "supply"):
