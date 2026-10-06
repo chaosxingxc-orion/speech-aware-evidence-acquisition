@@ -1,0 +1,127 @@
+{
+  "schema": "saea-windows-owned-memory-envelope-qualification-v1",
+  "at_utc": "2026-10-06T02:58:05.284205+00:00",
+  "authority": "owner227 bounded engineering; no task contact authority conferred",
+  "status": "MODEL-FREE-ENVELOPE-QUALIFIED",
+  "source_base": "b7978ff160539edbd79e6bbc15c83ebecbad9da0",
+  "unit_tests": {
+    "passed": 181,
+    "mailbox_statement_coverage_percent": 100,
+    "tdd_initial_result": "missing implementation import failure observed before code was written"
+  },
+  "healthy_cases": 2,
+  "fresh_measurements": 14,
+  "minimum_observed_free_gib": 20.49399185180664,
+  "maximum_observation_seconds": 0.08835794299375266,
+  "fault_proof": {
+    "injection": "terminate only owned Windows sampler after harmless worker starts",
+    "expected_guard_status": "resource-stop",
+    "actual_guard_exit": 125,
+    "actual_worker_returncode": -15,
+    "fixture_lease_preserved": true
+  },
+  "prior_proof_wrapper_defect": "V1 nested worker, lease and sampler exited zero, but outer PowerShell ExitCode was null. Retaining process handles before wait corrected capture; independent exit-7 check passed. V1 preserved and not relabeled.",
+  "original_failure_cause": "WSL-launched observer pipe timeout; underlying cause remains unestablished. This alternate transport does not establish that ReadLineAsync or memory scarcity caused it.",
+  "limits": [
+    "Model-free runtime and resident-session factories are synthetic; actual shared lease handoff, kernel custody, nested process topology, start wait and running guard execute.",
+    "Windows broker source and all launch bindings must be pinned for a future actual entry.",
+    "Old frozen capacity source, current failed flight lease, original attempts and controls are unchanged.",
+    "No new capacity, tokenizer, model or scorer contact; scientific families remain HELD."
+  ],
+  "generation_contacts": 0,
+  "tokenizer_contacts": 0,
+  "scorer_contacts": 0,
+  "active_lease_sha256_unchanged": "8d61bf26510704db81775e2eef3290df9dd46f6f7cc8b03e89991e4c42cf48af",
+  "source_files": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/session/windows_memory_mailbox.py",
+      "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+    },
+    {
+      "path": "scripts/flights/batch/windows_memory_mailbox.ps1",
+      "sha256": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5"
+    },
+    {
+      "path": "tests/unit/test_windows_memory_mailbox.py",
+      "sha256": "32aeebaa650b610d93765134bd5fffed761d0cc4b8f14cdf860c5f07fd1a61d9"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/registration.json",
+      "sha256": "4f183565c37c1532e0ef5f76aaf53782998e2ee9eba383a33e45168af55004d3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/windows-finished.json",
+      "sha256": "a84d7d47063ae9b9e87c01b75e6d2dadc602d3d0a6a47f9fe58248032da66a69"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-loss-proof-v1/registration.json",
+      "sha256": "d52a742b996c2e19ff8904b14efd34293393f55f666ef34f778f2c70680fe398"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-loss-proof-v1/windows-finished.json",
+      "sha256": "010796e7da3ba80605ace4695ec8084c29a0490d1ca5b212f9773c90f1d8675f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v1/windows-finished.json",
+      "sha256": "352887e1623a5ddf398299b2863a1b3a6ecf73d53c9a7cdb4f6426bdb20ebb8b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/system32-envelope/finished.json",
+      "sha256": "84c3e489bec36e03b29b5d002f56f1c86d5816ce0036b4e03fc08d7b8d193704"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/system32-envelope/memory-wait/events.jsonl",
+      "sha256": "8899e7fcdf5650de6982d785ae38a46ea319c145702a0d5ecca60f65551ec32a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/system32-envelope/memory-guard/events.jsonl",
+      "sha256": "2c227e42f3ccbe876f99db9d0c49b88b9010481490f4479d470238bfbaa0b818"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/system32-envelope/memory-guard/finished.json",
+      "sha256": "dad64e323699877c220a875087ce2d8e5b96ed09287687c95d1648fdc967bcd9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/system32-envelope/mailbox/finished.json",
+      "sha256": "59feebfd225bc99374b435c9cc1f2f8f87d5bdaf40453c13af79897992ca2b79"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/linux-envelope/finished.json",
+      "sha256": "5854dcbce8394b12b1fa28d094bd98ac1b43158e57d2b73446fc3d297ec3e06d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/linux-envelope/memory-wait/events.jsonl",
+      "sha256": "946637ee987b1f5d485daf7df267c9b24916e6962092d75b1117e68482539867"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/linux-envelope/memory-guard/events.jsonl",
+      "sha256": "55a9f06acb32fd3533e88b1fc3016027af360f2a4513096c3aa3a5ddc3bb0412"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/linux-envelope/memory-guard/finished.json",
+      "sha256": "7c4b72c0fa5bca81b5aaab7d49d4f11408feeb73942db382acdb70ef8c3cf144"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-envelope-proof-v2/linux-envelope/mailbox/finished.json",
+      "sha256": "ebc79b3ab1303f97c1c3ef5363fb485ec21c60fa4ef58a272ebfddc214fafc88"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-loss-proof-v1/running-observer-loss/finished.json",
+      "sha256": "8d1e2488270ae29ba4b145d08a7ebc3e6848ff3aed7cd563c8ffb168b50e2f25"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-loss-proof-v1/running-observer-loss/injected-loss.json",
+      "sha256": "62a964bbda42aa631bf51641eae9c46f3816443401a4c46b82ff7086e977a73b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-loss-proof-v1/running-observer-loss/memory-guard/events.jsonl",
+      "sha256": "0f37545e0c4605bbca1328b0a0515336c7c9fe58f1303a035b44e299ed33596c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-windows-mailbox-loss-proof-v1/running-observer-loss/memory-guard/finished.json",
+      "sha256": "1b29eb1082c805bbddc1481b5dc1c4c24af5f7f89da23e7337cee9d796059652"
+    }
+  ]
+}

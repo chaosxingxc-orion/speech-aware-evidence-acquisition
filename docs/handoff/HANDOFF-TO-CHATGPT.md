@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Windows-owned memory transport qualified without task contacts (2026-10-06)
+
+[The opt-in mailbox observer](../readiness/2026-10-06-windows-owned-memory-observer-v1/README.md)
+passes181 related tests and100percent Python-module statement coverage. Two
+Windows-owned model-free proofs executed the shared lease handoff/kernel custody,
+nested child, startup wait and running guard under private fixture data roots:
+14 fresh measurements passed and both harmless workers exited normally. Runtime
+and resident-session factories were synthetic. A registered sampler-loss proof
+stopped only its own private worker and preserved its fixture lease. Evidence:
+[qualification](../receipts/continuation/2026-10-06-update4-windows-mailbox-envelope-qualified.json).
+
+The original pipe failure cause remains unestablished. A failed first proof's
+outer exit-code capture was preserved and corrected only in a separate proof.
+Actual update4 capacity is still stopped with zero contacts. Preserve the existing
+continuation1 lease, old attempts, frozen94190872 worker and all failed records.
+No real entry was retried, no controls reconciled, no cache/host changes performed.
+Register a fresh exact capacity entry and observer lifecycle before further
+contacts; retain20GiB startup/8GiB running and original scientific scope. Model-free
+transport proof is not actual capacity, template improvement or GPU admission.
+The quality/process/cost reporting order and human-before8x400 boundary remain.
+
 ## Update4 capacity stopped before contact; real envelope repair required (2026-10-06)
 
 All16 frozen source/runtime/role/supply checks passed once on94190872a21c2b49f45917c85dc9629ecab994db;
@@ -3097,7 +3118,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T02:43:43.142357+00:00
+Last refreshed: 2026-10-06T02:58:05.284205+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
