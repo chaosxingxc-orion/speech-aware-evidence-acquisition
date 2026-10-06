@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update4 final configured partition launched (2026-10-06)
+
+Windows task SAEA-Update4-RemainingB2-Scientific-V1 launched at2026-10-06T07:52:27.7518357+00:00 from frozen /home/chao/saea-worktrees/codex-update4-remaining-b2-scientific-v1 atdccbfdee55862c612c1a8c81cedd7eaf0a01f894. All six frozen checks passed; registration SHA25636cdcbeb6b63b2d1f7c5dabab649720e35e5aeb5998c490c41651392621223cb. Config-derived members are seed, seed-aa and branches13-16,20 inputs each/120 trajectories. All prior configured cohorts are complete/root-reviewed; this is the unchanged final partition, not a new selection or proposal allocation.
+
+[Launch receipt](../receipts/continuation/2026-10-06-partitioned-update4-process-remaining-b2-launch.json) pins every source. Use its own monitor-operational-v1.py, not obsolete global batch state. First member OPENED and13 contacts at07:53:54Z, service healthy/identity verified, STOP absent. Startup guard passed three stable observations in20.51seconds. Prelaunch Windows free20.22GiB, then18.02GiB during worker initialization; running floor remains8GiB. Revalidate live values. Keep20GiB startup and observe-only boundaries.
+
+The15-minute heartbeat slurp-update4-remaining-b2-scientific-monitor is ACTIVE; delete after verified terminal with no bound generator/scorer/observer. Monitor never reads quality, changes controls or retries. After all six independent verified seals/unique official scores and exact root READ, run registered process/presentation/paired diagnostics. Whole-trial qualification and complete numeric-feedback join still require all three cohorts. No partial-trial learner export or adoption. Prior rejected/spent/frozen artifacts and other-carrier holds remain unchanged.
+
 ## Update4 remaining-b1 complete; adjacent remaining-b2 admitted (2026-10-06)
 
 All six remaining-b1 members independently finalized20 rows with verified seals,
