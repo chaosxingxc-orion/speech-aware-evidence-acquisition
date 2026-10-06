@@ -1,0 +1,93 @@
+{
+  "schema": "saea-structural-operational-successor-prepared-v1",
+  "at_utc": "2026-10-06T04:25:23.955207+00:00",
+  "status": "PREPARED_NOT_DISPATCHED",
+  "authority": "Root227 exact structural resource disposition",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/registration-v1.json",
+    "sha256": "3a1ca6cbe1f8841366388429178450a574e3c30ce2967319d9f383b04aea9165"
+  },
+  "predecessor_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/registration-v1.json",
+    "sha256": "0b19802b2999e574d7b4c14e0c2b690931b98601028a5414ab8d2d81697e5bfa"
+  },
+  "root_resource_disposition": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-structural-startup-resource-disposition.json",
+    "sha256": "07f8a6e2dcaa0af4fe5358652ba38cbbcfcaf1a9975bbb96ed76502425c89e5f"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1",
+  "worker_commit": "988ec3d9446b462c47f0312fc002e21bb5f95352",
+  "members": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "budget": {
+    "generation_contacts": 832,
+    "fit_endpoint_contacts": 3328,
+    "official_score_jobs": 0
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 18,
+    "wait_seconds": 600
+  },
+  "validation": {
+    "unittest_methods_passed": 3,
+    "positive_and_rejection_cases": 26,
+    "statement_coverage_percent": 100,
+    "statement_count": 27,
+    "powershell_parse": true,
+    "all_pins_verified": 135,
+    "original_pins_preserved": true,
+    "whole_family_frozen_checks": 16,
+    "structural_audit_premature_exit": 2,
+    "structural_audit_acceptance_written": false
+  },
+  "helpers": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/structural_resource_admission.py",
+      "sha256": "f58b73e1f553a334ac87f1d4f96a5a9a31bb5f1c03ee01b9f4440045b024edfc"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/test_structural_resource_admission.py",
+      "sha256": "46b320e508f2397e47d308d244970f6c50e16772b2dd23769b65cccf60f72074"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/launch-member-v1.py",
+      "sha256": "690f1942b23da02d08bf61bca2dbcd3b611857a78a687cc96834958275902d3f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/structural-windows-v1.ps1",
+      "sha256": "546d64a2b42cfe0cbd5246280d8602a67e1183fc0ac8f51695f98156e8f207a4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/structural-audit-v1.py",
+      "sha256": "84e16113336d9636f5a59945d158ba3ff06718138f40a80ea6fe3cb557ac59c0"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/live-prelaunch-v1.py",
+      "sha256": "ab2408ec749f4e6d00e7b056955e419ff66bbb1863c3fc8f093396a239ec71e4"
+    }
+  ],
+  "preserved": "Original20GiB registration and all source-bound model plans remain unchanged. This exact source-bound operational resource amendment supersedes only their startup resource condition for the registered four-row structural family.",
+  "scientific_inputs_changed": false,
+  "model_contacts": 0,
+  "official_scorer_contacts": 0,
+  "remaining": "Fresh live-memory/service/control checks, one exact Windows task launch, epoch receipt and15-minute script-only monitor. Any execution failure stops without retry."
+}
