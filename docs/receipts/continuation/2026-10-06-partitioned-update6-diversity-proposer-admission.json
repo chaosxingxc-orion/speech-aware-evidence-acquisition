@@ -1,0 +1,21 @@
+{
+  "schema": "saea-partitioned-context-proposer-admission-v1",
+  "at_utc": "2026-10-06T16:36:06.399873+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-PROPOSE-V1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT",
+  "authority": "Owner227, explicit one isolated GPT-6.1 Sol full-population generation direction, K-record aggregate instruction, and requested Astra proposer-prompt improvement.",
+  "plan": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-update6-diversity-prospective-v1/actor-plan-v1.json",
+    "sha256": "7c492eb8454471b56e0f1c21c4e5b89f6ad7b3ecc82a8cf7bf4669a930917c3a",
+    "bytes": 3817
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2/manifest.json",
+    "sha256": "cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865",
+    "bytes": 4387
+  },
+  "semantic_opportunities": 1,
+  "design_slots": 16,
+  "runtime_dispatch": false,
+  "paid_api_spend": 0
+}

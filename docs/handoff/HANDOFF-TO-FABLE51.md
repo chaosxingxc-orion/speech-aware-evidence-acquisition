@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T16:32:41.139248+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T16:38:34.968719+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -33,33 +33,29 @@ It retains all cohort/candidate/control statistics and is not itself learner adm
 The last GPU task is terminal and its fifteen-minute monitor was deleted. No new GPU
 flight or proposal contact has been admitted. Expected service idleness is intentional.
 
-### Actual offline work to resume
+### Actual work to resume
 
-Both Update5 source preparations completed successfully. History exited0 at
-2026-10-06T16:27:51.356581Z; PID201319 is absent, all reader/log/output pins were
-verified. Its root completion is [history-complete](../receipts/continuation/2026-10-06-update5-rejected-history-complete.json).
-The process bridge exited0 at16:18:18.534492Z, PID202274 is absent, and its root
-[completion](../receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json)
-verifies all10/6/6 members and exact numeric projection equivalence. Preserve both;
-never replay complete scores or rerun completed preparations without a named reason.
+All offline history/process/input readers are complete; original PIDs201319,202274 and
+204560 are absent. Root verified their exact completion and source hashes. The next
+aggregate capsule has64 records (four complete K16 populations),1,441,654 actor bytes
+and no per-input task contents. Current active parents remain unchanged after rejection.
 
-The next input preparation started2026-10-06T16:30:21.523122Z, PID204560, from
-`coordination/update6-aggregate-input-preparation-v1/prepare-next-input-v1.py` with
-operation `prepare --plan-sha256 e0607df7b145ef31361ef75065c81bc0a7ccda256ca990555945edd63fb8c6e9`.
-Revalidate that exact command/start identity and `started.json`, `exit.json`,
-`stdout.log`, `stderr.log`, `complete.json` in the same directory. It is currently
-live and adds no model/scorer contacts. A polling timeout is not termination.
-The root-only continuation registration-v2.json has been created under the Update5
-complete-continuation readiness package; no actor reservation/contact follows yet.
+One GPT-6.1 Sol/high fork-none proposal is admitted and reserved before contact.
+The exposure row and [root admission](../receipts/continuation/2026-10-06-partitioned-update6-diversity-proposer-admission.json)
+bind the exact manifest, final output contract, full aggregate input and future config.
+Final capsule: `system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2`.
+Manifest SHA256: `cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865`.
+Reservation exited0 at16:37:21.906568Z with zero model contacts. Actor dispatch is next;
+no actor is live yet at this checkpoint. Use exactly one original response and no replacements.
 
 ### Exact continuation sequence
 
 1. Completed: both history and process bridge exited successfully; root verified sources, outputs and original PID absence. Preserve their exact completion receipts.
 2. Completed: root recorded `docs/receipts/continuation/2026-10-06-update5-rejected-history-complete.json` using schema `saea-rejected-history-preparation-complete-v1`, status `COMPLETE`.
 3. Completed: root recorded `docs/receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json` using schema `saea-complete-process-backfill-reviewed-v1`, status `COMPLETE_ROOT_REVIEWED`. Reuse the exact verified bridge registration/result pins; do not replay scores.
-4. Running: observe the registered offline input preparation in `coordination/update6-aggregate-input-preparation-v1/prepare-next-input-v1.py` using those verified receipts. Its plan is [next-input-plan-v1.json](../readiness/2026-10-06-update5-complete-continuation-v1/next-input-plan-v1.json), SHA256 `e0607df7b145ef31361ef75065c81bc0a7ccda256ca990555945edd63fb8c6e9`. The operation is `prepare --plan-sha256 <exact hash>`. Use `PYTHONDONTWRITEBYTECODE=1`, Python `-B`, the project venv and the root checkout's `src` on PYTHONPATH.
+4. Completed: root verified the registered offline input preparation in `coordination/update6-aggregate-input-preparation-v1/prepare-next-input-v1.py` using those verified receipts. Its plan is [next-input-plan-v1.json](../readiness/2026-10-06-update5-complete-continuation-v1/next-input-plan-v1.json), SHA256 `e0607df7b145ef31361ef75065c81bc0a7ccda256ca990555945edd63fb8c6e9`. The operation is `prepare --plan-sha256 <exact hash>`. Use `PYTHONDONTWRITEBYTECODE=1`, Python `-B`, the project venv and the root checkout's `src` on PYTHONPATH.
 5. Verify exactly K aggregate records per complete observed population and T*K in historical input. Keep complete node templates/assembly, business/process/cost metrics, denominators, missingness, uncertainty and separate control references. Keep private source lists, raw cases/answers/gold/knowledge outside the actor.
-6. Prospectively pin the new prompt/interface, actual config, original-output contract, exact actor model/version, source manifest, reservation and exposure admission. GPT-6.1 Sol/high remains the single population generator. Do not dispatch merely because input preparation completed.
+6. Completed before contact: exact prompt/interface, actual config, original-output contract, model/effort, source manifest, reservation and exposure admission are bound. Dispatch the one admitted actor using its final allowlist. GPT-6.1 Sol/high remains the single population generator. Do not dispatch merely because input preparation completed.
 7. Only after proposal compilation and separate registered full-request capacity/structural proof may root admit the next bounded GPU experiment. Derive K/N/M/member order/sampling/budgets from one immutable config throughout. Current preparation retains N20; no expansion or hidden budget increase.
 
 ### Changed interfaces and verified limits

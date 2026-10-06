@@ -1,0 +1,38 @@
+{
+  "schema": "saea-aggregate-continuation-preparation-complete-v1",
+  "status": "COMPLETE_ROOT_VERIFIED_UNRESERVED",
+  "at_utc": "2026-10-06T16:33:32.152232+00:00",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-06-update5-complete-continuation-v1/registration-v2.json",
+    "sha256": "0a391ece8e9db30a624d444d70b720bb4b719e461101ab3c43e06101ac9cfe45"
+  },
+  "input_sha256": "61b3a6d8cee5ef756f3d56c773be19fb2ef116aa1b0d83715b254179da2bcd73",
+  "actor_input_sha256": "44f6a91c92d57d9529204382576aae97133cafe547ed4d824df198cf620cca78",
+  "actor_file": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-aggregate-input-preparation-v1/actor-input.json",
+    "sha256": "1159fa9719e5dbe812ed4fdae0448696bab1cc284963342edbb65efc9ec37652"
+  },
+  "actor_bytes": 1441654,
+  "K": 16,
+  "observed_rounds": 4,
+  "records": 64,
+  "cumulative_exposure_count": 35554,
+  "learner_dispatched": false,
+  "runtime_admission": false,
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "verified_at_utc": "2026-10-06T16:34:59.945013+00:00",
+  "preparation_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-aggregate-input-preparation-v1/exit.json",
+    "sha256": "49275f0c5910de6f24dfd6f549afd734fb030f08451ecfcf237f2d281b26b762",
+    "bytes": 289
+  },
+  "preparation_completion": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-aggregate-input-preparation-v1/complete.json",
+    "sha256": "48b0459c7c089f7b5d19106fa8df806b71d849b4a0e7336e614d9439a27be6c7",
+    "bytes": 1030
+  },
+  "verification": "Original PID absent; exit0, empty stderr, source/log/registration/input hashes and canonical actor hash verified. All configured candidate positions occur in every observed population; one active parent per position. No private per-input view exported."
+}

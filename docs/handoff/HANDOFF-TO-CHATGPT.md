@@ -1,5 +1,25 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 aggregate capsule admitted and reserved before contact (2026-10-06)
+
+Offline input preparation exited0 at16:33:32.183005Z. Root verified all source/log/
+registration/actor hashes and absent PID204560. The exact aggregate capsule contains
+64 records across4 complete K16 populations,1,441,654 actor-file bytes, one active parent
+per position and cumulative exposure retained privately. No per-input actor export.
+[Completion](../receipts/continuation/2026-10-06-update6-aggregate-input-complete.json).
+
+Root admitted one GPT-6.1 Sol/high fork-none opportunity using the prospective Astra
+aggregate-template-diversity-targeting-v2 prompt and exact native interface. Final
+capsule is data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2,
+manifest SHA256 cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865.
+The prepared v1 capsule is preserved; v2 only supersedes output-contract contact status.
+[Admission](../receipts/continuation/2026-10-06-partitioned-update6-diversity-proposer-admission.json)
+and exposure row precede contact. Exact reservation exited0 at16:37:21.906568Z with
+zero model contacts. The actor has not yet been dispatched at this checkpoint.
+Input canonical hash61b3a6d8cee5ef756f3d56c773be19fb2ef116aa1b0d83715b254179da2bcd73;
+actor canonical hash44f6a91c92d57d9529204382576aae97133cafe547ed4d824df198cf620cca78.
+No retry/replacement, paid API or GPU admission; preserve original response once emitted.
+
 ## Update5 history complete; Update6 input preparation running (2026-10-06)
 
 History preparation exited0 at16:27:51.356581Z. Root verified all pinned reader sources,
@@ -4892,7 +4912,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T16:32:41.139248+00:00
+Last refreshed: 2026-10-06T16:38:34.968719+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

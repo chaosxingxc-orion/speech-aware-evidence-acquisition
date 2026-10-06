@@ -1,0 +1,67 @@
+{
+  "schema": "saea-context-partitioned-update-actor-plan-v1",
+  "status": "ROOT-ADMITTED-BEFORE-CONTACT",
+  "at_utc": "2026-10-06T16:36:06.399873+00:00",
+  "root_authority": 227,
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-PROPOSE-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "split_role": "discovery",
+  "split_identity_hash": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "source_population": {
+    "relpath": "configs/experiments/slurp-context-template-update2-complete-source-join-v1.json",
+    "sha256": "3655493ee97dcb69dbb786e84b82e7c3e6ffb151e92f191a8f99c5c93f2106d4"
+  },
+  "source_registration": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-update5-complete-continuation-v1/registration-v2.json",
+    "sha256": "0a391ece8e9db30a624d444d70b720bb4b719e461101ab3c43e06101ac9cfe45",
+    "bytes": 1244
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2/manifest.json",
+    "sha256": "cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865",
+    "bytes": 4387
+  },
+  "source_packet": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/inputs/partitioned-complete-update6-aggregate-diversity-v2.json",
+    "sha256": "e5b1d7c9882f79fb28febfd9dd0e75af4c4a1b9204a45bb703b8b5128bc6ee9c",
+    "bytes": 54571692
+  },
+  "output_contract": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2/output-contract.json",
+    "sha256": "c170425495f20fbb946f8002ddb667eebaa1c1339ad72696350c1cf2b5398bd2",
+    "bytes": 7936
+  },
+  "target_iteration": 6,
+  "semantic_opportunities": 1,
+  "design_slots": 16,
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "max_input_bytes": 2097152,
+  "max_output_bytes": 262144,
+  "paid_api_spend": 0,
+  "original_usage_null_when_unavailable": true,
+  "no_matched_compute_claim": true,
+  "no_automatic_retry_or_replacement": true,
+  "runtime_admission": false,
+  "scope": "One full-population template and existing context-assembly update using prospectively pinned Astra-designed diversity-targeting-v2 instructions. Read all configured K records per complete historical population and full templates. Keep negative/no-change history, active parents, process denominators/uncertainty, fixed assets and separate cohort controls. No per-input content, source lists, knowledge, root chat or new GPU authority.",
+  "context_policy": {
+    "method": "Use bounded aggregate-record views and exact shared-template deduplication. Inspect every candidate and observed population. Do not reconstruct or request per-input records.",
+    "exact_model_tokenizer_available": false,
+    "full_capsule_context_fit_claim": false,
+    "provider_enforced_caps_claim": false,
+    "max_single_tool_output_tokens": 6000,
+    "target_visible_input_tokens": 90000,
+    "mechanical_original_output_bytes": 262144
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "prompt_version": "aggregate-template-diversity-targeting-v2",
+  "native_interface": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2/native-interface-v1.json",
+    "sha256": "b59bfa7ace2dedc8e7b63564f099c6856ab3e1163b4e3798223519cee445d6b0",
+    "bytes": 5123
+  }
+}
