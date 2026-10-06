@@ -1,5 +1,22 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Aggregate learner dispatched; evaluation base prepared (2026-10-06)
+
+Reservation completed normally before contact. The fresh fork-none GPT-6.1 Sol/high
+actor /root/aggregate_template_update5_sol is now authoring one original configured
+population response from the aggregate-only allowlist. See
+[dispatch](../receipts/continuation/2026-10-06-update5-aggregate-proposer-dispatched.json).
+Preserve all configured positions and the original emitted bytes; no feedback repair,
+replacement allocation or blind-comparator claim. Root must compile only after the
+actor reports its original file and that file is verified.
+
+The prospective update5 evaluation config changes only the experiment identity from
+update4: same three8/4/4 candidate cohorts, same20 distinct inputs, same four nodes,
+decoding/geometry/contacts and per-cohort seed/A/A. The evaluated family would contain
+440 trajectories, not440 distinct inputs. Evaluation intent and a pinned operational
+compiler are prepared; engineering-base and handoff freshness pass. This remains
+HELD_PENDING_ORIGINAL_RESPONSE, with no GPU dispatch or monitoring job.
+
 ## Aggregate update5 input verified and proposer admitted (2026-10-06)
 
 The separately captured v2 input preparation completed exit0. Root checked original
@@ -3862,7 +3879,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T09:18:28.802468+00:00
+Last refreshed: 2026-10-06T09:21:22.697160+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

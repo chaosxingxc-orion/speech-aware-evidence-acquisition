@@ -1,0 +1,21 @@
+{
+  "schema": "saea-isolated-template-proposer-dispatch-v1",
+  "at_utc": "2026-10-06T09:21:22.697160+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-PROPOSE-V1",
+  "agent": "/root/aggregate_template_update5_sol",
+  "requested_model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "precontact_reservation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/precontact-reservation-receipt.json",
+    "sha256": "5a7959a1f7b30985643d9a6e66479ef85a0db5f9c20dbf11bb51aca62620580c"
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/actor-capsule-v1/manifest.json",
+    "sha256": "0875fa089670b28ac7824d8a1f74937577e79f949906dd6c119290d2d7638793"
+  },
+  "response_destination": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/original-response-v1.json",
+  "status": "DISPATCHED",
+  "no_automatic_retry_or_replacement": true,
+  "runtime_admission": false
+}

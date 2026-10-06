@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Aggregate learner dispatched; evaluation base prepared (2026-10-06)
+
+Reservation completed normally before contact. The fresh fork-none GPT-6.1 Sol/high
+actor /root/aggregate_template_update5_sol is now authoring one original configured
+population response from the aggregate-only allowlist. See
+[dispatch](../receipts/continuation/2026-10-06-update5-aggregate-proposer-dispatched.json).
+Preserve all configured positions and the original emitted bytes; no feedback repair,
+replacement allocation or blind-comparator claim. Root must compile only after the
+actor reports its original file and that file is verified.
+
+The prospective update5 evaluation config changes only the experiment identity from
+update4: same three8/4/4 candidate cohorts, same20 distinct inputs, same four nodes,
+decoding/geometry/contacts and per-cohort seed/A/A. The evaluated family would contain
+440 trajectories, not440 distinct inputs. Evaluation intent and a pinned operational
+compiler are prepared; engineering-base and handoff freshness pass. This remains
+HELD_PENDING_ORIGINAL_RESPONSE, with no GPU dispatch or monitoring job.
+
 ## Aggregate update5 input verified and proposer admitted (2026-10-06)
 
 The separately captured v2 input preparation completed exit0. Root checked original

@@ -1,0 +1,36 @@
+{
+  "schema": "saea-partitioned-context-evaluation-intent-v1",
+  "status": "HELD_PENDING_ORIGINAL_RESPONSE",
+  "root_authority": 227,
+  "source_input_sha256": "ad1f2d14ddea7906fa46295b50a71117c5d40ce1ee190766d3f3621ed9685656",
+  "trial_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "population_update_batch": "complete-update5-aggregate-history-v1",
+  "compiler": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-preparation-v1/compile-original-population-v1.py",
+    "sha256": "f8b022867f34e1fcc2282073ffd4cf53c69bb014523b39d391a08a22be74075c"
+  },
+  "preserve_all_positions": true,
+  "runtime_admission": false,
+  "no_change_disposition": "Retain unchanged policy content at its configured position with new cumulative provenance and evaluation identity; never replace or omit.",
+  "invalid_disposition": "Preserve the original response and hold compilation if any position is invalid; do not ask the actor for repair.",
+  "statistical_priority": [
+    "Official complete-system quality and reliability",
+    "Complete process rates, harms and uncertainty",
+    "Resource costs including latency"
+  ],
+  "acceptance": "Keep strict-population-utility-sum as the registered learning retention signal; process diagnostics do not change historical decisions or establish efficacy.",
+  "registered_at_utc": "2026-10-06T09:20:39.262157+00:00",
+  "config_derivation": {
+    "previous": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+      "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+    },
+    "changed_fields": [
+      "experiment_id"
+    ],
+    "fixed_scope": "Same candidate partitions, node set, reused roster, deterministic sampling, contacts and observe-only boundary behavior."
+  }
+}
