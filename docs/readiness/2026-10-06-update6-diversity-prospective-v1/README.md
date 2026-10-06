@@ -62,3 +62,14 @@ data/coordination/partitioned-update6-diversity-preparation-v1/compiled-main-che
 SHA256 f2a3cf93c39ee5c02ca50dc59cbef93b930848d1697071599bae1bd19f09d8ec. These checks cover the
 integrated original policies and existing main configuration; they do not qualify partial
 engineering preparations or authorize runtime contacts.
+
+## Complete engineering preparation
+
+All configured candidates completed serial preparation at2026-10-06T17:45:35.528817Z.
+The complete-preparation verifier then exited0; it independently checked composed role
+bindings, config/supply hashes, original selection equality, all child/source/log pins and
+absence of original processes. The authoritative receipt is
+[complete engineering preparation](../../receipts/continuation/2026-10-06-partitioned-update6-diversity-engineering-prepared.json).
+All graph/capacity/structural cells remain HELD; no model/tokenizer/scorer contact occurred.
+Earlier prepared-only verifier statements above describe the previous checkpoint.
+Capacity registration is next; no frozen/live admission or GPU launch is implied.

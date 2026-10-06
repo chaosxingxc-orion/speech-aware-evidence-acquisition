@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T17:40:31.464999+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T17:49:32.561328+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -50,7 +50,7 @@ Reservation exited0 at16:37:21.906568Z with zero model contacts. The actor
 /root/aggregate_template_update6_sol is complete. Original response153517 bytes, SHA256
 e5251d2c9864254c49028f3aed821f1e1612a3c0670cd3a3e70db6ba14ee78a1;16 positions
 with14 edits and no-change08/15. Preserve partial inspection of secondary cost ranges
-and null usage. Shared original recording exited0 at17:17:52.479103Z; root verified all source/log pins and PID absence. All16 records passed. Operational compilation exited0 at17:21:21.208423Z and root verified all configured member and graph pins. Serial engineering preparation started17:24:03.627927Z as PID208718, start ticks63356126, exec session25670, under coordination/partitioned-update6-diversity-preparation-v1. Verify every child and the outer terminal receipt before capacity registration; never restart from timeout. No GPU admission.
+and null usage. Shared original recording exited0 at17:17:52.479103Z; root verified all source/log pins and PID absence. All16 records passed. Operational compilation exited0 at17:21:21.208423Z and root verified all configured member and graph pins. Serial engineering preparation completed at17:45:35.528817Z: all16 candidates and48 configurations. The independent verifier exited0, checking composed bindings/config hashes, original selection equality, all child exits and absence of original processes. The complete engineering receipt is docs/receipts/continuation/2026-10-06-partitioned-update6-diversity-engineering-prepared.json. No GPU admission.
 
 ### Exact continuation sequence
 
@@ -59,7 +59,7 @@ and null usage. Shared original recording exited0 at17:17:52.479103Z; root verif
 3. Completed: root recorded `docs/receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json` using schema `saea-complete-process-backfill-reviewed-v1`, status `COMPLETE_ROOT_REVIEWED`. Reuse the exact verified bridge registration/result pins; do not replay scores.
 4. Completed: root verified the registered offline input preparation in `coordination/update6-aggregate-input-preparation-v1/prepare-next-input-v1.py` using those verified receipts. Its plan is [next-input-plan-v1.json](../readiness/2026-10-06-update5-complete-continuation-v1/next-input-plan-v1.json), SHA256 `e0607df7b145ef31361ef75065c81bc0a7ccda256ca990555945edd63fb8c6e9`. The operation is `prepare --plan-sha256 <exact hash>`. Use `PYTHONDONTWRITEBYTECODE=1`, Python `-B`, the project venv and the root checkout's `src` on PYTHONPATH.
 5. Verify exactly K aggregate records per complete observed population and T*K in historical input. Keep complete node templates/assembly, business/process/cost metrics, denominators, missingness, uncertainty and separate control references. Keep private source lists, raw cases/answers/gold/knowledge outside the actor.
-6. Completed before contact: exact prompt/interface, actual config, original-output contract, model/effort, source manifest, reservation and exposure admission are bound. Completed: the one GPT-6.1 Sol/high actor emitted its original response and stopped. Do not dispatch again. Shared original recording is complete and verified. Operational compilation is complete and root verified. Engineering preparation is in progress as identified above; wait for all configured members and the outer terminal receipt before capacity registration.
+6. Completed before contact: exact prompt/interface, actual config, original-output contract, model/effort, source manifest, reservation and exposure admission are bound. Completed: the one GPT-6.1 Sol/high actor emitted its original response and stopped. Do not dispatch again. Shared original recording is complete and verified. Operational compilation is complete and root verified. Engineering preparation and independent root verification are complete. Next execute the prepared capacity registrar once, then integrate and freeze the exact registration before model-free frozen and live checks.
 7. Only after proposal compilation and separate registered full-request capacity/structural proof may root admit the next bounded GPU experiment. Derive K/N/M/member order/sampling/budgets from one immutable config throughout. Current preparation retains N20; no expansion or hidden budget increase.
 
 ### Changed interfaces and verified limits
@@ -108,17 +108,17 @@ inputs or change historical acceptance. Next algorithm changes need prospective 
 identity and comparison rules. Current Update6 remains the original aggregate protocol.
 
 
-Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. Original recording and operational compilation are complete and root verified. Serial engineering preparation is running. The full future capacity dispatch helper set is prepared under coordination/partitioned-update6-diversity-capacity-owner227-v1 but has not run. Source pins match the previous successful capacity entry; Python AST and PowerShell parser checks pass. Exact proof hashes are in the prospective Update6 README. Preserve original bytes and all partial preparations; no contacts or admission follow from this preparation.
+Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. Original recording and operational compilation are complete and root verified. Serial engineering preparation is complete and independently verified. The full future capacity dispatch helper set is prepared under coordination/partitioned-update6-diversity-capacity-owner227-v1 but has not run. Source pins match the previous successful capacity entry; Python AST and PowerShell parser checks pass. Exact proof hashes are in the prospective Update6 README. Preserve original bytes and all partial preparations; no contacts or admission follow from this preparation.
 
 
 Latest authority: [operational compilation review](../receipts/continuation/2026-10-06-update6-operational-compilation-reviewed.json). Declared mechanism diversity does not establish business benefit.
 
 
-The complete-preparation audit entry and corrected structural runtime/audit helpers are prepared,
+The complete-preparation audit exited0; corrected structural runtime/audit helpers remain prepared,
 not executed. See the prospective Update6 README for exact proof hashes. Compiled main
 snapshot e018bbf1d1f8ba0d9faeedb45f82a210a1954b87 passes engineering-base, Stage-3 algorithm-label
 and finite-completion-policy gates. This does not qualify partial engineering preparation
-or grant any runtime contact. Engineering preparation remains the same live serial process.
+or grant any runtime contact. The original serial process is terminal; do not restart it or its completed verification.
 
 <!-- current-engineering-handoff:end -->
 

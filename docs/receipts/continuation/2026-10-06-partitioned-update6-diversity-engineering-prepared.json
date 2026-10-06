@@ -1,0 +1,212 @@
+{
+  "schema": "saea-configured-population-engineering-prepared-v1",
+  "at_utc": "2026-10-06T17:48:37.003583+00:00",
+  "population": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "members": [
+    {
+      "candidate_id": "branch-01",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-01-engineering-v1/prepared-members-v1.json",
+        "sha256": "84a69ad4ef3cdd2bc506bb1d44ba1835d251ba378e0f9eed3af45d715a213ffa"
+      }
+    },
+    {
+      "candidate_id": "branch-02",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-02-engineering-v1/prepared-members-v1.json",
+        "sha256": "bd7b8002035a1cceff702575ab9d1ac4a0f37191b33106145d0a43bb0c3f115a"
+      }
+    },
+    {
+      "candidate_id": "branch-03",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-03-engineering-v1/prepared-members-v1.json",
+        "sha256": "ffe6ff9ce8dac5ddd1b04925465c3d62777475bd9d7c7d9effa6e46d434b5414"
+      }
+    },
+    {
+      "candidate_id": "branch-04",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-04-engineering-v1/prepared-members-v1.json",
+        "sha256": "19b11dbd9ed6e2fd1292621cb4fe3cb36c858ba52f8969b93728a40f8f7e42b6"
+      }
+    },
+    {
+      "candidate_id": "branch-05",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-05-engineering-v1/prepared-members-v1.json",
+        "sha256": "31d70ac3c67f4ed782fe0440bb9800085cfcc22c7db3b973ed70a94295c3d020"
+      }
+    },
+    {
+      "candidate_id": "branch-06",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-06-engineering-v1/prepared-members-v1.json",
+        "sha256": "a977a23c2ad949776a9001704bb48bd72f2f6f4de8b0b7895f9182b12529ffc4"
+      }
+    },
+    {
+      "candidate_id": "branch-07",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-07-engineering-v1/prepared-members-v1.json",
+        "sha256": "116b37820fe6a7bcf92cfc6f73e8343d9672340718363ed64baaecb823b83ed3"
+      }
+    },
+    {
+      "candidate_id": "branch-08",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-08-engineering-v1/prepared-members-v1.json",
+        "sha256": "29503e17f20b6e2b8895af012e3c8e41a6469cb1fa506a4030f6dbf96d50ab3f"
+      }
+    },
+    {
+      "candidate_id": "branch-09",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-09-engineering-v1/prepared-members-v1.json",
+        "sha256": "317fb6281dbaf17afa285ff8c65723c52d03b4e200ff307a26f36f658587c388"
+      }
+    },
+    {
+      "candidate_id": "branch-10",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-10-engineering-v1/prepared-members-v1.json",
+        "sha256": "e5a52972b1574fbdca76602da22b49a6616fa7cd731401ad9072dc2ee5d02b42"
+      }
+    },
+    {
+      "candidate_id": "branch-11",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-11-engineering-v1/prepared-members-v1.json",
+        "sha256": "62c68592d3a6920de55410bf637d2f04a99bae243c4ce50830832848e1257fc2"
+      }
+    },
+    {
+      "candidate_id": "branch-12",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-12-engineering-v1/prepared-members-v1.json",
+        "sha256": "3d689839ba641bafb26707dcf690ba4f10b53fc935dcd66d2a632de27995ee9f"
+      }
+    },
+    {
+      "candidate_id": "branch-13",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-13-engineering-v1/prepared-members-v1.json",
+        "sha256": "a42f9089d740366efbc0ae4ba2ffd7509d4624d2724de35e02bf6826e0280568"
+      }
+    },
+    {
+      "candidate_id": "branch-14",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-14-engineering-v1/prepared-members-v1.json",
+        "sha256": "1f74df85d44a8939101684ca436105501756d4dddb8f530368e1cefd0d1277e0"
+      }
+    },
+    {
+      "candidate_id": "branch-15",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-15-engineering-v1/prepared-members-v1.json",
+        "sha256": "261bd9df5979f4a5a5905c570a3c7b439f5633261fd99ac0a4f4e7406988640c"
+      }
+    },
+    {
+      "candidate_id": "branch-16",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-16-engineering-v1/prepared-members-v1.json",
+        "sha256": "3fac29c4f31b422d5ad9efd894add9a04c91fd6f7185cc367e0d8280e6f3618d"
+      }
+    }
+  ],
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/prepare-engineering-member-v1.py",
+    "sha256": "09a7e54adef8c9bff2398dae0bd31877b69c95f3461a5efe1994af30315f29e5"
+  },
+  "verification_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/verify-complete-engineering-v1.py",
+    "sha256": "f590f61b1af3708db917f1c5e8dd239d167275dd88afb293261e7b65fee45260"
+  },
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/engineering-preparation.started.json",
+    "sha256": "1f104c5fa877157f8f189907e7dde91276524068f59d8507e2d3249aefba3b0c"
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/engineering-preparation.exit.json",
+    "sha256": "685ff4d669cd6e18a2e2a0ff8d138d254b0bef8ba388785c5a42a790136bf7f1"
+  },
+  "member_exits": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-01-engineering.exit.json",
+      "sha256": "855b27852fce728a082976102ed8faa69ef3419c1402f1885c7d1d6f18775e25"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-02-engineering.exit.json",
+      "sha256": "ab72fb285ba97eeb05209bd2198e94b4d703a171e5706036c06dccaac66366ef"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-03-engineering.exit.json",
+      "sha256": "6503c00848b81b87033a103cfe81c50984bb62ff07929177143fe77347e78066"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-04-engineering.exit.json",
+      "sha256": "5a3bb3ffd82c67a292d0f63464bbd06e23c68f2b8af0a42cc31f75e7407fa938"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-05-engineering.exit.json",
+      "sha256": "1d01c2d8da2b5a95dede8baf46ca4c4aa91c1de5f4c5b40a3958c32836f15712"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-06-engineering.exit.json",
+      "sha256": "2a1b35e3fa857682ba0fce7ba763d104a2983c7419c4112b2511f43a0bc54ef5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-07-engineering.exit.json",
+      "sha256": "194108ab57a1f60fa91f4430d8d45524ecab225cb013ca51d42a50d91e58d8ea"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-08-engineering.exit.json",
+      "sha256": "8aa8c6e07e1ba2545e900285d9b6681fb6269e5ab2535984a1532d831011994a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-09-engineering.exit.json",
+      "sha256": "ea93ce0a1a69cbcac44eb74fe1d631dad48e58cc44d11c032fecdf0eee92cb49"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-10-engineering.exit.json",
+      "sha256": "8049879a8fedf966a680a64551ecfcd2e2be069a1b530f2e97e18dfd160c1a3d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-11-engineering.exit.json",
+      "sha256": "0cdf0df89f6a43f9da6711fe22e4518a1cd2ad5558b136636885d5b9c7428774"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-12-engineering.exit.json",
+      "sha256": "1664cf9f00a0117afb66a3a7de75d36d5d84284e11e43cf1c79d07fe04711cc7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-13-engineering.exit.json",
+      "sha256": "7709fa31600a219dec7b4752afba915defbd5e30b9b7f7fadaeffed9376f12a0"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-14-engineering.exit.json",
+      "sha256": "27f122ea7e6a3040f64ccdf77f16a8561b3bb566508d306bd27637d0968eb39b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-15-engineering.exit.json",
+      "sha256": "7c770a3770eeaa81bba24e645a62a17f6dddfa7a3bb4fe9605852829d20e8759"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/branch-16-engineering.exit.json",
+      "sha256": "aecf7f4e2a8fd640cb16d0939e46654b65a69e659361253bc970d40734f217a2"
+    }
+  ],
+  "verification": "Every configured position complete, source/log pins and original PID absence verified; actual composed role bindings and config hashes verified; source selection equality checked independently; all cells remain HELD without attempts or runs.",
+  "contacts_added": 0,
+  "runtime_admission": false,
+  "serial_independent_processes": true,
+  "verification_details": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/complete-engineering-verification-details-v1.json",
+    "sha256": "aeb02de40ef97fd0b1af278ca2912c61149ef543bbc1cac9c3dd9a48e992757c"
+  }
+}
