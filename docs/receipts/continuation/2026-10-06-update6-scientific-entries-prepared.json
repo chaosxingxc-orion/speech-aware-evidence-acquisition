@@ -1,0 +1,28 @@
+{
+  "schema": "saea-prospective-scientific-entry-verified-v1",
+  "at_utc": "2026-10-06T19:05:46.109821+00:00",
+  "status": "PREPARED_HELD",
+  "helper_provenance": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/scientific-helpers-prepared-v1.json",
+    "sha256": "97a71e656d86f804534a63add05ce0b95c6de18f82e2d7c38c2ee12258f93afc"
+  },
+  "tests": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/helper-tests-v1.exit.json",
+    "sha256": "5bb47a0e0ac31175b713f79db831561cd5be0bf26a2ef9108976d8d9b4c88ca6"
+  },
+  "pending_refusal_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/pending-entry-refusal-proof-v1.json",
+    "sha256": "1b82ee5a03dee9d6940d8b9cab8f0e2a983d3907b0fafaba5da9db611ed571d5"
+  },
+  "audit_wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/run-structural-audit-v1.py",
+    "sha256": "6aeb2bc23dc1c9de02afc20640036b6db2b73f0edaf005971a74257eafdbcccd"
+  },
+  "tests_passed": 6,
+  "subtests_passed": 16,
+  "structural_audit_requires_actual_captured_exit": true,
+  "runtime_admission": false,
+  "model_contacts": 0,
+  "official_scorer_contacts": 0,
+  "scope": "Prepared guarded entries only. The original structural task is still live. Await full structural completion, terminal process verification and actual audit before root acceptance and serial scientific preparation."
+}

@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:01:11.172049+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:05:46.109821+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -36,6 +36,17 @@ family is now running under the exact launch below. Scientific generation remain
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 downstream entries verified while structural task runs (2026-10-06)
+
+The scientific member/serial/draft/acceptance entries are prepared against the exact
+Update6 blueprint and structural worker. Six tests and sixteen fixture subtests pass;
+three real pending-entry checks refuse before writes. No scientific member preparation
+or admission has executed. [Entry verification](../receipts/continuation/2026-10-06-update6-scientific-entries-prepared.json).
+When the original structural task completes, verify terminal identities and delete its
+monitor, then use run-structural-audit-v1.py to capture the actual audit exit. Only after
+complete acceptance execute the prepared serial member preparation and draft finalizer.
+Do not rerun the current structural task or infer audit success from a file alone.
 
 ## Update6 structural family launched (2026-10-06)
 

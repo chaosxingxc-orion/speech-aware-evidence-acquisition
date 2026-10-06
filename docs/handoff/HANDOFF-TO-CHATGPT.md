@@ -1,5 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 downstream entries verified while structural task runs (2026-10-06)
+
+The scientific member/serial/draft/acceptance entries are prepared against the exact
+Update6 blueprint and structural worker. Six tests and sixteen fixture subtests pass;
+three real pending-entry checks refuse before writes. No scientific member preparation
+or admission has executed. [Entry verification](../receipts/continuation/2026-10-06-update6-scientific-entries-prepared.json).
+When the original structural task completes, verify terminal identities and delete its
+monitor, then use run-structural-audit-v1.py to capture the actual audit exit. Only after
+complete acceptance execute the prepared serial member preparation and draft finalizer.
+Do not rerun the current structural task or infer audit success from a file alone.
+
+
 ## Update6 structural family launched (2026-10-06)
 
 All configured frozen checks completed18:59:06.630949Z with verified logs, clean
@@ -5174,7 +5186,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T19:01:11.172049+00:00
+Last refreshed: 2026-10-06T19:05:46.109821+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
