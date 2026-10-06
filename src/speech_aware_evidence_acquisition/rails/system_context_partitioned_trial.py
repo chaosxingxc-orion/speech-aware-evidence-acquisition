@@ -44,7 +44,7 @@ def qualify_partitioned_context_trial(archive, *, input_sha256, contract_pin, re
     """
     root,data=Path(repo_root).resolve(),Path(data_root).resolve()
     packet,plan,ids=learning._population_update_input(archive,input_sha256)
-    require(packet['schema']==SCHEMA,'partitioned input required')
+    require(packet['schema'] in (SCHEMA, 'saea-partitioned-context-optimizer-input-v2'),'partitioned input required')
     contract=json.loads(_read_pin(contract_pin,root))
     require(set(contract)=={'schema','status','algorithm','iteration','source_packet',
             'original_update_record','trial_population','no_change_candidates','criterion','runtime_admission'}

@@ -447,7 +447,7 @@ def record_context_update(archive, *, input_sha256, update_id, proposal_document
     packet = matching[0]
     require(content_hash({k: v for k, v in packet.items() if k != "input_sha256"}) == input_sha256,
             "optimizer input hash differs")
-    partitioned = packet.get("schema") == "saea-partitioned-context-optimizer-input-v1"
+    partitioned = packet.get("schema") in ("saea-partitioned-context-optimizer-input-v1", "saea-partitioned-context-optimizer-input-v2")
     if partitioned:
         from .system_context_partitioned_learning import validate_partitioned_packet
         validate_partitioned_packet(archive, packet)
@@ -1025,7 +1025,7 @@ def _population_update_input(archive, input_sha256):
     packet = matches[0]
     require(content_hash({k: v for k, v in packet.items() if k != "input_sha256"}) == input_sha256,
             "optimizer input hash differs")
-    if packet.get("schema") == "saea-partitioned-context-optimizer-input-v1":
+    if packet.get("schema") in ("saea-partitioned-context-optimizer-input-v1", "saea-partitioned-context-optimizer-input-v2"):
         from .system_context_partitioned_learning import validate_partitioned_packet
         return validate_partitioned_packet(archive, packet)
     require(packet.get("schema") == "saea-context-optimizer-input-v1"

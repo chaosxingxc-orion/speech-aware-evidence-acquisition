@@ -36,6 +36,9 @@ def _plan(plan, config):
 
 def validate_partitioned_packet(archive, packet):
     """Reject changed membership, policies or normalized feedback before contact."""
+    if packet.get("schema") == "saea-partitioned-context-optimizer-input-v2":
+        from .system_context_continuation import validate_continuation_packet
+        return validate_continuation_packet(archive, packet)
     fields = {"schema", "algorithm", "iteration", "registration", "source_population", "source_commitment",
               "population_update_plan", "policies", "feedback_sample_ids", "experience", "learner_view",
               "budget", "runtime_admission", "contacts_added", "input_sha256"}
@@ -59,6 +62,7 @@ def validate_partitioned_packet(archive, packet):
                 "immutable observed policy bytes differ")
     view = packet["learner_view"]
     require(set(view) == {"schema", "representation", "population", "business_measurements", "templates"}
+            and view["schema"] == "saea-abstract-population-learning-view-v1"
             and view["representation"] == FEEDBACK_SCHEMA, "exact abstract representation required")
     cohorts = view["population"]["cohorts"]
     tags = [c["cohort_id"] for c in config["cohorts"]]
@@ -190,9 +194,14 @@ def partitioned_context_actor_view(archive, *, input_sha256):
     """Expose only templates, anonymous structure and measured complete outcomes."""
     from .system_context_learning import _population_update_input
     packet, plan, ids = _population_update_input(archive, input_sha256)
-    require(packet["schema"] == SCHEMA, "partitioned input required")
+    require(packet["schema"] in (SCHEMA, "saea-partitioned-context-optimizer-input-v2"), "partitioned input required")
+    return _partitioned_actor_view(archive, packet, plan, ids)
+
+
+def _partitioned_actor_view(archive, packet, plan, ids):
+    input_sha256 = packet["input_sha256"]
     view = packet["learner_view"]
-    return {"schema": "saea-partitioned-context-actor-view-v1", "optimizer_input_sha256": input_sha256,
+    result = {"schema": "saea-partitioned-context-actor-view-v1", "optimizer_input_sha256": input_sha256,
         "algorithm": packet["algorithm"], "iteration": packet["iteration"],
         "model": plan["model"], "reasoning_effort": plan["reasoning_effort"],
         "candidate_order": ids, "templates": deepcopy(view["templates"]),
@@ -206,3 +215,15 @@ def partitioned_context_actor_view(archive, *, input_sha256):
             "tools, scoring, sampling and runtime authority fixed. Do not request concrete cases or source rosters. "
             "Node correctness and causal credit are unmeasured. This is template-batch context-diversity learning, "
             "not original stochastic GRPO or a GEPA comparison. No proposal establishes positive gain or adoption."}
+
+    if packet["schema"] == "saea-partitioned-context-optimizer-input-v2":
+        from .system_context_continuation import continuation_actor_additions
+        result.update(continuation_actor_additions(archive, packet))
+        result["schema"] = "saea-partitioned-context-actor-view-v2"
+        result["instructions"] += (
+            " Retain the original active parents. Rejected history remains evidence, never an adopted policy. "
+            "Use process statistics to prioritize selective review, safe revision and supported candidate extraction. "
+            "Do not optimize alarm frequency or latency in place of official quality and reliability. "
+            "Separate raw model effects from deterministic postprocessing; missing observations stay unknown. "
+            "Criticism semantic accuracy and causal credit remain unmeasured.")
+    return result

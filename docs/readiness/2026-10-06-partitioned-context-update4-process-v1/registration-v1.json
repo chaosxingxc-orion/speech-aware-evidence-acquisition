@@ -1,0 +1,28 @@
+{
+  "schema": "saea-partitioned-context-continuation-registration-v1",
+  "status": "ROOT_REGISTERED",
+  "parent_input_sha256": "6ea92dad756a14c7e001dac6ef2503293e2ff8286721e4693ab5e19c49af3bd2",
+  "iteration": 4,
+  "population_update_plan": {
+    "schema": "saea-context-population-update-plan-v1",
+    "batch_id": "complete-update4-process-history-v1",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "semantic_batches": 1,
+    "proposal_slots": 16
+  },
+  "history_completion": {
+    "relpath": "docs/receipts/continuation/2026-10-06-rejected-history-preparation-complete.json",
+    "sha256": "2b45e78916bc9ee2d2041ecfb0d58375d40a718cc5f57fc0df3d48ae9b59ecb6"
+  },
+  "process_completion": {
+    "relpath": "docs/receipts/continuation/2026-10-06-slurp-process-backfill-complete.json",
+    "sha256": "e8bc9a2f85d72da3ced6ed74b85b80a5069e6b1b4f6eee463751aba7cc72273b"
+  },
+  "process_registration": {
+    "relpath": "docs/readiness/2026-10-06-slurp-process-metrics-backfill-v1/registration-v1.json",
+    "sha256": "cd7ff5a21f39a4a9f9ccc0c5df25816e1924b70715c8bb9e36563af1ee6a9384"
+  },
+  "max_actor_input_bytes": 2097152,
+  "runtime_admission": false
+}
