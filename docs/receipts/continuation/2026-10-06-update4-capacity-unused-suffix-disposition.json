@@ -1,0 +1,79 @@
+{
+  "schema": "saea-root-capacity-unused-suffix-disposition-v1",
+  "at_utc": "2026-10-06T03:28:02.302180+00:00",
+  "status": "decided",
+  "authority": "Owner227 bounded engineering and recorded incident disposition",
+  "predecessor": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-mailbox-capacity-startup-wait-stop.json",
+    "sha256": "3795ffbe4084dbc0d0fe80e8d296a4b5181f549e74c71bb64bd9f133d4c77ec9"
+  },
+  "completed_candidate_ids": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04"
+  ],
+  "eligible_candidate_ids": [
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "eligible_run_ids": [
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-05-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-06-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-07-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-08-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-09-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-10-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-11-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-12-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-13-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-14-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-15-CAPACITY-FIT-V1",
+    "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-16-CAPACITY-FIT-V1"
+  ],
+  "resource_policy_amendment": {
+    "scope": "nongenerative-capacity-only",
+    "previous": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 20,
+      "wait_seconds": 600
+    },
+    "next": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 18,
+      "wait_seconds": 600
+    },
+    "reason": "Four completed serial capacity workers had maximum sampled available-memory decline of 5.532009GiB. An18GiB startup threshold retains approximately4.467991GiB above the unchanged8GiB running floor after that observed decline; this is a bounded engineering margin, not a guarantee about unobserved peaks."
+  },
+  "scope": "Prepare one fresh registered entry for the exact unused suffix, with the same frozen worker, model requests, identities and per-member budgets. Reuse the four unique capacity receipts as immutable sources in a complete multi-epoch qualification. No completed capacity rerun, task generation, scoring or change to scientific resource policy.",
+  "budget": {
+    "remaining_tokenizer_endpoints": 3564,
+    "previously_spent_tokenizer_endpoints": 1188,
+    "original_family_tokenizer_ceiling": 4752,
+    "generation_contacts": 0,
+    "scorer_contacts": 0
+  },
+  "control_disposition": "Only after successor registration and live identity checks, archive the exact dead branch05 lease metadata if its token/run/attempt/owner/session/study_head match and the existing kernel guard is free. Preserve the guard inode, original metadata/token, all successful receipts and all failed bytes. Do not modify other coordinator controls.",
+  "launch_status": "NOT_PREPARED_OR_DISPATCHED",
+  "failure_policy": "Any new failure stops for diagnosis and recorded disposition; no automatic retry.",
+  "limits": [
+    "Sampled Windows available memory is not peak process RSS or proof of cache causality.",
+    "Do not flush caches, restart WSL or change host settings.",
+    "All16 original members remain required before capacity-family qualification.",
+    "Prepared structural intent remains held and needs a new multi-epoch source binding."
+  ]
+}

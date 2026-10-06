@@ -85,3 +85,57 @@ def test_single_epoch_uses_existing_qualifier():
 def test_reject_missing_or_invalid_terminal_structure(mutation):
     args=fixture();mutation(args)
     with pytest.raises(ValueError):qualify(args)
+
+
+def amended_fixture():
+    args = fixture()
+    args[2].pop(1)
+    first, successor = args[2]
+    first["precontact_failure"]["status"] = "wait-expired"
+    successor["registration"]["resource_policy"]["start_gib"] = 18
+    successor["root_disposition"]["resource_policy_amendment"] = {
+        "scope": "nongenerative-capacity-only",
+        "previous": copy.deepcopy(first["registration"]["resource_policy"]),
+        "next": copy.deepcopy(successor["registration"]["resource_policy"]),
+        "reason": "Measured capacity headroom; preserve the running floor.",
+    }
+    return args
+
+
+def test_explicit_capacity_startup_amendment_preserves_failed_epoch():
+    args = amended_fixture()
+    before = copy.deepcopy(args)
+    result = qualify(args)
+    assert args == before
+    assert [e["exit_code"] for e in result["epochs"]] == [1, 0]
+    assert result["tokenizer_endpoints"] == 9
+    assert result["runtime_admission"] is False
+
+
+@pytest.mark.parametrize("mutation", [
+    lambda a: a[2][1]["root_disposition"].pop("resource_policy_amendment"),
+    lambda a: a[2][1]["root_disposition"]["resource_policy_amendment"].update(scope="generation"),
+    lambda a: a[2][1]["root_disposition"]["resource_policy_amendment"].update(previous={}),
+    lambda a: a[2][1]["root_disposition"]["resource_policy_amendment"].update(next={}),
+    lambda a: a[2][1]["root_disposition"]["resource_policy_amendment"].update(reason=""),
+    lambda a: a[2][1]["registration"]["resource_policy"].update(floor_gib=4),
+    lambda a: a[2][1]["registration"]["resource_policy"].update(wait_seconds=900),
+    lambda a: a[2][0]["precontact_failure"].update(worker_started=True),
+])
+def test_reject_unbound_capacity_resource_amendment(mutation):
+    args = amended_fixture()
+    mutation(args)
+    with pytest.raises(ValueError):
+        qualify(args)
+
+
+@pytest.mark.parametrize("field,value", [
+    ("start_gib", 7), ("start_gib", float("nan")), ("start_gib", True),
+    ("floor_gib", 4), ("wait_seconds", 900),
+])
+def test_reject_bound_but_invalid_capacity_resource_amendment(field, value):
+    args = amended_fixture()
+    args[2][1]["registration"]["resource_policy"][field] = value
+    args[2][1]["root_disposition"]["resource_policy_amendment"]["next"][field] = value
+    with pytest.raises(ValueError):
+        qualify(args)

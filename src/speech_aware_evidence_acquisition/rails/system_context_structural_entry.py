@@ -103,8 +103,10 @@ def qualify_precontact_capacity_epochs(population, population_pin, epochs,
 
     Each failed epoch retains its actual nonzero terminal status and a startup
     receipt proving its next worker was not started. The caller verifies raw
-    source pins, disposition authority, and per-epoch absence of lease/contact
-    evidence. This function never creates a synthetic successful batch receipt.
+    source pins, disposition authority, preserved lease identities, and absence
+    of worker/contact evidence for each unstarted member. This function never creates a synthetic successful batch receipt. A recorded
+    capacity-only amendment may change startup headroom, never the running floor
+    or scientific inputs; every epoch retains its own resource policy.
     """
     try:
         _require(isinstance(epochs, list) and len(epochs) >= 2,
@@ -126,7 +128,7 @@ def qualify_precontact_capacity_epochs(population, population_pin, epochs,
                      "Epoch does not contain the exact unused suffix")
             _require(reg["status"] == "ROOT-ADMITTED", "Epoch was not admitted")
             _require(all(reg[k] == original[k] for k in
-                         ("worker", "worker_commit", "experiment_population", "sampling", "resource_policy")),
+                         ("worker", "worker_commit", "experiment_population", "sampling")),
                      "Continuation source or policy differs")
             budget = {"generation_contacts": 0, "scorer_contacts": 0,
                       "tokenizer_endpoint_caps": {m["label"]: m["contact_cap"] for m in remaining},
@@ -139,6 +141,25 @@ def qualify_precontact_capacity_epochs(population, population_pin, epochs,
                          and disposition["eligible_candidate_ids"] == labels[offset:]
                          and disposition["eligible_run_ids"] == [m["run_id"] for m in remaining],
                          "Exact root continuation disposition is absent")
+            if index:
+                previous_policy = epochs[index-1]["registration"]["resource_policy"]
+                next_policy = reg["resource_policy"]
+                if next_policy != previous_policy:
+                    amendment = disposition["resource_policy_amendment"]
+                    _require(amendment["scope"] == "nongenerative-capacity-only"
+                             and amendment["previous"] == previous_policy
+                             and amendment["next"] == next_policy
+                             and isinstance(amendment["reason"], str)
+                             and bool(amendment["reason"].strip()),
+                             "Capacity resource amendment is not explicitly bound")
+                    _require({k: v for k, v in next_policy.items() if k != "start_gib"}
+                             == {k: v for k, v in previous_policy.items() if k != "start_gib"},
+                             "Only the capacity startup threshold may be amended")
+                    _require(all(type(next_policy[k]) in (int, float)
+                                 and math.isfinite(next_policy[k]) and next_policy[k] > 0
+                                 for k in ("start_gib", "floor_gib"))
+                             and next_policy["start_gib"] >= next_policy["floor_gib"],
+                             "Invalid capacity startup threshold or running floor")
             completed = terminal["members"]
             _require(isinstance(completed, list) and len(completed) <= len(remaining),
                      "Epoch completed member list is invalid")
@@ -165,11 +186,12 @@ def qualify_precontact_capacity_epochs(population, population_pin, epochs,
                 _require(failure["candidate_id"] == remaining[len(completed)]["label"]
                          and failure["worker_started"] is False
                          and type(failure["exit_code"]) is int and failure["exit_code"] == 125
-                         and failure["status"] == "observation-failed",
-                         "Prior failure was not the registered precontact observation")
+                         and failure["status"] in ("observation-failed", "wait-expired"),
+                         "Prior failure was not a registered precontact wait failure")
             exits.extend(completed)
             summaries.append({"epoch_id": identity, "exit_code": code,
                               "completed_candidate_ids": [m["label"] for m in completed],
+                              "resource_policy": dict(reg["resource_policy"]),
                               "evidence_sha256": content_hash(epoch)})
         review = _qualify_members(population, population_pin, original,
                                   exits, receipts, **limits)

@@ -1,0 +1,275 @@
+{
+  "schema": "saea-capacity-startup-wait-terminal-v1",
+  "at_utc": "2026-10-06T03:28:02.302180+00:00",
+  "status": "STOPPED_BEFORE_NEXT_CAPACITY_WORKER",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/registration-v1.json",
+    "sha256": "32c09a0ff64d4031f1b472aecd9152ad5225ae51175aa529c8d092b1916fca16"
+  },
+  "raw_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/capacity-finished.json",
+    "sha256": "10b6ce1e57df0cd52add115ed1965270ab6f39b21336f6ee82972baeac648f8b"
+  },
+  "windows_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/windows-task-terminal-v1.json",
+    "sha256": "29bb9b32ede28fcef9826a52e57adf783bfd72d1684b8c8162655f87c517fa9d"
+  },
+  "active_entry_processes": [],
+  "stop_present": false,
+  "failure_wait": {
+    "elapsed_seconds": 600.0001638879767,
+    "exit_code": 125,
+    "interval_seconds": 10,
+    "observer_sha256": "852f8f4fb4cd63b7084b9fec9db63325baa2553e2f7e6637f61d8053a5e06c7b",
+    "running_floor_gib": 8,
+    "schema": "saea-precontact-memory-wait-v1",
+    "stable_samples": 3,
+    "start_gib": 20,
+    "status": "wait-expired",
+    "stop_marker": "/home/chao/batch-STOP",
+    "wait_seconds": 600,
+    "worker_started": false
+  },
+  "failure_wait_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-05/memory-wait/finished.json",
+    "sha256": "d6b79d6cfb8631092f19d0d24b9da91807543b40c2ef9a2844471f5199e52796"
+  },
+  "wait_sample_count": 60,
+  "wait_reader_errors": 0,
+  "wait_available_min_gib": 15.038787841796875,
+  "wait_available_max_gib": 19.741809844970703,
+  "wait_available_last_gib": 19.737213134765625,
+  "members": [
+    {
+      "candidate_id": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-01-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-01-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": true,
+      "capacity_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-01/request-fit-v1.json",
+        "sha256": "48156cefde63eddbfca29ecdd7cc0879b504eb53a0227197b1c1ed84c2028493"
+      },
+      "tokenizer_endpoints": 297,
+      "every_request_fits": true,
+      "running_memory": {
+        "sample_count": 7,
+        "first_gib": 20.506595611572266,
+        "minimum_gib": 16.02447509765625,
+        "sampled_decline_gib": 4.482120513916016,
+        "source": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-01/memory-guard/events.jsonl",
+          "sha256": "9531da523a2e01243d6442c87cc42cc0d36d13fe18d4bd6ed9e5d72ce3f21bb0"
+        }
+      }
+    },
+    {
+      "candidate_id": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-02-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-02-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": true,
+      "capacity_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-02/request-fit-v1.json",
+        "sha256": "bf1beba5787b0ae7cd72001c0c8ed37d2d28126edc09d5e5485ed5534ea66ee1"
+      },
+      "tokenizer_endpoints": 297,
+      "every_request_fits": true,
+      "running_memory": {
+        "sample_count": 8,
+        "first_gib": 20.435909271240234,
+        "minimum_gib": 15.610828399658203,
+        "sampled_decline_gib": 4.825080871582031,
+        "source": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-02/memory-guard/events.jsonl",
+          "sha256": "6da911a846f2f9b1ad851b55b0ea378ffadc280d205127b6414f442d0b3ee12a"
+        }
+      }
+    },
+    {
+      "candidate_id": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-03-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-03-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": true,
+      "capacity_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-03/request-fit-v1.json",
+        "sha256": "904b136dabf6cad1f40eedb834bd6d5d484d77107b0815dba28d13cf44f3e30b"
+      },
+      "tokenizer_endpoints": 297,
+      "every_request_fits": true,
+      "running_memory": {
+        "sample_count": 8,
+        "first_gib": 20.540363311767578,
+        "minimum_gib": 15.724071502685547,
+        "sampled_decline_gib": 4.816291809082031,
+        "source": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-03/memory-guard/events.jsonl",
+          "sha256": "b6cb02f308dc67459d22258dc9e806a94f2ef456f80810fe6f9d19ea6830e529"
+        }
+      }
+    },
+    {
+      "candidate_id": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-04-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-04-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": true,
+      "capacity_receipt": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-04/request-fit-v1.json",
+        "sha256": "6db53e6fa9ba598c0bf99a65ce8ccf3141f79a60deb0142df53548ca2cd203ac"
+      },
+      "tokenizer_endpoints": 297,
+      "every_request_fits": true,
+      "running_memory": {
+        "sample_count": 8,
+        "first_gib": 20.307804107666016,
+        "minimum_gib": 14.775794982910156,
+        "sampled_decline_gib": 5.532009124755859,
+        "source": {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-mailbox-entry1/branch-04/memory-guard/events.jsonl",
+          "sha256": "0349a69f3505a476632db4e5c1e9a1652b2ba7c19fc678cbedc8c9b14b6f36ab"
+        }
+      }
+    },
+    {
+      "candidate_id": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-05-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-05-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-06-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-06-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-07-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-07-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-08-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-09-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-10-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-11-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-12-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-13-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-14-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-15-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    },
+    {
+      "candidate_id": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-16-capacity-fit-v1",
+      "attempt_json_exists": false,
+      "run_root_exists": false,
+      "capacity_result_exists": false
+    }
+  ],
+  "completed_candidate_ids": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04"
+  ],
+  "unspent_candidate_ids": [
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "tokenizer_endpoints": 1188,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "maximum_sampled_running_decline_gib": 5.532009124755859,
+  "monitor": {
+    "id": "slurp-update4-mailbox-capacity-monitor",
+    "status": "DELETED_AFTER_VERIFIED_TERMINAL"
+  },
+  "serving": {
+    "pid": 686,
+    "cmdline_sha256": "bdcdef8623e00dddea2ceed5bfffa49628d18ec6c8fe66e6908394ea082dec30",
+    "health": {
+      "status": "ok"
+    },
+    "slots": 4,
+    "busy_slots": 0
+  },
+  "interpretation": "Startup wait expired below the registered20GiB threshold; no capacity worker started for branch05. No observer transport failure or OOM is established. Completed capacity contacts are spent and must never be repeated. The failed epoch remains failed.",
+  "control_action": "None. Preserve exact branch05 lease, original controls and frozen source. Structural/scientific generation stays held."
+}

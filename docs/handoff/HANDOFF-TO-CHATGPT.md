@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Mailbox capacity stopped at branch05 startup; preserve four completed proofs (2026-10-06)
+
+The03:06:10Z entry ended03:24:02Z with outer exit1. Branches01-04 each passed
+297 tokenizer endpoints (1188 total); branch05 exhausted its600-second startup
+wait with60 valid observations, maximum19.74181GiB below registered20GiB.
+No branch05 worker/result/attempt or any branch06-16 contact exists. No observer
+failure or OOM is established. Windows owner, sampler and WSL entry processes
+are gone; the bound15-minute heartbeat was deleted. Preserve the exact branch05
+lease and all controls. [Terminal evidence](../receipts/continuation/2026-10-06-update4-mailbox-capacity-startup-wait-stop.json).
+
+[Root227 disposition](../receipts/continuation/2026-10-06-update4-capacity-unused-suffix-disposition.json)
+authorizes preparation of one exact unused12-member suffix with18GiB startup,
+unchanged8GiB running floor and unchanged frozen94190872 scientific inputs.
+The measured maximum capacity-worker available-memory decline was5.53201GiB;
+this supports a bounded capacity-only margin, not a guarantee or a task-generation
+threshold change. No cache/host action. New registration, pin/live checks and
+exact dead-lease reconciliation remain before dispatch. Never rerun completed FITs.
+The previous full-epoch structural qualifier cannot qualify this failed batch;
+bind all unique results across preserved epochs through the tested join instead.
+All structural/scientific generation remains held. No new task-quality result.
+
 ## Mailbox capacity progressing; successor structural intent remains held (2026-10-06)
 
 The exact03:06:10Z Windows-owned capacity entry remains live. At2026-10-06T03:13:35.144401+00:00,

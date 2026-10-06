@@ -1,0 +1,12 @@
+{
+  "at_utc": "2026-10-06T03:28:35.591364+00:00",
+  "tests_passed": 96,
+  "statement_coverage_percent": 99,
+  "statements": 104,
+  "missing_lines": [
+    30
+  ],
+  "red_test": "test_explicit_capacity_startup_amendment_preserves_failed_epoch",
+  "runtime_contacts": 0,
+  "runtime_proven": false
+}
