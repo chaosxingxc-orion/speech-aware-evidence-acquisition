@@ -1,5 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Measurement prerequisite for the next algorithm contrast (2026-10-06)
+
+[Prospective note](../readiness/2026-10-06-system-evolution-algorithm-roadmap-v1/measurement-prerequisite.md)
+connects the qualified A/A variation to selection design. The local llama.cpp README
+at commit04ccc72a2207347ca76161b93fd9d846dd0a8675 explicitly cautions that cache reuse
+and backend batch shapes need not yield bit-identical logits. This is a possible
+mechanism, not our established root cause. No current geometry/cache/sampling change
+or probe admission follows. Complete Update6, review cohort-local A/A uncertainty,
+and keep exploration selection distinct from formal adoption. A controlled probe,
+if required, must have separate prospective identities and contact accounting.
+
 ## Qualified original-a sampling parameter source audit (2026-10-06)
 
 [Source supplement](../results/2026-10-06-update6-original-a-sampling-source-audit.md)
