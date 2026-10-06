@@ -1,0 +1,47 @@
+{
+  "schema": "saea-partitioned-context-root-retention-v1",
+  "recorded_at_utc": "2026-10-06T08:48:01.752463+00:00",
+  "owner_authority": 227,
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-v1/complete-trial-qualified-v1.json",
+    "sha256": "645bf91500d403cc10d4f022bd999cf5bec6196e9d499aaba2f54b26fc059eab"
+  },
+  "criterion": "strict-population-utility-sum",
+  "utility_before": -56.15925390968045,
+  "utility_after": -66.31647670116028,
+  "utility_delta": -10.157222791479832,
+  "decision": "REJECT_WHOLE_UPDATE_RETAIN_BEFORE_POPULATION",
+  "formal_incumbent": "unchanged seed",
+  "active_search_population": "unchanged update2 parents",
+  "cohorts": {
+    "original-a": {
+      "before": -33.29178512555497,
+      "after": -32.67870517040808
+    },
+    "remaining-b1": {
+      "before": -14.50996521745102,
+      "after": -15.951339198179602
+    },
+    "remaining-b2": {
+      "before": -8.35750356667446,
+      "after": -17.686432332572597
+    }
+  },
+  "preserve_all_candidates": true,
+  "preserve_no_change_positions": [
+    "branch-08",
+    "branch-15"
+  ],
+  "optimizer_state_mutated": false,
+  "new_learner_export": false,
+  "new_runtime_admission": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "next": "Prepare the complete rejected history and process bridge, then register a new aggregate-template-records-v1 continuation. Preserve K records per observed population, fixed knowledge and the current N20 pool.",
+  "limits": [
+    "No stable business improvement or learning advantage established.",
+    "Cross-flight point differences and repeated no-change variability are not causal template effects.",
+    "Retain cohort-local baselines/A/A and all source identities. No pooled F1 or normalized-return frontier.",
+    "Human review before 8x400; other-carrier holds remain."
+  ]
+}

@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update4 whole population rejected; aggregate continuation pending (2026-10-06)
+
+The exact complete trial finished normally after source, parent, lineage and READ
+revalidation. Registered utility decreases from -56.15925390968045 to
+-66.31647670116028. Root rejects the entire update and retains update2 search parents;
+the formal incumbent stays seed. Preserve all16 proposals, including no-change08/15.
+All22 members/440 trajectories finalized with unique successful scores, no failed
+jobs and exact cohort READs. Total model contacts2402. No next GPU job or monitor.
+
+[Root review](../results/2026-10-06-slurp-update4-complete-population-review.md) and
+[retention receipt](../receipts/continuation/2026-10-06-partitioned-update4-root-retention.json)
+bind the evidence. Full process numeric preparation is running under the existing
+complete-process-feedback-entry-v2.py; the continuation bridge follows. Private
+rejected-history projection is separately registered in the
+2026-10-06-update4-aggregate-continuation-v1 package. Revalidate those exact offline
+processes; preserve every original source. Next actor input must use the new
+aggregate-template-records-v1 profile, with all observed rounds and unchanged parents.
+No stable benefit, formal adoption, scale admission or other-carrier release is established.
+
 ## Update4 final cohort complete and root read (2026-10-06T08:28Z)
 
 Remaining-b2 completed all six members, 120 trajectories and 681 model contacts.
@@ -3760,7 +3779,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T08:39:28Z
+Last refreshed: 2026-10-06T08:49:28Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
