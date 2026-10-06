@@ -148,3 +148,26 @@ A separate v2 presentation rehearsal completed all three historical cohorts and
 contact and did not change the previous rejection. V2 of the current presentation
 entry/plan pins this correction prospectively. The current incomplete family
 still returns WAIT75. Do not claim the new current-family success path has run.
+
+
+## Whole-trial abstract process feedback preparation
+
+Use complete-process-feedback-entry-v2.py under the registered data-root
+coordination directory with the SHA-256 of complete-process-feedback-plan-v2.json.
+It requires all configured cohort reports, exact root READ authorities, the complete
+source registration and whole-trial qualification. It freshly requalifies sources
+before and after projection and verifies all hashes. The pure adapter retains
+all candidates and controls, separate cohorts, missingness, uncertainty and model
+versus postprocessing transitions. It removes private task contents and identities.
+
+The exclusive complete-root-process-feedback-v1.json is root preparation only.
+Future optimizer inputs still need prospective registration, preserved cumulative
+history, exact iteration/parent identities and separate actor admission. Never use
+this prepared packet to bypass a complete trial or export partial feedback.
+
+All84 focused tests pass; the new21-statement adapter has100percent statement
+coverage. The actual incomplete prepare call returned WAIT75 before quality
+loading, with no output or contacts. The full real three-cohort success path is
+pending. V1 entry/plan are preserved; V2 accepts the existing saved-score pin shape
+by passing only its already-qualified path/hash to the strict external reader.
+See the complete-process-feedback-prepared continuation receipt.

@@ -1,0 +1,51 @@
+{
+  "schema": "saea-complete-process-feedback-preparation-v1",
+  "at_utc": "2026-10-06T07:14:28.043450+00:00",
+  "status": "PREPARED_FULL_TRIAL_SUCCESS_PENDING",
+  "scope": "Root-only numeric process feedback; no current actor export or runtime authority",
+  "entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/complete-process-feedback-entry-v2.py",
+    "sha256": "7e3554510f321fd28fa64d9db53164f0d8b23282d75d21db225b92b621c46351"
+  },
+  "plan": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/complete-process-feedback-plan-v2.json",
+    "sha256": "b0038910e3158163b199a72e6772c7d9d158d255be73ba7be75ee30faf108145"
+  },
+  "premature_refusal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/complete-process-feedback-premature-check-v2.json",
+    "sha256": "7a93338d5b0a96031b2b4b69ba379b1ea95f34c4dc12ba07bc0b6dce9a7020f4"
+  },
+  "validation": {
+    "focused_tests_passed": 84,
+    "new_module_statement_coverage_percent": 100,
+    "covered_statements": 21,
+    "test_first": "Missing module failed before implementation. Complete and invalid synthetic multi-cohort sources now pass.",
+    "actual_incomplete_prepare_exit": 75,
+    "full_real_trial_projection": "pending all three exact complete process READs"
+  },
+  "retained_fields": [
+    "all candidates and controls",
+    "separate cohorts",
+    "observed denominators and unknowns",
+    "descriptive uncertainty",
+    "support and extraction",
+    "review detection precision false alarms and misses",
+    "model and postprocessing transitions",
+    "anonymous strata"
+  ],
+  "exclusions": [
+    "task contents",
+    "gold text",
+    "source lists",
+    "input identities",
+    "causal node credit",
+    "automatic learning export"
+  ],
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "runtime_changed": false,
+  "selection_rule_changed": false,
+  "preflight_correction": "V2 normalizes qualified saved-score pins to path and sha256; V1 is preserved. No diagnostic output was produced by V1."
+}

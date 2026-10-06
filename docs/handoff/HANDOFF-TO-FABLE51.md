@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete-trial process feedback join prepared (2026-10-06)
+
+The new root-only join requires every configured cohort process report, exact root
+READ, complete verified seals and unique scores, plus whole-trial qualification.
+It retains controls, separate cohorts, unknowns, intervals and model/postprocessing
+transitions while excluding task contents, gold text, source lists and input IDs.
+All84 focused tests pass; new adapter statement coverage is100percent. Actual
+incomplete entry refused with WAIT75 before reading quality or creating output.
+The full real trial projection remains pending; no partial learner export, policy
+adoption, runtime mutation or new model/scorer contact occurred.
+
+Use complete-process-feedback-entry-v2.py and complete-process-feedback-plan-v2.json
+after all three qualified process READs. Prospective optimizer registration and
+exact parent/iteration/cumulative history remain necessary before actor use.
+[Evidence](../receipts/continuation/2026-10-06-complete-process-feedback-prepared.json).
+The active remaining-b1 job and its15-minute monitor continue unchanged.
+
 ## Update4 remaining-b1 launched after full prior-cohort review (2026-10-06)
 
 Windows task SAEA-Update4-RemainingB1-Scientific-V1 launched at2026-10-06T06:58:56.3455462+00:00 from frozen /home/chao/saea-worktrees/codex-update4-remaining-b1-scientific-v1 at6d8dca0dfcc8d2b7fe7108e65e280453a3eaf2a4. All six frozen member checks passed. Members are seed, seed-aa and branches09-12,20 rows each/120 trajectories, derived from the unchanged population config. The first cohort is complete and root-read; no partial-trial selection or learner export.

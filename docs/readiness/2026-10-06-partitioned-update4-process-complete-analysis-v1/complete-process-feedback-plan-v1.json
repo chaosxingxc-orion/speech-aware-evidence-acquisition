@@ -1,0 +1,18 @@
+{
+  "schema": "saea-prospective-complete-process-feedback-plan-v1",
+  "scope": "All configured complete cohorts only; root numeric preparation, no actor export, selection change or model contact.",
+  "source_code": {
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_population_sources.py": "1fcd62c3b265d97c8b1ebd92d7bd9999821c934b6df9df7edfcc1485accac365",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_process_feedback.py": "60e211a614656c6015f359b24674041a92d7adf1705312ee150018552e88e0e6",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/complete_process_feedback.py": "bf3a0736eb573da5a99697017bcf282e49262927bac85a58142c75fc460140e3",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py": "74708299dcd896ed087fb867a93d31e8a3d5120a17ac09109deec5b0a379a1d9",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/complete-process-feedback-entry-v1.py": "2fe589e26bb40defcb133464c2708e4204900769a8d16443e71fde3691261fd2"
+  },
+  "source_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "9bebb1acd0fa41ba09af66d4c341d32749e0f263dc231b56a49bde17b4f3ef17"
+  },
+  "source_registration_relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/successor-source-registration-v1.json",
+  "status": "PREPARED_NOT_EXPORTED",
+  "trial_qualification_relpath": "coordination/partitioned-update4-process-scientific-preparation-v1/complete-trial-qualified-v1.json"
+}
