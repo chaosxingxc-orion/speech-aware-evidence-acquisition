@@ -1,0 +1,57 @@
+{
+  "schema": "saea-context-partitioned-update-actor-plan-v1",
+  "status": "ROOT-ADMITTED-BEFORE-CONTACT",
+  "at_utc": "2026-10-06T01:12:27.086776+00:00",
+  "root_authority": 227,
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-PROPOSE-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "split_role": "discovery",
+  "split_identity_hash": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "source_population": {
+    "relpath": "configs/experiments/slurp-context-template-update2-complete-source-join-v1.json",
+    "sha256": "3655493ee97dcb69dbb786e84b82e7c3e6ffb151e92f191a8f99c5c93f2106d4"
+  },
+  "source_registration": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-context-update4-process-v1/registration-v2.json",
+    "sha256": "829b7ae9771004829cb2537f4d698599dda35a2679ac8d7e5a4b0be18d3b0fff",
+    "bytes": 1167
+  },
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/actor-capsule-v1/manifest.json",
+    "sha256": "2e26231b78519dc25da3cfb798d2be012d11e5e183b218dac1c9415b9cc5bdf2",
+    "bytes": 1397
+  },
+  "source_packet": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/inputs/partitioned-complete-update4-process-history-v2.json",
+    "sha256": "70842af4ea559c2fa23f8012966c89ed34657994e3a7d58c5f294b0b0f3d3701",
+    "bytes": 54571690
+  },
+  "output_contract": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/actor-capsule-v1/output-contract.json",
+    "sha256": "0ec435891401a65595552a8d9a8e6ff1680415b8ba9957475800a1a8565d04c5",
+    "bytes": 7313
+  },
+  "target_iteration": 4,
+  "semantic_opportunities": 1,
+  "design_slots": 16,
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "max_input_bytes": 2097152,
+  "max_output_bytes": 262144,
+  "paid_api_spend": 0,
+  "original_usage_null_when_unavailable": true,
+  "no_matched_compute_claim": true,
+  "no_automatic_retry_or_replacement": true,
+  "runtime_admission": false,
+  "scope": "One complete process-aware template-only learning update; preserve original parents and rejected history, fixed knowledge and all source cohorts. Read only allowlisted abstract artifacts in bounded views, inspect complete templates and deterministic aggregates, never per-input semantic summaries. No GPU admission.",
+  "context_policy": {
+    "method": "Programmatic complete aggregation and exact shared-text deduplication; bounded section reads. Do not inject the entire capsule at once.",
+    "exact_model_tokenizer_available": false,
+    "full_capsule_context_fit_claim": false,
+    "provider_enforced_caps_claim": false,
+    "max_single_tool_output_tokens": 6000,
+    "target_visible_input_tokens": 90000,
+    "mechanical_original_output_bytes": 262144
+  }
+}
