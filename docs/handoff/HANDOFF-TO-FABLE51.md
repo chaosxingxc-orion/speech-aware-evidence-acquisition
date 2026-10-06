@@ -1,5 +1,26 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update4 frozen structural checks running (2026-10-06)
+
+Registration and capacity evidence were serially integrated at988ec3d9446b462c47f0312fc002e21bb5f95352.
+The new immutable worker is /home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1
+at that commit. Its serial model-free frozen checks started04:07:40.901838Z;
+parent104028 and branch01 child104059 were verified live. Revalidate PIDs.
+[Exact start receipt](../receipts/continuation/2026-10-06-update4-structural-frozen-check-started.json).
+
+Resume unified exec session24027 or inspect the exact frozen-check logs/terminal
+receipts in coordination/partitioned-update4-process-structural-epochs-v1.
+Do not rerun the checker or alter the frozen worker on a polling timeout.
+No GPU generation has launched. Complete frozen checks, final launch registration
+and live checks before dispatch; then activate a new exact15-minute monitor.
+The prior capacity monitor is deleted. Structural20/8GiB policy is unchanged.
+Global algorithm-label check still reports the same two historical frozen capacity
+labels; all16 new structural labels are valid, unchanged system-text-black-box-v1
+rollout labels. Synthetic OpenJiuwen and remaining offline gates pass. Current
+media-check output was preserved separately and its two historical output files
+restored to the initial exact bytes; no dataset or frozen artifact changed.
+Scientific N20 and other-carrier holds remain in force.
+
 ## Update4 structural registration complete; no dispatch (2026-10-06)
 
 All16 configured structural members are registered through the shared runtime,

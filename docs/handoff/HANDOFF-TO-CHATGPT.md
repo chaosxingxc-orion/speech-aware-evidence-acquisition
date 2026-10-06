@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update4 frozen structural checks running (2026-10-06)
+
+Registration and capacity evidence were serially integrated at988ec3d9446b462c47f0312fc002e21bb5f95352.
+The new immutable worker is /home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1
+at that commit. Its serial model-free frozen checks started04:07:40.901838Z;
+parent104028 and branch01 child104059 were verified live. Revalidate PIDs.
+[Exact start receipt](../receipts/continuation/2026-10-06-update4-structural-frozen-check-started.json).
+
+Resume unified exec session24027 or inspect the exact frozen-check logs/terminal
+receipts in coordination/partitioned-update4-process-structural-epochs-v1.
+Do not rerun the checker or alter the frozen worker on a polling timeout.
+No GPU generation has launched. Complete frozen checks, final launch registration
+and live checks before dispatch; then activate a new exact15-minute monitor.
+The prior capacity monitor is deleted. Structural20/8GiB policy is unchanged.
+Global algorithm-label check still reports the same two historical frozen capacity
+labels; all16 new structural labels are valid, unchanged system-text-black-box-v1
+rollout labels. Synthetic OpenJiuwen and remaining offline gates pass. Current
+media-check output was preserved separately and its two historical output files
+restored to the initial exact bytes; no dataset or frozen artifact changed.
+Scientific N20 and other-carrier holds remain in force.
+
 ## Update4 structural registration complete; no dispatch (2026-10-06)
 
 All16 configured structural members are registered through the shared runtime,
@@ -3261,7 +3282,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T04:02:14.859270+00:00
+Last refreshed: 2026-10-06T04:08:30.117749+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

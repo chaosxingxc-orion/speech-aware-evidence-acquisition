@@ -1,0 +1,18 @@
+{
+  "schema": "saea-model-free-frozen-check-start-v1",
+  "at_utc": "2026-10-06T04:08:30.117749+00:00",
+  "status": "RUNNING_VERIFIED",
+  "worker": "/home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1",
+  "commit": "988ec3d9446b462c47f0312fc002e21bb5f95352",
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/frozen-check-started-v1.json",
+    "sha256": "f38556cc59f942c5f65bc151e8cfa2d4ba088491d8b7f8206cdb11712d3dd910"
+  },
+  "revalidated_parent_pid": 104028,
+  "cmdline": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/frozen-check-structural-v1.py --worker /home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1 --commit 988ec3d9446b462c47f0312fc002e21bb5f95352 --receipt-root /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1 ",
+  "unified_exec_session": 24027,
+  "output_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1",
+  "instructions": "Wait for this exact process/session and source-bound terminal receipts. Never restart on observation timeout. No structural task generation has begun.",
+  "generation_contacts": 0,
+  "scorer_contacts": 0
+}
