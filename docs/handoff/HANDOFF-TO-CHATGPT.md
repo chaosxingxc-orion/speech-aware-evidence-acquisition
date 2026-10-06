@@ -2,7 +2,7 @@
 
 ## Historical support-source availability audited (2026-10-06)
 
-All22 already root-read update3 members were audited across440 trace records,
+All22 already root-read update3 members were audited across440 trajectories,
 with hashes checked against original manifests and prepared supply outputs.
 The examined surfaces preserve selected bootstrap values and actual requests,
 but no explicit raw recall-score/ranked-pool record or direct prepared-recall
