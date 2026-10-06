@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 structural follow-through prepared during frozen checks (2026-10-06)
+
+The exact frozen checker below remains the only current preparation process;
+revalidate it and await all16 member outcomes. Root prepared the read-only live
+prelaunch gate and adapted the preceding complete structural audit to this exact
+worker/intent/coordination. Future task name: SAEA-Update5-Aggregate-Structural-V1.
+The audit requires the original epoch string, successful whole-family terminal
+receipts, no remaining admitted processes, unscored worker-only lifecycles and
+all original request/FIT/role-handoff/Omni-custody evidence. A real preterminal
+invocation returned exit2 without writing acceptance or reading task quality.
+[Preparation evidence](../receipts/continuation/2026-10-06-update5-structural-followthrough-prepared.json).
+No new contact or dispatch. After frozen checks pass, finalize registration,
+perform fresh live admission, launch separately and create the15-minute monitor.
+At verified terminal delete that monitor, capture exact Windows terminal identity,
+then use structural-audit-v1.py with the frozen worker src on PYTHONPATH for
+structural-only root review. No official scoring or scientific read is allowed.
+
 ## Update5 structural worker frozen; exact checks active (2026-10-06)
 
 The complete structural registration is integrated at

@@ -1,0 +1,28 @@
+{
+  "schema": "saea-root-structural-followthrough-prepared-v1",
+  "at_utc": "2026-10-06T11:00:09.286067+00:00",
+  "status": "PREPARED_NOT_DISPATCHED",
+  "artifacts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/live-prelaunch-v1.py",
+      "sha256": "2f55528a64e7e54c390e9d5856a855be1f85eb207aa13c467b8345a4f076accd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/live-prelaunch-prepared-v1.json",
+      "sha256": "9a3d2cb3cbd6497ec835c7cabef5dfe60f09187e21b5e56af52d468d74b98d27"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/structural-audit-v1.py",
+      "sha256": "bebf928619a10f3c7116bd712093470ed1e2e41cb1e7274cabdd1797f5b46371"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/structural-audit-prepared-v1.json",
+      "sha256": "63cc4ec5dcc8a4845cdcbb1436d5eaa6f034a2838aecda371da2ac7919c739f0"
+    }
+  ],
+  "future_task_name": "SAEA-Update5-Aggregate-Structural-V1",
+  "verification": "Prepared read-only live service/memory/idle checks and full-family structural audit from the preceding working entries. Audit AST parsed and real preterminal invocation refused with exit2 before task-quality read or acceptance write. Prelaunch remains unexecuted.",
+  "model_contacts_added": 0,
+  "official_score_contacts_added": 0,
+  "runtime_admission": false
+}
