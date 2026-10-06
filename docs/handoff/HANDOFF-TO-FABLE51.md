@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:05:46.109821+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:10:19.420453+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -36,6 +36,17 @@ family is now running under the exact launch below. Scientific generation remain
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 cohort execution entries prepared (2026-10-06)
+
+All three configuration-derived cohort execution directories and frozen check entries
+are prepared by source-pinned reuse of the existing shared campaign path. All24 source
+files are verified; six PowerShell scripts parse with no execution. No scientific
+registration, worker identity, scheduled task or admission has been created.
+[Preparation evidence](../receipts/continuation/2026-10-06-update6-cohort-execution-entries-prepared.json).
+Current structural Windows task remains the original18:59:59.5408017Z epoch. Follow its
+complete terminal/audit sequence before serial scientific preparation. Preserve the
+full configured440-trajectory comparison and existing whole-population retention.
 
 ## Update6 downstream entries verified while structural task runs (2026-10-06)
 

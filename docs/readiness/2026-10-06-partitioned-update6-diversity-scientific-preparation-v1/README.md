@@ -30,3 +30,14 @@ stays unadmitted until separate exact root structural review, source/exposure ch
 cohort admission, clean frozen checks and fresh live guards. Preserve original no-change
 positions, own controls and strict whole-population retention. No score or result read
 is authorized by helper preparation.
+
+## Prospective cohort execution entries
+
+The configuration-derived original-a,remaining-b1,remaining-b2 coordination directories
+have source-pinned copies of the existing campaign launcher, observer, Windows driver,
+registration finalizer and live checker. Each corresponding scientific-preparation
+<cohort>-flight-v1 directory contains the shared frozen checker. Six PowerShell files
+parse successfully; all24 copied source files and ancestors are hash-verified.
+No actual cohort registration, worker identity, scheduled task or admission exists.
+Do not finalize these envelopes until their own exact prepared/admitted/frozen proof exists.
+[Preparation review](../../receipts/continuation/2026-10-06-update6-cohort-execution-entries-prepared.json).

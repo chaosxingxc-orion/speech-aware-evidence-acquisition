@@ -1,0 +1,22 @@
+{
+  "schema": "saea-configured-cohort-entry-preparation-reviewed-v1",
+  "at_utc": "2026-10-06T19:10:19.420453+00:00",
+  "status": "PREPARED_NOT_ADMITTED",
+  "source_provenance": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/cohort-entries-prepared-v1.json",
+    "sha256": "5924f3d4649345f6357f8d23aa330bad17a5f3fad08c9660fd2a7d481275a0bc"
+  },
+  "powershell_parser_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/cohort-powershell-parser-proof-v1.json",
+    "sha256": "ea78e4b6b9835be488ed8b29a38cdaed8ff7a15dc74ba2403a22df4770032e26"
+  },
+  "cohorts": [
+    "original-a",
+    "remaining-b1",
+    "remaining-b2"
+  ],
+  "source_files_verified": 24,
+  "runtime_admission": false,
+  "contacts": 0,
+  "scope": "Source-pinned copies of existing shared campaign launch and frozen checks, with only prospective coordination/package identities and cohort tag changed. Actual structural acceptance, member preparation, registration, runtime admission, clean frozen checks and fresh live gates are still required. No queued or scheduled scientific task."
+}
