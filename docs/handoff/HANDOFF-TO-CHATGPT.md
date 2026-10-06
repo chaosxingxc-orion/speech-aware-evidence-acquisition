@@ -1,5 +1,30 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## History complete; corrected aggregate input preparing (2026-10-06T09:14Z)
+
+Root verified the update4 private-history reader exit0, absent original process,
+output/log hashes and all pinned sources. See
+[history completion](../receipts/continuation/2026-10-06-update4-rejected-history-complete.json).
+All16 update2 parents and35554 cumulative feedback source IDs remain preserved.
+
+The first aggregate input entry refused a root-authored completion-receipt schema
+mismatch before history loading, archive evidence/input writes or proposal reservation.
+Original failed metadata/logs remain immutable. Root227 recorded
+[the exact disposition](../receipts/continuation/2026-10-06-update5-input-receipt-schema-disposition.json).
+The corrected reviewed-v2 receipt uses the existing shared consumer schema and
+preserves every scientific result pin; no policy or measurement rule changed.
+
+The separately captured v2 offline preparation is now running under
+coordination/update5-aggregate-input-preparation-v2/started.json.
+Revalidate its PID/start tick and exclusive exit; do not repeat a live reader or edit
+pinned sources. Its next-input-plan-v2.json SHA256 is
+0897c5e80aa82027ec8c01663db64f9d3f255c078a2157195b978357d55df62d.
+Require exit0 and actual complete.json before using its expected48 records from
+three observed K16 populations. The aggregate-only actor output contract remains
+DRAFT; no actor allocation, model/scorer contact or GPU admission has occurred.
+After preparation, check actual record counts, byte size and privacy, then separately
+register the capsule, exposure and reservation before proposer contact.
+
 ## Update4 process bridge complete and root reviewed (2026-10-06T09:00Z)
 
 The shared bridge completed normally, requalified every source and reproduced the
@@ -3817,7 +3842,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T09:01:44Z
+Last refreshed: 2026-10-06T09:14:02.521171+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,0 +1,27 @@
+{
+  "schema": "saea-rejected-history-preparation-complete-v1",
+  "recorded_at_utc": "2026-10-06T09:10:11.460559+00:00",
+  "exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-rejected-aggregate-history-v1/exit.json",
+    "sha256": "07c956fdeedc51b021b0579cc222cc1b082c0ef637ec773d0d5d432b44272726"
+  },
+  "output": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update4-rejected-aggregate-history-v1/history-private-v1.json",
+    "sha256": "ac0404382a03ec367b59519a22dcdd79a7af01d4449314d746d8bc13a10b552b"
+  },
+  "status": "COMPLETE",
+  "retained_parent_count": 16,
+  "disposition": "rejected-retain-before-population",
+  "criterion": "strict-population-utility-sum",
+  "utility_before": -56.15925390968045,
+  "utility_after": -66.31647670116028,
+  "cumulative_feedback_source_ids": 35554,
+  "learner_exported": false,
+  "runtime_admission": false,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0
+  },
+  "verification": "Root checked terminal exit, absent process, output/log hashes and every pinned reader source.",
+  "next": "Prepare the registered aggregate continuation; never export private per-input history to the proposer."
+}

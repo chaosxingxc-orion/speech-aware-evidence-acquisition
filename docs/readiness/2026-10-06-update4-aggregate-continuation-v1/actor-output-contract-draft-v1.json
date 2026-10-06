@@ -1,0 +1,100 @@
+{
+  "schema": "saea-context-population-actor-output-contract-v1",
+  "status": "DRAFT_WAIT_QUALIFIED_INPUT_AND_SEPARATE_ADMISSION",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "semantic_batches": 1,
+  "proposal_slots": 16,
+  "response_fields": [
+    "schema",
+    "input_sha256",
+    "actor_input_sha256",
+    "model",
+    "reasoning_effort",
+    "usage",
+    "branches"
+  ],
+  "response_schema": "saea-context-population-update-response-v1",
+  "bindings": {
+    "input_sha256": "Copy actor-input.json optimizer_input_sha256.",
+    "actor_input_sha256": "Copy the externally supplied canonical actor-input content hash; never hash an object containing its own hash.",
+    "iteration": "Copy actor-input.json iteration.",
+    "parent_ids": "Select the active-parent-observation record for this candidate_id; use exactly its template.bundle_id. Rejected-history records are evidence, never the active parent.",
+    "evidence": "Use a singleton list containing input_sha256."
+  },
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "usage_rule": "Use null for unavailable authoritative provider metering. Do not estimate or fabricate usage. Preserve original response metering and independently bind external receipts when available.",
+  "branch_fields": [
+    "candidate_id",
+    "proposal",
+    "experience_operations"
+  ],
+  "proposal_fields": [
+    "schema",
+    "algorithm",
+    "iteration",
+    "candidate_id",
+    "component",
+    "parent_ids",
+    "changes",
+    "rationale",
+    "hypotheses",
+    "evidence"
+  ],
+  "proposal_schema": "saea-context-policy-update-proposal-v1",
+  "algorithm": "tf-grpo-context-diversity",
+  "component": "joint-system",
+  "editable": {
+    "role_text": [
+      "perception",
+      "solver",
+      "reviewer",
+      "planner"
+    ],
+    "context_layout": {
+      "native_role_query_placement": [
+        null,
+        "before-speech-v1"
+      ]
+    },
+    "node_context": {
+      "tool_schema_rendering": [
+        "constant",
+        "per-role"
+      ],
+      "reviewer_history_scope": [
+        "full",
+        "latest-solver-and-local-tools"
+      ]
+    }
+  },
+  "instructions": [
+    "Return one JSON object with the exact response fields and one original proposal per configured candidate position. Do not add a Markdown wrapper.",
+    "Read only the prospective allowlisted aggregate capsule. Each record describes one complete template system evaluated over one source roster. There are K records per observed population and N times K records across complete observed history. Never request per-input cases, node visits, source lists, knowledge content, raw outputs or task answers.",
+    "Inspect all complete editable parent and historical templates and assembly configurations, using exact shared-text deduplication where useful. Inspect all aggregate records and their referenced comparator statistics. Keep cohort, roster, evaluated iteration and disposition attached to every comparison.",
+    "Prioritize official task quality, intent and reliable completion. Next diagnose evidence availability versus consumption, review error detection and false alarms, useful model revision versus damage, and postprocessing separately. Treat latency and resource use as secondary diagnostics, not the main optimization target.",
+    "Use each process numerator, denominator, eligible and unknown count, uncertainty and missingness fields. A missing historical process measurement is not zero. Gold-intent card presence does not establish gold entity-value support. An alarm on an erroneous input does not establish semantically correct criticism.",
+    "Keep raw model transitions separate from postprocessing transitions. A higher alarm rate or more revisions alone is not improvement. Preserve needed corrections while reducing unsupported revisions; use testable abstract hypotheses.",
+    "Propose one joint update per branch in a single semantic batch, preserving useful diversity across complete node instructions and assembly. Parent identity comes from that branch active-parent-observation; rejected populations remain historical evidence even when their bundle bytes equal an active parent.",
+    "Use only the declared editable fields and values. Replace an edited role with its complete English text. Omitted roles inherit their parent. Supply the full exact object if editing context_layout or node_context. Preserve executable output syntax, role/control handoffs, tool ownership and Omni final answer custody.",
+    "Keep knowledge, retrieval, construction, data, tools, parsers, scoring, deterministic sampling, scheduler and serving geometry fixed. Do not propose task-specific answers or rules derived from concrete entities.",
+    "Use changes={} for no-change and experience_operations=[] for this template-only update. Keep all original configured slots including unsuccessful hypotheses. Do not replace, repair or request additional proposals.",
+    "Keep rationale and hypotheses concise and abstract. Relative utility and node statistics guide complete-system search; they are not policy gradients, causal node credit or proof of learning. Historical whole-population rejection remains binding; do not reinterpret it as acceptance of selected members.",
+    "Compare within matched source cohorts using both their seed and A/A. All cohorts reuse the same small optimization roster. Do not count repeated trajectories as independent inputs or claim stable benefit or generalization.",
+    "Read bounded sections rather than dumping the entire capsule into context. Statistics are already aggregated; do not reconstruct per-input records or produce sample summaries. Share exact identical template text by references when inspecting, but emit complete text for each edited role.",
+    "Write one original JSON response by exclusive file creation within the admitted output-byte bound. Mechanical serialization before first emission is allowed. Do not compile, run experiments, revise after compiler feedback or dispatch further agents. Use null for unavailable authoritative provider metering. No matched-compute claim follows."
+  ],
+  "contact_admission": false,
+  "required_before_contact": [
+    "Complete qualified aggregate input and checked actual byte size",
+    "Pinned aggregate-only capsule and bound output contract",
+    "Exact root exposure row, immutable reservation and separate actor admission"
+  ],
+  "candidate_order_rule": "Copy candidate_order from the qualified aggregate actor input; require one response for each configured position in that exact order.",
+  "runtime_admission": false,
+  "max_original_output_bytes": 262144
+}

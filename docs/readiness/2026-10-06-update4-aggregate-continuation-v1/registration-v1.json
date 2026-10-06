@@ -1,0 +1,29 @@
+{
+  "schema": "saea-partitioned-context-continuation-registration-v2",
+  "status": "ROOT_REGISTERED",
+  "parent_input_sha256": "d24da70639da71acba7e709727e59e64b92ab5528d5d54b198de76762c0f3177",
+  "iteration": 5,
+  "population_update_plan": {
+    "schema": "saea-context-population-update-plan-v1",
+    "batch_id": "complete-update5-aggregate-history-v1",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "semantic_batches": 1,
+    "proposal_slots": 16
+  },
+  "history_completion": {
+    "relpath": "docs/receipts/continuation/2026-10-06-update4-rejected-history-complete.json",
+    "sha256": "f1452c434f400394a3ac4628f9c4ba58286ab7843f9f9e86597a04c64a9d66ec"
+  },
+  "process_completion": {
+    "relpath": "docs/receipts/continuation/2026-10-06-update4-process-bridge-reviewed.json",
+    "sha256": "eb08978e7f4e10c74e1cbe1fe817ec018ca761f77101bfd8fd792dfa8d2f959c"
+  },
+  "process_registration": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/continuation-process-registration-v1.json",
+    "sha256": "fe47d98c1e20f56c705dcd493063fbe46cf41eb07ca8d64e4cdd8622bae8a104"
+  },
+  "max_actor_input_bytes": 2097152,
+  "learner_profile": "aggregate-template-records-v1",
+  "runtime_admission": false
+}

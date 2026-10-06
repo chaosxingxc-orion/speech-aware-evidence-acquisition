@@ -14,3 +14,15 @@ source lists or per-visit records. Use one configured candidate order; no new da
 Keep the complete prior proposal response and all spent allocations. Any next allocation needs
 its own prospective batch/model/input/budget registration. No new GPU work follows from this
 preparation; the fixed reused N20 pool has not established stable quality improvement.
+
+## Current preparation
+
+Private rejected history completed with root-verified source/output hashes. Preserve
+the first next-input preparation refusal: the root completion schema included an
+extra slurp component not accepted by the shared reader. The separate reviewed-v2
+receipt corrects only that metadata and preserves all scientific evidence. Root227
+disposition permits one separate next-input-plan-v2 preparation; its live entry is
+coordination/update5-aggregate-input-preparation-v2/prepare-next-input-v2.py.
+Verify terminal metadata before use. The aggregate-only actor-output-contract-draft-v1.json
+is not contact admission. It derives K from the plan and orders business/process/cost
+priorities without per-input data, sources or knowledge content.

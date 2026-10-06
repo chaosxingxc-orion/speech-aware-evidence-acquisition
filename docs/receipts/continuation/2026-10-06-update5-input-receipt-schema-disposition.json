@@ -1,0 +1,38 @@
+{
+  "schema": "saea-precontact-metadata-disposition-v1",
+  "at_utc": "2026-10-06T09:13:03.181937+00:00",
+  "owner_authority": 227,
+  "status": "ROOT_DISPOSED_SEPARATE_CORRECTED_PREPARATION",
+  "failed_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-aggregate-input-preparation-v1/exit.json",
+    "sha256": "1ffe5ee0f61cd2be4c114d57461c5dec6604b5903fd283db65790acaed48a12d"
+  },
+  "failed_stderr": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-aggregate-input-preparation-v1/stderr.log",
+    "sha256": "5a8f5b46a8a9ca68e0043135dc542afe6b430942d539b41558d449d04ff07a0a"
+  },
+  "failed_registration": {
+    "relpath": "docs/readiness/2026-10-06-update4-aggregate-continuation-v1/registration-v1.json",
+    "sha256": "1aa7d99ccaf7b4d1c4c39862a1ac8c54aa1cd5eb0c915b59f6b3daf4a6bd77f4"
+  },
+  "cause": "Root authored schema saea-complete-slurp-process-backfill-reviewed-v1; shared consumer requires saea-complete-process-backfill-reviewed-v1. Refusal occurs before history loading or archive writes.",
+  "scientific_evidence_changed": false,
+  "proposal_reservation_added": false,
+  "input_and_evidence_destinations_absent": true,
+  "preserve_original": true,
+  "corrected_review": {
+    "relpath": "docs/receipts/continuation/2026-10-06-update4-process-bridge-reviewed-v2.json",
+    "sha256": "1a5ad4d22668a8847f4ed377b7f1e0d803f99af00de0b4e901867c7a0f9ab987"
+  },
+  "corrected_plan": {
+    "relpath": "docs/readiness/2026-10-06-update4-aggregate-continuation-v1/next-input-plan-v2.json",
+    "sha256": "0897c5e80aa82027ec8c01663db64f9d3f255c078a2157195b978357d55df62d"
+  },
+  "corrected_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-aggregate-input-preparation-v2/prepare-next-input-v2.py",
+    "sha256": "e6f8786a55bef1d60e5eb274f213ca5009df5c7bbc57f6a527b950af78276b0b"
+  },
+  "new_contacts": 0,
+  "runtime_admission": false,
+  "disposition": "Run one separately captured offline preparation with the same population, model and budgets. Any subsequent failure stops for fresh diagnosis."
+}

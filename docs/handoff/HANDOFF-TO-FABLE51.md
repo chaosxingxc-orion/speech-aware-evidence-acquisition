@@ -1,5 +1,30 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## History complete; corrected aggregate input preparing (2026-10-06T09:14Z)
+
+Root verified the update4 private-history reader exit0, absent original process,
+output/log hashes and all pinned sources. See
+[history completion](../receipts/continuation/2026-10-06-update4-rejected-history-complete.json).
+All16 update2 parents and35554 cumulative feedback source IDs remain preserved.
+
+The first aggregate input entry refused a root-authored completion-receipt schema
+mismatch before history loading, archive evidence/input writes or proposal reservation.
+Original failed metadata/logs remain immutable. Root227 recorded
+[the exact disposition](../receipts/continuation/2026-10-06-update5-input-receipt-schema-disposition.json).
+The corrected reviewed-v2 receipt uses the existing shared consumer schema and
+preserves every scientific result pin; no policy or measurement rule changed.
+
+The separately captured v2 offline preparation is now running under
+coordination/update5-aggregate-input-preparation-v2/started.json.
+Revalidate its PID/start tick and exclusive exit; do not repeat a live reader or edit
+pinned sources. Its next-input-plan-v2.json SHA256 is
+0897c5e80aa82027ec8c01663db64f9d3f255c078a2157195b978357d55df62d.
+Require exit0 and actual complete.json before using its expected48 records from
+three observed K16 populations. The aggregate-only actor output contract remains
+DRAFT; no actor allocation, model/scorer contact or GPU admission has occurred.
+After preparation, check actual record counts, byte size and privacy, then separately
+register the capsule, exposure and reservation before proposer contact.
+
 ## Update4 process bridge complete and root reviewed (2026-10-06T09:00Z)
 
 The shared bridge completed normally, requalified every source and reproduced the
