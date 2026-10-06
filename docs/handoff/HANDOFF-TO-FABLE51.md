@@ -1,5 +1,98 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+<!-- current-engineering-handoff:start -->
+## Current engineering handoff for Fable 5.1
+
+Last verified: 2026-10-06T16:16:19.517878+00:00. Maintain this section in place whenever engineering changes,
+launches, terminal receipts or source/admission decisions change. Keep the historical
+entries below as chronology; the current section and newer signed receipts supersede
+old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
+The owner explicitly requested synchronous engineering handoff maintenance on2026-10-06.
+
+### Workspace and integration
+
+- Main checkout: `/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition`.
+- Editable root checkout: `/home/chao/saea-worktrees/codex-cache-cost-audit`, branch `codex/cache-cost-audit`.
+- Latest prepared protocol commit: `49cda87f5fef7c4a09c92d88f4d6ffcbba619041`; preceding complete-result/retention commit: `db29f2ae31561febabadbc443756b85bb94958b6`. This handoff is committed and serially integrated after those changes. Resolve actual HEAD before editing.
+- External data root: `/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data`.
+- Preserve every frozen experiment checkout and original failed execution epoch. Work in an isolated checkout and integrate serially; never edit active frozen sources, shared queues or another coordinator's work.
+
+### Completed engineering and current scientific state
+
+All Update5 families completed their exact root READs:22 members,440 trajectories,
+2438 measured model calls, unique official scores and verified independent seals.
+The original whole-population utility changed from -56.15925390968045 to
+-69.32902959938615. Root rejected Update5, retaining the formal seed and active Update2
+parents. Preserve all sixteen candidate outcomes, including08/15 no-change positions.
+Branch16 is an uncertain favorable lead; it is not adopted or proof of useful review.
+
+The root numeric process projection is complete at
+`coordination/partitioned-update5-aggregate-scientific-preparation-v1/complete-root-process-feedback-v1.json`,
+SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
+It retains all cohort/candidate/control statistics and is not itself learner admission.
+The last GPU task is terminal and its fifteen-minute monitor was deleted. No new GPU
+flight or proposal contact has been admitted. Expected service idleness is intentional.
+
+### Actual offline work to resume
+
+The following readers are live at the verification timestamp; PIDs are observations,
+not durable authority. Revalidate command identity and terminal files before acting.
+
+- PID `201319`: `prepare-history-v1.py`; observed `State:	D (disk sleep)`.
+- PID `202274`: `continuation-process-bridge-entry-v1.py`; observed `State:	D (disk sleep)`.
+
+The history coordination root is `coordination/update5-rejected-aggregate-history-v1`.
+Observe `started.json`, `exit.json`, `stdout.log`, `stderr.log` and the exclusive
+`history-private-v1.json`. Do not open/export private task contents to the actor.
+The process bridge runs in `coordination/partitioned-update5-aggregate-scientific-preparation-v1`;
+its exclusive outputs are `continuation-process-backfill-v1.json` and
+`continuation-process-bridge-prepared-v1.json`. These readers add no model/scorer
+contacts. A polling timeout or an old lock is not a failure; never restart a live reader.
+
+### Exact continuation sequence
+
+1. Verify both readers terminate successfully; verify output/input/source hashes and no live original process. Preserve failures if either terminates unsuccessfully.
+2. Record `docs/receipts/continuation/2026-10-06-update5-rejected-history-complete.json` using schema `saea-rejected-history-preparation-complete-v1`, status `COMPLETE`.
+3. Record `docs/receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json` using schema `saea-complete-process-backfill-reviewed-v1`, status `COMPLETE_ROOT_REVIEWED`. Reuse the exact verified bridge registration/result pins; do not replay scores.
+4. Run only the registered offline input preparation in `coordination/update6-aggregate-input-preparation-v1/prepare-next-input-v1.py` after those receipts exist. Its plan is [next-input-plan-v1.json](../readiness/2026-10-06-update5-complete-continuation-v1/next-input-plan-v1.json), SHA256 `e0607df7b145ef31361ef75065c81bc0a7ccda256ca990555945edd63fb8c6e9`. The operation is `prepare --plan-sha256 <exact hash>`. Use `PYTHONDONTWRITEBYTECODE=1`, Python `-B`, the project venv and the root checkout's `src` on PYTHONPATH.
+5. Verify exactly K aggregate records per complete observed population and T*K in historical input. Keep complete node templates/assembly, business/process/cost metrics, denominators, missingness, uncertainty and separate control references. Keep private source lists, raw cases/answers/gold/knowledge outside the actor.
+6. Prospectively pin the new prompt/interface, actual config, original-output contract, exact actor model/version, source manifest, reservation and exposure admission. GPT-6.1 Sol/high remains the single population generator. Do not dispatch merely because input preparation completed.
+7. Only after proposal compilation and separate registered full-request capacity/structural proof may root admit the next bounded GPU experiment. Derive K/N/M/member order/sampling/budgets from one immutable config throughout. Current preparation retains N20; no expansion or hidden budget increase.
+
+### Changed interfaces and verified limits
+
+The requested GPT-6 Astra subagent designed
+[proposer diversity-targeting-v2](../readiness/2026-10-06-template-proposer-diversity-astra-v1/README.md).
+Root reproduced its static audit and shared parser proof:16 historical proposals accepted,
+8 legal assembly combinations accepted,6 illegal edit surfaces rejected. The
+[native-interface rehearsal](../readiness/2026-10-06-template-proposer-v2-integration-v1/README.md)
+checks actual configured limits across22 baseline bindings and the runtime Reviewer schema.
+These prove compatibility of the prepared interface, not future semantic diversity,
+context fit or business improvement. The new prompt is not yet used for an actor contact.
+
+Reuse `SystemTextPolicyBundle`, the shared context compiler/archive, existing complete
+feedback/history/continuation readers, controller and FlightRuntime. No model weights,
+knowledge/data, scorer, parser, serving geometry or tool-authority changes accompany
+this proposer improvement. Each role may use its own reasoning structure and full text;
+common-prefix similarity is not a search objective. Keep valid native output contracts.
+
+### Verification, boundaries and unresolved requirements
+
+Root verified complete-source bindings, original retention-rule agreement, JSON plans,
+whitespace checks and the handoff freshness gate. This continuation changes evidence and
+registration only; it does not claim a fresh full code-suite run. All earlier frozen
+source/test receipts remain addressable through the readiness packages.
+
+Stable SLURP business improvement and learning advantage remain unproved. Small reused
+N20 results are optimization evidence, not independent validation. Process metrics remain
+noncausal; more alarms or valid handoffs do not establish helpful reflection. Keep raw-model
+and postprocessing transitions separate. Human review is required before8x400 without
+splitting to evade it. Owner227 covers bounded SLURP engineering and recorded dispositions.
+Audio2Tool/E21 retain their separate holds and E22 has no GPU admission; shared model-free
+compatibility does not establish their complete real-system acceptance.
+
+<!-- current-engineering-handoff:end -->
+
 ## Update6 aggregate input protocol prepared (2026-10-06)
 
 Update5 complete numeric process feedback finished successfully with no new contacts.
