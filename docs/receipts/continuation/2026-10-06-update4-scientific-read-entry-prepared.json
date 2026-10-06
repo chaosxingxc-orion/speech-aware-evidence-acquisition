@@ -1,0 +1,54 @@
+{
+  "schema": "saea-scientific-complete-read-entry-prepared-v1",
+  "at_utc": "2026-10-06T05:47:40.398413+00:00",
+  "status": "PREPARED_NOT_COUNTERSIGNED",
+  "tests": {
+    "terminal_test_methods": 4,
+    "terminal_statement_coverage_percent": 100,
+    "shared_reader_and_learning_tests": 118,
+    "tests_first_missing_module_failure_observed": true,
+    "actual_incomplete_family": "WAIT75, no quality read or root READ",
+    "actual_premature_next_admission": "refused before ledger or admission mutation",
+    "windows_collector": "parser and actual live Running observation passed; not terminal evidence"
+  },
+  "sources": [
+    {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/scientific_read_terminal_v1.py",
+      "sha256": "9caedc75d6f577f39ee8a1e91dacad99929ac9c98ac49ac925b17a34a7313d58"
+    },
+    {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/test_scientific_read_terminal_v1.py",
+      "sha256": "af89b5cd24168df759581860389fdacf1e9ed121230912125adf33e3ec456240"
+    },
+    {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/observe-scientific-windows-terminal-v1.ps1",
+      "sha256": "18a5f2eafbed9ea5c5575240260dd15004a341e58c3555c5a8006e3d3916f071"
+    },
+    {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/review-scientific-cohort-v1.py",
+      "sha256": "96118fda1b4e286eb72657d14c63d8d58ec615d5239168dc2b667f3f44cbed3a"
+    },
+    {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/scientific-read-incomplete-refusal-v1.json",
+      "sha256": "05eab005903a5f3bafb2302443e08916ec68b563132950370fdfb6efd6e16c88"
+    },
+    {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/admit-next-cohort-v1.py",
+      "sha256": "1e4a71c903b61e68a0a4af060140745d71a9a58d4b98a4649ed9855cf1660f0c"
+    },
+    {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/next-cohort-premature-refusal-v1.json",
+      "sha256": "36625473d1ba0310befe9fd263ae642ed27ad1ed3930d3c33c98c4edd16ca67a"
+    }
+  ],
+  "compatibility": "New entry replaces obsolete global batch-driver completion assumptions with exact Windows job/member exits and fresh bound-process absence; shared seal/scoring qualifier and official reader are reused. One changed dependency pin only adds process-aware optimizer packet v2 dispatch; its family scope and estimators are unchanged.",
+  "reporting_order": [
+    "official business quality and reliability",
+    "support/review/repair/harm and missingness",
+    "timing and cost"
+  ],
+  "limits": "Complete success READ and subsequent cohort admission remain pending actual terminal evidence. No scientific quality read, new model/scorer contact, runtime change, retry, control reconciliation or learner export by this preparation.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_dispatched": false
+}

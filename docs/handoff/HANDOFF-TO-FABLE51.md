@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete scientific read and next-stage gates prepared (2026-10-06)
+
+The actual original-a task remains independent and running; no relaunch or
+partial quality read. The new root read entry verifies its Windows-owned job
+rather than consulting the obsolete global batch-driver terminal. Exact terminal
+checks have four test methods plus failure/foreign/stale cases and100percent
+statement coverage;118 shared reader/learning tests pass. Actual incomplete
+qualification returned WAIT75, and the original-a-only admission was refused
+for remaining-b1 before mutation. Three analysis supplements bind official
+quality first, process support/review/repair/harm second, latency/cost third.
+[Prepared entry](../receipts/continuation/2026-10-06-update4-scientific-read-entry-prepared.json).
+
+No READ is countersigned, no new cohort admitted and no complete-trial source
+registration is written by these preparations. Follow the exact helper/observer
+instructions in docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1.
+The running first cohort and15-minute monitor bindings below remain authoritative.
+
 ## Update4 first scientific cohort actually running (2026-10-06)
 
 Windows task SAEA-Update4-OriginalA-Scientific-V1 started at

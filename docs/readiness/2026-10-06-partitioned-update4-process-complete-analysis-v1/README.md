@@ -46,3 +46,34 @@ update3 rejection and active parents unchanged until the current full registered
 trial qualifies. This package adds no model/scorer contacts or runtime changes.
 Any prospective learner export contains only authorized anonymous statistics
 and editable templates, never gold text, answers, source lists or concrete cases.
+
+## Exact Windows-owned scientific read entry
+
+Use data-root coordination/partitioned-update4-process-scientific-preparation-epochs-v1/
+review-scientific-cohort-v1.py with qualify, countersign or read, plus the exact
+cohort, data-root-relative flight-coordination and repo-relative launch-receipt.
+For original-a, the proof directory is original-a-flight-v1 under that coordination
+root. Qualify returns WAIT75 until every registered member finalizes. It adds no
+model/scorer contacts and signs no READ.
+
+Before countersign, run observe-scientific-windows-terminal-v1.ps1 natively with
+the exact JobRoot, TaskName and a fresh exclusive Output path. Pass that output
+as --windows-observation (data-root relative). The gate requires an observation
+at most60 seconds old, exact launch/task/registration binding, successful complete
+Windows/member exits, no bound Windows owner/observer/workers, no live WSL flight
+or scorer, no STOP/flight lock, and available generation guard. The old global
+batch queue is not a terminal authority for this job. The root READ also freshly
+requalifies all independent seals and unique complete official scores.
+
+Each actual root authorization binds its terminal verification and observation.
+Read preserves exclusive output creation; an existing or failed output must be
+diagnosed, never silently replayed. All three analysis supplements now pin the
+unchanged projection/estimators and the versioned process metric contract before
+any quality read. The existing learning dependency has only the prospectively
+registered optimizer packet-v2 dispatch addition; the source difference is
+explicitly documented rather than silently replacing historical pins.
+
+Use admit-next-cohort-v1.py only after an adjacent prior cohort's complete root
+READ and fresh reviewed idle boundary. The current original-a-only review was
+actually rejected for remaining-b1, without mutation. Both later cohorts remain
+DRAFT. See the continuation receipt for test evidence and immutable helper pins.
