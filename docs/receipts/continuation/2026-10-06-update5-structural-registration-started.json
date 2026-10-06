@@ -1,0 +1,24 @@
+{
+  "schema": "saea-root-structural-registration-start-v1",
+  "at_utc": "2026-10-06T10:51:31.536074+00:00",
+  "status": "MODEL_FREE_REGISTRATION_RUNNING",
+  "capacity_family_review": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update5-aggregate-capacity-complete.json",
+    "sha256": "e6ec5401816642348666abc87a1db319d39f074d9c4643e77993e19647058854"
+  },
+  "capacity_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/windows-task-terminal-v1.json",
+    "sha256": "effcfea4a55aa8e649a978e27b7d117c3fcacaeab00d2368a8362d7de7bfee98"
+  },
+  "capacity_monitor": "slurp-update5-capacity-monitor deleted after verified terminal and no admitted processes",
+  "registration_start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/registration-started-v1.json",
+    "sha256": "49afcdc0ca554e345f5c5312f35e8575333f6156b7808df0009b44e60999d9ec"
+  },
+  "pid": 161524,
+  "start_ticks": "61037716",
+  "source_script_sha256": "e889ce52a83992848f18c8c492bbe060943e846966cbc67257b30f300988b716",
+  "model_contacts_added": 0,
+  "runtime_dispatched": false,
+  "next": "Observe this exact registration process. After successful complete registration, integrate and freeze/check the structural worker before final admission and Windows launch. Do not restart on observation timeout."
+}

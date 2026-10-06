@@ -1,5 +1,26 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 capacity complete; structural registration running (2026-10-06)
+
+The entire configured16-member nongenerative capacity family passed root review:
+4752 tokenizer endpoints, zero generation/scorer contacts, all successful original
+worker/lease/observer exits. Windows SAEA-Update5-Aggregate-Capacity-V1 ended
+2026-10-06T10:49:29.7209141+00:00 with exit0. Root verified terminal task and no
+remaining admitted Windows/WSL processes, preserved the exact original epoch,
+and deleted slurp-update5-capacity-monitor. See
+[capacity review](../receipts/continuation/2026-10-06-update5-aggregate-capacity-complete.json).
+
+The prepared structural registrar started10:50:31Z under coordination/
+partitioned-update5-aggregate-structural-mailbox-v1. Wrapper PID161524,
+start_ticks61037716 was revalidated live; inspect current identity and original
+registration-v1.exit.json before taking the next action. See
+[registration start](../receipts/continuation/2026-10-06-update5-structural-registration-started.json).
+It serially registers all original configured members after successful whole-family
+qualification. This is model-free preparation, with no GPU dispatch or scientific
+feedback. Do not duplicate a live registrar. After complete success, integrate,
+freeze/check and finalize the exact structural registration before a separate
+Windows launch and new15-minute monitor. Scientific N20 remains unadmitted.
+
 ## Update5 structural entry prepared behind active capacity (2026-10-06)
 
 The [new exact structural intent](../readiness/2026-10-06-partitioned-update5-aggregate-structural-mailbox-v1/intent-v1.json)

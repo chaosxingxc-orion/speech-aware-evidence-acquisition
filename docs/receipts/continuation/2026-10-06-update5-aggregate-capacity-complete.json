@@ -1,0 +1,502 @@
+{
+  "at_utc": "2026-10-06T10:50:38.509495+00:00",
+  "capacity_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-v1.json",
+    "sha256": "b3dc8c07e8b20ac5500caefd98385e60a97272077c16ad0e66e51c8c7b3b99fd"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "generation_contacts": 0,
+  "intent": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-structural-mailbox-v1/intent-v1.json",
+    "sha256": "f21434c5cd20d08a8932602478b76f8410e86bcae5328929c8ed7bea8f7cc2da"
+  },
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-capacity-fit-v1",
+      "candidate_id": "branch-01",
+      "capacity_output_sha256": "3389781542d67854b8780c193d38918a2eee689784a1fd40d572c1dde98176bb",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5472,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-capacity-fit-v1",
+      "candidate_id": "branch-02",
+      "capacity_output_sha256": "3c4a7415f1cee7058d7c70a3db95355a331e674743e09b174685d50b55721cf1",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5436,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-capacity-fit-v1",
+      "candidate_id": "branch-03",
+      "capacity_output_sha256": "b53e2d6d4265de2e7b7d3bd57b5c0aa0e3822056c94f3be3951dbaf439f8f163",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5482,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-capacity-fit-v1",
+      "candidate_id": "branch-04",
+      "capacity_output_sha256": "91bdcd59c5c355b6256315f93121ef8b8ca57cef9f4a93205f29a75a743b3a96",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5481,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-capacity-fit-v1",
+      "candidate_id": "branch-05",
+      "capacity_output_sha256": "0a72cc91402b3142cb545f9a14050627a7e3e1d3fc2158244013632c0e9dad66",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5477,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-capacity-fit-v1",
+      "candidate_id": "branch-06",
+      "capacity_output_sha256": "d9eaa8291beefeecc62cd46135b9ddb7a3a6c2778c8a65ae6739422d540688c4",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5448,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-capacity-fit-v1",
+      "candidate_id": "branch-07",
+      "capacity_output_sha256": "214e8e538b71ce883ee7200fd0147f738b1e9219443a1dcfa181131e9d0302f2",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5447,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-capacity-fit-v1",
+      "candidate_id": "branch-08",
+      "capacity_output_sha256": "0c89fbcbb3046cbc498068919bd4a7e3796bfa256fe8d0d0667e280c7cc5d33c",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5476,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-capacity-fit-v1",
+      "candidate_id": "branch-09",
+      "capacity_output_sha256": "38c0d331cb49ad81227ff76cd9a0aa1e74eba6aa55983ca38e09793a37eb9dc8",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5481,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-capacity-fit-v1",
+      "candidate_id": "branch-10",
+      "capacity_output_sha256": "03635b77afb8095568ca137933c2cdac566086ef66c6856c5ddd595f730f6ba0",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5465,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-capacity-fit-v1",
+      "candidate_id": "branch-11",
+      "capacity_output_sha256": "8f4585139c6bf93373ac93c8370dd30a032ce5d08f36f11500368d5b3f7cce5a",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5454,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-capacity-fit-v1",
+      "candidate_id": "branch-12",
+      "capacity_output_sha256": "031d7db64f035db6158dd8a0a9577cb11bd5f8daec775635579c1f1cdfa0865b",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5463,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-capacity-fit-v1",
+      "candidate_id": "branch-13",
+      "capacity_output_sha256": "2cd3c9aae07e4aea86fcd8ab37d1c386d57a35a3e3a69a347b64d5929f54247c",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5484,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-capacity-fit-v1",
+      "candidate_id": "branch-14",
+      "capacity_output_sha256": "7582d8957ec63fd6f7da48d5125b2d2b2a4ee90c73c293030bd5c771df1742af",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5469,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-capacity-fit-v1",
+      "candidate_id": "branch-15",
+      "capacity_output_sha256": "ee1de1352291a147491e5175eaba27c38c5c2aa80bbbc893153f766259ec0d16",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5465,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-capacity-fit-v1",
+      "candidate_id": "branch-16",
+      "capacity_output_sha256": "18106166c0219e524c4036ba5fa2a4dc658822576d35f4c5851b19081e27d867",
+      "contacts": 297,
+      "measured_requests": 44,
+      "minimum_margin_after_structural_reserve": 5459,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-CAPACITY-FIT-V1"
+    }
+  ],
+  "read_authority": "Exact per-member structural-only recipes registered under owner227 before capacity contact.",
+  "root_review_required": true,
+  "runtime_admission": false,
+  "schema": "saea-configured-capacity-family-review-v1",
+  "scope": "Registered structural-only capacity read. Full family, source hashes and original exits verified. Not arbitrary future-text coverage; actual FIT remains mandatory.",
+  "scorer_contacts": 0,
+  "source_receipts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-01-capacity-finished.json",
+      "sha256": "965650711c1ef2f450fe440244fd8d61c2b2f9c8017aa4decf339c26f75ee209"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-01/memory-guard/finished.json",
+      "sha256": "0496803166cade1bc9b44b6e0dff25679a32b3b105ca862997e15f7eb8a0fa3c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-01/mailbox/finished.json",
+      "sha256": "b891f52509c53c028d1d0bef795ba28a62b9b1595ca8646cf4bd7cf5296de9fa"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-01/request-fit-v1.json",
+      "sha256": "0ff9e85ab3a3f4c59e450c61c5e90b454cbd6c09ccc52c1b0d963cbad69ce7b2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-01-capacity-exit.json",
+      "sha256": "2d707b395519bb1dd32d070378a9b624f34fd6b2786749c2a6f99cb003f9a653"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-02-capacity-finished.json",
+      "sha256": "677344426c08806cf95e11161dbdeb2b19d0fca5ae5d5300e434dd190bd9c810"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-02/memory-guard/finished.json",
+      "sha256": "bbf39e7281f0c3c68c3be1db083239f7827702f7b36fb17b2cf4f81da31fc8d1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-02/mailbox/finished.json",
+      "sha256": "b1908566aeb49ef9dfe2d003cbd38e432d3137605a95e248bcf58d42b154c1dc"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-02/request-fit-v1.json",
+      "sha256": "5bbf705fd890be0499ae3642022afb48dbfd93c0609407d330bbcc3489a8d7ed"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-02-capacity-exit.json",
+      "sha256": "aa7132f24fd3fdecd2f272e2c77709d6b27bf65ef55b6cff68b751d06ec9f186"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-03-capacity-finished.json",
+      "sha256": "c6d3dbde287af9ddcf6a1e9e911425cd34e1dab8090afe09c0e61ed4c7510e9c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-03/memory-guard/finished.json",
+      "sha256": "fceb6d9ecb25b35127f6e3b8c35c4f3a78efafa9c19495ef918d2ad317cefbdf"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-03/mailbox/finished.json",
+      "sha256": "5b950602bcf63d175295f57c99f532f8edcd7dbb351e885782d8e98a893894d3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-03/request-fit-v1.json",
+      "sha256": "5b70697c927e5a7d5d6b0cd11e5b394e95198a31119bb1c34c946a32401f106a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-03-capacity-exit.json",
+      "sha256": "c654682038d8fbe513f88e6c1a1ffcc17c91bb74f34bea8bb87d9847395ec620"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-04-capacity-finished.json",
+      "sha256": "8b6a511c8c25b571e7136d5df5687a23460c9a2ba82235e2da769344f12e3def"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-04/memory-guard/finished.json",
+      "sha256": "061802d4e3f5948002932147e590408823cc08981f489ff4de6bbd3343260151"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-04/mailbox/finished.json",
+      "sha256": "6518b58f5d61addf3a9e8dd5cba238654c6e0ff97b12d93345f78aa80a4b4904"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-04/request-fit-v1.json",
+      "sha256": "bde3ff992958b1be3ca9b6c1a9b0c416f3a959e1b9b9d79faf5f0ff545241541"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-04-capacity-exit.json",
+      "sha256": "74da91641458f7948dda6567f88aa487534cc7ccafde79e8a4e3cbfe4cfef84f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-05-capacity-finished.json",
+      "sha256": "ff3a63b9cc6e0892d6191f35086f35cd04065d7bcb5be6add82128dab230bdbc"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-05/memory-guard/finished.json",
+      "sha256": "537710a69ca37828f9dc57cc4ccf492122ac3350e25562bf3457c6125382ce53"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-05/mailbox/finished.json",
+      "sha256": "e8d0e714f6c82bde1992b17aa14e4e002ddc76e0e09107c46032506f777b81b4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-05/request-fit-v1.json",
+      "sha256": "24d5e9cd2ce15e04aaa749010e216376fd10540df90f8e01bb5853b60fc0c5bc"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-05-capacity-exit.json",
+      "sha256": "dd3d177ac94921a530a9d840d5e2e0a470001aa7832e1b65072f0466bc6ff3e5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-06-capacity-finished.json",
+      "sha256": "4ddf8b44b1e78c002471f7ccaafcd92088c91e2c84ecf5b3c243d4078c7c9adb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-06/memory-guard/finished.json",
+      "sha256": "88b93bb076f4dd3ef9fa39c989592004a7db5ccbd88038c2e0572e54458b9000"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-06/mailbox/finished.json",
+      "sha256": "7539ab446fab68ac96eabaf34aad5dee83ca6e03cf1b89e7b594d9979dc89959"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-06/request-fit-v1.json",
+      "sha256": "59c38efea884bdf7a3e28fca1984be01236b1acdb970ca20bc7b1d4c07405e47"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-06-capacity-exit.json",
+      "sha256": "fa3a7c4964bcb4513a19ec5e26b691034bc435c53a9e6e5da2cb4c45b8eda3f3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-07-capacity-finished.json",
+      "sha256": "5865a9c7eb062a5222fffc886d94eaa5d83ab3b37a72322af04ede4c9cd7a89b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-07/memory-guard/finished.json",
+      "sha256": "c4abe84bbf0dd4caedcc215d062aac2a6dcb5930bb5bd0e95311479fea6039e1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-07/mailbox/finished.json",
+      "sha256": "d258842387280a1b8630958230dd96f05021ccb1b3a462e06c53a6bca573c1df"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-07/request-fit-v1.json",
+      "sha256": "c7db0a9ae9cbb5027825470e90665ac9c62c3ec39fc3abcd42e2483a2ded6e3e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-07-capacity-exit.json",
+      "sha256": "dd6c002027045c77fc46a3a7afe4d222b51d4d082d15498d43593eab5f56165d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-08-capacity-finished.json",
+      "sha256": "629575530f9a13b50686ebee8be2ec8f565ca52e9bbb811ce0b39c73c805a4bd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-08/memory-guard/finished.json",
+      "sha256": "8d2bf1830d86624b497a8f2bd6cdd83cea6745b145fd3573d9e421a0b8c2c778"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-08/mailbox/finished.json",
+      "sha256": "67dc0f45cfdc7545f07a87ae93051a6f4dd66a59f52a6ade02ae86bdad42c76f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-08/request-fit-v1.json",
+      "sha256": "beb3612b00d440c6b7eb2d86a3ccf1ed32c0f89ee31ecd5f3a63d4e51b9346c1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-08-capacity-exit.json",
+      "sha256": "e99ef6be8588b95a2c8d73ddeb4527619253538cc34288d499a21daf6c28a689"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-09-capacity-finished.json",
+      "sha256": "0bee1b71ca07d20b0ab6226a6abd0e3a34dcbcb09249b39ecd8dfbb8e472ad68"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-09/memory-guard/finished.json",
+      "sha256": "e5b24b689a281ae8efd6b562b7beaa960dcb24849d7680c23019183d0a4b7d7b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-09/mailbox/finished.json",
+      "sha256": "3473fc5b880d5afeaf603e5c9ce97c5c37454f34d87632ab375b335c8cf2b54c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-09/request-fit-v1.json",
+      "sha256": "8b95d9c4645d8376a45ddd50380d635cc75519a89a482a666696103409dcf690"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-09-capacity-exit.json",
+      "sha256": "102126df817137201054774f283b7caa51435ede8ca058cd58ed0cbeeafbea7d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-10-capacity-finished.json",
+      "sha256": "2228cae7dc0a4ec91ccb4d88c7cefb61f89045c1cb0d51a7f5427eaf4ad2f853"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-10/memory-guard/finished.json",
+      "sha256": "dcf70e62ee2b30f78e35ec7dc2fc8a36fade1d9141fc363b4ee58cc1d6e2fba4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-10/mailbox/finished.json",
+      "sha256": "46ad78fe309aab39e80de3062e051f7aafc210df1af51f448239612cebe6f2ff"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-10/request-fit-v1.json",
+      "sha256": "3613ece76a4737adc3a165a0692609d3edb5b860aed716c257c32bcca5542db7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-10-capacity-exit.json",
+      "sha256": "99115b430e9b032414d6f9b668dde7ab6aabcb795bd7226841c97af459a67338"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-11-capacity-finished.json",
+      "sha256": "8e2dc9b6bc09e0910e2154508bedf3084ad8d01e28e86001c501cf145ebb0b28"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-11/memory-guard/finished.json",
+      "sha256": "d47eed4fc3b70f31d5862f2a2591d09b32b2c3f116f94485cf3e557239728631"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-11/mailbox/finished.json",
+      "sha256": "56eedd7f18c90802578fff70c983b37d15ce60970da1cc859568dc0c6d277257"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-11/request-fit-v1.json",
+      "sha256": "bbe29f89e2291701689945cb404586ba55eaf2f0fe277c515040bca1efaca5bd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-11-capacity-exit.json",
+      "sha256": "849f4374116ba822acf48eada18d85855a05fa52ee9fd837e635cf7e7111fdc4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-12-capacity-finished.json",
+      "sha256": "b4ebc5235abbed9cec84cd9ae417bf259c378fb79ae47f339451dbe41163e163"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-12/memory-guard/finished.json",
+      "sha256": "7f5d1700cb8f2525ac81c7c9a397524ba587554da5b1b2188d2f11a105525edd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-12/mailbox/finished.json",
+      "sha256": "577c33024f5127e9b074619c564192d70dc0befcfb1a7484bf5dda5e2e3018ca"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-12/request-fit-v1.json",
+      "sha256": "c3e897be05abbf718dc27db4c49bf89ee5fa3ad8e8ec4b9755c96908c530d14f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-12-capacity-exit.json",
+      "sha256": "f29fdeb9111bd27069867e42eee9987dd5567f2d2ea5c4d41ed8682ea114c3b6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-13-capacity-finished.json",
+      "sha256": "28279fe76d96f417606c334c899c680ddf87f521a4e2e7864eb2495a34a6cca3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-13/memory-guard/finished.json",
+      "sha256": "389d5359bf8bf1aa01e0a6e606fc002606a3c7bf65b88e595a1d22996ca20adf"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-13/mailbox/finished.json",
+      "sha256": "6e647015072f88c46ce9b7934de7c965bf38019180c005c36589accafa7b3d0d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-13/request-fit-v1.json",
+      "sha256": "5de4af1f11a86c7fcf8d311f4198e226c250f281592bcdbee63479bafa4a4e19"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-13-capacity-exit.json",
+      "sha256": "9a02287acdc72544641b3652248ca5981b5618f52ea50b9065e65dfa5e6a540d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-14-capacity-finished.json",
+      "sha256": "50fef62ce597b6edcf6335a4e482731e93411599be864b0d0e5a93f40b8c24d8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-14/memory-guard/finished.json",
+      "sha256": "b1203798d2f4db674eb61dd267b95d7ade93037828cf31fb873d019fb48198e4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-14/mailbox/finished.json",
+      "sha256": "559a5b5f1dbd978d90e772008bb2ae38620388b9448e9b359c45d9b8af0659f2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-14/request-fit-v1.json",
+      "sha256": "20055d4eeaf8a01dd8edce5c6f0701af1fabf0e7afe0d8eeb0d32a503be0e3d9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-14-capacity-exit.json",
+      "sha256": "fffad5cf25237b611798e78caad7a5c417efe074beaea71880db537aafb01798"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-15-capacity-finished.json",
+      "sha256": "f035969bb06d15416aaede8932dad5fe39c77e53b95d290a01ae96ec316ef5a2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-15/memory-guard/finished.json",
+      "sha256": "50e3ad5eaec241b62ff4f0b271362525ff0e681e7b60f2d502d5d32529f5d8af"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-15/mailbox/finished.json",
+      "sha256": "d72ff364bc9c34badaf3aee6a453a645f3519571972e5828e1761549530ae1c1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-15/request-fit-v1.json",
+      "sha256": "7c8c6817a6b028b7332bec8241f27c88682e5fa7aa3818953f3b56973d8b9e04"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-15-capacity-exit.json",
+      "sha256": "9e8d1e37f3e555a0944c3e440b9b62add8f6f417eb956fe95c7acaedd6209f6e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-16-capacity-finished.json",
+      "sha256": "6439ae6eae2defec786e0666d87622e3795c239c9111cf846dfd19e17779509f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-16/memory-guard/finished.json",
+      "sha256": "011911e2a619751ec9e0895198c6adffb9f381d2fc0e8d98b18125d63464df8d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-16/mailbox/finished.json",
+      "sha256": "c2946cfb2b639c0fe78791982a7ad4c687d1f62b9c134eb0fec70c339269156e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-16/request-fit-v1.json",
+      "sha256": "4cefdf20f667aba78e29877d50eee5d25c75d3e0789f2a8370f7d3ea258c0fd2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-16-capacity-exit.json",
+      "sha256": "9a526e0c92672cb75874f10f919185411459d538a89341868737c98919aa0bb3"
+    }
+  ],
+  "terminal_projection": "Exact raw Windows member outcomes joined to separately captured successful lease/worker exits; raw receipts unchanged.",
+  "terminal_receipts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/capacity-finished.json",
+      "sha256": "f1290825bc9ba265bd7cd915071171258311307897661494ed23e369de5f4f28"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/windows-task-terminal-v1.json",
+      "sha256": "effcfea4a55aa8e649a978e27b7d117c3fcacaeab00d2368a8362d7de7bfee98"
+    }
+  ],
+  "tokenizer_endpoints": 4752
+}
