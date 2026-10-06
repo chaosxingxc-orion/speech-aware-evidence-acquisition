@@ -1,0 +1,20 @@
+{
+  "schema": "saea-scientific-member-entry-structural-rebind-v1",
+  "at_utc": "2026-10-06T04:30:31.663184+00:00",
+  "status": "PREPARED_HELD",
+  "predecessor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/prepare-member-v1.py",
+    "sha256": "b287bd0975401b7a33ca356c630e29fc112e148d8d3700f797bf35b1fd07692d"
+  },
+  "successor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/prepare-member-v2.py",
+    "sha256": "c08d51e5b6472154d152d23d781d294871f2b881a71ed12ce3eb77ea45694cca"
+  },
+  "structural_registration_sha256": "3a1ca6cbe1f8841366388429178450a574e3c30ce2967319d9f383b04aea9165",
+  "delta": "Point to the actual launched start18 structural acceptance and require its exact registration, complete ordered member list, frozen worker/commit and per-member rows. Preserve immutable scientific blueprint and source/policy/supply validation.",
+  "premature_exit": 75,
+  "model_contacts": 0,
+  "new_member_files_created": false,
+  "runtime_admission": false,
+  "limitations": "Positive preparation remains unexecuted pending complete structural acceptance and root binding."
+}

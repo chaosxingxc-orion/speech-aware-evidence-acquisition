@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Exact scientific successor prepared; structural job progressing (2026-10-06)
+
+At04:30Z branches01/02 of the launched structural job completed with worker/lease
+exit0; branch03 parent107586 was verified live. Revalidate actual identities.
+The exact task, epoch, frozen worker and15-minute monitor below remain active.
+No structural root acceptance or task-quality conclusion yet.
+
+The scientific helper successor is now prepare-member-v2.py under
+coordination/partitioned-update4-process-scientific-preparation-epochs-v1.
+[Source-bound rebind](../receipts/continuation/2026-10-06-update4-scientific-member-entry-rebound.json)
+uses the actual start18 acceptance path and exact registration SHA, ordered members,
+worker/commit and row counts. Its premature invocation correctly exited75 with no
+new member files. Do not invoke prepare-member-v1.py, whose old acceptance path is
+preserved. After the complete structural audit, root must create the exact
+structural-acceptance-binding-v1.json before any scientific member preparation.
+This is preparation only; no scientific admission or model contact follows.
+
 ## Update4 structural GPU family launched and live (2026-10-06)
 
 Windows task SAEA-Update4-Structural-Start18-V1 launched04:26:56.1721554Z.
