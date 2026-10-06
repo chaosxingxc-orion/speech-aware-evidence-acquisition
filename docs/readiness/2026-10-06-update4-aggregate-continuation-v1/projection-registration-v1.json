@@ -1,0 +1,23 @@
+{
+  "schema": "saea-abstract-population-projection-v1",
+  "status": "ROOT_REGISTERED",
+  "runtime_admission": false,
+  "source_join": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/successor-source-registration-v1.json",
+    "sha256": "64913641f1e98947f7d479c5f27cf128f6c7d1a59c72a199b5b034b1c2d0321b"
+  },
+  "source_specifications": {
+    "original-a": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/source-specifications.json",
+      "sha256": "c1159fd0021ea857eedf11ae354fbad27c0816f819cd1645314da9cbc4372501"
+    },
+    "remaining-b1": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/source-specifications.json",
+      "sha256": "094aaae3bc97c97e94bd3154230a50a274f83a8980a208f84b183802baa97f0e"
+    },
+    "remaining-b2": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/source-specifications.json",
+      "sha256": "995fede3513ddf5ff58d00195d36052ffc3df3eca1c7c121d153bf9e3c8c3f2a"
+    }
+  }
+}
