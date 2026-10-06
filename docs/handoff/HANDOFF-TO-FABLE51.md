@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:10:19.420453+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:15:00.224535+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -36,6 +36,17 @@ family is now running under the exact launch below. Scientific generation remain
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 complete-result analysis entries prepared (2026-10-06)
+
+Root prepared source-pinned copies of the existing exact READ, process, paired,
+presentation, trial-retention and numeric-feedback entries. No quality or reference
+content was read. The analysis plan builder refuses before writes while canonical
+drafts are absent. [Entry review](../receipts/continuation/2026-10-06-update6-analysis-entries-prepared.json).
+After complete structural acceptance and serial scientific preparation/draft registration,
+run prepare-analysis-plans-v1.py once to bind prospective estimators and all cohort
+comparisons before any scientific quality read. Runtime admission, frozen checks and
+exact full-family root READ remain separate. The structural job continues unchanged.
 
 ## Update6 cohort execution entries prepared (2026-10-06)
 

@@ -1,5 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 complete-result analysis entries prepared (2026-10-06)
+
+Root prepared source-pinned copies of the existing exact READ, process, paired,
+presentation, trial-retention and numeric-feedback entries. No quality or reference
+content was read. The analysis plan builder refuses before writes while canonical
+drafts are absent. [Entry review](../receipts/continuation/2026-10-06-update6-analysis-entries-prepared.json).
+After complete structural acceptance and serial scientific preparation/draft registration,
+run prepare-analysis-plans-v1.py once to bind prospective estimators and all cohort
+comparisons before any scientific quality read. Runtime admission, frozen checks and
+exact full-family root READ remain separate. The structural job continues unchanged.
+
+
 ## Update6 cohort execution entries prepared (2026-10-06)
 
 All three configuration-derived cohort execution directories and frozen check entries
@@ -5198,7 +5210,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T19:10:19.420453+00:00
+Last refreshed: 2026-10-06T19:15:00.224535+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

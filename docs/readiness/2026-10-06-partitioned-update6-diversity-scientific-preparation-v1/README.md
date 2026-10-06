@@ -41,3 +41,25 @@ parse successfully; all24 copied source files and ancestors are hash-verified.
 No actual cohort registration, worker identity, scheduled task or admission exists.
 Do not finalize these envelopes until their own exact prepared/admitted/frozen proof exists.
 [Preparation review](../../receipts/continuation/2026-10-06-update6-cohort-execution-entries-prepared.json).
+
+## Analysis entries ready to bind after canonical drafts
+
+The scientific coordination directory contains Update6 copies of the existing exact
+root READ/terminal qualifier, complete-cohort business/process/cost presentation, paired
+process diagnostics, whole-trial retention and numeric feedback readers. Four shared
+validation helpers remain byte-identical; all eleven source/target pairs are pinned.
+No reader has executed on this trial, and no analysis plan or learner export exists.
+
+After finalize-draft-registration-v2.py succeeds, run prepare-analysis-plans-v1.py once.
+It verifies canonical packages, unchanged analysis sources and source metadata hashes,
+derives all cohort comparisons from config, pins existing estimators and validates the
+new supplements with the shared reader. Its actual pending-state invocation returned75
+without writes. Quality, reference contents and scores are not loaded by preparation.
+[Entry review](../../receipts/continuation/2026-10-06-update6-analysis-entries-prepared.json).
+
+After every scientific cohort independently qualifies and root countersigns its READ,
+use the prepared complete-cohort read/timing, process, paired and presentation entries.
+Only after all configured cohorts have exact root READs may the complete trial entry
+join sources and evaluate the frozen strict-population utility criterion. Future numeric
+feedback remains root-only until a separate prospective learner admission. Preserve
+unknown support, denominators, adverse changes and all failed/no-change proposals.

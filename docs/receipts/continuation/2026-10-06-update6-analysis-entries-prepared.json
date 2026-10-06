@@ -1,0 +1,29 @@
+{
+  "schema": "saea-prospective-analysis-entry-review-v1",
+  "at_utc": "2026-10-06T19:15:00.224535+00:00",
+  "status": "PREPARED_NOT_EXECUTED",
+  "analysis_entries": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/analysis-entries-prepared-v1.json",
+    "sha256": "14d13917d8d3c6cd92bbb442818db2681472ade5763116b1d931a0fa5c355955"
+  },
+  "analysis_plan_builder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/prepare-analysis-plans-v1.py",
+    "sha256": "292d45ca221efd440416010b51716462b4c05bbc1b9ba23203793da8844122ce"
+  },
+  "pending_refusal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/analysis-plan-pending-proof-v1.json",
+    "sha256": "3cf266ed4653baaf80c986fa2395483913f13b7c7e88f908a9506846d809053a"
+  },
+  "source_files_verified": 11,
+  "source_identical_gates": [
+    "diagnostic_pins_v1.py",
+    "process_source_gate_v1.py",
+    "scientific_read_terminal_v1.py",
+    "next_stage_review_v1.py"
+  ],
+  "quality_read": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "learner_exported": false,
+  "scope": "Existing complete-family root READ, business/process/cost and strict trial readers with only prospective identities changed. Plans are not yet created: canonical draft packages and complete structural acceptance remain prerequisites. No current estimator/retention or runtime change."
+}
