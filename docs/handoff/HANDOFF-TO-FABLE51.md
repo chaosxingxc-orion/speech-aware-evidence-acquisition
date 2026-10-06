@@ -1,5 +1,39 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update4 structural registration complete; no dispatch (2026-10-06)
+
+All16 configured structural members are registered through the shared runtime,
+with unchanged policy/data/knowledge, verified actual role bytes and warm supplies.
+The family contains64 structural trajectories, at most832 generation contacts and
+3328 FIT service endpoints, with zero official score jobs. Resource policy remains
+20GiB startup/8GiB running. [Registration evidence](../receipts/continuation/2026-10-06-update4-structural-epochs-registered.json).
+
+No task generation has occurred. Next finish offline gates, serial integration,
+new clean frozen worker and exact per-member frozen/live checks before Windows-owned
+launch. Activate a fresh bound15-minute monitor only after actual launch. Old
+capacity task is terminal, all16 unique proofs are accepted and its monitor deleted.
+Scientific N20 remains separately HELD. Preserve all failures and original proofs.
+
+## All update4 capacities accepted; structural registration in progress (2026-10-06)
+
+The unused suffix ended normally at03:55:23.8646578Z. Windows task is Ready/exit0;
+all bound owner/observer/WSL processes are absent and the exact15-minute heartbeat
+has been deleted. The source-bound two-epoch review qualified all16 original
+members:4752 unique tokenizer endpoints,704 measured requests, zero generation
+or scorer contacts. Preserve the predecessor exit1 and its four unique proofs.
+[Root acceptance](../receipts/continuation/2026-10-06-update4-capacity-root-acceptance.json).
+
+A stale embedded helper SHA refused the first model-free registration wrapper
+before start receipts or subprocess execution. Every helper still matched its
+original preparation receipt. The recorded root227 disposition preserves that
+wrapper and uses a successor changing only the expected helper hash.
+[Disposition](../receipts/continuation/2026-10-06-update4-structural-registration-wrapper-disposition.json).
+Serial structural registration now runs in coordination/partitioned-update4-process-structural-epochs-v1;
+revalidate its exact registration process/logs, never restart it on a polling timeout.
+No structural or scientific model contact yet. Structural startup20GiB/running8GiB
+remain unchanged; full frozen/live checks still precede dispatch. Business and
+process metrics remain primary over latency. No cache, service or host changes.
+
 ## Exact unused capacity suffix launched with fresh Windows observer (2026-10-06)
 
 Windows task SAEA-Update4-Capacity-Unused-Suffix-V1 launched03:33:17.6122529Z.

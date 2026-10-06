@@ -1,0 +1,28 @@
+{
+  "schema": "saea-root-complete-capacity-acceptance-v1",
+  "at_utc": "2026-10-06T03:58:38.074140+00:00",
+  "authority": "Owner227 bounded root engineering",
+  "status": "CAPACITY_ACCEPTED_STRUCTURAL_REGISTRATION_IN_PROGRESS",
+  "capacity_review": {
+    "relpath": "docs/receipts/continuation/2026-10-06-update4-capacity-epochs-complete.json",
+    "sha256": "88c8f9149acaee55dd62174809724d292bb10391e20a8809d2fa7c8f835eb012"
+  },
+  "unique_members": 16,
+  "measured_requests": 704,
+  "unique_tokenizer_endpoints": 4752,
+  "minimum_margin_after_structural_reserve": 5409,
+  "preserved_failure": "Original epoch exit1 and four successful unique proofs are unchanged; only the exact unused suffix ran.",
+  "monitor": {
+    "id": "slurp-update4-unused-capacity-suffix-monitor",
+    "state": "DELETED",
+    "evidence": "Codex automation_update returned deleteStatus deleted after terminal task and absent Windows/WSL process verification."
+  },
+  "next": "Serial model-free structural registration; frozen checks and exact live admission still required before any structural contacts.",
+  "structural_resource_policy": {
+    "start_gib": 20,
+    "floor_gib": 8
+  },
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "business_quality_claim": false
+}

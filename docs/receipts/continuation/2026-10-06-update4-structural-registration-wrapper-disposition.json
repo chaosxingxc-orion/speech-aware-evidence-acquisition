@@ -1,0 +1,32 @@
+{
+  "schema": "saea-root-precontact-preparation-disposition-v1",
+  "at_utc": "2026-10-06T03:57:15.249859+00:00",
+  "authority": "Owner227 root bounded engineering",
+  "status": "DISPOSED_PRECONTACT_ONLY",
+  "observed_failure": {
+    "entry": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/run-registration-v1.py",
+    "sha256": "e89ee419e387278b223ea2224112b71fefc38b1ff37fb8e1551f3f5077d74eb8",
+    "exit_code": 1,
+    "condition": "Embedded preparation helper SHA mismatch, before start receipt or subprocess execution.",
+    "expected": "6e835fd444151bde156e34f382f8faf4b641a9569b525acd6ad11975e0d703bc",
+    "actual": "da1c9fe90e0163a9b1119646b2da649e5600d8cc0427a3ad4c18add65c0bd65f",
+    "outer_tool_chunk": "3c4fc2"
+  },
+  "cause": "Wrapper retained an older helper hash while the separately pinned successor preparation helper already had the correct new capacity-epoch paths. All helpers match the original preparation receipt; no unexplained source change.",
+  "preserved": "Original wrapper and all original receipts remain unchanged.",
+  "successor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/run-registration-v2.py",
+    "sha256": "b049c102be26e9a6af2d53752c56687d4689a4de2d6b416d2f7ab8ae01507f7e",
+    "delta": "Only two occurrences of the expected preparation helper hash are updated to the already registered successor helper SHA."
+  },
+  "verification": {
+    "all_prepared_helper_pins_match": true,
+    "no_entry_receipts_or_admission": true,
+    "python_ast": true,
+    "whole_capacity_check": "COMPLETE_CHECK_ONLY, 16 members"
+  },
+  "authorization": "Execute the model-free registration successor once after this disposition; existing downstream frozen/runtime gates remain mandatory.",
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "scientific_inputs_changed": false
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "saea-structural-offline-checks-v1",
+  "at_utc": "2026-10-06T04:04:36.831627+00:00",
+  "raw_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/offline-checks-v1.json",
+    "sha256": "191ee7a4ff55362ba52ae7fdbd3b60f3f4ac15e1abf49f26dba12c57fb8e636a"
+  },
+  "supplement": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/offline-checks-supplement-v1.json",
+    "sha256": "a0834a8821a2998bf85f7f7c74676d73a962a54ce9751849f789e9539da2c13f"
+  },
+  "new_members_passed": true,
+  "global_label_gate_passed": false,
+  "preserved_historical_findings": [
+    {
+      "cell": "slurp-native-stage3-system-text-native-capacity-recovery1-v1",
+      "kind": "invalid-label",
+      "message": "configs/experiment/slurp-native-stage3-system-text-native-capacity-recovery1-v1.json: stage3_algorithm.operators_used is empty; a cell labelled 'system-text-black-box-v1' states which of that algorithm's operators it exercises"
+    },
+    {
+      "cell": "slurp-native-stage3-system-text-native-capacity-v1",
+      "kind": "invalid-label",
+      "message": "configs/experiment/slurp-native-stage3-system-text-native-capacity-v1.json: stage3_algorithm.operators_used is empty; a cell labelled 'system-text-black-box-v1' states which of that algorithm's operators it exercises"
+    }
+  ],
+  "scope": "No new algorithm label violations. Preserve the two historical frozen capacity cells unchanged. Per-member registration/runtime and frozen checks remain mandatory.",
+  "model_contacts": 0
+}

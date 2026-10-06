@@ -1,0 +1,37 @@
+{
+  "schema": "saea-configured-structural-registration-complete-v1",
+  "at_utc": "2026-10-06T04:02:14.850452+00:00",
+  "status": "REGISTERED_NO_DISPATCH",
+  "authority": "Owner227 root bounded engineering",
+  "members": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-structural-epochs-v1/registered-members-v1.json",
+    "sha256": "ff441c033355067f534046a6f8517cb955feebdfd450ccc3c62b9654813748a8"
+  },
+  "admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/root-admission-v1.json",
+    "sha256": "6b116ac2e3340c44adfab918b6783b15c505707e6a09c974f299e82ee05f017b"
+  },
+  "registration_execution": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-epochs-v1/registration-v1.exit.json",
+    "sha256": "746bd76f6e0f6d5d9df42fddfc0bdfed56f4d650b07773fe048407c54d2943f1"
+  },
+  "totals": {
+    "fit_endpoint_contacts_cap": 3328,
+    "generation_contacts_cap": 832,
+    "official_score_jobs": 0,
+    "structural_trajectories": 64,
+    "systems": 16
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "verified": "All configured original members passed serial shared-runtime preparation, unchanged graph settings and actual policy-role binding, warm prepared-supply validation and source identity. Existing policy bytes, knowledge and input selections remain fixed.",
+  "remaining": "Offline checks, serial integration, new clean frozen worker, per-member frozen proof, launch registration, live gates and Windows-owned dispatch.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "scientific_admission": false
+}
