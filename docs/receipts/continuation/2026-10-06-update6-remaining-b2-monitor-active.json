@@ -1,0 +1,27 @@
+{
+  "schema": "saea-launched-cohort-monitor-receipt-v1",
+  "at_utc": "2026-10-06T22:21:38.066961+00:00",
+  "automation_id": "slurp-update6-remaining-b2-monitor",
+  "status": "ACTIVE",
+  "interval_minutes": 15,
+  "destination": "thread",
+  "terminal_action": "Delete after verified terminal and absence of every bound owner/child/scorer/observer.",
+  "launch": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update6-remaining-b2-scientific-launch.json",
+    "sha256": "767340e6a8a4ea1e7d915d3dbed5d03429553a7963ed193fab6ca72a74d4c73a"
+  },
+  "captured_root_read_entries": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/captured-root-read-entries-v1.json",
+    "sha256": "13509a3834b952c1ef8411af751291328fd2acbf06d260c45ef468ed676e202e"
+  },
+  "first_member_start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/seed/scientific-started.json",
+    "sha256": "c3705f05055d07354fbf366735149bfc7eacd6f40983549e85302fe62dfe7fe6"
+  },
+  "startup_wait": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/seed/memory-wait/finished.json",
+    "sha256": "193b9ebd73be3a82d3ac9b6bf7960738af74868a30ec4996cc0d7f2fe6a6a246"
+  },
+  "pid_revalidated": 256294,
+  "scientific_quality_read": false
+}

@@ -1,5 +1,34 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 final remaining-b2 cohort RUNNING (2026-10-06)
+
+Windows task SAEA-Update6-Diversity-RemainingB2-Scientific-V1 launched at
+2026-10-06T22:20:06.3589816+00:00; owner PID22956 created22:20:05.9715000Z,
+hidden supervisor10720/native capture6648. Revalidate identities. Frozen worker
+/home/chao/saea-worktrees/codex-partitioned-update6-diversity-remaining-b2-v1
+at02599c9e394e239cc3f0ed7ec1e4580f6f764b3e passed all six model-free frozen gates.
+Registration SHAe661c5ae9e95550f1c4154fd583100537bbea59e904d76e9f333f87319da64dd.
+Members seed,seed-aa,branches13-16 each20 trajectories;120 total. Same configured
+sampling,role execution,knowledge and policies. Branch15 spent no-change stays retained.
+Prelaunch Windows21.784GiB,healthy resident service4 idle slots,no STOP/flight/competitor.
+Seed launcher256294 verified live22:21:12Z after registered stable-memory wait.
+
+[Launch](../receipts/continuation/2026-10-06-update6-remaining-b2-scientific-launch.json)
+and separate read binding are saved. Monitor slurp-update6-remaining-b2-monitor is
+ACTIVE every15minutes; delete immediately after terminal with no bound processes.
+Independent native owner-process-exit.json is required alongside all six valid
+seals/unique official scores,zero failed jobs and exact root READ. At completion use
+job-root captured-root-read-entries-v1.json: original qualify, native v2 capture,
+captured-cohort countersign within60seconds, original read, registered process/
+presentation/paired analysis. No current quality read or partial learner export.
+
+After complete remaining-b2 root review, run the existing whole-trial join/evaluate
+and complete process-feedback preparation for all16 positions under the original
+strict-population-utility-sum rule. Do not select individual winners retrospectively,
+replace spent allocations, pool different-cohort point scores into one frontier,
+or launch a new algorithm/scale without its prospective registration. The current
+family finishes the already registered trial. Preserve all earlier failure evidence.
+
 ## Update6 remaining-b1 complete; remaining-b2 admitted pending frozen/live checks (2026-10-06)
 
 All six members finalized20 rows each, verified seals, one successful official score

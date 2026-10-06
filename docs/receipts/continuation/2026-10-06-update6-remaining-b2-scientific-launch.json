@@ -1,0 +1,153 @@
+{
+  "schema": "saea-configured-scientific-windows-launch-v1",
+  "at_utc": "2026-10-06T22:20:44.259362+00:00",
+  "status": "LAUNCHED",
+  "task_name": "SAEA-Update6-Diversity-RemainingB2-Scientific-V1",
+  "launch_epoch": "2026-10-06T22:20:06.3589816+00:00",
+  "windows_owner_pid": 22956,
+  "owner_creation_utc": "2026-10-06T22:20:05.9715000Z",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-remaining-b2-v1",
+  "worker_commit": "02599c9e394e239cc3f0ed7ec1e4580f6f764b3e",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "population_cohort": "remaining-b2",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/registration-v1.json",
+    "sha256": "e661c5ae9e95550f1c4154fd583100537bbea59e904d76e9f333f87319da64dd"
+  },
+  "start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/scientific-started.json",
+    "sha256": "8e6128eeae1845df9d8263779409fcc4f95d44e63ca7ac19e6c1a062d73f2fb1"
+  },
+  "windows_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/windows-launch-observation-v1.json",
+    "sha256": "91773ae9a142d7454763797cd138008db1a726e2e5a851a69397a2709e0fe6d0"
+  },
+  "task_definition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/windows-task-definition-v1.xml",
+    "sha256": "359eda078fafaa16bdc7c7d01b6a4f49789114922f95aaaede13ce4feccae022"
+  },
+  "native_capture": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/scientific_full_owner_capture.cmd",
+    "sha256": "01f0945e02ce7a3d01acd6467afcf0cb3d2a10c626ba91574ea9c8b18831632e"
+  },
+  "native_hidden_wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/scientific-owner-hidden-v1.vbs",
+    "sha256": "e3f1adf4e3fde6337c514bdea24f21c65af8f38fb9b5a14e37127859acb7d91b"
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/live-prelaunch-v1.json",
+    "sha256": "c72bca753f40599cbaa963618b1870643e4bc685394474b7d84bad8de313f734"
+  },
+  "frozen_root_verification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b2-flight-v1/root-frozen-verification-v1.json",
+    "sha256": "b1ee098df74c26fc830582c6df848cddb25ce2115d55f84cdf0fd11f2f52e5ed"
+  },
+  "members": [
+    {
+      "label": "seed",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-seed-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-SEED-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-seed-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-SEED-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+        "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+      }
+    },
+    {
+      "label": "seed-aa",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-seed-aa-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-SEED-AA-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-seed-aa-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-SEED-AA-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+        "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+      }
+    },
+    {
+      "label": "branch-13",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-13-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-13-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-13-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-13-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+        "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+      }
+    },
+    {
+      "label": "branch-14",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-14-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-14-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-14-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-14-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+        "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+      }
+    },
+    {
+      "label": "branch-15",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-15-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-15-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-15-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-15-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+        "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+      }
+    },
+    {
+      "label": "branch-16",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-16-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-16-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-16-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-16-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+        "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+      }
+    }
+  ],
+  "total_trajectories": 120,
+  "budget": {
+    "generation_contacts": 1560,
+    "fit_endpoint_contacts": 6240,
+    "official_score_jobs": 6
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "service_epoch": "2026-10-05T15:52:00.740486+00:00",
+  "service_pid_at_launch": 686,
+  "windows_free_gib_at_prelaunch": 21.78415298461914,
+  "scientific_quality_read": false,
+  "root_read_countersigned": false,
+  "next": "Follow all six configured members, independent native owner exit, exact cohort READ and registered complete analyses. Then join the whole16-position trial under its original acceptance rule. No partial learner export or automatic new algorithm/scale."
+}
