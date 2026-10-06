@@ -1,0 +1,122 @@
+"""Reject unsafe continuation without running any model or scorer."""
+import copy
+import importlib.util
+from pathlib import Path
+import pytest
+
+MODULE = Path(__file__).parents[2] / "scripts/flights/batch/scientific_continuation.py"
+spec = importlib.util.spec_from_file_location("scientific_continuation", MODULE)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+
+def fixture(count=4, completed=2):
+    reg = {"members": [{"label": f"m{i}", "run_id": f"run{i}", "attempt_id": f"attempt{i}"} for i in range(count)]}
+    observation = {"task_state": "Ready", "task_result": 2147943467,
+                   "original_owner_live": False, "bound_windows_processes": [],
+                   "bound_wsl_processes": [], "stop_present": False,
+                   "flight_lock_present": False, "observed_at": "2026-10-06T20:00:00Z"}
+    members = {}
+    for i, expected in enumerate(reg["members"]):
+        members[expected["label"]] = {**expected, "attempt_present": i < completed,
+            "run_present": i < completed, "unit_present": i < completed,
+            "attempt_state": "FINALIZED" if i < completed else None,
+            "started": i < completed, "finished_exit": 0 if i < completed else None,
+            "campaign_exit": 0 if i < completed else None,
+            "inspection_exit": 0 if i < completed else None,
+            "successful_scores": 1 if i < completed else 0,
+            "failed_scores": 0, "prepared_scores": 1 if i < completed else 0,
+            "failure_present": False}
+    return reg, observation, members
+
+
+def decide(reg, observation, members):
+    return module.plan_unstarted_continuation(registration=reg, observation=observation,
+        members=members, now="2026-10-06T20:00:20Z", max_age_seconds=60)
+
+
+@pytest.mark.parametrize("count,complete", [(3,1),(7,5),(10,5)])
+def test_derive_remaining_without_replaying_completed(count, complete):
+    reg, obs, members = fixture(count, complete)
+    before = copy.deepcopy((reg,obs,members))
+    result = decide(reg,obs,members)
+    assert result["preserved_members"] == [f"m{i}" for i in range(complete)]
+    assert result["unstarted_members"] == [f"m{i}" for i in range(complete,count)]
+    assert result["read_authorized"] is False
+    assert (reg,obs,members) == before
+
+
+@pytest.mark.parametrize("field,value", [
+    ("task_state","Running"),("task_result",0),("original_owner_live",True),
+    ("bound_windows_processes",[1]),("bound_wsl_processes",[2]),
+    ("stop_present",True),("flight_lock_present",True),
+    ("observed_at","2026-10-06T19:50:00Z"),
+    ("observed_at","2026-10-06T20:01:00Z"),
+    ("observed_at","2026-10-06T20:00:00")])
+def test_refuse_live_unsettled_or_stale_observation(field,value):
+    reg,obs,members=fixture();obs[field]=value
+    with pytest.raises(ValueError):decide(reg,obs,members)
+
+
+@pytest.mark.parametrize("field,value", [
+    ("attempt_state","OPENED"),("finished_exit",1),("campaign_exit",None),
+    ("inspection_exit",1),("successful_scores",2),("failed_scores",1),
+    ("prepared_scores",2),("failure_present",True),("started",False),
+    ("run_id","foreign"),("attempt_id","foreign"),("run_present",False)])
+def test_refuse_unfinished_failed_or_mismatched_preserved_member(field,value):
+    reg,obs,members=fixture();members['m0'][field]=value
+    with pytest.raises(ValueError):decide(reg,obs,members)
+
+
+@pytest.mark.parametrize("field,value", [
+    ("unit_present",True),("run_present",True),("started",True),
+    ("successful_scores",1),("failed_scores",1),("attempt_state","OPENED"),
+    ("finished_exit",0),("prepared_scores",1),("failure_present",True)])
+def test_refuse_any_trace_on_unstarted_member(field,value):
+    reg,obs,members=fixture();members['m2'][field]=value
+    with pytest.raises(ValueError):decide(reg,obs,members)
+
+
+def test_refuse_nonprefix_completion():
+    reg,obs,members=fixture()
+    for key in list(members['m0']):
+        if key not in ('label','run_id','attempt_id'):
+            members['m0'][key],members['m2'][key]=members['m2'][key],members['m0'][key]
+    with pytest.raises(ValueError):decide(reg,obs,members)
+
+
+@pytest.mark.parametrize("fault", ['missing','extra','duplicate','empty','all_done','none_done'])
+def test_refuse_invalid_member_partition(fault):
+    reg,obs,members=fixture()
+    if fault=='missing':members.pop('m0')
+    if fault=='extra':members['extra']=members['m0']
+    if fault=='duplicate':reg['members'].append(reg['members'][0])
+    if fault=='empty':reg['members']=[];members={}
+    if fault=='all_done':reg,obs,members=fixture(4,4)
+    if fault=='none_done':reg,obs,members=fixture(4,0)
+    with pytest.raises(ValueError):decide(reg,obs,members)
+
+
+@pytest.mark.parametrize("key", ["run_id", "attempt_id"])
+def test_refuse_duplicate_execution_identity(key):
+    reg,obs,members=fixture();reg['members'][1][key]=reg['members'][0][key]
+    with pytest.raises(ValueError):decide(reg,obs,members)
+
+
+@pytest.mark.parametrize("value", [0,-1])
+def test_refuse_disabled_freshness(value):
+    reg,obs,members=fixture()
+    with pytest.raises(ValueError):
+        module.plan_unstarted_continuation(registration=reg,observation=obs,
+            members=members,now="2026-10-06T20:00:20Z",max_age_seconds=value)
+
+
+def test_refuse_task_running_code_even_with_ready_snapshot():
+    reg,obs,members=fixture();obs['task_result']=267009
+    with pytest.raises(ValueError):decide(reg,obs,members)
+
+
+@pytest.mark.parametrize("field,value", [("successful_scores",True),("campaign_exit",False)])
+def test_refuse_boolean_numeric_evidence(field,value):
+    reg,obs,members=fixture();members['m0'][field]=value
+    with pytest.raises(ValueError):decide(reg,obs,members)

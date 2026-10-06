@@ -1,5 +1,32 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 original owner settled; suffix continuation preparation (2026-10-06)
+
+The original branch-03 child finished2026-10-06T20:29:20.436000Z with exit0,
+FINALIZED operational metadata, one successful official score and zero failures.
+At20:30:47Z native Windows inspection found no bound owner, WSL host or observer;
+the subsequent WSL scan found no original campaign/scorer/launcher. The original
+outer task remains failed (2147943467); missing root terminal and branch-03 native
+Windows exit receipts remain missing, never fabricated. Cause is unestablished.
+The job monitor slurp-update6-original-a-monitor has been deleted.
+
+Five members are preserved:seed,seed-aa,branch-01,branch-02,branch-03. Branch-04
+through branch-08 have no attempts, run directories or execution unit directories.
+The new model-free scripts/flights/batch/scientific_continuation.py verifies this
+exact completed-prefix/untouched-suffix partition. Its tests plus process-guard
+regression pass99 tests; new-module statement coverage100percent; engineering-base
+passes. A fresh real-file, native-process-bound partition rehearsal passes without
+model/scorer contacts. This helper does not grant dispatch or READ.
+
+Next prepare and test a separate suffix-only launcher and explicit cross-epoch
+terminal provenance, then record root227 disposition before actual continuation.
+Keep original worker/registration/policies/data/official scores immutable; do not
+rerun any completed member or fabricate an original normal-success receipt.
+Full-family READ and later cohorts remain held. No new user decision is required
+within the existing bounded root227 authority.
+[Settlement and preparation](../receipts/continuation/2026-10-06-update6-original-a-owner-exit-settled.json).
+
+
 ## Update6 original-a Windows owner exit; original child still live (2026-10-06)
 
 At20:23:15Z the original Windows task became Ready with result2147943467

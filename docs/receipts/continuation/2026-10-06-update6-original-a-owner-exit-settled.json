@@ -1,0 +1,66 @@
+{
+  "schema": "saea-owner-exit-settlement-and-continuation-preparation-v1",
+  "at_utc": "2026-10-06T20:32:50.214262+00:00",
+  "authority": "owner227",
+  "status": "ORIGINAL_PROCESSES_SETTLED_CONTINUATION_NOT_LAUNCHED",
+  "original_task_result": 2147943467,
+  "original_root_terminal_receipt": "absent; preserved as observed, never fabricated",
+  "cause": "Unestablished Windows outer owner termination",
+  "completed_members": [
+    "seed",
+    "seed-aa",
+    "branch-01",
+    "branch-02",
+    "branch-03"
+  ],
+  "unstarted_members": [
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08"
+  ],
+  "scientific_quality_read": false,
+  "read_countersigned": false,
+  "monitor": {
+    "id": "slurp-update6-original-a-monitor",
+    "action": "deleted after original process absence verified"
+  },
+  "model_free_tests": {
+    "passed": 99,
+    "new_module_statement_coverage_percent": 100,
+    "engineering_base_exit_code": 0
+  },
+  "real_partition_rehearsal": "Passed against fresh native Windows observation and current operational metadata; zero execution contacts",
+  "evidence": [
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-exit-settled-windows-v1.json",
+      "sha256": "462853db65ab06874ed2c2d45e0bcc8abf7ed085bd1570357b4d5991e3ab9248"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-exit-settled-partition-v1.json",
+      "sha256": "16ab074889625036f2062c64d10d6eec7d378157ce889fc72c7cb5b1b3f65fa6"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-continuation1-preparation/tests-exit.json",
+      "sha256": "775b2e62f3e0fd8990d778567ba7e00893af9fecd6c8106cfff2703c20c8552d"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-continuation1-preparation/coverage.json",
+      "sha256": "859d295bfb8a6f4e56f6bc419ece7b04b8e3e45126c5c75d9164c0bc8b89cc39"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-continuation1-preparation/engineering-base-exit.json",
+      "sha256": "b1e2233b3e98f8d498d986e1fbaf157a99c09df166c06de41fedcd5bef674022"
+    }
+  ],
+  "remaining_requirements": [
+    "Pin and test a separate continuation launcher restricted to the exact untouched suffix.",
+    "Reconcile complete terminal provenance across failed owner and successor without rewriting or synthesizing missing original receipts.",
+    "Preserve original frozen worker, registration, policies, supplies, dataset, scorer, all completed outputs and original scoring jobs.",
+    "Record exact root227 continuation disposition and fresh process/resource prelaunch evidence before dispatch.",
+    "Activate a new job-bound monitor only after actual launch; require full original family qualification and exact root READ before quality or learner export."
+  ],
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0
+}
