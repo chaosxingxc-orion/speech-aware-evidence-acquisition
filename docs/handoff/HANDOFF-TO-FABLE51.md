@@ -1,5 +1,32 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update4 final cohort complete and root read (2026-10-06T08:28Z)
+
+Remaining-b2 completed all six members, 120 trajectories and 681 model contacts.
+Every member has a verified seal, exactly one complete official score and zero failed
+jobs. Native terminal and WSL checks found no bound generator/scorer/observer; the
+fifteen-minute heartbeat slurp-update4-remaining-b2-scientific-monitor was deleted.
+The exact root READ and all process/presentation/nine paired contrasts are complete.
+See [review](../results/2026-10-06-slurp-update4-remaining-b2-process-diagnostics.md)
+and [evidence](../receipts/continuation/2026-10-06-partitioned-update4-process-remaining-b2-complete-read.json).
+
+No candidate exceeds seed58.19percent or A/A61.17percent SLU-F1. All gold-intent cards
+are present20/20, candidate coverage16-17/20. Branch15 detects10/10 known erroneous
+drafts but alarms on8/8 known correct drafts, with two unknown cases; raw entity
+revision repairs zero and harms one. Keep selective review and safe useful revision
+as targets, not alarm volume. Full diagnostics retain uncertainty and strata.
+
+All three update4 source families are now read. The registered complete source join
+is prepared. Whole-trial qualification is running through the existing exact
+complete-trial-entry-v1.py evaluate process (started around08:31Z); revalidate its
+live handle and result, never relaunch solely because observation is slow. Remaining
+steps: root whole-population retention decision, complete root process feedback and
+continuation bridge, rejected-history projection if applicable, then prospectively
+registered aggregate-template-records-v1 learning input. The new aggregate profile
+is tested and integrated at607899687; no next actor contact or GPU admission yet.
+This N20 reused pool establishes no stable gain or generalization. Keep other-carrier
+holds, spent allocations and all frozen artifacts unchanged.
+
 ## Aggregate K-record learner input, owner direction 2026-10-06
 
 Use the [new aggregate profile](../readiness/2026-10-06-aggregate-template-learning-v1/README.md).

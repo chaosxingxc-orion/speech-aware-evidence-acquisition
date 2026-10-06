@@ -1,0 +1,43 @@
+{
+  "schema": "saea-complete-cohort-root-process-review-v1",
+  "at_utc": "2026-10-06T08:35:40.009774+00:00",
+  "cohort": "remaining-b2",
+  "rows": 120,
+  "model_contacts": 681,
+  "members": 6,
+  "successful_official_scores": 6,
+  "failed_official_scores": 0,
+  "root_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1",
+  "terminal_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b2-terminal-20261006T0828.json",
+    "sha256": "30733dd627f4aac67755380f14aa1a8b9f8d5a5d531ae878200a50aba2570552"
+  },
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b2-flight-v1/family-qualified-v1.json",
+    "sha256": "63ead378aee29bca2a55b79ef46fc266513b364ea82e94ed9f4f706d8aec2442"
+  },
+  "root_authorization": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b2-flight-v1/root-read-authorization-v1.json",
+    "sha256": "229069a0d412db7087875895ecdcfaba82330b3f15eafc0432f1e9eb9a12454b"
+  },
+  "process": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/process-metrics-v1.json",
+    "sha256": "8ffdaf3ff09cb5eb0735d707ec127b692a114d0223866bd1bd39beba868ad1f4"
+  },
+  "presentation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/business-process-cost-v1.json",
+    "sha256": "b0cfce8f0a98caa0146451c206eea9ff4890550eda6e189a31e1f3065ce22273"
+  },
+  "paired_process": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/paired-process-diagnostics-v1.json",
+    "sha256": "83ef80a75b10f30e12b28a1776da97b07b436769f2b32eca6426d474a4e5c2b4"
+  },
+  "monitor": {
+    "id": "slurp-update4-remaining-b2-scientific-monitor",
+    "status": "DELETED",
+    "verified_bound_processes": 0
+  },
+  "root_disposition": "No candidate exceeds own seed or A/A; no adoption or scaling. Complete population selection remains subject to its registered qualification.",
+  "learner_exported": false,
+  "new_contacts_for_analysis": 0
+}
