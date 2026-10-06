@@ -1,5 +1,32 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Scientific member preparation and registration drafts complete (2026-10-06)
+
+The one-shot serial preparation completed all22 members with exit0; session81111
+is finished. Every own supply is warm-verified with unchanged source selections
+and actual policy bindings. The corrected draft finalizer v2 completed once.
+Three cohort packages now register16 candidates plus six seed/A/A controls,
+20 reused inputs/member,440 prospective trajectories. No model/FIT/scorer contact,
+scientific quality read or runtime admission occurred in this preparation.
+[Exact completion](../receipts/continuation/2026-10-06-update4-scientific-preparation-drafts-complete.json).
+
+Engineering-base and finite-completion checks pass. All22 new algorithm labels
+are valid; the whole-tree algorithm gate still reports two historical native-capacity
+cells with empty operators, preserved unchanged. The exact22-member flight gate
+now reports only intentional missing root generation/FIT signatures/decisions,
+plus existing roster-overlap advisories. Do not claim launch readiness or independent
+validation. Prospective READ profile and exact carrier caption defects were corrected
+before any runtime contact, retaining original helper/rows and test evidence.
+
+Next root-admit original-a, freeze and verify every control/candidate, then perform
+live/session/resource admission using the shared campaign and official scorer with
+the proven Windows-owned mailbox observer. Scientific20GiB startup/8GiB running
+policy is unchanged. Only an actual GPU launch activates a new15-minute monitor.
+The old structural monitor is deleted; structural attempts remain intentionally
+unscored. Later cohorts and complete-trial retention require their exact full-family
+qualification/root READs; no partial optimizer export. No stable gain is established.
+Business quality/reliability remains first, process mechanisms second, costs third.
+
 ## Actual scientific member preparation running (2026-10-06)
 
 The one-shot serial_prepare_v1.py --execute is ALREADY RUNNING after complete

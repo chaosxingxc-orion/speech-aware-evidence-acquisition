@@ -1,0 +1,64 @@
+{
+  "schema": "saea-scientific-preparation-draft-complete-v1",
+  "at_utc": "2026-10-06T05:19:38.753353+00:00",
+  "status": "COMPLETE_MODEL_FREE_PREPARATION_AND_DRAFT_REGISTRATION",
+  "authority": "owner227",
+  "preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/serial-preparation-v1/complete.json",
+    "sha256": "e643cc66c5a03d96c9e6255419ea1a623a7b92d96b13bd1f3a6ccf5c19af6783"
+  },
+  "finalizer": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/finalize-draft-registration-v2.py",
+    "sha256": "4e43f81b040f4b2c23702f79e9e20c52037ae34e77c6d14658b5445cd8acd5d7"
+  },
+  "finalizer_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/finalizer-v2.exit.json",
+    "sha256": "765e8ea5dfb5c5fc629f39ac258eda82ed42ac3e41628a7d769a855dff23d0fe"
+  },
+  "draft_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/draft-registration-complete-v1.json",
+    "sha256": "d78538f6eed5639f6410a32ed9b8eb0f291ae3ab95062dc07b6de788a467c993"
+  },
+  "canonical_packages": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/canonical-packages-v1.json",
+    "sha256": "11c9cf7e74729712b0ab76a14b3eac2e2d3072d2bae2cfaa714164d75ab30a43"
+  },
+  "prepared_members": 22,
+  "config_derivation": "16 candidates and six within-cohort controls; three cohorts;20 reused inputs/member;440 trajectories planned, not yet executed. No hardcoded population change.",
+  "fixed_assets": "Existing audio, packets, queries, votes and knowledge outputs reused; own prepared envelopes and actual policy bytes verified for every member.",
+  "checks": {
+    "engineering_base_check": "PASS",
+    "finite_completion_policy_check": "PASS",
+    "new_member_algorithm_labels": "All22 system-text-black-box-v1 with rollout/scoring; no new violations.",
+    "whole_tree_algorithm_gate": "FAIL on two historical native-capacity cells with empty operators. Preserve old pinned cells; do not claim whole-tree pass.",
+    "flight_registration": {
+      "exit_code": 1,
+      "expected_draft_refusal": true,
+      "cells": 22,
+      "findings": {
+        "tuning-roster-unverified": 66,
+        "row-not-countersigned": 44,
+        "no-decision-receipt": 44
+      },
+      "runtime_admission": false,
+      "contacts": 0
+    },
+    "gate_receipt": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/draft-flight-registration-v2-validation.json",
+      "sha256": "522d094071f4525b61476c9e0925daf72dd18637298030d211e1ed9ae37e9713"
+    },
+    "draft_caption_correction": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/draft-caption-correction-v1.json",
+      "sha256": "91b13141c077934e49ec40738ee280b25469596c67d8f7766970b15b32374bcf"
+    }
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_admission": false,
+  "scientific_quality_read": false,
+  "gpu_job_started": false,
+  "gpu_monitor": "Previous structural monitor deleted; no new GPU job to monitor.",
+  "resource_policy": "Scientific startup20GiB/running8GiB remains unchanged; structural18GiB amendment does not transfer.",
+  "next": "Root-admit only original-a after exact evidence review; clean frozen-source and live/session checks remain. Reuse shared campaign scoring and the proven Windows-owned mailbox memory observer. Later cohorts wait for complete prior-cohort qualification/root review. No partial trial retention/export; all configured cohorts and exact READs required.",
+  "priority": "Official business quality/reliability first; support, review and repair/damage statistics second; latency/cost third."
+}

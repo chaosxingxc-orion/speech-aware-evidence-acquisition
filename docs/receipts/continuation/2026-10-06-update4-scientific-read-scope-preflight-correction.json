@@ -1,0 +1,35 @@
+{
+  "schema": "saea-prospective-draft-scope-correction-v1",
+  "at_utc": "2026-10-06T05:11:03.526908+00:00",
+  "status": "prepared-and-tested; no real draft finalization yet",
+  "authority": "owner227",
+  "finding": "The prior draft finalizer used bounded-discovery-probe for context READ ledger rows. The shared reader and flight registration gate require model-free-check. No real scientific drafts or contacts were created by that finalizer.",
+  "preserved_predecessor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/finalize-draft-registration-v1.py",
+    "sha256": "1eebeb4c104e903ff5e8a4cb26dcce14d6c2ac9e51a9ed328c230b7f26a358b6"
+  },
+  "successor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/finalize-draft-registration-v2.py",
+    "sha256": "4e43f81b040f4b2c23702f79e9e20c52037ae34e77c6d14658b5445cd8acd5d7"
+  },
+  "tests": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/test_finalizer_fixture_v2.py",
+      "sha256": "f9308219a5c98c9e6017ebda67db2dc8ba0870d494c77dc1ff7b54654f7a662c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/test_finalizer_wait_v2.py",
+      "sha256": "f015e68388307df3a8359a0713b9dbbb1bfa31d594800c38300298788b3df0a6"
+    }
+  ],
+  "validation": {
+    "test_first_failure": "Shared _check_context_read_scope reported execution profile mismatch for the original fixture.",
+    "corrected_fixture": "All three configured packages pass shared reader scope and unchanged cohort/row/resource checks; repeated invocation refuses.",
+    "premature_real_entry": "Exit75 with WAIT_COMPLETE_MODEL_FREE_PREPARATION and no writes.",
+    "statement_coverage_percent": 99
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_admission": false,
+  "next": "After the current one-shot serial preparation completes successfully, invoke finalize-draft-registration-v2.py once. Preserve v1. Scientific admission and frozen/live gates remain separate."
+}
