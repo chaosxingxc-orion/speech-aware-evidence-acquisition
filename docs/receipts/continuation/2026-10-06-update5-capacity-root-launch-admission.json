@@ -1,0 +1,80 @@
+{
+  "schema": "saea-configured-capacity-root-launch-admission-v1",
+  "at_utc": "2026-10-06T10:25:59.387306+00:00",
+  "status": "ROOT_ADMITTED_BEFORE_CONTACT",
+  "authority": "owner227 bounded SLURP engineering",
+  "task_name": "SAEA-Update5-Aggregate-Capacity-V1",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-v1.json",
+    "sha256": "b3dc8c07e8b20ac5500caefd98385e60a97272077c16ad0e66e51c8c7b3b99fd"
+  },
+  "frozen_checks": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/frozen-check-v1.json",
+    "sha256": "8af64f2bc548d60e320de088fbe5d4ff6f371f02ed0fc04960488a7a856d5f6f"
+  },
+  "frozen_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/frozen-check-v1.exit.json",
+    "sha256": "4a546db43f6b8c7d4632eb205b8b03e18e2181ab3aa22c5d01917ed5f8d3aa9b"
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/live-prelaunch-v1.json",
+    "sha256": "5da55c0efb73b735c21b1317af829636cc8b04a1189a73629951355fa0e05e36"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-capacity-v1",
+  "commit": "a9a2831b20b2b0f9a4f6f8616199f5337b72b789",
+  "members": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-01": 297,
+      "branch-02": 297,
+      "branch-03": 297,
+      "branch-04": 297,
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 4752
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "windows_driver": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/capacity-windows-v1.ps1",
+    "sha256": "5a4530136cca8584a3ceaf4940bbe86e8d8f4de6c47f13fcb17771bec95e918b"
+  },
+  "conditions": "One exact Windows task launch; original resident service; same registered mailbox observer across startup and worker. Stop on failure, preserve all receipts; no automatic retry or control reconciliation. Start fifteen-minute script-only monitoring on actual launch and delete at verified terminal.",
+  "scope": "Nongenerative capacity only; no task answers, quality or optimizer feedback. Structural generation and scientific evaluation remain separately held.",
+  "contacts_before_launch": 0
+}
