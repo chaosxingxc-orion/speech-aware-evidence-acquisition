@@ -1,0 +1,18 @@
+{
+  "at_utc": "2026-10-06T10:56:29.543982+00:00",
+  "pid": 162236,
+  "start_ticks": "61072900",
+  "script_sha256": "c32397c867c45437e61467bca51f6f04015c36bf0e69a095002547ad2b3696ba",
+  "model_contacts": 0,
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-structural-v1",
+  "commit": "edc736481e62e24d5e1d33e4e01a2041e1fd3245",
+  "schema": "saea-root-structural-frozen-check-start-v1",
+  "observed_at_utc": "2026-10-06T10:57:11.871822+00:00",
+  "status": "RUNNING_MODEL_FREE",
+  "start_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/frozen-check-started-v1.json",
+    "sha256": "ab1cf348c2523f1196fd8cbc1a82fe101396ccedb0b46d1a879a091a46bcd4b2"
+  },
+  "runtime_dispatched": false,
+  "scope": "Serial exact frozen policy/config/graph/prepared-supply registration/runtime gates for every configured member. Observe this existing checker; do not duplicate on timeout."
+}

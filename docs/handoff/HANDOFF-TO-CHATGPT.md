@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 structural worker frozen; exact checks active (2026-10-06)
+
+The complete structural registration is integrated at
+edc736481e62e24d5e1d33e4e01a2041e1fd3245. A clean detached worker is frozen at
+/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-structural-v1.
+The durable all-member frozen checker started10:56:29Z; wrapper PID162236,
+start_ticks61072900 was revalidated live. See
+[frozen-check start](../receipts/continuation/2026-10-06-update5-structural-frozen-check-started.json).
+Observe coordination/partitioned-update5-aggregate-structural-mailbox-v1/
+frozen-check-v1.exit.json and per-member original receipts. An observation timeout
+does not permit a duplicate checker. No model/scorer contact or GPU dispatch yet.
+After all configured proofs pass and original process exits, finalize the prepared
+launch registration against that exact worker/commit, revalidate live prelaunch
+conditions, and separately launch Windows structural generation with a new15-minute
+monitor. Keep scientific N20 unadmitted until complete structural acceptance.
+
 ## Update5 structural registration complete; freeze next (2026-10-06)
 
 All16 configured original structural members completed model-free registration at
@@ -4129,7 +4145,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T10:55:41.857195+00:00
+Last refreshed: 2026-10-06T10:57:11.871822+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
