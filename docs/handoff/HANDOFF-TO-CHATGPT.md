@@ -1,5 +1,45 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 structural offline gates passed; freeze next (2026-10-06)
+
+All eleven required offline gates passed after complete structural registration.
+Proof: coordination/partitioned-update6-diversity-structural-mailbox-v1/offline-gates-exit-v1.json.
+Integrate exact registered configurations, then freeze codex-partitioned-update6-diversity-structural-v1
+and run run-frozen-check-v1.py with its exact worker and commit. No GPU launch until all
+configured frozen checks, final registration and fresh live guards pass. Capacity is
+complete and its monitor is deleted; no structural heartbeat exists before actual launch.
+
+
+## Update6 structural registration complete; offline gates next (2026-10-06)
+
+All16 structural member registrations completed18:45:55.967728Z without contacts.
+Root verified ordered config-derived membership, source/plan/policy/supply pins, exact
+budgets, unique generation/FIT/read ledger rows, all child exits and original PID absence.
+[Complete registration](../receipts/continuation/2026-10-06-update6-structural-registration-complete.json).
+Next execute run-offline-gates-v1.py under coordination/partitioned-update6-diversity-structural-mailbox-v1,
+then integrate the exact configuration, create clean codex-partitioned-update6-diversity-structural-v1
+and run all frozen checks. No structural GPU dispatch or active heartbeat yet; no retries.
+Keep capacity completion and all original attempts immutable. Scientific member preparation
+remains pending complete structural acceptance, despite its verified model-free blueprint.
+
+
+## Update6 complete capacity accepted; structural registration running (2026-10-06)
+
+The original Windows capacity task completed18:40:13.4373797Z with all16 members and
+observers exiting0. Root verified Windows/WSL process absence; the job-scoped monitor
+slurp-update6-capacity-monitor is deleted. The complete qualified capacity family contains
+704 measured requests and4752 tokenizer endpoints, zero generation/scorer
+contacts. Minimum remaining margin after full output and structural reserves is5432
+tokens for these exact registered requests. Actual per-contact FIT remains required.
+[Complete capacity review](../receipts/continuation/2026-10-06-update6-diversity-capacity-complete.json).
+
+The prepared structural registrar started2026-10-06T18:42:06.591101+00:00, PID224714, start
+ticks63812323, exec session21087, under coordination/partitioned-update6-diversity-structural-mailbox-v1.
+Its complete capacity review passed. It serially registers all configured members; wait
+for its original terminal and all member proofs before integration/freezing. Do not
+restart a partial registrar. No structural GPU launch, scientific contact or quality read.
+
+
 ## Current shared-base carrier regression verified (2026-10-06)
 
 The shared runner and FlightRuntime differ from the October2 carrier proof. Root ran

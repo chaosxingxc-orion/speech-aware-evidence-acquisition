@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T18:37:48.944499+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T18:48:04.718294+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -31,10 +31,47 @@ The root numeric process projection is complete at
 SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
 The previous GPU task is terminal and its monitor was deleted. Update6 nongenerative
-capacity is now running; its exact active task/epoch/monitor are recorded below.
+capacity completed with all16 passes and its monitor was deleted; the exact structural registrar is running below.
 Structural and scientific generation remain held; the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 structural offline gates passed; freeze next (2026-10-06)
+
+All eleven required offline gates passed after complete structural registration.
+Proof: coordination/partitioned-update6-diversity-structural-mailbox-v1/offline-gates-exit-v1.json.
+Integrate exact registered configurations, then freeze codex-partitioned-update6-diversity-structural-v1
+and run run-frozen-check-v1.py with its exact worker and commit. No GPU launch until all
+configured frozen checks, final registration and fresh live guards pass. Capacity is
+complete and its monitor is deleted; no structural heartbeat exists before actual launch.
+
+## Update6 structural registration complete; offline gates next (2026-10-06)
+
+All16 structural member registrations completed18:45:55.967728Z without contacts.
+Root verified ordered config-derived membership, source/plan/policy/supply pins, exact
+budgets, unique generation/FIT/read ledger rows, all child exits and original PID absence.
+[Complete registration](../receipts/continuation/2026-10-06-update6-structural-registration-complete.json).
+Next execute run-offline-gates-v1.py under coordination/partitioned-update6-diversity-structural-mailbox-v1,
+then integrate the exact configuration, create clean codex-partitioned-update6-diversity-structural-v1
+and run all frozen checks. No structural GPU dispatch or active heartbeat yet; no retries.
+Keep capacity completion and all original attempts immutable. Scientific member preparation
+remains pending complete structural acceptance, despite its verified model-free blueprint.
+
+## Update6 complete capacity accepted; structural registration running (2026-10-06)
+
+The original Windows capacity task completed18:40:13.4373797Z with all16 members and
+observers exiting0. Root verified Windows/WSL process absence; the job-scoped monitor
+slurp-update6-capacity-monitor is deleted. The complete qualified capacity family contains
+704 measured requests and4752 tokenizer endpoints, zero generation/scorer
+contacts. Minimum remaining margin after full output and structural reserves is5432
+tokens for these exact registered requests. Actual per-contact FIT remains required.
+[Complete capacity review](../receipts/continuation/2026-10-06-update6-diversity-capacity-complete.json).
+
+The prepared structural registrar started2026-10-06T18:42:06.591101+00:00, PID224714, start
+ticks63812323, exec session21087, under coordination/partitioned-update6-diversity-structural-mailbox-v1.
+Its complete capacity review passed. It serially registers all configured members; wait
+for its original terminal and all member proofs before integration/freezing. Do not
+restart a partial registrar. No structural GPU launch, scientific contact or quality read.
 
 ## Update6 scientific blueprint verified; capacity remains running (2026-10-06)
 

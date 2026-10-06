@@ -1,0 +1,402 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-01-smoke-4-generation-v1",
+    "bundle_id": "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-01-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-01-graph-v1",
+    "label": "branch-01",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-01-generation-plan-registered-v1.json",
+      "sha256": "c8dd4c2d4a661061faaea97043bb860b9523c31462d837fac2c33d9560df3fb3"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-01-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "6cf1bfeb1242385f10dd911c72af2b20c9d17385cfebf9eaefc104d89d57793b"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-01-analysis-recipe-v1.json",
+      "sha256": "a87df33ae6509719f250d909b8abe80b8fb3d4fcc206add8466b6e38a9e77fab"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-01-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-02-smoke-4-generation-v1",
+    "bundle_id": "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-02-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-02-graph-v1",
+    "label": "branch-02",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-02-generation-plan-registered-v1.json",
+      "sha256": "77794dcb44de662b53a5f633aedc547e2daa1ede63a6f02fc51068a95c7a6c0d"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-02-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "01e764477f81950df8c84eb6634773da8948fad7c6e8eeeb34ff2b55d031da64"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-02-analysis-recipe-v1.json",
+      "sha256": "74034226720f903f7fcb553f9cadaae62ff39ce43674ea5450850eccd99c8771"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-02-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-03-smoke-4-generation-v1",
+    "bundle_id": "32ded0981413c61c2b36a25f7311d7e2db89ad8b13767370240b6f5376c6ab3d",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-03-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-03-graph-v1",
+    "label": "branch-03",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-03-generation-plan-registered-v1.json",
+      "sha256": "08d6bebcdc3bc54391abb5ea36fce6cf7b6467198ae2093e016471fe7730f603"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-03-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "4aec73197298a5f826a4f867279d81560b57de93d90f25c1ec1a67ed5a279bda"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-03-analysis-recipe-v1.json",
+      "sha256": "6aa33259b9c9ca82efb21098d8c17e795047173b2dad0179e0d37ddb2e58d5fd"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-03-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-04-smoke-4-generation-v1",
+    "bundle_id": "71d71fc49f473a78827c0ad92ea292a8857572c83970f570f6751490765453e8",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-04-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-04-graph-v1",
+    "label": "branch-04",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-04-generation-plan-registered-v1.json",
+      "sha256": "9256cd489337ee19339ee37041f6eb412716572d6fc9e99bbc65d3e652026e51"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-04-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "9392b76e566e749f66c7b0f2e9380d96121e95a10b5803efb5fadbb2859e22dd"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-04-analysis-recipe-v1.json",
+      "sha256": "eea1869b5bcb338db4a35779a58b893b7dac728dc3a1c3a6f69027ca3855c65a"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-04-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-05-smoke-4-generation-v1",
+    "bundle_id": "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-05-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-05-graph-v1",
+    "label": "branch-05",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-05-generation-plan-registered-v1.json",
+      "sha256": "bc49ca955ed0eba459ce0bb0b58824ed284b13cf051bc94a1972b84c9ce1b766"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-05-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "c1ba16274cbae6aae88635cb670f3a4309aabb0cac3fecca3853e6651c8aae2a"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-05-analysis-recipe-v1.json",
+      "sha256": "12d608e41aa906b4b20c360d047965078f3e50923b86818b5a94de84bc3a8095"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-05-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-06-smoke-4-generation-v1",
+    "bundle_id": "19557dbb72089a88e4fb2ab3b37228d7c03140ee879e87fa48e9542ec346a2ac",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-06-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-06-graph-v1",
+    "label": "branch-06",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-06-generation-plan-registered-v1.json",
+      "sha256": "f14634ec9ccf77215e27059669b874e5bc548669e1add285a46da152f3ab2511"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-06-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "d01c0c4032f33f3febaaf9eb232d1b82e58bdc4352b913dc805ef798fe179ceb"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-06-analysis-recipe-v1.json",
+      "sha256": "bcaf5f386cefbf207cae457ba09585e0ac8d132d17f46d5f68c35d3bf4644040"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-06-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-07-smoke-4-generation-v1",
+    "bundle_id": "2ca6e39ee170f4bc74d317a22401280beee3ec4c294172a89f97b95e24e9a279",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-07-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-07-graph-v1",
+    "label": "branch-07",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-07-generation-plan-registered-v1.json",
+      "sha256": "ca2b66bd4bf70a18b6dd0c1150d6367d00db4a80090729d8965ab394ae4e8793"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-07-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "0ac06b4422ebacc501d32b32c4f22bdc3c4324c6e3eeef71053f22cff88ea6c1"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-07-analysis-recipe-v1.json",
+      "sha256": "df5c8c1bc88daf924b89f8584b116192c0230ce0cb1055ffebb7f546a67ba5ab"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-07-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-08-smoke-4-generation-v1",
+    "bundle_id": "b1b63127980bcbdfd2a8f303e5950539df17d99dcca5ea6bad10aeca633aa7cf",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-08-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-08-graph-v1",
+    "label": "branch-08",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-08-generation-plan-registered-v1.json",
+      "sha256": "6fe82adbba50894dac27f40e76b55cee41d8bb017bda77c8a3dfa9c6e38a60f7"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-08-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "c06264cee24ac2c2f5b0758a74a4414b7c2c6807e126739aedccefd2759a46f4"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-08-analysis-recipe-v1.json",
+      "sha256": "761beab69a966a289c778b9bf3d1adb64e724e5454d03a2d93c3925fe6065b48"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-08-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-09-smoke-4-generation-v1",
+    "bundle_id": "0a0db7dc5e7bcc774a3e7ec647f2f0a36e1440e12add11de629f3002aab339a0",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-09-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-09-graph-v1",
+    "label": "branch-09",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-09-generation-plan-registered-v1.json",
+      "sha256": "d310f8a0ce54eec632ccef2eaf4bc6cad4727325930f760133bf2ad447cff8f9"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-09-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "911d902188fb202c841ab2c15a657f9c361fa2a70968443325176dfeb5a866ed"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-09-analysis-recipe-v1.json",
+      "sha256": "e48961034fa07d17415565d0f293760c072bab9b40dabbbaa50ae73cc3c46788"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-09-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-10-smoke-4-generation-v1",
+    "bundle_id": "2294430ae8136193f8d4c5bed7a07a7b5c8cdc9c9699c65696167f815ab83b15",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-10-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-10-graph-v1",
+    "label": "branch-10",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-10-generation-plan-registered-v1.json",
+      "sha256": "408e3ba94035beefbbec1ef0034969f3045ef178cbd688b6e2cb45579a45a521"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-10-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "17c7eecccabae1171ce46a1f9446238b4c375cf59a0c4a238c27ca252a5fc519"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-10-analysis-recipe-v1.json",
+      "sha256": "e42e12421b93f8033dd8f4ee9b76d3890a2de5ffa3da126006d5470c91e4a931"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-10-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-11-smoke-4-generation-v1",
+    "bundle_id": "798b562699395d0aa14c1b521d7c2fd3e6528663eb2c3e7984ebe4e74af2a486",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-11-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-11-graph-v1",
+    "label": "branch-11",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-11-generation-plan-registered-v1.json",
+      "sha256": "ca67e6a1ada8248f600bf66f9b7125cf8fd026822e0dfcc1bc04a76d2b67ddb9"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-11-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "54f6a229e8935dc645ea8b0cca39be2afaad0b32986d8012d680218e4a0a94c3"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-11-analysis-recipe-v1.json",
+      "sha256": "7db6dd105c2e3794da0b01eba0bc7ad73d9e672e8166e610356536128764d7fa"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-11-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-12-smoke-4-generation-v1",
+    "bundle_id": "1df97b340fae852c62f9ba868633572462931cc7f415c3229ccca6629a2e5245",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-12-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-12-graph-v1",
+    "label": "branch-12",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-12-generation-plan-registered-v1.json",
+      "sha256": "45fa848372f75a5b051b5ee7491d53d800b8cb97984fdacc1eafb4fed9d8816c"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-12-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "a5146d233442087aebd29e78429937693c8dee0b9ff00567909e99604f4b9bad"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-12-analysis-recipe-v1.json",
+      "sha256": "771ce53df9ed18a5450eab9e33c4997ad93bd76d39b0ea270c119a07d62ba34a"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-12-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-13-smoke-4-generation-v1",
+    "bundle_id": "5c98fc4821225a613a21a60e82f1532971a50268c57eeb05ab60fab06cc8f35d",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-13-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-13-graph-v1",
+    "label": "branch-13",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-13-generation-plan-registered-v1.json",
+      "sha256": "affe7a53f39c33a6191fd8064b7ba6b19acd21efcca9814fc50564123ae0ec84"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-13-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "461ded62a3e83317d373cbc691f35b04884e447f3179f08d8e82f300e563c731"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-13-analysis-recipe-v1.json",
+      "sha256": "e78601a20c1713c8eda16d8cb1a012f349de9379387f3130dffc7d0bbc06b6b1"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-13-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-14-smoke-4-generation-v1",
+    "bundle_id": "71472330aee1c0e170350fb5e14f366eeeef9d1e8c3d56b86683a8317ede4755",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-14-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-14-graph-v1",
+    "label": "branch-14",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-14-generation-plan-registered-v1.json",
+      "sha256": "39621c20ab20309a08862f29c2b8fbdefd60fab2cab11ebc914c120ef021bad8"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-14-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "eee24265b9c4ef1cf4adde09837b1a6d3c3f1d3290d02ecc803e67482cc5266c"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-14-analysis-recipe-v1.json",
+      "sha256": "f1c4060a5dd94472daeb0e75c71f43f6a6d5e8abed7ec175db8b03e444dd9160"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-14-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-15-smoke-4-generation-v1",
+    "bundle_id": "b2a8d2ddb2bd4e52e04a63fc20c629f15f182230d5c12e694df67adc57e93a94",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-15-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-15-graph-v1",
+    "label": "branch-15",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-15-generation-plan-registered-v1.json",
+      "sha256": "1f1a217c21e4d934a0c7cac10e4a275079de17200be3f84ff0954665bbdc861a"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-15-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "e9f0b64c48411c4bce4acc5d351a78c0ee8e8c747fbe82190dec4f11b78d6158"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-15-analysis-recipe-v1.json",
+      "sha256": "fb1d48c033fce6ae2ce8eedb84f35985329354575099d42c257cac29092858d5"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-15-SMOKE-4-V1"
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-branch-16-smoke-4-generation-v1",
+    "bundle_id": "513092668d381bc6048248292a3b9ad04ef1773628d983b565cafb55b66f529a",
+    "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-16-smoke-4-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+      "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+    },
+    "graph": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-16-graph-v1",
+    "label": "branch-16",
+    "plan": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-16-generation-plan-registered-v1.json",
+      "sha256": "d632a523b5c78b0775d5aa6359643f18dd7e60950456197741d3395b412c5779"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-16-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "b053bbaf52c9bced4b4584712adfd7e3226eedd9e2ee977dcf685cf3d866426a"
+    },
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1/branch-16-analysis-recipe-v1.json",
+      "sha256": "0e55a24f8051ea509648bd13d35ee7ac191f74110dcb2e05465f1acc4c692f5c"
+    },
+    "rows": 4,
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-BRANCH-16-SMOKE-4-V1"
+  }
+]

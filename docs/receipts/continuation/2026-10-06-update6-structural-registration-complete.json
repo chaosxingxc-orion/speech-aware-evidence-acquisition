@@ -1,0 +1,240 @@
+{
+  "at_utc": "2026-10-06T18:46:20.847990+00:00",
+  "contacts_added": 0,
+  "decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/root-admission-v1.json",
+    "sha256": "50af762e9325cfc01a2dac7242e5f0d1392fcb96ffc287414fafa33891057ca2"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "member_evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-01-preparation.exit.json",
+      "sha256": "64138995661d94ae0b4e66862a36ff15bfaddbecaa498e22220a37eee386f5b9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-01-preparation.stdout.log",
+      "sha256": "7dcbd3d4074075f82a2594a4c95655a91d6a745f8f9e2f39133a54fe550eddda"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-01-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-02-preparation.exit.json",
+      "sha256": "fd559a8a1fee335b5f5a1391bcc77643b0a4aee28231104e10ef87ee6aeb989a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-02-preparation.stdout.log",
+      "sha256": "1b7efd447628db0425d2c659265217a6e9f23893da405b0bcc8b9fd70ffa096e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-02-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-03-preparation.exit.json",
+      "sha256": "46dfb85178742e1e5cce18e207952c1fe39dce01a9876c4297745e5b1a311691"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-03-preparation.stdout.log",
+      "sha256": "04d87cbb711ca3620065ed7513487fde4c1944acc315e4bea67c651da6f76398"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-03-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-04-preparation.exit.json",
+      "sha256": "bd03d245b0228ea0efac1f9ee0453954afb217dc6706817021fd8ec19659d292"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-04-preparation.stdout.log",
+      "sha256": "125916a30d1a5c67bc863211920bbbb789348c1b58a5cf1ad30aa20af61740a9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-04-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-05-preparation.exit.json",
+      "sha256": "a78367da99d972e2b02bfb9b0caf67b93b94c85bf2a786697bfeaef82d5ee974"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-05-preparation.stdout.log",
+      "sha256": "426a32f140071c185acc52ea271d69066bba860e9aa0d8ff5e5e60ce42a28fae"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-05-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-06-preparation.exit.json",
+      "sha256": "30e2a2128c085599afdef8f83af908f6edb68095becb8c1ec9f80a67bf312287"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-06-preparation.stdout.log",
+      "sha256": "7667453d4f4b09369c61b0142287876a74fd3c6f36486995a1d89183dda5b19b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-06-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-07-preparation.exit.json",
+      "sha256": "976e6a4626e9a3ee465056d852f0b7015861b158482982c4abe30472fcb3db34"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-07-preparation.stdout.log",
+      "sha256": "256add651bcb4216547a65da903e30d7cd2bdc095b80ae18a1ec7bebeceff941"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-07-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-08-preparation.exit.json",
+      "sha256": "43c32bb1e6be5a59b5d8d14952b49d33680e1ebbb816b8a6e14ba5d7d93aaac1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-08-preparation.stdout.log",
+      "sha256": "88c115c62a235e65d66cd5f10230cf2226873870352122ae783172d60d2fec66"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-08-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-09-preparation.exit.json",
+      "sha256": "ed5f80f97bef283c21820c5b80eba6ffc3e60521a64f6bf2f1cb591338ea517f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-09-preparation.stdout.log",
+      "sha256": "037dab1bc42f8f261fc39ed72f25af1497bec273520f5dbf2608d6dc65ed0cc6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-09-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-10-preparation.exit.json",
+      "sha256": "2ec12659f6a9410219ddf0362111c38264f8010c4e16be1ba5d1dd37cba421b4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-10-preparation.stdout.log",
+      "sha256": "b55a54ec606c68992b73483da224bacf5f4f9d8ea09373c2c547844848cf7519"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-10-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-11-preparation.exit.json",
+      "sha256": "bfc7688a502175766adf0375c84fc39f0997567a171284edb4c6008a6ec27454"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-11-preparation.stdout.log",
+      "sha256": "35993ae0a5d2cf34441fab3d85ac6b8a030eadc1e21865b082a54f5cfe0be40d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-11-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-12-preparation.exit.json",
+      "sha256": "1b8a3805d7a444f1fc6d3befc3afe024509e6152de3deeb640c9c15ec5b29ae5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-12-preparation.stdout.log",
+      "sha256": "7850274e622f74241a7e8fcd21e0b7a8eb277e005767f33cd72150502b06971e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-12-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-13-preparation.exit.json",
+      "sha256": "0fd0efb4b31b8144cdbe8e6132c0354806d2a47a50e12af7aa30a89556411bbd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-13-preparation.stdout.log",
+      "sha256": "184c3de08bdf9743a3d7b869799df0f7bec73a6fcc3aaa615ea8492c8d4071dd"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-13-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-14-preparation.exit.json",
+      "sha256": "839914d2c5088a2b27397f4a250ac7eeb675675e468de39abea3a3d6f3184e4f"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-14-preparation.stdout.log",
+      "sha256": "8b6632c6378e6ae2f94fb6950827e6eb2d1c08f30f62a459d1160131618acbe3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-14-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-15-preparation.exit.json",
+      "sha256": "1ec305bfeba11f85c1c44fa9c22f0c66576ea0c12b875ec941ee18ab75a1d43a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-15-preparation.stdout.log",
+      "sha256": "aea3dbeddd3dafc17a03dcbb42c58f32bd6501e2e6b18deb0e29204c829d9d09"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-15-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-16-preparation.exit.json",
+      "sha256": "c890e856c853e60c06103430716e90103ccc83cffc62651e83d1c5b7159950d0"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-16-preparation.stdout.log",
+      "sha256": "865f045e60c01fb136152fa279e5a4fd8d7df85ef134f9f49c108ed924de4b41"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/branch-16-preparation.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "members": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "original_process_absent": true,
+  "runtime_dispatched": false,
+  "schema": "saea-complete-structural-registration-root-review-v1",
+  "status": "COMPLETE_MODEL_FREE_REGISTRATION",
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/registration-v1.exit.json",
+    "sha256": "dc17dd060f7f4ac543524992066c36af80c7632d8c3ce157360d5ef18708d570"
+  },
+  "totals": {
+    "fit_endpoint_contacts_cap": 3328,
+    "generation_contacts_cap": 832,
+    "official_score_jobs": 0,
+    "structural_trajectories": 64,
+    "systems": 16
+  },
+  "verification": "All configured ordered members, exact source pins, plans/budgets, policy bindings, supply pins, unique GEN/FIT/READ ledger rows and absent attempts verified. Actual frozen runtime checks remain pending."
+}
