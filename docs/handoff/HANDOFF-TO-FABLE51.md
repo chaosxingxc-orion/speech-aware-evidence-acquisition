@@ -1,5 +1,19 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 scientific draft finalizer prepared (2026-10-06)
+
+The prospective finalize-draft-registration-v2.py in coordination/
+partitioned-update5-aggregate-scientific-preparation-v1 binds the current blueprint,
+actual recovery1 structural/resource evidence and original update5 aggregate actor
+response. Two tests passed: real absent-preparation refusal before writes, and
+isolated synthetic full-configured-package construction using pinned original
+protocols plus shared READ-scope checks and reentry refusal. The fixture does not
+supply actual runtime evidence. [Prepared finalizer](../receipts/continuation/2026-10-06-update5-scientific-finalizer-prepared.json).
+No real scientific registration/exposure rows, prepared members or contacts were
+created. Execute only after complete structural root acceptance and successful
+serial member preparation; keep runtime admission separate. Current structural
+job and its immutable worker remain untouched.
+
 ## Update5 scientific preparation entry is tested and held (2026-10-06)
 
 The shared-runtime prepare-member-v2.py and one-shot serial_prepare_v1.py in

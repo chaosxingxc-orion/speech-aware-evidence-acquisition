@@ -1,0 +1,30 @@
+{
+  "schema": "saea-root-scientific-draft-finalizer-prepared-v1",
+  "at_utc": "2026-10-06T11:21:56.624937+00:00",
+  "status": "PREPARED_WAIT_FOR_COMPLETE_REAL_PREPARATION",
+  "artifacts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/finalize-draft-registration-v2.py",
+      "sha256": "bbe5d27387d2d178525728436aac5c9684123824aaf73da24d31474391fbd47b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/test_finalizer_wait_v2.py",
+      "sha256": "536929f39f950014343a50cdd4289bb69014d27a382c152ad2ffb65446e17ec3"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/test_finalizer_fixture_v2.py",
+      "sha256": "46171fb5edad61e97b29d166f28ebe1aff2eb3b22eb94103ae2df65342e62ac5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/finalizer-tests-v1.json",
+      "sha256": "e2552f8ef991e04eadebddd0b4bf03515ddd8b45a9932b5d67b3048b34eb7eb6"
+    }
+  ],
+  "validation": "Two tests passed. Actual pending entry refuses exit75 before writes. Isolated temporary-tree fixture uses real pinned source protocols and synthetic prepared-member receipts to check all configured cohort packages, shared READ-scope gate, configured counts/rows/resource guards and reentry refusal. Synthetic receipts are not runtime evidence.",
+  "changes": "Bind exact update5 blueprint, recovery1 structural acceptance/resource policy and original update5 aggregate actor response. Preserve complete-family DRAFT-only behavior and source checks.",
+  "real_registration_created": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_admission": false,
+  "next": "After entire structural root acceptance and successful exact serial member preparation, execute finalizer once and complete all admission gates. No partial result read or automatic dispatch."
+}
