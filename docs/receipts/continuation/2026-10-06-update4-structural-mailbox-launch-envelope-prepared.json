@@ -1,0 +1,54 @@
+{
+  "at_utc": "2026-10-06T03:19:43.783160+00:00",
+  "status": "PREPARED_NOT_EXECUTED",
+  "authority": "Owner227 model-free bounded preparation; actual registration and launch remain contingent on complete capacity and frozen engineering gates.",
+  "scope": "One configured structural worker at a time through core.flight.cli worker, with existing lease_cli worker handoff and process_guard. Windows owns fresh per-member physical-memory observations. No scorer, policy edit, knowledge rebuild or task-quality read.",
+  "config_source": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+  "immutable_intent": "docs/readiness/2026-10-06-partitioned-update4-process-structural-mailbox-v1/intent-v1.json",
+  "requirements_before_finalizer": [
+    "Complete exact mailbox capacity family and root qualification",
+    "All structural plans/FIT/read identities registered",
+    "Clean frozen structural checkout and all configured frozen checks passed",
+    "Exact role bytes, same measured graph semantics and warm supply identity verified"
+  ],
+  "validation": [
+    "Python AST of new administrative helpers",
+    "PowerShell parser found no syntax errors",
+    "No residual native_graph_capacity command in structural worker",
+    "Worker-only stage and zero official-score allowance preserved"
+  ],
+  "limitations": "No runtime proof of these new structural launch bindings yet. Existing shared worker APIs and the observed capacity envelope are reused; syntax checks do not grant admission.",
+  "files": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/finalize-launch-registration-v1.py",
+      "sha256": "c0654f4079512b6eeccd509e7ef0938161efe28c3d59f70a46eb08d9b12a1609"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/launch-member-v1.py",
+      "sha256": "ac95509f1b189b4724d148f7b6bb4a3d296d89318a30d30e758b24bbb31c94b8"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/guarded-child-v1.py",
+      "sha256": "8455cdd02936451cf4940b0f268f1b79982cf4a70587b06d5f4c94c2887dbb66"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/continuous-observer-v1.py",
+      "sha256": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/windows_memory_mailbox.py",
+      "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/broker.ps1",
+      "sha256": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-structural-mailbox-v1/structural-windows-v1.ps1",
+      "sha256": "5a27bef4b10ddba30b554d1f785840264f1e5db9fdd3b4a03ada485703c861ae"
+    }
+  ],
+  "generation_contacts_added": 0,
+  "tokenizer_contacts_added": 0,
+  "official_score_jobs_added": 0
+}

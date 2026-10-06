@@ -17,3 +17,18 @@ All future execution must use the qualified Windows-owned observation transport;
 this preparation does not authorize the older pipe-based batch wrapper. Freeze
 the full structural registration and prove any prepared-supply identity change
 before generation. Preserve the prior intent/helpers and all failed epochs.
+
+## Prepared launch envelope
+
+The separately preserved `coordination/partitioned-update4-process-structural-mailbox-v1`
+helpers select the shared worker CLI and worker-stage lease. The finalizer refuses
+missing complete review, registered members, clean frozen source or matching
+all-member frozen checks. It derives ordered members and generation/FIT budgets
+from the immutable config and intent; official scoring stays zero. The Windows
+owner uses one sampler per member and stops the sequence on any failure. No
+script or observer under the running capacity entry is changed.
+
+Python and PowerShell syntax checks pass. This is preparation only: the new
+structural binding has not run, no actual registration is finalized, and no
+structural task contact follows until the stated gates pass. See
+../../receipts/continuation/2026-10-06-update4-structural-mailbox-launch-envelope-prepared.json.
