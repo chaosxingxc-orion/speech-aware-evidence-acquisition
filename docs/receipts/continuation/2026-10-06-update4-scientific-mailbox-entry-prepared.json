@@ -1,0 +1,62 @@
+{
+  "schema": "saea-scientific-mailbox-entry-preparation-v1",
+  "at_utc": "2026-10-06T05:28:57.488611+00:00",
+  "scope": "One configured complete scientific member in its own shared core.flight.cli campaign process, serial across the first cohort. The shared campaign owns generation lease and the full official score lifecycle.",
+  "tests": {
+    "methods_passed": 5,
+    "statement_coverage_percent": 99,
+    "synthetic_cases": [
+      "exact configured control/candidate order and budgets",
+      "reject foreign/missing/reordered member or resource mismatch",
+      "campaign command owns its lease; no worker token",
+      "generation failure stops before inspection",
+      "inspection failure stops before qualification",
+      "OPENED,failed or duplicate scoring refused",
+      "synthetic full main success with operational receipts",
+      "prelaunch STOP and registration failure start no child",
+      "synthetic scoring failure retains failure receipts"
+    ],
+    "windows_wrapper_parse": "PASS"
+  },
+  "unchanged_components": [
+    "Windows-owned broker",
+    "request-bound mailbox client",
+    "single-observer wait/guard transition",
+    "shared FlightRuntime campaign and scorer",
+    "official batch structural inspector"
+  ],
+  "files": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-original-a-scientific-v1/launch-member-v1.py",
+      "sha256": "640e190eafb50de22fbd473125578ed19fdc193610fbe62a22a097745e404d18"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-original-a-scientific-v1/test_launch_member_v1.py",
+      "sha256": "8c1e4d3f8da8315b1770e3376b47c34e43423905bad43d5ae88e3a6d6bee1fe7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-original-a-scientific-v1/scientific-windows-v1.ps1",
+      "sha256": "0ceb8798145120ee543e0481d3455ad946d5bceafafe40e01ff3006fb2abff67"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-original-a-scientific-v1/broker.ps1",
+      "sha256": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-original-a-scientific-v1/windows_memory_mailbox.py",
+      "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-original-a-scientific-v1/continuous-observer-v1.py",
+      "sha256": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-original-a-scientific-v1/live-prelaunch-v1.py",
+      "sha256": "c63bd482e176ad5dcd177a9dcdc067b3c148994cd866e643bf16136aed8621a4"
+    }
+  ],
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_dispatched": false,
+  "limits": "Synthetic launcher receipts are not actual scientific generation, seal or score receipts. Frozen and live checks still required. No source/scorer/geometry or sampling changes."
+}
