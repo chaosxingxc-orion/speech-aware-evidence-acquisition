@@ -88,8 +88,35 @@ def validate_continuation_packet(archive, packet):
 
 def continuation_actor_additions(archive, packet):
     evidence = json.loads(_read_pin(packet["continuation_evidence"], archive.root))
-    return {"rejected_history": deepcopy(evidence["rejected_history"]),
-            "process_feedback": deepcopy(evidence["process_feedback"])}
+    result = {"rejected_history": deepcopy(evidence["rejected_history"]),
+              "process_feedback": deepcopy(evidence["process_feedback"])}
+    prior = _prior_continuations(archive, packet)
+    if prior:
+        result["prior_continuations"] = prior
+    return result
+
+
+def _prior_continuations(archive, packet):
+    """Keep chronological abstract evidence without exporting private ancestry."""
+    from .system_context_learning import _population_update_input
+    parent, _, _ = _population_update_input(archive, packet["parent_input_sha256"])
+    if parent["schema"] != SCHEMA:
+        return []
+    additions = continuation_actor_additions(archive, parent)
+    prior = additions.pop("prior_continuations", [])
+    return prior + [{"iteration": parent["iteration"], **additions}]
+
+
+def context_packet_lineage(archive, packet):
+    """Return every validated input back to the unchanged evaluated population."""
+    from .system_context_learning import _population_update_input
+    lineage = [packet]
+    while packet["schema"] == SCHEMA:
+        packet, _, _ = _population_update_input(archive, packet["parent_input_sha256"])
+        lineage.append(packet)
+    require(packet["schema"] == "saea-partitioned-context-optimizer-input-v1",
+            "original active-parent projection required")
+    return lineage
 
 
 def _copy_pin(pin, source_root, archive):
@@ -120,9 +147,9 @@ def prepare_context_continuation(archive, *, registration_pin, repo_root, data_r
             and type(reg["max_actor_input_bytes"]) is int and reg["max_actor_input_bytes"] > 0,
             "exact prospective continuation registration required")
     parent, _, ids = _population_update_input(archive, reg["parent_input_sha256"])
-    require(parent["schema"] == "saea-partitioned-context-optimizer-input-v1"
+    require(parent["schema"] in ("saea-partitioned-context-optimizer-input-v1", SCHEMA)
             and type(reg["iteration"]) is int and reg["iteration"] == parent["iteration"]+1,
-            "this continuation requires the original v1 parent input and next iteration")
+            "continuation requires a validated partitioned parent and its next iteration")
     config = load_population_config(parent["source_population"], repo_root=archive.root)
     _plan(reg["population_update_plan"], config)
     destination = f"context-learning/inputs/partitioned-{reg['population_update_plan']['batch_id']}.json"
@@ -166,6 +193,9 @@ def prepare_context_continuation(archive, *, registration_pin, repo_root, data_r
         source_commitment=content_hash(evidence),feedback_sample_ids=feedback_ids)
     # Bound the full semantic payload before any archive input or proposal is created.
     preview = {"parents":parent["learner_view"],"history":rejected,"process":process}
+    prior = _prior_continuations(archive, packet)
+    if prior:
+        preview["prior_continuations"] = prior
     require(len(json.dumps(preview,ensure_ascii=True).encode()) <= reg["max_actor_input_bytes"], "actor byte budget exceeded")
     _copy_pin(registration_pin, root, archive)
     name = f"context-learning/evidence/{reg['population_update_plan']['batch_id']}.json"

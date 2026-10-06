@@ -1,0 +1,66 @@
+{
+  "schema": "saea-multiround-context-continuation-prepared-v1",
+  "at_utc": "2026-10-06T08:03:36.765439+00:00",
+  "status": "ENGINEERING_VERIFIED_NOT_ACTOR_ADMITTED",
+  "source_files": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_continuation.py",
+      "sha256": "1d645f85008fac3b03afa35a2207f1dce810c231ce5bd6699f7d07f44286900a"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_partitioned_trial.py",
+      "sha256": "1973d2f0521232c61887e5183213dbd26f9962d24d620bb0f337861770c008ba"
+    },
+    {
+      "relpath": "tests/unit/test_partitioned_context_continuation.py",
+      "sha256": "f86cf2abb12dd6f6378a7cc8ccf59953b0dbb345da962b4585561ade81774026"
+    },
+    {
+      "relpath": "tests/unit/test_context_continuation_trial.py",
+      "sha256": "5da169400db6bf4781a4c3436b6422347060661acdc626cd386b47507498c894"
+    }
+  ],
+  "validation": {
+    "tests_passed": 111,
+    "focused_tests": 99,
+    "rejected_history_tests": 12,
+    "continuation_statement_coverage_percent": 100,
+    "trial_statement_coverage_percent": 100,
+    "covered_statements": 254,
+    "coverage_evidence": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/multiround-context-continuation-v1/coverage-v1.json",
+      "sha256": "cd3b69e092f9a8374a046e2aca8618524e018c0b92458cb794a649fcd977c4d8"
+    },
+    "engineering_base_check": "PASS",
+    "test_first": "New repeated-continuation tests failed at original-v1-parent-only gate before implementation. Additional negative tests exposed missing intermediate registration revalidation; implementation now checks every lineage registration before and after measurement."
+  },
+  "real_existing_packet_compatibility": {
+    "input_sha256": "d24da70639da71acba7e709727e59e64b92ab5528d5d54b198de76762c0f3177",
+    "iteration": 4,
+    "before_worker": "/home/chao/saea-worktrees/codex-update4-remaining-b2-scientific-v1",
+    "before_commit": "dccbfdee55862c612c1a8c81cedd7eaf0a01f894",
+    "actor_content_hash_before_and_after": "7706d883dfccd5ceae10c327117d5b54a9b5d6721eee709f9b954c58957bef4c",
+    "serialized_bytes_before_and_after": 1525706,
+    "prior_continuations_present": false
+  },
+  "behavior": [
+    "Allow the next sequential iteration from a validated original or continuation input.",
+    "Keep active evaluated parents unchanged in this rejected-history continuation path.",
+    "Expose all earlier rejected-history/process pairs chronologically as abstract prior_continuations, preserving cumulative exposure.",
+    "Count the entire inherited actor payload against the prospective byte budget; never silently truncate history.",
+    "Resolve the evaluated original population through all validated ancestors; recheck every registration during whole-trial qualification."
+  ],
+  "limitations": [
+    "Current real update4 remains incomplete and unread as a whole trial.",
+    "No real next-iteration packet, proposal allocation, actor request or GPU admission was created.",
+    "This path preserves parents after rejected updates; it does not implement acceptance/promotion or bypass complete-trial root decisions.",
+    "Integration of the prospective complete-trial process-feedback projection still requires its exact registered preparation path."
+  ],
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "learner_exported": false,
+  "runtime_changed": false,
+  "selection_rule_changed": false
+}

@@ -143,3 +143,70 @@ def test_history_validates_its_own_configuration_identity(continuation):
     assert packet['source_population']==s.parent['source_population']
     view=partitioned.partitioned_context_actor_view(s.archive,input_sha256=packet['input_sha256'])
     assert view['rejected_history']['observation']['population']['population_config_sha256']==content_hash(cfg)
+
+
+def advance_registration(s, parent, ordinal):
+    """Create fresh immutable source identities for a further rejected update."""
+    s.parent = parent
+    history = deepcopy(s.history)
+    history['private_custody']['parent_input_sha256'] = parent['input_sha256']
+    history['private_custody']['feedback_sample_ids'] = sorted(
+        set(parent['feedback_sample_ids']) | {f'slurp:train:PRIVATE_HISTORY_{ordinal}'})
+    history['learner_history']['utility_after'] = 9. - ordinal
+    receipt = dict(s.hreceipt, output=pin(s.data, f'history-{ordinal}.json', history, True))
+    s.reg = dict(s.reg, parent_input_sha256=parent['input_sha256'],
+        iteration=parent['iteration'] + 1,
+        population_update_plan=dict(parent['population_update_plan'], batch_id=f'next-process-{ordinal}'),
+        history_completion=pin(s.root, f'history-complete-{ordinal}.json', receipt))
+    s.regpin = pin(s.root, f'continuation-{ordinal}.json', s.reg)
+
+
+def test_repeated_continuation_preserves_all_history_process_and_exposure(continuation):
+    s = continuation
+    original = s.parent
+    first = run(s)
+    first_view = partitioned.partitioned_context_actor_view(s.archive, input_sha256=first['input_sha256'])
+    assert 'prior_continuations' not in first_view
+    advance_registration(s, first, 2)
+    second = run(s)
+    advance_registration(s, second, 3)
+    third = run(s)
+    view = partitioned.partitioned_context_actor_view(s.archive, input_sha256=third['input_sha256'])
+    assert third['policies'] == original['policies']
+    assert [row['iteration'] for row in view['prior_continuations']] == [first['iteration'], second['iteration']]
+    assert view['prior_continuations'][0]['rejected_history'] == first_view['rejected_history']
+    assert view['prior_continuations'][0]['process_feedback'] == first_view['process_feedback']
+    assert [row['rejected_history']['utility_after'] for row in view['prior_continuations']] == [9., 7.]
+    assert view['rejected_history']['utility_after'] == 6.
+    assert set(first['feedback_sample_ids']) <= set(second['feedback_sample_ids']) <= set(third['feedback_sample_ids'])
+    assert 'slurp:train:PRIVATE_HISTORY_3' in third['feedback_sample_ids']
+    for secret in ['PRIVATE_', 'slurp:train:', str(s.data), 'source_pins', 'private_custody']:
+        assert secret not in json.dumps(view)
+    h = content_hash(view)
+    learning.reserve_context_population_update(s.archive, input_sha256=third['input_sha256'], actor_input_sha256=h)
+    out = learning.record_context_population_update(s.archive, input_sha256=third['input_sha256'], response_document=response(third, h))
+    child = s.archive.load_policy(out['records'][0]['bundle_id']).as_json()
+    assert set(third['feedback_sample_ids']) <= {sid for src in child['cumulative_sources'] for sid in src['sample_ids']}
+
+
+def test_repeated_continuation_rejects_modified_ancestor(continuation):
+    s = continuation
+    first = run(s)
+    advance_registration(s, first, 2)
+    second = run(s)
+    (s.archive.root / first['continuation_evidence']['relpath']).write_text('{}')
+    with pytest.raises(PolicyError):
+        partitioned.partitioned_context_actor_view(s.archive, input_sha256=second['input_sha256'])
+
+
+def test_repeated_continuation_budget_includes_prior_history(continuation):
+    s = continuation
+    first = run(s)
+    first_view = partitioned.partitioned_context_actor_view(s.archive, input_sha256=first['input_sha256'])
+    advance_registration(s, first, 2)
+    s.reg['max_actor_input_bytes'] = len(json.dumps(first_view, ensure_ascii=True).encode()) + 100
+    s.regpin = pin(s.root, 'bounded-second.json', s.reg)
+    with pytest.raises(PolicyError, match='byte budget'):
+        run(s)
+    assert not (s.archive.root / 'context-learning/inputs/partitioned-next-process-2.json').exists()
+    assert not (s.archive.root / 'context-learning/populations').exists()

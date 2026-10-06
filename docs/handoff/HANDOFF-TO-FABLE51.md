@@ -1,5 +1,20 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Multi-round rejected-history continuation verified (2026-10-06)
+
+The shared v2 continuation now supports further sequential registered iterations,
+retaining every prior abstract history/process pair and cumulative exposure. The
+complete actor payload is budgeted without truncation. Whole-trial evaluation
+rechecks all intermediate registrations as well as the original evaluated parents.
+All111 relevant tests pass, both modules have100percent statement coverage, and the
+engineering-base gate passes. The actual update4 actor content hash/bytes remain
+identical to the frozen implementation. No next actor packet/allocation/contact,
+selection change or runtime mutation occurred. Current remaining-b2 stays running.
+[Readiness](../readiness/2026-10-06-multiround-context-continuation-v1/README.md) and
+[evidence](../receipts/continuation/2026-10-06-multiround-context-continuation-prepared.json).
+Actual next-iteration process preparation still requires complete-trial review and
+prospective exact registration; no partial feedback export follows from this change.
+
 ## Update4 final configured partition launched (2026-10-06)
 
 Windows task SAEA-Update4-RemainingB2-Scientific-V1 launched at2026-10-06T07:52:27.7518357+00:00 from frozen /home/chao/saea-worktrees/codex-update4-remaining-b2-scientific-v1 atdccbfdee55862c612c1a8c81cedd7eaf0a01f894. All six frozen checks passed; registration SHA25636cdcbeb6b63b2d1f7c5dabab649720e35e5aeb5998c490c41651392621223cb. Config-derived members are seed, seed-aa and branches13-16,20 inputs each/120 trajectories. All prior configured cohorts are complete/root-reviewed; this is the unchanged final partition, not a new selection or proposal allocation.

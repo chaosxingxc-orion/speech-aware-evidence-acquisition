@@ -4,7 +4,7 @@ import json
 import pytest
 from test_abstract_population_projection import setup, with_archive
 from test_partitioned_context_learning import ready, response
-from test_partitioned_context_continuation import continuation, run as prepare_continuation
+from test_partitioned_context_continuation import continuation, advance_registration, run as prepare_continuation
 from test_abstract_population_sources import pin
 from speech_aware_evidence_acquisition.rails import system_context_learning as learning
 from speech_aware_evidence_acquisition.rails import system_context_partitioned_trial as subject
@@ -13,10 +13,13 @@ from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyError
 
 
-@pytest.fixture
-def continuation_trial(continuation, monkeypatch):
+@pytest.fixture(params=[1, 2, 3])
+def continuation_trial(continuation, monkeypatch, request):
     s=continuation
     s.packet=prepare_continuation(s)
+    for ordinal in range(2, request.param + 1):
+        advance_registration(s, s.packet, ordinal)
+        s.packet = prepare_continuation(s)
     h=content_hash(partitioned_context_actor_view(s.archive,input_sha256=s.packet['input_sha256']))
     learning.reserve_context_population_update(s.archive,input_sha256=s.packet['input_sha256'],actor_input_sha256=h)
     result=learning.record_context_population_update(s.archive,input_sha256=s.packet['input_sha256'],response_document=response(s.packet,h))

@@ -80,10 +80,10 @@ def qualify_partitioned_context_trial(archive, *, input_sha256, contract_pin, re
             'successor must retain every configured input, position and execution envelope')
     # A continuation binds additional rejected history/process evidence. Its
     # active-parent observation still belongs to the original registered projection.
-    parent_packet = packet
-    if packet['schema'] == 'saea-partitioned-context-optimizer-input-v2':
-        parent_packet, _, _ = learning._population_update_input(archive, packet['parent_input_sha256'])
-        require(parent_packet['schema'] == SCHEMA, 'original v1 parent projection required')
+    from .system_context_continuation import context_packet_lineage
+    lineage = context_packet_lineage(archive, packet)
+    lineage_registrations = [json.loads(_read_pin(p['registration'], root)) for p in lineage]
+    parent_packet = lineage[-1]
     initial=json.loads(_read_pin(parent_packet['registration'],root))
     projected=project_registered_population(projection_pin=initial['projection'],repo_root=root,
                                           data_root=data,policy_archive=archive)
@@ -144,8 +144,9 @@ def qualify_partitioned_context_trial(archive, *, input_sha256, contract_pin, re
         fresh=read_registered_population_sources(source_registration_pin=source_pin,repo_root=root,data_root=data)
         require(_source_identity(fresh)==_source_identity(original_join),
                 'source qualification or READ changed during measurement')
-    require(json.loads(_read_pin(parent_packet['registration'], root)) == initial,
-            'active-parent projection registration changed')
+    require(all(json.loads(_read_pin(p['registration'], root)) == registered
+                for p, registered in zip(lineage, lineage_registrations, strict=True)),
+            'continuation lineage registration changed')
     current, _, _ = learning._population_update_input(archive, input_sha256)
     require(current == packet, 'optimizer continuation or active-parent evidence changed')
     total_before,total_after=map(math.fsum,totals)
