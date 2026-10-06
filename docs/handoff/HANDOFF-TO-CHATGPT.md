@@ -1,5 +1,34 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 remaining-b1 scientific job running (2026-10-06)
+
+All six frozen proofs passed. Windows task SAEA-Update5-Aggregate-RemainingB1-Scientific-V1
+actually launched at 2026-10-06T13:44:45.4108975+00:00 from frozen worker
+/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1
+at efae9a68410cbd84ddf2339eec48e8f1465cdf2a. Registration SHA256:
+dd1b5d625716d6cf80c023f3cbab5d41bd37520fff373803b048f64ebce3bfeb.
+See [actual launch](../receipts/continuation/2026-10-06-update5-remaining-b1-scientific-launch.json).
+Seed, seed-aa and branches09-12 each run20 complete trajectories (120 total),
+with generation cap1560, FIT endpoint cap6240 and six unique official scores.
+All identities, source pins, policies and budgets come from the immutable config.
+
+The job and operational monitor are in speechrl-data/coordination/
+partitioned-update5-aggregate-remaining-b1-scientific-v1. Bound15-minute automation
+slurp-update5-remaining-b1-scientific-monitor is ACTIVE. Revalidate live processes;
+read metadata only while incomplete. No partial quality or learner export. Exact
+READ remains unsigned. At launch the service/guard/idle-slot gates passed, Windows
+free21.70GiB; after startup19.97GiB. Policy remains20GiB startup/8GiB running,
+observe-only maintenance. Delete the exact monitor after verified terminal and
+no admitted worker/scorer/lease/owned observers. Never retry from polling timeouts.
+
+The original-a complete root report is recorded and its monitor deleted. All eight
+candidate point estimates were below its own controls; no benefit or adoption.
+After this cohort finishes, use its prepared qualify/countersign/read entry with
+remaining-b1-flight-v1 and the new scientific-read-binding receipt, then process,
+presentation and paired diagnostics. Only that full review can admit remaining-b2.
+Full K16 retention and aggregate learner export wait for all configured cohorts.
+Other carriers retain their existing admission boundaries.
+
 ## Update5 remaining-b1 frozen checker live (2026-10-06)
 
 The new clean frozen worker is /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1
@@ -4551,7 +4580,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T13:40:52.065552+00:00
+Last refreshed: 2026-10-06T13:46:30.707371+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
