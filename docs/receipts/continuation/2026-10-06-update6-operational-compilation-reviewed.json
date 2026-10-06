@@ -1,0 +1,29 @@
+{
+  "schema": "saea-operational-compilation-root-review-v1",
+  "at_utc": "2026-10-06T17:25:48.503445+00:00",
+  "status": "COMPLETE_ROOT_VERIFIED",
+  "compiled": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-partitioned-update6-diversity-compiled.json",
+    "sha256": "02943fbca5db53379135e4d784bc5ce25c363ac7e25cbba672fed4bd0525df60"
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/operational-compile.exit.json",
+    "sha256": "5f0bac18a9b8e40510c5d7ef9f5279e55f0dbd41f95ed39e18e10495daeec927"
+  },
+  "all_configured_member_records_and_graph_hashes_verified": true,
+  "original_parent_graph_hashes_verified": true,
+  "original_child_pid_absent": true,
+  "original_proposal_preserved": true,
+  "no_change_positions_preserved": true,
+  "engineering_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/engineering-preparation.started.json",
+    "sha256": "1f104c5fa877157f8f189907e7dde91276524068f59d8507e2d3249aefba3b0c"
+  },
+  "engineering_session": 25670,
+  "capacity_entry_prepared": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/entry-prepared-v1.json",
+    "sha256": "e408f63dbd51c132ba5df7fee1da7d1acbd32e62809618ff629908e2649cd3d3"
+  },
+  "new_model_tokenizer_scorer_contacts": 0,
+  "runtime_admission": false
+}
