@@ -1,0 +1,24 @@
+{
+  "schema": "saea-qualified-parent-selection-proof-v1",
+  "at_utc": "2026-10-06T22:41:55.687176+00:00",
+  "status": "MODEL_FREE_PROTOTYPE_ONLY",
+  "tests_passed": 191,
+  "module_statements": 130,
+  "covered_statements": 130,
+  "model_contacts": 0,
+  "actor_contacts": 0,
+  "scorer_contacts": 0,
+  "admitted": false,
+  "runtime_changed": false,
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_parent_selection.py",
+      "sha256": "531765d66e3498db570fd5632dc6e8bd3a0fdee84abe4cff56cf52920eabf6c9"
+    },
+    {
+      "relpath": "tests/unit/test_qualified_parent_selection.py",
+      "sha256": "876a8f4c41cdc7c35ee6385c47d923d6c862328471372d3e58f1527b4a7f8984"
+    }
+  ],
+  "active_read_entry_pins_unchanged": true
+}

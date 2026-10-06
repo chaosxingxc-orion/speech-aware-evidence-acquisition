@@ -1,5 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Qualified parent selection adapter: offline only (2026-10-06)
+
+[Source-custody integration](../readiness/2026-10-06-qualified-parent-selection-v1/README.md)
+uses the existing complete-population READ/seal/score gate before cohort-local parent
+selection. Requalify every source again before a create-only private root record.
+Preserve all replicate measurements and use the prospectively designated first
+control/candidate order, never the most favorable draw.191 related tests pass with
+130/130 combined module statements covered. No real selection, actor export, runtime
+change or proposal admission; current Update6 acceptance and active parents unchanged.
+History-derived usage continuity, full experiment configuration/reservation integration
+and actual algorithm comparison remain. Active remaining-b2 READ entry pins unchanged.
+
+
 ## Configured proposal planner: offline only (2026-10-06)
 
 [Planner proof](../readiness/2026-10-06-system-evolution-proposal-planner-v1/README.md)

@@ -197,3 +197,68 @@ def plan_parent_proposals(configuration, *, selection):
         "scope": "Prospective planning only; registered source custody and reservation remain required."}
     result["plan_sha256"] = content_hash(result)
     return result
+
+
+
+def prepare_qualified_parent_selection(archive, *, request_pin, repo_root, data_root):
+    """Requalify an entire population before private, cohort-local parent planning.
+
+    Preserve every replicate; the declared first control then candidate order
+    fixes each policy's representative before seeing scores. This root artifact
+    neither exports learner input nor rewrites an earlier trial acceptance rule.
+    """
+    import json
+    from pathlib import Path
+    from ..analysis.abstract_population_sources import read_registered_population_sources
+    from .experiment_population import load_population_config
+    from .system_context_partitioned_trial import _source_identity
+    from .system_search_archive import SystemSearchArchive
+    from .system_search_measurement import measured_rows
+    from .system_text_policy import _read_pin
+
+    require(isinstance(archive, SystemSearchArchive), "shared SystemSearchArchive required")
+    root = Path(repo_root).resolve()
+    request = json.loads(_read_pin(request_pin, root))
+    require(set(request) == {"schema", "status", "source_registration", "cohort_id",
+                            "selection_config", "usage_counts", "replicate_rule"}
+            and request["schema"] == "saea-qualified-parent-selection-request-v1"
+            and request["status"] == "ROOT_REGISTERED"
+            and request["replicate_rule"] == "designated-control-then-registered-order",
+            "exact registered root selection request required")
+    _configuration(request["selection_config"])
+    manifest = json.loads(_read_pin(request["source_registration"], root))
+    population = load_population_config(manifest["projection_config"], repo_root=root)
+    require(request["cohort_id"] in [c["cohort_id"] for c in population["cohorts"]],
+            "selected cohort is outside the complete registered population")
+    options = dict(source_registration_pin=request["source_registration"],
+                   repo_root=root, data_root=data_root)
+    source = read_registered_population_sources(**options)
+    doc, _, registration, protocol, candidates, controls, _ = source["private_families"][request["cohort_id"]]
+    profile = protocol["measurement_profile"]
+    all_rows = measured_rows(doc, [controls[0], *candidates, *controls[1:]],
+                             registration["member_bindings"], profile=profile)
+    measurements, repeats, seen = [], [], set()
+    for row in all_rows:
+        (repeats if row["bundle_id"] in seen else measurements).append(row)
+        seen.add(row["bundle_id"])
+    result = select_search_parents(measurements, profile=profile,
+        selection_config=request["selection_config"], usage_counts=request["usage_counts"])
+    fresh = read_registered_population_sources(**options)
+    require(_source_identity(source) == _source_identity(fresh),
+            "complete population source changed during parent selection")
+    require(json.loads(_read_pin(request_pin, root)) == request,
+            "selection request changed during preparation")
+    record = {"schema": "saea-qualified-parent-selection-record-v1",
+        "request": request_pin, "source_registration": request["source_registration"],
+        "source_identity_sha256": content_hash(_source_identity(source)),
+        "projection_config": source["projection_config"], "cohort_id": request["cohort_id"],
+        "replicate_rule": request["replicate_rule"], "control_ids": controls,
+        "measurements": measurements, "duplicate_bundle_replicates": repeats,
+        "selection": result, "learner_exported": False, "runtime_admission": False,
+        "formal_adoption": False, "proposal_allocation_granted": False,
+        "scope": "Qualified private root planning only; no historical acceptance change or actor input."}
+    # The declared A/A remains a replicate even when it has the best observed score.
+    record["record_sha256"] = content_hash(record)
+    archive._write("context-learning/qualified-parent-selection/"
+        + f"{request['selection_config']['iteration']}-{content_hash(request['cohort_id'])}.json", record)
+    return record
