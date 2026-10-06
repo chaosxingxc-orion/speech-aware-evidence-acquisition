@@ -1,0 +1,61 @@
+{
+  "schema": "saea-update5-remaining-execution-entries-verified-v1",
+  "at_utc": "2026-10-06T12:40:04.217961+00:00",
+  "status": "STATIC_PREPARATION_ONLY",
+  "source_manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-execution-entries-prepared-v1.json",
+    "sha256": "080d2aaa56c530129df8d7ed32598454502dc999391a5269a46fc4c1f250d2eb"
+  },
+  "windows_parser": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-windows-parser-v1.json",
+    "sha256": "cda4fa4b17fdb4d36e4816117946088a6af9b10eca94335899847acdcb702e71"
+  },
+  "entries": [
+    {
+      "cohort": "remaining-b1",
+      "entry": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1",
+      "tests_passed": 6,
+      "tests_stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/launcher-tests-v1.stdout.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tests_stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/launcher-tests-v1.stderr.log",
+        "sha256": "3b47ce089f8684bf5f9c8758f674d3c3c622f250c4ea3e81bdb34bcda2beab96"
+      },
+      "tests_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/launcher-tests-v1.exit.json",
+        "sha256": "8b5656e3d5d85ee0f9bf5de4ba94cdc229550f38808a1554e54a0d97f13b91f1"
+      },
+      "admitted": false,
+      "worker_frozen": false,
+      "task_registered": false,
+      "runtime_dispatched": false
+    },
+    {
+      "cohort": "remaining-b2",
+      "entry": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1",
+      "tests_passed": 6,
+      "tests_stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/launcher-tests-v1.stdout.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "tests_stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/launcher-tests-v1.stderr.log",
+        "sha256": "aa4c39cfe71ad33a517d338c38c21b20b9e3953b82f30adcd27ef7afb865e22e"
+      },
+      "tests_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b2-scientific-v1/launcher-tests-v1.exit.json",
+        "sha256": "23d64201211b6386ea1bf4d8bad3e06ded8fbc19b547769d6dd6d594bc7144b9"
+      },
+      "admitted": false,
+      "worker_frozen": false,
+      "task_registered": false,
+      "runtime_dispatched": false
+    }
+  ],
+  "limits": "Do not invoke finalizers until exact root admission, new clean frozen-worker identity and successful full-cohort frozen proof exist. Create a fresh Windows task and fifteen-minute monitor only after all live gates and actual launch. No automatic transition or retry.",
+  "known_test_warning": "The unchanged imported Whisper normalizer emits an unclosed english.json ResourceWarning; all tests pass. This preparation does not modify that source.",
+  "model_contacts": 0,
+  "scorer_contacts": 0
+}

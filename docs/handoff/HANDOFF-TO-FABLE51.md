@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 remaining launch entries statically prepared (2026-10-06)
+
+Both remaining-b1 and remaining-b2 launch directories now exist at
+speechrl-data/coordination/partitioned-update5-aggregate-<cohort>-scientific-v1.
+Each reuses current tested launcher/observer/live-gate/monitor bytes. Windows entry
+paths and finalizer cohort tag are the only substitutions. Their frozen check scripts
+are prepared under the matching <cohort>-flight-v1 directories. Each launcher has
+six passing synthetic tests; both Windows entries parse. See
+[prepared remaining entries](../receipts/continuation/2026-10-06-update5-remaining-execution-entries-prepared.json).
+
+No later root admission, worker identity, runtime registration, Windows task or GPU
+contact exists. After the preceding exact complete root review, use the prepared
+adjacent admission helper; integrate serially, freeze a new clean worker and run
+every configured member's frozen proof. Only then finalize that entry, perform fresh
+live/resource checks, register a new Windows task and launch with a new job-bound
+15-minute monitor. Do not rerun or modify the current first-cohort frozen worker.
+The existing harmless imported normalizer ResourceWarning is preserved in test logs;
+no source or experiment failure is inferred from it.
+
 ## Update5 adjacent-stage review entry prepared (2026-10-06)
 
 Prepared current-cohort business/process/cost presentation and paired diagnostic
