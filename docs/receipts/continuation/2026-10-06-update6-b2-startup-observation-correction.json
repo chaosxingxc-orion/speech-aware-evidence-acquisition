@@ -1,0 +1,44 @@
+{
+  "schema": "saea-root-observation-correction-v1",
+  "at_utc": "2026-10-06T22:46:57.138489+00:00",
+  "incident_type": "root-reporting-inference-error-not-runtime-failure",
+  "member": "branch-15",
+  "correction": "Root previously inferred ongoing startup wait from sub-startup-threshold mailbox samples. The same observer serves the running guard after startup. The registered startup wait already succeeded; those later samples do not imply a startup stall.",
+  "startup_wait": {
+    "elapsed_seconds": 30.20178225589916,
+    "exit_code": 0,
+    "interval_seconds": 10,
+    "observer_sha256": "852f8f4fb4cd63b7084b9fec9db63325baa2553e2f7e6637f61d8053a5e06c7b",
+    "running_floor_gib": 8,
+    "schema": "saea-precontact-memory-wait-v1",
+    "stable_samples": 3,
+    "start_gib": 20,
+    "status": "ready",
+    "stop_marker": "/home/chao/batch-STOP",
+    "wait_seconds": 600,
+    "worker_started": false
+  },
+  "observed_attempt_state": "OPENED",
+  "startup_wait_finished_at_utc": "2026-10-06T22:40:54.097769+00:00",
+  "source_pins": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/branch-15/memory-wait/finished.json",
+      "sha256": "1786f9a31756c29afd3afc44ad399572a285a97e3b592daa1fa690145bf4438d",
+      "mutable_operational_snapshot": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/branch-15/memory-wait/events.jsonl",
+      "sha256": "e53f49114345af056ec72ab5f3c0e9a7030e2bec0895472fbcc3b4c79a842fd3",
+      "mutable_operational_snapshot": false
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-15-V1/attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-15-generation-v1.json",
+      "sha256": "2649c37a36dfbcdb09f529400c26b49eb09fda389535db08418a21b25ab83ead",
+      "mutable_operational_snapshot": true
+    }
+  ],
+  "runtime_changed": false,
+  "policy_changed": false,
+  "quality_read": false,
+  "recovery_required": false
+}

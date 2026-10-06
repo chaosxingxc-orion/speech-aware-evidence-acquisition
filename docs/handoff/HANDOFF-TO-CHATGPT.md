@@ -1,5 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Remaining-b2 startup observation correction (2026-10-06)
+
+[Root correction](../receipts/continuation/2026-10-06-update6-b2-startup-observation-correction.json)
+records a reporting inference error, not a runtime incident. Branch15 startup memory
+wait succeeded at22:40:54Z after30.20seconds; subsequent mailbox samples belong to the
+continuous running observer and do not establish a startup stall. Root confirmed its
+OPENED attempt and live campaign; four earlier members are FINALIZED. No STOP, memory
+policy change or recovery. Inspect the phase receipt before interpreting a sub-startup
+memory sample. Keep remaining-b2 quality unread until the complete six-member READ.
+
+
 ## Qualified parent selection adapter: offline only (2026-10-06)
 
 [Source-custody integration](../readiness/2026-10-06-qualified-parent-selection-v1/README.md)
