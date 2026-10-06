@@ -88,3 +88,54 @@ def plan_unstarted_continuation(*, registration, observation, members, now,
             "original_task_result": observation["task_result"],
             "dispatch_authorized": False, "read_authorized": False,
             "model_contacts_added": 0, "scorer_contacts_added": 0}
+
+
+
+def qualify_continued_terminal(*, registration, settlement, plan, current_members,
+                               original_windows, suffix_terminal,
+                               actual_missing_native_exit_members, now,
+                               max_age_seconds):
+    """Join an unchanged completed prefix to a separately verified suffix terminal.
+
+    The caller must verify pinned evidence, the suffix's native terminal through
+    the standard verifier, and the complete original family's seals and scores.
+    Missing native exits remain explicit exceptions; they are never synthesized.
+    """
+    require(plan["status"] == "ROOT-ADMITTED" and plan["authority"] == "owner227",
+            "A separately admitted root continuation is required")
+    prior = plan_unstarted_continuation(
+        registration=registration, observation=settlement["observation"],
+        members=settlement["members"], now=settlement["at_utc"],
+        max_age_seconds=max_age_seconds)
+    require(prior == settlement["result"], "Settlement partition changed")
+    for key in ("preserved_members", "unstarted_members", "original_task_result"):
+        require(plan[key] == prior[key], "Continuation scope changed")
+    preserved, suffix = prior["preserved_members"], prior["unstarted_members"]
+    require(set(current_members) == {m["label"] for m in registration["members"]},
+            "Current member set differs")
+    require(all(current_members[label] == settlement["members"][label]
+                for label in preserved), "Preserved member evidence changed")
+    missing = plan["missing_native_exit_members"]
+    require(len(missing) == len(set(missing)) and set(missing) <= set(preserved)
+            and missing == actual_missing_native_exit_members,
+            "Missing native exits differ from the exact disposition")
+    require(original_windows["task_state"] == "Ready"
+            and original_windows["task_result"] == prior["original_task_result"]
+            and original_windows["original_owner_live"] is False
+            and original_windows["bound_windows_processes"] == []
+            and original_windows["bound_wsl_processes"] == [],
+            "Original failed epoch is not preserved and settled")
+    age = (moment(now) - moment(original_windows["observed_at"])).total_seconds()
+    require(0 <= age <= max_age_seconds, "Original terminal observation is stale")
+    require(suffix_terminal["status"] == "EXACT_SCIENTIFIC_JOB_TERMINAL"
+            and suffix_terminal["member_count"] == len(suffix),
+            "Suffix lacks exact native terminal qualification")
+    require(moment(settlement["at_utc"]) <= moment(suffix_terminal["launch_epoch"])
+            <= moment(suffix_terminal["terminal_epoch"]) <= moment(now),
+            "Execution epochs overlap or are out of order")
+    return {"status": "CONTINUED_SCIENTIFIC_OWNER_CHAIN_VERIFIED",
+            "member_count": len(preserved) + len(suffix),
+            "preserved_members": preserved, "continued_members": suffix,
+            "original_task_result": prior["original_task_result"],
+            "missing_original_native_exits": missing,
+            "suffix_terminal": suffix_terminal, "read_authorized": False}

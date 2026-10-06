@@ -1,0 +1,45 @@
+{
+  "schema": "saea-scientific-owner-continuation-entry-preparation-v1",
+  "at_utc": "2026-10-06T20:40:04.295550+00:00",
+  "status": "PREPARED_COMPONENTS_NOT_RUNTIME_READY",
+  "authority": "owner227",
+  "python_tests_passed": 112,
+  "python_statement_coverage_percent": 100,
+  "native_windows_partition_cases_passed": 10,
+  "native_proof_scope": "Parser and pre-execution partition validation only, not GPU dispatch",
+  "original_incident_cause": "Unestablished; do not attribute to the separate synthetic shell module-loading issue",
+  "preserved_failed_synthetic_proof": "native-synthetic-v1 failed before any model/scorer contacts because its Windows PowerShell child did not auto-load Get-FileHash. The successor entry explicitly imports the native Utility and Management modules; original failed logs and entry bytes are retained.",
+  "operational_changes": [
+    "Add pure cross-epoch terminal check retaining the failed original owner and exact missing native-exit exceptions.",
+    "Add a separate Windows suffix-only owner entry preserving original member receipt paths and using a distinct owner receipt root.",
+    "Preserve complete-family seal/score and exact READ gates; helper success does not grant READ."
+  ],
+  "pending": [
+    "Implement and source-pin real start-time preflight for all original process identities, current preserved metadata and untouched suffix.",
+    "Add durable outer-process stdout/stderr/exit capture and verify it with synthetic native child exits.",
+    "Bind a new prospective continuation plan and root227 disposition; perform fresh live/source/resource checks.",
+    "Prepare complete root READ integration using unchanged full-family qualifier, standard suffix-terminal verifier and cross-epoch verifier.",
+    "Launch only the untouched suffix once all gates pass, then create the new job monitor."
+  ],
+  "evidence": [
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-continuation1-preparation/terminal-tests-exit.json",
+      "sha256": "ba48512ebb8903d0983fc57b667f33efc31d454d1a8f33ac59052dd8f396e921"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-continuation1-preparation/terminal-coverage.json",
+      "sha256": "2124d45d3398cba33dcba1d41311a02ae69192c1f6494dc805b465c69c0b351c"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-continuation1-preparation/native-synthetic-v2/receipt.json",
+      "sha256": "bacfa203a31f1f3d647f2cecd7d6538263af4e37d862960b74ba77d5c877555c"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-continuation1-preparation/terminal-engineering-base-exit.json",
+      "sha256": "845a5901279140c1bacde5c44d28da41b71c0b9bcf6bf7561f0f463e4088c0f3"
+    }
+  ],
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "quality_read": false
+}

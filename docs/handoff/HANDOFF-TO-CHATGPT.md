@@ -1,5 +1,29 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 suffix owner and terminal components prepared (2026-10-06)
+
+The original epoch is terminal failed, all original child/observer processes settled,
+and its monitor deleted. No continuation has launched. Five finalized members remain
+preserved and five suffix members remain unstarted. Current root helper code adds
+qualify_continued_terminal: it preserves original owner failure, exact prefix metadata,
+explicit missing original native-exit exceptions and non-overlapping execution epochs.
+The caller must still qualify the entire original family and use the standard native
+terminal verifier for the successor. Helper success alone grants no READ.
+
+The new scripts/flights/batch/scientific_suffix_owner.ps1 selects only the configured
+untouched suffix, writes successor owner receipts separately, and retains original
+member paths. Python tests pass112 with100percent module statement coverage;
+10 native Windows partition/hash/admission cases pass. Engineering-base passes.
+The first synthetic proof failed on native module autoload before contacts; its logs
+and source are preserved. Explicit native Utility/Management imports pass the new
+proof. This synthetic defect does not establish the original owner exit cause.
+
+Remaining work: real start-time preflight, durable outer stdout/stderr/exit capture,
+exact source-pinned continuation plan/root227 disposition, full READ provenance
+integration and fresh launch checks. Runtime remains undispatched and READ unsigned.
+[Component proof](../receipts/continuation/2026-10-06-update6-owner-continuation-components-prepared.json).
+
+
 ## Update6 original owner settled; suffix continuation preparation (2026-10-06)
 
 The original branch-03 child finished2026-10-06T20:29:20.436000Z with exit0,

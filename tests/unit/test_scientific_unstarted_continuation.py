@@ -120,3 +120,58 @@ def test_refuse_task_running_code_even_with_ready_snapshot():
 def test_refuse_boolean_numeric_evidence(field,value):
     reg,obs,members=fixture();members['m0'][field]=value
     with pytest.raises(ValueError):decide(reg,obs,members)
+
+
+
+def terminal_fixture():
+    reg, obs, members = fixture(4,2)
+    partition = decide(reg,obs,members)
+    snapshot = {"result": partition, "observation": obs, "members": copy.deepcopy(members),
+                "at_utc": "2026-10-06T20:00:20Z"}
+    plan = {"status":"ROOT-ADMITTED", "authority":"owner227",
+            "preserved_members":partition["preserved_members"],
+            "unstarted_members":partition["unstarted_members"],
+            "missing_native_exit_members":["m1"], "original_task_result":2147943467}
+    current = copy.deepcopy(members)
+    native = {"task_state":"Ready", "task_result":2147943467,
+              "original_owner_live":False, "bound_windows_processes":[],
+              "bound_wsl_processes":[], "observed_at":"2026-10-06T20:10:00Z"}
+    suffix = {"status":"EXACT_SCIENTIFIC_JOB_TERMINAL", "member_count":2,
+              "launch_epoch":"2026-10-06T20:01:00Z", "terminal_epoch":"2026-10-06T20:09:00Z"}
+    return reg, snapshot, plan, current, native, suffix
+
+
+def terminal_decide(values):
+    reg,snapshot,plan,current,native,suffix=values
+    return module.qualify_continued_terminal(registration=reg, settlement=snapshot,
+        plan=plan,current_members=current,original_windows=native,suffix_terminal=suffix,
+        actual_missing_native_exit_members=["m1"],now="2026-10-06T20:10:20Z",
+        max_age_seconds=60)
+
+
+def test_terminal_preserves_failed_owner_and_requires_separate_read():
+    result=terminal_decide(terminal_fixture())
+    assert result['status']=='CONTINUED_SCIENTIFIC_OWNER_CHAIN_VERIFIED'
+    assert result['original_task_result']==2147943467
+    assert result['member_count']==4
+    assert result['read_authorized'] is False
+
+
+@pytest.mark.parametrize('fault', ['unapproved','wrong_authority','changed_partition',
+    'changed_prefix','changed_owner_result','live_original','stale_native',
+    'bad_suffix','wrong_count','overlap_epochs','bad_missing_native_exit','unknown_missing_member'])
+def test_terminal_rejects_changed_or_incomplete_provenance(fault):
+    values=terminal_fixture();reg,snapshot,plan,current,native,suffix=values
+    if fault=='unapproved':plan['status']='DRAFT'
+    if fault=='wrong_authority':plan['authority']='monitor'
+    if fault=='changed_partition':plan['unstarted_members']=['m2']
+    if fault=='changed_prefix':current['m0']['successful_scores']=2
+    if fault=='changed_owner_result':native['task_result']=0
+    if fault=='live_original':native['bound_windows_processes']=[123]
+    if fault=='stale_native':native['observed_at']='2026-10-06T19:00:00Z'
+    if fault=='bad_suffix':suffix['status']='WAIT'
+    if fault=='wrong_count':suffix['member_count']=1
+    if fault=='overlap_epochs':suffix['launch_epoch']='2026-10-06T20:00:00Z'
+    if fault=='bad_missing_native_exit':plan['missing_native_exit_members']=[]
+    if fault=='unknown_missing_member':plan['missing_native_exit_members']=['m9']
+    with pytest.raises(ValueError):terminal_decide(values)
