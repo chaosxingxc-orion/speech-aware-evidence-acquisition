@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete process metrics reviewed (2026-10-06)
+
+The offline continuation completed00:37:54Z, exit0, empty stderr; PID74619/session87667
+are terminal. [Receipt](../receipts/continuation/2026-10-06-slurp-process-backfill-complete.json)
+and [complete process report](../results/2026-10-06-slurp-update3-process-diagnostics.md)
+cover all22 members/440 trajectories on20 unique reused inputs. Own-intent cards
+were supplied20/20 per member; candidate coverage16-17/20. Branch07 detects11/11
+entity-incorrect drafts but alarms9/9 correct drafts and damages3 correct answers.
+Raw model and deterministic postprocessing transitions are separated. Prioritize
+selective evidence-grounded review/revision, supported candidate extraction and
+raw output validity; latency is one resource metric. No stable improvement, causal
+credit, policy adoption, learner export or new runtime admission. Original rejected
+trial and parents remain unchanged. Next: prospectively integrate anonymous
+process/history feedback, never gold/answers/source lists, before another proposal.
+
+
 ## Offline process backfill continuation started (2026-10-06)
 
 [The single recorded continuation](../receipts/continuation/2026-10-06-process-backfill-continuation-started.json)
@@ -2875,7 +2891,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T00:00:36.602533+00:00
+Last refreshed: 2026-10-06T00:39:58.566908+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
