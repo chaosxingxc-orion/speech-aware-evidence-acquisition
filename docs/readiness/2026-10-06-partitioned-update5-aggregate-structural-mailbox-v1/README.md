@@ -1,0 +1,3 @@
+# Update5 configured structural preparation
+
+Derive every member and budget from the registered population and the completed own supplies. All original valid/no-change positions remain represented. Each child retains its exact policy, fixed assets and prepared source output. The blueprint is not runtime admission: finalize and pin the fresh capacity registration into a separate intent, qualify every capacity member, then register generation, actual-request FIT and structural-only reads before freezing and launching. Preserve existing outputs and one-shot attempts. No official score, task-quality read or learner export is permitted from these structural proofs.
