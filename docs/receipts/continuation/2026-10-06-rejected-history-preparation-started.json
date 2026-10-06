@@ -1,0 +1,23 @@
+{
+  "schema": "saea-rejected-history-preparation-started-v1",
+  "recorded_at_utc": "2026-10-06T00:00:36.602533+00:00",
+  "status": "RUNNING",
+  "pid": 70821,
+  "start_ticks": "57197638",
+  "tool_session": 62916,
+  "code_commit": "64adf5ce6c72ae3d5d89a5798c613d1e79d25973",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-05-rejected-template-history-v1/history-registration-v1.json",
+    "sha256": "c455b04afa45ba49fe47629ed0c8879bb5967c3756783c54745c06dc381e6976"
+  },
+  "entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/rejected-context-history-v1/prepare-history-v1.py",
+    "sha256": "1d665edd6dce86f5618b686645a687d5e26299381a4ccfbb5b9167861ff7846f"
+  },
+  "capture_directory": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/rejected-context-history-v1",
+  "exclusive_output": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/rejected-context-history-v1/history-private-v1.json",
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "learner_exported": false,
+  "next": "Collect the existing exact process and exit receipt. Do not restart on an observation timeout. On success inspect full history membership, original parent identities, abstract representation and cumulative exposure before a separate prospective optimizer-input integration."
+}
