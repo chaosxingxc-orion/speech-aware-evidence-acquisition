@@ -1,5 +1,25 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete update4 structural family accepted (2026-10-06)
+
+All16 members completed04:59:14.963202Z; Windows taskReady/exit0 and no bound
+Windows/WSL worker, observer, scorer, flight lock or STOP were verified05:00:25Z.
+The15-minute slurp-update4-structural-start18-monitor was DELETED through the app.
+The exact pinned audit exited0:64 rows,292 model contacts,292 actual-request FIT
+receipts,1168 tokenizer endpoints,76 valid visible Reviewer handoffs and64 native
+Omni terminal deliveries. Actual rendered-body/source/policy/routing proofs passed
+for every contact. No official scorer or task-quality read. Engineering attempts
+retain their intentional OPENED lifecycle; never score/reseal/restart them.
+
+[Root acceptance](../receipts/continuation/2026-10-06-update4-structural-start18-accepted.json)
+binds the original frozen988ec3d94 worker, actual start18 registration and terminal.
+All32 generation/FIT ledger rows now carry exact observed consumption notes.
+The exact structural-acceptance-binding-v1.json is now present in coordination/
+partitioned-update4-process-scientific-preparation-epochs-v1. Next execute its
+serial_prepare_v1.py --execute once, then the tested finalizer and registration
+gates. Preparation adds no model/scorer contacts; scientific admission remains
+separate and20GiB/8GiB resource policy is unchanged. No business gain is established.
+
 ## Historical N20 resource evidence complete (2026-10-06)
 
 The next scientific admission now has complete historical operational evidence

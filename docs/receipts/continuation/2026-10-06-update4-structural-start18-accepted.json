@@ -1,0 +1,43 @@
+{
+  "acceptance": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/structural-acceptance-v1.json",
+    "sha256": "2efa6562c8d049a9a1056666a3e9f2ec24e01b7fbe6e008c8c4ce8ffbdf7caf3"
+  },
+  "actual_request_fit_receipts": 292,
+  "at_utc": "2026-10-06T05:02:32.856368+00:00",
+  "authority": "owner227",
+  "commit": "988ec3d9446b462c47f0312fc002e21bb5f95352",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "fit_endpoint_contacts": 1168,
+  "members": 16,
+  "model_contacts": 292,
+  "monitor": {
+    "id": "slurp-update4-structural-start18-monitor",
+    "status": "DELETED_AFTER_VERIFIED_TERMINAL"
+  },
+  "native_omni_terminal_deliveries": 64,
+  "next": "Execute prepared one-shot serial model-free scientific member preparation. Then draft registration, source/exposure/FIT checks and separate root admission. Keep every original proposal and parent, fixed data/knowledge, exact config and complete-family scientific READ requirements.",
+  "official_scorer_contacts": 0,
+  "preparation_binding": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/structural-acceptance-binding-v1.json",
+    "sha256": "c1f7304266cfa859488d0c4d90e49c0c8870d0656b0c4b3f263115e778fa8ae6"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/registration-v1.json",
+    "sha256": "3a1ca6cbe1f8841366388429178450a574e3c30ce2967319d9f383b04aea9165"
+  },
+  "rows": 64,
+  "runtime_admission": false,
+  "schema": "saea-root-configured-structural-accepted-v1",
+  "status": "ROOT_ACCEPTED_STRUCTURAL_ONLY",
+  "task_quality_read": false,
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/windows-task-terminal-v1.json",
+    "sha256": "c2945c1c7fffae7ec70c3fbf4878787d1fdee8a31bc886fb2e43e3c02fce0218"
+  },
+  "valid_visible_reviewer_handoffs": 76,
+  "worker": "/home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1"
+}
