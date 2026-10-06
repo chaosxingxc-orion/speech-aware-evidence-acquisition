@@ -1,0 +1,28 @@
+{
+  "at_utc": "2026-10-06T18:49:50.772922+00:00",
+  "commit": "76fa610d78bc921c9d56f42b3d1e6cbe8fbc84ef",
+  "current_process_identity_verified": true,
+  "exec_session": 97571,
+  "model_tokenizer_scorer_contacts": 0,
+  "next": "Wait for the same original process and all configured member checks. Do not restart because of observation timeout. Final registration/live guards remain pending.",
+  "schema": "saea-frozen-structural-check-start-v1",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/frozen-check-structural-v1.py",
+    "sha256": "bb43b03f08b13ae067a1557b10412d9ddbef568ccd490f3736dc4a4f79440a96"
+  },
+  "source_clean_verified": true,
+  "start": {
+    "at_utc": "2026-10-06T18:48:58.516939+00:00",
+    "commit": "76fa610d78bc921c9d56f42b3d1e6cbe8fbc84ef",
+    "model_contacts": 0,
+    "pid": 225546,
+    "script_sha256": "bb43b03f08b13ae067a1557b10412d9ddbef568ccd490f3736dc4a4f79440a96",
+    "start_ticks": "63852408",
+    "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-structural-v1"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-structural-v1",
+  "wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/run-frozen-check-v1.py",
+    "sha256": "25305f17e65986182e1f0d9ad03ed7c149baa6d965cec430139498cda63ec27d"
+  }
+}

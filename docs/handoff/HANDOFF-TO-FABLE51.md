@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T18:48:04.718294+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T18:49:50.772922+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -35,6 +35,23 @@ capacity completed with all16 passes and its monitor was deleted; the exact stru
 Structural and scientific generation remain held; the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 frozen structural checks running (2026-10-06)
+
+The exact16-member structural registration and all eleven offline gates are integrated
+at76fa610d78bc921c9d56f42b3d1e6cbe8fbc84ef. Clean frozen worker /home/chao/saea-worktrees/codex-partitioned-update6-diversity-structural-v1
+is at that commit. Checks started2026-10-06T18:48:58.516939+00:00, PID225546,
+start ticks63852408, exec session97571. Root revalidated the live identity and
+clean source. [Started receipt](../receipts/continuation/2026-10-06-update6-structural-frozen-check-started.json).
+Wait for the same original checker and all member receipts; never restart on a polling
+timeout. Capacity is complete, its monitor is deleted, and no structural model contact
+has occurred. After every frozen check passes, run finalize-launch-registration-v1.py
+with this exact worker/commit, then inspect fresh live service/memory/ownership guards.
+Only then launch SAEA-Update6-Diversity-Structural-V1 and create its own15-minute monitor.
+The registered structural family has64 trajectories,832 model/3328 FIT endpoint caps,
+zero official scores. Intentional worker-only OPENED attempts must never be scored or
+resealed. Complete structural acceptance precedes the prepared22-member440-trajectory
+scientific sequence, whose frozen retention criterion and original positions stay fixed.
 
 ## Update6 structural offline gates passed; freeze next (2026-10-06)
 
