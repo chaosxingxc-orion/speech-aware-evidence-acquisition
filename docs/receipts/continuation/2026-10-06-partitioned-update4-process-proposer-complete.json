@@ -1,0 +1,132 @@
+{
+  "schema": "saea-partitioned-proposer-completion-v1",
+  "recorded_at_utc": "2026-10-06T01:33:07.546245+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-PROPOSE-V1",
+  "agent": "/root/partitioned_template_update4_sol",
+  "requested_model": "gpt-6.1-sol",
+  "original": {
+    "schema": "saea-partitioned-original-response-bytes-v1",
+    "at_utc": "2026-10-06T01:28:08.635788+00:00",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/original-response-v1.json",
+    "sha256": "334f34878df2ae5fa27226342e7571173172203e1932318659737dbc6c205b76",
+    "bytes": 189817,
+    "output_limit": 262144
+  },
+  "compile_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compile-receipt-v1.json",
+    "sha256": "0316bef634e548bfadf5cb449f3518c8c165aa71d0254300290f5df9f3a53a6a",
+    "bytes": 3705
+  },
+  "read_summary": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/original-response-v1.read-summary.json",
+    "sha256": "58d98aba91ef1719ef9f888a04b3bff3cce5afe3765edb5b41c21ddbfa277c35",
+    "bytes": 1211
+  },
+  "positions": [
+    {
+      "candidate_id": "branch-01",
+      "status": "provisional",
+      "bundle_id": "9f4baef004185417fdb677bb0559b92bd5e24a47fd8c47196ca31c5c72656c1a",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-02",
+      "status": "provisional",
+      "bundle_id": "d812bc25685e2e232b9a31d284d41bc284d47a10d15cdbeee6aae46129aee3da",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-03",
+      "status": "provisional",
+      "bundle_id": "fc443a1d099a0176ca4d263981c3acd5ed0eb30efa9e82ec41c7134ae5aac0d1",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-04",
+      "status": "provisional",
+      "bundle_id": "05e767761ec5c4f821a1893f59e54c50eb0e1642422706b77e2491ebd462583d",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-05",
+      "status": "provisional",
+      "bundle_id": "fee1f7c9426f5b4300ce2ebd190db3cbee23f29d92f6c99f3cf1cf502bafa9a3",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-06",
+      "status": "provisional",
+      "bundle_id": "512bf73ec8484f6df24642cc306a61f5e908b3958ab36500c2250e337cac2192",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-07",
+      "status": "provisional",
+      "bundle_id": "7030790bfdbfd94b30f9d85d5907ee141d45547da80cefff9e54931ea35c775f",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-08",
+      "status": "no-change",
+      "bundle_id": "935aaf3cfe17cd7859a669c9d4f711ffa7808fdd33bd58da8823c2aa890731a5",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-09",
+      "status": "provisional",
+      "bundle_id": "f489379c05ecbc394a721eacae1fb11170829cd13684a028e27f19a88b92a06e",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-10",
+      "status": "provisional",
+      "bundle_id": "91c84d701f30501949e3fe282dbad160befcc704080e87e428c038948ba91f01",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-11",
+      "status": "provisional",
+      "bundle_id": "8246c0ee25c82bb4470c51b823b748099e0c36a5db6bf27f8b86f07387c8b5bb",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-12",
+      "status": "provisional",
+      "bundle_id": "cd67527717a28d6599e0ae1a71888b23ae3190a80e78b5b4ba6b969e10a8984f",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-13",
+      "status": "provisional",
+      "bundle_id": "9432ab150cf32aef9c07ca080646c72203525111e61229804b5615d0038f1e0f",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-14",
+      "status": "provisional",
+      "bundle_id": "0e096ea90bc96beff1c5786a93bd1495ef4815499ba2b6c8f0f0f2466e4eff31",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-15",
+      "status": "no-change",
+      "bundle_id": "899e5673819ea628162229b4a8bf7a4c69ed1bff94437b1f92237822edc7c63d",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-16",
+      "status": "provisional",
+      "bundle_id": "3542d28a5d1e07048315cc65aec3f15b2615f6e0bda2bf03d2c509f72f99d82f",
+      "error": null
+    }
+  ],
+  "semantic_opportunities_spent": 1,
+  "proposal_slots_spent": 16,
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "runtime_admission": false,
+  "interpretation": "All original positions spent:14 provisional and2 no-change. Preserve original response, failed historical policies and all parents. No repair/retry/replacement, provider-token estimate, matched-compute or efficacy claim. Operational graph compilation and engineering are separate."
+}

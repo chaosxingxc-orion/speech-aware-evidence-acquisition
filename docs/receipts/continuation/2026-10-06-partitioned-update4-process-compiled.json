@@ -1,0 +1,173 @@
+{
+  "at_utc": "2026-10-06T01:35:10.994548+00:00",
+  "delta_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/context-template-tf-iteration2-owner227-v1/compile-original-child-v1.py",
+    "sha256": "6575fde8e0ec9e698405f70feed400f8f740a066541f4a8f68304515483f93c9"
+  },
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v2/compile-original-population-v1.py",
+    "sha256": "2bb6b60f75439fc3788415501a5c710b5265305b75ab121538fb0def2051a8a7"
+  },
+  "knowledge_data_unchanged": true,
+  "members": [
+    {
+      "bundle_id": "9f4baef004185417fdb677bb0559b92bd5e24a47fd8c47196ca31c5c72656c1a",
+      "candidate_id": "branch-01",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-01.json",
+        "sha256": "bfd392e42682f45017c2f70c615e482657cec9f89b19bc50e71ca67b3865dbff"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "d812bc25685e2e232b9a31d284d41bc284d47a10d15cdbeee6aae46129aee3da",
+      "candidate_id": "branch-02",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-02.json",
+        "sha256": "2ae209d2b31c3321bbf4cb81c5b3fe6c76f1e5b35961f618499436bc97feddd6"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "fc443a1d099a0176ca4d263981c3acd5ed0eb30efa9e82ec41c7134ae5aac0d1",
+      "candidate_id": "branch-03",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-03.json",
+        "sha256": "e26e4ac69d78e86d55efbf777b66e8016e2e648fb86faa971a3efd08e06c6129"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "05e767761ec5c4f821a1893f59e54c50eb0e1642422706b77e2491ebd462583d",
+      "candidate_id": "branch-04",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-04.json",
+        "sha256": "2f163d16c5d75fd43c5d7b9c42b56712e8aed1a2c70fdf71a5ee0ce5a41d5c45"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "fee1f7c9426f5b4300ce2ebd190db3cbee23f29d92f6c99f3cf1cf502bafa9a3",
+      "candidate_id": "branch-05",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-05.json",
+        "sha256": "86060d239df2f8b7a5d9898f5ba9cd97cf4399f59bf4f0c4eeaaf781aafebed2"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "512bf73ec8484f6df24642cc306a61f5e908b3958ab36500c2250e337cac2192",
+      "candidate_id": "branch-06",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-06.json",
+        "sha256": "640da3a1dc8bf6cddb0b81cbfb32b2df654cfe3593263ec5111f6e437a64fd5e"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "7030790bfdbfd94b30f9d85d5907ee141d45547da80cefff9e54931ea35c775f",
+      "candidate_id": "branch-07",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-07.json",
+        "sha256": "5f30dbfd5e83d2cb5ca9ed310bc84c47e17214ba8d29e2eaf801095b79254615"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "935aaf3cfe17cd7859a669c9d4f711ffa7808fdd33bd58da8823c2aa890731a5",
+      "candidate_id": "branch-08",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-08.json",
+        "sha256": "e5109b19cd5b0962586f632b5e88d4f00721a0d87c9e0b605eeeb4056f4e6ae0"
+      },
+      "status": "no-change"
+    },
+    {
+      "bundle_id": "f489379c05ecbc394a721eacae1fb11170829cd13684a028e27f19a88b92a06e",
+      "candidate_id": "branch-09",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-09.json",
+        "sha256": "2417d7364dfebce33573863ac45acf6edd47dff7d92bfb82efa60209cd715c9f"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "91c84d701f30501949e3fe282dbad160befcc704080e87e428c038948ba91f01",
+      "candidate_id": "branch-10",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-10.json",
+        "sha256": "d1ae1544e6adc560d16c75ab89e494d1db71fda32a6e0338647380ce49c136ab"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "8246c0ee25c82bb4470c51b823b748099e0c36a5db6bf27f8b86f07387c8b5bb",
+      "candidate_id": "branch-11",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-11.json",
+        "sha256": "ccb1562a4b68afc3d2c89ee82bfbd6b12c0bccbacd11c1fea6aa9c571fa5fd5f"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "cd67527717a28d6599e0ae1a71888b23ae3190a80e78b5b4ba6b969e10a8984f",
+      "candidate_id": "branch-12",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-12.json",
+        "sha256": "8409829a067da4c5027f0df42e9124c0bfd0737431fe1098b5df29a7ca9a9697"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "9432ab150cf32aef9c07ca080646c72203525111e61229804b5615d0038f1e0f",
+      "candidate_id": "branch-13",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-13.json",
+        "sha256": "cbc7b7e6ae43542648baa7061765b95928dd7c8469eff029a94484d0b2ebfad5"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "0e096ea90bc96beff1c5786a93bd1495ef4815499ba2b6c8f0f0f2466e4eff31",
+      "candidate_id": "branch-14",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-14.json",
+        "sha256": "6f56a2210c21a48b50a38d870188f14f9dcaad4d77ca0171324401b231172b03"
+      },
+      "status": "provisional"
+    },
+    {
+      "bundle_id": "899e5673819ea628162229b4a8bf7a4c69ed1bff94437b1f92237822edc7c63d",
+      "candidate_id": "branch-15",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-15.json",
+        "sha256": "d7aea08139fe2372ecf6d4093eb92b1d3a678d4a4a22673a83ce57f923fe121e"
+      },
+      "status": "no-change"
+    },
+    {
+      "bundle_id": "3542d28a5d1e07048315cc65aec3f15b2615f6e0bda2bf03d2c509f72f99d82f",
+      "candidate_id": "branch-16",
+      "record": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/compiled-members/branch-16.json",
+        "sha256": "058a7ae05c7e47d1d88bcd7c5bb9213db3931801151373a4cf5600fbb9ddd6f5"
+      },
+      "status": "provisional"
+    }
+  ],
+  "model_tokenizer_scorer_contacts": 0,
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update4-process-v2/original-response-v1.json",
+    "sha256": "334f34878df2ae5fa27226342e7571173172203e1932318659737dbc6c205b76"
+  },
+  "population": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "runtime_admission": false,
+  "schema": "saea-context-population-update-compiled-v1",
+  "source_packet": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/inputs/partitioned-complete-update4-process-history-v2.json",
+    "sha256": "70842af4ea559c2fa23f8012966c89ed34657994e3a7d58c5f294b0b0f3d3701"
+  }
+}

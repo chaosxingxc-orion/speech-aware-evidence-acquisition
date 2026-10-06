@@ -1,0 +1,133 @@
+{
+  "schema": "saea-configured-population-engineering-prepared-v1",
+  "at_utc": "2026-10-06T01:59:19.192663+00:00",
+  "population": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "members": [
+    {
+      "candidate_id": "branch-01",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-01-engineering-v1/prepared-members-v1.json",
+        "sha256": "4db2a060e41d2efda987d199bd756ca02072c537a8614f3eea7459bd7e1ae148"
+      }
+    },
+    {
+      "candidate_id": "branch-02",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-02-engineering-v1/prepared-members-v1.json",
+        "sha256": "e1dfff8bd5a9d33f958156b8a85030f9479f0bcd583e56b8567ae7e5fab53464"
+      }
+    },
+    {
+      "candidate_id": "branch-03",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-03-engineering-v1/prepared-members-v1.json",
+        "sha256": "c9129235a93e2489cf7bba30b4b222fcfd79e825bf921befbaea37982506ac5a"
+      }
+    },
+    {
+      "candidate_id": "branch-04",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-04-engineering-v1/prepared-members-v1.json",
+        "sha256": "cb5ca1c3d3d1fe8e1d07a7b61b70285f7b0e2d4fcae0c30699e81e9474cf677f"
+      }
+    },
+    {
+      "candidate_id": "branch-05",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-05-engineering-v1/prepared-members-v1.json",
+        "sha256": "2e4fdb1dd88ab0a1c15d05cfd8e980f58a18b102f81fcb776164cb1ce4856aee"
+      }
+    },
+    {
+      "candidate_id": "branch-06",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-06-engineering-v1/prepared-members-v1.json",
+        "sha256": "1ca662f46f2d4e30c1d8c4c32c0ddcf2bf31ac817083edd5572ab1cbbd577ce1"
+      }
+    },
+    {
+      "candidate_id": "branch-07",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-07-engineering-v1/prepared-members-v1.json",
+        "sha256": "759aa8407a550a8eaff56abad3f40f44da4ab39748287173f117cb65b0d67b14"
+      }
+    },
+    {
+      "candidate_id": "branch-08",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-08-engineering-v1/prepared-members-v1.json",
+        "sha256": "00d66eb39a73b14ad4623a7cde0b2d8de7deac7c6d406b30d941fb290e90db19"
+      }
+    },
+    {
+      "candidate_id": "branch-09",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-09-engineering-v1/prepared-members-v1.json",
+        "sha256": "50d09ad0245f04d7a85aa4c50c9be1281b22f824a34e1534035d37b39b1f1a3f"
+      }
+    },
+    {
+      "candidate_id": "branch-10",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-10-engineering-v1/prepared-members-v1.json",
+        "sha256": "c6183cba0e0251b9600983e75321e943078d1269bf7b7267dccc15e5f496b312"
+      }
+    },
+    {
+      "candidate_id": "branch-11",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-11-engineering-v1/prepared-members-v1.json",
+        "sha256": "368acf26b9fa7de1342ecb931307f971a55b7975dc5569d577f15c83fc43f458"
+      }
+    },
+    {
+      "candidate_id": "branch-12",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-12-engineering-v1/prepared-members-v1.json",
+        "sha256": "9e8024f4a97170452af13611ade3944b0a2d9f47115ee88104b20ffba40b9926"
+      }
+    },
+    {
+      "candidate_id": "branch-13",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-13-engineering-v1/prepared-members-v1.json",
+        "sha256": "f774ec5d464c4f7f672105bc972b8237d9e133824aaddbf1bbbd6db51bf1192b"
+      }
+    },
+    {
+      "candidate_id": "branch-14",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-14-engineering-v1/prepared-members-v1.json",
+        "sha256": "86f3b244c4519fc32c3dd1649caae8475b661d5178a55e310306ce1d89b1acfb"
+      }
+    },
+    {
+      "candidate_id": "branch-15",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-15-engineering-v1/prepared-members-v1.json",
+        "sha256": "170a1da2740d81453df1959cbf692d30c281b80c27a4dc23ece7043d3b955949"
+      }
+    },
+    {
+      "candidate_id": "branch-16",
+      "receipt": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-context-template-partitioned-update4-process-branch-16-engineering-v1/prepared-members-v1.json",
+        "sha256": "082d23c1fee673f5fbba3de19485c6dafda3d8cf581a6bbffd29da51b26d855b"
+      }
+    }
+  ],
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v2/prepare-partitioned-update4-process-engineering-v1.py",
+    "sha256": "bde1e68edc7436d574f4b70661b1d9bf36db0affd878669649b545d597812cd6"
+  },
+  "driver": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v2/prepare-partitioned-update4-process-population-v1.py",
+    "sha256": "859c071d6ce174ad2e55d19aa7a24fd7158e3237bdecbae4b283ca4a05a5969b"
+  },
+  "contacts_added": 0,
+  "runtime_admission": false,
+  "serial_independent_processes": true
+}

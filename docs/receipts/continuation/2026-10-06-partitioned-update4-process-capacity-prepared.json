@@ -1,0 +1,45 @@
+{
+  "schema": "saea-configured-capacity-ready-to-freeze-v1",
+  "at_utc": "2026-10-06T02:04:58.496214+00:00",
+  "status": "REGISTERED_NOT_DISPATCHED",
+  "root_authority": 227,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "registered_members": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update4-process-capacity-entry-v1/registered-capacity-members-v1.json",
+    "sha256": "448dcd4854b1c662964d9d4491116aa7692cfd4c04779c4a6999d6e3b847a453"
+  },
+  "member_count": 16,
+  "tokenizer_endpoint_cap_total": 4752,
+  "generation_cap": 0,
+  "scorer_cap": 0,
+  "contacts_added": 0,
+  "registration_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/registration.exit.json",
+    "sha256": "60a6672647e4121f4790305bcb4e1152f27aecb0c0bb10156856c68335b3edb3"
+  },
+  "offline_gates": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/offline-gates-v1/results.json",
+    "sha256": "4ac261ed121ad413a3de5c8f57be324852df803992816329b082b57d55123675"
+  },
+  "new_algorithm_scope": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/offline-gates-v1/new-algorithm-labels-v1.json",
+    "sha256": "cf51a124c5cb24db2ee0f8eee7b0244c414fb08ea34fad59103a0c6459659115"
+  },
+  "openjiuwen_corrected_invocation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/offline-gates-v1/openjiuwen-correct-invocation.exit.json",
+    "sha256": "8b69a610e37bea522c94ca40ad49477a4d549fb0ef801fe6cd802518aa742bfc"
+  },
+  "limitations": [
+    "Whole-repository algorithm gate retains two unchanged hash-pinned historical missing-operator findings. Every new engineering fragment passes.",
+    "First OpenJiuwen check omitted required --output and exited argparse2; corrected synthetic-only invocation passes. Original capture preserved.",
+    "Derived-media check default overwrote two historical reports in the editable tree; current outputs captured separately and exact clean pre-check HEAD bytes restored. No frozen worker or dataset was edited."
+  ],
+  "next": "Serially integrate completed preparation and registration, freeze a clean worker, run every exact registration/runtime/role/supply check, then finalize launch registration. No current runtime launch authority from this preparation receipt.",
+  "derived_media_current_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/offline-gates-v1/derived-media-output-preservation.json",
+    "sha256": "705a6de6cb31a2adef8393f21e8f379832e2359af6471c8fc71ad0e7a73b6b6b"
+  }
+}

@@ -1,5 +1,109 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete capacity registration ready for frozen verification (2026-10-06)
+
+[Registered capacity readiness](../receipts/continuation/2026-10-06-partitioned-update4-process-capacity-prepared.json)
+closes the one model-free registration with exit0 and empty stderr. All16 candidates
+have exact capacity plans/read recipes and exposure rows,4752 tokenizer endpoints
+in total,zero generation/scorer allowance. Sessions81199 and64208 are terminal.
+Do not restart either process. No actual tokenizer/model/scorer contact occurred.
+
+Engineering base,harness admission,results ledger,tool catalog,handoff,derived-media,
+finite-completion and freshness checks pass. The corrected synthetic OpenJiuwen
+invocation passes; the first invocation omitted required output and its argparse
+failure is preserved. All48 new engineering algorithm labels pass; the global gate
+still reports the same two hash-pinned historical empty-operator findings, unchanged
+from8821f709f. Do not rewrite those records or claim the whole gate passed.
+
+Next serially integrate this completed state,freeze a clean capacity worker and run
+all exact registration/runtime/actual-role/supply checks. Only after full success
+finalize the immutable launch registration and check live service/resources/leases.
+Actual capacity,structural proof,scientific execution and full-family quality reads
+remain pending. Other-carrier holds and human-before8x400 remain.
+
+## All configured engineering supplies prepared; capacity registration running (2026-10-06)
+
+[Root supply qualification](../receipts/continuation/2026-10-06-update4-engineering-supplies-qualified.json)
+verifies all16 original candidate positions and48 graph/capacity/four-row supply
+configurations. The original preparation ended01:59:19Z with exit0 and empty
+stderr; PID80882/session81199 are terminal. Every own supply hash is verified,
+with unchanged source selection and exact compiled policy bindings. No new model,
+tokenizer or scorer contact occurred; this is not actual capacity or structural proof.
+
+The previously registered dependency continued normally at01:59:20Z into one
+model-free capacity registration. Collect the existing session64208 and data-root
+coordination/partitioned-update4-process-capacity-owner227-v1 registration captures;
+entry PID87486 was launched by the existing dependency, not a retry. Do not run
+another registration. After full success, verify gates, serially integrate and
+freeze the worker before any actual capacity launch. Scientific execution remains
+separate and HELD. Earlier running-preparation snapshots below are historical.
+
+## Capacity registration waits on the exact running preparation (2026-10-06)
+
+[The root-owned model-free continuation](../receipts/continuation/2026-10-06-update4-capacity-registration-dependency-started.json)
+is live as PID84828/tool session64208. It revalidates original preparation
+PID80882/start identity and waits for its authoritative exit capture. Only exit0
+permits one capacity registration through the prepared shared-runtime entry;
+failed or missing dependency evidence stops without retry or dispatch. Capture is
+data-root coordination/partitioned-update4-process-capacity-owner227-v1.
+
+Collect this existing process and registration.exit.json; do not launch a second
+registration. No capacity/model/scorer contacts, frozen worker, queue changes or
+GPU admission exist at this checkpoint. Commit/integrate only after all preparation
+and registration writers have completed; then freeze and run actual source gates.
+
+## Prospective next-stage helpers verified offline (2026-10-06)
+
+[Helper readiness](../receipts/continuation/2026-10-06-update4-next-stage-helpers-prepared.json)
+records capacity entry/frozen/launch helpers and scientific preparation/read helpers
+without dispatch. The capacity assertions pass30 cases across three configuration
+sizes. The real v2 source proof resolves the original active-parent projection and
+all configured positions, retaining rejected history only as evidence. Scientific
+blueprint execution still requires structural registration. Do not infer a future
+complete source family or READ from these metadata checks.
+
+The [prospective process plan](../readiness/2026-10-06-partitioned-context-update4-process-v1/process-analysis-plan-v1.json)
+binds business-first reporting and complete diagnostic denominators/strata/unknowns
+before new evaluation. Register actual sealed source hashes only after all exact
+root READs; never backfill from partial families or silently replace the original
+retention criterion. Raw pool/slot-support and criticism truth remain unavailable
+until verified projections exist.
+
+The existing serial supply job PID80882/session81199 continues; collect its one
+original exit before capacity registration. Current editable preparation artifacts
+are not a frozen GPU worker. No new tokenizer/generation/scorer contact, queue
+reconciliation or monitor activation occurred. Preserve all future identities and
+run only the separately admitted next stage after its prerequisites.
+
+## Process-aware original proposals compiled; engineering preparation running (2026-10-06)
+
+The isolated GPT-6.1 Sol actor completed one original response. All16 configured
+positions passed the shared proposal compiler and actual-role operational binding:
+14 provisional changes and two original no-change positions08/15. Preserve all
+responses, spent positions and cumulative provenance. See
+[completion](../receipts/continuation/2026-10-06-partitioned-update4-process-proposer-complete.json)
+and [operational compilation](../receipts/continuation/2026-10-06-partitioned-update4-process-compiled.json).
+No improvement or runtime admission follows. The exact prospective trial contract
+retains the registered population-utility criterion and historical8/4/4 cohorts
+with their own seed/A/A controls; fixed assets and N20 remain unchanged.
+
+[Serial model-free engineering preparation](../receipts/continuation/2026-10-06-partitioned-update4-process-engineering-preparation-started.json)
+started01:37:32Z. Existing PID80882/tool session81199 runs the configured population
+once, with separate graph/capacity/four-row supplies per candidate. Collect its
+engineering-preparation stdout/stderr/exit captures under data-root coordination/
+partitioned-update4-process-preparation-v2. Do not relaunch after a polling timeout.
+All cells remain HELD; no tokenizer, task-generation or scoring contacts occurred.
+On completion verify every own supply and exact role binding, then separately
+register/freeze/admit capacity and structural proof before scientific execution.
+No GPU heartbeat is needed during this offline job. Preserve the resident service;
+boundary maintenance is observe-only, with no repeated blocked cache operation.
+
+Business quality and reliable completion lead the next report, followed by review
+selectivity, repair/damage and support coverage, then resource cost. Abstract
+process feedback excludes concrete answers/source lists. Other-carrier holds and
+human review before8x400 remain. Historical running/pending snapshots below are
+superseded only where this completion provides newer evidence.
+
 ## Process-aware update4 proposer dispatched (2026-10-06)
 
 One isolated GPT-6.1 Sol/high actor, /root/partitioned_template_update4_sol, is

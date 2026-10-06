@@ -1,0 +1,18 @@
+{
+  "schema": "saea-model-free-engineering-supply-root-review-v1",
+  "at_utc": "2026-10-06T02:00:16.724553+00:00",
+  "source_receipt": {
+    "relpath": "docs/receipts/continuation/2026-10-06-partitioned-update4-process-engineering-prepared.json",
+    "sha256": "0582550cc6539d83c9ceb8d7fa126968de364323463d52efb0bfcc444e19ef56"
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v2/engineering-preparation.exit.json",
+    "sha256": "eb92bb0b1d7ba75edee64cbfa3246aa5eca6db317e1961ea9aa31620ed38a60c"
+  },
+  "candidates": 16,
+  "prepared_configurations": 48,
+  "all_supply_hashes_verified": true,
+  "runtime_admission": false,
+  "capacity_status": "Model-free registration started after the successful preparation; actual capacity and structural contacts remain pending.",
+  "contacts_added": 0
+}

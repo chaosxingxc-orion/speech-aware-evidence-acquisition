@@ -1,0 +1,15 @@
+{
+  "schema": "saea-model-free-dependent-registration-started-v1",
+  "at_utc": "2026-10-06T01:52:05.466751+00:00",
+  "root_authority": 227,
+  "pid": 84828,
+  "start_ticks": "57853188",
+  "tool_session": 64208,
+  "dependency_pid": 80882,
+  "dependency_tool_session": 81199,
+  "capture_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1",
+  "scope": "Wait on the exact existing serial engineering preparation; on exit0 only, perform one model-free capacity registration. No dispatch or failure retry.",
+  "next": "Collect dependency-entry.exit.json and registration.exit.json; verify full registered members and source gates before commit/freeze.",
+  "contacts_added": 0,
+  "runtime_dispatch": false
+}

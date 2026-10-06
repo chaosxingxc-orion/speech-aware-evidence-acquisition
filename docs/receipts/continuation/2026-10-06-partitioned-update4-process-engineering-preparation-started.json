@@ -1,0 +1,17 @@
+{
+  "schema": "saea-model-free-engineering-preparation-started-v1",
+  "at_utc": "2026-10-06T01:40:08.829448+00:00",
+  "root_authority": 227,
+  "pid": 80882,
+  "start_ticks": 57776976,
+  "tool_session": 81199,
+  "script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v2/prepare-partitioned-update4-process-population-v1.py",
+    "sha256": "859c071d6ce174ad2e55d19aa7a24fd7158e3237bdecbae4b283ca4a05a5969b"
+  },
+  "capture_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v2",
+  "capture_prefix": "engineering-preparation",
+  "model_tokenizer_scorer_contacts": 0,
+  "runtime_admission": false,
+  "execution": "Serial independent preparation processes; stop on first failure; collect the existing job instead of relaunching."
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "saea-next-stage-helper-readiness-v1",
+  "at_utc": "2026-10-06T01:48:16.208913+00:00",
+  "capacity_helpers": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/helpers-prepared-v1.json",
+    "sha256": "168a04815c82be4fd2b7dac65d3bba4bd28bc6f13debec2a0420292c49af417a"
+  },
+  "capacity_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/helper-validation-v1.json",
+    "sha256": "d6d7157bd931164e2bcb25b0f5511e1e2f9582661175af434b7b9637c397190b"
+  },
+  "scientific_helpers": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-v1/helpers-prepared-v1.json",
+    "sha256": "c18529c9039818050a36629aaef7dc458de68ad23ed101c4bd9b2ef061e0d3f2"
+  },
+  "active_parent_source_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-v1/active-parent-source-proof-v1.json",
+    "sha256": "6aba3f9633fe02990776fab49404b28f6fc399e38837e00f6728deeee3ee9e74"
+  },
+  "prospective_process_analysis": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-context-update4-process-v1/process-analysis-plan-v1.json",
+    "sha256": "4dd65318af6ff223823a1a04313fc7e2d06edc76faba9c93db0fd92715a331a8"
+  },
+  "completed_checks": [
+    "Syntax and 30 actual extracted launcher admission checks across different configured population sizes.",
+    "Real v2 packet resolves to original active parents and original cohort projection, not rejected children."
+  ],
+  "not_yet_completed": [
+    "All member engineering preparation",
+    "Exact capacity registration and frozen runtime proof",
+    "Live resource admission and actual capacity contacts",
+    "Structural registration and proof",
+    "Scientific blueprint/full family execution and process read"
+  ],
+  "model_tokenizer_scorer_contacts": 0,
+  "runtime_admission": false
+}
