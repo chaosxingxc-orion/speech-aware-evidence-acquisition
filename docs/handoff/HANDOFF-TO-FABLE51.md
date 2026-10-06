@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 adjacent-stage review entry prepared (2026-10-06)
+
+Prepared current-cohort business/process/cost presentation and paired diagnostic
+plans plus the unchanged next-stage validator. See
+[adjacent-stage checks](../receipts/continuation/2026-10-06-update5-adjacent-stage-prepared.json).
+All32 focused tests and16 subtests pass; premature source reads return WAIT75.
+A labeled NOT_REVIEWED fixture is rejected before any ledger or admission mutation.
+Its expected assertion is a model-free negative test, not a runtime incident.
+
+The new admit-next-cohort-v2.py in update5 scientific coordination requires the
+prior exact complete READ, full business/process/presentation outputs, root rationale
+and idle boundary before admitting only the adjacent configured cohort. It binds
+unchanged20GiB startup/8GiB running policy from original-a admission. Both later
+admission receipts remain absent; no automatic stage transition, partial selection,
+new model/scorer contact or runtime change occurred. Follow the complete-analysis
+README after first-cohort qualification; preserve the running worker unchanged.
+
 ## Update5 process and whole-population join prepared (2026-10-06)
 
 The current GPU cohort remains in flight; no partial task quality was read.

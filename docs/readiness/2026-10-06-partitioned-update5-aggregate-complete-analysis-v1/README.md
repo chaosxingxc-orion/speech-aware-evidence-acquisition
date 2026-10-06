@@ -54,3 +54,24 @@ input. Original outputs and exit receipts are preserved in the current coordinat
 directory. Shared runtime/frozen sources are unchanged; no model or scorer contact
 was added by preparation. See the continuation receipt
 `docs/receipts/continuation/2026-10-06-update5-process-trial-entry-prepared.json`.
+
+## Complete-cohort presentation and adjacent-stage review
+
+The current presentation-plan-v2 and paired-process-plan-v1 bind the shared
+business/process/cost renderer and matched-input paired bootstrap without changing
+any estimator or selection rule. Run their prepared helpers only after the exact
+complete process diagnostics. Unknown support remains unknown; report all repair,
+damage, false-alarm and missing-data denominators beside terminal quality.
+
+The adjacent admit-next-cohort-v2 entry requires the prior exact READ, complete
+business/process/presentation outputs, root rationale, idle boundary observation,
+unchanged configuration and all structural proofs. Its resource policy comes from
+the existing original-a admission and must match every configured queue member.
+A prepared helper does not authorize another cohort or select any partial winner.
+New root boundary review, serial integration, clean frozen checks, live gates and
+an independently bound Windows job remain mandatory. Keep current sources frozen.
+
+All32 presentation/paired/stage tests and16 subtests pass. Premature presentation
+and paired entries return WAIT75. A clearly labeled not-reviewed synthetic fixture
+is rejected before ledger/plan/admission mutation; this is an expected negative
+test, not a failed GPU flight. Both later admission receipts remain absent.

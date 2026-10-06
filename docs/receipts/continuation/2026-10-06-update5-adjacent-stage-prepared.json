@@ -1,0 +1,84 @@
+{
+  "schema": "saea-update5-adjacent-stage-prepared-v1",
+  "at_utc": "2026-10-06T12:37:33.620506+00:00",
+  "status": "PREPARED_NOT_ADMITTED",
+  "preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/adjacent-stage-entry-preparation-v1.json",
+    "sha256": "5de1ee137c653b7351b20aa6012dc8d00c7b430b111350d6532226287397628e"
+  },
+  "checks": [
+    {
+      "name": "adjacent-stage-tests-v1",
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/adjacent-stage-tests-v1.stdout.log",
+        "sha256": "4ba9256d23debdfa21ca894127774a18cbc5c93a001205cf8fbd9b484fc7969f"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/adjacent-stage-tests-v1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/adjacent-stage-tests-v1.exit.json",
+        "sha256": "40aa9dd8383feea7abc1f5c499969496d808a469f4c2b4dfda4b3c207a662e1a"
+      }
+    },
+    {
+      "name": "presentation-premature-refusal-v1",
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/presentation-premature-refusal-v1.stdout.log",
+        "sha256": "16722bb67f02109debdfc6c08d899a112d55883f37903f5a5215101099e2db9e"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/presentation-premature-refusal-v1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/presentation-premature-refusal-v1.exit.json",
+        "sha256": "712135cec74ed6c45043084dcd580ba1ddf5237929fdc0e2bce53e26712ca8d1"
+      }
+    },
+    {
+      "name": "paired-premature-refusal-v1",
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/paired-premature-refusal-v1.stdout.log",
+        "sha256": "7f54b2613b80f64052298340682ca0c6fafc851b2292fc0158476a352b91d27e"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/paired-premature-refusal-v1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/paired-premature-refusal-v1.exit.json",
+        "sha256": "b3b00d6fc4645c0d893b735939f329db3c888a46a0791a1aef68759085b98b44"
+      }
+    },
+    {
+      "name": "adjacent-premature-refusal-v1",
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/adjacent-premature-refusal-v1.stdout.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/adjacent-premature-refusal-v1.stderr.log",
+        "sha256": "5f01853d7212031de3df24dd1d6d85718552e63d65d141ec023a3ce202d8bebf"
+      },
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/adjacent-premature-refusal-v1.exit.json",
+        "sha256": "2f41042e5415642be077ae49f66abddd786cc0e4229e24d0dac5b249b52dac14"
+      }
+    }
+  ],
+  "no_mutation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/adjacent-refusal-no-mutation-v1.json",
+    "sha256": "0b5ae8546ab9683609e16445b251390272880fbf6e03bb74ab571a9e6267e3ec"
+  },
+  "tests_passed": 32,
+  "subtests_passed": 16,
+  "negative_test": "A clearly labeled NOT_REVIEWED fixture was refused before any ledger/plan/admission mutation. Its expected assertion is a test result, not a runtime failure or owner decision.",
+  "compatibility": "Reuse unchanged shared report, paired estimator and next-stage validator. Thin scripts substitute only current paths/receipt identities and bind the unchanged resource policy to the existing first-cohort admission.",
+  "next_cohorts_admitted": false,
+  "quality_read": false,
+  "learner_exported": false,
+  "model_contacts": 0,
+  "official_scorer_contacts": 0
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "saea-prospective-process-presentation-v1",
+  "at_utc": "2026-10-06T12:36:17.909693+00:00",
+  "source_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "d369f9fe2e39f66f33aa80c190f8eb9cf7fe85c48c9fae1c6f471a60f7e4ff12"
+  },
+  "process_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-complete-analysis-v1/process-analysis-plan-v2.json",
+    "sha256": "c6c95246168431068c18889f3813ff058914b57e115b50da1a5d2269a31871e9"
+  },
+  "source_code": {
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/system_process_report.py": "33ae748b0db227d7b4678a4f2aff049442f669efa30d0206aa322ff82836e28e",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/diagnostic_pins_v1.py": "2931edf9ba768aa32500f143e18381ce8536e50185d25db12fca5da55e51ef7c",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/present-complete-cohort-v2.py": "da6c1cf32af5f1329a2ccb40f8722e33ffdd698459e8dc244ef3d02b91b552c3"
+  },
+  "scope": "Pure presentation of an already complete root-read cohort. No new estimators, selection rule, rollout, scorer invocation, gold read or learner export.",
+  "priority": [
+    "official quality and reliable completion",
+    "support and review/repair/harm",
+    "latency and cost"
+  ],
+  "outputs": [
+    "business-process-cost-v1.json",
+    "business-process-cost-v1.md"
+  ],
+  "predecessor": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/presentation-plan-v2.json",
+    "sha256": "148d85d9ad3a4db1a7bde5bffc400a0e8930e5bb4608febcb2f1bfe732364fd4"
+  }
+}
