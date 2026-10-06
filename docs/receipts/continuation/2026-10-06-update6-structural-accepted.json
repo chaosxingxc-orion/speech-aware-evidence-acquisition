@@ -1,0 +1,43 @@
+{
+  "acceptance": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/structural-acceptance-v1.json",
+    "sha256": "2d61b963c1ed26ea384dba5209bd431931f7f4db34c443a41c79f38b56982065"
+  },
+  "actual_request_fit_receipts": 286,
+  "at_utc": "2026-10-06T19:31:53.522089+00:00",
+  "authority": "owner227",
+  "commit": "76fa610d78bc921c9d56f42b3d1e6cbe8fbc84ef",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "fit_endpoint_contacts": 1144,
+  "members": 16,
+  "model_contacts": 286,
+  "monitor": {
+    "id": "slurp-update6-structural-monitor",
+    "status": "DELETED_AFTER_VERIFIED_TERMINAL"
+  },
+  "native_omni_terminal_deliveries": 64,
+  "next": "Execute prepared one-shot serial model-free scientific member preparation. Then draft registration, source/exposure/FIT checks and separate root admission. Keep every original proposal and parent, fixed data/knowledge, exact config and complete-family scientific READ requirements.",
+  "official_scorer_contacts": 0,
+  "preparation_binding": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/structural-acceptance-binding-v1.json",
+    "sha256": "52c7ee5c4be19b6fe3eb468d3d48f7709b1c21b17f496d8941aaf168a937339c"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/registration-v1.json",
+    "sha256": "9cebac900d7c1ebf149e1441a75c79475b20a1c2867356c0540b5c0906b292fe"
+  },
+  "rows": 64,
+  "runtime_admission": false,
+  "schema": "saea-root-configured-structural-accepted-v1",
+  "status": "ROOT_ACCEPTED_STRUCTURAL_ONLY",
+  "task_quality_read": false,
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/windows-task-terminal-v1.json",
+    "sha256": "af81058a89c9ac4fdda156c2cd319023f3f4851f5224fa7c52baaa6796d1f073"
+  },
+  "valid_visible_reviewer_handoffs": 74,
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-structural-v1"
+}

@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:17:58.690562+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:32:39.410268+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -32,10 +32,32 @@ SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
 The previous GPU task is terminal and its monitor was deleted. Update6 nongenerative
 capacity completed with all16 passes and its monitor was deleted. The complete structural
-family is now running under the exact launch below. Scientific generation remains held;
+family is now structurally accepted under the verified terminal below. Scientific generation remains held;
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 complete structural acceptance (2026-10-06)
+
+The original Windows task finished2026-10-06T19:29:58.4516020+00:00 with all16
+member/observer exits0. Root verified native Windows and WSL process identities absent,
+exact frozen source/registration pins and no STOP/flight lock. The bound15-minute
+slurp-update6-structural-monitor is deleted. The one-shot full structural audit exited0;
+64 rows,74 valid visible Reviewer handoffs and64 native Omni terminal deliveries passed.
+Observed286 model contacts,286 actual-request FIT receipts and1144 tokenizer endpoints;
+zero official scoring or task-quality read. Engineering attempts retain the intentional
+worker-only OPENED lifecycle; never score, reseal or restart them.
+[Root acceptance](../receipts/continuation/2026-10-06-update6-structural-accepted.json).
+
+The existing one-shot serial scientific preparation has started under owner227 in
+coordination/partitioned-update6-diversity-scientific-preparation-v1/serial-preparation-v1.
+Follow its original process and complete/failed receipt; do not restart on observation
+latency. It prepares all22 configuration-derived members without model/scorer contacts.
+After complete preparation, finalize DRAFT packages and prospective analysis plans,
+then perform separate root admission and frozen checks before scientific launch.
+No business improvement or learning advantage is established by structural acceptance.
+
+
 
 ## Update6 complete-result analysis entries prepared (2026-10-06)
 
