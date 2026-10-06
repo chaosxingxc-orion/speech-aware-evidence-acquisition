@@ -97,3 +97,20 @@ pass; source-binding and pin-verification helpers have100percent statement
 coverage across thirty statements. Fifty-one existing process/attribution tests
 pass. The full current-cohort success path remains pending completion; these
 checks do not claim it has run. See the prepared-entry continuation receipt.
+
+## Balanced result presentation
+
+After process-complete-cohort-v2.py succeeds, run data-root
+coordination/partitioned-update4-process-scientific-preparation-epochs-v1/
+present-complete-cohort-v1.py with the exact cohort and SHA-256 of
+presentation-plan-v1.json. It binds the saved process, business, timing, family
+and root READ artifacts. Its exclusive JSON keeps all business paired contrasts,
+A/A variability, scenario strata, process rates/unknowns and separate model versus
+postprocessing transitions. Its Markdown presents business first, process second,
+cost third. Raw task contents and per-input identities are omitted from this view;
+this is root presentation, not a learner export.
+
+The same new renderer and existing process/attribution suite pass65 tests, with
+100percent statement coverage of the60-statement renderer. The actual premature
+entry returns WAIT75 before quality/reference loading. Full current-cohort output
+is pending; no adoption decision, estimator or runtime policy changed.

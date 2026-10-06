@@ -1,5 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Balanced business/process/cost presentation prepared (2026-10-06)
+
+The new pure report joins all same-cohort members only after complete root READ
+and process diagnostics. It retains official paired contrasts/A/A/strata, review
+rates with unknowns and uncertainty, raw-model versus postprocessing transitions,
+then latency/cost. No raw cases, selection change or automatic learner export.
+[Evidence](../receipts/continuation/2026-10-06-business-process-cost-presentation-prepared.json).
+
+All65 focused tests pass; the new renderer has100percent statement coverage.
+Actual premature entry returned WAIT75 before quality/reference loading.
+The complete current-cohort path is pending; the running job is unchanged.
+
 ## Complete-cohort process diagnostics entry prepared (2026-10-06)
 
 The prospective v2 entry reuses the shared source-bound process metrics after

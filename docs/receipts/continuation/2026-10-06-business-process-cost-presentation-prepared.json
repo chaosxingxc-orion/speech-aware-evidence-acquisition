@@ -1,0 +1,31 @@
+{
+  "schema": "saea-root-presentation-prepared-v1",
+  "at_utc": "2026-10-06T06:10:05.756664+00:00",
+  "plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/presentation-plan-v1.json",
+    "sha256": "9a420926761843ad92a5e22843b1ae925ebdcbbbb3b211f1f46c94455c3831ae"
+  },
+  "tests": {
+    "passed": 65,
+    "new_presentation_tests": 14,
+    "module_statement_coverage": {
+      "covered": 60,
+      "total": 60,
+      "percent": 100
+    },
+    "red_phase": "New test initially failed with ModuleNotFoundError before implementing the presentation module. Tests pass with the isolated worktree src explicitly selected."
+  },
+  "actual_incomplete_entry": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/presentation-incomplete-refusal-v1.json",
+    "sha256": "5f56eb221e6429e98e256d6c537753c827b60cc499a49977082071741e1e3971"
+  },
+  "source_tests": {
+    "relpath": "tests/unit/test_system_process_report.py",
+    "sha256": "c4bc33cdf0d68a8e39226a971c636b44f278082df42493e7fb222c79a91f6284"
+  },
+  "current_complete_family_success_path": "Pending. The actual incomplete entry refused before reading quality or references.",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "runtime_changed": false,
+  "learner_exported": false
+}
