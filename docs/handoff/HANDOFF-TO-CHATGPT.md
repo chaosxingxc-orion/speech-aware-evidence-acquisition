@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Aggregate K-record learner input, owner direction 2026-10-06
+
+Use the [new aggregate profile](../readiness/2026-10-06-aggregate-template-learning-v1/README.md).
+One complete evaluated template system contributes one record; derive K from config.
+Keep K records per complete observed population and N times K historical records.
+Retain full templates/assembly, business quality, numeric process/cost summaries,
+missingness, denominators and intervals. Keep baseline/A/A in referenced shared
+comparison metadata. Keep per-input/visit records, raw contents, detailed strata and
+private source custody on the audit side. Preserve exposure and all spent proposals.
+This prospectively supersedes the older anonymous per-input actor representation.
+New exact continuation registration selects aggregate-template-records-v1; historical
+frozen registrations remain byte-identical. All69 relevant tests and engineering-base
+pass; new module statement coverage100percent. Real offline rehearsal gives32 records
+for two K16 populations and55.72percent fewer bytes. No new actor contact or runtime
+change. [Owner record](../receipts/owner/2026-10-06-aggregate-template-learning-records.json).
+
 ## Complete process-to-continuation bridge prepared (2026-10-06)
 
 The new thin adapter reuses complete process validation and the existing registered

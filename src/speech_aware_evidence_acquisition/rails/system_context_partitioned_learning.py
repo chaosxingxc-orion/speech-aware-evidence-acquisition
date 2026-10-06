@@ -226,4 +226,10 @@ def _partitioned_actor_view(archive, packet, plan, ids):
             "Do not optimize alarm frequency or latency in place of official quality and reliability. "
             "Separate raw model effects from deterministic postprocessing; missing observations stay unknown. "
             "Criticism semantic accuracy and causal credit remain unmeasured.")
+    if packet["schema"] == "saea-partitioned-context-optimizer-input-v2":
+        from .system_context_continuation import continuation_profile
+        registration = json.loads(_read_pin(packet["registration"], archive.root))
+        if continuation_profile(registration) == "aggregate-template-records-v1":
+            from ..analysis.aggregate_template_learning import aggregate_actor_view
+            return aggregate_actor_view(result)
     return result

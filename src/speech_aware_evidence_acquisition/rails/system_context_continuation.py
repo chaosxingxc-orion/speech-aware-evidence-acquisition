@@ -18,6 +18,20 @@ from .system_text_policy import _read_pin, require
 SCHEMA = "saea-partitioned-context-optimizer-input-v2"
 
 
+def continuation_profile(reg):
+    """Select a prospectively pinned actor format; historical registrations stay exact."""
+    base = {"schema", "status", "parent_input_sha256", "iteration", "population_update_plan",
+        "history_completion", "process_completion", "process_registration", "max_actor_input_bytes", "runtime_admission"}
+    newer = reg.get("schema") == "saea-partitioned-context-continuation-registration-v2"
+    require(set(reg) == base | ({"learner_profile"} if newer else set())
+            and (newer and reg["learner_profile"] == "aggregate-template-records-v1"
+                 or not newer and reg.get("schema") == "saea-partitioned-context-continuation-registration-v1")
+            and reg["status"] == "ROOT_REGISTERED" and reg["runtime_admission"] is False
+            and type(reg["max_actor_input_bytes"]) is int and reg["max_actor_input_bytes"] > 0,
+            "exact prospective continuation registration required")
+    return reg.get("learner_profile")
+
+
 def _identity(packet):
     packet.pop("input_sha256", None)
     packet["input_sha256"] = content_hash(packet)
@@ -68,6 +82,7 @@ def validate_continuation_packet(archive, packet):
             "immutable continuation packet required")
     evidence = json.loads(_read_pin(packet["continuation_evidence"], archive.root))
     registration = json.loads(_read_pin(packet["registration"], archive.root))
+    continuation_profile(registration)
     parent, _, ids = _population_update_input(archive, packet["parent_input_sha256"])
     require(registration["parent_input_sha256"] == parent["input_sha256"]
             and registration["iteration"] == packet["iteration"] == parent["iteration"]+1
@@ -140,12 +155,7 @@ def prepare_context_continuation(archive, *, registration_pin, repo_root, data_r
     from .system_context_partitioned_learning import _plan, _partitioned_actor_view
     root, data = Path(repo_root).resolve(), Path(data_root).resolve()
     reg = json.loads(_read_pin(registration_pin, root))
-    require(set(reg) == {"schema", "status", "parent_input_sha256", "iteration", "population_update_plan",
-            "history_completion", "process_completion", "process_registration", "max_actor_input_bytes", "runtime_admission"}
-            and reg["schema"] == "saea-partitioned-context-continuation-registration-v1"
-            and reg["status"] == "ROOT_REGISTERED" and reg["runtime_admission"] is False
-            and type(reg["max_actor_input_bytes"]) is int and reg["max_actor_input_bytes"] > 0,
-            "exact prospective continuation registration required")
+    profile = continuation_profile(reg)
     parent, _, ids = _population_update_input(archive, reg["parent_input_sha256"])
     require(parent["schema"] in ("saea-partitioned-context-optimizer-input-v1", SCHEMA)
             and type(reg["iteration"]) is int and reg["iteration"] == parent["iteration"]+1,
@@ -196,7 +206,8 @@ def prepare_context_continuation(archive, *, registration_pin, repo_root, data_r
     prior = _prior_continuations(archive, packet)
     if prior:
         preview["prior_continuations"] = prior
-    require(len(json.dumps(preview,ensure_ascii=True).encode()) <= reg["max_actor_input_bytes"], "actor byte budget exceeded")
+    if profile is None:
+        require(len(json.dumps(preview,ensure_ascii=True).encode()) <= reg["max_actor_input_bytes"], "actor byte budget exceeded")
     _copy_pin(registration_pin, root, archive)
     name = f"context-learning/evidence/{reg['population_update_plan']['batch_id']}.json"
     archive._write(name, evidence)

@@ -1,0 +1,26 @@
+{
+  "schema": "saea-aggregate-template-learning-rehearsal-v1",
+  "scope": "Offline projection of the previously qualified historical actor capsule; not a new actor reservation or export.",
+  "source_file_sha256": "d5851dff828af8dd5a684b24ab01f3bd7bab5bdc1633e13ea851f57a664d092e",
+  "original_actor_sha256": "7706d883dfccd5ceae10c327117d5b54a9b5d6721eee709f9b954c58957bef4c",
+  "projected_sha256": "352918baaf02be4b472fb4be26f5df9ad1e22140261a1ac032f59fbd4d7cec3f",
+  "old_bytes": 1525706,
+  "new_bytes": 675641,
+  "reduction_percent": 55.716173364986446,
+  "K": 16,
+  "observed_rounds": 2,
+  "candidate_records": 32,
+  "evaluated_iteration_labels": [
+    2,
+    3
+  ],
+  "tests": {
+    "passed": 69,
+    "new_module_statement_coverage_percent": 100,
+    "scope": "Projection, refusal, shared reservation/compiler, multi-round continuation and complete trial."
+  },
+  "original_capsule_changed": false,
+  "runtime_changed": false,
+  "learner_exported": false,
+  "contacts_added": 0
+}

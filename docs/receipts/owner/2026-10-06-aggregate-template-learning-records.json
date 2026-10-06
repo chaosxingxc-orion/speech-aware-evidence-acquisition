@@ -1,0 +1,29 @@
+{
+  "schema": "saea-owner-aggregate-template-records-v1",
+  "at_utc": "2026-10-06T08:29:48.752608+00:00",
+  "source": "Direct human message in this root conversation on 2026-10-06; full English translation follows.",
+  "complete_english_translation": "One learning input should theoretically contain only K records because its primary information consists of statistical results. Process feedback only needs statistics, not excessive textual content. After N iterations, retain only N times K records and statistical results.",
+  "resolution": {
+    "unit": "one complete template system evaluated in one registered round",
+    "configured_K": "derive from the immutable candidate list, never hardcode",
+    "learner_history": "one record for each original candidate in each complete observed population; preserve rejected and unchanged candidates",
+    "learner_content": [
+      "full editable node templates and assembly configuration",
+      "official business quality and reliability aggregates",
+      "aggregate node structure and measured performance",
+      "support, review, revision and postprocessing statistics with counts, denominators, missingness and intervals",
+      "source cohort and roster hash, policy identity, disposition and comparison references"
+    ],
+    "excluded": [
+      "per-input or per-visit records, even anonymous",
+      "task answers, labels, transcripts, knowledge contents or source lists",
+      "per-case summaries and long historical explanations"
+    ],
+    "private_audit": "Preserve full trajectories, paired observations, exact source pins, strata reports and cumulative exposure. Aggregate after complete-family qualification and exact root READ; never export a partial population.",
+    "iteration_accounting": "N counts complete evaluated populations actually available in the validated lineage, including its initial observed population. Preserve their exact iteration labels; do not invent missing earlier rounds. Fixed K gives N times K records; independently registered changes to K require explicit sum-of-K accounting in a later schema.",
+    "comparison_metadata": "Keep baseline/A/A numeric statistics once per source cohort as referenced metadata, outside the K candidate record list. Do not pool different source cohorts.",
+    "prospective_profile": "aggregate-template-records-v1 under a new exact continuation registration; preserve every historical frozen actor input and response",
+    "runtime_change": false,
+    "new_contacts": 0
+  }
+}
