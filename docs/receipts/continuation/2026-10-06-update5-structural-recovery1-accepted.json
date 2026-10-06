@@ -1,0 +1,43 @@
+{
+  "acceptance": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/structural-acceptance-v1.json",
+    "sha256": "30b4b59feaf0f91248b3f0369e092d6351bb8fcc461792e4fee90420844400f8"
+  },
+  "actual_request_fit_receipts": 289,
+  "at_utc": "2026-10-06T11:46:07.190105+00:00",
+  "authority": "owner227",
+  "commit": "edc736481e62e24d5e1d33e4e01a2041e1fd3245",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "fit_endpoint_contacts": 1156,
+  "members": 16,
+  "model_contacts": 289,
+  "monitor": {
+    "id": "slurp-update5-structural-recovery-monitor",
+    "status": "DELETED_AFTER_VERIFIED_TERMINAL"
+  },
+  "native_omni_terminal_deliveries": 64,
+  "next": "Execute prepared one-shot serial model-free scientific member preparation. Then draft registration, source/exposure/FIT checks and separate root admission. Keep every original proposal and parent, fixed data/knowledge, exact config and complete-family scientific READ requirements.",
+  "official_scorer_contacts": 0,
+  "preparation_binding": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/structural-acceptance-binding-v1.json",
+    "sha256": "4a4b5901b4c103afc88443f70734faa54e7081b5b1bd0bad833ba3efdb29a4b5"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/registration-v1.json",
+    "sha256": "7f92cef36bb7bfd41afb5034faa54eb5817cf8b7a65e78b421c3e7725ccf8b7a"
+  },
+  "rows": 64,
+  "runtime_admission": false,
+  "schema": "saea-root-configured-structural-accepted-v1",
+  "status": "ROOT_ACCEPTED_STRUCTURAL_ONLY",
+  "task_quality_read": false,
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/windows-task-terminal-v1.json",
+    "sha256": "7392d70be178679b32146023e768474c960562fe103ded2b4060c0d263a9b56b"
+  },
+  "valid_visible_reviewer_handoffs": 75,
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-structural-v1"
+}

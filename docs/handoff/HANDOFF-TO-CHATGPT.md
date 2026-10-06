@@ -1,5 +1,31 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 complete structural acceptance; scientific preparation active (2026-10-06)
+
+Windows structural recovery1 ended11:41:21Z exit0. All16 configured members
+completed64 engineering trajectories with289 generation contacts and1156 actual-FIT
+endpoints. Root verified original owner/observer/WSL exit and no active lease; one
+old observer PID was reused by an unrelated later Windows search process, retained
+in the terminal identity evidence without interference. The exact15-minute monitor
+slurp-update5-structural-recovery-monitor is deleted.
+
+The complete frozen-source structural audit exited0 at11:45:05Z. All75 normalized
+Reviewer handoffs were valid/visible and all64 terminal deliveries retained Omni
+custody. All actual request bodies/FIT receipts and unscored engineering lifecycles
+passed. No official score or task-quality read occurred; this proves structural
+execution only. See [root acceptance](../receipts/continuation/2026-10-06-update5-structural-recovery1-accepted.json).
+Preserve the completed engineering attempts as OPENED/unscored; never reseal or score.
+
+Root bound this full acceptance to the prepared scientific entry and started the
+one-shot serial model-free22-member preparer. See [original start](../receipts/continuation/2026-10-06-update5-scientific-preparation-started.json).
+Observe coordination/partitioned-update5-aggregate-scientific-preparation-v1/
+serial-entry-v1.exit.json and serial-preparation-v1/complete.json; revalidate the
+original PID/start identity before waiting. No model/scorer contact or scientific
+admission is granted. After complete success, execute the prepared draft finalizer,
+then exact source/exposure/FIT checks, serial integration/freeze and separate live
+root admission. Preserve K-record aggregate learning, all original candidates,
+no-change branches, fixed sources and complete-family trial/READ requirements.
+
 ## Update5 scientific draft finalizer prepared (2026-10-06)
 
 The prospective finalize-draft-registration-v2.py in coordination/

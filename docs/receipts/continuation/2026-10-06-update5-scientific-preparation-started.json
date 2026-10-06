@@ -1,0 +1,17 @@
+{
+  "at_utc": "2026-10-06T11:46:58.211501+00:00",
+  "authority": "owner227",
+  "model_contacts": 0,
+  "next": "Observe original serial-entry-v1.exit.json and all configured prepared receipts. Do not duplicate or resume a failed preparation. Execute the prepared draft finalizer only after complete original success.",
+  "original_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/serial-entry-v1.started.json",
+    "sha256": "d6b172696aca122a541fa99268a15a71a31519e140f9c01662f3ff608e627de0"
+  },
+  "pid": 170177,
+  "runtime_admission": false,
+  "schema": "saea-model-free-scientific-preparation-started-v1",
+  "scorer_contacts": 0,
+  "start_ticks": "61366933",
+  "status": "RUNNING_MODEL_FREE_PREPARATION",
+  "structural_acceptance": "docs/receipts/continuation/2026-10-06-update5-structural-recovery1-accepted.json"
+}
