@@ -1,5 +1,33 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 nongenerative capacity is running (2026-10-06)
+
+All16 frozen checks passed at commit a9a2831b20b2b0f9a4f6f8616199f5337b72b789;
+the original checker exited0 and is absent. The clean frozen worker remains
+/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-capacity-v1.
+Root sealed registration SHA256
+b3dc8c07e8b20ac5500caefd98385e60a97272077c16ad0e66e51c8c7b3b99fd,
+verified healthy idle4-slot service, no competing flight/STOP and24.12GiB free
+Windows memory, then launched Windows SAEA-Update5-Aggregate-Capacity-V1 at
+2026-10-06T10:26:37.3217847Z. See [exact launch](../receipts/continuation/2026-10-06-update5-capacity-launch.json).
+
+Read coordination/partitioned-update5-aggregate-capacity-owner227-v1 operational
+receipts for EVERY configured member. The first stable startup gate passed in
+20.211seconds. Branch01 completed exit0 with successful lease release; branch02
+was verified live when recording this handoff. Revalidate current PIDs/identities.
+Historical Windows PID31120 is not proof of current activity. Do not use the
+stale default batch queue. Tokenizer cap4752; generation/scorer contacts0.
+Service epoch2026-10-05T15:52:00.740486Z,4x24576,max512; revalidate actual state.
+Windows policy remains20GiB startup/8GiB running. No cache/host/control changes.
+
+Automation slurp-update5-capacity-monitor is ACTIVE every15minutes, script-only
+and bound to this exact job. Keep healthy/in-progress checks quiet. Delete it at
+verified task terminal AND no remaining admitted workers/observers. Failure stops
+for evidence and root disposition; monitoring never dispatches or recovers.
+Structural blueprint is prepared only. Qualify the entire capacity family before
+structural registration, then separate generation proof before scientific N20.
+No task quality, learning gain or system benefit follows from capacity execution.
+
 ## Update5 structural blueprint prepared while frozen checks run (2026-10-06)
 
 The [structural blueprint](../readiness/2026-10-06-partitioned-update5-aggregate-structural-mailbox-v1/blueprint-v1.json)
@@ -4044,7 +4072,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T10:19:08.963413+00:00
+Last refreshed: 2026-10-06T10:29:26.217920+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

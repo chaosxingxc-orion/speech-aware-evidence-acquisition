@@ -1,0 +1,167 @@
+{
+  "schema": "saea-configured-capacity-launch-receipt-v1",
+  "at_utc": "2026-10-06T10:29:26.217920+00:00",
+  "status": "RUNNING",
+  "task_name": "SAEA-Update5-Aggregate-Capacity-V1",
+  "epoch": "2026-10-06T10:26:37.3217847+00:00",
+  "windows_owner_pid": 31120,
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-v1.json",
+    "sha256": "b3dc8c07e8b20ac5500caefd98385e60a97272077c16ad0e66e51c8c7b3b99fd"
+  },
+  "source_commit": "a9a2831b20b2b0f9a4f6f8616199f5337b72b789",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-capacity-v1",
+  "windows_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/capacity-started.json",
+    "sha256": "84805e64d5ca48216801510b1f364e7d7a1721e7992774b33c243916f1d6138c"
+  },
+  "task_xml": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/windows-task-v1.xml",
+    "sha256": "f1642be06c0ae1aa4c1f3f8af24b6e009fd2990cb5be960e0c2510b0380778cb"
+  },
+  "root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/root-launch-admission-v1.json",
+    "sha256": "cd5e85166871f58ce52d0a1a8d739b99f3bed50c5be8aedb1cda54160c0e5279"
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/live-prelaunch-v1.json",
+    "sha256": "5da55c0efb73b735c21b1317af829636cc8b04a1189a73629951355fa0e05e36"
+  },
+  "startup_memory": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-01/memory-wait/finished.json",
+    "sha256": "3388d182cedc5c696db7257a9f23163a99282087070d80b13774895211615e6a"
+  },
+  "startup_wait_seconds": 20.21101757104043,
+  "member_observations": [
+    {
+      "label": "branch-01",
+      "state": "COMPLETED",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-01-capacity-exit.json",
+        "sha256": "2d707b395519bb1dd32d070378a9b624f34fd6b2786749c2a6f99cb003f9a653"
+      }
+    },
+    {
+      "label": "branch-02",
+      "state": "RUNNING",
+      "started": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-02-capacity-started.json",
+        "sha256": "453d146afcf9b0d83da80ae0a9100a908436d15b66cc2f4bc22e29b2fb6646b3"
+      },
+      "pid": 156704,
+      "start_ticks": "60905496"
+    }
+  ],
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-01": 297,
+      "branch-02": 297,
+      "branch-03": 297,
+      "branch-04": 297,
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 4752
+  },
+  "members": [
+    {
+      "label": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-capacity-fit-v1"
+    },
+    {
+      "label": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-capacity-fit-v1"
+    },
+    {
+      "label": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-capacity-fit-v1"
+    },
+    {
+      "label": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-capacity-fit-v1"
+    },
+    {
+      "label": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-capacity-fit-v1"
+    },
+    {
+      "label": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-capacity-fit-v1"
+    },
+    {
+      "label": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-capacity-fit-v1"
+    },
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-capacity-fit-v1"
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-capacity-fit-v1"
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-capacity-fit-v1"
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-capacity-fit-v1"
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-capacity-fit-v1"
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-capacity-fit-v1"
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-capacity-fit-v1"
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-capacity-fit-v1"
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-capacity-fit-v1"
+    }
+  ],
+  "automation": {
+    "id": "slurp-update5-capacity-monitor",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "policy": "Script-only exact job and epoch; delete at verified terminal with no remaining admitted workers/observers."
+  },
+  "scope": "Nongenerative capacity only; no generation, scoring, task quality, optimizer feedback or automatic recovery."
+}
