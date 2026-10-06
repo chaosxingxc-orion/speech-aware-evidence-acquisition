@@ -1,0 +1,52 @@
+{
+  "schema": "saea-configured-cohort-admission-v1",
+  "at_utc": "2026-10-06T05:23:53.032589+00:00",
+  "authority": "owner227",
+  "cohort": "original-a",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/original-a-root-admission-v1.json",
+    "sha256": "1def32fa675fb3280042a863f4014d6be09f40066d784f724710f1c1212d42e6"
+  },
+  "structural_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/root-structural-review-v1.json",
+    "sha256": "4122cedac2de30a81529591acbb1a89aef3f0a67e880038180ebec110b1b5693"
+  },
+  "admission_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/admit-first-cohort-v1.py",
+    "sha256": "42f93248162afdefac2355d918dd3375fad537e044eb4deb5c586efb85226ce6"
+  },
+  "boundary_test": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/first-cohort-boundary-test-v1.json",
+    "sha256": "b9f4aabbf3a7e98f3921da2137a690c258a4b7c526348169ee31b655af3758dd"
+  },
+  "registration_gate": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/original-a-admitted-gate.stdout.json",
+    "sha256": "d5c8682e184a455b217b5445f275c8b6d6c325f9535f24e1361a8a9d553e8ab3"
+  },
+  "scope": {
+    "K": 8,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 160,
+    "control_trajectories": 40,
+    "family_trajectories": 200,
+    "fit_endpoints_cap": 10400,
+    "generation_contacts_cap": 2600
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_dispatched": false,
+  "read_countersigned": false,
+  "next": "Create exact clean frozen checkout; run all control/candidate frozen gates; bind Windows-owned mailbox observer to shared campaign lifecycle; revalidate live resources before one-shot dispatch. Later cohorts remain drafts."
+}
