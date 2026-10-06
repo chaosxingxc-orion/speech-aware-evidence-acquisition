@@ -1,0 +1,14 @@
+{
+  "exit_code": 75,
+  "result": {
+    "status": "WAIT_COMPLETE_ROOT_READS",
+    "missing": [
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-V1-REMAINING-B2-READ-V1/family.json",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b2-flight-v1/root-read-authorization-v1.json"
+    ],
+    "quality_read": false,
+    "source_join_written": false,
+    "contacts": 0
+  },
+  "interpretation": "Expected incomplete-family refusal while the registered final cohort is live; no retry or failure disposition required."
+}

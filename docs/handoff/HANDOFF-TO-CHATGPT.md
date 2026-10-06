@@ -1,5 +1,31 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Proposer v2 independently verified and integration prepared (2026-10-06)
+
+The requested Astra design package is complete and serially integrated at ff06c9a1a.
+Root reproduced its static and shared-parser compatibility reports exactly. Sixteen
+current templates are byte-distinct with six assembly combinations; the diagnosis is
+insufficient operational differentiation, not demonstrated literal duplication.
+Mechanism contrasts, predicted process signatures and adverse signatures are soft
+proposal-design guidance, never replacement permission or a new reward/acceptance rule.
+
+[Prospective integration](../readiness/2026-10-06-template-proposer-v2-integration-v1/README.md)
+binds the unchanged four prompt documents (35,894 bytes), wire description and a
+configuration-derived native-interface rehearsal. All22 current scientific member
+baselines agree on the checked role/tool limits. The existing runtime function supplies
+the Reviewer output schema. K16/N20/M4 and deterministic sampling are configuration
+derived. Rebind the interface to the next exact admitted config; this is not a new actor
+allocation. Byte counts do not establish model context fit. GPT-6.1 Sol remains the
+registered generator preference; Astra designed instructions only.
+
+Do not supply root diagnosis, private traces, concrete cases, source lists or partial
+Update5 outcomes to the actor. Complete the last cohort and original full-population
+retention before exporting the next T*K aggregate history. The whole-trial check now
+correctly waits only for remaining-b2 family/READ, with no quality read or source write.
+At15:21Z seed and seed-aa were independently FINALIZED; branch-13 launcher196460 was
+live, health ok, STOP absent. Revalidate actual state; the15-minute monitor remains
+bound to this live final cohort. No new contacts or runtime changes from prompt work.
+
 ## Update5 final remaining-b2 cohort running (2026-10-06)
 
 Windows task SAEA-Update5-Aggregate-RemainingB2-Scientific-V1 launched with capture
@@ -4750,7 +4776,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T15:13:14.459693+00:00
+Last refreshed: 2026-10-06T15:22:10.404493+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

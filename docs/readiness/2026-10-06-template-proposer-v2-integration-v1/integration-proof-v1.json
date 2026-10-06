@@ -1,0 +1,148 @@
+{
+  "schema": "saea-proposer-v2-root-integration-proof-v1",
+  "at_utc": "2026-10-06T15:21:22.642140+00:00",
+  "status": "MODEL_FREE_PREPARATION_PASS",
+  "prompt_package": {
+    "relpath": "docs/readiness/2026-10-06-template-proposer-diversity-astra-v1/package-manifest.json",
+    "sha256": "af8440810ce4e6ec1eb3d8916f2cb7ef4b64e4a602bf9b70ca8117e5f7409c23"
+  },
+  "prompt_files": [
+    {
+      "relpath": "docs/readiness/2026-10-06-template-proposer-diversity-astra-v1/generator-system-prompt.md",
+      "sha256": "178d1ae40a63a0a385bff63ff0b56b1c49293ca3491ddd71b7beccdb2e0b2675"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-06-template-proposer-diversity-astra-v1/generator-task-prompt.md",
+      "sha256": "968a93a24d95aa37fd828032ab20257214eec3d3e044542a1128e2d71640e0d4"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-06-template-proposer-diversity-astra-v1/branch-design-matrix.md",
+      "sha256": "5da1ab53bc4773edd7c1691af6951d83142f2cafc274771c41813dd82450461a"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-06-template-proposer-diversity-astra-v1/validation-protocol.md",
+      "sha256": "ba7fae4ae627ab248435c0bfa0ea3141d5dc552c4db1d14406d177fead696a64"
+    }
+  ],
+  "wire_description": {
+    "relpath": "docs/readiness/2026-10-06-template-proposer-diversity-astra-v1/wire-contract-v2.json",
+    "sha256": "224dd3cdd1899abb63717bf50876bc3c2485f64a9fb509bc111c2726e502a951"
+  },
+  "prompt_document_bytes": 35894,
+  "config": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "member_baseline_pins": [
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-seed-v1.json",
+      "sha256": "1c3fc9c4d76e89bd5129e237b3228062098f4eb2de6ace1e36f3f5a5739729af"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-seed-aa-v1.json",
+      "sha256": "2b2a4fb3201857394bf28dda3a035c3c60411fe65a98dfea12edf5b0c0d35342"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-branch-01-v1.json",
+      "sha256": "08341b8be541a5a32035b1dce912c528a53b8c9fd3d9997a3a1e524f6ad2b649"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-branch-02-v1.json",
+      "sha256": "b4df5307eb6253748dbfe10630c6d0a2084653c8ee27ff567b3b69dea221d1fb"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-branch-03-v1.json",
+      "sha256": "3aa53a3aa936ade03945f90508938d73f71dcbb31e094464e4580b19e80b473e"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-branch-04-v1.json",
+      "sha256": "48e2375861ea363c2e69d72bbb6ff466091ffc19619020d3c8b3275c31847a44"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-branch-05-v1.json",
+      "sha256": "a94e7ebf7dd2ec4ce08936adfa76813c998b1085e6e7f751470f3f4e8d626994"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-branch-06-v1.json",
+      "sha256": "9a09d9da5e38c89ed1a186573f731a8cc36c66a8e29a6414b488e077c176c270"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-branch-07-v1.json",
+      "sha256": "14a60b73d976cca1dde12426ca3a515c3d07b28f9fa1e4138caf07ee43b62280"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-original-a-branch-08-v1.json",
+      "sha256": "e1aadca33baa63b9fd18e6eb55047663dbcbc1b76b10c39ca81707c2484dde4d"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-seed-v1.json",
+      "sha256": "78eb3116ffaa3fb26daf10e0106c6cef3f7c1e1dec3ca7fb289c37075f7bc324"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-seed-aa-v1.json",
+      "sha256": "f7863170ec17d3c0c9e2d3ceeb09f9bddcfac625818f6b76136ab514ae7d5823"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-09-v1.json",
+      "sha256": "b5a157dd7dce34da3e27edb64d39d3507b2bdf38d339c1610d7522f5f1e0bc30"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-10-v1.json",
+      "sha256": "91daa1caa49b80f1a932bf9b41414c922d0198508c9cd044b847ef653b906262"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-11-v1.json",
+      "sha256": "b471a62f0df48293aeb8351b20987448c5407d6f7e8bbdad2d1107f490801ca5"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-12-v1.json",
+      "sha256": "53c5bb9e5d810398ce4a239833a91181d9e1f09c9b15336622696c56af272b7f"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b2-seed-v1.json",
+      "sha256": "ff20af921096d38ff59ab9c4b808dc8ef71cbeeba06b42f4d05466eefb86dab5"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b2-seed-aa-v1.json",
+      "sha256": "0e160d9a95c8c212cae18089902520499277ac6d4c3debf1879dc10e9c07aa5c"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b2-branch-13-v1.json",
+      "sha256": "aa63cdbd353644f8054263da200e69915a289572532bd5ce980d19898a9e5cd1"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b2-branch-14-v1.json",
+      "sha256": "2c49b45e07cfee9bd3c078c6c9cf8ef538b9d441b6f9d8f59f366a7fdad94af1"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b2-branch-15-v1.json",
+      "sha256": "93224cb08c7b73075d44387c3695b22bb4b14ca5732870aff207c24f24cf50f2"
+    },
+    {
+      "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b2-branch-16-v1.json",
+      "sha256": "a8e7905f5c29ede1329b827cfa0eea71e6326d7398353ef5789b0fd5cddf2943"
+    }
+  ],
+  "member_native_invariants_equal": true,
+  "member_count": 22,
+  "interface": {
+    "relpath": "docs/readiness/2026-10-06-template-proposer-v2-integration-v1/native-interface-rehearsal-v1.json",
+    "sha256": "7f2a2ac5e5c133c5cb1879b504a17d6c0a295ab4789af3d709f86f9452666d9f"
+  },
+  "reviewer_schema_source": {
+    "relpath": "src/speech_aware_evidence_acquisition/rails/review_handoff.py",
+    "sha256": "1905e3162cfc999266ca1db057b8856cde3e5eb72faf39f78d3044b1c2913090"
+  },
+  "contacts_added": 0,
+  "historical_results_opened": false,
+  "learner_exported": false,
+  "source_records_included": 0,
+  "runtime_admission": false,
+  "next_required": [
+    "Complete every Update5 cohort and exact root READ.",
+    "Qualify the original complete K population and apply unchanged registered retention.",
+    "Prepare and requalify complete process feedback.",
+    "Register the next complete aggregate capsule and exact prompt/interface/model/budgets before one original proposer opportunity.",
+    "Check complete actual input capacity; byte counts do not prove model context fit."
+  ]
+}
