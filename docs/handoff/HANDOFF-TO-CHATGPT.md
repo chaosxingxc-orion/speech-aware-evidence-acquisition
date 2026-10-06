@@ -1,5 +1,33 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 continued root READ entries prepared; job still running (2026-10-06)
+
+The exact suffix job is still running at ownerPID39980; branch-04 was OPENED with
+104 measured contacts at20:55Z. That is contact metadata, not a completed-row count.
+No quality or READ has occurred. The new owner-chain countersign entry and native
+capture both refuse the actual incomplete/live family with native75/WAIT; no terminal
+observation or READ authorization is written and the exposure ledger is unchanged.
+[Pending-path proof](../receipts/continuation/2026-10-06-update6-continued-root-read-prepared.json).
+
+Use the source-pinned sequence in the successor coordination directory:
+continued-root-read-entries-v1.json. First use original review-scientific-cohort-v1.py
+qualify after all10 members independently finalize. Then native Windows PowerShell
+runs capture-continued-terminal-v1.ps1 with PlanPath and a fresh OutputTag. It creates
+both successor and original native observations only after successful successor
+termination and process absence. Within60seconds run the new
+countersign-continued-cohort-v1.py with original cohort/flight/launch binding arguments,
+plus --continuation-launch-receipt for the suffix launch receipt,
+--windows-observation for tag-successor.json and --original-windows-observation for
+tag-original.json. It preserves the failed original owner and exact missing native
+branch-03 exits while checking every original member and unchanged prefix pin.
+
+Only after the exact countersign succeeds, use the ORIGINAL review entry operation
+read with original arguments, followed by the unchanged registered process analysis.
+No new scorer/reseal, altered scientific recipe, partial learner export or changed
+acceptance rule is introduced. Success-path execution remains pending actual family
+completion. Delete the current bound monitor when all actual processes terminate.
+
+
 ## Update6 untouched suffix continuation RUNNING (2026-10-06)
 
 Windows task SAEA-Update6-OriginalA-Suffix-Continuation1-V1 launched at

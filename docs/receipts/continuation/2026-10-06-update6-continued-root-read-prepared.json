@@ -1,0 +1,25 @@
+{
+  "schema": "saea-continued-root-read-preparation-proof-v1",
+  "at_utc": "2026-10-06T20:57:12.746132+00:00",
+  "status": "PENDING_PATH_VERIFIED_NO_READ",
+  "source_and_sequence": {
+    "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/continued-root-read-entries-v1.json",
+    "sha256": "643b46704a36f8ff91c436bb7a8ddfde05ff4488ea89299284da70a1a48993d4"
+  },
+  "pending_proofs": [
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/pending-chain-read-proof.json",
+      "sha256": "84be04b537867c0c892d8afc0989f9d4b2320584f8ee1dd9b601a2eb6043812c"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/pending-native-capture-proof.json",
+      "sha256": "88d7fc31dc8369c211b70ec56a598962780de412b24a382660ba39b570875cf9"
+    }
+  ],
+  "ledger_unchanged": true,
+  "read_authorization_absent": true,
+  "quality_values_read": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "limitations": "Successful full-family path is not executed while the job is running; no completeness or scientific benefit claim."
+}
