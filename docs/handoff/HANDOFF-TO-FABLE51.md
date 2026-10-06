@@ -1,5 +1,23 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 single-root pristine tail prepared and tested (2026-10-06)
+
+The two pending scientific identities remain ABSENT; four original members remain
+FINALIZED20 rows with one official success each. New registration in data/coordination/
+update5-b1-tail-v1 preserves the entire six-member scientific family/config/budgets
+and frozen worker efae9a684, while dispatch selects only branch-11/12 from explicit
+root disposition. Original source pins and all failed entry roots/mailbox bytes remain
+preserved. The new registration SHA256 is205fbde30fa4a59e2a9421d8801fdfbf1f999b0ee207e546fc3b18fc2a842a25.
+
+[Source-bound package](../readiness/2026-10-06-update5-remaining-b1-tail-v1/README.md):
+24 unit tests pass, registration/path modules have100percent statement coverage.
+The final production PowerShell5 body passes four-member success and failure-stop
+integration fixtures with zero real model/scorer calls. Fresh prior-task/identity/
+source/lock/memory checks and actual unique Windows task launch remain. No live task
+or monitor exists for this new entry yet. Full-family READ stays unsigned; implement
+and test the explicit original-prefix/new-tail terminal join without fake old exits.
+Next cohort/learner export remain held. This supersedes the earlier preparation route.
+
 ## Update5 continuation2 precontact failure; full orchestration proof complete (2026-10-06)
 
 Continuation2 started14:21:58.8725092Z, coordinator14:22:00.7129370Z, and exited1

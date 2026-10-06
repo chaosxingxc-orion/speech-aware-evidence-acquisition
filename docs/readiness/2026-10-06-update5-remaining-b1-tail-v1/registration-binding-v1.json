@@ -1,0 +1,50 @@
+{
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/registration-v1.json",
+    "sha256": "205fbde30fa4a59e2a9421d8801fdfbf1f999b0ee207e546fc3b18fc2a842a25"
+  },
+  "source_identical_files": [
+    {
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/launch-member-v1.py",
+        "sha256": "d27c7435ff5d88aa944b3ad95750baec09e11d2a9438c3e46718d81ee75c463e"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/launch-member-v1.py",
+        "sha256": "d27c7435ff5d88aa944b3ad95750baec09e11d2a9438c3e46718d81ee75c463e"
+      }
+    },
+    {
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/broker.ps1",
+        "sha256": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/broker.ps1",
+        "sha256": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5"
+      }
+    },
+    {
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/continuous-observer-v1.py",
+        "sha256": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/continuous-observer-v1.py",
+        "sha256": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630"
+      }
+    },
+    {
+      "original": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/windows_memory_mailbox.py",
+        "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+      },
+      "successor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/windows_memory_mailbox.py",
+        "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+      }
+    }
+  ],
+  "scientific_configuration_unchanged": true,
+  "runtime_dispatched": false
+}

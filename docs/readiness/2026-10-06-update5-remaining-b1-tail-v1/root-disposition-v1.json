@@ -1,0 +1,122 @@
+{
+  "schema": "saea-root-pristine-tail-disposition-v1",
+  "at_utc": "2026-10-06T14:32:32.470157+00:00",
+  "authority": "owner227",
+  "status": "decided",
+  "original_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/registration-v1.json",
+    "sha256": "dd1b5d625716d6cf80c023f3cbab5d41bd37520fff373803b048f64ebce3bfeb"
+  },
+  "original_task": "SAEA-Update5-Aggregate-RemainingB1-Scientific-V1",
+  "original_task_result": 2147943467,
+  "original_launch_epoch": "2026-10-06T13:44:45.4108975+00:00",
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/boundary-qualified-v1.json",
+    "sha256": "84323da81f6be7983b83bb1d7dfa76accd58cc26c8bfa8871dd695b46d33fd0d"
+  },
+  "completed_members": [
+    "seed",
+    "seed-aa",
+    "branch-09",
+    "branch-10"
+  ],
+  "pending_members": [
+    "branch-11",
+    "branch-12"
+  ],
+  "new_receipt_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1",
+  "new_task": "SAEA-Update5-Aggregate-RemainingB1-TailV1",
+  "prior_precontact_tasks": [
+    "SAEA-Update5-Aggregate-RemainingB1-BoundaryContinuation1",
+    "SAEA-Update5-Aggregate-RemainingB1-BoundaryContinuation2"
+  ],
+  "preserved_precontact_entries": [
+    {
+      "root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1",
+      "files": [
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/capture-child.json",
+          "sha256": "20474c25f255b5111f08c22cb924543fe82b86248f27beac302f426ff8ffc0e6"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/capture-exit.json",
+          "sha256": "e68ee8617388fb161b0157c88db069ace917f5f59d14bc2cf0125156fc2e297b"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/capture-started.json",
+          "sha256": "f3498ed76056461c63a1597fd40667df450b8766420eabafd245d87329097c8d"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/scientific-finished.json",
+          "sha256": "eefb03c18079e417e743ec447197df968a4fabebc14a881bf290d7d8c8c07d6d"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/scientific-windows-failure.json",
+          "sha256": "a2e0ec04323a8c8cb2e240c7521e17844a09ecc1b9338c03626cacec49d8aa56"
+        }
+      ]
+    },
+    {
+      "root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2",
+      "files": [
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/capture-child.json",
+          "sha256": "8ba76d9873ff11dae63a800eb27e7df374eb56a91b8671bd9d3e4dd40fcb5dfd"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/capture-exit.json",
+          "sha256": "bb36a0a899d1d09149d6367503ab5c03e1fddfcf320dfb56e2072cb34cc9d638"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/capture-started.json",
+          "sha256": "85d02976a2aec4deb4f71d4012be35f3763226916840970b8ff14daecc6334d4"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/scientific-finished.json",
+          "sha256": "9d3552e84d6484fe2ce3fc8225e21467586dc6f8eac2907d770b98395d8cd2ff"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/scientific-started.json",
+          "sha256": "95fdd55cdd6795a213a3862c7f16d123276674a6a26dfbfe816e6ae9f41218fb"
+        },
+        {
+          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/scientific-windows-failure.json",
+          "sha256": "b61ee4dde17025230d8135aa2ba71553779727263c6c0d2515895e4879100c2e"
+        }
+      ]
+    }
+  ],
+  "preserved_original_branch11_mailbox": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/branch-11/mailbox/ready.json",
+      "sha256": "d552476072303bc7f73af5aea6b0c520224a989b9af7a1c4ebbebd9a83ee9cf9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/branch-11/observer.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/branch-11/observer.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "engineering_proof": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-update5-remaining-b1-orchestration-proof-v1/proof-v1.json",
+    "sha256": "fa05a46c967c83e3e7832bbcbd535ca7fc58e9d489cc606fc03b92b8dc8c9bb8"
+  },
+  "scope": "One prospective dispatch of only the original never-started tail, using a single new execution/receipt root and the unchanged frozen worker, member identities, policies, input roster, budget and resource guards. Prior attempts/results remain immutable.",
+  "conditions": [
+    "Validate source-identical scientific registration; preserve the original registration and every original source pin.",
+    "Use actual candidate absence under both attempt and run namespaces; new member directories must be absent. Preserve old precontact mailbox bytes.",
+    "Pass the production dispatch body model-free full success/fail-stop integration fixtures after root substitution.",
+    "Verify every prior Windows task terminal and its owner/observer gone; no live admitted WSL process, STOP or lease; generation guard available and memory startup gate satisfied.",
+    "Stop on any failure; no automatic recovery or new member allocation.",
+    "Require all six independently qualified sealed/scored members plus an explicit multi-epoch terminal verification and exact root READ before quality. No fabricated original success."
+  ],
+  "runtime_source_change": "Only outer dispatch selection, host path handling and execution receipt root. All request/scoring/runtime worker bytes remain fixed.",
+  "new_model_contacts_at_disposition": 0,
+  "new_scorer_contacts_at_disposition": 0,
+  "scientific_read_authorized": false,
+  "new_proposals_authorized": false,
+  "next_cohort_admitted": false
+}

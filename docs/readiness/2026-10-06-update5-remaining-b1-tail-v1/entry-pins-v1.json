@@ -1,0 +1,113 @@
+{
+  "schema": "saea-single-root-tail-entry-pins-v1",
+  "at_utc": "2026-10-06T14:35:36.240997+00:00",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/registration-v1.json",
+    "sha256": "205fbde30fa4a59e2a9421d8801fdfbf1f999b0ee207e546fc3b18fc2a842a25"
+  },
+  "files": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/boundary_continuation_v1.py",
+      "sha256": "388d45680d3d906443090f30cbcc8bdbb6634197ff077bd58a0ebcded14400b2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/broker.ps1",
+      "sha256": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/capture-windows-v1.ps1",
+      "sha256": "a7fe8bde8b90af36206cff2bbec6b0c56a7d1104c0837f49bd887a95632978c2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/continuous-observer-v1.py",
+      "sha256": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/launch-member-v1.py",
+      "sha256": "d27c7435ff5d88aa944b3ad95750baec09e11d2a9438c3e46718d81ee75c463e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/monitor-operational-v1.py",
+      "sha256": "1087a07291a3f379e262b2da21b871078f6477ae6cc30fe036d0ca754be59eef"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/prelaunch-v1.py",
+      "sha256": "bbecb9ad70d581d1969f8470770731148fe6fa7a152c78bc09f03e9b0d0b6c6c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/scientific-windows-v1.ps1",
+      "sha256": "3534ee32f86fdf1662a7aa0c7e64a1cebf379d9f0d2f40f5044296115fd4f16b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/tail_registration_v1.py",
+      "sha256": "2f1e5266963669616a5a12dd4103d5eb1807223fe0d33396929c9c053c2bcb7c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/test_boundary_continuation_v1.py",
+      "sha256": "9c0f52b24b38f5467a002ce519b89391a04839f8e74faad21486d516b10805a6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/test_launch_member_v1.py",
+      "sha256": "930bfe2608e5969a4411c80614f85337530a77f264ca8452947596be361760e7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/test_tail_registration_v1.py",
+      "sha256": "c7e5de1a3a19992d1a04ed6c1a4ae9b5c849487acd000ee681c856b7a3ecd477"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/test_windows_evidence_path_v1.py",
+      "sha256": "469ac2c4cb42feab2b3f781fbdc8892b386e83bfcdd31a9b241fc2f981a34780"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/windows_evidence_path_v1.py",
+      "sha256": "633909ca191a9d139233883a1bef598ea4e113b2dd2e3e6a736de36f8a622c7e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-b1-tail-v1/windows_memory_mailbox.py",
+      "sha256": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+    }
+  ],
+  "integration_proofs": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/production-success/test-result.json",
+      "sha256": "a790e3d490f1eb10816d80bcb6a1f4be7035b119bf78f16935179be15ac48edc"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/production-success/source-binding.json",
+      "sha256": "cb44fd83954dda7f3365ecd1aba8835c217533422317eca256eec11e16a65db2"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/production-success/dispatch.ps1",
+      "sha256": "45e469a53f3c209aa4195cbff3c5c4565e7fe0c5e27fc42f25334871c4203599"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/production-success/data/scientific-finished.json",
+      "sha256": "febb1ab8e44529dd680ae3d05aed685771243b7859fe30161039cfdd273475c6"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/production-fail-stop/test-result.json",
+      "sha256": "0ec0f2edca6666a677508aea97b5e3fc8d548fbefa923dd53e46e71ade39e3a9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/production-fail-stop/source-binding.json",
+      "sha256": "8184f79737320d13d2113526aefaad71f13fd1deffcfd557aedc7a0242cf3396"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/production-fail-stop/dispatch.ps1",
+      "sha256": "9bbc5fcea93b78e02e4ec0603242ec53aef017fd9cee9e961652a768c79a0076"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/production-fail-stop/data/scientific-finished.json",
+      "sha256": "370077515b905cc5aa166bc6355516c4da9d95e2630336183f19f321cfb2963b"
+    }
+  ],
+  "tests": {
+    "unit_tests": 24,
+    "new_registration_validator_statement_coverage_percent": 100,
+    "new_windows_path_statement_coverage_percent": 100,
+    "production_body_four_member_success": true,
+    "production_body_failure_stops_later_members": true
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0
+}
