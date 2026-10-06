@@ -1,5 +1,27 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Scientific serial preparation tested; structural family continues (2026-10-06)
+
+At04:39Z the source rehearsal verified148 exact source pins for all22 prospective
+scientific members across the three configured cohorts. No proposed member exists;
+no generation, scorer or preparation contact occurred. The one-shot serial entry
+serial_prepare_v1.py is prepared beside prepare-member-v2.py under coordination/
+partitioned-update4-process-scientific-preparation-epochs-v1. Four test methods
+cover positive sequencing and failure/admission cases;81 statements have98percent
+coverage. Real premature execution exits75 before writes because the full structural
+root acceptance binding is absent. Synthetic proof is not actual preparation.
+
+[Exact evidence](../receipts/continuation/2026-10-06-update4-scientific-serial-preparation-ready.json)
+binds helper and test bytes. After full structural acceptance and its exact root
+binding, --execute runs each existing shared-runtime member preparer in a fresh
+serial child. Any failure stops and preserves logs/receipts; never blanket-rerun.
+This entry does not register, admit, launch, score or read scientific results.
+
+Current structural task/epoch/frozen worker below remain unchanged. Branches01-06
+have worker exit0; branch07 parent109011 was live when checked. Revalidate PIDs.
+The15-minute exact job monitor stays active until verified terminal/no processes.
+Business/process/resource priority and all other-carrier holds remain unchanged.
+
 ## Exact scientific successor prepared; structural job progressing (2026-10-06)
 
 At04:30Z branches01/02 of the launched structural job completed with worker/lease

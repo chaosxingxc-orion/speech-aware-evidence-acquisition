@@ -1,0 +1,55 @@
+{
+  "schema": "saea-scientific-serial-preparation-ready-v1",
+  "at_utc": "2026-10-06T04:40:09.406845+00:00",
+  "status": "PREPARED_WAITING_COMPLETE_STRUCTURAL_ACCEPTANCE",
+  "authority": "owner227",
+  "entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/serial_prepare_v1.py",
+    "sha256": "31333e733b5e5f0cf4a3abe01f6f50ce11b6a22355c6620802c2580b1633c269"
+  },
+  "tests": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/test_serial_prepare_v1.py",
+    "sha256": "0f7202a1aa7c0f45a814cf07ae3bd0000a25f40c1e33394f4c5a9b20f1dea817"
+  },
+  "source_rehearsal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/source-rehearsal-v1.json",
+    "sha256": "87717ad22dccc214f5058ae550d368a0ea51034b454c79cb3b9f13a42895b40f"
+  },
+  "existing_member_preparer": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/prepare-member-v2.py",
+    "sha256": "c08d51e5b6472154d152d23d781d294871f2b881a71ed12ce3eb77ea45694cca"
+  },
+  "verification": {
+    "unittest_methods_passed": 4,
+    "positive_and_failure_cases": "Exact order; one child per member; no rerun; exit, missing receipt, identity, contacts, child exception and incomplete warm proof stop; absent/stale structural bindings and preexisting members refuse.",
+    "statement_coverage_percent": 98,
+    "statement_count": 81,
+    "uncovered": "Two CLI execution lines; serial core exercised with synthetic children. Actual positive execution awaits complete structural acceptance.",
+    "real_source_pins_verified": 148,
+    "members": 22,
+    "cohorts": 3,
+    "real_premature_check": "exit75; no preparation outputs",
+    "tests_model_contacts": 0
+  },
+  "execution": "After complete structural audit and root exact acceptance binding, invoke the entry with --execute once. Preserve its exclusive serial-preparation-v1 receipts on any failure; diagnose before a separately recorded disposition. All member identities, K/N/M and budgets remain derived from the immutable configuration and existing blueprint.",
+  "runtime_admission": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "structural_job": {
+    "task": "SAEA-Update4-Structural-Start18-V1",
+    "epoch": "2026-10-06T04:26:56.1721554+00:00",
+    "worker_commit": "988ec3d9446b462c47f0312fc002e21bb5f95352",
+    "observed_completed_members": [
+      "branch-01",
+      "branch-02",
+      "branch-03",
+      "branch-04",
+      "branch-05",
+      "branch-06"
+    ],
+    "live_member": "branch-07",
+    "live_parent_pid": 109011,
+    "revalidate": true
+  },
+  "scientific_quality_read": false
+}
