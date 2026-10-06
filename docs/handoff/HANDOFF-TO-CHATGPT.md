@@ -1,5 +1,36 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 original-a scientific comparison launched (2026-10-06)
+
+All10 first-cohort frozen checks completed successfully and root verified their actual
+exit, log pins, original process absence and clean source. Windows task
+SAEA-Update6-Diversity-OriginalA-Scientific-V1 started2026-10-06T19:58:27.2224485+00:00,
+owner PID43676 created19:58:26.0718590Z. Frozen worker
+/home/chao/saea-worktrees/codex-partitioned-update6-diversity-original-a-v1 remains
+atc947d67b24e5f2dd5e69c2ad3e0bf58b60822be0. Registration SHA256
+5c974758cc48677159430078b6115dd6c634dbb8895ce3c236ffd895fd944025.
+[Launch receipt](../receipts/continuation/2026-10-06-update6-original-a-scientific-launch.json).
+
+Inspect the exact coordination/partitioned-update6-diversity-original-a-scientific-v1
+registration and every member:seed,seed-aa,branch-01 through branch-08. Twenty
+trajectories each,200 total; caps2600 generation/10400 FIT endpoints and10 unique
+complete official scores. First member seed's actual launcher PID237747 is live;
+its three stable startup observations passed after20.24seconds. Before launch the
+service was healthy/idle at epoch2026-10-05T15:52:00.740486Z,serverPID686,Windows
+free23.96GiB. Revalidate current identities; four24576 slots,max512 unchanged.
+Registered floors remain20GiB startup/8GiB running. No scientific quality read yet.
+
+The job-scoped15-minute slurp-update6-original-a-monitor is ACTIVE. Delete it after
+verified terminal and all bound original workers/scorers/observers are gone. Monitor
+scripts only operational metadata; no quality, READ, retry, dispatch, source or control
+changes. This task owns its execution independently of the old shared queue. On any
+failure preserve evidence and stop for a named root227 disposition. All ten members
+must independently FINALIZE with verified seals,one successful complete official score
+and zero failed jobs before exact root original-a READ. Later remaining-b1/b2 cohorts
+remain pending their separate complete-cohort reviews; no partial learner export or
+change to the frozen Update6 acceptance rule. Maintain all other-carrier holds.
+
+
 ## Update6 first-cohort frozen check running (2026-10-06)
 
 The prepared experiment and analysis packages are integrated at
@@ -5293,7 +5324,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T19:51:58.512494+00:00
+Last refreshed: 2026-10-06T20:00:42.385187+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

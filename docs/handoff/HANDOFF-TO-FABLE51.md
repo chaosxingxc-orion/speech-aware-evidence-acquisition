@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:51:58.512494+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T20:00:42.385187+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -32,10 +32,42 @@ SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
 The previous GPU task is terminal and its monitor was deleted. Update6 nongenerative
 capacity completed with all16 passes and its monitor was deleted. The complete structural
-family is now structurally accepted under the verified terminal below. Scientific generation remains held;
+family is structurally accepted; original-a scientific generation is now running as below;
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 original-a scientific comparison launched (2026-10-06)
+
+All10 first-cohort frozen checks completed successfully and root verified their actual
+exit, log pins, original process absence and clean source. Windows task
+SAEA-Update6-Diversity-OriginalA-Scientific-V1 started2026-10-06T19:58:27.2224485+00:00,
+owner PID43676 created19:58:26.0718590Z. Frozen worker
+/home/chao/saea-worktrees/codex-partitioned-update6-diversity-original-a-v1 remains
+atc947d67b24e5f2dd5e69c2ad3e0bf58b60822be0. Registration SHA256
+5c974758cc48677159430078b6115dd6c634dbb8895ce3c236ffd895fd944025.
+[Launch receipt](../receipts/continuation/2026-10-06-update6-original-a-scientific-launch.json).
+
+Inspect the exact coordination/partitioned-update6-diversity-original-a-scientific-v1
+registration and every member:seed,seed-aa,branch-01 through branch-08. Twenty
+trajectories each,200 total; caps2600 generation/10400 FIT endpoints and10 unique
+complete official scores. First member seed's actual launcher PID237747 is live;
+its three stable startup observations passed after20.24seconds. Before launch the
+service was healthy/idle at epoch2026-10-05T15:52:00.740486Z,serverPID686,Windows
+free23.96GiB. Revalidate current identities; four24576 slots,max512 unchanged.
+Registered floors remain20GiB startup/8GiB running. No scientific quality read yet.
+
+The job-scoped15-minute slurp-update6-original-a-monitor is ACTIVE. Delete it after
+verified terminal and all bound original workers/scorers/observers are gone. Monitor
+scripts only operational metadata; no quality, READ, retry, dispatch, source or control
+changes. This task owns its execution independently of the old shared queue. On any
+failure preserve evidence and stop for a named root227 disposition. All ten members
+must independently FINALIZE with verified seals,one successful complete official score
+and zero failed jobs before exact root original-a READ. Later remaining-b1/b2 cohorts
+remain pending their separate complete-cohort reviews; no partial learner export or
+change to the frozen Update6 acceptance rule. Maintain all other-carrier holds.
+
+
 
 ## Update6 first-cohort frozen check running (2026-10-06)
 
