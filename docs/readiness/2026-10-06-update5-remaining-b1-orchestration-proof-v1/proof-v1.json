@@ -1,0 +1,55 @@
+{
+  "schema": "saea-model-free-owned-orchestration-proof-v1",
+  "at_utc": "2026-10-06T14:28:44.416480+00:00",
+  "original_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/continuation-windows-v1.ps1",
+    "sha256": "24f94aa349ea78cb841a25bb0d86e0e15ac1786fe7bf074bd1325dbebb43142d"
+  },
+  "red_reproduction": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/red-test-result-v2.json",
+    "sha256": "adad655c12e916e966dd8af6383a01e1342289f6a252a02d09882ddddbc038e8"
+  },
+  "red_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/red-four-members2/dispatch.ps1",
+    "sha256": "7a3d15331a530bd10154a4b4ebf8149af448249fad19c63ff8ca088fef16d0b5"
+  },
+  "green_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/green-four-members/dispatch.ps1",
+    "sha256": "faa3cceefea1401e05c3e9c1ca0532950aabfdeca192c8de75788498f098e54c"
+  },
+  "green_success": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/green-test-result-v1.json",
+    "sha256": "0be2959f4f902524c72f8901ab9911561a38a60832a75dee68342eae64ea48a8"
+  },
+  "green_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/green-four-members/data/scientific-finished.json",
+    "sha256": "d079cfc406fa609eafc7d842592419712ab077f1cf07237020136e8388279fcc"
+  },
+  "green_fail_stop": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/green-failure-test-result-v1.json",
+    "sha256": "d1e61e8003198d49ba39a0f75490ae9dfadcb5961b0cef0a91b9d39c15f30c74"
+  },
+  "green_fail_stop_source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/green-stop-on-failure/dispatch.ps1",
+    "sha256": "7c9bbc39f699c7da7e89407c0cc1da2638498d751c34039831dc4b6f93e6f036"
+  },
+  "green_fail_stop_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-orchestration-integration-v1/green-stop-on-failure/data/scientific-finished.json",
+    "sha256": "69d838e0bd447c8302824cee326a7f96c9b1cada8c31e97646361e2c4c102bed"
+  },
+  "execution": "Actual Windows PowerShell5 orchestration body with isolated roots, fake task snapshot, fake broker and fake WSL child; no model or scorer contacts. Fake children write only synthetic completion and mailbox STOP.",
+  "proved": [
+    "Dual receipt/member roots reproduce the actual precontact missing-parent error.",
+    "One execution root permits all four configured synthetic members to finish with owner/observer/child receipts.",
+    "A synthetic second-child exit7 stops the four-member sequence after two receipts, with later member directories absent."
+  ],
+  "not_proved": [
+    "Real GPU continuation has not run.",
+    "No task quality, benefit, learning improvement, full family READ, or real scorer replay is established."
+  ],
+  "preliminary_fixture": "The first red fixture expired its60-second freshness window; retain it as fixture setup evidence. The refreshed second red fixture reproduces the actual directory error.",
+  "next": "Prepare a new single execution-root registration, preserve original failed entry roots and all four completed members, keep exact pending identities/worker/config/remaining budgets. Prove fresh admission and explicit multi-epoch complete-family READ before scientific interpretation.",
+  "runtime_dispatched": false,
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0
+}

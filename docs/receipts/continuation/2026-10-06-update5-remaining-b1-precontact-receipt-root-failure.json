@@ -1,0 +1,55 @@
+{
+  "schema": "saea-precontact-receipt-root-failure-v1",
+  "at_utc": "2026-10-06T14:24:08.205859+00:00",
+  "authority": "owner227",
+  "status": "STOPPED_PENDING_FULL_MODEL_FREE_INTEGRATION_PROOF",
+  "task": "SAEA-Update5-Aggregate-RemainingB1-BoundaryContinuation2",
+  "capture_launch_epoch": "2026-10-06T14:21:58.8725092+00:00",
+  "coordinator_epoch": "2026-10-06T14:22:00.7129370+00:00",
+  "capture_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/capture-exit.json",
+    "sha256": "bb36a0a899d1d09149d6367503ab5c03e1fddfcf320dfb56e2072cb34cc9d638"
+  },
+  "failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/scientific-windows-failure.json",
+    "sha256": "b61ee4dde17025230d8135aa2ba71553779727263c6c0d2515895e4879100c2e"
+  },
+  "finished": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/scientific-finished.json",
+    "sha256": "9d3552e84d6484fe2ce3fc8225e21467586dc6f8eac2907d770b98395d8cd2ff"
+  },
+  "operational": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/postfailure-operational-v1.json",
+    "sha256": "cfbec750d4fec9c5627debeb0109e63a66378976cffd49a3f9e7e8fd33a606b9"
+  },
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation2/continuation-windows-v1.ps1",
+    "sha256": "24f94aa349ea78cb841a25bb0d86e0e15ac1786fe7bf074bd1325dbebb43142d"
+  },
+  "english_translation": "The Windows File.Open call could not find part of the new continuation receipt path ending in branch-11/windows-observer-binding.json.",
+  "named_component": "Outer continuation receipt-root routing: the member directory/mailbox was created under the original job root, but WriteEvidence routed its observer binding to the new continuation root whose member directory was absent.",
+  "accountability": "Root preparation defect. Unit boundary checks, capture exit tests and four-file path checks did not exercise the complete two-root orchestration path.",
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "attempts_created": 0,
+  "completed_original_members": 4,
+  "remaining_members": [
+    "branch-11",
+    "branch-12"
+  ],
+  "preserve": [
+    "All original completed generations/seals/scores and frozen worker.",
+    "Both failed continuation source/registration/proof/task/receipt sets.",
+    "The original job root branch-11 mailbox directory created during precontact setup; do not delete, move or silently reuse it."
+  ],
+  "next_required": [
+    "Build a model-free integration fixture exercising directory creation, owned observer readiness/binding, child launch, normal/failure exit and final receipts using the actual PowerShell5 dispatch body.",
+    "Keep future member artifacts and receipts under a single new execution root with the same immutable scientific identities, source bytes and remaining budgets; prospectively bind the new root/registration.",
+    "Prove all source/epoch joins for complete-family READ; do not fabricate missing original exits or bypass full-family qualification.",
+    "Record a new bounded root disposition only after integration proof and fresh terminal/no-process/lock/memory checks."
+  ],
+  "runtime_dispatch_authorized_by_this_record": false,
+  "quality_read": false,
+  "monitor": "Neither precontact continuation reached GPU work; no new monitor was created. Original terminal monitor remains deleted.",
+  "owner_decision_needed": false
+}

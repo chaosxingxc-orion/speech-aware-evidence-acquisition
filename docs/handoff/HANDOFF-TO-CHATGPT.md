@@ -1,5 +1,33 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 continuation2 precontact failure; full orchestration proof complete (2026-10-06)
+
+Continuation2 started14:21:58.8725092Z, coordinator14:22:00.7129370Z, and exited1
+at14:22:01.2156613Z before launching a WSL scientific child. Its observer-binding
+receipt targeted the new root while its member directory was under the original
+root. Preserve original branch-11 mailbox directory as precontact-only; never
+silently reuse, move or delete it. Both branch-11/12 scientific attempts remain
+ABSENT, zero new model/scorer contacts. Four original members remain FINALIZED.
+The Windows task/owner/observer and admitted WSL processes are gone; STOP absent.
+No new monitor was created for either precontact-only continuation.
+
+See [named failure](../receipts/continuation/2026-10-06-update5-remaining-b1-precontact-receipt-root-failure.json)
+and [complete model-free chain proof](../readiness/2026-10-06-update5-remaining-b1-orchestration-proof-v1/proof-v1.json).
+The actual PowerShell5 dispatch body now has a reproduced red fixture, a single-root
+four-member success fixture, and a failure fixture that stops after the second member
+without starting the final two. These are synthetic process tests, not GPU trajectories.
+The prior long-path correction was valid but its narrower tests missed this root-routing
+error. The original coordinator termination cause remains unestablished.
+
+NEXT: prepare a new single-root execution registration with original pending identities,
+unchanged frozen worker/requests/config/remaining budgets. Preserve all earlier roots and
+bind the new dispatch source/epoch explicitly. Fresh guards and recorded root admission
+remain before launch; add a15-minute exact monitor only after actual GPU launch. A tested
+multi-epoch terminal join is also required for full-family READ; never fabricate missing
+original exits. No partial quality/learner export, rescore or next-cohort admission.
+No further runtime is authorized by the proof alone. Root227 covers this engineering;
+there is no pending human decision and other carriers remain held.
+
 ## Update5 boundary continuation precontact path refusal (2026-10-06)
 
 BoundaryContinuation1 exited1 before scientific-started or any new member/contact.
@@ -4623,7 +4651,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T14:21:21.161598+00:00
+Last refreshed: 2026-10-06T14:28:44.432212+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
