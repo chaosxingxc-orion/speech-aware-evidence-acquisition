@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T16:52:39.953671+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T16:58:19.400766+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -48,7 +48,8 @@ Final capsule: `system-text-search/context-template-k16-v1/partitioned-update6-d
 Manifest SHA256: `cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865`.
 Reservation exited0 at16:37:21.906568Z with zero model contacts. The actor is now
 running as /root/aggregate_template_update6_sol, GPT-6.1 Sol/high, fork-none. It verified
-capsule hashes and reported full-template/aggregate inspection. Use exactly one original
+capsule hashes and completed all64 records and full-template inspection. It is producing
+the original response. Use exactly one original
 response and no replacements; wait for original file and actual agent terminal state.
 
 ### Exact continuation sequence
@@ -105,6 +106,10 @@ SkillOpt/TF-GRPO/GEPA/ACE/DGM were inspected as references, not installed or exe
 Do not send this root-only research to the already admitted actor, replace its frozen
 inputs or change historical acceptance. Next algorithm changes need prospective config,
 identity and comparison rules. Current Update6 remains the original aggregate protocol.
+
+
+Offline Update6 downstream entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1; [evaluation intent](../readiness/2026-10-06-update6-diversity-prospective-v1/evaluation-intent-v1.json) binds the exact config and unchanged strict-population criterion. They have not run.
+Wait for actor completion; preserve original bytes before shared recording/compilation.
 
 <!-- current-engineering-handoff:end -->
 

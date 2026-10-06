@@ -13,3 +13,12 @@ preparation. Existing parent/feedback source configs remain historical provenanc
 [Preparation receipt](population-preparation-v1.json) binds the config and prospective
 [native interface](native-interface-v1.json). The Astra prompt version remains pinned
 separately; next actor input must first pass complete history/process qualification.
+
+## Offline downstream preparation
+
+The [evaluation intent](evaluation-intent-v1.json) binds the same immutable config and
+whole-population criterion. Shared original-recording, operational compilation and
+per-member supply-preparation entries are prepared under external coordination/partitioned-update6-diversity-preparation-v1. They are not run while the actor
+is writing. Wait for actual actor completion and pin its immutable original bytes.
+Record every spent position; any invalid proposal holds downstream preparation rather
+than triggering a replacement. Capacity, structural and scientific contacts remain HELD.

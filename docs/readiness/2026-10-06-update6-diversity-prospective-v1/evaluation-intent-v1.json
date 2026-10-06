@@ -1,0 +1,36 @@
+{
+  "schema": "saea-partitioned-context-evaluation-intent-v1",
+  "status": "HELD_PENDING_ORIGINAL_RESPONSE",
+  "root_authority": 227,
+  "source_input_sha256": "61b3a6d8cee5ef756f3d56c773be19fb2ef116aa1b0d83715b254179da2bcd73",
+  "trial_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "population_update_batch": "complete-update6-aggregate-diversity-v2",
+  "compiler": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/compile-original-population-v1.py",
+    "sha256": "05f84db01af870a69d0e474acf0e97a48dfecb5c1cf9bae2110cb6e136871c93"
+  },
+  "preserve_all_positions": true,
+  "runtime_admission": false,
+  "no_change_disposition": "Retain unchanged policy content at its configured position with new cumulative provenance and evaluation identity; never replace or omit.",
+  "invalid_disposition": "Preserve the original response and hold compilation if any position is invalid; do not ask the actor for repair.",
+  "statistical_priority": [
+    "Official complete-system quality and reliability",
+    "Complete process rates, harms and uncertainty",
+    "Resource costs including latency"
+  ],
+  "acceptance": "Keep strict-population-utility-sum as the registered learning retention signal; process diagnostics do not change historical decisions or establish efficacy.",
+  "registered_at_utc": "2026-10-06T16:57:19.362935+00:00",
+  "config_derivation": {
+    "previous": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "changed_fields": [
+      "experiment_id"
+    ],
+    "fixed_scope": "Same candidate partitions, node set, reused roster, deterministic sampling, contacts and observe-only boundary behavior."
+  }
+}
