@@ -1,7 +1,9 @@
 # SLURP process diagnostics v1
 
-Status: implemented offline diagnostic interfaces with synthetic source-join verification.
-Real-cohort backfill and prospective report/learner integration are not complete.
+Status: offline diagnostics and complete22-member backfill are complete and root-reviewed.
+See docs/results/2026-10-06-slurp-update3-process-diagnostics.md. Prospective
+abstract learner integration is implemented; actual packet preparation and actor
+admission remain separate.
 No new task generations, model calls, official scoring, policy adoption or runtime
 knowledge changes are authorized or performed by this package.
 

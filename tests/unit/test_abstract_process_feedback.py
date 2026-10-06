@@ -57,3 +57,52 @@ def test_process_projection_refuses_incomplete_or_inconsistent_evidence(fault):
     elif fault=='support-metric': a['intent_support']['metrics']['gold_intent_in_initial_candidates']['value']=0
     else: a['intent_support']['samples'][0]['c0_gold_covered']=1
     with pytest.raises(ValueError): project_process_feedback(report,config=c,bindings=b)
+
+
+def test_source_order_is_verified_before_identity_join_to_config_order():
+    report,c,b=fixture()
+    for a in report['families']['part'].values():
+        a['rows'].reverse();a['intent_support']['samples'].reverse();a['delivery_stages']['rows'].reverse()
+        a['source']['ordered_sample_ids_sha256']=content_hash([r['sample_id'] for r in a['rows']])
+    out=project_process_feedback(report,config=c,bindings=b)
+    assert out['cohorts']['part']['members']['a']['sample_count']==2
+    assert out['cohorts']['part']['members']['a']['rates']['review_false_alarm']['value']==1
+
+
+def test_compact_process_encoding_is_lossless_including_unknowns_and_intervals():
+    from speech_aware_evidence_acquisition.analysis.abstract_process_feedback import compact_process_feedback
+    raw,c,b=fixture();full=project_process_feedback(raw,config=c,bindings=b)
+    compact=compact_process_feedback(full)
+    restored=deepcopy(compact)
+    legend=restored.pop('encoding')
+    restored['schema']=full['schema']
+    def decode(rows,names):
+        return {name:dict(zip(legend['rate_fields'],values,strict=True)) for name,values in zip(names,rows,strict=True)}
+    for cohort in restored['cohorts'].values():
+        for member in cohort['members'].values():
+            member['rates']=decode(member['rates'],legend['metric_order'])
+            member['support']=decode(member['support'],legend['support_order'])
+            for stratum in member['strata'].values():stratum['metrics']=decode(stratum['metrics'],legend['metric_order'])
+    assert restored==full
+    assert len(json.dumps(compact)) < len(json.dumps(full))*.65
+
+
+def test_four_row_identity_join_proof_preserves_all_rates():
+    from speech_aware_evidence_acquisition.analysis.abstract_process_feedback import compact_process_feedback
+    raw,c,b=fixture();ids=c['cohorts'][0]['sample_ids']
+    ids += ['slurp:train:PRIVATE_C','slurp:train:PRIVATE_D']
+    for a in raw['families']['part'].values():
+        for rows in (a['rows'],a['intent_support']['samples'],a['delivery_stages']['rows']):
+            rows.extend(deepcopy(rows))
+            for row,sid in zip(rows,ids,strict=True):row['sample_id']=sid
+            rows.reverse()
+        a.update(aggregate_process_metrics(a['rows']))
+        a['source']['ordered_sample_ids_sha256']=content_hash([r['sample_id'] for r in a['rows']])
+        support=a['intent_support']['samples']
+        a['intent_support']['metrics']={'gold_intent_card_in_initial_request':rate([True]*4),
+            'gold_intent_in_initial_candidates':rate([r['c0_gold_covered'] for r in support]),
+            'candidate_coverage_given_card':rate([r['c0_gold_covered'] for r in support])}
+    full=project_process_feedback(raw,config=c,bindings=b)
+    assert all(m['sample_count']==4 for m in full['cohorts']['part']['members'].values())
+    assert full['cohorts']['part']['members']['a']['rates']['review_false_alarm']['numerator']==2
+    assert compact_process_feedback(full)['cohorts']['part']['sample_count']==4

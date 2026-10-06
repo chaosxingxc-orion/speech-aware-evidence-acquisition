@@ -10,7 +10,7 @@ import math
 from pathlib import Path
 from types import SimpleNamespace
 from ..analysis.abstract_population_sources import _external
-from ..analysis.abstract_process_feedback import project_process_feedback
+from ..analysis.abstract_process_feedback import project_process_feedback, compact_process_feedback
 from .experiment_population import load_population_config, population_accounting
 from .hashing import content_hash
 from .system_text_policy import _read_pin, require
@@ -149,7 +149,7 @@ def prepare_context_continuation(archive, *, registration_pin, repo_root, data_r
             and preg.get("schema") == "saea-slurp-process-backfill-v1" and preg.get("status") == "ROOT_REGISTERED",
             "exact registered complete process source required")
     bindings = {c["cohort_id"]:{m["member_id"]:m for m in c["members"]} for c in preg["cohorts"]}
-    process = project_process_feedback(report, config=config, bindings=bindings)
+    process = compact_process_feedback(project_process_feedback(report, config=config, bindings=bindings))
     evidence = {"schema":"saea-context-continuation-evidence-v1", "parent_input_sha256":parent["input_sha256"],
         "feedback_sample_ids":feedback_ids,"source_pins":source_pins,
         "rejected_history":rejected,"process_feedback":process}

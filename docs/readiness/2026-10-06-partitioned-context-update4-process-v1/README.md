@@ -62,3 +62,19 @@ proposer and contact limits. A regression with different historical experiment
 identity demonstrates the correction without relaxing metric or parent custody.
 The original worker and capture remain immutable. Root disposition records one
 separately captured offline continuation with unchanged registration and script.
+
+## V2 offline source-order and compact-statistic preparation
+
+The first v1 continuation is closed after a second pre-publication offline refusal.
+Native row order differs from the configured roster, while exact unique identities,
+own-order hashes and official-score pins agree for all22 members. Verify source
+order before joining by identity; never join by position. Four-row synthetic
+permutation proof and all22 actual source projections pass. Preserve both failed
+workers and captures. The new registration-v2 uses a new batch identity; no proposal
+was reserved or spent in either failure.
+
+Use a lossless shared column legend for process rates. Preserve every numerator,
+denominator, unknown, descriptive interval, transition and scenario stratum. The
+real process payload shrinks from1289017 to381000 bytes without deleting metrics.
+The full actor view must still fit the original2097152-byte preparation cap; this
+does not establish model-token capacity. No proposal/GPU admission follows.

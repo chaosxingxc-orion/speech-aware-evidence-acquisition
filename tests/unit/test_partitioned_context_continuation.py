@@ -112,7 +112,7 @@ def test_bad_continuation_never_reserves_proposals(continuation,fault):
 def test_modified_feedback_cannot_be_rehashed_into_actor_input(continuation):
     s=continuation;p=run(s)
     ep=s.archive.root/p['continuation_evidence']['relpath']
-    ev=json.loads(ep.read_text());ev['process_feedback']['cohorts']['cohort-0']['members']['candidate-0']['rates']['review_false_alarm']['value']=0
+    ev=json.loads(ep.read_text());ev['process_feedback']['cohorts']['cohort-0']['members']['candidate-0']['rates'][0][4]=0
     ep.write_text(json.dumps(ev))
     with pytest.raises(PolicyError):partitioned.partitioned_context_actor_view(s.archive,input_sha256=p['input_sha256'])
 

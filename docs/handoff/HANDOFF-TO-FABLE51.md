@@ -1,5 +1,23 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Process-aware continuation prepared offline (2026-10-06)
+
+The original update4 preparation and its first continuation exited before proposal
+reservation or model contact. Preserve both captures/workers. The first used the
+wrong historical configuration identity; the second incorrectly required native
+row order to match configured order despite exact identities and verified own-order
+hashes. [The new disposition](../receipts/continuation/2026-10-06-update4-source-order-disposition.json)
+closes v1 and registers a new v2 offline preparation after four-row synthetic and
+all22 real-source proofs. It does not admit an actor, GPU trial or score replay.
+
+329 tests pass with the editable source explicitly selected; new projection has
+100percent and continuation99percent combined statement/branch coverage. An earlier
+test command accidentally loaded the main checkout and failed four new tests;
+the explicit source-path run passed all329. Engineering base and diff checks pass.
+The lossless process payload retains every rate/interval/stratum in381000 bytes
+instead of1289017. Full packet preparation and actual actor capacity are still
+pending. Preserve all16 active parents and original rejected-update disposition.
+
 ## Complete process metrics reviewed (2026-10-06)
 
 The offline continuation completed00:37:54Z, exit0, empty stderr; PID74619/session87667

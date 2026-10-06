@@ -1,0 +1,25 @@
+{
+  "schema": "saea-root-offline-preparation-disposition-v1",
+  "at_utc": "2026-10-06T01:03:34.523653+00:00",
+  "authority": "owner227",
+  "failed_capture": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v1/continuation1",
+  "failed_worker": "/home/chao/saea-worktrees/codex-context-update4-process-prep-recovery1",
+  "failed_commit": "40df8dd8486f32c63c9d970a0de55f9e1541025d",
+  "exit_at_utc": "2026-10-06T00:56:07.256030Z",
+  "exit_code": 1,
+  "stderr_sha256": "38b8217be2f126fcd6574e7a97fc84c6799747b08f7b994f972db60f8e6ece46",
+  "named_cause": "Native archived row order differs from configured order. All22 members have the exact unique20-input set, correct own-order hash and exact registered official-score pin. Positional equality wrongly refused this valid identity join.",
+  "correction": "Verify native ordered hashes before joining by exact unique sample identity. Require scenario agreement by identity. Keep raw/support/stage custody in native order. Export aggregates only.",
+  "proof": {
+    "synthetic": "Four-row linked-order permutation preserves every aggregate; inconsistent hash, duplicate/missing identities and inconsistent stages are refused.",
+    "real": "All22 real members project successfully with no model or scoring contact.",
+    "compact_encoding": "Lossless shared column legends reduce the complete process projection from1289017 to381000 bytes; rates, unknowns, intervals and all strata remain.",
+    "compact_projection_sha256": "79542260c6fa14a64883ee03c39879b434a8bdcd65f8591f31dafdf3953f9a7b"
+  },
+  "disposition": "Close and preserve both failed v1 preparations. Register one new v2 offline preparation under a new batch identity after proofs, with the original sources, active parents, iteration4, configured population and2MiB bound. This is not a second retry under the prior disposition. No proposal reservation or slot was spent; no replacement, GPU dispatch or official scoring is admitted. Preserve any new failure for diagnosis.",
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "runtime_admission": false
+}

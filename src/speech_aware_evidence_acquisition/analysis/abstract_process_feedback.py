@@ -42,7 +42,9 @@ def project_process_feedback(report, *, config, bindings):
 
     The caller must bind the input file to its qualified root completion receipt.
     Do not export rows, custody, references, task text, source lists or scenario names.
-    The same configured roster defines all rates; no cross-cohort pooling occurs.
+    Verify each original ordered source hash, then join exact unique sample identities
+    to the configured roster. Aggregate statistics are order invariant; no
+    cross-cohort pooling occurs.
     """
     cohorts = config["cohorts"]
     require(set(report["families"]) == {c["cohort_id"] for c in cohorts} == set(bindings),
@@ -53,14 +55,15 @@ def project_process_feedback(report, *, config, bindings):
         members = cohort["candidate_ids"] + cohort["control_ids"]
         family = report["families"][tag]
         require(set(family) == set(members) == set(bindings[tag]), "every candidate and comparator required")
-        reference_scenarios = [r["scenario"] for r in family[members[0]]["rows"]]
-        strata = {label: f"stratum-{i+1:02d}" for i, label in enumerate(sorted(set(reference_scenarios)))}
+        reference_scenarios = {r["sample_id"]:r["scenario"] for r in family[members[0]]["rows"]}
+        strata = {label: f"stratum-{i+1:02d}" for i, label in enumerate(sorted(set(reference_scenarios.values())))}
         projected = {}
         for mid in members:
             source = family[mid]; rows = source["rows"]
-            require([r["sample_id"] for r in rows] == ids
-                    and [r["scenario"] for r in rows] == reference_scenarios
-                    and source["source"]["ordered_sample_ids_sha256"] == content_hash(ids)
+            native_ids = [r["sample_id"] for r in rows]
+            require(len(native_ids) == len(set(native_ids)) == len(ids) and set(native_ids) == set(ids)
+                    and {r["sample_id"]:r["scenario"] for r in rows} == reference_scenarios
+                    and source["source"]["ordered_sample_ids_sha256"] == content_hash(native_ids)
                     and source["source"]["official_score_result_sha256"] == bindings[tag][mid]["score_result"]["sha256"],
                     "ordered roster, strata or official score custody differs")
             rebuilt = aggregate_process_metrics(rows)
@@ -69,7 +72,7 @@ def project_process_feedback(report, *, config, bindings):
             value = {"sample_count": len(ids), "is_control": mid in cohort["control_ids"],
                      "rates": rebuilt["metrics"], "transitions": rebuilt["transitions"],
                      "conditioning_unavailable": rebuilt["conditioning_unavailable"],
-                     "support": _support(source, ids),
+                     "support": _support(source, native_ids),
                      "strata": {strata[k]: v for k, v in rebuilt["by_scenario"].items()}}
             for name in ("model", "postprocessing"):
                 stage_rows = [s[name] for s in stages]
@@ -82,3 +85,25 @@ def project_process_feedback(report, *, config, bindings):
                       "independent_unit": "original input, not policy trajectory or role visit",
                       "intervals": "descriptive Wilson; not paired treatment-effect intervals",
                       "priority": "business quality and reliability, then process diagnosis, then resource costs"}})
+
+
+def compact_process_feedback(projected):
+    """Losslessly encode repeated statistic keys once; omit no observations or rates."""
+    require(projected.get("schema") == "saea-abstract-process-feedback-v1", "verified process projection required")
+    result = deepcopy(projected)
+    first = next(iter(next(iter(result["cohorts"].values()))["members"].values()))
+    fields = list(next(iter(first["rates"].values())))
+    metrics, support = list(first["rates"]), list(first["support"])
+    def encode(rows, names):
+        require(list(rows) == names and all(set(v) == set(fields) for v in rows.values()),
+                "compact process columns must be identical")
+        return [[rows[name][field] for field in fields] for name in names]
+    for cohort in result["cohorts"].values():
+        for member in cohort["members"].values():
+            member["rates"] = encode(member["rates"], metrics)
+            member["support"] = encode(member["support"], support)
+            for stratum in member["strata"].values():
+                stratum["metrics"] = encode(stratum["metrics"], metrics)
+    result.update(schema="saea-abstract-process-feedback-compact-v1", encoding={
+        "rate_fields":fields,"metric_order":metrics,"support_order":support})
+    return result
