@@ -1,0 +1,172 @@
+{
+  "schema": "saea-configured-update4-capacity-continuation-launch-v1",
+  "at_utc": "2026-10-06T02:38:09.156465+00:00",
+  "status": "RUNNING",
+  "windows_task": "SAEA-Update4-Process-Capacity-Precontact-Continuation1",
+  "capacity_epoch": "2026-10-06T02:37:53.065727+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+  "source_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/registration-v1.json",
+    "sha256": "e409beaf0832bdfc17ff27cee828cfd508280ae1c31953cb6ca1bd5d906164eb"
+  },
+  "root_disposition": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-capacity-precontact-continuation-disposition.json",
+    "sha256": "1914c5a95c92de42ee67b19547a62c0cc773b1ac7dedff5c2bb136ccafa72add"
+  },
+  "control_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/control-disposition-v1.json",
+    "sha256": "e3a08dcb5ccc79ca873d73943ba55f13980fc5dfc31b32115f2ef32dc8ca8190"
+  },
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/windows-launch-v1.json",
+    "sha256": "0f762f921950ee38fc33e1d32f2f7c00a60a21eef44c484d6f96c92fa1d92cf6"
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/live-prelaunch-v1.json",
+    "sha256": "c5f9ec4735e79b969983758a13fa54405ec25b3d4999a75de85439750586b120"
+  },
+  "live_launcher": {
+    "pid": 91949,
+    "start_ticks": "58133385",
+    "command": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/launch-capacity-v1.py --registration /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/registration-v1.json --sha256 e409beaf0832bdfc17ff27cee828cfd508280ae1c31953cb6ca1bd5d906164eb "
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "members": [
+    {
+      "label": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-01-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-01-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-02-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-02-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-03-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-03-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-04-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-04-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-05-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-05-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-06-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-06-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-07-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-07-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-08-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-09-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-10-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-11-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-12-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-13-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-14-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-15-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-16-capacity-fit-v1",
+      "contact_cap": 297
+    }
+  ],
+  "budgets": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-01": 297,
+      "branch-02": 297,
+      "branch-03": 297,
+      "branch-04": 297,
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 4752
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "scope": "Continue every original unspent configured capacity identity once, unchanged model requests, policies, samples, frozen worker, geometry, resource thresholds and tokenizer caps; zero task generation or scoring. No new allocations.",
+  "original_epoch": "2026-10-06T02:22:56.579118+00:00",
+  "original_contacts": 0,
+  "observer_lifecycle": "One owned fresh observer across stable wait and guarded work. No fallback, reconnect or stale samples.",
+  "monitor": "Create exact fifteen-minute script heartbeat on actual launch; delete on terminal.",
+  "scientific_runtime_admission": false
+}

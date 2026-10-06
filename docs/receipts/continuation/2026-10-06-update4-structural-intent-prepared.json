@@ -1,0 +1,32 @@
+{
+  "schema": "saea-prospective-structural-preparation-v1",
+  "at_utc": "2026-10-06T02:21:39.585659+00:00",
+  "status": "PREPARED_NOT_ADMITTED",
+  "intent": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-structural-entry-v1/intent-v1.json",
+    "sha256": "ccf86be1fd8eadac6abaa44de56ea1f5dd8e37321600115d9cdcbec2c426464c"
+  },
+  "helpers": [
+    {
+      "relpath": "coordination/partitioned-update4-process-structural-owner227-v1/registration-helpers-prepared-v1.json",
+      "sha256": "69a53870e1a254ac1949a4fb4596315576a8aabd1fe4419c701c0571e2c2d0d0"
+    },
+    {
+      "relpath": "coordination/partitioned-update4-process-structural-owner227-v1/frozen-check-helper-prepared-v1.json",
+      "sha256": "04d602969a95abae5a3f633de94dc0aa917a51241e073e7be04fcbe92257e26e"
+    }
+  ],
+  "validation": "All configured member counts, sampling, graph/smoke identities, immutable bundle and supply hashes, exact input prefixes, generation/FIT budgets and zero-score allowance checked against current source configs. Administrative helpers preserve the shared source workflow and pass syntax validation; no runtime execution is claimed.",
+  "totals": {
+    "fit_endpoint_contacts_cap": 3328,
+    "generation_contacts_cap": 832,
+    "official_score_jobs": 0,
+    "structural_trajectories": 64,
+    "systems": 16
+  },
+  "capacity_dependency": "Existing frozen check session46462; full frozen success then exact finalized capacity launch, complete successful capacity family and root structural review before registration.",
+  "generation_contacts_added": 0,
+  "tokenizer_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "runtime_dispatched": false
+}

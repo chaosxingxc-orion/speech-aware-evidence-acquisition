@@ -1,5 +1,38 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update4 capacity stopped before contact; real envelope repair required (2026-10-06)
+
+All16 frozen source/runtime/role/supply checks passed once on94190872a21c2b49f45917c85dc9629ecab994db;
+see [frozen qualification](../receipts/continuation/2026-10-06-update4-capacity-frozen-qualified.json).
+The original capacity epoch02:22:56Z stopped before creating a capacity worker when
+its second memory observer timed out after a successful20.55GiB stable startup wait.
+Root227 recorded one exact precontact continuation, preserving every original byte
+and archiving only its own dead lease metadata after kernel-lock and identity checks.
+
+[That continuation](../receipts/continuation/2026-10-06-update4-capacity-precontact-continuation-launch.json)
+started02:37:53Z and also stopped before any worker at02:38:09Z: the first fresh
+observation in the real leased child timed out. The continuous-observer bridge passed
+131 tests and independent Windows-owned harmless-child proofs, but **did not repair
+the actual runtime envelope**. Preserve this negative evidence and do not claim success.
+[The exact terminal record](../receipts/continuation/2026-10-06-update4-capacity-continuation-observer-stop.json)
+verifies all16 capacity attempts/runs/results remain absent and zero tokenizer,
+generation or scorer contacts occurred. Both job-scoped heartbeats were deleted.
+
+Current preserved lease belongs to root-owner227-update4-capacity-precontact-continuation1;
+its ownerPID91981 and launcherPID91949 are gone. STOP is absent. Do not clear controls,
+retry, alter frozen sources or dispatch a third runtime entry. Service idleness is
+expected. Diagnostics identify an unstable observer transport, not a measured memory
+shortage or a template/scientific failure; lower-level cause remains unestablished.
+The [model-free envelope matrix](../receipts/continuation/2026-10-06-update4-observer-envelope-diagnostic.json)
+completed with mixed outcomes; its order/directory variables are confounded.
+
+Next prove a corrected observation path in the complete Windows-owned launcher/leased
+child envelope using harmless workers, preserving fresh nonce/identity/deadline checks
+and20GiB startup/8GiB running thresholds. No further task contacts before root records
+that proof and a new bounded entry. The original four-row structural intent and helpers
+are prepared only; their original capacity qualifier cannot admit failed epochs.
+Scientific N20, larger stages and other-carrier boundaries remain unchanged.
+
 ## Frozen capacity checks running from integrated source (2026-10-06)
 
 Completed original proposal compilation,all48 engineering supplies,all16 capacity
@@ -3064,7 +3097,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T00:39:58.566908+00:00
+Last refreshed: 2026-10-06T02:43:43.142357+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

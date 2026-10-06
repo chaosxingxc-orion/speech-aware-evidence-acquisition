@@ -1,0 +1,177 @@
+{
+  "schema": "saea-precontact-capacity-observer-stop-v1",
+  "at_utc": "2026-10-06T02:25:32.033351+00:00",
+  "status": "STOPPED_BEFORE_CAPACITY_WORKER",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/registration-v1.json",
+    "sha256": "b373bbe0e1a729c0549d78e97dd722c53882027f2f35f2880749c5e995264742"
+  },
+  "launch": {
+    "relpath": "docs/receipts/continuation/2026-10-06-partitioned-update4-process-capacity-launch.json",
+    "sha256": "d66e51c9ebbed8e6d49799c434f95dcc51098edc8e6422f5d1bd8b3faf770dba"
+  },
+  "terminal_sources": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/capacity-finished.json",
+      "sha256": "0dbf099cdbca1b483baa2beb6b17d86cafb6180ad496d6642de65069e8d77bac"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/capacity-failure.json",
+      "sha256": "f80030cce16f5012dd7947b8cfd9b7fca0bbb36462d0281b278b6b6a540a2f4a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/capacity-windows-v1.exit.json",
+      "sha256": "62c3f9cfa116242b051fb65fa090748d27abc909d96de0b5fcf372ebf550e9ad"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/branch-01-capacity-exit.json",
+      "sha256": "2a199719df09f4ab7ae64d970e8b89475084da8a64bf1451be4746affab394d1"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/branch-01/memory-wait/events.jsonl",
+      "sha256": "8b17128d578828d741b7bc13eed056945233e4876c6242e5d77566b85c4f1e95"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/branch-01/memory-wait/finished.json",
+      "sha256": "d75e78c1db30fac0713d17bf4be5a667e83e060892625d335bdc5b98478c9b1d"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/branch-01/memory-guard/events.jsonl",
+      "sha256": "2538076afe65fc0acee2a2dc84cc94495b71d2a8bac8e9fa26b08070f3d991bf"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/branch-01/memory-guard/finished.json",
+      "sha256": "09f1ab70100097c002018385b2fb1093fa972508cf90a1c573df86fe675aab0a"
+    }
+  ],
+  "finding": "Three startup observations passed near20.55GiB. A distinct guard observer returned transport-timeout at8seconds, before child creation. Windows reading was unavailable, not measured below threshold. Root cause of transport timeout remains unestablished.",
+  "worker_pid": null,
+  "member_absence_checks": [
+    {
+      "label": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-01-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-01-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-02-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-02-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-03-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-03-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-04-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-04-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-05-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-05-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-06-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-06-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-07-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-07-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-08-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-09-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-10-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-11-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-12-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-13-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-14-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-15-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-16-capacity-fit-v1",
+      "attempt_and_run_absent": true,
+      "fit_result_absent": true
+    }
+  ],
+  "tokenizer_contacts": 0,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "stop_present": false,
+  "lease_metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/locks/flight.lock",
+    "sha256": "30688ae5767efcc035425c800162e34408b2247868f550a9274e8333f340c90a"
+  },
+  "monitor": {
+    "id": "slurp-update4-capacity-monitor",
+    "created_after_launch": true,
+    "deleted_after_verified_terminal": true
+  },
+  "disposition": "Preserve frozen worker, registered inputs, failed launch, guard receipts, token and lease metadata. Diagnose observer transport using separately recorded model-free probes; no retry, reconciliation or new runtime dispatch yet. Owner227 permits a later exact recorded root disposition."
+}

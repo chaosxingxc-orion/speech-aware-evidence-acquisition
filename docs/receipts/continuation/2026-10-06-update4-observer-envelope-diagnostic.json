@@ -1,0 +1,47 @@
+{
+  "schema": "saea-model-free-observer-envelope-diagnostic-v1",
+  "at_utc": "2026-10-06T02:43:43.141073+00:00",
+  "cases": [
+    {
+      "case": "linux-inherit",
+      "cwd": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+      "stdin_is_tty": true,
+      "reason": null,
+      "available_gib": 20.622215270996094,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-observer-envelope-matrix-v1/linux-inherit/finished.json",
+        "sha256": "e55c0461dad905ddfee2f7a689574e2a40b5a7d9f750a3bb9f18607842e68c5b"
+      }
+    },
+    {
+      "case": "linux-null",
+      "cwd": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+      "stdin_is_tty": false,
+      "reason": null,
+      "available_gib": 20.647483825683594,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-observer-envelope-matrix-v1/linux-null/finished.json",
+        "sha256": "fbf26140a6348e8d84e2c11ca8f0be829b296eb9bc2eea9ca9cbc44dfdc60b3a"
+      }
+    },
+    {
+      "case": "windows-inherit",
+      "cwd": "/mnt/c/Windows/System32",
+      "stdin_is_tty": true,
+      "reason": "windows-reading-unavailable",
+      "available_gib": null,
+      "source": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-observer-envelope-matrix-v1/windows-inherit/finished.json",
+        "sha256": "7614058be3f2251840ece3fb8b42bcb221f3d5c3886e69e95ceb81a8044d64eb"
+      }
+    }
+  ],
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-observer-envelope-matrix-v1/windows-proof.exit.json",
+    "sha256": "46f6b2ba69aebc73e20ac1cbcc9e826c859fe049eca161471a130cb8e3ad39f3"
+  },
+  "interpretation": "Two Linux-directory envelope cases passed; the subsequent Windows-directory case timed out after spawn returned. Order and directory are confounded; previous isolated contexts also passed. Do not claim a unique working-directory, thread, authentication or memory-shortage cause. A reused persistent observer is not a verified repair for the actual leased child.",
+  "next": "Use exact full launcher-envelope structural proof before any third runtime entry. Prefer removing the unstable WSL-to-Windows pipe startup dependency with a separately tested Windows-owned memory observation channel; preserve nonce-bound freshness, identity, hard deadlines and unchanged thresholds. No worker admission from diagnostics.",
+  "contacts_added": 0,
+  "control_changes": false
+}

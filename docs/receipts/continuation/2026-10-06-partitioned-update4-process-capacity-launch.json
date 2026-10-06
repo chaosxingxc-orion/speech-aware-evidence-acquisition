@@ -1,0 +1,169 @@
+{
+  "schema": "saea-configured-update4-process-capacity-launch-v1",
+  "at_utc": "2026-10-06T02:23:17.494288+00:00",
+  "status": "RUNNING",
+  "windows_task": "SAEA-Partitioned-Update4-Process-Capacity-Owner227",
+  "capacity_epoch": "2026-10-06T02:22:56.579118+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+  "source_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/registration-v1.json",
+    "sha256": "b373bbe0e1a729c0549d78e97dd722c53882027f2f35f2880749c5e995264742"
+  },
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/frozen-check-v2.json",
+    "sha256": "0eaeed59ca230dfd35c1913889dca6d27f93dbe2d4da4cb8c718877207e1d125"
+  },
+  "windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/windows-launch-v1.json",
+    "sha256": "cc15721dbee871ba447798a667dd806f917e89dc3a7ea194c779c3f8f4125e47"
+  },
+  "windows_wrapper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/capacity-windows-v1.ps1",
+    "sha256": "9c6110e09b62f3c8b821f8001263f9fbeedf54f81daf3a4f18830ca33e514310"
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/live-prelaunch-v1.json",
+    "sha256": "b2ffdc70dfa44dfcbc085d710ff84a2c71a3447431f3de2f61a2a8472f70fc76"
+  },
+  "live_launcher": {
+    "pid": 90785,
+    "start_ticks": "58045007",
+    "command": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/launch-capacity-v1.py --registration /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/registration-v1.json --sha256 b373bbe0e1a729c0549d78e97dd722c53882027f2f35f2880749c5e995264742 "
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "members": [
+    {
+      "label": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-01-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-01-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-02-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-02-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-03-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-03-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-04-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-04-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-05-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-05-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-06-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-06-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-07-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-07-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-08-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-08-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-09-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-09-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-10-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-10-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-11-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-11-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-12-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-12-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-13-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-13-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-14-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-14-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-15-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-15-capacity-fit-v1",
+      "contact_cap": 297
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-16-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-16-capacity-fit-v1",
+      "contact_cap": 297
+    }
+  ],
+  "budgets": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-01": 297,
+      "branch-02": 297,
+      "branch-03": 297,
+      "branch-04": 297,
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 4752
+  },
+  "scope": "Nongenerative real-request capacity only. No task results, scoring or optimizer feedback.",
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "monitor": "Create exact job-scoped fifteen-minute script heartbeat and delete on terminal.",
+  "structural_and_scientific_runtime_admission": false
+}

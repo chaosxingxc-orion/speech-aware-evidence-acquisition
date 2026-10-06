@@ -1,0 +1,79 @@
+{
+  "at_utc": "2026-10-06T02:36:05.260138+00:00",
+  "authority": "Owner227 bounded root engineering and incident disposition before8x400",
+  "budgets": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "branch-01": 297,
+      "branch-02": 297,
+      "branch-03": 297,
+      "branch-04": 297,
+      "branch-05": 297,
+      "branch-06": 297,
+      "branch-07": 297,
+      "branch-08": 297,
+      "branch-09": 297,
+      "branch-10": 297,
+      "branch-11": 297,
+      "branch-12": 297,
+      "branch-13": 297,
+      "branch-14": 297,
+      "branch-15": 297,
+      "branch-16": 297
+    },
+    "tokenizer_endpoints_total": 4752
+  },
+  "contacts_added": 0,
+  "control_disposition": "After proving the old launcher, worker and lease owner absent and acquiring the free kernel guard, archive only this exact preserved flight.lock whose run/attempt/session/owner match the original branch01 token. Never remove the kernel guard, clear STOP or touch other controls. STOP must be absent.",
+  "correction": "Keep one owned persistent observer alive across stable startup admission and the unchanged sampled worker guard. Every observation remains fresh. Run the bounded wait inside the leased child wrapper; remove the duplicate outer observer. Capture observer stderr. Reuse original frozen wait/guard/observer APIs.",
+  "exact_scope": "Continue every original unspent configured capacity identity once, unchanged model requests, policies, samples, frozen worker, geometry, resource thresholds and tokenizer caps; zero task generation or scoring. No new allocations.",
+  "finding": "Stable admission succeeded, but a separately reopened observer timed out before creating the capacity worker. A Windows-owned benign sequence reproduced this behavior; isolated main/thread/exec transports separately passed. The lower-level transport cause is not established. No measured memory shortage or model failure is claimed.",
+  "future_failure": "Stop and preserve again; no automatic recovery or replay. A subsequent root diagnosis is required before any different experiment.",
+  "original_failure": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-capacity-precontact-observer-stop.json",
+    "sha256": "287d3b9f37da5a91201fde9dae876a26dcd2db2f539cc26eb51a8346069ac8b6"
+  },
+  "original_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-owner227-v1/registration-v1.json",
+    "sha256": "b373bbe0e1a729c0549d78e97dd722c53882027f2f35f2880749c5e995264742"
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 20,
+    "wait_seconds": 600
+  },
+  "schema": "saea-root-precontact-continuation-disposition-v1",
+  "source_commit": "94190872a21c2b49f45917c85dc9629ecab994db",
+  "source_worker": "/home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1",
+  "status": "APPROVED_ONE_EXACT_PRECONTACT_CONTINUATION",
+  "structural_and_scientific_admission": false,
+  "verification": {
+    "independent_seven_sample_proof": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-observer-continuity-proof-v1/finished.json",
+      "sha256": "9d90797b62bfcd3b489c8eade9880175996dd75290b64fbc11404d5339b86540"
+    },
+    "real_prepared_helper": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/helper-proof/finished.json",
+      "sha256": "fcd56afb57db33347375fecaf23d57694258722968c386a010d63ea6bb0403cf"
+    },
+    "reproduced_failure": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-observer-diagnostic-v1/windows-proof.finished.json",
+      "sha256": "57d67c6434ba85af03f8e87762c8f381e46c4b92f11a42a3557d6888a276a756"
+    },
+    "tests": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/validation.json",
+      "sha256": "9d31aabf2422d84e9f59ea14b1bebcf539f1741ce013b1d326763fddf282586a"
+    },
+    "transport_comparison": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-observer-interop-proof-v1/finished.json",
+      "sha256": "5e8427eae3c0b072d91fcd69e553980d1ebe935fc5c21015b669c884e0da1904"
+    },
+    "windows_exit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/helper-proof/windows-proof.exit.json",
+      "sha256": "3e027ba98e1a54fbd2e619297e84d7f5b164e687b3acf8adb26c636e3d230aa6"
+    }
+  }
+}

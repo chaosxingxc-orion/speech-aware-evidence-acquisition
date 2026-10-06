@@ -1,0 +1,78 @@
+{
+  "absent_capacity_members": [
+    "branch-01",
+    "branch-02",
+    "branch-03",
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08",
+    "branch-09",
+    "branch-10",
+    "branch-11",
+    "branch-12",
+    "branch-13",
+    "branch-14",
+    "branch-15",
+    "branch-16"
+  ],
+  "at_utc": "2026-10-06T02:40:46.886202+00:00",
+  "finding": "The same8second transport timeout occurred on the first startup-wait observation inside the real leased child. No guarded capacity worker was created. The independent continuous-observer proof did not cover the complete real parent/lease/child invocation environment. Persistent lifecycle reuse is not a verified fix for this launch. The lower-level cause remains unestablished.",
+  "future_structural_registration": "Prepared intent/helpers are not admitted. Their original capacity qualifier cannot qualify either failed epoch and must not be run as if a complete capacity family exists.",
+  "live_launcher": false,
+  "live_lease_owner": false,
+  "monitor": {
+    "deleted_after_verified_terminal": true,
+    "id": "slurp-update4-capacity-continuation-monitor"
+  },
+  "next_required_work": "No third runtime launch. Preserve both registrations and control evidence. Reproduce the exact Windows-owned parent/lease/child process and standard-handle environment using a harmless worker, with transport stage diagnostics; prove any correction there before registering a new bounded capacity entry. Do not alter thresholds, bypass observations, clear controls, restart WSL, or claim task-quality evidence from either precontact stop.",
+  "preserved_lease_metadata": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/locks/flight.lock",
+    "sha256": "8d61bf26510704db81775e2eef3290df9dd46f6f7cc8b03e89991e4c42cf48af"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/registration-v1.json",
+    "sha256": "e409beaf0832bdfc17ff27cee828cfd508280ae1c31953cb6ca1bd5d906164eb"
+  },
+  "root_disposition": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-capacity-precontact-continuation-disposition.json",
+    "sha256": "1914c5a95c92de42ee67b19547a62c0cc773b1ac7dedff5c2bb136ccafa72add"
+  },
+  "schema": "saea-root-capacity-second-precontact-stop-v1",
+  "scorer_contacts": 0,
+  "status": "STOPPED_REPAIR_NOT_VERIFIED_IN_REAL_LAUNCH",
+  "stop_present": false,
+  "task_generation_contacts": 0,
+  "terminal_sources": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/capacity-finished.json",
+      "sha256": "56e90a3afba92ab48d3f4c1868135151ad7fff21ae1d8d897bf3ad5c07ee57bb"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/capacity-failure.json",
+      "sha256": "f6614fd5dee74aa3c6e3c78da7ecc208a3251021d2d505c10b1c096f70b78a00"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/capacity-windows-v1.exit.json",
+      "sha256": "b70bb0ba067eaf85fef3c14af52783a360f3ef0905505b57f6bbf5fe1b844df9"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/branch-01-capacity-exit.json",
+      "sha256": "647227a8eb6c042bc53700d98e4d07861d1d3a4bbfb6c0d1238285ad2a88cc7c"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/branch-01/memory-wait/events.jsonl",
+      "sha256": "d3089eb3ff46a70b6e35ba643c66f2ae49b4f986d2bd616434e820f1af45cc94"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/branch-01/memory-wait/finished.json",
+      "sha256": "45426ab98a2451fd0ddf1f0f9f268f70d8eb2cf1314baa524605c1935bce3a8e"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-capacity-precontact-continuation1/branch-01/observer.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "tokenizer_contacts": 0
+}
