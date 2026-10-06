@@ -1,5 +1,16 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Qualified original-a sampling parameter source audit (2026-10-06)
+
+[Source supplement](../results/2026-10-06-update6-original-a-sampling-source-audit.md)
+rechecks the qualified116 seed/131 A/A requests and frozen transport bytes.
+Temperature0/seed20260913 are forwarded into the POST body; no audited decoding
+parameters request multiple completions. Local llama.cpp zero-temperature source
+keeps the maximum-logit candidate, but equal logits/KV/numerical execution are not
+proved. Child seed offsets require multiple completions and are not an established
+cause. Parameter omission is unsupported; reproducibility root cause remains unknown.
+No current runtime change, new contacts, active-family quality or learner export.
+
 ## Qualified original-a A/A repeatability audit (2026-10-06)
 
 [Root hash audit](../results/2026-10-06-update6-original-a-repeatability-audit.md)

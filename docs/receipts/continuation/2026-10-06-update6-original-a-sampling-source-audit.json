@@ -1,0 +1,15 @@
+{
+  "schema": "saea-root-sampling-source-audit-receipt-v1",
+  "evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-original-a-repeatability-audit-v1/sampling-source-audit-v1.json",
+    "sha256": "d530bbc4b6e33ad9aa5680655b5d372100ff22c88bdca0a4510de807a5289df2"
+  },
+  "report": {
+    "relpath": "docs/results/2026-10-06-update6-original-a-sampling-source-audit.md",
+    "sha256": "862d1d57103505d9f26586602cee2793ca35008b5465dfb9f1d0f94f58b15ad8"
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "root_cause": "UNESTABLISHED",
+  "learner_exported": false
+}
