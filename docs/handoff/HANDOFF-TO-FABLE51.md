@@ -1,5 +1,20 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 first-cohort structural review bound (2026-10-06)
+
+Root revalidated the full structural acceptance, original successful audit exit,
+exact terminal/process evidence and configured membership, and bound
+coordination/partitioned-update5-aggregate-scientific-preparation-v1/
+root-structural-review-v1.json for only the first configured cohort, original-a.
+See [review binding](../receipts/continuation/2026-10-06-update5-first-cohort-structural-review-bound.json).
+The serial22-member preparer remains the sole active preparation; inspect its
+original PID/start identity and original exit. Complete preparation and draft
+finalization must precede the prepared admit-first-cohort-v1.py. Frozen/live
+checks and Windows registration/launch remain subsequent, separate steps.
+No launch, quality read, later-cohort admission or optimizer export follows from
+this structural review. Keep every candidate and no-change version, and retain
+all configured data, resource and complete-population trial bounds.
+
 ## Update5 scientific execution entry prepared behind active preparation (2026-10-06)
 
 Prospective coordination/partitioned-update5-aggregate-original-a-scientific-v1

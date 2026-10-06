@@ -1,0 +1,28 @@
+{
+  "at_utc": "2026-10-06T11:54:10.682536+00:00",
+  "authority": "owner227",
+  "conditions": [
+    "All original22 members prepared by the existing one-shot serial process",
+    "Exact complete draft registration",
+    "Prospective first-cohort registration admission",
+    "Integrated clean frozen worker and every-member frozen checks",
+    "Fresh live gates and separately recorded Windows launch"
+  ],
+  "eligible_scientific_cohorts": [
+    "original-a"
+  ],
+  "later_cohort_policy": "Prior complete cohort qualification and root stage review remain required; no partial population optimizer export.",
+  "model_contacts": 0,
+  "review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/root-structural-review-v1.json",
+    "sha256": "06e88cd53c62713db776893e82b32cb08830378f0062c3befef011a47da29162"
+  },
+  "runtime_admission": false,
+  "schema": "saea-prospective-first-cohort-structural-review-v1",
+  "scientific_quality_read": false,
+  "status": "FIRST_COHORT_STRUCTURAL_REVIEW_BOUND",
+  "structural_acceptance": {
+    "relpath": "coordination/partitioned-update5-aggregate-structural-precontact-recovery1/structural-acceptance-v1.json",
+    "sha256": "30b4b59feaf0f91248b3f0369e092d6351bb8fcc461792e4fee90420844400f8"
+  }
+}
