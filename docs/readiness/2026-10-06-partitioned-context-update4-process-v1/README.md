@@ -78,3 +78,12 @@ denominator, unknown, descriptive interval, transition and scenario stratum. The
 real process payload shrinks from1289017 to381000 bytes without deleting metrics.
 The full actor view must still fit the original2097152-byte preparation cap; this
 does not establish model-token capacity. No proposal/GPU admission follows.
+
+## Actual offline completion
+
+The v2 preparation completed2026-10-06T01:06:16.700968Z, exit0, empty stderr,
+with a1525706-byte actor view and all16 active parents retained. No proposal was
+reserved or dispatched. See the completion receipt for exact input/view hashes,
+cumulative exposure and worker identity. Complete process statistics and rejected
+templates are now available through the optional shared continuation interface.
+Actual actor token/context admission remains pending; GPU admission is separate.

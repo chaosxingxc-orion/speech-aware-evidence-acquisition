@@ -1,0 +1,34 @@
+{
+  "status": "COMPLETE_UNRESERVED",
+  "input_sha256": "d24da70639da71acba7e709727e59e64b92ab5528d5d54b198de76762c0f3177",
+  "actor_input_sha256": "7706d883dfccd5ceae10c327117d5b54a9b5d6721eee709f9b954c58957bef4c",
+  "actor_file_sha256": "d5851dff828af8dd5a684b24ab01f3bd7bab5bdc1633e13ea851f57a664d092e",
+  "actor_bytes": 1525706,
+  "candidate_count": 16,
+  "iteration": 4,
+  "cumulative_exposure_count": 35554,
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "runtime_admission": false,
+  "learner_dispatched": false,
+  "schema": "saea-process-continuation-preparation-complete-v1",
+  "at_utc": "2026-10-06T01:06:47.219933+00:00",
+  "completed_at_utc": "2026-10-06T01:06:16.700341+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-context-update4-process-prep-v2",
+  "worker_commit": "24dfe88850f38db605f4cfd0881913f9580f96c5",
+  "capture": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v2",
+  "parent_disposition": "Preserve all16 original active parents and rejected update3 as history only.",
+  "tests": {
+    "passed": 329,
+    "projection_coverage_percent": 100,
+    "continuation_coverage_percent": 99
+  },
+  "limitations": [
+    "Actor byte admission is not model token capacity.",
+    "Original20 reused inputs do not become440 independent samples.",
+    "Raw retrieval-pool recall, slot-value support and criticism semantic correctness remain unavailable.",
+    "No policy improvement or adoption is established."
+  ]
+}

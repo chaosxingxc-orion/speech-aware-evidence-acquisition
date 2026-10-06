@@ -2,8 +2,8 @@
 
 Status: offline diagnostics and complete22-member backfill are complete and root-reviewed.
 See docs/results/2026-10-06-slurp-update3-process-diagnostics.md. Prospective
-abstract learner integration is implemented; actual packet preparation and actor
-admission remain separate.
+abstract learner integration and actual packet preparation are complete; actor
+admission remains separate.
 No new task generations, model calls, official scoring, policy adoption or runtime
 knowledge changes are authorized or performed by this package.
 

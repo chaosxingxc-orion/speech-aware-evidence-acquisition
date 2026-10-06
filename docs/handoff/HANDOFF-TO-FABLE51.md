@@ -1,5 +1,23 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Process-aware learning packet complete (2026-10-06)
+
+[The new offline preparation](../receipts/continuation/2026-10-06-update4-process-preparation-complete.json)
+completed01:06:16Z with exit0 and empty stderr. Session40390/PID78110 are terminal.
+Input d24da70639da71acba7e709727e59e64b92ab5528d5d54b198de76762c0f3177
+retains all16 original parents and rejected history, with35554 cumulative exposure
+identities. The prospective actor view is1525706 bytes within the registered2MiB
+preparation cap. It includes templates, anonymous observations and all22 members'
+process metrics/strata/uncertainty, with no task answers or private source rosters.
+
+No new proposal reservation, learner contact, GPU trial or scorer contact occurred.
+Keep the packet unreserved until actual actor context/token admission and the exact
+isolated GPT-6.1 Sol protocol are ready. Byte fit does not establish model context fit.
+No population adoption or stable improvement follows. Earlier failed preparation
+captures/workers remain immutable; their running snapshots below are historical.
+Prioritize business quality and completion, review selectivity and repair/damage,
+then resource cost. Other-carrier holds and human-before8x400 remain.
+
 ## Process-aware continuation prepared offline (2026-10-06)
 
 The original update4 preparation and its first continuation exited before proposal
