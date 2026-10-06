@@ -1,0 +1,32 @@
+{
+  "schema": "saea-runtime-owner-exit-containment-v1",
+  "at_utc": "2026-10-06T20:25:13.212979+00:00",
+  "authority": "owner227",
+  "status": "CONTAINED_PENDING_ORIGINAL_MEMBER_SETTLEMENT",
+  "task": "SAEA-Update6-Diversity-OriginalA-Scientific-V1",
+  "original_owner_pid": 43676,
+  "last_task_result": 2147943467,
+  "last_task_result_hex": "0x8007042B",
+  "named_component": "Windows outer scientific cohort owner",
+  "cause": "Unestablished. Native task reports unexpected process termination. No attribution to memory, model, authentication, task quality, or user action.",
+  "evidence": [
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-exit-observed-v1.json",
+      "sha256": "a3a3b1d45bd9a9d21885ab3f86c449acc29c9bc9fcf05605ce74821ccd952ea5"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-scientific-v1/owner-exit-wsl-observed-v1.json",
+      "sha256": "95e4b7b9fffa47ae119f6053470f852f161cbe222062a6f087d0636717c68672"
+    }
+  ],
+  "disposition": [
+    "Preserve original task, source, registration, generations, scores, logs, and missing terminal receipts as observed.",
+    "Do not relaunch the original task or start any replacement member.",
+    "Allow only the already admitted original branch-03 guarded child to settle within its existing resource and contact limits while monitoring its original identities. Its live Windows observer remains bound.",
+    "Keep branch-04 through branch-08 and later cohorts undispatched pending a separate evidence-based continuation disposition.",
+    "No scientific READ, score replay, reseal, policy update, or learner export.",
+    "Keep the job monitor until all original bound children and observer processes settle; then delete it with terminal incident evidence."
+  ],
+  "new_model_or_scorer_contacts_by_root": 0,
+  "quality_read": false
+}

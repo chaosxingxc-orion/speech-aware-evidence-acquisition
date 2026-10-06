@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T20:04:33.439025+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T20:25:13.212979+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -32,10 +32,31 @@ SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
 The previous GPU task is terminal and its monitor was deleted. Update6 nongenerative
 capacity completed with all16 passes and its monitor was deleted. The complete structural
-family is structurally accepted; original-a scientific generation is now running as below;
+family is structurally accepted; the original-a Windows owner failed while its original
+branch-03 guarded child remains live, as detailed below;
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 original-a Windows owner exit; original child still live (2026-10-06)
+
+At20:23:15Z the original Windows task became Ready with result2147943467
+(0x8007042B, unexpected process termination); original owner PID43676 is absent.
+No root terminal or failure receipt exists. Cause is unestablished. Do not infer
+memory, authentication, model, quality, or human-action failure from this code.
+Four members (seed,seed-aa,branch-01,branch-02) independently finalized with one
+successful official score and zero failed scores each. The original branch-03
+launcher PID240318 and campaign PID240377 remain live with Windows observer9480
+and WSL hosts30312/17976. Revalidate identities before action.
+
+Root227 containment preserves all evidence and permits only that already admitted
+bounded child to settle under its original guard. Do not relaunch the task, dispatch
+unstarted members, rewrite frozen sources, replay scores, or countersign READ.
+The existing normal-success terminal helper cannot qualify this failed owner epoch.
+Keep the current job monitor until original bound children/observer are gone, then
+delete it with a terminal incident receipt. A separate root continuation disposition
+and exact terminal/read provenance are needed before any new execution.
+[Incident and containment](../receipts/continuation/2026-10-06-update6-original-a-owner-exit-containment.json).
 
 ## Update6 original-a completion entries verified while running (2026-10-06)
 

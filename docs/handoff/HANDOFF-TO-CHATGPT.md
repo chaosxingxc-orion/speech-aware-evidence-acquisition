@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 original-a Windows owner exit; original child still live (2026-10-06)
+
+At20:23:15Z the original Windows task became Ready with result2147943467
+(0x8007042B, unexpected process termination); original owner PID43676 is absent.
+No root terminal or failure receipt exists. Cause is unestablished. Do not infer
+memory, authentication, model, quality, or human-action failure from this code.
+Four members (seed,seed-aa,branch-01,branch-02) independently finalized with one
+successful official score and zero failed scores each. The original branch-03
+launcher PID240318 and campaign PID240377 remain live with Windows observer9480
+and WSL hosts30312/17976. Revalidate identities before action.
+
+Root227 containment preserves all evidence and permits only that already admitted
+bounded child to settle under its original guard. Do not relaunch the task, dispatch
+unstarted members, rewrite frozen sources, replay scores, or countersign READ.
+The existing normal-success terminal helper cannot qualify this failed owner epoch.
+Keep the current job monitor until original bound children/observer are gone, then
+delete it with a terminal incident receipt. A separate root continuation disposition
+and exact terminal/read provenance are needed before any new execution.
+[Incident and containment](../receipts/continuation/2026-10-06-update6-original-a-owner-exit-containment.json).
+
+
 ## Update6 original-a completion entries verified while running (2026-10-06)
 
 The actual launch now has a separate immutable scientific-read-binding receipt using
