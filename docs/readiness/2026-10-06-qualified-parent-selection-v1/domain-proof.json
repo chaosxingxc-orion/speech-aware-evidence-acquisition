@@ -1,0 +1,24 @@
+{
+  "schema": "saea-qualified-parent-domain-proof-v1",
+  "at_utc": "2026-10-06T22:53:17.931937+00:00",
+  "tests_passed": 192,
+  "module_statements": 133,
+  "covered_statements": 133,
+  "regression": "same roster/profile/session must not merge distinct evaluation cohorts",
+  "runtime_changed": false,
+  "real_selection_performed": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "actor_contacts": 0,
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_parent_selection.py",
+      "sha256": "95586e580c4e5c9af48f5c7fbd020627bf25c3fd8d59b6282a78ca79463b5b6e"
+    },
+    {
+      "relpath": "tests/unit/test_qualified_parent_selection.py",
+      "sha256": "0bb1880ebf136ed18f2be15905251810b801bd4d64c2e463c3af41030e2ebeb1"
+    }
+  ],
+  "active_read_entry_pins_unchanged": true
+}

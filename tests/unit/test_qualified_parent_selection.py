@@ -125,3 +125,18 @@ def test_only_target_cohort_measurements_enter_frontier(prepared):
     assert result["duplicate_bundle_replicates"][0]["candidate_id"] == "seed-aa"
     assert "private_families" not in result
     assert result["source_registration"] == prepared.pin
+
+
+
+def test_same_roster_and_session_do_not_merge_distinct_evaluation_cohorts(prepared):
+    s = prepared; first = run(s)
+    s.request["cohort_id"] = "cohort-1"
+    s.request["usage_counts"] = {content_hash(cid): 0 for cid in ["seed", "candidate-3", "candidate-4"]}
+    second = run(s)
+    assert first["selection"]["cohort_id"] == second["selection"]["cohort_id"]
+    assert first["selection"]["measurement_id"] != second["selection"]["measurement_id"]
+    # Repeated identical inputs and a shared server are not one evaluation batch.
+    mixed = [first["measurements"][1], second["measurements"][1]]
+    with pytest.raises(PolicyError, match="one measured cohort"):
+        subject.select_search_parents(mixed, profile=profile(), selection_config=config(),
+            usage_counts={r["bundle_id"]: 0 for r in mixed})

@@ -1,5 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Search measurement domain correction: prospective only (2026-10-06)
+
+The qualified-parent adapter now binds search measurements to the source registration
+and evaluation cohort as well as the original timing identity. Identical input rosters
+and serving sessions no longer permit accidental cross-cohort frontier pooling.
+Record schema v2 preserves the explicit domain; no actual v1 selection had occurred.
+The historical timing reader and current Update6 analysis bytes remain unchanged.
+[Successor proof](../readiness/2026-10-06-qualified-parent-selection-v1/domain-proof.json):
+regression failed first,192 related tests pass,133/133 statements covered. Offline only.
+
+
 ## Remaining-b2 startup observation correction (2026-10-06)
 
 [Root correction](../receipts/continuation/2026-10-06-update6-b2-startup-observation-correction.json)

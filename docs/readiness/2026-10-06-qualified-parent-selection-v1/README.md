@@ -45,3 +45,20 @@ to count both the duplicate candidate and retained A/A; no implementation relaxa
 The combined selector/planner/adapter module covers130/130 statements. This is model-free
 integration evidence, not a real-data algorithm run. Zero new actor/model/scorer contacts.
 Current remaining-b2 captured READ entry pins and frozen worker sources remain unchanged.
+
+
+## Successor domain binding correction
+
+The added regression test exposed that the legacy timing measurement ID contains
+ordered input IDs, profile and serving identity, but not the evaluation batch. Two
+qualified cohorts with identical inputs and service could therefore share that ID.
+The new adapter now binds its search measurement ID to the original timing identity,
+complete source registration and selected cohort. Record schema v2 retains this domain
+explicitly. Combining rows from distinct cohorts now fails even when their rosters,
+profile and serving session match. The underlying historical timing adapter and every
+current analysis source remain unchanged. No real parent selection had used v1.
+
+The new test failed before the correction and passes afterward.192 related tests pass;
+combined module133/133 statements covered. domain-proof.json supersedes the earlier
+source/test coverage snapshot without rewriting it. This remains offline integration
+only, with no new actor, model or scorer contacts and no live algorithm activation.

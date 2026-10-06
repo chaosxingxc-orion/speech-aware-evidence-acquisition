@@ -237,6 +237,12 @@ def prepare_qualified_parent_selection(archive, *, request_pin, repo_root, data_
     profile = protocol["measurement_profile"]
     all_rows = measured_rows(doc, [controls[0], *candidates, *controls[1:]],
                              registration["member_bindings"], profile=profile)
+    # Equal input rosters and serving sessions do not identify one evaluation batch.
+    domain = {"timing_measurement_id": all_rows[0]["measurement_id"],
+              "source_registration": request["source_registration"],
+              "cohort_id": request["cohort_id"]}
+    for row in all_rows:
+        row["measurement_id"] = content_hash(domain)
     measurements, repeats, seen = [], [], set()
     for row in all_rows:
         (repeats if row["bundle_id"] in seen else measurements).append(row)
@@ -248,8 +254,8 @@ def prepare_qualified_parent_selection(archive, *, request_pin, repo_root, data_
             "complete population source changed during parent selection")
     require(json.loads(_read_pin(request_pin, root)) == request,
             "selection request changed during preparation")
-    record = {"schema": "saea-qualified-parent-selection-record-v1",
-        "request": request_pin, "source_registration": request["source_registration"],
+    record = {"schema": "saea-qualified-parent-selection-record-v2",
+        "measurement_domain": domain, "request": request_pin, "source_registration": request["source_registration"],
         "source_identity_sha256": content_hash(_source_identity(source)),
         "projection_config": source["projection_config"], "cohort_id": request["cohort_id"],
         "replicate_rule": request["replicate_rule"], "control_ids": controls,
