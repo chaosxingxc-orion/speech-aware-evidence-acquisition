@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 capacity registration is running (2026-10-06)
+
+All16 engineering supplies are complete and serially integrated at9a063d0f7.
+The single model-free capacity registration started at2026-10-06T10:05:38Z;
+see [bound start observation](../receipts/continuation/2026-10-06-update5-capacity-registration-started.json).
+Its durable wrapper PID153438/start ticks60773904 and registrar child were
+verified live. Revalidate actual identity and
+coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-v1.exit.json.
+The first member registered normally; no model/tokenizer/scorer contact occurred.
+Do not invoke run-registration-v1.py again while this execution exists.
+
+After terminal exit0 and all configured registered members are verified, serially
+integrate changed capacity metadata and exposure rows. Freeze a clean
+codex-partitioned-update5-aggregate-capacity-v1 worker at that exact commit.
+Run frozen-check-v1.py with SAEA_EXPECTED_COMMIT, then finalize-capacity-registration-v1.py.
+The mailbox Windows entry and broker are already prepared. Fresh live gates,
+Windows task identity and fifteen-minute launch-bound monitoring remain mandatory.
+No GPU job or heartbeat is active; structural and scientific evaluation remain held.
+
 ## Update5 all configured engineering supplies complete (2026-10-06)
 
 All16 configured positions completed serial preparation with exit0. Root verified
@@ -3970,7 +3989,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T10:04:47.832896+00:00
+Last refreshed: 2026-10-06T10:06:33.890212+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

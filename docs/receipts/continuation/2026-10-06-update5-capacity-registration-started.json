@@ -1,0 +1,24 @@
+{
+  "schema": "saea-capacity-registration-start-observation-v1",
+  "at_utc": "2026-10-06T10:06:33.890212+00:00",
+  "status": "MODEL_FREE_REGISTRATION_RUNNING",
+  "source_commit": "9a063d0f70c32fc75952ab0c3099244d924360fe",
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-started-v1.json",
+    "sha256": "b7956dba5f1637cef491b22bd9ca50912f2a59e51661be45e9160e73c5df45d1"
+  },
+  "pid": 153438,
+  "start_ticks": "60773904",
+  "runner": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/run-registration-v1.py",
+    "sha256": "bbbc9bef57b113eb3c13d51a747f5712eaeedf7d7792c6ea8302ea628beeb9a7"
+  },
+  "registrar": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/prepare-capacity-entry-v1.py",
+    "sha256": "40a2c5cad214301aca185d662269eb92c1b3b8fb28d8793d5637e545ce888c3e"
+  },
+  "terminal_expected": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-v1.exit.json",
+  "contacts_added": 0,
+  "runtime_admission": false,
+  "instruction": "Observe the same registered process until terminal. Do not duplicate or retry on observation timeout. After successful complete registration, serially integrate and freeze a clean capacity worker, then run the prepared frozen-check-v1.py with the exact expected commit. Actual contact requires final fresh registration and live Windows-owned job admission."
+}
