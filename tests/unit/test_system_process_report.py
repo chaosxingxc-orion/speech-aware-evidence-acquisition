@@ -81,3 +81,15 @@ def test_report_does_not_alias_source_documents():
     v=documents(); result=build_process_comparison(**v)
     result["business"]["official_summaries"]["seed"]["slu_f1"]=0
     assert v["business"]["official_summaries"]["seed"]["slu_f1"]==.5
+
+def test_exact_same_roster_in_different_record_order_is_joined_by_identity():
+    v=documents()
+    v["recipe"]["sample_ids"]=["s1","s2"]
+    for member in v["recipe"]["expected_members"]:
+        source=v["process"]["members"][member]
+        second=copy.deepcopy(source["rows"][0]);second["sample_id"]="s2"
+        source["rows"]=[second,source["rows"][0]]
+        source["sample_count"]=2
+        v["timing"][member]["completed_samples"]=2
+    result=build_process_comparison(**v)
+    assert result["unique_inputs"]==2 and result["trajectories"]==4

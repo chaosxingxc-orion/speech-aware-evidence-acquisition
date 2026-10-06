@@ -26,8 +26,8 @@ def build_process_comparison(*, recipe, business, process, timing):
         source = process["members"][member]
         rows = source["rows"]
         _require(source["sample_count"] == len(ids) == len(rows)
-                 and [r["sample_id"] for r in rows] == ids,
-                 "process roster, order or count differs")
+                 and {r["sample_id"] for r in rows} == set(ids),
+                 "process roster identity or count differs")
         _require(source["claims_causal_node_credit"] is False
                  and source["claims_semantically_correct_criticism"] is False,
                  "unverified causal or criticism correctness claim")

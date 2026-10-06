@@ -1,0 +1,36 @@
+{
+  "schema": "saea-prospective-process-presentation-v1",
+  "at_utc": "2026-10-06T06:22:13.410724+00:00",
+  "source_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "9bebb1acd0fa41ba09af66d4c341d32749e0f263dc231b56a49bde17b4f3ef17"
+  },
+  "process_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/process-analysis-plan-v2.json",
+    "sha256": "3800966caf7ab5af623d893fa404a18c7822abf80761c3c232bd542d4fe3fd7f"
+  },
+  "source_code": {
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/system_process_report.py": "33ae748b0db227d7b4678a4f2aff049442f669efa30d0206aa322ff82836e28e",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/diagnostic_pins_v1.py": "2931edf9ba768aa32500f143e18381ce8536e50185d25db12fca5da55e51ef7c",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/present-complete-cohort-v2.py": "18bdf13419deee8b810cd4d6ba61ef1c74477adecd321b9087bde37b6e0e3688"
+  },
+  "scope": "Pure presentation of an already complete root-read cohort. No new estimators, selection rule, rollout, scorer invocation, gold read or learner export.",
+  "priority": [
+    "official quality and reliable completion",
+    "support and review/repair/harm",
+    "latency and cost"
+  ],
+  "outputs": [
+    "business-process-cost-v1.json",
+    "business-process-cost-v1.md"
+  ],
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/presentation-plan-v1.json",
+    "sha256": "9a420926761843ad92a5e22843b1ae925ebdcbbbb3b211f1f46c94455c3831ae"
+  },
+  "correction": "Join the exact unique input set by identity; process artifacts may have a different record order. Missing, duplicate and foreign inputs remain refused. No estimator or selection rule changes.",
+  "preserved_original_renderer": {
+    "relpath": "coordination/slurp-process-presentation-rehearsal-v1/system_process_report-original-v1.py",
+    "sha256": "e6cba2cd946f9b87ea1976db2aaaadbcdf75ee5d3ce8a15ca4607b2da25f21b5"
+  }
+}

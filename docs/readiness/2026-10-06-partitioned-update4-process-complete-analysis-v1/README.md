@@ -102,8 +102,8 @@ checks do not claim it has run. See the prepared-entry continuation receipt.
 
 After process-complete-cohort-v2.py succeeds, run data-root
 coordination/partitioned-update4-process-scientific-preparation-epochs-v1/
-present-complete-cohort-v1.py with the exact cohort and SHA-256 of
-presentation-plan-v1.json. It binds the saved process, business, timing, family
+present-complete-cohort-v2.py with the exact cohort and SHA-256 of
+presentation-plan-v2.json. It binds the saved process, business, timing, family
 and root READ artifacts. Its exclusive JSON keeps all business paired contrasts,
 A/A variability, scenario strata, process rates/unknowns and separate model versus
 postprocessing transitions. Its Markdown presents business first, process second,
@@ -131,3 +131,20 @@ Two pure test methods plus sixteen negative cases cover all thirteen validator
 statements. The actual old structural-only review was refused before changing
 the ledger or creating admission. Both later cohorts remain DRAFT. See
 docs/receipts/continuation/2026-10-06-next-cohort-process-review-prepared.json.
+
+## Real historical presentation rehearsal and identity correction
+
+The full already authorized update3 sources exposed an ordering mismatch:
+all22 members have the exact unique20-input roster, but process record order
+differs from the recipe. The initial presentation refused before output.
+Preserve its input pins, source copy and failure under data-root coordination/
+slurp-process-presentation-rehearsal-v1. Join this aggregate view by exact unique
+input identity instead of serialization order; missing/duplicate/foreign inputs
+still fail. The dedicated regression test first reproduced the refusal.
+
+All66 focused tests now pass with100percent renderer statement coverage.
+A separate v2 presentation rehearsal completed all three historical cohorts and
+22 members/440 trajectories over the same20 inputs. It made no model/scorer
+contact and did not change the previous rejection. V2 of the current presentation
+entry/plan pins this correction prospectively. The current incomplete family
+still returns WAIT75. Do not claim the new current-family success path has run.

@@ -1,0 +1,35 @@
+{
+  "schema": "saea-process-presentation-actual-rehearsal-v1",
+  "at_utc": "2026-10-06T06:22:13.500204+00:00",
+  "status": "HISTORICAL_FULL_PRESENTATION_VERIFIED_CURRENT_FAMILY_PENDING",
+  "current_prospective_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/presentation-plan-v2.json",
+    "sha256": "148d85d9ad3a4db1a7bde5bffc400a0e8930e5bb4608febcb2f1bfe732364fd4"
+  },
+  "preserved_failure": {
+    "relpath": "coordination/slurp-process-presentation-rehearsal-v1/failure-v1.json",
+    "sha256": "2d6ee39bbf8a1bef7d87e2a6e24b383f3e7c9ea5e92f96537f4408b1f2726174"
+  },
+  "historical_complete_presentation": {
+    "relpath": "coordination/slurp-process-presentation-rehearsal-v2/complete-v1.json",
+    "sha256": "b00128a59399c52fe8042a3a56341c9d9b71bb0947652014e520e389b15eee1a"
+  },
+  "current_incomplete_refusal": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/presentation-v2-incomplete-refusal-v1.json",
+    "sha256": "3239143b18e9f5011d72410ba7cecdc8f7cff333990bc501f361d66c7bfc5627"
+  },
+  "finding": "All22 historical member process records contain the exact unique20-input registered sets, but their record order differs. Aggregate presentation must join identity rather than require equivalent serialization order.",
+  "verification": {
+    "passed_tests": 66,
+    "renderer_statement_coverage_percent": 100,
+    "historical_complete_cohorts": 3,
+    "historical_members": 22,
+    "historical_trajectories": 440,
+    "unique_reused_inputs": 20,
+    "prior_rejection_unchanged": true
+  },
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "runtime_changed": false,
+  "learner_exported": false
+}

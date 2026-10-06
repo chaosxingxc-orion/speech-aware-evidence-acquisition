@@ -1,5 +1,20 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Historical full presentation verified; exact-ID join corrected (2026-10-06)
+
+The real authorized update3 rehearsal revealed identical input sets with different
+record order. The initial display refused before publication and is preserved.
+The aggregate display now joins exact unique input identities; missing, duplicate
+or foreign inputs still fail. All66 tests pass; renderer statement coverage is100percent.
+The separate v2 rehearsal produced all three historical cohort reports, retaining
+all22 members and the prior rejection, with zero model/scorer contacts or learner export.
+[Evidence](../receipts/continuation/2026-10-06-process-presentation-actual-rehearsal.json).
+
+For the running update4 cohort use present-complete-cohort-v2.py and
+presentation-plan-v2.json after complete root process diagnostics. V1 is preserved.
+The actual incomplete v2 call refused before quality/reference loading. Runtime
+sources, active job, selection rules and later-stage holds are unchanged.
+
 ## Next stage requires complete business and process review (2026-10-06)
 
 Use the prepared admit-next-cohort-v2.py after the current exact complete root
