@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Rejected history complete; process backfill registered
+
+The [existing rejected-history reader completed successfully](../receipts/continuation/2026-10-06-rejected-history-preparation-complete.json)
+at2026-10-06T00:18:19Z. Its exclusive private output hash is
+9a9160cbdb3c92660c16f8db2caf1f43e9743bb9f5487ea632bab3f6a9b162ae.
+All16 original parents remain retained; the rejected full update and all cumulative
+source exposure remain history. No learner export, model/scorer contacts, optimizer
+activation or new GPU admission. The613204588-byte private result is not a proposer
+input; prospectively integrate a bounded abstract view, never dump its private custody.
+PID70821/session62916 are terminal, superseding the running snapshots below.
+
+[Complete process backfill](../readiness/2026-10-06-slurp-process-metrics-backfill-v1/README.md)
+is registered over all22 completed members in the three update3 cohorts. Its exact
+registration binds saved source specifications, manifests, official score results,
+governed TRAIN metadata and the zero-contact reader. Requalify all source families
+and signed READs before offline diagnostics. The output is exclusive under data-root
+coordination/slurp-process-metrics-backfill-v1. No actual backfill completion is claimed
+at this preparation checkpoint. Keep original retention rules and all runtime holds.
+
 ## Process diagnostics implemented; real-cohort backfill pending
 
 The owner requests intermediate statistical monitoring and a balanced reporting order.

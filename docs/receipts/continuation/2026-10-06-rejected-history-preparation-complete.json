@@ -1,0 +1,26 @@
+{
+  "schema": "saea-rejected-history-preparation-complete-v1",
+  "recorded_at_utc": "2026-10-06T00:20:34.243872+00:00",
+  "exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/rejected-context-history-v1/exit.json",
+    "sha256": "0869210fb0e7879eb4d4d2907ed08a7a1e769ee02bf4dd8e1992012b0fe52d9b"
+  },
+  "output": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/rejected-context-history-v1/history-private-v1.json",
+    "sha256": "9a9160cbdb3c92660c16f8db2caf1f43e9743bb9f5487ea632bab3f6a9b162ae"
+  },
+  "status": "COMPLETE",
+  "retained_parent_count": 16,
+  "disposition": "rejected-retain-before-population",
+  "criterion": "strict-population-utility-sum",
+  "utility_before": -56.15925390968045,
+  "utility_after": -59.5941577658888,
+  "cumulative_feedback_source_ids": 35554,
+  "learner_exported": false,
+  "runtime_admission": false,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0
+  },
+  "next": "Prospectively integrate bounded abstract history and process metrics; do not send private output directly to a proposer."
+}
