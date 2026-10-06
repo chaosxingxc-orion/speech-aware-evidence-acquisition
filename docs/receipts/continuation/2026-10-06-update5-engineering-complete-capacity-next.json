@@ -1,0 +1,28 @@
+{
+  "schema": "saea-update5-capacity-next-entry-v1",
+  "at_utc": "2026-10-06T10:04:47.832896+00:00",
+  "status": "ENGINEERING_COMPLETE_CAPACITY_REGISTRATION_NEXT",
+  "engineering": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-partitioned-update5-aggregate-engineering-prepared.json",
+    "sha256": "87388cf15e66ff6dc5978d0f85e522933fbbce9923797276bc7693fbb85b25a9"
+  },
+  "completion_verifier": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-preparation-v1/verify-engineering-completion-v1.py",
+    "sha256": "d17c09022d2035da0e7ba049bd4b1fa4312de9bd3a0b405dc1c2d292a55afd60"
+  },
+  "prepared_helpers": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-preparation-v1/completion-and-registration-helpers-prepared-v1.json",
+    "sha256": "e63d770c20fec773c91324fcd2e07ce1f6eb97092f61efa0748f48b0a45f9cba"
+  },
+  "capacity_capture": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/run-registration-v1.py",
+    "sha256": "bbbc9bef57b113eb3c13d51a747f5712eaeedf7d7792c6ea8302ea628beeb9a7"
+  },
+  "capacity_registrar": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/prepare-capacity-entry-v1.py",
+    "sha256": "40a2c5cad214301aca185d662269eb92c1b3b8fb28d8793d5637e545ce888c3e"
+  },
+  "contacts": 0,
+  "runtime_admission": false,
+  "next": "Serially integrate all exact finished member files, then run the pinned capture once. Its registration-started-v1.json and registration-v1.exit.json are authoritative. Freeze/check/finalize and live admission remain before tokenizer contact."
+}

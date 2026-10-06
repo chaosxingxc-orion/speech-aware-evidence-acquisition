@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 all configured engineering supplies complete (2026-10-06)
+
+All16 configured positions completed serial preparation with exit0. Root verified
+the terminal receipt, original process absence, exact ordered membership, compiled
+policy bindings, HELD cells and every prepared supply hash. Each member has its
+own graph, maximum-request capacity and four-row structural supplies; shared-runtime
+warm verification and equality to immutable source selections passed. No generation,
+tokenizer or scorer contact was added. See [complete preparation](../receipts/continuation/2026-10-06-partitioned-update5-aggregate-engineering-prepared.json).
+
+The [next capacity entry](../receipts/continuation/2026-10-06-update5-engineering-complete-capacity-next.json)
+pins the completion verifier and durable registration capture. Serially integrate
+these complete files, then invoke the capture once from
+coordination/partitioned-update5-aggregate-capacity-owner227-v1/run-registration-v1.py.
+Observe its registration-started-v1.json and registration-v1.exit.json without
+restarting on an observation timeout. This is model-free registration only.
+A clean frozen worker, complete frozen checks, fresh final registration and live
+admission remain before tokenizer contact. Structural and N20 scientific evaluation
+remain separately held. No GPU job or heartbeat is active and no gain is established.
+
 ## Update5 capacity entry prepared; serial supplies still live (2026-10-06)
 
 The new nongenerative entry is prepared under
