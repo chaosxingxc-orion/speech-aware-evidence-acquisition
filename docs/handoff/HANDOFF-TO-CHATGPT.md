@@ -1,5 +1,23 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 frozen capacity checks running; structural blueprint prepared (2026-10-06)
+
+The clean worker /home/chao/saea-worktrees/codex-partitioned-update6-diversity-capacity-v1
+is frozen at de6b4dac5bd783891b45e1f4c9ebd0a80b2460d0. Model-free checks started
+18:00:49.565269Z as PID217048, start ticks63571483, exec session34341; logs and
+exclusive terminal receipt are under coordination/partitioned-update6-diversity-capacity-owner227-v1.
+Root revalidated PID identity and clean source. Wait for the same process; do not retry
+on a polling timeout. [Frozen-check start](../receipts/continuation/2026-10-06-update6-capacity-frozen-check-started.json).
+All configured members must pass before finalizing capacity registration and live
+Windows admission. No new model/tokenizer/scorer contact or GPU launch occurred.
+
+The exact future structural blueprint is prepared in
+docs/readiness/2026-10-06-partitioned-update6-diversity-structural-mailbox-v1.
+It derives all16 original candidates,64 engineering trajectories,832 maximum model
+contacts and3328 FIT endpoints from the same config and prepared plans. It is not
+registration or dispatch authority; capacity-family qualification remains required.
+
+
 ## Update6 capacity offline gates passed; freeze next (2026-10-06)
 
 All eleven repository offline gates passed for the registered capacity configuration.
@@ -5033,7 +5051,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T17:59:34.028781+00:00
+Last refreshed: 2026-10-06T18:06:21.300991+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

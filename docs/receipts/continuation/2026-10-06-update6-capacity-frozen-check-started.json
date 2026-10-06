@@ -1,0 +1,20 @@
+{
+  "schema": "saea-frozen-capacity-preflight-started-v1",
+  "at_utc": "2026-10-06T18:06:21.300991+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-capacity-v1",
+  "commit": "de6b4dac5bd783891b45e1f4c9ebd0a80b2460d0",
+  "worker_clean_at_root_check": true,
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/frozen-check-started-v1.json",
+    "sha256": "1c98cf41de3ea420b9352b42c184a0d2c7f1f8d0606e7ad2f8d3ddf6636a3b3e"
+  },
+  "session_id": 34341,
+  "qualified_offline_gates": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-capacity-owner227-v1/offline-gates-qualified-v1.json",
+    "sha256": "64d8ccd81ac0b6063a15c764022e65cd4a5df1f4f2f480f987914bc0508ebf11"
+  },
+  "model_tokenizer_scorer_contacts": 0,
+  "status": "RUNNING_MODEL_FREE_FROZEN_CHECKS",
+  "runtime_dispatched": false,
+  "next": "Require all configured frozen checks and exact terminal before finalizing launch registration and live admission."
+}
