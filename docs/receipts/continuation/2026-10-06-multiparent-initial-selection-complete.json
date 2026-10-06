@@ -1,0 +1,31 @@
+{
+  "schema": "saea-initial-qualified-parent-selection-complete-v1",
+  "at_utc": "2026-10-06T23:29:00.477672+00:00",
+  "request": {
+    "relpath": "docs/readiness/2026-10-06-multiparent-search-initial-selection-v1/request-v1.json",
+    "sha256": "010d0ad6f85891c296e969c9310b2415f9e44a92556196e6cf7ad488afe9d4ae"
+  },
+  "record": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/qualified-parent-selection/1-bd9161457b3f96c826984c2f529c134c34435aaa3e0f199e2fea43dc53a0fe9f.json",
+    "sha256": "89ec777377625fde28683ab515acaea125c7425cadaa98d1f85779d1ec5a8a89"
+  },
+  "source_identity_sha256": "f570228650512be5be09a2ee1482e4c0ad694fa172ef2f4c33641d76bf00edc1",
+  "selected_frontier_labels": [
+    "seed",
+    "branch-01",
+    "branch-05"
+  ],
+  "selected_exploration_labels": [
+    "branch-02"
+  ],
+  "selection_rule": "Configured point-estimate quality-cost frontier and bounded exploration; no confidence-qualified promotion.",
+  "learner_exported": false,
+  "proposal_allocation_granted": false,
+  "runtime_admission": false,
+  "contacts_added": 0,
+  "implementation_commit": "df4fd14a5eb43e71fe20e6ca1266bc28f2915e11",
+  "implementation_source": {
+    "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_parent_selection.py",
+    "sha256": "ae411dad8a7a822a6df095c798c705746fd5ac94993878449f2d3e4d485be82e"
+  }
+}

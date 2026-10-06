@@ -1,5 +1,28 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Initial multi-parent selection complete; proposal mapping in progress (2026-10-06)
+
+The root-only first qualified selection ended23:27:36Z with exit0 after complete
+source/READ requalification. Its point-estimate frontier parents are seed,branch01,
+branch05; bounded exploration selects branch02. Keep every other observation and
+exclusion reason. No adoption, active Update2 replacement, allocation or actor export.
+[Receipt](../receipts/continuation/2026-10-06-multiparent-initial-selection-complete.json)
+binds the actual archive record and implementation source.
+
+The prospective multi-parent arm now binds that exact record and its immutable K8
+population in [proposal configuration](../readiness/2026-10-06-system-context-algorithm-contrast-n20-v1/multi-parent-proposal-config-v1.json).
+Configured modes are four local,two recombination,two exploration positions. This is
+configuration data, not hardcoded runtime K. The source-qualified proposal planner is
+running at coordination/multiparent-search-initial-proposal-plan-v1/prepare-v1.py,
+original unified session76919. Inspect its exact stdout/stderr/exit and original
+process; do not restart on observation timeout. It grants no contact authority.
+
+Next finish distinct algorithm/input/response and spent-allocation integration,
+shared aggregate history and exact analysis rules for both arms. The fixed-parent
+arm uses corresponding Update2 parents and the same evidence/budget representation.
+Keep current root rejection and all originals; no new GPU task or monitor is active.
+
+
 ## Complete Update6 process projection prepared (2026-10-06)
 
 The original complete-process-feedback v2 prepare entry exited0 at23:23:31Z. All16

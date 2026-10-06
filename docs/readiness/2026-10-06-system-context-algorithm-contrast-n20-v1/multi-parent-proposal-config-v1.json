@@ -1,0 +1,22 @@
+{
+  "schema": "saea-qualified-parent-proposal-config-v1",
+  "status": "ROOT_REGISTERED",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+    "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+  },
+  "selection_record": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/qualified-parent-selection/1-bd9161457b3f96c826984c2f529c134c34435aaa3e0f199e2fea43dc53a0fe9f.json",
+    "sha256": "89ec777377625fde28683ab515acaea125c7425cadaa98d1f85779d1ec5a8a89"
+  },
+  "modes": {
+    "branch-01": "local",
+    "branch-02": "local",
+    "branch-03": "local",
+    "branch-04": "recombine",
+    "branch-05": "recombine",
+    "branch-06": "explore",
+    "branch-07": "explore",
+    "branch-08": "local"
+  }
+}
