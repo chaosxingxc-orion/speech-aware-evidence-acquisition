@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 scientific preparation entry is tested and held (2026-10-06)
+
+The shared-runtime prepare-member-v2.py and one-shot serial_prepare_v1.py in
+coordination/partitioned-update5-aggregate-scientific-preparation-v1 now bind the
+actual recovery1 structural registration7f92cef3 and frozen edc736481 worker plus
+scientific blueprint SHA256d57a0adc16d847e43e36cb41c20b06f01406a26acab5f29ef9dd23ea9bcc7d55.
+Four reused synthetic entry tests passed. Actual entry invocations both refused
+exit75 before writes/contacts because full structural root acceptance is absent.
+See [entry evidence](../receipts/continuation/2026-10-06-update5-scientific-entry-prepared.json).
+No member supplies, new configs, model calls or scientific admission were created.
+After complete structural audit/root acceptance, bind that exact acceptance into
+structural-acceptance-binding-v1.json; then execute the serial preparer once.
+Keep failure stops, immutable source selections and configured policy verification
+for all controls/candidates. Further draft registration and frozen/live admission
+remain required. Current structural generation continues in its own frozen worker.
+
 ## Update5 scientific blueprint prepared; structural job continues (2026-10-06)
 
 Model-free scientific blueprint preparation completed11:15:04Z exit0 with no model
@@ -4226,7 +4242,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T11:16:17.810505+00:00
+Last refreshed: 2026-10-06T11:18:24.982345+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
