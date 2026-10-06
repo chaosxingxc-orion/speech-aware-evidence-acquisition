@@ -1,0 +1,98 @@
+{
+  "schema": "saea-root-member-boundary-disposition-v1",
+  "at_utc": "2026-10-06T14:10:32.536128+00:00",
+  "authority": "owner227",
+  "status": "decided",
+  "incident": "Original Windows coordinator exited unexpectedly after branch-10 independently completed; outer branch-10 exit and cohort terminal receipts are absent. Cause remains unestablished.",
+  "original_task": "SAEA-Update5-Aggregate-RemainingB1-Scientific-V1",
+  "original_launch_epoch": "2026-10-06T13:44:45.4108975+00:00",
+  "observed_task_result": 2147943467,
+  "original_worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1",
+  "original_commit": "efae9a68410cbd84ddf2339eec48e8f1465cdf2a",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-remaining-b1-scientific-v1/registration-v1.json",
+    "sha256": "dd1b5d625716d6cf80c023f3cbab5d41bd37520fff373803b048f64ebce3bfeb"
+  },
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1/boundary-qualified-v1.json",
+    "sha256": "84323da81f6be7983b83bb1d7dfa76accd58cc26c8bfa8871dd695b46d33fd0d"
+  },
+  "completed_members": [
+    "seed",
+    "seed-aa",
+    "branch-09",
+    "branch-10"
+  ],
+  "pending_members": [
+    "branch-11",
+    "branch-12"
+  ],
+  "authorized_members": [
+    {
+      "label": "branch-11",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-11-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-REMAINING-B1-BRANCH-11-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-11-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-REMAINING-B1-BRANCH-11-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+        "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+      }
+    },
+    {
+      "label": "branch-12",
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-12-v1",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-REMAINING-B1-BRANCH-12-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-n20-remaining-b1-branch-12-generation-v1",
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-N20-REMAINING-B1-BRANCH-12-FIT-V1",
+      "rows": 20,
+      "generation_cap": 260,
+      "fit_endpoint_cap": 1040,
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+        "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+      }
+    }
+  ],
+  "continuation_limit": 1,
+  "new_task": "SAEA-Update5-Aggregate-RemainingB1-BoundaryContinuation1",
+  "new_coordination_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-boundary-continuation1",
+  "scope": "Continue only the two never-started members with their original identities, immutable worker, policies, input roster, shared campaign/scorer and remaining original budgets. No regeneration, retry, reseal, score replay or new allocation.",
+  "conditions": [
+    "Fresh original-task terminal/no owner or observer processes; no admitted WSL process, STOP or flight lease; generation guard available.",
+    "Verify every original source and completed operational evidence hash, exact original worker/registration and pending attempt/run/unit absence.",
+    "Use original startup/running resource guards and one-shot exclusive receipts; any further failure stops this continuation.",
+    "Preserve original missing outer receipts as missing; never synthesize original success. A new source-bound terminal verifier must explicitly join original completed-prefix evidence and the real successor task terminal before exact full-family READ."
+  ],
+  "quality_read_authorized": false,
+  "learner_export_authorized": false,
+  "next_cohort_admitted": false,
+  "monitor": "Original monitor deleted after verified terminal/no admitted processes. Create a new exact 15-minute monitor only after actual continuation launch.",
+  "unchanged": {
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "resource_policy": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 20,
+      "wait_seconds": 600
+    },
+    "budget": {
+      "generation_contacts": 1560,
+      "fit_endpoint_contacts": 6240,
+      "official_score_jobs": 6
+    }
+  },
+  "verification": {
+    "unit_tests_passed": 9,
+    "statement_coverage_percent": 100,
+    "model_contacts": 0,
+    "scorer_contacts": 0
+  }
+}

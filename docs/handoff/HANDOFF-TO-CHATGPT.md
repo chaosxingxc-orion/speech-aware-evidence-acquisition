@@ -1,5 +1,29 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 remaining-b1 outer process exit; bounded tail continuation prepared (2026-10-06)
+
+The original Windows task is terminal Ready with result2147943467. Its owner,
+owned observers and admitted WSL processes are absent; STOP/lease are absent and
+the generation guard is available. Four members independently FINALIZED20 rows
+with verified inspections and one successful official score each, zero failures:
+seed, seed-aa, branch-09, branch-10. The last member's campaign, inspection,
+worker and observer exited0, but the outer Windows member/cohort exit receipts
+are missing. The cause of the outer process termination remains unestablished.
+Branch-11 and branch-12 remain pristine/ABSENT. No task quality was read.
+
+Root227 recorded [one bounded continuation](../readiness/2026-10-06-update5-remaining-b1-boundary-continuation1/root-disposition-v1.json)
+for only the two unstarted members, using their unchanged identities, immutable
+worker, original config and remaining original budgets. Do not regenerate or
+rescore the completed prefix or fabricate missing original terminal receipts.
+Nine new boundary tests pass with100percent statement coverage, six original
+launcher tests pass, and native success/failure capture proof passes. The separate
+continuation source and every input are hash-pinned. Runtime is not launched yet.
+Fresh gates and the exact new Windows task remain before any continuation contact.
+The original15-minute monitor was deleted after verified terminal/no live work;
+create a new exact monitor only on actual launch. Full-family READ stays unsigned
+and must explicitly join the two actual epochs; the normal verifier is unchanged.
+Remaining-b2 stays unadmitted. No quality/learner export or next-stage promotion.
+
 ## Update5 remaining-b1 scientific job running (2026-10-06)
 
 All six frozen proofs passed. Windows task SAEA-Update5-Aggregate-RemainingB1-Scientific-V1
@@ -4580,7 +4604,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T13:46:30.707371+00:00
+Last refreshed: 2026-10-06T14:15:12.742294+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
