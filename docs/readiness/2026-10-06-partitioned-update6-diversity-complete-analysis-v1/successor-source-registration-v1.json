@@ -1,0 +1,57 @@
+{
+  "schema": "saea-abstract-population-source-registration-v1",
+  "status": "ROOT_REGISTERED",
+  "scope": "abstract-feedback-source-join-only",
+  "runtime_admission": false,
+  "projection_config": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "families": [
+    {
+      "cohort_id": "original-a",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-scientific-preparation-v1-original-a/analysis-recipe-v1.json",
+        "sha256": "73a5708aa266e31169e27ef96ca0e1b840bd15f12d5ba9f2d5982c250e8b3b75"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-flight-v1/frozen-check-v1.json",
+        "sha256": "42ea4dd15e45eb68949c210935f31442a57f87f1ef39429aa2298da5085b99f5"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1/family.json",
+        "sha256": "f9649056516a8ead5ead42b334f71d54069cb106f17692ae6fe06234c4cf0581"
+      }
+    },
+    {
+      "cohort_id": "remaining-b1",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-scientific-preparation-v1-remaining-b1/analysis-recipe-v1.json",
+        "sha256": "d7251fa1da34f38d33817aa4862086542914cc7de143f259863cf1dcf7fbea07"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b1-flight-v1/frozen-check-v1.json",
+        "sha256": "435df211ef04043dd9bd3f0a4f4fc29774c215ba250fa9189600c384927c756a"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B1-READ-V1/family.json",
+        "sha256": "88f8cee232d401e5ddbd930ae03be1d4e8d7260d1641c35b9c0908d9c0985d12"
+      }
+    },
+    {
+      "cohort_id": "remaining-b2",
+      "recipe": {
+        "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-scientific-preparation-v1-remaining-b2/analysis-recipe-v1.json",
+        "sha256": "cb438315d8a8b8ce38e5fc5a00e827676db10885b668770c3f7b96a8db41719c"
+      },
+      "frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b2-flight-v1/frozen-check-v1.json",
+        "sha256": "39340c31e90c95ef9526624392fac4cf67eea427dbe8ac148e90f229ab37cf38"
+      },
+      "saved_family": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1/family.json",
+        "sha256": "0593900115cfcd7bd83b716dbe6378c1c38d012faacfa162795e62c243621f88"
+      }
+    }
+  ]
+}

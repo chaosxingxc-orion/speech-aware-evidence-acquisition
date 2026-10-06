@@ -1,5 +1,31 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 remaining-b2 complete; whole-trial evaluation in progress (2026-10-06)
+
+All six members independently FINALIZED20 rows with verified seals, exactly one
+successful official score each and zero failed jobs:120 trajectories,672 contacts.
+Native owner exit0 and terminal identities passed; exact root READ completed22:59:34Z.
+Registered process/presentation/paired diagnostics passed. The bound fifteen-minute
+monitor slurp-update6-remaining-b2-monitor is DELETED. No generator/scorer remains.
+Frozen02599c9e3 worker and all original evidence stay unchanged.
+
+[Root review](../results/2026-10-06-update6-remaining-b2-complete-review.md) and
+[receipt](../receipts/continuation/2026-10-06-update6-remaining-b2-scientific-read.json)
+retain business comparisons, scenario strata, process missingness and costs.
+Candidate16 has F1 +1.1254pp versus seed but -2.4174pp versus A/A and -5pp intent;
+no stable benefit is established. Candidate raw model revisions have zero full-answer
+repairs;15/16 produce2/1 harms. Do not credit normalization repairs to model revision.
+
+The create-only whole-trial pipeline has checked and registered all three complete
+source cohorts and is evaluating the original strict-population-utility-sum rule.
+Do not rerun while its original process is active. After it succeeds, run the pinned
+complete-process-feedback-entry-v2.py prepare path, then root retention and handoff.
+Keep formal seed and Update2 active parents until the exact original-rule disposition.
+The prospective [algorithm priorities](../readiness/2026-10-06-system-evolution-algorithm-roadmap-v1/next-algorithm-priorities.md)
+separate measurement protection, bounded parent selection and revisable experience.
+Offline prototypes confer no actor, GPU, algorithm-change or scale admission.
+
+
 ## Search measurement domain correction: prospective only (2026-10-06)
 
 The qualified-parent adapter now binds search measurements to the source registration

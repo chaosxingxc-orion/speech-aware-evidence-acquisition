@@ -1,0 +1,60 @@
+{
+  "schema": "saea-complete-cohort-root-review-receipt-v1",
+  "at_utc": "2026-10-06T23:05:00.591897+00:00",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1",
+  "status": "COMPLETE_ROOT_REVIEW",
+  "root_report": {
+    "relpath": "docs/results/2026-10-06-update6-remaining-b2-complete-review.md",
+    "sha256": "d84bc5fc1c171372598f4db8dbe8268b8ab131682f8cd70ef3905c1879a3e564"
+  },
+  "source_pins": [
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1/report.json",
+      "sha256": "760f91cae9a2eba37c87f0b2e740d8a0fee81f851b045e6f52bc6eeca87a37bb"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1/family.json",
+      "sha256": "0593900115cfcd7bd83b716dbe6378c1c38d012faacfa162795e62c243621f88"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1/process-metrics-v1.json",
+      "sha256": "b0b41163149564b3913661744377c62070ce835b46c505242b0be7466e83c533"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1/business-process-cost-v1.json",
+      "sha256": "d4e45e2077b81287c4fa875285c188a4072fb19233621ca78e903aa487c3c109"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1/paired-process-diagnostics-v1.json",
+      "sha256": "7eb13bb31a61319fe2f181f85bef16ab2b8e78674d5fb65609484bb915425ff1"
+    },
+    {
+      "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-REMAINING-B2-READ-V1/timing-summary.json",
+      "sha256": "edca7c7a5967df0dd1835706130f85e8aabf08d6d3eb330a86464dd3345430cd"
+    },
+    {
+      "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b2-flight-v1/native-owner-read-proof-v1.json",
+      "sha256": "0c6540cf0d92c36b8b015fc030e90980d7e46180682ee53f8055df04d39b20d9"
+    },
+    {
+      "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/remaining-b2-flight-v1/root-read-authorization-v1.json",
+      "sha256": "949a60147fc03624266eab2c7a069352810b33cb67e16a334e59bb237a2db0f9"
+    },
+    {
+      "relpath": "coordination/partitioned-update6-diversity-remaining-b2-scientific-v1/owner-process-exit.json",
+      "sha256": "ba0b6461a9b9bfca57c4b8b6ef57c68df0117cdfad2a63b81af836fdfd59747d"
+    }
+  ],
+  "trajectories": 120,
+  "model_contacts": 672,
+  "official_score_jobs": 6,
+  "failed_score_jobs": 0,
+  "monitor": {
+    "id": "slurp-update6-remaining-b2-monitor",
+    "status": "DELETED_AFTER_TERMINAL"
+  },
+  "stable_benefit_established": false,
+  "learner_exported": false,
+  "whole_trial_selected": false,
+  "next_operation": "Original complete-trial evaluation; no automatic new proposal or dispatch."
+}
