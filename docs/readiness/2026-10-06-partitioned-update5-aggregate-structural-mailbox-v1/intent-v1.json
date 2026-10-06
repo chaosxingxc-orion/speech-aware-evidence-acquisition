@@ -1,0 +1,696 @@
+{
+  "at_utc": "2026-10-06T10:31:51.710726+00:00",
+  "capacity_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-capacity-owner227-v1/registration-v1.json",
+    "sha256": "b3dc8c07e8b20ac5500caefd98385e60a97272077c16ad0e66e51c8c7b3b99fd"
+  },
+  "constraints": [
+    "All configured capacity members must complete successfully before structural admission.",
+    "Preserve full output and structural reserves and actual request FIT on every generation contact.",
+    "Record root structural admission, exact generation/FIT/read exposure and clean frozen preflight before dispatch.",
+    "Use separate serial processes for per-member registration; do not retain every runtime in memory.",
+    "No quality read, optimizer feedback, scoring or resealing of worker-only structural attempts.",
+    "Use the same configured sequential trajectory geometry and resident service.",
+    "No cache clearing, global sync or restart.",
+    "Observe and stop on failure; diagnose and record root disposition before any successor.",
+    "Create the fifteen-minute script monitor only on actual launch; delete it when terminal."
+  ],
+  "contacts_added": 0,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "members": [
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/b16e21a57092d21e5c41e14e98dd579b7cc65e77462c9cc46b4f0550234c8099.json",
+        "sha256": "d6fa1ed23a4e670987c0cf6eea2553ca46626886278d8fa5769cafab42e3edbd"
+      },
+      "candidate_id": "branch-01",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-01/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-01-smoke-4-v1.json",
+        "sha256": "23b0eaefdae9c5e34053d45fdfe3ee743463899066965177b8d203a84017cfca"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-01-engineering-v1/prepared-members-v1.json",
+        "sha256": "e7a1d13e5b3df337a1c8a9e2bcc4b52db0086f6e5413734222b7506842b7865f"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "0860853b22eadaee09bb22b1382099b17393fa07fdc8adc552b41c0cf6bca5f4"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-01-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/a74730b67cf649521e5cac63e327638413537d2a5c5d0441b36cb7c460e32ddb.json",
+        "sha256": "42568ee3c6153cf48186d6e56fa630cb2c1aa0416092b13b4287e4a7a8814540"
+      },
+      "candidate_id": "branch-02",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-02/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-02-smoke-4-v1.json",
+        "sha256": "6b45f9a2b14aea6998917aea54f1881155100482d91e032eaa2a103e7dc47c54"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-02-engineering-v1/prepared-members-v1.json",
+        "sha256": "d9f63fe17781bba70e129469d72005030234abd7850175acf2907404437c4df7"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "b6ba20739a3205002678eaabb7862615873af1854d7e39d917eee6f542ec6608"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-02-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/ecfbed26f16bc2add13f3b8d07c8326605305e1cda1f75e4ac6e395ae342a88b.json",
+        "sha256": "1820387f1b81fa8570b95b15d452c466de7caf76a1038202e0e5bbb1bdf6ba95"
+      },
+      "candidate_id": "branch-03",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-03/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-03-smoke-4-v1.json",
+        "sha256": "50d314e0e3768730266cffc6c3ab5e7da4da78993ca89fed18deb426ed23d5aa"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-03-engineering-v1/prepared-members-v1.json",
+        "sha256": "70d95d795c54297a8ffe4a112fe3df148b68237e36ec9178fc01fb8ca8e57006"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "1a26313996b65bb2d776b040314647673568af7459c4b21a0173a42277c1236f"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-03-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/f4f841d09620fe8f5f89ffc3de2979cf991c0d2864062b6e502e19e186956f59.json",
+        "sha256": "83b35a4a60a1d3def41f428e11cf2e78c96905fbec80dbf94db26a47114fa928"
+      },
+      "candidate_id": "branch-04",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-04/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-04-smoke-4-v1.json",
+        "sha256": "f0f7bae4b45f81d146f503a36cbdff118ffaafc6c462b50a84da0ab6b024c52d"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-04-engineering-v1/prepared-members-v1.json",
+        "sha256": "48939cd130e2a283985586998bd7eb5960c799e9965def2776f8f6b14bbfb0eb"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "d2dbacd811242ba6f0b2ad3f2797ba12ca2ec9b9f77ee48813ffc8c9372ddcc9"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-04-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/250570653870c8646c6fa0bf5aed500f603ad9a3774d1f99637511433788bae1.json",
+        "sha256": "d7607fa82a005f0fd12b2fd2edd771209300bf96e4908a359c31b6d94de4fea2"
+      },
+      "candidate_id": "branch-05",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-05/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-05-smoke-4-v1.json",
+        "sha256": "cc56e5eee961a1e2f4f8d6a050af0511e434df0c2a4a70e2c4e5eedaab496496"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-05-engineering-v1/prepared-members-v1.json",
+        "sha256": "6687b0c3cb07b7f636763b0ab2d92519cbf1599e035076d6f6497544802b5ffd"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "9c051a704e4d81b8cf5b2f54aed9623e966ae34ac43b597155e18f2e1257da7a"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-05-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/e73409bf458f1b4b28ba8e6cd3d9fce596775e49dcdc60753996581b4d439ac4.json",
+        "sha256": "04b7d350341c39a03e8ac5d19bbae289171cf8dd2d8411d23fea80f48aefdb6e"
+      },
+      "candidate_id": "branch-06",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-06/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-06-smoke-4-v1.json",
+        "sha256": "48b77aadae6d9975e375645cfcf82fb3110a24af39f816c852bb2dbc8dbc4f8d"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-06-engineering-v1/prepared-members-v1.json",
+        "sha256": "e52e4015d3146353e58be2b8ba89559eb92e6167122f611afa7d09559ac62587"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "ff79b86c57f8e2925f96aa560e4b36764523fadf90ba89f94bca62235ebb5279"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-06-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/ca9c306373848637fabd8e0c84ee2adfdd1ab91897287b2b590af63ac7a88726.json",
+        "sha256": "ca33e67e074d69eafee9fdb84864a168e306620fc8ccbfdbe6cbe686a816ef7b"
+      },
+      "candidate_id": "branch-07",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-07/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-07-smoke-4-v1.json",
+        "sha256": "e2d69063d2aada460ffbc112db7da558bfaa3dfda54e5f278402143ea43bf62f"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-07-engineering-v1/prepared-members-v1.json",
+        "sha256": "1b96aa9d4147180d8ec1169accc2a7dcec6ee493b787fe4e4faa5d446ae9ca77"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "10bb023fd62cfdc9a5e64b7f388880d68a8a7767d7fb56e14e86d63968e47c2e"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-07-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/76658555d8ce2afbdd5857766630b8e71eeb5876348a169e624247a6f3b17662.json",
+        "sha256": "a6d3464cacf3bd39bfc797ad4576d5021ae9819b78580911227497987f0a531f"
+      },
+      "candidate_id": "branch-08",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-08/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-08-smoke-4-v1.json",
+        "sha256": "e86e694eb8edf8700d326d4bda86236ed7f5f3aee1f7f921e6ac3bd8d105eaa7"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-08-engineering-v1/prepared-members-v1.json",
+        "sha256": "61509cab3c3d44457e175ef446606b431a44afaed704b51b23dd7e7a42e3a68f"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "ba31e1696c35e032b7d391d9afc1475c2d44bcf857409d754518cd72cefc6eae"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-08-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/6baea15a7e1fa8ae935594feba93f8826b66dd68f77bc01b35f5dddfb6a5646c.json",
+        "sha256": "560a3d0369f0ab2bda1495eab57edb209019b6f15523a185bef5bfb926bf905a"
+      },
+      "candidate_id": "branch-09",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-09/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-09-smoke-4-v1.json",
+        "sha256": "3822dfec496e095b1dc4158bd587b7430bd39f1e06107db391081a24a56fcfbe"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-09-engineering-v1/prepared-members-v1.json",
+        "sha256": "945c94c3abb4319a8a56c0a79546bfe448a0e3d1fa0d69ed74562bbfc5463b46"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "fc389ba92f1d2d3ab0210782c87e329dfdb44069dc16ea2fdfa3096f88085de0"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-09-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/4a2d86c2594bdd4b3eee9f40b0c62056d44fbdfc56d21e78488aec5e4219e1d2.json",
+        "sha256": "02cdc31f641b713e25b848ee31ddadc9d516b19ba14effd80e38bebb79b64da6"
+      },
+      "candidate_id": "branch-10",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-10/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-10-smoke-4-v1.json",
+        "sha256": "7c1fc8bdd54ec7585fa5f71343312fbd50c9de7d79550afb5f70f6d045eb3324"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-10-engineering-v1/prepared-members-v1.json",
+        "sha256": "e5aac17e9a9d9eb4f2e726466b8a53d665f94805fab760cadf837630dc606df2"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "90787604ee133d6fdd37907390177dec4d0ed24f3b309fda25de260a1542dc43"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-10-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/4252173169072ce4a889fe7c49a26c1326829ba63ff97e8ef89700c9eaefabb9.json",
+        "sha256": "0efaf2dab7299897420de51c77c798a71dc8c49046b77a2d2abcf667fe6d1e45"
+      },
+      "candidate_id": "branch-11",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-11/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-11-smoke-4-v1.json",
+        "sha256": "7982615bc67d66474b1c260fd84e7885ec99c67e137a63b2e8af068c68fb9e00"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-11-engineering-v1/prepared-members-v1.json",
+        "sha256": "cd02e2fee1b056f1200aed07db6e5c48702d1df10546dfd56270eb1527fe8a89"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "5f92974ec2b067b23a86aa86251c9d13c5be4129cb69133241b37d36edcc2a1c"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-11-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/b2834b66eec3cf89c888896bc610199cb0efc2dc27e933bb8bc36d69d3dfdbd0.json",
+        "sha256": "ea3f34b477a1f2bf4ce12689501b8a1c54439d3755d37e33b0701c8eb24202aa"
+      },
+      "candidate_id": "branch-12",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-12/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-12-smoke-4-v1.json",
+        "sha256": "3d9fc5d07b7c8f440f7ec21747751c8bf8c465d6d6916b5e272c1fa7b8911f7e"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-12-engineering-v1/prepared-members-v1.json",
+        "sha256": "82de05e9a327aa6cd2b9132f4a0c0375a3924c0d3d4b8aa0208bba067971f7f7"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "4fbfa69a3a2e917aaded1b282b622460cef7cbf7f1453d9b5c46369d605a0b76"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-12-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/928dc8457091d7f46a184230265197032d25f6444de678c701c9da38a3053f3d.json",
+        "sha256": "a6ed4618500237152f66a0e10566b7c4fd4f872ec0b441ed36c4cf8f594cad19"
+      },
+      "candidate_id": "branch-13",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-13/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-13-smoke-4-v1.json",
+        "sha256": "176fa3426ec4d4a35cfec566614dd8f14c6b5fcb607223cddb9a0146923558c0"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-13-engineering-v1/prepared-members-v1.json",
+        "sha256": "0b3aac4d85dcf7dfcef2a4ae431c53e4f0155f351a2ff6cc8ba79b7031460b12"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "d6327d1fc125c80333e3aa4f0df74d6b282480d7321d4c9b278cd77b50f1b81a"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-13-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/523a0ad803e30dabae41a01ae6db6bcdae7d676dcd6e7430ef6aaa9e7a724eae.json",
+        "sha256": "9720c6a8c452012736cf0f150f8783930e730343fd4080b99a1105250282ff50"
+      },
+      "candidate_id": "branch-14",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-14/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-14-smoke-4-v1.json",
+        "sha256": "0c1313a0c54f303d1d14c12a33ccb69fb0ab657b20a5864160914e21e4c42a5f"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-14-engineering-v1/prepared-members-v1.json",
+        "sha256": "7a28ea3b3b3a560401d85ab3fe648fc1778325f9723de66b53346adf0d9c2373"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "be34086f79616c288b5b1bc9335d90cea72a9d9a89bbd2d68443dde7d4095923"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-14-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/df1917bf541a9b62a0633709337faf4ef8878b6774729917a74e30d96666713b.json",
+        "sha256": "aec66b35f485cbea8d93f5f1d66ebe94632fb13b1110f05ed34dc5da4fca053e"
+      },
+      "candidate_id": "branch-15",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-15/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-15-smoke-4-v1.json",
+        "sha256": "c4e2149490ddc26f19a37bbc4e661707df90de8992415d93f7a8f54337f284ea"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-15-engineering-v1/prepared-members-v1.json",
+        "sha256": "9e03b7a07c4e605944bb1b7453cbf99d4fbfceee3444030a7bff32488f6b1e7b"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "81b47c936ea1e706ee6e7bdd807be330f13a148ae4258d80201a00ec4870b533"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-15-SMOKE-4-STRUCTURE-V1"
+    },
+    {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/a99eeb7e1414b48c231f2d0a71878d5d0a80d472df3098eff76d91b65ecc4b51.json",
+        "sha256": "cd8bd0eae883cd299595add3126fde3204db823d0f77b1394ef1b676d3ed3ca4"
+      },
+      "candidate_id": "branch-16",
+      "capacity_receipt_expected": "coordination/partitioned-update5-aggregate-capacity-owner227-v1/branch-16/request-fit-v1.json",
+      "capacity_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-CAPACITY-FIT-V1",
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "experiment": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-smoke-4-fit-v1",
+      "fit_endpoint_cap": 208,
+      "fit_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-SMOKE-4-FIT-V1",
+      "generation_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-smoke-4-generation-v1",
+      "generation_cap": 52,
+      "generation_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-SMOKE-4-V1",
+      "graph": "slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-graph-v1",
+      "held_cell": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-partitioned-update5-aggregate-branch-16-smoke-4-v1.json",
+        "sha256": "40c8b04c17bbd3e7e04d45328fd4cfaf57d2f0cda0687f5324e274af91a323ac"
+      },
+      "prepared_members": {
+        "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update5-aggregate-branch-16-engineering-v1/prepared-members-v1.json",
+        "sha256": "700cc0e70fb95c985f3a51fb24e4e866ffc5e387d03774aba691388e6af91a0c"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-SMOKE-4-V1/phase-supply-v1.json",
+        "sha256": "9949b8b0effa0264848bd9e7b781f5cd65b55b8e79813f45a8afb24537cd2541"
+      },
+      "rows": 4,
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "scientific_score_jobs": 0,
+      "structural_read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-BRANCH-16-SMOKE-4-STRUCTURE-V1"
+    }
+  ],
+  "runtime_admission": false,
+  "schema": "saea-configured-structural-entry-intent-v1",
+  "source_assets": "Reuse existing prepared source outputs and current knowledge. Do not rebuild data or knowledge.",
+  "source_blueprint": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-structural-mailbox-v1/blueprint-v1.json",
+    "sha256": "b463557c8d146d57b9a0833a8514bc03c2286d8ab331c24532be028e60366e87"
+  },
+  "status": "PREPARED-NOT-ADMITTED",
+  "totals": {
+    "fit_endpoint_contacts_cap": 3328,
+    "generation_contacts_cap": 832,
+    "official_score_jobs": 0,
+    "structural_trajectories": 64,
+    "systems": 16
+  }
+}

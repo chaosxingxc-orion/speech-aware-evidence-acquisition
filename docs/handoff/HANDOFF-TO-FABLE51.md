@@ -1,5 +1,26 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 structural entry prepared behind active capacity (2026-10-06)
+
+The [new exact structural intent](../readiness/2026-10-06-partitioned-update5-aggregate-structural-mailbox-v1/intent-v1.json)
+pins the actual current capacity registration and every original held child.
+See [prepared entry evidence](../receipts/continuation/2026-10-06-update5-structural-entry-prepared.json).
+Prospective helpers under coordination/partitioned-update5-aggregate-structural-mailbox-v1
+reuse the successful whole-family capacity qualifier, shared-runtime registration,
+frozen checks and Windows/mailbox execution. New identity/pin substitutions parsed;
+shared observer files are byte-identical. No helper was executed, no readiness
+changed, and no new contact was added by this preparation.
+
+The exact capacity task below remains active; monitor its actual current receipts,
+not this snapshot. After verified complete capacity and absence of its remaining
+workers/observers, delete slurp-update5-capacity-monitor and capture
+windows-task-terminal-v1.json in its coordination directory, bound to
+SAEA-Update5-Aggregate-Capacity-V1 and its exact epoch/registration. Then the prepared
+structural run-registration-v1.py may qualify the entire capacity family and
+register structural generation/FIT/read only. Do not run it before that terminal
+receipt exists. Freeze/check/finalize before a separate structural launch and new
+job-scoped monitor. No partial quality read, scientific admission or learning gain.
+
 ## Update5 nongenerative capacity is running (2026-10-06)
 
 All16 frozen checks passed at commit a9a2831b20b2b0f9a4f6f8616199f5337b72b789;

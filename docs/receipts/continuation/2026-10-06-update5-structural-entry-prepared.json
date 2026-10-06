@@ -1,0 +1,21 @@
+{
+  "schema": "saea-configured-structural-entry-root-preparation-v1",
+  "at_utc": "2026-10-06T10:33:26.912505+00:00",
+  "status": "PREPARED_NOT_EXECUTED",
+  "intent": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update5-aggregate-structural-mailbox-v1/intent-v1.json",
+    "sha256": "f21434c5cd20d08a8932602478b76f8410e86bcae5328929c8ed7bea8f7cc2da"
+  },
+  "helpers": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/helper-preparation-v1.json",
+    "sha256": "ae3bb6e1162c171472243d89be731cb101bbce3a62a69576353db876d43ea6d0"
+  },
+  "validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/helper-validation-v1.json",
+    "sha256": "79d19c24e2647e7b743c0be926104dc40f054ece226e6b214ec271ecfcac4f11"
+  },
+  "contacts_added": 0,
+  "runtime_admission": false,
+  "verification": "Exact configured ordering, fixed own policy/supply hashes, current capacity identity and per-member budgets checked. Python AST and PowerShell parsing passed. Shared observer files copied byte-identically; runtime behavior is not established by parsing.",
+  "next": "Wait for exact complete capacity terminal and no admitted remaining workers/observers, stop its monitor, capture task terminal and qualify every original capacity member. Only then invoke prepared structural run-registration-v1.py once, freeze/check, finalize a new entry and launch under its own monitor. No partial task quality or optimizer feedback."
+}
