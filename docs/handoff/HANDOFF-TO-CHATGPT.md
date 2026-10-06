@@ -1,5 +1,20 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 capacity registration running; no runtime contact (2026-10-06)
+
+Complete engineering preparation and independent root verification are integrated through
+b3a5bfbbb. The exact capacity registrar started2026-10-06T17:50:09.594577Z as
+PID215837, start ticks63508748, exec session86524. Its durable started/exit and member
+logs are under data/coordination/partitioned-update6-diversity-capacity-owner227-v1.
+Root's prospective capacity-only decision derives all16 members and4752 tokenizer
+endpoint maximum from their prepared plans; generation and scoring budgets are zero.
+The actual registrar has made no model/tokenizer/scorer contacts. Verify its exact
+terminal and every member before integration/freezing. Do not rerun a partial registrar.
+Frozen checks, live service/resource checks, final registration and Windows launch remain
+pending. Resource policy remains20GiB startup/8GiB running with stable observations.
+No GPU heartbeat is active because no new GPU task has launched.
+
+
 ## Update6 complete engineering preparation independently verified (2026-10-06)
 
 All configured16 candidates completed serial preparation at17:45:35.528817Z with
@@ -4992,7 +5007,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T17:49:32.561328+00:00
+Last refreshed: 2026-10-06T17:51:03.930711+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
