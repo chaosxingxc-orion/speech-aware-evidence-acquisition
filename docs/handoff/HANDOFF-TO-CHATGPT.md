@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update4 remaining-b1 launched after full prior-cohort review (2026-10-06)
+
+Windows task SAEA-Update4-RemainingB1-Scientific-V1 launched at2026-10-06T06:58:56.3455462+00:00 from frozen /home/chao/saea-worktrees/codex-update4-remaining-b1-scientific-v1 at6d8dca0dfcc8d2b7fe7108e65e280453a3eaf2a4. All six frozen member checks passed. Members are seed, seed-aa and branches09-12,20 rows each/120 trajectories, derived from the unchanged population config. The first cohort is complete and root-read; no partial-trial selection or learner export.
+
+[Launch receipt](../receipts/continuation/2026-10-06-partitioned-update4-process-remaining-b1-launch.json) binds exact sources and process evidence. Use its own coordination monitor, not the obsolete global batch queue. The15-minute heartbeat slurp-update4-remaining-b1-scientific-monitor is active and must be deleted at verified terminal with no bound worker/scorer/observer. Resource guards remain20GiB startup/8GiB running,3stable10-second samples/600-second wait. Fresh prelaunch Windows free memory20.40GiB; service identity verified healthy/idle before launch. Revalidate live values.
+
+No cache flush, global sync, restart or policy change. Remaining-b2 is still DRAFT; it requires this cohort complete business/process review before admission. This job has no partial READ authority. Other carriers and old failed artifacts retain their holds.
+
 ## Update4 original-a complete; business and process reviewed (2026-10-06)
 
 All ten members finalized20 rows with verified seals, one official successful score each and zero failed jobs. Windows terminated normally at06:39:16Z, with no bound worker/scorer/observer; its15-minute monitor was deleted. Root exact READ, process diagnostics and balanced presentation completed with zero new model/scorer contacts.
@@ -3609,7 +3617,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T06:51:39Z
+Last refreshed: 2026-10-06T07:00:57Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
