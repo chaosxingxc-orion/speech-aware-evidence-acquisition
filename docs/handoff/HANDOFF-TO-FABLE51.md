@@ -1,5 +1,21 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Actual scientific member preparation running (2026-10-06)
+
+The one-shot serial_prepare_v1.py --execute is ALREADY RUNNING after complete
+structural root acceptance. Parent113037 started05:02:56Z; unified exec session81111.
+The original-a seed and seed-aa members completed with exit0; branch01 child113203
+was verified live. Revalidate actual identities and resume this same session or
+inspect its exclusive receipts, never rerun the entry on a polling timeout.
+[Exact start](../receipts/continuation/2026-10-06-update4-scientific-serial-preparation-started.json).
+
+All22 members run serially in separate model-free children through the existing
+shared runtime; preserve immutable selections, original candidate policies and
+new own supply identities. No generation/FIT/scorer contacts or runtime admission.
+On complete success invoke the prepared draft finalizer once, then gates. On any
+failure preserve partial preparation and diagnose before a new disposition.
+The structural job monitor is deleted; no GPU job is active. Other holds remain.
+
 ## Complete update4 structural family accepted (2026-10-06)
 
 All16 members completed04:59:14.963202Z; Windows taskReady/exit0 and no bound

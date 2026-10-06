@@ -1,0 +1,27 @@
+{
+  "schema": "saea-scientific-preparation-started-v1",
+  "recorded_at_utc": "2026-10-06T05:04:38.640206+00:00",
+  "started_at_utc": "2026-10-06T05:02:56.868237+00:00",
+  "status": "RUNNING_MODEL_FREE",
+  "parent_pid": 113037,
+  "exec_session_id": 81111,
+  "entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/serial_prepare_v1.py",
+    "sha256": "31333e733b5e5f0cf4a3abe01f6f50ce11b6a22355c6620802c2580b1633c269"
+  },
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/serial-preparation-v1/started.json",
+    "sha256": "95f62a0d8140d7171d9c4697847916b82fc1eff20ec5dc0f83be566d6f6e7064"
+  },
+  "expected_members": 22,
+  "observed_complete_members": [
+    "original-a-seed",
+    "original-a-seed-aa"
+  ],
+  "observed_current_member": "original-a-branch-01",
+  "current_child_pid": 113203,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_admission": false,
+  "next": "Resume exact exec session81111 or verify live parent/child identities and exclusive serial-preparation-v1 receipts. Do not rerun the entry. On complete success run the prepared draft finalizer once; on any failure stop for preserved root diagnosis. No GPU heartbeat applies to this model-free preparation."
+}
