@@ -1,5 +1,33 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update4 structural GPU family launched and live (2026-10-06)
+
+Windows task SAEA-Update4-Structural-Start18-V1 launched04:26:56.1721554Z.
+Receipt root coordination/partitioned-update4-structural-start18-v1; registration
+SHA3a1ca6cbe1f8841366388429178450a574e3c30ce2967319d9f383b04aea9165.
+Frozen worker remains /home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1
+at988ec3d9446b462c47f0312fc002e21bb5f95352. All16 original members run once,
+four rows each,64 total,832 model/3328 tokenizer maximum,zero official scoring.
+[Exact launch](../receipts/continuation/2026-10-06-update4-structural-start18-launch.json).
+
+Root227 startup-only amendment18GiB/unchanged8GiB floor is machine-verified;
+26 positive/rejection cases,100percent of27 statements,all135 pins passed.
+Launch memory19.49447GiB,4 idle slots,original healthy service and free guard.
+First member passed20.207seconds stable wait and completed normally04:28:24Z.
+Second member parent107154 was verified live; revalidate PIDs and epoch.
+Windows owner36556. Monitor slurp-update4-structural-start18-monitor ACTIVE at15minutes;
+delete after verified terminal/no bound processes. No cache/service/host changes.
+
+Use this independent Windows entry and per-member receipts, not the old batch queue.
+Engineering OPENED attempts/completed manifests/prepared score specs are intentional;
+never score/reseal/restart or read task quality. After complete successful terminal,
+record windows-task-terminal-v1.json in the NEW receipt root and run its pinned
+structural-audit-v1.py for structural-only root acceptance. The old epochs-directory
+audit is bound to the unlaunched20GiB entry; do not use it on this job.
+The prepared scientific member helper still expects the old acceptance path and is
+HELD; version its binding to this new exact acceptance before any future execution.
+Scientific N20 needs separate registration/admission/READ. Other-carrier holds remain.
+
 ## Frozen checks complete; structural prelaunch resource disposition (2026-10-06)
 
 All16 frozen structural checks passed at04:17:51.830150Z; session24027 exited0.

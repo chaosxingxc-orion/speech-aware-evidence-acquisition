@@ -1,0 +1,172 @@
+{
+  "schema": "saea-configured-structural-windows-launch-v1",
+  "at_utc": "2026-10-06T04:29:46.165252+00:00",
+  "status": "RUNNING",
+  "task_name": "SAEA-Update4-Structural-Start18-V1",
+  "launch_epoch": "2026-10-06T04:26:56.1721554+00:00",
+  "windows_owner_pid": 36556,
+  "worker": "/home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1",
+  "commit": "988ec3d9446b462c47f0312fc002e21bb5f95352",
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/registration-v1.json",
+    "sha256": "3a1ca6cbe1f8841366388429178450a574e3c30ce2967319d9f383b04aea9165"
+  },
+  "resource_disposition": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update4-structural-startup-resource-disposition.json",
+    "sha256": "07f8a6e2dcaa0af4fe5358652ba38cbbcfcaf1a9975bbb96ed76502425c89e5f"
+  },
+  "resource_policy": {
+    "floor_gib": 8,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 18,
+    "wait_seconds": 600
+  },
+  "budget": {
+    "generation_contacts": 832,
+    "fit_endpoint_contacts": 3328,
+    "official_score_jobs": 0
+  },
+  "members": [
+    {
+      "label": "branch-01",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-01-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-01-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-02",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-02-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-02-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-03",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-03-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-03-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-04",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-04-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-04-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-05",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-05-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-05-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-06",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-06-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-06-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-07",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-07-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-07-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-08",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-08-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-08-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-09",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-09-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-09-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-10",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-10-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-10-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-11",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-11-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-11-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-12",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-12-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-12-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-13",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-13-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-13-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-14",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-14-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-14-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-15",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-15-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-15-smoke-4-generation-v1",
+      "rows": 4
+    },
+    {
+      "label": "branch-16",
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-16-SMOKE-4-V1",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-16-smoke-4-generation-v1",
+      "rows": 4
+    }
+  ],
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/live-prelaunch-v1.json",
+    "sha256": "8b14a1617bab6d6a4a004c1d2dc7fe44ebbebd2485773aed1f2214790a999e9d"
+  },
+  "windows_task": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/windows-task-v1.xml",
+    "sha256": "584ea65f1433bec6fc3c41f50336c1b50b2914dfee65ad09e8e6a9476ac733e0"
+  },
+  "first_member_operational": {
+    "state": "OPENED",
+    "actual_calls_at_observation": 16,
+    "memory_wait_seconds": 20.207280352944508
+  },
+  "completed_member_exits": [
+    {
+      "at_utc": "2026-10-06T04:28:24.373382+00:00",
+      "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update4-process-branch-01-smoke-4-generation-v1",
+      "exit_code": 0,
+      "label": "branch-01",
+      "lease_exit_code": 0,
+      "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-BRANCH-01-SMOKE-4-V1"
+    }
+  ],
+  "revalidated_live_parents": [
+    {
+      "pid": 107154,
+      "command": "/home/chao/.venvs/speechrl/bin/python -B /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/launch-member-v1.py --registration /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/registration-v1.json --sha256 3a1ca6cbe1f8841366388429178450a574e3c30ce2967319d9f383b04aea9165 --label branch-02 "
+    }
+  ],
+  "monitor": {
+    "id": "slurp-update4-structural-start18-monitor",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "terminal_action": "Delete only after verified terminal with all bound processes absent."
+  },
+  "structural_acceptance_reader": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-structural-start18-v1/structural-audit-v1.py",
+    "sha256": "84e16113336d9636f5a59945d158ba3ff06718138f40a80ea6fe3cb557ac59c0"
+  },
+  "official_scoring_permitted": false,
+  "task_quality_read": false,
+  "scientific_N20_admission": false,
+  "boundary_maintenance": "observe-only",
+  "preserved": "Original20GiB entry never launched; original plans and all unique capacity proofs remain unchanged. Exact root resource amendment governs only this structural entry."
+}
