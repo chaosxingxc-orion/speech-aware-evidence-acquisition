@@ -1,0 +1,25 @@
+{
+  "schema": "saea-partitioned-context-evaluation-intent-v1",
+  "status": "HELD_PENDING_ORIGINAL_RESPONSE",
+  "root_authority": 227,
+  "source_input_sha256": "d24da70639da71acba7e709727e59e64b92ab5528d5d54b198de76762c0f3177",
+  "trial_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "population_update_batch": "complete-update4-process-history-v2",
+  "compiler": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-preparation-v2/compile-original-population-v1.py",
+    "sha256": "2bb6b60f75439fc3788415501a5c710b5265305b75ab121538fb0def2051a8a7"
+  },
+  "preserve_all_positions": true,
+  "runtime_admission": false,
+  "no_change_disposition": "Retain unchanged policy content at its configured position with new cumulative provenance and evaluation identity; never replace or omit.",
+  "invalid_disposition": "Preserve the original response and hold compilation if any position is invalid; do not ask the actor for repair.",
+  "statistical_priority": [
+    "Official complete-system quality and reliability",
+    "Complete process rates, harms and uncertainty",
+    "Resource costs including latency"
+  ],
+  "acceptance": "Keep strict-population-utility-sum as the registered learning retention signal; process diagnostics do not change historical decisions or establish efficacy."
+}
