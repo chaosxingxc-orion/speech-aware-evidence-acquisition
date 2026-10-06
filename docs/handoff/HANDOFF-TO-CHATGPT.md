@@ -1,5 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 remaining-b1 frozen checker live (2026-10-06)
+
+The new clean frozen worker is /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1
+at efae9a68410cbd84ddf2339eec48e8f1465cdf2a. The all-six-member model-free checker started
+2026-10-06T13:40:07.741653+00:00; PID 184346, start ticks 62036758 (revalidate).
+It runs from the existing remaining-b1-flight-v1/frozen-check-v1.py and preserves
+exclusive logs, per-member proofs and checker-exit-v1.json in that directory.
+See [start receipt](../receipts/continuation/2026-10-06-update5-remaining-b1-frozen-check-started.json).
+Wait for this exact checker. Do not restart or duplicate it. No GPU registration
+finalization, Windows task or model/scorer contact for remaining-b1 exists yet.
+After all six proofs pass, finalize the prepared remaining-b1 job and perform fresh
+live/resource gates. Runtime remains held until those checks succeed. The prior
+original-a scientific job is complete, root-read, and its monitor deleted.
+
 ## Update5 first cohort complete; adjacent cohort admitted (2026-10-06)
 
 The original-a Windows job ended 13:29:25.4112695Z with exit 0. All ten
@@ -4537,7 +4551,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T13:39:01.455246+00:00
+Last refreshed: 2026-10-06T13:40:52.065552+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

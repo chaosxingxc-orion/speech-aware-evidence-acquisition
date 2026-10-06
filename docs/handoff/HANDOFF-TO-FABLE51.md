@@ -1,5 +1,19 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 remaining-b1 frozen checker live (2026-10-06)
+
+The new clean frozen worker is /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1
+at efae9a68410cbd84ddf2339eec48e8f1465cdf2a. The all-six-member model-free checker started
+2026-10-06T13:40:07.741653+00:00; PID 184346, start ticks 62036758 (revalidate).
+It runs from the existing remaining-b1-flight-v1/frozen-check-v1.py and preserves
+exclusive logs, per-member proofs and checker-exit-v1.json in that directory.
+See [start receipt](../receipts/continuation/2026-10-06-update5-remaining-b1-frozen-check-started.json).
+Wait for this exact checker. Do not restart or duplicate it. No GPU registration
+finalization, Windows task or model/scorer contact for remaining-b1 exists yet.
+After all six proofs pass, finalize the prepared remaining-b1 job and perform fresh
+live/resource gates. Runtime remains held until those checks succeed. The prior
+original-a scientific job is complete, root-read, and its monitor deleted.
+
 ## Update5 first cohort complete; adjacent cohort admitted (2026-10-06)
 
 The original-a Windows job ended 13:29:25.4112695Z with exit 0. All ten

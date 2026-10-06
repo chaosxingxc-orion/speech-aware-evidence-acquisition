@@ -1,0 +1,19 @@
+{
+  "schema": "saea-configured-frozen-check-started-v1",
+  "at_utc": "2026-10-06T13:40:52.065552+00:00",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1",
+  "commit": "efae9a68410cbd84ddf2339eec48e8f1465cdf2a",
+  "cohort": "remaining-b1",
+  "identity": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-flight-v1/worker-identity-v1.json",
+    "sha256": "64bd2b68e7985bbeb794c0d8f812ac462ffe0d2d3555519fa841889c9334284f"
+  },
+  "started": {
+    "relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/remaining-b1-flight-v1/checker-started-v1.json",
+    "sha256": "5c1b0f043581938d4c3d50def02c9fbab50f7b112658b247f53e7f28445ab4c4"
+  },
+  "status": "LIVE_MODEL_FREE_CHECK",
+  "runtime_dispatched": false,
+  "new_model_or_scorer_contacts": 0,
+  "next_action": "Wait for this exact checker and inspect checker-exit-v1.json and all six proofs. Do not duplicate or restart. Finalize registration and fresh live gates only after complete success."
+}
