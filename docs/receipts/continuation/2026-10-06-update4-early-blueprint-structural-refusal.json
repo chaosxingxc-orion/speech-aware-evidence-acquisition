@@ -1,0 +1,12 @@
+{
+  "at_utc": "2026-10-06T03:42:24.738950+00:00",
+  "status": "PREPARATION_REFUSED_BEFORE_ARTIFACT_MUTATION",
+  "attempted_helper": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-v1/build-blueprint-v1.py",
+  "sha256": "1672475b217cf652df5c9cc636e075dc2595c7cec2a9802e632db2b1f1ed3bf3",
+  "reason": "An existing previously prepared helper was invoked by a dependent shell line after directory creation refused. It stopped at missing original structural registered-members, before its first output-directory creation.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "readiness_changes": false,
+  "old_prepared_helper_unchanged": true,
+  "resolution": "Inspect and preserve the existing helper. Use a separate explicitly HELD blueprint successor referencing current pending structural intent; do not execute member preparation or admission before structural acceptance."
+}

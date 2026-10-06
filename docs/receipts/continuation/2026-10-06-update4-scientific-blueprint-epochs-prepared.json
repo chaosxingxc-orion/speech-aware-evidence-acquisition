@@ -1,0 +1,63 @@
+{
+  "schema": "saea-update4-scientific-blueprint-prepared-v1",
+  "at_utc": "2026-10-06T03:43:56.107056+00:00",
+  "status": "HELD_PREPARATION_COMPLETE",
+  "blueprint": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-scientific-blueprint-epochs-v1/planned-members-v1.json",
+    "sha256": "b3fe79a00fd2a5b4613b1469e80942007f4a9d666d8022abadf8b28998043764"
+  },
+  "process_analysis_intent": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-scientific-blueprint-epochs-v1/process-analysis-intent-v1.json",
+    "sha256": "dbf7b7c15e25a09ac6acfff39f21b2420d92890704c72c18d1b8ea38045993a3"
+  },
+  "builder": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-blueprint-epochs-v1/build-blueprint-v1.py",
+    "sha256": "a3684340fdac55d17151f42ad3d0e36cf97495cba60a7417bd22c938ae7b2cea"
+  },
+  "builder_completion": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-blueprint-epochs-v1/blueprint-complete-v1.json",
+    "sha256": "7ddf25e22a86e4e283f70f68525af28c54fd5f476040c455d583c10d3c20bc4f"
+  },
+  "cohorts": {
+    "original-a": {
+      "candidates": 8,
+      "controls": 2,
+      "rows": 200
+    },
+    "remaining-b1": {
+      "candidates": 4,
+      "controls": 2,
+      "rows": 120
+    },
+    "remaining-b2": {
+      "candidates": 4,
+      "controls": 2,
+      "rows": 120
+    }
+  },
+  "totals": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "family_trajectories": 440,
+    "fit_endpoints_cap": 22880,
+    "generation_contacts_cap": 5720
+  },
+  "no_change_candidates": [
+    "branch-08",
+    "branch-15"
+  ],
+  "controls": [
+    "original-a/seed",
+    "original-a/seed-aa",
+    "remaining-b1/seed",
+    "remaining-b1/seed-aa",
+    "remaining-b2/seed",
+    "remaining-b2/seed-aa"
+  ],
+  "all_new_attempt_run_supply_and_experiment_paths_absent": true,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "structural_acceptance": false,
+  "runtime_admission": false,
+  "next": "After complete capacity and structural qualification, register and prepare exact scientific members serially. Preserve source cohorts, controls, protocol, spent proposals, fixed assets and full-family read gating."
+}

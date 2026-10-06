@@ -16,6 +16,13 @@ owner/run/attempt/session/source and free kernel-guard checks; no other controls
 changed. New heartbeat slurp-update4-unused-capacity-suffix-monitor is ACTIVE
 at15minutes and must be deleted at verified terminal. No cache/restart/host action.
 
+[The held scientific blueprint](../readiness/2026-10-06-partitioned-update4-process-scientific-blueprint-epochs-v1/README.md)
+now binds22 members/440 trajectories, source cohorts8/4/4 and each cohort's seed/A/A,
+including the original no-change branches08/15. All new attempt/run/supply/experiment
+paths remain absent. The prospective process-analysis intent puts quality/reliability
+first, support/review/repair/harm second, resources third; retain unknown support and
+no causal claims. No scientific registration/admission or new contacts occurred.
+
 All original members remain required in a source-bound multi-epoch capacity join.
 [The successor structural intent and helpers](../readiness/2026-10-06-partitioned-update4-process-structural-epochs-v1/README.md)
 are prepared; the premature qualifier returned WAIT without a review or admission.

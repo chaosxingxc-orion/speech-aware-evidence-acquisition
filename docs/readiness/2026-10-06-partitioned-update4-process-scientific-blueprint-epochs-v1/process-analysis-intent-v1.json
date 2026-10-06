@@ -1,0 +1,62 @@
+{
+  "schema": "saea-process-analysis-intent-v1",
+  "status": "PROSPECTIVE_HELD",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "scientific_blueprint": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-scientific-blueprint-epochs-v1/planned-members-v1.json",
+    "sha256": "b3fe79a00fd2a5b4613b1469e80942007f4a9d666d8022abadf8b28998043764"
+  },
+  "learning_trial_contract": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-context-update4-process-v1/trial-contract-v1.json",
+    "sha256": "6284b1e72f9d9799de00b5dbe5cabb3b692d4c3aa169b89903076013c2e0e50a"
+  },
+  "priority_order": [
+    "Official whole-manifest SLU-F1, intent and reliable completion",
+    "Source-bound intermediate support/review/revision metrics",
+    "Resource cost, including mean first and subsequent input latency"
+  ],
+  "metric_contract": {
+    "relpath": "docs/readiness/2026-10-06-slurp-process-metrics-v1/README.md",
+    "sha256": "1e65a0f67bdde23fd276b913676d690b2b7105dbaee35c04074be96100f347b7"
+  },
+  "implemented_reducer": {
+    "relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py",
+    "sha256": "74708299dcd896ed087fb867a93d31e8a3d5120a17ac09109deec5b0a379a1d9"
+  },
+  "required_read_gate": "Every admitted member complete with verified seal and exactly one successful official score, followed by exact root family READ. Actual saved-source and score hashes are bound in the future analysis registration before execution of diagnostics.",
+  "process_metrics": [
+    "gold_intent_value_supplied",
+    "initial_candidate_gold_coverage",
+    "review_valid",
+    "review_error_detection",
+    "review_alarm_precision",
+    "review_false_alarm",
+    "review_miss",
+    "handoff_visibility_given_valid_review",
+    "revision_after_alarm",
+    "entity_repair_given_revision",
+    "entity_harm_given_revision",
+    "entity_and_full_transition_tables",
+    "raw_model_vs_postprocessed_delivery_stages",
+    "empty_gold_false_fill"
+  ],
+  "statistics": [
+    "numerator, observed denominator, eligible, unknown",
+    "descriptive Wilson95% intervals and missing-data bounds",
+    "scenario strata and empty-entity strata",
+    "one observation per original input, with repeated template executions kept paired",
+    "show A/A variation; do not treat440 trajectories as440 independent inputs"
+  ],
+  "unavailable_until_verified": [
+    "actual raw retrieval-pool coverage",
+    "slot-type and exact slot-value support in retrieved/delivered material",
+    "semantically correct finding localization"
+  ],
+  "retention": "Use the previously registered strict-population-utility-sum criterion unchanged; process metrics explain failure and do not silently add a new acceptance rule.",
+  "learner_export": "None by this intent. Later export requires separate qualified anonymous projection; no concrete answers, knowledge text, source lists or gold labels.",
+  "contacts_added": 0,
+  "runtime_admission": false
+}
