@@ -171,3 +171,22 @@ loading, with no output or contacts. The full real three-cohort success path is
 pending. V1 entry/plan are preserved; V2 accepts the existing saved-score pin shape
 by passing only its already-qualified path/hash to the strict external reader.
 See the complete-process-feedback-prepared continuation receipt.
+
+
+## Paired input-level process contrasts
+
+The optional paired-process-entry-v1.py uses paired-process-plan-v1.json after an
+exact complete cohort root READ and saved process report. It requalifies the full
+family, source pins and READ, validates numeric aggregates against bound rows, and
+reuses the shared paired cluster bootstrap. Every configured candidate-control
+and control-control contrast is retained. All99 focused tests pass; the new
+37-statement reducer has100percent statement coverage. Original-a completed all17
+contrasts; remaining-b1 refused with WAIT75 before any quality read.
+
+The same original input is resampled in both arms. Each metric uses matched-known
+inputs; report that denominator and both arms' unknowns. Worst-case bounds for the
+whole roster remain separate from descriptive percentile intervals. Event-rate
+contrasts are distinct from conditional detection/repair rates. Delivered endpoints
+include postprocessing and never identify causal Reviewer credit. This optional
+root-only supplement changes no retention rule or learner input. Other cohorts'
+actual success paths remain pending their own full READ.

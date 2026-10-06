@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Paired process diagnostics verified on complete original-a (2026-10-06)
+
+All17 configured candidate-control and control-control comparisons completed after
+fresh whole-family qualification and exact root READ verification. They preserve
+matched-known denominators, unknown pairs and full-roster missing-data bounds,
+using the shared paired bootstrap. Report these input-event contrasts beside
+conditional detection/repair rates and separate raw-model/postprocessing transitions.
+Do not infer causal node contribution, independent efficacy or zero uncertainty
+from degenerate small-sample intervals. All99 focused tests pass; new reducer
+statement coverage is100percent. The live remaining-b1 premature read refused.
+No contacts, selection-rule changes, learner export or runtime mutation occurred.
+[Evidence](../receipts/continuation/2026-10-06-paired-process-diagnostics-complete.json),
+[all comparisons](../results/2026-10-06-slurp-update4-original-a-paired-process.md).
+Use paired-process-entry-v1.py with paired-process-plan-v1.json only after each
+future cohort's complete process READ. Current GPU job and monitor remain active.
+
 ## Complete-trial process feedback join prepared (2026-10-06)
 
 The new root-only join requires every configured cohort process report, exact root

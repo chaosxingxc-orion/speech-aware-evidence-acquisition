@@ -1,0 +1,23 @@
+{
+  "schema": "saea-paired-process-analysis-plan-v1",
+  "status": "ROOT_DESCRIPTIVE_DIAGNOSTICS_ONLY",
+  "source_plan": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "9bebb1acd0fa41ba09af66d4c341d32749e0f263dc231b56a49bde17b4f3ef17"
+  },
+  "bootstrap": {
+    "n_replicates": 2000,
+    "seed": 20261006,
+    "ci_level": 0.95
+  },
+  "source_code": {
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/paired-process-entry-v1.py": "0c76e4bd96abf6096a15da8239613186d03e6f0cbd801ba58b400aba47548ccd",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/paired_process_diagnostics.py": "edc127f9a9adfb434632874c188257e7e62dad2cc391b176cdf25a2a994ca00e",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/bootstrap.py": "552e9a00a0f2c3cfcd887afb17f54abeaf5df68453dedbec69717f18bb2634dc",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py": "74708299dcd896ed087fb867a93d31e8a3d5120a17ac09109deec5b0a379a1d9",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/complete_process_feedback.py": "bf3a0736eb573da5a99697017bcf282e49262927bac85a58142c75fc460140e3",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_process_feedback.py": "60e211a614656c6015f359b24674041a92d7adf1705312ee150018552e88e0e6",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/scripts/analysis/system_text_pilot_read.py": "2ca75f606a176e799572ef4dca6f6d003acc3a396238a0587324e149b5a3ce22"
+  },
+  "scope": "All candidate-control and in-chain control contrasts; matched-known original input resampling with missing-data bounds. No criterion change, actor export or runtime authority."
+}

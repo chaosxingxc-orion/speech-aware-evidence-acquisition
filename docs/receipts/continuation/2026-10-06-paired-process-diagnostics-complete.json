@@ -1,0 +1,46 @@
+{
+  "schema": "saea-paired-process-diagnostics-complete-v1",
+  "at_utc": "2026-10-06T07:22:24.002646+00:00",
+  "status": "ORIGINAL_A_COMPLETE_OTHER_COHORTS_PENDING",
+  "source": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/paired-process-diagnostics-v1.json",
+    "sha256": "2792dac543c603f4a50495596f69be2df463fdd10ffb89511502267dc53a3403"
+  },
+  "plan": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/paired-process-plan-v1.json",
+    "sha256": "a6003db8a2c53c91e31e462252d41b6a1c887a135c52657a0c36c0e587f2f5de"
+  },
+  "entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/paired-process-entry-v1.py",
+    "sha256": "0c76e4bd96abf6096a15da8239613186d03e6f0cbd801ba58b400aba47548ccd"
+  },
+  "complete_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/paired-process-original-a-entry-v1.exit.json",
+    "sha256": "53180123c826ce815df98ffdcd7e8a6096fe204f2bacc532d72ea0e7d0e77b8f"
+  },
+  "incomplete_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/paired-process-remaining-b1-entry-v1.exit.json",
+    "sha256": "09f6f4ce19851bf9e1ed51f254d1f3eccb1ff7e47b5f3358a51d4234f369f2e5"
+  },
+  "validation": {
+    "tests_passed": 99,
+    "new_module_statement_coverage_percent": 100,
+    "covered_statements": 37,
+    "test_first": "Missing-module failure observed before implementation.",
+    "complete_actual_comparisons": 17,
+    "incomplete_cohort_exit": 75
+  },
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "learner_exported": false,
+  "runtime_changed": false,
+  "selection_rule_changed": false,
+  "limitations": [
+    "Matched-known per-metric population; retain unknown pairs and full-roster worst-case bounds.",
+    "Delivered transitions include deterministic postprocessing; use raw-model transitions separately.",
+    "Descriptive paired percentile intervals do not adjust for adaptive selection or multiple comparisons.",
+    "Degenerate bootstrap intervals do not prove zero uncertainty on small reused inputs."
+  ]
+}
