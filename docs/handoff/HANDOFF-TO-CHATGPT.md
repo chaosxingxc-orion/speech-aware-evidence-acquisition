@@ -1,5 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 original recording verified; operational compilation running (2026-10-06)
+
+The shared recorder exited0 at17:17:52.479103Z. Root verified original bytes, all
+pinned Python sources, both log hashes and original PID absence. All16 positions
+recorded successfully:14 provisional edits and2 no-change positions, without replacement.
+[Root verification](../receipts/continuation/2026-10-06-update6-original-recording-complete.json).
+Operational compilation started17:19:13.815909Z as PID208270, start ticks63327796,
+exec session5570. Exclusive phase logs are under external
+coordination/partitioned-update6-diversity-preparation-v1. Check its terminal receipt
+before engineering preparation; do not restart on an observation timeout.
+No new GPU admission or policy acceptance. Future algorithm research remains separate.
+
+
 ## Update6 original response received; shared recording running (2026-10-06)
 
 The GPT-6.1 Sol actor completed. Its single original response is153517 bytes, SHA256
@@ -4944,7 +4957,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T17:11:22.356266+00:00
+Last refreshed: 2026-10-06T17:21:41.740393+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

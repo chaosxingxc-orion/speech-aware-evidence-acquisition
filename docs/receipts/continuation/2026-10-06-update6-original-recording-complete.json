@@ -1,0 +1,29 @@
+{
+  "schema": "saea-original-proposal-recording-root-reviewed-v1",
+  "at_utc": "2026-10-06T17:21:41.740393+00:00",
+  "status": "COMPLETE_ROOT_VERIFIED",
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/record-original.exit.json",
+    "sha256": "705f1f263d0838bd144d14af491cd47b2146699298f0547c0e96ad6fc0ff90e3"
+  },
+  "recording_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/compile-receipt-v1.json",
+    "sha256": "ec5dfd1b60d119bf3268c7aaec33cba422281e0897a734b8aa549ab117396e71"
+  },
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/original-response-v1.json",
+    "sha256": "e5251d2c9864254c49028f3aed821f1e1612a3c0670cd3a3e70db6ba14ee78a1"
+  },
+  "source_pins_verified": true,
+  "original_pid_absent": true,
+  "records": 16,
+  "provisional": 14,
+  "no_change": 2,
+  "new_model_tokenizer_scorer_contacts": 0,
+  "operational_compile_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-preparation-v1/operational-compile.started.json",
+    "sha256": "7ff9787191e31658b30780aa41502a9db5524cea05cb06619c39ea93279c499b"
+  },
+  "operational_compile_session": 5570,
+  "runtime_admission": false
+}
