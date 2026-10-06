@@ -1,0 +1,100 @@
+{
+  "schema": "saea-scientific-suffix-continuation-launch-v1",
+  "at_utc": "2026-10-06T20:50:47.343835+00:00",
+  "status": "RUNNING",
+  "authority": "owner227",
+  "task_name": "SAEA-Update6-OriginalA-Suffix-Continuation1-V1",
+  "launch_epoch": "2026-10-06T20:48:43.1845986+00:00",
+  "inner_windows_owner_pid": 39980,
+  "inner_windows_owner_created_utc": "2026-10-06T20:48:40.6359850Z",
+  "hidden_supervisor_pid": 32848,
+  "hidden_supervisor_created_utc": "2026-10-06T20:48:40.4557860Z",
+  "intermediate_cmd_pid": 45484,
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-original-a-v1",
+  "worker_commit": "c947d67b24e5f2dd5e69c2ad3e0bf58b60822be0",
+  "registration_sha256": "5c974758cc48677159430078b6115dd6c634dbb8895ce3c236ffd895fd944025",
+  "continuation_plan_sha256": "1ecaa8dd99080ff12239e8b89f6fb7ebea89ff18e2096de940bf04d750200f89",
+  "preserved_members": [
+    "seed",
+    "seed-aa",
+    "branch-01",
+    "branch-02",
+    "branch-03"
+  ],
+  "new_execution_members": [
+    "branch-04",
+    "branch-05",
+    "branch-06",
+    "branch-07",
+    "branch-08"
+  ],
+  "first_member": {
+    "member": "branch-04",
+    "pid": 243090,
+    "started": "2026-10-06T20:48:48.648566+00:00",
+    "command_verified": true,
+    "memory_wait": {
+      "elapsed_seconds": 20.180949195986614,
+      "exit_code": 0,
+      "interval_seconds": 10,
+      "observer_sha256": "852f8f4fb4cd63b7084b9fec9db63325baa2553e2f7e6637f61d8053a5e06c7b",
+      "running_floor_gib": 8,
+      "schema": "saea-precontact-memory-wait-v1",
+      "stable_samples": 3,
+      "start_gib": 20,
+      "status": "ready",
+      "stop_marker": "/home/chao/batch-STOP",
+      "wait_seconds": 600,
+      "worker_started": false
+    }
+  },
+  "monitor": {
+    "id": "slurp-update6-suffix-continuation-monitor",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "delete_when": "Verified terminal and all bound continuation processes absent"
+  },
+  "old_monitor": "deleted",
+  "original_outer_failure_preserved": 2147943467,
+  "evidence": [
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/scientific-started.json",
+      "sha256": "1d52c178668e95473f474eec29513bdaf26805a57cafbea45b19f27434c84039"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/continuation-plan-v1.json",
+      "sha256": "1ecaa8dd99080ff12239e8b89f6fb7ebea89ff18e2096de940bf04d750200f89"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/preflight-v1.json",
+      "sha256": "ff15616889c3a105c1bfe8d8735a29ca644b349bf13db5e19786f307a45cadb8"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/prelaunch-original-windows.json",
+      "sha256": "10760ab82e815eec65c0f9e8814f1818cb05678e7a16ee864ff630c56255dac8"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/windows-task-definition-v1.xml",
+      "sha256": "28b672ee33762a1d341641dd2757fa9903a4208dbb583aae38ba6f5151793549"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/windows-launch-observation-v1.json",
+      "sha256": "69069d3141474f1fa264295fe1472eea1e1e62f0743ed0e1a4a8416fbb37e3bd"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/live-prelaunch-v1.json",
+      "sha256": "36d6a0a3f5cb0e05f10d5eb2519c0dde6e59d6e1dc8bb32434e906a9c2b9c85b"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/launch-hidden-v1.vbs",
+      "sha256": "f1619a16bda97c205b8691c41a3ee370e5159cbf4c0905dde45d5782ea774003"
+    },
+    {
+      "path": "coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1/hidden-wrapper-synthetic-v1/receipt.json",
+      "sha256": "2b4d884bdd3b1aa54a52b08eda3d4c87d429e9cacdf81adf5d31679aff903ed0"
+    }
+  ],
+  "quality_read": false,
+  "read_countersigned": false,
+  "remaining_work": "Complete all admitted members; qualify full family and explicit owner chain before exact root READ. Integrate root continued-terminal entry without modifying original receipts."
+}

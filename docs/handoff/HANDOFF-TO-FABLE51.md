@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T20:46:47.578070+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T20:50:47.343835+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -32,11 +32,38 @@ SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
 The previous GPU task is terminal and its monitor was deleted. Update6 nongenerative
 capacity completed with all16 passes and its monitor was deleted. The complete structural
-family is structurally accepted; the original-a Windows owner failed, its original
-branch-03 child completed and all original processes are now gone, as detailed below;
+family is structurally accepted; the original-a failed owner and its children have
+settled, and the separately admitted untouched-suffix continuation is running below;
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 untouched suffix continuation RUNNING (2026-10-06)
+
+Windows task SAEA-Update6-OriginalA-Suffix-Continuation1-V1 launched at
+2026-10-06T20:48:43.1845986+00:00. Inner ownerPID39980 created20:48:40.6359850Z,
+hidden wscript supervisorPID32848 created20:48:40.4557860Z,cmdPID45484.
+First original branch-04 launcherPID243090 is live at the exact frozen
+c947d67b24e5f2dd5e69c2ad3e0bf58b60822be0 worker; its start-time preflight passed.
+Revalidate current identities. No completed member was rerun or rescored.
+[Actual continuation launch](../receipts/continuation/2026-10-06-update6-original-a-suffix-continuation-launch.json).
+
+New owner receipts:coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1.
+All member receipts and unchanged full registration remain in the original
+coordination/partitioned-update6-diversity-original-a-scientific-v1 directory.
+Only branch-04 through branch-08 are new executions; preserve completed prefix and
+original failed owner/missing native receipts. Full cohort is still10 members;
+no partial scientific or learner read. New monitor
+slurp-update6-suffix-continuation-monitor is ACTIVE every15minutes. Delete on verified
+terminal and absence of all bound continuation owners/children/scorers/observers.
+Old original-a monitor is deleted. Fresh launch service was healthy idle atPID686,
+Windows free23.41GiB; original20GiB startup/8GiB running guard remains mandatory.
+
+Next follow this exact job, not the old failed owner. Prepare root READ entry joining
+unchanged whole-family qualification, standard new suffix native terminal and explicit
+original-owner-chain verifier. Do not fabricate missing old root/branch-03 native
+exits or weaken seal/unique-score checks. Further failure stops; later cohorts and
+other-carrier holds remain unchanged. No new owner input is needed in root227 scope.
 
 ## Update6 exact untouched suffix continuation admitted conditionally (2026-10-06)
 

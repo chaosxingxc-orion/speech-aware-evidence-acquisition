@@ -1,5 +1,33 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 untouched suffix continuation RUNNING (2026-10-06)
+
+Windows task SAEA-Update6-OriginalA-Suffix-Continuation1-V1 launched at
+2026-10-06T20:48:43.1845986+00:00. Inner ownerPID39980 created20:48:40.6359850Z,
+hidden wscript supervisorPID32848 created20:48:40.4557860Z,cmdPID45484.
+First original branch-04 launcherPID243090 is live at the exact frozen
+c947d67b24e5f2dd5e69c2ad3e0bf58b60822be0 worker; its start-time preflight passed.
+Revalidate current identities. No completed member was rerun or rescored.
+[Actual continuation launch](../receipts/continuation/2026-10-06-update6-original-a-suffix-continuation-launch.json).
+
+New owner receipts:coordination/partitioned-update6-diversity-original-a-owner-continuation1-v1.
+All member receipts and unchanged full registration remain in the original
+coordination/partitioned-update6-diversity-original-a-scientific-v1 directory.
+Only branch-04 through branch-08 are new executions; preserve completed prefix and
+original failed owner/missing native receipts. Full cohort is still10 members;
+no partial scientific or learner read. New monitor
+slurp-update6-suffix-continuation-monitor is ACTIVE every15minutes. Delete on verified
+terminal and absence of all bound continuation owners/children/scorers/observers.
+Old original-a monitor is deleted. Fresh launch service was healthy idle atPID686,
+Windows free23.41GiB; original20GiB startup/8GiB running guard remains mandatory.
+
+Next follow this exact job, not the old failed owner. Prepare root READ entry joining
+unchanged whole-family qualification, standard new suffix native terminal and explicit
+original-owner-chain verifier. Do not fabricate missing old root/branch-03 native
+exits or weaken seal/unique-score checks. Further failure stops; later cohorts and
+other-carrier holds remain unchanged. No new owner input is needed in root227 scope.
+
+
 ## Update6 exact untouched suffix continuation admitted conditionally (2026-10-06)
 
 Root227 approves one first execution of original branch-04 through branch-08 after
