@@ -1,5 +1,22 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete-cohort process diagnostics entry prepared (2026-10-06)
+
+The prospective v2 entry reuses the shared source-bound process metrics after
+exact complete-family root READ. It reports support delivery/candidate coverage,
+review detection/precision/false alarms, revision repair/damage and model versus
+postprocessing transitions, with missingness and descriptive uncertainty.
+Business quality/reliability remains first; latency/cost remains third.
+[Prepared entry](../receipts/continuation/2026-10-06-update4-process-entry-prepared.json).
+
+The actual current incomplete family was refused before gold/quality loading.
+Six pure tests plus eighteen subtests pass; two new validation helpers have
+100percent statement coverage, and fifty-one shared process tests pass. The full
+current-cohort success path remains pending. An unused v1 JSONL parsing assumption
+was corrected prospectively in preserved v2; no runtime source changed.
+No partial-trial retention, learner export, new contact or READ follows from
+preparation. The exact original-a job/monitor below continues independently.
+
 ## Historical support-source availability audited (2026-10-06)
 
 All22 already root-read update3 members were audited across440 trajectories,

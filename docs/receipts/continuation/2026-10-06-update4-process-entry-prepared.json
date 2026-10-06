@@ -1,0 +1,76 @@
+{
+  "schema": "saea-complete-cohort-process-entry-prepared-v1",
+  "at_utc": "2026-10-06T06:04:34.873551+00:00",
+  "status": "PREPARED_COMPLETE_FAMILY_SUCCESS_PATH_PENDING",
+  "plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/process-analysis-plan-v2.json",
+    "sha256": "3800966caf7ab5af623d893fa404a18c7822abf80761c3c232bd542d4fe3fd7f"
+  },
+  "preserved_predecessor": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/process-analysis-plan-v1.json",
+    "sha256": "102d8d932616e3efed479a9df7324a7307a0a55b018036e47da740aeaed41177"
+  },
+  "data_root_helpers": {
+    "process-complete-cohort-v1.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/process-complete-cohort-v1.py",
+      "sha256": "d4e8d0896d9bcf1845e02dbc185e0d6a0aa8cdd09c0050e79acb1fc3a7a80ed6"
+    },
+    "process-complete-cohort-v2.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/process-complete-cohort-v2.py",
+      "sha256": "141f66864ac386397c5835cf2ef4bc493801532c725b75b54eddcd508da1499e"
+    },
+    "process_source_gate_v1.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/process_source_gate_v1.py",
+      "sha256": "2bc28a4a3583a9b9e68b7ac25070448f3b6a3220b7e866e2b2720958e9fbbb2f"
+    },
+    "diagnostic_pins_v1.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/diagnostic_pins_v1.py",
+      "sha256": "2931edf9ba768aa32500f143e18381ce8536e50185d25db12fca5da55e51ef7c"
+    },
+    "test_process_source_gate_v1.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/test_process_source_gate_v1.py",
+      "sha256": "789f2e746ba59ca5dc6bd0b8624abce58a375d803545537d84b44f3fc3356cfc"
+    },
+    "test_diagnostic_pins_v1.py": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/test_diagnostic_pins_v1.py",
+      "sha256": "86907ebb672d3e201ad433b5a4b43188b6b7a402275dd6dce284d18833b2ddea"
+    }
+  },
+  "refusals": {
+    "process-incomplete-refusal-v1.json": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/process-incomplete-refusal-v1.json",
+      "sha256": "6f83fa2bdca952c8edab03d44d2d8ccb93bc4ea0b0fd789495dc05affb21f6db"
+    },
+    "process-v2-incomplete-refusal-v1.json": {
+      "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/process-v2-incomplete-refusal-v1.json",
+      "sha256": "37d0534b69c06d0f3b6f753e683462073b3d1d9d8d8d03b0d51df7bb67ebd14f"
+    }
+  },
+  "verification": {
+    "new_pure_gate_tests": {
+      "passed": 6,
+      "subtests_passed": 18,
+      "statement_coverage_percent": 100,
+      "covered_statements": 30
+    },
+    "existing_process_and_stage_attribution_tests": {
+      "passed": 51,
+      "scope": "tests/unit/test_slurp_process_metrics.py and tests/unit/test_slurp_solver_stage_attribution.py; observed before preparation receipt"
+    },
+    "actual_current_cohort_v2": "WAIT_COMPLETE_FAMILY, exit75, before reference or quality loading",
+    "success_limit": "The current complete-family diagnostic success path has not run. Unit coverage is not end-to-end validation."
+  },
+  "precontact_correction": "The unused v1 entry attempted to JSON-decode hash-pinned TRAIN JSONL. This was caught by model-free inspection before any actual diagnostic read. Preserve v1; v2 uses streamed byte verification separately from explicit JSON document parsing.",
+  "contracts": [
+    "Require complete independent seals and unique successful scores, exact root READ and matching saved sources before gold-dependent diagnostics.",
+    "Keep unknown source coverage distinct from zero. Report numerator, denominator, missingness and uncertainty.",
+    "Business quality and reliable completion first; support, detection, false alarm, repair and damage second; latency and cost third.",
+    "Separate raw model revision from deterministic delivery normalization.",
+    "No partial-trial retention, learner export, runtime modification or new model/scorer contacts."
+  ],
+  "runtime_changed": false,
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "reference_loaded": false,
+  "quality_read": false
+}

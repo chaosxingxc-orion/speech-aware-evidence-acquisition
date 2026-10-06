@@ -77,3 +77,23 @@ Use admit-next-cohort-v1.py only after an adjacent prior cohort's complete root
 READ and fresh reviewed idle boundary. The current original-a-only review was
 actually rejected for remaining-b1, without mutation. Both later cohorts remain
 DRAFT. See the continuation receipt for test evidence and immutable helper pins.
+
+## Complete-cohort process entry
+
+After the exact successful root READ and timing export, use data-root
+coordination/partitioned-update4-process-scientific-preparation-epochs-v1/
+process-complete-cohort-v2.py with --cohort and the SHA-256 of the prospective
+process-analysis-plan-v2.json in this directory. It requalifies the entire cohort
+and matches root authority, exact members, saved manifests/scores, frozen workers
+and timing membership before loading governed TRAIN references. It creates one
+exclusive process-metrics-v1.json in that cohort's existing READ analysis folder.
+It does not export learning feedback or invoke generation/the official scorer.
+
+Preserve v1, which was superseded before any diagnostic read because TRAIN
+metadata is JSONL rather than a single JSON document. V2 verifies byte hashes
+separately from document parsing. Both actual incomplete-family calls returned
+WAIT75 before references or quality. Six pure gate tests plus eighteen subtests
+pass; source-binding and pin-verification helpers have100percent statement
+coverage across thirty statements. Fifty-one existing process/attribution tests
+pass. The full current-cohort success path remains pending completion; these
+checks do not claim it has run. See the prepared-entry continuation receipt.
