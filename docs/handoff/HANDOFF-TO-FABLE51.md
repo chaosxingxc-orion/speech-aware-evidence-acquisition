@@ -1,5 +1,44 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update5 first scientific cohort launched (2026-10-06)
+
+The complete original model-free frozen check ended12:21:41Z exit0 with all10
+configured seed/A/A/candidate proofs passing. Registration finalization and fresh
+live admission passed. Windows task SAEA-Update5-Aggregate-OriginalA-Scientific-V1
+started12:22:44.0038559Z, owner PID21156 (revalidate identity, never trust PID alone).
+Frozen worker /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-original-a-scientific-v1
+remains at2e26372dc5e25245a68c4c2df8cff2a54d350ea2. See
+[actual scientific launch](../receipts/continuation/2026-10-06-update5-original-a-scientific-launch.json).
+
+Coordination directory is speechrl-data/coordination/
+partitioned-update5-aggregate-original-a-scientific-v1. Registration SHA256 is
+4f333ca84ae7ab99ee9e7a61b9864dcf704eff500d9c37586405b4b63c649bab.
+The configured cohort contains seed,seed-aa,branch-01 through branch-08, each20
+inputs:200 complete trajectories, at most2600 generation contacts and10400 FIT
+endpoints,10 unique complete official score jobs. Shared Windows-owned serial
+campaign is live; at12:24Z seed was OPENED with27 contacts,GPU65percent, no STOP
+or failure, fresh healthy serving telemetry. These are operational facts, not row
+completion or quality evidence. Startup observed23.22GiB Windows free; retain
+20GiB startup/8GiB running floors and observe-only boundary maintenance.
+
+The15-minute script-only automation slurp-update5-original-a-scientific-monitor
+is ACTIVE for this exact task/epoch/worker/registration. Use the coordination
+monitor-operational-v1.py with Python-B and bytecode disabled; inspect every
+member and owned Windows/WSL/observer identity. Never dispatch or retry from the
+monitor. Delete it after exact terminal receipts and no admitted worker/scorer,
+lease or owned observer remains. Preserve frozen sources and all prior failures.
+
+No partial scientific read or learner export. Require all10 independently
+FINALIZED,verified seals,one successful complete official score each,zero failed
+jobs,then exact root READ. Later6+6-member cohorts stay held for first-cohort
+qualification and root boundary review. Whole-population update5 retention remains
+strict-population-utility-sum; no cherry-picking. All16 candidate allocations,
+including no-change08/15, remain spent and retained. Aggregate learning output is
+K records per complete population,N times K across observed rounds; shared controls
+are metadata,not extra candidate records. Business quality/reliability first,
+numeric process diagnostics with denominators/missingness second,cost third.
+No stable benefit or learning gain is established. Keep other-carrier holds.
+
 ## Update5 first scientific worker frozen; checks running (2026-10-06)
 
 All prepared source and historical metadata correction are integrated at
