@@ -1,0 +1,179 @@
+{
+  "schema": "saea-slurp-process-backfill-v1",
+  "status": "ROOT_REGISTERED",
+  "source_registration": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/successor-source-registration-v1.json",
+    "sha256": "64913641f1e98947f7d479c5f27cf128f6c7d1a59c72a199b5b034b1c2d0321b"
+  },
+  "cohorts": [
+    {
+      "cohort_id": "original-a",
+      "members": [
+        {
+          "member_id": "branch-01",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/branch-01/saved-score/score-result.json",
+            "sha256": "c22f1cb4816e623246f65495d14c2ba4f8595096322d140a979e80ffb2d8151e"
+          }
+        },
+        {
+          "member_id": "branch-02",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/branch-02/saved-score/score-result.json",
+            "sha256": "9bbf44912062f8209ddc2d81e3d7d83e6869f3a19ff3ff8c262839833917c59a"
+          }
+        },
+        {
+          "member_id": "branch-03",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/branch-03/saved-score/score-result.json",
+            "sha256": "1c2bd097bdb5be7a6800413e2c5bbd21513962699c0f7a0d20b80157d259b1aa"
+          }
+        },
+        {
+          "member_id": "branch-04",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/branch-04/saved-score/score-result.json",
+            "sha256": "c9953ab2a218b41733e105af06bbd3c7d115e5d4736a6be5e449b6d9cee35ddd"
+          }
+        },
+        {
+          "member_id": "branch-05",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/branch-05/saved-score/score-result.json",
+            "sha256": "3fd80c7139b3bb295ee9912af3ab75cc9fee79b57c8eb70b8b40de379e1f4abb"
+          }
+        },
+        {
+          "member_id": "branch-06",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/branch-06/saved-score/score-result.json",
+            "sha256": "4e2fb35cc6ff0100a993d7d8e93e3511a7a281429249507073d8b826d63fc540"
+          }
+        },
+        {
+          "member_id": "branch-07",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/branch-07/saved-score/score-result.json",
+            "sha256": "5fb89a5a8ba3de1fe887581e758b9193632e0809aab5846e6133e9322117813c"
+          }
+        },
+        {
+          "member_id": "branch-08",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/branch-08/saved-score/score-result.json",
+            "sha256": "42e3ea2342a9207c66ab192e726657d14f162b572c99669b1291bfb7890752f0"
+          }
+        },
+        {
+          "member_id": "seed",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/seed/saved-score/score-result.json",
+            "sha256": "5a7acdcdc58c0b1beb1c4e9df4bb322e840d5e9aea69e5c8681f24741dd3c1eb"
+          }
+        },
+        {
+          "member_id": "seed-aa",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/seed-aa/saved-score/score-result.json",
+            "sha256": "1048beae6c0fd1aa95cdc71abc2279d6ccf93f54b4d767880dc8bd6edbaed8df"
+          }
+        }
+      ]
+    },
+    {
+      "cohort_id": "remaining-b1",
+      "members": [
+        {
+          "member_id": "branch-09",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/branch-09/saved-score/score-result.json",
+            "sha256": "97c26039acf51910835050438892f6b8e100d40d57455f53b7cf3151a69bd8e1"
+          }
+        },
+        {
+          "member_id": "branch-10",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/branch-10/saved-score/score-result.json",
+            "sha256": "e0b3cffa0b8e4b4386edf2bf006131e9f0f746dd2e48f0e78d5403126e5ff602"
+          }
+        },
+        {
+          "member_id": "branch-11",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/branch-11/saved-score/score-result.json",
+            "sha256": "e83365be2e609225fe5aa4e769d7c7aa1b6582f44b9a18255fb8392a5b681659"
+          }
+        },
+        {
+          "member_id": "branch-12",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/branch-12/saved-score/score-result.json",
+            "sha256": "72fa9f6647d320d9a9a0cf82ad4a6d88d10f0e4ef0dcd7bd2900e0d7640dde37"
+          }
+        },
+        {
+          "member_id": "seed",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/seed/saved-score/score-result.json",
+            "sha256": "8104d575dd6690dbfc84c46d0ae3189998b736773d12c0945c28286194e45f93"
+          }
+        },
+        {
+          "member_id": "seed-aa",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B1-READ-V1/seed-aa/saved-score/score-result.json",
+            "sha256": "e770d71174700fb13344368e87e4c668e2d78fa4c2483f42efa6ebdc00b91886"
+          }
+        }
+      ]
+    },
+    {
+      "cohort_id": "remaining-b2",
+      "members": [
+        {
+          "member_id": "branch-13",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/branch-13/saved-score/score-result.json",
+            "sha256": "7b938bfac6f64a050d33de574769d10aa786d2278914f2e66bf0ea063139a2a2"
+          }
+        },
+        {
+          "member_id": "branch-14",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/branch-14/saved-score/score-result.json",
+            "sha256": "04c93ad55870a634e6c83fc07eb8bccb354eead872b1000254eee3f0c8f8b323"
+          }
+        },
+        {
+          "member_id": "branch-15",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/branch-15/saved-score/score-result.json",
+            "sha256": "a95caf5a0b2db4b85c2c95db4620f8d244918db0bfb6c4a6e1a22d536c15e102"
+          }
+        },
+        {
+          "member_id": "branch-16",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/branch-16/saved-score/score-result.json",
+            "sha256": "cb24128528ea1b8bf02370417ddb9d16d3527ea0b29419922ae806d53ed1971e"
+          }
+        },
+        {
+          "member_id": "seed",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/seed/saved-score/score-result.json",
+            "sha256": "54d9e2a73875e5704fe5130e03344a7e2c665d190f9ba7f8ed364edce28d91bf"
+          }
+        },
+        {
+          "member_id": "seed-aa",
+          "score_result": {
+            "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-REMAINING-B2-READ-V1/seed-aa/saved-score/score-result.json",
+            "sha256": "52a2b4b661413a77eed6c5eb5c6a2d53a26ef9f62b4077e19f87f8c16990cdc8"
+          }
+        }
+      ]
+    }
+  ]
+}

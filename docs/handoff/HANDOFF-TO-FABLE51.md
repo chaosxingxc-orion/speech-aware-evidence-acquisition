@@ -1,5 +1,23 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update4 process bridge complete and root reviewed (2026-10-06T09:00Z)
+
+The shared bridge completed normally, requalified every source and reproduced the
+prepared numerical process feedback exactly. Root reviewed and recorded the
+[complete process receipt](../receipts/continuation/2026-10-06-update4-process-bridge-reviewed.json).
+All22 members across three cohorts are preserved; no model/scorer contact, learner
+export, policy activation or GPU admission occurred. The exact registration is now
+continuation-process-registration-v1.json in the update4 complete-analysis package.
+
+Private rejected-history preparation remains active under its own started.json
+in coordination/update4-rejected-aggregate-history-v1. Revalidate that PID/start tick
+and exclusive exit before proceeding. The next aggregate input entry waits for its
+root completion receipt. Do not repeat a running reader or edit its pinned sources.
+After completion, record 2026-10-06-update4-rejected-history-complete.json and invoke
+coordination/update5-aggregate-input-preparation-v1/prepare-next-input-v1.py prepare
+with next-input-plan-v1.json SHA256e18f7714d305ff66ca6152c906e83667a03656ce478464be703817100b634317.
+That step only prepares an unreserved aggregate input; next proposal admission is separate.
+
 ## Complete statistics joined; next aggregate input entry prepared (2026-10-06)
 
 Complete numeric process feedback covers all three cohorts, all16 candidates and

@@ -1,0 +1,39 @@
+{
+  "schema": "saea-complete-slurp-process-backfill-reviewed-v1",
+  "status": "COMPLETE_ROOT_REVIEWED",
+  "at_utc": "2026-10-06T09:01:44.584739+00:00",
+  "owner_authority": 227,
+  "result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/continuation-process-backfill-v1.json",
+    "sha256": "3e2423755c788b6cebc4310697d409db0e17cf8840607f7084c43a550699ed0a"
+  },
+  "process_registration": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/continuation-process-registration-v1.json",
+    "sha256": "fe47d98c1e20f56c705dcd493063fbe46cf41eb07ca8d64e4cdd8622bae8a104"
+  },
+  "bridge_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/continuation-process-bridge-prepared-v1.json",
+    "sha256": "7fe418ecb3820ef577e9da4bacf032d077ad83c1657e6c9977e5032d3525e104"
+  },
+  "complete_numeric_feedback": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/complete-root-process-feedback-v1.json",
+    "sha256": "c5691fef4e751bc98948a5c9c2c209e78aeb6efb1ed6907b34aa7bff13d223fd"
+  },
+  "whole_trial_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-v1/complete-trial-qualified-v1.json",
+    "sha256": "645bf91500d403cc10d4f022bd999cf5bec6196e9d499aaba2f54b26fc059eab"
+  },
+  "cohort_member_counts": {
+    "original-a": 10,
+    "remaining-b1": 6,
+    "remaining-b2": 6
+  },
+  "review": "Root reviewed each complete cohort business/process/paired report and rejected the whole update under its original utility criterion. Bridge requalification preserves all source members and reproduces the existing complete numeric process projection exactly. Preserve denominators, unknowns, intervals and raw-model/postprocessing separation.",
+  "learner_exported": false,
+  "runtime_admission": false,
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "next": "Bind this receipt and the independently complete rejected-history receipt in the prospective aggregate continuation registration."
+}
