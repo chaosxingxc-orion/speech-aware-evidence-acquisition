@@ -1,0 +1,39 @@
+{
+  "schema": "saea-complete-process-backfill-reviewed-v1",
+  "status": "COMPLETE_ROOT_REVIEWED",
+  "at_utc": "2026-10-06T16:18:50.248945+00:00",
+  "owner_authority": 227,
+  "result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/continuation-process-backfill-v1.json",
+    "sha256": "94db5b38fd3b2c8f622149bbb9b6f68a4825f7b0ecbf6cf7687867693387ed41"
+  },
+  "process_registration": {
+    "relpath": "docs/readiness/2026-10-06-update5-complete-continuation-v1/continuation-process-registration-v1.json",
+    "sha256": "b57461694d23de4f4ecb47f0f62f04e5e9e53e9339f07d01ff56d175a2af371f"
+  },
+  "bridge_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/continuation-process-bridge-prepared-v1.json",
+    "sha256": "16aca651e03712efaaffa63b11db065c253813bd3a3370bb5d9a869d926df08b"
+  },
+  "complete_numeric_feedback": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/complete-root-process-feedback-v1.json",
+    "sha256": "d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb"
+  },
+  "whole_trial_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/complete-trial-qualified-v1.json",
+    "sha256": "e5395077df370921cc3919e3b3d2b84d1f0ea40e7e01b6a2ab4f8edfd0618f7f"
+  },
+  "cohort_member_counts": {
+    "original-a": 10,
+    "remaining-b1": 6,
+    "remaining-b2": 6
+  },
+  "review": "Root reviewed every complete cohort business/process/paired report and rejected Update5 under its original population utility rule. The shared bridge requalifies every exact READ/source and reproduces all prepared compact numeric process feedback. Source and output hashes verified after exit0 and original PID absence. Preserve denominators, unknowns, intervals, and raw-model versus postprocessing transitions.",
+  "learner_exported": false,
+  "runtime_admission": false,
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "next": "Bind this exact completion with independently verified rejected-history completion in the prospective aggregate continuation."
+}

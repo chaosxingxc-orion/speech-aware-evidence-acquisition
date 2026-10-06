@@ -36,3 +36,9 @@ It binds the prospective Astra prompt integration preparation but grants no acto
 The registered original-response limits and zero paid spend remain. The new input entry
 only proceeds after exact history/process completion schemas and pinned root receipts.
 The process bridge uses the existing shared implementation and no rescoring.
+
+Process bridge completion: the exact bridge has now finished and root verified its
+source/output pins and all10/6/6 source member counts. The completion receipt is
+`docs/receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json`.
+History preparation remains live; do not execute the next input entry until its
+separate completion receipt is verified and registered.
