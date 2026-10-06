@@ -1,0 +1,43 @@
+{
+  "admission_and_frozen_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/admission-frozen-entry-prepared-v1.json",
+    "sha256": "1dbb38319893d2210c40a56065772631a373a40f65af35939577d9ea38540b95"
+  },
+  "at_utc": "2026-10-06T11:51:58.241549+00:00",
+  "authority": "owner227",
+  "launcher_tests": {
+    "exit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-original-a-scientific-v1/launcher-tests-v1.exit.json",
+      "sha256": "965d4cf9227c4b8300ef3b39a99eb86b4aa8394c6c01fbae1a92f96cb99f7c3e"
+    },
+    "nonfatal_warning": "Existing Whisper normalizer english.json ResourceWarning; unchanged source.",
+    "scope": "Synthetic config/member/budget binding, same campaign execution, registration/campaign/score failure stopping, duplicate score refusal and optional exact resource amendment validation. No real campaign contact.",
+    "stderr": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-original-a-scientific-v1/launcher-tests-v1.stderr.log",
+      "sha256": "5b7e1cdff9d95b658bc72ae03701ee600833d836cb31df43469e168805f11f20"
+    },
+    "stdout": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-original-a-scientific-v1/launcher-tests-v1.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tests": 6
+  },
+  "model_contacts": 0,
+  "next": "After complete original member preparation, finalize drafts; root binds complete structural acceptance to exact first-cohort review, admits registration, integrates/freezes, runs copied all-member frozen checker and finalizes prospective Windows registration. Fresh live gates and actual launch precede a new15-minute monitor. No automatic later cohort or partial optimizer export.",
+  "powershell_parse": {
+    "errors": 0,
+    "files": [
+      "broker.ps1",
+      "scientific-windows-v1.ps1"
+    ]
+  },
+  "resource_policy": "Preserve original20GiB startup/8GiB running; no amendment created.",
+  "runtime_admission": false,
+  "schema": "saea-scientific-execution-entry-prepared-v1",
+  "scorer_contacts": 0,
+  "source_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-original-a-scientific-v1/source-preparation-v1.json",
+    "sha256": "12dbd6c43f3975c153a8c6b9e8cd94f56d8a98698a5c79a879eb056ab5feef6b"
+  },
+  "status": "PREPARED_NOT_ADMITTED"
+}

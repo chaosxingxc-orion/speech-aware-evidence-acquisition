@@ -1,5 +1,23 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 scientific execution entry prepared behind active preparation (2026-10-06)
+
+Prospective coordination/partitioned-update5-aggregate-original-a-scientific-v1
+reuses the successful shared scientific campaign launcher, continuous memory
+observer, Windows mailbox and complete-score operational verifier. Six synthetic
+launcher tests pass; both PowerShell files parse without errors. Original observer
+and launcher source bytes are retained, with only new entry paths in the Windows
+wrapper. The prospective finalizer binds exact future admission/frozen evidence;
+no registration or model contact is created. See [entry preparation](../receipts/continuation/2026-10-06-update5-scientific-execution-entry-prepared.json).
+
+The first-cohort admission helper and byte-identical all-member frozen checker are
+also prepared in the scientific preparation coordination directory. They have not
+run. Require the original serial preparation to finish, then successful draft
+finalization and exact root structural review before admission; require the actual
+integrated clean worker and frozen proof before sealing a Windows registration.
+Maintain20GiB startup/8GiB running and the existing complete-family trial. This
+preparation does not grant dispatch, quality read or automatic next-cohort execution.
+
 ## Update5 complete structural acceptance; scientific preparation active (2026-10-06)
 
 Windows structural recovery1 ended11:41:21Z exit0. All16 configured members
