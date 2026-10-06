@@ -1,0 +1,24 @@
+{
+  "schema": "saea-precontact-registration-caption-disposition-v1",
+  "at_utc": "2026-10-06T19:47:21.324607+00:00",
+  "authority": "owner227",
+  "cause": "The reused draft finalizer emitted uppercase SLURP without the exact carrier token slurp; the registration gate refused before runtime contact.",
+  "failed_gate": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-admitted-gate.stdout.json",
+    "sha256": "f93c7442117af50e62e6cd9eb25d3e8f9f5029e470ca5041f7e12ae1354bb366"
+  },
+  "failed_gate_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-admitted-gate.exit.json",
+    "sha256": "ee7a343943d4edf52d242ed44c7aa23141116147dc7b0e40825a2975946ef688"
+  },
+  "blocking_findings": 20,
+  "affected_rows": 44,
+  "original_rows": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/precontact-carrier-caption-disposition-v1/original-ledger-rows.json",
+    "sha256": "bccb27ecf4b99bbea164a4850fc473705c361c6ed8c8e4d948eb108b771ae853"
+  },
+  "disposition": "Correct only the carrier caption of these own unconsumed GEN/FIT registration rows; preserve all original logs, identities, templates, configs, supplies, plans and read conditions. Run the existing registration gate into a new receipt. No generation retry or new allocation.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_dispatch": false
+}

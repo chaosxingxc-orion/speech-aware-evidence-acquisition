@@ -1,0 +1,131 @@
+{
+  "actual_policy_binding": {
+    "bundle_id": "5c98fc4821225a613a21a60e82f1532971a50268c57eeb05ab60fab06cc8f35d",
+    "context_layout": {
+      "native_role_query_placement": null
+    },
+    "node_context": {
+      "reviewer_history_scope": "full",
+      "tool_schema_rendering": "constant"
+    },
+    "role_sha256": {
+      "perception": "9586bda15737f3521dfbcd80a4424aaf916080c06f65b801e21dfc226028a5c5",
+      "planner": "75161a06e903e4249162c39eca04bc1f49cb28007383ac9b19140f545bd4753b",
+      "reviewer": "c2425ba1b27829c0dca87235a423c7618f9dc1bd3efb9bb4fbda27bd60982a65",
+      "solver": "2003ff6b8ac5263611f65cb19bb91264956f0a9381ac74649957be1eecf45cee"
+    }
+  },
+  "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-13-generation-v1",
+  "bundle_id": "5c98fc4821225a613a21a60e82f1532971a50268c57eeb05ab60fab06cc8f35d",
+  "compilation": {
+    "relpath": "system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/compiled-members/branch-13.json",
+    "sha256": "b4334b05747eff339464a53e471eb1a203d563501529c6d4dad23b5bd0896856"
+  },
+  "config_hash": "e7b759aeff97e58e08fb016842594a22bcdf171ca4591b97550f13c2e4db631f",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-13-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "83718d75f173c8f8852c6c05e118e99a9b89f9d9ac32bba44e45a20be4771ef1",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-13-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_rows": 20,
+  "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-13-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "fit_endpoints_cap": 1040,
+  "fit_execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-13-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 1040,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "83718d75f173c8f8852c6c05e118e99a9b89f9d9ac32bba44e45a20be4771ef1",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-13-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "generation_cap": 260,
+  "graph_experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-branch-13-graph-v1",
+  "iteration": 6,
+  "learning_trial_contract": {
+    "relpath": "docs/readiness/2026-10-06-update6-diversity-prospective-v1/trial-contract-v1.json",
+    "sha256": "bca55466567c6776094a246b91a2201c0796357df1b94bf3d4f96d1e0156ef85"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "member": "branch-13",
+  "model_contacts": 0,
+  "policy_baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-context-template-partitioned-update6-diversity-branch-13-graph-v1.json",
+    "sha256": "5710b7a12eaa8dd76ac55959b5f16cd8da216b6bf498d11f63ce998ea175b4fc"
+  },
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-template-k16-v1/policies/5c98fc4821225a613a21a60e82f1532971a50268c57eeb05ab60fab06cc8f35d.json",
+      "sha256": "4c5b185546f62cd3fa1ea82a0df609f76fa8cf6a61ba1bf29d56114697fd661b"
+    },
+    "bundle_id": "5c98fc4821225a613a21a60e82f1532971a50268c57eeb05ab60fab06cc8f35d",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_cohort": "remaining-b2",
+  "prepared_graph": {
+    "relpath": "docs/readiness/2026-10-06-context-template-partitioned-update6-diversity-branch-13-engineering-v1/prepared-members-v1.json",
+    "sha256": "a42f9089d740366efbc0ae4ba2ffd7509d4624d2724de35e02bf6826e0280568"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-13-V1/phase-supply-v1.json",
+    "sha256": "6e786730109f373e4b5bf22f6b5f47016f4eae1c11119643da48ad471395982f"
+  },
+  "proposal_disposition": "provisional",
+  "proposed_attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-13-generation-v1",
+  "proposed_experiment_stem": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-remaining-b2-branch-13-v1",
+  "proposed_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-13-V1",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-REMAINING-B2-BRANCH-13-V1",
+  "runtime_admission": false,
+  "scorer_contacts": 0,
+  "source_baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-v1.json",
+    "sha256": "40a59d6f0e298e20544587c95415c8a42b4f5523aa6870961545d6c316cd4739"
+  },
+  "source_binding": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-generation-v1",
+    "bundle_id": "9d4c492b2e24c0eba6fef7eacf474f846d81310e148a10c078bf8a7d48e4d630",
+    "config_hash": "593ee5fc5db2b51d030ee64f6ed22b8b5d67a2b155f1155b88761173c177d585",
+    "experiment": "slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-v1",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-OBSERVE-BOUNDARY-N20-REMAINING-B2-BRANCH-13-V1"
+  },
+  "source_experiment": {
+    "relpath": "configs/experiment/slurp-native-stage3-context-template-k4-observe-boundary-n20-remaining-b2-branch-13-v1.json",
+    "sha256": "22c9b1b865806b5fffdcd1e6ee292a5dfa96cbd716aa195dea23c48e9722d120"
+  },
+  "source_protocol": {
+    "relpath": "docs/readiness/2026-10-05-slurp-context-template-observe-boundary-n20-v1/protocol-v1.json",
+    "sha256": "91bc106be7a4836075d19a9c4ba1b3bf480d79a7bcbba9f52b1e28d8eb0f0705"
+  },
+  "source_registration": {
+    "relpath": "docs/readiness/2026-10-05-slurp-context-template-observe-boundary-n20-v1/registration-v1.json",
+    "sha256": "96a4bf7cea0680dd19a2efae8a16896080c8539da381c74acf916e922e84cb5c"
+  },
+  "status": "PREPARED_DRAFT",
+  "unchanged_source_selection": true,
+  "warm_verified": true
+}

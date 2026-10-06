@@ -1,0 +1,53 @@
+{
+  "schema": "saea-complete-update6-scientific-preparation-v1",
+  "at_utc": "2026-10-06T19:49:19.978177+00:00",
+  "status": "PREPARED_FIRST_COHORT_REGISTRATION_PASSED_FROZEN_CHECK_PENDING",
+  "serial_process_terminal": true,
+  "original_exec_exit_code": 0,
+  "members": 22,
+  "complete_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/serial-preparation-v1/complete.json",
+    "sha256": "d340ea6f6aeb4403a3011d5a8314bedc0159130afaf3b17a3d70bf7900cad595"
+  },
+  "canonical_packages": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/canonical-packages-v1.json",
+    "sha256": "c67b5423f9856f1d4eb426cffd5753d560868155fee306dedad22fb400b122f4"
+  },
+  "draft_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/draft-registration-complete-v1.json",
+    "sha256": "31346ffa751396052b464d12e8e1b772ca7dd82ae6203a64f41f7e098e96bdf5"
+  },
+  "prospective_analysis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/analysis-plans-complete-v1.json",
+    "sha256": "c369fdcae483ac82eac6e5d0cdd0df79e529c3a65fd3cad39ba2de7c95170a23"
+  },
+  "root_structural_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/root-structural-review-v1.json",
+    "sha256": "58cee37e38598e283d6fb7bc5b1bc6e90f466969729f353b98794d4f31df9927"
+  },
+  "first_cohort_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-root-admission-v1.json",
+    "sha256": "a997cffee97f7f15dca6b2f2b552b17b5dfa1688623f502e0a5f5ff435a71c88"
+  },
+  "first_cohort_gate": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-admitted-gate-v2.stdout.json",
+    "sha256": "c26d20b0fbbaebd419ae8143b7449eed7c7337184c9964019659a71d4e7e0dd7"
+  },
+  "offline_gates": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/offline-gates-exit-v1.json",
+    "sha256": "0c3037e39a48e3d211d1b6fa149ba2baae87b94574f984371075bf4c738b9eae"
+  },
+  "precontact_disposition": "docs/receipts/continuation/2026-10-06-update6-precontact-carrier-caption-disposition.json",
+  "totals": {
+    "candidate_trajectories": 320,
+    "control_trajectories": 120,
+    "family_trajectories": 440,
+    "fit_endpoints_cap": 22880,
+    "generation_contacts_cap": 5720
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "quality_read": false,
+  "runtime_dispatched": false,
+  "next": "Freeze original-a on the integrated clean commit, verify all ten controls/candidates and supply identities with the prepared frozen checker, then bind launch registration and perform fresh live admission. Later cohorts require prior complete-cohort root review."
+}

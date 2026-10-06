@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:34:22.396367+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:49:19.978177+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -36,6 +36,28 @@ family is now structurally accepted under the verified terminal below. Scientifi
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 scientific preparation complete (2026-10-06)
+
+The original serial preparation exited0 with all22 members prepared and warm-verified,
+zero model/scorer contacts. The exact configuration retains440 trajectories:320
+candidate and120 control trajectories across original-a/remaining-b1/remaining-b2.
+All three canonical packages and prospective analysis supplements/plans are sealed;
+no quality or reference content was read. The first-cohort admission check initially
+refused an uppercase carrier caption. Root227 preserved its evidence and corrected
+only44 own unconsumed GEN/FIT ledger captions to the exact slurp carrier token.
+The new first-cohort registration check passes all10 members; all11 offline gates pass.
+Later cohorts remain DRAFT and each READ remains unsigned.
+[Complete preparation](../receipts/continuation/2026-10-06-update6-scientific-prepared.json).
+
+Next freeze original-a from the clean integrated commit and run the prepared complete
+frozen checker in coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-flight-v1.
+No scientific runtime is launched yet. Bind actual checker PID/exit/logs and never
+restart on an observation timeout. Preserve all earlier failed gate/source bytes;
+finalize-draft-registration-v3.py corrects future captions but was not rerun over
+existing packages. The structural job is terminal and its monitor is deleted.
+
+
 
 ## Update6 complete structural acceptance (2026-10-06)
 

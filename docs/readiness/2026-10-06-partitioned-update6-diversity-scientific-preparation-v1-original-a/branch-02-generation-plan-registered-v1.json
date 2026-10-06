@@ -1,0 +1,62 @@
+{
+  "cell": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-original-a-branch-02-v1",
+  "composed_config_hash": "41032d1796e9b188ff2f80f26c16359619eeee4c8342ccb20c09909de3c36ce4",
+  "decision_receipt": {
+    "relpath": "coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-root-admission-v1.json",
+    "sha256": "a997cffee97f7f15dca6b2f2b552b17b5dfa1688623f502e0a5f5ff435a71c88"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-context-template-partitioned-update6-diversity-n20-original-a-branch-02-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 260,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "1f994bd7a117389bedb4aad81c253ed5d79eae8d7f2dfd57d480e015aab6080c",
+    "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-ORIGINAL-A-BRANCH-02-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-context-template-partitioned-update6-diversity-n20-original-a-branch-02-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 1,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/context-template-k16-v1/policies/18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d.json",
+      "sha256": "05b8dc7251014b33da1ad3a65950892a4f8ba54edefdd1d8dd28952367b3dad8"
+    },
+    "bundle_id": "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_budget": {
+    "K": 8,
+    "M": 4,
+    "N": 20,
+    "candidate_trajectories": 160,
+    "control_trajectories": 40,
+    "family_trajectories": 200,
+    "fit_endpoints_cap": 10400,
+    "generation_contacts_cap": 2600
+  },
+  "population_cohort": "original-a",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-ORIGINAL-A-BRANCH-02-V1/phase-supply-v1.json",
+    "sha256": "b73fb264d0b8274eefaad382e6b3a14df5589c671ac921ca8a569eca40a4c644"
+  },
+  "read_run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

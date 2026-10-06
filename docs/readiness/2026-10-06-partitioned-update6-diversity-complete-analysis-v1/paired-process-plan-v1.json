@@ -1,0 +1,28 @@
+{
+  "schema": "saea-paired-process-analysis-plan-v1",
+  "status": "ROOT_DESCRIPTIVE_DIAGNOSTICS_ONLY",
+  "source_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "13e25b7919dd316c2848e78d08ee50c951c6911c01a0e6c436e39282cc78d6cc"
+  },
+  "bootstrap": {
+    "n_replicates": 2000,
+    "seed": 20261006,
+    "ci_level": 0.95
+  },
+  "source_code": {
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/paired-process-entry-v1.py": "a1c74f970458855276ddf8c9576401f6e0b6f1a5a495723638db9223321dafd0",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/paired_process_diagnostics.py": "edc127f9a9adfb434632874c188257e7e62dad2cc391b176cdf25a2a994ca00e",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/bootstrap.py": "552e9a00a0f2c3cfcd887afb17f54abeaf5df68453dedbec69717f18bb2634dc",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py": "74708299dcd896ed087fb867a93d31e8a3d5120a17ac09109deec5b0a379a1d9",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/complete_process_feedback.py": "bf3a0736eb573da5a99697017bcf282e49262927bac85a58142c75fc460140e3",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_process_feedback.py": "60e211a614656c6015f359b24674041a92d7adf1705312ee150018552e88e0e6",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/scripts/analysis/system_text_pilot_read.py": "2ca75f606a176e799572ef4dca6f6d003acc3a396238a0587324e149b5a3ce22"
+  },
+  "scope": "All candidate-control and in-chain control contrasts; matched-known original input resampling with missing-data bounds. No criterion change, actor export or runtime authority.",
+  "at_utc": "2026-10-06T19:45:20.622704+00:00",
+  "predecessor": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-complete-analysis-v1/paired-process-plan-v1.json",
+    "sha256": "2acc1f0f1dadefe24d707192a9afd0c1031ccdcf6d6dae0cd89762292032d90d"
+  }
+}

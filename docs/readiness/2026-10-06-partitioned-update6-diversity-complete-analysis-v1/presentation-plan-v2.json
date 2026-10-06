@@ -1,0 +1,31 @@
+{
+  "schema": "saea-prospective-process-presentation-v1",
+  "at_utc": "2026-10-06T19:45:20.622704+00:00",
+  "source_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "13e25b7919dd316c2848e78d08ee50c951c6911c01a0e6c436e39282cc78d6cc"
+  },
+  "process_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-complete-analysis-v1/process-analysis-plan-v2.json",
+    "sha256": "78e815be57536a9815c8438ce27cacb377b76bb3f76fef08b22ad83f72aab822"
+  },
+  "source_code": {
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/system_process_report.py": "33ae748b0db227d7b4678a4f2aff049442f669efa30d0206aa322ff82836e28e",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/diagnostic_pins_v1.py": "2931edf9ba768aa32500f143e18381ce8536e50185d25db12fca5da55e51ef7c",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/present-complete-cohort-v2.py": "fff640f7d6cdf31bf4f1868a6cb31a1d58c96c512bf970bbecd301258dae9004"
+  },
+  "scope": "Pure presentation of an already complete root-read cohort. No new estimators, selection rule, rollout, scorer invocation, gold read or learner export.",
+  "priority": [
+    "official quality and reliable completion",
+    "support and review/repair/harm",
+    "latency and cost"
+  ],
+  "outputs": [
+    "business-process-cost-v1.json",
+    "business-process-cost-v1.md"
+  ],
+  "predecessor": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-complete-analysis-v1/presentation-plan-v2.json",
+    "sha256": "4535bab88d9af5247d974b0c41241623a5cfd5a580f60cc0f2f66bfdd142c93e"
+  }
+}

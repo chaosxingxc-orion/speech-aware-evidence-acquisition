@@ -1,0 +1,131 @@
+{
+  "comparisons": {
+    "calibration": "same-chain seed-aa versus seed; report candidate contrasts against seed-aa as well",
+    "primary": [
+      "branch-09 versus seed",
+      "branch-10 versus seed",
+      "branch-11 versus seed",
+      "branch-12 versus seed"
+    ],
+    "required": "Retain every member, stratum, failure, abstention and adverse change; descriptive paired uncertainty only, no small-panel efficacy claim.",
+    "weightings": [
+      "natural-mixture",
+      "equal-stratum"
+    ]
+  },
+  "efficiency": "Actual mean/all and non-first sample wall time, per-node prefill/decode/transport, first4/rest diagnostic, throughput separately. Same observed admission order across members; do not relabel non-first warm.",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json",
+    "sha256": "7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7"
+  },
+  "frontier": "Same-cohort nondominated official quality, intent, reliability and measured latency; separate from algorithm retention.",
+  "implementation_amendment": "Apply unchanged official projection, paired estimators, strata, measured-cost frontier and original TRAIN reward reference to the complete configuration-bound cohort; derive all counts/member IDs from its pinned config.",
+  "launch_worker_policy": "Bind unchanged official projection, estimators and source readers prospectively. No scientific task has launched; runtime admission and frozen/live checks remain separate.",
+  "learning_retention_intent": {
+    "relpath": "docs/readiness/2026-10-06-update6-diversity-prospective-v1/trial-contract-v1.json",
+    "sha256": "bca55466567c6776094a246b91a2201c0796357df1b94bf3d4f96d1e0156ef85"
+  },
+  "output_boundary": "Root complete configured cohort interpretation only; no partial population learner export, pooled frontier or cross-cohort return normalization.",
+  "population_cohort": "remaining-b1",
+  "predecessor": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-scientific-preparation-v1-remaining-b1/analysis-supplement-v1.json",
+    "sha256": "4b9273d50814fc8f5a09ba084769fefb14906ccad57dd55efc7d968074e60072"
+  },
+  "projection": {
+    "aggregate_fields": [
+      "port_micro.slu_f1",
+      "port_micro.intent_accuracy"
+    ],
+    "per_sample_fields": [
+      "scenario_action_exact",
+      "scenario_exact",
+      "action_exact",
+      "slot_f1_exact_tp",
+      "slot_f1_exact_fp",
+      "slot_f1_exact_fn",
+      "slu_f1_word_tp",
+      "slu_f1_word_fp",
+      "slu_f1_word_fn",
+      "slu_f1_char_tp",
+      "slu_f1_char_fp",
+      "slu_f1_char_fn"
+    ],
+    "reward_rule_id": "context-initial4-n20-official-counts-v1",
+    "schema": "saea-reward-projection-v1",
+    "scorer": "slurp-slu-official-train"
+  },
+  "quality": "Official pooled SLU-F1; separate intent accuracy, reliable completion, failure and abstention rates.",
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-scientific-preparation-v1-remaining-b1/analysis-recipe-v1.json",
+    "sha256": "d7251fa1da34f38d33817aa4862086542914cc7de143f259863cf1dcf7fbea07"
+  },
+  "recorded_at_utc": "2026-10-06T19:45:20.622704+00:00",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-scientific-preparation-v1-remaining-b1/registration-v1.json",
+    "sha256": "9c8a309d01bddf8530b99dab934809be2e757b7bdd79ccc609e421e2d541c727"
+  },
+  "repairs_and_damage": "Between complete systems, a whole answer is exact when intent is correct and official exact-entity FP=FN=0; empty correct entities count as correct. This association does not establish a within-trajectory or node causal effect. Separate source-verified role diagnostics are required to explain a mechanism.",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "confidence": 0.95,
+    "seed": 20261001,
+    "unit": "paired utterance; keep all recording variants together"
+  },
+  "reward": "Frozen original TRAIN reference utility after exact complete-family READ. Future learner view has exactly K candidate aggregate records per complete population and N times K across observed rounds; complete templates/assembly and numeric quality/process/cost with denominators and missingness only. Keep per-input evidence private.",
+  "schema": "saea-context-learning-analysis-supplement-v1",
+  "source_code": {
+    "scripts/analysis/system_text_pilot_read.py": {
+      "relpath": "scripts/analysis/system_text_pilot_read.py",
+      "sha256": "2ca75f606a176e799572ef4dca6f6d003acc3a396238a0587324e149b5a3ce22"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_cache_cost.py",
+      "sha256": "4eae28f1c7a425692da2314cd33e058c6e6c6d2da37343480b341ad470ea0e29"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_context_read.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_context_read.py",
+      "sha256": "1d54d89974ff535217b0a6cfac830e3e55a7945ceb3aef2e365bba690fc41cf6"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_text_update.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_text_update.py",
+      "sha256": "602c77693ebf5a52bb677e57229ce007ca25cdbde02b49a74b1fe16db2de200a"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_context_learning.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_learning.py",
+      "sha256": "904cd3f994ce5c1a5e767e00564a8b922e73d88b56853968a02764cc0812e5b5"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_search_measurement.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_measurement.py",
+      "sha256": "dcea023512c2de81e12fc59c10e6610bfea8232723b3e1fb06daa62d75fefb6b"
+    },
+    "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_text_feedback.py",
+      "sha256": "3ebf16b43103474b39f9cfe618c0b36ced76d78a6d8dc2427cd3f50e8290a2ec"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py",
+      "sha256": "74708299dcd896ed087fb867a93d31e8a3d5120a17ac09109deec5b0a379a1d9"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/aggregate_template_learning.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/aggregate_template_learning.py",
+      "sha256": "b2cb4ac109e721511f735577aaadd2901a2c30eeff2d0ac8ab33c364dcbfc1d6"
+    }
+  },
+  "status": "PINNED BEFORE ANY UPDATE6 COHORT QUALITY READ; no READ countersignature",
+  "stratum_metadata": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d"
+  },
+  "source_compatibility_review": [],
+  "reporting_priority": [
+    "official business quality and reliable completion",
+    "source-bound support, review, repair and damage diagnostics",
+    "latency and execution cost"
+  ],
+  "process_metrics_contract": {
+    "relpath": "docs/readiness/2026-10-06-slurp-process-metrics-v1/README.md",
+    "sha256": "1e65a0f67bdde23fd276b913676d690b2b7105dbaee35c04074be96100f347b7"
+  },
+  "process_metrics": "After exact root READ, use verified initial draft/first review joins; distinguish raw-model revision from deterministic postprocessing, false alarms from detection, unknown support from absent support. No causal credit or runtime gold.",
+  "learner_profile": "aggregate-template-records-v1"
+}
