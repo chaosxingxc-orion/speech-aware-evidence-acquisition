@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete process metric backfill is running
+
+[One registered offline reader](../receipts/continuation/2026-10-06-slurp-process-metrics-backfill-started.json)
+started2026-10-06T00:22:26.568443Z on frozen codex-process-metrics-v1 at
+7f80d2f98100cd405fade516e997538e9cfefb2d. PID73510/start_ticks57332837,
+tool session40562 were revalidated live. Collect that existing process and its
+stdout/stderr/exit under data-root coordination/slurp-process-metrics-backfill-v1;
+do not relaunch after an observation timeout. No GPU heartbeat is required for
+this offline,zero-model/official-scorer-contact job. Its reader Python sources
+are hash-guarded; do not edit that checkout during execution.
+
+The registered scope is all22 members across three complete update3 cohorts.
+Qualification precedes gold reads, and only an exclusive complete-process-metrics-v1.json
+will carry the full result. Real metric values remain unreported until completion.
+Root must inspect the whole result, include all strata and missingness, and retain
+the original failed-update disposition. No learner export,adoption or next GPU
+admission occurs automatically. Rejected-history preparation is complete as below;
+its private output requires separately bounded prospective integration.
+
 ## Rejected history complete; process backfill registered
 
 The [existing rejected-history reader completed successfully](../receipts/continuation/2026-10-06-rejected-history-preparation-complete.json)
