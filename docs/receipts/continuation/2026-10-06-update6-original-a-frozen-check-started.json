@@ -1,0 +1,26 @@
+{
+  "schema": "saea-first-cohort-frozen-check-launch-v1",
+  "at_utc": "2026-10-06T19:51:58.512494+00:00",
+  "status": "RUNNING_MODEL_FREE_CHECK",
+  "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-original-a-v1",
+  "commit": "c947d67b24e5f2dd5e69c2ad3e0bf58b60822be0",
+  "pid": 236049,
+  "start_ticks": "64214712",
+  "exec_session_id": 83077,
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-flight-v1/frozen-check-started-v1.json",
+    "sha256": "d089bb653b2f09c7a0284e409e2881e11154683499ce5ab88ce068462657eea0"
+  },
+  "entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-flight-v1/run-frozen-check-v1.py",
+    "sha256": "baa3e9c276352d90536b0287de78f07fff131fe2586ee3fff7b3ff3fec576f41"
+  },
+  "checker": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-flight-v1/frozen-check-v1.py",
+    "sha256": "46a795fe720ef0a98d41ca6b8e1cb6121a1ee27ffd5a8554954ac19c863bbda3"
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "runtime_dispatched": false,
+  "next": "Poll the original session83077 or exact PID/start ticks. Require actual exit0, all configured member proofs, unchanged clean frozen checkout and original checker exit before finalize-registration-v1.py. Any failure stops without automatic checker or runtime retry."
+}

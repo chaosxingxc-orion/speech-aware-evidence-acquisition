@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:49:19.978177+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:51:58.512494+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -36,6 +36,27 @@ family is now structurally accepted under the verified terminal below. Scientifi
 the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 first-cohort frozen check running (2026-10-06)
+
+The prepared experiment and analysis packages are integrated at
+c947d67b24e5f2dd5e69c2ad3e0bf58b60822be0. The first-cohort frozen worker is
+/home/chao/saea-worktrees/codex-partitioned-update6-diversity-original-a-v1 at that
+exact commit. Its complete model-free frozen checker started2026-10-06T19:51:02.490343Z,
+PID236049/start_ticks64214712, exec session83077, with identity revalidated by root.
+[Original checker](../receipts/continuation/2026-10-06-update6-original-a-frozen-check-started.json).
+
+Resume the same checker, not a replacement: its entries/logs are under
+coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-flight-v1.
+Require actual exit0, all10 configured member proofs, original process absence and
+clean exact frozen source. Then run the already prepared original-a launch registrar,
+fresh live checks and Windows task launch with a new job-scoped15-minute monitor.
+No scientific runtime/contact or score has occurred. Later cohorts and all exact READs
+remain held behind their separate complete-family conditions. All prior failed
+registration logs are preserved; the corrected carrier-caption gate and11 offline
+gates passed before freeze. No algorithm retention rule or task knowledge changed.
+
+
 
 ## Update6 scientific preparation complete (2026-10-06)
 
