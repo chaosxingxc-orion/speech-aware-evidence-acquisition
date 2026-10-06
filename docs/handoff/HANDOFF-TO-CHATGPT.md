@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Native capture is an executable prerequisite for remaining-b1 READ (2026-10-06)
+
+The running frozen worker and requests are unchanged. Root added an independent
+native-owner receipt verifier and a source-pinned wrapper around the original
+complete-family countersign entry. It rejects missing/noninteger/failed/wrong-schema
+or wrong-registration native exits. Receipt success grants no READ by itself.
+All original seal/unique-score/live-process/freshness checks still run unchanged.
+Unit suite72PASS;101 module statements100percent covered; engineering-base PASS.
+Actual live native observer and Python entry both return75/WAIT and write no terminal
+observation or root authorization. No model/scorer contacts or partial quality read.
+
+At terminal follow coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/
+captured-root-read-entries-v1.json: original full-family qualify, native
+capture-windows-terminal-v2.ps1, then within60seconds
+countersign-captured-cohort-v1.py with its exact entry-manifest and original launch
+binding. Finally use original read and unchanged registered process/presentation.
+Successful actual complete-family entry remains unverified until this job terminates.
+Keep the15minute bound monitor active until every admitted process settles.
+[Prepared entry and proof](../receipts/continuation/2026-10-06-update6-native-captured-root-read-prepared.json).
+
+
 ## Update6 remaining-b1 scientific cohort RUNNING (2026-10-06)
 
 Windows task SAEA-Update6-Diversity-RemainingB1-Scientific-V1 launched at
@@ -5592,7 +5613,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T21:40:32.012996+00:00
+Last refreshed: 2026-10-06T21:45:09.222447+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

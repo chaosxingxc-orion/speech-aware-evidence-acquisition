@@ -207,3 +207,29 @@ def test_observe_rejects_path_escape(tmp_path):
     reg,_,_=fixture();reg['members'][0]['run_id']='../escape'
     with pytest.raises(ValueError):
         module.observe_members(registration=reg,data_root=tmp_path/'data',job_root=tmp_path/'job')
+
+
+def test_full_owner_capture_is_additional_evidence_not_read_authority():
+    receipt = {"schema": "saea-scientific-owner-native-exit-v1", "exit_code": 0,
+               "registration_sha256": "a" * 64}
+    result = module.verify_full_owner_capture(receipt=receipt, registration_sha="a" * 64)
+    assert result["status"] == "NATIVE_OWNER_SUCCESS_BOUND"
+    assert result["read_authorized"] is False
+    assert result["registration_sha256"] == "a" * 64
+
+
+@pytest.mark.parametrize("fault", ["missing", "failed", "boolean", "string", "float",
+                                    "wrong_registration", "wrong_schema", "missing_exit"])
+def test_full_owner_capture_refuses_missing_failed_or_unbound_receipt(fault):
+    receipt = {"schema": "saea-scientific-owner-native-exit-v1", "exit_code": 0,
+               "registration_sha256": "a" * 64}
+    if fault == "missing": receipt = None
+    if fault == "failed": receipt["exit_code"] = 23
+    if fault == "boolean": receipt["exit_code"] = False
+    if fault == "string": receipt["exit_code"] = "0"
+    if fault == "float": receipt["exit_code"] = 0.0
+    if fault == "wrong_registration": receipt["registration_sha256"] = "b" * 64
+    if fault == "wrong_schema": receipt["schema"] = "other"
+    if fault == "missing_exit": del receipt["exit_code"]
+    with pytest.raises(ValueError):
+        module.verify_full_owner_capture(receipt=receipt, registration_sha="a" * 64)

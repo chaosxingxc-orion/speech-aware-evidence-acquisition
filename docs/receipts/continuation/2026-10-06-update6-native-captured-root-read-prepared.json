@@ -1,0 +1,40 @@
+{
+  "schema": "saea-root-read-native-capture-prepared-v1",
+  "at_utc": "2026-10-06T21:45:09.222447+00:00",
+  "status": "PREPARED_PENDING_ACTUAL_TERMINAL",
+  "cohort": "remaining-b1",
+  "entries": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/captured-root-read-entries-v1.json",
+    "sha256": "950f380609c6d4ea4f4398b763a009729b2d8aa0f0ce5e0640a847cf31c579c0"
+  },
+  "implementation": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/scripts/flights/batch/scientific_continuation.py",
+    "sha256": "b61748a6fe26fa45177eaf8969b6b53d2e032ca03cb8a0cb4dd864607810299c"
+  },
+  "tests": {
+    "unit_passed": 72,
+    "module_statements": 101,
+    "module_statement_coverage_percent": 100,
+    "engineering_base": "PASS",
+    "red_phase": "Nine new tests failed on absent capture verification before implementation.",
+    "limitations": "Actual successful complete-family entry remains pending real job termination; native pending branch and pure receipt refusal cases are verified."
+  },
+  "native_pending": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/native-capture-pending-proof-v1.json",
+    "sha256": "3f9d27bf85145eba775cb35568973389f354a53551846f6400561ad617b265c3"
+  },
+  "python_pending": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-remaining-b1-scientific-v1/python-capture-pending-proof-v1.json",
+    "sha256": "5491e50074a040970e5ad59593f7593f921f053779d2ceda9366f401fcafba7d"
+  },
+  "invariants": [
+    "Verify independent native exit0 belongs to exact registration before original countersign.",
+    "Retain unchanged original complete-family seal, score, process, freshness and root authority gates.",
+    "Capture success alone grants no READ.",
+    "Do not modify active frozen sources, model requests, budgets or analysis recipes."
+  ],
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "quality_read": false,
+  "READ_countersigned": false
+}

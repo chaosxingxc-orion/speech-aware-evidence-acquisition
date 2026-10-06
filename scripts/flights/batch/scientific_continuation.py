@@ -200,3 +200,20 @@ def observe_members(*, registration, data_root, job_root):
     require(all(digest(Path(item["path"])) == item["sha256"] for item in pins),
             "Operational metadata changed during observation")
     return members, pins
+
+
+def verify_full_owner_capture(*, receipt, registration_sha):
+    """Require the independent native exit in addition to complete-family gates.
+
+    The caller must pin and read the exact admitted job's capture file. Success
+    grants no READ and does not replace live process or seal/score qualification.
+    """
+    require(isinstance(receipt, dict), "Independent native owner receipt is absent")
+    require(receipt.get("schema") == "saea-scientific-owner-native-exit-v1",
+            "Independent native owner receipt schema differs")
+    require(type(receipt.get("exit_code")) is int and receipt["exit_code"] == 0,
+            "Independent native owner did not succeed")
+    require(receipt.get("registration_sha256") == registration_sha,
+            "Independent native exit belongs to another registration")
+    return {"status": "NATIVE_OWNER_SUCCESS_BOUND",
+            "registration_sha256": registration_sha, "read_authorized": False}
