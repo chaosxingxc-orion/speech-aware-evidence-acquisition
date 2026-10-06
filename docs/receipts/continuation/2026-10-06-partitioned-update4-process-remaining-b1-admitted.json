@@ -1,0 +1,16 @@
+{
+  "at_utc": "2026-10-06T06:51:39Z",
+  "status": "NEXT_COHORT_ADMITTED_NOT_LAUNCHED",
+  "cohort": "remaining-b1",
+  "decision": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/remaining-b1-root-admission-v1.json",
+    "sha256": "3b5df4fc2c0e9faf168a4f39c6cd68041e4b149ceeda4e3f3bf32ad6e0052828"
+  },
+  "gate": {
+    "at_utc": "2026-10-06T06:51:14.839015+00:00",
+    "exit_code": 0
+  },
+  "scope": "Only the next registered cohort, four frozen candidates and two controls on the same20 inputs; no partial learning selection or policy change.",
+  "contacts_added": 0,
+  "frozen_and_live_checks_pending": true
+}

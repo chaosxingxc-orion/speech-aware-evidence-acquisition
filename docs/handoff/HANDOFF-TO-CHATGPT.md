@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update4 original-a complete; business and process reviewed (2026-10-06)
+
+All ten members finalized20 rows with verified seals, one official successful score each and zero failed jobs. Windows terminated normally at06:39:16Z, with no bound worker/scorer/observer; its15-minute monitor was deleted. Root exact READ, process diagnostics and balanced presentation completed with zero new model/scorer contacts.
+
+Seed SLU-F1 is60.31percent, A/A56.36percent; candidate range46.32-60.03percent. No candidate exceeds seed. Card presence20/20 contrasts with initial candidate coverage16-18/20. High-detection branches also show high false alarms and harmful revisions; no observed raw-model entity repair occurred. Retain missing support evidence as unknown. See [complete review](../results/2026-10-06-slurp-update4-original-a-process-diagnostics.md) and [receipt](../receipts/continuation/2026-10-06-partitioned-update4-process-original-a-complete-read.json).
+
+Root reviewed and admitted only unchanged adjacent remaining-b1 continuation; registration passed and frozen/live checks remain before launch. Remaining-b2 stays DRAFT. No partial-trial retention, learner export or stable-benefit claim; preserve all frozen sources and observe-only boundary maintenance.
+
 ## Historical full presentation verified; exact-ID join corrected (2026-10-06)
 
 The real authorized update3 rehearsal revealed identical input sets with different
@@ -3601,7 +3609,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T05:53:15.843603+00:00
+Last refreshed: 2026-10-06T06:51:39Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

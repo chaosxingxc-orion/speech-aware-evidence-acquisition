@@ -1,0 +1,54 @@
+{
+  "adoption_decided": false,
+  "at_utc": "2026-10-06T06:50:51.802651+00:00",
+  "business": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/report.json",
+    "sha256": "15297088bc7ca0346d2add12d3b3464676267c93dc083b117ff5a98a25df69ee"
+  },
+  "cohort": "original-a",
+  "contacts_added_by_read": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update4-process-n20-v1.json",
+    "sha256": "636663af1d3e8085f697323c900d3cd1a449d01b6025959494fcb8b7e1b86c45"
+  },
+  "learner_exported": false,
+  "members": 10,
+  "monitor": {
+    "deleted_after_verified_terminal": true,
+    "id": "slurp-update4-original-a-scientific-monitor"
+  },
+  "next_scope": "Reviewed unchanged remaining-b1; separate admission/frozen/live gates required.",
+  "presentation": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/business-process-cost-v1.json",
+    "sha256": "ea74adad23736028ebdb15ab41a80bdcb00a1e831cb6a9711fd020c1aad00520"
+  },
+  "process": {
+    "relpath": "analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1/process-metrics-v1.json",
+    "sha256": "0c5f02333fd9c3c7f5ffee5b2ee09dc6cee299d13de10330d8bd55560574e2c4"
+  },
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE4-PROCESS-N20-V1-ORIGINAL-A-READ-V1",
+  "report": {
+    "relpath": "docs/results/2026-10-06-slurp-update4-original-a-process-diagnostics.md",
+    "sha256": "b530b27590e4d8385a56ec8f8bafacecdb44abf322c1371d9076890313a8c835"
+  },
+  "root_authorization": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/original-a-flight-v1/root-read-authorization-v1.json",
+    "sha256": "09f1dd4fbb81b67a2223ebfc7e3788647f3f48df2873282301e7c67f67a29275"
+  },
+  "root_review": {
+    "relpath": "coordination/partitioned-update4-process-scientific-preparation-epochs-v1/original-a-root-continuation-review-v1.json",
+    "sha256": "84465a263dfabc0054274aa760a3bd360c6a1ab024e7effd729a4ca86a52c320"
+  },
+  "schema": "saea-complete-cohort-business-process-review-v1",
+  "status": "COMPLETE_ROOT_COHORT_READ_AND_PROCESS_REVIEW",
+  "terminal": {
+    "relpath": "coordination/partitioned-update4-original-a-scientific-v1/scientific-finished.json",
+    "sha256": "3360c1424d72a9492458777f33a5449b361bacece346cf707a31b827c9a138b7"
+  },
+  "trajectories": 200,
+  "unique_reused_inputs": 20,
+  "whole_trial_complete": false
+}
