@@ -1,0 +1,83 @@
+{
+  "schema": "saea-historical-aggregate-selection-review-v1",
+  "at_utc": "2026-10-06T21:11:53.340307+00:00",
+  "sources": [
+    {
+      "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-update6-diversity-prospective-v1/actor-plan-v1.json",
+      "sha256": "7c492eb8454471b56e0f1c21c4e5b89f6ad7b3ecc82a8cf7bf4669a930917c3a"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2/manifest.json",
+      "sha256": "cf068db7a94437bc789f5dd5c60b2430b36550f69bb8f3ccb5d88f04bd995865"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2/actor-input.json",
+      "sha256": "1159fa9719e5dbe812ed4fdae0448696bab1cc284963342edbb65efc9ec37652"
+    }
+  ],
+  "derivation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-historical-selection-diagnostic-v1/derive-v1.py",
+    "sha256": "d6bf4f2e0a0ad2efbbbd0d095de7ead2d9a33fe3750a6a68d2801fdd01dcdc47"
+  },
+  "result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-historical-selection-diagnostic-v1/result.json",
+    "sha256": "baf6ac724ee3d0db21d422c2e8bbcfe6d0ceda555b57e5039dcc6b9753b6e460"
+  },
+  "interpretation": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/readiness/2026-10-06-system-evolution-algorithm-roadmap-v1/historical-selection-diagnostic.md",
+    "sha256": "03017a764a32b45e5d863deb9ad5b4b1d1975c326b58deb9461bb33ccf381d5d"
+  },
+  "round_summaries": [
+    {
+      "iteration": 3,
+      "K": 16,
+      "positive_utility": 9,
+      "negative_utility": 7,
+      "zero_utility": 0,
+      "quality_up_intent_reliability_protected": 5,
+      "changed_bundle_quality_up_intent_reliability_protected": 5,
+      "utility_before": -56.15925390968045,
+      "utility_after": -59.5941577658888,
+      "utility_delta": -3.4349038562083507,
+      "positive_delta_sum": 17.303298123558175,
+      "negative_delta_sum": -20.73820197976653,
+      "registered_acceptance": "REJECT"
+    },
+    {
+      "iteration": 4,
+      "K": 16,
+      "positive_utility": 5,
+      "negative_utility": 11,
+      "zero_utility": 0,
+      "quality_up_intent_reliability_protected": 6,
+      "changed_bundle_quality_up_intent_reliability_protected": 6,
+      "utility_before": -56.15925390968045,
+      "utility_after": -66.31647670116028,
+      "utility_delta": -10.157222791479832,
+      "positive_delta_sum": 12.565154344318112,
+      "negative_delta_sum": -22.72237713579794,
+      "registered_acceptance": "REJECT"
+    },
+    {
+      "iteration": 5,
+      "K": 16,
+      "positive_utility": 6,
+      "negative_utility": 9,
+      "zero_utility": 1,
+      "quality_up_intent_reliability_protected": 6,
+      "changed_bundle_quality_up_intent_reliability_protected": 6,
+      "utility_before": -56.15925390968045,
+      "utility_after": -69.32902959938615,
+      "utility_delta": -13.169775689705695,
+      "positive_delta_sum": 9.302717605489853,
+      "negative_delta_sum": -22.472493295195545,
+      "registered_acceptance": "REJECT"
+    }
+  ],
+  "maximum_absolute_historical_seed_aa_f1_difference": 0.1230441500294186,
+  "active_parents_unchanged": true,
+  "current_update6_quality_read": false,
+  "learner_exported": false,
+  "model_contacts": 0,
+  "scorer_contacts": 0
+}

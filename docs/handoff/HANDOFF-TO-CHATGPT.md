@@ -1,5 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Historical aggregate selection audit completed (2026-10-06)
+
+A root-only audit of the already admitted64-record aggregate capsule reproduces
+Update3/4/5 utility totals. Positive branch differences number9/5/6 while whole
+population differences remain-3.434904/-10.157223/-13.169776; all original rejections
+stand. F1-up with nondecreasing intent/reliability point estimates number5/6/6, all
+changed bundles. These are descriptive cross-flight estimates, not adopted winners.
+Maximum absolute historical seed/A/A F1 difference across12 pairs is0.12304415;
+noise and reused N20 selection remain major limitations. Aggregate records cannot
+supply paired covariance. No raw contents, current Update6 quality, model/scorer
+contacts or learner export. Active parents remain Update2. Consider prospective
+bounded parent retention with measurement protection after Update6, never retroactively.
+[Diagnostic](../readiness/2026-10-06-system-evolution-algorithm-roadmap-v1/historical-selection-diagnostic.md).
+
 ## Future Update6 cohorts have independent native exit capture prepared (2026-10-06)
 
 The current suffix job is unchanged. For the unadmitted remaining-b1 and remaining-b2,
