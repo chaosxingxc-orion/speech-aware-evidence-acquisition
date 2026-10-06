@@ -1,5 +1,25 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update5 structural precontact stop; one root disposition prepared (2026-10-06)
+
+The first structural Windows task launched11:07:48Z and ended exit1 at11:08:01Z.
+Its launch runtime registration stderr name collided with the frozen checker log;
+exclusive open failed before registration subprocess, lease, attempt or model call.
+All16 generation/FIT attempts and runs remain absent. The secondary observer wait
+expired and Windows terminated its owned observer; no original owner/observer/WSL
+entry remains. The job-scoped monitor is deleted. Preserve all original bytes.
+
+Root227 approved one precontact continuation in separate coordination/
+partitioned-update5-aggregate-structural-precontact-recovery1 and future Windows
+SAEA-Update5-Aggregate-Structural-Recovery1. The actual launch helper now uses
+runtime-registration log names. All configured16 synthetic cases reproduced the
+old collision and verified corrected writes while preserving old logs. No model
+contact occurred. See [exact disposition](../receipts/continuation/2026-10-06-update5-structural-precontact-disposition.json).
+Reuse the identical frozen edc736481 worker and already-passed16 frozen proofs,
+unchanged policies/data/budgets/sampling/resources and unopened identities. Finalize
+new registration and fresh live admission before launch. Any further failure stops;
+no automatic second continuation. Structural-only scope and no-scoring remain.
+
 ## Update5 structural follow-through prepared during frozen checks (2026-10-06)
 
 The exact frozen checker below remains the only current preparation process;
@@ -4162,7 +4182,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T11:00:09.286067+00:00
+Last refreshed: 2026-10-06T11:10:50.663490+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

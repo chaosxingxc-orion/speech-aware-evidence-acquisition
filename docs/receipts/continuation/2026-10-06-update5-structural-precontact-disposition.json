@@ -1,0 +1,55 @@
+{
+  "schema": "saea-root-precontact-incident-disposition-v1",
+  "at_utc": "2026-10-06T11:10:50.663490+00:00",
+  "authority": "Owner227 root bounded SLURP engineering and incident dispositions",
+  "status": "APPROVED_ONE_PRECONTACT_CONTINUATION",
+  "incident": "Launch runtime registration stderr filename collided with the immutable frozen-check stderr filename. Exclusive file open raised before registration subprocess/lease/model request. Windows then timed out waiting for observer stop and terminated its owned observer.",
+  "original_task": "SAEA-Update5-Aggregate-Structural-V1",
+  "original_epoch": "2026-10-06T11:07:48.3736248+00:00",
+  "original_registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/registration-v1.json",
+    "sha256": "fcafe446efbf943842cf51a2ffbd822ed34c5f5a04b763a8d93f35c7e42ebeb0"
+  },
+  "failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/branch-01-structural-failure.json",
+    "sha256": "adb2154773f23cb48ecf8d6c6bf2a6156e0a61bfc78e38debe667e4dd3518051"
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-mailbox-v1/structural-finished.json",
+    "sha256": "aa29fb914c2cee816feb736422df96a6d837405af636d562ac8111789d4bd014"
+  },
+  "proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-structural-precontact-recovery1/log-isolation-proof-v1.json",
+    "sha256": "758e6d1d3cd28086f0379efa79825ed8f0ce5b835bc8c8018e6f4cbc60e1c4f0"
+  },
+  "verified_no_attempts_or_runs": true,
+  "verified_no_lease_entry": true,
+  "original_model_contacts": 0,
+  "original_score_contacts": 0,
+  "process_disposition": "Exact Windows task terminal exit1, original owner and observer absent; no admitted WSL entry remained. Original15-minute monitor deleted.",
+  "preservation": "Keep every old task/log/registration and frozen source byte. No old output is deleted, scored, retried or resealed.",
+  "continuation": "Use separate coordination and new Windows task SAEA-Update5-Aggregate-Structural-Recovery1 with runtime-registration log names. Reuse identical clean frozen worker, complete proven source/config/graph/supply bindings and still-unopened registered identities; same configured rows/budgets/sampling/resource policy.",
+  "unchanged": {
+    "worker": "/home/chao/saea-worktrees/codex-partitioned-update5-aggregate-structural-v1",
+    "commit": "edc736481e62e24d5e1d33e4e01a2041e1fd3245",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+      "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+    },
+    "budget": {
+      "generation_contacts": 832,
+      "fit_endpoint_contacts": 3328,
+      "official_score_jobs": 0
+    },
+    "resource_policy": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 20,
+      "wait_seconds": 600
+    }
+  },
+  "recovery_limit": 1,
+  "further_failure": "Stop for evidence and root diagnosis; no automatic second continuation.",
+  "runtime_dispatched": false
+}
