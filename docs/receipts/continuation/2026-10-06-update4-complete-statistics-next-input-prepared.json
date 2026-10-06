@@ -1,0 +1,43 @@
+{
+  "schema": "saea-update4-complete-statistics-next-input-readiness-v1",
+  "at_utc": "2026-10-06T08:58:13.202691+00:00",
+  "complete_root_process_feedback": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update4-process-scientific-preparation-epochs-v1/complete-root-process-feedback-v1.json",
+    "sha256": "c5691fef4e751bc98948a5c9c2c209e78aeb6efb1ed6907b34aa7bff13d223fd"
+  },
+  "cohorts": {
+    "original-a": {
+      "members": 10,
+      "candidates": 8,
+      "sample_count": 20
+    },
+    "remaining-b1": {
+      "members": 6,
+      "candidates": 4,
+      "sample_count": 20
+    },
+    "remaining-b2": {
+      "members": 6,
+      "candidates": 4,
+      "sample_count": 20
+    }
+  },
+  "next_input_plan": {
+    "relpath": "docs/readiness/2026-10-06-update4-aggregate-continuation-v1/next-input-plan-v1.json",
+    "sha256": "e18f7714d305ff66ca6152c906e83667a03656ce478464be703817100b634317"
+  },
+  "next_input_entry": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update5-aggregate-input-preparation-v1/prepare-next-input-v1.py",
+    "sha256": "5e61699f0aa27bbd318b287f52578ef9a5df2ffbd58474439c2cf94d06c96dc9"
+  },
+  "check_status": "WAIT_ROOT_REVIEWED_HISTORY_PROCESS",
+  "check_created_no_input_or_reservation": true,
+  "private_history_status": "RUNNING; revalidate coordination/update4-rejected-aggregate-history-v1/started.json and exact process identity",
+  "bridge_status": "RUNNING; revalidate exact continuation-process-bridge-entry-v1.py handle",
+  "next_actor_contact_admitted": false,
+  "runtime_admission": false,
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  }
+}

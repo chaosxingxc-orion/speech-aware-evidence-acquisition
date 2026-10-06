@@ -1,0 +1,32 @@
+{
+  "schema": "saea-prospective-aggregate-continuation-input-plan-v1",
+  "status": "WAIT_COMPLETE_ROOT_HISTORY_AND_PROCESS",
+  "owner_authority": 227,
+  "profile": "aggregate-template-records-v1",
+  "parent_input_sha256": "d24da70639da71acba7e709727e59e64b92ab5528d5d54b198de76762c0f3177",
+  "target_iteration": 5,
+  "population_update_plan": {
+    "schema": "saea-context-population-update-plan-v1",
+    "batch_id": "complete-update5-aggregate-history-v1",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "semantic_batches": 1,
+    "proposal_slots": 16
+  },
+  "max_actor_input_bytes": 2097152,
+  "history_completion_relpath": "docs/receipts/continuation/2026-10-06-update4-rejected-history-complete.json",
+  "process_completion_relpath": "docs/receipts/continuation/2026-10-06-update4-process-bridge-reviewed.json",
+  "process_registration_relpath": "docs/readiness/2026-10-06-partitioned-update4-process-complete-analysis-v1/continuation-process-registration-v1.json",
+  "registration_schema": "saea-partitioned-context-continuation-registration-v2",
+  "required_private_contract": "Complete root-reviewed original update2 parent evidence plus rejected update3 and update4, with cumulative exposure. No partial or fabricated rounds.",
+  "record_rule": "K configured records per observed population; derive observed_rounds from validated sequential lineage. Referenced control statistics are shared comparison metadata.",
+  "priority": [
+    "Official business quality and reliable completion",
+    "Correct initial evidence consumption; selective review precision and useful safe revision",
+    "Measured costs including latency"
+  ],
+  "runtime_admission": false,
+  "actor_contact_admitted": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0
+}

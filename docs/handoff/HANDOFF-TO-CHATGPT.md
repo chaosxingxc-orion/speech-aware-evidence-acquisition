@@ -1,5 +1,25 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Complete statistics joined; next aggregate input entry prepared (2026-10-06)
+
+Complete numeric process feedback covers all three cohorts, all16 candidates and
+six controls; every population uses the same20 registered inputs. The result is
+root-only and introduces zero contacts. The shared continuation bridge is running
+via continuation-process-bridge-entry-v1.py prepare. Private rejected update4
+history is running via coordination/update4-rejected-aggregate-history-v1/prepare-history-v1.py;
+its started.json binds PID/start ticks, source hashes and exact registration. Preserve
+sources while these readers run; observation timeout is not failure or retry authority.
+
+[Prepared next input](../receipts/continuation/2026-10-06-update4-complete-statistics-next-input-prepared.json)
+pins next-input-plan-v1.json and the exclusive prepare-next-input-v1.py entry. It
+correctly waits for root-reviewed history/process completion receipts before writing
+an input or reserving any proposal. The plan derives iteration5 and K from the prior
+registration and uses aggregate-template-records-v1, unchanged parents, currentN20,
+fixed knowledge and the existing2MiB actor byte limit. Actual actor token/context
+admission remains separate. After both source preparations finish, root reviews them,
+records exact completion receipts, then invokes the prepared input entry. No new
+actor, GPU task, policy adoption or scale admission has occurred.
+
 ## Update4 whole population rejected; aggregate continuation pending (2026-10-06)
 
 The exact complete trial finished normally after source, parent, lineage and READ
@@ -3779,7 +3799,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T08:49:28Z
+Last refreshed: 2026-10-06T08:58:13Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
