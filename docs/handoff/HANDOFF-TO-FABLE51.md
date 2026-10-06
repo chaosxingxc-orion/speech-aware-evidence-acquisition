@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T19:15:00.224535+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:17:58.690562+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -221,6 +221,18 @@ this proposer improvement. Each role may use its own reasoning structure and ful
 common-prefix similarity is not a search objective. Keep valid native output contracts.
 
 ### Verification, boundaries and unresolved requirements
+
+## Cross-carrier completion distinction revalidated (2026-10-06)
+
+Current registered Audio2Tool/E21 consumption-module all-off smoke/full cells remain
+HELD with absent attempts. Historical E22 direct short-form run
+SAEA-E22-DEV-ESB-TAIL2S-V1 has FINALIZED metadata,1500 recorded contacts and one
+successful score job with zero failures, on historical sourceab7e6ddbccd9e1525af0e2cad9146beaa4bf3f53.
+This operational observation does not reverify its seal/read quality or qualify the
+current native consumption profile. The current89 synthetic carrier tests remain
+separate evidence. [Gap review](../receipts/continuation/2026-10-06-cross-carrier-execution-gap-review.json).
+Preserve carrier holds and closed lines; no new admission, old-run replay or claim of
+full goal completion. Continue current SLURP sequence first.
 
 ## Current shared-base carrier regression verified (2026-10-06)
 

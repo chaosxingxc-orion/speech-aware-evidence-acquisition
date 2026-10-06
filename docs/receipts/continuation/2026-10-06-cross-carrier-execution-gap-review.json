@@ -1,0 +1,98 @@
+{
+  "schema": "saea-cross-carrier-execution-gap-review-v1",
+  "at_utc": "2026-10-06T19:17:58.690562+00:00",
+  "scope": "Operational metadata and current config inspection only. No new model/scorer contact or task-quality read. Historical completeness is not current native consumption-profile acceptance.",
+  "current_module_cells": [
+    {
+      "config": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/a2t-native-stage3-module-alloff-smoke-4-v1.json",
+        "sha256": "e8fd8b57de9b8deccd9334305a01f46309ef10cc311f83c2c7e8d483beb81073"
+      },
+      "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+      "attempt_id": "attempt-a2t-native-stage3-module-alloff-smoke-4-v1-generation-v1",
+      "dataset_fragment": "audio2tool-paired-400",
+      "readiness": "held",
+      "attempt_present": false,
+      "scope": "Current registered consumption-module cell; no reopen or dispatch authority inferred."
+    },
+    {
+      "config": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/a2t-native-stage3-module-alloff-v1.json",
+        "sha256": "16359818113aafe1e1096f4509abcb3cd0c4b328be507ec9d507906f500aeff9"
+      },
+      "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "attempt_id": "attempt-a2t-native-stage3-module-alloff-v1-generation-v1",
+      "dataset_fragment": "audio2tool-paired-400",
+      "readiness": "held",
+      "attempt_present": false,
+      "scope": "Current registered consumption-module cell; no reopen or dispatch authority inferred."
+    },
+    {
+      "config": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/earnings21-native-stage3-module-alloff-smoke-4-v1.json",
+        "sha256": "b5108177dfceb789b005e8781b0c022c3e552cce10afeec9308125a07cd03b21"
+      },
+      "run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+      "attempt_id": "attempt-earnings21-native-stage3-module-alloff-smoke-4-v1-generation-v1",
+      "dataset_fragment": "e21-native-window-four-row-v1",
+      "readiness": "held",
+      "attempt_present": false,
+      "scope": "Current registered consumption-module cell; no reopen or dispatch authority inferred."
+    },
+    {
+      "config": {
+        "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiment/earnings21-native-stage3-module-alloff-v1.json",
+        "sha256": "82196f901d65541514d8c445811565b6b8a8282ea4aca882e0d61e6ec9123d37"
+      },
+      "run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "attempt_id": "attempt-earnings21-native-stage3-module-alloff-v1-generation-v1",
+      "dataset_fragment": "earnings21-native-window-full44-v1",
+      "readiness": "held",
+      "attempt_present": false,
+      "scope": "Current registered consumption-module cell; no reopen or dispatch authority inferred."
+    }
+  ],
+  "historical_e22": {
+    "run_id": "SAEA-E22-DEV-ESB-TAIL2S-V1",
+    "attempt_id": "attempt-20260907T090708Z-df36cc",
+    "attempt_state": "FINALIZED",
+    "manifest_status": "COMPLETED",
+    "source_commit": "ab7e6ddbccd9e1525af0e2cad9146beaa4bf3f53",
+    "model_contacts": 1500,
+    "score_jobs": 1,
+    "score_successes": 1,
+    "score_failures": 0,
+    "metadata": [
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-E22-DEV-ESB-TAIL2S-V1/attempt-20260907T090708Z-df36cc.json",
+        "sha256": "bc4284ff8d0f873ee0f15e7f19387268a617ed36adf4b2e67e45d8ae2a0458b1"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-TAIL2S-V1/attempt-20260907T090708Z-df36cc/SAEA-E22-DEV-ESB-TAIL2S-V1.run-manifest.json",
+        "sha256": "59c4fbcd3cb1539eb6635cd9392eccc3c5a8a862688841cf7eae3808ba6e130c"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-TAIL2S-V1/attempt-20260907T090708Z-df36cc/score-batch/batch-summary.json",
+        "sha256": "b55d1831843addc5f668f6bf74f286814a501b6a55fc7dda074252cd29c6a49c"
+      },
+      {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E22-DEV-ESB-TAIL2S-V1/attempt-20260907T090708Z-df36cc/score-jobs.jsonl",
+        "sha256": "a0319b23506a61d16c7f507079a6eae0b7318a9098195fff20b314c88cfafa05"
+      }
+    ],
+    "seal_reverified": false,
+    "shared_campaign_receipt_present": false,
+    "scope": "Historical E22 direct short-form execution metadata, not an additional current-profile READ or claim of complete current native knowledge-consumption execution."
+  },
+  "current_base_regression": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-cross-carrier-native-regression.json",
+    "sha256": "c6a59b6ff4d6dd49b666803b1a9a93e56d12f108935132a838ab0f31d7f3c462"
+  },
+  "requirements_remaining": [
+    "Finish exact SLURP Update6 structural and scientific sequence; establish actual system-level and learning evidence rather than infer from preparation.",
+    "Keep separate carrier holds until explicit carrier disposition and exact source/roster/runtime admission.",
+    "For current carrier consumption profiles, require their own real capacity/structural execution, complete manifests and unique standard scoring under current base, not only synthetic tests or old direct runs."
+  ],
+  "runtime_admission": false,
+  "goal_complete": false
+}

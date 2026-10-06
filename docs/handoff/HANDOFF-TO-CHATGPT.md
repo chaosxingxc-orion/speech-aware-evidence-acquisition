@@ -1,5 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Cross-carrier completion distinction revalidated (2026-10-06)
+
+Current registered Audio2Tool/E21 consumption-module all-off smoke/full cells remain
+HELD with absent attempts. Historical E22 direct short-form run
+SAEA-E22-DEV-ESB-TAIL2S-V1 has FINALIZED metadata,1500 recorded contacts and one
+successful score job with zero failures, on historical sourceab7e6ddbccd9e1525af0e2cad9146beaa4bf3f53.
+This operational observation does not reverify its seal/read quality or qualify the
+current native consumption profile. The current89 synthetic carrier tests remain
+separate evidence. [Gap review](../receipts/continuation/2026-10-06-cross-carrier-execution-gap-review.json).
+Preserve carrier holds and closed lines; no new admission, old-run replay or claim of
+full goal completion. Continue current SLURP sequence first.
+
+
 ## Update6 complete-result analysis entries prepared (2026-10-06)
 
 Root prepared source-pinned copies of the existing exact READ, process, paired,
@@ -5210,7 +5223,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T19:15:00.224535+00:00
+Last refreshed: 2026-10-06T19:17:58.690562+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
