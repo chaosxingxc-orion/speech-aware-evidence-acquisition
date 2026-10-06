@@ -1,0 +1,18 @@
+{
+  "schema": "saea-root-structural-acceptance-writer-prepared-v1",
+  "at_utc": "2026-10-06T11:32:48.114281+00:00",
+  "artifacts": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/accept_structural_v1.py",
+      "sha256": "4f25e5f3069e4fb90f5d078daead426bba4892c5ead01795f5005c0fe12592f7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/accept-structural-prepared-v1.json",
+      "sha256": "3cc8299259218272fa38eeeadbffb42ed7ef5e64502ad023571803ec9fedbe1d"
+    }
+  ],
+  "status": "PREPARED_NOT_ACCEPTED",
+  "scope": "Preserve prior root whole-family structural writer, rebind exact recovery1 source identity and derive counts. Require successful actual audit and terminal before invocation; root must inspect actual exit and structural report first. Real incomplete-state invocation refused exit75 before binding/ledger/receipt mutation.",
+  "contacts": 0,
+  "runtime_admission": false
+}
