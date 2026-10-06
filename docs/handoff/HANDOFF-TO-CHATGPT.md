@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 exact prospective configuration prepared (2026-10-06)
+
+The exact next configuration is
+`configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json`,
+SHA256 `7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7`.
+Only the experiment identity changes from Update5: preserve cohorts, candidate positions,
+rosters, node order, deterministic sampling, execution and contact limits. The shared
+loader and engineering-base gate pass. Configuration accounting remains320 candidate
+plus120 control trajectories; this is preparation, not GPU admission or an expansion.
+[Native interface and preparation](../readiness/2026-10-06-update6-diversity-prospective-v1/README.md)
+recheck the pinned prior native contracts and derive dimensions from this exact config.
+Bind this same config through actor admission, compilation and later runtime preparation.
+Historical parent and feedback source configs remain provenance, not dispatch configs.
+The only outstanding reader is registered rejected-history PID201319; revalidate live
+identity and exit before preparing the next input. No new actor or model contact.
+
 ## Update5 process bridge complete; history reader still live (2026-10-06)
 
 The continuation process bridge exited0 at16:18:18.534492Z; original PID202274 is
@@ -4857,7 +4873,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T16:19:59.521109+00:00
+Last refreshed: 2026-10-06T16:24:24.983079+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

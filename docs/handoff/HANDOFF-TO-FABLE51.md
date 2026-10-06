@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T16:19:59.521109+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T16:24:24.983079+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -13,7 +13,7 @@ The owner explicitly requested synchronous engineering handoff maintenance on202
 
 - Main checkout: `/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition`.
 - Editable root checkout: `/home/chao/saea-worktrees/codex-cache-cost-audit`, branch `codex/cache-cost-audit`.
-- Latest prepared protocol commit: `49cda87f5fef7c4a09c92d88f4d6ffcbba619041`; preceding complete-result/retention commit: `db29f2ae31561febabadbc443756b85bb94958b6`. This handoff is committed and serially integrated after those changes. Resolve actual HEAD before editing.
+- Prior input-protocol commit: `49cda87f5fef7c4a09c92d88f4d6ffcbba619041`; preceding complete-result/retention commit: `db29f2ae31561febabadbc443756b85bb94958b6`. This handoff is committed and serially integrated after those changes. Resolve actual HEAD before editing.
 - External data root: `/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data`.
 - Preserve every frozen experiment checkout and original failed execution epoch. Work in an isolated checkout and integrate serially; never edit active frozen sources, shared queues or another coordinator's work.
 
@@ -59,6 +59,8 @@ contacts. A polling timeout or an old lock is not a failure; never restart a liv
 7. Only after proposal compilation and separate registered full-request capacity/structural proof may root admit the next bounded GPU experiment. Derive K/N/M/member order/sampling/budgets from one immutable config throughout. Current preparation retains N20; no expansion or hidden budget increase.
 
 ### Changed interfaces and verified limits
+
+The exact next prospective config is `configs/experiments/slurp-context-template-partitioned-update6-diversity-n20-v1.json`, SHA256 `7b1e8da30a2387591c4000e13c3b23952f40f46aaaedef0d9ee5e2e332f67ad7`. Only experiment identity changes; all rosters, positions, sampling, execution and contact limits remain fixed. Its shared config loader and engineering-base gate pass. [The prepared native interface](../readiness/2026-10-06-update6-diversity-prospective-v1/README.md) is bound to this config. Carry its exact hash through future actor/compile/capacity/runtime stages; it does not admit any contact.
 
 The requested GPT-6 Astra subagent designed
 [proposer diversity-targeting-v2](../readiness/2026-10-06-template-proposer-diversity-astra-v1/README.md).
