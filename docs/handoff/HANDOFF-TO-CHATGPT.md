@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Qualified original-a A/A repeatability audit (2026-10-06)
+
+[Root hash audit](../results/2026-10-06-update6-original-a-repeatability-audit.md)
+requalifies the completed family and joins116 seed/131 A/A requests to actual-request
+FIT and preserved original responses. All temperature0/seed20260913; same baseline
+configuration, serving identity/model/fingerprint. Seven Perception request pairs have
+equal rendered-body hashes and slots, but six have different original choice messages.
+All seven have equal reported cache2526 and pairwise equal prompt counts. Cache
+eviction or numerical root cause is NOT established. Top intent agrees20/20, but
+complete candidate list/set only11/20 (5/7 among equal-body pairs). This separates
+wording variation from additional-hypothesis variation without gold labels.
+No active-family quality, new contacts, learner export, runtime or acceptance change.
+A future prospectively registered repeatability diagnostic should precede causal
+claims about schedule/cache effects; this report grants no new contact admission.
+
+
 ## Qualified original-a paired process supplement (2026-10-06)
 
 The registered paired process entry completed17 contrasts with zero new model/scorer

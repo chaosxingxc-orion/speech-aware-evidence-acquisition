@@ -1,0 +1,31 @@
+{
+  "schema": "saea-qualified-aa-repeatability-review-v1",
+  "at_utc": "2026-10-06T21:57:05.510962+00:00",
+  "status": "COMPLETE_ROOT_DIAGNOSTIC",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1",
+  "audit_script": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-original-a-repeatability-audit-v1/audit-v1.py",
+    "sha256": "1feeb719ea166d7af9e4a89bf11ba21197b03d447816ed5f2b0525fd3338afb1"
+  },
+  "audit_result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-original-a-repeatability-audit-v1/result-v1.json",
+    "sha256": "075249f71f77ada9dd5534b6045425e7a3e85039434b9e9a5ef6eb7e9b1fa03b"
+  },
+  "candidate_identity": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-original-a-repeatability-audit-v1/candidate-identity-diagnostic-v1.json",
+    "sha256": "3f1652008b17d7bb7913265343845c230c49a7a8550e17860c40b0186f87f0a8"
+  },
+  "exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-original-a-repeatability-audit-v1/exit.json",
+    "sha256": "618e55014731258df80c85edb795845173b37d05151b9fe7e31bb8a4034ae0af"
+  },
+  "report": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/results/2026-10-06-update6-original-a-repeatability-audit.md",
+    "sha256": "8c11f7d224ce4f52558c615dd211107484b8c5cdfb36c181fa4023d77493cc9f"
+  },
+  "new_model_contacts": 0,
+  "new_scorer_contacts": 0,
+  "learner_exported": false,
+  "runtime_changed": false,
+  "cause": "UNESTABLISHED"
+}
