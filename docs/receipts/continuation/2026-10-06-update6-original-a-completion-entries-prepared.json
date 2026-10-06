@@ -1,0 +1,25 @@
+{
+  "schema": "saea-scientific-completion-entries-prepared-v1",
+  "at_utc": "2026-10-06T20:04:33.439025+00:00",
+  "status": "PREPARED_AND_PENDING_PATH_VERIFIED",
+  "launch_read_binding": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/receipts/continuation/2026-10-06-update6-original-a-scientific-read-binding.json",
+    "sha256": "37a06a778ee19fec4c1cebd957ebbe1cd9a9e6a46b57b7dad089d04a86946903"
+  },
+  "terminal_capture": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-original-a-scientific-v1/capture-windows-terminal-v1.ps1",
+    "sha256": "5a1e48b680d01666046fa1b7a302ca638dd7bfec556ebe3c39092fc913c47edf"
+  },
+  "terminal_capture_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-original-a-scientific-v1/terminal-capture-prepared-v1.json",
+    "sha256": "508f02a5698347b13623b26cbe1989b6c4e0fc30acea63179dd31f22d1c8e537"
+  },
+  "pending_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-original-a-scientific-v1/pending-read-proof-v1.json",
+    "sha256": "a3dd68dd727a87e6f9059217e980f39905bb88f013a7b957e58b8d3cb568b06c"
+  },
+  "contacts": 0,
+  "quality_read": false,
+  "root_read_countersigned": false,
+  "next": "After actual complete task termination and all original owned processes exit, qualify the full family first. Then capture fresh Windows terminal observation with capture-windows-terminal-v1.ps1 and countersign using the existing review-scientific-cohort-v1.py with the exact read-binding receipt and original-a-flight-v1 directory. Fresh native observation must satisfy the existing60-second limit. Delete the job monitor on verified terminal. Run read and full process diagnostics only after exact authorization. Preserve any failure; never silently replay or overwrite terminal observations."
+}
