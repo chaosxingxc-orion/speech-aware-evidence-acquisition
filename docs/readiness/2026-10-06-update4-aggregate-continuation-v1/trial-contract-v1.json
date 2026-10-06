@@ -1,0 +1,24 @@
+{
+  "schema": "saea-partitioned-context-trial-contract-v1",
+  "status": "ROOT_REGISTERED",
+  "algorithm": "tf-grpo-context-diversity",
+  "iteration": 5,
+  "source_packet": {
+    "relpath": "system-text-search/context-template-k16-v1/context-learning/inputs/partitioned-complete-update5-aggregate-history-v1.json",
+    "sha256": "3f550c4827a3a7aaf6bd1c6ec3191f9dc4e4dfdef7742bc9a5695b7c33dd11bb"
+  },
+  "original_update_record": {
+    "relpath": "system-text-search/context-template-k16-v1/context-learning/populations/complete-update5-aggregate-history-v1/result.json",
+    "sha256": "a9035f102b28149dd2328685683787fbb8a8d77598877c27859ac3b6ec88b39a"
+  },
+  "trial_population": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "no_change_candidates": [
+    "branch-08",
+    "branch-15"
+  ],
+  "criterion": "strict-population-utility-sum",
+  "runtime_admission": false
+}

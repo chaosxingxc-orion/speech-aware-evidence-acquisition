@@ -1,0 +1,23 @@
+{
+  "at_utc": "2026-10-06T09:41:01.140196+00:00",
+  "authority": 227,
+  "decision": "Retain each unchanged proposal as the same evaluated parent runtime policy in its original configured position. Bind the new cumulative-provenance bundle and fresh evaluation identity; do not repair, replace, omit or reallocate it. Re-evaluate it with the complete prospective population after admission.",
+  "original": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/original-response-v1.json",
+    "sha256": "d271861c890b1f0862eee396c00c7573b043a3e4a85e1c3431ecbd9ffb459eb8"
+  },
+  "population": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "positions": [
+    "branch-08",
+    "branch-15"
+  ],
+  "result": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/populations/complete-update5-aggregate-history-v1/result.json",
+    "sha256": "a9035f102b28149dd2328685683787fbb8a8d77598877c27859ac3b6ec88b39a"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-population-no-change-disposition-v1"
+}

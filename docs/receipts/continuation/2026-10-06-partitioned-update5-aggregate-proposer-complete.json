@@ -1,0 +1,130 @@
+{
+  "schema": "saea-partitioned-proposer-completion-v1",
+  "recorded_at_utc": "2026-10-06T09:41:08.447066+00:00",
+  "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE5-AGGREGATE-PROPOSE-V1",
+  "agent": "/root/aggregate_template_update5_sol",
+  "requested_model": "gpt-6.1-sol",
+  "original": {
+    "schema": "saea-partitioned-original-response-bytes-v1",
+    "at_utc": "2026-10-06T09:34:10.808359+00:00",
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/original-response-v1.json",
+    "sha256": "d271861c890b1f0862eee396c00c7573b043a3e4a85e1c3431ecbd9ffb459eb8",
+    "bytes": 126811,
+    "output_limit": 262144
+  },
+  "compile_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/compile-receipt-v1.json",
+    "sha256": "4a24cc4eb95f2d9e2671365df35eb621e8a0e09d70229adbdd7a255d5c021e63"
+  },
+  "read_summary": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update5-aggregate-v1/read-summary-v1.json",
+    "sha256": "1a8f31454e51b7bdec317c8b8b22c577d973076b1b8fb18efcc1895c5f5ef262"
+  },
+  "positions": [
+    {
+      "candidate_id": "branch-01",
+      "status": "provisional",
+      "bundle_id": "b16e21a57092d21e5c41e14e98dd579b7cc65e77462c9cc46b4f0550234c8099",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-02",
+      "status": "provisional",
+      "bundle_id": "a74730b67cf649521e5cac63e327638413537d2a5c5d0441b36cb7c460e32ddb",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-03",
+      "status": "provisional",
+      "bundle_id": "ecfbed26f16bc2add13f3b8d07c8326605305e1cda1f75e4ac6e395ae342a88b",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-04",
+      "status": "provisional",
+      "bundle_id": "f4f841d09620fe8f5f89ffc3de2979cf991c0d2864062b6e502e19e186956f59",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-05",
+      "status": "provisional",
+      "bundle_id": "250570653870c8646c6fa0bf5aed500f603ad9a3774d1f99637511433788bae1",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-06",
+      "status": "provisional",
+      "bundle_id": "e73409bf458f1b4b28ba8e6cd3d9fce596775e49dcdc60753996581b4d439ac4",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-07",
+      "status": "provisional",
+      "bundle_id": "ca9c306373848637fabd8e0c84ee2adfdd1ab91897287b2b590af63ac7a88726",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-08",
+      "status": "no-change",
+      "bundle_id": "76658555d8ce2afbdd5857766630b8e71eeb5876348a169e624247a6f3b17662",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-09",
+      "status": "provisional",
+      "bundle_id": "6baea15a7e1fa8ae935594feba93f8826b66dd68f77bc01b35f5dddfb6a5646c",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-10",
+      "status": "provisional",
+      "bundle_id": "4a2d86c2594bdd4b3eee9f40b0c62056d44fbdfc56d21e78488aec5e4219e1d2",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-11",
+      "status": "provisional",
+      "bundle_id": "4252173169072ce4a889fe7c49a26c1326829ba63ff97e8ef89700c9eaefabb9",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-12",
+      "status": "provisional",
+      "bundle_id": "b2834b66eec3cf89c888896bc610199cb0efc2dc27e933bb8bc36d69d3dfdbd0",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-13",
+      "status": "provisional",
+      "bundle_id": "928dc8457091d7f46a184230265197032d25f6444de678c701c9da38a3053f3d",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-14",
+      "status": "provisional",
+      "bundle_id": "523a0ad803e30dabae41a01ae6db6bcdae7d676dcd6e7430ef6aaa9e7a724eae",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-15",
+      "status": "no-change",
+      "bundle_id": "df1917bf541a9b62a0633709337faf4ef8878b6774729917a74e30d96666713b",
+      "error": null
+    },
+    {
+      "candidate_id": "branch-16",
+      "status": "provisional",
+      "bundle_id": "a99eeb7e1414b48c231f2d0a71878d5d0a80d472df3098eff76d91b65ecc4b51",
+      "error": null
+    }
+  ],
+  "semantic_opportunities_spent": 1,
+  "proposal_slots_spent": 16,
+  "usage": {
+    "provider_contacts": null,
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "runtime_admission": false,
+  "interpretation": "All original positions spent:14 provisional and2 no-change; no repairs/replacements. Aggregate-only learner input, exact original response preserved. Statistical process feedback does not change the original population retention rule. No benefit, matched compute or policy adoption is established."
+}
