@@ -1,5 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Configured proposal planner: offline only (2026-10-06)
+
+[Planner proof](../readiness/2026-10-06-system-evolution-proposal-planner-v1/README.md)
+adds exact configured candidate-to-parent planning beside the offline selector.
+Local/recombine/explore modes cover every configured identity once; no extra slots,
+replacements or silent fallback. K and full-system budgets derive from the embedded
+population configuration. Parent capacity failure refuses the plan.125 related tests
+pass; combined module96/96 statements covered. No actor/model/scorer contacts and no
+current runtime, acceptance, active parent or allocation change. Complete source
+custody, exact immutable lifecycle pinning and reservation integration remain before
+any real use. Current remaining-b2 captured READ source pins remain unchanged.
+
+
 ## Prospective bounded parent selector: offline only (2026-10-06)
 
 [Prototype and scope](../readiness/2026-10-06-system-evolution-parent-selector-v1/README.md)

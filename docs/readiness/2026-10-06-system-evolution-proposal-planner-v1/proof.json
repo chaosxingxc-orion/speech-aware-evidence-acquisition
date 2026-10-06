@@ -1,0 +1,25 @@
+{
+  "schema": "saea-parent-proposal-planner-proof-v1",
+  "at_utc": "2026-10-06T22:35:29.302950+00:00",
+  "status": "MODEL_FREE_PROTOTYPE_ONLY",
+  "tests_passed": 125,
+  "module_statements": 96,
+  "covered_statements": 96,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "actor_contacts": 0,
+  "runtime_changed": false,
+  "admitted": false,
+  "business_benefit_established": false,
+  "source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_search_parent_selection.py",
+      "sha256": "e471a2a0fe8b773a356e74bf243ac043664adf42f5e614599329f9e145d78024"
+    },
+    {
+      "relpath": "tests/unit/test_system_search_parent_selection.py",
+      "sha256": "dedbfeb2c2f1e76c677587a3986a060b1c97b303349e4030695b96480b8a8214"
+    }
+  ],
+  "existing_active_read_entry_pins_unchanged": true
+}

@@ -169,3 +169,92 @@ def test_reliability_floor_is_reapplied_even_when_eligible_flag_is_true():
     data = rows(); data[0]["reliable_completion_rate"] = .9
     result = select(data)
     assert result["dispositions"][content_hash("quality")] == "ineligible"
+
+
+def proposal_config(selection, modes):
+    from test_experiment_population_config import config as population_config
+    population = population_config((len(modes),), n=3)
+    return {"schema": "saea-parent-proposal-plan-config-v1",
+            "experiment_population": population,
+            "parent_selection_sha256": selection["selection_sha256"],
+            "modes": dict(zip(population["cohorts"][0]["candidate_ids"], modes))}
+
+
+def test_proposal_plan_covers_configured_population_without_extra_slots():
+    from speech_aware_evidence_acquisition.rails.system_search_parent_selection import plan_parent_proposals
+    selection = select()
+    cfg = proposal_config(selection, ["local", "recombine", "explore", "local"])
+    original = copy.deepcopy(cfg)
+    plan = plan_parent_proposals(cfg, selection=selection)
+    assert len(plan["slots"]) == 4
+    assert [s["candidate_id"] for s in plan["slots"]] == list(cfg["modes"])
+    assert [len(s["parent_bundle_ids"]) for s in plan["slots"]] == [1, 2, 1, 1]
+    assert plan["slots"][2]["parent_bundle_ids"] == selection["exploration_parent_ids"]
+    assert plan["population_budget"]["candidate_trajectories"] == 12
+    assert plan["configuration_sha256"] == content_hash(cfg)
+    assert plan["proposal_allocation_granted"] is False
+    assert plan["runtime_admission"] is False and cfg == original
+
+
+@pytest.mark.parametrize("k", [2, 4, 8, 16])
+def test_proposal_plan_sizes_and_determinism_follow_config(k):
+    from speech_aware_evidence_acquisition.rails.system_search_parent_selection import plan_parent_proposals
+    selection = select(); cfg = proposal_config(selection, ["local"] * (k-1) + ["explore"])
+    a = plan_parent_proposals(cfg, selection=selection)
+    cfg["modes"] = dict(reversed(list(cfg["modes"].items())))
+    assert plan_parent_proposals(cfg, selection=selection) == a
+    assert len(a["slots"]) == k
+
+
+@pytest.mark.parametrize("fault", ["missing_slot", "extra_slot", "unknown_mode", "selection_pin",
+                                    "altered_selection", "extra_config", "no_exploration"])
+def test_proposal_plan_refuses_drift_and_silent_budget_changes(fault):
+    from speech_aware_evidence_acquisition.rails.system_search_parent_selection import plan_parent_proposals
+    selection = select(); cfg = proposal_config(selection, ["local", "explore"])
+    if fault == "missing_slot": cfg["modes"].pop("candidate-0")
+    elif fault == "extra_slot": cfg["modes"]["replacement"] = "local"
+    elif fault == "unknown_mode": cfg["modes"]["candidate-0"] = "retry"
+    elif fault == "selection_pin": cfg["parent_selection_sha256"] = "a" * 64
+    elif fault == "altered_selection": selection["frontier_parent_ids"] = ["f" * 64]
+    elif fault == "extra_config": cfg["K"] = 999
+    else: cfg["modes"]["candidate-1"] = "local"
+    with pytest.raises(PolicyError): plan_parent_proposals(cfg, selection=selection)
+
+
+@pytest.mark.parametrize("mode,frontier,exploration", [("recombine", 1, 1), ("explore", 1, 0)])
+def test_proposal_plan_refuses_missing_parent_capacity_without_fallback(mode, frontier, exploration):
+    from speech_aware_evidence_acquisition.rails.system_search_parent_selection import plan_parent_proposals
+    selection = select(cfg=config(frontier_capacity=frontier, exploration_capacity=exploration))
+    cfg = proposal_config(selection, [mode, "explore"])
+    with pytest.raises(PolicyError): plan_parent_proposals(cfg, selection=selection)
+
+
+
+def test_proposal_plan_preserves_multiple_cohort_order_and_budget():
+    from test_experiment_population_config import config as population_config
+    from speech_aware_evidence_acquisition.rails.system_search_parent_selection import plan_parent_proposals
+    selection = select(); cfg = proposal_config(selection, ["local", "explore"])
+    cfg["experiment_population"] = population_config((3, 2), n=7)
+    cfg["modes"] = {f"candidate-{i}": "explore" if i == 4 else "local" for i in range(5)}
+    plan = plan_parent_proposals(cfg, selection=selection)
+    assert [s["cohort_id"] for s in plan["slots"]] == ["cohort-0"] * 3 + ["cohort-1"] * 2
+    assert plan["population_budget"]["family_trajectories"] == 63
+    assert plan["population_budget"]["generation_contacts_cap"] == 63 * 13
+    parents = [s["parent_bundle_ids"][0] for s in plan["slots"][:4]]
+    assert parents == selection["frontier_parent_ids"] + [selection["frontier_parent_ids"][0]]
+
+
+@pytest.mark.parametrize("fault", ["duplicate", "disposition", "empty", "bad_sha", "malformed_mode"])
+def test_proposal_plan_refuses_inconsistent_rehashed_selection(fault):
+    from speech_aware_evidence_acquisition.rails.system_search_parent_selection import plan_parent_proposals
+    selection = select()
+    if fault == "duplicate": selection["exploration_parent_ids"] = selection["frontier_parent_ids"][:1]
+    elif fault == "disposition": selection["dispositions"][selection["frontier_parent_ids"][0]] = "ineligible"
+    elif fault == "empty": selection["frontier_parent_ids"] = []
+    elif fault == "bad_sha":
+        selection["frontier_parent_ids"][0] = "invalid"
+        selection["dispositions"]["invalid"] = "frontier-parent"
+    selection["selection_sha256"] = content_hash({k: v for k, v in selection.items() if k != "selection_sha256"})
+    cfg = proposal_config(selection, ["local", "explore"])
+    if fault == "malformed_mode": cfg["modes"]["candidate-0"] = []
+    with pytest.raises(PolicyError): plan_parent_proposals(cfg, selection=selection)

@@ -132,3 +132,68 @@ def record_parent_selection(archive, *, rows, profile, selection_config,
          "inputs": {"rows": rows, "profile": profile, "usage_counts": usage_counts},
          "selection": result})
     return result
+
+
+
+def plan_parent_proposals(configuration, *, selection):
+    """Map every configured candidate to parents without reserving a proposal.
+
+    This prospective envelope embeds the complete existing population config.
+    A later registered lifecycle must carry its exact file pin through all stages.
+    Source qualification, proposer isolation and spent-slot enforcement remain
+    prerequisites at the existing reservation boundary. Never use this planner
+    as a substitute for them. No hidden fallback or replacement slot is created.
+    """
+    from .experiment_population import validate_population_config, population_accounting
+
+    require(isinstance(configuration, dict) and set(configuration) == {
+        "schema", "experiment_population", "parent_selection_sha256", "modes"}
+        and configuration["schema"] == "saea-parent-proposal-plan-config-v1",
+        "proposal planning configuration fields differ")
+    population = validate_population_config(configuration["experiment_population"])
+    require(isinstance(selection, dict)
+        and selection.get("schema") == "saea-search-parent-selection-v1"
+        and selection.get("selection_sha256") == content_hash({
+            k: v for k, v in selection.items() if k != "selection_sha256"})
+        and configuration["parent_selection_sha256"] == selection["selection_sha256"],
+        "parent selection identity differs")
+    candidates = [cid for cohort in population["cohorts"] for cid in cohort["candidate_ids"]]
+    modes = configuration["modes"]
+    require(isinstance(modes, dict) and set(modes) == set(candidates)
+            and all(isinstance(v, str) and v in {"local", "recombine", "explore"}
+                    for v in modes.values()), "every configured proposal needs one supported mode")
+    require("explore" in modes.values(), "this exploration protocol requires a reserved exploration slot")
+    frontier, exploration = selection["frontier_parent_ids"], selection["exploration_parent_ids"]
+    require(isinstance(frontier, list) and isinstance(exploration, list)
+            and len(set(frontier + exploration)) == len(frontier + exploration),
+            "selected parent pools must be disjoint and unique")
+    for pool, disposition in ((frontier, "frontier-parent"), (exploration, "exploration-parent")):
+        require(all(selection["dispositions"].get(p) == disposition for p in pool),
+                "selected parent disposition differs")
+        for parent in pool:
+            sha(parent)
+    require(frontier and exploration and ("recombine" not in modes.values() or len(frontier) >= 2),
+            "configured proposal mode lacks selected parents; no silent fallback")
+    counters = dict.fromkeys(("local", "recombine", "explore"), 0)
+    slots = []
+    for cohort in population["cohorts"]:
+        for candidate in cohort["candidate_ids"]:
+            mode = modes[candidate]; index = counters[mode]
+            pool = exploration if mode == "explore" else frontier
+            parents = [pool[index % len(pool)]]
+            if mode == "recombine":
+                parents.append(pool[(index + 1) % len(pool)])
+            counters[mode] += 1
+            slots.append({"cohort_id": cohort["cohort_id"], "candidate_id": candidate,
+                          "mode": mode, "parent_bundle_ids": parents})
+    result = {"schema": "saea-parent-proposal-plan-v1",
+        "configuration_sha256": content_hash(configuration),
+        "experiment_population_sha256": content_hash(population),
+        "parent_selection_sha256": selection["selection_sha256"],
+        "slots": slots, "mode_counts": counters,
+        "population_budget": population_accounting(population),
+        "proposal_allocation_granted": False, "runtime_admission": False,
+        "learner_exported": False,
+        "scope": "Prospective planning only; registered source custody and reservation remain required."}
+    result["plan_sha256"] = content_hash(result)
+    return result
