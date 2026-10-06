@@ -1,5 +1,17 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update6 aggregate input protocol prepared (2026-10-06)
+
+Update5 complete numeric process feedback finished successfully with no new contacts.
+Its continuation bridge is running separately and verifies exact equivalence through
+the existing learner schema. Rejected-history preparation is also live; revalidate their
+exclusive completion receipts before creating a next input. No timeout licenses replay.
+The prospectively registered next-input plan derives iteration6 and K16 from qualified
+packet/config, retains current N20 and selects GPT-6.1 Sol/high with aggregate records.
+It binds the Astra proposer-v2 integration preparation without admitting an actor or GPU.
+No output, candidate or policy is fabricated while these source checks are running.
+See [the source-bound protocol](../readiness/2026-10-06-update5-complete-continuation-v1/README.md).
+
 ## Update5 whole-population rejection; complete history preparation (2026-10-06)
 
 The original whole-trial reader completed with exit0 and qualified all original sources.

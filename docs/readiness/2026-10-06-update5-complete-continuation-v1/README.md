@@ -20,3 +20,19 @@ qualified history/process joins. Use the aggregate-template-records-v1 profile a
 prospectively pinned Astra-designed prompt/interface, retaining GPT-6.1 Sol. Derive K,
 N, M and limits from the exact next config; retain cumulative exposure and fixed assets.
 No new candidate, allocation, input capsule or GPU flight is admitted by this preparation.
+
+## Next-input preparation protocol
+
+The complete numeric process projection finished successfully and remains root-only.
+The continuation bridge requalifies every source and verifies that the existing shared
+learner representation reproduces that numeric projection exactly. Rejected-history
+preparation independently verifies the complete original trial and retains active parents.
+Both must finish before a next input can be created.
+
+[next-input-plan-v1.json](next-input-plan-v1.json) derives iteration6 and all sixteen
+proposal positions from the qualified parent packet and existing immutable configuration.
+It selects aggregate-template-records-v1, GPT-6.1 Sol/high and one semantic proposal batch.
+It binds the prospective Astra prompt integration preparation but grants no actor contact.
+The registered original-response limits and zero paid spend remain. The new input entry
+only proceeds after exact history/process completion schemas and pinned root receipts.
+The process bridge uses the existing shared implementation and no rescoring.

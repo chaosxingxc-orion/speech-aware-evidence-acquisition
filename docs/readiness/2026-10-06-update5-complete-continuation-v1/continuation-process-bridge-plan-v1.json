@@ -1,0 +1,19 @@
+{
+  "schema": "saea-prospective-continuation-process-bridge-plan-v1",
+  "status": "PREPARED_NOT_ACTOR_ADMITTED",
+  "source_plan": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-complete-analysis-v1/successor-source-join-plan-v1.json",
+    "sha256": "d369f9fe2e39f66f33aa80c190f8eb9cf7fe85c48c9fae1c6f471a60f7e4ff12"
+  },
+  "source_registration_relpath": "docs/readiness/2026-10-06-partitioned-update5-aggregate-complete-analysis-v1/successor-source-registration-v1.json",
+  "trial_qualification_relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/complete-trial-qualified-v1.json",
+  "complete_feedback_relpath": "coordination/partitioned-update5-aggregate-scientific-preparation-v1/complete-root-process-feedback-v1.json",
+  "source_code": {
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/continuation_process_bridge.py": "d5c434b0dbb4b046618e2e52eda0f3c8fec4871b8e3f139e7359b5009e2b0eea",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/complete_process_feedback.py": "bf3a0736eb573da5a99697017bcf282e49262927bac85a58142c75fc460140e3",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_process_feedback.py": "60e211a614656c6015f359b24674041a92d7adf1705312ee150018552e88e0e6",
+    "/home/chao/saea-worktrees/codex-cache-cost-audit/src/speech_aware_evidence_acquisition/analysis/abstract_population_sources.py": "1fcd62c3b265d97c8b1ebd92d7bd9999821c934b6df9df7edfcc1485accac365",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update5-aggregate-scientific-preparation-v1/continuation-process-bridge-entry-v1.py": "e2f59701474220e77938ec398137c945b0d2aca0b31959f577b4fce9104efb37"
+  },
+  "scope": "Requalify all complete configured process sources and reproduce the prepared abstract feedback through the existing continuation backfill schema. Root review and prospective optimizer registration remain separate."
+}

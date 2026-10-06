@@ -1,0 +1,40 @@
+{
+  "schema": "saea-prospective-aggregate-continuation-input-plan-v1",
+  "status": "ROOT_REGISTERED_PREPARATION_ONLY",
+  "owner_authority": 227,
+  "profile": "aggregate-template-records-v1",
+  "parent_input_sha256": "ad1f2d14ddea7906fa46295b50a71117c5d40ce1ee190766d3f3621ed9685656",
+  "target_iteration": 6,
+  "population_update_plan": {
+    "schema": "saea-context-population-update-plan-v1",
+    "batch_id": "complete-update6-aggregate-diversity-v2",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "semantic_batches": 1,
+    "proposal_slots": 16
+  },
+  "max_actor_input_bytes": 2097152,
+  "history_completion_relpath": "docs/receipts/continuation/2026-10-06-update5-rejected-history-complete.json",
+  "process_completion_relpath": "docs/receipts/continuation/2026-10-06-update5-process-bridge-reviewed-v1.json",
+  "process_registration_relpath": "docs/readiness/2026-10-06-update5-complete-continuation-v1/continuation-process-registration-v1.json",
+  "registration_schema": "saea-partitioned-context-continuation-registration-v2",
+  "required_private_contract": "Complete original active parents and every sequential rejected population through Update5, exact root retention and cumulative exposure; no partial or invented historical round.",
+  "record_rule": "K configured records per observed population; derive observed_rounds from validated sequential lineage. Referenced control statistics are shared comparison metadata.",
+  "priority": [
+    "Official business quality and reliable completion",
+    "Correct initial evidence consumption; selective review precision and useful safe revision",
+    "Measured costs including latency"
+  ],
+  "runtime_admission": false,
+  "actor_contact_admitted": false,
+  "model_contacts_added": 0,
+  "scorer_contacts_added": 0,
+  "configuration_basis": {
+    "relpath": "configs/experiments/slurp-context-template-partitioned-update5-aggregate-n20-v1.json",
+    "sha256": "8afe68f26795862636f3fd1685d7d632391e35c21e497dd40b1816ee4d39fb98"
+  },
+  "prompt_integration_preparation": {
+    "relpath": "docs/readiness/2026-10-06-template-proposer-v2-integration-v1/integration-proof-v1.json",
+    "sha256": "74f470dbb02f474b0d6419e505d23b4786b70b6a99f898740ca0bb5e926a11a4"
+  }
+}
