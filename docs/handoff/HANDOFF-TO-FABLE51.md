@@ -1,5 +1,18 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Qualified original-a paired process supplement (2026-10-06)
+
+The registered paired process entry completed17 contrasts with zero new model/scorer
+contacts. [Supplement](../results/2026-10-06-update6-original-a-paired-process-review.md)
+retains both comparators, matched-known counts, unknown pairs, intervals and missing
+bounds. Alarm metrics are ENTITY-correctness based: an alarm on an entity-correct
+draft is not proof of semantically wrong criticism or full-task correctness. This
+clarifies prior shorthand without rewriting pinned reports. Branch03/07 later-stage
+net transitions are worse than seed descriptively, but no causal Reviewer credit,
+stable benefit, adoption or partial learner export follows. Whole-trial source join
+correctly waits for remaining-b1/b2 READs. Current remaining-b1 job remains live.
+
+
 ## Native capture is an executable prerequisite for remaining-b1 READ (2026-10-06)
 
 The running frozen worker and requests are unchanged. Root added an independent

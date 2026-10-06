@@ -1,0 +1,25 @@
+{
+  "schema": "saea-qualified-paired-process-review-v1",
+  "at_utc": "2026-10-06T21:49:04.882248+00:00",
+  "status": "COMPLETE_ROOT_DIAGNOSTIC",
+  "read_id": "SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1",
+  "paired_output": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-CONTEXT-TEMPLATE-PARTITIONED-UPDATE6-DIVERSITY-N20-V1-ORIGINAL-A-READ-V1/paired-process-diagnostics-v1.json",
+    "sha256": "c10c8dcc2e57b3f1e515415f35c5f395a77022a6280313795232387ec4c82fac"
+  },
+  "report": {
+    "path": "/home/chao/saea-worktrees/codex-cache-cost-audit/docs/results/2026-10-06-update6-original-a-paired-process-review.md",
+    "sha256": "a8e4c32ae759e0739596d21105d09cf97a47fd087c7adabe1939f3c2000d813b"
+  },
+  "execution_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-scientific-preparation-v1/original-a-paired-process-entry-v1.exit.json",
+    "sha256": "0afc0b538fd9858b8b6de5496dd6a9ce151ed06c455086c5d099c4a05654d14a"
+  },
+  "comparisons": 17,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "learner_exported": false,
+  "selection_rule_changed": false,
+  "formal_efficacy": false,
+  "clarification": "Entity-correct-draft alarm does not establish a semantically incorrect critique or a fully correct draft."
+}
