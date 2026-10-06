@@ -1,0 +1,54 @@
+{
+  "schema": "saea-configured-structural-launch-receipt-v1",
+  "at_utc": "2026-10-06T19:01:11.172049+00:00",
+  "status": "RUNNING",
+  "task": "SAEA-Update6-Diversity-Structural-V1",
+  "started": {
+    "windows_owner_pid": 38996,
+    "at_utc": "2026-10-06T18:59:59.5408017+00:00",
+    "official_score_jobs": 0,
+    "worker_commit": "76fa610d78bc921c9d56f42b3d1e6cbe8fbc84ef",
+    "worker": "/home/chao/saea-worktrees/codex-partitioned-update6-diversity-structural-v1",
+    "registration_sha256": "9cebac900d7c1ebf149e1441a75c79475b20a1c2867356c0540b5c0906b292fe"
+  },
+  "windows_owner": {
+    "at_utc": "2026-10-06T19:00:32.6890561+00:00",
+    "task_name": "SAEA-Update6-Diversity-Structural-V1",
+    "state": "Running",
+    "owner_pid": 38996,
+    "owner_creation_utc": "2026-10-06T18:59:58.9309610Z",
+    "owner_command": "\"powershell.exe\" -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File \"E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\partitioned-update6-diversity-structural-mailbox-v1\\structural-windows-v1.ps1\" -RegistrationSHA 9cebac900d7c1ebf149e1441a75c79475b20a1c2867356c0540b5c0906b292fe",
+    "registration_sha256": "9cebac900d7c1ebf149e1441a75c79475b20a1c2867356c0540b5c0906b292fe"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/registration-v1.json",
+    "sha256": "9cebac900d7c1ebf149e1441a75c79475b20a1c2867356c0540b5c0906b292fe"
+  },
+  "frozen_check": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/frozen-check-v1.json",
+    "sha256": "9a7df0478ddafc9e12f4e1d7393b5754ca1030a2d1ec0c69399e5336605545fc",
+    "completed_at": "2026-10-06T18:59:06.630949+00:00",
+    "original_checker_absent": true,
+    "all_member_log_hashes_verified": true
+  },
+  "member_count": 16,
+  "structural_trajectories": 64,
+  "budget": {
+    "generation_contacts": 832,
+    "fit_endpoint_contacts": 3328,
+    "official_score_jobs": 0
+  },
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/partitioned-update6-diversity-structural-mailbox-v1/live-prelaunch-v1.json",
+    "sha256": "708aeabafec02318a9e113b0633a54ad62d1239822f5b4804405a98c1ba01213"
+  },
+  "monitor": {
+    "id": "slurp-update6-structural-monitor",
+    "status": "ACTIVE",
+    "interval_minutes": 15,
+    "delete_on_verified_terminal": true
+  },
+  "official_scoring_permitted": false,
+  "scientific_quality_read_permitted": false,
+  "scope": "Run every admitted member once through the shared worker-only structural lifecycle. Preserve OPENED attempts and inert score specifications. No automatic recovery."
+}

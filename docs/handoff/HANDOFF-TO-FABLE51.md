@@ -3,7 +3,7 @@
 <!-- current-engineering-handoff:start -->
 ## Current engineering handoff for Fable 5.1
 
-Last verified: 2026-10-06T18:49:50.772922+00:00. Maintain this section in place whenever engineering changes,
+Last verified: 2026-10-06T19:01:11.172049+00:00. Maintain this section in place whenever engineering changes,
 launches, terminal receipts or source/admission decisions change. Keep the historical
 entries below as chronology; the current section and newer signed receipts supersede
 old live-process snapshots. Root maintains this document alongside the ChatGPT handoff.
@@ -31,10 +31,32 @@ The root numeric process projection is complete at
 SHA256 `d9aa14e6a7211cc52182bcfe7fd0bf9bd7a823cdfba988d69212c80580ff21eb`.
 It retains all cohort/candidate/control statistics and is not itself learner admission.
 The previous GPU task is terminal and its monitor was deleted. Update6 nongenerative
-capacity completed with all16 passes and its monitor was deleted; the exact structural registrar is running below.
-Structural and scientific generation remain held; the Update6 proposer is complete.
+capacity completed with all16 passes and its monitor was deleted. The complete structural
+family is now running under the exact launch below. Scientific generation remains held;
+the Update6 proposer is complete.
 
 ### Actual work to resume
+
+## Update6 structural family launched (2026-10-06)
+
+All configured frozen checks completed18:59:06.630949Z with verified logs, clean
+worker and absent original checker. The exact Windows task SAEA-Update6-Diversity-Structural-V1
+started2026-10-06T18:59:59.5408017+00:00, owner PID38996, creation18:59:58.930961Z.
+Frozen /home/chao/saea-worktrees/codex-partitioned-update6-diversity-structural-v1
+remains at76fa610d78bc921c9d56f42b3d1e6cbe8fbc84ef. Registration SHA256
+9cebac900d7c1ebf149e1441a75c79475b20a1c2867356c0540b5c0906b292fe.
+[Launch receipt](../receipts/continuation/2026-10-06-update6-diversity-structural-launch.json).
+
+The full family has64 structural trajectories and832 model/3328 FIT endpoint caps,
+zero official scores. Inspect all members under coordination/partitioned-update6-diversity-structural-mailbox-v1.
+Worker-only OPENED attempts are intentional; no scoring, resealing or task-quality read.
+The15-minute slurp-update6-structural-monitor is active; delete on verified terminal and
+absence of all owned workers/observers. Never restart or reconcile a failed job automatically.
+Fresh prelaunch service was healthy/idle at epoch2026-10-05T15:52:00.740486Z, PID686,
+Windows free24.18GiB;20GiB startup/8GiB running guards remain required. Revalidate identities.
+After complete structural acceptance, prepare the exact22-member440-trajectory scientific
+sequence; no scientific admission yet. Preserve Update6 original algorithm/retention and
+all proposal positions. Future SkillOpt/GEPA/experience research stays prospective.
 
 ## Update6 frozen structural checks running (2026-10-06)
 

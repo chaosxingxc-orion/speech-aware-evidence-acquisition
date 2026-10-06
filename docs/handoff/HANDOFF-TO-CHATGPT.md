@@ -1,5 +1,27 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Update6 structural family launched (2026-10-06)
+
+All configured frozen checks completed18:59:06.630949Z with verified logs, clean
+worker and absent original checker. The exact Windows task SAEA-Update6-Diversity-Structural-V1
+started2026-10-06T18:59:59.5408017+00:00, owner PID38996, creation18:59:58.930961Z.
+Frozen /home/chao/saea-worktrees/codex-partitioned-update6-diversity-structural-v1
+remains at76fa610d78bc921c9d56f42b3d1e6cbe8fbc84ef. Registration SHA256
+9cebac900d7c1ebf149e1441a75c79475b20a1c2867356c0540b5c0906b292fe.
+[Launch receipt](../receipts/continuation/2026-10-06-update6-diversity-structural-launch.json).
+
+The full family has64 structural trajectories and832 model/3328 FIT endpoint caps,
+zero official scores. Inspect all members under coordination/partitioned-update6-diversity-structural-mailbox-v1.
+Worker-only OPENED attempts are intentional; no scoring, resealing or task-quality read.
+The15-minute slurp-update6-structural-monitor is active; delete on verified terminal and
+absence of all owned workers/observers. Never restart or reconcile a failed job automatically.
+Fresh prelaunch service was healthy/idle at epoch2026-10-05T15:52:00.740486Z, PID686,
+Windows free24.18GiB;20GiB startup/8GiB running guards remain required. Revalidate identities.
+After complete structural acceptance, prepare the exact22-member440-trajectory scientific
+sequence; no scientific admission yet. Preserve Update6 original algorithm/retention and
+all proposal positions. Future SkillOpt/GEPA/experience research stays prospective.
+
+
 ## Update6 frozen structural checks running (2026-10-06)
 
 The exact16-member structural registration and all eleven offline gates are integrated
@@ -5152,7 +5174,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T18:50:50.395049+00:00
+Last refreshed: 2026-10-06T19:01:11.172049+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
