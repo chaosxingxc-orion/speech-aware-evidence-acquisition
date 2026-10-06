@@ -1,5 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Offline process backfill continuation started (2026-10-06)
+
+[The single recorded continuation](../receipts/continuation/2026-10-06-process-backfill-continuation-started.json)
+started00:34:19Z from frozen codex-process-metrics-continuation1 at3cf531b84.
+PID74619/start_ticks57402976 and tool session87667 identify this job. Capture is
+coordination/slurp-process-metrics-backfill-v1/continuation1 under data-root.
+Collect this existing job; do not duplicate it. The registered scope/output remain
+unchanged. No complete metrics are claimed before the exclusive full22-member
+output. The prior failure and every original source/output/score remain preserved.
+
+
 ## Process diagnostic compatibility disposition (2026-10-06)
 
 The original offline backfill PID73510/session40562 exited1 at00:25:50Z;
