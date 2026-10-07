@@ -100,7 +100,7 @@ def test_policy_is_opt_in_and_strict():
     assert guard.resource_limits({}) is None
     assert guard.resource_limits({"serving_resource_limits": LIMITS}) == LIMITS
     for field, value in [
-        ("windows_stop_gib", 9),
+        ("windows_stop_gib", 3.99),
         ("windows_admit_gib", 9),
         ("windows_start_gib", 11),
         ("gpu_admit_free_mib", 999),

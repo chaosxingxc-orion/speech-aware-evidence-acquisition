@@ -56,8 +56,8 @@ def resource_limits(values):
     if not (
         limits["windows_start_gib"]
         >= limits["windows_admit_gib"]
-        > limits["windows_stop_gib"]
-        >= 10
+        >= limits["windows_stop_gib"]
+        >= 4
         and limits["gpu_admit_free_mib"] > limits["gpu_stop_free_mib"] > 0
         and 0 < limits["max_sample_age_seconds"] <= 15
     ):

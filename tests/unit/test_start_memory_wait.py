@@ -31,6 +31,7 @@ class Clock:
 
 
 def run(tmp_path, values, **kwargs):
+    kwargs.setdefault("floor_gib", 10.0)
     m = module()
     readings = iter(values)
     clock = Clock()
@@ -120,7 +121,7 @@ def test_stop_appearing_during_wait_prevents_admission(tmp_path):
 @pytest.mark.parametrize(
     "start,seconds,samples",
     [
-        (9, 60, 3),
+        (3.99, 60, 3),
         (float("nan"), 60, 3),
         (14.5, 0, 3),
         (14.5, 3601, 3),
@@ -314,7 +315,8 @@ def test_invalid_policy_does_not_create_default_observer(tmp_path,monkeypatch):
     m=module()
     def forbidden(): raise AssertionError('Observer must not be created')
     monkeypatch.setattr(m,'WindowsMemoryObserver',forbidden,raising=False)
-    with pytest.raises(ValueError):m.wait_for_memory(tmp_path/'receipt',tmp_path/'STOP',7,60,3)
+    with pytest.raises(ValueError):
+        m.wait_for_memory(tmp_path/'receipt',tmp_path/'STOP',3.99,60,3)
 
 
 def test_explicit_reader_never_creates_default_observer(tmp_path,monkeypatch):

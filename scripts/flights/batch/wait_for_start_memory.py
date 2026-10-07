@@ -30,7 +30,7 @@ def wait_for_memory(
     wait_seconds,
     stable_samples,
     *,
-    floor_gib=10.0,
+    floor_gib=4.0,
     host_reader=None,
     monotonic=time.monotonic,
     sleep=time.sleep,
@@ -131,7 +131,7 @@ def main(argv=None):
     for field in ("receipt-dir", "data-root", "stop-marker"):
         parser.add_argument("--" + field, required=True)
     parser.add_argument("--start-gib", type=float, required=True)
-    parser.add_argument("--floor-gib", type=float, default=10.0)
+    parser.add_argument("--floor-gib", type=float, default=4.0)
     parser.add_argument("--wait-seconds", type=float, required=True)
     parser.add_argument("--stable-samples", type=int, required=True)
     args = parser.parse_args(argv)

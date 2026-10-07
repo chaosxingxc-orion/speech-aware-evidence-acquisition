@@ -39,20 +39,20 @@ def _finite(value):
 @dataclass(frozen=True)
 class MemoryPolicy:
     start_gib: float
-    floor_gib: float = 10.0
+    floor_gib: float = 4.0
     interval_seconds: float = 5.0
     read_timeout_seconds: float = 10.0
     stop_grace_seconds: float = 5.0
 
     def __post_init__(self):
         if not all(_finite(v) for v in asdict(self).values()) or not (
-            self.start_gib >= self.floor_gib >= 8
+            self.start_gib >= self.floor_gib >= 4
             and 0 < self.interval_seconds <= 10
             and 0 < self.read_timeout_seconds <= 15
             and 0 < self.stop_grace_seconds <= 30
         ):
             raise FlightProcessGuardError(
-                "invalid flight memory policy or floor below owner-authorized 8 GiB"
+                "invalid flight memory policy or floor below owner-authorized 4 GiB"
             )
 
 
@@ -238,7 +238,7 @@ def main(argv=None):
     parser.add_argument("--experiment")
     parser.add_argument("--campaign-plan", type=Path)
     parser.add_argument("--start-gib", type=float, required=True)
-    parser.add_argument("--floor-gib", type=float, default=10.0)
+    parser.add_argument("--floor-gib", type=float, default=4.0)
     parser.add_argument("--mode", choices=("campaign", "worker", "node-panel", "node-panel-worker"), default="campaign")
     parser.add_argument("--lease-token-file")
     args = parser.parse_args(argv)

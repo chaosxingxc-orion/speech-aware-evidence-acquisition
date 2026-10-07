@@ -1269,6 +1269,17 @@ def _resident_refusal(
     )
 
 
+def _validate_host_memory_policy(min_host_free_gb: float, margin_gb: float = 0.0) -> None:
+    for name, value, minimum in (
+        ("min_host_free_gb", min_host_free_gb, 4), ("margin_gb", margin_gb, 0)
+    ):
+        if (isinstance(value, bool) or not isinstance(value, (int, float))
+                or not math.isfinite(value) or value < minimum):
+            raise ServingSessionError(f"{name} must be finite and at least {minimum} GiB")
+    if not math.isfinite(min_host_free_gb + margin_gb):
+        raise ServingSessionError("combined host memory minimum must be finite")
+
+
 def _refuse_low_host_memory(min_host_free_gb: float) -> None:
     """Refuse to start a new 18.5 GB resident server on a host that does not
     provably have room for it (E7c, the 2026-09-07 incident: the VM's mmap
@@ -1281,6 +1292,7 @@ def _refuse_low_host_memory(min_host_free_gb: float) -> None:
     GPU never proves staleness in :func:`observe_session_process`.
     """
 
+    _validate_host_memory_policy(min_host_free_gb)
     host_memory = read_host_memory()
     free_gb = host_memory.get("host_free_gb")
     if isinstance(free_gb, bool) or not isinstance(free_gb, (int, float)):
@@ -1315,6 +1327,7 @@ def host_memory_verdict(
     (2026-09-27: 11.7 GB and 10.1 GB against 12.0 left the card empty twice).
     """
 
+    _validate_host_memory_policy(min_host_free_gb, margin_gb)
     free_gb = host_memory.get("host_free_gb")
     required = float(min_host_free_gb) + float(margin_gb)
     numeric = not isinstance(free_gb, bool) and isinstance(free_gb, (int, float))
@@ -1864,7 +1877,7 @@ def build_parser():
     start.add_argument(
         "--min-host-free-gb",
         type=float,
-        default=12.0,
+        default=4.0,
         help=(
             "refuse to start when the Windows host's free memory is below this (owner "
             "cap, 2026-09-07: a serving wrapper is a host-watchdog target, so the running "
@@ -1890,7 +1903,7 @@ def build_parser():
             f"{HOST_MEMORY_SHORT_EXIT} when the reading proves it would refuse"
         ),
     )
-    host_memory.add_argument("--min-host-free-gb", type=float, default=12.0)
+    host_memory.add_argument("--min-host-free-gb", type=float, default=4.0)
     host_memory.add_argument(
         "--margin-gb",
         type=float,

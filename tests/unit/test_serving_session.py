@@ -531,7 +531,7 @@ def test_the_cli_requires_a_subcommand():
 
 def test_the_cli_accepts_min_host_free_gb_only_on_start():
     args = build_parser().parse_args(["start", "frag"])
-    assert args.min_host_free_gb == 12.0
+    assert args.min_host_free_gb == 4.0
     overridden = build_parser().parse_args(["start", "frag", "--min-host-free-gb", "20"])
     assert overridden.min_host_free_gb == 20.0
     with pytest.raises(SystemExit):
@@ -1453,7 +1453,7 @@ def test_start_refuses_when_the_host_free_memory_is_below_the_floor(monkeypatch)
     import speech_aware_evidence_acquisition.core.session.serving as serving_module
 
     monkeypatch.setattr(serving_module, "read_host_memory", lambda: dict(_LOW_HOST_MEMORY))
-    args = build_parser().parse_args(["start", "frag"])
+    args = build_parser().parse_args(["start", "frag", "--min-host-free-gb", "12"])
 
     with pytest.raises(ServingSessionError, match=r"host's free memory is 4\.0 GB"):
         serving_module._start(args)
@@ -1543,7 +1543,7 @@ def test_host_memory_verdict_fails_open_like_the_start_guard():
 def test_the_host_memory_command_exits_four_only_on_a_proven_shortfall(monkeypatch, capsys):
     import speech_aware_evidence_acquisition.core.session.serving as serving_module
 
-    args = build_parser().parse_args(["host-memory", "--margin-gb", "0.5"])
+    args = build_parser().parse_args(["host-memory", "--min-host-free-gb", "12", "--margin-gb", "0.5"])
     assert args.min_host_free_gb == 12.0 and args.margin_gb == 0.5
     monkeypatch.setattr(serving_module, "read_host_memory", lambda: {"host_free_gb": 11.7})
     assert args.handler(args) == serving_module.HOST_MEMORY_SHORT_EXIT == 4

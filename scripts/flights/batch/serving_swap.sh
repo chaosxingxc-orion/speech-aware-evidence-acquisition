@@ -3,7 +3,7 @@
 # hand-run pair "WSL switch script + Windows scheduled-task switch" whose halves were run separately on 2026-09-27
 # (one ran while the other refused) and it never leaves the card without a server on a refusal it could foresee.
 #
-#   serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1> [--dry-run] [--restart] [--min-host-free-gb 12.0]
+#   serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1> [--dry-run] [--restart] [--min-host-free-gb 4.0]
 #                   [--margin-gb 0.5] [--wait-timeout 600] [--monitor-delay 20] [--no-restore]
 #                   [--gap-hook <script>]
 #
@@ -20,7 +20,7 @@
 #      coordinator wants recycled past its uptime bound), in which case it falls through to the normal stop+start
 #      of that same geometry below instead of the fast no-op path;
 #   4. host-memory pre-check BEFORE anything is stopped: serving_session.sh host-memory with the start guard
-#      (--min-host-free-gb, default 12.0) plus --margin-gb headroom; a proven shortfall refuses and names the CPU
+#      (--min-host-free-gb, default 4.0) plus --margin-gb headroom; a proven shortfall refuses and names the CPU
 #      sidecars holding memory (2026-09-27: 11.7 GB and 10.1 GB under a resident 8081 sidecar failed two restarts
 #      AFTER the running geometry had been stopped);
 #   5. clean stop of the current session (serving_session.sh stop), its leftover wrapper, port 8080 verified free,

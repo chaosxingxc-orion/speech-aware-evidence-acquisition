@@ -30,8 +30,8 @@ SAEA_SWAP_LOCK=${SAEA_SWAP_LOCK:-$SAEA_RUNTIME_ROOT/serving-swap.lock}
 SAEA_SWAP_PENDING=${SAEA_SWAP_PENDING:-$SAEA_RUNTIME_ROOT/serving-swap.pending}
 SAEA_TASK_PS1_WIN=${SAEA_TASK_PS1_WIN:-'D:\chao_workspace\exploring-l4-intelligence\studies\speech-aware-evidence-acquisition\scripts\flights\batch\saea_task.ps1'}
 SAEA_TARGETS="slurp-np4 a2t-np3 e21-np4 det-np1"
-# The start guard of core.session.serving (`start --min-host-free-gb`, default 12.0); every task entry uses the default.
-SAEA_MIN_HOST_FREE_GB=${SAEA_MIN_HOST_FREE_GB:-12.0}
+# The prospective owner floor is 4 GiB; preserve any explicit higher registered minimum.
+SAEA_MIN_HOST_FREE_GB=${SAEA_MIN_HOST_FREE_GB:-4.0}
 
 # The geometry table: one row per resident serving geometry this host swaps between. The fragment is the one the
 # serving task entry starts; its -c/-np are the geometry /props must report (see serving_ready_probe.py).

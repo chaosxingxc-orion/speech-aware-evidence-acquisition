@@ -195,6 +195,7 @@ class Host:
             SAEA_MAIN=str(REPO),
             SAEA_SERVING_SESSION=str(self.bin / "serving_session.sh"),
             SAEA_POWERSHELL=str(self.bin / "powershell.exe"),
+            SAEA_MIN_HOST_FREE_GB="12.0",
             PYTHONDONTWRITEBYTECODE="1",
         )
         env.pop("GIT_DIR", None)

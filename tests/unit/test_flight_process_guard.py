@@ -154,7 +154,7 @@ def test_existing_receipt_cannot_be_overwritten(tmp_path):
     "changes",
     [
         dict(start_gib=7),
-        dict(floor_gib=7.9),
+        dict(floor_gib=3.99),
         dict(start_gib=True),
         dict(interval_seconds=0),
         dict(interval_seconds=11),
@@ -231,7 +231,8 @@ def test_spawn_failure_is_preserved_without_retry(tmp_path):
     assert events(tmp_path / "guard")[-2]["error_type"] == "FileNotFoundError"
 
 
-def test_guard_main_keeps_exact_single_cell_campaign_arguments(tmp_path, monkeypatch):
+@pytest.mark.parametrize("start", ["4", "14.5"])
+def test_guard_main_keeps_exact_single_cell_campaign_arguments(tmp_path, monkeypatch, start):
     from types import SimpleNamespace
     from speech_aware_evidence_acquisition.core.flight import (
         process_guard as guard,
@@ -290,9 +291,10 @@ def test_guard_main_keeps_exact_single_cell_campaign_arguments(tmp_path, monkeyp
         "--receipt-dir",
         str(data / "coordination/guard"),
         "--start-gib",
-        "14.5",
+        start,
     ]
     assert guard.main(args) == 0
+    assert calls[0][0][2].floor_gib == 4
     cmd = calls[0][0][0]
     assert cmd[:5] == [
         sys.executable,
@@ -400,7 +402,7 @@ def test_owner_eight_gib_floor_is_explicit_and_enforced(tmp_path, running, expec
         host_reader=lambda: {"host_free_gb": next(readings, running)},
     )
     assert result.status == expected
-    assert MemoryPolicy(start_gib=14.5).floor_gib == 10
+    assert MemoryPolicy(start_gib=14.5).floor_gib == 4
 
 
 @pytest.mark.parametrize(
