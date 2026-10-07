@@ -1,0 +1,74 @@
+{
+  "capacity_graph": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-graph-v3",
+  "capacity_graph_config_hash": "e884993674a8a90d2926e398182f561afebe970731ced93d56124d363140f213",
+  "config_hash": "c182115726af1bae929fb99a3e3e5ebf79c01e790b24be15751ed93f3b09c0d2",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-v4",
+  "fit_cap": 48,
+  "generation_cap": 12,
+  "generation_contacts": 0,
+  "label": "solver-lookup",
+  "new_prepared_pin": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+    "sha256": "0bee0a54c46e62f6d3fdd4d7c6c980ee88168243623fa1a62e11367000b60832"
+  },
+  "non_envelope_policy_equal": true,
+  "old_prepared_pin": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V3/phase-supply-v1.json",
+    "sha256": "91150b17b63a7cffa3f1384b7e4bcbbe56411b8651e0cfda202718390c024e5e"
+  },
+  "original_experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-v3",
+  "output_equal": true,
+  "repin": {
+    "new_pin": {
+      "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+      "sha256": "0bee0a54c46e62f6d3fdd4d7c6c980ee88168243623fa1a62e11367000b60832"
+    },
+    "old_pin": {
+      "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V3/phase-supply-v1.json",
+      "sha256": "91150b17b63a7cffa3f1384b7e4bcbbe56411b8651e0cfda202718390c024e5e"
+    },
+    "readiness_requirement": {
+      "appended": 1,
+      "kept": 0,
+      "updated": 0
+    },
+    "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+    "rebuilt": true,
+    "row_counts": {
+      "new": {
+        "facets": 0,
+        "values": 4
+      },
+      "old": {
+        "facets": 0,
+        "values": 4
+      }
+    }
+  },
+  "runtime_sample_ids": [
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "scorer_contacts": 0,
+  "status": "HELD",
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "0bee0a54c46e62f6d3fdd4d7c6c980ee88168243623fa1a62e11367000b60832"
+    }
+  ],
+  "tokenizer_contacts": 0
+}

@@ -485,10 +485,6 @@
       "sha256": "0b05a5f424210f4f91c22ea9340d1e34a12929dc86a5519f853f9dd58a74febe"
     }
   ],
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V3/phase-supply-v1.json",
-    "sha256": "fdfb00cf79b8803cb4c80fdb8d8179cf1fe037b4411c73db592abc5ff81aa7a0"
-  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -511,5 +507,9 @@
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
-  "what_this_is": "HELD simple-consumption architecture engineering. Reuse fixed source assets and prepared selection; no scorer or scientific read. Separate capacity and natural structural admission required."
+  "what_this_is": "HELD simple-consumption architecture engineering. Reuse fixed source assets and prepared selection; no scorer or scientific read. Separate capacity and natural structural admission required.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+    "sha256": "375cbbe60a1b98da3f64b5fc5ff4df397d16ccd87eefd3726e6ffe3c44d6f9fc"
+  }
 }

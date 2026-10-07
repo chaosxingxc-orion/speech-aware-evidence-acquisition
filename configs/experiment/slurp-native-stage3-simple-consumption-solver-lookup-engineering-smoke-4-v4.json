@@ -14,7 +14,14 @@
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
         "reason": "PREPARATION ONLY; final merged source, strict output-equal envelope repin, root incident disposition and countersignature, frozen and live gates required.",
-        "requirements": [],
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+            "sha256": "0bee0a54c46e62f6d3fdd4d7c6c980ee88168243623fa1a62e11367000b60832",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
         "state": "held"
       },
       "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4",
