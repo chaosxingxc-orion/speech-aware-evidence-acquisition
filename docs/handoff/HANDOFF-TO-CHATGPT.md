@@ -1,5 +1,38 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Four-GiB policy verified live; capacity held on supply identity (2026-10-07)
+
+The direct owner 4 GiB startup/running policy is implemented in the shared
+process guard, startup wait, service resource validation and prospective
+serving defaults. Independent Astra/Ultra review passed 288 focused tests.
+Implementation ee64c3a9f is integrated at e688da0bd. Preserve higher explicitly
+registered historical policies and all frozen bytes. Do not clear cache or
+restart for the superseded 20 GiB default.
+
+The new Windows task SAEA-Simple-Consumption-Capacity-Recovery1-Memory4-20261007
+started at 09:14:02Z on frozen 9e787fcbd. Its actual 4/4 GiB startup wait
+passed three samples in 20.15 seconds. Running samples remained at or above
+9.2668 GiB. No memory refusal occurred. The capacity child then failed after
+143 tokenizer endpoints with prepared artifact identity mismatch in phase
+supply seed loading during maximum-request graph rehearsal. No generation,
+scoring or FIT artifact exists. This is a distinct operational binding error,
+not evidence of insufficient memory or a cache fault.
+
+The outer task ended at 09:15:03Z; all admitted processes are gone. The owned
+observer exited normally and the job-scoped monitor was deleted. Preserve
+C3 logs, failed lease, original143 endpoints and earlier C2zero-contact failure
+as separate records. Shared source diagnosis is offline; no retry, natural
+proof, scientific dispatch or quality read is admitted by this receipt.
+Offline diagnosis with network blocked confirmed the graph supply envelope
+still pins the pre-repair runtime source. It is stale before rehearsal; tool
+binding does not change its identity. Root re-pinned the new capacity envelope
+but omitted the graph envelope. The dry-run fallback masked this during the
+earlier frozen check. Add strict prepared-graph validation before any tokenizer
+contact, then prospectively repin the graph with output equality; preserve the
+old envelope. This is a provenance binding defect, not file-cache pressure.
+
+See [live policy proof and stopped capacity](../receipts/continuation/2026-10-07-four-gib-live-proof-capacity-supply-stop.json).
+
 ## Capacity entry stopped before contact: inner memory policy (2026-10-07)
 
 The singleton recovery entry ended with exit 1 at 08:43:12Z. Its shared

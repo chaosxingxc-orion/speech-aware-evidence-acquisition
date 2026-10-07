@@ -1,0 +1,86 @@
+{
+  "FIT_receipt_exists": false,
+  "WSL_restart_performed": false,
+  "at_utc": "2026-10-07T09:19:10.593164+00:00",
+  "cache_clear_performed": false,
+  "capacity_contact_evidence": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-memory4-v1\\solver-lookup\\request-fit-v1.json.contacts.jsonl",
+    "sha256": "411b9e1745c72df1e0d321180bddea9322ccd2f41dab6d6dd947ec05faba9361"
+  },
+  "capacity_endpoint_contacts": 143,
+  "capacity_finished": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-memory4-v1\\capacity-finished.json",
+    "sha256": "77cfdcd351ac455aeb5768b9191fc9b3a0ca62f6a2ed516a84c7c8d5f8a77bc4"
+  },
+  "failure_trace": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-memory4-v1\\solver-lookup-capacity.stderr.log",
+    "sha256": "4316bf14c0a1a7633b380330c5f90f9658c9824962f1709b81468c0c207d1372"
+  },
+  "frozen_worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-recovery1-memory4-v1",
+  "generation_contacts": 0,
+  "guard_events": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-memory4-v1\\solver-lookup\\memory-guard\\events.jsonl",
+    "sha256": "1be28f806dcb81272df9d4cb5b14d9969a1b5ffb3a5b5fd88e6e26c87576e5a9"
+  },
+  "implementation_commit": "ee64c3a9f7cb7c040ffc501d3fb9a16555c279a1",
+  "independent_tests": {
+    "exit_code": 0,
+    "original_session": 42881,
+    "passed": 288
+  },
+  "main_integration_commit": "e688da0bd",
+  "memory_change": "Completed and independently reviewed, then verified by actual Windows-owned capacity launch. Startup and running thresholds are4GiB; no memory resource refusal occurred.",
+  "minimum_observed_running_free_gib": 9.266803741455078,
+  "monitor": {
+    "deleted": true,
+    "id": "slurp-memory4-capacity"
+  },
+  "new_failure": "The actual maximum-request graph rehearsal enters phase-supply seed loading and rejects a prepared artifact identity mismatch. Root cause details are being checked offline. Do not call this a cache failure or memory shortage.",
+  "next_step": "Reproduce the actual prepared-supply identity mismatch offline, repair the named shared rehearsal/identity path with preserved validators, and review a new bounded disposition before any further capacity contact. No automatic retry, natural generation or scientific comparison follows.",
+  "observer_teardown": "Owned Windows observer exited0 without forced termination and preserved original child failure.",
+  "offline_root_cause": {
+    "actual_runtime_source_sha256": "fc7d8fab1e22f9421c81a37c251442dc19c6b42a1d74b274b338e35b884ea7ca",
+    "artifact_relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-GRAPH-V2/phase-supply-v1.json",
+    "artifact_sha256": "14d313d3e58548af72bb64252870e146bd4912cdf719e31463207d78b1a3cde8",
+    "contacts_added": 0,
+    "exit_code": 0,
+    "finding": "The graph-v2 prepared phase-supply identity was stale before rehearsal and stayed unchanged after tool binding. Only sources.implementation.runtime differs. The model-free dry-run used by the frozen checker intentionally falls back to router bootstrap on stale supply; real dispatch correctly rejects that stale pin. Root re-pinned the capacity envelope but omitted the graph envelope.",
+    "original_session": 22174,
+    "recorded_runtime_source_sha256": "e51b7b2746f738c5840eea2d858feab0421e9676afe3f2f09ebb6dcb1f8ed075",
+    "required_repair": "Strictly validate prepared graph artifacts before any tokenizer authorization; prospectively repin the unchanged graph supply output under a separate reviewed entry. Never bypass the existing identity validator or alter frozen artifacts.",
+    "status": "REPRODUCED-WITH-NETWORK-BLOCKED"
+  },
+  "preservation": "Retain this failed entry, frozen source, logs,143 endpoint contacts and lease. Prior C2zero-contact failure remains preserved separately. Original first capacity Solver143 remains a separate failed spend; neither failure has a FIT receipt. Three original successful capacity receipts remain immutable.",
+  "registration": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-memory4-v1\\registration-v1.json",
+    "sha256": "b641b469ac1c42d1396b2577e4eecfef9cd39777165d39ccff43f805e4546ef7"
+  },
+  "resource_policy": {
+    "floor_gib": 4,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 4,
+    "wait_seconds": 600
+  },
+  "runtime_admission": false,
+  "schema": "saea-four-gib-policy-live-proof-and-capacity-failure-v1",
+  "scientific_read_authorized": false,
+  "scorer_contacts": 0,
+  "source_commit": "9e787fcbd72ea8974f585f69c1555126476ed09d",
+  "startup_elapsed_seconds": 20.151392242056318,
+  "startup_proof": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-memory4-v1\\solver-lookup\\memory-wait\\finished.json",
+    "sha256": "203969c8b5dd044f686fc1983867b6e8d2aa9989f202fe9a4216b12943ce38c9"
+  },
+  "status": "CAPACITY-STOPPED-PREPARED-SUPPLY-IDENTITY-MISMATCH",
+  "task": "SAEA-Simple-Consumption-Capacity-Recovery1-Memory4-20261007",
+  "task_exit": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-memory4-v1\\capacity-task-exit.json",
+    "sha256": "f5d405b39716c1b18af91199d33ece103f7d0cf9a1783b9b24584d0be43afc12"
+  },
+  "task_started": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-memory4-v1\\capacity-task-started.json",
+    "sha256": "e8335e5c58ee355b4357434f6e9b06015971520c5e62183787d2a209f6059b43"
+  },
+  "verified_no_remaining_owned_children": true
+}
