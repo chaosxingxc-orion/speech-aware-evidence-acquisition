@@ -1,0 +1,44 @@
+{
+  "schema": "saea-root-complete-family-analysis-disposition-v1",
+  "at_utc": "2026-10-07T15:33:34.816342+00:00",
+  "owner_authority": 227,
+  "status": "GPU_FAMILY_COMPLETE_OFFLINE_PROJECTION_REPAIR",
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/family-qualified-v1.json",
+    "sha256": "5e26f3d6176eebf6cca40eb48420942129ddfdccfd3f62ef5faeb200a6e91a97"
+  },
+  "resources": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/complete-operational-resources-v1.json",
+    "sha256": "84e68e2bc8164c862b2c05bfb66b690a1e899ec801b6018e2acc97b11981fd37"
+  },
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/terminal-closure-v1.json",
+    "sha256": "9fccb98e17517cdcc39e1ea4f139c5a52a49aa71c5361bc3c8056a26ba824d2c"
+  },
+  "read_authority": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/root-read-authority-v1.json",
+    "sha256": "a29856ccb9ed18f9eb0183be0f47b9af6d3967294223e2f5159a78a61ca0cb55"
+  },
+  "original_reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/business-reader-v1-exit.json",
+    "sha256": "809f7c77efc1437107a31c8280ecfc27d36a19d0be4f545740058c2545b891eb"
+  },
+  "original_reader_stderr": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/business-reader-v1.stderr.log",
+    "sha256": "22c47c24300f735063766028f40eca757e4d4bf5e6f81a085a2911d95905bdc2"
+  },
+  "prospective_process_scope": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/root-diagnostic-scope-v1.json",
+    "sha256": "aba177ed1a7cb56557ab1b308ac8494e58d90a5f1b29544eab6f2e4838fcac7f"
+  },
+  "original_process_inputs": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/root-process-operational-inputs-v1.json",
+    "sha256": "0d6df9fdbc8c8a96c7f34e700224f0772df9f5d30092d9814d350c1fbc63870d"
+  },
+  "root_cause": "The authored manual analysis supplement contains only the scorer field; RewardProjection requires schema, rule ID, native aggregate fields and all native per-sample sufficient statistics. The complete-family verification succeeded before the derivative construction failed.",
+  "disposition": "Preserve the original supplement, failed derivative, complete generations, all four successful official scores and exact recipe/READ row. Author and validate a separate supplement successor with the canonical native projection, then produce a new offline derivative. No generation or official scoring may be repeated.",
+  "model_contacts_added": 0,
+  "official_scoring_jobs_added": 0,
+  "monitor": "slurp-same20-experiment-health deleted after verified normal terminal closure",
+  "learner_export": false
+}

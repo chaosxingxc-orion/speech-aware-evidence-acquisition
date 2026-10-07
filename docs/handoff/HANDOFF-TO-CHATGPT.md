@@ -1,5 +1,52 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Same20 complete business read; retain seed pending process diagnostics (2026-10-07 15:45Z)
+
+All80 trajectories and four unique official scores are complete. The root reader passed
+under the separately appended READ-METADATA-SUCCESSOR1-V1 row; the original signed row,
+old packages and both failed offline derivatives remain unchanged. The source-preserving
+resolved-v2 package repairs only the canonical native projection and missing copy of the
+already declared measurement profile, with dependent pins and a distinct READ ID.
+
+Official SLU-F1 is seed62.3261%, A/A60.3123%, review-off55.9689%, solver-lookup59.1619%;
+intent is70/70/75/65%, and all members reliably complete100%. Remaining19 sample mean
+latency is29.055/32.196/16.111/21.697seconds. Faster simplified candidates do not establish
+quality gain. Retain seed and stay at20 for source-bound process diagnostics before any
+prospective revision or scale review. This manual comparison has no learner export,
+independent validation, stable-benefit or L-over-B claim. Four lookup tool calls establish
+actual use only. Do not infer cache state from first-versus-remaining latency.
+
+The GPU campaign is terminal, no experiment children remain, and its15-minute monitor is
+deleted. Preserve all original frozen bytes and the intentional unscored engineering
+lifecycles. Read the complete [root business report](../results/2026-10-07-simple-consumption-same20-business-v1.md)
+and [custody receipt](../receipts/continuation/2026-10-07-simple-consumption-n20-business-read.json).
+
+## Same20 GPU family complete; offline projection repair in progress (2026-10-07 15:30Z)
+
+The Windows driver completed normally at15:21:41Z. All four independently finalized
+20 trajectories with verified seals, exactly one complete successful official score
+and zero failed jobs each. Model contacts were seed122, seed-AA125, review-off40 and
+solver-lookup44 (331 total). No STOP, flight lease or live experiment child remains.
+The experiment-only15-minute monitor was deleted after terminal verification.
+Windows available memory stayed at or above15.854553GiB; the maximum measured worker
+PSS was2226.50586MiB. Campaign wall time was1375seconds, not a per-sample latency.
+
+Root countersigned the exact complete-family READ at15:22:06Z. Its row and resolved-v1
+recipe must remain byte-identical throughout business and separate process analysis.
+The prospective process metric scope and original source pins were fixed before the
+first business read. The first offline reader stopped while constructing reward links:
+the authored supplement provided only a scorer name, omitting the required native
+projection fields. This is an analysis-preparation schema defect. Preserve the failed
+derivative and original supplement. Root owner227 disposition permits only a validated
+immutable supplement successor and new offline derivative; never regenerate, reseal or
+repeat official scoring. No business conclusion has been read from a complete report.
+
+Process diagnostics must remain a separate source-bound derivative under the same READ;
+do not create a circular recipe/output hash or weaken source verification. No learner
+export or scale admission follows from completion. Keep structural proofs intentionally
+unscored and all old failed bytes immutable. Return before8x400 or equivalent splitting.
+See [complete-family and analysis disposition](../receipts/continuation/2026-10-07-simple-consumption-n20-complete-analysis-disposition.json).
+
 ## Same20 comparison running after instrumented repair (2026-10-07 14:58Z)
 
 Windows SAEA-Batch-Driver started14:58:46Z; the first campaign started14:59:13Z.
@@ -6820,7 +6867,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T14:31:21.144123+00:00
+Last refreshed: 2026-10-07T15:48:56.278062+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

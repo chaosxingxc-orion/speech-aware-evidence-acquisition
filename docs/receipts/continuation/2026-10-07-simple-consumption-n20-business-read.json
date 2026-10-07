@@ -1,0 +1,41 @@
+{
+  "at_utc": "2026-10-07T15:48:56.278062+00:00",
+  "authority": {
+    "ledger_row_sha256": "44499118d5c4907a92321178ac7d2bdae93ae98f88c64368c443a2bd77960b21",
+    "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N20-READ-METADATA-SUCCESSOR1-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-resolved-v2/analysis-recipe-v1.json",
+      "sha256": "65df6c3663a6987cad86abbce29295228e4e0cc588ad2f166bd154009d243a3b"
+    }
+  },
+  "business_family": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/slurp-simple-consumption-n20-v2-root-read-v3/family.json",
+    "sha256": "a5d875dab6f7b1cc204144ef5f6e7253c446d932d64cbad720c1fb6e9ba32582"
+  },
+  "business_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/slurp-simple-consumption-n20-v2-root-read-v3/report.json",
+    "sha256": "3813a4399a7c56f8593603fa9c4b02cf9a54080343ec10d2d672a319e3deefe5"
+  },
+  "complete_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/family-qualified-v1.json",
+    "sha256": "5e26f3d6176eebf6cca40eb48420942129ddfdccfd3f62ef5faeb200a6e91a97"
+  },
+  "decision": "Retain seed; stay at20 pending complete source-bound process mechanism review. No candidate adoption or automatic expansion.",
+  "learner_export": false,
+  "metadata_succession": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/root-analysis-metadata-succession-v1.json",
+    "sha256": "37cfa3693e215d3c447e8420be62aea13b2a7e3d8f47cf5373148dea74919e55"
+  },
+  "model_contacts_added": 0,
+  "official_score_jobs_added": 0,
+  "reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/business-reader-v3-exit.json",
+    "sha256": "161515cac0584b51631f4f48eb575ea08662271d1074abc1a06fa9d1c563bcba"
+  },
+  "root_report": {
+    "relpath": "docs/results/2026-10-07-simple-consumption-same20-business-v1.md",
+    "sha256": "5be6c4e463015f58625d7a0ab3cf682e3a20bdda8a4cab4d60c47ce8f7f924a0"
+  },
+  "schema": "saea-root-complete-manual-business-read-v1",
+  "status": "FORM-PROOF-NO-ADOPTION"
+}

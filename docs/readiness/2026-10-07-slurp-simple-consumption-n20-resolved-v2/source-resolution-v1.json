@@ -1,0 +1,24 @@
+{
+  "analysis_intent": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v5/manual-architecture-analysis-intent-v1.json",
+    "sha256": "585bbeb9683487289b6a7f4cf61ffebde99c2380f382109aed8eca69aaf80088"
+  },
+  "comparisons_changed": false,
+  "contacts": 0,
+  "frozen_launch_binding": {
+    "relpath": "coordination/simple-consumption-n20-v4/root-frozen-launch-binding-v1.json",
+    "sha256": "48713cc51aa73338ed3bd7b57bb7f364c0e5eb89d1f2969b074bb4d9d29a32df"
+  },
+  "predecessor_resolution": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-resolved-v1/source-resolution-v1.json",
+    "sha256": "7a801cd2e47a1c637628891f06142bef3ffffbe3c93eb697aeaf0454e67add4f"
+  },
+  "read_authorized": false,
+  "schema": "saea-manual-architecture-source-resolution-v1",
+  "status": "INDEPENDENT OFFLINE METADATA SUCCESSOR; original READ row preserved",
+  "successor_recipe": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-resolved-v2/analysis-recipe-v1.json",
+    "sha256": "65df6c3663a6987cad86abbce29295228e4e0cc588ad2f166bd154009d243a3b"
+  },
+  "worker_commit": "b282ed3c42231eb6366607b691d70488dfcc9502"
+}
