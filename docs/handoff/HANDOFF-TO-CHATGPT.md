@@ -1,5 +1,10 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## N100 fresh ENTRY2 capacity metadata; actual FIT pending (2026-10-07T19:11:05.411314+00:00)
+
+The original frozen capacity gate refused an uppercase carrier caption before any contact. Root227 preserved its source, failed exit and signed rows, then registered four fresh ENTRY2 capacity identities with the correct exact carrier binding. Original ledger bytes remain an exact prefix; capacity output bytes, source inputs, split and policies are unchanged. All four named registration checks passed. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-capacity-entry2-offline-v1.json`. Frozen checks and actual FIT remain pending; generation and graph are HELD. No model, tokenizer, scorer, queue or service contact/change occurred. Continue with 4 GiB floors and the reviewed continuous four-group GPU campaign, four concurrent samples per group, overlapping CPU scoring and exact separately authorized complete-member analysis.
+
+
 ## N100 capacity offline registration (2026-10-07T18:19:45.834014+00:00)
 
 The four unchanged N100 systems have fresh offline capacity registration; actual FIT and generation remain pending. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-capacity-offline-registration-v1.json`. Preserve the zero-contact v1 authoring refusal and its root227 v2 schema-only disposition. Capacity bounds total 996 tokenizer endpoints; generation and graph remain HELD. Startup/running memory floors are 4 GiB. The next task is frozen-source verification, then fresh capacity. Keep the original completed N20 controls, resident service and old results unchanged. The planned N100 GPU campaign is serial across groups with four concurrent samples per group; CPU scoring and separately authorized descriptive analysis overlap subsequent generation. No scientific read or dispatch follows merely from preparation.

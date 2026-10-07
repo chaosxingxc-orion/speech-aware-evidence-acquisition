@@ -1,0 +1,75 @@
+{
+  "contacts": 0,
+  "members": [
+    {
+      "label": "seed",
+      "original_frozen_source_commit": "3fcc91f2484ad3f4ae275f8bc50d1e634baa0527",
+      "predecessor_snapshot": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-capacity-registration-entry2-v1/seed-capacity-predecessor-config-v1.json",
+        "sha256": "27751be5eda7d2e8be2665e4768854f5e57bdcf1269b68d0c6454711a87bcbc5"
+      },
+      "root_disposition": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v3/root-carrier-disposition-v1.json",
+        "sha256": "26734e64d9260e8def6644a5857c842986b4235796f12ad3367088a113bf3274"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-CAPACITY-FIT-V1",
+      "successor_readiness_only": {
+        "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-seed-n100-capacity-v1.json",
+        "sha256": "cfaab7a82d914e545d1a0d3a94e012f1b5efeabf08629ef896b1ae59242ab4e0"
+      }
+    },
+    {
+      "label": "seed-aa",
+      "original_frozen_source_commit": "3fcc91f2484ad3f4ae275f8bc50d1e634baa0527",
+      "predecessor_snapshot": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-capacity-registration-entry2-v1/seed-aa-capacity-predecessor-config-v1.json",
+        "sha256": "17265a3fda74acec6d064800981d08c8073b05b95cfc500550a47dd11c0188a2"
+      },
+      "root_disposition": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v3/root-carrier-disposition-v1.json",
+        "sha256": "26734e64d9260e8def6644a5857c842986b4235796f12ad3367088a113bf3274"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-CAPACITY-FIT-V1",
+      "successor_readiness_only": {
+        "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-seed-aa-n100-capacity-v1.json",
+        "sha256": "95fb10dc4a5e1255d5cd26f01f609ae8157b24ae9e59ff85892b6518c21727a8"
+      }
+    },
+    {
+      "label": "review-off",
+      "original_frozen_source_commit": "3fcc91f2484ad3f4ae275f8bc50d1e634baa0527",
+      "predecessor_snapshot": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-capacity-registration-entry2-v1/review-off-capacity-predecessor-config-v1.json",
+        "sha256": "d963ab584a13de44eef11f372a51791bea14a3db0b58b72cff6fb3cdb120a8fa"
+      },
+      "root_disposition": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v3/root-carrier-disposition-v1.json",
+        "sha256": "26734e64d9260e8def6644a5857c842986b4235796f12ad3367088a113bf3274"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-CAPACITY-FIT-V1",
+      "successor_readiness_only": {
+        "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-review-off-n100-capacity-v1.json",
+        "sha256": "6e989aab1d108984a723b764a0ec1868b233344a0ad1b75378a55067a45ad200"
+      }
+    },
+    {
+      "label": "solver-lookup",
+      "original_frozen_source_commit": "3fcc91f2484ad3f4ae275f8bc50d1e634baa0527",
+      "predecessor_snapshot": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-capacity-registration-entry2-v1/solver-lookup-capacity-predecessor-config-v1.json",
+        "sha256": "36be4c505f43cd5bede80b58697826405d68dc8ea84d9e6a525e15fe890d6e04"
+      },
+      "root_disposition": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v3/root-carrier-disposition-v1.json",
+        "sha256": "26734e64d9260e8def6644a5857c842986b4235796f12ad3367088a113bf3274"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-CAPACITY-FIT-V1",
+      "successor_readiness_only": {
+        "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-solver-lookup-n100-capacity-v1.json",
+        "sha256": "a60b64b38525c5d253528e8e827e52c23b193b8136a9e5296e3933bc819fe770"
+      }
+    }
+  ],
+  "old_signed_rows_unchanged": true,
+  "status": "HELD_UNUSED_PRECONTACT_IDENTITIES"
+}

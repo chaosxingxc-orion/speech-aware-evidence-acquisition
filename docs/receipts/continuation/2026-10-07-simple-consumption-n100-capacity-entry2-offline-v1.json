@@ -1,0 +1,80 @@
+{
+  "at_utc": "2026-10-07T19:11:05.411314+00:00",
+  "capacity_endpoint_cap": 996,
+  "dispatches": 0,
+  "finished": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/metadata-rebind-finished-v1.json",
+    "sha256": "0bab15520b49f197ec0cffcbbc4c999ac152a739e8ed2e47955307b56aac2efd"
+  },
+  "generation_contacts": 0,
+  "generation_graph_unchanged": true,
+  "input": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/metadata-rebind-input-v1.json",
+    "sha256": "ca7fbe2188b2962113dbad2eec5bd6d68ba92dccbffc8757202adeb62700d071"
+  },
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-capacity-v1-entry2-fit",
+      "contact_cap": 299,
+      "label": "seed",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-CAPACITY-ENTRY2-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n100-capacity-v1-entry2-fit",
+      "contact_cap": 299,
+      "label": "seed-aa",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-CAPACITY-ENTRY2-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n100-capacity-v1-entry2-fit",
+      "contact_cap": 157,
+      "label": "review-off",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-CAPACITY-ENTRY2-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n100-capacity-v1-entry2-fit",
+      "contact_cap": 241,
+      "label": "solver-lookup",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-CAPACITY-ENTRY2-FIT-V1"
+    }
+  ],
+  "memory_floors_gib": {
+    "running": 4,
+    "startup": 4
+  },
+  "old_signed_rows_preserved": true,
+  "original_exit": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/root-metadata-rebind-v1.exit.json",
+    "sha256": "42031c3237c0ef34c9bd8de576b862fba0ccf44ba2061e28d3e7c35f82e41deb"
+  },
+  "original_frozen_refusal": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v2/frozen-check-v1.exit.json",
+    "sha256": "c77da12d62debaf80c579a338b60a085f3b7a232334ef939732073a9c6bf8df1"
+  },
+  "original_named_check_exit": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/metadata-named-check-v1.exit.json",
+    "sha256": "adc3500fb58b78ccf11cecd4aa3a48e936edae5c15b1413c354259647030150f"
+  },
+  "owner_decision": 227,
+  "preparation": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/registration-preparation-v1.json",
+    "sha256": "992e4865f369a686c99841c9cfc46b9587f09e703a51be34bc51d601397d3c14"
+  },
+  "root_admission": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/root-capacity-admission-v1.json",
+    "sha256": "1c8fe3b843be2f8dac08f3b055907156c1da076df807d80ab68d8cae5f912a63"
+  },
+  "root_disposition": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/root-carrier-disposition-v1.json",
+    "sha256": "26734e64d9260e8def6644a5857c842986b4235796f12ad3367088a113bf3274"
+  },
+  "schema": "saea-root-n100-capacity-entry2-offline-receipt-v1",
+  "scorer_contacts": 0,
+  "source_base": "3fcc91f2484ad3f4ae275f8bc50d1e634baa0527",
+  "status": "FRESH ENTRY2 METADATA REGISTERED; ACTUAL FIT PENDING",
+  "tokenizer_contacts": 0,
+  "writer": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/rebind-capacity-entry2-metadata-v1.py",
+    "sha256": "0822373a5f56aae8eb68a2188d4170c2f6b690184be4956660ddff74f740a25c"
+  }
+}
