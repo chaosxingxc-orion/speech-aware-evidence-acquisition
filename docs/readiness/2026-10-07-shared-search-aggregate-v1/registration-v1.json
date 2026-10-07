@@ -1,0 +1,18 @@
+{
+  "schema": "saea-aggregate-search-feedback-registration-v1",
+  "status": "ROOT_REGISTERED",
+  "parent_input_sha256": "61b3a6d8cee5ef756f3d56c773be19fb2ef116aa1b0d83715b254179da2bcd73",
+  "source_registration": {
+    "relpath": "docs/readiness/2026-10-06-partitioned-update6-diversity-complete-analysis-v1/successor-source-registration-v1.json",
+    "sha256": "282117de823e53401f81f1e7c02d7a4a115ac32cc91676650d044a0d70e7a0da"
+  },
+  "history_completion": {
+    "relpath": "docs/receipts/continuation/2026-10-07-update6-rejected-history-complete.json",
+    "sha256": "72fe356b7c6d962a443efd097d2c7034c46a290d9c3264b850507f8da1921dda"
+  },
+  "process_completion": {
+    "relpath": "docs/receipts/continuation/2026-10-06-update6-complete-process-feedback-prepared.json",
+    "sha256": "b335c0bdd9b6e19a8f4bfa25cd5ab67d588d6ed466cf6ef85a50dac60c065b31"
+  },
+  "max_feedback_bytes": 8388608
+}

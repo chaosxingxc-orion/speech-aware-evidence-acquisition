@@ -1,0 +1,44 @@
+{
+  "schema": "saea-rejected-history-preparation-complete-v1",
+  "recorded_at_utc": "2026-10-07T00:10:10.522265+00:00",
+  "status": "COMPLETE",
+  "exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-rejected-search-history-v1/exit.json",
+    "sha256": "02902b300f21ba811cd3c4b622353f87528e3cd178705726445efbdaf5b95ae1"
+  },
+  "output": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-rejected-search-history-v1/history-private-v1.json",
+    "sha256": "392c827921fe7d95d0365419340b3e14e5548dfea7ad29bc7d077334a5881dc0"
+  },
+  "original_process": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-rejected-search-history-v1/process.json",
+    "sha256": "10216db82a5111b367a9e39d8d5446c0a70bb6c82272ddf77a8ae817e5d92bc1"
+  },
+  "logs": {
+    "stdout": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-rejected-search-history-v1/stdout.log",
+      "sha256": "f5cb6e3ec9079a70337e3f5154dea14645644dcfd25eacc033c94d5b88944462"
+    },
+    "stderr": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/update6-rejected-search-history-v1/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "registration": {
+    "relpath": "docs/readiness/2026-10-06-update6-search-history-v1/history-registration-v1.json",
+    "sha256": "d7d6324f2bf475ae95e1c5ee62085c25c890569cb01d6ebfe597eefa8291a6d6"
+  },
+  "retained_parent_count": 16,
+  "disposition": "rejected-retain-before-population",
+  "criterion": "strict-population-utility-sum",
+  "utility_before": -56.15925390968045,
+  "utility_after": -66.71616742532431,
+  "cumulative_feedback_source_ids": 35554,
+  "learner_exported": false,
+  "runtime_admission": false,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0
+  },
+  "verification": "Root verified original exit0, absent PID, output/log and registration hashes, full configured membership and unchanged rejection. The existing history reader requalified the original complete trial and every source before output."
+}

@@ -1,5 +1,31 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Update6 historical evidence completed; real shared aggregate running (2026-10-07)
+
+The original history process/session24745 exited0 at00:08:29Z and its PID is absent.
+Root verified output/log hashes, exact configured sixteen retained parents and the
+unchanged rejected disposition. The [completion receipt](../receipts/continuation/2026-10-07-update6-rejected-history-complete.json)
+binds all evidence. Do not restart that completed process. No model/scorer contact,
+parent activation or learner export occurred.
+
+The next [registered aggregate preparation](../readiness/2026-10-07-shared-search-aggregate-v1/README.md)
+is now running through original session67759, PID268605, started2026-10-07T00:10:25.632024+00:00.
+Its exact entry is coordination/shared-search-aggregate-v1/prepare-v1.py under the data
+root. Revalidated live at2026-10-07T00:11:27.390155+00:00. Inspect original stdout/stderr/exit; observation
+expiry is not failure. It requalifies current sources, then retains all five original
+K16 populations in one common aggregate record. No completed eighty-record artifact
+is claimed until its successful exit and root check. The8MiB bound is local artifact
+serialization only; model input/output limits are not raised.
+
+The configured actor draft assembler, common prompt and comparison design are now
+serially integrated at205010a80.110 tests pass and shared search module statement
+coverage is100percent. Real paired actor drafts await this exact aggregate completion,
+parent-plan/source requalification and prospective capsule/contact registration.
+No new proposal or GPU experiment has started; no monitor is needed for this private
+model-free analysis. Keep old Update6 rejection, formal parents, all exposure and
+other-carrier holds. No stable benefit or learning gain has been established.
+
+
 ## Shared actor draft assembly tested; no new proposal consumed (2026-10-06)
 
 The [actor assembler](../readiness/2026-10-06-search-actor-assembly-v1/README.md)
