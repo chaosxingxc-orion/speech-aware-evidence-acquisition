@@ -1,0 +1,53 @@
+{
+  "at_utc": "2026-10-07T03:33:54.002155+00:00",
+  "cell": "slurp-native-stage3-simple-consumption-seed-engineering-capacity-v2",
+  "composed_config_hash": "da50c9d73de52ceebd30bacc4d09479d4e6d9e089ef62b45bb6b1389c96f5e88",
+  "decision_receipt": {
+    "relpath": "coordination/simple-consumption-capacity-v2/root-capacity-admission-v1.json",
+    "sha256": "a49a0db69a8395bc5904223277116ed703b5cf28f7190d64b95982889d9966ec"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-v2-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 299,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "48fcaa8e85e9f779ceb7a320d33c92a64f524be63188ca3824f511bfe2a17df8",
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-simple-consumption-seed-engineering-capacity-v2",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "004acf181437852dcb2f6fdd1c6ab83d9c117dd2e8144958332c1d8875cb5aed"
+  },
+  "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

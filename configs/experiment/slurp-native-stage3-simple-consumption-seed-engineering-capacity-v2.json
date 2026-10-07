@@ -13,9 +13,9 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Separate exact capacity registration and frozen/live admission remain required.",
+        "reason": "Root227 nongenerative capacity only; exact frozen and live admission remain mandatory.",
         "requirements": [],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1",
       "system_text_policy_binding": {
