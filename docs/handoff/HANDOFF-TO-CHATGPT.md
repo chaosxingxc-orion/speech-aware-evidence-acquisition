@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner reduces the next comparison to100 inputs; no launch yet (2026-10-07)
+
+The latest direct instruction supersedes the unlaunchedN400 direction. Reuse the
+registered seed20261001 stable-hash prefix100 of the SAME existing UPDATE2fixed400.
+All100 recording and utterance identities are distinct, and the old20 are included.
+Four unchanged systems (seed, A/A, review-off, solver-lookup) mean400trajectories.
+No result-informed selection, data/knowledge rebuild or new template is authorized.
+N400 offline partial supplies and wrapper drafts are preserved without dispatch.
+Fresh exactN100 capacity, source/supply bindings and root admission remain required.
+Full-family official quality and process statistics are exploratory atN100, below
+formal paired-effectiveness sample size; no stable-benefit or learning claim follows.
+Keep4GiB memory floors and create the15-minute monitor only at actual launch.
+Expected duration is roughly1–2hours from the previous4x20 walltime, not a promise.
+The existing matched-search arms and other-carrier holds remain unchanged.
+Read [the current scope](../readiness/2026-10-07-slurp-simple-consumption-n100-prospective-v1/README.md).
+
 ## Direct N400 expansion requested; preparation active, no launch yet (2026-10-07)
 
 The owner supersedes the proposed N100 step and explicitly requests400 inputs. Root
@@ -6916,7 +6932,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T16:25:13.913368+00:00
+Last refreshed: 2026-10-07T16:52:27.454988+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

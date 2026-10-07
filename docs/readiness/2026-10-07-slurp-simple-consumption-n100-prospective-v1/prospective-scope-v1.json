@@ -1,0 +1,169 @@
+{
+  "K": 2,
+  "N": 100,
+  "actual_request_fit_endpoint_ceiling": 12400,
+  "additional_stress_fit": "Separate fresh exactN100 registration; derive endpoint caps from reachable maximum legal requests. Do not relabelN20 capacity or dispatchN400.",
+  "admission_remaining": [
+    "N100 configurable prepared members and strict supply identity",
+    "narrow successor gate preserving historical N20 checks",
+    "exact runtime and execution-plan registration",
+    "fresh N100 full-request capacity",
+    "explicit structural compatibility or separately registered proof if needed",
+    "frozen worker and live readiness",
+    "root-only exact queue admission"
+  ],
+  "completion_read": "Allfour independentlyFINALIZED,verifiedseals,oneuniquecompleteofficialscoreeach,zerofailedjobs,then exactrootREAD; no partial quality read.",
+  "duration_expectation": {
+    "basis": "Previous four-member20 campaign walltime1375seconds, including startup/score overhead.",
+    "rough_linear_seconds": 6875.0,
+    "user_facing_range": "Roughly1\u20132hours, not a promise; actual variable node paths, startup and scoring can change it."
+  },
+  "exposure_and_subsets": {
+    "additional80": "Additional coverage relative to recent20; not guaranteed previously unseen or independently heldout.",
+    "previous20": "All previous20 are the configured prefix, not necessarily first in runtime sorted order. Retain cumulative exposure.",
+    "primary": "All100inputs; each member independently scored once on its complete manifest.",
+    "sampling_rule": "Sort the fixed400 sample IDs ascending by SHA256 of UTF-8 seed:sample_id; take first configuredN. Use no gold, predictions or quality values for selection.",
+    "sampling_seed": 20261001,
+    "selected_roster": {
+      "relpath": "docs/receipts/rosters/slurp-system-text-fixed400-prefix100-owner225-v1.json",
+      "sha256": "2bdbffeeb2a03f89b10e94c61376aa5614d71b2b82c58b0a2196903cea343e8c"
+    },
+    "selected_runtime_view": {
+      "relpath": "configs/dataset/slurp-speech-native-system-text-fixed400-prefix100-owner225-v1.json",
+      "sha256": "aea512f309a3bf46a93b564d6a056743da7cb2a8f413daf862bde54f00e7d3a0"
+    },
+    "source_runtime_view": {
+      "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+      "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+    },
+    "subset_diagnostics": "Old20 versus additional80 descriptive only; no separate official score or outcome-based selection."
+  },
+  "family_id": "slurp-simple-consumption-n100-v1",
+  "family_trajectories": 400,
+  "fixed_assets": [
+    "policy text and assembly",
+    "knowledge",
+    "existing UPDATE2fixed400 inputs",
+    "audio packets",
+    "queries and votes",
+    "Omni weights and answer authority",
+    "tool and parser contracts",
+    "official scorer",
+    "temperature0 and registered seed",
+    "four slots of24576 and max512 output"
+  ],
+  "matched_search": "Both original8-candidate algorithm arms remainHELD; preserve policies/allocations; do not silently change them using manual outcomes.",
+  "members": {
+    "review-off": {
+      "maximum_actual_request_fit_endpoints": 800,
+      "maximum_model_contacts": 200,
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-review-off-policy-v2.json",
+        "sha256": "55408431fc08e37231c179bd1c033377977a83654ca04dd3982a07b74f7579d7"
+      },
+      "rows": 100
+    },
+    "seed": {
+      "maximum_actual_request_fit_endpoints": 5200,
+      "maximum_model_contacts": 1300,
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "rows": 100
+    },
+    "seed-aa": {
+      "maximum_actual_request_fit_endpoints": 5200,
+      "maximum_model_contacts": 1300,
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-aa-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "rows": 100
+    },
+    "solver-lookup": {
+      "maximum_actual_request_fit_endpoints": 1200,
+      "maximum_model_contacts": 300,
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-solver-lookup-policy-v2.json",
+        "sha256": "2e4c3a6e6d31a6760cf268852cdac05b93f2617b2db42bd892c08b974c0b2742"
+      },
+      "rows": 100
+    }
+  },
+  "model_contact_ceiling": 3100,
+  "natural_proof": "Reuse only with explicit equality of policy/control/parser/geometry/runtime semantics; fresh source and request capacity qualification remains required.",
+  "other_carriers": "No shared GPU or hold release is implied.",
+  "owner_basis": {
+    "latest_direct_input_translation": "Wait. If it takes several hours, reduce the dataset. Expanding fivefold seems reasonable; sample100 inputs.",
+    "root_response": "Use the previously registered deterministic100-input prefix of the same400 pool, keeping the four systems unchanged:400 complete trajectories. NoN400 runtime or capacity model contacts occurred.",
+    "standing_decision": 227,
+    "supersedes": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n400-prospective-v1/prospective-scope-v1.json",
+      "sha256": "1b592b1be09a28610ac939831f37a14a1fdf9844076f1d15858ce2d605ac3c78"
+    },
+    "supersession_scope": "N400 offline preparation and wrapper drafts are retained but not dispatched. No old frozen bytes or completed attempts are changed."
+  },
+  "primary_analysis": {
+    "contrasts": [
+      "seed-aa minus seed",
+      "review-off minus seed",
+      "review-off minus seed-aa",
+      "solver-lookup minus seed",
+      "solver-lookup minus seed-aa"
+    ],
+    "endpoint": "official complete-manifest pooled SLU-F1",
+    "guards": [
+      "intent accuracy",
+      "reliable completion"
+    ],
+    "measurement": "sequential-trajectory schedule,queue_depth4,slot_count4; preserve per-node and sample timings",
+    "resampling": {
+      "confidence": 0.95,
+      "draws": 10000,
+      "seed": 20261001,
+      "unit": "paired utterance; keep recording variants together"
+    },
+    "strata": "all scenario strata and equal-stratum descriptive view; no favorable subset selection"
+  },
+  "process_metrics": [
+    "delivered intent-card coverage",
+    "initial candidate coverage",
+    "raw/normalized parse and entity/full correctness",
+    "review detection,miss,precision,false-alarm with denominators and unknowns",
+    "valid/visible handoff",
+    "revision after alarm",
+    "raw model repair/harm versus postprocessing repair/harm",
+    "empty-gold false fill",
+    "actual tool/model contacts",
+    "first/non-first sample and per-node timing"
+  ],
+  "prohibited_changes": [
+    "test or milestone feedback",
+    "new data or knowledge construction",
+    "changing frozen previous attempts",
+    "replaying previous generation or scoring",
+    "automatic learner export",
+    "automatic8x400 or equivalent split scale"
+  ],
+  "recorded_at_utc": "2026-10-07T16:52:27.454988+00:00",
+  "resource_policy": {
+    "delete_monitor_when_terminal": true,
+    "job_monitor_minutes": 15,
+    "one_generator": true,
+    "one_official_scorer": true,
+    "running_free_gib": 4,
+    "startup_free_gib": 4,
+    "telemetry_seconds": 10
+  },
+  "root_decision": "Retain current seed pending complete new evidence. This manual architecture comparison is not feedback-specific learning evidence.",
+  "schema": "saea-manual-architecture-prospective-scale-v1",
+  "scientific_scope": "Fixed-pool discovery/form evidence. N100 is below the registered paired-effectiveness threshold of400 and cannot establish formal stable benefit, independent generalization or feedback-specific learning. Report complete metrics, paired intervals and all strata as exploratory evidence.",
+  "status": "PROSPECTIVE_SCOPE_APPROVED_EXACT_RUNTIME_ADMISSION_PENDING",
+  "unavailable_not_imputed": [
+    "unverified raw retrieval-pool recall",
+    "unverified semantic slot support",
+    "semantic criticism truth beyond the registered proxy"
+  ],
+  "unique_input_count": 100
+}

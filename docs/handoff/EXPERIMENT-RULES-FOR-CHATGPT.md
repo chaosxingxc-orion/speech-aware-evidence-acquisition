@@ -1,5 +1,21 @@
 # Experiment rules for the ChatGPT side
 
+## Owner reduces the next comparison to100 inputs; no launch yet (2026-10-07)
+
+The latest direct instruction supersedes the unlaunchedN400 direction. Reuse the
+registered seed20261001 stable-hash prefix100 of the SAME existing UPDATE2fixed400.
+All100 recording and utterance identities are distinct, and the old20 are included.
+Four unchanged systems (seed, A/A, review-off, solver-lookup) mean400trajectories.
+No result-informed selection, data/knowledge rebuild or new template is authorized.
+N400 offline partial supplies and wrapper drafts are preserved without dispatch.
+Fresh exactN100 capacity, source/supply bindings and root admission remain required.
+Full-family official quality and process statistics are exploratory atN100, below
+formal paired-effectiveness sample size; no stable-benefit or learning claim follows.
+Keep4GiB memory floors and create the15-minute monitor only at actual launch.
+Expected duration is roughly1–2hours from the previous4x20 walltime, not a promise.
+The existing matched-search arms and other-carrier holds remain unchanged.
+Read [the current scope](../readiness/2026-10-07-slurp-simple-consumption-n100-prospective-v1/README.md).
+
 ## Direct N400 expansion requested; preparation active, no launch yet (2026-10-07)
 
 The owner supersedes the proposed N100 step and explicitly requests400 inputs. Root

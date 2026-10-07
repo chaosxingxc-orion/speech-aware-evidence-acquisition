@@ -1,0 +1,27 @@
+{
+  "at_utc": "2026-10-07T16:52:27.454988+00:00",
+  "configured_order_sha256": "e47d76752d5f88eeb79c1ee095aa84fb540eaa8aeb09edfd38e0fd44277476ae",
+  "count": 100,
+  "gold_or_quality_read": false,
+  "includes_original20": true,
+  "item_metadata_equal_to_source": true,
+  "model_contacts": 0,
+  "registered_roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-fixed400-prefix100-owner225-v1.json",
+    "sha256": "2bdbffeeb2a03f89b10e94c61376aa5614d71b2b82c58b0a2196903cea343e8c"
+  },
+  "runtime_order_must_be_bound_separately": true,
+  "schema": "saea-fixed-pool-roster-verification-v1",
+  "scorer_contacts": 0,
+  "selected": {
+    "relpath": "configs/dataset/slurp-speech-native-system-text-fixed400-prefix100-owner225-v1.json",
+    "sha256": "aea512f309a3bf46a93b564d6a056743da7cb2a8f413daf862bde54f00e7d3a0"
+  },
+  "source": {
+    "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+    "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+  },
+  "tokenizer_contacts": 0,
+  "unique_recordings": 100,
+  "unique_utterances": 100
+}
