@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from .native_graph_rehearsal import (
     FourPathResponder, ReviewOffResponder, rehearse_native_graph, rehearsal_profile,
-    LEGACY_PROFILE,
+    LEGACY_PROFILE, require_prepared_graph_artifacts,
 )
 
 
@@ -225,6 +225,7 @@ def fit_native_graph(runtime, path, *, policy, graph_factory, contact_cap=2048, 
             raise ValueError("Graph proof differs from capacity configuration: " + key)
     if len(probe_context["sample_ids"]) != 4 or not set(probe_context["sample_ids"]) <= set(context["sample_ids"]):
         raise ValueError("The four proof rows must belong to the registered capacity roster")
+    require_prepared_graph_artifacts(probe)
     from .native_episode_dry_run import compose_dry_run
     compose_dry_run(probe, sample_limit=4)
     budget = None

@@ -129,6 +129,7 @@ def test_capacity_scratch_refuses_existing_proof_before_authorization(tmp_path, 
     context = {"values": {}, "sample_ids": list("abcd"), "data_root": data}
     runtime = SimpleNamespace(preparation_context=lambda: context, _data_root=data,
         _repo_root=tmp_path, _composed=SimpleNamespace(config_hash="synthetic"),
+        verify_prepared_artifacts=lambda: (),
         authorize_preparation_contacts=lambda **kw: pytest.fail("authorized contacts"))
     monkeypatch.setattr(dry, "compose_dry_run", lambda *a, **kw: None)
     monkeypatch.setattr(gc, "require_clean_study_repo", lambda *a: "a" * 40)

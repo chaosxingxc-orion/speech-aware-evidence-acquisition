@@ -47,6 +47,7 @@ def test_producer_uses_exact_declared_budget_and_proves_maximum_return(tmp_path,
     inventory = NS(validate=lambda: NS(candidate_ids=list("xyz")))
     authorizations, guards, endpoints = [], [], []
     runtime = NS(preparation_context=lambda: context, _data_root=tmp_path, _repo_root=tmp_path,
+                 verify_prepared_artifacts=lambda: (),
                  _composed=NS(config_hash="c" * 64), _knowledge_store_binding=binding,
                  _adapter=NS(candidate_inventory=lambda: inventory),
                  speech_packet_bindings=lambda: {"a": {"packet_id": "packet", "sha256": "d" * 64}},

@@ -14,11 +14,20 @@ import json
 from pathlib import Path
 from uuid import uuid4
 
-from ..core.preparation import canonical_bytes, digest
+from ..core.preparation import PreparationError, canonical_bytes, digest
 
 PREFIX = "SAEA-WIRE-CHECK-"
 LEGACY_PROFILE = "legacy-four-path-v1"
 REVIEW_OFF_PROFILE = "review-off-v1"
+
+
+def require_prepared_graph_artifacts(runtime):
+    """Verify pinned seeds before dry-run fallback, session attachment or FIT."""
+    for report in runtime.verify_prepared_artifacts():
+        if report["identity_ok"] is not True or report.get("seed_ok") is False:
+            raise PreparationError(
+                f"Native graph {report['key']} is unusable: {report.get('reason')}"
+            )
 
 
 def rehearsal_profile(values, profile):
@@ -211,6 +220,7 @@ def rehearse_native_graph(runtime, *, session_path: Path, respond, output: Path,
         raise ValueError("Synthetic rehearsal permits discovery rosters only")
     values = context["values"]
     profile_config = rehearsal_profile(values, profile)
+    require_prepared_graph_artifacts(runtime)
     tool_names = {name for spec in values.get("phase_tools", {}).values()
                   for name in spec.get("allowed_tools", ())}
     expected_tools = (set() if profile_config is not None and not profile_config.solver_tool_access

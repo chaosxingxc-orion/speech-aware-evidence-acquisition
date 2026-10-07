@@ -1,0 +1,60 @@
+{
+  "schema": "saea-native-capacity-prepared-graph-diagnosis-v1",
+  "status": "ROOT-CAUSE-CONFIRMED-OFFLINE",
+  "source_commit": "9e787fcbd72ea8974f585f69c1555126476ed09d",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-recovery1-memory4-v1",
+  "failed_stderr": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-capacity-recovery1-memory4-v1/solver-lookup-capacity.stderr.log",
+    "sha256": "4316bf14c0a1a7633b380330c5f90f9658c9824962f1709b81468c0c207d1372"
+  },
+  "graph_experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-graph-v2",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-GRAPH-V2/phase-supply-v1.json",
+    "sha256": "14d313d3e58548af72bb64252870e146bd4912cdf719e31463207d78b1a3cde8"
+  },
+  "only_input_difference": {
+    "field": "sources.implementation.runtime",
+    "recorded": "e51b7b2746f738c5840eea2d858feab0421e9676afe3f2f09ebb6dcb1f8ed075",
+    "computed": "fc7d8fab1e22f9421c81a37c251442dc19c6b42a1d74b274b338e35b884ea7ca"
+  },
+  "offline_identity_proof": {
+    "original_exec_session": "22174",
+    "exit_code": 0,
+    "method": "Build the unchanged four-row graph runtime; compare read_artifact_inputs with phase_supply_artifact_identity; compose_dry_run and prepare native phase tools; compare the same recorded inputs with _phase_seed_inputs again.",
+    "socket_connect_and_connect_ex": "blocked by assertion",
+    "before_rehearsal_differences": ["sources.implementation.runtime"],
+    "after_tool_binding_differences": ["sources.implementation.runtime"],
+    "frozen_and_detached_runtime_bytes_match": true,
+    "generation_contacts": 0,
+    "tokenizer_contacts": 0,
+    "scorer_contacts": 0,
+    "source_or_artifact_mutations": 0
+  },
+  "cause": "The graph supply pin predates the current runtime implementation. It is already stale before rehearsal. The model-free composition path permits a documented router-bootstrap fallback; the capacity producer did not require the strict prepared-artifact verification before tokenizer authorization. Production dispatch correctly refused the stale pin.",
+  "repair_scope": "Require the existing FlightRuntime prepared-artifact identity and seed checks before capacity tokenizer authorization and before direct rehearsal session attachment. Preserve the strict loader and general dry-run fallback. Prospectively reprepare and repin the graph only under a separate root disposition.",
+  "production_entry_regression": {
+    "original_exec_session": "82324",
+    "exit_code": 0,
+    "capacity_experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-memory4-v1",
+    "graph_experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-graph-v2",
+    "profile": "review-off-v1",
+    "contact_cap": 241,
+    "method": "Invoke fit_native_graph with the real composed capacity runtime and fresh graph factory, block socket connect/connect_ex, and make authorization raise if reached. Observe the strict prepared_phase_supply refusal naming sources.implementation.runtime before authorization or output creation.",
+    "status": "expected-precontact-refusal",
+    "authorizations": 0,
+    "output_written": false,
+    "generation_contacts": 0,
+    "tokenizer_contacts": 0,
+    "scorer_contacts": 0
+  },
+  "focused_regression": {
+    "original_exec_session": "87307",
+    "exit_code": 0,
+    "passed": 120,
+    "new_tests": "tests/unit/test_native_graph_prepared_artifacts.py",
+    "new_cases": 12,
+    "coverage": "Real prepared-artifact identity and seed checks on four synthetic rows; stale runtime, invalid selection, missing file and wrong hash rejected at both public entries; current pins and historical unpinned graphs remain accepted. Existing capacity, rehearsal, prepared supply and preflight tests also pass."
+  },
+  "runtime_admission": false,
+  "scientific_results_read": false
+}
