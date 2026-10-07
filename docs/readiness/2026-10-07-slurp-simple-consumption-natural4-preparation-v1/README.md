@@ -1,0 +1,19 @@
+# Prospective natural four-row registration package
+
+Actual complete C4 capacity qualification is raw-pinned in all final prospective plan pairs. The final smoke-4-v3 cells now declare readiness ready for registration, while each prospective plan remains unsigned. The existing natural API passed for all four actual capacity-bound plan pairs using an in-memory countersignature only; no root status or exposure rows were persisted. Older held draft files and preparation evidence remain preserved as predecessors. No implementation change is required.
+
+Root must create the actual decided admission from `root-admission-prospective-v1.json`, then invoke `root-countersign-natural4-v1.py` once in this preparation checkout with its exact DATA-relative raw pin. That helper verifies the actual capacity chain and unchanged composed configuration before authoring the eight registered plan documents and exact exposure rows. It changes no config, service, task or control file. All targets are refused if they already exist.
+
+See `ROOT-COMMANDS.md` for the exact root sequence. The prepared queue has four `kind=engineering` steps with identical arm/smoke IDs and no campaign plan. It preserves actual no-call lookup outcomes, uses 4/4 GiB floors and 600-second/three-sample startup waiting, and exits before any campaign path. Natural ceilings are 52/52/8/12 generation contacts and 208/208/32/48 actual FIT endpoints. No official scoring or quality feedback is allowed.
+
+# Held natural four-row preparation
+
+This isolated preparation reuses the existing `require_architecture_natural_registration` API and the original four-member smoke-4-v2 configuration bases. The only executable differences in smoke-4-v3 are fresh generation/FIT identities and output-equal prepared phase-supply envelopes on the current unchanged production runtime. The graph-v3 capacity configuration, configured four-row membership, policy, knowledge, audio, queries, votes, sampling and geometry remain bound to the existing population. No algorithm or admission schema is added.
+
+Historical draft stage (superseded by the ready/prospective package above): all four successor cells initially remained held. The preserved predecessor generation/FIT draft documents use the existing plan schemas with an explicitly draft status and their then-pending null qualification SHA-256. They are not registered plans, do not appear in the exposure ledger and cannot authorize a contact. Do not convert a null pin into an invented qualification. The actual full-family C4 `capacity-qualified-v1.json` must exist and be raw-pinned beside the original C4 registration before root registration. Historical spend and the live capacity campaign remain separate.
+
+After capacity qualifies, root should inspect the actual complete-family record and its existing raw evidence chain, fill the two identical prerequisite pins in each generation/FIT pair, admit the exact fresh identities, write the real exposure preregistration and apply the final readiness decision. Recompose each cell and regenerate its exact execution/protocol hashes after readiness changes; do not reuse the held draft hashes as final registration hashes. Use the existing natural registration validator, strict prepared artifact validation and ordinary frozen/live gates on one clean worker. No model contact, scorer, quality read or dispatch follows from this preparation.
+
+Expected ceilings from the existing population are 52/52/8/12 generation contacts and 208/208/32/48 actual-request FIT endpoints, for four trajectories per member. These are ceilings, not measured use. Natural structural proof remains separate from the same20 scientific comparison. Return to the human before 8x400 or an equivalent split.
+
+GPT-6.1 Sol performs engineering, preparation, implementation and tests. GPT-6 Astra/Ultra performs optimization, planning, independent review and template analysis. Root coordinates admission and launch.

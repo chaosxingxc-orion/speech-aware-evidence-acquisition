@@ -1,0 +1,28 @@
+{
+  "allowed_read": "Saved request/FIT/wire/control/custody form and original operational timing only after exact complete proof. No task quality, official score, scientific feedback or learner export. Preserve valid natural zero-lookup disposition.",
+  "architecture_member": "seed-aa",
+  "expected_rows": 4,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "learner_export": false,
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-STRUCTURE-V3",
+  "run_ids": {
+    "fit": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-FIT-V3",
+    "generation": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V3",
+    "read": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-STRUCTURE-V3"
+  },
+  "schema": "saea-system-text-engineering-analysis-v1",
+  "scientific_feedback": false,
+  "status": "DRAFT UNSIGNED READ; countersign only after complete natural structural proof"
+}

@@ -1,0 +1,50 @@
+{
+  "capacity_prerequisite": {
+    "qualification": {
+      "relpath": "coordination/simple-consumption-prepared-graph-recovery2-v1/capacity-qualified-v1.json",
+      "sha256": "47de73ed7217c042321abcc36ed027767fddc4bc8b77181f1b038477b8efff93"
+    },
+    "registration": {
+      "relpath": "coordination/simple-consumption-prepared-graph-recovery2-v1/registration-v1.json",
+      "sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a"
+    }
+  },
+  "decision_id": "simple-consumption-natural4-owner227-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V3",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-FIT-V3",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V3",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-FIT-V3",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-V3",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-FIT-V3",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V3",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-FIT-V3"
+  ],
+  "failure_disposition": "Stop, preserve and obtain named root disposition; no automatic retry.",
+  "learning": "HELD",
+  "next_panel_authorized": false,
+  "owner_decisions": [
+    227
+  ],
+  "precontact_conditions": [
+    "Exact countersigned generation/FIT pairs and exposure ledger",
+    "Clean single frozen worker; strict supply/source/registration validation",
+    "Fresh resident-service identity and idle guard; no STOP or competing worker",
+    "Windows startup/running floors4GiB, stable600second/3sample startup wait"
+  ],
+  "resource_policy": {
+    "floor_gib": 4,
+    "stable_samples": 3,
+    "start_gib": 4,
+    "wait_seconds": 600
+  },
+  "role_division": {
+    "admission_launch": "root",
+    "engineering": "GPT-6.1 Sol",
+    "planning_optimization_independent_review_template_analysis": "GPT-6 Astra/Ultra"
+  },
+  "schema": "saea-campaign-decision-v1",
+  "scope": "Exactly four configured members times four natural structural trajectories; maximum124 generation contacts and496 actual FIT endpoints; no official scoring, quality read or scientific feedback.",
+  "status": "DRAFT UNSIGNED",
+  "structural_read_scope": "Operational request/FIT/control/custody form only; no scientific scores or learner export. Natural absence of solver lookup is permitted; synthetic coverage stays separate."
+}

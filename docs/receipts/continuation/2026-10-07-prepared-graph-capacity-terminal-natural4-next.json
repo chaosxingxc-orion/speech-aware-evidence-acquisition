@@ -1,0 +1,74 @@
+{
+  "at_utc": "2026-10-07T10:51:34.260062+00:00",
+  "capacity_qualification": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\capacity-qualified-v1.json",
+    "sha256": "47de73ed7217c042321abcc36ed027767fddc4bc8b77181f1b038477b8efff93"
+  },
+  "capacity_registration": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\registration-v1.json",
+    "sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a"
+  },
+  "cumulative_historical_tokenizer_endpoints": 2023,
+  "evidence": [
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\capacity-finished.json",
+      "sha256": "ccd3d4bf3450206a2d5cbadfc20bcfa042fc947967f97e0cfd22b74a685a9ddd"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\capacity-task-exit.json",
+      "sha256": "fff67972600f7d4860a20650c6d19a2f940fee8dd506dbb596f27bea4e66391b"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\capacity-started.json",
+      "sha256": "ed6c6f927944b0e63391e4bfc2c636e00f3c89288d0e78e04d825e99c9dbf2d1"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\capacity-task-started.json",
+      "sha256": "d6cd2dcead03758d6e05382620ea4005e217847eb49af7b266f208f2737d30ab"
+    }
+  ],
+  "frozen_capacity_source_commit": "cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811",
+  "generation_contacts": 0,
+  "monitor_deleted": "Root deleted slurp-graph-capacity-monitor after verified terminal.",
+  "natural_limits": {
+    "actual_request_fit_endpoint_cap": 496,
+    "generation_calls_cap": 124,
+    "official_score_jobs": 0
+  },
+  "next_proof": "Exactly existing four members times four natural structural trajectories; prospective configs ready, unsigned plans, no admission/dispatch.",
+  "operational_members": [
+    {
+      "contacts": 297,
+      "label": "seed",
+      "minimum_margin_after_structural_reserve": 5546
+    },
+    {
+      "contacts": 297,
+      "label": "seed-aa",
+      "minimum_margin_after_structural_reserve": 5546
+    },
+    {
+      "contacts": 156,
+      "label": "review-off",
+      "minimum_margin_after_structural_reserve": 6850
+    },
+    {
+      "contacts": 237,
+      "label": "solver-lookup",
+      "minimum_margin_after_structural_reserve": 5650
+    }
+  ],
+  "owned_children_gone": "Root verified current task Ready/LastResult0 and all owned Windows/WSL children absent in the coordinating conversation. Revalidate live state before next launch.",
+  "prior_historical_tokenizer_endpoints": 1036,
+  "role_division": {
+    "admission_launch": "root",
+    "engineering": "GPT-6.1 Sol",
+    "optimization_planning_independent_review_template_analysis": "GPT-6 Astra/Ultra"
+  },
+  "runtime_admission": false,
+  "schema": "saea-capacity-terminal-natural4-handoff-v1",
+  "scientific_results_read": false,
+  "scope": "English terminal handoff for the actual complete capacity qualification; natural4 prospective package only.",
+  "scorer_contacts": 0,
+  "tokenizer_endpoints": 987
+}

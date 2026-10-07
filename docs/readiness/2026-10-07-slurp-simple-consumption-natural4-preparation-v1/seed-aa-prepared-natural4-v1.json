@@ -1,0 +1,74 @@
+{
+  "capacity_graph": "slurp-native-stage3-simple-consumption-seed-aa-engineering-graph-v3",
+  "capacity_graph_config_hash": "c3102b66c1e40460e237762447e2a342831ed551a46ef1405671c18e2d8729f9",
+  "config_hash": "a958625940fee53f98b090d0942400bb06ef5fefc3ae67228527bad22ec28a4b",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "experiment": "slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v3",
+  "fit_cap": 208,
+  "generation_cap": 52,
+  "generation_contacts": 0,
+  "label": "seed-aa",
+  "new_prepared_pin": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V3/phase-supply-v1.json",
+    "sha256": "9e8ea1688cea9591c2dc89bd265d1d376bc12b318809d5c6ab94eecb90f216ca"
+  },
+  "non_envelope_policy_equal": true,
+  "old_prepared_pin": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V2/phase-supply-v1.json",
+    "sha256": "d2b0cfbf2ff0e4c4ca1f83e319e055e2727a0a4d4038f93f8141d527c8f49d7a"
+  },
+  "original_experiment": "slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v2",
+  "output_equal": true,
+  "repin": {
+    "new_pin": {
+      "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V3/phase-supply-v1.json",
+      "sha256": "9e8ea1688cea9591c2dc89bd265d1d376bc12b318809d5c6ab94eecb90f216ca"
+    },
+    "old_pin": {
+      "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V2/phase-supply-v1.json",
+      "sha256": "d2b0cfbf2ff0e4c4ca1f83e319e055e2727a0a4d4038f93f8141d527c8f49d7a"
+    },
+    "readiness_requirement": {
+      "appended": 1,
+      "kept": 0,
+      "updated": 0
+    },
+    "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+    "rebuilt": true,
+    "row_counts": {
+      "new": {
+        "facets": 0,
+        "values": 4
+      },
+      "old": {
+        "facets": 0,
+        "values": 4
+      }
+    }
+  },
+  "runtime_sample_ids": [
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "scorer_contacts": 0,
+  "status": "HELD",
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V3/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "9e8ea1688cea9591c2dc89bd265d1d376bc12b318809d5c6ab94eecb90f216ca"
+    }
+  ],
+  "tokenizer_contacts": 0
+}
