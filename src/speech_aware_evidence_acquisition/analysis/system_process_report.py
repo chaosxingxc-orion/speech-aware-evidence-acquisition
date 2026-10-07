@@ -21,6 +21,10 @@ def build_process_comparison(*, recipe, business, process, timing):
              == recipe["run_ids"]["read"], "exact complete root READ differs")
     _require(expected and set(expected) == set(business["official_summaries"])
              == set(process["members"]) == set(timing), "complete member sets differ")
+    schemas = {source["schema"] for source in process["members"].values()}
+    prospective = "saea-slurp-process-metrics-v2" in schemas
+    _require(not prospective or schemas == {"saea-slurp-process-metrics-v2"},
+             "complete prospective applicability coverage required")
     diagnostic, resources = {}, {}
     for member in expected:
         source = process["members"][member]
@@ -37,6 +41,11 @@ def build_process_comparison(*, recipe, business, process, timing):
                 "by_scenario", "recall_status", "statistical_scope",
             )
         }
+        if prospective:
+            _require(source.get("learner_export_allowed") is False,
+                     "prospective architecture learner export must remain disabled")
+            diagnostic[member].update({k: source[k] for k in (
+                "review_applicability", "role_counts", "conditioning_not_applicable")})
         support = source.get("intent_support", {})
         diagnostic[member]["intent_support"] = {
             "metrics": support.get("metrics", {}),
@@ -61,7 +70,7 @@ def build_process_comparison(*, recipe, business, process, timing):
             "cold_start_limit": clock.get("cold_start_limit"),
         }
     return deepcopy({
-        "schema": "saea-business-process-cost-comparison-v1",
+        "schema": "saea-business-process-cost-comparison-v2" if prospective else "saea-business-process-cost-comparison-v1",
         "family_id": recipe["family_id"], "read_id": process["read_id"],
         "members": list(expected), "unique_inputs": len(ids),
         "trajectories": len(ids) * len(expected),
@@ -87,6 +96,8 @@ def _number(value, scale=1):
 def _rate(value):
     if not value:
         return "unavailable"
+    if value.get("applicability") == "not-applicable-by-design":
+        return f'not applicable by design; excluded {value["excluded_by_design"]}; unknown {value["unknown"]}'
     interval = value["ci95_wilson"]
     ci = "unavailable" if interval is None else "-".join(_number(x, 100) for x in interval) + "%"
     return (f'{value["numerator"]}/{value["denominator"]}; unknown {value["unknown"]}; '
@@ -136,14 +147,20 @@ def render_process_comparison(report):
             lines.append(f"| {member} | {key} | {_rate(m.get(key))} |")
     lines += ["", "The repair/harm rates above use final delivery; the stages below",
               "separate raw model changes from deterministic postprocessing.",
-              "", "## Model revision and Postprocessing", "",
+              "", ("## First raw answer to selected raw answer and Postprocessing"
+                     if report["schema"] == "saea-business-process-cost-comparison-v2"
+                     else "## Model revision and Postprocessing"), "",
               "| Member | Stage | Endpoint | Repairs | Harms | Unknown |",
               "|---|---|---|---:|---:|---:|"]
     for member in report["members"]:
         stages = report["process"][member]["delivery_stages"]
+        if stages.get("model_revision_applicability") == "not-applicable-by-design":
+            lines.append(f'| {member} | model revision: not applicable by design | -- | -- | -- | -- |')
         for stage in ("model_revision", "postprocessing"):
+            label = ("first_raw_to_selected_raw" if stage == "model_revision"
+                     and report["schema"] == "saea-business-process-cost-comparison-v2" else stage)
             for axis, values in stages[stage].items():
-                lines.append(f'| {member} | {stage} | {axis} | '
+                lines.append(f'| {member} | {label} | {axis} | '
                              f'{values.get("wrong_to_correct", "unavailable")} | '
                              f'{values.get("correct_to_wrong", "unavailable")} | '
                              f'{values.get("unknown", "unavailable")} |')

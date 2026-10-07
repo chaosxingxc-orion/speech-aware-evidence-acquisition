@@ -196,7 +196,61 @@ def _context_contains(payload, text):
     )
 
 
-def analyze_slot_review_episode(source, *, legal_slot_types):
+def validate_review_applicability(source, binding):
+    """Bind prospective review applicability to a verified config and its traces.
+
+    Pass exactly schema/config_sha256/review_loop in the registered diagnostic
+    recipe. This opt-in does not authorize READ. An omitted binding preserves the
+    historical missing-review interpretation. The off profile permits at most one
+    Perception and one Solver attempt, including interruptions; missing execution
+    remains measurable. Multiple contacts inside one attempt are permitted.
+    """
+    from collections.abc import Mapping
+    from .native_episode_source import VerifiedNativeEpisodeSource
+
+    if (not isinstance(source, VerifiedNativeEpisodeSource)
+            or not isinstance(binding, dict)
+            or set(binding) != {"schema", "config_sha256", "review_loop"}
+            or binding["schema"] != "saea-review-applicability-v1"
+            or binding["config_sha256"] != source.composed.config_hash
+            or binding["review_loop"] not in ("on", "off")):
+        raise ReviewFindingsError("review applicability needs the exact verified configuration")
+    episode_config = source.composed.values.get("native_episode", {})
+    roles = episode_config.get("roles", {})
+    counts = [roles.get(role, {}).get("max_iterations") for role in ("reviewer", "planner")]
+    revisions = episode_config.get("max_revisions")
+    if any(type(n) is not int or n < 0 for n in [*counts, revisions]):
+        raise ReviewFindingsError("review applicability requires explicit iteration and revision limits")
+    enabled = all(n > 0 for n in counts)
+    expected = "on" if enabled else "off"
+    if ((not enabled and (counts != [0, 0] or revisions != 0))
+            or binding["review_loop"] != expected
+            or episode_config.get("review_loop", expected) != expected):
+        raise ReviewFindingsError("review applicability conflicts with configured review execution")
+    if not enabled:
+        for sid in source.sample_ids:
+            episode = source.phase_results[sid]["native_episode_receipt"]
+            visits = list(episode["role_visits"])
+            interrupted = episode.get("interrupted_role")
+            if interrupted is not None:
+                if not isinstance(interrupted, Mapping):
+                    raise ReviewFindingsError("invalid interrupted role in review-off trace")
+                visits.append(interrupted)
+            allowed = {"perception", "solver"}
+            if (episode.get("planner_routes") or episode.get("reviewer_verdicts")
+                    or any(v.get("role_id") not in allowed
+                           or v.get("stage", v.get("role_id")) not in allowed for v in visits)
+                    or any(sum(v.get("role_id") == role or v.get("stage") == role
+                               for v in visits) > 1 for role in allowed)):
+                raise ReviewFindingsError("review-off trace exceeds its Perception/Solver-only profile")
+        if any(isinstance(record, Mapping) and "use_role_id" in record
+               and record["use_role_id"] not in {"perception", "solver"}
+               for record in source.bundle.trace_records.values()):
+            raise ReviewFindingsError("review-off trace contains a contact outside Perception/Solver")
+    return dict(binding)
+
+
+def analyze_slot_review_episode(source, *, legal_slot_types, review_applicability=None):
     """Describe every raw role reply and actual handoff in a verified native system.
 
     The caller must qualify and authorize its entire family first. Keep this
@@ -231,7 +285,13 @@ def analyze_slot_review_episode(source, *, legal_slot_types):
             "slot analysis requires an unambiguous legal inventory"
         )
     legal = set(legal_slot_types)
+    applicability = (None if review_applicability is None else
+                     validate_review_applicability(source, review_applicability))
+    review_enabled = applicability is None or applicability["review_loop"] == "on"
     counts, actions, rows = Counter(), Counter(), []
+    if applicability is not None:
+        counts.update({role + suffix: 0 for role in ("perception", "solver", "reviewer", "planner")
+                       for suffix in ("_visits", "_contacts")})
     for sid in ids:
         episode = source.phase_results[sid]["native_episode_receipt"]
         visits = episode["role_visits"]
@@ -242,6 +302,8 @@ def analyze_slot_review_episode(source, *, legal_slot_types):
                 source, sample_id=sid, role_id=role, visit_index=index
             )
             counts[role + "_visits"] += 1
+            if applicability is not None:
+                counts[role + "_contacts"] += len(visit["execution_receipt"]["contacts"])
             if role == "solver":
                 strict = _strict_slurp_reply(selected.response_text)
                 marker = "<tool_call>" in selected.response_text
@@ -313,7 +375,7 @@ def analyze_slot_review_episode(source, *, legal_slot_types):
                     "planner_action": action,
                 }
             )
-        if not row["reviews"]:
+        if not row["reviews"] and review_enabled:
             missing = select_verified_native_role_response(
                 source, sample_id=sid, role_id="reviewer"
             )
@@ -326,6 +388,13 @@ def analyze_slot_review_episode(source, *, legal_slot_types):
                     "planner_action": None,
                 }
             )
+        if applicability is not None:
+            row["review_applicable"] = review_enabled
+            interrupted = episode.get("interrupted_role")
+            if interrupted is not None:
+                selected = select_verified_native_role_response(
+                    source, sample_id=sid, role_id=interrupted["role_id"])
+                counts[selected.role_id + "_contacts"] += len(interrupted["execution_receipt"]["contacts"])
         solver = row["solver_visits"]
         row["extra_solver_revisions"] = max(0, len(solver) - 1)
         row["first_to_last_solver_text_changed"] = (
@@ -339,7 +408,7 @@ def analyze_slot_review_episode(source, *, legal_slot_types):
             row["first_to_last_solver_text_changed"] is True
         )
         rows.append(row)
-    return {
+    result = {
         "schema": "saea-slot-review-episode-analysis-v1",
         "sample_count": len(ids),
         "source": {
@@ -356,3 +425,6 @@ def analyze_slot_review_episode(source, *, legal_slot_types):
         "claims_causal_node_credit": False,
         "contacts_added": {"model": 0, "scorer": 0},
     }
+    if applicability is not None:
+        result.update(schema="saea-slot-review-episode-analysis-v2", review_applicability=applicability)
+    return result

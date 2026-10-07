@@ -18,6 +18,13 @@ BOOL_FIELDS = frozenset({
     "handoff_visible", "revised",
 })
 OPTIONAL_FIELDS = frozenset({"empty_false_fill", "draft_parsed", "final_parsed"})
+REVIEW_FIELDS = frozenset({"review_valid", "review_alarm", "handoff_visible"})
+REVIEW_METRICS = frozenset({
+    "review_valid", "review_error_detection", "review_miss", "review_alarm_precision",
+    "review_false_alarm", "handoff_visibility_given_valid_review", "revision_after_alarm",
+    "entity_repair_given_revision", "entity_repair_after_alarm", "entity_harm_given_revision",
+    "full_repair_given_revision", "full_harm_given_revision",
+})
 
 
 def rate(observations):
@@ -74,6 +81,18 @@ def measure_support(gold, *, retrieved, delivered):
 
 
 def _metrics(rows):
+    if rows and "review_applicable" in rows[0]:
+        # Reuse historical arithmetic only on applicable observations. Inactivity
+        # is not missing instrumentation, a no-error judgment or a measured miss.
+        legacy = [{k: v for k, v in r.items() if k != "review_applicable"} for r in rows]
+        applicable = [r for r, original in zip(legacy, rows) if original["review_applicable"]]
+        result = _metrics(legacy)
+        result.update({k: v for k, v in _metrics(applicable).items() if k in REVIEW_METRICS})
+        for key, value in result.items():
+            included = len(applicable) if key in REVIEW_METRICS else len(rows)
+            value.update(applicability="applicable" if included else "not-applicable-by-design",
+                         excluded_by_design=len(rows) - included)
+        return result
     def metric(key, condition=lambda r: True):
         # Eligibility is explicit; unknown conditioning variables are separately
         # counted below rather than silently treated as positive/negative cases.
@@ -120,9 +139,11 @@ def _transitions(rows, axis):
 def aggregate_process_metrics(rows):
     """Reduce abstract input-level rows; this reducer alone grants no read authority."""
     rows = list(rows)
+    prospective = any("review_applicable" in row for row in rows if isinstance(row, dict))
     seen = set()
     for row in rows:
-        if not isinstance(row, dict) or not BOOL_FIELDS <= row.keys() or not set(row) <= BOOL_FIELDS | OPTIONAL_FIELDS | {"sample_id", "scenario"}:
+        required = BOOL_FIELDS | ({"review_applicable"} if prospective else set())
+        if not isinstance(row, dict) or not required <= row.keys() or not set(row) <= required | OPTIONAL_FIELDS | {"sample_id", "scenario"}:
             raise ValueError("unexpected or missing abstract diagnostic fields")
         for key in ("sample_id", "scenario"):
             if not isinstance(row.get(key), str) or not row[key]:
@@ -130,16 +151,21 @@ def aggregate_process_metrics(rows):
         if row["sample_id"] in seen:
             raise ValueError("one observation per unique input is required")
         seen.add(row["sample_id"])
-        for key in BOOL_FIELDS | (OPTIONAL_FIELDS & row.keys()):
+        for key in required | (OPTIONAL_FIELDS & row.keys()):
             if row[key] is not None and type(row[key]) is not bool:
                 raise ValueError("diagnostic flags must be bool or None")
+        if prospective and (type(row["review_applicable"]) is not bool or
+                (not row["review_applicable"] and
+                 (any(row[k] is not None for k in REVIEW_FIELDS) or row["revised"] is not False))):
+            raise ValueError("disabled review requires absent review evidence and no Solver revision")
         if row["review_valid"] is not True and row["review_alarm"] is not None:
             raise ValueError("invalid or missing review is not a positive or negative alarm")
-    return {
+    result = {
         "schema": "saea-slurp-process-metrics-v1", "sample_count": len(rows),
         "metrics": _metrics(rows),
         "transitions": {axis: _transitions(rows,axis) for axis in ("entity","full")},
-        "conditioning_unavailable": {k: sum(r[k] is None for r in rows) for k in BOOL_FIELDS},
+        "conditioning_unavailable": {k: sum(r[k] is None for r in rows
+            if not prospective or k not in REVIEW_FIELDS or r["review_applicable"]) for k in BOOL_FIELDS},
         "by_scenario": {s: {"sample_count": sum(r["scenario"] == s for r in rows),
                             "metrics": _metrics([r for r in rows if r["scenario"] == s])}
                         for s in sorted({r["scenario"] for r in rows})},
@@ -147,25 +173,35 @@ def aggregate_process_metrics(rows):
         "claims_semantically_correct_criticism": False,
         "statistical_scope": "descriptive single-input Wilson intervals; adaptive reused-roster evidence",
     }
+    if prospective:
+        result.update(schema="saea-slurp-process-metrics-v2", learner_export_allowed=False,
+            conditioning_not_applicable={k: sum(not r["review_applicable"] for r in rows)
+                                         if k in REVIEW_FIELDS else 0 for k in BOOL_FIELDS})
+    return result
 
 
 def build_slurp_process_metrics(source, *, reference_records, official_final_rows,
                                reference_binding_sha256, official_score_result_sha256,
-                               legal_slot_types, intent_support_configuration=None):
+                               legal_slot_types, intent_support_configuration=None,
+                               review_applicability=None):
     """Join first-draft review and final delivery with verified saved source custody.
 
     Count at most one review per input: the first completed Reviewer between the
     initial Solver and its next Solver visit. Never evaluate a later review against
     the initial draft. Review detection concerns entities, the slot contract's scope.
     A finding on an erroneous draft is an episode alarm, not validated criticism.
+    A registered review_applicability binding opts into v2, including on controls.
+    It excludes disabled review from review denominators, retains actual activity
+    counts, and disables learner export. Omission preserves the historical v1 view.
     """
     references = tuple(reference_records)
+    audit = analyze_slot_review_episode(source, legal_slot_types=legal_slot_types,
+                                       review_applicability=review_applicability)
     stage = build_slurp_solver_stage_attribution(
         source, reference_records=references, official_final_rows=official_final_rows,
         reference_binding_sha256=reference_binding_sha256,
         official_score_result_sha256=official_score_result_sha256,
     )
-    audit = analyze_slot_review_episode(source, legal_slot_types=legal_slot_types)
     rows, custody = [], []
     for ref, scored, reviewed in zip(references, stage["samples"], audit["rows"], strict=True):
         visits = source.phase_results[ref.sample_id]["native_episode_receipt"]["role_visits"]
@@ -192,10 +228,19 @@ def build_slurp_process_metrics(source, *, reference_records, official_final_row
             "handoff_visible": review.get("handoff_in_next_planner_context") if review else None,
             "revised": scored["revision"]["completed_solver_revision"],
         })
+        if review_applicability is not None:
+            rows[-1]["review_applicable"] = reviewed["review_applicable"]
         custody.append({"sample_id": ref.sample_id, **scored["source"],
                         "first_draft_review": review["source"] if review else None})
     report = aggregate_process_metrics(rows)
     report["delivery_stages"] = _delivery_stages(stage["samples"])
+    if review_applicability is not None:
+        report.update(review_applicability=audit["review_applicability"],
+            role_counts={k: v for k, v in audit["counts"].items() if k.endswith(("_visits", "_contacts"))})
+        report["delivery_stages"].update(
+            model_revision_applicability=("applicable" if review_applicability["review_loop"] == "on"
+                                          else "not-applicable-by-design"),
+            model_endpoint="First raw answer to selected raw answer; the first answer is after any within-visit tools.")
     report.update(source=stage["source"], inventory_sha256=audit["inventory_sha256"],
                   rows=rows, custody=custody,
                   recall_status="unavailable-until-actual-source-projection",

@@ -43,36 +43,46 @@ def compare_process_rows(*, baseline, candidate, sample_ids, bootstrap):
             or type(bootstrap["n_replicates"]) is not int or bootstrap["n_replicates"] <= 0
             or type(bootstrap["ci_level"]) not in (int, float) or not 0 < bootstrap["ci_level"] < 1):
         raise ValueError("unique nonempty roster and explicit bootstrap configuration required")
-    maps = []
+    maps, schemas = [], []
     for rows in (baseline, candidate):
-        aggregate_process_metrics(rows)
+        schemas.append(aggregate_process_metrics(rows)["schema"])
         mapping = {r["sample_id"]: r for r in rows}
         if set(mapping) != set(sample_ids):
             raise ValueError("both arms must contain every exact configured input")
         maps.append(mapping)
+    if schemas[0] != schemas[1]:
+        raise ValueError("paired process applicability versions must match")
+    prospective = schemas[0] == "saea-slurp-process-metrics-v2"
     for sid in sample_ids:
         if any(maps[0][sid][k] != maps[1][sid][k] for k in ("scenario", "gold_empty")):
             raise ValueError("paired source strata or gold identity differ")
     observations = [{sid: _observations(m[sid]) for sid in sample_ids} for m in maps]
     metrics = {}
     for metric in observations[0][sample_ids[0]]:
-        known = [sid for sid in sample_ids if all(o[sid][metric] is not None for o in observations)]
+        review_metric = metric in {"review_valid", "error_alarm_event", "false_alarm_event", "missed_error_event"}
+        applicable = [sid for sid in sample_ids if not prospective or not review_metric
+                      or all(m[sid]["review_applicable"] for m in maps)]
+        known = [sid for sid in applicable if all(o[sid][metric] is not None for o in observations)]
         delta = {sid: int(observations[1][sid][metric])-int(observations[0][sid][metric]) for sid in known}
-        total, unknown = sum(delta.values()), len(sample_ids)-len(known)
+        total, unknown = sum(delta.values()), len(applicable)-len(known)
         bound = 2 if metric.endswith("_net_transition") else 1
         result = paired_cluster_bootstrap(sample_ids=known,
             statistic=lambda ids: sum(delta[sid] for sid in ids)/len(ids), **bootstrap) if known else None
         metrics[metric] = {
             "paired_known": len(known), "paired_unknown": unknown,
-            "baseline_known": sum(observations[0][sid][metric] is not None for sid in sample_ids),
-            "candidate_known": sum(observations[1][sid][metric] is not None for sid in sample_ids),
+            "baseline_known": sum(observations[0][sid][metric] is not None for sid in applicable),
+            "candidate_known": sum(observations[1][sid][metric] is not None for sid in applicable),
             "baseline_matched_mean": sum(int(observations[0][sid][metric]) for sid in known)/len(known) if known else None,
             "candidate_matched_mean": sum(int(observations[1][sid][metric]) for sid in known)/len(known) if known else None,
             "difference": result.point_estimate if result else None,
             "paired_bootstrap": result.as_json() if result else None,
-            "population_missing_bounds": [(total-bound*unknown)/len(sample_ids), (total+bound*unknown)/len(sample_ids)],
+            "population_missing_bounds": ([(total-bound*unknown)/len(applicable), (total+bound*unknown)/len(applicable)]
+                                          if applicable else None),
         }
-    return {"schema": "saea-paired-process-diagnostics-v1", "independent_inputs": len(sample_ids),
+        if prospective:
+            metrics[metric].update(applicability="applicable" if applicable else "not-applicable-by-design",
+                                   excluded_by_design=len(sample_ids)-len(applicable))
+    result = {"schema": "saea-paired-process-diagnostics-v1", "independent_inputs": len(sample_ids),
         "metrics": metrics, "bootstrap_config": dict(bootstrap), "causal_credit": False,
         "formal_efficacy": False, "selection_rule_changed": False,
         "semantics": {"difference": "candidate minus baseline; rates in fractions, net transitions per input",
@@ -81,3 +91,8 @@ def compare_process_rows(*, baseline, candidate, sample_ids, bootstrap):
             "intervals": "descriptive paired percentile bootstrap; no multiplicity or adaptive-selection correction",
             "limitations": "Small reused rosters and degenerate intervals do not prove stable benefit or zero uncertainty.",
             "scope": "Root-only descriptive diagnosis; caller must bind complete source READ and score custody."}}
+    if prospective:
+        result.update(schema="saea-paired-process-diagnostics-v2", learner_export_allowed=False)
+        result["semantics"]["missing_bounds"] = (
+            "Applicable paired-input worst-case bounds, not confidence intervals; intentionally absent review is excluded.")
+    return result

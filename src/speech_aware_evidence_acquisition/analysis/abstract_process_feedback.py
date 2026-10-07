@@ -59,7 +59,11 @@ def project_process_feedback(report, *, config, bindings):
         strata = {label: f"stratum-{i+1:02d}" for i, label in enumerate(sorted(set(reference_scenarios.values())))}
         projected = {}
         for mid in members:
-            source = family[mid]; rows = source["rows"]
+            source = family[mid]
+            rows = source["rows"]
+            require(source.get("schema") == "saea-slurp-process-metrics-v1"
+                    and source.get("learner_export_allowed") is not False,
+                    "architecture process learner export is not admitted")
             native_ids = [r["sample_id"] for r in rows]
             require(len(native_ids) == len(set(native_ids)) == len(ids) and set(native_ids) == set(ids)
                     and {r["sample_id"]:r["scenario"] for r in rows} == reference_scenarios
