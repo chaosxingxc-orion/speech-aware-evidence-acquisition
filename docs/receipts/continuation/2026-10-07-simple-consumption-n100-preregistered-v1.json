@@ -1,0 +1,40 @@
+{
+  "authoring_chain": {
+    "exit_sha256": "af5dc5b70aac0ff18fa4d3cf7859a9392c461a1b826a8c87086e43957909639a",
+    "input_sha256": "8e78b44bb0e9ddb0cc7c2f25119bb053e2daa242d41631b6d6a7c2353dd21628",
+    "started_sha256": "c1ab6f8257c7e1982e93f7c7aa663b32975876d754b0e4697b555e46c3844f1a",
+    "validation_sha256": "a643bc291b508ea34c18539b512dac98b501d0c8fb57b28bff065253c89b5f6d"
+  },
+  "authoring_queue": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/queue-v1.json",
+    "sha256": "b4401817f7cda7ec32e5be4f643abcfbc6d7e6d90716c86635c44f9083360967"
+  },
+  "contacts": 0,
+  "dispatches": 0,
+  "launch_queue": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/campaign-queue-v1.json",
+    "sha256": "d280b1b3c3eccf2293263e56a9ca7d37830e9053176208e288d2d624a69a850c"
+  },
+  "read_countersigned": false,
+  "registered_ids": [
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-FIT-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-FIT-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-FIT-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-FIT-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-N100-READ-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-DESCRIPTIVE-READ-V1"
+  ],
+  "root_decision": {
+    "relpath": "coordination/simple-consumption-n100-v1/root-admission-v1.json",
+    "sha256": "094f46c5ee08215b9763d08753914ca6b80b4ebcac919e5ed45384328f6888ae"
+  },
+  "schema": "saea-manual-fixed-roster-root-registration-v1",
+  "status": "REGISTERED BEFORE CONTACT; FROZEN AND LIVE GATES PENDING"
+}

@@ -14,16 +14,23 @@
       "dataset_fragment": "slurp-speech-native-simple-consumption-n100-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Exact root admission, fresh N100 capacity and frozen/live gates pending.",
+        "reason": "Root227 admits the exact frozen-policy fixed-roster comparison after fresh full-family capacity and historical natural structural qualification; final frozen and live gates remain required.",
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "Exact fixed400 selection outputs reused with current source identity; zero contacts.",
+            "reason": "Exact reused prepared supply; strict warm identity verified before plans.",
             "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-V1/phase-supply-v1.json",
             "sha256": "893550c4759d77b48f32a3ee01344322530a703a04b91cc8c217b4aa5e726e02"
+          },
+          {
+            "expected_decision_id": "simple-consumption-n100-v1",
+            "kind": "decision",
+            "reason": "Root decided this exact configured generation/FIT family before contact.",
+            "relpath": "coordination/simple-consumption-n100-v1/root-admission-v1.json",
+            "sha256": "094f46c5ee08215b9763d08753914ca6b80b4ebcac919e5ed45384328f6888ae"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-V1",
       "system_text_policy_binding": {

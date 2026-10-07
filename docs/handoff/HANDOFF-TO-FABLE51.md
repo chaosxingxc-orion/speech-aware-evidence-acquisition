@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## N100 continuous campaign preregistered; frozen/live checks pending (2026-10-07T20:23:21.803577+00:00)
+
+Root227 registered the unchanged four-system100-input family after actual complete ENTRY2 capacity qualification. The single dispatch queue points to the exact original ordered four-member plan. Keep four concurrent samples per member, one serial generator, one CPU official scorer overlapping later generation, and4GiB startup/running floors. The eight generation/FIT rows and five distinct unsigned READ scopes are appended without rewriting history. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-preregistered-v1.json`. The full named campaign gate passed; frozen CLI/catalog/live gates and actual launch remain pending. No task-quality read, learner export or policy change occurred. Per-member descriptive CPU analysis requires its own complete100, verified seal, unique original official score, zero failed jobs and exact root READ; cross-member comparison waits the complete family.
+
+
 ## N100 complete capacity qualified (2026-10-07T20:16:00.871816+00:00)
 
 All four original ENTRY2 capacity members completed successfully through the reviewed capacity-v4 wrapper on unchanged frozen source `22c1a692a9421f52a3deaa4d0d0b699dc6882ca1`. Original complete-family qualification passed; no generation or official scorer contact occurred. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-capacity-complete-v1.json`. Preserve the original v3 precontact Windows failure and all capacity sources/receipts. Generation remains pending exact prospective registration, frozen-source and live gates. Root continues the unchanged four-system100-input campaign: four concurrent samples per member, one serial generator, and overlapped CPU scoring/completed-member descriptive analysis. No learner export or early cross-member comparison is authorized.
