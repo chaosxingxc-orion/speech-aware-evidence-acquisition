@@ -1,0 +1,178 @@
+{
+  "schema": "saea-simple-consumption-capacity-launch-and-maintenance-incident-v1",
+  "at_utc": "2026-10-07T04:48:28.034698+00:00",
+  "source_admission": {
+    "source_commit": "e1939f4c70a9d054df9653813ea4499b6aa7a383",
+    "frozen_worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-v3",
+    "fix": "Explicit manual V4 capacity registration binding, with historical/default loaders unchanged.",
+    "validation": {
+      "implementation_combined_tests_passed": 246,
+      "independent_astra_ultra_tests_passed": 203,
+      "new_binding_statement_coverage_percent": 100,
+      "actual_frozen_members_passed": 4,
+      "note": "Scopes overlap and are not additive unique tests. All original successful and failed checks remain preserved."
+    }
+  },
+  "maintenance_incident": {
+    "initial_windows_free_gib": 5.157,
+    "startup_guard_gib": 20,
+    "operation": "One clean page-cache write at the verified idle completed-cohort boundary; no sync.",
+    "partial_reclamation": "Guest cache fell from about30.5GiB to about0.4GiB, but the syscall never completed normally.",
+    "observed_wait": "super_lock in iterate_supers/drop_caches_sysctl_handler; sole D-state task; root cause unproven.",
+    "termination": "One SIGKILL stayed pending. One root-disposed Ubuntu-only termination exited0; original exec32921 exited1. No normal cleanup after receipt was created.",
+    "service_restoration": {
+      "old_epoch": "2026-10-05T15:52:00.740486+00:00",
+      "new_epoch": "2026-10-07T04:42:57.499274+00:00",
+      "pid": 723,
+      "guard_available": true,
+      "idle_slots": 4,
+      "windows_free_gib": 26.214996,
+      "same_geometry": true
+    },
+    "no_experiment_retry_or_result_read": true
+  },
+  "actual_launch": {
+    "windows_task": "SAEA-Simple-Consumption-Capacity-V2-20261007",
+    "task_started": {
+      "windows_owner_pid": 45672,
+      "at_utc": "2026-10-07T04:44:36.2346588+00:00",
+      "restart_permitted": false,
+      "worker_commit": "e1939f4c70a9d054df9653813ea4499b6aa7a383",
+      "worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-v3",
+      "registration_sha256": "1b84b7c39b211d6d515b6f2a65121f7fefaa1d5ef30c5ea50d549f136b73eb82"
+    },
+    "capacity_started": {
+      "windows_owner_pid": 44620,
+      "at_utc": "2026-10-07T04:44:36.7418587+00:00",
+      "scorer_contacts": 0,
+      "worker_commit": "e1939f4c70a9d054df9653813ea4499b6aa7a383",
+      "worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-v3",
+      "registration_sha256": "1b84b7c39b211d6d515b6f2a65121f7fefaa1d5ef30c5ea50d549f136b73eb82",
+      "generation_contacts": 0
+    },
+    "members": [
+      {
+        "label": "seed",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1",
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-v2-capacity-fit-v1",
+        "endpoint_cap": 299
+      },
+      {
+        "label": "seed-aa",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V2-CAPACITY-FIT-V1",
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-v2-capacity-fit-v1",
+        "endpoint_cap": 299
+      },
+      {
+        "label": "review-off",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V2-CAPACITY-FIT-V1",
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-v2-capacity-fit-v1",
+        "endpoint_cap": 157
+      },
+      {
+        "label": "solver-lookup",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1",
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-v2-capacity-fit-v1",
+        "endpoint_cap": 241
+      }
+    ],
+    "generation_contacts_allowed": 0,
+    "scorer_contacts_allowed": 0,
+    "tokenizer_endpoints_ceiling": 996,
+    "resource_policy": {
+      "floor_gib": 8,
+      "interval_seconds": 10,
+      "stable_samples": 3,
+      "start_gib": 20,
+      "wait_seconds": 600
+    },
+    "monitor_automation": "slurp-simple-consumption-capacity",
+    "monitor_interval_minutes": 15,
+    "monitor_terminal_rule": "Delete after verified original terminal and no admitted child."
+  },
+  "status": "CAPACITY_RUNNING; real natural four-row generation and same20 scientific comparison remain HELD.",
+  "scientific_claim": "No benefit, natural tool competence or learning gain is established by preparation/capacity.",
+  "next": "Qualify all four original complete capacity receipts, then separately admit natural four-row structural generation. A narrow natural V4 registration binding is being prepared; do not use the capacity helper as a generic bypass.",
+  "evidence": [
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\registration-v1.json",
+      "sha256": "1b84b7c39b211d6d515b6f2a65121f7fefaa1d5ef30c5ea50d549f136b73eb82"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\root-capacity-admission-v1.json",
+      "sha256": "a49a0db69a8395bc5904223277116ed703b5cf28f7190d64b95982889d9966ec"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\frozen-check-v2.json",
+      "sha256": "d073ff9beb2c7c3b046a1955c07c13c6a1034c963bd7de56f918542ae7dbd96d"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\frozen-check-v2.exit.json",
+      "sha256": "690a54ca5522aea3d0c4f83cd46f9c3e1bc9735f40eda0ca4eaf1be7b64aabe5"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\helper-validation-v1.json",
+      "sha256": "d9ceeb538ea94b4217bba3ce038fe0777bd40a53bcf0ee396118a508e61bdcdd"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\live-windows-memory-v1.json",
+      "sha256": "7772b3dc37510329966d06ecdd5ed81c28971df71b2487c2dd1d7d0e63f04a72"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\completed-cohort-cache-boundary-before-v1.json",
+      "sha256": "01fb425ef538e7efea29822793a96773424dbcff594ebb68bc8dac69c043be93"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\completed-cohort-cache-boundary-disposition-v1.json",
+      "sha256": "7e245ae188415a7a48a3cc1f9bf39b94ffbc6fd8f7b32fd8e4f4e1d578d7e9d7"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\cache-stall-snapshot-first-v1.json",
+      "sha256": "53d7dcd740f90085b1385f66e1f3d357d9e2a06803c5cae0a30fbd3ca59f5915"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\cache-stall-snapshot-second-v1.json",
+      "sha256": "0cac7b75869161423812efb67cde616ce636efce9e1df6b61ba7ab083af61cbe"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\cache-maintenance-kill-disposition-v1.json",
+      "sha256": "189d6acee0d8f4c02e55d90a5b68fb7719444c8e3fd2ceb2195c900d13d77de5"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\cache-maintenance-kill-sent-v1.json",
+      "sha256": "24ba9fa2f0fbd0e22993b87765205eedea6395d952eee453464a4345d80b2598"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\root-scoped-restart-disposition-v1.json",
+      "sha256": "cdcce42557b86b86b533e46aee6438b8f3674616dbcd8d642fc78b2863798b72"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\scoped-distro-termination-exit-v1.json",
+      "sha256": "abce513d6cf74ff56f10911cfb096e75d6d9c54ef982a3ba156f395d41919ebc"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\serving-restoration-dispatch-v1.json",
+      "sha256": "aaa7a18925c61f9e3685f877695d4c382f2d06042a56fc03f8242d0bf02f2a6b"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\live-prelaunch-successor-v2-proof.json",
+      "sha256": "658101783ab701788c7d53d27ec48a000aecccb43f8388bc337809bea5e6c9d8"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\live-prelaunch-v2.json",
+      "sha256": "20abc82b7a619671896d6013b99890c39067d8e224b226ffe72eae126e90fbed"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\windows-task-dispatch-v1.json",
+      "sha256": "dbea9a8de479624afdeda368f96fc17e7d7dd038e058dcee027b4187eeef38bf"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\capacity-task-started.json",
+      "sha256": "74b872d96269f610f031ff7d058b34d8d2aa1c44af28ebd6bfa214487679a544"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\capacity-started.json",
+      "sha256": "dca5dcc2a200e95ecb895b174ce3b1c28aacda369040702eabe5f772d1962956"
+    }
+  ]
+}

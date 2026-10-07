@@ -1,5 +1,39 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Simple-consumption capacity running; stalled maintenance preserved (2026-10-07)
+
+The narrow manual-V4 capacity registration fix is integrated at e1939f4c7.
+All four actual frozen source/registration/runtime checks passed in the clean
+codex-simple-consumption-capacity-v3 worker. Implementation reports246 tests and
+independent Astra/Ultra review reran203 (overlapping scopes); the new binding has
+100percent statement coverage. Historical/default admission remains strict.
+
+Startup initially refused5.157GiB Windows headroom. One authorized idle-boundary
+clean-cache write reclaimed most guest cache but stalled in super_lock; the kernel
+root cause is unproven. The owner's exact-process kill was sent once and remained
+pending. Root preserved all evidence and, under the recorded bounded incident
+disposition, terminated Ubuntu-24.04 once and restored the existing service and
+telemetry tasks. Original maintenance exec32921 exited1, not successful cleanup;
+no normal after receipt exists. No experiment was interrupted or retried. Do not
+repeat the stalled cache path or bypass/delete a live generation guard.
+
+Fresh admission verified the restored service epoch2026-10-07T04:42:57.499274Z,
+PID723, unchanged decoder-only4x24576/max512, idle slots, available guard and
+26.215GiB Windows headroom. Revalidate PIDs rather than relying on this snapshot.
+Windows task SAEA-Simple-Consumption-Capacity-V2-20261007 launched at04:44:36Z.
+The four nongenerative members are seed, seed-aa, review-off and solver-lookup;
+their endpoint ceilings are299/299/157/241,996 total, with zero generation/scoring.
+Pinned registration lives under DATA/coordination/simple-consumption-capacity-v2
+at SHA2561b84b7c39b211d6d515b6f2a65121f7fefaa1d5ef30c5ea50d549f136b73eb82.
+
+The script-only15-minute heartbeat slurp-simple-consumption-capacity is active
+for this job only; delete it after verified terminal with no remaining admitted
+child. Preserve20GiB startup/8GiB running guards, original exits and all four
+capacity receipts. Natural four-row generation and the same20 architecture
+comparison remain HELD for complete capacity qualification and separate admission.
+No performance or tool-competence claim follows from preparation or capacity.
+See [source, maintenance and launch evidence](../receipts/continuation/2026-10-07-simple-consumption-capacity-launch-and-cache-incident.json).
+
 ## Simple-consumption source admission stopped before contact (2026-10-07)
 
 The configured nongenerative capacity family is preregistered in sole master
@@ -6399,7 +6433,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T03:55:18Z
+Last refreshed: 2026-10-07T04:48:28.034698+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

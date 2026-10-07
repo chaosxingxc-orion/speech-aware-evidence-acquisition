@@ -1,0 +1,8 @@
+{
+  "schema": "saea-owner-stalled-cache-maintenance-termination-v1",
+  "recorded_at": "2026-10-07T04:48:28.034698+00:00",
+  "instruction_english": "Cache reclamation repeatedly gets stuck on a system lock. Confirm whether a remedy is available; if not, kill that process and begin experiments promptly.",
+  "source": "Direct owner message in the current root conversation, retained there.",
+  "resolution": "One identity-bound SIGKILL was sent. It remained pending in an uninterruptible kernel wait, so root recorded a bounded incident disposition under owner227 and the prior direct fallback, preserved the idle service evidence, terminated Ubuntu-24.04 once, and restored the same serving/telemetry tasks. No experiment was interrupted or replayed.",
+  "future_scope": "Do not repeat the known stalled drop_caches path in this capacity/engineering sequence. Use actual Windows memory admission and preserve process/service identity. Do not infer safe guard release from a signal return or delete a live lock."
+}
