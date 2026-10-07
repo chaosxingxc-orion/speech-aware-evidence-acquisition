@@ -1,5 +1,23 @@
 # Experiment rules for the ChatGPT side
 
+## Capacity entry stopped before contact: inner memory policy (2026-10-07)
+
+The singleton recovery entry ended with exit 1 at 08:43:12Z. Its shared
+MemoryPolicy still rejected a floor below 8 GiB, despite the newly pinned
+owner-authorized 4/4 GiB outer policy. No memory sample, tokenizer endpoint,
+generation or scoring contact occurred. There is no FIT receipt or attempt
+manifest. Root omitted the real inner guard path from the earlier validation.
+This was not an observed memory shortage; a later Windows observation was
+13.179 GiB free. Preserve the child error and the secondary observer-teardown
+error separately. All owned children are gone; the job monitor was deleted.
+
+Preserve the frozen 8026edbd worker, entry, logs and failed lease. Repair and
+review the shared startup/running policy and real guard chain before a freshly
+pinned precontact continuation. Do not clear cache or restart for the obsolete
+20 GiB gate. The direct owner directive is 4 GiB for startup and running.
+No natural proof, scientific evaluation or benefit is claimed. See
+[the failure receipt](../receipts/continuation/2026-10-07-capacity-recovery-precontact-memory-policy-failure.json).
+
 ## Direct owner correction: Windows memory floors are4GiB (2026-10-07)
 
 The human explicitly corrected the inherited20GiB startup threshold and reiterated

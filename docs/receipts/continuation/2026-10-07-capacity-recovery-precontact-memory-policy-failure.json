@@ -1,0 +1,72 @@
+{
+  "at_utc": "2026-10-07T08:54:23.951312+00:00",
+  "attempt_manifest_exists": false,
+  "capacity_endpoints": 0,
+  "cause": "The shared MemoryPolicy constructor retained an 8 GiB minimum and rejected the registered 4/4 policy before its first memory sample or capacity child. The root integration tested only the outer registration contract and omitted this actual inner path. This is not an observed memory shortage, model failure or task-quality result.",
+  "contacts_file_exists": false,
+  "disposition": "Preserve the frozen worker, original entry files, logs, unused allocation and failed lease. Repair and independently review the actual startup and running memory policy. Require a newly pinned precontact entry and recorded root disposition before any continuation. Do not change serving, clear caches, replay scoring or read quality.",
+  "fit_receipt_exists": false,
+  "generation_contacts": 0,
+  "monitor": {
+    "deleted_after_verified_terminal": true,
+    "id": "slurp-capacity-recovery"
+  },
+  "operational_evidence": [
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-v1\\capacity-task-started.json",
+      "sha256": "fd8d060a7fce36a3e970df44ac2bff199f42daa1192e89dd10c07e7672557132"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-v1\\capacity-task-exit.json",
+      "sha256": "9ba2261b47f4d1259baba3bad36a97092229a7c79ea7dc2cce9afdc3c4f9ee8a"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-v1\\capacity-finished.json",
+      "sha256": "f4b8833001a9ce77f4076ca58cb6312ad51b07b32ca47c58c1dc5f3a6a9f2d0c"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-v1\\solver-lookup-capacity-finished.json",
+      "sha256": "e69d43f0a1f6c2615b0e5a57a1924a43391a59763aa7c270b416564a65c6dece"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-v1\\solver-lookup-capacity.stderr.log",
+      "sha256": "96c6fb65d76cbf53378703104c74173b087e03976ce369b779b1cf4dcb3d7e57"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-v1\\solver-lookup\\windows-observer-binding.json",
+      "sha256": "30998b1e9d8517c884c62eae9473470ad2d86e921a1354c8a26aeb95167d067d"
+    }
+  ],
+  "owner_amendment": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-v1\\owner-memory-floor-4g-v1.json",
+    "sha256": "b404e5397c76e2a519780ae2e6e321cce7a44f2056ff9facb203c07d62fc10e6"
+  },
+  "process_verification": {
+    "all_absent_at_check": true,
+    "windows_child_pid": 43600,
+    "windows_free_gib": 13.179,
+    "windows_observer_pid": 21052,
+    "windows_owner_pid": 25208,
+    "wsl_capacity_and_lease_children_absent": true
+  },
+  "read_authorized": false,
+  "registered_resource_policy": {
+    "floor_gib": 4,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 4,
+    "wait_seconds": 600
+  },
+  "registration": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-recovery1-v1\\registration-v1.json",
+    "sha256": "43a6c632ba57f35f66e11f9056d980aef0d8416cb9b72bdf2e21de89a80c26fc"
+  },
+  "runtime_admission": false,
+  "schema": "saea-capacity-precontact-memory-policy-failure-v1",
+  "scorer_contacts": 0,
+  "secondary_failure": "The Windows wrapper waited for the unused observer and reported teardown failure; its finally block terminated its own observer. Preserve both the original child error and the wrapper error.",
+  "source_commit": "8026edbd983b5174a2bd3aa109133a6e9f0f990a",
+  "status": "STOPPED-BEFORE-CAPACITY-CONTACT",
+  "task": "SAEA-Simple-Consumption-Capacity-Recovery1-20261007",
+  "worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-recovery1-v1"
+}
