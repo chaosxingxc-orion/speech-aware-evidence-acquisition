@@ -1,0 +1,45 @@
+{
+  "at_utc": "2026-10-07T01:27:15.975122+00:00",
+  "configured_members": 20,
+  "contacts_added": 0,
+  "continuation": "Inspect the original session/PID and per-member logs. Never restart on an observation timeout. After full successful exit, run the independent verifier once, integrate cleanly into master, then prepare exact separate runtime admissions.",
+  "entry": {
+    "relpath": "coordination/matched-search-engineering-preparation-v1/serial-prepare-v2.py",
+    "sha256": "cf79d4f67bf7f24df060a34d4f74ee3afe0f33e8f55571bf5d0e2c9919031590"
+  },
+  "entry_disposition": {
+    "relpath": "coordination/matched-search-engineering-preparation-v1/preparation-entry-disposition.json",
+    "sha256": "5c7210e7e0e3dfe3faf07011f14a95e6c095eedc15b46cee71fc686323ce7ccf"
+  },
+  "expected_terminal_relpath": "coordination/matched-search-engineering-preparation-v1/exit.json",
+  "gpu_job_started": false,
+  "helper": {
+    "relpath": "coordination/matched-search-engineering-preparation-v1/prepare-member-v1.py",
+    "sha256": "c3bffbceb418fda9ea9223ae11abb1f823bae494927caf70dbc67938a43e6556"
+  },
+  "intent": {
+    "relpath": "docs/readiness/2026-10-07-matched-search-engineering-preparation-v1/intent-v1.json",
+    "sha256": "74dc83b7591d068bdaca255a5ebce5b6782360056272bf2d34563fe129f105cc"
+  },
+  "main_branch": "master",
+  "manifest": {
+    "relpath": "coordination/matched-search-engineering-preparation-v1/manifest-v1.json",
+    "sha256": "6a2892b854cc8772a34c78ad02e049d0e57506b186dd6d6262d512d8996541d1"
+  },
+  "monitor_required_now": false,
+  "pid": 277770,
+  "schema": "saea-matched-search-engineering-preparation-started-v1",
+  "session_id": 41351,
+  "source_commit": "8b2d041be9a04473d1eb8a8abaaab3e7ecc06bc3",
+  "started": {
+    "relpath": "coordination/matched-search-engineering-preparation-v1/started.json",
+    "sha256": "5e7429d9787ff5255ef1943f517e60a08175a7fb478a301784ca11a9c80dbe79"
+  },
+  "started_at_utc": "2026-10-07T01:23:10.631854+00:00",
+  "status": "RUNNING_MODEL_FREE",
+  "verification_entry": {
+    "relpath": "coordination/matched-search-engineering-preparation-v1/verify-complete-v1.py",
+    "sha256": "7284e8393396a22e62216a0bdad7aa143a35478f5c53fe3ddf7fb987029dc14e"
+  },
+  "working_directory": "/mnt/d/chao_workspace/saea-maintenance/matched-search-engineering-20261007"
+}

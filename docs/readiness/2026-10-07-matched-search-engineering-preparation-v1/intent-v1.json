@@ -1,0 +1,813 @@
+{
+  "at_utc": "2026-10-07T01:27:15.973513+00:00",
+  "constraints": [
+    "Derive every population position, sample count, sampling setting and per-trajectory budget from each exact configuration.",
+    "Keep all original proposals and archive reservations spent and immutable. Do not substitute or filter candidates.",
+    "Reuse immutable ordered UPDATE2 inputs and all knowledge, audio, packet, query and vote assets.",
+    "Verify both comparator identities as well as all candidate role bytes before contact.",
+    "Complete every model-free preparation and independent verification before serial integration and exact capacity admission.",
+    "Maximum-request FIT and four-row structural validation require separate exact exposure registration, clean frozen worker and live resource/service admission.",
+    "Read engineering structural metadata only; never score or derive task-quality feedback from worker-only structural attempts.",
+    "Each actual GPU launch requires its own fifteen-minute script monitor, removed on terminal status.",
+    "Scientific evaluation uses complete independent seals and unique official scores for every configured member, then the exact root READ.",
+    "Compare business quality and reliable completion first, process diagnostics second, latency and cost third. This N20 reused pool is optimization, not independent validation or stable learning-gain proof."
+  ],
+  "contact_authority": false,
+  "maximum_request_basis": {
+    "relpath": "configs/experiment/slurp-native-stage3-context-initial4-coverage-ledger-capacity-v1.json",
+    "sha256": "9b09914aef6b18bf9c6d9b2803a3917439a6ef9217effa475ca870151517fead"
+  },
+  "members": [
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "seed",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-seed-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+        "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "seed-aa",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-seed-aa-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+        "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-01",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-01-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/87fee81be838aecfbd8eea31cd977b28e0982ee1a7436b7d8ce7eadb74f71e47.json",
+          "sha256": "e4b9017f81f4995abb3029a446f3fb670bdd349e2942b5cda711035902f09035"
+        },
+        "bundle_id": "87fee81be838aecfbd8eea31cd977b28e0982ee1a7436b7d8ce7eadb74f71e47",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-01.json",
+        "sha256": "5b31e8d6c4b6621c1fd21f1f8059673e1b54a5ad460af8f878f9bd5896e3fcaa"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-02",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-02-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/3ef287ed99bdfe614fc820b87b77a2630e539654045a169b36c15194e05f2190.json",
+          "sha256": "d9cab5a94347ecf6f83efa23825af1f05d2cc19b7d1a5da5c048ea4aa83ec465"
+        },
+        "bundle_id": "3ef287ed99bdfe614fc820b87b77a2630e539654045a169b36c15194e05f2190",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-02.json",
+        "sha256": "f7014cb7efc9cbba8176acff0616db3ea29cf23f731e3194345722dbdd37030b"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-03",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-03-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/b9a6110c563c8c6ec69630c2742b91e07a075a959b2087aad19c23ab520d4d9b.json",
+          "sha256": "596b502999a4e15c21bbffb347985e0d1278a071ae6ab59db7f2c8186eb4ec11"
+        },
+        "bundle_id": "b9a6110c563c8c6ec69630c2742b91e07a075a959b2087aad19c23ab520d4d9b",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-03.json",
+        "sha256": "030cf979bf7c65511db536907dfc513ca1f2e9444b9552a9b0240b555e89c857"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-04",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-04-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/5e7473a9d9d7a396c842278a8ec2eea2086ee70dc3e05e6ee91f3eca49ac7a5e.json",
+          "sha256": "23a557e57cfab516af17172c669604fc027c7bfa34d1a19351eb90433c2a9c8f"
+        },
+        "bundle_id": "5e7473a9d9d7a396c842278a8ec2eea2086ee70dc3e05e6ee91f3eca49ac7a5e",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-04.json",
+        "sha256": "68d9e38caa6630a678d0f044df7fbc020655e050d0554f72c177808253e26930"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-05",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-05-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/397a471b8b033784e5e40b6b45fba38d8a913450304444c896e30473353368bc.json",
+          "sha256": "5dbfa077c1d48db3d229bdbf4775baa2d649be2f3d88e0ac52edee084191a034"
+        },
+        "bundle_id": "397a471b8b033784e5e40b6b45fba38d8a913450304444c896e30473353368bc",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-05.json",
+        "sha256": "123b4158abec04316ba85c054aa152ae853b42003379dcbc38c8f346d01caac3"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-06",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-06-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f.json",
+          "sha256": "c5e88bb0800d1a590365767ec9c71c0c9dd6d87250f13ca2c2ec8d5a5381ae9d"
+        },
+        "bundle_id": "85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-06.json",
+        "sha256": "3e48529864bf53a129de28d0555f8a2aad5bcddd94041c38ea53ddca1fd9f1b1"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-07",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-07-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/aa57471a9d0fe5ef074b7234851691f52d0cfbf470b55e376a04a800f4b6d8ef.json",
+          "sha256": "e6557390273d4b544e43240c93745704ade586f1820d43a4fbf996c39aac7b36"
+        },
+        "bundle_id": "aa57471a9d0fe5ef074b7234851691f52d0cfbf470b55e376a04a800f4b6d8ef",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-07.json",
+        "sha256": "051c565f0b66af735b8fed06ce218a269e5223cddabcc97ff370ad7856e78dc9"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-08",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-08-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/8df4b0b8d9fb709426d053468da2ff18a043653f83804aa9786b8bf9ac1dffbd.json",
+          "sha256": "fb183a2be118980e79b6bba2febca6002f47e73470958fef83cd8ad3759fff05"
+        },
+        "bundle_id": "8df4b0b8d9fb709426d053468da2ff18a043653f83804aa9786b8bf9ac1dffbd",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-08.json",
+        "sha256": "b56b3299f8edeeac310572f2c722352822ed3a68cf2a7190316dc8fb76ff01bc"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "seed",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-seed-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+        "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "seed-aa",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-seed-aa-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+        "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-01",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-01-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/405b94b908381ae3da350cca08a88a6a63a398fbad598977aff36a144b0a80b2.json",
+          "sha256": "d59012ff48e4ac6ada3c2ac75c66822650a449dc1d531e0d8e250690edf5708a"
+        },
+        "bundle_id": "405b94b908381ae3da350cca08a88a6a63a398fbad598977aff36a144b0a80b2",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-01.json",
+        "sha256": "cead7879a41a7c43566ec956b211d36fbc0c3e8cde6827c9888e523ee7e4fca8"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-02",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-02-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/b06c6755a58aa7719501d728d4b455f7c262f3a3cbc532346fe727ec44050519.json",
+          "sha256": "3b87b7e4e9ec29cbcbf9c5f58a85c6f62f02cf0a82ff2bb853fc785e17fdd945"
+        },
+        "bundle_id": "b06c6755a58aa7719501d728d4b455f7c262f3a3cbc532346fe727ec44050519",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-02.json",
+        "sha256": "710af3b3f8cf37557dcd1ebe23ac0cf0eb8ff3ea2ed8a3c5128f6dfa89bc6607"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-03",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-03-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/d2a05478387aa66472f74044ad3643b1c90c9a40be23234ba6413d23977f10e3.json",
+          "sha256": "4c002702cbbcb0215217363987bade9769f538f5b6a635ea9a2701af37237468"
+        },
+        "bundle_id": "d2a05478387aa66472f74044ad3643b1c90c9a40be23234ba6413d23977f10e3",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-03.json",
+        "sha256": "c3bec063ceab1e878f2e1e69b51739819ed716cf544592b33f6d16f58e1bb8fc"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-04",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-04-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/a3e46a37bd911da87fd233a3ce75d967521322cbdd342ceba5e777d320c9a4c2.json",
+          "sha256": "4e3ace853e81cdfd4a8f76f550344bc8d2bae0e0fd187a0694453bc111b6b363"
+        },
+        "bundle_id": "a3e46a37bd911da87fd233a3ce75d967521322cbdd342ceba5e777d320c9a4c2",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-04.json",
+        "sha256": "ee67f9405b02f7a74764ac1bc97fecb0f6742a6765824f6b626d2f5546ad7e69"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-05",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-05-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/9f04e5a99b1c4ea63e76b9664fd009d531f1c104831cf58374c2e459de7ffd9b.json",
+          "sha256": "3126873ae10e5a212104adbddc87d39698b5bf3887d6dbf3fb9328d5a7f221b8"
+        },
+        "bundle_id": "9f04e5a99b1c4ea63e76b9664fd009d531f1c104831cf58374c2e459de7ffd9b",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-05.json",
+        "sha256": "45fad3d1b6e7b4f0f2ede58a2988752469a71b129164cf43debd8e0e93de8a02"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-06",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-06-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/dae5eee1986e4da276a095e3e91fd08c45c4f3298278bec0ac0c14ee52571e73.json",
+          "sha256": "6c2f36021740d7ee71664502adae2cd9c91f2a525d5d89f76eb934366902f417"
+        },
+        "bundle_id": "dae5eee1986e4da276a095e3e91fd08c45c4f3298278bec0ac0c14ee52571e73",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-06.json",
+        "sha256": "69225daffb3ef575c4b0d0e465ebb23106e6c065264339e699e45d88c583ba13"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-07",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-07-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/79a02192fa74ecbd963802f30f688a8775962b5840c24fcb8869f2292a3c1251.json",
+          "sha256": "00c49edb318dc1eea449992d75e84a2d013cad30a604ff982e273da6453e9ef4"
+        },
+        "bundle_id": "79a02192fa74ecbd963802f30f688a8775962b5840c24fcb8869f2292a3c1251",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-07.json",
+        "sha256": "f89176e8a1d3a0c5e5042b1bb8a6667d28ccb4b8eaa8bb2ae1b4bb1e964c4212"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-08",
+      "cohort": "comparison",
+      "counts": {
+        "engineering_official_score_jobs": 0,
+        "maximum_request_tokenizer_endpoints": 297,
+        "scientific_trajectories": 20,
+        "structural_actual_request_fit_endpoints": 208,
+        "structural_generation_contacts": 52,
+        "structural_trajectories": 4
+      },
+      "execution": {
+        "queue_depth": 4,
+        "schedule": "sequential-trajectory",
+        "slot_count": 4
+      },
+      "expected_preparation_receipt": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-08-engineering-v1/prepared-members-v1.json",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/667fd0c4f7e1d95a755aef0230badb51993b559d9d5376c78fb0e68c4bdbc378.json",
+          "sha256": "164c5cee89f40d311f89e1d5034c869388d7a4b2cea5ec83fdc946ff78229336"
+        },
+        "bundle_id": "667fd0c4f7e1d95a755aef0230badb51993b559d9d5376c78fb0e68c4bdbc378",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "sampling": {
+        "seed": 20260913,
+        "temperature": 0
+      },
+      "source_compile": {
+        "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-08.json",
+        "sha256": "374b23cc1dd34830dcc5c4b75b1597708b19340610626db235b201645aa91feb"
+      }
+    }
+  ],
+  "schema": "saea-matched-search-engineering-intent-v1",
+  "scientific_runtime_admission": false,
+  "status": "MODEL_FREE_PREPARATION_ONLY",
+  "total_budget_ceiling": {
+    "engineering_official_score_jobs": 0,
+    "maximum_request_tokenizer_endpoints": 5940,
+    "scientific_trajectories": 400,
+    "structural_actual_request_fit_endpoints": 4160,
+    "structural_generation_contacts": 1040,
+    "structural_trajectories": 80
+  }
+}

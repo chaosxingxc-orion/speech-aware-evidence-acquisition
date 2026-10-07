@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Matched search engineering preparation started (2026-10-07)
+
+The original model-free serial preparation is session41351/PID277770, started
+01:23:10Z from detached matched-search-engineering-20261007 at8b2d041be.
+See [launch evidence](../receipts/continuation/2026-10-07-matched-search-engineering-preparation-started.json)
+and [configuration-derived intent](../readiness/2026-10-07-matched-search-engineering-preparation-v1/README.md).
+Inspect its exact durable coordination/matched-search-engineering-preparation-v1
+started/process/stdout/stderr/exit records; never restart on observation timeout.
+It covers both eight-candidate arms plus each unchanged seed/A/A, with graph,
+capacity and structural preparations per member. Verify comparator role bytes too.
+Reuse the exact fixed knowledge and ordered inputs; all cells remain HELD.
+
+The first entry failed before any member process/contact because WSL Git could
+not resolve a Windows-created worktree pointer. The preserved root227 disposition
+uses explicit WSL Git environment paths; original entries and pointers remain intact.
+No GPU/FIT/scorer contact occurred, so no job heartbeat is required yet.
+After all members complete, run the independent verifier once; then serially
+integrate prepared artifacts into sole master and register real capacity/structural
+jobs separately. Preserve the working checkout while its process is live.
+The original sixteen proposals remain spent. No quality or learning benefit follows.
+
 ## Matched proposals recorded and all sixteen policies compiled (2026-10-07)
 
 Both original matched GPT-6.1 Sol actors are complete. All eight fixed-parent and
