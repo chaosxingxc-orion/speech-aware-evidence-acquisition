@@ -1,0 +1,346 @@
+{
+  "at_utc": "2026-10-07T09:49:19.887650+00:00",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "generation_contacts": 0,
+  "members": [
+    {
+      "capacity_config_hash": "c2e5e0954103bf3ee81c84629099c560961dc702c375cfb1190f37490225d01a",
+      "capacity_rows": 20,
+      "capacity_sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:009411:audio-1497030307-headset",
+        "slurp:train:015179:audio-1498569151-headset",
+        "slurp:train:013565:audio-1501765573-headset",
+        "slurp:train:010065:audio-1501756518",
+        "slurp:train:004087:audio-1490199961",
+        "slurp:train:013560:audio-1490291477-headset",
+        "slurp:train:014610:audio-1502218659-headset",
+        "slurp:train:014741:audio-1497882505",
+        "slurp:train:000081:audio-1501753218-headset",
+        "slurp:train:006032:audio--1504195204",
+        "slurp:train:016836:audio-1490705489-headset",
+        "slurp:train:004499:audio--1504194378-headset",
+        "slurp:train:011479:audio-1502216306-headset",
+        "slurp:train:010006:audio-1499693788-headset",
+        "slurp:train:010537:audio-1490183278"
+      ],
+      "label": "seed",
+      "model_contacts": 0,
+      "new_baseline_sha256": "368451ccb3d3926b8c0a941bee3ee4b96a47c16d32142f2c81b84da12acba0a1",
+      "new_capacity": "slurp-native-stage3-simple-consumption-seed-engineering-capacity-v3",
+      "new_experiment_sha256": "2c024e55aa81e6d7a4ae3d4335f503da9cfc19cb4cbfc9803c05b9582d9ce05c",
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "a0be604fd88303d56985dfe5e3aa15f6ab73159c40eb99c9f7c0c3a4b3fd9c27"
+      },
+      "new_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "a0be604fd88303d56985dfe5e3aa15f6ab73159c40eb99c9f7c0c3a4b3fd9c27"
+      },
+      "non_envelope_baseline_equal": true,
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "004acf181437852dcb2f6fdd1c6ab83d9c117dd2e8144958332c1d8875cb5aed"
+      },
+      "original_baseline_sha256": "0d226858b6fa14ee0cef1236d428922a854bdbb0e09adee27020ca9cee0a4b17",
+      "original_capacity": "slurp-native-stage3-simple-consumption-seed-engineering-capacity-v2",
+      "original_experiment_sha256": "510a37ce33e28760f0aff43964a9f70953e241e0db046a4b9a9efcb9b47e7ee4",
+      "original_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "004acf181437852dcb2f6fdd1c6ab83d9c117dd2e8144958332c1d8875cb5aed"
+      },
+      "output_equal": true,
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "readiness_requirement": {
+        "appended": 1,
+        "kept": 0,
+        "updated": 0
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 20
+        },
+        "old": {
+          "facets": 0,
+          "values": 20
+        }
+      },
+      "scorer_contacts": 0,
+      "strict_prepared_artifacts": [
+        {
+          "difference": null,
+          "identity_ok": true,
+          "key": "prepared_phase_supply",
+          "reason": null,
+          "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+          "seed_ok": true,
+          "sha256": "a0be604fd88303d56985dfe5e3aa15f6ab73159c40eb99c9f7c0c3a4b3fd9c27"
+        }
+      ],
+      "tokenizer_contacts": 0
+    },
+    {
+      "capacity_config_hash": "420f4e4b1d8d90a298fdb01fe2970dad8fdcfd9b7dd9756d09f036f6c4cab415",
+      "capacity_rows": 20,
+      "capacity_sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:009411:audio-1497030307-headset",
+        "slurp:train:015179:audio-1498569151-headset",
+        "slurp:train:013565:audio-1501765573-headset",
+        "slurp:train:010065:audio-1501756518",
+        "slurp:train:004087:audio-1490199961",
+        "slurp:train:013560:audio-1490291477-headset",
+        "slurp:train:014610:audio-1502218659-headset",
+        "slurp:train:014741:audio-1497882505",
+        "slurp:train:000081:audio-1501753218-headset",
+        "slurp:train:006032:audio--1504195204",
+        "slurp:train:016836:audio-1490705489-headset",
+        "slurp:train:004499:audio--1504194378-headset",
+        "slurp:train:011479:audio-1502216306-headset",
+        "slurp:train:010006:audio-1499693788-headset",
+        "slurp:train:010537:audio-1490183278"
+      ],
+      "label": "seed-aa",
+      "model_contacts": 0,
+      "new_baseline_sha256": "bd4062e470f9fc378a33b2040a9d96b25b4e99ca290348355d55b43f81c21d5b",
+      "new_capacity": "slurp-native-stage3-simple-consumption-seed-aa-engineering-capacity-v3",
+      "new_experiment_sha256": "b9762f9d66f2db23406c45c4272629bfbf05004c01bb19c998c025e6b9793937",
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "2440f84b3d000add419f446aecc3f7ae0b5dec39c9066b4afc44a04bb8edce45"
+      },
+      "new_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "2440f84b3d000add419f446aecc3f7ae0b5dec39c9066b4afc44a04bb8edce45"
+      },
+      "non_envelope_baseline_equal": true,
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "7b688a6ea865f22db713607a61ea1fdbb6ef5ce6e78fadc6616227c6bbb5f48b"
+      },
+      "original_baseline_sha256": "8b232e6329caa5bc06eadcd9e445bb6830c93adaf3ba596b594a559d534c49e8",
+      "original_capacity": "slurp-native-stage3-simple-consumption-seed-aa-engineering-capacity-v2",
+      "original_experiment_sha256": "d8c849d3f560828acbdb6717bd884a3776ece49ee94e7e0eb3e0bcbd3e00a303",
+      "original_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "7b688a6ea865f22db713607a61ea1fdbb6ef5ce6e78fadc6616227c6bbb5f48b"
+      },
+      "output_equal": true,
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "readiness_requirement": {
+        "appended": 1,
+        "kept": 0,
+        "updated": 0
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 20
+        },
+        "old": {
+          "facets": 0,
+          "values": 20
+        }
+      },
+      "scorer_contacts": 0,
+      "strict_prepared_artifacts": [
+        {
+          "difference": null,
+          "identity_ok": true,
+          "key": "prepared_phase_supply",
+          "reason": null,
+          "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+          "seed_ok": true,
+          "sha256": "2440f84b3d000add419f446aecc3f7ae0b5dec39c9066b4afc44a04bb8edce45"
+        }
+      ],
+      "tokenizer_contacts": 0
+    },
+    {
+      "capacity_config_hash": "94a8503683f84d78946379ec73bf619e8ba15382e8ffa63162df86e2815b6a17",
+      "capacity_rows": 20,
+      "capacity_sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:009411:audio-1497030307-headset",
+        "slurp:train:015179:audio-1498569151-headset",
+        "slurp:train:013565:audio-1501765573-headset",
+        "slurp:train:010065:audio-1501756518",
+        "slurp:train:004087:audio-1490199961",
+        "slurp:train:013560:audio-1490291477-headset",
+        "slurp:train:014610:audio-1502218659-headset",
+        "slurp:train:014741:audio-1497882505",
+        "slurp:train:000081:audio-1501753218-headset",
+        "slurp:train:006032:audio--1504195204",
+        "slurp:train:016836:audio-1490705489-headset",
+        "slurp:train:004499:audio--1504194378-headset",
+        "slurp:train:011479:audio-1502216306-headset",
+        "slurp:train:010006:audio-1499693788-headset",
+        "slurp:train:010537:audio-1490183278"
+      ],
+      "label": "review-off",
+      "model_contacts": 0,
+      "new_baseline_sha256": "31df3775a8a47746081b71dced884bf58ccb5c3f182104c83494a23ae8f8cc45",
+      "new_capacity": "slurp-native-stage3-simple-consumption-review-off-engineering-capacity-v3",
+      "new_experiment_sha256": "58bc9ed4887b3ed827002ac0af130002346c0b7da6e214cf8c523331102de262",
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "86d1fba10e721a260fc8c02fda72ef8c39aad70b48b82cc37e46eab53d4b1fec"
+      },
+      "new_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "86d1fba10e721a260fc8c02fda72ef8c39aad70b48b82cc37e46eab53d4b1fec"
+      },
+      "non_envelope_baseline_equal": true,
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "d95ee097b8c30e20efcb6fa517d4808b532469bc95e6a6d7693044f5821fd765"
+      },
+      "original_baseline_sha256": "6f9d48a5ee1ba02364d75dfd353e9e683d69855677a317f562ff06e5bc15ca9a",
+      "original_capacity": "slurp-native-stage3-simple-consumption-review-off-engineering-capacity-v2",
+      "original_experiment_sha256": "5f0b02072b1ed3108a8f86b8e298aa2c04d8ee75901bf10d5d3758176940d9aa",
+      "original_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "d95ee097b8c30e20efcb6fa517d4808b532469bc95e6a6d7693044f5821fd765"
+      },
+      "output_equal": true,
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "readiness_requirement": {
+        "appended": 1,
+        "kept": 0,
+        "updated": 0
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 20
+        },
+        "old": {
+          "facets": 0,
+          "values": 20
+        }
+      },
+      "scorer_contacts": 0,
+      "strict_prepared_artifacts": [
+        {
+          "difference": null,
+          "identity_ok": true,
+          "key": "prepared_phase_supply",
+          "reason": null,
+          "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+          "seed_ok": true,
+          "sha256": "86d1fba10e721a260fc8c02fda72ef8c39aad70b48b82cc37e46eab53d4b1fec"
+        }
+      ],
+      "tokenizer_contacts": 0
+    },
+    {
+      "capacity_config_hash": "a7555bb8121de966326a49d24d3710a57ba531080563e797ad4df4587707fe27",
+      "capacity_rows": 20,
+      "capacity_sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:009411:audio-1497030307-headset",
+        "slurp:train:015179:audio-1498569151-headset",
+        "slurp:train:013565:audio-1501765573-headset",
+        "slurp:train:010065:audio-1501756518",
+        "slurp:train:004087:audio-1490199961",
+        "slurp:train:013560:audio-1490291477-headset",
+        "slurp:train:014610:audio-1502218659-headset",
+        "slurp:train:014741:audio-1497882505",
+        "slurp:train:000081:audio-1501753218-headset",
+        "slurp:train:006032:audio--1504195204",
+        "slurp:train:016836:audio-1490705489-headset",
+        "slurp:train:004499:audio--1504194378-headset",
+        "slurp:train:011479:audio-1502216306-headset",
+        "slurp:train:010006:audio-1499693788-headset",
+        "slurp:train:010537:audio-1490183278"
+      ],
+      "label": "solver-lookup",
+      "model_contacts": 0,
+      "new_baseline_sha256": "e3569e24d737de6f31fa01afd32323f8af6547132c1417386382d55d3a3a4ef4",
+      "new_capacity": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-v3",
+      "new_experiment_sha256": "9401b3273473db5eba137f1b5d326acdf76974274c0443e653b61a01288813b5",
+      "new_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "40ab309a3171a5bc8c7cfdd400cafac22327260d363ef831ccd045c2d4c168be"
+      },
+      "new_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "40ab309a3171a5bc8c7cfdd400cafac22327260d363ef831ccd045c2d4c168be"
+      },
+      "non_envelope_baseline_equal": true,
+      "old_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "a5b4178e50bbfd523d394959bdcc18e385fe79e5013819b5ee5f41c7a2445c88"
+      },
+      "original_baseline_sha256": "17d3f83649a9931bf07bd29c43faae83609c756e6c865b9cce166421771f8ad0",
+      "original_capacity": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-v2",
+      "original_experiment_sha256": "54b75db446f5bb035669757858d8ee4d1e21d874a9aac50e2226289ad068a48e",
+      "original_prepared_pin": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "a5b4178e50bbfd523d394959bdcc18e385fe79e5013819b5ee5f41c7a2445c88"
+      },
+      "output_equal": true,
+      "output_sha256": "e4d4123a0c5491376813632afd939bd369b8eb273dff593df78dba569a9d72c6",
+      "readiness_requirement": {
+        "appended": 1,
+        "kept": 0,
+        "updated": 0
+      },
+      "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+      "rebuilt": true,
+      "row_counts": {
+        "new": {
+          "facets": 0,
+          "values": 20
+        },
+        "old": {
+          "facets": 0,
+          "values": 20
+        }
+      },
+      "scorer_contacts": 0,
+      "strict_prepared_artifacts": [
+        {
+          "difference": null,
+          "identity_ok": true,
+          "key": "prepared_phase_supply",
+          "reason": null,
+          "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V3-CAPACITY-FIT-V1/phase-supply-v1.json",
+          "seed_ok": true,
+          "sha256": "40ab309a3171a5bc8c7cfdd400cafac22327260d363ef831ccd045c2d4c168be"
+        }
+      ],
+      "tokenizer_contacts": 0
+    }
+  ],
+  "runtime_admission": false,
+  "schema": "saea-architecture-output-equal-prepared-capacities-v1",
+  "scorer_contacts": 0,
+  "tokenizer_contacts": 0
+}

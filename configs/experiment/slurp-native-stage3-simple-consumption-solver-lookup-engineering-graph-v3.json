@@ -1,0 +1,88 @@
+{
+  "architecture_member": "solver-lookup",
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-graph-v3",
+      "baseline_fragment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-graph-v3",
+      "cell_id": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-graph-v3",
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Prospective source-corrected four-row preparation only; no generation/tokenizer/scorer admission.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-GRAPH-V3/phase-supply-v1.json",
+            "sha256": "1b5cc9b6004d94a254d977fa63b34eb11818a7e4a0564c7e4153b8f3946e6cf3",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-GRAPH-V3",
+      "system_text_policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/simple-consumption-architecture-v1/policies/e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51.json",
+          "sha256": "496bec5e028d7dc502d7d6ed66767d60a9cadd440d17d4af5e5e778880ea4497"
+        },
+        "bundle_id": "e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    }
+  ],
+  "date": "2026-10-07",
+  "execution_plan": {
+    "execution_profile": "model-free-check",
+    "planned_gpu_hours": 0.01,
+    "planned_model_calls": 1,
+    "planned_speech_audio_seconds": 1500,
+    "split_role": "discovery"
+  },
+  "execution_profile": "model-free-check",
+  "experiment_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-GRAPH-V3",
+  "family_budget": {
+    "complete_system_trajectories": 0,
+    "generation_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "tokenizer_endpoint_cap": 0
+  },
+  "native_graph_capacity_profile": "review-off-v1",
+  "population": {
+    "count": 4,
+    "roster_receipt": "docs/readiness/2026-10-02-slurp-system-text-update2-v1/graph-roster-v1.json",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "split_id": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "Manual architecture engineering with fixed knowledge. No learning update or quality claim.",
+    "operators_used": []
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0,
+    "measurement_design": "form-proof",
+    "note": "Same immutable UPDATE2 prefix; structural form proof only. No task-quality or learning feedback.",
+    "primary_metric": "Capacity only; no task quality",
+    "primary_metric_key": "slu",
+    "read_roster": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+    "rows": 4,
+    "tuning_roster": "none"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "graph_config_hash": "517aada089ba001e6701b3807da39a26f10c7dfd8afe9424eb134949b58e6c7b",
+  "graph_rows": 4,
+  "graph_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "label": "seed",
+  "model_contacts": 0,
+  "new_baseline_sha256": "ebe1a6d50d9f0adf20d935af36fc2b84095c25d2cb9e463dd7760bedcea3ab23",
+  "new_experiment_sha256": "0713eea5bc94b91d1a6e100d9d98e68ba36378df059cff999d53ad1c3563398b",
+  "new_graph": "slurp-native-stage3-simple-consumption-seed-engineering-graph-v3",
+  "new_pin": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-GRAPH-V3/phase-supply-v1.json",
+    "sha256": "a3eb8b0a31e8edb074a81551588bbef887b6ca30e4579dcc2f606f95a494ca50"
+  },
+  "new_prepared_pin": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-GRAPH-V3/phase-supply-v1.json",
+    "sha256": "a3eb8b0a31e8edb074a81551588bbef887b6ca30e4579dcc2f606f95a494ca50"
+  },
+  "non_envelope_baseline_equal": true,
+  "old_pin": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-GRAPH-V2/phase-supply-v1.json",
+    "sha256": "35aa10dd8222b3dd48d7a65f1c82567e1bd2175ec9a48432a6427af1ae39f9b0"
+  },
+  "original_baseline_sha256": "c3b7ce2acb09f0345ebd38171f9e1ae9f9d1a13c00166360264a094234a3be97",
+  "original_experiment_sha256": "f5c9a17f64a8e4c05d876e0ca16e8cef5e18417aafa64675b0ac519d7a8e0f3d",
+  "original_graph": "slurp-native-stage3-simple-consumption-seed-engineering-graph-v2",
+  "original_prepared_pin": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-GRAPH-V2/phase-supply-v1.json",
+    "sha256": "35aa10dd8222b3dd48d7a65f1c82567e1bd2175ec9a48432a6427af1ae39f9b0"
+  },
+  "output_equal": true,
+  "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+  "readiness_requirement": {
+    "appended": 1,
+    "kept": 0,
+    "updated": 0
+  },
+  "reason": "prepared artifact identity mismatch; first differing identity key: config_sha256",
+  "rebuilt": true,
+  "row_counts": {
+    "new": {
+      "facets": 0,
+      "values": 4
+    },
+    "old": {
+      "facets": 0,
+      "values": 4
+    }
+  },
+  "scorer_contacts": 0,
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-GRAPH-V3/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "a3eb8b0a31e8edb074a81551588bbef887b6ca30e4579dcc2f606f95a494ca50"
+    }
+  ],
+  "tokenizer_contacts": 0
+}

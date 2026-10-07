@@ -1,0 +1,39 @@
+{
+  "allowed_control_transition": "After revalidating terminal processes, no STOP, no competing flight and real generation-guard custody, archive only the exact dead C3 lease into this receipt root. Never print its secret. Do not clear caches or restart WSL.",
+  "at_utc": "2026-10-07T10:12:24.417303+00:00",
+  "authority": "Owner227 bounded engineering and incident disposition; direct owner four-GiB correction.",
+  "cumulative_endpoint_ceiling": 2032,
+  "disposition": "Keep all former flights stopped and immutable. Use four fresh run and attempt identities on one frozen source with the existing full-family qualifier. This is a new complete nongenerative engineering proof, not a replay of old successes or a mixed-source recovery.",
+  "failure_disposition": "Stop for preserved evidence, diagnosis and a recorded root disposition; no automatic retry.",
+  "finding": "C3 correctly rejected the stale graph-v2 runtime-source identity. The preparation updated the capacity envelope but omitted its graph. The former dry-run fallback hid the mismatch in preflight.",
+  "generation_contacts": 0,
+  "held": "Natural four-row generation and the scientific 80-trajectory family require their separate qualifications/admissions. Human review remains mandatory before 8x400 or equivalent split.",
+  "new_endpoint_cap": 996,
+  "offline_proof": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-prepared-graph-recovery2-v1/offline-graph-repair-proof-v1.json",
+    "sha256": "f1649bcbd0e3f65adddffbfd47851b3d05557ba705d5b65c8bcfe872bd04731d"
+  },
+  "prepare_reports": [
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-prepared-graph-recovery2-v1/prepared-graphs-v3.json",
+      "sha256": "a3b678af2d40705c247835f688d1378ce80467ad3d86cb50ebdaeb782d5980b1"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-prepared-graph-recovery2-v1/prepared-capacities-v3.json",
+      "sha256": "4864244a7254d21781712fbc3ae269b33af598605b3d3b525daf500aa7cd818d"
+    }
+  ],
+  "prior_spend_breakdown": {
+    "memory_guard_precontact": 0,
+    "original_failed_solver": 143,
+    "original_successes": 750,
+    "stale_graph_failure": 143
+  },
+  "prior_spent_tokenizer_endpoints": 1036,
+  "repair": "Keep strict identity validation, verify both real prepared graphs and capacity inputs before any authorization, and create output-equal graph-v3/capacity-v3 envelopes.",
+  "schema": "saea-root-prepared-graph-incident-disposition-v1",
+  "scientific_admission": false,
+  "scorer_contacts": 0,
+  "source_commit": "77f4ff03fddd71aa50d8e06e1011dc7713e9d432",
+  "status": "DECIDED"
+}
