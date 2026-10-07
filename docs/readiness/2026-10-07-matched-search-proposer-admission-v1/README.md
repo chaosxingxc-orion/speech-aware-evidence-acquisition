@@ -54,3 +54,15 @@ use the shared search recorder/compiler and freeze exact members. Complete new F
 and structural proofs before the configured N20 experiments. Full-family READ and
 quality/process/cost comparison remain required. No automatic8x400 or held-carrier
 release. Sole active branch remains master; source workers remain detached/frozen.
+
+## Downstream preparation map
+
+The runtime-preparation-map-v1.json derives two ten-member N20 families from the
+pinned configs:160 candidate plus40 control trajectories per arm. It verifies the
+same exact source input order, original seed compiler identity and both historical
+control bindings without rebuilding any selections. Candidate bindings are null
+until the original response is recorded and compiled. No runtime member is admitted.
+Do not force new search algorithms through the older TF/GEPA-only context-learning
+protocol validator. Bind their exact registered identities through the shared generic
+complete-family scorer/READ primitives and prospective search evaluation contract.
+The underlying runtime algorithm label remains system-text-black-box-v1.

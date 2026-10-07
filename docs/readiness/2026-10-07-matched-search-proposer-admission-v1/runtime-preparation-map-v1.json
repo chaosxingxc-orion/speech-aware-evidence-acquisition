@@ -1,0 +1,519 @@
+{
+  "schema": "saea-matched-search-runtime-preparation-map-v1",
+  "status": "PREPARATION_ONLY",
+  "arms": [
+    {
+      "arm": "fixed-parent",
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "stages": [
+        {
+          "stage": {
+            "experiment_population": {
+              "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+              "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+            },
+            "population_cohort": "comparison",
+            "boundary_maintenance": {
+              "mode": "observe-only",
+              "when": "after-complete-cohort",
+              "require_generation_scoring_preprocessing_idle": true,
+              "preserve_model_service": true,
+              "global_sync": false,
+              "record_before_after": true
+            },
+            "population_budget": {
+              "candidate_trajectories": 160,
+              "control_trajectories": 40,
+              "family_trajectories": 200,
+              "generation_contacts_cap": 2600,
+              "fit_endpoints_cap": 10400,
+              "K": 8,
+              "N": 20,
+              "M": 4
+            },
+            "candidate_members": [
+              "branch-01",
+              "branch-02",
+              "branch-03",
+              "branch-04",
+              "branch-05",
+              "branch-06",
+              "branch-07",
+              "branch-08"
+            ],
+            "control_members": [
+              "seed",
+              "seed-aa"
+            ],
+            "sample_ids": [
+              "slurp:train:005407:audio-1502374837",
+              "slurp:train:003560:audio-1501686037",
+              "slurp:train:005513:audio-1494513310",
+              "slurp:train:011838:audio-1490369500",
+              "slurp:train:000244:audio-1497883990-headset",
+              "slurp:train:009411:audio-1497030307-headset",
+              "slurp:train:015179:audio-1498569151-headset",
+              "slurp:train:013565:audio-1501765573-headset",
+              "slurp:train:010065:audio-1501756518",
+              "slurp:train:004087:audio-1490199961",
+              "slurp:train:013560:audio-1490291477-headset",
+              "slurp:train:014610:audio-1502218659-headset",
+              "slurp:train:014741:audio-1497882505",
+              "slurp:train:000081:audio-1501753218-headset",
+              "slurp:train:006032:audio--1504195204",
+              "slurp:train:016836:audio-1490705489-headset",
+              "slurp:train:004499:audio--1504194378-headset",
+              "slurp:train:011479:audio-1502216306-headset",
+              "slurp:train:010006:audio-1499693788-headset",
+              "slurp:train:010537:audio-1490183278"
+            ],
+            "K": 8,
+            "N": 20,
+            "M": [
+              "perception",
+              "solver",
+              "reviewer",
+              "planner"
+            ],
+            "sampling": {
+              "seed": 20260913,
+              "temperature": 0
+            },
+            "execution": {
+              "slot_count": 4,
+              "queue_depth": 4,
+              "schedule": "sequential-trajectory"
+            },
+            "proposer": {
+              "model": "gpt-6.1-sol",
+              "reasoning_effort": "high",
+              "semantic_batches": 1
+            },
+            "member_generation_contacts_cap": 260,
+            "member_fit_endpoints_cap": 1040,
+            "runtime_admission": false
+          },
+          "control_sources": {
+            "seed": {
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+              },
+              "source_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "b0999a8b249db03f115510dc3c4d89a0719f44aac50a769d1be292445b07404f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              }
+            },
+            "seed-aa": {
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "6e4fde9cca2b2491494755d4d423df74dca74607c1b16a59cff4114a8b36a730"
+              },
+              "source_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "debe37098203cd6f7602e964e2b3fcb3ff69937ac148e4cc6cc59a500aaf9f7f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              }
+            }
+          },
+          "members": [
+            {
+              "member": "seed",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-SEED-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-seed-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "seed-aa",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-SEED-AA-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-seed-aa-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-01",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-01-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-01-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-02",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-02-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-02-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-03",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-03-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-03-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-04",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-04-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-04-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-05",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-05-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-05-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-06",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-06-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-06-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-07",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-07-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-07-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-08",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-08-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-08-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            }
+          ]
+        }
+      ],
+      "budget": {
+        "candidate_trajectories": 160,
+        "control_trajectories": 40,
+        "family_trajectories": 200,
+        "generation_contacts_cap": 2600,
+        "fit_endpoints_cap": 10400
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "stages": [
+        {
+          "stage": {
+            "experiment_population": {
+              "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+              "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+            },
+            "population_cohort": "comparison",
+            "boundary_maintenance": {
+              "mode": "observe-only",
+              "when": "after-complete-cohort",
+              "require_generation_scoring_preprocessing_idle": true,
+              "preserve_model_service": true,
+              "global_sync": false,
+              "record_before_after": true
+            },
+            "population_budget": {
+              "candidate_trajectories": 160,
+              "control_trajectories": 40,
+              "family_trajectories": 200,
+              "generation_contacts_cap": 2600,
+              "fit_endpoints_cap": 10400,
+              "K": 8,
+              "N": 20,
+              "M": 4
+            },
+            "candidate_members": [
+              "branch-01",
+              "branch-02",
+              "branch-03",
+              "branch-04",
+              "branch-05",
+              "branch-06",
+              "branch-07",
+              "branch-08"
+            ],
+            "control_members": [
+              "seed",
+              "seed-aa"
+            ],
+            "sample_ids": [
+              "slurp:train:005407:audio-1502374837",
+              "slurp:train:003560:audio-1501686037",
+              "slurp:train:005513:audio-1494513310",
+              "slurp:train:011838:audio-1490369500",
+              "slurp:train:000244:audio-1497883990-headset",
+              "slurp:train:009411:audio-1497030307-headset",
+              "slurp:train:015179:audio-1498569151-headset",
+              "slurp:train:013565:audio-1501765573-headset",
+              "slurp:train:010065:audio-1501756518",
+              "slurp:train:004087:audio-1490199961",
+              "slurp:train:013560:audio-1490291477-headset",
+              "slurp:train:014610:audio-1502218659-headset",
+              "slurp:train:014741:audio-1497882505",
+              "slurp:train:000081:audio-1501753218-headset",
+              "slurp:train:006032:audio--1504195204",
+              "slurp:train:016836:audio-1490705489-headset",
+              "slurp:train:004499:audio--1504194378-headset",
+              "slurp:train:011479:audio-1502216306-headset",
+              "slurp:train:010006:audio-1499693788-headset",
+              "slurp:train:010537:audio-1490183278"
+            ],
+            "K": 8,
+            "N": 20,
+            "M": [
+              "perception",
+              "solver",
+              "reviewer",
+              "planner"
+            ],
+            "sampling": {
+              "seed": 20260913,
+              "temperature": 0
+            },
+            "execution": {
+              "slot_count": 4,
+              "queue_depth": 4,
+              "schedule": "sequential-trajectory"
+            },
+            "proposer": {
+              "model": "gpt-6.1-sol",
+              "reasoning_effort": "high",
+              "semantic_batches": 1
+            },
+            "member_generation_contacts_cap": 260,
+            "member_fit_endpoints_cap": 1040,
+            "runtime_admission": false
+          },
+          "control_sources": {
+            "seed": {
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+              },
+              "source_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "b0999a8b249db03f115510dc3c4d89a0719f44aac50a769d1be292445b07404f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              }
+            },
+            "seed-aa": {
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "6e4fde9cca2b2491494755d4d423df74dca74607c1b16a59cff4114a8b36a730"
+              },
+              "source_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "debe37098203cd6f7602e964e2b3fcb3ff69937ac148e4cc6cc59a500aaf9f7f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              }
+            }
+          },
+          "members": [
+            {
+              "member": "seed",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-SEED-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-seed-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "seed-aa",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-SEED-AA-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-seed-aa-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-01",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-01-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-01-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-02",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-02-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-02-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-03",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-03-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-03-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-04",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-04-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-04-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-05",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-05-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-05-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-06",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-06-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-06-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-07",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-07-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-07-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            },
+            {
+              "member": "branch-08",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-08-V1",
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-08-generation-v1",
+              "status": "AWAIT_ORIGINAL_CANDIDATE_AND_STRUCTURAL_ACCEPTANCE",
+              "policy_binding": null,
+              "model_contact_cap": 260,
+              "fit_endpoint_cap": 1040
+            }
+          ]
+        }
+      ],
+      "budget": {
+        "candidate_trajectories": 160,
+        "control_trajectories": 40,
+        "family_trajectories": 200,
+        "generation_contacts_cap": 2600,
+        "fit_endpoints_cap": 10400
+      }
+    }
+  ],
+  "compile_seed": {
+    "relpath": "configs/baseline/slurp-native-stage3-system-text-review-contract-seed-v1.json",
+    "sha256": "2d7596c9b3c91e50f9881d95d65b2d69d19e4d314416bd7b3e19b6abb37df512"
+  },
+  "shared_runtime": [
+    "TaskAdapter",
+    "KnowledgeProvider",
+    "EvidenceAgentController",
+    "FlightRuntime",
+    "OpenJiuwen"
+  ],
+  "source_selections_rebuilt": false,
+  "proposal_result_required": true,
+  "source_stage3_algorithm": "system-text-black-box-v1",
+  "analysis_requirement": "Use exact new search algorithm identities and complete family registration. Do not alias the search algorithms to historical tf-grpo-context-diversity or gepa protocol validators. Reuse generic complete-family scoring/READ primitives with explicit prospective binding.",
+  "runtime_admission": false,
+  "contacts_added": 0
+}
