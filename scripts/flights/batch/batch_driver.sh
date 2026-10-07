@@ -138,7 +138,7 @@ fly_smoke() {  # $1 order $2 smoke_experiment $3 smoke_cell $4 owner
     $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard --mode worker \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --experiment "$exp" --owner "$owner" --expected-session-id "$SESSION" --lease-token-file "$token" \
-      --receipt-dir "$guard_dir" --start-gib "$process_start" --floor-gib "$process_floor" \
+      "${diagnostic_args[@]}" --receipt-dir "$guard_dir" --start-gib "$process_start" --floor-gib "$process_floor" \
       > /home/chao/batch-smoke-$1-worker.log 2>&1
     rc=$?
     if [ $rc -ne 0 ]; then
@@ -164,6 +164,9 @@ for ((i=0; i<N; i++)); do
   sexp=$(field $i smoke_experiment); scell=$(field $i smoke_cell); plan=$(field $i campaign_plan); run=$(field $i run_id)
   gatt=$(field $i gen_attempt_id); srun=$(field $i smoke_run_id); satt=$(field $i smoke_attempt_id)
   rows=$(field $i expected_rows); ceil=$(field $i ceiling_per_row); notool=$(field $i notool); owner=$(field $i owner)
+  diagnostic_args=()
+  diagnostics=$(field $i process_memory_diagnostics)
+  [ "$diagnostics" = "true" ] && diagnostic_args+=(--memory-diagnostics)
   process_start=$(field $i process_start_gib); process_floor=$(field $i process_floor_gib)
   process_wait=$(field $i process_start_wait_seconds); process_stable=$(field $i process_start_stable_samples)
   [ "$notool" = "true" ] && nt=1 || nt=0
@@ -235,13 +238,13 @@ for ((i=0; i<N; i++)); do
     $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard --mode "$kind" \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --campaign-plan "$REPO/$plan" --owner "$owner" --expected-session-id "$SESSION" \
-      --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
+      "${diagnostic_args[@]}" --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
   elif [ -n "$process_start" ]; then
     GUARD_DIR="$DATA/coordination/process-guard/$(basename "$LOGF" .log)"
     $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
       --experiment "$exp" --owner "$owner" --expected-session-id "$SESSION" \
-      --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
+      "${diagnostic_args[@]}" --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
   elif [ -n "$plan" ] && [ "$plan" != "None" ]; then
     $PY -B -m speech_aware_evidence_acquisition.core.flight.cli campaign \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \

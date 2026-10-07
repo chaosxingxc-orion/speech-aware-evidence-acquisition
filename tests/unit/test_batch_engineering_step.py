@@ -89,8 +89,9 @@ sleep() { :; }
         assert (tmp_path / "done").exists()
 
 
+@pytest.mark.parametrize("diagnostics", [False, True])
 @pytest.mark.parametrize("guarded,worker_exit", [(True, 0), (True, 125), (False, 0)])
-def test_real_smoke_function_guards_worker_and_preserves_failed_lease(tmp_path, guarded, worker_exit):
+def test_real_smoke_function_guards_worker_and_preserves_failed_lease(tmp_path, guarded, worker_exit, diagnostics):
     driver = Path(__file__).resolve().parents[2] / "scripts/flights/batch/batch_driver.sh"
     source = driver.read_text()
     function = source[source.index("fly_smoke() {"):source.index("for ((i=0; i<N; i++)); do")]
@@ -121,7 +122,7 @@ sleep() { /bin/sleep .01; }
                DISPATCHES=str(tmp_path / "dispatches"), LEASE_COMMAND=str(tmp_path / "lease-command"),
                WORKER_EXIT=str(worker_exit), process_start="12.5" if guarded else "",
                process_floor="8" if guarded else "")
-    result = subprocess.run(["bash"], input=prefix + function + '\nfly_smoke 1 e c owner\n',
+    result = subprocess.run(["bash"], input=prefix + function + ('\ndiagnostic_args=(--memory-diagnostics)\n' if diagnostics else '\ndiagnostic_args=()\n') + 'fly_smoke 1 e c owner\n',
                             text=True, env=env, capture_output=True, timeout=10)
     commands = [json.loads(x) for x in (tmp_path / "dispatches").read_text().splitlines()]
     assert len(commands) == 1
@@ -132,6 +133,7 @@ sleep() { /bin/sleep .01; }
         assert cmd[cmd.index("--mode") + 1] == "worker"
         assert cmd[cmd.index("--start-gib") + 1] == "12.5"
         assert cmd[cmd.index("--floor-gib") + 1] == "8"
+    assert ("--memory-diagnostics" in cmd) == (guarded and diagnostics)
     assert "campaign" not in cmd and "--lease-token-file" in cmd
     failed = guarded and worker_exit != 0
     assert result.returncode == (9 if failed else 0), result.stderr

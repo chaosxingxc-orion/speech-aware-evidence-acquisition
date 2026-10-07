@@ -104,6 +104,126 @@ def _sample(reader, policy):
     }
 
 
+_MEMINFO_FIELDS = ("MemFree", "MemAvailable", "Cached", "Buffers", "AnonPages",
+                   "Shmem", "Mlocked", "Unevictable", "Slab", "SwapFree")
+
+
+def _bounded_proc_read(path, *, limit=65536):
+    """Read a bounded operational proc record, never command or task content."""
+    with Path(path).open("rb") as handle:
+        raw = handle.read(limit + 1)
+    if len(raw) > limit:
+        raise ValueError("proc record exceeds bounded read")
+    return raw.decode("ascii")
+
+
+def _proc_starttime(root, pid):
+    raw = _bounded_proc_read(root / str(pid) / "stat", limit=4096)
+    fields = raw[raw.rindex(")") + 2:].split()
+    if int(raw.split(" ", 1)[0]) != pid:
+        raise ValueError("proc PID differs")
+    return int(fields[19])
+
+
+def _memory_fields(raw, names):
+    result = dict.fromkeys(names)
+    for line in raw.splitlines():
+        key, _, value = line.partition(":")
+        if key in result:
+            parts = value.split()
+            if len(parts) == 2 and parts[1] == "kB" and parts[0].isdigit():
+                result[key] = int(parts[0])
+    return result
+
+
+class ProcessMemoryDiagnostics:
+    """One in-flight, nonblocking Linux memory diagnostic; never admission."""
+
+    def __init__(self, *, proc_root=Path("/proc"), server_pid=None):
+        self.root = Path(proc_root)
+        self.server_pid = server_pid
+        self.server_error = None
+        self.identities = {}
+        self.thread = None
+        self.results = queue.Queue(maxsize=1)
+        self.latest = {"status": "not-sampled"}
+
+    def _process(self, role, pid):
+        if pid is None:
+            return {"status": "not-started"}
+        result = {"pid": pid}
+        try:
+            start = _proc_starttime(self.root, pid)
+            identity = {"pid": pid, "starttime_ticks": start}
+            result["identity"] = identity
+            bound = self.identities.setdefault(role, identity)
+            if bound != identity:
+                result["error"] = "pid-identity-changed"
+                return result
+            memory = _memory_fields(_bounded_proc_read(self.root / str(pid) / "smaps_rollup"),
+                                    ("Rss", "Pss", "Swap"))
+            if _proc_starttime(self.root, pid) != start:
+                result["error"] = "pid-identity-changed"
+                return result
+            result["memory_kib"] = memory
+        except Exception as error:
+            result["error"] = type(error).__name__
+        return result
+
+    def collect(self, worker_pid):
+        started = time.monotonic()
+        result = {"schema": "saea-process-memory-diagnostics-v1", "started_at": time.time()}
+        try:
+            result["meminfo_kib"] = _memory_fields(
+                _bounded_proc_read(self.root / "meminfo"), _MEMINFO_FIELDS)
+        except Exception as error:
+            result["meminfo_error"] = type(error).__name__
+        result["worker"] = self._process("worker", worker_pid)
+        result["server"] = ({"error": self.server_error} if self.server_error else
+                            self._process("server", self.server_pid))
+        result["completed_at"] = time.time()
+        result["elapsed_seconds"] = time.monotonic() - started
+        return result
+
+    def start(self, worker_pid):
+        self.snapshot()
+        if self.thread is not None and self.thread.is_alive():
+            return
+        def read():
+            try:
+                value = self.collect(worker_pid)
+            except Exception as error:
+                value = {"error": type(error).__name__}
+            self.results.put_nowait(value)
+        self.thread = threading.Thread(target=read, daemon=True)
+        self.thread.start()
+
+    def snapshot(self):
+        try:
+            self.latest = self.results.get_nowait()
+        except queue.Empty:
+            pass
+        return {**self.latest, "pending": bool(self.thread and self.thread.is_alive()),
+                "age_seconds": max(0, time.time() - self.latest["completed_at"])
+                if "completed_at" in self.latest else None}
+
+
+def _diagnostic_start(diagnostics, pid):
+    try:
+        diagnostics.start(pid)
+    except Exception as error:
+        return {"scheduling_error": type(error).__name__}
+    return None
+
+
+def _diagnostic_snapshot(diagnostics, scheduling_error):
+    try:
+        result = diagnostics.snapshot()
+    except Exception as error:
+        result = {"snapshot_error": type(error).__name__}
+    return {**result, **(scheduling_error or {})}
+
+
 def _stop_owned(process, policy, emit):
     if process.poll() is not None:
         return
@@ -134,18 +254,18 @@ def _stop_owned(process, policy, emit):
 
 
 def run_guarded(
-    command, receipt_dir, policy, *, host_reader=None, identity=None
+    command, receipt_dir, policy, *, host_reader=None, identity=None, diagnostics=None
 ):
     """Execute once, preserve exit status, and stop only this private group."""
     if host_reader is None:
         with WindowsMemoryObserver() as observer:
             return _run_guarded(command, receipt_dir, policy,
-                                host_reader=observer, identity=identity)
+                                host_reader=observer, identity=identity, diagnostics=diagnostics)
     return _run_guarded(command, receipt_dir, policy,
-                        host_reader=host_reader, identity=identity)
+                        host_reader=host_reader, identity=identity, diagnostics=diagnostics)
 
 
-def _run_guarded(command, receipt_dir, policy, *, host_reader, identity):
+def _run_guarded(command, receipt_dir, policy, *, host_reader, identity, diagnostics=None):
     if (
         os.name != "posix"
         or not command
@@ -162,9 +282,12 @@ def _run_guarded(command, receipt_dir, policy, *, host_reader, identity):
             "guard receipt directory already exists"
         ) from error
     process = None
+    diagnostic_error = None
     with (root / "events.jsonl").open("x") as log:
 
         def emit(event, **fields):
+            if diagnostics is not None:
+                fields["memory_diagnostics"] = _diagnostic_snapshot(diagnostics, diagnostic_error)
             log.write(
                 json.dumps(
                     {"event": event, "at": time.time(), **fields},
@@ -189,11 +312,15 @@ def _run_guarded(command, receipt_dir, policy, *, host_reader, identity):
                 "command": list(command),
                 "identity": identity or {},
             }
+            if diagnostics is not None:
+                doc["memory_diagnostics"] = _diagnostic_snapshot(diagnostics, diagnostic_error)
             with (root / "finished.json").open("x") as handle:
                 handle.write(json.dumps(doc, sort_keys=True, indent=2) + "\n")
             emit("finished", **asdict(result))
             return result
 
+        if diagnostics is not None:
+            diagnostic_error = _diagnostic_start(diagnostics, None)
         initial = _sample(host_reader, policy)
         emit("start-sample", **initial)
         if initial["reason"] or initial["available_gib"] < policy.start_gib:
@@ -202,6 +329,8 @@ def _run_guarded(command, receipt_dir, policy, *, host_reader, identity):
             process = subprocess.Popen(list(command), start_new_session=True)
             emit("worker-start", pid=process.pid)
             while process.poll() is None:
+                if diagnostics is not None:
+                    diagnostic_error = _diagnostic_start(diagnostics, process.pid)
                 observation = _sample(host_reader, policy)
                 emit("running-sample", **observation)
                 if (
@@ -223,6 +352,23 @@ def _run_guarded(command, receipt_dir, policy, *, host_reader, identity):
             return finish("guard-failed", 125)
 
 
+def _registered_diagnostics(data, session_id):
+    """Resolve only the registered service PID, reporting diagnostic errors."""
+    diagnostics = ProcessMemoryDiagnostics()
+    try:
+        session_root = (data / "serving").resolve()
+        session_path = (session_root / session_id / "session-receipt.json").resolve()
+        if not session_path.is_relative_to(session_root):
+            raise ValueError("diagnostic session path escapes serving root")
+        session = json.loads(_bounded_proc_read(session_path))
+        pid = session.get("pid")
+        if session.get("session_id") != session_id or type(pid) is not int or pid <= 0:
+            raise ValueError("diagnostic resident identity mismatch")
+        diagnostics.server_pid = pid
+    except Exception as error:
+        diagnostics.server_error = type(error).__name__
+    return diagnostics
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     for name in (
@@ -235,6 +381,7 @@ def main(argv=None):
         "receipt-dir",
     ):
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--memory-diagnostics", action="store_true")
     parser.add_argument("--experiment")
     parser.add_argument("--campaign-plan", type=Path)
     parser.add_argument("--start-gib", type=float, required=True)
@@ -331,12 +478,16 @@ def main(argv=None):
     def interrupted(signum, frame):
         raise InterruptedError("owned process supervisor interrupted")
 
+    diagnostics = None
+    if args.memory_diagnostics:
+        diagnostics = _registered_diagnostics(data, args.expected_session_id)
     prior = signal.signal(signal.SIGTERM, interrupted)
     try:
         result = run_guarded(
             command,
             receipt,
             policy,
+            diagnostics=diagnostics,
             identity={
                 **ownership,
                 "repo_root": str(repo),
