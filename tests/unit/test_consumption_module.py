@@ -297,7 +297,7 @@ def test_compile_is_pure_and_deterministic():
 
 def test_the_program_family_registers_one_id_per_ceiling():
     lock = rc.default_phase_program(rc.MODULE_PROGRAM_FAMILY_BASE)
-    assert rc.MODULE_PROGRAM_FAMILY_IDS == tuple(f"phase-native-module-v1-c{c}" for c in range(11, 25))
+    assert rc.MODULE_PROGRAM_FAMILY_IDS == tuple(f"phase-native-module-v1-c{c}" for c in (2, 3, *range(11, 25)))
     for program_id in rc.MODULE_PROGRAM_FAMILY_IDS:
         assert program_id in AGENT_CONTROLLERS.names()
         program = rc.default_phase_program(program_id)

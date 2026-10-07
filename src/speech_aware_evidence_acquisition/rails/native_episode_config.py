@@ -13,6 +13,8 @@ from .native_tool_authority import (
 )
 
 PLANNER_ACTION_RESPONSE_FORMAT_ID = "saea-native-planner-action-v1"
+SOLVER_TOOL_ACCESS_MODE = "bounded-slot-lookup-v1"
+SOLVER_SLOT_TOOL = "saea-tool-knowledge-target-lookup-v1"
 
 
 #: Keys a Solver ``decoding_overrides`` block must carry, exactly.
@@ -706,6 +708,8 @@ class NativeEpisodeConfig:
     carrier_profile: str | None = None
     # Absent preserves historical raw Reviewer state bytes.
     review_handoff: str | None = None
+    # Absent preserves historical Solver tool prohibition and request bytes.
+    solver_tool_access: str | None = None
 
     @property
     def knowledge_value_rendering(self) -> dict[str, object] | None:
@@ -1187,6 +1191,7 @@ def load_native_episode_config(
         "relisten",
         "consumption_module",
         "review_handoff",
+        "solver_tool_access",
     }
     if (
         not isinstance(raw, Mapping)
@@ -1197,6 +1202,9 @@ def load_native_episode_config(
         raise ValueError("native_episode has unknown or missing fields")
     if not isinstance(raw["episode_id"], str) or not raw["episode_id"].strip():
         raise ValueError("native episode identity must be nonempty")
+    solver_access = raw.get("solver_tool_access")
+    if "solver_tool_access" in raw and solver_access != SOLVER_TOOL_ACCESS_MODE:
+        raise ValueError("solver_tool_access must be bounded-slot-lookup-v1 or absent")
     revisions = raw["max_revisions"]
     if isinstance(revisions, bool) or not isinstance(revisions, int) or revisions < 0:
         raise ValueError("max_revisions must be a nonnegative integer")
@@ -1610,7 +1618,7 @@ def load_native_episode_config(
         spec = tool_specs.get(phase_id)
         tools = ()
         if spec is not None:
-            if kind not in {"reviewer", "planner"}:
+            if kind not in {"reviewer", "planner"} and not (kind == "solver" and solver_access):
                 raise ValueError("only Reviewer and Planner may expose analytical tools")
             if spec.get("mode") != "native-tools" or spec.get("source_authority_role") != phase_id:
                 raise ValueError("native role tools require exact phase source authority")
@@ -1651,7 +1659,12 @@ def load_native_episode_config(
     # union IS each of their arrays, and only the tool-free roles change.
     if tool_schema_rendering == "constant":
         bearing = [role.tool_names for role in roles if role.tool_names]
-        if not bearing:
+        # Preserve the seed node-context declaration only for the explicitly
+        # compiled and verified plain review-off architecture. Other tool-free
+        # configs retain the historical refusal of this rendering alias.
+        plain_off_profile = (consumption_module_json is not None and solver_access is None
+                             and raw["consumption_module"].get("review_loop") == "off")
+        if not bearing and not plain_off_profile:
             raise ValueError(
                 "native_episode.tool_schema_rendering 'constant' requires at least "
                 "one role with tool authority; with no tools at all it is a second "
@@ -2271,7 +2284,7 @@ def load_native_episode_config(
     review_handoff = raw.get("review_handoff")
     if review_handoff not in (None, "slot-issues-v1"):
         raise ValueError("native_episode.review_handoff is invalid")
-    return NativeEpisodeConfig(
+    result = NativeEpisodeConfig(
         raw["episode_id"],
         revisions,
         action_values,
@@ -2304,7 +2317,54 @@ def load_native_episode_config(
         consumption_module_json,
         carrier_profile=_carrier_profile(values),
         review_handoff=review_handoff,
+        solver_tool_access=solver_access,
     )
+    if solver_access:
+        stores = values.get("knowledge_stores")
+        if not isinstance(stores, Mapping) or "slot-contracts" not in stores:
+            raise ValueError("Solver lookup requires the declared slot-contracts store")
+        validate_solver_tool_access(result, tool_specs)
+    return result
+
+
+def validate_solver_tool_access(config, tool_specs, *, dispatcher=None):
+    """Recheck opt-in authority at load and shared-runtime binding boundaries."""
+    if config.solver_tool_access is None:
+        return
+    solver, perception = config.role("solver"), config.role("perception")
+    if (config.solver_tool_access != SOLVER_TOOL_ACCESS_MODE or config.review_loop_enabled
+            or config.role("planner").max_iterations != 0 or config.max_revisions != 0
+            or solver.max_iterations != 2 or solver.samples != 1 or solver.supply_variants is not None
+            or perception.max_iterations != 1 or perception.perception_branches is not None
+            or config.max_contacts != 3 or not config.reserve_final_report
+            or config.tool_schema_rendering != "per-role" or config.acquisition_enabled
+            or config.refresh_action is not None or config.relisten_json is not None
+            or solver.tool_names != (SOLVER_SLOT_TOOL,)
+            or any(r.tool_names for r in config.roles if r.role_kind != "solver")):
+        raise ValueError("Solver bounded lookup requires the reserved three-contact review-off graph")
+    expected = {"mode": "native-tools", "source_authority_role": solver.phase_id,
+                "allowed_tools": (SOLVER_SLOT_TOOL,), "knowledge_views": ("text",),
+                "knowledge_store_ids": ("slot-contracts",), "knowledge_target_axis": "slot-type",
+                "knowledge_selection_mode": "targeted", "candidate_limit": 2,
+                "knowledge_values_per_candidate": 1, "max_calls_per_sample": 1}
+    if not isinstance(tool_specs, Mapping) or set(tool_specs) != {solver.phase_id}:
+        raise ValueError("Solver lookup requires exactly its own phase tool authority")
+    spec = tool_specs[solver.phase_id]
+    for key, value in expected.items():
+        actual = spec.get(key)
+        if isinstance(value, tuple) and isinstance(actual, list):
+            actual = tuple(actual)
+        if type(actual) is not type(value) or actual != value:
+            raise ValueError(f"Solver lookup authority differs at {key}")
+    cap = spec.get("knowledge_value_limit")
+    if type(cap) is not int or not 1 <= cap <= 2:
+        raise ValueError("Solver lookup permits at most two fixed slot values")
+    if dispatcher is not None:
+        stores = getattr(dispatcher, "knowledge_stores", None)
+        indices = getattr(getattr(dispatcher, "supply_for_store", None), "slot_target_indices", {})
+        if (stores is None or "slot-contracts" not in stores.store_ids
+                or "slot-contracts" not in indices or not callable(dispatcher.tool_contact)):
+            raise ValueError("Solver lookup requires the bound fixed store, authored slot index and custodian")
 
 
 def _load_knowledge_index(

@@ -2313,6 +2313,13 @@ async def _invoke_native_role_episode(
 
     from .execution_units import scoped_execution_contact_id
     config, program = binding.config, binding.program
+    if config.solver_tool_access is not None:
+        from .native_episode_config import validate_solver_tool_access
+
+        if binding.tools_for_phase is None:
+            raise ValueError("Solver lookup requires a bound phase tool dispatcher")
+        validate_solver_tool_access(config, binding.tools_for_phase.specs,
+                                    dispatcher=binding.tools_for_phase)
     # Item E4 (2026-09-28, owner decision 185): the post-accept targeted
     # re-listen's own config, resolved once. ``None`` for every config
     # written before E4 and every unarmed fragment, which leaves the
@@ -5017,6 +5024,7 @@ async def _invoke_native_role_episode(
                     role_id=role.phase_id, role_kind=role.role_kind, prompt=prompt,
                     max_iterations=role.max_iterations, ability_names=role.tool_names,
                     reserve_final_report=config.reserve_final_report and bool(role.tool_names),
+                    solver_tool_access=(config.solver_tool_access if role.role_kind == "solver" else None),
                     # Item E39 (2026-09-22): under ``answering-node`` scope a
                     # NON-answering role keeps its truncated text and the
                     # episode continues to the node that does answer. False
@@ -5032,7 +5040,9 @@ async def _invoke_native_role_episode(
                 abilities=tuple(ability_for(role, schema_by_name[name]) for name in role.tool_names),
                 tool_allowed=(
                     (lambda phase, name, role=role: phase == role.phase_id and name in role.tool_names)
-                    if role.role_kind in {"reviewer", "planner"} else None
+                    if role.role_kind in {"reviewer", "planner"} or (
+                        role.role_kind == "solver" and config.solver_tool_access is not None
+                    ) else None
                 ),
                 delivery_allowed=role_delivery_allowed,
             )

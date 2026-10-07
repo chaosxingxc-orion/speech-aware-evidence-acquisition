@@ -332,6 +332,7 @@ class NativeRoleNodeSpec:
     # carry it. Declared LAST so every positional construction written before
     # E39 composes exactly the spec it always did.
     tolerate_length_truncation: bool = False
+    solver_tool_access: str | None = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.role_id, str) or not self.role_id:
@@ -357,7 +358,14 @@ class NativeRoleNodeSpec:
             or len(set(self.ability_names)) != len(self.ability_names)
         ):
             raise ValueError("ability_names must be ordered unique non-empty strings")
-        if self.role_kind in _TOOL_FREE_ROLE_KINDS and self.ability_names:
+        if self.solver_tool_access is not None:
+            from ...rails.native_episode_config import SOLVER_TOOL_ACCESS_MODE, SOLVER_SLOT_TOOL
+
+            if (self.solver_tool_access != SOLVER_TOOL_ACCESS_MODE or self.role_kind != "solver"
+                    or self.ability_names != (SOLVER_SLOT_TOOL,) or self.max_iterations != 2
+                    or not self.reserve_final_report):
+                raise ValueError("Solver tool access requires one bounded lookup and a reserved final answer")
+        if self.role_kind in _TOOL_FREE_ROLE_KINDS and self.ability_names and self.solver_tool_access is None:
             raise ValueError(f"{self.role_kind} role must be tool-free")
         if type(self.reserve_final_report) is not bool or (
             self.reserve_final_report
@@ -888,7 +896,8 @@ class NativeRoleNode(WorkflowComponent):
         self._delivery_allowed = delivery_allowed or (
             lambda _role, _output: False
         )
-        if spec.role_kind in _TOOL_FREE_ROLE_KINDS and tool_allowed is not None:
+        if (spec.role_kind in _TOOL_FREE_ROLE_KINDS and spec.solver_tool_access is None
+                and tool_allowed is not None):
             raise ValueError(f"{spec.role_kind} role must be tool-free")
         names: list[str] = []
         self._invocation_namespace = uuid.uuid4().hex

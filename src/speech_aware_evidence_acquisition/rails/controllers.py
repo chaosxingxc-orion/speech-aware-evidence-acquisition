@@ -1760,6 +1760,8 @@ _LOADED_PROGRAMS: dict[str, PhaseProgram] = {}
 # section 2.4) can reach over the lock's 11: + 1 (the E3 slot-types node),
 # + 2..6 (one or two same-flight Perception columns at level 1 or 2), + 6
 # (re-listen, 3 entities x 2 contacts) -- every value from 11 to 24.
+# The prospective review-off profile adds only 2 and 3: Perception/Solver,
+# with one optional bounded Solver lookup followed by its reserved answer.
 #
 # The ids are written out as literals in one tuple so the engineering-base
 # gate reads them from source without importing the package
@@ -1767,6 +1769,8 @@ _LOADED_PROGRAMS: dict[str, PhaseProgram] = {}
 MODULE_PROGRAM_FAMILY_PREFIX = "phase-native-module-v1-c"
 MODULE_PROGRAM_FAMILY_BASE = "phase-native-candidates-review-revise-v1"
 MODULE_PROGRAM_FAMILY_IDS: tuple[str, ...] = (
+    "phase-native-module-v1-c2",
+    "phase-native-module-v1-c3",
     "phase-native-module-v1-c11",
     "phase-native-module-v1-c12",
     "phase-native-module-v1-c13",

@@ -85,7 +85,7 @@ STATE_COLUMN = "column"
 COMPONENT_STATES: tuple[str, ...] = (STATE_ON, STATE_OFF, STATE_SHADOW, STATE_COLUMN)
 
 _BLOCK_REQUIRED = frozenset({"module_id", "profile", "components"})
-_BLOCK_OPTIONAL = frozenset({"columns", "lock"})
+_BLOCK_OPTIONAL = frozenset({"columns", "lock", "review_loop", "solver_tool_access"})
 #: A lock-version name a block may declare (migration step 6, owner decision
 #: 204): ``v<major>.<minor>``, resolved through the carrier's ``lock_versions``.
 _LOCK_VERSION = re.compile(r"^v[0-9]+\.[0-9]+$")
@@ -448,6 +448,8 @@ class ConsumptionModuleBlock:
     #: every block written before step 6 compiled onto (the v2.0 lock on the
     #: first carrier), kept so their bytes and proofs never move.
     lock: str | None = None
+    review_loop: str | None = None
+    solver_tool_access: str | None = None
 
     def component(self, component_id: str) -> ComponentDecl | None:
         for decl in self.components:
@@ -525,6 +527,14 @@ def parse_consumption_module_block(
     columns = raw.get("columns", [])
     if not isinstance(columns, list):
         raise ConsumptionModuleConfigError("consumption_module.columns must be a list")
+    review_loop = raw.get("review_loop")
+    if "review_loop" in raw and review_loop != "off":
+        raise ConsumptionModuleConfigError("the prospective review_loop profile must be off or absent")
+    solver_access = raw.get("solver_tool_access")
+    if "solver_tool_access" in raw and (solver_access != "bounded-slot-lookup-v1" or review_loop != "off"):
+        raise ConsumptionModuleConfigError("Solver tool access requires the explicit review-off profile")
+    if review_loop == "off" and columns:
+        raise ConsumptionModuleConfigError("review-off profile does not support branch columns")
     lock = raw.get("lock")
     if "lock" in raw and (not isinstance(lock, str) or _LOCK_VERSION.fullmatch(lock) is None):
         raise ConsumptionModuleConfigError(
@@ -602,6 +612,8 @@ def parse_consumption_module_block(
         block_json=block_json,
         columns=column_decls,
         lock=lock,
+        review_loop=review_loop,
+        solver_tool_access=solver_access,
     )
 
 
@@ -911,6 +923,29 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             f"armed {[d.component_id for d in block.armed()]} need a locked system layer"
         )
     writer = _Writer(layer)
+    if block.review_loop == "off":
+        if direct_layer or block.columns or any(d.component_id == RELISTEN for d in block.armed()):
+            raise ConsumptionModuleConfigError("review-off profile requires a simple native graph")
+        opportunity = block.component(KNOWLEDGE_CONSUMPTION_OPPORTUNITY)
+        if block.solver_tool_access and (opportunity is None or opportunity.state != STATE_ON
+                or opportunity.params.get("mode") != "targeted"
+                or opportunity.params.get("store_id") != "slot-contracts"
+                or not opportunity.params.get("solver_template")):
+            raise ConsumptionModuleConfigError("Solver access requires a fixed targeted slot opportunity and prospective Solver template")
+        for kind in ("reviewer", "planner"):
+            writer.set(("native_episode", "roles", kind, "max_iterations"), 0,
+                       component_id="review-off-profile", replace_only=True)
+        writer.set(("native_episode", "max_revisions"), 0,
+                   component_id="review-off-profile", replace_only=True)
+        writer.set(("native_episode", "review_loop"), "off",
+                   component_id="review-off-profile", replace_only="review_loop" in layer["native_episode"])
+        if block.solver_tool_access:
+            writer.set(("native_episode", "roles", "solver", "max_iterations"), 2,
+                       component_id="review-off-profile", replace_only=True)
+            for key, value in (("solver_tool_access", block.solver_tool_access),
+                               ("tool_iteration_policy", "reserve-final-report")):
+                writer.set(("native_episode", key), value, component_id="review-off-profile",
+                           replace_only=key in layer["native_episode"])
     context_decl = block.component(NODE_CONTEXT_PRESENTATION)
     context_owns_tools = (
         context_decl is not None and context_decl.state == STATE_ON
@@ -919,6 +954,8 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
     for decl in block.armed():
         cid, params = decl.component_id, decl.params
         if cid == NODE_CONTEXT_PRESENTATION:
+            if block.solver_tool_access and params.get("tool_schema_rendering", "per-role") != "per-role":
+                raise ConsumptionModuleConfigError("Solver tool profile requires per-role schema rendering")
             _compile_node_presentation(params, writer)
         elif cid in (AGREE_VOTE_SEED, CENTROID_BOUNDARY_KEY):
             seed = tuple(_require_hook(hooks, "decision_supply_path", cid))
@@ -980,6 +1017,17 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             value_limit = params.get("value_limit", 2)
             if type(value_limit) is not int or not 1 <= value_limit <= 2:
                 raise ConsumptionModuleConfigError("knowledge opportunity permits one or two values")
+            if block.review_loop == "off":
+                if block.solver_tool_access:
+                    writer.set(("phase_tools",), {"solver": {
+                        "mode": "native-tools", "source_authority_role": "solver",
+                        "allowed_tools": ["saea-tool-knowledge-target-lookup-v1"],
+                        "knowledge_views": ["text"], "knowledge_store_ids": [store_id],
+                        "candidate_limit": 2, "knowledge_values_per_candidate": 1,
+                        "knowledge_value_limit": value_limit, "knowledge_target_axis": "slot-type",
+                        "knowledge_selection_mode": params["mode"], "max_calls_per_sample": 1,
+                    }}, component_id=cid, replace_only="phase_tools" in layer)
+                continue
             episode = layer["native_episode"]
             if episode["max_revisions"] != 1:
                 raise ConsumptionModuleConfigError("knowledge opportunity requires one revision")
@@ -1045,6 +1093,13 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             continue  # compiled below, with the columns (one branch block)
         else:  # pragma: no cover - the parse refuses every other armed id
             raise ConsumptionModuleConfigError(f"component {cid!r} does not compile in v1")
+    if block.review_loop == "off":
+        if not block.solver_tool_access:
+            writer.set(("phase_tools",), {}, component_id="review-off-profile", replace_only="phase_tools" in layer)
+        if block.solver_tool_access and not context_owns_tools:
+            writer.set(("native_episode", "tool_schema_rendering"), "per-role",
+                       component_id="review-off-profile", replace_only="tool_schema_rendering" in layer["native_episode"])
+        ceiling = sum(layer["native_episode"]["roles"][kind]["max_iterations"] for kind in ("perception", "solver"))
     level = _compile_perception_branches(block, hooks, writer)
     if level is not None:
         from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
@@ -1064,7 +1119,7 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
     reviewer_material = layer["phase_material"].get("reviewer")
     reviewer_contract = (reviewer_material.get("response_format_id")
                          if isinstance(reviewer_material, Mapping) else None)
-    if reviewer_contract == "saea-slot-review-handoff-v1":
+    if reviewer_contract == "saea-slot-review-handoff-v1" and block.review_loop != "off":
         if ceiling != 13 or contract is not None or level is not None:
             raise ConsumptionModuleConfigError(
                 "Reviewer handoff contract requires the registered uncited 13-contact phase shape"
@@ -1247,7 +1302,7 @@ def is_module_off_block(raw_block: object, *, repo_root: Path | None = None) -> 
         parsed = parse_consumption_module_block(raw_block, repo_root=repo_root)
     except ConsumptionModuleConfigError:
         return False
-    return not parsed.armed() and not parsed.columns
+    return not parsed.armed() and not parsed.columns and parsed.review_loop is None
 
 
 def verify_declared_module(
