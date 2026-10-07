@@ -1,5 +1,20 @@
 # Experiment rules for the ChatGPT side
 
+## Same20 streaming-source supplies prepared; execution remains held (2026-10-07)
+
+All four configured same20 members now have source-compatible successor phase-supply-v2
+envelopes with exactly equal outputs and strict warm checks passed. This prepared80
+trajectories without a model/tokenizer/scorer contact, attempt, data/knowledge rebuild,
+queue transition or admission. Preserve previous envelopes and the completed natural
+proof. Root source preparation is27173009088e47047999b1e382a77816c529507f.
+
+Final readiness metadata must precede final config hashes and registered plan bindings:
+a model-free wording check demonstrated that readiness prose changes composed identity,
+then root restored exact bytes and verified all four held identities. Do not use the held
+receipts as final ready-config receipts without a separately verified successor. The
+manual admission/reader integration, exact family registration and frozen/live checks
+remain before GPU dispatch. See [preparation evidence](../receipts/continuation/2026-10-07-simple-consumption-n20-streaming-prepared.json).
+
 ## Complete natural-four structural acceptance; N20 preparation continues (2026-10-07)
 
 Root countersigned all four exact structural READ scopes under owner227 after complete
@@ -548,4 +563,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-07T13:21:38.536827+00:00
+Last refreshed: 2026-10-07T13:42:11.573807+00:00

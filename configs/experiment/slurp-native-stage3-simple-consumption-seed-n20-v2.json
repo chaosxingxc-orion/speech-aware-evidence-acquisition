@@ -19,8 +19,8 @@
           {
             "kind": "preparation",
             "reason": "Existing full-roster fixed selections re-enveloped without recomputation; strict warm identity verified offline.",
-            "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2/phase-supply-v1.json",
-            "sha256": "9016f48df0e2cb2753437f43ed710e34bda4920ad5403198f8716aa1c9e5cc61"
+            "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2/phase-supply-v2.json",
+            "sha256": "92d1a6d43b8b8a1001578dbcfd15c17437a2dd00d8fa0e4aee27eb5189215870"
           }
         ],
         "state": "held"

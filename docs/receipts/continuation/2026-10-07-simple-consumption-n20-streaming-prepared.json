@@ -1,0 +1,65 @@
+{
+  "at_utc": "2026-10-07T13:42:11.573807+00:00",
+  "completed": {
+    "relpath": "coordination/simple-consumption-n20-streaming-v1/preparation-complete-v1.json",
+    "sha256": "f40f7f333579ccaa77541d9286a5e0b7d8df90f328bab0cfa7a3e607328ef424"
+  },
+  "members": [
+    {
+      "config_hash": "e5d4cc5d333bd0dc0c88e2e3298a92be9a9f5097d4aa26d9509e081723cfc4cb",
+      "member_id": "seed",
+      "output_equal": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2/phase-supply-v2.json",
+        "sha256": "92d1a6d43b8b8a1001578dbcfd15c17437a2dd00d8fa0e4aee27eb5189215870"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2"
+    },
+    {
+      "config_hash": "3c4472894cb3351e3cfd5de5c9f33e66312f3b41e247f22ff2e13eb8e2f78a3c",
+      "member_id": "seed-aa",
+      "output_equal": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2/phase-supply-v2.json",
+        "sha256": "4584b1948b5596de74e535fe1d7f567044dff44147eb6678075e7860ae2871f6"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2"
+    },
+    {
+      "config_hash": "54ab89314b58ba704d429e6733785dab5c508bc1ec35f2632b03c7afb07b7ace",
+      "member_id": "review-off",
+      "output_equal": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2/phase-supply-v2.json",
+        "sha256": "64ba7272b6213f17411fc614ff0812acd81051522415774f87753c47821eae3f"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2"
+    },
+    {
+      "config_hash": "159e049c835ffd2ccf23e88656aef1976759d16b344178e158ec7304a46f1c24",
+      "member_id": "solver-lookup",
+      "output_equal": true,
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2/phase-supply-v2.json",
+        "sha256": "73f40830e25185e2eda6bc29acef0e58db855ef7fa6302664f99c711f38e40b2"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2"
+    }
+  ],
+  "model_contacts": 0,
+  "notes": "Final ready-state metadata changes require final config/plan/receipt binding; no silent rebinding of these historical prepared records.",
+  "population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "preparation_source_commit": "27173009088e47047999b1e382a77816c529507f",
+  "producer": {
+    "relpath": "coordination/simple-consumption-n20-streaming-v1/prepare-output-equal-n20-v1.py",
+    "sha256": "07ae37d9d36a14cb719f8693c19986cd8353e35e241ad83c021b875eb91ea1e6"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-n20-streaming-preparation-v1",
+  "scorer_contacts": 0,
+  "status": "HELD_PREPARED",
+  "tokenizer_contacts": 0
+}

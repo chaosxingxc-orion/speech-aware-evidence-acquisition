@@ -1,5 +1,20 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Same20 streaming-source supplies prepared; execution remains held (2026-10-07)
+
+All four configured same20 members now have source-compatible successor phase-supply-v2
+envelopes with exactly equal outputs and strict warm checks passed. This prepared80
+trajectories without a model/tokenizer/scorer contact, attempt, data/knowledge rebuild,
+queue transition or admission. Preserve previous envelopes and the completed natural
+proof. Root source preparation is27173009088e47047999b1e382a77816c529507f.
+
+Final readiness metadata must precede final config hashes and registered plan bindings:
+a model-free wording check demonstrated that readiness prose changes composed identity,
+then root restored exact bytes and verified all four held identities. Do not use the held
+receipts as final ready-config receipts without a separately verified successor. The
+manual admission/reader integration, exact family registration and frozen/live checks
+remain before GPU dispatch. See [preparation evidence](../receipts/continuation/2026-10-07-simple-consumption-n20-streaming-prepared.json).
+
 ## Complete natural-four structural acceptance; N20 preparation continues (2026-10-07)
 
 Root countersigned all four exact structural READ scopes under owner227 after complete
@@ -6724,7 +6739,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T13:21:38.536827+00:00
+Last refreshed: 2026-10-07T13:42:11.573807+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

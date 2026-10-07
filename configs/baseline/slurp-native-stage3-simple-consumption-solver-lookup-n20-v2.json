@@ -503,10 +503,6 @@
       "sha256": "0b05a5f424210f4f91c22ea9340d1e34a12929dc86a5519f853f9dd58a74febe"
     }
   ],
-  "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2/phase-supply-v1.json",
-    "sha256": "5ef4ee10c5c96a0f40618e512064f59f50fc77efa65f7f74fabafa704f6f6901"
-  },
   "scorers": [
     "slurp-slu-official-train",
     "cost"
@@ -529,5 +525,9 @@
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
   "what_the_train_exemplars_store_is": "Twenty speech-retrieved TRAIN exemplars from the common minus-R01 release; identical knowledge and selection across R01C, A and B. Each cohort binds its own sealed speech query vectors. Snapshot/facet/value provenance excludes all three cohorts, as recorded by the system-round asset audit.",
-  "what_this_is": "HELD bounded manual architecture comparison on the unchanged declared N20 roster. Drafts are not exposure registration, root admission or READ authority. Natural four-row qualification remains pending."
+  "what_this_is": "HELD bounded manual architecture comparison on the unchanged declared N20 roster. Drafts are not exposure registration, root admission or READ authority. Natural four-row qualification remains pending.",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2/phase-supply-v2.json",
+    "sha256": "73f40830e25185e2eda6bc29acef0e58db855ef7fa6302664f99c711f38e40b2"
+  }
 }
