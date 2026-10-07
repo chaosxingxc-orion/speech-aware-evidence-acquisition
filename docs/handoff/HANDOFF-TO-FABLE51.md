@@ -1,6 +1,27 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
-Last refreshed: 2026-10-07T03:29:47Z
+## Simple-consumption source admission stopped before contact (2026-10-07)
+
+The configured nongenerative capacity family is preregistered in sole master
+at6608d848d. The original clean frozen checker stopped at03:50:14Z on the first
+seed's population-config-binding gate: the generic registration checker does not
+yet explicitly admit the manual V4 architecture profile. No lease, attempt,
+tokenizer, generation or scorer contact occurred. This is a named source admission
+integration gap, not task-quality evidence. Preserve the original frozen worker
+/home/chao/saea-worktrees/codex-simple-consumption-capacity-v2, every original checker
+and its stdout/stderr/exit. See [root disposition and exact evidence pins](../receipts/continuation/2026-10-07-simple-consumption-capacity-source-gate-stop.json).
+
+Root227 admits a narrow reviewed registration repair, negative/historical tests,
+serial integration and a new clean source checkout with successor model-free checks.
+Do not disable the loader's default manual-profile refusal or broaden ordinary
+template-learning admission. The policies, source pool, full output reserves,
+geometry and budgets stay fixed. Real capacity and all generation remain pending;
+no GPU job or fifteen-minute heartbeat was started. The launch helpers separately
+passed ten pure checks, with98percent combined helper coverage, original observer
+byte parity and an independent Astra/Ultra review. These are engineering proofs,
+not runtime admission or business performance.
+
+Last refreshed: 2026-10-07T03:55:18Z
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

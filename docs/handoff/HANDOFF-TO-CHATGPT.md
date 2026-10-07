@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Simple-consumption source admission stopped before contact (2026-10-07)
+
+The configured nongenerative capacity family is preregistered in sole master
+at6608d848d. The original clean frozen checker stopped at03:50:14Z on the first
+seed's population-config-binding gate: the generic registration checker does not
+yet explicitly admit the manual V4 architecture profile. No lease, attempt,
+tokenizer, generation or scorer contact occurred. This is a named source admission
+integration gap, not task-quality evidence. Preserve the original frozen worker
+/home/chao/saea-worktrees/codex-simple-consumption-capacity-v2, every original checker
+and its stdout/stderr/exit. See [root disposition and exact evidence pins](../receipts/continuation/2026-10-07-simple-consumption-capacity-source-gate-stop.json).
+
+Root227 admits a narrow reviewed registration repair, negative/historical tests,
+serial integration and a new clean source checkout with successor model-free checks.
+Do not disable the loader's default manual-profile refusal or broaden ordinary
+template-learning admission. The policies, source pool, full output reserves,
+geometry and budgets stay fixed. Real capacity and all generation remain pending;
+no GPU job or fifteen-minute heartbeat was started. The launch helpers separately
+passed ten pure checks, with98percent combined helper coverage, original observer
+byte parity and an independent Astra/Ultra review. These are engineering proofs,
+not runtime admission or business performance.
+
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
 All four configured members now have separate graph, capacity and natural four-row
@@ -6378,7 +6399,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T03:29:47Z
+Last refreshed: 2026-10-07T03:55:18Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
