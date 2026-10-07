@@ -1,0 +1,53 @@
+{
+  "at_utc": "2026-10-07T09:06:11.663187+00:00",
+  "cell": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-memory4-v1",
+  "composed_config_hash": "3c14f49b000f18219613274d7af1af3a56962d3c84a5286b34619f9b2d8cb190",
+  "decision_receipt": {
+    "relpath": "coordination/simple-consumption-capacity-recovery1-memory4-v1/root-capacity-admission-v1.json",
+    "sha256": "3a2e66529f91c7d1cdb57da0f71a75056f7c5caac3e554b7a63a74013fccd0bb"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-memory4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 241,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "7c2789d6949ebcf4f89377c26b59ad8d500bfb41cbda7edaf13f4721a531d333",
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-MEMORY4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-memory4-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/simple-consumption-architecture-v1/policies/e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51.json",
+      "sha256": "496bec5e028d7dc502d7d6ed66767d60a9cadd440d17d4af5e5e778880ea4497"
+    },
+    "bundle_id": "e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-MEMORY4-FIT-V1/phase-supply-v1.json",
+    "sha256": "99f9b86ed2ae1bde82f2e6f3e8452d44c61a2923b7ff22a4929faf89154f77ae"
+  },
+  "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-MEMORY4-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}
