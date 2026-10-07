@@ -1,0 +1,248 @@
+{
+  "at_utc": "2026-10-07T00:29:14.719865+00:00",
+  "main_head": "edf3d04929ef418122ee922b0e145eb33904349b",
+  "branches": [
+    {
+      "name": "codex/a2t-context-budget-config-v1",
+      "sha": "f54a82b975d920cbf08a333f3fe7c4f785c87c61",
+      "worktree": ""
+    },
+    {
+      "name": "codex/a2t-native-power-recovery-v1",
+      "sha": "22b56d706e2f5601dc79f58a8fad2bb6a9629f51",
+      "worktree": ""
+    },
+    {
+      "name": "codex/a2t-scope-tools-ledger-correction-v1",
+      "sha": "790c176f847496c6d2fd8b9d0aeed0b9156f2173",
+      "worktree": ""
+    },
+    {
+      "name": "codex/a2t-scope-tools-np2-feasibility-v1",
+      "sha": "a4576cf438ff2fb14b162c6c07c5e65acb17a787",
+      "worktree": ""
+    },
+    {
+      "name": "codex/a2t-scope-tools-np2-proof4-prepare-v1",
+      "sha": "f54a82b975d920cbf08a333f3fe7c4f785c87c61",
+      "worktree": ""
+    },
+    {
+      "name": "codex/cache-cost-audit",
+      "sha": "edf3d04929ef418122ee922b0e145eb33904349b",
+      "worktree": "/home/chao/saea-worktrees/codex-cache-cost-audit"
+    },
+    {
+      "name": "codex/candidate-contract-lookup-v1",
+      "sha": "3c5b3c7eb0f06e1f4f6e84d7abb88e07251b5571",
+      "worktree": ""
+    },
+    {
+      "name": "codex/context-diversity-initial4",
+      "sha": "71071058151a4dcef75729cbbf71e9ea4e723411",
+      "worktree": "/home/chao/saea-worktrees/codex-grouped-rollout-contract"
+    },
+    {
+      "name": "codex/context-learning-baselines",
+      "sha": "727d0e7f2c439ec604686e2a2e6f4baf936fa319",
+      "worktree": "/home/chao/saea-worktrees/codex-context-learning-baselines"
+    },
+    {
+      "name": "codex/context-learning-iterations",
+      "sha": "b65d382dbe0f95ce3f02c0bb4bae17206300d8e5",
+      "worktree": "/home/chao/saea-worktrees/codex-context-learning-iterations"
+    },
+    {
+      "name": "codex/context-update4-process-prep",
+      "sha": "a3af791f63c3050e0cd764950c67f6127e5303ac",
+      "worktree": "/home/chao/saea-worktrees/codex-context-update4-process-prep"
+    },
+    {
+      "name": "codex/context-update4-process-prep-recovery1",
+      "sha": "40df8dd8486f32c63c9d970a0de55f9e1541025d",
+      "worktree": "/home/chao/saea-worktrees/codex-context-update4-process-prep-recovery1"
+    },
+    {
+      "name": "codex/e21-current-executor-proof",
+      "sha": "44d8529b5a06e3247033326286300b6aa7995eb6",
+      "worktree": ""
+    },
+    {
+      "name": "codex/e21-execution-unit-runner-v1",
+      "sha": "9a556951d0fcc5542fb23e87af154b7763e9a66b",
+      "worktree": ""
+    },
+    {
+      "name": "codex/e21-ojw-integration-proof",
+      "sha": "75f536c7aad2a80644163f86889cf9df19f6ee96",
+      "worktree": ""
+    },
+    {
+      "name": "codex/k16-registered-analysis",
+      "sha": "a7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087",
+      "worktree": "/home/chao/saea-worktrees/codex-k16-registered-analysis"
+    },
+    {
+      "name": "codex/ku-s4n-twin-config",
+      "sha": "91040116a3491162949bf5d9866962141c008d77",
+      "worktree": ""
+    },
+    {
+      "name": "codex/memory-observer-repair",
+      "sha": "1f9e55c0612d1e4cd643fd269aa9387c49b9d40b",
+      "worktree": "/home/chao/saea-worktrees/codex-memory-observer-repair"
+    },
+    {
+      "name": "codex/process-metrics-continuation1",
+      "sha": "3cf531b84ee32c29089c6b7379ab39cb28520912",
+      "worktree": "/home/chao/saea-worktrees/codex-process-metrics-continuation1"
+    },
+    {
+      "name": "codex/process-metrics-v1",
+      "sha": "7f80d2f98100cd405fade516e997538e9cfefb2d",
+      "worktree": "/home/chao/saea-worktrees/codex-process-metrics-v1"
+    },
+    {
+      "name": "codex/registration-carrier-preflight",
+      "sha": "056e023e3610e08f18977ccf5658b91b58d2ff39",
+      "worktree": "/home/chao/saea-worktrees/codex-registration-carrier-preflight-v1"
+    },
+    {
+      "name": "codex/sealed-native-tool-result-v1",
+      "sha": "036232754e7c4b606de80b5356a023476c9ca933",
+      "worktree": ""
+    },
+    {
+      "name": "codex/slurp-distinct-successor-recovery-v1",
+      "sha": "5dde511a388103faaa555a2da5eb79ad19ea17e2",
+      "worktree": ""
+    },
+    {
+      "name": "codex/slurp-dual-store-base-replication-v1",
+      "sha": "1b5009d6f82655b9ffd2f6aa2ce381f330f9f5f9",
+      "worktree": ""
+    },
+    {
+      "name": "codex/slurp-next-phase",
+      "sha": "afce16557514f5ab188073745d6bc1baab8c15cc",
+      "worktree": "C:/Users/35686/.codex/worktrees/slurp-next-phase/speech-aware-evidence-acquisition"
+    },
+    {
+      "name": "codex/slurp-task-agent-config-v1",
+      "sha": "1dca716d1493293c15756fff5607fbb8a58afdd6",
+      "worktree": ""
+    },
+    {
+      "name": "codex/sol-panel-measurement-fix",
+      "sha": "676c369dfbd330ccd2953334384f6754bee547a7",
+      "worktree": "/home/chao/saea-worktrees/codex-sol-panel-measurement-fix"
+    },
+    {
+      "name": "codex/sol-successor-panel",
+      "sha": "fb532e5a9dc28713be159751de514726e7f9e3ff",
+      "worktree": "/home/chao/saea-worktrees/codex-sol-successor-panel"
+    },
+    {
+      "name": "codex/sol-successor20-prep",
+      "sha": "fece7425c0734d720f4b7f544935ef4e617df9ee",
+      "worktree": "/home/chao/saea-worktrees/codex-sol-successor20-prep"
+    },
+    {
+      "name": "codex/speech-query-preparation",
+      "sha": "9d7e8bd9b5e2ed1007f466f4abc7d79a314c4509",
+      "worktree": ""
+    },
+    {
+      "name": "codex/stage2-speech-native-agentloop",
+      "sha": "5c8f32c11a505130e049183450fcfda3af981e8e",
+      "worktree": ""
+    },
+    {
+      "name": "codex/system-text-pilot20-memory-owner221-v1",
+      "sha": "62b487e9be02b6c9e63379957f2275a640646ddc",
+      "worktree": "/home/chao/saea-worktrees/codex-system-text-pilot20-memory-owner221-v1"
+    },
+    {
+      "name": "codex/system-text-pilot20-owner220-flight-v1",
+      "sha": "4101a4925e604d48921bac7d8e995216282264de",
+      "worktree": "/home/chao/saea-worktrees/codex-system-text-pilot20-owner220-flight-v1"
+    },
+    {
+      "name": "codex/system-text-policy",
+      "sha": "88d42f8964da6d0c0252edd10718d34e31f3b239",
+      "worktree": "/home/chao/saea-worktrees/codex-system-text-policy"
+    },
+    {
+      "name": "codex/system-text-review-contract-capacity-v1",
+      "sha": "37236d36ba0ad2ff40d9c09c5f8f0337b65d1b2b",
+      "worktree": "/home/chao/saea-worktrees/codex-system-text-review-contract-capacity-v1"
+    },
+    {
+      "name": "codex/system-text-review-contract-engineering-v1",
+      "sha": "6c9b5829b777bfc51985a1c9e5dc1c2b6d8159c7",
+      "worktree": "/home/chao/saea-worktrees/codex-system-text-review-contract-engineering-v1"
+    },
+    {
+      "name": "codex/system-text-round6-arrange",
+      "sha": "fc40d0fa7a6666eaa5235a18c1541e96ba164f61",
+      "worktree": "/home/chao/saea-worktrees/codex-system-text-round6-arrange"
+    },
+    {
+      "name": "codex/system-text-update2-memory-recovery1-flight",
+      "sha": "ebe5c5b466cc7eab917c668b8dfe167938ef3d8b",
+      "worktree": "/home/chao/saea-worktrees/codex-system-text-update2-memory-recovery1-flight"
+    },
+    {
+      "name": "codex/template-proposer-diversity-astra",
+      "sha": "a0a41d26539696088d0054dfe5ae60cae02bbb01",
+      "worktree": "/home/chao/saea-worktrees/codex-template-proposer-diversity-astra"
+    },
+    {
+      "name": "codex/training-action-credit-spec-v1",
+      "sha": "a537f969c64fb63990344beceb66cd441c7a701b",
+      "worktree": ""
+    },
+    {
+      "name": "codex/window-feature-provenance",
+      "sha": "0f157ba570033ac4bd28821ef62515e0600543c7",
+      "worktree": ""
+    },
+    {
+      "name": "fable/commit",
+      "sha": "71bf3b0f5a02e65208aebf365baa588d181d0a59",
+      "worktree": ""
+    },
+    {
+      "name": "fable/comp1",
+      "sha": "e58035c5d4f38fb9c7ff8506b393950c3bd0192f",
+      "worktree": ""
+    },
+    {
+      "name": "fable/milestonefit",
+      "sha": "a22ef7fca7be3b3bb4ea58593385d687752ae002",
+      "worktree": "/home/chao/saea-worktrees/fable-milestonefit"
+    },
+    {
+      "name": "fable/samplegoldbank",
+      "sha": "3d90cf04855657ba09f7ba0827210e754e0657bb",
+      "worktree": ""
+    },
+    {
+      "name": "master",
+      "sha": "edf3d04929ef418122ee922b0e145eb33904349b",
+      "worktree": "D:/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
+    },
+    {
+      "name": "staged/a2t-item-functions-cell",
+      "sha": "c6cecbfab8a79cd76bba37debfb4d15dea8a600f",
+      "worktree": ""
+    },
+    {
+      "name": "staged/select-fill-factorial-128",
+      "sha": "d39ebd78201e575ee36a386f322388c9850cc84c",
+      "worktree": ""
+    }
+  ],
+  "worktrees": "worktree D:/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition\nHEAD edf3d04929ef418122ee922b0e145eb33904349b\nbranch refs/heads/master\n\nworktree /home/chao/saea-worktrees/codex-cache-cost-audit\nHEAD edf3d04929ef418122ee922b0e145eb33904349b\nbranch refs/heads/codex/cache-cost-audit\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-baseline-workers-iteration1-v1\nHEAD a403cad0b51638f2a8903cbbc0a8873019bba9aa\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-gepa-iteration1-capacity-recovery1-v1\nHEAD fcb43a7ce99646685877cd71d2d465384c6301bc\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-gepa-iteration1-capacity-recovery1-v2\nHEAD 6bf07f6d34aef18e31bfd25c6bdef9837ad70681\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-gepa-iteration1-capacity-v1\nHEAD 2a7e379a37cc4b1fa184b99e4e2d47e81f855d02\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-gepa-iteration1-n20-v1\nHEAD c41772055e5d7db35634fe50bca0e6e92607a1df\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-gepa-iteration1-structural-v1\nHEAD 665101384fb608bf9767809a42f9859f5a025485\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-initial4-capacity-v1\nHEAD 993fd7908c979343e00c93c9a53a03a3a5c2c7d0\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-initial4-capacity-v2\nHEAD cdce93551a7b82151f42c22f9e5451b147a7202a\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-initial4-engineering-v1\nHEAD 237c4658ee5f4436f353ae7861df7f1ad0e6d658\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-initial4-n20-v1\nHEAD c6f5543b7d5f66707a80fd09435953da7dfc1b51\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-layout-capacity-v1\nHEAD becae023450f93e95f205d67dd0a4c0a829d849d\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-layout-structural-v1\nHEAD fe7682ca46f852875a9a4192ed011be4c6318201\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-learning-baselines\nHEAD 727d0e7f2c439ec604686e2a2e6f4baf936fa319\nbranch refs/heads/codex/context-learning-baselines\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-learning-iterations\nHEAD b65d382dbe0f95ce3f02c0bb4bae17206300d8e5\nbranch refs/heads/codex/context-learning-iterations\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-matrix-n20-v1\nHEAD d8456cefecafc8a7da681e06bfc06f141e994972\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-matrix-structural-v1\nHEAD 4ab00128df468ce7c49a857beb8aeda0aca5c1c0\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-causal-observer-engineering-v1\nHEAD 358baca8afc27a00d697428536982f9a3dcc637c\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-causal-observer-engineering-v2\nHEAD e9f93eab85ca3f1d9c69885fa11dbbc71818617d\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-configured-k4-b1-v1\nHEAD 19e65d44d6420ca36f734789d61b523e60c109b6\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-configured-k4-b1-v2\nHEAD d81d8cf8c3e2e896ab3e0d24a93bd547b9261baa\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-capacity-v1\nHEAD 16cd42cd1ec4dc2e687222c295ba796c27de4d80\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-n20-v1\nHEAD a7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-structural-v1\nHEAD a024df8aecfbdf69efbd3d4f93f9b464f9e7f777\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-update2-capacity-v1\nHEAD 29a796c398c4869d22439ef5ad09c465df5ad2fa\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-update2-n20-v1\nHEAD 6ede9f34e43dde5f0b26510480bc5cc7dc649bb3\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v1\nHEAD 23b2367abe467b3ecfec2de8998261fbe1d62ce0\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v2\nHEAD 4e9b7f5058df2e973a9a7ef17764d484d6cddc1d\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-update2-observer-recovery1-v3\nHEAD 7e57894a15bff71ab61939f815f1463220c4c3d0\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k16-update2-structural-v1\nHEAD ce2811dd0c1dfbf4b730ebbdddb3b3fcba175c6c\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k8a-post-observer-n20-v1\nHEAD 62ae52eebef86d4efad0b3bd138d93c4b0833c1c\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k8a-update2-n20-v1\nHEAD 82c2f4603cdb959f616b4a5fdad15949b803b7be\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-k8b-admitted-n20-v1\nHEAD bb1c52c4045623260682bd3e05d6e8eca07f88f3\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-observe-boundary-n20-v1\nHEAD 6ca4284c37e337cc46ed60d30a2591f2c64c98eb\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-template-observe-boundary-n20-v2\nHEAD c7a01c05264adcd4b1fc7e3c91c611d3e891efa9\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-tf-iteration1-capacity-v1\nHEAD b05a49fb17ac73f16bd51719360e4e34272b600d\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-tf-iteration1-n20-v1\nHEAD a74951313b824d3fbf45f00e780d4e2d3f859b90\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-tf-iteration1-structural-v1\nHEAD e3bc294a05455abb624eaa1a54215415e9d97804\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-update4-process-prep\nHEAD a3af791f63c3050e0cd764950c67f6127e5303ac\nbranch refs/heads/codex/context-update4-process-prep\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-update4-process-prep-recovery1\nHEAD 40df8dd8486f32c63c9d970a0de55f9e1541025d\nbranch refs/heads/codex/context-update4-process-prep-recovery1\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-context-update4-process-prep-v2\nHEAD 24dfe88850f38db605f4cfd0881913f9580f96c5\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-four-node-proposer-round9-v1\nHEAD 8eafb9f601242d7310cb889656d30dc3cb9af214\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-four-node-seed-capacity-v1\nHEAD c72225424ca076bd8b563bf9fd7346c5c3c0a383\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-four-node-seed-capacity-v2\nHEAD 6d542d7c44c7dde262f51bd85d6f233736bfb9cd\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-four-node-seed-engineering-v1\nHEAD 53ecaca74ed3653ed8506a950d9239c21a98c714\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-grouped-rollout-contract\nHEAD 71071058151a4dcef75729cbbf71e9ea4e723411\nbranch refs/heads/codex/context-diversity-initial4\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-k16-registered-analysis\nHEAD a7b3a21ccb3b26e0b4e6d177879fcc49b7fb5087\nbranch refs/heads/codex/k16-registered-analysis\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-k8a-post-observer-registered-analysis\nHEAD 62ae52eebef86d4efad0b3bd138d93c4b0833c1c\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-memory-observer-engineering-v1\nHEAD 92252d116127b4d54b06638811731f66ff392110\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-memory-observer-engineering-v2\nHEAD 1b87ab05fe79b31c0d1bcce47052a9de3c3b9ecb\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-memory-observer-fitcap-recovery1-v1\nHEAD f479244c9914772f25d261f152bf729c141be143\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-memory-observer-repair\nHEAD 1f9e55c0612d1e4cd643fd269aa9387c49b9d40b\nbranch refs/heads/codex/memory-observer-repair\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-node-batch-capacity-v1\nHEAD 5b9344ffc6a1fa43fd53c9ca71fba6571ff9e38a\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-node-batch-structural-v1\nHEAD 09e6e4d3bf5d3904c7dfe746d6e960bcc7d88b08\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-node-panel-capacity-v1\nHEAD 456a28180238a59a1a7cbcdd7de8fba7f6c2756f\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-node-panel-schedule-n20-v1\nHEAD 63bda5da5f962ed6b971702144456d820eb19bc5\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-node-panel-schedule-n20-v2\nHEAD dd765815218eb7d9207701c130ae5ed9f802dab8\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-node-panel-structural-recovery1\nHEAD aee1d61e707208ce68082e9174168979ae44dda2\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-node-panel-structural-v1\nHEAD a77b4b7dac67653d62302571bb53467a86969274\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update3-capacity-v1\nHEAD b691e86222adb55b77a0af97663d493b21efc2a9\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update3-original-a-n20-v1\nHEAD 45808f73063715dc525703f901b3397d4650fac1\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update3-original-a-n20-v2\nHEAD 5f834db339a39123f922b7982f1ba54c24642c86\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update3-remaining-b1-n20-v1\nHEAD f358b03074592b2a4c62c81272c678ef0f943a4b\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update3-remaining-b2-n20-v1\nHEAD afa8de1c512b2b761236641231d95061c94a11a6\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update3-structural-v1\nHEAD 535f45fd8728da08636ee8d06f93a0bd2bc13ae5\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update4-process-capacity-v1\nHEAD 94190872a21c2b49f45917c85dc9629ecab994db\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-capacity-v1\nHEAD a9a2831b20b2b0f9a4f6f8616199f5337b72b789\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-original-a-scientific-v1\nHEAD 2e26372dc5e25245a68c4c2df8cff2a54d350ea2\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b1-scientific-v1\nHEAD efae9a68410cbd84ddf2339eec48e8f1465cdf2a\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-remaining-b2-scientific-v1\nHEAD 1f163a1bac3a35d6a908659ee326b8d2dab56fde\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update5-aggregate-structural-v1\nHEAD edc736481e62e24d5e1d33e4e01a2041e1fd3245\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update6-diversity-capacity-v1\nHEAD de6b4dac5bd783891b45e1f4c9ebd0a80b2460d0\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update6-diversity-original-a-v1\nHEAD c947d67b24e5f2dd5e69c2ad3e0bf58b60822be0\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update6-diversity-remaining-b1-v1\nHEAD 445f0ce444707d345eed944beed808655f58a5be\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update6-diversity-remaining-b2-v1\nHEAD 02599c9e394e239cc3f0ed7ec1e4580f6f764b3e\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-partitioned-update6-diversity-structural-v1\nHEAD 76fa610d78bc921c9d56f42b3d1e6cbe8fbc84ef\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-prefix-affinity-capacity-v1\nHEAD 194edc87ae0f06aaabdb54b88cc07bd1ab7848b4\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-prefix-affinity-engineering-v1\nHEAD 6d1748ab964a3741e7d8552f922ea79cc98d9314\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-prefix-affinity-n20-v1\nHEAD 4c98cbf8d94fe543e2aaab887ece5c02ba4858e1\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-process-metrics-continuation1\nHEAD 3cf531b84ee32c29089c6b7379ab39cb28520912\nbranch refs/heads/codex/process-metrics-continuation1\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-process-metrics-v1\nHEAD 7f80d2f98100cd405fade516e997538e9cfefb2d\nbranch refs/heads/codex/process-metrics-v1\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-registration-carrier-preflight-v1\nHEAD 056e023e3610e08f18977ccf5658b91b58d2ff39\nbranch refs/heads/codex/registration-carrier-preflight\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-sol-panel-measurement-fix\nHEAD 676c369dfbd330ccd2953334384f6754bee547a7\nbranch refs/heads/codex/sol-panel-measurement-fix\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-sol-successor-panel\nHEAD fb532e5a9dc28713be159751de514726e7f9e3ff\nbranch refs/heads/codex/sol-successor-panel\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-sol-successor20-prep\nHEAD fece7425c0734d720f4b7f544935ef4e617df9ee\nbranch refs/heads/codex/sol-successor20-prep\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-capacity-attach\nHEAD c9c0cb852fdefe84087f9f03c53da6ffb5e6d486\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-capacity-control2\nHEAD 98cea783e73f42e9df9938e240bcea91e58a0260\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-capacity-recovery1\nHEAD 2c86943439904b5a59ff7b0e31b9966bbe5a94e2\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-context-engineering-v1\nHEAD 7ba7f5fdb33ff836960fdf0fca8fe80f8b88fd61\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-context20-capacity-v1\nHEAD 9ec4dcb072ef758dbe518301bcd4e6744b0f0e5d\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-context20-recovery1\nHEAD 963528f3ee858837afbf94abc15d3b535906c7c1\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-engineering-flight-v1\nHEAD b5305a95ba55a0cdacf9bb4b0da5d7595f8e0f2b\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-engineering-flight-v2\nHEAD 1d9b69c018400504e6426ca104ee15d6f4f2611c\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-engineering-recovery1\nHEAD 3a0e56bf7b16b9a11f4cb81a6bfe797cb1137ac1\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-extra5-capacity-v1\nHEAD 21361f3e2c014c411ae85c4ce2ab202317cbc65f\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-extra5-capacity-v2\nHEAD 13523e1a4c576838b904c46289a36c3fcc3290a4\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-extra5-engineering-v1\nHEAD b04c9aab9f41374760618a41795283fc500f35e2\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-fixed400-context20-v1\nHEAD 4fbc2489d0484f44b7360abdaf43f4251e3fa374\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-fixed400-context20-v2\nHEAD c33fc23e9f1bcfe7846d4b00368d281289cedc46\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-initial-control2\nHEAD 6f6807176f1e3a45d98835fa48e531fd23323efe\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-initial-control2-v2\nHEAD 953f9b598adba1df7c424c755993713087428823\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-native-capacity\nHEAD ca0341fa45fe954009491c771496ad3b6296c882\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-native-capacity-recovery1\nHEAD 386276c36ed084cd3a1644bbfd8d029659afbbcc\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-pilot20-memory-owner221-v1\nHEAD 62b487e9be02b6c9e63379957f2275a640646ddc\nbranch refs/heads/codex/system-text-pilot20-memory-owner221-v1\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-pilot20-owner220-flight-v1\nHEAD 4101a4925e604d48921bac7d8e995216282264de\nbranch refs/heads/codex/system-text-pilot20-owner220-flight-v1\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-policy\nHEAD 88d42f8964da6d0c0252edd10718d34e31f3b239\nbranch refs/heads/codex/system-text-policy\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-extra4-v1\nHEAD 8b090ff2ee8e749ddcdaef8de0974d209de1df56\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-extra4-v2\nHEAD 268baff2be27352efbedee944524e2ca47e39a2b\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-extra5-precontact-recovery1\nHEAD 4878e58ad5dc03f6653f05062b363c17d5dbf1a7\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-extra5-v1\nHEAD 89c4486c2ec5d445aff30e6a10bc67d7ad708817\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-extra6-v1\nHEAD a4f69684b175833919c16422cccb5bef9f93033a\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-round1-remaining-v2\nHEAD 26b961dcdc47036ce594293b7842cbdc2879e9ef\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-round1-slot2-v1\nHEAD 3aae00fcf3bd5b42f9193ab059c721c5b46c50f6\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-round1-v1\nHEAD 64d54a84eb8d08fa623daddeb47278751febfb44\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-round2-v1\nHEAD 70c75b98a89a37be695dbf3c5f9e2c53aa7b8b86\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-round3-owner224-v1\nHEAD 44ca3519039b3133ba134c080652727981285d47\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-successor1-admitted-v1\nHEAD 316583e498f5c21225529dd122d47a37068b2f04\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-successor1-v1\nHEAD 14e281a8f1d6c5f0fb514fc95dfbb732f68692e5\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-typed-successor2-admitted-v1\nHEAD 13de9fd1db00a9e80e82431b9dc1c40a66d8bd01\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-proposer-typed-successor2-prepared-v1\nHEAD abc721ba762a6a48863441876e7f86357bdb7c62\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-review-contract-capacity-v1\nHEAD 37236d36ba0ad2ff40d9c09c5f8f0337b65d1b2b\nbranch refs/heads/codex/system-text-review-contract-capacity-v1\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-review-contract-engineering-v1\nHEAD 6c9b5829b777bfc51985a1c9e5dc1c2b6d8159c7\nbranch refs/heads/codex/system-text-review-contract-engineering-v1\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-round5-n20-supply-v2\nHEAD 406eda8ccb35dfbb30347ce0f3c84fe9808728d9\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-round5-n20-v1\nHEAD 232438ac59252bfc251476fa6e08c52df01e5e16\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-round6-arrange\nHEAD fc40d0fa7a6666eaa5235a18c1541e96ba164f61\nbranch refs/heads/codex/system-text-round6-arrange\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-round8-capacity-v1\nHEAD 1343e022f96e3b541b247a39254d163ee737a0cb\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-round8-structural-v1\nHEAD deab94ffe4c85f88e6e2e46b5eafe886e65aa069\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-score-entry-recovery1\nHEAD 953f9b598adba1df7c424c755993713087428823\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-seed-binding-capacity-recovery1\nHEAD 0a078853c3818d9b9b90dab8867b349e07e8978c\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-seed-binding-engineering-recovery1\nHEAD 988ba39944e51113844a613a7c19cafd1a47a766\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-update1-capacity-v1\nHEAD 73c85d610ada68b85568bc858b7e79b43484e704\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-update1-capacity-v2\nHEAD 34af001bc6769a498ff93b7e0c8dfae01d13ade7\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-update1-flight-v1\nHEAD 2f07dd3d6f52eee79d24243c40a0dff195260816\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-update2-capacity-v1\nHEAD 2288783830cd820507aee1c7b450b87ee4fc0ac6\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-update2-flight-v1\nHEAD e56ff40199c0e85fc265daded888e946e43b3498\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-update2-flight-v2\nHEAD 046f6b33784071e8e80197c0c46167c966ded99b\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-system-text-update2-memory-recovery1-flight\nHEAD ebe5c5b466cc7eab917c668b8dfe167938ef3d8b\nbranch refs/heads/codex/system-text-update2-memory-recovery1-flight\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-template-proposer-diversity-astra\nHEAD a0a41d26539696088d0054dfe5ae60cae02bbb01\nbranch refs/heads/codex/template-proposer-diversity-astra\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-template-tf-iteration2-worker-v1\nHEAD f66d9aabf07d83929db45e4447a480c4c2b124cf\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-update4-original-a-scientific-v1\nHEAD 2c9fa842e65aa5130e6a9e4dcc5976c264475d22\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-update4-process-structural-epochs-v1\nHEAD 988ec3d9446b462c47f0312fc002e21bb5f95352\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-update4-remaining-b1-scientific-v1\nHEAD 6d8dca0dfcc8d2b7fe7108e65e280453a3eaf2a4\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/codex-update4-remaining-b2-scientific-v1\nHEAD dccbfdee55862c612c1a8c81cedd7eaf0a01f894\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/fable-batch-flight\nHEAD 4f536851ef096ffdde2f64a83500ae1f918cc3b5\ndetached\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/fable-milestonefit\nHEAD a22ef7fca7be3b3bb4ea58593385d687752ae002\nbranch refs/heads/fable/milestonefit\nprunable gitdir file points to non-existent location\n\nworktree /home/chao/saea-worktrees/fable-testsampleruntime\nHEAD 77a038f038725aee87358f71e8e18f7211a098ae\ndetached\nprunable gitdir file points to non-existent location\n\nworktree C:/Users/35686/.codex/worktrees/slurp-next-phase/speech-aware-evidence-acquisition\nHEAD afce16557514f5ab188073745d6bc1baab8c15cc\nbranch refs/heads/codex/slurp-next-phase",
+  "authority": "Owner explicitly requests removal of all remaining branch tracks; root decides reconciliation. Preserve recoverable historical commits and existing worktree contents."
+}

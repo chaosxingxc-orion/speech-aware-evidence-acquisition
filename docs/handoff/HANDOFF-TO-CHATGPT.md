@@ -1,6 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
 
+## One active mainline; original aggregate successor remains live (2026-10-07)
+
+The latest owner directive is one track. Only local master remains after verified
+backup and removal of47 remaining branch refs (727 original refs removed in total).
+All24 secondary branch-attached worktrees retain identical commits/files as detached
+historical checkouts; three dirty worktrees and71 files are preserved and backed up.
+The23 non-equivalent histories are archived, not activated. See the
+[one-track receipt and recovery inventory](../maintenance/2026-10-07-one-track/README.md).
+Future isolation uses detached worktrees and serial commit integration, not standing
+feature branches. Do not recreate the deleted cache-cost-audit branch.
+
+Aggregate successor session80121/PID271847 is live at00:31Z (elapsed184s,CPU115s),
+with no exit receipt and empty stderr. Source checkout remains detached atedf3d0492.
+Inspect coordination/shared-search-aggregate-recovery1/{process,launch,exit}.json
+and original stdout/stderr. Do not edit/advance that source or restart on timeout.
+No new actor, model/scorer contact or GPU experiment. Exact aggregate completion,
+paired actor inputs and registration remain next; Update6 rejection stays unchanged.
+
+
+
 ## Shared aggregate stopped at private-pin schema; successor prepared (2026-10-07)
 
 Original session67759/PID268605 exited1 at00:13:24Z and is absent. No aggregate

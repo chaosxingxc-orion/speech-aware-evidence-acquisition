@@ -1,0 +1,21 @@
+{
+  "schema": "saea-one-track-consolidation-v1",
+  "at_utc": "2026-10-07T00:31:00.698688+00:00",
+  "retained_branch": "master",
+  "deleted_local_branches": 47,
+  "previously_integrated_removed": 24,
+  "non_equivalent_archived": 23,
+  "branch_backup": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\one-track-consolidation-20261007\\all-local-branches.bundle",
+    "sha256": "9ca4691f02da1b7dfc0355a6e1c05bac432ddaf4caa76ef9fcd692addcdad230",
+    "bytes": 319154634,
+    "verified_all_48_original_tips": true
+  },
+  "unchanged_detached_worktrees": 24,
+  "dirty_worktrees_preserved": 3,
+  "uncommitted_files_preserved": 71,
+  "main_head": "edf3d04929ef418122ee922b0e145eb33904349b",
+  "status": "",
+  "remote_changed": false,
+  "runtime_contacts_added": 0
+}
