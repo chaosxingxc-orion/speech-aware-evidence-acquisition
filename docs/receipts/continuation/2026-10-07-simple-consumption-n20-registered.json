@@ -1,0 +1,45 @@
+{
+  "analysis_intent": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/manual-architecture-analysis-intent-v1.json",
+    "sha256": "50e75b795ef1e4ba75c6a2f4d8f8b9434173dea4ad30b77555c95cabbbf8a161"
+  },
+  "analysis_metadata_correction": "Reuse existing identical ordered owner220 analysis roster instead of the selection-only receipt; preserve old template and all raw samples.",
+  "at_utc": "2026-10-07T14:31:21.144123+00:00",
+  "authoring_exit": {
+    "relpath": "coordination/simple-consumption-n20-v4/authoring-exit-v1.json",
+    "sha256": "afefcf194198225bf55a5d6bfe9f546546784ee111ade5547832d632bf458261"
+  },
+  "authoring_input": {
+    "relpath": "coordination/simple-consumption-n20-v4/authoring-input-v1.json",
+    "sha256": "9bf6ab04fae7e52d3accfc99b1e067c6c101530ed918221187750641cee1d24c"
+  },
+  "contacts": 0,
+  "dispatches": 0,
+  "generation_fit_ids": [
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-FIT-V2",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-FIT-V2",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-FIT-V2",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2",
+    "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-FIT-V2"
+  ],
+  "queue": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/queue-v1.json",
+    "sha256": "64d563c86b15bc5e0b3e6d65560a31bdfac64927cc2e040df535d86dc4f96e17"
+  },
+  "read_countersigned": false,
+  "read_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N20-READ-V2",
+  "root_decision": {
+    "relpath": "coordination/simple-consumption-n20-v4/root-admission-v1.json",
+    "sha256": "a27e62cf2bec1775f098e3e0bad99f5e540e3386c6b5f9212678f2b7b09c0a12"
+  },
+  "rows_registered": 9,
+  "schema": "saea-manual-n20-root-registration-v1",
+  "status": "REGISTERED_BEFORE_CONTACT_FROZEN_AND_LIVE_GATES_PENDING",
+  "validation": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/authoring-validation-v1.json",
+    "sha256": "e956e8c0bc36b6156367146789dd86a6bed72f6bd15c5da0bab430e43f35e666"
+  }
+}

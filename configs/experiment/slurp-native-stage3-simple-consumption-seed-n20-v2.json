@@ -14,16 +14,23 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Natural four-row complete-family qualification, reviewed manual N20 registration, exact exposure and frozen/live root admission remain pending.",
+        "reason": "Original C4 capacity and complete C5 structural family qualified; root227 admits exact manual same20 comparison subject to final source and live gates. Preserve the original policy, inputs, prepared outputs and independent complete scoring.",
         "requirements": [
           {
             "kind": "preparation",
-            "reason": "Existing full-roster fixed selections re-enveloped without recomputation; strict warm identity verified offline.",
+            "reason": "Exact reused prepared supply; strict warm identity verified before plans.",
             "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2/phase-supply-v2.json",
             "sha256": "92d1a6d43b8b8a1001578dbcfd15c17437a2dd00d8fa0e4aee27eb5189215870"
+          },
+          {
+            "expected_decision_id": "simple-consumption-n20-v4",
+            "kind": "decision",
+            "reason": "Root decided this exact configured generation/FIT family before contact.",
+            "relpath": "coordination/simple-consumption-n20-v4/root-admission-v1.json",
+            "sha256": "a27e62cf2bec1775f098e3e0bad99f5e540e3386c6b5f9212678f2b7b09c0a12"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2",
       "system_text_policy_binding": {

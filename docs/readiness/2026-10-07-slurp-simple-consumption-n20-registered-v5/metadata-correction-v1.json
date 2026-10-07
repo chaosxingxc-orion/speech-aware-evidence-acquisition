@@ -1,0 +1,68 @@
+{
+  "all_original_package_hashes": {
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/README.md": "ed4ed792c01dddb31688105ab6a0391f51e8b3fd9a991a61417dc93fe59791b5",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/analysis-recipe-intent-v1.json": "f3471f1b556059fd37dbe94197bf5e3ac1a3f389ed2cfe0cc917a85c40022e36",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/authoring-validation-v1.json": "e956e8c0bc36b6156367146789dd86a6bed72f6bd15c5da0bab430e43f35e666",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/campaign-plan-v1.json": "f72411fa0ed62321c63d0d7b6d46786a758e1d9e7fa1df39f9d99f939367dcbd",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/exposure-rows-authoring-draft-v1.json": "20a6da8d566b2c0426e3e1c9757a3614a1bd24a71d1140504bbe83cfbba1e13c",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/manual-architecture-analysis-intent-v1.json": "50e75b795ef1e4ba75c6a2f4d8f8b9434173dea4ad30b77555c95cabbbf8a161",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/queue-v1.json": "64d563c86b15bc5e0b3e6d65560a31bdfac64927cc2e040df535d86dc4f96e17",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/review-off-fit-plan-registered-v1.json": "cfe0e760a937257d99dfe132e04d0176937911eafdfe1593cd2c3fdf1ea8864c",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/review-off-generation-plan-registered-v1.json": "ef7e5647e2d3d708d99e264bd112cac7ad56872cf941f6d01ad85f8bb0160c14",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/review-off-original-experiment-v1.json": "6de04abdfca3a7cc78db0f4dbc9d5dab3a1c4b6836b6d33a23790d0ac670d765",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/review-off-preparation-receipt-final-v1.json": "b264c401ddd9c9a238876e0d8da89bcc4182762b9f2b1d12e7a3976b269774b3",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/root-read-draft-v1.json": "3aea3715103c14e00a8ee400a4a8f4bff0930eebbe82d7cf0bf4eb0c6b69229c",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-aa-fit-plan-registered-v1.json": "5ca2fc0014898c584ebdbcee54a4123d1301b33d298db4ce5c4c86c537b697c1",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-aa-generation-plan-registered-v1.json": "86db2fce90972e3d9914f9115e784388747185f830605bc7a932138ea8822944",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-aa-original-experiment-v1.json": "7ccd5b23820bf2692c9b6dffe7f592921a0fc24005331d39968d2e5453331564",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-aa-preparation-receipt-final-v1.json": "7e107be1771bb4deb8bc9627f162ca10dc7a6d95ec0bd2c83b97d91abee44ece",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-fit-plan-registered-v1.json": "e8cf5e3131f1e2d64cdfb31b949b80d1a1be0cbf1c6e9235e940c4281d17ae09",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-generation-plan-registered-v1.json": "b4699ad29405620b60081ed6d436692bf1e0612242aa01faf58c869186df2b82",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-original-experiment-v1.json": "c20de4602ecea7ac50ed893fa9cefe25e33a525ac4eeb7366689c0c13fe3d903",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-preparation-receipt-final-v1.json": "17c14eecc9452cb09c8d34761508fbf837a824dfba71ca1147ece58d2c5cba0d",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/solver-lookup-fit-plan-registered-v1.json": "8fea7bb29b66c55675fa4fffc822735cb2df9cc88aff641c285324fb40cb6849",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/solver-lookup-generation-plan-registered-v1.json": "d64156b64229d088cb5562d3170aa2cbe83a4f4b048050b0cde9d7ed55e4113f",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/solver-lookup-original-experiment-v1.json": "66dc388f1e52849e80ec947252853d78918618a38d86b4468f8ca55245e72017",
+    "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/solver-lookup-preparation-receipt-final-v1.json": "1995ad1646defb1f0a44363efa195c3afcbbc39329b8d6d75d46bb997641d462"
+  },
+  "at_utc": "2026-10-07T14:38:09.922479+00:00",
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "model_contacts": 0,
+  "original_gate": {
+    "relpath": "coordination/simple-consumption-n20-v4/named-registration-check-v1.json",
+    "sha256": "c6a5ed1b16296615987bc8aac529f5f180749e6f71e2a916316c2e9a7fbfccb4"
+  },
+  "original_intent": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/manual-architecture-analysis-intent-v1.json",
+    "sha256": "50e75b795ef1e4ba75c6a2f4d8f8b9434173dea4ad30b77555c95cabbbf8a161"
+  },
+  "preparation_repeated": false,
+  "queue": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v5/queue-v1.json",
+    "sha256": "64d563c86b15bc5e0b3e6d65560a31bdfac64927cc2e040df535d86dc4f96e17"
+  },
+  "read_countersigned": false,
+  "root_authority": "owner227",
+  "rows_added": 0,
+  "rows_updated": 9,
+  "runtime_configuration_changed": false,
+  "schema": "saea-manual-n20-measurement-metadata-correction-v1",
+  "scorer_contacts": 0,
+  "status": "PROSPECTIVE_METADATA_SUCCESSOR_ONLY",
+  "successor_intent": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v5/manual-architecture-analysis-intent-v1.json",
+    "sha256": "585bbeb9683487289b6a7f4cf61ffebde99c2380f382109aed8eca69aaf80088"
+  },
+  "successor_recipe": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v5/analysis-recipe-intent-v1.json",
+    "sha256": "8da4acebe5d5dd640aabd7695eec96750fa9a90e35a40206b1189b528c83bef8"
+  },
+  "tokenizer_contacts": 0
+}

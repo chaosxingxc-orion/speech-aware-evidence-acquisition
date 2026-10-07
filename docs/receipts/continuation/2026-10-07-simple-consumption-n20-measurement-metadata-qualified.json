@@ -1,0 +1,48 @@
+{
+  "analysis_intent": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v5/manual-architecture-analysis-intent-v1.json",
+    "sha256": "585bbeb9683487289b6a7f4cf61ffebde99c2380f382109aed8eca69aaf80088"
+  },
+  "at_utc": "2026-10-07T14:50:25.902775+00:00",
+  "cause": "The authoring helper omitted the already registered common runtime measurement profile from the analysis definition and recipe. The real policy-bound checker refused all four cells before any contact.",
+  "contacts": 0,
+  "dispatches": 0,
+  "disposition": "Preserve v4; add the identical common profile in immutable v5 metadata. Preserve all plan, supply, input, policy and queue bytes. Update only the same nine unspent ledger artifact pointers.",
+  "metadata_correction": {
+    "relpath": "coordination/simple-consumption-n20-v4/measurement-metadata-correction-v1.json",
+    "sha256": "2ac334d430a4818457faec039ef545daccd42e3fa818be6ecedf52023704d18e"
+  },
+  "original_refusal": {
+    "relpath": "coordination/simple-consumption-n20-v4/named-registration-check-v1.json",
+    "sha256": "c6a5ed1b16296615987bc8aac529f5f180749e6f71e2a916316c2e9a7fbfccb4"
+  },
+  "owner_decisions": [
+    227
+  ],
+  "prior_registration": {
+    "relpath": "docs/receipts/continuation/2026-10-07-simple-consumption-n20-registered.json",
+    "sha256": "c3e0a6bb77b9af8192d95235957ce65cbe46a41b2c49e582a1ebb401f089f54e"
+  },
+  "queue": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v5/queue-v1.json",
+    "sha256": "64d563c86b15bc5e0b3e6d65560a31bdfac64927cc2e040df535d86dc4f96e17"
+  },
+  "read_countersigned": false,
+  "schema": "saea-manual-n20-metadata-succession-v1",
+  "source_fix_reviewed_commit": "c2c662ef20234948ee683f0e050a26b7a99060d2",
+  "status": "NAMED_REGISTRATION_PASSED_SOURCE_FREEZE_PENDING",
+  "successor_exit": {
+    "relpath": "coordination/simple-consumption-n20-v4/named-registration-exit-v2.json",
+    "sha256": "940020487a3de88c33e5095fd4e5cf43f076a586cf773dc9a0c1c7a29d895d22"
+  },
+  "successor_result": {
+    "relpath": "coordination/simple-consumption-n20-v4/named-registration-check-v2.json",
+    "sha256": "57e6d1c12b66acb79b4afc918f8323996738ffef4b7458bb05e9b938dd848867"
+  },
+  "verification": {
+    "actual_named_members_passed": 4,
+    "helper_tests": 29,
+    "independent_focused_tests": 4,
+    "original_v4_files_preserved": 24
+  }
+}

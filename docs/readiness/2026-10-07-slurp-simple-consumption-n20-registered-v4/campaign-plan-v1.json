@@ -1,0 +1,21 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-native-stage3-simple-consumption-seed-n20-v2",
+      "experiment": "slurp-native-stage3-simple-consumption-seed-n20-v2"
+    },
+    {
+      "cell": "slurp-native-stage3-simple-consumption-seed-aa-n20-v2",
+      "experiment": "slurp-native-stage3-simple-consumption-seed-aa-n20-v2"
+    },
+    {
+      "cell": "slurp-native-stage3-simple-consumption-review-off-n20-v2",
+      "experiment": "slurp-native-stage3-simple-consumption-review-off-n20-v2"
+    },
+    {
+      "cell": "slurp-native-stage3-simple-consumption-solver-lookup-n20-v2",
+      "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-n20-v2"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

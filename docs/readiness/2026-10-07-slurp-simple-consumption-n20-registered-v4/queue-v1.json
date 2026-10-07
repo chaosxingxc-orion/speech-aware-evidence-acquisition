@@ -1,0 +1,182 @@
+[
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-simple-consumption-seed-n20-v2",
+    "contacts_per_row": 4,
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-simple-consumption-seed-n20-v2",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+      "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+    },
+    "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-FIT-V2",
+    "gen_attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n20-generation-v2",
+    "kind": "cell",
+    "notool": false,
+    "order": 1,
+    "owner": "root-simple-consumption-n20-v4",
+    "population_budget": {
+      "K": 2,
+      "N": 20,
+      "active_node_counts": {
+        "review-off": 2,
+        "seed": 4,
+        "seed-aa": 4,
+        "solver-lookup": 2
+      },
+      "candidate_trajectories": 40,
+      "control_trajectories": 40,
+      "family_trajectories": 80,
+      "fit_endpoints_cap": 2480,
+      "generation_contacts_cap": 620
+    },
+    "population_cohort": "comparison",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2",
+    "short": "slurp-simple-consumption-n20-v2-seed",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  },
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-simple-consumption-seed-aa-n20-v2",
+    "contacts_per_row": 4,
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-simple-consumption-seed-aa-n20-v2",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+      "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+    },
+    "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-FIT-V2",
+    "gen_attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n20-generation-v2",
+    "kind": "cell",
+    "notool": false,
+    "order": 2,
+    "owner": "root-simple-consumption-n20-v4",
+    "population_budget": {
+      "K": 2,
+      "N": 20,
+      "active_node_counts": {
+        "review-off": 2,
+        "seed": 4,
+        "seed-aa": 4,
+        "solver-lookup": 2
+      },
+      "candidate_trajectories": 40,
+      "control_trajectories": 40,
+      "family_trajectories": 80,
+      "fit_endpoints_cap": 2480,
+      "generation_contacts_cap": 620
+    },
+    "population_cohort": "comparison",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2",
+    "short": "slurp-simple-consumption-n20-v2-seed-aa",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  },
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 2,
+    "cell": "slurp-native-stage3-simple-consumption-review-off-n20-v2",
+    "contacts_per_row": 2,
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-simple-consumption-review-off-n20-v2",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+      "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+    },
+    "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-FIT-V2",
+    "gen_attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n20-generation-v2",
+    "kind": "cell",
+    "notool": false,
+    "order": 3,
+    "owner": "root-simple-consumption-n20-v4",
+    "population_budget": {
+      "K": 2,
+      "N": 20,
+      "active_node_counts": {
+        "review-off": 2,
+        "seed": 4,
+        "seed-aa": 4,
+        "solver-lookup": 2
+      },
+      "candidate_trajectories": 40,
+      "control_trajectories": 40,
+      "family_trajectories": 80,
+      "fit_endpoints_cap": 2480,
+      "generation_contacts_cap": 620
+    },
+    "population_cohort": "comparison",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2",
+    "short": "slurp-simple-consumption-n20-v2-review-off",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  },
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 3,
+    "cell": "slurp-native-stage3-simple-consumption-solver-lookup-n20-v2",
+    "contacts_per_row": 2,
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-n20-v2",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+      "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+    },
+    "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-FIT-V2",
+    "gen_attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n20-generation-v2",
+    "kind": "cell",
+    "notool": false,
+    "order": 4,
+    "owner": "root-simple-consumption-n20-v4",
+    "population_budget": {
+      "K": 2,
+      "N": 20,
+      "active_node_counts": {
+        "review-off": 2,
+        "seed": 4,
+        "seed-aa": 4,
+        "solver-lookup": 2
+      },
+      "candidate_trajectories": 40,
+      "control_trajectories": 40,
+      "family_trajectories": 80,
+      "fit_endpoints_cap": 2480,
+      "generation_contacts_cap": 620
+    },
+    "population_cohort": "comparison",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2",
+    "short": "slurp-simple-consumption-n20-v2-solver-lookup",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  }
+]

@@ -1,5 +1,42 @@
 # Experiment rules for the ChatGPT side
 
+## Same20 named registration passes after preserved metadata correction (2026-10-07)
+
+The actual policy-bound registration gate identified one omitted measurement-profile
+field in the analysis recipe. Root preserved the complete v4 package and zero-contact
+refusal, authored metadata-only registered-v5, and verified all four named cells PASS.
+The eight plan bytes, queue, runtime configurations, policies, prepared supplies and
+ordered inputs are unchanged. The same nine unspent ledger rows now reference v5;
+the exact READ remains DRAFT. Reviewed helper c2c662ef prevents recurrence with an
+actual policy-bound checker regression. No warm preparation was repeated.
+
+The full offline sweep also identified the streaming loader's stale tool-catalog
+source pin; record its scoped correction before the final frozen gates. Two checker
+invocations used an unsupported generic argument; their corrected native interfaces
+passed, with the first invocation logs preserved. No model or scorer contact occurred.
+Continue under owner227 with the same four-member20 comparison, 4GiB resource floors
+and process diagnostics. No new owner decision is needed. Preserve all old records.
+See [metadata qualification](../receipts/continuation/2026-10-07-simple-consumption-n20-measurement-metadata-qualified.json).
+
+## Same20 comparison registered before contact; freeze and live gates next (2026-10-07)
+
+Actual root authoring completed with zero model/tokenizer/scorer contacts. All four
+ready configurations passed the repaired shared N20 pair API and exact warm supply
+checks. Eight generation/FIT rows are root countersigned and the existing exact N20
+READ ID is registered DRAFT. The queue preserves four 20-row members, fixed policies,
+4GiB start/run floors, stable startup wait and enabled process memory diagnostics.
+No queue/control transition or dispatch has occurred. Next freeze the clean integrated
+worker, verify named gates and resolve the unchanged analysis successor against the
+external actual-worker receipt before launch. Never modify frozen source or self-pin
+its commit. Scientific READ remains unsigned until the entire family qualifies.
+
+The original template accidentally named the selection-only roster. Its immutable
+successor reuses the already existing ordered analysis counterpart; every sample and
+utterance identity matches. No dataset or knowledge was rebuilt and no result was read.
+The earlier 16-row natural proof remains complete and intentionally unscored. Owner227
+covers this bounded continuation; return before8x400 or equivalent split. See
+[registration evidence](../receipts/continuation/2026-10-07-simple-consumption-n20-registered.json).
+
 ## Manual same20 admission and reader integrated; final authoring pending (2026-10-07)
 
 Root serially integrated reviewed admission, its direct-API exact run/attempt repair,
@@ -582,4 +619,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-07T14:10:51.476361+00:00
+Last refreshed: 2026-10-07T14:31:21.144123+00:00

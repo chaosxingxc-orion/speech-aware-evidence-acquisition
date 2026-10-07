@@ -1,0 +1,140 @@
+{
+  "architecture_member": "review-off",
+  "architecture_proof": "manual-architecture-n20-v1",
+  "capacity_prerequisite": {
+    "qualification": {
+      "relpath": "coordination/simple-consumption-prepared-graph-recovery2-v1/capacity-qualified-v1.json",
+      "sha256": "47de73ed7217c042321abcc36ed027767fddc4bc8b77181f1b038477b8efff93"
+    },
+    "registration": {
+      "relpath": "coordination/simple-consumption-prepared-graph-recovery2-v1/registration-v1.json",
+      "sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a"
+    }
+  },
+  "cell": "slurp-native-stage3-simple-consumption-review-off-n20-v2",
+  "composed_config_hash": "6fad514bd98e5354e9bce52b65676fc1ced9ee7c966ec12c92809ff9a10d0ddd",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "decision_receipt": {
+    "relpath": "coordination/simple-consumption-n20-v4/root-admission-v1.json",
+    "sha256": "a27e62cf2bec1775f098e3e0bad99f5e540e3386c6b5f9212678f2b7b09c0a12"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n20-fit-v2",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 160,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "061233f47c22efe0a2f3364343a9f82c1f0e5c54bdab0d4ebc5f777e32070de8",
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-FIT-V2",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-simple-consumption-review-off-n20-v2",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "learner_export": false,
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "natural_prerequisite": {
+    "qualification": {
+      "relpath": "coordination/simple-consumption-natural4-instrumented-v4/natural-family-qualified-v1.json",
+      "sha256": "9774e958f14fc46542243d23f33ec2c800467132177f61a2221893d3a52ee1a9"
+    },
+    "registration": {
+      "relpath": "coordination/simple-consumption-natural4-instrumented-v4/root-admission-v1.json",
+      "sha256": "65fd6313efa995247cb9f9a28c562801a8d41f9557c06eccf9b576f3ebbdaaa5"
+    }
+  },
+  "official_score_jobs": 1,
+  "plan_role": "fit",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_budget": {
+    "K": 2,
+    "N": 20,
+    "active_node_counts": {
+      "review-off": 2,
+      "seed": 4,
+      "seed-aa": 4,
+      "solver-lookup": 2
+    },
+    "candidate_trajectories": 40,
+    "control_trajectories": 40,
+    "family_trajectories": 80,
+    "fit_endpoints_cap": 2480,
+    "generation_contacts_cap": 620
+  },
+  "population_cohort": "comparison",
+  "preparation_receipt": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/review-off-preparation-receipt-final-v1.json",
+    "sha256": "b264c401ddd9c9a238876e0d8da89bcc4182762b9f2b1d12e7a3976b269774b3"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2/phase-supply-v2.json",
+    "sha256": "64ba7272b6213f17411fc614ff0812acd81051522415774f87753c47821eae3f"
+  },
+  "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N20-READ-V2",
+  "registered_at_utc": "2026-10-07T14:22:15.451066+00:00",
+  "runtime_sample_ids": [
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:010537:audio-1490183278",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:016836:audio-1490705489-headset"
+  ],
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT; explicit root authoring"
+}
