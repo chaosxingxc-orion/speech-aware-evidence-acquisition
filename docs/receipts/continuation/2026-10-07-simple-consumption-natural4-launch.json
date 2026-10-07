@@ -1,0 +1,178 @@
+{
+  "allowed_actual_fit_endpoint_ceiling": 496,
+  "allowed_generation_ceiling": 124,
+  "at_utc": "2026-10-07T11:30:05.823695+00:00",
+  "configured_members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-generation-v3",
+      "ceiling_per_row": 13,
+      "label": "seed",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V3"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-generation-v3",
+      "ceiling_per_row": 13,
+      "label": "seed-aa",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V3"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-generation-v3",
+      "ceiling_per_row": 2,
+      "label": "review-off",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-V3"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-generation-v3",
+      "ceiling_per_row": 3,
+      "label": "solver-lookup",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V3"
+    }
+  ],
+  "dispatch": {
+    "at_utc": "2026-10-07T11:24:55.8260208Z",
+    "floor_gib": 4,
+    "queue_sha256": "cc0e4d876384bd842b2f804ad077ca73b15a36e94bb94daea127b7fae11e5724",
+    "restart_permitted": false,
+    "root_admission_sha256": "23dd1d9d5c28ad9a1beec7c705f0c06b36eff421f4afedbab5b10a1d2dc57e7b",
+    "scope": "Four registered natural engineering members, four trajectories each, zero official scoring; no scientific comparison or learner export",
+    "start_gib": 4,
+    "task_name": "SAEA-Batch-Driver",
+    "windows_free_gib": 21.126575469970703,
+    "worker": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-v3",
+    "worker_commit": "3f3c30af26ad70086970876656ac5a36e1268cc4"
+  },
+  "evidence": [
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\root-admission-v1.json",
+      "sha256": "23dd1d9d5c28ad9a1beec7c705f0c06b36eff421f4afedbab5b10a1d2dc57e7b"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\dispatch-requested-v1.json",
+      "sha256": "666e9583bbcf640078327f4fac94ebc75509ef0887edd8c10a75300f2ecb9e6c"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\normal-control-transition-v1.json",
+      "sha256": "284e419e462d18d308c544a4f07ea78c172cd5c247d2f7dd98d72a6c5ffb6699"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\normal-transition-cross-device-disposition-v1.json",
+      "sha256": "53757b1017cf539afefb732f1bb609c83275aee93d384ad5dbaf2195ecb683d3"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\frozen-registration-check-v1.stdout.json",
+      "sha256": "1067b7cac7d9d4f79ce9621ebec745c364a024031ff71bea264daca51f89ddd8"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\registered-preparation-check-v1.exit.json",
+      "sha256": "23f486b09a49bbb967803a1f8b5abf89d2e78d81314463978f3037f7eb4f359a"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\registered-preparation-check-v1.stdout.json",
+      "sha256": "1067b7cac7d9d4f79ce9621ebec745c364a024031ff71bea264daca51f89ddd8"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\launch-driver-status-snapshot-v1.jsonl",
+      "sha256": "4ffb6586b1bd6b983fac8e4bdab14de8275fb2e9390a203edc4d5baa233181a7"
+    },
+    {
+      "path": "D:\\chao_workspace\\saea-maintenance\\sol61-natural4-preparation-20261007\\docs\\readiness\\2026-10-07-slurp-simple-consumption-natural4-preparation-v1\\natural4-engineering-queue-v1.json",
+      "sha256": "cc0e4d876384bd842b2f804ad077ca73b15a36e94bb94daea127b7fae11e5724"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\simple-natural4-seed-frozen-check-v1.exit.json",
+      "sha256": "e58c306802379c4ffa092aaf2a11d84743fe6f4437bf640482b2a40e9154020f"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\simple-natural4-seed-frozen-check-v1.stdout.log",
+      "sha256": "7215b2461c4ae617c3118cf960f08f0cf99e8e57917e362a68f495c0d27c917e"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\simple-natural4-seed-aa-frozen-check-v1.exit.json",
+      "sha256": "c3876d5f7c76433e65657276a751f8a468b8dcdcd2dfcb9889d9d05177907ed7"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\simple-natural4-seed-aa-frozen-check-v1.stdout.log",
+      "sha256": "8a06a815aef732737ad873fe76fb178f3b5854c803931d941a819354e717771a"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\simple-natural4-review-off-frozen-check-v1.exit.json",
+      "sha256": "1a0d5e495bf096db22499ebd5a4beb86aad83ba0841f8892ef71e78d1a6a84ab"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\simple-natural4-review-off-frozen-check-v1.stdout.log",
+      "sha256": "d25acbfd1821ac0cf6fe71d701dd4590f3b3025cc5ba070d92c3d2601ff44af1"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\simple-natural4-solver-lookup-frozen-check-v1.exit.json",
+      "sha256": "dda1e993d9fa3313788f8000481c9738f271e203b4b71a40b806fec7c465a694"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\simple-natural4-solver-lookup-frozen-check-v1.stdout.log",
+      "sha256": "473bb65c2ff88edfe3b0d8f0e26b76042d9eff313314b1656fd440e42480d060"
+    }
+  ],
+  "frozen_source_commit": "3f3c30af26ad70086970876656ac5a36e1268cc4",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-v3",
+  "monitor_reported_by_root": {
+    "id": "slurp-natural4-engineering-monitor",
+    "initial_creation_error": "Missing destination rejected before any automation existed; corrected creation confirmed. This is an automation authoring correction, not an experiment retry.",
+    "interval_minutes": 15,
+    "status": "ACTIVE at launch",
+    "terminal_rule": "Root deletes monitor after verified original terminal and no admitted child"
+  },
+  "normal_transition": {
+    "STOP_changed": false,
+    "cache_cleared": false,
+    "experiment_retry": false,
+    "first_attempt": "EXDEV before the first move; failed /mnt/e archive remained empty",
+    "preserved_controls": 22,
+    "root_disposition": {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\normal-transition-cross-device-disposition-v1.json",
+      "sha256": "53757b1017cf539afefb732f1bb609c83275aee93d384ad5dbaf2195ecb683d3"
+    },
+    "service_restarted": false,
+    "successful_same_filesystem_archive": "/home/chao/batch-archive-20261007-natural4-transition-v1"
+  },
+  "official_scoring_allowed": 0,
+  "original_driver_start": {
+    "at": "2026-10-07T11:24:56Z",
+    "detail": {
+      "flight_commit": "3f3c30af26ad70086970876656ac5a36e1268cc4",
+      "queue": "/home/chao/batch-queue.json"
+    },
+    "event": "driver-start"
+  },
+  "original_first_step_start": {
+    "at": "2026-10-07T11:24:57Z",
+    "detail": {
+      "cell": "slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v3",
+      "kind": "engineering",
+      "short": "simple-natural4-seed",
+      "step": 1
+    },
+    "event": "step-start"
+  },
+  "quality_read_authorized": false,
+  "queue_sha256": "cc0e4d876384bd842b2f804ad077ca73b15a36e94bb94daea127b7fae11e5724",
+  "resource_policy": {
+    "floor_gib": 4,
+    "stable_samples": 3,
+    "start_gib": 4,
+    "wait_seconds": 600
+  },
+  "role_division": {
+    "admission_launch_monitoring": "root",
+    "engineering_preparation_implementation_tests": "GPT-6.1 Sol",
+    "optimization_planning_independent_review_template_analysis": "GPT-6 Astra/Ultra"
+  },
+  "schema": "saea-natural4-launch-handoff-v1",
+  "snapshot_limitation": "Saved operational start evidence only. No current liveness, completion, measured contact count, quality, natural tool competence or benefit is inferred. Root owns script monitoring.",
+  "status": "ACTUAL_LAUNCH_RECORDED_SNAPSHOT_ONLY",
+  "structural_READ_status": "DRAFT UNSIGNED until exact complete proof and root countersignature",
+  "task": "SAEA-Batch-Driver",
+  "windows_free_gib_at_dispatch": 21.126575469970703
+}

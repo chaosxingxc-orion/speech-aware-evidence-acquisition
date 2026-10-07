@@ -1,5 +1,21 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Natural four-row proof stopped at the first member's running memory floor (2026-10-07)
+
+The original seed guard finished `resource-stop`, exit 125, at 11:26:28.469447Z. Its final valid Windows free-memory observation was 1.744949 GiB against the 4 GiB running floor; preceding observations were 6.339710 and 4.606812 GiB. Observer sequence 13 has no reader error or refusal reason. The guard sent SIGTERM and then SIGKILL to its owned process group; the worker returned -15. This establishes a running memory-floor breach, not an observer failure. The guard does not establish the source of memory growth or actual contact count.
+
+Root reported STOP at 11:26:28Z, the seed attempt opened with no manifest, and the other three members not started. The full natural family remains incomplete and structural READ remains unsigned. Preserve the original launch snapshot and guard bytes; no retry, control change or source change is authorized by this handoff. Root owns operational disposition. See [original STOP evidence](../receipts/continuation/2026-10-07-simple-consumption-natural4-stop.json). The launch section below is historical start evidence.
+
+Root subsequently verified operational closure: original seed metadata records four calls and 8.7029375 audio seconds, with state OPENED; all other three attempt directories are absent. The root closure receipt records owned-process/observer absence, recovered memory and monitor deletion. Wrapper Ready/LastResult0 does not turn guard exit125 into worker success. Allocation source remains unresolved. See [operational closure](../receipts/continuation/2026-10-07-simple-consumption-natural4-operational-closure.json).
+
+## Natural four-row proof launched through the existing shared driver (2026-10-07)
+
+Root registered the exact eight generation/FIT plans and four unsigned structural READ rows, passed the actual named registration gate and all four frozen CLI checks, then launched the existing `SAEA-Batch-Driver` task once. The dispatch receipt is timestamped 11:24:55.8260208Z; the original saved driver-start event is 11:24:56Z. The clean worker is `/home/chao/saea-worktrees/codex-simple-consumption-natural4-v3` at `3f3c30af26ad70086970876656ac5a36e1268cc4`. The four-step engineering queue hash is `cc0e4d876384bd842b2f804ad077ca73b15a36e94bb94daea127b7fae11e5724`. Windows free memory at dispatch was 21.126575 GiB; configured startup/running floors are 4 GiB with a 600-second/three-sample startup wait. These are launch snapshots, not fresh liveness or completion assertions.
+
+The first completed-control archive attempt failed with EXDEV before moving its first file; its empty archive and exact root disposition are preserved. The successful same-filesystem transition preserved 22 old controls at `/home/chao/batch-archive-20261007-natural4-transition-v1`. No model-attempt retry, cache clearing, service restart or STOP change occurred. Root reported the job-scoped `slurp-natural4-engineering-monitor` active every 15 minutes. Its first creation request lacked a destination and was rejected before any automation existed; corrected creation succeeded. Root owns script monitoring and deletes the monitor after verified terminal with no admitted child.
+
+This is four registered members times four natural structural trajectories, with ceilings of 124 generation contacts and 496 actual FIT endpoints, zero official scoring, no quality feedback or learner export. Natural zero-lookup outcomes remain valid. Structural READ stays unsigned until the exact whole-family proof completes and root countersigns it; the scientific comparison remains held. GPT-6.1 Sol owns engineering, preparation, implementation and tests; GPT-6 Astra/Ultra owns optimization, planning, independent review and template analysis; root coordinates admission, launch and monitoring. Return to the human before 8x400 or an equivalent split. See [actual launch snapshot](../receipts/continuation/2026-10-07-simple-consumption-natural4-launch.json).
+
 ## Natural four-row proof registered; frozen/live checks pending (2026-10-07)
 
 Root countersigned the eight exact generation/FIT plans under owner227 decision `coordination/simple-consumption-natural4-owner227-v1/root-admission-v1.json`, raw SHA-256 `23dd1d9d5c28ad9a1beec7c705f0c06b36eff421f4afedbab5b10a1d2dc57e7b`. The actual named-cell registration checker passed all four members with zero blocking cells. Four structural READ rows are preregistered but remain unsigned until the complete natural proof. This authorizes only the configured seed, seed-aa, review-off and solver-lookup four-row workers, subject to the exact frozen and live checks; no model contact or launch has yet occurred in this record.
@@ -207,7 +223,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-07T11:13:35.6705072Z
+Last refreshed: 2026-10-07T11:30:05.823695+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

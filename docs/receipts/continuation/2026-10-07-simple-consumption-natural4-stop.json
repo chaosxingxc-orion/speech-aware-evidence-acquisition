@@ -1,0 +1,100 @@
+{
+  "diagnosis": "A valid Windows physical-memory observation fell below the 4 GiB running floor. The guard stopped its owned process group. No observer error is recorded. The allocation source and actual contact count are not established by these records.",
+  "evidence": [
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\process-guard\\smoke-1-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v3-20261007T112524Z\\events.jsonl",
+      "sha256": "95c10749cc7ee0ce6d7fe1fd7cadb6faf23b83139ea84284dca7f6c262018db0"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\process-guard\\smoke-1-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v3-20261007T112524Z\\finished.json",
+      "sha256": "20ed420825165de4e5467ab95f42d746ffdcdd53b40e685be29edefae286a8d4"
+    }
+  ],
+  "final_running_sample": {
+    "at": 1791372383.4659946,
+    "available_gib": 1.7449493408203125,
+    "elapsed_seconds": 0.0014461230020970106,
+    "event": "running-sample",
+    "observer": {
+      "freshness": "request-causal-monotonic-v1",
+      "observer_pid": 35788,
+      "sample_elapsed_ms": 0.0125,
+      "sampled_at": 1791372382.656,
+      "sequence": 13,
+      "transport": "persistent-windows-physical-memory-v1"
+    },
+    "reader_diagnostics": {},
+    "reader_error": null,
+    "reason": null
+  },
+  "frozen_source_commit": "3f3c30af26ad70086970876656ac5a36e1268cc4",
+  "guard_terminal": {
+    "command": [
+      "/home/chao/.venvs/speechrl/bin/python",
+      "-B",
+      "-m",
+      "speech_aware_evidence_acquisition.core.flight.cli",
+      "worker",
+      "--repo-root",
+      "/home/chao/saea-worktrees/codex-simple-consumption-natural4-v3",
+      "--data-root",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "--runtime-root",
+      "/home/chao",
+      "--lock-path",
+      "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
+      "--owner",
+      "root-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v3",
+      "--expected-session-id",
+      "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "--experiment",
+      "slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v3",
+      "--cell",
+      "slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v3",
+      "--lease-token-file",
+      "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v3.worker-lease.json"
+    ],
+    "exit_code": 125,
+    "identity": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-generation-v3",
+      "repo_root": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-v3",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V3",
+      "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "study_head": "3f3c30af26ad70086970876656ac5a36e1268cc4"
+    },
+    "pid": 31335,
+    "policy": {
+      "floor_gib": 4.0,
+      "interval_seconds": 5.0,
+      "read_timeout_seconds": 10.0,
+      "start_gib": 4.0,
+      "stop_grace_seconds": 5.0
+    },
+    "schema": "saea-flight-process-memory-guard-v1",
+    "status": "resource-stop",
+    "worker_returncode": -15
+  },
+  "identity": {
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-generation-v3",
+    "repo_root": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-v3",
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V3",
+    "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "study_head": "3f3c30af26ad70086970876656ac5a36e1268cc4"
+  },
+  "launch_receipt": "2026-10-07-simple-consumption-natural4-launch.json",
+  "original_terminal_at_utc": "2026-10-07T11:26:28.469447+00:00",
+  "preceding_running_available_gib": [
+    6.339710235595703,
+    4.6068115234375,
+    1.7449493408203125
+  ],
+  "root_reported_snapshot": {
+    "batch_STOP_at_utc": "2026-10-07T11:26:28Z",
+    "remaining_three_members_started": false,
+    "seed_attempt_opened": true,
+    "seed_manifest_present": false
+  },
+  "schema": "saea-natural4-resource-stop-handoff-v1",
+  "scope": "Operational guard evidence only; no answers, quality, retry, controls or source changes. Structural READ remains unsigned.",
+  "status": "ORIGINAL_SEED_RESOURCE_STOP_OTHER_MEMBERS_HELD"
+}

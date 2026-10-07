@@ -1,0 +1,121 @@
+{
+  "at_utc": "2026-10-07T11:38:41.098682+00:00",
+  "attempt_accounting": {
+    "actual": {
+      "audio_seconds": 8.702937499999999,
+      "calls": 4
+    },
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-generation-v3",
+    "carrier_lock_key": "slurp",
+    "reserved": {
+      "audio_seconds": 1500.0,
+      "calls": 52
+    },
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V3",
+    "schema": "saea-attempt-v1",
+    "state": "OPENED"
+  },
+  "evidence": [
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\attempts\\SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V3\\attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-generation-v3.json",
+      "sha256": "a01375ac45c1397c7d43862fe9142e7f0dfb66ac6a30a70c15d6686f2da8d524"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-natural4-owner227-v1\\root-terminal-observation-v1.json",
+      "sha256": "71240722042cc648db925eac559dd78f237cf85f267a9acd597de12cf7f2a84f"
+    }
+  ],
+  "frozen_source_commit": "3f3c30af26ad70086970876656ac5a36e1268cc4",
+  "limitations": "Four calls are original attempt accounting, not evidence of trajectory completion or quality. The original running Windows floor breach is established; allocation source is unresolved. No rerun, STOP, lease, cache or service mutation. READ remains unsigned.",
+  "remaining_members_directory_absence": [
+    {
+      "exists": false,
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\attempts\\SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V3"
+    },
+    {
+      "exists": false,
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\attempts\\SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-V3"
+    },
+    {
+      "exists": false,
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\attempts\\SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V3"
+    }
+  ],
+  "root_observation": {
+    "at_utc": "2026-10-07T11:37:43.5357557Z",
+    "linux_process_snapshot": [
+      "    PID    PPID    PGID   RSS COMMAND         COMMAND",
+      "      1       0       1 12480 systemd         /sbin/init",
+      "      2       1       0  1920 init-systemd(Ub /init",
+      "      8       2       0  3648 init            plan9 --control-socket 7 --log-level 4 --server-fd 8 --pipe-fd 10 --log-truncate",
+      "     41       1      41 17448 systemd-journal /usr/lib/systemd/systemd-journald",
+      "     68       1      68  6144 systemd-udevd   /usr/lib/systemd/systemd-udevd",
+      "    177       1     177 13056 systemd-resolve /usr/lib/systemd/systemd-resolved",
+      "    178       1     178  7680 systemd-timesyn /usr/lib/systemd/systemd-timesyncd",
+      "    186       1     186  2496 cron            /usr/sbin/cron -f -P",
+      "    187       1     187  4800 dbus-daemon     @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only",
+      "    194       1     194  8640 systemd-logind  /usr/lib/systemd/systemd-logind",
+      "    204       1     204  4992 rsyslogd        /usr/sbin/rsyslogd -n -iNONE",
+      "    208       1     208  1920 agetty          /sbin/agetty -o -p -- \\u --noclear --keep-baud - 115200,38400,9600 vt220",
+      "    213       1     213  1728 agetty          /sbin/agetty -o -p -- \\u --noclear - linux",
+      "    233       1     233 22848 unattended-upgr /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal",
+      "    236       1     236 10944 systemd         /usr/lib/systemd/systemd --user",
+      "    245     236     236  3452 (sd-pam)        (sd-pam)",
+      "    337       2     337   768 SessionLeader   /init",
+      "    338     337     337   960 Relay(339)      /init",
+      "    339     338     339  3264 bash            bash /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/serving_task_entry.sh",
+      "    340       2     340   768 SessionLeader   /init",
+      "    341       2     341  4608 login           /bin/login -f",
+      "    343     340     340   960 Relay(345)      /init",
+      "    345     343     345  3264 bash            bash /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch/serving_monitor_start.sh",
+      "    378     345     345 47788 python          python -B scripts/serving_monitor.py sample --session-id serving-slurp-native-candidate-five-train-a-np4-v1 --interval 10",
+      "    391     341     391  8640 bash            -bash",
+      "    708     339     339 47012 python          python -m speech_aware_evidence_acquisition.core.session.serving start q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1 --session-id serving-slurp-native-candidate-five-train-a-np4-v1 --runtime-root /home/chao",
+      "    723     708     339 909312 llama-server   /home/chao/llama.cpp-featcache/build/bin/llama-server --host 127.0.0.1 --port 8080 -m /home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf --no-mmproj -c 98304 -np 4 -b 2048 -ub 512 -fa on -ngl 999 -ctk q8_0 -ctv q8_0 --cache-prompt --cache-ram 0 --no-cache-idle-slots --slot-prompt-similarity 0",
+      "    788       2     788  4416 login           /bin/login -f",
+      "    828       1     828 11520 systemd         /usr/lib/systemd/systemd --user",
+      "    829     828     828  3444 (sd-pam)        (sd-pam)",
+      "    851     788     851  4992 bash            -bash",
+      "  32204      68      68  3768 (udev-worker)   (udev-worker)",
+      "  32205      68      68  3768 (udev-worker)   (udev-worker)",
+      "  32206      68      68  3768 (udev-worker)   (udev-worker)",
+      "  32207      68      68  3192 (udev-worker)   (udev-worker)",
+      "  32209      68      68  3768 (udev-worker)   (udev-worker)",
+      "  32211       2   32211   768 SessionLeader   /init",
+      "  32212   32211   32211   960 Relay(32213)    /init",
+      "  32213   32212   32213  3840 ps              ps -eo pid,ppid,pgid,rss,comm,args"
+    ],
+    "monitor": {
+      "action": "deleted",
+      "basis": "Verified original guard terminal and no admitted live driver, guard, worker, lease or observer child",
+      "id": "slurp-natural4-engineering-monitor",
+      "result": "Deleted automation in the app",
+      "tool": "mcp__codex_app__automation_update"
+    },
+    "mutations": {
+      "STOP_changed": false,
+      "cache_cleared": false,
+      "lease_changed": false,
+      "quality_read": false,
+      "retry": false,
+      "service_restarted": false
+    },
+    "original_observer_pid": 35788,
+    "original_observer_present": false,
+    "root_prior_verifications": {
+      "linux_chunk": "ecf14f",
+      "original_guard_chunk": "5ca8e0",
+      "windows_observer_and_child_chunk": "b4d1cf"
+    },
+    "schema": "saea-natural4-root-terminal-observation-v1",
+    "scope": "Operational closure only; memory allocation cause remains under diagnosis; natural structural family incomplete",
+    "task_last_run_utc": "2026-10-07T11:24:55.0000000Z",
+    "task_state": "Ready",
+    "task_wrapper_result": 0,
+    "windows_free_gib": 24.253440856933594,
+    "windows_total_gib": 63.43492889404297,
+    "worker_terminal_is_separate": "Original process guard exit125/resource-stop; task wrapper zero is not worker success"
+  },
+  "schema": "saea-natural4-operational-closure-handoff-v1",
+  "status": "RESOURCE_STOP_CLOSED_CAUSE_OF_MEMORY_GROWTH_UNRESOLVED"
+}
