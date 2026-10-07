@@ -1,0 +1,79 @@
+{
+  "authority": "Owner227 autonomous bounded engineering and the later direct simple-consumption instruction",
+  "contacts": {
+    "generation": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "finding": "The generic registration loader correctly rejects the manual V4 architecture profile without an explicit, validated architecture entry path. This occurred on the first seed registration check before runtime check, lease, attempt, tokenizer or generation.",
+  "named_component": "scripts/checks/flight_registration_check.py population-config-binding",
+  "observed_exit_at_utc": "2026-10-07T03:50:14.933418+00:00",
+  "original_evidence_pins": [
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/frozen-check-v1.py",
+      "sha256": "bd1217be9cafdb04f22dae9e9bfe6e691aaa5c44ca2e44003a17c126e6a49691"
+    },
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/run-frozen-check-v1.py",
+      "sha256": "7fdd3f3f4f3dfc5baed0592f4c9cd1ce145692e067eec200131a43f99e388c73"
+    },
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/frozen-check-v1.started.json",
+      "sha256": "b2f99657572f50fd63f3a21e1bf6225332a368634fe24add9e5d02e87e59d409"
+    },
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/frozen-check-v1.exit.json",
+      "sha256": "9dc476eae48d07980ec3fbe30455bf148d932f545f8ed36db483a8d768a2c30c"
+    },
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/frozen-check-v1.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/frozen-check-v1.stderr.log",
+      "sha256": "bfd936c19189fa77ea08595c45923840053ae5bdfd9f23f6ffeaedee2ec2e0da"
+    },
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/seed-frozen-registration-v1.stdout.json",
+      "sha256": "53dd01c0adc8914b15384040d4985b430a35bc2626c07be3ca60ce0f6503d3b5"
+    },
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/seed-frozen-registration-v1.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relpath": "coordination/simple-consumption-capacity-v2/seed-frozen-registration-v1.exit.json",
+      "sha256": "5e2468eb7d2fd13c6cf6e875ec2af9154ba5e90a8ba6990b7b1dd18bf96dcd83"
+    }
+  ],
+  "original_evidence_root": "coordination/simple-consumption-capacity-v2",
+  "preserve": [
+    "frozen-check-v1.py",
+    "run-frozen-check-v1.py",
+    "frozen-check-v1.started.json",
+    "frozen-check-v1.exit.json",
+    "frozen-check-v1.stdout.log",
+    "frozen-check-v1.stderr.log",
+    "seed-frozen-registration-v1.stdout.json",
+    "seed-frozen-registration-v1.stderr.log",
+    "seed-frozen-registration-v1.exit.json",
+    "The original frozen checkout, registration plans, policies, source selections and all prepared supplies"
+  ],
+  "root_disposition": "Implement and independently review a narrow explicit architecture capacity registration validator, retaining default refusal for template-learning paths and all malformed or foreign bindings. Prove negative and historical cases, serially integrate the repair, and create a new clean frozen source checkout and successor model-free check records. Do not overwrite or relabel the original checker or its failure. Only after successful source checks and exact current live admission may the separately registered capacity task run.",
+  "runtime_admission": false,
+  "schema": "saea-root-incident-disposition-v1",
+  "scientific_interpretation": "No task-quality evidence, tool competence, benefit or learning gain is established by this precontact gate refusal.",
+  "source_commit": "6608d848da49ccff6de030e6a338fd1d0688ff7a",
+  "source_worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-v2",
+  "status": "PRECONTACT_SOURCE_GATE_STOPPED_FIX_IN_PROGRESS",
+  "unchanged": [
+    "The exact configured policies and four-member comparison design",
+    "The existing input pool, knowledge, audio, packets, queries and votes",
+    "Temperature zero, fixed seed, native Omni authority, output reserves and serving geometry",
+    "All original attempt, exposure, official-scoring and complete-family read boundaries"
+  ]
+}
