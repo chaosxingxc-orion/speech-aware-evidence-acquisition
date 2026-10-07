@@ -933,7 +933,7 @@ SEALED_VECTOR_QUERY_MANIFEST = ToolManifest(
         "speech, declared by the fragment and embedded before the flight."
     ),
     source_ref="speech_aware_evidence_acquisition.rails.phase_supply:load_sealed_vectors",
-    pinned_sha256="8a64a4de71970d01ac8cb4b98a29a7fe4efdcfdd6e417bc986409c3d0b4afc5d",
+    pinned_sha256="b2eb76eda7d88991c1566df54811b9aac038c641795feb421924eaeaa91da897",
     inputs={
         "path": "pathlib.Path",
         "expected_sha256": "str",

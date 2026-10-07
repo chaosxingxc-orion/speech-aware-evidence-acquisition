@@ -1,0 +1,43 @@
+{
+  "base_commit": "8d98b7149",
+  "change": "Update only the catalog source digest to register the already-reviewed streaming implementation. No callable, schema, config, prepared envelope or input changes.",
+  "changed_source_sha256": "95d520fe7adea2f075e3a47dd22f6b3282515fd9219c17f7a75fa1e3db3ccfc4",
+  "checks": [
+    {
+      "exit_code": 0,
+      "kind": "independent-inspect-source-digest",
+      "tool_chunk": "2283e3"
+    },
+    {
+      "exit_code": 0,
+      "kind": "existing-tool-catalog-and-gate-unit-tests",
+      "passed": 47,
+      "seconds": 8.64,
+      "tool_chunk": "4ff4b5"
+    },
+    {
+      "additional_pins": 1,
+      "exit_code": 0,
+      "kind": "actual-tool-catalog-check",
+      "modules": 17,
+      "tool_chunk": "dc5f12",
+      "tools": 34
+    }
+  ],
+  "control_changes": false,
+  "correct_inspect_source_pin": "b2eb76eda7d88991c1566df54811b9aac038c641795feb421924eaeaa91da897",
+  "model_contacts": 0,
+  "original_failed_gate": "Preserve C7/offline-tool_catalog_check-v1.log; this change does not modify or replace it.",
+  "prepared_identity_impact": {
+    "envelope_repin_required": false,
+    "fit": "Unchanged: request-FIT implementation sources do not contain rails/tools.py or catalog pins.",
+    "phase_supply": "Unchanged: implementation contains runtime, kb_policy, knowledge_provider, knowledge_stores and phase_supply; rails/tools.py is absent.",
+    "provenance": "Future tool source attribution uses the correct loader digest. Tool source attribution is distinct from these prepared identities."
+  },
+  "previous_pin": "8a64a4de71970d01ac8cb4b98a29a7fe4efdcfdd6e417bc986409c3d0b4afc5d",
+  "schema": "saea-tool-catalog-source-registration-validation-v1",
+  "scorer_contacts": 0,
+  "source_ref": "speech_aware_evidence_acquisition.rails.phase_supply:load_sealed_vectors",
+  "status": "PASS",
+  "tokenizer_contacts": 0
+}
