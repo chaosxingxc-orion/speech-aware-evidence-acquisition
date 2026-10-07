@@ -1,0 +1,25 @@
+{
+  "schema": "saea-actual-search-binding-rehearsal-v1",
+  "at_utc": "2026-10-07T01:16:06.758809+00:00",
+  "arms": [
+    {
+      "arm": "fixed-parent",
+      "algorithm": "fixed-parent-aggregate-v1",
+      "population_cohort": "comparison",
+      "candidate_count": 8,
+      "status": "PASS"
+    },
+    {
+      "arm": "multi-parent",
+      "algorithm": "bounded-multiparent-aggregate-v1",
+      "population_cohort": "comparison",
+      "candidate_count": 8,
+      "status": "PASS"
+    }
+  ],
+  "engineering_base_check": "PASS",
+  "runtime_admission": false,
+  "scientific_read": false,
+  "contacts_added": 0,
+  "scope": "Actual original reservation/result and recorded child identities only; full runtime registration, FIT and structural proof remain pending."
+}

@@ -1,0 +1,41 @@
+{
+  "coverage": {
+    "bytes": 5977,
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-original-record-v1/coverage.json",
+    "sha256": "56a48a7bbdf723225f9b001e1a16819f3437c7f769e230b0d09d9c8897aea928"
+  },
+  "initial_red": "New algorithms rejected by the previous bounded registered algorithms gate.",
+  "module_coverage": {
+    "covered_lines": 104,
+    "excluded_lines": 0,
+    "missing_lines": 24,
+    "num_statements": 128,
+    "percent_covered": 81.25,
+    "percent_covered_display": "81",
+    "percent_statements_covered": 81.25,
+    "percent_statements_covered_display": "81"
+  },
+  "new_function_coverage": {
+    "covered_lines": 26,
+    "excluded_lines": 0,
+    "missing_lines": 0,
+    "num_statements": 26,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "percent_statements_covered": 100.0,
+    "percent_statements_covered_display": "100"
+  },
+  "schema": "saea-matched-search-binding-verification-v1",
+  "scope": "Synthetic original-slot binding, prelaunch, complete-family ordering and report tests; no real FIT, engineering or task-quality proof.",
+  "test_count": 173,
+  "test_files": [
+    "test_search_evaluation_binding.py",
+    "test_system_search_learning.py",
+    "test_context_learning_prelaunch.py",
+    "test_context_population_scope.py",
+    "test_context_learning_read.py",
+    "test_context_population_read.py",
+    "test_experiment_population_config.py"
+  ],
+  "test_status": "PASS"
+}

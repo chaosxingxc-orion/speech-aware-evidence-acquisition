@@ -154,6 +154,72 @@ def record_search_update(archive, *, registration_pin, repo_root, response_docum
     return result
 
 
+def require_search_evaluation_binding(recipe, registration, protocol, *, root, config):
+    """Bind prospective evaluation to original spent slots and recorded children.
+
+    Pins address exact create-only reservation/result metadata copied into the
+    registered repository. Raw responses and cumulative sources remain private.
+    This gate grants neither source READ nor runtime admission. The shared scope,
+    prelaunch policy-byte check, complete-family seals and exact READ still apply.
+    """
+    binding = protocol.get("search_evaluation")
+    require(isinstance(binding, dict) and set(binding) == {"reservation", "result"}
+            and all(d.get("search_evaluation") == binding for d in (recipe, registration)),
+            "exact search evaluation pins required at every stage")
+    reserved = json.loads(_read_pin(binding["reservation"], root))
+    result = json.loads(_read_pin(binding["result"], root))
+    require(reserved.get("schema") == "saea-search-update-reservation-v1"
+            and result.get("schema") == "saea-search-update-result-v1"
+            and result.get("status") == "recorded"
+            and reserved.get("runtime_admission") is False and result.get("runtime_admission") is False,
+            "original unactivated search records required")
+    algorithm = reserved.get("algorithm")
+    require(algorithm in SEARCH_ALGORITHMS and protocol.get("algorithms") == [algorithm]
+            and result.get("algorithm") == algorithm
+            and type(reserved.get("iteration")) is int
+            and reserved["iteration"] == result.get("iteration") == protocol.get("iteration"),
+            "search algorithm or iteration differs")
+    expected_budget = population_accounting(config)
+    require(all(d.get("experiment_population") == protocol["experiment_population"]
+                and d.get("population_budget") == expected_budget for d in (reserved, result))
+            and reserved.get("proposer") == config["proposer"],
+            "search records differ from the pinned population")
+    require(result.get("registration") == reserved.get("registration")
+            and isinstance(reserved.get("registration"), dict)
+            and set(reserved["registration"]) == {"relpath", "sha256"}
+            and bool(reserved["registration"]["relpath"]), "search registration identity differs")
+    sha(reserved["registration"]["sha256"])
+    for key in ("registration_sha256", "qualified_input_sha256", "actor_input_sha256"):
+        sha(reserved.get(key))
+    sha(result.get("response_sha256"))
+    positions = [(c["cohort_id"], cid) for c in config["cohorts"] for cid in c["candidate_ids"]]
+    slots, records = reserved.get("slots"), result.get("records")
+    require(isinstance(slots, list) and isinstance(records, list)
+            and len(slots) == len(records) == len(positions)
+            and type(reserved.get("proposal_slots")) is int
+            and reserved["proposal_slots"] == len(positions), "complete original search positions required")
+    for slot, record, (cohort, cid) in zip(slots, records, positions, strict=True):
+        require(isinstance(slot, dict)
+                and set(slot) == {"candidate_id", "cohort_id", "mode", "parent_bundle_ids"}
+                and slot["candidate_id"] == cid and slot["cohort_id"] == cohort
+                and isinstance(record, dict) and record.get("candidate_id") == cid,
+                "original search position order differs")
+        TextPolicyUpdateProposal.from_search_json({"schema": "saea-search-policy-update-proposal-v1",
+            "algorithm": algorithm, "iteration": reserved["iteration"], "candidate_id": cid,
+            "mode": slot["mode"], "parent_ids": slot["parent_bundle_ids"], "changes": {},
+            "rationale": "Verify original reserved search identity.", "hypotheses": [], "evidence": []})
+        # An invalid member is never replaced or silently dropped from its cohort.
+        if cohort == protocol["population_cohort"]:
+            require(record.get("status") in {"materialized-policy", "no-change"}
+                    and record.get("parent_bundle_ids") == slot["parent_bundle_ids"],
+                    "evaluated search positions must retain valid original children and parents")
+            sha(record.get("proposal_sha256"))
+            sha(record.get("bundle_id"))
+            require(registration["member_bindings"][cid]["bundle_id"] == record["bundle_id"],
+                    "runtime policy differs from the recorded original child")
+    return algorithm
+
+
 
 def assemble_search_actor_input(archive, *, feedback_record, configuration, repo_root):
     """Build a reviewable draft from prepared evidence; grant no source/contact rights.

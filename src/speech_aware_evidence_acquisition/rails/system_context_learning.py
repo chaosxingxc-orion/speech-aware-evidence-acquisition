@@ -201,10 +201,14 @@ def _validate_configured_scope(recipe, registration, protocol, *, root):
     owner = _load(protocol["owner"], root)
     require(owner.get("schema") == "saea-owner-deterministic-context-rollouts-v1",
             "registered context owner source required")
+    algorithms = set(CONTEXT_LEARNING_ALGORITHMS)
+    if any("search_evaluation" in d for d in (recipe, registration, protocol)):
+        from .system_search_learning import require_search_evaluation_binding
+        algorithms = {require_search_evaluation_binding(recipe, registration, protocol, root=root, config=config)}
     require(protocol.get("automatic_expansion") is False and protocol.get("independent_validation") is False
             and type(protocol.get("iteration")) is int and protocol["iteration"] > 0
             and isinstance(protocol.get("algorithms"), list) and protocol["algorithms"]
-            and set(protocol["algorithms"]) <= set(CONTEXT_LEARNING_ALGORITHMS),
+            and set(protocol["algorithms"]) <= algorithms,
             "bounded registered algorithms required")
     pool = _load(protocol["fixed_roster"], root).get("sample_ids", [])
     require(len(pool) == len(set(pool)) and all(s in pool for s in ids)

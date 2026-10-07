@@ -1,5 +1,33 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Matched proposals recorded and all sixteen policies compiled (2026-10-07)
+
+Both original matched GPT-6.1 Sol actors are complete. All eight fixed-parent and
+all eight multi-parent positions materialized valid distinct policies per arm.
+Original responses, their read reports and spent reservations remain immutable.
+See [completion](../receipts/continuation/2026-10-07-matched-search-original-compiled.json)
+and [prospective evaluation binding](../readiness/2026-10-07-matched-search-evaluation-v1/README.md).
+All sixteen compile through the shared seed/compiler and operational delta;
+actual policy-role bytes and unchanged knowledge substrate pass. Original recorder
+sessions13034 and35036 exited0; serial compilation session58189 exited0 at01:13:35Z.
+Never replay the create-only recorder or replace any spent position.
+
+Root verified declared read accounting:682895/489643 bytes, all80 primary records
+and30 comparator records, optional detail reads0/1. Provider usage remains null;
+fixed actor may have exceeded the soft90k proxy target. No OS-sandbox enforcement
+or matched-total-compute claim. Both actors recovered bounded tool truncation;
+pre-write Windows transport failures did not replace semantic proposals.
+
+The opt-in search_evaluation pins bind original reservation/result metadata through
+shared prelaunch and complete-family scope checks, with explicit new algorithm
+labels. Historical TFGRPO/GEPA restrictions stay intact.173 tests pass, new validator
+statement coverage100percent, focused module81.25percent; engineering base passes.
+No GPU/FIT/scorer contact, full-request capacity or structural proof was added.
+Next: prepare per-member supply/runtime identities from the same20 inputs, real
+capacity and four-row structural proofs, then complete exact family admission.
+Keep one master branch, detached temporary isolation and serial integration.
+Both configured families remain HELD; other-carrier holds and owner227 bounds stay.
+
 ## Both matched proposal actors launched (2026-10-07)
 
 Root committed admission at9c3db6e56, then reserved all configured eight positions
@@ -6137,7 +6165,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-06T23:26:25.448813+00:00
+Last refreshed: 2026-10-07T01:16:07Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -111,4 +111,13 @@ def analyze(evidence, *, recipe, registration, protocol, roster, supplement):
     )
     report.update({k: protocol[k] for k in ("experiment_population", "population_cohort", "population_budget")
                    if k in protocol})
+    if "search_evaluation" in protocol:
+        require(all(d.get("search_evaluation") == protocol["search_evaluation"]
+                    for d in (recipe, registration)), "search report provenance differs")
+        report.update(status="EXPLORATORY-SEARCH-EVALUATION-NO-ADOPTION",
+            search_evaluation=protocol["search_evaluation"], search_algorithms=protocol["algorithms"],
+            interpretation="Complete registered-input deterministic search evaluation. "
+            "Retain all original candidate outcomes, quality, reliability, process diagnostics and cost. "
+            "No stable benefit, automatic adoption, exact GRPO/GEPA reproduction or independent validation. "
+            "Any later optimizer export requires separate fresh complete-source qualification.")
     return report

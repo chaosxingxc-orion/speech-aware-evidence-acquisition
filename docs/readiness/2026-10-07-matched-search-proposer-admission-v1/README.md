@@ -66,3 +66,11 @@ Do not force new search algorithms through the older TF/GEPA-only context-learni
 protocol validator. Bind their exact registered identities through the shared generic
 complete-family scorer/READ primitives and prospective search evaluation contract.
 The underlying runtime algorithm label remains system-text-black-box-v1.
+
+## Subsequent original completion
+
+Both actors completed and all sixteen original policies were recorded and compiled.
+See [the prospective evaluation binding](../2026-10-07-matched-search-evaluation-v1/README.md).
+The shared context-family gates now support explicit original reservation/result
+pins for new search algorithms; this does not relabel them as TFGRPO/GEPA or
+relax any complete-family, READ, policy-byte or runtime gate. Admission remains HELD.
