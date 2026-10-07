@@ -266,83 +266,10 @@ def qualify_architecture_capacity_family(population, population_pin, registratio
         summary = []
         for identity, member, outer in zip(identities, members, finished["members"], strict=True):
             label = member["label"]
-            sha(member["composed_config_hash"])
-            sha(graph_config_hashes[label])
-            cohort = cohorts[identity["cohort_id"]]
-            roster = cohort["sample_ids"]
-            _require(member["member_id"] == identity["member_id"]
-                     and member["population_cohort"] == identity["cohort_id"]
-                     and member["execution_config"] == identity["execution_config"]
-                     and member["execution_identity_sha256"] == content_hash(identity)
-                     and type(member["model_per_trajectory"]) is int
-                     and member["model_per_trajectory"] == identity["model_per_trajectory"]
-                     and member["experiment_population"] == population_pin,
-                     "Registered architecture member differs from its policy or ceiling")
-            _require(type(member["expected_rows"]) is int and member["expected_rows"] == len(roster)
-                     and type(member["graph_rows"]) is int and member["graph_rows"] == 4,
-                     "Architecture capacity requires its complete roster and four graph rows")
-            graph_roster = member["graph_sample_ids"]
-            _require(isinstance(graph_roster, list) and len(graph_roster) == 4
-                     and len(set(graph_roster)) == 4 and set(graph_roster) <= set(roster),
-                     "Registered graph branch roster is missing, repeated or outside the population")
-            raw = policy_config_bytes[label]
-            _require(isinstance(raw, bytes) and hashlib.sha256(raw).hexdigest() == identity["execution_config"]["sha256"],
-                     "Architecture policy bytes differ from their population pin")
-            episode = json.loads(raw)["native_episode"]
-            off = identity["active_roles"] == ["perception", "solver"]
-            tool = episode.get("solver_tool_access", "none") == "bounded-slot-lookup-v1"
-            profile = "review-off-v1" if off else "legacy-four-path-v1"
-            _require(member["rehearsal_profile"] == profile
-                     and (episode.get("review_loop") == "off") == off,
-                     "Capacity profile differs from the pinned architecture")
-            if off:
-                roles = episode["roles"]
-                _require(episode["max_revisions"] == 0
-                         and episode.get("solver_tool_access", "none") in ("none", "bounded-slot-lookup-v1")
-                         and {r: roles[r]["max_iterations"] for r in ("perception", "solver", "reviewer", "planner")}
-                         == {"perception": 1, "solver": 2 if tool else 1, "reviewer": 0, "planner": 0}
-                         and identity["model_per_trajectory"] == (3 if tool else 2),
-                         "Unsupported review-off role or contact limits")
-            _require(all(outer[k] == member[k] for k in ("label", "run_id", "attempt_id"))
-                     and all(type(outer[k]) is int and outer[k] == 0 for k in ("exit_code", "observer_exit_code")),
-                     "Capacity outer member identity or observer exit differs")
-            terminal = member_terminals[label]
-            _require(all(type(terminal[k]) is int and terminal[k] == 0 for k in
-                         ("exit_code", "generation_contacts", "scorer_contacts"))
-                     and isinstance(terminal["members"], list) and len(terminal["members"]) == 1,
-                     "Child capacity terminal is incomplete or unsuccessful")
-            record = receipts[label]
-            _require(record["inputs"]["roster"] == roster, "Ordered architecture roster differs")
-            for value in (record["inputs"], record["output"]):
-                _require(value.get("rehearsal_profile", "legacy-four-path-v1") == profile,
-                         "Capacity receipt profile differs from its registration")
-            if off:
-                endpoint_budget = record["inputs"]["endpoint_budget"]
-                ranking = endpoint_budget["ranking_tokenizer_endpoints"]
-                _require(type(ranking) is int and ranking > 0, "Invalid ranking endpoint count")
-                expected_budget = {"profile": profile, "graph_rows": 4,
-                    "supply_modes": 2 if tool else 1, "captured_requests": 22 if tool else 8,
-                    "ranking_tokenizer_endpoints": ranking, "padding_tokenizer_endpoints": 60 if tool else 18,
-                    "request_measurement_endpoints": 66 if tool else 24, "contact_cap": ranking + (127 if tool else 43)}
-                _require(content_hash(endpoint_budget) == content_hash(expected_budget)
-                         and content_hash(record["output"]["endpoint_budget"]) == content_hash(expected_budget)
-                         and type(record["inputs"]["registered_contact_cap"]) is int
-                         and record["inputs"]["registered_contact_cap"] == member["contact_cap"]
-                         and member["contact_cap"] >= expected_budget["contact_cap"]
-                         and type(record["output"]["contacts"]) is int
-                         and 0 < record["output"]["contacts"] <= expected_budget["contact_cap"],
-                         "Review-off measured endpoint budget differs or exceeds registration")
-            result = _qualify_member(member, terminal["members"][0], registration, record, roster,
-                                     output_reserve=output_reserve, structural_reserve=structural_reserve,
-                                     slot_tokens=slot_tokens, graph_config_hash=graph_config_hashes[label])
-            _qualify_architecture_proofs(record, graph_roster, off=off, tool=tool)
-            result.update(member_id=identity["member_id"], population_cohort=identity["cohort_id"],
-                          member_role="control" if label in cohort["control_ids"] else "candidate",
-                          execution_config=deepcopy(identity["execution_config"]),
-                          execution_identity_sha256=content_hash(identity),
-                          graph_sample_ids=deepcopy(graph_roster),
-                          model_per_trajectory=identity["model_per_trajectory"], rehearsal_profile=profile)
-            summary.append(result)
+            summary.append(_qualify_architecture_member(
+                identity, member, outer, member_terminals[label], receipts[label], registration,
+                cohorts[identity["cohort_id"]], policy_config_bytes[label], graph_config_hashes[label],
+                output_reserve=output_reserve, structural_reserve=structural_reserve, slot_tokens=slot_tokens))
         return {"schema": "saea-architecture-capacity-family-review-v1",
                 "experiment_population": deepcopy(population_pin), "members": summary,
                 "tokenizer_endpoints": sum(m["contacts"] for m in summary),
@@ -354,6 +281,87 @@ def qualify_architecture_capacity_family(population, population_pin, registratio
                 "root_review_required": True, "runtime_admission": False}
     except (KeyError, TypeError, AttributeError, IndexError, UnicodeError) as error:
         raise ValueError("Malformed architecture capacity family evidence") from error
+
+
+def _qualify_architecture_member(identity, member, outer, terminal, record, registration,
+                                 cohort, policy_bytes, graph_config_hash, *, output_reserve,
+                                 structural_reserve, slot_tokens):
+    """Apply identical member proof checks to original and explicitly recovered sources."""
+    label = member["label"]
+    sha(member["composed_config_hash"])
+    sha(graph_config_hash)
+    roster = cohort["sample_ids"]
+    _require(member["member_id"] == identity["member_id"]
+             and member["population_cohort"] == identity["cohort_id"]
+             and member["execution_config"] == identity["execution_config"]
+             and member["execution_identity_sha256"] == content_hash(identity)
+             and type(member["model_per_trajectory"]) is int
+             and member["model_per_trajectory"] == identity["model_per_trajectory"]
+             and member["experiment_population"] == registration["experiment_population"],
+             "Registered architecture member differs from its policy or ceiling")
+    _require(type(member["expected_rows"]) is int and member["expected_rows"] == len(roster)
+             and type(member["graph_rows"]) is int and member["graph_rows"] == 4,
+             "Architecture capacity requires its complete roster and four graph rows")
+    graph_roster = member["graph_sample_ids"]
+    _require(isinstance(graph_roster, list) and len(graph_roster) == 4
+             and len(set(graph_roster)) == 4 and set(graph_roster) <= set(roster),
+             "Registered graph branch roster is missing, repeated or outside the population")
+    raw = policy_bytes
+    _require(isinstance(raw, bytes) and hashlib.sha256(raw).hexdigest() == identity["execution_config"]["sha256"],
+             "Architecture policy bytes differ from their population pin")
+    episode = json.loads(raw)["native_episode"]
+    off = identity["active_roles"] == ["perception", "solver"]
+    tool = episode.get("solver_tool_access", "none") == "bounded-slot-lookup-v1"
+    profile = "review-off-v1" if off else "legacy-four-path-v1"
+    _require(member["rehearsal_profile"] == profile
+             and (episode.get("review_loop") == "off") == off,
+             "Capacity profile differs from the pinned architecture")
+    if off:
+        roles = episode["roles"]
+        _require(episode["max_revisions"] == 0
+                 and episode.get("solver_tool_access", "none") in ("none", "bounded-slot-lookup-v1")
+                 and {r: roles[r]["max_iterations"] for r in ("perception", "solver", "reviewer", "planner")}
+                 == {"perception": 1, "solver": 2 if tool else 1, "reviewer": 0, "planner": 0}
+                 and identity["model_per_trajectory"] == (3 if tool else 2),
+                 "Unsupported review-off role or contact limits")
+    _require(all(outer[k] == member[k] for k in ("label", "run_id", "attempt_id"))
+             and all(type(outer[k]) is int and outer[k] == 0 for k in ("exit_code", "observer_exit_code")),
+             "Capacity outer member identity or observer exit differs")
+    _require(all(type(terminal[k]) is int and terminal[k] == 0 for k in
+                 ("exit_code", "generation_contacts", "scorer_contacts"))
+             and isinstance(terminal["members"], list) and len(terminal["members"]) == 1,
+             "Child capacity terminal is incomplete or unsuccessful")
+    _require(record["inputs"]["roster"] == roster, "Ordered architecture roster differs")
+    for value in (record["inputs"], record["output"]):
+        _require(value.get("rehearsal_profile", "legacy-four-path-v1") == profile,
+                 "Capacity receipt profile differs from its registration")
+    if off:
+        endpoint_budget = record["inputs"]["endpoint_budget"]
+        ranking = endpoint_budget["ranking_tokenizer_endpoints"]
+        _require(type(ranking) is int and ranking > 0, "Invalid ranking endpoint count")
+        expected_budget = {"profile": profile, "graph_rows": 4,
+            "supply_modes": 2 if tool else 1, "captured_requests": 22 if tool else 8,
+            "ranking_tokenizer_endpoints": ranking, "padding_tokenizer_endpoints": 60 if tool else 18,
+            "request_measurement_endpoints": 66 if tool else 24, "contact_cap": ranking + (127 if tool else 43)}
+        _require(content_hash(endpoint_budget) == content_hash(expected_budget)
+                 and content_hash(record["output"]["endpoint_budget"]) == content_hash(expected_budget)
+                 and type(record["inputs"]["registered_contact_cap"]) is int
+                 and record["inputs"]["registered_contact_cap"] == member["contact_cap"]
+                 and member["contact_cap"] >= expected_budget["contact_cap"]
+                 and type(record["output"]["contacts"]) is int
+                 and 0 < record["output"]["contacts"] <= expected_budget["contact_cap"],
+                 "Review-off measured endpoint budget differs or exceeds registration")
+    result = _qualify_member(member, terminal["members"][0], registration, record, roster,
+                             output_reserve=output_reserve, structural_reserve=structural_reserve,
+                             slot_tokens=slot_tokens, graph_config_hash=graph_config_hash)
+    _qualify_architecture_proofs(record, graph_roster, off=off, tool=tool)
+    result.update(member_id=identity["member_id"], population_cohort=identity["cohort_id"],
+                  member_role="control" if label in cohort["control_ids"] else "candidate",
+                  execution_config=deepcopy(identity["execution_config"]),
+                  execution_identity_sha256=content_hash(identity),
+                  graph_sample_ids=deepcopy(graph_roster),
+                  model_per_trajectory=identity["model_per_trajectory"], rehearsal_profile=profile)
+    return result
 
 
 def _qualify_architecture_proofs(record, graph_roster, *, off, tool):
@@ -613,3 +621,213 @@ def qualify_precontact_capacity_epochs(population, population_pin, epochs,
         return review
     except (KeyError, TypeError, AttributeError, IndexError) as error:
         raise ValueError("Malformed capacity epoch evidence") from error
+
+_RECOVERY_LABELS = ("seed", "seed-aa", "review-off", "solver-lookup")
+_RECOVERY_MEMBER_FIELDS = (
+    "label", "member_id", "population_cohort", "execution_config", "execution_identity_sha256",
+    "model_per_trajectory", "rehearsal_profile", "run_id", "attempt_id", "composed_config_hash",
+    "capacity", "graph", "graph_config_hash", "graph_sample_ids", "contact_cap", "expected_rows", "graph_rows",
+)
+_RECOVERY_REGISTRATION_FIELDS = (
+    "schema", "experiment_population", "sampling", "execution", "worker", "worker_commit", "budget", "new_receipt_root",
+)
+
+
+def architecture_capacity_recovery_binding(registration):
+    """Return the prospective identity without circular authority/source-check pins.
+
+    Bind the launched capacity cell as well as each source/config/run/attempt.
+    Root disposition and compatibility pins can then be added to the registration
+    without changing the identity they prospectively approve. This grants no contact.
+    """
+    try:
+        return {**{k: deepcopy(registration[k]) for k in _RECOVERY_REGISTRATION_FIELDS},
+                "members": [{k: deepcopy(m[k]) for k in _RECOVERY_MEMBER_FIELDS}
+                            for m in registration["members"]]}
+    except (KeyError, TypeError, AttributeError) as error:
+        raise ValueError("Malformed architecture recovery registration binding") from error
+
+
+def _recovery_raw(raw, pin):
+    """Verify caller-supplied immutable bytes without opening any path."""
+    _require(isinstance(pin, dict) and set(pin) == {"path", "sha256"}
+             and isinstance(pin["path"], str) and bool(pin["path"]), "Malformed recovery evidence pin")
+    sha(pin["sha256"])
+    _require(isinstance(raw, bytes) and hashlib.sha256(raw).hexdigest() == pin["sha256"],
+             "Recovery evidence raw bytes differ from their pin")
+    return raw
+
+
+def _recovery_source(entry, schema, labels, receipt_labels, config, pin, graphs):
+    """Check one real source envelope; preserve its outer disposition verbatim."""
+    reg = entry["registration"]
+    _require(content_hash(reg) == content_hash(entry["original_registration"]),
+             "Recovery source differs from its independently pinned registration")
+    _require(reg["schema"] == schema and reg["status"] == "ROOT-ADMITTED",
+             "Recovery source schema or admission differs")
+    _require(reg["experiment_population"] == pin and reg["sampling"] == config["sampling"]
+             and reg["execution"] == config["execution"], "Recovery population or execution differs")
+    _require(isinstance(reg["worker"], str) and reg["worker"]
+             and isinstance(reg["worker_commit"], str) and re.fullmatch(r"[a-f0-9]{40}", reg["worker_commit"]),
+             "Recovery requires an immutable worker source")
+    source = entry["source_check"]
+    _require(content_hash(source) == reg["source_check_sha256"]
+             and source["source_commit"] == reg["worker_commit"] and source["experiment_population"] == pin
+             and all(type(source[k]) is int and source[k] == 0 for k in
+                     ("exit_code", "generation_contacts", "tokenizer_contacts", "scorer_contacts")),
+             "Recovery source check is unsuccessful or cross-bound")
+    members = reg["members"]
+    _require([m["label"] for m in members] == labels
+             and [m["label"] for m in entry["finished"]["members"]] == labels
+             and set(entry["member_terminals"]) == set(graphs) == set(labels)
+             and set(entry["receipts"]) == set(receipt_labels), "Recovery source coverage differs")
+    _require(all(isinstance(m[k], str) and m[k] for m in members for k in ("run_id", "attempt_id", "capacity", "graph"))
+             and all(len({m[k] for m in members}) == len(members) for k in ("run_id", "attempt_id")),
+             "Recovery source identities are empty or repeated")
+    _require(all(type(m["contact_cap"]) is int and m["contact_cap"] > 0 for m in members),
+             "Recovery endpoint cap is invalid")
+    budget = {"generation_contacts": 0, "scorer_contacts": 0,
+              "tokenizer_endpoint_caps": {m["label"]: m["contact_cap"] for m in members},
+              "tokenizer_endpoints_total": sum(m["contact_cap"] for m in members)}
+    _require(content_hash(reg["budget"]) == content_hash(budget), "Recovery source budget differs")
+    _require(all(graphs[m["label"]] == m["graph_config_hash"] for m in members),
+             "Recovery graph differs from independently verified source")
+    _require(all(type(entry["finished"][k]) is int and entry["finished"][k] == 0
+                 for k in ("generation_contacts", "scorer_contacts")), "Recovery source added generation or scoring")
+    return reg
+
+
+def qualify_architecture_capacity_recovery(population, population_pin, original_evidence_bytes, recovery, *,
+                                           original_evidence_pin, root_disposition_bytes, root_disposition_pin,
+                                           source_compatibility_bytes, source_compatibility_pin,
+                                           failed_contacts_bytes, failed_contacts_pin, policy_config_bytes,
+                                           graph_config_hashes, output_reserve, structural_reserve, slot_tokens):
+    """Qualify exactly three original successes and one fresh Solver recovery.
+
+    This explicit opt-in never relaxes the complete-family or precontact APIs.
+    The original raw-hash-pinned operational envelope contains registration,
+    original_registration, source_check, finished, windows_exit, member_terminals
+    for all four members, receipts for exactly the first three, and pins for the
+    original registration/finished/windows_exit files. The caller verifies those
+    original files against these pins, plus graph source hashes and policy bytes.
+    Recovery has its own original_registration/source/terminal/receipt envelope.
+
+    Root disposition prospectively pins the canonical original envelope and the
+    acyclic new registration identity, not future recovery results. Its pinned
+    compatibility evidence explicitly approves reuse under the changed source.
+    The separately pinned failed contact JSONL is counted without reading task
+    responses. Actual original outer exit 1 and failed spend remain in the result.
+    No member is rerun here, no synthetic successful outer is created, and this
+    pure validator grants neither runtime nor task-quality READ authority.
+    """
+    try:
+        _pin(population_pin)
+        config = validate_population_config(population, allow_architecture=True)
+        identities = config["architecture"]["members"]
+        labels = list(_RECOVERY_LABELS)
+        reused, recovered = labels[:3], labels[-1]
+        _require(config["schema"] == "saea-experiment-population-config-v4"
+                 and [m["member_id"] for m in identities] == labels, "Unsupported recovery architecture family")
+        _require((output_reserve, structural_reserve, slot_tokens) == (512, 2048, 24576)
+                 and all(type(v) is int for v in (output_reserve, structural_reserve, slot_tokens)),
+                 "Unsupported recovery capacity geometry")
+        _require(set(policy_config_bytes) == set(labels) and set(graph_config_hashes) == {"original", "recovery"},
+                 "Recovery policy or graph coverage differs")
+        original = json.loads(_recovery_raw(original_evidence_bytes, original_evidence_pin))
+        disposition = json.loads(_recovery_raw(root_disposition_bytes, root_disposition_pin))
+        compatible = json.loads(_recovery_raw(source_compatibility_bytes, source_compatibility_pin))
+        old = _recovery_source(original, "saea-architecture-capacity-entry-v1", labels, reused,
+                               config, population_pin, graph_config_hashes["original"])
+        new = _recovery_source(recovery, "saea-architecture-capacity-recovery-entry-v1", [recovered], [recovered],
+                               config, population_pin, graph_config_hashes["recovery"])
+        for key in ("registration", "finished", "windows_exit"):
+            _require(new["original_" + key] == original["pins"][key], "Original source pin differs")
+        _require(new["original_evidence"] == original_evidence_pin
+                 and new["root_recovery_disposition"] == root_disposition_pin
+                 and new["source_compatibility"] == source_compatibility_pin, "Recovery authority pins differ")
+        _require(disposition["schema"] == "saea-architecture-capacity-root-recovery-disposition-v1"
+                 and disposition["status"] == "decided"
+                 and disposition["scope"] == "nongenerative-architecture-capacity-recovery-only"
+                 and type(disposition["recovery_ordinal"]) is int and disposition["recovery_ordinal"] == 1
+                 and disposition["experiment_population"] == population_pin
+                 and disposition["reused_member_ids"] == reused and disposition["recovered_member_id"] == recovered
+                 and disposition["original_evidence_sha256"] == content_hash(original)
+                 and disposition["original_registration_sha256"] == content_hash(old)
+                 and disposition["recovery_binding_sha256"] == content_hash(architecture_capacity_recovery_binding(new))
+                 and disposition["source_compatibility"] == source_compatibility_pin
+                 and disposition["failed_contacts"] == failed_contacts_pin, "Exact prospective recovery disposition is absent")
+        _require(old["worker_commit"] != new["worker_commit"] and old["worker"] != new["worker"]
+                 and old["new_receipt_root"] != new["new_receipt_root"], "Recovery must retain a separate frozen source and entry")
+        unchanged = {m["label"]: {k: m[k] for k in
+                     ("execution_identity_sha256", "graph_config_hash", "graph_sample_ids", "model_per_trajectory")}
+                     for m in old["members"][:3]}
+        _require(compatible["schema"] == "saea-architecture-capacity-source-compatibility-v1"
+                 and compatible["status"] == "ROOT-VERIFIED" and compatible["scope"] == "solver-lookup-routing-only"
+                 and compatible["experiment_population"] == population_pin
+                 and compatible["source_commits"] == {"original": old["worker_commit"], "recovery": new["worker_commit"]}
+                 and compatible["reused_member_ids"] == reused and compatible["changed_member_id"] == recovered
+                 and content_hash(compatible["unchanged_members"]) == content_hash(unchanged)
+                 and compatible["passed"] is True and all(type(compatible[k]) is int and compatible[k] == 0
+                     for k in ("generation_contacts", "tokenizer_contacts", "scorer_contacts")),
+                 "Exact model-free source compatibility evidence is absent")
+        failed, replacement = old["members"][-1], new["members"][0]
+        fixed = set(_RECOVERY_MEMBER_FIELDS) - {"run_id", "attempt_id", "capacity", "composed_config_hash"}
+        _require(all(replacement[k] == failed[k] for k in fixed), "Recovered policy, graph, roster or capacity ceiling changed")
+        _require(all(replacement[k] not in {m[k] for m in old["members"]}
+                     for k in ("run_id", "attempt_id", "capacity", "composed_config_hash")),
+                 "Recovery reuses a spent identity or capacity cell")
+        for source, expected_code in ((original, 1), (recovery, 0)):
+            _require(all(type(source[k]["exit_code"]) is int and source[k]["exit_code"] == expected_code
+                         for k in ("finished", "windows_exit")), "Recovery source outer status differs")
+        _require(bool(original["finished"]["failure"]) and recovery["finished"]["failure"] is None,
+                 "Recovery must preserve the actual failed original")
+        failure_outer = original["finished"]["members"][-1]
+        failure_terminal = original["member_terminals"][recovered]
+        _require(all(failure_outer[k] == failed[k] for k in ("label", "run_id", "attempt_id"))
+                 and type(failure_outer["exit_code"]) is int and failure_outer["exit_code"] == 1
+                 and type(failure_outer["observer_exit_code"]) is int and failure_outer["observer_exit_code"] == 0
+                 and type(failure_terminal["exit_code"]) is int and failure_terminal["exit_code"] == 1
+                 and all(type(failure_terminal[k]) is int and failure_terminal[k] == 0
+                         for k in ("generation_contacts", "scorer_contacts"))
+                 and len(failure_terminal["members"]) == 1, "Original Solver failure evidence differs")
+        failed_child = failure_terminal["members"][0]
+        _require(all(failed_child[k] == failed[k] for k in ("label", "run_id", "attempt_id"))
+                 and type(failed_child["exit_code"]) is int and failed_child["exit_code"] == 1
+                 and type(failed_child["lease_exit_code"]) is int and failed_child["lease_exit_code"] != 0,
+                 "Original failed child identity or lease differs")
+        contacts = [json.loads(line) for line in _recovery_raw(failed_contacts_bytes, failed_contacts_pin).splitlines()
+                    if line.strip()]
+        _require(0 < len(contacts) <= failed["contact_cap"] and all(
+            c["run_id"] == failed["run_id"] and c["attempt_id"] == failed["attempt_id"]
+            and type(c["contact"]) is int and c["contact"] == i
+            and (c["method"], c["route"]) in (("GET", "/props"), ("POST", "/tokenize"))
+            for i, c in enumerate(contacts, 1)), "Failed Solver endpoint accounting differs")
+        cohorts = {c["cohort_id"]: c for c in config["cohorts"]}
+        summary = []
+        for index, identity in enumerate(identities):
+            source_name = "original" if index < 3 else "recovery"
+            source = original if index < 3 else recovery
+            member = old["members"][index] if index < 3 else replacement
+            outer = source["finished"]["members"][index if index < 3 else 0]
+            label = member["label"]
+            result = _qualify_architecture_member(
+                identity, member, outer, source["member_terminals"][label], source["receipts"][label],
+                source["registration"], cohorts[identity["cohort_id"]], policy_config_bytes[label],
+                graph_config_hashes[source_name][label], output_reserve=output_reserve,
+                structural_reserve=structural_reserve, slot_tokens=slot_tokens)
+            result.update(source=source_name, source_commit=source["registration"]["worker_commit"],
+                          registration_sha256=content_hash(source["registration"]))
+            summary.append(result)
+        endpoints = sum(m["contacts"] for m in summary)
+        return {"schema": "saea-architecture-capacity-recovery-review-v1", "experiment_population": deepcopy(population_pin),
+                "members": summary, "tokenizer_endpoints": endpoints, "failed_attempt_tokenizer_endpoints": len(contacts),
+                "spent_tokenizer_endpoints": endpoints + len(contacts), "generation_contacts": 0, "scorer_contacts": 0,
+                "sources": [{"source": label, "exit_code": source["finished"]["exit_code"],
+                    "worker_commit": source["registration"]["worker_commit"],
+                    "evidence_sha256": content_hash(source)} for label, source in (("original", original), ("recovery", recovery))],
+                "original_evidence_sha256": content_hash(original), "recovery_evidence_sha256": content_hash(recovery),
+                "root_disposition_pin": deepcopy(root_disposition_pin), "source_compatibility_pin": deepcopy(source_compatibility_pin),
+                "failed_contacts_pin": deepcopy(failed_contacts_pin), "root_review_required": True,
+                "runtime_admission": False, "read_authorized": False}
+    except (KeyError, TypeError, AttributeError, IndexError, UnicodeError) as error:
+        raise ValueError("Malformed architecture capacity recovery evidence") from error
