@@ -453,7 +453,17 @@ def _require_n20_root_decision(plans, population, natural, *, repo_root, data_ro
         document = cell.document
         config = compose(repo_root, document["model_fragment"], document["dataset_fragment"],
                          document["baseline_fragment"], stem)
-        expected_ids.extend([document["run_id"], config.values["native_contact_fit"]["run_id"]])
+        fit = config.values["native_contact_fit"]
+        expected_ids.extend([document["run_id"], fit["run_id"]])
+        if member["member_id"] == plans["generation"]["architecture_member"]:
+            for role, run_id, attempt_id in (("generation", document["run_id"], document["attempt_id"]),
+                                            ("fit", fit["run_id"], fit["attempt_id"])):
+                plan = plans[role]
+                require(plan["cell"] == plan["experiment"] == document["cell_id"]
+                        and plan["composed_config_hash"] == config.config_hash
+                        and plan["execution_plan"]["run_id"] == run_id
+                        and plan["execution_plan"]["attempt_id"] == attempt_id,
+                        "N20 root member identity differs from its independently composed cell")
     require(decision.get("eligible_run_ids") == expected_ids and len(set(expected_ids)) == len(expected_ids),
             "N20 root admission family eligibility differs")
 

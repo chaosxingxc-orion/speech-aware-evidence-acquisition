@@ -1,0 +1,48 @@
+{
+  "added_cases": [
+    "generation unlisted run and attempt",
+    "FIT unlisted run and attempt",
+    "generation same-run foreign attempt",
+    "FIT same-run foreign attempt"
+  ],
+  "change": "Compare each role cell, experiment, composed config hash, run ID and attempt ID with that label independently loaded/composed from the existing N20 configurations.",
+  "checks": [
+    {
+      "basis": "Generation and FIT consistent unlisted rebinding incorrectly admitted before repair",
+      "completion_chunk": "d45b15",
+      "exit_code": 1,
+      "expected_failures": 2,
+      "kind": "tests-before-repair"
+    },
+    {
+      "completion_chunk": "a7e1b2",
+      "exit_code": 0,
+      "kind": "focused-N20-contract-and-checker-suite",
+      "original_session": 86224,
+      "passed": 47,
+      "seconds": 25.3
+    },
+    {
+      "exit_code": 0,
+      "kind": "scoped-ruff-and-diff",
+      "tool_chunk": "d89e13"
+    }
+  ],
+  "control_changes": false,
+  "model_contacts": 0,
+  "official_score_jobs": 0,
+  "prepared_implementation_change": false,
+  "previous_commit": "dc4ae6a356175ed567dc83aad301285e678ed715",
+  "previous_regression": "Original352-test PASS remains recorded; no full531-second repeat for this12-line root-decision-only repair.",
+  "problem": "The exact root family eligibility list did not independently bind the current API pair to its member cell, permitting consistently changed unlisted identities.",
+  "quality_read": false,
+  "schema": "saea-manual-architecture-n20-admission-validation-v2",
+  "source_files": {
+    "src/speech_aware_evidence_acquisition/rails/architecture_natural_registration.py": "d4d7a360cbff42b34a22c5d5c0250bf1fdc8f3d3ce9c1a395bd1ef5a88914d87",
+    "tests/unit/test_architecture_n20_registration.py": "2df451513be583c7fa9347f1c2197a77a636be2f54c619942a6588db76ee47f9"
+  },
+  "status": "PASS",
+  "supersedes_scope": "Direct API member identity binding only; preserve original validation-v1 and commit.",
+  "task_answers_read": false,
+  "tokenizer_contacts": 0
+}

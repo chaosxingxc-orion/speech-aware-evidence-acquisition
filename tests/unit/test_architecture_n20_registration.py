@@ -414,6 +414,11 @@ def fixture(tmp_path, monkeypatch, label="seed"):
         return original_read(p, root)
 
     monkeypatch.setattr(admission, "_read_pin", read)
+    # Independently persisted fresh N20 configuration: never alias later caller
+    # mutations of values, the cell or its proposed execution identities.
+    compositions[stem] = SimpleNamespace(
+        values=deepcopy(values), config_hash=config_hash
+    )
     original_compose = admission.compose
     monkeypatch.setattr(
         admission,
@@ -720,3 +725,71 @@ def test_existing_named_checker_routes_only_the_complete_n20_pair(
     assert bool(report.findings) is not complete
     if not complete:
         assert any(f.kind == "population-config-binding" for f in report.findings)
+
+
+@pytest.mark.parametrize("role", ["generation", "fit"])
+@pytest.mark.parametrize("change_run", [True, False])
+def test_consistently_rebound_unlisted_pair_identity_is_refused(
+    tmp_path, monkeypatch, role, change_run
+):
+    args = fixture(tmp_path, monkeypatch)
+    values, cell = args["values"], args["cell"]
+    if role == "generation":
+        if change_run:
+            cell["run_id"] = "UNLISTED-N20-GENERATION-SYNTHETIC"
+        cell["attempt_id"] = "unlisted-generation-attempt"
+    else:
+        if change_run:
+            values["native_contact_fit"]["run_id"] = "UNLISTED-N20-FIT-SYNTHETIC"
+        values["native_contact_fit"]["attempt_id"] = "unlisted-fit-attempt"
+        supply_path = tmp_path / values["prepared_phase_supply"]["relpath"]
+        prepared = json.loads(supply_path.read_bytes())
+        prepared["inputs"] = artifact_inputs(
+            config=values,
+            split_identity_hash=values["population"]["split_identity_hash"],
+            sources=prepared["inputs"]["sources"],
+        )
+        values["prepared_phase_supply"] = write(
+            tmp_path, values["prepared_phase_supply"]["relpath"], prepared
+        )
+    config_hash = _canonical_hash(values)
+    split = values["population"]["split_identity_hash"]
+    generation = ExecutionPlan(
+        **values["execution_plan"],
+        run_id=cell["run_id"],
+        attempt_id=cell["attempt_id"],
+        carrier_lock_key="slurp",
+        split_identity_hash=split,
+        protocol_hash=protocol_hash(config_hash, values["arm"], split),
+    ).validate()
+    fit = values["native_contact_fit"]
+    for document in args["registered_plans"]:
+        bound = (
+            generation
+            if document["plan_role"] == "generation"
+            else replace(
+                generation,
+                run_id=fit["run_id"],
+                attempt_id=fit["attempt_id"],
+                planned_model_calls=fit["contact_cap"],
+            )
+        )
+        document.update(
+            composed_config_hash=config_hash,
+            execution_plan=asdict(bound),
+            run_id=bound.run_id,
+            attempt_id=bound.attempt_id,
+            prepared_phase_supply=deepcopy(values["prepared_phase_supply"]),
+        )
+    rehash(
+        args,
+        "repo-preparation.json",
+        lambda receipt: receipt.update(
+            run_id=cell["run_id"],
+            attempt_id=cell["attempt_id"],
+            config_hash=config_hash,
+            prepared_phase_supply=deepcopy(values["prepared_phase_supply"]),
+        ),
+    )
+    with pytest.raises(ValueError, match="N20 root.*identity"):
+        invoke(args)
