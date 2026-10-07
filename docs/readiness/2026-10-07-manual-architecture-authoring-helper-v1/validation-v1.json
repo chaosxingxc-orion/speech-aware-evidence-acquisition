@@ -1,0 +1,22 @@
+{
+  "exposure_or_runtime_controls_mutated": false,
+  "files": {
+    "scripts/analysis/author_manual_architecture_package.py": "6ecb05e444465ed100892e5d6657c2a661d8089b18bec4df6b8dc04cb64cd639",
+    "tests/unit/test_manual_architecture_authoring.py": "cd348622443b1a971c633bb452f1495308a95baf712205f03f916a5ee8c8e9ae"
+  },
+  "generation_contacts": 0,
+  "independent_admission_api_regression": "dc4ae6a356175ed567dc83aad301285e678ed715 plus repaired identity commit13ff0a; root serially integrated main d0221ce5003e82c4537d02b3fd800bbbef6a240c",
+  "real_authoring": false,
+  "schema": "saea-manual-architecture-authoring-engineering-validation-v1",
+  "scorer_contacts": 0,
+  "source_resolution": "existing external saea-root-frozen-launch-binding-v1 plus immutable intent; unchanged reader exact manifest study_commit check",
+  "status": "MODEL-FREE SYNTHETIC VALIDATION; independent review pending",
+  "task_results_read": false,
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 python -B -m pytest -q -p no:cacheprovider tests/unit/test_manual_architecture_authoring.py tests/unit/test_system_architecture_read.py",
+  "test_result": {
+    "exit_code": 0,
+    "passed": 62,
+    "seconds": 9.75
+  },
+  "tokenizer_contacts": 0
+}
