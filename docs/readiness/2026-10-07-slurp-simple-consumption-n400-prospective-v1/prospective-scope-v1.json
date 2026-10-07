@@ -1,0 +1,147 @@
+{
+  "schema": "saea-manual-architecture-prospective-scale-v1",
+  "recorded_at_utc": "2026-10-07T16:25:13.913368+00:00",
+  "status": "PROSPECTIVE_SCOPE_APPROVED_EXACT_RUNTIME_ADMISSION_PENDING",
+  "owner_basis": {
+    "standing_decision": 227,
+    "latest_direct_input_translation": "Alternatively, start validation on the 400-input dataset directly. Does one experiment take only a little over ten minutes?",
+    "root_response": "Proceed with the four unchanged systems on the existing400-input pool,1600 trajectories. Correct the duration premise: prior4x20 took about23minutes; hours are expected.",
+    "supersedes": "The preceding N100 preparation direction; no N100 model or preparation contact occurred."
+  },
+  "family_id": "slurp-simple-consumption-n400-v1",
+  "N": 400,
+  "K": 2,
+  "members": {
+    "seed": {
+      "rows": 400,
+      "maximum_model_contacts": 5200,
+      "maximum_actual_request_fit_endpoints": 20800,
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      }
+    },
+    "seed-aa": {
+      "rows": 400,
+      "maximum_model_contacts": 5200,
+      "maximum_actual_request_fit_endpoints": 20800,
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-aa-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      }
+    },
+    "review-off": {
+      "rows": 400,
+      "maximum_model_contacts": 800,
+      "maximum_actual_request_fit_endpoints": 3200,
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-review-off-policy-v2.json",
+        "sha256": "55408431fc08e37231c179bd1c033377977a83654ca04dd3982a07b74f7579d7"
+      }
+    },
+    "solver-lookup": {
+      "rows": 400,
+      "maximum_model_contacts": 1200,
+      "maximum_actual_request_fit_endpoints": 4800,
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-solver-lookup-policy-v2.json",
+        "sha256": "2e4c3a6e6d31a6760cf268852cdac05b93f2617b2db42bd892c08b974c0b2742"
+      }
+    }
+  },
+  "unique_input_count": 400,
+  "family_trajectories": 1600,
+  "model_contact_ceiling": 12400,
+  "actual_request_fit_endpoint_ceiling": 49600,
+  "additional_stress_fit": "Separate exact N400 registration, derive endpoint bounds from reachable maximum legal requests, not these generation FIT ceilings. No inherited N20 result relabel.",
+  "fixed_assets": [
+    "policy text and assembly",
+    "knowledge",
+    "existing UPDATE2fixed400 inputs",
+    "audio packets",
+    "queries and votes",
+    "Omni weights and answer authority",
+    "tool and parser contracts",
+    "official scorer",
+    "temperature0 and registered seed",
+    "four slots of24576 and max512 output"
+  ],
+  "prohibited_changes": [
+    "test or milestone feedback",
+    "new data or knowledge construction",
+    "changing frozen previous attempts",
+    "replaying previous generation or scoring",
+    "automatic learner export",
+    "automatic8x400 or equivalent split scale"
+  ],
+  "primary_analysis": {
+    "endpoint": "official complete-manifest pooled SLU-F1",
+    "guards": [
+      "intent accuracy",
+      "reliable completion"
+    ],
+    "contrasts": [
+      "seed-aa minus seed",
+      "review-off minus seed",
+      "review-off minus seed-aa",
+      "solver-lookup minus seed",
+      "solver-lookup minus seed-aa"
+    ],
+    "resampling": {
+      "draws": 10000,
+      "seed": 20261001,
+      "confidence": 0.95,
+      "unit": "paired utterance; keep recording variants together"
+    },
+    "strata": "all scenario strata and equal-stratum descriptive view; no favorable subset selection",
+    "measurement": "sequential-trajectory schedule,queue_depth4,slot_count4; preserve per-node and sample timings"
+  },
+  "process_metrics": [
+    "delivered intent-card coverage",
+    "initial candidate coverage",
+    "raw/normalized parse and entity/full correctness",
+    "review detection,miss,precision,false-alarm with denominators and unknowns",
+    "valid/visible handoff",
+    "revision after alarm",
+    "raw model repair/harm versus postprocessing repair/harm",
+    "empty-gold false fill",
+    "actual tool/model contacts",
+    "first/non-first sample and per-node timing"
+  ],
+  "unavailable_not_imputed": [
+    "unverified raw retrieval-pool recall",
+    "unverified semantic slot support",
+    "semantic criticism truth beyond the registered proxy"
+  ],
+  "exposure_and_subsets": {
+    "roster": "exact existing UPDATE2fixed400; derive and pin rather than resample",
+    "previous20": "retain membership and history; configured order differs from runtime sorted order",
+    "remaining380": "additional coverage relative to recent20, not guaranteed unseen or independently heldout",
+    "primary": "all400",
+    "subset_diagnostics": "old20 versus remaining380 descriptive only, no additional official score or post-hoc selection"
+  },
+  "completion_read": "Allfour independentlyFINALIZED,verifiedseals,oneuniquecompleteofficialscoreeach,zerofailedjobs,then exactrootREAD; no partial quality read.",
+  "natural_proof": "Reuse only with explicit equality of policy/control/parser/geometry/runtime semantics; fresh source and request capacity qualification remains required.",
+  "resource_policy": {
+    "startup_free_gib": 4,
+    "running_free_gib": 4,
+    "one_generator": true,
+    "one_official_scorer": true,
+    "telemetry_seconds": 10,
+    "job_monitor_minutes": 15,
+    "delete_monitor_when_terminal": true
+  },
+  "root_decision": "Retain current seed pending complete new evidence. This manual architecture comparison is not feedback-specific learning evidence.",
+  "admission_remaining": [
+    "N400 configurable prepared members and strict supply identity",
+    "narrow successor gate preserving historical N20 checks",
+    "exact runtime and execution-plan registration",
+    "fresh N400 full-request capacity",
+    "explicit structural compatibility or separately registered proof if needed",
+    "frozen worker and live readiness",
+    "root-only exact queue admission"
+  ],
+  "matched_search": "Both original8-candidate algorithm arms remainHELD; preserve policies/allocations; do not silently change them using manual outcomes.",
+  "other_carriers": "No shared GPU or hold release is implied.",
+  "scientific_scope": "Fixed-pool discovery comparison; N400 meets input-size threshold but repeated exposure still prevents independent generalization or stable learning claims."
+}

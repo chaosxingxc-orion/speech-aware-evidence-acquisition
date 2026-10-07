@@ -1,5 +1,23 @@
 # Experiment rules for the ChatGPT side
 
+## Direct N400 expansion requested; preparation active, no launch yet (2026-10-07)
+
+The owner supersedes the proposed N100 step and explicitly requests400 inputs. Root
+selects the same four frozen simple-consumption systems: seed, A/A, review-off and
+solver-lookup,1600 trajectories on the existing UPDATE2fixed400 roster. Keep policies,
+knowledge, packets, queries, votes, sampling and geometry fixed. Broader coverage is
+optimization evidence, not a fresh independent dataset or a feedback-learning claim.
+Primary business/process analysis covers400; old20/additional380 views are descriptive.
+Fresh exactN400FIT and strict source/roster/supply bindings are required; do not relabel
+N20 capacity. Historical natural4 proof needs explicit policy/control compatibility.
+The old API and sealed experiments stay intact. Sol engineering prepares the explicit
+successor; Astra reviews. No new generation/FIT/scorer contact or queue change yet.
+All exact execution and root READ prerequisites remain. Keep4GiB floors and create a
+15-minute job monitor only at launch. The existing matched-search arms remain held.
+The owner's ten-minute premise was corrected: prior4x20 wall time was23minutes and
+4x400 should be budgeted in hours. Other-carrier boundaries and human-before8x400
+remain. Read [prospective scope](../readiness/2026-10-07-slurp-simple-consumption-n400-prospective-v1/README.md).
+
 ## Same20 business and process review complete; retain seed (2026-10-07 16:12Z)
 
 The four-member80-trajectory GPU family and the separate source-bound process derivative
