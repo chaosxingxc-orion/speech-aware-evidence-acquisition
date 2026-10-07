@@ -230,3 +230,79 @@ def population_stage_spec(pin, *, repo_root, cohort_id, allow_architecture=False
                                       *config["contact_limits"]["fit_endpoints_per_model_contact"] for m in members},
         )
     return result
+
+
+def require_architecture_capacity_registration(values, cell, registered_plan, *, repo_root):
+    """Validate an explicitly declared manual, nongenerative capacity registration.
+
+    This opt-in is restricted to check/prepare-supply/prompt-fit cells. It neither
+    admits a natural generation graph nor changes generic population loaders,
+    text-learning accounting, execution-plan exposure or live runtime gates.
+    Only pinned configuration/registration bytes are read; no task adapter is built.
+    """
+    from ..core.config import _canonical_hash, drop_null_arms
+    from .controllers import default_phase_program
+    from .native_episode_config import load_native_episode_config
+    from ..analysis.native_graph_rehearsal import rehearsal_profile
+
+    require(isinstance(registered_plan, dict)
+            and registered_plan.get("schema") == "saea-registered-fit-plan-v1"
+            and str(registered_plan.get("status", "")).upper().startswith("ROOT COUNTERSIGNED BEFORE CONTACT"),
+            "manual capacity requires its countersigned FIT plan")
+    require(cell.get("allowed_execution_stages") == ["check", "prepare-supply", "prompt-fit"],
+            "manual capacity permits only check/prepare-supply/prompt-fit")
+    require(not any(k in values for k in ("system_context_learning", "system_search_learning", "system_optimization"))
+            and values.get("stage3_algorithm", {}).get("id") == "none"
+            and values["stage3_algorithm"].get("operators_used") == []
+            and values.get("stage3_measurement", {}).get("claims_benefit") is False,
+            "manual capacity cannot admit learning or scientific feedback")
+    budget = values["family_budget"]
+    require(all(type(budget.get(k)) is int and budget[k] == 0 for k in
+                ("complete_system_trajectories", "generation_calls_cap", "official_complete_scoring_jobs"))
+            and _positive(budget.get("tokenizer_endpoint_cap")),
+            "manual capacity requires zero generation/scoring and a positive tokenizer cap")
+    pin = values["experiment_population"]
+    population = load_population_config(pin, repo_root=repo_root, allow_architecture=True)
+    require(population["schema"] == ARCHITECTURE_VERSION, "manual capacity requires the explicit V4 profile")
+    matches = [m for m in population["architecture"]["members"]
+               if m["member_id"] == values.get("architecture_member")
+               and m["cohort_id"] == values.get("population_cohort")]
+    require(len(matches) == 1, "manual capacity has no exact configured architecture member")
+    member = matches[0]
+    cohort = require_population_binding(population, pin, member["cohort_id"], values)
+    require(registered_plan.get("experiment_population") == pin
+            and values["populations"][0]["ids"] == cohort["sample_ids"]
+            and values["population"]["count"] == len(cohort["sample_ids"]),
+            "manual capacity population/roster binding differs")
+    policy = drop_null_arms(json.loads(_read_pin(member["execution_config"], repo_root)))
+    require(all(values.get(k) == v for k, v in policy.items() if k != "what_this_is"),
+            "manual capacity effective policy differs from its pinned execution config")
+    native = load_native_episode_config(values, default_phase_program(values["policy"]))
+    require(native is not None and native.max_contacts == member["model_per_trajectory"]
+            and [r for r in population["nodes"] if native.role(r).max_iterations > 0] == member["active_roles"],
+            "manual capacity role/contact identity differs")
+    profile = values["native_graph_capacity_profile"]
+    require(profile == ("review-off-v1" if member["active_roles"] == ["perception", "solver"]
+                        else "legacy-four-path-v1"), "manual capacity profile differs from active roles")
+    rehearsal_profile(values, profile)
+    require(all(values.get("decoding_params", {}).get(k) == v for k, v in population["sampling"].items()),
+            "manual capacity sampling differs")
+    binding = cell["system_text_policy_binding"]
+    require(binding["bundle_id"] == member["base_bundle_id"]
+            and registered_plan.get("policy_binding") == binding,
+            "manual capacity base text bundle differs")
+    plan = registered_plan["execution_plan"]
+    require(registered_plan.get("composed_config_hash") == _canonical_hash(values)
+            and registered_plan.get("cell") == cell["cell_id"]
+            and plan.get("run_id") == cell["run_id"] and plan.get("attempt_id") == cell["attempt_id"],
+            "manual capacity registered configuration/run/attempt differs")
+    require(type(plan.get("planned_model_calls")) is int
+            and plan["planned_model_calls"] == budget["tokenizer_endpoint_cap"]
+            == values["execution_plan"]["planned_model_calls"]
+            and type(registered_plan.get("official_score_jobs")) is int
+            and registered_plan["official_score_jobs"] == 0
+            and registered_plan.get("scientific_feedback") is False,
+            "manual capacity registered cap or read scope differs")
+    return dict(member_id=member["member_id"], execution_config=deepcopy(member["execution_config"]),
+                execution_identity_sha256=content_hash(member), model_per_trajectory=native.max_contacts,
+                rehearsal_profile=profile, contact_cap=plan["planned_model_calls"], runtime_admission=False)

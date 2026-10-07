@@ -1601,7 +1601,7 @@ def _check_declared_carrier_binding(report, document, run_id, ledger):
         ))
 
 
-def _check_registered_supply_binding(report, baseline, index, package, ledger):
+def _check_registered_supply_binding(report, baseline, index, package, ledger, *, cell=None, fragment=None):
     """Refuse a plan that declares another member's prepared supply envelope.
 
     Legacy plans without this optional declaration retain their old behavior.
@@ -1622,17 +1622,25 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger):
             try:
                 from speech_aware_evidence_acquisition.rails.experiment_population import (
                     load_population_config, require_population_binding,
+                    require_architecture_capacity_registration,
                 )
                 from speech_aware_evidence_acquisition.rails.system_text_policy import require
-                population_pin = baseline["experiment_population"]
-                population = load_population_config(population_pin, repo_root=index.repo_root)
-                cohort = require_population_binding(population, population_pin,
-                    baseline["population_cohort"], document)
-                cap = len(cohort["sample_ids"]) * population["contact_limits"]["model_per_trajectory"]
-                if run_id != report.run_ids["generation"]:
-                    cap *= population["contact_limits"]["fit_endpoints_per_model_contact"]
-                require(isinstance(plan, dict) and plan.get("planned_model_calls") == cap,
-                        "registered plan contact cap differs from config")
+                if "architecture_member" in (fragment or {}) or "architecture_member" in baseline:
+                    from speech_aware_evidence_acquisition.core.config import compose
+                    effective = compose(index.repo_root, cell["model_fragment"], cell["dataset_fragment"],
+                                        cell["baseline_fragment"], report.experiment)
+                    require_architecture_capacity_registration(effective.values, cell, document,
+                                                              repo_root=index.repo_root)
+                else:
+                    population_pin = baseline["experiment_population"]
+                    population = load_population_config(population_pin, repo_root=index.repo_root)
+                    cohort = require_population_binding(population, population_pin,
+                        baseline["population_cohort"], document)
+                    cap = len(cohort["sample_ids"]) * population["contact_limits"]["model_per_trajectory"]
+                    if run_id != report.run_ids["generation"]:
+                        cap *= population["contact_limits"]["fit_endpoints_per_model_contact"]
+                    require(isinstance(plan, dict) and plan.get("planned_model_calls") == cap,
+                            "registered plan contact cap differs from config")
             except (ValueError, KeyError, TypeError, OSError) as error:
                 report.findings.append(Finding("population-config-binding", f"{run_id}: {error}", run_id))
         if (run_id in report.run_ids.values() and "prepared_phase_supply" in document
@@ -1709,7 +1717,7 @@ def check_cell(
         ))
         return
     report.package = f"{READINESS.as_posix()}/{package}"
-    _check_registered_supply_binding(report, baseline, index, package, ledger)
+    _check_registered_supply_binding(report, baseline, index, package, ledger, cell=cell, fragment=fragment)
     _check_resume_replay_proof(report, cell, index, package)
     recipes = index.recipes(package)
     if not recipes:
