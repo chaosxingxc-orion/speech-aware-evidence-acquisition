@@ -1,5 +1,24 @@
 # Experiment rules for the ChatGPT side
 
+## Direct owner correction: Windows memory floors are4GiB (2026-10-07)
+
+The human explicitly corrected the inherited20GiB startup threshold and reiterated
+4GiB free memory. Use4GiB for both prospective startup and running Windows-memory
+floors. Keep the original observation interval, stable-sample count, wait limit,
+process guard, serving identity, output reserves and registered capacity budget.
+Preserve historical20/8 receipts unchanged; do not silently relabel past launches.
+The new recovery registration binds a separate raw-hash-pinned owner amendment and
+admission v2. Its original plan/admission v1 remain preserved as source evidence.
+
+Do not clear caches or restart merely to satisfy the superseded20GiB gate. Keep
+file caching on demand; this correction does not disable the model KV cache.
+The old stuck maintenance process has already ended. At08:26Z Windows free memory
+was9.392GiB; that snapshot is sufficient for4GiB but must be freshly observed at
+launch. The fresh recovery source checker exited0 at08:31:02Z, with zero contacts.
+The new4/4 helper amendment is being verified before the singleton launch. No
+new capacity/generation/scoring contact or lease archival has occurred yet.
+See [the exact owner amendment](../receipts/owner/2026-10-07-windows-free-memory-floor-4gib.json).
+
 ## Aggregate K-record learner input, owner direction 2026-10-06
 
 Use the [new aggregate profile](../readiness/2026-10-06-aggregate-template-learning-v1/README.md).

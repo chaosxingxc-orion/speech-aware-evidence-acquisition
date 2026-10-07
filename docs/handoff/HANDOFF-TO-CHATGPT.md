@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Direct owner correction: Windows memory floors are4GiB (2026-10-07)
+
+The human explicitly corrected the inherited20GiB startup threshold and reiterated
+4GiB free memory. Use4GiB for both prospective startup and running Windows-memory
+floors. Keep the original observation interval, stable-sample count, wait limit,
+process guard, serving identity, output reserves and registered capacity budget.
+Preserve historical20/8 receipts unchanged; do not silently relabel past launches.
+The new recovery registration binds a separate raw-hash-pinned owner amendment and
+admission v2. Its original plan/admission v1 remain preserved as source evidence.
+
+Do not clear caches or restart merely to satisfy the superseded20GiB gate. Keep
+file caching on demand; this correction does not disable the model KV cache.
+The old stuck maintenance process has already ended. At08:26Z Windows free memory
+was9.392GiB; that snapshot is sufficient for4GiB but must be freshly observed at
+launch. The fresh recovery source checker exited0 at08:31:02Z, with zero contacts.
+The new4/4 helper amendment is being verified before the singleton launch. No
+new capacity/generation/scoring contact or lease archival has occurred yet.
+See [the exact owner amendment](../receipts/owner/2026-10-07-windows-free-memory-floor-4gib.json).
+
 ## Reviewed Solver routing and natural-proof registration integrated (2026-10-07)
 
 The narrow Solver on-demand routing repair is integrated at7293f6170. It uses the
@@ -6483,7 +6502,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T08:15:57.089948+00:00
+Last refreshed: 2026-10-07T08:36:28.062217+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

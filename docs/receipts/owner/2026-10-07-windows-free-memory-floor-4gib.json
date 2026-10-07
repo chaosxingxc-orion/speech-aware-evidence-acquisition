@@ -1,0 +1,15 @@
+{
+  "at_utc": "2026-10-07T08:34:30.913742+00:00",
+  "authority": "Direct human instruction in this chat on 2026-10-07, reiterating the earlier4GiB instruction.",
+  "owner_statement_english": "I remember previously asking you to change the experiment startup threshold to4GB free, rather than20GB.20GB is too high and would leave no room for caches.",
+  "preserved": "Sampling, population, policy, output reserves, hardware geometry, interval, stable-sample count, memory wait, process guard, actual-request FIT, one generating flight, one scorer and failure preservation.",
+  "resource_policy_override": {
+    "floor_gib": 4,
+    "start_gib": 4
+  },
+  "root_interpretation": "Use4GiB Windows available memory as both prospective startup and running floor. Preserve file caches on demand; do not clear caches or restart merely to satisfy the superseded20GiB threshold. No requirement to disable the model KV cache is inferred.",
+  "schema": "saea-owner-memory-floor-amendment-v1",
+  "scope": "all-memory-floors-4gib",
+  "status": "OWNER-AUTHORIZED",
+  "supersedes": "The inherited20GiB startup and8GiB running thresholds in unlaunched recovery inputs. Historical frozen evidence remains unchanged."
+}
