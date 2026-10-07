@@ -1,0 +1,25 @@
+{
+  "change": "Derive common profile from independent original composition; refuse disagreement before writes; require identical warm profile; retain it in intent, analysis definition, intent recipe and resolved successor.",
+  "exposure_or_runtime_controls_mutated": false,
+  "files": {
+    "scripts/analysis/author_manual_architecture_package.py": "e8b011c970bc2a648ef51b1f96cb5b8b967f265863509ba80779d1d55ffb4cdc",
+    "tests/unit/test_manual_architecture_authoring.py": "2b0cef4c3ab8b77b684081887b35c6dc1ff00e4d462355ddd151a21411c58bac"
+  },
+  "generation_contacts": 0,
+  "post_test_edit": "Only an explicit Ruff F811 suppression for the imported pytest fixture argument; runtime test semantics unchanged.",
+  "preserved_actual_refusal": "C7 named-registration-check-v1.json b626f2; zero contacts; missing recipe.measurement_profile",
+  "real_authoring": false,
+  "realistic_checker_proof": "Actual compiled-policy fixture + actual verify_system_text_binding/compose/configured_geometry/runtime_options; exact profile accepted, missing/changed recipe profile refused. No early-return or verifier mock.",
+  "schema": "saea-manual-architecture-authoring-engineering-validation-v1",
+  "scorer_contacts": 0,
+  "status": "MODEL-FREE MEASUREMENT-CUSTODY SUCCESSOR; independent review pending",
+  "supersedes_commit": "7e48ccca9414f4c1f9f1b6db25a493f27eefbaa7",
+  "task_results_read": false,
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 python -B -m pytest -q -p no:cacheprovider tests/unit/test_manual_architecture_authoring.py",
+  "test_result": {
+    "exit_code": 0,
+    "passed": 29,
+    "seconds": 6.14
+  },
+  "tokenizer_contacts": 0
+}

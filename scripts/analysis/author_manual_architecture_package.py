@@ -81,6 +81,7 @@ def _member_inputs(spec, stage, repo_root):
         "every configured preparation receipt required",
     )
     members = []
+    profiles = []
     for label in labels:
         receipt_pin = spec["preparation_receipts"][label]
         receipt = json.loads(_read_pin(receipt_pin, repo_root))
@@ -93,6 +94,7 @@ def _member_inputs(spec, stage, repo_root):
             c["baseline_fragment"],
             receipt["experiment"],
         )
+        profiles.append(deepcopy(configured.values["system_search_measurement"]))
         runtime = receipt["runtime_sample_ids"]
         require(
             receipt.get("member_id") == label
@@ -129,7 +131,11 @@ def _member_inputs(spec, stage, repo_root):
         and len({fit["run_id"] for _, _, _, _, fit, _ in members}) == len(members),
         "duplicate member spend identity",
     )
-    return members
+    require(
+        profiles and all(p == profiles[0] for p in profiles),
+        "manual family measurement profiles differ before authoring",
+    )
+    return members, profiles[0]
 
 
 def validate_inputs(spec, *, repo_root, data_root):
@@ -169,7 +175,7 @@ def validate_inputs(spec, *, repo_root, data_root):
         cohort_id=spec["population_cohort"],
         allow_architecture=True,
     )
-    members = _member_inputs(spec, stage, repo_root)
+    members, measurement_profile = _member_inputs(spec, stage, repo_root)
     decision = json.loads(_read_pin(spec["decision_receipt"], data_root))
     eligible = [
         run for _, _, _, c, fit, _ in members for run in (c["run_id"], fit["run_id"])
@@ -259,7 +265,7 @@ def validate_inputs(spec, *, repo_root, data_root):
         == {**guard, "process_memory_diagnostics": spec["process_memory_diagnostics"]},
         "process memory/wait/instrumentation input differs from exact decided resource policy",
     )
-    return package, stage, members, decision, template
+    return package, stage, members, decision, template, measurement_profile
 
 
 def finalize_member(spec, member, decision, *, package, repo_root, data_root):
@@ -345,7 +351,7 @@ def finalize_member(spec, member, decision, *, package, repo_root, data_root):
 def author(spec, *, repo_root, data_root, root_countersign_plans=False):
     """Author package only; no ledger, queue control, attempt, READ or dispatch write."""
     repo_root, data_root = Path(repo_root).resolve(), Path(data_root).resolve()
-    package, stage, members, decision, template = validate_inputs(
+    package, stage, members, decision, template, measurement_profile = validate_inputs(
         spec, repo_root=repo_root, data_root=data_root
     )
     package.mkdir(parents=True)
@@ -364,6 +370,10 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
                 package=package,
                 repo_root=repo_root,
                 data_root=data_root,
+            )
+            require(
+                context["values"]["system_search_measurement"] == measurement_profile,
+                "warm member measurement profile differs from composed family",
             )
             plan = context["execution_plan"]
             fit = context["values"]["native_contact_fit"]
@@ -507,6 +517,7 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
         "ordered_member_labels": list(expected),
         "expected_members": expected,
         "member_bindings": bindings,
+        "measurement_profile": deepcopy(measurement_profile),
         "rows_per_member": stage["N"],
         "official_score_jobs_cap": len(expected),
         "learner_export": False,
@@ -531,6 +542,7 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
         population_budget=stage["population_budget"],
         sample_ids=stage["sample_ids"],
         expected_members=expected,
+        measurement_profile=deepcopy(measurement_profile),
         required_rows_per_member=stage["N"],
         score_jobs=len(expected),
         learner_export=False,

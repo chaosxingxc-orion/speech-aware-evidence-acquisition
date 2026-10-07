@@ -13,6 +13,7 @@ from speech_aware_evidence_acquisition.rails import (
     architecture_natural_registration as pair_api,
 )
 from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyError
+from test_system_text_policy_binding import bound  # noqa: F401
 
 SOURCE = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location(
@@ -127,7 +128,19 @@ def fixture(tmp_path, monkeypatch, *, candidates=2, rows=5):
         baseline = {
             "native_contact_fit": fit,
             "prepared_phase_supply": supply,
-            "system_search_measurement": {"schema": "fixture measurement metadata"},
+            "system_search_measurement": {
+                "schema": "saea-system-search-measurement-v2",
+                "latency_scope": "sample-admission-to-settled-workflow-v1",
+                "schedule": "sequential-trajectory",
+                "slot_count": 4,
+                "queue_depth": 4,
+                "minimum_reliable_completion_rate": 1.0,
+            },
+            "serving_slots": 4,
+            "serving_slot_tokens": 24576,
+            "decoding_params": {"max_tokens": 1024},
+            "server_args": ["-np", "4", "-c", "98304"],
+            "native_episode": {},
         }
         rp("configs/baseline/" + label + ".json", baseline)
         cell = {
@@ -352,6 +365,17 @@ def test_dynamic_full_package_preserves_originals_and_final_hashes(
     intent_path = package / "manual-architecture-analysis-intent-v1.json"
     intent = json.loads(intent_path.read_text())
     assert "source_commit" not in intent
+    assert (
+        intent["measurement_profile"]
+        == intent["analysis_definition"]["measurement_profile"]
+    )
+    assert all(
+        json.loads(
+            (package / (label + "-generation-plan-registered-v1.json")).read_text()
+        )["measurement_profile"]
+        == intent["measurement_profile"]
+        for label in labels
+    )
     assert all("source_commit" not in m for m in intent["member_bindings"].values())
     assert not (package / "manual-architecture-registration-v1.json").exists()
     worker = tmp_path / "immutable-worker"
@@ -595,8 +619,12 @@ def test_frozen_identity_requires_clean_git_head(tmp_path):
         helper._frozen_identity(repo)
 
 
-def test_existing_preflight_accepts_manual_intent_and_draft_read(tmp_path, monkeypatch):
-    repo, data, inputs, _, _, _, _ = fixture(tmp_path, monkeypatch)
+def test_existing_preflight_accepts_manual_intent_and_draft_read(
+    tmp_path, monkeypatch, bound  # noqa: F811
+):
+    authored_root = tmp_path / "authored"
+    authored_root.mkdir()
+    repo, data, inputs, _, _, _, _ = fixture(authored_root, monkeypatch)
     helper.author(inputs, repo_root=repo, data_root=data)
     package = repo / inputs["package_relpath"]
     recipe = json.loads((package / "analysis-recipe-intent-v1.json").read_text())
@@ -609,14 +637,47 @@ def test_existing_preflight_accepts_manual_intent_and_draft_read(tmp_path, monke
     monkeypatch.setitem(sys.modules, module_spec.name, checker)
     module_spec.loader.exec_module(checker)
     report = SimpleNamespace(
-        run_id="RUN-seed", findings=[], read_run_id=inputs["read_run_id"]
+        run_id="RUN-seed",
+        experiment="seed",
+        findings=[],
+        read_run_id=inputs["read_run_id"],
     )
-    checker._check_system_text_binding(report, {}, {}, recipe, repo, data)
+    # Reuse the established compiled-policy fixture, not an early return or a
+    # mocked policy verifier. The actual checker composes a policy-bound cell.
+    compiled, binding, policy_repo, policy_data, _, _ = bound
+    shutil.copytree(policy_repo / "configs", repo / "configs", dirs_exist_ok=True)
+    shutil.copytree(policy_repo / "docs", repo / "docs", dirs_exist_ok=True)
+    shutil.copytree(policy_data / "search", data / "search")
+    baseline_path = repo / "configs/baseline/seed.json"
+    metadata = json.loads(baseline_path.read_text())
+    baseline = {
+        **compiled,
+        **{k: v for k, v in metadata.items() if k != "native_episode"},
+    }
+    baseline_path.write_bytes(helper.serialized(baseline))
+    cell_path = repo / "configs/experiment/seed.json"
+    fragment = json.loads(cell_path.read_text())
+    cell = fragment["cells"][0]
+    cell["system_text_policy_binding"] = binding
+    cell_path.write_bytes(helper.serialized(fragment))
+    checker._check_system_text_binding(report, cell, baseline, recipe, repo, data)
     checker._check_context_read_scope(
         report, recipe, [{"root countersignature": "DRAFT"}]
     )
     assert not report.findings
     assert checker.read_run_id_of(recipe) == inputs["read_run_id"]
+    assert recipe["measurement_profile"] == baseline["system_search_measurement"]
+    for invalid in (
+        {k: v for k, v in recipe.items() if k != "measurement_profile"},
+        {
+            **recipe,
+            "measurement_profile": {**recipe["measurement_profile"], "queue_depth": 8},
+        },
+    ):
+        refused = SimpleNamespace(run_id="RUN-seed", experiment="seed", findings=[])
+        checker._check_system_text_binding(refused, cell, baseline, invalid, repo, data)
+        assert len(refused.findings) == 1
+        assert "registered measurement profile differs" in refused.findings[0].message
 
 
 @pytest.mark.parametrize("enabled", [True, False])
@@ -659,6 +720,28 @@ def test_decided_resource_policy_mismatch_refuses_before_mutation(
     else:
         inputs["process_memory_diagnostics"] = False
     with pytest.raises(PolicyError, match="decided resource policy"):
+        helper.author(inputs, repo_root=repo, data_root=data)
+    assert not (repo / inputs["package_relpath"]).exists()
+    assert all(p.read_bytes() == raw for p, raw in before.items())
+
+
+def test_mismatched_family_measurement_profile_refuses_before_mutation(
+    tmp_path, monkeypatch
+):
+    repo, data, inputs, _, _, _, _ = fixture(tmp_path, monkeypatch)
+    path = repo / "configs/baseline/seed-aa.json"
+    value = json.loads(path.read_text())
+    value["system_search_measurement"]["queue_depth"] = 8
+    path.write_bytes(helper.serialized(value))
+    receipt_path = repo / inputs["preparation_receipts"]["seed-aa"]["relpath"]
+    receipt = json.loads(receipt_path.read_text())
+    receipt["config_hash"] = helper.compose(
+        repo, "model", "dataset", "seed-aa", "seed-aa"
+    ).config_hash
+    receipt_path.write_bytes(helper.serialized(receipt))
+    inputs["preparation_receipts"]["seed-aa"] = helper.raw_pin(receipt_path, repo)
+    before = {p: p.read_bytes() for p in (repo / "configs/experiment").glob("*.json")}
+    with pytest.raises(PolicyError, match="family measurement profiles differ"):
         helper.author(inputs, repo_root=repo, data_root=data)
     assert not (repo / inputs["package_relpath"]).exists()
     assert all(p.read_bytes() == raw for p, raw in before.items())
