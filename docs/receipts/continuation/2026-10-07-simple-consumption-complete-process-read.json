@@ -1,0 +1,41 @@
+{
+  "schema": "saea-same20-complete-process-root-review-v1",
+  "recorded_at_utc": "2026-10-07T16:11:29.772921+00:00",
+  "status": "COMPLETE_ROOT_REVIEW_RETAIN_SEED",
+  "family_id": "slurp-simple-consumption-n20-v2",
+  "read_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N20-READ-METADATA-SUCCESSOR1-V1",
+  "sources": {
+    "report.md": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/slurp-simple-consumption-n20-v2-process-v1/report.md",
+      "sha256": "5add6986a94d0c596a506540c1f0dc6c190cb4ed313f0127e6be67a01fdb9734"
+    },
+    "process-v2.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/slurp-simple-consumption-n20-v2-process-v1/process-v2.json",
+      "sha256": "1363dbf4c6bdd9e7de5ebc054f467022a8937dd74842c162aa0654e5ce6b036f"
+    },
+    "comparison-v2.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/slurp-simple-consumption-n20-v2-process-v1/comparison-v2.json",
+      "sha256": "317a00cc63e093f09334ceed68d0ad2d08a64d42b5af8e7670721394165cc4d7"
+    },
+    "provenance-v1.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/slurp-simple-consumption-n20-v2-process-v1/provenance-v1.json",
+      "sha256": "af15cf24c66662b994ce0fb445c367b48ac2a3a38d4f47107c14effb42776aad"
+    }
+  },
+  "execution": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/root-process-execution-v1.json",
+    "sha256": "0e8fe8cd523b151daa433a9c2b7916334dfa747c1d8472b1f61b246b56a05682"
+  },
+  "exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n20-v4/process-reader-v1-exit.json",
+    "sha256": "993db9a9176a8c8ed47247bba54acf40df8e32fdff724f1084e901e01d58dce3"
+  },
+  "unique_reused_inputs": 20,
+  "trajectories": 80,
+  "model_contacts_added": 0,
+  "official_scoring_jobs_added": 0,
+  "learner_exported": false,
+  "runtime_admission": false,
+  "adopted": false,
+  "review": "Independent Astra aggregate review confirmed denominators, missingness, transitions, contacts and canonical READ authority. Retain uncertainty and separate model revision from postprocessing."
+}
