@@ -111,51 +111,57 @@ def source_bindings(registration, roster_pin, data_root):
     """Read all operational job metadata before any saved score is opened."""
     result, metadata_pins = [], []
     for cid, member in registration["member_bindings"].items():
-        directory = data_root / "runs" / member["run_id"] / member["attempt_id"]
-        jobs_path, summary_path = (
-            directory / "score-jobs.jsonl",
-            directory / "score-batch/batch-summary.json",
-        )
-        metadata_pins.extend([pin(jobs_path), pin(summary_path)])
-        jobs = [
-            json.loads(line)
-            for line in jobs_path.read_text().splitlines()
-            if line.strip()
-        ]
-        summary = CLI.read(summary_path)
-        require(
-            len(jobs) == 1
-            and jobs[0]["job_id"] == member["attempt_id"]
-            and summary.get("job_count") == summary.get("succeeded") == 1
-            and summary.get("failed") == 0
-            and summary.get("include_per_sample") is True
-            and len(summary.get("jobs", [])) == 1,
-            "pilot requires exactly one successful complete official job and zero failures",
-        )
-        job = summary["jobs"][0]
-        require(
-            job["job_id"] == jobs[0]["job_id"]
-            and job.get("returncode") == 0
-            and job.get("status") == "succeeded"
-            and job.get("operation") == "finalize"
-            and Path(job["manifest"]).resolve() == Path(jobs[0]["manifest"]).resolve(),
-            "pilot official job identity/status differs",
-        )
-        manifest = Path(jobs[0]["manifest"]).resolve()
-        require(
-            manifest.parent == directory.resolve(),
-            "pilot manifest escaped its original attempt",
-        )
-        result.append(
-            {
-                "candidate_id": cid,
-                "config": {
-                    "manifest": pin(manifest),
-                    "construction_roster": roster_pin,
-                },
-            }
-        )
+        binding, pins = member_source_binding(cid, member, roster_pin, data_root)
+        result.append(binding)
+        metadata_pins.extend(pins)
     return result, metadata_pins
+
+
+def member_source_binding(cid, member, roster_pin, data_root):
+    """Inspect one complete original score job; return no family evidence."""
+    directory = data_root / "runs" / member["run_id"] / member["attempt_id"]
+    jobs_path, summary_path = (
+        directory / "score-jobs.jsonl",
+        directory / "score-batch/batch-summary.json",
+    )
+    metadata_pins = [pin(jobs_path), pin(summary_path)]
+    jobs = [
+        json.loads(line)
+        for line in jobs_path.read_text().splitlines()
+        if line.strip()
+    ]
+    summary = CLI.read(summary_path)
+    require(
+        len(jobs) == 1
+        and jobs[0]["job_id"] == member["attempt_id"]
+        and summary.get("job_count") == summary.get("succeeded") == 1
+        and summary.get("failed") == 0
+        and summary.get("include_per_sample") is True
+        and len(summary.get("jobs", [])) == 1,
+        "pilot requires exactly one successful complete official job and zero failures",
+    )
+    job = summary["jobs"][0]
+    require(
+        job["job_id"] == jobs[0]["job_id"]
+        and job.get("returncode") == 0
+        and job.get("status") == "succeeded"
+        and job.get("operation") == "finalize"
+        and Path(job["manifest"]).resolve() == Path(jobs[0]["manifest"]).resolve(),
+        "pilot official job identity/status differs",
+    )
+    manifest = Path(jobs[0]["manifest"]).resolve()
+    require(
+        manifest.parent == directory.resolve(),
+        "pilot manifest escaped its original attempt",
+    )
+    binding = {
+            "candidate_id": cid,
+            "config": {
+                "manifest": pin(manifest),
+                "construction_roster": roster_pin,
+            },
+    }
+    return binding, metadata_pins
 
 
 def qualify_registered_context_family(*, recipe_pin, repo_root, data_root, frozen_check):

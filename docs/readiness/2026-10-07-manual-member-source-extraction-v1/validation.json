@@ -1,0 +1,62 @@
+{
+  "base_commit": "f909873a8b5d00f949730c7d96a3cc3ec42e497e",
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "focused": {
+    "exit_code": 0,
+    "original_exec": "669a34",
+    "original_files": [
+      {
+        "path": "/tmp/saea-member-source-extraction-proof-7655k0js/exit.json",
+        "sha256": "68d1a316f699e290c40ecb5b5f5480ce2e822e95f31248f2c435873a817b5a3a"
+      },
+      {
+        "path": "/tmp/saea-member-source-extraction-proof-7655k0js/stdout.log",
+        "sha256": "3f7b68dca78d066e2e9348f31fc18b5e1df21bbe3826be5ae587806f448bd17e"
+      },
+      {
+        "path": "/tmp/saea-member-source-extraction-proof-7655k0js/stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/saea-member-source-extraction-proof-7655k0js/junit.xml",
+        "sha256": "90cf3b6746b942336eebdde05ec8e77704d5615faa77dce6a5241c86dcc9ddcb"
+      },
+      {
+        "path": "/tmp/saea-member-source-extraction-proof-7655k0js/fence.py",
+        "sha256": "a95b0b22f6ba99d61037be9e49372d51f7fe9e8fc5bace40225a3e712cd70960"
+      }
+    ],
+    "passed": 4,
+    "seconds": 6.11
+  },
+  "independent_review": {
+    "original_exec": "d8e6ba",
+    "passed": 56,
+    "seconds": 8.45,
+    "status": "GREEN_FOR_TWO_SOURCE_EXTRACTIONS_ONLY"
+  },
+  "limitations": [
+    "The separate member descriptive wrapper is not part of this commit and is not accepted or invoked.",
+    "No current task, quality or reference answers were read; no actual authority or controls changed."
+  ],
+  "schema": "saea-manual-member-source-extraction-validation-v1",
+  "source_files": [
+    {
+      "relpath": "scripts/analysis/system_text_pilot_read.py",
+      "sha256": "69e9a2cf8f4ea090264b6bb62e1ebc7249ebcd64ea18c6fa476d2ab571ab2b7c"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_architecture_read.py",
+      "sha256": "a178cd0fc314195ad246650b702f9bfa2306ca9c979c0c11dfb7bcf8ebe6e369"
+    },
+    {
+      "relpath": "tests/unit/test_manual_architecture_source_registration.py",
+      "sha256": "01331dab90c6c7d93a9716ab32d8a055d1a169b2cdd7a6a635d5ced6cb93e58c"
+    }
+  ],
+  "status": "SOURCE_ONLY_EXTRACTION_ACCEPTED_MEMBER_WRAPPER_PENDING"
+}

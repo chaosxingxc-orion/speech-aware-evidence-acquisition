@@ -34,7 +34,21 @@ class CompleteArchitectureEvidence:
 def validate_registration(
     recipe, registration, owner, authority, *, repo_root, data_root
 ):
-    """Check every exact registered pair before any saved task result is read."""
+    """Retain the exact whole-family READ gate before source validation."""
+    require(
+        authority.get("read_run_id")
+        == recipe.get("run_ids", {}).get("read")
+        == registration.get("read_id")
+        and authority.get("ledger_row_sha256"),
+        "exact root manual READ required",
+    )
+    return validate_source_registration(
+        recipe, registration, owner, repo_root=repo_root, data_root=data_root
+    )
+
+
+def validate_source_registration(recipe, registration, owner, *, repo_root, data_root):
+    """Validate every source pair; grant no READ or complete-evidence authority."""
     from ..rails.architecture_natural_registration import (
         require_architecture_n20_registration,
     )
@@ -117,13 +131,6 @@ def validate_registration(
         and recipe.get("comparison_groups")
         == {"architecture": [*stage["control_members"], stage["candidate_members"]]},
         "manual complete family, roster, budget or comparators differ from configuration",
-    )
-    require(
-        authority.get("read_run_id")
-        == recipe.get("run_ids", {}).get("read")
-        == registration.get("read_id")
-        and authority.get("ledger_row_sha256"),
-        "exact root manual READ required",
     )
     commits = set()
     runtime_orders = {}
