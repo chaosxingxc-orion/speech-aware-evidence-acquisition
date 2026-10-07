@@ -1601,13 +1601,17 @@ def _check_declared_carrier_binding(report, document, run_id, ledger):
         ))
 
 
-def _check_registered_supply_binding(report, baseline, index, package, ledger, *, cell=None, fragment=None):
+def _check_registered_supply_binding(report, baseline, index, package, ledger, *, cell=None, fragment=None,
+                                     data_root=None):
     """Refuse a plan that declares another member's prepared supply envelope.
 
     Legacy plans without this optional declaration retain their old behavior.
     Runtime preparation still verifies the actual artifact and source hashes.
     """
     expected = (baseline or {}).get("prepared_phase_supply")
+    natural = (cell is not None and cell.get("allowed_execution_stages") == ["check", "prepare-supply", "worker"]
+               and ("architecture_member" in (fragment or {}) or "architecture_member" in (baseline or {})))
+    natural_plans = []
     for path in sorted((index.repo_root / READINESS / package).glob("*plan-registered*.json")):
         try:
             document = json.loads(path.read_text(encoding="utf-8"))
@@ -1619,13 +1623,17 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
         run_id = document.get("run_id") or (plan.get("run_id") if isinstance(plan, dict) else None)
         _check_declared_carrier_binding(report, document, run_id, ledger)
         if run_id in report.run_ids.values() and "experiment_population" in (baseline or {}):
+            if natural:
+                natural_plans.append(document)
             try:
                 from speech_aware_evidence_acquisition.rails.experiment_population import (
                     load_population_config, require_population_binding,
                     require_architecture_capacity_registration,
                 )
                 from speech_aware_evidence_acquisition.rails.system_text_policy import require
-                if "architecture_member" in (fragment or {}) or "architecture_member" in baseline:
+                if natural:
+                    pass  # Validate the complete generation/FIT pair after collecting it.
+                elif "architecture_member" in (fragment or {}) or "architecture_member" in baseline:
                     from speech_aware_evidence_acquisition.core.config import compose
                     effective = compose(index.repo_root, cell["model_fragment"], cell["dataset_fragment"],
                                         cell["baseline_fragment"], report.experiment)
@@ -1650,6 +1658,18 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
                 f"{run_id}: {path.name} declares a prepared supply different from its cell baseline",
                 run_id,
             ))
+    if natural:
+        try:
+            from speech_aware_evidence_acquisition.core.config import compose
+            from speech_aware_evidence_acquisition.rails.architecture_natural_registration import (
+                require_architecture_natural_registration,
+            )
+            effective = compose(index.repo_root, cell["model_fragment"], cell["dataset_fragment"],
+                                cell["baseline_fragment"], report.experiment)
+            require_architecture_natural_registration(effective.values, cell, natural_plans,
+                                                     repo_root=index.repo_root, data_root=data_root)
+        except (ValueError, KeyError, TypeError, OSError) as error:
+            report.findings.append(Finding("population-config-binding", str(error), report.run_id))
 
 
 def check_cell(
@@ -1717,7 +1737,8 @@ def check_cell(
         ))
         return
     report.package = f"{READINESS.as_posix()}/{package}"
-    _check_registered_supply_binding(report, baseline, index, package, ledger, cell=cell, fragment=fragment)
+    _check_registered_supply_binding(report, baseline, index, package, ledger, cell=cell, fragment=fragment,
+                                     data_root=data_root)
     _check_resume_replay_proof(report, cell, index, package)
     recipes = index.recipes(package)
     if not recipes:
