@@ -1,0 +1,45 @@
+{
+  "at_utc": "2026-10-07T14:10:51.476361+00:00",
+  "checks": {
+    "author_admission_regression": 352,
+    "author_final_admission_focused": 47,
+    "independent_admission": 43,
+    "independent_identity_repair_targeted": 8,
+    "independent_reader": 146,
+    "integrated_admission_reader": {
+      "completion_tool_chunk": "9a6c1d",
+      "exit_code": 0,
+      "original_session": 49742,
+      "passed": 88,
+      "seconds": 32.37,
+      "start_tool_chunk": "f509b3"
+    }
+  },
+  "dispatches": 0,
+  "integrated_commit": "d0221ce5003e82c4537d02b3fd800bbbef6a240c",
+  "learner_export": false,
+  "model_contacts": 0,
+  "operational_note": "A root-owned read-only git status spent at least102seconds in p9_client_rpc, then completed normally and the isolated cherry-picks exited0. No process was killed and no service or WSL restart occurred. This is not an experiment failure or an established cause of prior host memory loss.",
+  "original_commits": [
+    "dc4ae6a356175ed567dc83aad301285e678ed715",
+    "13ff0a49c5b0d9abc7c10863addd151a094a55a2",
+    "9e2d1de4ef9ca0fb4c50c7caba20afd2c1a9f7b6"
+  ],
+  "remaining": [
+    "Final ready-state metadata and warm-verified successor preparation receipts",
+    "Exact plan/exposure/analysis intent and queue registration",
+    "Clean frozen source and named registration/prepared-source checks",
+    "Fresh live service, process/control and memory admission before one dispatch",
+    "Whole-family completion then exact root READ before quality analysis"
+  ],
+  "review": "GPT-6 Astra/Ultra GREEN for exact source and identity repair; root serial integration. The named checker already rejected unlisted runs; the direct public API now independently rejects them too.",
+  "root_decision": {
+    "relpath": "coordination/simple-consumption-n20-v4/root-admission-v1.json",
+    "sha256": "a27e62cf2bec1775f098e3e0bad99f5e540e3386c6b5f9212678f2b7b09c0a12"
+  },
+  "schema": "saea-manual-n20-source-integration-v1",
+  "scorer_contacts": 0,
+  "source_binding_resolution": "Freeze immutable preregistered analysis intent and DRAFT READ in the worker, then bind a separately versioned resolved analysis successor to the actual external frozen-launch receipt and exact source commit. Preserve membership, plans, comparisons and metrics; never insert a self-referential commit into the worker.",
+  "status": "REVIEWED_INTEGRATED_EXECUTION_HELD",
+  "tokenizer_contacts": 0
+}

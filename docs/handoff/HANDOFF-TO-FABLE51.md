@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Manual same20 admission and reader integrated; final authoring pending (2026-10-07)
+
+Root serially integrated reviewed admission, its direct-API exact run/attempt repair,
+and the complete manual-family reader through `d0221ce500`. The merged admission/reader
+suite passed 88 tests. The root owner227 decision at
+`coordination/simple-consumption-n20-v4/root-admission-v1.json` conditionally covers only
+the configured four-member same20 comparison: 80 trajectories, ceilings of 620 generation
+contacts and 2480 FIT endpoints, and four complete official scoring jobs. Execution remains
+HELD until final preparation/registration, clean frozen and fresh live checks; no contact
+or queue transition occurred. No owner decision is pending for these bounded steps.
+
+Freeze an immutable analysis intent/DRAFT READ first. Resolve its unchanged analysis
+successor in the root analysis checkout against the actual external frozen-launch receipt
+after freeze; never embed a commit inside the same commit it is supposed to identify.
+The exact final root READ still waits for all independent seals and unique official scores.
+The earlier natural structural run remains complete and intentionally unscored. Keep
+4GiB floors, memory diagnostics, fixed inputs/policies and the owner return before8x400.
+See [integration evidence](../receipts/continuation/2026-10-07-simple-consumption-n20-source-integration.json).
+
 ## Same20 streaming-source supplies prepared; execution remains held (2026-10-07)
 
 All four configured same20 members now have source-compatible successor phase-supply-v2
@@ -361,7 +380,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-07T13:42:11.573807+00:00
+Last refreshed: 2026-10-07T14:10:51.476361+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
