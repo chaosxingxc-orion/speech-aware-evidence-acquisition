@@ -1,5 +1,33 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Matched search model-free continuation bound (2026-10-07)
+
+The original preparation session41351/PID277770 remains the only supply-preparation
+owner. Ten of twenty configured systems completed at the last checkpoint; the
+multi-parent seed is running. Revalidate original live processes and durable exits.
+A conditional model-free successor, session16375/PID281174, now waits for that exact
+original process identity to end successfully. It then runs complete independent
+verification and capacity-registration preparation serially, stopping on any failure.
+See [continuation receipt](../receipts/continuation/2026-10-07-matched-search-model-free-continuation-started.json).
+Do not separately run those two stage entries while the successor owns them.
+This is not GPU dispatch, queue control, recovery, scoring or scientific READ.
+
+The [successor runtime map](../readiness/2026-10-07-matched-search-engineering-preparation-v1/runtime-preparation-map-v2.json)
+binds all sixteen original compiled children and four seed/A/A identities to exact
+recorded search results. Both original algorithm/configuration bindings pass;
+full runtime identities, FIT/structural acceptance and READ remain ahead. Eleven
+prospective dispatch checks reject missing/reordered members, crossed population
+pins, changed budgets/resources/sampling and substituted identities. Parsing passes;
+this does not establish live runtime acceptance.
+
+At01:37Z the service was healthy idle with fresh telemetry and four free slots.
+Windows free memory19.07GiB was below the planned20GiB startup threshold while
+model-free preparation remained active; it exceeded the8GiB running floor. Remeasure
+after preparation and require the registered stable-memory gate. Do not lower guards
+or clear caches based on this snapshot. No current GPU job or monitor was started.
+After complete success, inspect and serially integrate the prepared artifacts into
+sole master, freeze the exact capacity source, and complete actual admission.
+
 ## Matched search engineering preparation started (2026-10-07)
 
 The original model-free serial preparation is session41351/PID277770, started

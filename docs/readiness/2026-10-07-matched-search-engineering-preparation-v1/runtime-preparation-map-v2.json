@@ -1,0 +1,943 @@
+{
+  "analysis_requirement": "Use exact new search algorithm identities and complete family registration. Do not alias the search algorithms to historical tf-grpo-context-diversity or gepa protocol validators. Reuse generic complete-family scoring/READ primitives with explicit prospective binding.",
+  "arms": [
+    {
+      "algorithm": "fixed-parent-aggregate-v1",
+      "arm": "fixed-parent",
+      "budget": {
+        "candidate_trajectories": 160,
+        "control_trajectories": 40,
+        "family_trajectories": 200,
+        "fit_endpoints_cap": 10400,
+        "generation_contacts_cap": 2600
+      },
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "iteration": 1,
+      "search_evaluation": {
+        "reservation": {
+          "relpath": "docs/readiness/2026-10-07-matched-search-evaluation-v1/fixed-parent-reservation.json",
+          "sha256": "322491554fd3838f93da76c79d9be607257ce7174c7cb57800db0e3ec916af3d"
+        },
+        "result": {
+          "relpath": "docs/readiness/2026-10-07-matched-search-evaluation-v1/fixed-parent-result.json",
+          "sha256": "cf4996a090cccb67819c88a0d780752cdf7f5d630528db07a509aacc7ad990da"
+        }
+      },
+      "stages": [
+        {
+          "control_sources": {
+            "seed": {
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "source_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "b0999a8b249db03f115510dc3c4d89a0719f44aac50a769d1be292445b07404f"
+              },
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+              }
+            },
+            "seed-aa": {
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "source_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "debe37098203cd6f7602e964e2b3fcb3ff69937ac148e4cc6cc59a500aaf9f7f"
+              },
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "6e4fde9cca2b2491494755d4d423df74dca74607c1b16a59cff4114a8b36a730"
+              }
+            }
+          },
+          "members": [
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-seed-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-seed-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "seed",
+              "model_contact_cap": 260,
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "b0999a8b249db03f115510dc3c4d89a0719f44aac50a769d1be292445b07404f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "unchanged-control",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-SEED-V1",
+              "runtime_admission": false,
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+              },
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-seed-aa-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-seed-aa-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "seed-aa",
+              "model_contact_cap": 260,
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "debe37098203cd6f7602e964e2b3fcb3ff69937ac148e4cc6cc59a500aaf9f7f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "unchanged-control",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-SEED-AA-V1",
+              "runtime_admission": false,
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "6e4fde9cca2b2491494755d4d423df74dca74607c1b16a59cff4114a8b36a730"
+              },
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-01-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-01-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-01",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-01.json",
+                "sha256": "5b31e8d6c4b6621c1fd21f1f8059673e1b54a5ad460af8f878f9bd5896e3fcaa"
+              },
+              "parent_bundle_ids": [
+                "0136f4381cf70905ad70fb648b639da884df9c8e0fbde75786d1b3efdf84898d"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-fixed-parent-update1-branch-01-graph-v1.json",
+                "sha256": "39613c898e9a1cfde92ed828881ce0fc7a84f9a66031adfff11c248c26d15e17"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/87fee81be838aecfbd8eea31cd977b28e0982ee1a7436b7d8ce7eadb74f71e47.json",
+                  "sha256": "e4b9017f81f4995abb3029a446f3fb670bdd349e2942b5cda711035902f09035"
+                },
+                "bundle_id": "87fee81be838aecfbd8eea31cd977b28e0982ee1a7436b7d8ce7eadb74f71e47",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-01-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-02-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-02-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-02",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-02.json",
+                "sha256": "f7014cb7efc9cbba8176acff0616db3ea29cf23f731e3194345722dbdd37030b"
+              },
+              "parent_bundle_ids": [
+                "958345cb641172ffc5b52ca01cc1dcf61d678f44a0e7a690f889071a732f2a99"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-fixed-parent-update1-branch-02-graph-v1.json",
+                "sha256": "4c0aebc52c72310cd4d61a8cf73a4f9f033c361313f251212534d59bf6d67eab"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/3ef287ed99bdfe614fc820b87b77a2630e539654045a169b36c15194e05f2190.json",
+                  "sha256": "d9cab5a94347ecf6f83efa23825af1f05d2cc19b7d1a5da5c048ea4aa83ec465"
+                },
+                "bundle_id": "3ef287ed99bdfe614fc820b87b77a2630e539654045a169b36c15194e05f2190",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-02-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-03-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-03-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-03",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-03.json",
+                "sha256": "030cf979bf7c65511db536907dfc513ca1f2e9444b9552a9b0240b555e89c857"
+              },
+              "parent_bundle_ids": [
+                "a1390d6298351f2ba374ff0512f855efd5746ce8fdd51f20e2b42c2112e56568"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-fixed-parent-update1-branch-03-graph-v1.json",
+                "sha256": "f75e84365616bbea11c5002b502beb051ce865fafedf01982a55588b13987fe0"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/b9a6110c563c8c6ec69630c2742b91e07a075a959b2087aad19c23ab520d4d9b.json",
+                  "sha256": "596b502999a4e15c21bbffb347985e0d1278a071ae6ab59db7f2c8186eb4ec11"
+                },
+                "bundle_id": "b9a6110c563c8c6ec69630c2742b91e07a075a959b2087aad19c23ab520d4d9b",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-03-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-04-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-04-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-04",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-04.json",
+                "sha256": "68d9e38caa6630a678d0f044df7fbc020655e050d0554f72c177808253e26930"
+              },
+              "parent_bundle_ids": [
+                "a9b61b9a7c37b8610a497aebf2ef9996543f9308726b93d3438481e1d4c96709"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-fixed-parent-update1-branch-04-graph-v1.json",
+                "sha256": "8120d08c56534a5e24920be618f2446ccb4e268f7ceb2a6e589b3025c1acfd81"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/5e7473a9d9d7a396c842278a8ec2eea2086ee70dc3e05e6ee91f3eca49ac7a5e.json",
+                  "sha256": "23a557e57cfab516af17172c669604fc027c7bfa34d1a19351eb90433c2a9c8f"
+                },
+                "bundle_id": "5e7473a9d9d7a396c842278a8ec2eea2086ee70dc3e05e6ee91f3eca49ac7a5e",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-04-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-05-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-05-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-05",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-05.json",
+                "sha256": "123b4158abec04316ba85c054aa152ae853b42003379dcbc38c8f346d01caac3"
+              },
+              "parent_bundle_ids": [
+                "b17788c067a7bff3ba7753215e72af1e4b303e7c86aeb712105cb3137394c1b6"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-fixed-parent-update1-branch-05-graph-v1.json",
+                "sha256": "8ba23f9a8b2e250a6aa85b06c4f2a64c46327889f2a27cdef0ebd22dc2e62ff7"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/397a471b8b033784e5e40b6b45fba38d8a913450304444c896e30473353368bc.json",
+                  "sha256": "5dbfa077c1d48db3d229bdbf4775baa2d649be2f3d88e0ac52edee084191a034"
+                },
+                "bundle_id": "397a471b8b033784e5e40b6b45fba38d8a913450304444c896e30473353368bc",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-05-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-06-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-06-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-06",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-06.json",
+                "sha256": "3e48529864bf53a129de28d0555f8a2aad5bcddd94041c38ea53ddca1fd9f1b1"
+              },
+              "parent_bundle_ids": [
+                "98327a8b6b932e40021ad3e0175e79e8844c529b2464f888116277752705228c"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-graph-v1.json",
+                "sha256": "ae1ffe85ddf1dc969f072cde63c256ec31a71703e45f0f0e76864e0e98a6acbf"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f.json",
+                  "sha256": "c5e88bb0800d1a590365767ec9c71c0c9dd6d87250f13ca2c2ec8d5a5381ae9d"
+                },
+                "bundle_id": "85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-06-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-07-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-07-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-07",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-07.json",
+                "sha256": "051c565f0b66af735b8fed06ce218a269e5223cddabcc97ff370ad7856e78dc9"
+              },
+              "parent_bundle_ids": [
+                "ce29134403c3214d9a8875d07a03cb00f68b94cd32b33ab8bcd147a8f9580ddd"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-fixed-parent-update1-branch-07-graph-v1.json",
+                "sha256": "ac7a66ffd8ba4c941ae2ada09f05cff2e6cdf47e8df5ac5112f1528570cf2a9a"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/aa57471a9d0fe5ef074b7234851691f52d0cfbf470b55e376a04a800f4b6d8ef.json",
+                  "sha256": "e6557390273d4b544e43240c93745704ade586f1820d43a4fbf996c39aac7b36"
+                },
+                "bundle_id": "aa57471a9d0fe5ef074b7234851691f52d0cfbf470b55e376a04a800f4b6d8ef",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-07-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-fixed-parent-comparison-branch-08-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-08-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-08",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/compiled-members/branch-08.json",
+                "sha256": "b56b3299f8edeeac310572f2c722352822ed3a68cf2a7190316dc8fb76ff01bc"
+              },
+              "parent_bundle_ids": [
+                "43e117be0bec8bb84c5065421dea92cf5e91a8a7f250ae73f8eac3ce52462c2d"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-fixed-parent-update1-branch-08-graph-v1.json",
+                "sha256": "2c0413d4225f41ea5be29bd5bb535af632fdff71b8e2a10e13d4e01897164f04"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/8df4b0b8d9fb709426d053468da2ff18a043653f83804aa9786b8bf9ac1dffbd.json",
+                  "sha256": "fb183a2be118980e79b6bba2febca6002f47e73470958fef83cd8ad3759fff05"
+                },
+                "bundle_id": "8df4b0b8d9fb709426d053468da2ff18a043653f83804aa9786b8bf9ac1dffbd",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-FIXED-PARENT-COMPARISON-BRANCH-08-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            }
+          ],
+          "stage": {
+            "K": 8,
+            "M": [
+              "perception",
+              "solver",
+              "reviewer",
+              "planner"
+            ],
+            "N": 20,
+            "boundary_maintenance": {
+              "global_sync": false,
+              "mode": "observe-only",
+              "preserve_model_service": true,
+              "record_before_after": true,
+              "require_generation_scoring_preprocessing_idle": true,
+              "when": "after-complete-cohort"
+            },
+            "candidate_members": [
+              "branch-01",
+              "branch-02",
+              "branch-03",
+              "branch-04",
+              "branch-05",
+              "branch-06",
+              "branch-07",
+              "branch-08"
+            ],
+            "control_members": [
+              "seed",
+              "seed-aa"
+            ],
+            "execution": {
+              "queue_depth": 4,
+              "schedule": "sequential-trajectory",
+              "slot_count": 4
+            },
+            "experiment_population": {
+              "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+              "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+            },
+            "member_fit_endpoints_cap": 1040,
+            "member_generation_contacts_cap": 260,
+            "population_budget": {
+              "K": 8,
+              "M": 4,
+              "N": 20,
+              "candidate_trajectories": 160,
+              "control_trajectories": 40,
+              "family_trajectories": 200,
+              "fit_endpoints_cap": 10400,
+              "generation_contacts_cap": 2600
+            },
+            "population_cohort": "comparison",
+            "proposer": {
+              "model": "gpt-6.1-sol",
+              "reasoning_effort": "high",
+              "semantic_batches": 1
+            },
+            "runtime_admission": false,
+            "sample_ids": [
+              "slurp:train:005407:audio-1502374837",
+              "slurp:train:003560:audio-1501686037",
+              "slurp:train:005513:audio-1494513310",
+              "slurp:train:011838:audio-1490369500",
+              "slurp:train:000244:audio-1497883990-headset",
+              "slurp:train:009411:audio-1497030307-headset",
+              "slurp:train:015179:audio-1498569151-headset",
+              "slurp:train:013565:audio-1501765573-headset",
+              "slurp:train:010065:audio-1501756518",
+              "slurp:train:004087:audio-1490199961",
+              "slurp:train:013560:audio-1490291477-headset",
+              "slurp:train:014610:audio-1502218659-headset",
+              "slurp:train:014741:audio-1497882505",
+              "slurp:train:000081:audio-1501753218-headset",
+              "slurp:train:006032:audio--1504195204",
+              "slurp:train:016836:audio-1490705489-headset",
+              "slurp:train:004499:audio--1504194378-headset",
+              "slurp:train:011479:audio-1502216306-headset",
+              "slurp:train:010006:audio-1499693788-headset",
+              "slurp:train:010537:audio-1490183278"
+            ],
+            "sampling": {
+              "seed": 20260913,
+              "temperature": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "algorithm": "bounded-multiparent-aggregate-v1",
+      "arm": "multi-parent",
+      "budget": {
+        "candidate_trajectories": 160,
+        "control_trajectories": 40,
+        "family_trajectories": 200,
+        "fit_endpoints_cap": 10400,
+        "generation_contacts_cap": 2600
+      },
+      "experiment_population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "iteration": 1,
+      "search_evaluation": {
+        "reservation": {
+          "relpath": "docs/readiness/2026-10-07-matched-search-evaluation-v1/multi-parent-reservation.json",
+          "sha256": "e0e668f26ae4be49a431b3d998b3f47966dd9acf24920e4126567aeacce49a04"
+        },
+        "result": {
+          "relpath": "docs/readiness/2026-10-07-matched-search-evaluation-v1/multi-parent-result.json",
+          "sha256": "ca94295529f77330e65412752e7a8db62bfd2842e246f90bae42292da360ebcc"
+        }
+      },
+      "stages": [
+        {
+          "control_sources": {
+            "seed": {
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "source_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "b0999a8b249db03f115510dc3c4d89a0719f44aac50a769d1be292445b07404f"
+              },
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+              }
+            },
+            "seed-aa": {
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "source_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "debe37098203cd6f7602e964e2b3fcb3ff69937ac148e4cc6cc59a500aaf9f7f"
+              },
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "6e4fde9cca2b2491494755d4d423df74dca74607c1b16a59cff4114a8b36a730"
+              }
+            }
+          },
+          "members": [
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-seed-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-seed-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "seed",
+              "model_contact_cap": 260,
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "b0999a8b249db03f115510dc3c4d89a0719f44aac50a769d1be292445b07404f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "unchanged-control",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-SEED-V1",
+              "runtime_admission": false,
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-post-observer-v1.json",
+                "sha256": "7ea7c28291b97ac86575a87acd6520c055fc326ea6008cefac748aa2b36b33db"
+              },
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-seed-aa-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-seed-aa-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "seed-aa",
+              "model_contact_cap": 260,
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "debe37098203cd6f7602e964e2b3fcb3ff69937ac148e4cc6cc59a500aaf9f7f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+                  "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+                },
+                "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "unchanged-control",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-SEED-AA-V1",
+              "runtime_admission": false,
+              "source_experiment": {
+                "relpath": "configs/experiment/slurp-native-stage3-context-template-k8a-update2-n20-seed-aa-v1.json",
+                "sha256": "6e4fde9cca2b2491494755d4d423df74dca74607c1b16a59cff4114a8b36a730"
+              },
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-01-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-01-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-01",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-01.json",
+                "sha256": "cead7879a41a7c43566ec956b211d36fbc0c3e8cde6827c9888e523ee7e4fca8"
+              },
+              "parent_bundle_ids": [
+                "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-multi-parent-update1-branch-01-graph-v1.json",
+                "sha256": "59e2b2095c3da3d36998288f04172d3e3df95bf8fcba06af50352fb858667df1"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/405b94b908381ae3da350cca08a88a6a63a398fbad598977aff36a144b0a80b2.json",
+                  "sha256": "d59012ff48e4ac6ada3c2ac75c66822650a449dc1d531e0d8e250690edf5708a"
+                },
+                "bundle_id": "405b94b908381ae3da350cca08a88a6a63a398fbad598977aff36a144b0a80b2",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-01-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-02-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-02-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-02",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-02.json",
+                "sha256": "710af3b3f8cf37557dcd1ebe23ac0cf0eb8ff3ea2ed8a3c5128f6dfa89bc6607"
+              },
+              "parent_bundle_ids": [
+                "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-multi-parent-update1-branch-02-graph-v1.json",
+                "sha256": "45b8a4a118292255128b2b82f2c436423a898e68e985f10d64dbaa4ddeb317d3"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/b06c6755a58aa7719501d728d4b455f7c262f3a3cbc532346fe727ec44050519.json",
+                  "sha256": "3b87b7e4e9ec29cbcbf9c5f58a85c6f62f02cf0a82ff2bb853fc785e17fdd945"
+                },
+                "bundle_id": "b06c6755a58aa7719501d728d4b455f7c262f3a3cbc532346fe727ec44050519",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-02-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-03-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-03-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-03",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-03.json",
+                "sha256": "c3bec063ceab1e878f2e1e69b51739819ed716cf544592b33f6d16f58e1bb8fc"
+              },
+              "parent_bundle_ids": [
+                "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-multi-parent-update1-branch-03-graph-v1.json",
+                "sha256": "094c77629629944a4157924f17ac9c35907b2c0454f003dfb10bc373eb76ce0b"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/d2a05478387aa66472f74044ad3643b1c90c9a40be23234ba6413d23977f10e3.json",
+                  "sha256": "4c002702cbbcb0215217363987bade9769f538f5b6a635ea9a2701af37237468"
+                },
+                "bundle_id": "d2a05478387aa66472f74044ad3643b1c90c9a40be23234ba6413d23977f10e3",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-03-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-04-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-04-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-04",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-04.json",
+                "sha256": "ee67f9405b02f7a74764ac1bc97fecb0f6742a6765824f6b626d2f5546ad7e69"
+              },
+              "parent_bundle_ids": [
+                "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+                "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-multi-parent-update1-branch-04-graph-v1.json",
+                "sha256": "e5d1aa61d4e83d5b6dda8bc2381f083e43733b698a8b7f766f155c9972e72bf7"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/a3e46a37bd911da87fd233a3ce75d967521322cbdd342ceba5e777d320c9a4c2.json",
+                  "sha256": "4e3ace853e81cdfd4a8f76f550344bc8d2bae0e0fd187a0694453bc111b6b363"
+                },
+                "bundle_id": "a3e46a37bd911da87fd233a3ce75d967521322cbdd342ceba5e777d320c9a4c2",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-04-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-05-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-05-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-05",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-05.json",
+                "sha256": "45fad3d1b6e7b4f0f2ede58a2988752469a71b129164cf43debd8e0e93de8a02"
+              },
+              "parent_bundle_ids": [
+                "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef",
+                "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-multi-parent-update1-branch-05-graph-v1.json",
+                "sha256": "c70615d836c48d6c2e4dddfdb892f06d201383304f83ccfad7d2c5454f116f92"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/9f04e5a99b1c4ea63e76b9664fd009d531f1c104831cf58374c2e459de7ffd9b.json",
+                  "sha256": "3126873ae10e5a212104adbddc87d39698b5bf3887d6dbf3fb9328d5a7f221b8"
+                },
+                "bundle_id": "9f04e5a99b1c4ea63e76b9664fd009d531f1c104831cf58374c2e459de7ffd9b",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-05-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-06-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-06-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-06",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-06.json",
+                "sha256": "69225daffb3ef575c4b0d0e465ebb23106e6c065264339e699e45d88c583ba13"
+              },
+              "parent_bundle_ids": [
+                "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-multi-parent-update1-branch-06-graph-v1.json",
+                "sha256": "a21f5c992a6ababbae93b9bbb861ca9286b3c5ff1d8c476368bd94625f3f46b0"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/dae5eee1986e4da276a095e3e91fd08c45c4f3298278bec0ac0c14ee52571e73.json",
+                  "sha256": "6c2f36021740d7ee71664502adae2cd9c91f2a525d5d89f76eb934366902f417"
+                },
+                "bundle_id": "dae5eee1986e4da276a095e3e91fd08c45c4f3298278bec0ac0c14ee52571e73",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-06-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-07-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-07-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-07",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-07.json",
+                "sha256": "f89176e8a1d3a0c5e5042b1bb8a6667d28ccb4b8eaa8bb2ae1b4bb1e964c4212"
+              },
+              "parent_bundle_ids": [
+                "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-multi-parent-update1-branch-07-graph-v1.json",
+                "sha256": "f48c1651836cd0c4c515788dce33099c0798c12215b50c7dc88576a52faa600d"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/79a02192fa74ecbd963802f30f688a8775962b5840c24fcb8869f2292a3c1251.json",
+                  "sha256": "00c49edb318dc1eea449992d75e84a2d013cad30a604ff982e273da6453e9ef4"
+                },
+                "bundle_id": "79a02192fa74ecbd963802f30f688a8775962b5840c24fcb8869f2292a3c1251",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-07-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            },
+            {
+              "attempt_id": "attempt-slurp-system-context-algorithm-contrast-n20-multi-parent-comparison-branch-08-generation-v1",
+              "expected_engineering_preparation": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-08-engineering-v1/prepared-members-v1.json",
+              "fit_endpoint_cap": 1040,
+              "member": "branch-08",
+              "model_contact_cap": 260,
+              "original_compilation": {
+                "relpath": "system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/compiled-members/branch-08.json",
+                "sha256": "374b23cc1dd34830dcc5c4b75b1597708b19340610626db235b201645aa91feb"
+              },
+              "parent_bundle_ids": [
+                "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572"
+              ],
+              "policy_baseline": {
+                "relpath": "configs/baseline/slurp-native-stage3-matched-search-multi-parent-update1-branch-08-graph-v1.json",
+                "sha256": "d17aaeeb7aa89cebcec10d2720f8b49371c1b4bfb834fb15d90692e95542e66f"
+              },
+              "policy_binding": {
+                "bundle": {
+                  "relpath": "system-text-search/context-template-k16-v1/policies/667fd0c4f7e1d95a755aef0230badb51993b559d9d5376c78fb0e68c4bdbc378.json",
+                  "sha256": "164c5cee89f40d311f89e1d5034c869388d7a4b2cea5ec83fdc946ff78229336"
+                },
+                "bundle_id": "667fd0c4f7e1d95a755aef0230badb51993b559d9d5376c78fb0e68c4bdbc378",
+                "schema": "saea-system-text-role-binding-v1"
+              },
+              "proposal_disposition": "materialized-policy",
+              "run_id": "SAEA-SLURP-SYSTEM-CONTEXT-ALGORITHM-CONTRAST-N20-MULTI-PARENT-COMPARISON-BRANCH-08-V1",
+              "runtime_admission": false,
+              "status": "POLICY_BOUND_ENGINEERING_PENDING"
+            }
+          ],
+          "stage": {
+            "K": 8,
+            "M": [
+              "perception",
+              "solver",
+              "reviewer",
+              "planner"
+            ],
+            "N": 20,
+            "boundary_maintenance": {
+              "global_sync": false,
+              "mode": "observe-only",
+              "preserve_model_service": true,
+              "record_before_after": true,
+              "require_generation_scoring_preprocessing_idle": true,
+              "when": "after-complete-cohort"
+            },
+            "candidate_members": [
+              "branch-01",
+              "branch-02",
+              "branch-03",
+              "branch-04",
+              "branch-05",
+              "branch-06",
+              "branch-07",
+              "branch-08"
+            ],
+            "control_members": [
+              "seed",
+              "seed-aa"
+            ],
+            "execution": {
+              "queue_depth": 4,
+              "schedule": "sequential-trajectory",
+              "slot_count": 4
+            },
+            "experiment_population": {
+              "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+              "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+            },
+            "member_fit_endpoints_cap": 1040,
+            "member_generation_contacts_cap": 260,
+            "population_budget": {
+              "K": 8,
+              "M": 4,
+              "N": 20,
+              "candidate_trajectories": 160,
+              "control_trajectories": 40,
+              "family_trajectories": 200,
+              "fit_endpoints_cap": 10400,
+              "generation_contacts_cap": 2600
+            },
+            "population_cohort": "comparison",
+            "proposer": {
+              "model": "gpt-6.1-sol",
+              "reasoning_effort": "high",
+              "semantic_batches": 1
+            },
+            "runtime_admission": false,
+            "sample_ids": [
+              "slurp:train:005407:audio-1502374837",
+              "slurp:train:003560:audio-1501686037",
+              "slurp:train:005513:audio-1494513310",
+              "slurp:train:011838:audio-1490369500",
+              "slurp:train:000244:audio-1497883990-headset",
+              "slurp:train:009411:audio-1497030307-headset",
+              "slurp:train:015179:audio-1498569151-headset",
+              "slurp:train:013565:audio-1501765573-headset",
+              "slurp:train:010065:audio-1501756518",
+              "slurp:train:004087:audio-1490199961",
+              "slurp:train:013560:audio-1490291477-headset",
+              "slurp:train:014610:audio-1502218659-headset",
+              "slurp:train:014741:audio-1497882505",
+              "slurp:train:000081:audio-1501753218-headset",
+              "slurp:train:006032:audio--1504195204",
+              "slurp:train:016836:audio-1490705489-headset",
+              "slurp:train:004499:audio--1504194378-headset",
+              "slurp:train:011479:audio-1502216306-headset",
+              "slurp:train:010006:audio-1499693788-headset",
+              "slurp:train:010537:audio-1490183278"
+            ],
+            "sampling": {
+              "seed": 20260913,
+              "temperature": 0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "at_utc": "2026-10-07T01:36:34.409442+00:00",
+  "capacity_and_structural_acceptance_required": true,
+  "compile_seed": {
+    "relpath": "configs/baseline/slurp-native-stage3-system-text-review-contract-seed-v1.json",
+    "sha256": "2d7596c9b3c91e50f9881d95d65b2d69d19e4d314416bd7b3e19b6abb37df512"
+  },
+  "compiled_source": {
+    "relpath": "docs/receipts/continuation/2026-10-07-matched-search-original-compiled.json",
+    "sha256": "c5e4c736f022979f84e4e94fa91419766daf5a1a0b7d95a2d3202ea892bdc54a"
+  },
+  "contacts_added": 0,
+  "proposal_result_required": false,
+  "proposal_results_verified": true,
+  "read_constraints": [
+    "Require each exact complete configured family with every member independently finalized, verified seal, one unique official complete score and no failed score jobs before root READ.",
+    "Require both family READs before the matched cross-arm root interpretation; do not export partial or root-only outcomes to proposers.",
+    "Preserve the frozen initial utility reference and report own current seed/A/A beside each arm.",
+    "Report official quality and completion first, intermediate aggregate diagnostics second, measured per-sample/node latency and cost third.",
+    "Any template selection is exploratory optimization on the reused pool; no stable efficacy, blind-search advantage or exact TFGRPO/GEPA reproduction claim."
+  ],
+  "runtime_admission": false,
+  "schema": "saea-matched-search-runtime-preparation-map-v2",
+  "shared_runtime": [
+    "TaskAdapter",
+    "KnowledgeProvider",
+    "EvidenceAgentController",
+    "FlightRuntime",
+    "OpenJiuwen"
+  ],
+  "source_selections_rebuilt": false,
+  "source_stage3_algorithm": "system-text-black-box-v1",
+  "status": "ALL_ORIGINAL_POLICIES_BOUND_AWAIT_ENGINEERING",
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-07-matched-search-proposer-admission-v1/runtime-preparation-map-v1.json",
+    "sha256": "e59cf808e779a4b5e3f4b93ebd2c27d1a03867975229952e2a10656ca2ebc510"
+  }
+}

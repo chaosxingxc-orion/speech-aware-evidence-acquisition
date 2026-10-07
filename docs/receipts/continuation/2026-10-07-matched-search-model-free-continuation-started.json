@@ -1,0 +1,49 @@
+{
+  "at_utc": "2026-10-07T01:38:01.339951+00:00",
+  "capacity_helper_validation": {
+    "relpath": "coordination/matched-search-capacity-owner227-v1/helper-validation-v1.json",
+    "sha256": "a804087ba31c394a58613bfa68d2660a332ef9b74bd2d6e446f98a021434b545"
+  },
+  "contacts_authorized": false,
+  "entry": {
+    "relpath": "coordination/matched-search-capacity-owner227-v1/continue-model-free-v1.py",
+    "sha256": "21f3250c8a2fabbd838387802fe34b9348b7b1e0bc67c41b45f82c8268bd02ee"
+  },
+  "expected_terminal": "coordination/matched-search-capacity-owner227-v1/model-free-continuation-exit.json",
+  "gpu_dispatch": false,
+  "operational_snapshot": {
+    "at_utc": "2026-10-07T01:37:15Z",
+    "busy_slots": 0,
+    "gpu_memory_used_mib": 22976,
+    "interpretation": "The model-free preparation is still active. This is not startup admission; remeasure after preparation and require the registered stable-memory guard. No cache, service or host-setting change.",
+    "planned_running_floor_gib": 8,
+    "planned_startup_gib": 20,
+    "serving_health": "healthy idle",
+    "slots_total": 4,
+    "telemetry_age_seconds": 1.317,
+    "windows_free_gib": 19.07,
+    "windows_total_gib": 63.43
+  },
+  "pid": 281174,
+  "plan": {
+    "relpath": "coordination/matched-search-capacity-owner227-v1/model-free-continuation-plan-v1.json",
+    "sha256": "07c911255981d41d0bb87fa7ec4dd2b1aa7399e829879c17806683a14cc1466e"
+  },
+  "rules": [
+    "Inspect exact original handles and durable stage logs. Do not launch a duplicate verifier or capacity-registration entry while this chain owns them.",
+    "Failure stops; preserve all partial metadata and record a root disposition before any successor.",
+    "Root inspects full terminal evidence, serially integrates the prepared source, creates the clean frozen capacity checkout, runs frozen/live checks, and admits the actual GPU job separately."
+  ],
+  "runtime_map": {
+    "relpath": "docs/readiness/2026-10-07-matched-search-engineering-preparation-v1/runtime-preparation-map-v2.json",
+    "sha256": "2832ab6545c02b9a865e453f2ccc1b552303c8e6092e2d3c8905cd44433e0d47"
+  },
+  "schema": "saea-matched-search-model-free-continuation-started-v1",
+  "session_id": 16375,
+  "source_preparation_pid": 277770,
+  "started": {
+    "relpath": "coordination/matched-search-capacity-owner227-v1/model-free-continuation-started.json",
+    "sha256": "b1870ca96354b3fea9248ede431e20b06aaecf09b9db0f452738071b6b414c5b"
+  },
+  "status_at_record": "Waiting for original preparation; conditional model-free verification/registration only."
+}
