@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Both matched proposal actors launched (2026-10-07)
+
+Root committed admission at9c3db6e56, then reserved all configured eight positions
+per arm before dispatch. Fresh GPT-6.1 Sol/high fork-none actors are
+/root/matched_fixed_parent_update1_sol and /root/matched_multi_parent_update1_sol.
+See [launch receipt](../receipts/continuation/2026-10-07-matched-search-proposer-launch.json).
+Inspect these exact actors and their original-response.json/access-report.json under
+their separate matched-search-indexed-update1-v1 directories. Never spawn replacements
+or edit their input/output bytes. They receive identical qualified aggregate feedback;
+this is a parent-selection/mode contrast, not blind search. No GPU job is running
+from this admission and no job heartbeat is required yet. Full source qualification,
+private registration and both immutable reservations are complete. Actual provider
+usage remains unknown until authoritative evidence exists. Candidate validity, runtime
+FIT/structural admission and the full N20 evaluation remain ahead.
+
+
 ## Matched indexed proposals admitted; source authority requalified (2026-10-07)
 
 The [two proposer plans](../readiness/2026-10-07-matched-search-proposer-admission-v1/README.md)

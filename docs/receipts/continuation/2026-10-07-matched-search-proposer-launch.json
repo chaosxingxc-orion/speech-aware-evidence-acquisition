@@ -1,0 +1,30 @@
+{
+  "schema": "saea-matched-search-proposer-launch-v1",
+  "at_utc": "2026-10-07T00:58:23.751026+00:00",
+  "admission_commit": "9c3db6e56",
+  "reservation_receipt": {
+    "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\system-text-search\\context-template-k16-v1\\matched-search-indexed-update1-v1\\reservations.json",
+    "sha256": "ccc1477baff7a4c605bae43f7c0463e6930d17b5c0112d9727553e8e843c9570"
+  },
+  "agents": [
+    {
+      "arm": "fixed-parent",
+      "agent": "/root/matched_fixed_parent_update1_sol"
+    },
+    {
+      "arm": "multi-parent",
+      "agent": "/root/matched_multi_parent_update1_sol"
+    }
+  ],
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "semantic_opportunities_dispatched": 2,
+  "configured_positions_reserved": 16,
+  "provider_contacts": null,
+  "provider_input_tokens": null,
+  "provider_output_tokens": null,
+  "runtime_admission": false,
+  "gpu_launched": false,
+  "scope": "Two fresh isolated feedback-aware proposal contexts; no retries, replacement or model mixing. Original output and read audit pending."
+}
