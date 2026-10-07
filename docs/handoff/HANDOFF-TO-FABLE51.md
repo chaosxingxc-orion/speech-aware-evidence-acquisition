@@ -1,5 +1,35 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Simple-consumption implementation integrated; exact policy preparation complete (2026-10-07)
+
+Astra/Ultra independently accepted the shared default-OFF Solver lookup/compiler and
+review-applicability changes, serially integrated at90dc548f3 and6d0cb440f. Root reran
+52 runtime and113 metric tests successfully; implementation suites reported415 and183
+respectively (overlapping scopes, not additive unique counts). Historical default
+requests stay unchanged. Review-off metrics use source-bound not-applicable semantics;
+no missing review is converted into a performance zero or automatic learner feedback.
+
+The four [prepared policy identities](../readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-architecture-identities-v1.json)
+and pinned population now pass root loader/binding checks and independent Astra/Ultra
+hash/roster/budget review. The same20 reused inputs produce80 trajectories across
+seed/A/A, real review-off and optional bounded Solver lookup. Contact ceilings are
+13/13/2/3 per input;620 generation contacts and2480 per-request FIT endpoints total.
+Separate capacity/structural budgets are not included. No runtime contact was made.
+
+The original offline preparation failed because its caller supplied a baseline alone
+to a composed-value validator. Preserve its script, child bundle and four exact role
+files. The successful successor uses real original model/dataset context and exact
+roster checks, without relaxing the loader or replaying any runtime attempt.
+
+Equal P/S instruction bytes do not mean equal entire requests: removing Planner also
+removes the formerly global tool schema, and dynamic limits change. Record this as
+whole-package simplification, not an isolated Reviewer causal test. Actual composed
+plans/supply/FIT/structural proof/wire captures and exact full-family READ remain ahead.
+All new runtime work and the old matched GPU family remain HELD; no new monitor exists.
+See [integration and failure-preservation evidence](../receipts/continuation/2026-10-07-simple-consumption-integration-and-preparation.json).
+Keep Astra/Ultra for future analyses, reviews and template generation; preserve spent
+Sol allocations, fixed sources, sole master and owner227 human-before8x400 boundary.
+
 ## Original check complete; simple-consumption interfaces in preparation (2026-10-07)
 
 The original matched source checker session23645 exited0 at02:20:56Z. All20 members

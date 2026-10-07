@@ -1,6 +1,7 @@
 # Evidence-led simple consumption direction
 
-Status: prospective design, not GPU admission, candidate generation or a benefit claim.
+Status: shared implementation integrated and four policy fragments verified; actual
+capacity, structural proof and GPU comparison remain HELD. No new benefit claim.
 Owner direction: use GPT-6 Astra / Ultra for analysis, evaluation, summarization,
 filtering and future template generation. Preserve the original spent Sol proposals.
 Root requested independent Astra/Ultra review in matched_capacity_astra_review and
@@ -58,19 +59,20 @@ The configuration requires reviewer iterations0, planner iterations0 and revisio
 an optional review_loop=off marker must agree. This is an execution configuration change,
 not a field currently writable by the text-policy proposer.
 
-Current native role tool validation explicitly limits analytical tools to Reviewer and
-Planner. The present seed assigns its single bounded lookup to Planner. Simply deleting
-review therefore removes active knowledge access too. A Solver-first lookup needs a
-prospective shared-runtime extension with explicit authority, tool-result custody,
-iteration/output reserves and contact accounting. Reuse the same TaskAdapter,
+The historical seed assigns its single bounded lookup to Planner. Simply deleting
+review therefore removes active knowledge access too. The default-OFF Solver extension
+is now integrated at90dc548f3, independently accepted by Astra/Ultra. It binds explicit
+authority, tool-result custody, iteration/output reserves and contact accounting.
+It reuses the same TaskAdapter,
 KnowledgeProvider, EvidenceAgentController, FlightRuntime and OpenJiuwen executor.
 Do not create a second answerer, replace the scorer or manufacture a tool call in text.
 
 Keep the existing lookup API, frozen store and result limits: at most one active lookup
 and at most two slot identifiers. Enforce limits in code rather than relying on lengthy
 reminders. Preserve empty/failure results and prevent invalid or unbound calls before
-transport. Solver retains final Omni answer authority. This is a prospective design;
-the extension is not yet implemented or admitted.
+transport. Solver retains final Omni answer authority. The implementation passes
+synthetic shared-runner tests; this is not proof of actual model tool use or usefulness.
+See the [shared contract](../../contracts/solver-tool-access-v1.md).
 
 ## Next proposed bounded comparison
 
@@ -83,9 +85,10 @@ Use the exact current ordered N20 inputs from the fixed UPDATE2 pool. Four membe
 4. Review-off plus the existing bounded lookup exposed to Solver before finalization,
    only after the shared authority extension and separate structural proof pass.
 
-This first comparison isolates removing the mandatory review loop, then measures the
-joint effect of moving bounded lookup into the answer stage. It does not separately
-identify every component's causal contribution. Preserve knowledge, audio, packets,
+This first comparison measures removal of the mandatory review package, then the joint
+effect of bounded lookup in the answer stage. Removing Planner also removes the globally
+rendered lookup schema from Perception/Solver; runtime limit text changes too. It does
+not isolate Reviewer reasoning alone. Preserve knowledge, audio, packets,
 queries, votes, answer normalizer, scorer, geometry, temperature0 and seed20260913.
 T0/seed remain a requested sampling contract, not a promise of bitwise reproducibility.
 Do not add calls to make realized costs look equal. Declare member maximum budgets
@@ -131,12 +134,26 @@ split. No quality/learning gain or deployment adoption is established by this de
 
 ## Current continuation
 
-The original matched20-member model-free frozen check continues from immutable worker
-/home/chao/saea-worktrees/codex-matched-search-capacity-v1 atb14e894ff4d6087f56c9207ac5107605183fbb3b,
-original session23645 / wrapper PID286584. Revalidate the original handle and durable
-coordination/matched-search-capacity-owner227-v1/frozen-check-* files. Do not restart
-on observation timeout. Astra's capacity audit found no concrete predispatch blocker,
-subject to complete frozen/live checks. Nevertheless actual capacity/GPU dispatch is
-held by this newer root priority disposition while the simplified comparison is prepared.
+The original matched20-member source check completed at02:20:56Z with zero contacts.
+Preserve immutable worker codex-matched-search-capacity-v1 atb14e894ff4 and all original
+check receipts; do not restart it. Its actual GPU dispatch remains HELD under this
+newer simple-consumption priority.
 Preserve all original16 policies,20 prepared systems and previous allocation accounting.
 No new job monitor is needed until an actual GPU job is launched.
+
+The shared review-applicability implementation is integrated at6d0cb440f and Solver
+access/compiler at90dc548f3. Both have independent Astra/Ultra acceptance. The four
+prepared policy fragments bind two full-role controls and two P/S candidates, on the
+same twenty inputs:80 trajectories, at most620 generation contacts and2480 per-request
+FIT endpoints. These are ceilings, not realized calls. Separate capacity and structural
+proof contacts require separate registration.
+
+The original model-free preparation correctly stopped because its caller passed only
+a baseline fragment to a composed-value validator. Preserve its exact script, partial
+bundle and four role files. A successor used the source cell's real model/dataset
+fragments, checked collisions and the exact roster, and exited0 without weakening any
+guard. All four member identities pass an independent root audit. The policy files
+are not complete experiment admission: per-member supply, execution plans, exposure
+registration, actual request captures and exact full-family READ are still required.
+See [prepared identities](prepared-architecture-identities-v1.json) and
+[configuration differences](prepared-configuration-audit-v1.json).

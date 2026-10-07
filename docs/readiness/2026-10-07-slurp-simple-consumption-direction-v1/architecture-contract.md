@@ -45,6 +45,10 @@ Reviewer reasoning effect alone. Compare actual rendered requests: removing cons
 tool-schema presentation or changing dynamic limits may alter non-role-text bytes.
 Record those differences and verify identical supplied evidence assets. Temperature0
 and seed20260913 do not promise identical generated Perception hypotheses.
+Program-derived request identifiers change with the graph. The frozen store/selection
+assets and supply rules remain fixed, but realized Solver supply can change when
+Perception outputs different candidate intents. Verify these separately; do not call
+the realized downstream context identical merely because source-asset hashes match.
 
 Compile the explicit supported consumption-module off profile; never patch a compiled
 configuration behind its verifier. Require role/tool/iteration limits and module

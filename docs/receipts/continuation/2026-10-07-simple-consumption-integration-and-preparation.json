@@ -1,0 +1,102 @@
+{
+  "at_utc": "2026-10-07T02:55:36Z",
+  "configuration_audit": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-configuration-audit-v1.json",
+    "sha256": "41b18beb5499131a0ca550279680dd06f13ce87756a404a4610714259e8ceb42"
+  },
+  "independent_review": {
+    "agent": "/root/matched_capacity_astra_review",
+    "limitation": "Independent reviewer package-loader rerun on Windows unavailable because more_itertools was absent. Reviewer inspected successor source; root independently ran the actual WSL loader and all four bindings successfully.",
+    "model": "gpt-6-astra",
+    "prepared_identity_disposition": "No blocking identity issue for HELD policy-fragment integration; source context, role bytes, exact roster, pins and arithmetic verified.",
+    "reasoning_effort": "ultra",
+    "runtime_and_metrics_disposition": "Accepted both scoped exact source commits before serial integration."
+  },
+  "learner_export": false,
+  "new_gpu_monitor": false,
+  "preparation_incident": {
+    "disposition": "Preserve original pre-contact caller failure and exact partial outputs; validate prospective fragments using disjoint real model/dataset context. No validator or historical admission change.",
+    "failure_receipt": {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/prepare-draft-v1-preserved-failure.json",
+      "sha256": "f68753625870e370f70dfdba500d475800f1a47de9a7bf2a351b2fa5fdbf07db"
+    },
+    "independent_root_audit_source": {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/verify-draft-v1.py",
+      "sha256": "506bca117970ccb16a526a454e4dc3a7b431d757d3fcd6a2f3c07d29e26f2bc1"
+    },
+    "original_source": {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/prepare-draft-v1.py",
+      "sha256": "c49340d648f7e3253486e2b7595b54f484280a84e9de18d03ec851be44fff98c"
+    },
+    "successor_exit": {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/continue-draft-v2.exit.json",
+      "sha256": "ba59253ec699b9a9110acc9b6aa6ec60840c5b4915b2da96a56473953b40b620"
+    },
+    "successor_source": {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/continue-draft-v2.py",
+      "sha256": "5c1665d7aecba82a53a49d4f0f5e4fd50cbb0a07a730d62821cf5440aa330df9"
+    }
+  },
+  "prepared_identities": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-architecture-identities-v1.json",
+    "sha256": "ebf7a7313c8836bc3f3b996f3b47f099649be7d81963cc1dee36be90eb7b5da9"
+  },
+  "process_metrics_integrated_commit": "6d0cb440f",
+  "process_metrics_source_commit": "9306542bbe03a692a2075d4a32e25371a9231a1b",
+  "remaining": [
+    "Actual composed experiment and per-member source/supply identities",
+    "Separate registered maximum-request capacity and structural proof",
+    "Full-family registration, frozen/live admission, then exact root READ"
+  ],
+  "request_comparison_limit": "Review-off removes the globally rendered Planner lookup schema and changes dynamic limits as well as graph execution. Equal P/S instruction bytes are not identical entire requests. Actual wire captures remain ahead.",
+  "runtime_admission": false,
+  "runtime_integrated_commit": "90dc548f34a96c58bacb8750ef963a2201cb8733",
+  "runtime_model_tokenizer_scorer_contacts_added": 0,
+  "runtime_source_commit": "50554e9ce80cab1d466662b3122289d78c6412fe",
+  "sampling": {
+    "candidate_systems": 2,
+    "complete_system_trajectories": 80,
+    "control_systems": 2,
+    "generation_contact_ceiling": 620,
+    "per_request_fit_endpoint_ceiling": 2480,
+    "unique_inputs": 20
+  },
+  "schema": "saea-simple-consumption-integration-and-preparation-v1",
+  "scientific_claim": "No new business benefit or learning gain established. Prefer testing simpler evidence consumption without assuming incapability from model size.",
+  "semantic_search_proposals_allocated": 0,
+  "spent_proposals_replaced": 0,
+  "status": "HELD_POLICY_FRAGMENTS_VERIFIED",
+  "verification": {
+    "all_existing_knowledge_store_declarations_equal": true,
+    "counts_note": "These overlapping suites are separate verification scopes; do not sum as distinct tests.",
+    "final_prepared_checks": {
+      "engineering_base": "PASS",
+      "handoff_freshness": "PASS",
+      "staged_diff": "PASS"
+    },
+    "metrics_branch_coverage": {
+      "covered": 199,
+      "total": 204
+    },
+    "metrics_implementation_reported_tests_passed": 183,
+    "metrics_statement_coverage": {
+      "covered": 515,
+      "total": 517
+    },
+    "original_seed_policy_owned_values_equal": true,
+    "prepared_members_independent_hash_and_budget_audit": 4,
+    "prepared_members_verified_by_root_actual_loader": 4,
+    "root_metrics_tests_passed": 113,
+    "root_runtime_tests_passed": 52,
+    "runtime_changed_branch_coverage": {
+      "covered": 63,
+      "total": 72
+    },
+    "runtime_changed_statement_coverage": {
+      "covered": 85,
+      "total": 91
+    },
+    "runtime_implementation_reported_tests_passed": 415,
+    "seed_aa_policy_bytes_equal": true
+  }
+}
