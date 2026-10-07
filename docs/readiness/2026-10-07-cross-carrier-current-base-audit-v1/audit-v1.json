@@ -1,0 +1,479 @@
+{
+  "schema": "saea-cross-carrier-current-base-audit-v1",
+  "at_utc": "2026-10-07T16:43:32.169855+00:00",
+  "source_commit": "c1dec4c500259744c0a1fefa0af884539a491743",
+  "main_observed_after_root_restoration": "50c9a3875e6ad798a59ea8626b6ebcb8d87721f7",
+  "scope": "Source, published repository reports, config and attempt-file existence metadata, plus synthetic offline tests only. No raw answers, current task quality, reference gold, live model/tool/scorer contacts or controls.",
+  "source_files": [
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/src/speech_aware_evidence_acquisition/rails/runner.py",
+      "sha256": "b3189f82fb1a5602e81443760af2f9e904fc778cbc4f988ea6af145e7a2ce160",
+      "bytes": 365194
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "fc7d8fab1e22f9421c81a37c251442dc19c6b42a1d74b274b338e35b884ea7ca",
+      "bytes": 671838
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/src/speech_aware_evidence_acquisition/rails/adapters/audio2tool_module_hooks.py",
+      "sha256": "39f0e4691a3a2389646b3a30261c48b8a1e63a772b91732a1ea5e571f20a9d79",
+      "bytes": 8962
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/src/speech_aware_evidence_acquisition/rails/adapters/earnings_module_hooks.py",
+      "sha256": "50d8227031f734882f1e63aaf3137e4019b953aa586ba4db9af87fdd4d15fdf9",
+      "bytes": 7588
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/src/speech_aware_evidence_acquisition/rails/adapters/earnings22_module_hooks.py",
+      "sha256": "52b983bc2900c2679415a471461d7cdb779d2bbef6bdfbad12e8eaa676e0a558",
+      "bytes": 1902
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/src/speech_aware_evidence_acquisition/rails/system_text_feedback.py",
+      "sha256": "3ebf16b43103474b39f9cfe618c0b36ced76d78a6d8dc2427cd3f50e8290a2ec",
+      "bytes": 19217
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/src/speech_aware_evidence_acquisition/analysis/system_feedback.py",
+      "sha256": "b07155e81a29a9240b93072a5fa966d883de333f0585a806eae96fa3fde99ded",
+      "bytes": 15050
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/scripts/analysis/module_equivalence_proof.py",
+      "sha256": "12c87e1f6618fa257be90396ba47bb7e44a0846a90d4a5c0b3624ac299a54d33",
+      "bytes": 31866
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/scripts/flights/batch/batch_driver.sh",
+      "sha256": "a50ca22a0a2f88910438e07dcf4186181daae6240dff6c76cd946188203b7de4",
+      "bytes": 20096
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/scripts/flights/module/batch_chain_module_alloff_a2t0.sh",
+      "sha256": "827e886c9535f88fdcf8f8507b39c2b25e134abced04a2a7aeee4fc3286f5377",
+      "bytes": 3621
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/scripts/flights/module/batch_chain_module_alloff_e210.sh",
+      "sha256": "0fa93e35185b50cf4a693b326f5de830a9350ebb7ba23c45fe59e8de68d01fdd",
+      "bytes": 3167
+    }
+  ],
+  "test_files": [
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/tests/unit/test_earnings_native_branch_integration.py",
+      "sha256": "af3b468ba5e1540ed79c815bc00849a407e8226c088e50bd27aac12d3d40480f",
+      "bytes": 12085
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/tests/unit/test_audio2tool_native_episode_integration.py",
+      "sha256": "d0fd0fcab47dde71249eb1e6ff94b2f46cf2108e5742bf8818ada14968f4d7d2",
+      "bytes": 19657
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/tests/unit/test_audio2tool_native_branch_integration.py",
+      "sha256": "e5e7be5688cd6f56f854dc14eedde5871fabe5e6e7229428ec5c79b96d5a3846",
+      "bytes": 8161
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/tests/unit/test_earnings22_consumption_profile.py",
+      "sha256": "798046a476895958ba744453d26fa6a7538f7dd2bd3bbe476debb83700852efc",
+      "bytes": 8381
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/tests/unit/test_earnings22_runtime_adapter.py",
+      "sha256": "7e522aa61b6f863df212b7774af24bdc506f04dc8f5eaca337c9c98d0d6787b2",
+      "bytes": 4363
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/tests/unit/test_consumption_module_carrier_transfer.py",
+      "sha256": "f252e71bd34b6ff94480b5a2282d6f86d089074f5b2f8bbcc50938d4bbdbcd58",
+      "bytes": 17622
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/tests/unit/test_consumption_module_carrier_hooks.py",
+      "sha256": "27d985ea651cf59bc79fa3900a1b6b5abb3fe6cc7b89126fc3d120b4949f729c",
+      "bytes": 10531
+    }
+  ],
+  "handoffs": [
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/docs/handoff/HANDOFF-TO-CHATGPT.md",
+      "sha256": "76aa0f42809e927efd8895fcccbeee8e07c2a9c1e08c83f30020f7e114626efb",
+      "bytes": 980369
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/docs/handoff/HANDOFF-TO-FABLE51.md",
+      "sha256": "5000f9c236c36d29687feb3b38adfbe069c18fde7480c16c7cf7998faf47345a",
+      "bytes": 954589
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/docs/handoff/EXPERIMENT-RULES-FOR-CHATGPT.md",
+      "sha256": "3ee0131d6328bcb66446d3c9963d2fa0a2fe454bf7e6f3cc5b2c7f30810d5c8e",
+      "bytes": 67280
+    }
+  ],
+  "current_module_cells": [
+    {
+      "config": {
+        "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/configs/experiment/a2t-native-stage3-module-alloff-smoke-4-v1.json",
+        "sha256": "e8fd8b57de9b8deccd9334305a01f46309ef10cc311f83c2c7e8d483beb81073",
+        "bytes": 8748
+      },
+      "matches_2026_10_06_raw_pin": true,
+      "cell_id": "a2t-native-stage3-module-alloff-smoke-4-v1",
+      "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+      "attempt_id": "attempt-a2t-native-stage3-module-alloff-smoke-4-v1-generation-v1",
+      "readiness": "held",
+      "population": {
+        "count": 4,
+        "dataset_fragment": "audio2tool-paired-400",
+        "decision_population": "The four smoke rows of A2T-PAIRED-400-V1: the lexicographically first sample of tiers 1, 2, 5 and 6 of the paired 400, named in the frozen roster receipt (smoke_four) and here; 20.707500 s of speech. Already-exposed discovery identities; no new speech identity.",
+        "split_identity_hash": "c7057020334be227c430d661953fa3ad3b0b044dfbc97c4e186c5777cb6a5baa"
+      },
+      "generation_budget": {
+        "cap": 4,
+        "definition": "The direct-only phase program makes exactly one contact per row: 4 x 1 = 4; the live phase fit makes 1 + (2 + 1) x 4 = 13 tokenizer endpoint calls under SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-FIT-V1. Ceilings, not targets; run-cumulative across attempts.",
+        "target": 4
+      },
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 13,
+        "generation_calls_cap": 4,
+        "gpu_hours_fit_inclusive": 0.2,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 21
+      },
+      "attempt_directory_present": false,
+      "attempt_json_count": 0
+    },
+    {
+      "config": {
+        "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/configs/experiment/a2t-native-stage3-module-alloff-v1.json",
+        "sha256": "16359818113aafe1e1096f4509abcb3cd0c4b328be507ec9d507906f500aeff9",
+        "bytes": 8912
+      },
+      "matches_2026_10_06_raw_pin": true,
+      "cell_id": "a2t-native-stage3-module-alloff-v1",
+      "run_id": "SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "attempt_id": "attempt-a2t-native-stage3-module-alloff-v1-generation-v1",
+      "readiness": "held",
+      "population": {
+        "count": 400,
+        "dataset_fragment": "audio2tool-paired-400",
+        "decision_population": "A2T-PAIRED-400-V1 (docs/receipts/rosters/a2t-paired-400-v1.json): 50 rows per tier over the eight Audio2Tool tiers, one seeded draw (seed 20260921) by core.roster.freeze_roster from the sample ids of the sealed A2T-ORG1-UNION-4000 -- owner decisions 67 and 71; roster role evaluation, split role discovery; domains smart_home 306, wearables 74, smart_car 20; 2760.438042 s of speech, 1 654-second synthesis-defect row(s) kept because the comparator rows were sealed on exactly these rows. Every row already carries a sealed direct comparator row (SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1) whose per-row hashes are frozen beside the roster; no new speech identity; the full 4,000 flies only for an admitted form.",
+        "split_identity_hash": "965f145f581753874353216a25109a4746627095027cefbab0ed91c88090990a"
+      },
+      "generation_budget": {
+        "cap": 400,
+        "definition": "The direct-only phase program makes exactly one contact per row: 400 x 1 = 400; the live phase fit makes 1 + (2 + 1) x 400 = 1201 tokenizer endpoint calls under SAEA-A2T-NATIVE-STAGE3-MODULE-ALLOFF-FIT-V1. Ceilings, not targets; run-cumulative across attempts.",
+        "target": 400
+      },
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 1201,
+        "generation_calls_cap": 400,
+        "gpu_hours_fit_inclusive": 0.5,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 2761
+      },
+      "attempt_directory_present": false,
+      "attempt_json_count": 0
+    },
+    {
+      "config": {
+        "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/configs/experiment/earnings21-native-stage3-module-alloff-smoke-4-v1.json",
+        "sha256": "b5108177dfceb789b005e8781b0c022c3e552cce10afeec9308125a07cd03b21",
+        "bytes": 7352
+      },
+      "matches_2026_10_06_raw_pin": true,
+      "cell_id": "earnings21-native-stage3-module-alloff-smoke-4-v1",
+      "run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+      "attempt_id": "attempt-earnings21-native-stage3-module-alloff-smoke-4-v1-generation-v1",
+      "readiness": "held",
+      "population": {
+        "carrier": "earnings21-original",
+        "count": 1,
+        "dataset_fragment": "e21-native-window-four-row-v1",
+        "execution_units": 4,
+        "historically_exposed": true,
+        "roster_receipt": "docs/receipts/probe-samples/e21-current-executor-four-row-proof-v1.json",
+        "split_identity_hash": "4d9ea907c05b67c43b5829e3e6c379ee37d39df012028a864aa0cdb7ae0c1992"
+      },
+      "generation_budget": {
+        "cap": 4,
+        "ceilings_are_not_targets": true,
+        "definition": "The direct-only phase program makes exactly one contact per native window: 4 windows x 1. No fit identity (the direct baseline declares none, as the flown E35 direct arms). Ceilings, not targets; run-cumulative across attempts.",
+        "target": 4
+      },
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 0,
+        "generation_calls_cap": 4,
+        "gpu_hours_fit_inclusive": 0.3,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 360
+      },
+      "attempt_directory_present": false,
+      "attempt_json_count": 0
+    },
+    {
+      "config": {
+        "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/configs/experiment/earnings21-native-stage3-module-alloff-v1.json",
+        "sha256": "82196f901d65541514d8c445811565b6b8a8282ea4aca882e0d61e6ec9123d37",
+        "bytes": 7136
+      },
+      "matches_2026_10_06_raw_pin": true,
+      "cell_id": "earnings21-native-stage3-module-alloff-v1",
+      "run_id": "SAEA-EARNINGS21-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "attempt_id": "attempt-earnings21-native-stage3-module-alloff-v1-generation-v1",
+      "readiness": "held",
+      "population": {
+        "count": 44,
+        "execution_units": 1593,
+        "historically_exposed": true,
+        "split_identity_hash": "fcc1b0bc55432d02347dcdf730c6bcef561a9b0ad9605c45b367e1ed3da5d69e"
+      },
+      "generation_budget": {
+        "cap": 1593,
+        "ceilings_are_not_targets": true,
+        "definition": "The direct-only phase program makes exactly one contact per native window: 1593 windows x 1. No fit identity (the direct baseline declares none, as the flown E35 direct arms). Ceilings, not targets; run-cumulative across attempts.",
+        "target": 1593
+      },
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 0,
+        "generation_calls_cap": 1593,
+        "gpu_hours_fit_inclusive": 4.0,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 141346
+      },
+      "attempt_directory_present": false,
+      "attempt_json_count": 0
+    }
+  ],
+  "current_full_module_carrier_runs_completed": 0,
+  "prior_evidence": [
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/docs/receipts/continuation/2026-10-06-cross-carrier-execution-gap-review.json",
+      "sha256": "162ee4d654bb3239d2c16180f28126d973b8d67df2b14a1bf990d82870425b78",
+      "bytes": 5424
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/docs/receipts/continuation/2026-10-06-cross-carrier-native-regression.json",
+      "sha256": "c6a59b6ff4d6dd49b666803b1a9a93e56d12f108935132a838ab0f31d7f3c462",
+      "bytes": 3919
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/docs/receipts/continuation/2026-10-04-cross-carrier-base-scope-audit.json",
+      "sha256": "f510ea773c117ca18066f5ef2c5cf8c0a84fb03c876f9e5994a65bdbe35780a9",
+      "bytes": 2369
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/docs/receipts/owner/2026-10-07-windows-free-memory-floor-4gib.json",
+      "sha256": "b404e5397c76e2a519780ae2e6e321cce7a44f2056ff9facb203c07d62fc10e6",
+      "bytes": 1200
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-cross-carrier-current-audit-20261007/docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "d53b22823df149b72e23377adad7e1a3ff51beac61fff6f99aa85261f025c906",
+      "bytes": 276317
+    }
+  ],
+  "proofs_chronological": [
+    {
+      "root": "/tmp/saea-cross-carrier-current-audit-20261007-kh4bhhbc",
+      "files": [
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-20261007-kh4bhhbc/current-carrier-tests.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-20261007-kh4bhhbc/current-carrier-tests.stdout",
+          "sha256": "6a418995933549e76f42453b8512d4854bb51a78b8cf8a6a5e5abd1ab6dc1ffe",
+          "bytes": 149634
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-20261007-kh4bhhbc/exits.json",
+          "sha256": "aecfd7a5f5903c0eae5fd93f61713fc213c949989053b7635b16b057340ef9c9",
+          "bytes": 100
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-20261007-kh4bhhbc/junit.xml",
+          "sha256": "9e647169f791e1449f761c685190fb2bd9b728099c69cc3dbd7cd14756054990",
+          "bytes": 167355
+        }
+      ]
+    },
+    {
+      "root": "/tmp/saea-cross-carrier-current-audit-corrected-20261007-zzf8ttv5",
+      "files": [
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-corrected-20261007-zzf8ttv5/current-carrier-tests.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-corrected-20261007-zzf8ttv5/current-carrier-tests.stdout",
+          "sha256": "c71cccdc7108bb19109a7a8d031ab8a8066bbb68b20e1cc71849f63df98f1ced",
+          "bytes": 15238
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-corrected-20261007-zzf8ttv5/exits.json",
+          "sha256": "568fde31712b36fb6f1954123901cdc3962ec55505f29f6b517f73a6de66d1a3",
+          "bytes": 101
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-corrected-20261007-zzf8ttv5/git-setup-incident-v1.json",
+          "sha256": "1b95f99cc333e985f44f48127387fa003160cdfbfc7017ad3362acd4755ab478",
+          "bytes": 543
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-corrected-20261007-zzf8ttv5/junit.xml",
+          "sha256": "6ab72e556fa6aa72a86d12cb8710024521099d31882dc545dc90330f492615b5",
+          "bytes": 36832
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-corrected-20261007-zzf8ttv5/shared-config-after-fixture.raw",
+          "sha256": "eff2729b076ffd80b19b55be4748679f111fb30dbc424f16dd1c770d218e2b13",
+          "bytes": 548
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-corrected-20261007-zzf8ttv5/synthetic-fence.py",
+          "sha256": "e75aa8c866fa1a102c8de581d74878f315c1bcfc5ddd63ce336218c52b42c892",
+          "bytes": 1226
+        }
+      ]
+    },
+    {
+      "root": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7",
+      "files": [
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7/after.json",
+          "sha256": "939e329d51f617156ec8408e3f6f6e6a8e694cb0530d48bcae22f8395425f077",
+          "bytes": 590
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7/before.json",
+          "sha256": "939e329d51f617156ec8408e3f6f6e6a8e694cb0530d48bcae22f8395425f077",
+          "bytes": 590
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7/current-carrier-tests.stderr",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7/current-carrier-tests.stdout",
+          "sha256": "30f9d66d2add8461734e2f1a355bae7aaa8d9c63513b85e6a11bea4586d28e57",
+          "bytes": 7331
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7/exits.json",
+          "sha256": "3870fb51204064f708379e55a667c19abf333fa317ff0794187f9e926fda960a",
+          "bytes": 137
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7/junit.xml",
+          "sha256": "c1f1558817a93bfc63cd05af85747d14895c2f92c21d253f3a0ce67d0a55a9f4",
+          "bytes": 28981
+        },
+        {
+          "path": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7/synthetic-fence.py",
+          "sha256": "e75aa8c866fa1a102c8de581d74878f315c1bcfc5ddd63ce336218c52b42c892",
+          "bytes": 1226
+        }
+      ]
+    }
+  ],
+  "final_per_module_counts": {
+    "tests.unit.test_earnings_native_branch_integration": {
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests.unit.test_audio2tool_native_episode_integration": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests.unit.test_audio2tool_native_branch_integration": {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests.unit.test_earnings22_consumption_profile": {
+      "tests": 52,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests.unit.test_earnings22_runtime_adapter": {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests.unit.test_consumption_module_carrier_transfer": {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests.unit.test_consumption_module_carrier_hooks": {
+      "tests": 10,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "final_combined_run": {
+    "passed": 132,
+    "failed": 1,
+    "errors": 0,
+    "seconds_pytest": 54.25,
+    "exit_code": 1,
+    "all_off_a2t0_e210_tests_passed": true,
+    "native_five_suite_tests_passed": 89,
+    "common_config_and_refs_unchanged": true,
+    "remaining_failure": "Historical SLURP git -C audit-root show6291c23de was refused by the strict wrapper because it did not parse the -C prefix. This is not a passing combined suite. Standalone equivalence/engineering-base commands were not executed after the failure."
+  },
+  "root_restoration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/git-audit-fixture-incident-20261007/root-restoration-v1.json",
+    "sha256": "67b62eb173218965250147323d3024e8efefb1977129906cd39d4bc228bdf43d",
+    "bytes": 490
+  },
+  "incident": "The second run inherited process-local GIT_DIR/GIT_COMMON_DIR/GIT_WORK_TREE into synthetic fixture Git, unintentionally setting shared core.worktree to the WSL audit path. Root removed only that unintended key. The Test identity already existed and was retained. Both failed runs and raw pre-restoration configuration are preserved. The final run removed inherited GIT variables and refused mutating commands at the audit root; before/after configuration and main/audit references are byte-identical.",
+  "production_code_changed": false,
+  "runtime_admission": false,
+  "holds_released": false,
+  "goal_complete": false,
+  "final_read_only_git_wrapper": {
+    "path": "/tmp/saea-cross-carrier-current-audit-final-20261007-kiui6qk7/bin/git",
+    "sha256": "77cc1984a20774670bd83c609f4b7ec4d86569ff0c81770e655fe756c3224195",
+    "bytes": 766,
+    "allowed_audit_root_commands": [
+      "show",
+      "rev-parse"
+    ],
+    "prefix_parsing_limitation": "Existing -C prefix refused; no fallback or final retry."
+  }
+}
