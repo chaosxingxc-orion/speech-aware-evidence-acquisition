@@ -1,0 +1,42 @@
+{
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "dispatches": 0,
+  "helper_sha256": "e37996bbccc6debf23c23a5391ff36b051e20e643c56f181df60accc02148b80",
+  "input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-v1/member-resolution-input-v1.json",
+    "sha256": "df6de20e36394566c1ea2f132eee3b1a3f38edcb9024f8dd9a7a1e5a3ee86dda"
+  },
+  "intent_support_binding": {
+    "relpath": "coordination/simple-consumption-n100-v1/root-intent-support-binding-v1.json",
+    "sha256": "d846d67d9824e47e3d4650bf40f102054335d40889cb15d7badf0053059ed85d"
+  },
+  "ledger_modified": false,
+  "member_recipes": {
+    "review-off": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-member-resolved-v1/review-off-member-read-resolved-v1.json",
+      "sha256": "b71d2802abeb7cc76d2bac0b45616b1779e053d79cf5bb0a65f830ccc4d100d5"
+    },
+    "seed": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-member-resolved-v1/seed-member-read-resolved-v1.json",
+      "sha256": "41a5f1ee25f87ac3d24dce72b3651f4e1b81d2da55ab7c6e6a8647418a8b4d7a"
+    },
+    "seed-aa": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-member-resolved-v1/seed-aa-member-read-resolved-v1.json",
+      "sha256": "58e2cdfcf05195af729572c811feddf2f21ab78eb1d76e95fbb1bc24ea645adb"
+    },
+    "solver-lookup": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-member-resolved-v1/solver-lookup-member-read-resolved-v1.json",
+      "sha256": "ee92f37db82061532a2d01593ff3827d251e2b8ce50c17546a6fe753ebe5235c"
+    }
+  },
+  "read_authorized": false,
+  "schema": "saea-manual-member-source-resolution-v1",
+  "status": "SOURCE RESOLVED; ALL MEMBER READS REMAIN UNSIGNED",
+  "task_outcomes_used": false,
+  "worker_commit": "2204cfb96e59bdaa0f83f92cd61d3adaf513aadd",
+  "worker_root": "/home/chao/saea-worktrees/codex-simple-consumption-n100-frozen-v1"
+}

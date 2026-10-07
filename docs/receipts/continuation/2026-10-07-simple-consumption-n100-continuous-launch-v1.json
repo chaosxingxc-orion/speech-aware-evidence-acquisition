@@ -1,0 +1,81 @@
+{
+  "at_utc": "2026-10-07T20:32:29.480620+00:00",
+  "campaign_started_at": "2026-10-07T20:27:59Z",
+  "continuity_limit": "Existing per-member preflight/preprocessing may still create a measurable handoff gap. One campaign removes separate outer-driver transitions and overlaps official scoring; do not claim zero idle before measured evidence.",
+  "control_changes": "Only normally completed C7 controls archived and exact singleton whole-campaign N100 queue installed; no STOP/lease clearing, service restart or cache change.",
+  "cpu_work": "Source-only member analysis resolution proceeds independently while GPU runs. A complete scored member may be described only after exact root READ; cross-member conclusions wait all four.",
+  "driver_epoch": "2026-10-07T20:27:27Z",
+  "frozen_binding": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-v1/root-frozen-launch-binding-v1.json",
+    "sha256": "d127cc639ba734be35ba79177635564ddab3bb347cfdd1efd007bfc2fc2b7069"
+  },
+  "members": [
+    {
+      "attempt_exists": true,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-v1-generation",
+      "attempt_state": "OPENED",
+      "label": "seed",
+      "manifest_exists": false,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-V1"
+    },
+    {
+      "attempt_exists": false,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n100-v1-generation",
+      "attempt_state": null,
+      "label": "seed-aa",
+      "manifest_exists": false,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-V1"
+    },
+    {
+      "attempt_exists": false,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n100-v1-generation",
+      "attempt_state": null,
+      "label": "review-off",
+      "manifest_exists": false,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-V1"
+    },
+    {
+      "attempt_exists": false,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n100-v1-generation",
+      "attempt_state": null,
+      "label": "solver-lookup",
+      "manifest_exists": false,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-V1"
+    }
+  ],
+  "monitor": {
+    "delete_after_original_terminal": true,
+    "id": "slurp-n100-experiment-health",
+    "minutes": 15
+  },
+  "normal_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-v1/normal-transition-finished-v1.json",
+    "sha256": "8405c27bd3cc4c08802c5bf50bbfeef703d077d16b13d5d8c712a5fe85921001"
+  },
+  "observed_status": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-v1/root-launch-observed-v1.json",
+    "sha256": "025420a37e899e78ed0953030bc41a35a4dd990407a1f5ee1aeb12497d15fdfd"
+  },
+  "owner_decision": 227,
+  "read_status": "All four member and whole-family READs remain unsigned. No task outputs or quality read.",
+  "root_windows_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-v1/root-windows-generation-launch-v1.json",
+    "sha256": "7271c428f3d8b64b39c1dd0cc70c986ca7f1193922ed107c8ff866955c6b1db5"
+  },
+  "schema": "saea-root-n100-continuous-generation-launch-v1",
+  "shape": {
+    "cpu_official_scorers": 1,
+    "distinct_inputs": 100,
+    "gpu_generators": 1,
+    "systems": 4,
+    "trajectories": 400,
+    "within_member_concurrency": 4
+  },
+  "status": "RUNNING_FIRST_MEMBER_INFERENCE",
+  "windows_memory": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-v1/root-inference-windows-observation-v1.json",
+    "sha256": "0f2852e803d90ae0cba377f04f096b650f9e6652b88d689e1466ca2f68836601"
+  },
+  "worker_commit": "2204cfb96e59bdaa0f83f92cd61d3adaf513aadd",
+  "worker_root": "/home/chao/saea-worktrees/codex-simple-consumption-n100-frozen-v1"
+}

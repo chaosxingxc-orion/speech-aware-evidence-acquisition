@@ -1,0 +1,73 @@
+{
+  "after_ledger_sha256": "43f2bded254d61e3059b2c486068ab57746409f4f160757b9114515d6e6d0c4a",
+  "all_other_lines_unchanged": true,
+  "at_utc": "2026-10-07T20:37:35.670704+00:00",
+  "before_ledger": {
+    "relpath": "coordination/simple-consumption-n100-v1/ledger-before-prospective-read-binding-v1.md",
+    "sha256": "6e82224fc5f38a498e53995bcafa620009e2c785ea1526468027c5ca7e22d6cb"
+  },
+  "changes": [
+    {
+      "after_line_sha256": "ec5b7373210d8743227544bcb3a531047b5e8b0a6d761198fedd6d7fa3513ff8",
+      "before_line_sha256": "2f7070a199b022dc55d55acf66a91cd71a47300b975446bf61f086ca770cc2d9",
+      "prior_artifact": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/analysis-recipe-intent-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-resolved-v1/analysis-recipe-v1.json",
+        "sha256": "8b87d5454ccffc0a70f8fabe68a3f5a2b0bccc2153675d06be4cf113b5affe49"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N100-READ-V1"
+    },
+    {
+      "after_line_sha256": "a246cedb775fc35cf72ac9449c2164379da848244f332d600213c4e8efb9705e",
+      "before_line_sha256": "70b5a5044db6d165d698a67567771db16fa96e10a8984e7f7905b1035bbfc5c6",
+      "prior_artifact": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/review-off-member-read-draft-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-member-resolved-v1/review-off-member-read-resolved-v1.json",
+        "sha256": "b71d2802abeb7cc76d2bac0b45616b1779e053d79cf5bb0a65f830ccc4d100d5"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-DESCRIPTIVE-READ-V1"
+    },
+    {
+      "after_line_sha256": "03e720eb9cff56e2f169e81e5af75e7166a10240f7925d4e8c7faa7dd492b431",
+      "before_line_sha256": "2a6e34c95b770a84edfc55b26bb96077181669a7c6c0a3d3c7b2500532aa4461",
+      "prior_artifact": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/seed-member-read-draft-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-member-resolved-v1/seed-member-read-resolved-v1.json",
+        "sha256": "41a5f1ee25f87ac3d24dce72b3651f4e1b81d2da55ab7c6e6a8647418a8b4d7a"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-DESCRIPTIVE-READ-V1"
+    },
+    {
+      "after_line_sha256": "b0907e6b1f7b93b5a9537a5afbf51a42c41d4ed1bdb42034daedf6c0f8288e52",
+      "before_line_sha256": "d3720043a3cefa446bd0178bf5f9d2f739d6813e2c3a2c22be74c94fd456edab",
+      "prior_artifact": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/seed-aa-member-read-draft-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-member-resolved-v1/seed-aa-member-read-resolved-v1.json",
+        "sha256": "58e2cdfcf05195af729572c811feddf2f21ab78eb1d76e95fbb1bc24ea645adb"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-DESCRIPTIVE-READ-V1"
+    },
+    {
+      "after_line_sha256": "3986fdd6e4ab7ce5e952150eaad1cd759797470b7c7d1db05d2a41e52c6e4369",
+      "before_line_sha256": "177b4da1a4d36069f7a81bd3daa147a1f0555dae37dbc34184f7d6b2adb78195",
+      "prior_artifact": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/solver-lookup-member-read-draft-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-member-resolved-v1/solver-lookup-member-read-resolved-v1.json",
+        "sha256": "ee92f37db82061532a2d01593ff3827d251e2b8ce50c17546a6fe753ebe5235c"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-DESCRIPTIVE-READ-V1"
+    }
+  ],
+  "frozen_worker_changed": false,
+  "learner_export": false,
+  "owner_decision": 227,
+  "read_countersigned": false,
+  "runtime_gold": false,
+  "schema": "saea-root-prospective-read-source-binding-v1",
+  "source_resolution_closure": {
+    "relpath": "coordination/simple-consumption-n100-v1/source-only-analysis-resolution-closure-v1.json",
+    "sha256": "de058397af0bddce764934f510ada01e6ad9eb383408d25284378a6b7a23d4cb"
+  },
+  "status": "FIVE UNSIGNED READ ARTIFACTS RESOLVED; NO READ GRANTED",
+  "task_quality_read": false
+}
