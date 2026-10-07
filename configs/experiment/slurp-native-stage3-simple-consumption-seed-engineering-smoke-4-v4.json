@@ -13,16 +13,16 @@
       "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "PREPARATION ONLY; final merged source, strict output-equal envelope repin, root incident disposition and countersignature, frozen and live gates required.",
+        "reason": "Root227 prospective natural4 preparation after adopted complete C4 capacity qualification; exact countersigned plans, exposure registration and frozen/live gates remain mandatory before contact.",
         "requirements": [
           {
             "kind": "preparation",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact.",
             "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
-            "sha256": "375cbbe60a1b98da3f64b5fc5ff4df397d16ccd87eefd3726e6ffe3c44d6f9fc",
-            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+            "sha256": "375cbbe60a1b98da3f64b5fc5ff4df397d16ccd87eefd3726e6ffe3c44d6f9fc"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4",
       "system_text_policy_binding": {

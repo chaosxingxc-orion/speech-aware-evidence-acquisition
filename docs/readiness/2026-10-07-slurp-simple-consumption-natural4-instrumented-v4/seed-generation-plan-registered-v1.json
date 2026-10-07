@@ -1,0 +1,65 @@
+{
+  "architecture_member": "seed",
+  "architecture_proof": "natural-four-row-v1",
+  "at_utc": "2026-10-07T12:29:41.694395+00:00",
+  "capacity_prerequisite": {
+    "qualification": {
+      "relpath": "coordination/simple-consumption-prepared-graph-recovery2-v1/capacity-qualified-v1.json",
+      "sha256": "47de73ed7217c042321abcc36ed027767fddc4bc8b77181f1b038477b8efff93"
+    },
+    "registration": {
+      "relpath": "coordination/simple-consumption-prepared-graph-recovery2-v1/registration-v1.json",
+      "sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a"
+    }
+  },
+  "cell": "slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v4",
+  "composed_config_hash": "5af58106a63ec2f1fb54aa3a4752a7ea0d8c71063846afa6e70b80b59651d079",
+  "decision_receipt": {
+    "relpath": "coordination/simple-consumption-natural4-instrumented-v4/root-admission-v1.json",
+    "sha256": "65fd6313efa995247cb9f9a28c562801a8d41f9557c06eccf9b576f3ebbdaaa5"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-generation-v4",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "1ed95f7a3008e34cee595252dfde983977582a0e4bc2baf41b7bc873c4b049c0",
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v4",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "learner_export": false,
+  "official_score_jobs": 0,
+  "plan_role": "generation",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_cohort": "comparison",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+    "sha256": "375cbbe60a1b98da3f64b5fc5ff4df397d16ccd87eefd3726e6ffe3c44d6f9fc"
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

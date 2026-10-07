@@ -1,0 +1,162 @@
+[
+  {
+    "composed_config_hash": "5af58106a63ec2f1fb54aa3a4752a7ea0d8c71063846afa6e70b80b59651d079",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-generation-v4",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "1ed95f7a3008e34cee595252dfde983977582a0e4bc2baf41b7bc873c4b049c0",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "label": "seed",
+    "plan_relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/seed-generation-plan-registered-v1.json",
+    "role": "generation"
+  },
+  {
+    "composed_config_hash": "5af58106a63ec2f1fb54aa3a4752a7ea0d8c71063846afa6e70b80b59651d079",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-fit-v4",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 208,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "1ed95f7a3008e34cee595252dfde983977582a0e4bc2baf41b7bc873c4b049c0",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-FIT-V4",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "label": "seed",
+    "plan_relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/seed-fit-plan-registered-v1.json",
+    "role": "fit"
+  },
+  {
+    "composed_config_hash": "317b9f8fae66c7478b32cff6379228c48922a0c570bba9b03cbe0b6554118e8c",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-generation-v4",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "8d744676cc34f66aeabd24acaa446d1787566e349852cff10b87fd0245af3ebf",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V4",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "label": "seed-aa",
+    "plan_relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/seed-aa-generation-plan-registered-v1.json",
+    "role": "generation"
+  },
+  {
+    "composed_config_hash": "317b9f8fae66c7478b32cff6379228c48922a0c570bba9b03cbe0b6554118e8c",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-fit-v4",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 208,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "8d744676cc34f66aeabd24acaa446d1787566e349852cff10b87fd0245af3ebf",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-FIT-V4",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "label": "seed-aa",
+    "plan_relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/seed-aa-fit-plan-registered-v1.json",
+    "role": "fit"
+  },
+  {
+    "composed_config_hash": "f318b67d469a55b61aad944f94de708abd0241d8f02f16b6f12decf52e91f8f3",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-generation-v4",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 8,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "8ddda6d99660fbeaf2fbbd2fd9906ca54be461188f07b75328ac7365ae110bd8",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-V4",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "label": "review-off",
+    "plan_relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/review-off-generation-plan-registered-v1.json",
+    "role": "generation"
+  },
+  {
+    "composed_config_hash": "f318b67d469a55b61aad944f94de708abd0241d8f02f16b6f12decf52e91f8f3",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-fit-v4",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 32,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "8ddda6d99660fbeaf2fbbd2fd9906ca54be461188f07b75328ac7365ae110bd8",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-FIT-V4",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "label": "review-off",
+    "plan_relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/review-off-fit-plan-registered-v1.json",
+    "role": "fit"
+  },
+  {
+    "composed_config_hash": "3739952a5583e200980c86b5b8fb10f04c32b153805906a633dbbfced3d8a610",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-generation-v4",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 12,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "dc589aa292b92dcdef229db1d7f0ea3738046961acaed312ee044d0e8bd8073a",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "label": "solver-lookup",
+    "plan_relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/solver-lookup-generation-plan-registered-v1.json",
+    "role": "generation"
+  },
+  {
+    "composed_config_hash": "3739952a5583e200980c86b5b8fb10f04c32b153805906a633dbbfced3d8a610",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-fit-v4",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 48,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "dc589aa292b92dcdef229db1d7f0ea3738046961acaed312ee044d0e8bd8073a",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-FIT-V4",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "label": "solver-lookup",
+    "plan_relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/solver-lookup-fit-plan-registered-v1.json",
+    "role": "fit"
+  }
+]
