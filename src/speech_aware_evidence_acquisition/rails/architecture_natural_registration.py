@@ -2,6 +2,8 @@
 from copy import deepcopy
 from dataclasses import asdict, replace
 import json
+import hashlib
+from collections import Counter
 from pathlib import Path
 
 from ..contracts import ExecutionPlan
@@ -9,7 +11,7 @@ from ..core.config import _canonical_hash, compose, drop_null_arms, protocol_has
 from ..core.flight.campaign import load_campaign_cells
 from ..data.splits import prefixed, split_identity_hash
 from .controllers import default_phase_program
-from .experiment_population import ARCHITECTURE_VERSION, load_population_config, require_population_binding
+from .experiment_population import ARCHITECTURE_VERSION, load_population_config, population_accounting, require_population_binding
 from .hashing import content_hash
 from .native_episode_config import load_native_episode_config
 from .system_context_structural_entry import qualify_architecture_capacity_family, qualify_architecture_capacity_recovery
@@ -276,3 +278,334 @@ def require_architecture_natural_registration(values, cell, registered_plans, *,
                       capacity_source_exits=[s["exit_code"] for s in qualified["sources"]],
                       failed_attempt_tokenizer_endpoints=qualified["failed_attempt_tokenizer_endpoints"])
     return result
+
+
+def require_architecture_n20_registration(values, cell, registered_plans, *, repo_root, data_root=None):
+    """Bind one manual N20 pair to the completed N20 family and root READ.
+
+    This validates preregistration metadata only. Existing runtime, scoring and
+    complete-family READ gates retain their independent authority.
+    """
+    from ..analysis.native_graph_rehearsal import rehearsal_profile
+    from ..core.preparation_fit import validate_native_contact_fit_config
+
+    require(isinstance(registered_plans, list) and len(registered_plans) == 2
+            and all(isinstance(p, dict) for p in registered_plans)
+            and {p.get("plan_role") for p in registered_plans} == {"generation", "fit"},
+            "N20 proof requires exactly one generation and one FIT plan")
+    plans = {p["plan_role"]: p for p in registered_plans}
+    require(cell.get("allowed_execution_stages") == ["check", "prepare-supply", "worker", "campaign"],
+            "N20 proof permits exactly check/prepare-supply/worker/campaign")
+    require(not any(k in values for k in ("system_context_learning", "system_search_learning", "system_optimization"))
+            and values.get("stage3_algorithm", {}).get("id") == "none"
+            and values["stage3_algorithm"].get("operators_used") == []
+            and values.get("stage3_measurement", {}).get("claims_benefit") is False,
+            "N20 proof cannot admit learning or benefit claims")
+    pin = values["experiment_population"]
+    population = load_population_config(pin, repo_root=repo_root, allow_architecture=True)
+    require(population["schema"] == ARCHITECTURE_VERSION, "N20 proof requires explicit V4 architecture")
+    identity, = [m for m in population["architecture"]["members"]
+                if m["member_id"] == values["architecture_member"] and m["cohort_id"] == values["population_cohort"]]
+    cohort = require_population_binding(population, pin, identity["cohort_id"], values, *registered_plans)
+    require(plans["generation"]["capacity_prerequisite"] == plans["fit"]["capacity_prerequisite"],
+            "N20 plan pair has different capacity prerequisites")
+    prerequisite = plans["generation"]["capacity_prerequisite"]
+    capacity, qualified = _qualified_capacity(population, pin, prerequisite, repo_root=repo_root, data_root=data_root)
+    require(plans["generation"].get("natural_prerequisite") == plans["fit"].get("natural_prerequisite"),
+            "N20 pair has different natural prerequisites")
+    natural = _qualified_natural_family(population, pin, plans["generation"]["natural_prerequisite"],
+                                       prerequisite, capacity, repo_root=repo_root, data_root=data_root)
+    member, = [m for m in capacity["members"] if m["member_id"] == identity["member_id"]]
+    roster = values["populations"][0]["ids"]
+    require(len(values["populations"]) == 1 and type(values["population"]["count"]) is int
+            and values["population"]["count"] == len(roster) == len(cohort["sample_ids"])
+            and roster == cohort["sample_ids"] and len(set(roster)) == len(roster),
+            "N20 configured roster differs from its immutable cohort")
+    prepared = json.loads(_read_pin(values["prepared_phase_supply"], Path(data_root).resolve()))
+    receipt_pin = plans["generation"].get("preparation_receipt")
+    require(receipt_pin == plans["fit"].get("preparation_receipt"), "N20 preparation receipts differ")
+    receipt = json.loads(_read_pin(receipt_pin, repo_root))
+    require(receipt.get("member_id") == identity["member_id"]
+            and receipt.get("experiment") == cell["cell_id"] and receipt.get("run_id") == cell["run_id"]
+            and receipt.get("attempt_id") == cell["attempt_id"] and receipt.get("config_hash") == _canonical_hash(values)
+            and receipt.get("configured_sample_ids") == roster
+            and receipt.get("prepared_phase_supply") == values["prepared_phase_supply"]
+            and receipt.get("contacts") == 0 and type(receipt["contacts"]) is int
+            and receipt.get("output_equal") is True and receipt.get("warm_verified") is True
+            and receipt.get("runtime_admission") is False
+            and receipt.get("source_policy") == identity["execution_config"], "N20 preparation provenance differs")
+    _require_prepared_implementation(prepared, repo_root, values)
+    require(prepared.get("output_sha256") == receipt.get("output_sha256"), "N20 prepared output binding differs")
+    require(receipt["source_prepared_phase_supply"]
+            == member["prepared_artifact_verification"]["capacity"]["prepared_pin"],
+            "N20 prepared output source differs from original qualified capacity")
+    prior = json.loads(_read_pin(receipt["source_prepared_phase_supply"], Path(data_root).resolve()))
+    from ..core.preparation import digest
+    require(prior.get("output_sha256") == prepared["output_sha256"] == digest(prior["output"]),
+            "N20 prepared output equality differs")
+    runtime_roster = receipt["runtime_sample_ids"]
+    require(isinstance(runtime_roster, list) and all(isinstance(x, str) for x in runtime_roster)
+            and len(runtime_roster) == len(set(runtime_roster)) == len(roster)
+            and set(runtime_roster) == set(roster)
+            and runtime_roster == member.get("runtime_sample_ids", cohort["sample_ids"]),
+            "N20 prepared runtime roster differs from original capacity order")
+    policy = drop_null_arms(json.loads(_read_pin(identity["execution_config"], repo_root)))
+    require(all(values.get(k) == v for k, v in policy.items() if k != "what_this_is"),
+            "N20 effective policy differs from its pinned member")
+    program = default_phase_program(values["policy"])
+    native = load_native_episode_config(values, program)
+    require(native is not None and native.max_contacts == identity["model_per_trajectory"]
+            and [r for r in population["nodes"] if native.role(r).max_iterations > 0] == identity["active_roles"],
+            "N20 role/contact identity differs")
+    require(values["native_graph_capacity_profile"] == member["rehearsal_profile"], "N20 profile differs")
+    rehearsal_profile(values, member["rehearsal_profile"])
+    require(all(values.get("decoding_params", {}).get(k) == v for k, v in population["sampling"].items())
+            and all(values["system_search_measurement"].get(k) == v for k, v in population["execution"].items())
+            and values["serving_slots"] == population["execution"]["slot_count"]
+            and values["serving_slot_tokens"] == 24576, "N20 sampling/execution geometry differs")
+    fit = validate_native_contact_fit_config(values, program)
+    generation_cap = len(roster) * native.max_contacts
+    fit_cap = generation_cap * population["contact_limits"]["fit_endpoints_per_model_contact"]
+    require(fit is not None and fit.get("max_speech_packets", 1) == 1 and type(fit["contact_cap"]) is int
+            and fit["contact_cap"] == fit_cap and fit["run_id"] != cell["run_id"]
+            and fit["attempt_id"] != cell["attempt_id"], "N20 FIT identity or ceiling differs")
+    expected_budget = dict(complete_system_trajectories=len(roster), generation_calls_cap=generation_cap,
+                           actual_request_fit_endpoint_cap=fit_cap, official_complete_scoring_jobs=1)
+    require(content_hash(values["family_budget"]) == content_hash(expected_budget), "N20 family budget differs")
+    config_hash = _canonical_hash(values)
+    split = split_identity_hash(prefixed("slurp", roster))
+    require(values["population"]["split_identity_hash"] == split, "N20 split identity differs")
+    expected = ExecutionPlan(**values["execution_plan"], run_id=cell["run_id"], attempt_id=cell["attempt_id"],
+                            carrier_lock_key="slurp", split_identity_hash=split,
+                            protocol_hash=protocol_hash(config_hash, values["arm"], split)).validate()
+    require(expected.planned_model_calls == generation_cap and type(expected.planned_model_calls) is int
+            and expected.execution_profile == "bounded-discovery-probe" and expected.split_role == "discovery",
+            "N20 generation plan differs")
+    for role, document in plans.items():
+        bound_plan = expected if role == "generation" else replace(expected, run_id=fit["run_id"],
+                                                                  attempt_id=fit["attempt_id"], planned_model_calls=fit_cap)
+        require(document.get("schema") == f"saea-registered-{role}-plan-v1"
+                and document.get("architecture_proof") == "manual-architecture-n20-v1"
+                and str(document.get("status", "")).upper().startswith("ROOT COUNTERSIGNED BEFORE CONTACT")
+                and document.get("architecture_member") == identity["member_id"]
+                and document.get("cell") == cell["cell_id"] and document.get("experiment") == cell["cell_id"]
+                and document.get("composed_config_hash") == config_hash and document.get("configured_sample_ids") == roster
+                and document.get("runtime_sample_ids") == runtime_roster
+                and document.get("policy_binding") == cell["system_text_policy_binding"]
+                and cell["system_text_policy_binding"]["bundle_id"] == identity["base_bundle_id"]
+                and document.get("prepared_phase_supply") == values["prepared_phase_supply"]
+                and document.get("run_id", bound_plan.run_id) == bound_plan.run_id
+                and document.get("attempt_id", bound_plan.attempt_id) == bound_plan.attempt_id
+                and content_hash(document["execution_plan"]) == content_hash(asdict(bound_plan))
+                and type(document.get("official_score_jobs")) is int and document["official_score_jobs"] == 1
+                and document.get("learner_export") is False
+                and document.get("population_budget") == population_accounting(population, identity["cohort_id"]),
+                "N20 registered plan differs from its exact configuration, scope or identity")
+    _require_n20_root_decision(plans, population, natural, repo_root=repo_root, data_root=data_root)
+    return dict(member_id=identity["member_id"], sample_ids=deepcopy(roster),
+                runtime_sample_ids=deepcopy(runtime_roster), generation_cap=generation_cap, fit_cap=fit_cap,
+                capacity_registration_sha256=qualified["registration_sha256"],
+                capacity_source_commit=capacity["worker_commit"],
+                natural_qualification_sha256=plans["generation"]["natural_prerequisite"]["qualification"]["sha256"],
+                natural_source_commit=natural["source_commit"], runtime_admission=False, read_authorized=False)
+
+
+def _require_prepared_implementation(prepared, repo_root, values):
+    """Bind the existing supply fingerprint to exact current source bytes."""
+    from ..core.preparation import artifact_inputs, digest, SCHEMA
+    require(prepared.get("schema") == SCHEMA and prepared.get("kind") == "phase-supply"
+            and prepared.get("contact_class") == "model-free"
+            and digest(prepared["output"]) == prepared.get("output_sha256"), "N20 prepared supply seal differs")
+    expected = artifact_inputs(config=values, split_identity_hash=values["population"]["split_identity_hash"],
+                               sources=prepared["inputs"]["sources"])
+    require(prepared["inputs"] == expected
+            and set(prepared["inputs"]["sources"]["packets"]) == set(values["populations"][0]["ids"]),
+            "N20 prepared supply config or packet membership differs")
+    implementation = prepared["inputs"]["sources"]["implementation"]
+    paths = {"runtime": "core/flight/runtime.py"}
+    paths.update({"speech_aware_evidence_acquisition.rails." + name: "rails/" + name + ".py"
+                  for name in ("kb_policy", "knowledge_provider", "knowledge_stores", "phase_supply")})
+    require(set(implementation) == set(paths), "N20 prepared implementation coverage differs")
+    package = Path(repo_root) / "src/speech_aware_evidence_acquisition"
+    require(all(hashlib.sha256((package / path).read_bytes()).hexdigest() == implementation[name]
+                for name, path in paths.items()), "N20 prepared implementation source differs")
+
+
+def _require_n20_root_decision(plans, population, natural, *, repo_root, data_root):
+    """Require one decided owner227 admission for the exact prospective family."""
+    decision_pin = plans["generation"].get("decision_receipt")
+    require(decision_pin == plans["fit"].get("decision_receipt"), "N20 pair root decisions differ")
+    decision = json.loads(_read_pin(decision_pin, Path(data_root).resolve()))
+    require(decision.get("schema") == "saea-campaign-decision-v1" and decision.get("status") == "decided"
+            and 227 in decision.get("owner_decisions", []) and decision.get("learner_export") is False
+            and decision.get("experiment_population") == plans["generation"]["experiment_population"]
+            and decision.get("capacity_prerequisite") == plans["generation"]["capacity_prerequisite"]
+            and decision.get("natural_prerequisite") == plans["generation"]["natural_prerequisite"],
+            "N20 decided owner227 admission differs")
+    receipt = json.loads(_read_pin(plans["generation"]["preparation_receipt"], repo_root))
+    source = receipt.get("prepared_source_commit")
+    require(isinstance(source, str) and len(source) == 40 and all(x in "0123456789abcdef" for x in source)
+            and decision.get("source_preparation_commit") == source, "N20 root preparation source differs")
+    expected_ids = []
+    for member in population["architecture"]["members"]:
+        stem = "slurp-native-stage3-simple-consumption-" + member["member_id"] + "-n20-v2"
+        cell, = load_campaign_cells(repo_root, stem)
+        document = cell.document
+        config = compose(repo_root, document["model_fragment"], document["dataset_fragment"],
+                         document["baseline_fragment"], stem)
+        expected_ids.extend([document["run_id"], config.values["native_contact_fit"]["run_id"]])
+    require(decision.get("eligible_run_ids") == expected_ids and len(set(expected_ids)) == len(expected_ids),
+            "N20 root admission family eligibility differs")
+
+
+def _qualified_natural_family(population, pin, prerequisite, capacity_prerequisite, capacity, *, repo_root, data_root):
+    """Validate all raw-pinned structural prerequisites without reading task answers."""
+    require(data_root is not None and isinstance(prerequisite, dict)
+            and set(prerequisite) == {"registration", "qualification"}, "exact N20 natural prerequisite required")
+    root = Path(data_root).resolve()
+    def read(raw_pin):
+        return json.loads(_read_pin(raw_pin, root))
+    admission, qualified = read(prerequisite["registration"]), read(prerequisite["qualification"])
+    labels = [m["member_id"] for m in population["architecture"]["members"]]
+    require(qualified.get("schema") == "saea-architecture-natural-family-qualification-v1"
+            and qualified.get("status") == "QUALIFIED_STRUCTURAL_ONLY" and qualified.get("passed") is True
+            and qualified.get("registration") == prerequisite["registration"]
+            and qualified.get("experiment_population") == pin
+            and type(qualified.get("official_score_jobs")) is int and qualified["official_score_jobs"] == 0
+            and qualified.get("scientific_feedback") is False and qualified.get("learner_export") is False
+            and qualified.get("next_panel_admitted") is False,
+            "N20 natural qualification scope or registration differs")
+    source = qualified["source_commit"]
+    require(isinstance(source, str) and len(source) == 40 and all(x in "0123456789abcdef" for x in source),
+            "N20 natural source commit invalid")
+    root_read = read(qualified["root_read_receipt"])
+    require(root_read.get("schema") == "saea-architecture-natural-family-root-read-v1"
+            and root_read.get("status") == "ROOT COUNTERSIGNED STRUCTURAL READ" and root_read.get("passed") is True
+            and root_read.get("registration") == prerequisite["registration"]
+            and root_read.get("experiment_population") == pin and root_read.get("source_commit") == source
+            and root_read.get("frozen_worker") == qualified["frozen_worker"]
+            and root_read.get("member_labels") == labels
+            and type(root_read.get("official_score_jobs")) is int and root_read["official_score_jobs"] == 0
+            and root_read.get("scientific_feedback") is False and root_read.get("learner_export") is False,
+            "N20 whole-family root structural READ differs")
+    require(admission.get("schema") == "saea-campaign-decision-v1" and admission.get("status") == "decided"
+            and 227 in admission.get("owner_decisions", []) and admission.get("next_panel_authorized") is False
+            and admission.get("learning") == "HELD" and admission.get("capacity_prerequisite") == capacity_prerequisite,
+            "N20 natural owner227 admission differs")
+    require([m.get("label") for m in qualified["members"]] == labels
+            and [m.get("label") for m in root_read["members"]] == labels,
+            "N20 natural family incomplete, duplicated or reordered")
+    eligible = []
+    for identity, member, read_member in zip(population["architecture"]["members"], qualified["members"],
+                                           root_read["members"], strict=True):
+        label = identity["member_id"]
+        cell, = load_campaign_cells(repo_root, member["experiment"])
+        cell = cell.document
+        config = compose(repo_root, cell["model_fragment"], cell["dataset_fragment"],
+                         cell["baseline_fragment"], member["experiment"])
+        values = config.values
+        capmember, = [m for m in capacity["members"] if m["label"] == label]
+        roster, runtime = member["configured_sample_ids"], member["runtime_sample_ids"]
+        require(isinstance(roster, list) and isinstance(runtime, list)
+                and all(isinstance(x, str) for x in roster + runtime)
+                and len(roster) == len(set(roster)) == len(runtime) == len(set(runtime)) == member["rows"] == 4
+                and roster == capmember["graph_sample_ids"]
+                and runtime == capmember.get("runtime_graph_sample_ids", roster), "N20 natural runtime membership differs")
+        require(cell.get("allowed_execution_stages") == ["check", "prepare-supply", "worker"]
+                and values["architecture_member"] == label and values["experiment_population"] == pin
+                and config.config_hash == member["config_hash"] and values["populations"][0]["ids"] == roster
+                and cell["run_id"] == member["run_id"] and cell["attempt_id"] == member["attempt_id"]
+                and values["native_contact_fit"]["run_id"] == member["fit_run_id"]
+                and cell["system_text_policy_binding"] == member["policy_binding"]
+                and member["policy_binding"]["bundle_id"] == identity["base_bundle_id"]
+                and values["prepared_phase_supply"] == member["prepared_phase_supply"],
+                "N20 natural member config, policy or identity differs")
+        policy = drop_null_arms(json.loads(_read_pin(identity["execution_config"], repo_root)))
+        require(all(values.get(k) == v for k, v in policy.items() if k != "what_this_is"),
+                "N20 natural effective policy differs")
+        _require_prepared_implementation(read(member["prepared_phase_supply"]), repo_root, values)
+        require(all(read_member.get(k) == member[k] for k in ("run_id", "attempt_id", "manifest", "guard_finished")),
+                "N20 root READ member custody binding differs")
+        manifest, attempt, inspection, guard, report = [read(member[k]) for k in
+            ("manifest", "attempt", "inspection", "guard_finished", "structural_report")]
+        split = split_identity_hash(prefixed("slurp", roster))
+        expected_plan = ExecutionPlan(**values["execution_plan"], run_id=member["run_id"],
+            attempt_id=member["attempt_id"], carrier_lock_key="slurp", split_identity_hash=split,
+            protocol_hash=protocol_hash(config.config_hash, values["arm"], split)).validate()
+        fit_spec = values["native_contact_fit"]
+        expected_fit = replace(expected_plan, run_id=fit_spec["run_id"], attempt_id=fit_spec["attempt_id"],
+                               planned_model_calls=fit_spec["contact_cap"])
+        contacts = member["model_contacts"]
+        require(type(contacts) is int and 0 < contacts <= 4 * identity["model_per_trajectory"],
+                "N20 natural contact accounting invalid")
+        require(manifest.get("schema") == "saea-run-manifest-v1" and manifest.get("status") == "COMPLETED"
+                and manifest.get("run_id") == member["run_id"] and manifest.get("study_commit") == source
+                and manifest.get("study_repo_dirt") == [] and manifest["config"]["config_hash"] == member["config_hash"]
+                and manifest["plan"] == asdict(expected_plan) and manifest.get("scores") is None,
+                "N20 natural manifest source, identity or completion differs")
+        require(attempt.get("state") == "OPENED" and attempt.get("run_id") == member["run_id"]
+                and attempt.get("attempt_id") == member["attempt_id"] and attempt["actual"]["calls"] == contacts,
+                "N20 natural attempt accounting differs")
+        require(inspection.get("pass") is True and inspection.get("bundle_verified") is True
+                and inspection.get("fails") == [] and inspection.get("dirt") == []
+                and inspection.get("study_commit") == source and inspection.get("manifest_status") == "COMPLETED"
+                and inspection.get("run_id") == member["run_id"] and inspection.get("attempt_id") == member["attempt_id"]
+                and inspection.get("rows") == inspection.get("distinct") == 4
+                and inspection["actual"]["calls"] == contacts
+                and inspection.get("sha256_run-manifest") == member["manifest"]["sha256"],
+                "N20 natural custody inspection differs")
+        require(guard.get("schema") == "saea-flight-process-memory-guard-v1" and guard.get("status") == "completed"
+                and type(guard.get("exit_code")) is int and guard["exit_code"] == 0
+                and type(guard.get("worker_returncode")) is int and guard["worker_returncode"] == 0
+                and guard["identity"]["run_id"] == member["run_id"]
+                and guard["identity"]["attempt_id"] == member["attempt_id"]
+                and guard["identity"]["study_head"] == source
+                and guard["identity"]["repo_root"] == qualified["frozen_worker"], "N20 natural guarded terminal differs")
+        require(report.get("schema") == "saea-natural-architecture-structural-report-v1"
+                and all(report.get(k) is True for k in ("passed", "bundle_verified", "all_contacts_joined",
+                                                       "all_original_fits_verified", "terminal_policy_verified"))
+                and all(report.get(k) == member[k] for k in ("label", "run_id", "attempt_id", "config_hash",
+                    "configured_sample_ids", "runtime_sample_ids", "model_contacts"))
+                and report.get("source_commit") == source and report.get("official_score_jobs") == 0
+                and report.get("scientific_feedback") is False and report.get("learner_export") is False
+                and len(report["rows"]) == 4
+                and [row["sample_id"] for row in report["rows"]] == runtime
+                and all(row.get("terminal_policy_verified") is True for row in report["rows"])
+                and sum(row["contacts"] for row in report["rows"]) == contacts
+                and report.get("reviewer_applicable") == ("reviewer" in identity["active_roles"]),
+                "N20 natural structural report differs")
+        _read_pin(report["flight_receipts"], root)
+        accounting = read(member["actual_fit_accounting"])
+        require(member["actual_fit_accounting"] == root_read["actual_fit_accounting"]
+                and accounting.get("schema") == "saea-native-actual-fit-accounting-v1", "N20 FIT accounting scope differs")
+        fit, = [f for f in accounting["members"] if f["run_id"] == member["fit_run_id"]]
+        records = fit["records"]
+        require(len(records) == fit["actual_request_receipts"] == report["actual_fit_receipts"]
+                and len({r["relpath"] for r in records}) == len(records)
+                and fit["actual_endpoints"] == report["actual_fit_endpoints"]
+                == sum(r["actual_endpoints"] for r in records)
+                and {r["relpath"]: r["sha256"] for r in records}
+                == {r["relpath"]: r["sha256"] for r in report["fit_receipts"]}, "N20 actual FIT coverage differs")
+        for record in records:
+            from ..core.preparation import load_artifact
+            raw_pin = {k: record[k] for k in ("relpath", "sha256")}
+            artifact = read(raw_pin)
+            output = load_artifact(root / raw_pin["relpath"], expected_sha256=raw_pin["sha256"],
+                                   kind="request-fit", inputs=artifact["inputs"])
+            journal = _read_pin({"relpath": record["relpath"] + ".contacts.jsonl",
+                                 "sha256": record["journal_sha256"]}, root)
+            journal = [json.loads(line) for line in journal.splitlines() if line.strip()]
+            require(artifact["contact_class"] == "tokenizer" and output.get("every_request_fits") is True
+                    and output.get("capacity_scope") == "actual-variable-trajectory-contact"
+                    and output.get("generation_contacts") == 0
+                    and artifact["inputs"]["fit_plan"] == asdict(expected_fit)
+                    and artifact["inputs"]["native_contact"]["agent_contact_id"] == output["agent_contact_id"]
+                    and len(journal) == output["contacts"] == record["actual_endpoints"]
+                    and dict(Counter(row["method"] + " " + row["route"] for row in journal)) == output["contact_counts"]
+                    and [row["contact"] for row in journal]
+                    == list(range(output["cumulative_contacts"] - output["contacts"] + 1,
+                                  output["cumulative_contacts"] + 1)), "N20 original FIT journal or identity differs")
+        eligible.extend([member["run_id"], member["fit_run_id"]])
+    require(admission.get("eligible_run_ids") == eligible and len(set(eligible)) == len(eligible),
+            "N20 natural admission eligibility differs")
+    return qualified

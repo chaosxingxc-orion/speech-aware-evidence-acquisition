@@ -1,0 +1,72 @@
+{
+  "base_commit": "cb6e71d31eb6db0b740050737d610b47ad0c35f2",
+  "changed_files_in_prepared_implementation": [],
+  "checks": [
+    {
+      "exit_code": 1,
+      "expected_failure": "Missing require_architecture_n20_registration interface",
+      "kind": "tests-before-implementation",
+      "tool_chunk": "2ba691"
+    },
+    {
+      "exit_code": 0,
+      "kind": "legacy-natural-focused",
+      "original_session": 43678,
+      "passed": 72,
+      "seconds": 18.79
+    },
+    {
+      "exit_code": 0,
+      "kind": "final-N20-contracts-and-named-checker",
+      "original_session": 83681,
+      "passed": 43,
+      "seconds": 27.42
+    },
+    {
+      "exit_code": 0,
+      "kind": "scoped-ruff",
+      "tool_chunk": "675043"
+    },
+    {
+      "exit_code": 0,
+      "kind": "actual-root-qualified-natural-metadata",
+      "members": 4,
+      "source_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+      "tool_chunk": "c12139"
+    },
+    {
+      "completion_chunk": "b18f58",
+      "exit_code": 0,
+      "kind": "existing-natural-recovery-capacity-and-checker-regression",
+      "original_session": 34909,
+      "passed": 352,
+      "seconds": 531.43
+    }
+  ],
+  "control_changes": false,
+  "model_contacts": 0,
+  "official_score_jobs": 0,
+  "prepared_implementation_members": [
+    "core/flight/runtime.py",
+    "rails/kb_policy.py",
+    "rails/knowledge_provider.py",
+    "rails/knowledge_stores.py",
+    "rails/phase_supply.py"
+  ],
+  "quality_read": false,
+  "role_division": {
+    "admission_integration_launch": "root",
+    "engineering": "GPT-6.1 Sol",
+    "planning_optimization_independent_review": "GPT-6 Astra/Ultra"
+  },
+  "schema": "saea-manual-architecture-n20-admission-validation-v1",
+  "scope": "Synthetic contract fixtures plus whitelisted already-root-qualified structural metadata only; no task outputs or scientific evaluation.",
+  "source_files": {
+    "scripts/checks/flight_registration_check.py": "f16ce486ff75a859c03e8ed1c550cd1af5bc3c30a52829154b02de5f8531eeb2",
+    "src/speech_aware_evidence_acquisition/rails/architecture_natural_registration.py": "e9eef94d78b2a30e8d2759716e80ba7b991aada205bdef17bb55eee61d6e9fb3",
+    "tests/unit/test_architecture_n20_registration.py": "7ced0c47813a112142c21528edf83f8eed6acd65275664971159b9ba376c488f"
+  },
+  "status": "PASS",
+  "task_answers_read": false,
+  "tokenizer_contacts": 0
+}

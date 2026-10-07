@@ -1611,6 +1611,9 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
     expected = (baseline or {}).get("prepared_phase_supply")
     natural = (cell is not None and cell.get("allowed_execution_stages") == ["check", "prepare-supply", "worker"]
                and ("architecture_member" in (fragment or {}) or "architecture_member" in (baseline or {})))
+    manual_n20 = (cell is not None
+                  and cell.get("allowed_execution_stages") == ["check", "prepare-supply", "worker", "campaign"]
+                  and ("architecture_member" in (fragment or {}) or "architecture_member" in (baseline or {})))
     natural_plans = []
     for path in sorted((index.repo_root / READINESS / package).glob("*plan-registered*.json")):
         try:
@@ -1623,7 +1626,7 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
         run_id = document.get("run_id") or (plan.get("run_id") if isinstance(plan, dict) else None)
         _check_declared_carrier_binding(report, document, run_id, ledger)
         if run_id in report.run_ids.values() and "experiment_population" in (baseline or {}):
-            if natural:
+            if natural or manual_n20:
                 natural_plans.append(document)
             try:
                 from speech_aware_evidence_acquisition.rails.experiment_population import (
@@ -1631,7 +1634,7 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
                     require_architecture_capacity_registration,
                 )
                 from speech_aware_evidence_acquisition.rails.system_text_policy import require
-                if natural:
+                if natural or manual_n20:
                     pass  # Validate the complete generation/FIT pair after collecting it.
                 elif "architecture_member" in (fragment or {}) or "architecture_member" in baseline:
                     from speech_aware_evidence_acquisition.core.config import compose
@@ -1658,15 +1661,16 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
                 f"{run_id}: {path.name} declares a prepared supply different from its cell baseline",
                 run_id,
             ))
-    if natural:
+    if natural or manual_n20:
         try:
             from speech_aware_evidence_acquisition.core.config import compose
             from speech_aware_evidence_acquisition.rails.architecture_natural_registration import (
-                require_architecture_natural_registration,
+                require_architecture_natural_registration, require_architecture_n20_registration,
             )
             effective = compose(index.repo_root, cell["model_fragment"], cell["dataset_fragment"],
                                 cell["baseline_fragment"], report.experiment)
-            require_architecture_natural_registration(effective.values, cell, natural_plans,
+            validator = require_architecture_n20_registration if manual_n20 else require_architecture_natural_registration
+            validator(effective.values, cell, natural_plans,
                                                      repo_root=index.repo_root, data_root=data_root)
         except (ValueError, KeyError, TypeError, OSError) as error:
             report.findings.append(Finding("population-config-binding", str(error), report.run_id))
