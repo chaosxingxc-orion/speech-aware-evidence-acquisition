@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Prepared-graph complete capacity actual launch recorded (2026-10-07)
+
+Saved task, outer and member-start receipts bind registration `975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a` to frozen source `cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811`. Configured members: seed, seed-aa, review-off, solver-lookup. Member starts observed in this snapshot: seed, seed-aa. The saved service epoch is `2026-10-07T04:42:57.499274+00:00`; this is an operational snapshot, not a fresh liveness attestation.
+
+The startup and running Windows floors are 4 GiB. Preserve all 1,036 historical tokenizer endpoints; the fresh complete-family ceiling is 996, with zero generation and scoring allowed. Only present memory-wait receipts are copied and pinned. No capacity qualification or scientific benefit is inferred from launch. Natural generation and the scientific comparison remain held for separate qualification and admission; return to the human before 8x400 or an equivalent split.
+
+GPT-6.1 Sol owns engineering, preparation, implementation and tests. GPT-6 Astra/Ultra owns optimization, planning, independent review and template analysis. Root coordinates admission and launch. Preserve immutable historical receipts and authorship. See [actual launch evidence](../receipts/continuation/2026-10-07-prepared-graph-capacity-launch.json).
+
+A root helper invocation diagnostic is preserved with its raw hash in the launch receipt. Its saved fields describe the helper invocation; this writer does not infer an experiment retry or additional contacts from that record.
+
 ## Fresh complete capacity registration; offline structural proof passed (2026-10-07)
 
 The four-member production graph proof passed on unchanged preparation source `77f4ff03fddd71aa50d8e06e1011dc7713e9d432`. Its receipt, `SPEECHRL_DATA_DIR/coordination/simple-consumption-prepared-graph-recovery2-v1/offline-graph-repair-proof-v1.json`, has SHA-256 `f1649bcbd0e3f65adddffbfd47851b3d05557ba705d5b65c8bcfe872bd04731d`. Every real generation, tokenizer and scorer contact count is zero. The old C3 graph was refused before authorization. Earlier failed proof producers and historical flights remain preserved.
@@ -6561,7 +6571,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T08:36:28.062217+00:00
+Last refreshed: 2026-10-07T10:32:26.377153+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

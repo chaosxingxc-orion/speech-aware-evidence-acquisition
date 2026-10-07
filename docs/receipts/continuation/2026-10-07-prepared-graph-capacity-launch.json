@@ -1,0 +1,210 @@
+{
+  "at_utc": "2026-10-07T10:32:26.377153+00:00",
+  "evidence": [
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\registration-v1.json",
+      "sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a"
+    },
+    {
+      "path": "D:\\chao_workspace\\saea-maintenance\\simple-consumption-protocol-20261007\\configs\\experiments\\slurp-simple-consumption-architecture-n20-v2.json",
+      "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\capacity-task-started.json",
+      "sha256": "d6cd2dcead03758d6e05382620ea4005e217847eb49af7b266f208f2737d30ab"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\capacity-started.json",
+      "sha256": "ed6c6f927944b0e63391e4bfc2c636e00f3c89288d0e78e04d825e99c9dbf2d1"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\live-prelaunch-v1.json",
+      "sha256": "046555e0b59d71e849b6efaddb3523394548f8dd72c5176d334128af3ec18424"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\root-prepared-graph-disposition-v1.json",
+      "sha256": "3f1652a55959671f77e1a5ca30e819e951ad551178b4ca7095a20819f7fe32de"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\root-finalizer-invocation-diagnostic-v1.json",
+      "sha256": "41997a42686a29dc8f6823430d85548666f485842e0e2cabcb1f2c26f9e7b993"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\seed-capacity-started.json",
+      "sha256": "81ae59fb19f7096f92154e58050180d2e561abbee416fece1393e5c9975c49ef"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\seed\\memory-wait\\finished.json",
+      "sha256": "b58482c3e2eced2a81588813c308f86876d303be0835ebb33badfe4c59e2ebd5"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\seed-aa-capacity-started.json",
+      "sha256": "62583586dee58876c433f92499c409ec522100c510b9fdd3ceefda810a7787c1"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\seed-aa\\memory-wait\\finished.json",
+      "sha256": "e852c99d3e8670e967723398fb8a03a46cb2aaa3b208b8e8afdfde1da8e058eb"
+    }
+  ],
+  "frozen_worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-graph-v3",
+  "generation_contacts_allowed": 0,
+  "launch_records": {
+    "capacity-started.json": {
+      "at_utc": "2026-10-07T10:29:07.3478788+00:00",
+      "generation_contacts": 0,
+      "registration_sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a",
+      "scorer_contacts": 0,
+      "windows_owner_pid": 44712,
+      "worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-graph-v3",
+      "worker_commit": "cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811"
+    },
+    "capacity-task-started.json": {
+      "at_utc": "2026-10-07T10:29:06.8936176+00:00",
+      "registration_sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a",
+      "restart_permitted": false,
+      "windows_owner_pid": 43576,
+      "worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-graph-v3",
+      "worker_commit": "cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811"
+    }
+  },
+  "limitation": "Saved launch and operational snapshots only. No current liveness, capacity qualification, natural tool competence or scientific benefit is inferred.",
+  "members": [
+    {
+      "actual_member_started": {
+        "at_utc": "2026-10-07T10:29:08.546874+00:00",
+        "pid": 26611,
+        "registration_sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a",
+        "script_sha256": "8d1ba410d04eeb36a0fe5d786adb489fb9ceeff1362555fb573636c0040ef2cb",
+        "source_commit": "cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811",
+        "worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-graph-v3"
+      },
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-v3-capacity-fit-v1",
+      "contact_cap": 299,
+      "label": "seed",
+      "member_started_observed": true,
+      "memory_wait_receipts": [
+        {
+          "evidence": {
+            "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\seed\\memory-wait\\finished.json",
+            "sha256": "b58482c3e2eced2a81588813c308f86876d303be0835ebb33badfe4c59e2ebd5"
+          },
+          "saved_operational_receipt": {
+            "elapsed_seconds": 20.13824116496835,
+            "exit_code": 0,
+            "interval_seconds": 10,
+            "observer_sha256": "ce1e86c1d79d2d0251e9087614317e36f19cf995468b3354c3af94e2eda998e2",
+            "running_floor_gib": 4,
+            "schema": "saea-precontact-memory-wait-v1",
+            "stable_samples": 3,
+            "start_gib": 4,
+            "status": "ready",
+            "stop_marker": "/home/chao/batch-STOP",
+            "wait_seconds": 600,
+            "worker_started": false
+          }
+        }
+      ],
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V3-CAPACITY-FIT-V1"
+    },
+    {
+      "actual_member_started": {
+        "at_utc": "2026-10-07T10:31:11.081163+00:00",
+        "pid": 26936,
+        "registration_sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a",
+        "script_sha256": "8d1ba410d04eeb36a0fe5d786adb489fb9ceeff1362555fb573636c0040ef2cb",
+        "source_commit": "cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811",
+        "worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-graph-v3"
+      },
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-v3-capacity-fit-v1",
+      "contact_cap": 299,
+      "label": "seed-aa",
+      "member_started_observed": true,
+      "memory_wait_receipts": [
+        {
+          "evidence": {
+            "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-prepared-graph-recovery2-v1\\seed-aa\\memory-wait\\finished.json",
+            "sha256": "e852c99d3e8670e967723398fb8a03a46cb2aaa3b208b8e8afdfde1da8e058eb"
+          },
+          "saved_operational_receipt": {
+            "elapsed_seconds": 20.12042081099935,
+            "exit_code": 0,
+            "interval_seconds": 10,
+            "observer_sha256": "ce1e86c1d79d2d0251e9087614317e36f19cf995468b3354c3af94e2eda998e2",
+            "running_floor_gib": 4,
+            "schema": "saea-precontact-memory-wait-v1",
+            "stable_samples": 3,
+            "start_gib": 4,
+            "status": "ready",
+            "stop_marker": "/home/chao/batch-STOP",
+            "wait_seconds": 600,
+            "worker_started": false
+          }
+        }
+      ],
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V3-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-v3-capacity-fit-v1",
+      "contact_cap": 157,
+      "label": "review-off",
+      "member_started_observed": false,
+      "memory_wait_receipts": [],
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V3-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-v3-capacity-fit-v1",
+      "contact_cap": 241,
+      "label": "solver-lookup",
+      "member_started_observed": false,
+      "memory_wait_receipts": [],
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V3-CAPACITY-FIT-V1"
+    }
+  ],
+  "new_tokenizer_endpoint_cap": 996,
+  "prior_historical_tokenizer_endpoints": 1036,
+  "registration_sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a",
+  "resource_policy": {
+    "floor_gib": 4,
+    "interval_seconds": 10,
+    "stable_samples": 3,
+    "start_gib": 4,
+    "wait_seconds": 600
+  },
+  "role_division": {
+    "admission_launch_coordination": "root",
+    "engineering_preparation_implementation_tests": "GPT-6.1 Sol",
+    "optimization_planning_independent_review_template_analysis": "GPT-6 Astra/Ultra"
+  },
+  "root_helper_invocation_diagnostic": {
+    "at_utc": "2026-10-07T10:28:18.5390302+00:00",
+    "cause": "Root omitted the required exact source environment parameter. Failure occurred before registration write or any service contact.",
+    "corrected_exit_code": 0,
+    "corrected_tool_chunk": "9115b0",
+    "error": "KeyError: SAEA_EXPECTED_COMMIT",
+    "expected_commit": "cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811",
+    "experiment_retry": false,
+    "failed_exit_code": 1,
+    "failed_tool_chunk": "a02977",
+    "generation_contacts": 0,
+    "registration_created_once": true,
+    "registration_sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a",
+    "schema": "saea-root-helper-invocation-diagnostic-v1",
+    "scorer_contacts": 0,
+    "source_or_helper_bytes_changed": false,
+    "tokenizer_contacts": 0
+  },
+  "runtime_admission_created": false,
+  "schema": "saea-prepared-graph-capacity-launch-v1",
+  "scientific_results_read": false,
+  "scorer_contacts_allowed": 0,
+  "service_snapshot": {
+    "at_utc": "2026-10-07T10:28:19.904607+00:00",
+    "guard_available": true,
+    "idle_slots": 4,
+    "service_epoch": "2026-10-07T04:42:57.499274+00:00",
+    "service_pid": 723
+  },
+  "source_commit": "cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811",
+  "status": "ACTUAL_LAUNCH_RECORDED",
+  "terminal_receipt_present_at_recording": false
+}
