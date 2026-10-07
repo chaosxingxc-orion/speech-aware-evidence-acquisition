@@ -10,6 +10,7 @@ import math
 import hashlib
 import json
 import re
+from collections import Counter
 from copy import deepcopy
 from .experiment_population import validate_population_config
 from .hashing import content_hash
@@ -202,7 +203,10 @@ def qualify_architecture_capacity_family(population, population_pin, registratio
     pin, sampling, execution, worker/worker_commit, budget, and ordered members.
     Each member adds member_id, population_cohort, execution_config,
     execution_identity_sha256 (canonical V4 member hash), model_per_trajectory,
-    and rehearsal_profile to the existing run/attempt/config/cap/row fields.
+    rehearsal_profile, and ordered graph_sample_ids to the existing
+    run/attempt/config/cap/row fields. Verify graph_sample_ids against the same
+    pinned graph configuration as graph_config_hashes before calling. Branches
+    follow that registered roster, never the order of parallel completions.
     ``source_check_sha256`` pins the separate completed model-free source check
     canonically: source_commit, experiment_population, exit_code, and integer
     zero generation_contacts/tokenizer_contacts/scorer_contacts are required.
@@ -277,6 +281,10 @@ def qualify_architecture_capacity_family(population, population_pin, registratio
             _require(type(member["expected_rows"]) is int and member["expected_rows"] == len(roster)
                      and type(member["graph_rows"]) is int and member["graph_rows"] == 4,
                      "Architecture capacity requires its complete roster and four graph rows")
+            graph_roster = member["graph_sample_ids"]
+            _require(isinstance(graph_roster, list) and len(graph_roster) == 4
+                     and len(set(graph_roster)) == 4 and set(graph_roster) <= set(roster),
+                     "Registered graph branch roster is missing, repeated or outside the population")
             raw = policy_config_bytes[label]
             _require(isinstance(raw, bytes) and hashlib.sha256(raw).hexdigest() == identity["execution_config"]["sha256"],
                      "Architecture policy bytes differ from their population pin")
@@ -327,11 +335,12 @@ def qualify_architecture_capacity_family(population, population_pin, registratio
             result = _qualify_member(member, terminal["members"][0], registration, record, roster,
                                      output_reserve=output_reserve, structural_reserve=structural_reserve,
                                      slot_tokens=slot_tokens, graph_config_hash=graph_config_hashes[label])
-            _qualify_architecture_proofs(record, roster, off=off, tool=tool)
+            _qualify_architecture_proofs(record, graph_roster, off=off, tool=tool)
             result.update(member_id=identity["member_id"], population_cohort=identity["cohort_id"],
                           member_role="control" if label in cohort["control_ids"] else "candidate",
                           execution_config=deepcopy(identity["execution_config"]),
                           execution_identity_sha256=content_hash(identity),
+                          graph_sample_ids=deepcopy(graph_roster),
                           model_per_trajectory=identity["model_per_trajectory"], rehearsal_profile=profile)
             summary.append(result)
         return {"schema": "saea-architecture-capacity-family-review-v1",
@@ -347,7 +356,7 @@ def qualify_architecture_capacity_family(population, population_pin, registratio
         raise ValueError("Malformed architecture capacity family evidence") from error
 
 
-def _qualify_architecture_proofs(record, roster, *, off, tool):
+def _qualify_architecture_proofs(record, graph_roster, *, off, tool):
     """Refuse partial captures, wrong stress profiles and absent final custody."""
     output = record["output"]
     _require(record["inputs"]["schema"] == "saea-native-graph-capacity-input-v1"
@@ -390,7 +399,6 @@ def _qualify_architecture_proofs(record, roster, *, off, tool):
     _require(isinstance(proofs, list) and [p["mode"] for p in proofs] == modes
              and [r["mode"] for r in rows] == [m for m in modes for _ in range(sum(counts))],
              "Capacity stress modes or captured request counts differ")
-    graph_rosters = []
     for proof in proofs:
         _require(type(proof["terminal_rows"]) is int and proof["terminal_rows"] == 4
                  and type(proof["synthetic_completions"]) is int and proof["synthetic_completions"] == sum(counts),
@@ -407,23 +415,23 @@ def _qualify_architecture_proofs(record, roster, *, off, tool):
                  and all(type(v) is int and 0 < v <= 512 for v in tokens.values()),
                  "Bounded synthetic role response measurements differ")
         measured = [r for r in rows if r["mode"] == proof["mode"]]
-        samples = list(dict.fromkeys(r["sample_id"] for r in measured))
-        _require(len(samples) == 4 and set(samples) <= set(roster)
+        # Parallel trajectories can interleave and their first contacts can
+        # complete in any order. Only each registered branch's count and the
+        # global capture indexes are invariant; do not regroup the source rows.
+        observed_counts = Counter(r["sample_id"] for r in measured)
+        _require(observed_counts == dict(zip(graph_roster, counts, strict=True))
                  and all(type(r["captured_request_index"]) is int for r in measured)
-                 and [r["captured_request_index"] for r in measured] == list(range(sum(counts)))
-                 and [r["sample_id"] for r in measured] == [s for s, n in zip(samples, counts, strict=True) for _ in range(n)],
+                 and [r["captured_request_index"] for r in measured] == list(range(sum(counts))),
                  "Capacity graph requests are missing, repeated or reordered")
-        graph_rosters.append(samples)
         if off:
             _require(type(proof["synthetic_tool_calls"]) is int and proof["synthetic_tool_calls"] == (2 if tool else 0)
                      and type(proof["post_tool_final_requests"]) is int
                      and proof["post_tool_final_requests"] == (3 if tool else 0),
                      "Review-off capacity tool and final-contact counts differ")
             finals = proof["accepted_final_request_sha256"]
-            _require(set(finals) == set(samples)
+            _require(set(finals) == set(graph_roster)
                      and all(isinstance(v, str) and re.fullmatch(r"[a-f0-9]{64}", v) for v in finals.values())
                      and len(set(finals.values())) == 4, "Review-off accepted final request custody is incomplete")
-    _require(all(samples == graph_rosters[0] for samples in graph_rosters), "Graph stress rosters differ")
 
 
 def _qualify_members(population, population_pin, registration, member_exits,

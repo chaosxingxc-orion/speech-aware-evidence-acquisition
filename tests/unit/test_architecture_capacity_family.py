@@ -36,7 +36,8 @@ def example():
                   "rehearsal_profile": profile, "run_id": "run-" + label,
                   "attempt_id": "attempt-" + label, "contact_cap": 500,
                   "composed_config_hash": content_hash({"fit": label}),
-                  "experiment_population": deepcopy(pin), "expected_rows": len(roster), "graph_rows": 4}
+                  "experiment_population": deepcopy(pin), "expected_rows": len(roster), "graph_rows": 4,
+                  "graph_sample_ids": list(roster[:4])}
         members.append(member)
         graph_hashes[label] = content_hash({"graph": label})
         output = {"schema": "saea-native-graph-capacity-v1", "every_request_fits": True,
@@ -297,6 +298,63 @@ def test_consistently_bound_malformed_pin_or_config_hash_refuses(field):
     else:
         args["graph_config_hashes"]["seed"] = ""
         args["receipts"]["seed"]["inputs"]["graph_config_hash"] = ""
+    args["original_registration"] = deepcopy(args["registration"])
+    with pytest.raises(ValueError):
+        qualify_architecture_capacity_family(**args)
+
+
+def interleave_captures(args, branch_order):
+    """Preserve every per-sample request while varying parallel completion order."""
+    for member in args["registration"]["members"]:
+        output = args["receipts"][member["label"]]["output"]
+        reordered = []
+        for proof in output["proofs"]:
+            queues = [[r for r in output["rows"] if r["mode"] == proof["mode"] and r["sample_id"] == sample]
+                      for sample in member["graph_sample_ids"]]
+            captured = []
+            while any(queues):
+                for index in branch_order:
+                    if queues[index]:
+                        captured.append(queues[index].pop(0))
+            for index, row in enumerate(captured):
+                row["captured_request_index"] = index
+            reordered.extend(captured)
+        output["rows"] = reordered
+    rehash(args)
+
+
+@pytest.mark.parametrize("branch_order", [(0, 1, 2, 3), (3, 1, 0, 2)])
+def test_interleaved_requests_use_registered_branch_order_not_first_capture(branch_order):
+    args = example()
+    interleave_captures(args, branch_order)
+    before = deepcopy(args)
+    result = qualify_architecture_capacity_family(**args)
+    assert [m["measured_requests"] for m in result["members"]] == [44, 44, 8, 22]
+    assert args == before and result["runtime_admission"] is False
+
+
+@pytest.mark.parametrize("label", ["seed", "review-off", "solver-lookup"])
+def test_interleaved_wrong_per_sample_count_refuses_even_with_complete_total(label):
+    args = example()
+    interleave_captures(args, (3, 1, 0, 2))
+    output = args["receipts"][label]["output"]
+    rows = output["rows"]
+    rows[0]["sample_id"] = rows[1]["sample_id"]
+    rehash(args)
+    with pytest.raises(ValueError):
+        qualify_architecture_capacity_family(**args)
+
+
+@pytest.mark.parametrize("change", [
+    lambda m: m.pop("graph_sample_ids"),
+    lambda m: m["graph_sample_ids"].pop(),
+    lambda m: m["graph_sample_ids"].reverse(),
+    lambda m: m["graph_sample_ids"].__setitem__(0, m["graph_sample_ids"][1]),
+    lambda m: m["graph_sample_ids"].__setitem__(0, "slurp:train:unknown"),
+])
+def test_missing_malformed_or_wrong_branch_roster_refuses(change):
+    args = example()
+    change(args["registration"]["members"][0])
     args["original_registration"] = deepcopy(args["registration"])
     with pytest.raises(ValueError):
         qualify_architecture_capacity_family(**args)
