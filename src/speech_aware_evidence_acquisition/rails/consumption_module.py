@@ -993,7 +993,9 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                 reviewer_contract = params["reviewer_response_format_id"]
                 if reviewer_contract != "saea-slot-review-handoff-v1":
                     raise ConsumptionModuleConfigError("unregistered Reviewer handoff contract")
-                writer.set(("phase_material", "reviewer", "response_format_id"), reviewer_contract,
+                # Keep dormant material consistent with the uncited off program.
+                effective_contract = None if block.review_loop == "off" else reviewer_contract
+                writer.set(("phase_material", "reviewer", "response_format_id"), effective_contract,
                            component_id=cid, replace_only=True)
             if "solver_template" in params:
                 template = _require_text(params["solver_template"], field="solver template")

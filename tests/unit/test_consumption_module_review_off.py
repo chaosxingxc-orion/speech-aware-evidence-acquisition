@@ -1,5 +1,7 @@
 """Bind a prospective review-off graph in the compiler, never by later mutation."""
 from copy import deepcopy
+import json
+from pathlib import Path
 
 import pytest
 
@@ -7,8 +9,42 @@ from speech_aware_evidence_acquisition.rails import consumption_module as cm
 from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import carrier_module_hooks
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
 from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config
+from speech_aware_evidence_acquisition.rails.phase_material import (
+    PhaseMaterialError, load_phase_material_specs,
+)
 from test_consumption_module import _block
 from test_solver_tool_access import MODE, TARGET
+
+
+@pytest.mark.parametrize("label", ["seed", "review-off", "solver-lookup"])
+def test_real_seed_handoff_contract_compiles_through_both_runtime_loaders(label):
+    root = Path(__file__).resolve().parents[2]
+    original = json.loads((root / "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1"
+                          / f"prepared-{label}-policy-v1.json").read_text())
+    block = original["native_episode"]["consumption_module"]
+    values = cm.compile_module(block, carrier_module_hooks()).values()
+    values["carrier_lock_key"] = "slurp"
+    values["native_episode"]["consumption_module"] = block
+    program = default_phase_program(values["policy"])
+    native = load_native_episode_config(values, program)
+    material = load_phase_material_specs(values, program)
+    assert native.review_loop_enabled is (label == "seed")
+    assert material["reviewer"].response_format_id == (
+        "saea-slot-review-handoff-v1" if label == "seed" else None
+    )
+    for role in ("perception", "solver", "reviewer", "planner"):
+        assert material[role].instruction_template == original["phase_material"][role]["instruction_template"]
+    for role in ("perception", "solver"):
+        bad = deepcopy(values)
+        bad["phase_material"][role]["response_format_id"] = "unregistered-output-contract"
+        with pytest.raises(PhaseMaterialError, match="exactly one authority"):
+            load_phase_material_specs(bad, program)
+    bad_block = deepcopy(block)
+    component = next(c for c in bad_block["components"]
+                     if c["component_id"] == cm.KNOWLEDGE_CONSUMPTION_OPPORTUNITY)
+    component["params"]["reviewer_response_format_id"] = "unregistered-output-contract"
+    with pytest.raises(cm.ConsumptionModuleConfigError, match="unregistered Reviewer"):
+        cm.compile_module(bad_block, carrier_module_hooks())
 
 
 def review_off_block(*, tool=False):
