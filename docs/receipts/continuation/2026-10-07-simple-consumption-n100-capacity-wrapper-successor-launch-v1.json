@@ -1,0 +1,41 @@
+{
+  "at_utc": "2026-10-07T20:06:14.917871+00:00",
+  "capacity_identity_count": 4,
+  "cause": "Inherited bundled PowerShell module search path prevented native hidden Windows child cmdlet resolution. Exact harmless synthetic chain reproduced failure; process-local native Windows PowerShell module path corrected outer, inner and owned descendants. No global environment setting changed.",
+  "disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v3/root-windows-wrapper-disposition-v1.json",
+    "sha256": "e2f1dd059680b8f56ae1aeca9dc83aba3dc454e186a0f7278c8781d1d2af6261"
+  },
+  "generation_started": false,
+  "inner_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v4/capacity-started.json",
+    "sha256": "bc597b474a7bbda6ba2ccc533af820786cfaf53ff54fc28cd775a58c08e5300d"
+  },
+  "launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v4/root-background-launch-v1.json",
+    "sha256": "172cda0369a4155d73b7cc668d617bd190cd993aec838373eabd167f9e6eab89"
+  },
+  "monitor_id": "slurp-n100-capacity-health",
+  "monitor_minutes": 15,
+  "next": "Qualify all four original capacity receipts, then admit the registered continuous four-member N100 campaign. One generator with four concurrent samples; scoring and separately authorized completed-member analysis overlap later generation.",
+  "old_controls_or_service_changed": false,
+  "outer_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v4/capacity-task-started.json",
+    "sha256": "59e64a8b6afc7cc2fee283bca4e83ba645faf433fcb16be88247d6240e3145f9"
+  },
+  "owner_decision": 227,
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v4/registration-v1.json",
+    "sha256": "180703b48dde278624e0da5e9fa01ea0694b12c70f865c81ca17adcb9c89e5f3"
+  },
+  "schema": "saea-root-n100-capacity-wrapper-successor-launch-v1",
+  "scorer_started": false,
+  "source_reuse": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-capacity-v4/wrapper-source-reuse-v1.json",
+    "sha256": "6326953f2a1f5a0c7f01e4e55d35f99c9fcee23d111b0d1464a5b886c2950e15"
+  },
+  "status": "RUNNING_CAPACITY_ONLY",
+  "tokenizer_endpoint_budget": 996,
+  "worker": "/home/chao/saea-worktrees/codex-simple-consumption-n100-capacity-frozen-v2",
+  "worker_commit": "22c1a692a9421f52a3deaa4d0d0b699dc6882ca1"
+}
