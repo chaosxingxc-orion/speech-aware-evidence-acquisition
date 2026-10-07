@@ -245,6 +245,22 @@ def qualify_architecture_capacity_family(population, population_pin, registratio
         _require([m["label"] for m in members] == labels
                  and [m["label"] for m in finished["members"]] == labels,
                  "Ordered architecture capacity members differ")
+        runtime_fields = ("runtime_sample_ids", "runtime_graph_sample_ids")
+        if (any(k in m for m in members for k in runtime_fields)
+                or any(k in m for m in source_check.get("members", []) for k in runtime_fields)):
+            checked_members = source_check["members"]
+            _require(isinstance(checked_members, list)
+                     and [m["label"] for m in checked_members] == labels,
+                     "Frozen runtime order check does not cover the complete ordered family")
+            for member, checked in zip(members, checked_members, strict=True):
+                _require(checked["graph_config_hash"] == graph_config_hashes[member["label"]]
+                         and ("graph_config_hash" not in member
+                              or member["graph_config_hash"] == checked["graph_config_hash"]),
+                         "Frozen runtime graph configuration differs")
+                _require(all(k in member and k in checked and member[k] == checked[k]
+                             for k in (*runtime_fields, "run_id", "attempt_id", "composed_config_hash",
+                                       "graph_sample_ids")),
+                         "Registered runtime order differs from the frozen production source check")
         _require(all(set(mapping) == set(labels) for mapping in
                      (receipts, member_terminals, graph_config_hashes, policy_config_bytes)),
                  "Architecture evidence does not cover exactly the complete family")
@@ -306,6 +322,17 @@ def _qualify_architecture_member(identity, member, outer, terminal, record, regi
     _require(isinstance(graph_roster, list) and len(graph_roster) == 4
              and len(set(graph_roster)) == 4 and set(graph_roster) <= set(roster),
              "Registered graph branch roster is missing, repeated or outside the population")
+    runtime_fields = ("runtime_sample_ids", "runtime_graph_sample_ids")
+    explicit_runtime_order = any(k in member for k in runtime_fields)
+    runtime_roster, runtime_graph_roster = roster, graph_roster
+    if explicit_runtime_order:
+        _require(all(k in member for k in runtime_fields), "Runtime roster bindings must be supplied together")
+        runtime_roster, runtime_graph_roster = (member[k] for k in runtime_fields)
+        for actual, configured in ((runtime_roster, roster), (runtime_graph_roster, graph_roster)):
+            _require(isinstance(actual, list) and all(isinstance(s, str) for s in actual)
+                     and len(actual) == len(configured) and len(set(actual)) == len(actual)
+                     and set(actual) == set(configured),
+                     "Runtime roster binding is missing, repeated or outside the registered membership")
     raw = policy_bytes
     _require(isinstance(raw, bytes) and hashlib.sha256(raw).hexdigest() == identity["execution_config"]["sha256"],
              "Architecture policy bytes differ from their population pin")
@@ -331,7 +358,7 @@ def _qualify_architecture_member(identity, member, outer, terminal, record, regi
                  ("exit_code", "generation_contacts", "scorer_contacts"))
              and isinstance(terminal["members"], list) and len(terminal["members"]) == 1,
              "Child capacity terminal is incomplete or unsuccessful")
-    _require(record["inputs"]["roster"] == roster, "Ordered architecture roster differs")
+    _require(record["inputs"]["roster"] == runtime_roster, "Ordered architecture roster differs")
     for value in (record["inputs"], record["output"]):
         _require(value.get("rehearsal_profile", "legacy-four-path-v1") == profile,
                  "Capacity receipt profile differs from its registration")
@@ -354,13 +381,16 @@ def _qualify_architecture_member(identity, member, outer, terminal, record, regi
     result = _qualify_member(member, terminal["members"][0], registration, record, roster,
                              output_reserve=output_reserve, structural_reserve=structural_reserve,
                              slot_tokens=slot_tokens, graph_config_hash=graph_config_hash)
-    _qualify_architecture_proofs(record, graph_roster, off=off, tool=tool)
+    _qualify_architecture_proofs(record, runtime_graph_roster, off=off, tool=tool)
     result.update(member_id=identity["member_id"], population_cohort=identity["cohort_id"],
                   member_role="control" if label in cohort["control_ids"] else "candidate",
                   execution_config=deepcopy(identity["execution_config"]),
                   execution_identity_sha256=content_hash(identity),
                   graph_sample_ids=deepcopy(graph_roster),
                   model_per_trajectory=identity["model_per_trajectory"], rehearsal_profile=profile)
+    if explicit_runtime_order:
+        result.update(runtime_sample_ids=deepcopy(runtime_roster),
+                      runtime_graph_sample_ids=deepcopy(runtime_graph_roster))
     return result
 
 
@@ -740,6 +770,10 @@ def qualify_architecture_capacity_recovery(population, population_pin, original_
                                config, population_pin, graph_config_hashes["original"])
         new = _recovery_source(recovery, "saea-architecture-capacity-recovery-entry-v1", [recovered], [recovered],
                                config, population_pin, graph_config_hashes["recovery"])
+        _require(not any(k in m for envelope in (original, recovery)
+                         for m in envelope["registration"]["members"]
+                         for k in ("runtime_sample_ids", "runtime_graph_sample_ids")),
+                 "Explicit runtime order requires the complete-family capacity API")
         for key in ("registration", "finished", "windows_exit"):
             _require(new["original_" + key] == original["pins"][key], "Original source pin differs")
         _require(new["original_evidence"] == original_evidence_pin

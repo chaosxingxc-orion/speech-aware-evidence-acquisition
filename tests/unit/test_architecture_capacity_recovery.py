@@ -559,3 +559,14 @@ def test_recovery_binding_rejects_missing_launch_identity():
     del reg["members"][0]["capacity"]
     with pytest.raises(ValueError):
         architecture_capacity_recovery_binding(reg)
+
+
+@pytest.mark.parametrize("field", ["runtime_sample_ids", "runtime_graph_sample_ids"])
+def test_runtime_order_opt_in_requires_complete_family_api(field):
+    case = fixture()
+    a, original, _, _ = case
+    a["recovery"]["registration"]["members"][0][field] = ["synthetic-order"]
+    a["recovery"]["original_registration"] = deepcopy(a["recovery"]["registration"])
+    seal(case)
+    with pytest.raises(ValueError):
+        invoke(a)

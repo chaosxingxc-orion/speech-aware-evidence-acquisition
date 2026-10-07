@@ -358,3 +358,93 @@ def test_missing_malformed_or_wrong_branch_roster_refuses(change):
     args["original_registration"] = deepcopy(args["registration"])
     with pytest.raises(ValueError):
         qualify_architecture_capacity_family(**args)
+
+
+def runtime_order_example():
+    args = example()
+    for member in args["registration"]["members"]:
+        label = member["label"]
+        runtime = list(args["receipts"][label]["inputs"]["roster"])
+        runtime[0], runtime[1] = runtime[1], runtime[0]
+        graph = list(member["graph_sample_ids"])
+        graph[0], graph[1] = graph[1], graph[0]
+        member.update(runtime_sample_ids=runtime, runtime_graph_sample_ids=graph)
+        args["receipts"][label]["inputs"]["roster"] = list(runtime)
+        remap = dict(zip(member["graph_sample_ids"], graph, strict=True))
+        for row in args["receipts"][label]["output"]["rows"]:
+            row["sample_id"] = remap[row["sample_id"]]
+    args["source_check"]["members"] = [
+        {**deepcopy(m), "graph_config_hash": args["graph_config_hashes"][m["label"]]}
+        for m in args["registration"]["members"]]
+    args["registration"]["source_check_sha256"] = content_hash(args["source_check"])
+    args["original_registration"] = deepcopy(args["registration"])
+    rehash(args)
+    return args
+
+
+def test_explicit_runtime_order_preserves_configured_membership_and_accepts_real_branch_order():
+    args = runtime_order_example()
+    result = qualify_architecture_capacity_family(**args)
+    for registered, qualified in zip(args["registration"]["members"], result["members"], strict=True):
+        assert qualified["runtime_sample_ids"] == registered["runtime_sample_ids"]
+        assert qualified["runtime_graph_sample_ids"] == registered["runtime_graph_sample_ids"]
+        assert qualified["graph_sample_ids"] == registered["graph_sample_ids"]
+
+
+@pytest.mark.parametrize("field", ["runtime_sample_ids", "runtime_graph_sample_ids"])
+@pytest.mark.parametrize("defect", ["duplicate", "omitted", "foreign", "tampered_order", "missing"])
+def test_explicit_runtime_order_refuses_invalid_or_unbound_rosters(field, defect):
+    args = runtime_order_example()
+    member = args["registration"]["members"][0]
+    if defect == "duplicate":
+        member[field][0] = member[field][1]
+    elif defect == "omitted":
+        member[field].pop()
+    elif defect == "foreign":
+        member[field][0] = "foreign-sample"
+    elif defect == "tampered_order":
+        member[field][0], member[field][1] = member[field][1], member[field][0]
+    else:
+        del member[field]
+    args["original_registration"] = deepcopy(args["registration"])
+    with pytest.raises(ValueError):
+        qualify_architecture_capacity_family(**args)
+
+
+@pytest.mark.parametrize("defect", ["missing", "repeated", "reordered", "equal_count_permutation"])
+def test_frozen_production_runtime_order_binding_cannot_be_spoofed(defect):
+    args = runtime_order_example()
+    checked = args["source_check"]["members"]
+    if defect == "missing":
+        checked.pop()
+    elif defect == "repeated":
+        checked[1] = deepcopy(checked[0])
+    elif defect == "reordered":
+        checked.reverse()
+    else:
+        ids = checked[-1]["runtime_graph_sample_ids"]
+        ids[1], ids[2] = ids[2], ids[1]
+    args["registration"]["source_check_sha256"] = content_hash(args["source_check"])
+    args["original_registration"] = deepcopy(args["registration"])
+    with pytest.raises(ValueError):
+        qualify_architecture_capacity_family(**args)
+
+
+def test_source_only_runtime_binding_cannot_downgrade_to_legacy():
+    args = runtime_order_example()
+    for member in args["registration"]["members"]:
+        del member["runtime_sample_ids"], member["runtime_graph_sample_ids"]
+    args["original_registration"] = deepcopy(args["registration"])
+    with pytest.raises(ValueError, match="runtime order"):
+        qualify_architecture_capacity_family(**args)
+
+
+@pytest.mark.parametrize("field", ["run_id", "attempt_id", "composed_config_hash", "graph_config_hash", "graph_sample_ids"])
+def test_runtime_order_source_check_binds_exact_member_custody(field):
+    args = runtime_order_example()
+    checked = args["source_check"]["members"][0]
+    checked[field] = list(reversed(checked[field])) if field == "graph_sample_ids" else "different-source-member"
+    args["registration"]["source_check_sha256"] = content_hash(args["source_check"])
+    args["original_registration"] = deepcopy(args["registration"])
+    with pytest.raises(ValueError):
+        qualify_architecture_capacity_family(**args)
