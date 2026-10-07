@@ -150,7 +150,7 @@ def test_changed_link_order_or_feedback_is_rejected(completed_source):
 
 def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False,
                   carrier="slurp", sample_ids=None, scorer=None, score_function=None,
-                  response_text=None, run_id="SAEA-SYNTHETIC-SLURP", trace_transform=None):
+                  response_text=None, run_id="SAEA-SYNTHETIC-SLURP", trace_transform=None, session_receipt=None):
     """Build synthetic role traces; optional carriers reuse the same custody path."""
     from speech_aware_evidence_acquisition.contracts import ExecutionPlan, TraceRecord
     from speech_aware_evidence_acquisition.core.attempts import AttemptStore
@@ -522,6 +522,8 @@ def _slurp_source(completed_source, tmp_path, mode, *, native_framework=False,
         attempt={"run_id": run_id, "attempt_id": attempt_id, "state_path": str(handle.path)},
         scorers=[scorer], scores=None,
     )
+    if session_receipt is not None:
+        manifest["session_receipt"] = session_receipt
     manifest["cost"]["calls_used"] = call_count
     for key, path in files.items():
         manifest[key] = {"path": str(path), "sha256": _sha(path)}
@@ -832,3 +834,89 @@ def test_native_role_and_tool_sources_cannot_cross_roles(native_slurp_source, ca
     path, ref, roster, projection = _mutate_synthetic_trace(native_slurp_source, case)
     with pytest.raises(RewardLinkError):
         build_reward_links(path, ref, roster, projection)
+
+
+def test_authored_official_projection_real_links_and_shared_evidence(completed_source, tmp_path):
+    """Use actual seals, reward joins, cost reader and pooled cohort statistics."""
+    from test_manual_architecture_authoring import helper
+    from speech_aware_evidence_acquisition.rails.reward_links import SLURP_NATIVE_FIELDS
+    from speech_aware_evidence_acquisition.analysis.system_text_pilot import _read_complete_evidence
+    from speech_aware_evidence_acquisition.analysis.system_architecture_read import CompleteArchitectureEvidence
+    from speech_aware_evidence_acquisition.analysis.system_text_update import _describe_complete_cohort
+    from speech_aware_evidence_acquisition.rails.system_text_policy import PolicyError
+    from speech_aware_evidence_acquisition.rails.reward_link_io import build_reward_link_artifact
+    projection = RewardProjection.from_json(helper.official_slurp_projection())
+    ids = ["slurp:train:1", "slurp:train:10"]
+    def saved_counts(_):
+        rows = [{"sample_id": sid, **{f: (0 if f.endswith(("_fp", "_fn")) else 1)
+                 for f in SLURP_NATIVE_FIELDS}} for sid in ids]
+        return {"aggregate": {"identity_check": {"passed": True},
+                "official": {"slu_f1": 1.0},
+                "port_micro": {"slu_f1": 1.0, "intent_accuracy": 1.0}}, "per_sample": rows}
+    def terminal_metadata(records, outputs):
+        from speech_aware_evidence_acquisition.rails.hashing import content_hash
+        for index, output in enumerate(outputs):
+            contact = {"request_id": output["request_id"],
+                       "response_sha256": output["response_sha256"],
+                       "response_text_sha256": output["response_text_sha256"]}
+            execution = {"contacts": [contact], "final_contact": contact}
+            output["native_episode_receipt"] = {
+                "role_visits": [{"stage": "solver", "role_id": "solver",
+                                 "execution_receipt": execution}],
+                "planner_routes": [], "accepted_solver_receipt": execution}
+            timing = {"schema": "saea-sample-execution-timing-v1", "sample_id": output["sample_id"],
+                "execution_unit_id": None, "admission_index": index, "expected_samples": 2,
+                "slot_count": 4, "queue_depth": 16, "batch_started_ns": 0,
+                "admitted_ns": (index + 1) * 1_000_000_000,
+                "finished_ns": (index + 2) * 1_000_000_000,
+                "status": "completed", "error_type": None}
+            payload = {"use_sample_execution_timing": timing}
+            records.append({"record_id": output["sample_id"] + "/synthetic-program/sample-execution-timing",
+                "channel": "USE", "payload": payload, "content_sha256": content_hash(payload)})
+        return records, outputs
+    session = tmp_path / "synthetic-session.json"
+    session.write_text(json.dumps({"session_id": "synthetic-only"}))
+    session_pin = {"path": str(session), "sha256": _sha(session)}
+    bindings, members = [], {}
+    for label in ("seed", "seed-aa"):
+        directory = tmp_path / label
+        directory.mkdir()
+        path, ref, roster, _, _ = _slurp_source(
+            completed_source, directory, "native", run_id="SYNTHETIC-" + label,
+            score_function=saved_counts, trace_transform=terminal_metadata, session_receipt=session_pin)
+        manifest = json.loads(path.read_text())
+        (path.parent / "score-jobs.jsonl").write_text(json.dumps({
+            "manifest": str(path), "job_id": "synthetic-slurp-score"}) + "\n")
+        config = {"schema": "saea-reward-link-artifact-config-v1", "manifest": {"path": str(path), "sha256": _sha(path)},
+                  "complete_score_receipt": {"path": str(ref.path), "sha256": _sha(ref.path), "cell_id": ref.cell_id},
+                  "construction_roster": {"path": str(roster), "sha256": _sha(roster)},
+                  "projection": projection.as_json()}
+        links = build_reward_links(path, ref, roster, projection)
+        assert len(links) == 2
+        assert set(links[0].native_score_vector["per_sample"][ids[0]]) == set(SLURP_NATIVE_FIELDS)
+        artifact = build_reward_link_artifact(config, path.parent / "reward-links.json")
+        bindings.append({"candidate_id": label, "config": config, "artifact": artifact})
+        members[label] = {"bundle_id": "synthetic-policy", "run_id": manifest["run_id"],
+                          "config_hash": manifest["config"]["config_hash"],
+                          "attempt_id": manifest["attempt"]["attempt_id"]}
+    recipe = {"expected_members": {k: v["run_id"] for k, v in members.items()},
+              "sample_ids": ids, "required_rows_per_member": 2}
+    registration = {"member_bindings": members, "registration_sha256": "a" * 64}
+    def read(registration, recipe):
+        return _read_complete_evidence(bindings, recipe=recipe, registration=registration,
+            authority={"read_run_id": "SYNTHETIC-READ"}, family="synthetic-manual",
+            schema="synthetic-evidence", evidence_type=CompleteArchitectureEvidence)
+    with pytest.raises(PolicyError, match="measurement profile differs"):
+        read(registration, {**recipe, "measurement_profile": {"slot_count": 4}})
+    profile = {"schema": "saea-system-search-measurement-v2",
+        "latency_scope": "sample-admission-to-settled-workflow-v1",
+        "schedule": "sequential-trajectory", "slot_count": 4, "queue_depth": 16,
+        "minimum_reliable_completion_rate": 1.0}
+    recipe["measurement_profile"] = registration["measurement_profile"] = profile
+    evidence = read(registration, recipe).as_json()
+    report = _describe_complete_cohort(evidence, ids=ids, bindings=members,
+        recipe={**recipe, "resampling": {"bootstrap_draws": 10, "confidence": .95,
+            "seed": 1, "unit": "paired utterance; keep all recording variants together"}},
+        roster={sid: {"sample_id": sid, "utterance_id": sid, "stratum": "synthetic"} for sid in ids},
+        comparison_groups={"architecture": ("seed", "seed-aa", [])})
+    assert report["sample_count"] == 2

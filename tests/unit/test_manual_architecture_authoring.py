@@ -364,6 +364,11 @@ def test_dynamic_full_package_preserves_originals_and_final_hashes(
     # Worker intent is preregistered but cannot execute a scientific reader yet.
     intent_path = package / "manual-architecture-analysis-intent-v1.json"
     intent = json.loads(intent_path.read_text())
+    from speech_aware_evidence_acquisition.rails.reward_links import RewardProjection, SLURP_NATIVE_FIELDS
+    projection = RewardProjection.from_json(intent["supplement_definition"]["projection"])
+    assert projection.scorer == "slurp-slu-official-train"
+    assert projection.aggregate_fields == ("port_micro.slu_f1", "port_micro.intent_accuracy")
+    assert projection.per_sample_fields == SLURP_NATIVE_FIELDS
     assert "source_commit" not in intent
     assert (
         intent["measurement_profile"]
@@ -417,6 +422,8 @@ def test_dynamic_full_package_preserves_originals_and_final_hashes(
         repo,
     )
     assert docs[0]["expected_members"] == docs[1]["expected_members"]
+    assert docs[1]["measurement_profile"] == docs[0]["measurement_profile"]
+    assert RewardProjection.from_json(docs[3]["projection"]) == projection
     assert docs[1]["source_commit"] == "a" * 40
     assert all(
         m["source_commit"] == "a" * 40 for m in docs[1]["member_bindings"].values()
@@ -526,6 +533,9 @@ def test_root_opt_in_authors_plan_status_only_and_never_read_or_exposure(
 @pytest.mark.parametrize(
     "fault",
     [
+        "projection",
+        "missing-profile",
+        "profile-mismatch",
         "same-worker",
         "commit",
         "decision",
@@ -541,6 +551,16 @@ def test_postfreeze_resolution_refuses_wrong_source_before_any_write(
     repo, data, inputs, _, _, _, _ = fixture(tmp_path, monkeypatch)
     helper.author(inputs, repo_root=repo, data_root=data)
     package = repo / inputs["package_relpath"]
+    if fault in {"projection", "missing-profile", "profile-mismatch"}:
+        intent_path = package / "manual-architecture-analysis-intent-v1.json"
+        invalid = json.loads(intent_path.read_text())
+        if fault == "projection":
+            invalid["supplement_definition"]["projection"] = {"scorer": "slurp-slu-official-train"}
+        elif fault == "missing-profile":
+            invalid.pop("measurement_profile")
+        else:
+            invalid["measurement_profile"]["queue_depth"] = 8
+        intent_path.write_bytes(helper.serialized(invalid))
     worker = tmp_path / "immutable-worker"
     shutil.copytree(repo, worker)
     intent = helper.raw_pin(
@@ -579,7 +599,8 @@ def test_postfreeze_resolution_refuses_wrong_source_before_any_write(
         "package_relpath": "docs/readiness/resolved-analysis",
     }
     monkeypatch.setattr(helper, "_frozen_identity", lambda root: "a" * 40)
-    with pytest.raises(PolicyError):
+    from speech_aware_evidence_acquisition.rails.reward_links import RewardLinkError
+    with pytest.raises((PolicyError, RewardLinkError)):
         helper.resolve_analysis(
             spec,
             repo_root=repo,

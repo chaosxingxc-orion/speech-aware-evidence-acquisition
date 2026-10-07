@@ -39,7 +39,20 @@ from speech_aware_evidence_acquisition.analysis import (
 )
 
 
+from speech_aware_evidence_acquisition.rails.reward_links import RewardProjection, SLURP_NATIVE_FIELDS
+
+
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def official_slurp_projection():
+    """Preserve official native counts and the established SLURP endpoints."""
+    return RewardProjection(
+        "manual-architecture-official-counts-v1",
+        "slurp-slu-official-train",
+        ("port_micro.slu_f1", "port_micro.intent_accuracy"),
+        SLURP_NATIVE_FIELDS,
+    ).as_json()
 
 
 def serialized(value):
@@ -570,7 +583,7 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
             "schema": "saea-manual-architecture-analysis-supplement-v1",
             "owner_decision": spec["owner_decision"],
             "stratum_metadata": spec["stratum_metadata"],
-            "projection": {"scorer": "slurp-slu-official-train"},
+            "projection": official_slurp_projection(),
             "resampling": template["resampling"],
             "source_code": source_code,
         },
@@ -718,6 +731,12 @@ def resolve_analysis(spec, *, repo_root, data_root, frozen_worker_root):
     )
     definition = intent["analysis_definition"]
     supplement = intent["supplement_definition"]
+    RewardProjection.from_json(supplement["projection"])
+    require(
+        intent.get("measurement_profile") == definition.get("measurement_profile")
+        and "measurement_profile" in intent,
+        "frozen registration measurement profile differs from analysis definition",
+    )
     pins = [
         intent["experiment_population"],
         definition["analysis_roster"],
@@ -785,6 +804,7 @@ def resolve_analysis(spec, *, repo_root, data_root, frozen_worker_root):
     }
     registration["schema"] = reader.REGISTRATION
     registration["source_commit"] = commit
+    registration["measurement_profile"] = deepcopy(definition["measurement_profile"])
     for member in registration["member_bindings"].values():
         member["source_commit"] = commit
     registration["registration_sha256"] = content_hash(registration)

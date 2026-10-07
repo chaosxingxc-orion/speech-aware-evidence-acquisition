@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 
+from speech_aware_evidence_acquisition.rails.reward_links import RewardProjection, SLURP_NATIVE_FIELDS
+
 from speech_aware_evidence_acquisition.analysis import system_text_pilot as pilot
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 from speech_aware_evidence_acquisition.rails.system_text_feedback import (
@@ -354,7 +356,10 @@ def cli_fixture(tmp_path, monkeypatch, fixture_factory=None):
         recipe=recipe_pin,
         owner_decision=rp("owner.json", owner),
         stratum_metadata=rp("strata.json", {"items": list(roster.values())}),
-        projection={"scorer": "slurp-slu-official-train"},
+        projection=RewardProjection(
+            "synthetic-official-counts-v1", "slurp-slu-official-train",
+            ("port_micro.slu_f1", "port_micro.intent_accuracy"), SLURP_NATIVE_FIELDS,
+        ).as_json(),
     )
     supplement_pin = rp("supplement.json", supplement)
     manifests = {}
@@ -419,6 +424,8 @@ def cli_fixture(tmp_path, monkeypatch, fixture_factory=None):
     monkeypatch.setattr(cli, "write_complete_saved_score_receipt", reuse)
 
     def artifact(config, path):
+        from speech_aware_evidence_acquisition.rails.reward_links import RewardProjection
+        RewardProjection.from_json(config["projection"])
         calls["artifacts"].append(config)
         save(path, {"stub": True})
 
