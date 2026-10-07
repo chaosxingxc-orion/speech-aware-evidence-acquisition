@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## N100 stopped: aggregate audio budget was not scaled (2026-10-07T23:56:46.114446+00:00)
+
+The original N100 campaign stopped at20:42:17Z. Seed is ABORTED after1498.234875 cumulative audio seconds against its1500-second registered ceiling; the next Reviewer request was refused. The other three attempts are absent. No complete generation manifest, seal or official score exists. No quality was read. Preserve the failed frozen2204cfb96 checkout, attempt, outputs, queue and STOP. The original job-scoped15-minute monitor has been deleted.
+
+Root and the Sol engineering audit confirmed a preparation defect: model-call limits scaled from260/260/40/60 to1300/1300/200/300, while every audio limit stayed1500. The producer used `max(1500, one-pass roster audio)` although each model-adapter admission charges its source duration again. Prepared-feature and prefix reuse do not discount this accounting. It is cumulative exposure, not GPU or wall-clock time. The100-input one-pass duration is293.7795seconds; complete legal generation bounds are3819.1335/3819.1335/587.559/881.3385seconds for seed/A/A/review-off/lookup. Integer ceilings3820/3820/588/882 cover those declared paths. The former20-input seed bound was693.0226875seconds, explaining why the same1500 ceiling did not fail there.
+
+Read [the exact source and budget audit](../receipts/continuation/2026-10-07-simple-consumption-n100-audio-budget-root-cause-v1.json). Call-cap and context-FIT checks passed but omitted aggregate-audio adequacy. Under existing owner227, prepare a configuration-derived exact-duration/role-bound calculation and precontact rejection test, then an immutable prospective recovery registration. No correction, recovery dispatch, control reconciliation or new model/scorer contact has occurred in this audit. No new human ruling is needed for that bounded correction. Keep policies,100-input roster, knowledge, four-way concurrency and4GiB memory floors unchanged; no learner export or early quality inference.
+
 ## N100 continuous GPU campaign is running (2026-10-07T20:33:55.448731+00:00)
 
 The Windows-owned driver epoch is2026-10-07T20:27:27Z; its single four-member campaign started20:27:59Z from immutable `/home/chao/saea-worktrees/codex-simple-consumption-n100-frozen-v1` at `2204cfb96e59bdaa0f83f92cd61d3adaf513aadd`. Root observed first-member OPENED, four busy slots and93percent GPU utilization at20:32Z; service telemetry was fresh and healthy. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-continuous-launch-v1.json` and DATA `coordination/simple-consumption-n100-v1/root-generation-launch-receipt-v1.json`.

@@ -1,0 +1,135 @@
+{
+  "schema": "saea-root-audio-budget-root-cause-v1",
+  "recorded_at_utc": "2026-10-07T23:56:46.114446+00:00",
+  "status": "DIAGNOSED; ORIGINAL FAMILY STOPPED; NO RECOVERY REGISTERED OR DISPATCHED",
+  "owner_scope": "Owner227 covers bounded engineering and an evidence-preserving prospective disposition. No additional human decision is required for this budget correction inside the unchanged four-system N100 scope.",
+  "terminal_evidence": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-v1/monitor-terminal-failure-20261007T2042-v1.json",
+    "sha256": "11057762506340737fc0d0c4b8aabb08714f0072a4b4f2aaf2df7e0342fa621e"
+  },
+  "failed_source_commit": "2204cfb96e59bdaa0f83f92cd61d3adaf513aadd",
+  "root_cause": "N100 authoring scaled model-call ceilings by five but retained the N20 cumulative audio ceiling through max(1500, one-pass roster audio). Runtime charges source audio duration on every role/revision model-adapter admission. The seed and A/A ceilings therefore cannot cover all legal N100 trajectories.",
+  "producer": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-offline-preparation-v1/producer-v3.py",
+    "sha256": "5456b2c70369e4f7f6d12afea616b6aeddd5ac4a0f76bb453ae01c744131b4b9"
+  },
+  "producer_line": 184,
+  "source_duration_metadata": {
+    "n20": {
+      "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/configs/dataset/slurp-speech-native-system-text-pilot20-owner220-v1.json",
+      "sha256": "138a727592e6e9d376a3a629227cec37bb0c85988e4b127e7838cc0eac63acff"
+    },
+    "n100": {
+      "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/configs/dataset/slurp-speech-native-simple-consumption-n100-v1.json",
+      "sha256": "24746a8f5bbefad7189be410945be4a8fa42b7cdf83ccf85286567721633ed87"
+    },
+    "n20_one_pass_seconds": 53.3094375,
+    "n100_one_pass_seconds": 293.7795
+  },
+  "members": [
+    {
+      "member": "seed",
+      "n20_plan": {
+        "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-generation-plan-registered-v1.json",
+        "sha256": "b4699ad29405620b60081ed6d436692bf1e0612242aa01faf58c869186df2b82"
+      },
+      "n100_plan": {
+        "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/seed-generation-plan-registered-v1.json",
+        "sha256": "2a1836670f9c05e2f565f3cdaef97c62aecbfc098b2945bb6e1fe14d923b9092"
+      },
+      "max_model_contacts_per_trajectory": 13,
+      "n20_model_calls_cap": 260,
+      "n100_model_calls_cap": 1300,
+      "n20_audio_seconds_cap": 1500,
+      "n100_audio_seconds_cap": 1500,
+      "n20_full_legal_audio_seconds": 693.0226875000001,
+      "n100_full_legal_audio_seconds": 3819.1335,
+      "n100_sufficient_integer_ceiling": 3820
+    },
+    {
+      "member": "seed-aa",
+      "n20_plan": {
+        "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/seed-aa-generation-plan-registered-v1.json",
+        "sha256": "86db2fce90972e3d9914f9115e784388747185f830605bc7a932138ea8822944"
+      },
+      "n100_plan": {
+        "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/seed-aa-generation-plan-registered-v1.json",
+        "sha256": "94cb27fab0133e3e115e743bc792fe0513f9556827326660e4522de9e87cce01"
+      },
+      "max_model_contacts_per_trajectory": 13,
+      "n20_model_calls_cap": 260,
+      "n100_model_calls_cap": 1300,
+      "n20_audio_seconds_cap": 1500,
+      "n100_audio_seconds_cap": 1500,
+      "n20_full_legal_audio_seconds": 693.0226875000001,
+      "n100_full_legal_audio_seconds": 3819.1335,
+      "n100_sufficient_integer_ceiling": 3820
+    },
+    {
+      "member": "review-off",
+      "n20_plan": {
+        "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/review-off-generation-plan-registered-v1.json",
+        "sha256": "ef7e5647e2d3d708d99e264bd112cac7ad56872cf941f6d01ad85f8bb0160c14"
+      },
+      "n100_plan": {
+        "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/review-off-generation-plan-registered-v1.json",
+        "sha256": "7cac17f64395e9b5b18d947e01c2e3c235b17f8cd7e1abe1a4016d582d5509e0"
+      },
+      "max_model_contacts_per_trajectory": 2,
+      "n20_model_calls_cap": 40,
+      "n100_model_calls_cap": 200,
+      "n20_audio_seconds_cap": 1500,
+      "n100_audio_seconds_cap": 1500,
+      "n20_full_legal_audio_seconds": 106.618875,
+      "n100_full_legal_audio_seconds": 587.559,
+      "n100_sufficient_integer_ceiling": 588
+    },
+    {
+      "member": "solver-lookup",
+      "n20_plan": {
+        "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v4/solver-lookup-generation-plan-registered-v1.json",
+        "sha256": "d64156b64229d088cb5562d3170aa2cbe83a4f4b048050b0cde9d7ed55e4113f"
+      },
+      "n100_plan": {
+        "path": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-preparation-v4/docs/readiness/2026-10-07-slurp-simple-consumption-n100-registered-v1/solver-lookup-generation-plan-registered-v1.json",
+        "sha256": "f3e9fc29a4aa172b68f50b96c828c9fa0609e4b77d02cb8bc3b8fb3c32288ceb"
+      },
+      "max_model_contacts_per_trajectory": 3,
+      "n20_model_calls_cap": 60,
+      "n100_model_calls_cap": 300,
+      "n20_audio_seconds_cap": 1500,
+      "n100_audio_seconds_cap": 1500,
+      "n20_full_legal_audio_seconds": 159.9283125,
+      "n100_full_legal_audio_seconds": 881.3385,
+      "n100_sufficient_integer_ceiling": 882
+    }
+  ],
+  "accounting": "Durable model-adapter admissions are charged before transport, including prepared-feature/decoder-only use. Reusing source features or a prefix does not discount this exposure measure. It is not wall-clock time, GPU-seconds, unique-recording duration, or successful-response count. The refused request is not charged. Actual-request tokenizer FIT contacts are separate.",
+  "runtime_source_evidence": [
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/model/adapter.py",
+      "lines": [
+        301,
+        349,
+        351,
+        386,
+        387,
+        399
+      ]
+    },
+    {
+      "path": "src/speech_aware_evidence_acquisition/core/model/binding.py",
+      "lines": [
+        65,
+        69
+      ]
+    }
+  ],
+  "prelaunch_gap": "The architecture registration validates roster, native max_contacts, model-call cap and actual-request FIT cap, but did not prove cumulative generation audio adequacy. Maximum-request context FIT does not validate a whole-flight audio budget.",
+  "proposed_correction": "Derive the generation audio ceiling prospectively from exact duration-only roster metadata and the parsed legal per-sample contact bound; independently reject inadequate registered budgets before the first attempt/contact. Keep all N/K/counts and graph limits config-derived. Preserve accounting and do not silently mutate runtime budgets. Revalidate exact loaded durations before admission.",
+  "recovery_state": "Not registered or dispatched. Preserve original failed worker, attempts, outputs, queue and STOP; no partial quality read, score or reseal. All four analysis READs and family READ remain unsigned.",
+  "task_answers_or_quality_read": false,
+  "new_model_tokenizer_scorer_contacts": 0,
+  "control_or_service_changes": false,
+  "monitor": "The original job-scoped fifteen-minute monitor was deleted after terminal verification. No global monitor was restarted."
+}
