@@ -1,0 +1,41 @@
+{
+  "actual_preparation_exit": {
+    "relpath": "coordination/simple-consumption-n20-preparation-v1/preparation-exit-v3.json",
+    "sha256": "794051174ca024a86ed3c296b9774d53997c16d99b79ff7e0d24cebc4e2f560f"
+  },
+  "attempts_reserved": 0,
+  "configured_runtime_rosters_separate": true,
+  "exposure_rows_added": 0,
+  "focused_tests": {
+    "count": 87,
+    "elapsed_seconds": 13.57,
+    "files": [
+      "tests/unit/test_architecture_population_config.py",
+      "tests/unit/test_runtime_population_selection.py",
+      "tests/unit/test_system_text_policy_binding.py"
+    ],
+    "passed": true,
+    "pytest_cache_disabled": true,
+    "python_no_bytecode": true
+  },
+  "full_roster_output_equality": true,
+  "generation_contacts": 0,
+  "natural_qualified": false,
+  "producer": {
+    "relpath": "coordination/simple-consumption-n20-preparation-v1/prepare-n20-v3.py",
+    "sha256": "62e3b8950329d25224e6487f6cc013ee3562b324501b6059c62249d804b1e30b"
+  },
+  "pure_composition": "All configured members passed unchanged core.config.compose and native contact-identity checks before materialization; population_budget is declared only in baseline.",
+  "read_authorized": false,
+  "root_disposition": {
+    "relpath": "coordination/simple-consumption-n20-preparation-v1/root-preparation-disposition-v3.json",
+    "sha256": "6e794870bb7e8583a17dd81acced219d231cc03b589603877bd2a6965a77e84a"
+  },
+  "runtime_admission": false,
+  "scorer_contacts": 0,
+  "source_commit": "dfdd57eb7af81d52d1b09d34903d76edd45fd271",
+  "status": "PASS_HELD_PREPARATION_ONLY",
+  "strict_prior_and_final_source_checks": true,
+  "strict_warm_supply_verification": true,
+  "tokenizer_contacts": 0
+}

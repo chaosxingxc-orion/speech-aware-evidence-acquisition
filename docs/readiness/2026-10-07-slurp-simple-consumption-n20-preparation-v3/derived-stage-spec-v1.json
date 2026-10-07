@@ -1,0 +1,161 @@
+{
+  "K": 2,
+  "N": 20,
+  "architecture_members": [
+    {
+      "active_roles": [
+        "perception",
+        "solver",
+        "reviewer",
+        "planner"
+      ],
+      "base_bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "cohort_id": "comparison",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "member_id": "seed",
+      "model_per_trajectory": 13
+    },
+    {
+      "active_roles": [
+        "perception",
+        "solver",
+        "reviewer",
+        "planner"
+      ],
+      "base_bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "cohort_id": "comparison",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-aa-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "member_id": "seed-aa",
+      "model_per_trajectory": 13
+    },
+    {
+      "active_roles": [
+        "perception",
+        "solver"
+      ],
+      "base_bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "cohort_id": "comparison",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-review-off-policy-v2.json",
+        "sha256": "55408431fc08e37231c179bd1c033377977a83654ca04dd3982a07b74f7579d7"
+      },
+      "member_id": "review-off",
+      "model_per_trajectory": 2
+    },
+    {
+      "active_roles": [
+        "perception",
+        "solver"
+      ],
+      "base_bundle_id": "e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51",
+      "cohort_id": "comparison",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-solver-lookup-policy-v2.json",
+        "sha256": "2e4c3a6e6d31a6760cf268852cdac05b93f2617b2db42bd892c08b974c0b2742"
+      },
+      "member_id": "solver-lookup",
+      "model_per_trajectory": 3
+    }
+  ],
+  "boundary_maintenance": {
+    "global_sync": false,
+    "mode": "observe-only",
+    "preserve_model_service": true,
+    "record_before_after": true,
+    "require_generation_scoring_preprocessing_idle": true,
+    "when": "after-complete-cohort"
+  },
+  "candidate_members": [
+    "review-off",
+    "solver-lookup"
+  ],
+  "control_members": [
+    "seed",
+    "seed-aa"
+  ],
+  "execution": {
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "slot_count": 4
+  },
+  "execution_identity_sha256": {
+    "review-off": "ff16aa847b08e8fd5373c5b498133d6ea434d25c8516e1c9b7f9eda78736f6a9",
+    "seed": "31860941b2ec451c25c9f502d7c406c2c8a0a6532f313eec1c8808c7834380a1",
+    "seed-aa": "79fa2a7a0851dd7328649e302902c9c8c47da56b68091c0c5b4089229836eed4",
+    "solver-lookup": "4bd36cb19a0cd59af198ba78ed0b3aced3bf059fc36a2595078f935901be6b87"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "learner_export": false,
+  "member_fit_endpoints_caps": {
+    "review-off": 160,
+    "seed": 1040,
+    "seed-aa": 1040,
+    "solver-lookup": 240
+  },
+  "member_generation_contacts_caps": {
+    "review-off": 40,
+    "seed": 260,
+    "seed-aa": 260,
+    "solver-lookup": 60
+  },
+  "population_budget": {
+    "K": 2,
+    "N": 20,
+    "active_node_counts": {
+      "review-off": 2,
+      "seed": 4,
+      "seed-aa": 4,
+      "solver-lookup": 2
+    },
+    "candidate_trajectories": 40,
+    "control_trajectories": 40,
+    "family_trajectories": 80,
+    "fit_endpoints_cap": 2480,
+    "generation_contacts_cap": 620
+  },
+  "population_cohort": "comparison",
+  "proposer": null,
+  "role_universe": [
+    "perception",
+    "solver",
+    "reviewer",
+    "planner"
+  ],
+  "runtime_admission": false,
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "sampling": {
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "semantic_proposals": 0
+}

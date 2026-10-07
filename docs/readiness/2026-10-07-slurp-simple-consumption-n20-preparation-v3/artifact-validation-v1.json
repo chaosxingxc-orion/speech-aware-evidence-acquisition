@@ -1,0 +1,32 @@
+{
+  "all_derived_caps_rosters_policy_roles_and_finite_policies_checked": true,
+  "contacts": 0,
+  "manual_population_refused_without_explicit_opt_in": true,
+  "members": [
+    {
+      "config_hash": "7bb7c6b6a0c9a806da881b98eaf28ea9997aa61b426b9f7cecd06de5dda22800",
+      "member_id": "seed",
+      "status": "PASS_HELD_CONFIG_PLAN_SOURCE_CUSTODY"
+    },
+    {
+      "config_hash": "37399a69831be66f6ddabdb04404145a7a60242634cc08bd13d78cae1b034c3f",
+      "member_id": "seed-aa",
+      "status": "PASS_HELD_CONFIG_PLAN_SOURCE_CUSTODY"
+    },
+    {
+      "config_hash": "31fa312754690bd78c5a810539e868f9e6264f20fb452b25e9668c392fa16de6",
+      "member_id": "review-off",
+      "status": "PASS_HELD_CONFIG_PLAN_SOURCE_CUSTODY"
+    },
+    {
+      "config_hash": "5021a3fd66f5ded55e8eb7a905dba01d127d53ea29873434685f62ce3b6063ca",
+      "member_id": "solver-lookup",
+      "status": "PASS_HELD_CONFIG_PLAN_SOURCE_CUSTODY"
+    }
+  ],
+  "read_authorized": false,
+  "recipe_exact_complete_family_checked": true,
+  "runtime_admission": false,
+  "status": "PASS",
+  "unsigned_drafts_refused_by_existing_capacity_gate": true
+}

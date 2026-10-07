@@ -1,0 +1,402 @@
+{
+  "analysis_roster": {
+    "relpath": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-v1.json",
+    "sha256": "bf72abff34fe726b023c5172c4944f9c029fbd0a0de6313bb7873f06abf110f9"
+  },
+  "capacity_prerequisite": {
+    "qualification": {
+      "relpath": "coordination/simple-consumption-prepared-graph-recovery2-v1/capacity-qualified-v1.json",
+      "sha256": "47de73ed7217c042321abcc36ed027767fddc4bc8b77181f1b038477b8efff93"
+    },
+    "registration": {
+      "relpath": "coordination/simple-consumption-prepared-graph-recovery2-v1/registration-v1.json",
+      "sha256": "975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a"
+    }
+  },
+  "comparison_groups": {
+    "architecture": [
+      "seed",
+      "seed-aa",
+      [
+        "review-off",
+        "solver-lookup"
+      ]
+    ]
+  },
+  "declared_design": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/architecture-contract.md",
+    "sha256": "3b3062efafbc726119115e0b20b47dd8b50c4f844f013143c012fc0bff13cafb"
+  },
+  "endpoint": "Official pooled SLU-F1 per complete manifest; retain intent and reliable completion.",
+  "expected_members": [
+    "seed",
+    "seed-aa",
+    "review-off",
+    "solver-lookup"
+  ],
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "learner_export": false,
+  "member_bindings": {
+    "review-off": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n20-generation-v2",
+      "config_hash": "31fa312754690bd78c5a810539e868f9e6264f20fb452b25e9668c392fa16de6",
+      "draft_plans": {
+        "fit": {
+          "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-preparation-v3/review-off-fit-plan-draft-v1.json",
+          "sha256": "ff87942b5ba5aa49d04d86c82d59e7791fd5501d44607970cc201c54fc110000"
+        },
+        "generation": {
+          "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-preparation-v3/review-off-generation-plan-draft-v1.json",
+          "sha256": "b975cac4c5da9f25d0d40cf4fe0783048c28f92961b682ae2e56a64ec3eed601"
+        }
+      },
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n20-generation-v2",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 40,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "4842092c6e71906625cf57fa52a2549a7f88d28ab6b046fa5acd0f7471cf648a",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-simple-consumption-review-off-n20-v2",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2/phase-supply-v1.json",
+        "sha256": "7f1b34956e412282675e8fbc04ffcb222b0a3b3427036a7090861eec929f5b90"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2",
+      "source_policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-review-off-policy-v2.json",
+        "sha256": "55408431fc08e37231c179bd1c033377977a83654ca04dd3982a07b74f7579d7"
+      }
+    },
+    "seed": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n20-generation-v2",
+      "config_hash": "7bb7c6b6a0c9a806da881b98eaf28ea9997aa61b426b9f7cecd06de5dda22800",
+      "draft_plans": {
+        "fit": {
+          "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-preparation-v3/seed-fit-plan-draft-v1.json",
+          "sha256": "1cfcd72185e781283c459dcbbcaafaa2530f3d7b75eeb92fa6cbedc9a51e32da"
+        },
+        "generation": {
+          "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-preparation-v3/seed-generation-plan-draft-v1.json",
+          "sha256": "c5f68cf888c7915c34e82f17e70da165edba96befd3d122726145b35f4772b1c"
+        }
+      },
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n20-generation-v2",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 260,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "47e0695e144f48575225e5e269e2afb3ab7aa3cf23170a22e6369d7da7ea7a86",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-simple-consumption-seed-n20-v2",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2/phase-supply-v1.json",
+        "sha256": "9016f48df0e2cb2753437f43ed710e34bda4920ad5403198f8716aa1c9e5cc61"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2",
+      "source_policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      }
+    },
+    "seed-aa": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n20-generation-v2",
+      "config_hash": "37399a69831be66f6ddabdb04404145a7a60242634cc08bd13d78cae1b034c3f",
+      "draft_plans": {
+        "fit": {
+          "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-preparation-v3/seed-aa-fit-plan-draft-v1.json",
+          "sha256": "efc5eb74c6a329f9e307dbaf68d639a24adf4fa4686d252a51a945eab5dbfa18"
+        },
+        "generation": {
+          "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-preparation-v3/seed-aa-generation-plan-draft-v1.json",
+          "sha256": "05fffe8dd553d71abbef6c03ed61eea024c8ae4fd84e71ef1d0f2696e6130f1e"
+        }
+      },
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n20-generation-v2",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 260,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "7b91582c5858758423fa5df6cfc3f3cb01c55837224b00942f6f45bc3cc06d96",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-simple-consumption-seed-aa-n20-v2",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2/phase-supply-v1.json",
+        "sha256": "a297aaa10b41fd03208163aa985687615c4642096b1254a91da595d4f6e8f990"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2",
+      "source_policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-aa-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      }
+    },
+    "solver-lookup": {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n20-generation-v2",
+      "config_hash": "5021a3fd66f5ded55e8eb7a905dba01d127d53ea29873434685f62ce3b6063ca",
+      "draft_plans": {
+        "fit": {
+          "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-preparation-v3/solver-lookup-fit-plan-draft-v1.json",
+          "sha256": "6dc10589903f5472b8a5b16d06208b6e3ce0581d97183b0d9b6e13100fbc30d5"
+        },
+        "generation": {
+          "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-preparation-v3/solver-lookup-generation-plan-draft-v1.json",
+          "sha256": "b7b4dfb7ec80039027ac3f4a4c188ec7edf2a51320c7e379c27653b1abef2f94"
+        }
+      },
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n20-generation-v2",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 60,
+        "planned_speech_audio_seconds": 1500,
+        "protocol_hash": "f7965a5bfef320bf3207ba4e9cdf93f56ead7c98493dca943b439f9fa317426b",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-n20-v2",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/simple-consumption-architecture-v1/policies/e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51.json",
+          "sha256": "496bec5e028d7dc502d7d6ed66767d60a9cadd440d17d4af5e5e778880ea4497"
+        },
+        "bundle_id": "e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2/phase-supply-v1.json",
+        "sha256": "5ef4ee10c5c96a0f40618e512064f59f50fc77efa65f7f74fabafa704f6f6901"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2",
+      "source_policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-solver-lookup-policy-v2.json",
+        "sha256": "2e4c3a6e6d31a6760cf268852cdac05b93f2617b2db42bd892c08b974c0b2742"
+      }
+    }
+  },
+  "members": {
+    "review-off": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2",
+    "seed": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2",
+    "seed-aa": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2",
+    "solver-lookup": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2"
+  },
+  "natural_prerequisite": "PENDING_NOT_QUALIFIED",
+  "one_generator": true,
+  "one_scorer": true,
+  "population_budget": {
+    "K": 2,
+    "N": 20,
+    "active_node_counts": {
+      "review-off": 2,
+      "seed": 4,
+      "seed-aa": 4,
+      "solver-lookup": 2
+    },
+    "candidate_trajectories": 40,
+    "control_trajectories": 40,
+    "family_trajectories": 80,
+    "fit_endpoints_cap": 2480,
+    "generation_contacts_cap": 620
+  },
+  "population_cohort": "comparison",
+  "progression_boundary": "Root reviews bounded progression within the same400 pool; return to the human before8x400 or an equivalent split.",
+  "read_authorized": false,
+  "read_gate": [
+    "Require every configured member to complete the exact roster with verified seals and exactly one unique official complete-manifest score through core.scoring_batch.",
+    "Require one exact complete-family root READ; do not inspect partial member quality or export learner feedback.",
+    "Keep ordered configuration and production rosters separately pinned; require exact duplicate-free membership.",
+    "Require the reviewed manual N20 registration and READ opt-in in the shared paths; this draft is not machine admission."
+  ],
+  "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N20-READ-V2",
+  "recipe_id": "slurp-simple-consumption-n20-v2-analysis-draft-v1",
+  "reference_recipe": {
+    "relpath": "docs/readiness/2026-10-02-slurp-system-text-update2-v1/analysis-recipe-v1.json",
+    "sha256": "86e85e758e8d99f5796092651d8e751a3c303693eda64540fae030aba66209b9"
+  },
+  "report_views": [
+    "official aggregate",
+    "natural mixture",
+    "equal-stratum",
+    "per-scenario counts",
+    "same-chain A/A",
+    "raw and normalized delivery transitions",
+    "lookup request, execution, visibility, bounds and failure states",
+    "first and non-first sample latency, calls and tokens"
+  ],
+  "required_rows_per_member": 20,
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "confidence": 0.95,
+    "seed": 20261001,
+    "unit": "paired utterance; keep all recording variants together"
+  },
+  "review_applicability": "Absent Reviewer and Planner are not applicable by design for review-off and solver-lookup. Missing on-graph evidence remains unknown; unexpected off-graph roles fail verification.",
+  "runtime_admission": false,
+  "runtime_sample_ids": {
+    "review-off": [
+      "slurp:train:000081:audio-1501753218-headset",
+      "slurp:train:000244:audio-1497883990-headset",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:004087:audio-1490199961",
+      "slurp:train:004499:audio--1504194378-headset",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:006032:audio--1504195204",
+      "slurp:train:009411:audio-1497030307-headset",
+      "slurp:train:010006:audio-1499693788-headset",
+      "slurp:train:010065:audio-1501756518",
+      "slurp:train:010537:audio-1490183278",
+      "slurp:train:011479:audio-1502216306-headset",
+      "slurp:train:011838:audio-1490369500",
+      "slurp:train:013560:audio-1490291477-headset",
+      "slurp:train:013565:audio-1501765573-headset",
+      "slurp:train:014610:audio-1502218659-headset",
+      "slurp:train:014741:audio-1497882505",
+      "slurp:train:015179:audio-1498569151-headset",
+      "slurp:train:016836:audio-1490705489-headset"
+    ],
+    "seed": [
+      "slurp:train:000081:audio-1501753218-headset",
+      "slurp:train:000244:audio-1497883990-headset",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:004087:audio-1490199961",
+      "slurp:train:004499:audio--1504194378-headset",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:006032:audio--1504195204",
+      "slurp:train:009411:audio-1497030307-headset",
+      "slurp:train:010006:audio-1499693788-headset",
+      "slurp:train:010065:audio-1501756518",
+      "slurp:train:010537:audio-1490183278",
+      "slurp:train:011479:audio-1502216306-headset",
+      "slurp:train:011838:audio-1490369500",
+      "slurp:train:013560:audio-1490291477-headset",
+      "slurp:train:013565:audio-1501765573-headset",
+      "slurp:train:014610:audio-1502218659-headset",
+      "slurp:train:014741:audio-1497882505",
+      "slurp:train:015179:audio-1498569151-headset",
+      "slurp:train:016836:audio-1490705489-headset"
+    ],
+    "seed-aa": [
+      "slurp:train:000081:audio-1501753218-headset",
+      "slurp:train:000244:audio-1497883990-headset",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:004087:audio-1490199961",
+      "slurp:train:004499:audio--1504194378-headset",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:006032:audio--1504195204",
+      "slurp:train:009411:audio-1497030307-headset",
+      "slurp:train:010006:audio-1499693788-headset",
+      "slurp:train:010065:audio-1501756518",
+      "slurp:train:010537:audio-1490183278",
+      "slurp:train:011479:audio-1502216306-headset",
+      "slurp:train:011838:audio-1490369500",
+      "slurp:train:013560:audio-1490291477-headset",
+      "slurp:train:013565:audio-1501765573-headset",
+      "slurp:train:014610:audio-1502218659-headset",
+      "slurp:train:014741:audio-1497882505",
+      "slurp:train:015179:audio-1498569151-headset",
+      "slurp:train:016836:audio-1490705489-headset"
+    ],
+    "solver-lookup": [
+      "slurp:train:000081:audio-1501753218-headset",
+      "slurp:train:000244:audio-1497883990-headset",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:004087:audio-1490199961",
+      "slurp:train:004499:audio--1504194378-headset",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:006032:audio--1504195204",
+      "slurp:train:009411:audio-1497030307-headset",
+      "slurp:train:010006:audio-1499693788-headset",
+      "slurp:train:010065:audio-1501756518",
+      "slurp:train:010537:audio-1490183278",
+      "slurp:train:011479:audio-1502216306-headset",
+      "slurp:train:011838:audio-1490369500",
+      "slurp:train:013560:audio-1490291477-headset",
+      "slurp:train:013565:audio-1501765573-headset",
+      "slurp:train:014610:audio-1502218659-headset",
+      "slurp:train:014741:audio-1497882505",
+      "slurp:train:015179:audio-1498569151-headset",
+      "slurp:train:016836:audio-1490705489-headset"
+    ]
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500",
+    "slurp:train:000244:audio-1497883990-headset",
+    "slurp:train:009411:audio-1497030307-headset",
+    "slurp:train:015179:audio-1498569151-headset",
+    "slurp:train:013565:audio-1501765573-headset",
+    "slurp:train:010065:audio-1501756518",
+    "slurp:train:004087:audio-1490199961",
+    "slurp:train:013560:audio-1490291477-headset",
+    "slurp:train:014610:audio-1502218659-headset",
+    "slurp:train:014741:audio-1497882505",
+    "slurp:train:000081:audio-1501753218-headset",
+    "slurp:train:006032:audio--1504195204",
+    "slurp:train:016836:audio-1490705489-headset",
+    "slurp:train:004499:audio--1504194378-headset",
+    "slurp:train:011479:audio-1502216306-headset",
+    "slurp:train:010006:audio-1499693788-headset",
+    "slurp:train:010537:audio-1490183278"
+  ],
+  "schema": "saea-system-text-analysis-recipe-v1",
+  "scientific_claims": "Reused optimization/form evidence only; no benefit, adoption, independent validation, parameter learning or generalization claim.",
+  "score_jobs": 4,
+  "status": "DRAFT_HELD_NOT_REGISTERED"
+}
