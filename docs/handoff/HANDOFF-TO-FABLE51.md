@@ -1,5 +1,28 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Simple consumption priority and Astra Ultra templates (2026-10-07)
+
+Follow the [new owner direction](../receipts/owner/2026-10-07-astra-ultra-template-and-cognitive-scope.json)
+and [evidence-led architecture plan](../readiness/2026-10-07-slurp-simple-consumption-direction-v1/README.md).
+Use Astra/Ultra for future analysis, evaluation, summarization, filtering and template
+generation. Preserve all spent original Sol proposals and frozen registrations.
+Independent Astra review supports testing review-off before assuming complex reflection
+helps. Current code has a real Perception/Solver-only graph, but Solver tool authority
+is explicitly prohibited; the bounded tool-first variant needs a shared extension.
+Keep external official evaluation, gold isolation and numeric process monitoring.
+The proposed new complete family is full seed/A/A, review-off and review-off+Solver
+lookup on the same20 inputs,80 trajectories, after separate registration/engineering.
+No architecture or template performance claim is established. New templates have not
+been generated. Do not conflate missing-by-design Reviewer metrics with zero scores.
+
+The original matched capacity source check is running model-free: session23645,
+wrapper PID286584, start02:04:05Z, worker codex-matched-search-capacity-v1 atb14e894ff.
+Revalidate its original handle; never restart because a read timed out. Actual GPU
+capacity dispatch is now held pending the new architecture priority, even if source
+checks pass. The independent capacity review found no concrete predispatch blocker,
+subject to full frozen/live qualification; it grants no generation/READ authority.
+No new GPU job or heartbeat exists. Preserve one master and detached isolation.
+
 ## Owner review-model preference (2026-10-07)
 
 Use GPT-6 Astra with Ultra reasoning for future delegated analysis, evaluation,

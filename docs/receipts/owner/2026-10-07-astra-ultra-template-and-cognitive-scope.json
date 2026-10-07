@@ -1,0 +1,25 @@
+{
+  "schema": "saea-owner-template-review-direction-v1",
+  "at_utc": "2026-10-07T02:08:27.236136+00:00",
+  "source": "Direct human instruction in the current chat",
+  "instruction_english": "Use GPT-6 Astra with Ultra reasoning for analysis, evaluation, summarization, filtering and prompt-template generation. Investigate whether complex reflection and evaluation overburden the frozen model; consider simplifying steps and exposing essential task capabilities as bounded tools the model can choose to call.",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "ultra",
+  "prospective_model_roles": [
+    "analysis",
+    "evaluation",
+    "summarization",
+    "filtering",
+    "prompt-template-generation"
+  ],
+  "hypothesis_not_established_fact": "Model size and training quality may limit complex instruction following; distinguish instruction load, evidence availability, review correctness and revision usefulness empirically.",
+  "root_disposition": "Continue the already launched model-free source checks. Hold actual matched capacity/GPU dispatch pending architecture review. Preserve all original completed GPT-6.1 Sol proposals and immutable registrations; do not reinterpret them as Astra-generated or replace spent allocations.",
+  "constraints": [
+    "Keep fixed knowledge, data, final Omni authority and scorer.",
+    "Retain external official evaluation and numeric process monitoring. Consider simplification of runtime semantic review separately.",
+    "Register execution-graph/tool changes prospectively and prove them through the shared runtime.",
+    "Retain complete-family reads, deterministic requested sampling, no paid API and owner227 scale boundary."
+  ],
+  "new_proposal_contacts": 0,
+  "new_runtime_contacts": 0
+}
