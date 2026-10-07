@@ -99,3 +99,28 @@ def test_registration_mutation_during_assembly_refuses_write(sources,monkeypatch
     monkeypatch.setattr(subject,"_round",mutate)
     with pytest.raises(PolicyError):prepare_feedback(s)
     assert not outputs(s)
+
+
+def test_real_process_pin_cell_annotation_is_verified_without_actor_export(sources):
+    s = sources
+    s.root_process["private_source_pins"][0]["cell_id"] = "attempt-private-process-member"
+    s.receipt["process_feedback"] = pin(s.data, "complete-process.json", s.root_process)
+    s.request["process_completion"] = pin(s.root, "search-process-complete.json", s.receipt)
+    result = prepare_feedback(s)
+    assert len(result["aggregate_feedback"]["records"]) == 15
+    assert "attempt-private-process-member" not in json.dumps(result["aggregate_feedback"])
+
+
+@pytest.mark.parametrize("fault", ["empty-cell", "numeric-cell", "extra-field", "changed-file", "outside-root"])
+def test_annotated_private_pin_does_not_weaken_identity_checks(tmp_path, fault):
+    root, data = tmp_path / "repo", tmp_path / "data"
+    root.mkdir(); data.mkdir()
+    value = pin(data, "source.json", {"receipt": "fixed"}, True)
+    value["cell_id"] = "attempt-private-process-member"
+    if fault == "empty-cell": value["cell_id"] = ""
+    elif fault == "numeric-cell": value["cell_id"] = 7
+    elif fault == "extra-field": value["unchecked"] = "field"
+    elif fault == "changed-file": (data / "source.json").write_text("{}")
+    else: value = {**pin(tmp_path, "outside.json", {}, True), "cell_id": value["cell_id"]}
+    with pytest.raises(PolicyError):
+        subject._verify_private_pin(value, root, data)

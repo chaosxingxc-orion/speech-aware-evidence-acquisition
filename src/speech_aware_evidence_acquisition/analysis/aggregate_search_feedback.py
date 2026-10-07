@@ -20,8 +20,14 @@ from ..rails.system_text_policy import _read_pin, require
 
 
 def _verify_private_pin(pin, root, data):
-    require(isinstance(pin, dict) and set(pin) == {"path", "sha256"},
+    require(isinstance(pin, dict) and set(pin) in (
+                {"path", "sha256"}, {"path", "sha256", "cell_id"}),
             "exact private source pin required")
+    # The complete process producer annotates per-member score pins. The label
+    # is private metadata, never a substitute for path confinement or byte identity.
+    if "cell_id" in pin:
+        require(isinstance(pin["cell_id"], str) and bool(pin["cell_id"].strip()),
+                "private source cell annotation must be nonempty text")
     path = Path(pin["path"]).resolve()
     require(path.is_relative_to(root) or path.is_relative_to(data),
             "private source escaped registered roots")

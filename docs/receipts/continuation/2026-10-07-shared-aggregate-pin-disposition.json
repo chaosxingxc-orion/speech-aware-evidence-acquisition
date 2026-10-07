@@ -1,0 +1,69 @@
+{
+  "schema": "saea-root-model-free-preparation-disposition-v1",
+  "at_utc": "2026-10-07T00:26:59.165782+00:00",
+  "authority": "Owner227 bounded engineering and root incident disposition; no new model or runtime authority.",
+  "status": "ONE_SEPARATE_MODEL_FREE_CONTINUATION_REGISTERED",
+  "original_worker_commit": "338b2f7d0482adb54099b39374ec3f5be77fbaf0",
+  "original_process_pid": 268605,
+  "original_process_absent": true,
+  "original_exit": {
+    "exit_code": 1,
+    "at_utc": "2026-10-07T00:13:24.121207+00:00"
+  },
+  "original_evidence": {
+    "prepare-v1.py": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-v1/prepare-v1.py",
+      "sha256": "a1dc47064712b3672f8b10aa90f5d64d141e220ecb7e401e428447d7e7379e12"
+    },
+    "process.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-v1/process.json",
+      "sha256": "f97e4535aa54d5ddd174afc15cd883b4218a137e164b6d301b675ce510a60662"
+    },
+    "stdout.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-v1/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-v1/stderr.log",
+      "sha256": "621f36434aad0234d6cfbfbe0f6e0a8dfb78e4a150e71604973273308a7c9ddb"
+    },
+    "exit.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-v1/exit.json",
+      "sha256": "58ea6105ff78e7a5f80ed7409d1eb51e678ed235dd31e522436b75f0adf8457a"
+    }
+  },
+  "original_registration": {
+    "relpath": "docs/readiness/2026-10-07-shared-search-aggregate-v1/registration-v1.json",
+    "sha256": "85afea60808136fe3373f03e720101b18d18387660a3c67a259c961b9570e38d"
+  },
+  "original_output_absent": true,
+  "root_cause": "The new aggregate adapter accepted only path/sha256 private pins. The existing complete process producer also annotates twenty-two official-score pins with cell_id. The synthetic fixture omitted this real producer form.",
+  "repair": "Accept exactly the existing optional nonempty text cell_id annotation; retain confined path and byte-hash checks, full source/READ qualification, receipt binding and before-write rechecks. Never export the annotation to the actor.",
+  "validation": {
+    "related_tests_passed": 68,
+    "new_regression_cases": 6,
+    "initial_red": "Real producer cell_id annotation reproduced exact private source pin required.",
+    "adapter_coverage": {
+      "statements": 70,
+      "missed": 0,
+      "percent": 100
+    },
+    "real_source_pins_verified": 58,
+    "annotated_pins_verified": 22,
+    "process_plan_verified": true,
+    "engineering_base_check": "PASS"
+  },
+  "successor_registration": {
+    "relpath": "docs/readiness/2026-10-07-shared-search-aggregate-recovery1/registration-v1.json",
+    "sha256": "85afea60808136fe3373f03e720101b18d18387660a3c67a259c961b9570e38d"
+  },
+  "preservation": "Keep original script/logs/exit, registration and immutable historical feedback unchanged. The successor uses a distinct path and archive identity.",
+  "stopping_rule": "Any successor failure stops preparation for diagnosis; do not automatically rerun.",
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "proposal_allocation_granted": false,
+  "learner_exported": false,
+  "runtime_admission": false
+}

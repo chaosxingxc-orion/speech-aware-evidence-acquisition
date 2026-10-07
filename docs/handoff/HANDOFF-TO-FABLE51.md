@@ -1,6 +1,21 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
 
+## Shared aggregate stopped at private-pin schema; successor prepared (2026-10-07)
+
+Original session67759/PID268605 exited1 at00:13:24Z and is absent. No aggregate
+artifact or proposal/model/scorer contact occurred. The existing process producer
+annotates22 private source pins with cell_id; the new adapter fixture omitted that
+form. Preserve original logs and registration. Root recorded the exact
+[owner227 disposition](../receipts/continuation/2026-10-07-shared-aggregate-pin-disposition.json).
+The fix keeps every path/hash/source/READ gate.68 related tests pass, adapter
+coverage100percent;58 actual source pins and the plan pass. A separately registered
+[model-free successor](../readiness/2026-10-07-shared-search-aggregate-recovery1/README.md)
+is prepared. Do not call it complete before its exit and root output verification.
+No new actor or GPU execution; retained Update6 rejection and parents are unchanged.
+
+
+
 ## Local branch reconciliation (2026-10-07)
 
 Root integrated reviewed past work and deleted680 merged inactive branch references
