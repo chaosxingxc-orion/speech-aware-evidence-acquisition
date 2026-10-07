@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Simple-consumption capacity stopped on Solver binding (2026-10-07)
+
+The original Windows task ended at04:51:24Z with exit1. Seed, seed A/A and
+review-off completed normally with297/297/156 capacity service endpoints.
+Solver lookup stopped after143 endpoints, without a FIT artifact. Total893
+counts include4 props reads,96 template-render calls and793 tokenize calls;
+generation and scoring contacts remain0. Stable startup passed and running
+observations stayed above21GiB. This was not a memory-floor failure.
+
+Astra/Ultra localized a shared production routing defect: on-demand store
+selection still admits only Reviewer/Planner roles. The validated opt-in Solver
+therefore lacks its authored slot index and the runtime validator correctly
+refuses. A narrow repair and actual binding regression are in progress; do not
+weaken the validator or fake custody. No complete-family qualification exists.
+
+The task and all admitted children are terminal. The job-scoped15-minute monitor
+slurp-simple-consumption-capacity was deleted. Preserve the original frozen
+worker, three completed FIT artifacts, failed member logs and lease metadata.
+No replay, original retry, lease clearing or generation is admitted. Prove and
+independently review the repair, then preregister any recovery under a new
+identity. Natural four-row and same20 scientific work remain HELD. No model
+capability, task-quality or learning conclusion follows from this failure.
+See [original failure and operational accounting](../receipts/continuation/2026-10-07-simple-consumption-capacity-binding-failure.json).
+
 ## Simple-consumption capacity running; stalled maintenance preserved (2026-10-07)
 
 The narrow manual-V4 capacity registration fix is integrated at e1939f4c7.
@@ -55,7 +79,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-07T04:48:28.034698+00:00
+Last refreshed: 2026-10-07T04:58:23.535732+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

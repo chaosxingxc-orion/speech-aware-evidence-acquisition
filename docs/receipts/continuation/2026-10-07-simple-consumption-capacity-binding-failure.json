@@ -1,0 +1,250 @@
+{
+  "schema": "saea-simple-consumption-capacity-binding-failure-v1",
+  "at_utc": "2026-10-07T04:58:23.535732+00:00",
+  "status": "STOPPED; no complete-family qualification",
+  "frozen_worker": "/home/chao/saea-worktrees/codex-simple-consumption-capacity-v3",
+  "source_commit": "e1939f4c70a9d054df9653813ea4499b6aa7a383",
+  "original_family_terminal": {
+    "exit_code": 1,
+    "at_utc": "2026-10-07T04:51:24.8295157+00:00",
+    "registration_sha256": "1b84b7c39b211d6d515b6f2a65121f7fefaa1d5ef30c5ea50d549f136b73eb82",
+    "failure": {
+      "at_utc": "2026-10-07T04:51:24.8265154+00:00",
+      "message": "Member failed; stop without retry",
+      "type": "RuntimeException"
+    },
+    "scorer_contacts": 0,
+    "members": [
+      {
+        "exit_code": 0,
+        "label": "seed",
+        "observer_exit_code": 0,
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-v2-capacity-fit-v1",
+        "at_utc": "2026-10-07T04:47:46.2171294+00:00",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1"
+      },
+      {
+        "exit_code": 0,
+        "label": "seed-aa",
+        "observer_exit_code": 0,
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-v2-capacity-fit-v1",
+        "at_utc": "2026-10-07T04:49:17.3471811+00:00",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V2-CAPACITY-FIT-V1"
+      },
+      {
+        "exit_code": 0,
+        "label": "review-off",
+        "observer_exit_code": 0,
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-v2-capacity-fit-v1",
+        "at_utc": "2026-10-07T04:50:24.3211028+00:00",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V2-CAPACITY-FIT-V1"
+      },
+      {
+        "exit_code": 1,
+        "label": "solver-lookup",
+        "observer_exit_code": 0,
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-v2-capacity-fit-v1",
+        "at_utc": "2026-10-07T04:51:24.7981981+00:00",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1"
+      }
+    ],
+    "generation_contacts": 0
+  },
+  "original_task_exit": {
+    "exit_code": 1,
+    "at_utc": "2026-10-07T04:51:24.9665179+00:00",
+    "restart_permitted": false,
+    "failure": null,
+    "registration_sha256": "1b84b7c39b211d6d515b6f2a65121f7fefaa1d5ef30c5ea50d549f136b73eb82",
+    "child_pid": 44620
+  },
+  "members": [
+    {
+      "label": "seed",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-v2-capacity-fit-v1",
+      "observed_capacity_service_endpoints": 297,
+      "endpoint_routes": {
+        "GET /props": 1,
+        "POST /tokenize": 252,
+        "POST /apply-template": 44
+      },
+      "registered_cap": 299,
+      "fit_receipt_exists": true,
+      "terminal": {
+        "at_utc": "2026-10-07T04:47:47.313767+00:00",
+        "exit_code": 0,
+        "generation_contacts": 0,
+        "members": [
+          {
+            "at_utc": "2026-10-07T04:47:47.309454+00:00",
+            "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-v2-capacity-fit-v1",
+            "exit_code": 0,
+            "label": "seed",
+            "lease_exit_code": 0,
+            "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-V2-CAPACITY-FIT-V1"
+          }
+        ],
+        "scorer_contacts": 0
+      },
+      "contacts_pin": {
+        "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\seed\\request-fit-v1.json.contacts.jsonl",
+        "sha256": "6903a1f5c6cc4bacc6ec676377ec5ec30a866f845a745ea07ff8df4ba239842e"
+      }
+    },
+    {
+      "label": "seed-aa",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V2-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-v2-capacity-fit-v1",
+      "observed_capacity_service_endpoints": 297,
+      "endpoint_routes": {
+        "GET /props": 1,
+        "POST /tokenize": 252,
+        "POST /apply-template": 44
+      },
+      "registered_cap": 299,
+      "fit_receipt_exists": true,
+      "terminal": {
+        "at_utc": "2026-10-07T04:49:18.434904+00:00",
+        "exit_code": 0,
+        "generation_contacts": 0,
+        "members": [
+          {
+            "at_utc": "2026-10-07T04:49:18.430678+00:00",
+            "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-v2-capacity-fit-v1",
+            "exit_code": 0,
+            "label": "seed-aa",
+            "lease_exit_code": 0,
+            "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-V2-CAPACITY-FIT-V1"
+          }
+        ],
+        "scorer_contacts": 0
+      },
+      "contacts_pin": {
+        "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\seed-aa\\request-fit-v1.json.contacts.jsonl",
+        "sha256": "5b1a22c1728b3feaa47c9b7779c3231fff5dd4cdb3fbc6a3c6182f79abcaa613"
+      }
+    },
+    {
+      "label": "review-off",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V2-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-v2-capacity-fit-v1",
+      "observed_capacity_service_endpoints": 156,
+      "endpoint_routes": {
+        "GET /props": 1,
+        "POST /tokenize": 147,
+        "POST /apply-template": 8
+      },
+      "registered_cap": 157,
+      "fit_receipt_exists": true,
+      "terminal": {
+        "at_utc": "2026-10-07T04:50:23.837295+00:00",
+        "exit_code": 0,
+        "generation_contacts": 0,
+        "members": [
+          {
+            "at_utc": "2026-10-07T04:50:23.828975+00:00",
+            "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-v2-capacity-fit-v1",
+            "exit_code": 0,
+            "label": "review-off",
+            "lease_exit_code": 0,
+            "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-V2-CAPACITY-FIT-V1"
+          }
+        ],
+        "scorer_contacts": 0
+      },
+      "contacts_pin": {
+        "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\review-off\\request-fit-v1.json.contacts.jsonl",
+        "sha256": "b4f029770440cbe3b2180408d0d0c6a1ebdcc240ec9177ac5afd2819b0f3fd58"
+      }
+    },
+    {
+      "label": "solver-lookup",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1",
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-v2-capacity-fit-v1",
+      "observed_capacity_service_endpoints": 143,
+      "endpoint_routes": {
+        "GET /props": 1,
+        "POST /tokenize": 142
+      },
+      "registered_cap": 241,
+      "fit_receipt_exists": false,
+      "terminal": {
+        "at_utc": "2026-10-07T04:51:25.968939+00:00",
+        "exit_code": 1,
+        "generation_contacts": 0,
+        "members": [
+          {
+            "at_utc": "2026-10-07T04:51:25.938593+00:00",
+            "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-v2-capacity-fit-v1",
+            "exit_code": 1,
+            "label": "solver-lookup",
+            "lease_exit_code": 2,
+            "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1"
+          }
+        ],
+        "scorer_contacts": 0
+      },
+      "contacts_pin": {
+        "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\solver-lookup\\request-fit-v1.json.contacts.jsonl",
+        "sha256": "cf8ce1ce617af61e705316362067101d823aeda1e95425e533bea8933240477d"
+      }
+    }
+  ],
+  "capacity_service_endpoints": 893,
+  "generation_contacts": 0,
+  "scorer_contacts": 0,
+  "named_error": "ValueError: Solver lookup requires the bound fixed store, authored slot index and custodian",
+  "source_diagnosis": "FlightRuntime on-demand store derivation includes only Reviewer and Planner roles. Validated opt-in Solver authority is omitted, so its slot-contracts authored target index is absent and the runtime validator correctly refuses. Astra/Ultra identified this production routing defect; a narrow repair and meaningful binding regression are in progress.",
+  "resource_diagnosis": "The failed member passed three stable startup observations. Running observations stayed above21GiB. The guard reports worker-failed, not a memory-floor breach.",
+  "root_disposition": "Preserve the original frozen worker, three completed FIT artifacts, failed member contact logs and failed lease metadata. Do not replay completed members, retry the failed identity, clear the lease, or start generation. Prove the narrow routing repair without model contacts, independently review, and preregister any later recovery under a new identity.",
+  "monitor": {
+    "id": "slurp-simple-consumption-capacity",
+    "status": "deleted",
+    "basis": "Windows task terminal; original Windows owners and all admitted WSL children absent."
+  },
+  "runtime_admission": false,
+  "task_quality_read": false,
+  "evidence": [
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\registration-v1.json",
+      "sha256": "1b84b7c39b211d6d515b6f2a65121f7fefaa1d5ef30c5ea50d549f136b73eb82"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\capacity-finished.json",
+      "sha256": "6616c687010ebeaacc4bcc0cea75aff19065990a583f17f7aa87f85e1fb31e2a"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\capacity-task-exit.json",
+      "sha256": "2d5de431fda94b9c29d6e80a09dee0aecc911802d139e62e90b834718c0040a7"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\capacity-windows-failure.json",
+      "sha256": "9c78b083211e22c6ba611044034c51af6c4a381dbaa2645d8f1562199883415a"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\solver-lookup-capacity.stderr.log",
+      "sha256": "3d81e1d49d5b9a20ea8e2b597a86d4d4ab3572c3ba515e1922d6006b4ce16ffd"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\solver-lookup-capacity.stdout.log",
+      "sha256": "d7fb822f7da6014affca87ff1aef28bd714a48bef45f3d2e3792617415954160"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\solver-lookup-lease.stdout.log",
+      "sha256": "ea483feb459c13755a41b72db818ba2958a2e7b6ecd33fc4e2fdac2acc5e6db4"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\solver-lookup\\memory-guard\\finished.json",
+      "sha256": "0da894ae447257121c75e7595127b45f554ddf417f3de9fae3420c23dc2634ab"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\solver-lookup\\memory-guard\\events.jsonl",
+      "sha256": "d7dcc83f5ca7b62362294da7283c2ee439a3158b7a2a8aec037f88deb1f90d30"
+    },
+    {
+      "path": "E:\\chao_workspace\\exploring-l4-intelligence\\speechrl-data\\coordination\\simple-consumption-capacity-v2\\solver-lookup\\memory-wait\\finished.json",
+      "sha256": "747d72e5905c7bbd83516cd5c0ffc1025ef84e017a194460434ebddd82b821ba"
+    }
+  ]
+}
