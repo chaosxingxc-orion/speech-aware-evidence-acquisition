@@ -1,0 +1,33 @@
+{
+  "base_commit": "5da70894f51009f8df5c8dec2663a7082690664b",
+  "checks": [
+    {
+      "completion_chunk": "f70dee",
+      "note": "Before the final support-binding addition.",
+      "passed": 105,
+      "scope": "new producer plus existing process/stage/report/node timing suites",
+      "seconds": 20.25,
+      "session": 70552
+    },
+    {
+      "chunk": "dfcdd5",
+      "passed": 30,
+      "scope": "final producer focused synthetic suite",
+      "seconds": 5.31
+    },
+    {
+      "chunk": "dfcdd5",
+      "result": "PASS",
+      "scope": "final producer/test Ruff"
+    }
+  ],
+  "learner_export": false,
+  "model_contacts": 0,
+  "official_scorer_contacts": 0,
+  "runtime_gold": false,
+  "schema": "saea-model-free-engineering-validation-v1",
+  "source_sha256": "e8b32d3cc35079dd3748320dd4d5a7f63ab20575899874988f195b2cbec96d25",
+  "status": "PASSED_SOURCE_ONLY_NO_ACTUAL_QUALITY_READ",
+  "test_sha256": "68af05e15c4541a76275aba5fc88f21faf45fbe8f82e25300bc5e09a119f4dbb",
+  "verification_limits": "Outer registration/file custody and numeric timing loaders are mocked in orchestration fixtures; existing API suites retain their original source-specific coverage. The real standard reference join, v2 metrics, architecture combiner and renderer execute in the complete synthetic derivative. No actual result, gold-reference content or runtime mutation was consumed. Root owns production execution after independent review."
+}
