@@ -278,7 +278,7 @@ def test_campaign_cli_forwards_runtime_and_lock_paths_to_shared_factory(tmp_path
 
     def build(*args, **kwargs):
         factory_calls.append((args, kwargs))
-        return object()
+        return SimpleNamespace(verify_prepared_artifacts=lambda: ())
 
     monkeypatch.setattr(cli, "build_flight_runtime", build)
     monkeypatch.setattr(

@@ -1,5 +1,17 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+
+## Local branch reconciliation (2026-10-07)
+
+Root is integrating past work and safely deleting merged inactive branch references
+under the direct owner cleanup instruction. Mainline remains `master`, the actual
+remote default. See [maintenance audit](../maintenance/2026-10-07-local-branch-cleanup/README.md).
+147 histories are content-equivalent reconciliation; two pending changes passed78
+related tests.23 historical branches remain non-equivalent and are preserved for
+semantic review. All existing worktrees and three dirty WSL directories are retained.
+No frozen worker or active aggregate-preparation source is modified.
+
+
 ## Update6 historical evidence completed; real shared aggregate running (2026-10-07)
 
 The original history process/session24745 exited0 at00:08:29Z and its PID is absent.
