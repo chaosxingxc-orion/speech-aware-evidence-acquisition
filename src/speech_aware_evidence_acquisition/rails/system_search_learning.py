@@ -8,6 +8,7 @@ permission. No execution API calls this prospective interface yet.
 """
 from __future__ import annotations
 
+from copy import deepcopy
 import json
 import re
 
@@ -16,13 +17,17 @@ from .hashing import content_hash
 from .system_search_archive import SystemSearchArchive
 from .system_text_policy import (
     SEARCH_ALGORITHMS, TextPolicyUpdateProposal, _read_pin, apply_text_proposal,
-    require, require_search_parent_compatibility, sha, validate_sources,
+    require, require_search_parent_compatibility, sha, validate_sources, cumulative_sources, _text,
 )
 
 
 def _registration(archive, registration_pin, repo_root):
-    require(isinstance(archive, SystemSearchArchive), "shared archive required")
     d = json.loads(_read_pin(registration_pin, repo_root))
+    return _validate_registration(archive, d, repo_root)
+
+
+def _validate_registration(archive, d, repo_root):
+    require(isinstance(archive, SystemSearchArchive), "shared archive required")
     fields = {"schema", "status", "batch_id", "algorithm", "iteration", "experiment_population",
               "qualified_input_sha256", "actor_input_sha256", "slots", "evidence_record_ids", "cumulative_sources"}
     require(isinstance(d, dict) and set(d) == fields
@@ -146,4 +151,73 @@ def record_search_update(archive, *, registration_pin, repo_root, response_docum
                              parent_bundle_ids=slot["parent_bundle_ids"])
             result["records"].append(entry)
     archive._write(base + "/result.json", result)
+    return result
+
+
+
+def assemble_search_actor_input(archive, *, feedback_record, configuration, repo_root):
+    """Build a reviewable draft from prepared evidence; grant no source/contact rights.
+
+    The caller must bind the original source-qualified feedback and parent plan,
+    recheck their complete-family authority, and register the isolated capsule before
+    contact. This pure assembler validates structure, ancestry and privacy separation;
+    self-hashed objects do not establish scientific READ permission. Return a DRAFT
+    recorder registration so that this helper cannot silently spend proposal slots.
+    """
+    c, f = deepcopy(configuration), feedback_record
+    require(isinstance(c, dict) and set(c) == {"batch_id", "algorithm", "iteration",
+        "experiment_population", "slots", "parent_plan_sha256", "instructions", "max_actor_input_bytes"},
+        "exact configured actor draft required")
+    sha(c["parent_plan_sha256"])
+    _text(c["instructions"])
+    require(type(c["max_actor_input_bytes"]) is int and c["max_actor_input_bytes"] > 0,
+            "positive actor byte limit required")
+    require(isinstance(f, dict) and f.get("schema") == "saea-qualified-aggregate-search-feedback-v1"
+        and f.get("feedback_sha256") == content_hash({k:v for k,v in f.items() if k != "feedback_sha256"})
+        and all(f.get(k) is False for k in ("runtime_admission", "learner_exported", "proposal_allocation_granted")),
+        "immutable prepared aggregate feedback required")
+    view = f["aggregate_feedback"]
+    require(set(view) == {"schema", "records", "comparators", "statistic_columns", "limitations",
+                         "process_encoding", "observed_populations"}
+        and view["schema"] == "saea-aggregate-search-feedback-view-v1", "aggregate-only feedback required")
+    record_fields = {"evaluated_iteration", "candidate_id", "cohort", "source_batch", "sample_order_sha256",
+        "sample_count", "disposition", "is_active_parent", "template", "selection", "business", "comparators",
+        "terminal", "node_statistics", "process", "record_id"}
+    require(bool(view["records"]), "complete aggregate history required")
+    for record in view["records"]:
+        require(set(record) == record_fields and record["record_id"] == content_hash({
+            k:v for k,v in record.items() if k != "record_id"}), "aggregate record identity or fields changed")
+    population = load_population_config(c["experiment_population"], repo_root=repo_root)
+    parents = {pid: archive.load_policy(pid) for slot in c["slots"] for pid in slot["parent_bundle_ids"]}
+    source_identity = content_hash({"feedback_sha256": f["feedback_sha256"],
+        "parent_plan_sha256": c["parent_plan_sha256"], "configuration": c})
+    actor = {"schema": "saea-aggregate-search-actor-draft-v1", "source_identity_sha256": source_identity,
+        "algorithm": c["algorithm"], "iteration": c["iteration"], "experiment_population": c["experiment_population"],
+        "model": population["proposer"]["model"], "reasoning_effort": population["proposer"]["reasoning_effort"],
+        "nodes": population["nodes"], "sampling": population["sampling"], "slots": c["slots"],
+        "population_budget": population_accounting(population), "feedback": deepcopy(view),
+        "parent_templates": {pid: {k: p.as_json()[k] for k in ("role_text", "context_layout", "node_context")}
+                             for pid, p in parents.items()},
+        "instructions": c["instructions"], "runtime_admission": False,
+        "response_contract": {"schema": "saea-search-policy-update-proposal-v1",
+            "ordered_candidates": [s["candidate_id"] for s in c["slots"]],
+            "editable_fields": ["role_text", "context_layout", "node_context"],
+            "rationale_and_hypotheses": "English template-level explanations; reference aggregate record IDs only.",
+            "no_change_and_invalid": "Every original position remains spent; no replacement or extra proposal.",
+            "transport": "Provider identity, usage and registration hashes are attached by the admitted receiver."}}
+    sources = cumulative_sources(list(parents.values()), [{"kind": "feedback", "sha256": f["feedback_sha256"],
+        "sample_ids": f["private_custody"]["feedback_sample_ids"]}])
+    reg = {"schema": "saea-search-update-registration-v1", "status": "ROOT_REGISTERED",
+        **{k: c[k] for k in ("batch_id", "algorithm", "iteration", "experiment_population", "slots")},
+        "qualified_input_sha256": source_identity, "actor_input_sha256": content_hash(actor),
+        "evidence_record_ids": [r["record_id"] for r in view["records"]], "cumulative_sources": sources}
+    _validate_registration(archive, reg, repo_root)
+    require(len(json.dumps(actor, ensure_ascii=True).encode()) <= c["max_actor_input_bytes"],
+            "complete actor byte budget exceeded")
+    reg["status"] = "DRAFT"
+    result = {"schema": "saea-search-input-draft-v1", "actor_view": actor, "registration_draft": reg,
+        "parent_plan_sha256": c["parent_plan_sha256"], "feedback_sha256": f["feedback_sha256"],
+        "source_qualification_required": True, "runtime_admission": False, "learner_exported": False,
+        "proposal_allocation_granted": False}
+    result["draft_sha256"] = content_hash(result)
     return result

@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Shared actor draft assembly tested; no new proposal consumed (2026-10-06)
+
+The [actor assembler](../readiness/2026-10-06-search-actor-assembly-v1/README.md)
+now connects aggregate evidence and configured parent assignments to the existing
+search recorder. Both algorithms receive identical feedback; next K does not trim
+history. Private exposure stays outside actor context. Returned registration isDRAFT
+and cannot reserve slots.110 related tests pass; shared module coverage100percent;
+engineering-base PASS. No actual new actor export, proposal or GPU contact.
+
+[Common instructions](../readiness/2026-10-06-system-context-algorithm-contrast-n20-v1/common-proposer-instructions-v1.md)
+and [analysis design](../readiness/2026-10-06-system-context-algorithm-contrast-n20-v1/comparison-analysis-v1.md)
+are prepared before contacts. The intended factor includes parent selection and
+proposal mode, not a claim of selector-only causality. Incomplete candidate coverage
+precludes a whole-population quality comparison; invalid slots remain spent without
+fabricated task scores. Preserve source domains, A/A ambiguity andN20 claim limits.
+
+The earlier integration/session42648 completed successfully at commit53a97d476.
+The exact original rejected-history process/session24745 (PID266046) remains live;
+at elapsed1138 seconds CPU time was12:04 with no exit/log output. Do not restart it.
+After it completes, verify the durable receipt and bind real aggregate evidence,
+then finalize the exact parent-plan/capsule/contact and full-family READ identities.
+No current monitor or recovery operation is needed for this model-free preparation.
+
+
 ## Aggregate history adapter tested; actual Update6 history still preparing (2026-10-06)
 
 The [aggregate evidence adapter](../readiness/2026-10-06-aggregate-search-feedback-v1/README.md)
