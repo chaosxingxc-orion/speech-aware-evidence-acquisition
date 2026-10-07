@@ -1,0 +1,45 @@
+{
+  "at_utc": "2026-10-07T01:33:05.529535+00:00",
+  "byte_identical_existing_helpers": {
+    "broker.ps1": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5",
+    "continuous-observer-v1.py": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630",
+    "guarded-child-v1.py": "050dc7dcbfc4b4213b7453b45e160c2c4ec8b0acd3aa463c9bc716658edc6b10",
+    "live-prelaunch-v1.py": "0c704f27e4175ee0c0680f0c00f6213d30fd27eb9b00226008c54f0c7d39b919",
+    "windows_memory_mailbox.py": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+  },
+  "contacts_added": 0,
+  "details": {
+    "relpath": "coordination/matched-search-capacity-owner227-v1/helper-validation-v1.json",
+    "sha256": "a804087ba31c394a58613bfa68d2660a332ef9b74bd2d6e446f98a021434b545"
+  },
+  "limitations": [
+    "Validation covers configuration membership, sampling/resource/budget drift rejection and parsing.",
+    "No full registered frozen checkout, prelaunch admission, capacity receipt or structural evidence exists for this new family yet.",
+    "Do not invoke actual capacity dispatch before complete preparation, serial integration, exact source freezing and live checks."
+  ],
+  "membership_probes": {
+    "passed": 11,
+    "relpath": "coordination/matched-search-capacity-owner227-v1/dispatch-helpers-validation-v1.json",
+    "sha256": "5e03f3dfe87c71f28fd350d79cbacf18c83626a4d2adce6fa63a284cc0f63700"
+  },
+  "powershell_ast": {
+    "broker.ps1": "PASS",
+    "capacity-windows-v1.ps1": "PASS"
+  },
+  "prepared_entries": {
+    "broker.ps1": "bacd3c02d5e2f0a74fe68f3e04a7dcd064ad6b62098bd40ca4a47fa1931135b5",
+    "capacity-windows-v1.ps1": "94884dbfdb42811bd193012a0461058f273bb3e127ec15c5b07bda234c94c4f9",
+    "continuous-observer-v1.py": "8572228e2e38575242eb8ddc9124b57c8616dcef74f14bf97376e2210683d630",
+    "finalize-capacity-registration-v1.py": "51bb201acf936b1392ccb784d69355e036e794bf51e76f723ff50771fa7d280d",
+    "frozen-check-v1.py": "74a66387203e5c162a553088ca0635c327684e75b371d4068c8ed203af04b3ed",
+    "guarded-child-v1.py": "050dc7dcbfc4b4213b7453b45e160c2c4ec8b0acd3aa463c9bc716658edc6b10",
+    "launch-member-v1.py": "289f8af4fea5bb1da3af135585b4ae4b9e078c21693375542f928c316674c66f",
+    "live-prelaunch-v1.py": "0c704f27e4175ee0c0680f0c00f6213d30fd27eb9b00226008c54f0c7d39b919",
+    "prepare-capacity-entry-v1.py": "275ee7f167fc968d667cf41e058c939359a6c932778dfd00eb7a67712036c358",
+    "validate-dispatch-v1.py": "96a91e4dc2a4c857506146486be6783e50d41a259e0364fef744ca932861fb52",
+    "windows_memory_mailbox.py": "b8326c33509cf85d6e462e3ef0265625c6f343b65c2ed543e786fd6badc3c2de"
+  },
+  "python_ast": "PASS",
+  "schema": "saea-matched-search-capacity-helper-validation-v1",
+  "status": "MODEL_FREE_WIRING_VALIDATED_NOT_ADMITTED"
+}
