@@ -1,0 +1,3 @@
+# Configured matched search capacity entry
+
+Register only nongenerative maximum-request capacity for every configured original candidate and each unchanged comparator identity. Candidate order and execution settings come from the pinned population configuration; endpoint budgets come from each exact prepared capacity plan. Source data and knowledge remain fixed. Full output and structural reserves remain unchanged. No generation, scorer, scientific feedback or automatic recovery. Freeze and qualify all registered inputs before contact, then launch with current20/8GiB guards and a job-scoped fifteen-minute monitor. Keep structural and scientific generation separately held.

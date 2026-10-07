@@ -1,0 +1,582 @@
+[
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-seed-engineering-capacity-fit-v1",
+    "candidate_id": "seed",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-seed-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-seed-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-seed-capacity-fit-plan-registered-v1.json",
+      "sha256": "43d1e59f4660febe94fbf00c099f0cf5ee083cad7f6c9319c22a7244da130a4b"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-seed-capacity-analysis-recipe-v1.json",
+      "sha256": "070d190fb7e0560c5be218a0415f1b846ed622cb1d0b46b393e3073ff81b86a1"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-SEED-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-seed"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-seed-aa-engineering-capacity-fit-v1",
+    "candidate_id": "seed-aa",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-seed-aa-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-seed-aa-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-seed-aa-capacity-fit-plan-registered-v1.json",
+      "sha256": "8088431548583ea83ef454db8274ac9d3ab2f559f189e6c9d07571485157d7c7"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-seed-aa-capacity-analysis-recipe-v1.json",
+      "sha256": "dc7b752742f24bbe1ef2b8b6fef8a563a4f9675f6c1bdb58a59577ea57358990"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-SEED-AA-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-seed-aa"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-01-engineering-capacity-fit-v1",
+    "candidate_id": "branch-01",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-01-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-01-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-01-capacity-fit-plan-registered-v1.json",
+      "sha256": "a7ed0c053932c5c85ab3a406983db8a14fcb70365e2b53fef64568795c5ee1fc"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-01-capacity-analysis-recipe-v1.json",
+      "sha256": "4214263b5db87c8d4c926e1c39d972b491d06b402a112b27f3fc786c7b9c4113"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-01-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-branch-01"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-02-engineering-capacity-fit-v1",
+    "candidate_id": "branch-02",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-02-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-02-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-02-capacity-fit-plan-registered-v1.json",
+      "sha256": "3211145c8a710661e3dfac6148a2e5004dcc825ffbb770522a46fe50f0539e09"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-02-capacity-analysis-recipe-v1.json",
+      "sha256": "8a079454a5e01e1e18efb0ade2b0dd92c3003721326571524348aea5fd45ef48"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-02-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-branch-02"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-03-engineering-capacity-fit-v1",
+    "candidate_id": "branch-03",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-03-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-03-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-03-capacity-fit-plan-registered-v1.json",
+      "sha256": "7efc5ef67a14187770ac2c586e2d27983b87b5168670dae9fe96c218701dd601"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-03-capacity-analysis-recipe-v1.json",
+      "sha256": "e78132bf2f44c308c7e5136152346fadb1064af995040a764a2d5811f3b0c2a2"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-03-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-branch-03"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-04-engineering-capacity-fit-v1",
+    "candidate_id": "branch-04",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-04-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-04-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-04-capacity-fit-plan-registered-v1.json",
+      "sha256": "cb1966c698941cbff00f61a17cd12b7440107a68ef67fccfba18be7a742f184d"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-04-capacity-analysis-recipe-v1.json",
+      "sha256": "347ceba54998942914b174d09ba88c5a47bdf38855f0727198615b81b6ee385c"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-04-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-branch-04"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-05-engineering-capacity-fit-v1",
+    "candidate_id": "branch-05",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-05-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-05-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-05-capacity-fit-plan-registered-v1.json",
+      "sha256": "a8de96aab7e0df2305cf12f715d459eb4c23bb70bfe46498bdeaad283b102aff"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-05-capacity-analysis-recipe-v1.json",
+      "sha256": "02a506dbde5ed60dd5b0c2627d102372bd18b364359588a0fa0bd8576f3f0050"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-05-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-branch-05"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-capacity-fit-v1",
+    "candidate_id": "branch-06",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-06-capacity-fit-plan-registered-v1.json",
+      "sha256": "97cc010688ab5c143e89781e5d0fd29c2061d5f0f675f8e9bbb4671da1a0e571"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-06-capacity-analysis-recipe-v1.json",
+      "sha256": "12724eae5e26921f529a032a9363d272e8640a13329a8a30d494860f7eda86e1"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-branch-06"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-07-engineering-capacity-fit-v1",
+    "candidate_id": "branch-07",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-07-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-07-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-07-capacity-fit-plan-registered-v1.json",
+      "sha256": "1f6dc947f4beb251f62f750f3a5556e4e4e8a4a6883d35b734f0eca64ccf3f76"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-07-capacity-analysis-recipe-v1.json",
+      "sha256": "a520f3ca4694b7bb72e73b5461fe75340f6213a0e0eb91cf121a2534c9d27316"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-07-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-branch-07"
+  },
+  {
+    "arm": "fixed-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-08-engineering-capacity-fit-v1",
+    "candidate_id": "branch-08",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-08-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "graph": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-08-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-08-capacity-fit-plan-registered-v1.json",
+      "sha256": "9b2e54d2e42687d681f94f704ee1e1eaa931977bd014dcc336f2f362b2e48517"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/fixed-parent-branch-08-capacity-analysis-recipe-v1.json",
+      "sha256": "4066135344d86056d09fe64655bd194613160ad6edb5217e7aae1afefc7749f8"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-08-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "fixed-parent-branch-08"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-seed-engineering-capacity-fit-v1",
+    "candidate_id": "seed",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-seed-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-seed-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-seed-capacity-fit-plan-registered-v1.json",
+      "sha256": "c62a734152a7b64dcfe2cfd2424553cd8d1263bf0edbd1ea06afc962d3931d1f"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-seed-capacity-analysis-recipe-v1.json",
+      "sha256": "772454b89c0fd2424af0758fd71bf5a85436a37dfce6910ae80d24ab456f1f13"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-SEED-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-seed"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-seed-aa-engineering-capacity-fit-v1",
+    "candidate_id": "seed-aa",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-seed-aa-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-seed-aa-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-seed-aa-capacity-fit-plan-registered-v1.json",
+      "sha256": "c7decff6e7b5274522ee6b6203ab9711f6c8faba90144f548b7e233738cfebc7"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-seed-aa-capacity-analysis-recipe-v1.json",
+      "sha256": "f58a16a7d52a76fd47847b4a3e4a3943b97aeff3423371eb2ef1a417e0a74ec5"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-SEED-AA-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-seed-aa"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-01-engineering-capacity-fit-v1",
+    "candidate_id": "branch-01",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-01-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-branch-01-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-01-capacity-fit-plan-registered-v1.json",
+      "sha256": "9685be28745b4af633a7996ed220882b6240573fadc47a3df8d8f59bddae0df9"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-01-capacity-analysis-recipe-v1.json",
+      "sha256": "f77e721cd1bf9ae7f4ea0f0dc6f85a91703b2e062017ec137933885ddcea2138"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-01-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-branch-01"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-02-engineering-capacity-fit-v1",
+    "candidate_id": "branch-02",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-02-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-branch-02-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-02-capacity-fit-plan-registered-v1.json",
+      "sha256": "92abedcc49abd7ba121a67b7d74c1d763d36024d1d85a7dbd1eca5166f3c1b37"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-02-capacity-analysis-recipe-v1.json",
+      "sha256": "8797f65d5a8f38da7e35eb054ea1a82b81fc7ec912467fe7ee0eefcb3afa4930"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-02-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-branch-02"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-03-engineering-capacity-fit-v1",
+    "candidate_id": "branch-03",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-03-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-branch-03-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-03-capacity-fit-plan-registered-v1.json",
+      "sha256": "d7a77f2d2e8c96983b59583aa4efd822c6a69d409384b50f760139b52ac9ade8"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-03-capacity-analysis-recipe-v1.json",
+      "sha256": "63fb78fb55b05e1768756d2266da8e5ebec25d5b009f74d92f9c9d1d472c7e50"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-03-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-branch-03"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-04-engineering-capacity-fit-v1",
+    "candidate_id": "branch-04",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-04-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-branch-04-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-04-capacity-fit-plan-registered-v1.json",
+      "sha256": "4f79fec8148c489fff155c06ee486c1437d0db398d3107bae8604f2adf2c5854"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-04-capacity-analysis-recipe-v1.json",
+      "sha256": "758a56df75a26eb9d3324f5943c8addf095804eb849e532d6499eaf0ddd3c37e"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-04-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-branch-04"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-05-engineering-capacity-fit-v1",
+    "candidate_id": "branch-05",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-05-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-branch-05-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-05-capacity-fit-plan-registered-v1.json",
+      "sha256": "f915281d92145a50a844505358ca9900e0271a25804744321eba0bedbe35a58f"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-05-capacity-analysis-recipe-v1.json",
+      "sha256": "52fc1739ca1b5b5df119152976169298ede4411930886d6d428f78ea66b7f3d0"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-05-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-branch-05"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-06-engineering-capacity-fit-v1",
+    "candidate_id": "branch-06",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-06-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-branch-06-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-06-capacity-fit-plan-registered-v1.json",
+      "sha256": "5397082f978ef22c539aa8f73b83c4b88d01eefba28427ddc423961266abc19b"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-06-capacity-analysis-recipe-v1.json",
+      "sha256": "0486f261a314841e59db5b1693e788705580de1edd48787e2db2c51338c17093"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-06-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-branch-06"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-07-engineering-capacity-fit-v1",
+    "candidate_id": "branch-07",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-07-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-branch-07-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-07-capacity-fit-plan-registered-v1.json",
+      "sha256": "31ede690a76f217bfa04a97f3f50ef07e4f2fc9f8f98086820111fcb410ef890"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-07-capacity-analysis-recipe-v1.json",
+      "sha256": "6624014615fe9c0f7b70e387db83150fb965c24a978c5c868a648c4d367f3eb7"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-07-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-branch-07"
+  },
+  {
+    "arm": "multi-parent",
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-08-engineering-capacity-fit-v1",
+    "candidate_id": "branch-08",
+    "contact_cap": 297,
+    "decision": {
+      "relpath": "coordination/matched-search-capacity-owner227-v1/root-capacity-admission-v1.json",
+      "sha256": "51b36cb5f021cab86764058bd6287b0bbd445af3b0741d22a2ff703e84469df5"
+    },
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-08-engineering-capacity-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+      "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+    },
+    "graph": "slurp-native-stage3-matched-search-multi-parent-update1-branch-08-engineering-graph-v1",
+    "graph_rows": 4,
+    "plan": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-08-capacity-fit-plan-registered-v1.json",
+      "sha256": "43068f73ce8421676153199442c09b59777d97dcb37b05adce3c191aca6ac339"
+    },
+    "population_cohort": "comparison",
+    "read_recipe": {
+      "relpath": "docs/readiness/2026-10-07-matched-search-capacity-entry-v1/multi-parent-branch-08-capacity-analysis-recipe-v1.json",
+      "sha256": "d36d1acb1a328c28e788f93c32258c4345caf46f841d79ba2f13824e93ae0211"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-08-ENGINEERING-CAPACITY-FIT-V1",
+    "system_id": "multi-parent-branch-08"
+  }
+]

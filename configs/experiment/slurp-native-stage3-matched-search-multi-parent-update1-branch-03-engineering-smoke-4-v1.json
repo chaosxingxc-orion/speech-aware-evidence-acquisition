@@ -1,0 +1,85 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-matched-search-multi-parent-update1-branch-03-engineering-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-matched-search-multi-parent-update1-branch-03-engineering-smoke-4-v1",
+      "cell_id": "slurp-native-stage3-matched-search-multi-parent-update1-branch-03-engineering-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Exact matched feedback-aware search child engineering preparation; registration and frozen/live admission pending.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-03-ENGINEERING-SMOKE-4-V1",
+      "system_text_policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/context-template-k16-v1/policies/d2a05478387aa66472f74044ad3643b1c90c9a40be23234ba6413d23977f10e3.json",
+          "sha256": "4c002702cbbcb0215217363987bade9769f538f5b6a635ea9a2701af37237468"
+        },
+        "bundle_id": "d2a05478387aa66472f74044ad3643b1c90c9a40be23234ba6413d23977f10e3",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    }
+  ],
+  "date": "2026-10-07",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-UPDATE1-BRANCH-03-ENGINEERING-SMOKE-4-V1",
+  "family_budget": {
+    "complete_system_trajectories": 4,
+    "generation_calls_cap": 52,
+    "official_complete_scoring_jobs": 0
+  },
+  "population": {
+    "count": 4,
+    "roster_receipt": "docs/readiness/2026-10-02-slurp-fixed400-context-engineering-v1/roster-v1.json",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "split_id": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+  "stage3_algorithm": {
+    "id": "system-text-black-box-v1",
+    "note": "Engineering one original matched feedback-aware search complete-system child; no efficacy or completed learning claim.",
+    "operators_used": [
+      "rollout"
+    ]
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0,
+    "measurement_design": "form-proof",
+    "note": "Same immutable UPDATE2 first20/first4; structural/capacity proof only. No efficacy claim.",
+    "primary_metric": "SLU field reserved for compatibility; no quality read in engineering proof",
+    "primary_metric_key": "slu",
+    "read_roster": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+    "rows": 4,
+    "tuning_roster": [
+      "SLURP-EVO-FOLD-A-V2",
+      "SLURP-EVO-FOLD-B-V2",
+      "SLURP-DEV-2000-ADDED-V1"
+    ]
+  }
+}

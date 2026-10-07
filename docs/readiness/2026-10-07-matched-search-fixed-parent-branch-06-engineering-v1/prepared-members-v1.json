@@ -1,0 +1,128 @@
+[
+  {
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-graph-v1",
+    "baseline": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-graph-prepared-v1",
+    "config_hash": "2c9e7acbe244f4095bd98cecde3d857b14cedd97b26dd90dfedb22ec93866218",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-graph-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "model-free-check",
+      "planned_gpu_hours": 0.01,
+      "planned_model_calls": 1,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "f4730a31edc9f4305581812afcda855f33dfbd153578aa033c20254de908786e",
+      "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-GRAPH-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-graph-v1",
+    "kind": "graph",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f.json",
+        "sha256": "c5e88bb0800d1a590365767ec9c71c0c9dd6d87250f13ca2c2ec8d5a5381ae9d"
+      },
+      "bundle_id": "85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-GRAPH-V1/phase-supply-v1.json",
+      "sha256": "decc63cf6cc69c6b16c9e3da7022abb8c3dbb49ef88dea9129195aa1a3014f62"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-GRAPH-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-capacity-fit-v1",
+    "baseline": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-capacity-v1",
+    "config_hash": "e01f643c1c7e86d697e4dbf42f0e1e4434491681721ef5e691c5349e2c014837",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-capacity-fit-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 297,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "349b63e974af099f413d665a89995e9a3fadd6f38bb79717c07fcf93c629a1a2",
+      "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-CAPACITY-FIT-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-capacity-v1",
+    "kind": "capacity",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f.json",
+        "sha256": "c5e88bb0800d1a590365767ec9c71c0c9dd6d87250f13ca2c2ec8d5a5381ae9d"
+      },
+      "bundle_id": "85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-CAPACITY-FIT-V1/phase-supply-v1.json",
+      "sha256": "2813d53e1084b03c8e53ba075680442db8887bd98e87bd274a5446eac4bd6368"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-CAPACITY-FIT-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  },
+  {
+    "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-smoke-4-generation-v1",
+    "baseline": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-smoke-4-v1",
+    "config_hash": "0d4e85ab485d82e83b3f3ba161a7b79f203bf3c8c8076a80a42220a6c3f090ce",
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-smoke-4-generation-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 1500,
+      "protocol_hash": "a79e259f3b5e4e4f0246217175957cdfcb00f65822629d3348abcaa145578bb4",
+      "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-SMOKE-4-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-matched-search-fixed-parent-update1-branch-06-engineering-smoke-4-v1",
+    "kind": "smoke-4",
+    "no_contacts": true,
+    "policy_binding": {
+      "bundle": {
+        "relpath": "system-text-search/context-template-k16-v1/policies/85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f.json",
+        "sha256": "c5e88bb0800d1a590365767ec9c71c0c9dd6d87250f13ca2c2ec8d5a5381ae9d"
+      },
+      "bundle_id": "85a99eb8378f218a353301260621bc5e9a560c9fd4ffae03c538d4f4c9f2539f",
+      "schema": "saea-system-text-role-binding-v1"
+    },
+    "population": {
+      "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+      "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-SMOKE-4-V1/phase-supply-v1.json",
+      "sha256": "03cc0398faa1abec4cfaa21952ceac593ca53258961159dcc616b313b9ccb8c2"
+    },
+    "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-UPDATE1-BRANCH-06-ENGINEERING-SMOKE-4-V1",
+    "status": "HELD",
+    "unchanged_source_selection": true,
+    "warm_verified": true
+  }
+]

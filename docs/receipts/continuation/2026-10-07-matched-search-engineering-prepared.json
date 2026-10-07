@@ -1,0 +1,534 @@
+{
+  "at_utc": "2026-10-07T01:52:13.835321+00:00",
+  "contacts_added": 0,
+  "details": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/verification-details-v1.json",
+    "sha256": "ac9c59b8459b4e6ca3b21c0a477e8f13a71bbef8a52b2da9e69f8b893c1ee187"
+  },
+  "entry_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/preparation-entry-disposition.json",
+    "sha256": "5c7210e7e0e3dfe3faf07011f14a95e6c095eedc15b46cee71fc686323ce7ccf"
+  },
+  "helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/prepare-member-v1.py",
+    "sha256": "c3bffbceb418fda9ea9223ae11abb1f823bae494927caf70dbc67938a43e6556"
+  },
+  "members": [
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "seed",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-seed.exit.json",
+        "sha256": "71c5b01a6ba9880fd7991081a42615fd7fc14e730e4962362bf7a0ca4c83f3d2"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-seed-engineering-v1/prepared-members-v1.json",
+        "sha256": "a73e5ac39e0f602bb1057506d938819c77110168bf6346ab73efe2097bc08eb6"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-seed.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-seed.stdout.log",
+        "sha256": "3bbff4dfaa3dc1a0bfc5856868a8e796d37c7d96278c73338cb43188cb6f9a8a"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "seed-aa",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-seed-aa.exit.json",
+        "sha256": "31bee569574fc8db8ae4585a801e8cb6a0c9114506df87dbb1b35180b640cd42"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-seed-aa-engineering-v1/prepared-members-v1.json",
+        "sha256": "d407d6ef7408ef32b02f8f880099c417b8b61bfa74628841f44c5ff0ae7060a4"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-seed-aa.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-seed-aa.stdout.log",
+        "sha256": "d956d32e0785d3479a3c9c4519dc82284239a00d0bd6b0141db905688b4579bc"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-01",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-01.exit.json",
+        "sha256": "b4f7bda8bb2e5404ae94ff9bf06e2b5a83465757c8cd1fc214e7dcaec1b56b3c"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-01-engineering-v1/prepared-members-v1.json",
+        "sha256": "b9fc8f70d10dc2e3b42b1b6291a451b5e658464fb4d4ab514cbd7a508d733fd6"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-01.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-01.stdout.log",
+        "sha256": "1eac1f2798148ee7cbdda7f1ddb76e37699b8e9dec1e89310a51f3a6b9671683"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-02",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-02.exit.json",
+        "sha256": "91208756d7ce278203f597dafd7a77c1735c3d2d3f622d50f084cb6fdbbbb382"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-02-engineering-v1/prepared-members-v1.json",
+        "sha256": "0a9947bc4f355d8cb81a813dec873f0c3258e342d53e68b957bd923791d16fc0"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-02.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-02.stdout.log",
+        "sha256": "c509539866a3197c74f7021b6de9bc3c402e28262e2abebc44a8665b14ce76ec"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-03",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-03.exit.json",
+        "sha256": "40ab5c03322427198f7cf5331f7c9f5e83c835d1c629d59143d4ef047862f5bd"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-03-engineering-v1/prepared-members-v1.json",
+        "sha256": "3ba65429d87f56dcedba3f08fd53b2da669c0e9ea253a4734c1238f7ef9d1938"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-03.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-03.stdout.log",
+        "sha256": "ebfd9918062afc1cd4f3b93b439d69fd132fc7e5c2a62a2db6ab270a4af26e5b"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-04",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-04.exit.json",
+        "sha256": "e1c2ffba9c15563b13a4e993b4f2fd04daff294e287a45965f0bb3dbf5445db3"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-04-engineering-v1/prepared-members-v1.json",
+        "sha256": "5601783cc3c60b30ec11683c2c6ea23d81efbc8a8f33564bde15d75542d1306e"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-04.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-04.stdout.log",
+        "sha256": "de7ffd8170e1ee5e7f939ac6f3eb72257ca3265d07cdc55b097dc49b000ca887"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-05",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-05.exit.json",
+        "sha256": "372c3223318a77fc8b6373c7f5f44953f0fe5f7361b0bed0d0cf248886271699"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-05-engineering-v1/prepared-members-v1.json",
+        "sha256": "231b17101914c147adb83d4df6f6f417b0f48ec31b62025d6f9a004c28ec467d"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-05.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-05.stdout.log",
+        "sha256": "42a75661d70eecbb7b751116aa8782be53fad6ad6735e9809deab1d633670e0b"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-06",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-06.exit.json",
+        "sha256": "afda8fe73557f721cdd892023a299769259ac97f3fd2b459fe646c64f1324b9d"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-06-engineering-v1/prepared-members-v1.json",
+        "sha256": "93a2334a52b9878a726dd08fe32ca9296679b05116b9550883cbe416d4b17607"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-06.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-06.stdout.log",
+        "sha256": "ef23ead25ec143ca449b6e030561356a055233aab3c73a2d3ceba6d49636564e"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-07",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-07.exit.json",
+        "sha256": "baa95897705572af85bb68afb1e0d23073ab7a2ff596dc7f995d1efef5c71ff6"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-07-engineering-v1/prepared-members-v1.json",
+        "sha256": "00dc791c62a8038ca20874b50b0e372ccb83fa128a4d6908d5c37b65a311a430"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-07.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-07.stdout.log",
+        "sha256": "16b675aad6ac82cb0137c4945621803988c75eff725c30756ca4219465f50f6d"
+      }
+    },
+    {
+      "arm": "fixed-parent",
+      "candidate_id": "branch-08",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-08.exit.json",
+        "sha256": "454743e1c64ede69cad74ff8eb39e890c13dc6d5f69bbd711e59a6bb805603dd"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+        "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-fixed-parent-branch-08-engineering-v1/prepared-members-v1.json",
+        "sha256": "26f4c8351cea5b9ddd21420ddc952d771a1ba16676241152ae1c35532c2625c1"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-08.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/fixed-parent-branch-08.stdout.log",
+        "sha256": "e0862b4dfce695e5ac78ca749df240c0b92daeaa28857bd3c3224a0dc813b7f2"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "seed",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-seed.exit.json",
+        "sha256": "d5793cee5e773efdf5874dd7aa3e4475a1f5c654d37a4efa9b54e27ecf078558"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-seed-engineering-v1/prepared-members-v1.json",
+        "sha256": "575231becbe4d045f055dee1e408e36b322dc1dbaebab97ed19f20d6f1411bbd"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-seed.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-seed.stdout.log",
+        "sha256": "3bbff4dfaa3dc1a0bfc5856868a8e796d37c7d96278c73338cb43188cb6f9a8a"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "seed-aa",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-seed-aa.exit.json",
+        "sha256": "7288d0f177d7c53ace2ae7261f8e71b0de06f7655ea77a49a1b571f9bddcb190"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-seed-aa-engineering-v1/prepared-members-v1.json",
+        "sha256": "4df8b901a0ead79f6a2228882468ccb3c1d17ec2a0f4b45ab084de53f216c3c6"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-seed-aa.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-seed-aa.stdout.log",
+        "sha256": "d956d32e0785d3479a3c9c4519dc82284239a00d0bd6b0141db905688b4579bc"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-01",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-01.exit.json",
+        "sha256": "b9ea7cae31ddc6449b6146bb0d4e8a639502b12d0449619d9cb5eeaa38c0a891"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-01-engineering-v1/prepared-members-v1.json",
+        "sha256": "63eb86ec302f9c9cc88beeca9a79765f4f321ac7f13ed02e405ad2cc79f57e38"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-01.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-01.stdout.log",
+        "sha256": "1eac1f2798148ee7cbdda7f1ddb76e37699b8e9dec1e89310a51f3a6b9671683"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-02",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-02.exit.json",
+        "sha256": "3dd992d9f37a9c030ecaa1f37f1ddb39532727c6d24c58274bb633e876c85a42"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-02-engineering-v1/prepared-members-v1.json",
+        "sha256": "604a7f9265ed97dda5ed566dce3f8baf5917de1159c1877ba99a4ec74a1f06c0"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-02.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-02.stdout.log",
+        "sha256": "c509539866a3197c74f7021b6de9bc3c402e28262e2abebc44a8665b14ce76ec"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-03",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-03.exit.json",
+        "sha256": "1001d25cf39c47b2a063034f0c095cba350b6f79870efdd567f93c095a130c45"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-03-engineering-v1/prepared-members-v1.json",
+        "sha256": "400dad20321fcc54cafff61fb221614eb469e9100f265fc769b197be219a325c"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-03.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-03.stdout.log",
+        "sha256": "ebfd9918062afc1cd4f3b93b439d69fd132fc7e5c2a62a2db6ab270a4af26e5b"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-04",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-04.exit.json",
+        "sha256": "46ba16891421a31b0e5271107808499150b0eec37ab02ae69d555efb7f91491b"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-04-engineering-v1/prepared-members-v1.json",
+        "sha256": "dedca3c6e1fd295cce7cd9d5dc1c79c70b27ca52d883796181820ee34a438caa"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-04.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-04.stdout.log",
+        "sha256": "de7ffd8170e1ee5e7f939ac6f3eb72257ca3265d07cdc55b097dc49b000ca887"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-05",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-05.exit.json",
+        "sha256": "d530b1d11d353477e1cc009f5224d652cd3034aec9c55e08dddefb1bacfc614c"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-05-engineering-v1/prepared-members-v1.json",
+        "sha256": "33466bb91f90edd8856bcf5af54d342e1d24f3e0fc0eed4b09f45d2ad32fd697"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-05.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-05.stdout.log",
+        "sha256": "42a75661d70eecbb7b751116aa8782be53fad6ad6735e9809deab1d633670e0b"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-06",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-06.exit.json",
+        "sha256": "80a6e82acb018a9344bddb5c4d9ee7298b470742ffd2dd473e1e4698a635de4a"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-06-engineering-v1/prepared-members-v1.json",
+        "sha256": "3203a745bafaac7bc7deeb901b3cae27703187208de80baf20f6985864e1237e"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-06.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-06.stdout.log",
+        "sha256": "ef23ead25ec143ca449b6e030561356a055233aab3c73a2d3ceba6d49636564e"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-07",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-07.exit.json",
+        "sha256": "45fe3a0797374dfaeac76cd91728590d03e7ec8ab9e2865440bedd26e03f7620"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-07-engineering-v1/prepared-members-v1.json",
+        "sha256": "c3a69e92b9599d3aceb1ac717a59f04ffdeb3d418578a8c7a4099cf2e8f3ef06"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-07.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-07.stdout.log",
+        "sha256": "16b675aad6ac82cb0137c4945621803988c75eff725c30756ca4219465f50f6d"
+      }
+    },
+    {
+      "arm": "multi-parent",
+      "candidate_id": "branch-08",
+      "cohort": "comparison",
+      "exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-08.exit.json",
+        "sha256": "350bb5b0d98e2c0fa245e5afb2c7da417d16ffbd68cff4e097686123b44f3ff3"
+      },
+      "population": {
+        "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+        "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-multi-parent-branch-08-engineering-v1/prepared-members-v1.json",
+        "sha256": "17d4ac4ae7eef9edc5af7176f76da64bfcbdf4a90601aeecd458aeac1a96f542"
+      },
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-08.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/multi-parent-branch-08.stdout.log",
+        "sha256": "e0862b4dfce695e5ac78ca749df240c0b92daeaa28857bd3c3224a0dc813b7f2"
+      }
+    }
+  ],
+  "runtime_admission": false,
+  "schema": "saea-matched-search-engineering-prepared-v1",
+  "started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/started.json",
+    "sha256": "5e7429d9787ff5255ef1943f517e60a08175a7fb478a301784ca11a9c80dbe79"
+  },
+  "status": "ALL_CONFIGURED_MEMBERS_PREPARED_HELD",
+  "terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/exit.json",
+    "sha256": "f407905191836967f4e04839c4549ecf9e485bac95c95e4606ea4a8e8aab3e9f"
+  },
+  "verification": "Exact configuration-derived members and roster order; original policy bytes, composed hashes, deterministic sampling, unchanged supply outputs, independent original processes and zero-contact terminal evidence verified.",
+  "verifier": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-engineering-preparation-v1/verify-complete-v1.py",
+    "sha256": "7284e8393396a22e62216a0bdad7aa143a35478f5c53fe3ddf7fb987029dc14e"
+  }
+}
