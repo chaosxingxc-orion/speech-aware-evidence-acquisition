@@ -1,0 +1,368 @@
+{
+  "actual_fit_accounting_pin": {
+    "bytes": 29525,
+    "path": "coordination/simple-consumption-natural4-instrumented-v4/actual-fit-accounting-v1.json",
+    "root": "SPEECHRL_DATA_DIR",
+    "sha256": "f01f2cbb43328bf3a3190f16bb3ae2675add64d7ce418edae74029b685986130"
+  },
+  "actual_fit_endpoint_count": 228,
+  "actual_fit_request_receipts": 57,
+  "at_utc": "2026-10-07T12:55:43.218156+00:00",
+  "attempt_lifecycle": "All four generation attempts remain OPENED as expected for engineering workers; their complete manifests and passing structural inspections do not imply scored/finalized business results.",
+  "author": "GPT-6.1 Sol engineering documentation under root instruction",
+  "documentation_action": {
+    "live_monitoring_performed": false,
+    "model_contacts": 0,
+    "original_guard_inspection_and_closure_bytes_preserved": true,
+    "runtime_controls_changed": false,
+    "scorer_contacts": 0,
+    "task_outputs_read": false,
+    "tokenizer_contacts": 0
+  },
+  "driver_end": "2026-10-07T12:44:44Z",
+  "driver_start": "2026-10-07T12:36:27Z",
+  "evidence": [
+    {
+      "bytes": 7767,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/operational-complete-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "9426a5f3193a75cc85f71df3b755e682dd80086da56bd8482fa2269a394b8947"
+    },
+    {
+      "bytes": 727,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/root-terminal-closure-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "1c9fa4153a0de78b521fb05f38a283372fdb83feedba855454a83d395538f2f7"
+    },
+    {
+      "bytes": 471,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/monitor-deleted-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "adcda92a9b7806d2c069cf9f601af587c95394782f69f5804731ade35101971e"
+    },
+    {
+      "bytes": 940,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-seed-v4-complete-inspection-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "f56aa6f34d0c4cade00b7204989fc4a89229fe6d4b83d89788f7b705d5611f2f"
+    },
+    {
+      "bytes": 2758,
+      "path": "coordination/process-guard/smoke-1-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v4-20261007T123655Z/finished.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "99add748466ac866e9586a7b44e3760b09c6e5eca598639f0547d50406c956a5"
+    },
+    {
+      "bytes": 21704,
+      "path": "coordination/process-guard/smoke-1-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v4-20261007T123655Z/events.jsonl",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "1ee9d0ec1db0e4250d2c178d0667b095bcbec1be710a43350c64463e3cb4a182"
+    },
+    {
+      "bytes": 945,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-seed-aa-v4-complete-inspection-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "f34640c2be3b9de9a8f249f24a71a979e5f3108e15c8ab72e5f8a7402f175c6b"
+    },
+    {
+      "bytes": 2778,
+      "path": "coordination/process-guard/smoke-2-slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v4-20261007T123905Z/finished.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "a74b94dc03a0526c797303ce1b5e0bc8294736e2247add7c1e2ee402bbaee2d6"
+    },
+    {
+      "bytes": 21728,
+      "path": "coordination/process-guard/smoke-2-slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v4-20261007T123905Z/events.jsonl",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "1ff685f183c7d7c9cb59c0582d42abf5f6a452b2faed7f2107255587a96e8481"
+    },
+    {
+      "bytes": 947,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-review-off-v4-complete-inspection-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "dd43c647e5cf1eb72c8891e5ebcbc154768f0dcb88efd62b65e3c0121a8559d9"
+    },
+    {
+      "bytes": 2797,
+      "path": "coordination/process-guard/smoke-3-slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-v4-20261007T124113Z/finished.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "5a68c59e5b46141e76f61a03b0a7e3452ff98decba39371645a9dcfb3fe71738"
+    },
+    {
+      "bytes": 19438,
+      "path": "coordination/process-guard/smoke-3-slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-v4-20261007T124113Z/events.jsonl",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "dbcc093ae6df7e2ce158e41d1845305158de6bef073eef6a8b0b1a91c7efbff0"
+    },
+    {
+      "bytes": 953,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-solver-lookup-v4-complete-inspection-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "b6428f30950aafbc057faf328e5e8ccd706fcf87210370717e5b680166927d6d"
+    },
+    {
+      "bytes": 2816,
+      "path": "coordination/process-guard/smoke-4-slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-v4-20261007T124311Z/finished.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "343a5796de526c7ea6a6bbe57ca619de6f4baffd8143e9163681ff70c1f7c81f"
+    },
+    {
+      "bytes": 20619,
+      "path": "coordination/process-guard/smoke-4-slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-v4-20261007T124311Z/events.jsonl",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "3a639db629f2325a655678c2a486e218f3b0212eb59d8f6f9573f3121692d0c2"
+    },
+    {
+      "bytes": 29525,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/actual-fit-accounting-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "f01f2cbb43328bf3a3190f16bb3ae2675add64d7ce418edae74029b685986130"
+    },
+    {
+      "bytes": 9172,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/operational-server-memory-review-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "f31d25140efe28c6853f4c46d8fede4ccdeddc0daa89056a41ddd13320e46de9"
+    }
+  ],
+  "fit_accounting": "Independent completed request-fit receipts crosschecked against each actual contact journal; not inferred from generation or service totals",
+  "members": [
+    {
+      "actual_fit_endpoints": 76,
+      "actual_fit_request_receipts": 19,
+      "attempt_state": "OPENED",
+      "diagnostic_sample_count": 17,
+      "fresh_diagnostic_samples": 17,
+      "generation_contacts": 19,
+      "guard_events_pin": {
+        "bytes": 21704,
+        "path": "coordination/process-guard/smoke-1-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v4-20261007T123655Z/events.jsonl",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "1ee9d0ec1db0e4250d2c178d0667b095bcbec1be710a43350c64463e3cb4a182"
+      },
+      "guard_exit_code": 0,
+      "guard_finished_pin": {
+        "bytes": 2758,
+        "path": "coordination/process-guard/smoke-1-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v4-20261007T123655Z/finished.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "99add748466ac866e9586a7b44e3760b09c6e5eca598639f0547d50406c956a5"
+      },
+      "guard_status": "completed",
+      "inspection_pass": true,
+      "inspection_pin": {
+        "bytes": 940,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-seed-v4-complete-inspection-v1.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "f56aa6f34d0c4cade00b7204989fc4a89229fe6d4b83d89788f7b705d5611f2f"
+      },
+      "manifest_status": "COMPLETED",
+      "member": "simple-natural4-seed-v4",
+      "minimum_windows_free_gib": 18.592575073242188,
+      "prepared_score_specification_count": 1,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4",
+      "runtime_output_hashes_reported_by_existing_inspector_only": {
+        "manifest": "9966510712d8d5562987424713d8a5c01f7664c8acd7b93445111d4bf37ba95f",
+        "outputs": "146b8cc5ea6ff8ccc18499a0c08a87f325f05ad2d635cad3bfc77722d4fed484"
+      },
+      "sampled_server_pss_max_mib": 963.3095703125,
+      "sampled_worker_pss_max_mib": 2156.16796875,
+      "score_lifecycle": "Prepared score specification only; engineering worker is intentionally unscored",
+      "worker_returncode": 0
+    },
+    {
+      "actual_fit_endpoints": 88,
+      "actual_fit_request_receipts": 22,
+      "attempt_state": "OPENED",
+      "diagnostic_sample_count": 17,
+      "fresh_diagnostic_samples": 17,
+      "generation_contacts": 22,
+      "guard_events_pin": {
+        "bytes": 21728,
+        "path": "coordination/process-guard/smoke-2-slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v4-20261007T123905Z/events.jsonl",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "1ff685f183c7d7c9cb59c0582d42abf5f6a452b2faed7f2107255587a96e8481"
+      },
+      "guard_exit_code": 0,
+      "guard_finished_pin": {
+        "bytes": 2778,
+        "path": "coordination/process-guard/smoke-2-slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v4-20261007T123905Z/finished.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "a74b94dc03a0526c797303ce1b5e0bc8294736e2247add7c1e2ee402bbaee2d6"
+      },
+      "guard_status": "completed",
+      "inspection_pass": true,
+      "inspection_pin": {
+        "bytes": 945,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-seed-aa-v4-complete-inspection-v1.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "f34640c2be3b9de9a8f249f24a71a979e5f3108e15c8ab72e5f8a7402f175c6b"
+      },
+      "manifest_status": "COMPLETED",
+      "member": "simple-natural4-seed-aa-v4",
+      "minimum_windows_free_gib": 18.30621337890625,
+      "prepared_score_specification_count": 1,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V4",
+      "runtime_output_hashes_reported_by_existing_inspector_only": {
+        "manifest": "eb8f2cf11728dac9e879afe87cd675e54df5c84f02f8132bbaf034bf59be83c0",
+        "outputs": "6884bb6428e64a43e32e3ab1ddc7bfffacd4275582ac609a8541b6384bdeca52"
+      },
+      "sampled_server_pss_max_mib": 963.6328125,
+      "sampled_worker_pss_max_mib": 2208.505859375,
+      "score_lifecycle": "Prepared score specification only; engineering worker is intentionally unscored",
+      "worker_returncode": 0
+    },
+    {
+      "actual_fit_endpoints": 32,
+      "actual_fit_request_receipts": 8,
+      "attempt_state": "OPENED",
+      "diagnostic_sample_count": 15,
+      "fresh_diagnostic_samples": 15,
+      "generation_contacts": 8,
+      "guard_events_pin": {
+        "bytes": 19438,
+        "path": "coordination/process-guard/smoke-3-slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-v4-20261007T124113Z/events.jsonl",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "dbcc093ae6df7e2ce158e41d1845305158de6bef073eef6a8b0b1a91c7efbff0"
+      },
+      "guard_exit_code": 0,
+      "guard_finished_pin": {
+        "bytes": 2797,
+        "path": "coordination/process-guard/smoke-3-slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-v4-20261007T124113Z/finished.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "5a68c59e5b46141e76f61a03b0a7e3452ff98decba39371645a9dcfb3fe71738"
+      },
+      "guard_status": "completed",
+      "inspection_pass": true,
+      "inspection_pin": {
+        "bytes": 947,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-review-off-v4-complete-inspection-v1.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "dd43c647e5cf1eb72c8891e5ebcbc154768f0dcb88efd62b65e3c0121a8559d9"
+      },
+      "manifest_status": "COMPLETED",
+      "member": "simple-natural4-review-off-v4",
+      "minimum_windows_free_gib": 18.19593048095703,
+      "prepared_score_specification_count": 1,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-V4",
+      "runtime_output_hashes_reported_by_existing_inspector_only": {
+        "manifest": "ec10177b2e6371a12df3ead3dda99ea02006e851b41cc08f7a2f1c815529e390",
+        "outputs": "698fc85d6a19f98baff018dfe042fca0f93c74cc51d1457b4002ca0713775feb"
+      },
+      "sampled_server_pss_max_mib": 993.056640625,
+      "sampled_worker_pss_max_mib": 2316.4248046875,
+      "score_lifecycle": "Prepared score specification only; engineering worker is intentionally unscored",
+      "worker_returncode": 0
+    },
+    {
+      "actual_fit_endpoints": 32,
+      "actual_fit_request_receipts": 8,
+      "attempt_state": "OPENED",
+      "diagnostic_sample_count": 16,
+      "fresh_diagnostic_samples": 16,
+      "generation_contacts": 8,
+      "guard_events_pin": {
+        "bytes": 20619,
+        "path": "coordination/process-guard/smoke-4-slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-v4-20261007T124311Z/events.jsonl",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "3a639db629f2325a655678c2a486e218f3b0212eb59d8f6f9573f3121692d0c2"
+      },
+      "guard_exit_code": 0,
+      "guard_finished_pin": {
+        "bytes": 2816,
+        "path": "coordination/process-guard/smoke-4-slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-v4-20261007T124311Z/finished.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "343a5796de526c7ea6a6bbe57ca619de6f4baffd8143e9163681ff70c1f7c81f"
+      },
+      "guard_status": "completed",
+      "inspection_pass": true,
+      "inspection_pin": {
+        "bytes": 953,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-solver-lookup-v4-complete-inspection-v1.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "b6428f30950aafbc057faf328e5e8ccd706fcf87210370717e5b680166927d6d"
+      },
+      "manifest_status": "COMPLETED",
+      "member": "simple-natural4-solver-lookup-v4",
+      "minimum_windows_free_gib": 18.39621353149414,
+      "prepared_score_specification_count": 1,
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4",
+      "runtime_output_hashes_reported_by_existing_inspector_only": {
+        "manifest": "619cdc525154e390affc33b4428a63174b41418cf12d3a34dc2cb6cb97b20bfb",
+        "outputs": "76f8311c6bfa0b7085761379a5f4e811c3ec027f7fd3395b3f486249ad0cb516"
+      },
+      "sampled_server_pss_max_mib": 994.77734375,
+      "sampled_worker_pss_max_mib": 2270.560546875,
+      "score_lifecycle": "Prepared score specification only; engineering worker is intentionally unscored",
+      "worker_returncode": 0
+    }
+  ],
+  "memory_summary": {
+    "diagnostic_interval_seconds": 5,
+    "limitation": "Five-second sampled process data are not true allocation peaks. This successful continuation does not establish why the original host grew approximately20GiB; source and starting host/service residency differ.",
+    "minimum_windows_free_gib": 18.19593048095703,
+    "operational_disposition": "This bounded instrumented continuation completed without a Windows memory-floor breach. The earlier approximately 20 GiB loss remains causally unexplained; successful operation is not evidence of business gain.",
+    "sampled_server_pss_max_mib": 994.77734375,
+    "sampled_worker_pss_max_mib": 2316.4248046875
+  },
+  "monitor_disposition": {
+    "action": "deleted",
+    "at_utc": "2026-10-07T12:48:10.0127486Z",
+    "automation_id": "slurp-instrumented-natural4-monitor",
+    "basis": "Driver complete, four successful guards, no admitted Linux workers or Windows observers",
+    "schema": "saea-job-monitor-disposition-v1",
+    "terminal_closure_sha256": "1c9fa4153a0de78b521fb05f38a283372fdb83feedba855454a83d395538f2f7",
+    "tool": "mcp__codex_app__automation_update",
+    "tool_result": "deleteStatus deleted"
+  },
+  "official_scorer_runs": 0,
+  "prepared_score_specifications_only": true,
+  "remaining_scope": {
+    "N20_preparation_gaps": [
+      "Narrow shared manual comparison registration and complete-family reader extension",
+      "Prospective streaming-source envelope re-pinning; no old envelope rewrite"
+    ],
+    "learner_export": false,
+    "new_runtime_attempt_admitted": false,
+    "official_scoring_admitted": false,
+    "scientific_comparison": "N20 HELD; no automatic admission follows from operational completion",
+    "structural_READ": "Pending exact root structural READ and countersignature",
+    "structural_READ_countersigned": false,
+    "task_quality_read": false
+  },
+  "saved_terminal_closure": {
+    "active_linux_admitted_processes": [],
+    "at_utc": "2026-10-07T12:46:39.0504257Z",
+    "generation_contacts": 57,
+    "monitor_disposition": "Verified terminal; root deletes job-scoped monitor next",
+    "no_task_quality_read": true,
+    "observer_pids": [
+      16768,
+      34456,
+      39336,
+      43540
+    ],
+    "observer_processes_present": [],
+    "operational_complete_sha256": "9426a5f3193a75cc85f71df3b755e682dd80086da56bd8482fa2269a394b8947",
+    "rows": 16,
+    "schema": "saea-instrumented-natural4-terminal-closure-v1",
+    "task_state": "Ready",
+    "windows_free_gib": 20.18783187866211,
+    "worker_results": "All four independent guard/worker exits zero; wrapper result is not substituted",
+    "wrapper_result": 0
+  },
+  "schema": "saea-instrumented-natural4-completion-continuation-v1",
+  "source_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+  "status": "COMPLETE_OPERATIONAL_STRUCTURAL_INSPECTION_WITH_SAVED_TERMINAL_CLOSURE",
+  "supersedes_launch_snapshot": {
+    "bytes": 24390,
+    "path": "docs/receipts/continuation/2026-10-07-simple-consumption-natural4-instrumented-v4-launch.json",
+    "root": "repository",
+    "sha256": "2433359dd9bc42a47c26ba6f8d2940c99133da2193d310d37250f5e98cbb64f6"
+  },
+  "total_generation_contacts": 57,
+  "total_rows": 16
+}

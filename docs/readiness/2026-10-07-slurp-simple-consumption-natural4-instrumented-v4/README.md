@@ -1,5 +1,18 @@
 # Fresh instrumented natural4 continuation drafts (2026-10-07)
 
+## Current saved status: operational completion
+
+The exact instrumented v4 continuation completed on frozen
+`d4ba0ec70ee7634eceaf8c2b824a653894dde0b3`: four structural inspections passed,
+16 rows, 57 generation contacts and 228 independently verified actual FIT
+endpoints. Root verified terminal closure and deleted the job monitor. Engineering
+attempts remain OPENED with complete manifests and prepared score specifications
+only; zero official scorer runs occurred. Structural READ remains unsigned and
+N20 remains held. Operational completion does not explain the original approximately
+20 GiB loss or establish business gain. See the [completion and closure record](../../receipts/continuation/2026-10-07-simple-consumption-natural4-instrumented-v4-completion.json).
+
+## Historical draft preparation instructions (preserved)
+
 PREPARATION ONLY. All four smoke-4-v4 members use fresh generation/FIT/READ identities, the same registered four-row subset, unchanged policies, four slots and 4 GiB startup/running floors. The draft engineering queue enables `process_memory_diagnostics: true`; natural zero-lookup remains valid. No producer, countersignature, admission or launch has run. Existing STOP, lease, original v3 partial outputs, frozen source and controls are preserved.
 
 The eight v4 configs are held. Their supply pins temporarily reference the original v3 envelope as the exact-output reference; they are not launch-ready. Materialize only after root integrates and reviews the final streaming loader and diagnostics source. The portable preparation producer and prospective finalizer are adaptations of the existing natural4 routines, using the same `ensure_artifact_pinned(...allow_output_change=False)` and strict prepared/native registration APIs. They require an exact clean checkout commit and raw-pin the root preparation-only incident receipt. They never countersign or touch controls. Root personally chooses those arguments and invokes them only after source review.

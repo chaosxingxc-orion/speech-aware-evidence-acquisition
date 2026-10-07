@@ -1,5 +1,47 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Instrumented natural-four engineering run completed; structural READ pending (2026-10-07)
+
+The saved driver epoch ran from 12:36:27Z to 12:44:44Z on frozen
+`d4ba0ec70ee7634eceaf8c2b824a653894dde0b3`. All four independent guards and
+workers exited zero, and all four existing structural inspections passed:
+16 total rows and 57 generation contacts, split 19/22/8/8 for seed, seed-aa,
+review-off and solver-lookup. The root operational-completion receipt has SHA-256
+`9426a5f3193a75cc85f71df3b755e682dd80086da56bd8482fa2269a394b8947`.
+This saved completion supersedes the launch-only snapshot below.
+
+Root's terminal closure at 12:46:39.0504257Z records no admitted Linux child,
+all four Windows observer processes absent, task Ready and Windows free memory
+20.187832 GiB. The wrapper result is not substituted for the four verified guard
+and worker results. Root deleted `slurp-instrumented-natural4-monitor`; the saved
+delete receipt at 12:48:10.0127486Z records the automation tool's successful
+deletion. These are saved terminal observations, not a fresh health attestation.
+This writer did not monitor processes, inspect raw task outputs or change controls.
+
+The minimum recorded Windows free memory was 18.195930 GiB. Five-second fresh
+diagnostic samples recorded maximum worker PSS 2,316.4248 MiB and server PSS
+994.7773 MiB. Sampled maxima are not true allocation peaks. This bounded
+continuation finished without the previous memory-floor breach and clears that
+operational blocker for this run. It does not establish the cause of the original
+approximately 20 GiB Windows loss; source and starting host/service residency
+changed. No business gain, task-quality or causal conclusion follows.
+
+All four engineering attempts remain `OPENED`, with `COMPLETED` manifests and
+passing structural inspections. Each has a prepared score specification only;
+zero official scorer runs occurred. Do not mistake prepared score jobs for actual
+scoring or finalized business results. Root independently verified 57 completed
+request-fit receipts and 228 actual tokenizer endpoints, split 19/76, 22/88, 8/32
+and 8/32; the accounting receipt SHA-256 is
+`f01f2cbb43328bf3a3190f16bb3ae2675add64d7ce418edae74029b685986130`.
+These measured endpoints come from exact FIT receipts and journals, not the
+configured 496-endpoint ceiling. Structural READ is not yet signed. N20 remains
+held until the exact root structural READ/countersignature and separate admission.
+The declared 80-trajectory comparison still needs the narrow shared manual
+registration/reader extension and prospective streaming-source envelope re-pinning.
+No scientific feedback or learner export is authorized. Preserve original v3
+failures, all v4 guard/inspection bytes, both precontact refusals and all source
+bindings. Root owns the next decision. See [saved completion and closure evidence](../receipts/continuation/2026-10-07-simple-consumption-natural4-instrumented-v4-completion.json).
+
 ## Instrumented natural four-row continuation launched (2026-10-07)
 
 Root admitted and launched the exact separately registered v4 continuation through
@@ -6650,7 +6692,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T12:44:29.755789+00:00
+Last refreshed: 2026-10-07T12:55:43.218156+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
