@@ -13,16 +13,9 @@
       "dataset_fragment": "slurp-speech-native-simple-consumption-n100-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Exact root admission, fresh N100 capacity and frozen/live gates pending.",
-        "requirements": [
-          {
-            "kind": "preparation",
-            "reason": "Exact fixed400 selection outputs reused with current source identity; zero contacts.",
-            "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-CAPACITY-FIT-V1/phase-supply-v1.json",
-            "sha256": "bf44c4a67eef1814cc8f6709aea2239721dc163d4c8b4627f774079a529eb4db"
-          }
-        ],
-        "state": "held"
+        "reason": "Root owner227 admits this fresh nongenerative capacity family on the exact prepared cohort and source. Actual frozen-source, role-byte, named registration and CLI checks plus live 4 GiB memory, session, lease and current request-FIT gates remain mandatory before contact.",
+        "requirements": [],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-CAPACITY-FIT-V1",
       "system_text_policy_binding": {

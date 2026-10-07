@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## N100 capacity offline registration (2026-10-07T18:19:45.834014+00:00)
+
+The four unchanged N100 systems have fresh offline capacity registration; actual FIT and generation remain pending. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-capacity-offline-registration-v1.json`. Preserve the zero-contact v1 authoring refusal and its root227 v2 schema-only disposition. Capacity bounds total 996 tokenizer endpoints; generation and graph remain HELD. Startup/running memory floors are 4 GiB. The next task is frozen-source verification, then fresh capacity. Keep the original completed N20 controls, resident service and old results unchanged. The planned N100 GPU campaign is serial across groups with four concurrent samples per group; CPU scoring and separately authorized descriptive analysis overlap subsequent generation. No scientific read or dispatch follows merely from preparation.
+
+
 ## Continuous GPU execution clarified; keep four-way concurrency within each member (2026-10-07)
 
 The owner's latest clarification accepts four concurrent samples within a group.

@@ -1,0 +1,9 @@
+# N100 capacity registration before contact
+
+Root completed the fresh four-member nongenerative capacity registration under owner227. The final capacity cells are ready only for their registered maximum legal request FIT. Generation and graph cells remain held. The four bounds are 299, 299, 157 and 241 tokenizer endpoints (996 total); there were no tokenizer, generation or scorer contacts during preparation. All original prepared source identities, fixed 100-input cohort, policy text and task outputs remain unchanged.
+
+The first model-free authoring attempt stopped before edits or contact because its helper incorrectly expected a capacity budget object in generation and graph receipts, whose producer intentionally records explicit null. Root preserved that attempt and admitted a narrowly scoped successor. The successor requires the capacity object to equal the source-derived bound and requires the other two fields to exist and be null. Independent review passed the actual twelve receipt predicates and source pins; this is not a runtime retry or policy change.
+
+Original exposure-ledger bytes remain an exact prefix. The original precontact evidence, source, helper and captures remain preserved under the v1 coordination directory; the reviewed v2 wrapper owns new durable started, stdout, stderr and original-exit evidence.
+
+Next: commit and freeze this registration, pass the original named and frozen source/runtime checks, then run one fresh capacity family against the current resident service with 4 GiB startup/running floors. No queue, STOP, lease, cache or service was changed by registration. The later generation campaign uses four concurrent samples within each group and a single serial GPU campaign with official CPU scoring overlap. Per-group descriptive CPU analysis is independent of the next GPU admission and uses separate exact READ authority.

@@ -1,0 +1,66 @@
+{
+  "at_utc": "2026-10-07T18:19:45.834014+00:00",
+  "authoring_exit": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v2/authoring-v1.exit.json",
+    "sha256": "4425aec3a3ad0ca1c5c1ef050c908f6985d7cce1d963481776adc092825f79f5"
+  },
+  "authoring_inputs": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v2/root-authoring-inputs-v1.json",
+    "sha256": "640fa887304c6b2af6be028d8ea6e1c686a7d652d0050d508959d28ef0a0c9e8"
+  },
+  "capacity_endpoint_cap": 996,
+  "dispatches": 0,
+  "generation_contacts": 0,
+  "generation_status": "HELD",
+  "independent_review": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v2/root-recorded-independent-review-v1.json",
+    "sha256": "ee0376fa88b7b8abaf1b8e5a4a91d88b3fe66cfc33605483d6df6eed1820027d"
+  },
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-capacity-v1-fit",
+      "contact_cap": 299,
+      "label": "seed",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n100-capacity-v1-fit",
+      "contact_cap": 299,
+      "label": "seed-aa",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n100-capacity-v1-fit",
+      "contact_cap": 157,
+      "label": "review-off",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n100-capacity-v1-fit",
+      "contact_cap": 241,
+      "label": "solver-lookup",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-CAPACITY-FIT-V1"
+    }
+  ],
+  "owner_decisions": [
+    227
+  ],
+  "precontact_disposition": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v1/root-precontact-authoring-disposition-v1.json",
+    "sha256": "57f20e81aaef436506b0ad57e51a29a0c7e9a81160cf455cf9a8fd0cfc230da8"
+  },
+  "preparation": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v2/registration-preparation-v1.json",
+    "sha256": "96ebda5f1271b41a90ee825ad442b59e4eb599715e559e5db3b61708826398cd"
+  },
+  "queue_or_service_changed": false,
+  "resource_floors_gib": {
+    "running": 4,
+    "startup": 4
+  },
+  "schema": "saea-root-offline-capacity-authoring-receipt-v1",
+  "scorer_contacts": 0,
+  "source_base": "f188d322127f6ef9ff3c89a7434e98efa97e678e",
+  "status": "OFFLINE REGISTERED; FROZEN CHECKS AND ACTUAL CAPACITY PENDING",
+  "tokenizer_contacts": 0
+}
