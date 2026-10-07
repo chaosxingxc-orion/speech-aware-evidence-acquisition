@@ -12,6 +12,7 @@ from test_group_relative_feedback import source_pair  # noqa: F401
 from test_llama_server_transport import _spawn_live_matching_process  # noqa: F401
 
 from speech_aware_evidence_acquisition.contracts import TraceRecord
+from speech_aware_evidence_acquisition.core.delivery import native_abstention_records
 from speech_aware_evidence_acquisition.core.bundle.artifacts import VerifiedBundle
 from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
 from speech_aware_evidence_acquisition.core.preparation import (
@@ -88,6 +89,7 @@ def _proposal(
 @pytest.fixture()
 def materialization_world(tmp_path, monkeypatch):
     import speech_aware_evidence_acquisition.core.provisional_candidate_materialization as module
+    import speech_aware_evidence_acquisition.rails.training_proposal_context as proposal_module
 
     data_root = tmp_path / "data"
     sample_ids = ("slurp:train:1", "slurp:train:2")
@@ -124,13 +126,13 @@ def materialization_world(tmp_path, monkeypatch):
     source_bindings_path = data_root / "prepared" / "source-bindings.json"
     source_bindings = [{"fixture": "source-a"}, {"fixture": "source-b"}]
     source_bindings_sha = _write_json(source_bindings_path, source_bindings)
-    monkeypatch.setattr(
-        module,
-        "build_training_proposal_contexts",
-        lambda value: copy.deepcopy(prepared_output)
-        if value == source_bindings
-        else (_ for _ in ()).throw(AssertionError("wrong source bindings")),
-    )
+    def rebuild(value):
+        if value != source_bindings:
+            raise AssertionError("wrong source bindings")
+        return copy.deepcopy(prepared_output)
+
+    monkeypatch.setattr(module, "build_training_proposal_contexts", rebuild)
+    monkeypatch.setattr(proposal_module, "build_training_proposal_contexts", rebuild)
     prepared_path = data_root / "prepared" / "proposal-contexts.json"
     prepared_inputs = training_proposal_context_preparation_inputs(prepared_output)
     prepared_receipt = prepare_artifact(
@@ -324,6 +326,68 @@ def _prepare(world):
     )
 
 
+def _source_derived_abstention_delivery(sample_id: str) -> dict[str, object]:
+    source_contact = {
+        "agent_contact_id": "synthetic-program:solver:0:" + sample_id,
+        "request_id": "synthetic-final-request",
+        "request_sha256": "1" * 64,
+        "response_sha256": "2" * 64,
+        "response_text_sha256": "3" * 64,
+    }
+    derived_id, _request, response = native_abstention_records(
+        sample_id=sample_id,
+        source_contact=source_contact,
+        finish_reason="length",
+    )
+    return {
+        "kind": "abstention",
+        "delivered_solver": False,
+        "derived_request_id": derived_id,
+        "response_sha256": response["response_sha256"],
+        "response_text_sha256": response["response_text_sha256"],
+    }
+
+
+def _rebind_public_prepared_contexts(world) -> None:
+    """Republish reconstructed synthetic contexts and update exact public pins."""
+    source_bindings = json.loads(world["paths"]["source_bindings"].read_bytes())
+    world["paths"]["prepared"].unlink()
+    receipt = prepare_training_proposal_contexts(
+        source_bindings, world["paths"]["prepared"]
+    )
+    prepared = json.loads(world["paths"]["prepared"].read_bytes())
+    pin = {
+        "data_relpath": "prepared/proposal-contexts.json",
+        "sha256": receipt["sha256"],
+        "output_sha256": prepared["output_sha256"],
+    }
+    for row in world["rows"]:
+        row["artifact_source_sha256"] = receipt["sha256"]
+    world["config"]["prepared_contexts"] = pin
+    world["manifest"]["artifact_result"]["content_contract"][
+        "prepared_contexts"
+    ] = pin
+    world["config"]["proposal_bundle"]["sha256"] = _write_json(
+        world["manifest_path"], world["manifest"]
+    )
+    protocol = json.loads(world["paths"]["protocol"].read_bytes())
+    protocol["prepared_contexts_sha256"] = receipt["sha256"]
+    world["config"]["proposal_protocol"]["sha256"] = _write_json(
+        world["paths"]["protocol"], protocol
+    )
+    decision = json.loads(world["paths"]["decision"].read_bytes())
+    decision["source_bundle_manifest_sha256"] = world["config"]["proposal_bundle"][
+        "sha256"
+    ]
+    decision["proposal_protocol_sha256"] = world["config"]["proposal_protocol"][
+        "sha256"
+    ]
+    world["config"]["materialization_decision"]["sha256"] = _write_json(
+        world["paths"]["decision"], decision
+    )
+    world["config_sha"] = _write_json(world["config_path"], world["config"])
+
+
 def test_empty_results_are_preserved_and_warm_materialization_is_identical(
     materialization_world,
 ):
@@ -384,6 +448,42 @@ def test_maps_options_to_real_hidden_sources_without_reordering(materialization_
         "Proposal provenance only; these provisional candidates are not evaluation "
         "evidence and are not admitted runtime memory."
     )
+
+
+def test_public_materialization_accepts_source_derived_abstention_binding(
+    materialization_world,
+):
+    world = materialization_world
+    binding = world["contexts"]["contexts"][0]["candidate_bindings"][1]
+    binding["delivery"] = _source_derived_abstention_delivery(world["sample_ids"][0])
+    _rebind_public_prepared_contexts(world)
+
+    receipt = _prepare(world)
+    output = json.loads(Path(receipt["path"]).read_bytes())["output"]
+    assert output["samples"][0]["records"][0]["source"] == _source(
+        world["sample_ids"][0], 2
+    )
+
+
+@pytest.mark.parametrize(
+    "case", ["forged_delivery", "extra_delivery_field", "extra_binding_field"]
+)
+def test_public_materialization_refuses_forged_abstention_binding(
+    materialization_world, case,
+):
+    world = materialization_world
+    binding = world["contexts"]["contexts"][0]["candidate_bindings"][1]
+    binding["delivery"] = _source_derived_abstention_delivery(world["sample_ids"][0])
+    if case == "forged_delivery":
+        binding["delivery"]["kind"] = "unknown"
+    elif case == "extra_delivery_field":
+        binding["delivery"]["unexpected"] = "forged"
+    else:
+        binding["unexpected"] = "forged"
+    _rebind_public_prepared_contexts(world)
+
+    with pytest.raises(MaterializationError, match="candidate binding|delivery"):
+        _prepare(world)
 
 
 @pytest.mark.parametrize("bad_label", ["option-9", "candidate-2"])
