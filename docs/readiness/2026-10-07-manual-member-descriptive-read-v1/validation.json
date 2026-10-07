@@ -1,0 +1,60 @@
+{
+  "actual_result_reads": 0,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "fixture_seams": [
+    "The completed100 fixture explicitly substitutes native source acquisition and whole-family source validation with typed verified-source objects; it does not qualify any real run or prove a production seal.",
+    "Actual READ ledger parsing, saved-score reuse/verification, official native sufficient-count arithmetic, reference identity joins, v2 process metrics, and sample/node timing export execute unchanged. Reference lock/ontology/split providers are synthetic.",
+    "The real signed-member-vs-family authority refusal is exercised through the unchanged public full-family gate. Shared source extractions remain byte-identical to independently reviewed351eb4.",
+    "The completed100 fixture also substitutes load_documents, validate_source_registration, the implementation inventory lookup, require_clean_study_repo, and lock/ontology/split acquisition. Their production gates remain active in the helper; this synthetic fixture does not independently verify these external boundaries."
+  ],
+  "preserved_failed_proofs": [
+    "/tmp/saea-n100-member-read-proof-20261007-1t3zvqjl",
+    "/tmp/saea-member-wrapper-focused-0mzf4shq",
+    "/tmp/saea-member-integration-sexk1ezt",
+    "/tmp/saea-member-integration2-i3nnbs8l",
+    "/tmp/saea-member-read-final-t68tyyp5",
+    "/tmp/saea-member-read-final2-r_14jcb2"
+  ],
+  "proof_files": [
+    {
+      "path": "/tmp/saea-member-read-accepted-tfh3kcyg/stdout.log",
+      "sha256": "b762aeccee7e4dba827cb6284321888475ab042d5182cc6b3325ed0adad4c3d3"
+    },
+    {
+      "path": "/tmp/saea-member-read-accepted-tfh3kcyg/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/tmp/saea-member-read-accepted-tfh3kcyg/junit.xml",
+      "sha256": "ea75a43e44e6ae50e987c3e7e69f786f4e25ea06ff792041f24b7e0da2ad8ec2"
+    },
+    {
+      "path": "/tmp/saea-member-read-accepted-tfh3kcyg/exit.json",
+      "sha256": "ca2601ff62963686068bb7013994ed09001879eb5a9544a2d952751dc17427e2"
+    }
+  ],
+  "runtime_operations": 0,
+  "schema": "saea-manual-member-reader-offline-validation-v1",
+  "shared_common_config_sha256": "40369a90938c3e79716b19fa0db5811e193bc3c480e7be870a3abf45302fe63c",
+  "source_files": [
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-n100-member-read-20261007/scripts/analysis/manual_architecture_member_read.py",
+      "sha256": "5e19c2381eb2c94ba314d3e32aa19a797a99c33b012c63cce514e8f07fa9e1e5"
+    },
+    {
+      "path": "/mnt/d/chao_workspace/saea-maintenance/sol61-n100-member-read-20261007/tests/unit/test_manual_architecture_member_read.py",
+      "sha256": "ac39f92459662cce12a18862bcbad1479ff9f7d824b30f546ff410df5dc58ba3"
+    }
+  ],
+  "status": "SOURCE_AND_SYNTHETIC_ONLY",
+  "tests": {
+    "failed": 0,
+    "original_exec": "c07621",
+    "passed": 41,
+    "seconds": 8.66
+  }
+}
