@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Natural four-row proof registered; frozen/live checks pending (2026-10-07)
+
+Root countersigned the eight exact generation/FIT plans under owner227 decision `coordination/simple-consumption-natural4-owner227-v1/root-admission-v1.json`, raw SHA-256 `23dd1d9d5c28ad9a1beec7c705f0c06b36eff421f4afedbab5b10a1d2dc57e7b`. The actual named-cell registration checker passed all four members with zero blocking cells. Four structural READ rows are preregistered but remain unsigned until the complete natural proof. This authorizes only the configured seed, seed-aa, review-off and solver-lookup four-row workers, subject to the exact frozen and live checks; no model contact or launch has yet occurred in this record.
+
+Use the existing engineering-only batch path, 4 GiB startup/running floors and the resident geometry. Keep original capacity evidence and all earlier failures immutable. No official scorer, scientific read or learner export is included. The same20 comparison remains held. See [root registration evidence](../receipts/continuation/2026-10-07-natural4-root-registration.json).
+
 ## Complete capacity qualified; natural four-row package prepared (2026-10-07)
 
 The original four-member capacity task completed with all outer/member/observer exits zero. Root verified its Ready/LastResult0 state and no remaining owned Windows/WSL child, then deleted the job monitor. The actual full-family qualification is `SPEECHRL_DATA_DIR/coordination/simple-consumption-prepared-graph-recovery2-v1/capacity-qualified-v1.json`, SHA-256 `47de73ed7217c042321abcc36ed027767fddc4bc8b77181f1b038477b8efff93`, bound to original registration `975bb7c9fb4525082a3bc191d20736a7493df5328b4302a884fd0ba4712c302a` and frozen source `cc21562b8ed8ad5a5c45d7adb7f8f5aac6cd4811`. Contacts were 297/297/156/237 (987 total); minimum post-reserve margins were 5,546/5,546/6,850/5,650 tokens. Generation and scoring were zero. Preserve prior 1,036 endpoints separately; cumulative operational tokenizer use is 2,023.
@@ -6579,7 +6585,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T10:32:26.377153+00:00
+Last refreshed: 2026-10-07T11:13:35.6705072Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

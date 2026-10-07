@@ -1,0 +1,67 @@
+{
+  "schema": "saea-natural4-root-registration-v1",
+  "scorer_contacts": 0,
+  "registered_plans": [
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-preparation-v1/review-off-fit-plan-registered-v1.json",
+      "sha256": "d8344044c8ecfd53683d4e56aeda9992e16cd3d2627500521b8276dd52b3635a"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-preparation-v1/review-off-generation-plan-registered-v1.json",
+      "sha256": "282b26973b04238ca3efa6563258c75cae3a6171739bc6144077665a6c5a6617"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-preparation-v1/seed-aa-fit-plan-registered-v1.json",
+      "sha256": "7ae38a2f598a408be5254adfa2dc224285f08a3573867813a6c29b2a9f9480c7"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-preparation-v1/seed-aa-generation-plan-registered-v1.json",
+      "sha256": "85f3b910fb4d775ba9d4ce9842b83bb9f00a384ee96832cf1d914e5f60c59ec9"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-preparation-v1/seed-fit-plan-registered-v1.json",
+      "sha256": "032a44f49df44ef57e00e88892c94cfb28f4cf00bce51d61aa67adf80dcf36dd"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-preparation-v1/seed-generation-plan-registered-v1.json",
+      "sha256": "d5d23fdb35af4cac90c600feef37777ad567b3de0bdd2d464a9f16aa0d581717"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-preparation-v1/solver-lookup-fit-plan-registered-v1.json",
+      "sha256": "42192c8d9e4d3f01626ea216b507320b807ec91c781b6b673ef40e36817b2c3d"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-preparation-v1/solver-lookup-generation-plan-registered-v1.json",
+      "sha256": "be2a3aaa5e7da45b522bf2bd40ff0cf062ab2aeb099af6399cfbfeee277fc01d"
+    }
+  ],
+  "next_scientific_panel": "HELD",
+  "dispatched": false,
+  "at_utc": "2026-10-07T11:13:35.6705072Z",
+  "resource_policy": {
+    "floor_gib": 4,
+    "start_gib": 4
+  },
+  "decision": {
+    "relpath": "coordination/simple-consumption-natural4-owner227-v1/root-admission-v1.json",
+    "sha256": "23dd1d9d5c28ad9a1beec7c705f0c06b36eff421f4afedbab5b10a1d2dc57e7b"
+  },
+  "generation_contacts": 0,
+  "status": "REGISTERED; frozen and live checks pending",
+  "member_count": 4,
+  "trajectories": 16.0,
+  "registration_gate": {
+    "advisory_cells": [
+      "slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v3",
+      "slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v3",
+      "slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-v3",
+      "slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-v3"
+    ],
+    "relpath": "coordination/simple-consumption-natural4-owner227-v1/registered-preparation-check-v1.stdout.json",
+    "passed": true,
+    "blocking_cells": [],
+    "sha256": "1067b7cac7d9d4f79ce9621ebec745c364a024031ff71bea264daca51f89ddd8"
+  },
+  "tokenizer_contacts": 0,
+  "read_status": "All per-member structural READ rows remain unsigned until complete natural proof"
+}
