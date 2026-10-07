@@ -1,0 +1,43 @@
+{
+  "schema": "saea-local-branch-cleanup-completion-v1",
+  "checked_at": "2026-10-07T00:23:38.031885+00:00",
+  "original_local_branches": 728,
+  "deleted_merged_inactive_branches": 680,
+  "remaining_original_branches": 48,
+  "temporary_maintenance_branch": 1,
+  "preserved_original_nonmain_worktrees": 147,
+  "all_preserved_heads_and_attachments_unchanged": true,
+  "main_head": "a96f2e64774773d077e56eaf301d95efcd4b3409",
+  "validation": {
+    "related_unit_tests_passed": 78,
+    "engineering_base_check": "PASS",
+    "git_diff_check": "PASS"
+  },
+  "unmerged_original_branches": [
+    "codex/a2t-context-budget-config-v1",
+    "codex/a2t-native-power-recovery-v1",
+    "codex/a2t-scope-tools-ledger-correction-v1",
+    "codex/a2t-scope-tools-np2-feasibility-v1",
+    "codex/a2t-scope-tools-np2-proof4-prepare-v1",
+    "codex/candidate-contract-lookup-v1",
+    "codex/e21-current-executor-proof",
+    "codex/e21-execution-unit-runner-v1",
+    "codex/e21-ojw-integration-proof",
+    "codex/ku-s4n-twin-config",
+    "codex/sealed-native-tool-result-v1",
+    "codex/slurp-distinct-successor-recovery-v1",
+    "codex/slurp-dual-store-base-replication-v1",
+    "codex/slurp-task-agent-config-v1",
+    "codex/speech-query-preparation",
+    "codex/stage2-speech-native-agentloop",
+    "codex/training-action-credit-spec-v1",
+    "codex/window-feature-provenance",
+    "fable/commit",
+    "fable/comp1",
+    "fable/samplegoldbank",
+    "staged/a2t-item-functions-cell",
+    "staged/select-fill-factorial-128"
+  ],
+  "remote_pushed": false,
+  "mainline_renamed": false
+}

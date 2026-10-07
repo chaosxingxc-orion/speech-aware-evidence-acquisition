@@ -28,3 +28,12 @@ The external coordination/local-branch-cleanup inventory retains all original br
 names and commit IDs, Windows and WSL worktree inventories, patch-equivalence results
 and merge simulations. Final deletion receipts record only merged, unchecked-out
 branch references removed with safe Git deletion. No experiment or scorer was run.
+
+## Verified completion
+
+Deleted680 merged inactive branch references with `git branch -d`, without force.
+48 original branches remain: master,24 other checked-out branches, and23 preserved
+non-equivalent historical branches. The temporary maintenance branch/worktree will
+be removed after its final fast-forward integration. Every original nonmain worktree
+retains its exact HEAD and branch attachment. Main is clean; engineering-base PASS
+and78 related unit tests pass. No remote changes were made.

@@ -3,13 +3,17 @@
 
 ## Local branch reconciliation (2026-10-07)
 
-Root is integrating past work and safely deleting merged inactive branch references
+Root integrated reviewed past work and deleted680 merged inactive branch references
 under the direct owner cleanup instruction. Mainline remains `master`, the actual
 remote default. See [maintenance audit](../maintenance/2026-10-07-local-branch-cleanup/README.md).
 147 histories are content-equivalent reconciliation; two pending changes passed78
 related tests.23 historical branches remain non-equivalent and are preserved for
 semantic review. All existing worktrees and three dirty WSL directories are retained.
-No frozen worker or active aggregate-preparation source is modified.
+No frozen worker or active aggregate-preparation source is modified.48 original
+branches remain (master,24 checked-out,23 unresolved historical);78 tests and
+engineering-base pass. Original nonmain worktree HEADs/attachments are unchanged.
+The active cache-cost-audit checkout remains at338b2f7d; do not advance its source
+while the original aggregate process is still running.
 
 
 ## Update6 historical evidence completed; real shared aggregate running (2026-10-07)
