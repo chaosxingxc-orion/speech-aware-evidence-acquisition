@@ -1,0 +1,23 @@
+{
+  "execution_profile": "model-free-check",
+  "expected_members": {
+    "review-off": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2",
+    "seed": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2",
+    "seed-aa": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2",
+    "solver-lookup": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2"
+  },
+  "frozen_analysis_intent": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v5/manual-architecture-analysis-intent-v1.json",
+    "sha256": "585bbeb9683487289b6a7f4cf61ffebde99c2380f382109aed8eca69aaf80088"
+  },
+  "optimizer_export": false,
+  "planned_model_calls": 0,
+  "read_authorized": false,
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-resolved-v1/analysis-recipe-v1.json",
+    "sha256": "fdbc4ffa0dd2265df09e02af6d0ea025d975174c6252c0cf14d8701c6a636e42"
+  },
+  "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N20-READ-V2",
+  "split_role": "discovery",
+  "status": "DRAFT ROOT COUNTERSIGNATURE PENDING"
+}

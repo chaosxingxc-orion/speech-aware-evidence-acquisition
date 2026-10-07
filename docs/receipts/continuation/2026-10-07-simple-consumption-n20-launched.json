@@ -1,0 +1,116 @@
+{
+  "analysis_source_resolution": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-resolved-v1/source-resolution-v1.json",
+    "sha256": "7a801cd2e47a1c637628891f06142bef3ffffbe3c93eb697aeaf0454e67add4f"
+  },
+  "at_utc": "2026-10-07T15:02:43.930342+00:00",
+  "campaign_epoch": "2026-10-07T14:59:13Z",
+  "catalog_source_pin_correction": "b23d4c9c4096306e27623b6ed679b2572659f3e4",
+  "driver_epoch": "2026-10-07T14:58:46Z",
+  "frozen_binding": {
+    "relpath": "coordination/simple-consumption-n20-v4/root-frozen-launch-binding-v1.json",
+    "sha256": "48713cc51aa73338ed3bd7b57bb7f364c0e5eb89d1f2969b074bb4d9d29a32df"
+  },
+  "launch_request": {
+    "relpath": "coordination/simple-consumption-n20-v4/windows-launch-request-v1.json",
+    "sha256": "456ead5a829f20b055d49adae778b527a557e00e9464199dc335ce36ee0b82c4"
+  },
+  "members": [
+    {
+      "actual": {
+        "audio_seconds": 304.49675000000025,
+        "calls": 118
+      },
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n20-generation-v2",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N20-V2",
+      "state": "OPENED"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n20-generation-v2",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N20-V2",
+      "state": "ABSENT"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n20-generation-v2",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N20-V2",
+      "state": "ABSENT"
+    },
+    {
+      "actual": null,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n20-generation-v2",
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N20-V2",
+      "state": "ABSENT"
+    }
+  ],
+  "memory_wait": {
+    "elapsed_seconds": 20.334693379001692,
+    "exit_code": 0,
+    "interval_seconds": 10,
+    "observer_sha256": "ce1e86c1d79d2d0251e9087614317e36f19cf995468b3354c3af94e2eda998e2",
+    "running_floor_gib": 4.0,
+    "schema": "saea-precontact-memory-wait-v1",
+    "stable_samples": 3,
+    "start_gib": 4.0,
+    "status": "ready",
+    "stop_marker": "/home/chao/batch-STOP",
+    "wait_seconds": 600.0,
+    "worker_started": false
+  },
+  "metadata_successor": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n20-registered-v5/manual-architecture-analysis-intent-v1.json",
+    "sha256": "585bbeb9683487289b6a7f4cf61ffebde99c2380f382109aed8eca69aaf80088"
+  },
+  "monitor_delete_condition": "Experiment terminal and all experiment children gone",
+  "monitor_id": "slurp-same20-experiment-health",
+  "monitor_interval_minutes": 15,
+  "normal_transition": {
+    "relpath": "coordination/simple-consumption-n20-v4/normal-transition-finished-v1.json",
+    "sha256": "57b78778d10efaf15f71ab4548654a0da8b1cc2e29132156bab9068b72df6099"
+  },
+  "optimizer_export": false,
+  "owner_decisions": [
+    227
+  ],
+  "process_memory_diagnostics": {
+    "enabled": true,
+    "events_relpath": "coordination/process-guard/batch-campaign-1-slurp-simple-consumption-n20-v2-seed-20261007T145913Z/events.jsonl",
+    "observed_event_count": 43
+  },
+  "read_countersigned": false,
+  "root_analysis_scope": "Business quality, applicable process metrics, reliable completion, cost and first/non-first latency; no stable-benefit claim from same20",
+  "schema": "saea-manual-n20-launch-observation-v1",
+  "status": "RUNNING",
+  "telemetry": {
+    "gpu": {
+      "clocks_sm_mhz": 180.0,
+      "memory_used_mib": 22976.0,
+      "power_watts": 96.52,
+      "pstate": "P4",
+      "utilization_percent": 98.0
+    },
+    "host_memory": {
+      "host_free_gb": 17.04977035522461,
+      "host_memory_error": null,
+      "host_memory_source": "windows+vm",
+      "host_total_gb": 63.43492889404297,
+      "vm_available_gb": 39.00379943847656,
+      "vm_total_gb": 43.10558319091797,
+      "vmmem_ws_gb": 28.98314666748047
+    },
+    "metrics": null,
+    "requests_total": 92,
+    "sampled_at": 1791385351.9606519,
+    "sampled_at_iso": "2026-10-07T15:02:31.960652+00:00",
+    "schema": "saea-serving-monitor-sample-v1",
+    "server_ok": true,
+    "slots": {
+      "busy": 2,
+      "idle": 2,
+      "total": 4
+    }
+  },
+  "worker_commit": "b282ed3c42231eb6366607b691d70488dfcc9502",
+  "worker_root": "/home/chao/saea-worktrees/codex-simple-consumption-n20-streaming-frozen-v4"
+}

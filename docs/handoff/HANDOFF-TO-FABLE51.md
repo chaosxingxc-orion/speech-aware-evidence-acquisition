@@ -1,5 +1,30 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Same20 comparison running after instrumented repair (2026-10-07 14:58Z)
+
+Windows SAEA-Batch-Driver started14:58:46Z; the first campaign started14:59:13Z.
+Frozen worker `/home/chao/saea-worktrees/codex-simple-consumption-n20-streaming-frozen-v4`
+is at `b282ed3c42231eb6366607b691d70488dfcc9502`. All four frozen runtime checks,
+actual registration and catalog gates passed. The normal completed engineering controls
+were archived with exact hashes only after no STOP/lease/worker and healthy idle service
+were verified. No service restart, cache flush, failed-output reuse or model retry occurred.
+The startup wait passed20.335seconds at4GiB start/run floors; process memory diagnostics
+are enabled. The first exact attempt is OPENED and model contacts are advancing.
+
+Four members remain seed, seed-AA, review-off and solver-lookup,20 each, on the same fixed
+inputs and shared executor. Use the registered-v5 queue and the external coordination
+`simple-consumption-n20-v4` source binding. The separate resolved-v1 analysis package
+pins the exact frozen worker; READ remains unsigned until all four independently finalize
+with verified seals and one complete successful official score each and no failed jobs.
+Never read partial quality. Report business/process outcomes alongside cost and latency;
+this same20 comparison does not establish stable benefit or learning superiority.
+
+The15-minute `slurp-same20-experiment-health` monitor is active only for this experiment;
+delete it after terminal status and all experiment children exit. It may inspect operational
+metadata but never dispatch/recover/sign READ. Keep old structural proofs intentionally
+unscored and old failed bytes immutable. Return before8x400 or equivalent splitting.
+See [launch evidence](../receipts/continuation/2026-10-07-simple-consumption-n20-launched.json).
+
 ## Same20 named registration passes after preserved metadata correction (2026-10-07)
 
 The actual policy-bound registration gate identified one omitted measurement-profile
