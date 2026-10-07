@@ -1,5 +1,24 @@
 # Experiment rules for the ChatGPT side
 
+## Continuous GPU execution clarified; keep four-way concurrency within each member (2026-10-07)
+
+The owner's latest clarification accepts four concurrent samples within a group.
+The requirement is continuous GPU work, not a mixed cross-member400-job scheduler.
+Cancel that proposed scheduler/profile change before implementation. Keep four unchanged
+100-input systems, original sequential node trajectories and four-way within-member
+concurrency. Use the existing campaign queue's single CPU scorer to overlap complete
+member scoring with next-member generation; analysis must not block GPU admission.
+Prepare immutable inputs ahead, and measure any remaining setup gaps honestly.
+
+The prior explicit per-completed-member descriptive CPU analysis permission remains.
+Each member needs its own registeredREAD, complete verifiedseal and uniqueofficialscore;
+final comparisons still need the complete four-member family. Early analysis cannot
+change pending policies or samples. Only the guarded multi-member campaign entry and
+all-member terminal inspection need a narrow engineering extension; no new scheduler.
+N100 supplies are prepared with zero model/tokenizer/scorer contacts. FreshFIT, source
+checks and launch admission remain pending. Keep4GiB floors and job-scoped monitoring.
+Read [the current dispatch scope](../readiness/2026-10-07-slurp-simple-consumption-n100-prospective-v1/continuous-gpu-scope-v3.json).
+
 ## N100 uses one shared trajectory queue; per-member CPU reads are authorized (2026-10-07)
 
 The owner directs CPU preparation/scoring/analysis to overlap GPU execution. One GPU
@@ -777,4 +796,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-07T17:07:58.655853+00:00
+Last refreshed: 2026-10-07T17:13:41.265166+00:00

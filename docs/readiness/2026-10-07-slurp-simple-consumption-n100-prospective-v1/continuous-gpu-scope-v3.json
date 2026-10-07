@@ -1,0 +1,36 @@
+{
+  "N400": "Previousunlauncheddrafts/partialofflinepreparationsremainimmutableandnotdispatched.",
+  "canceled_before_implementation": [
+    "Mixed cross-member400-trajectory queue",
+    "New trajectory-panel mode",
+    "New shared-load scheduling profile"
+  ],
+  "comparison": "Keepfinalcross-membercomparisonbehindthewholefour-member qualificationandexactfamilyREAD. Keeppriorpartial-read gates excepttheexplicitnewmemberREADs.",
+  "contacts": {
+    "generation": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "cpu_overlap": "Prepare immutable inputs ahead ofGPUneed; overlap scorer and completed-group CPUanalysis withremainingGPUgeneration. Measure remaininghandoff/setup gaps rather than claimingliteralzeroidletime.",
+  "dispatch": "Keep original sequential member generation, with four bounded concurrent sample workflows inside each member. Use the existing shared run_campaign/FlightQueue to overlap the one CPU scoring worker with the next group; do not wait for analysis to admit already frozen next groups.",
+  "engineering": "Addonlythemissingguardedmultimembercampaign entryandall-memberterminalinspectionusingexistingexecutionpath. No new scheduler orframework. Preserve stage-level4GiBguard/STOP/processcustody.",
+  "failure": "Stopandpreservedataforrootdisposition; noautomaticretry/score replay.",
+  "member_analysis": "Retain the previous instruction: prospectively register exactsingle-member descriptiveREADs. Afterits100rows independentlyFINALIZE withverifiedseal, oneuniquecompleteofficialscore andzerofailedjobs, rootcountersigns and delegatesitsCPUanalysis. Neverfeedearlyresults into pendingfrozenruns.",
+  "owner_input_translation": "Four concurrent samples within each group is fine. My main requirement is that GPU jobs continue without interruption.",
+  "recorded_at_utc": "2026-10-07T17:13:41.265166+00:00",
+  "schema": "saea-manual-architecture-continuous-gpu-scope-v1",
+  "status": "OWNER_CLARIFIED_PREPARATION_ACTIVE_NO_GPU_CONTACT",
+  "supersedes_dispatch_requirement": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-prospective-v1/concurrency-scope-v2.json",
+    "sha256": "603f0f3cf354a73ea7a2c7118dabe4bfbdceca461d4d4224b31710171bdf93b6"
+  },
+  "unchanged": [
+    "100distinctinputs shared by four frozen systems",
+    "400totaltrajectories",
+    "Existing per-sample node order/policy/request assembly",
+    "Existing queue_depth4 andfour serving slots",
+    "4GiB startup/runningfloors and10secondtelemetry",
+    "OneGPUgeneration experiment andoneofficialscorer",
+    "Model-authorized tool calls andOmni finalauthority"
+  ]
+}

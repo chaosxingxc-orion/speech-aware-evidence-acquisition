@@ -1,5 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Continuous GPU execution clarified; keep four-way concurrency within each member (2026-10-07)
+
+The owner's latest clarification accepts four concurrent samples within a group.
+The requirement is continuous GPU work, not a mixed cross-member400-job scheduler.
+Cancel that proposed scheduler/profile change before implementation. Keep four unchanged
+100-input systems, original sequential node trajectories and four-way within-member
+concurrency. Use the existing campaign queue's single CPU scorer to overlap complete
+member scoring with next-member generation; analysis must not block GPU admission.
+Prepare immutable inputs ahead, and measure any remaining setup gaps honestly.
+
+The prior explicit per-completed-member descriptive CPU analysis permission remains.
+Each member needs its own registeredREAD, complete verifiedseal and uniqueofficialscore;
+final comparisons still need the complete four-member family. Early analysis cannot
+change pending policies or samples. Only the guarded multi-member campaign entry and
+all-member terminal inspection need a narrow engineering extension; no new scheduler.
+N100 supplies are prepared with zero model/tokenizer/scorer contacts. FreshFIT, source
+checks and launch admission remain pending. Keep4GiB floors and job-scoped monitoring.
+Read [the current dispatch scope](../readiness/2026-10-07-slurp-simple-consumption-n100-prospective-v1/continuous-gpu-scope-v3.json).
+
 ## N100 uses one shared trajectory queue; per-member CPU reads are authorized (2026-10-07)
 
 The owner directs CPU preparation/scoring/analysis to overlap GPU execution. One GPU
@@ -6953,7 +6972,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T17:07:58.655853+00:00
+Last refreshed: 2026-10-07T17:13:41.265166+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
