@@ -10446,10 +10446,20 @@ class FlightRuntime:
                 )
 
                 tool_specs = load_phase_tool_specs(self._composed.values, program)
+                on_demand_roles = {"reviewer", "planner"}
+                native = self._composed.values.get("native_episode")
+                if isinstance(native, Mapping) and native.get("solver_tool_access") is not None:
+                    from ...rails.native_episode_config import load_native_episode_config
+
+                    # The bounded Solver opt-in needs the same authored index
+                    # as other targeted tools. Validate its complete authority
+                    # before admitting its phase to the existing store router.
+                    episode = load_native_episode_config(self._composed.values, program)
+                    on_demand_roles.add(episode.role("solver").phase_id)
                 on_demand_stores = tuple(sorted({
                     store_id
                     for role, tool_spec in tool_specs.items()
-                    if role in {"reviewer", "planner"}
+                    if role in on_demand_roles
                     and tool_spec.get("source_authority_role") == role
                     and KNOWLEDGE_TARGET_TOOL in tool_spec["allowed_tools"]
                     for store_id in tool_spec.get("knowledge_store_ids", ())

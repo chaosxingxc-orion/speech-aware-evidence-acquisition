@@ -6,24 +6,25 @@ import json
 
 import pytest
 
-from speech_aware_evidence_acquisition.rails.knowledge_stores import build_knowledge_store_supply
 from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config
-from test_released_target_index import _binding, LEGAL
+from test_released_target_index import _binding
 from test_phase_native_tools import call
 from test_solver_tool_access import TARGET, solver_values
 from test_llama_server_transport import _spawn_live_matching_process  # noqa: F401
 import test_native_episode_runner as episode_runner
+from test_solver_on_demand_routing import runtime_for, slot_binding
 
 pytestmark = pytest.mark.usefixtures("_spawn_live_matching_process")
 
 def harness_for(tmp_path, monkeypatch, *, arguments=None, opt_out=False, extra_call=False, repeat_call=False):
-    binding = _binding(tmp_path / "stores")
+    binding = slot_binding(_binding(tmp_path / "stores"), tmp_path / "stores")
     values = solver_values()
     builder = episode_runner.build_phase_tools
 
     def tools(_config, program, **kwargs):
-        router = build_knowledge_store_supply(binding, program=program, data_root=tmp_path / "stores",
-                                              legal_candidate_ids=LEGAL, on_demand_store_ids=binding.store_ids)
+        runtime = runtime_for(values, binding, tmp_path / "stores")
+        runtime._resolve_phase_supply(program, binding.composite_snapshot)
+        router = runtime._knowledge_store_supply
         return builder(values, program, **{**kwargs, "snapshot": binding.composite_snapshot},
                        knowledge_stores=binding, supply_for_store=router)
 
