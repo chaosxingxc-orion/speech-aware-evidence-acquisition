@@ -19,7 +19,7 @@
   },
   "intent": {
     "relpath": "docs/readiness/2026-10-07-matched-search-engineering-preparation-v1/intent-v1.json",
-    "sha256": "74dc83b7591d068bdaca255a5ebce5b6782360056272bf2d34563fe129f105cc"
+    "sha256": "1ee194bdf67769cb4699cd8610b6fb3596902b7e2f50d46d354162cdb8554d61"
   },
   "main_branch": "master",
   "manifest": {
