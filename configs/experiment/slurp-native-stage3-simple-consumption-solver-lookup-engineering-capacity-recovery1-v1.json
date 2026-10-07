@@ -1,0 +1,105 @@
+{
+  "architecture_member": "solver-lookup",
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "prompt-fit"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-fit-v1",
+      "baseline_fragment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-v1",
+      "cell_id": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-v1",
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Root227 single nongenerative Solver binding recovery; exact frozen and live admission mandatory.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-FIT-V1/phase-supply-v1.json",
+            "sha256": "9e0f94bc250cf0d0239f3a97cbc1036b6ab5e00f47a7e1eb5384e6b2c546a6b6",
+            "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
+          }
+        ],
+        "state": "ready"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-FIT-V1",
+      "system_text_policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/simple-consumption-architecture-v1/policies/e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51.json",
+          "sha256": "496bec5e028d7dc502d7d6ed66767d60a9cadd440d17d4af5e5e778880ea4497"
+        },
+        "bundle_id": "e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    }
+  ],
+  "date": "2026-10-07",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 241,
+    "planned_speech_audio_seconds": 1500,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-FIT-V1",
+  "family_budget": {
+    "complete_system_trajectories": 0,
+    "generation_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "tokenizer_endpoint_cap": 241
+  },
+  "native_graph_capacity_profile": "review-off-v1",
+  "population": {
+    "count": 20,
+    "roster_receipt": "docs/receipts/rosters/slurp-system-text-pilot20-owner220-v1.json",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-system-text-pilot20-owner220-v1",
+      "ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500",
+        "slurp:train:000244:audio-1497883990-headset",
+        "slurp:train:009411:audio-1497030307-headset",
+        "slurp:train:015179:audio-1498569151-headset",
+        "slurp:train:013565:audio-1501765573-headset",
+        "slurp:train:010065:audio-1501756518",
+        "slurp:train:004087:audio-1490199961",
+        "slurp:train:013560:audio-1490291477-headset",
+        "slurp:train:014610:audio-1502218659-headset",
+        "slurp:train:014741:audio-1497882505",
+        "slurp:train:000081:audio-1501753218-headset",
+        "slurp:train:006032:audio--1504195204",
+        "slurp:train:016836:audio-1490705489-headset",
+        "slurp:train:004499:audio--1504194378-headset",
+        "slurp:train:011479:audio-1502216306-headset",
+        "slurp:train:010006:audio-1499693788-headset",
+        "slurp:train:010537:audio-1490183278"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "split_id": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "Manual architecture capacity; no learning or task-quality feedback.",
+    "operators_used": []
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0,
+    "measurement_design": "form-proof",
+    "note": "Same immutable UPDATE2 prefix; measured request capacity only.",
+    "primary_metric": "Capacity only; no task quality",
+    "primary_metric_key": "slu",
+    "read_roster": "SLURP-SYSTEM-TEXT-PILOT20-OWNER220-V1",
+    "rows": 20,
+    "tuning_roster": "none"
+  }
+}

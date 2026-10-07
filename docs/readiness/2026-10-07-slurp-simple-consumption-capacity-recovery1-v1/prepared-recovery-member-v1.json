@@ -1,0 +1,103 @@
+{
+  "at_utc": "2026-10-07T08:15:10.619406+00:00",
+  "contacts": 0,
+  "endpoint_budget": {
+    "captured_requests": 22,
+    "contact_cap": 241,
+    "graph_rows": 4,
+    "padding_tokenizer_endpoints": 60,
+    "profile": "review-off-v1",
+    "ranking_tokenizer_endpoints": 114,
+    "request_measurement_endpoints": 66,
+    "supply_modes": 2
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 241,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "c9593fdcdd7449f6d3481f793714aefd97852d7a9cdefb6f716b0d9f7ade9734",
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "member": {
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-fit-v1",
+    "capacity": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-v1",
+    "composed_config_hash": "36b7f29e3acbc9aa5c554445672bafbbd693472f0d9a74dbd47665b0d18ac899",
+    "contact_cap": 241,
+    "endpoint_budget": {
+      "captured_requests": 22,
+      "contact_cap": 241,
+      "graph_rows": 4,
+      "padding_tokenizer_endpoints": 60,
+      "profile": "review-off-v1",
+      "ranking_tokenizer_endpoints": 114,
+      "request_measurement_endpoints": 66,
+      "supply_modes": 2
+    },
+    "execution_config": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-solver-lookup-policy-v2.json",
+      "sha256": "2e4c3a6e6d31a6760cf268852cdac05b93f2617b2db42bd892c08b974c0b2742"
+    },
+    "execution_identity_sha256": "4bd36cb19a0cd59af198ba78ed0b3aced3bf059fc36a2595078f935901be6b87",
+    "expected_rows": 20,
+    "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+      "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+    },
+    "graph": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-graph-v2",
+    "graph_config_hash": "ee2454cfcbe207d8b51ccfac60d53c2b9b14673a4119c0dba237ce59192e518e",
+    "graph_rows": 4,
+    "graph_sample_ids": [
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "label": "solver-lookup",
+    "member_id": "solver-lookup",
+    "model_per_trajectory": 3,
+    "population_cohort": "comparison",
+    "rehearsal_profile": "review-off-v1",
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-FIT-V1",
+    "system_id": "solver-lookup"
+  },
+  "original_prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "a5b4178e50bbfd523d394959bdcc18e385fe79e5013819b5ee5f41c7a2445c88"
+  },
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/simple-consumption-architecture-v1/policies/e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51.json",
+      "sha256": "496bec5e028d7dc502d7d6ed66767d60a9cadd440d17d4af5e5e778880ea4497"
+    },
+    "bundle_id": "e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-FIT-V1/phase-supply-v1.json",
+    "sha256": "9e0f94bc250cf0d0239f3a97cbc1036b6ab5e00f47a7e1eb5384e6b2c546a6b6"
+  },
+  "runtime_admission": false,
+  "schema": "saea-architecture-capacity-recovery-preparation-v1",
+  "source_baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-v2.json",
+    "sha256": "17d3f83649a9931bf07bd29c43faae83609c756e6c865b9cce166421771f8ad0"
+  },
+  "source_experiment": {
+    "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-v2.json",
+    "sha256": "54b75db446f5bb035669757858d8ee4d1e21d874a9aac50e2226289ad068a48e"
+  },
+  "source_value_counts": {
+    "intent_value_count": 60,
+    "slot_value_count": 54
+  },
+  "unchanged_source_selection": true,
+  "warm_verified": true
+}
