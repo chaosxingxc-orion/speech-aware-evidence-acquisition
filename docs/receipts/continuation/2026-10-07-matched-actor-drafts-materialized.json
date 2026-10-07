@@ -1,0 +1,52 @@
+{
+  "schema": "saea-matched-search-actor-materialization-proof-v1",
+  "at_utc": "2026-10-07T00:40:09.877573+00:00",
+  "arms": [
+    {
+      "arm": "fixed-parent",
+      "draft": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-actor-drafts-v1/fixed-parent-draft.json",
+        "sha256": "4b2764cb3e596ffdbe86886683ccae2f34a3eec414764fd986832934a675495a"
+      },
+      "actor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-actor-drafts-v1/fixed-parent-actor.json",
+        "sha256": "3a38d4834a4b77e73c663592547562517177fe346d17c1dc69d1f46080d0e362"
+      },
+      "actor_content_sha256": "f93ab388cdcbe8b8b905eef54e17ffc605d6ffac4007611fe6d6b376c7bd352d",
+      "configured_byte_count": 1930229,
+      "file_bytes": 3190682,
+      "cap_bytes": 2097152,
+      "slots": 8,
+      "historical_records": 80,
+      "registration_status": "DRAFT"
+    },
+    {
+      "arm": "multi-parent",
+      "draft": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-actor-drafts-v1/multi-parent-draft.json",
+        "sha256": "7264ad5b112df723713434d310351a9dc13fce62a5d8e4155722487e3d57f843"
+      },
+      "actor": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-actor-drafts-v1/multi-parent-actor.json",
+        "sha256": "3b2ae24f4fdd62681e689fb21ff0b8d6aed62b01445ef70ad6b2690daf692e55"
+      },
+      "actor_content_sha256": "9adfc2a1d647c9859279c5ed09976cd2673ccc81cebd88e2c67361bf80ac0e78",
+      "configured_byte_count": 1870766,
+      "file_bytes": 3130803,
+      "cap_bytes": 2097152,
+      "slots": 8,
+      "historical_records": 80,
+      "registration_status": "DRAFT"
+    }
+  ],
+  "identical_feedback": true,
+  "identical_instructions": true,
+  "proposal_slots_reserved": 0,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0
+  },
+  "learner_exported": false,
+  "runtime_admission": false,
+  "source_requalification_and_contact_admission_pending": true
+}

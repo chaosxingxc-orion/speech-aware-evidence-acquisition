@@ -1,5 +1,29 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Shared aggregate complete; indexed actor input rehearsed (2026-10-07)
+
+Original aggregate session80121/PID271847 exited0 at00:35:28Z and is absent.
+Root verified all80 unique records across five originalK16 populations, hashes and
+empty stderr. See [completion](../receipts/continuation/2026-10-07-shared-aggregate-complete.json).
+Do not restart that completed process. Both actual parent-bound actor drafts now
+exist, with identical feedback/instructions and DRAFT registrations. No proposal
+reservation, actor/model/scorer contact, parent activation or GPU launch occurred.
+
+The full drafts fit the byte bound but measure approximately526k/516k proxy tokens,
+so they are not ready to feed to actors. The prospective [indexed presentation](../readiness/2026-10-07-indexed-search-input-v1/README.md)
+keeps all80 primary records and all110 exact detail objects, with unchanged precision
+and reconstructable source hashes. Current parent templates remain inline. Primary
+sizes are84517/73729 o200k_base proxy tokens; this is not exact model tokenization or
+complete capsule FIT.26 related tests pass, new module statement coverage100percent,
+and both real-file exact round trips pass. Complete native/output contract overhead,
+source/READ/parent-plan requalification, indexed capsule and contact registration
+remain next. No partial history filtering, no discarded failures or consumed slots.
+
+Only master remains. Use detached isolation and serial integration. Old Update6 whole
+population rejection, retained parents, fixed knowledge and other-carrier holds stay
+unchanged. No stable SLURP benefit or learning advantage is established by these checks.
+
+
 
 ## Matched actor configurations verified against real parents (2026-10-07)
 

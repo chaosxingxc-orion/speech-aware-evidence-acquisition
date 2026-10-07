@@ -1,0 +1,40 @@
+{
+  "schema": "saea-indexed-search-real-rehearsal-v3",
+  "at_utc": "2026-10-07T00:46:39.473103+00:00",
+  "arms": [
+    {
+      "arm": "fixed-parent",
+      "primary_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-actor-drafts-v1/indexed-rehearsal-v3/fixed-parent-primary.json",
+      "package_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-actor-drafts-v1/indexed-rehearsal-v3/fixed-parent-package.json",
+      "primary_bytes": 277634,
+      "primary_proxy_tokens": 84517,
+      "original_proxy_tokens": 526307,
+      "detail_documents": 110,
+      "rate_vectors": 138,
+      "package_sha256": "38d1c28713a81726d66ce7ae2ce38782c33d0f2560e51549fb46fa297e19053a",
+      "primary_file_sha256": "0698960c01d22c647776122c4d782fd86759b7f405eedc58b10720e9f39ce25f",
+      "roundtrip": "EXACT",
+      "records": 80
+    },
+    {
+      "arm": "multi-parent",
+      "primary_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-actor-drafts-v1/indexed-rehearsal-v3/multi-parent-primary.json",
+      "package_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-actor-drafts-v1/indexed-rehearsal-v3/multi-parent-package.json",
+      "primary_bytes": 218241,
+      "primary_proxy_tokens": 73729,
+      "original_proxy_tokens": 515518,
+      "detail_documents": 110,
+      "rate_vectors": 138,
+      "package_sha256": "e2bbfc958a108e7aec6c3cd4354462b651785a5e470c7b2fb83ea21a274fcf31",
+      "primary_file_sha256": "f5094149e8985d5304719ef0fb0c5db5814810a4080051ce083aa44dffa10679",
+      "roundtrip": "EXACT",
+      "records": 80
+    }
+  ],
+  "identical_primary_feedback_and_details": true,
+  "token_measurement": "o200k_base proxy only; not the exact GPT-6.1 tokenizer or provider billing",
+  "soft_visible_target": 90000,
+  "admission": "DRAFT_NEW_PRESENTATION_REQUIRES_PROSPECTIVE_REGISTRATION",
+  "contacts_added": 0,
+  "reserved_slots": 0
+}

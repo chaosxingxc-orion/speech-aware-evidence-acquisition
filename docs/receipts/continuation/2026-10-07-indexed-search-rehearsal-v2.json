@@ -1,0 +1,36 @@
+{
+  "schema": "saea-indexed-search-real-rehearsal-v2",
+  "at_utc": "2026-10-07T00:45:24.857919+00:00",
+  "arms": [
+    {
+      "arm": "fixed-parent",
+      "primary_bytes": 302491,
+      "primary_proxy_tokens": 89696,
+      "original_proxy_tokens": 526307,
+      "detail_documents": 110,
+      "rate_vectors": 138,
+      "package_sha256": "11e314c7c62c4b763a3f25cc5d538b44ef7cc1179689e361b064cf6e61e3668c",
+      "primary_file_sha256": "8552e6cd4f530d4db466b0c92f1d02c2c6937b2b2dc08c78aa2494a1b9e7f000",
+      "roundtrip": "EXACT",
+      "records": 80
+    },
+    {
+      "arm": "multi-parent",
+      "primary_bytes": 243098,
+      "primary_proxy_tokens": 78908,
+      "original_proxy_tokens": 515518,
+      "detail_documents": 110,
+      "rate_vectors": 138,
+      "package_sha256": "1390d98564673258fd840ba5d96a46f2d278a7d78bd6b05a56c11de401356e0d",
+      "primary_file_sha256": "7bab7f2b757a67644fc581fe804394abdcb0ee7b2710d14ec75bc80dacf3c82f",
+      "roundtrip": "EXACT",
+      "records": 80
+    }
+  ],
+  "identical_primary_feedback_and_details": true,
+  "token_measurement": "o200k_base proxy only; not the exact GPT-6.1 tokenizer or provider billing",
+  "soft_visible_target": 90000,
+  "admission": "DRAFT_NEW_PRESENTATION_REQUIRES_PROSPECTIVE_REGISTRATION",
+  "contacts_added": 0,
+  "reserved_slots": 0
+}

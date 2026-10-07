@@ -1,0 +1,33 @@
+{
+  "schema": "saea-indexed-search-real-rehearsal-v1",
+  "at_utc": "2026-10-07T00:44:12.802298+00:00",
+  "arms": [
+    {
+      "arm": "fixed-parent",
+      "primary_bytes": 343893,
+      "primary_proxy_tokens": 113591,
+      "original_proxy_tokens": 526307,
+      "detail_documents": 110,
+      "package_sha256": "2f4d1ef7df05ee98b130ac0f776492d7a838a378261396c1cfbdd8f78b55af7b",
+      "primary_file_sha256": "1a3b3029162afed0a1d0fe5a3369dcb9cca595f0ab5712925260d5c5d1d4cf1b",
+      "roundtrip": "EXACT",
+      "records": 80
+    },
+    {
+      "arm": "multi-parent",
+      "primary_bytes": 284500,
+      "primary_proxy_tokens": 102803,
+      "original_proxy_tokens": 515518,
+      "detail_documents": 110,
+      "package_sha256": "67d91c9db8a065b62a4bc6304159c3dd645fe145da873ef5624925128d6f3f79",
+      "primary_file_sha256": "bffd08398c4da1e19aec6e0268ec0bd6bd7168d243cf26b0ed68228fe002a400",
+      "roundtrip": "EXACT",
+      "records": 80
+    }
+  ],
+  "token_measurement": "o200k_base proxy only; not the exact GPT-6.1 tokenizer or provider billing",
+  "soft_visible_target": 90000,
+  "admission": "DRAFT_NEW_PRESENTATION_REQUIRES_PROSPECTIVE_REGISTRATION",
+  "contacts_added": 0,
+  "reserved_slots": 0
+}

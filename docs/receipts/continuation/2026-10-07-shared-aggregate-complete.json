@@ -1,0 +1,74 @@
+{
+  "schema": "saea-shared-aggregate-completion-v1",
+  "at_utc": "2026-10-07T00:39:45.654268+00:00",
+  "status": "COMPLETE",
+  "output": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/context-learning/search-feedback/e79f7504630c21046754f5467261bf824a8b081a8819b098c96bbeabccd48692.json",
+    "sha256": "296b08e35bfb9e0c6938008d0640da4afc46cfc801a9d2e49ca839faed6600b1"
+  },
+  "record_sha256": "95aefe12383307fc8ce955e18a5bbdd0d23c70a981947a2a7837ac95a103c3cd",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-07-shared-search-aggregate-recovery1/registration-v1.json",
+    "sha256": "85afea60808136fe3373f03e720101b18d18387660a3c67a259c961b9570e38d"
+  },
+  "original_evidence": {
+    "run-v1.py": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-recovery1/run-v1.py",
+      "sha256": "1a2de5c9170b09470ca1fb014cd5ae28668566c4c1807a3866f0fc3e349e582a"
+    },
+    "prepare-v1.py": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-recovery1/prepare-v1.py",
+      "sha256": "b4c4a266e0402f2008f1946f47f297fab26409387fbf484d04e8a1e056a1da74"
+    },
+    "process.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-recovery1/process.json",
+      "sha256": "c324af2d30e8fdfad002b1124cc1611f28cb2f9f7f77828acea596c6b061b21a"
+    },
+    "launch.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-recovery1/launch.json",
+      "sha256": "31e36f609c49331a537e8747cc9049d58119bdef2b6798f973c83112e541d423"
+    },
+    "exit.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-recovery1/exit.json",
+      "sha256": "7bb2cecb60522b8b5abe60a746f6c5bf35500a13785f9cac04128e05cdf6dc7e"
+    },
+    "stdout.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-recovery1/stdout.log",
+      "sha256": "99141447546b71d769d056341eb3462d6a5d4554caddcb4a6dfd2cf1a4115fb7"
+    },
+    "stderr.log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/shared-search-aggregate-recovery1/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "records": 80,
+  "populations": [
+    {
+      "iteration": 2,
+      "candidate_records": 16
+    },
+    {
+      "iteration": 3,
+      "candidate_records": 16
+    },
+    {
+      "iteration": 4,
+      "candidate_records": 16
+    },
+    {
+      "iteration": 5,
+      "candidate_records": 16
+    },
+    {
+      "iteration": 6,
+      "candidate_records": 16
+    }
+  ],
+  "verification": "Original exit zero, absent original PID, empty stderr, exact output/internal/registration/source receipt hashes and unique full population membership verified. Source preparation qualified full-family evidence before output. No replay.",
+  "contacts_added": {
+    "model": 0,
+    "official_scorer": 0
+  },
+  "learner_exported": false,
+  "runtime_admission": false
+}
