@@ -190,6 +190,13 @@ def fixture(tmp_path, monkeypatch, *, candidates=2, rows=5):
         "capacity_prerequisite": capacity,
         "natural_prerequisite": natural,
         "source_preparation_commit": "b" * 40,
+        "resource_policy": {
+            "start_gib": 4,
+            "floor_gib": 4,
+            "wait_seconds": 600,
+            "stable_samples": 3,
+            "process_memory_diagnostics": True,
+        },
     }
     decision_pin = rp("coordination/decision.json", decision, data)
     values = {
@@ -210,6 +217,7 @@ def fixture(tmp_path, monkeypatch, *, candidates=2, rows=5):
         "analysis_template": template,
         "stratum_metadata": strata_pin,
         "owner_decision": owner,
+        "process_memory_diagnostics": True,
         "process_guard": {
             "start_gib": 4,
             "floor_gib": 4,
@@ -609,3 +617,48 @@ def test_existing_preflight_accepts_manual_intent_and_draft_read(tmp_path, monke
     )
     assert not report.findings
     assert checker.read_run_id_of(recipe) == inputs["read_run_id"]
+
+
+@pytest.mark.parametrize("enabled", [True, False])
+def test_process_memory_diagnostics_is_explicitly_forwarded(
+    tmp_path, monkeypatch, enabled
+):
+    repo, data, inputs, _, _, _, _ = fixture(tmp_path, monkeypatch)
+    inputs["process_memory_diagnostics"] = enabled
+    decision_path = data / inputs["decision_receipt"]["relpath"]
+    decision = json.loads(decision_path.read_text())
+    decision["resource_policy"]["process_memory_diagnostics"] = enabled
+    decision_path.write_bytes(helper.serialized(decision))
+    inputs["decision_receipt"] = helper.raw_pin(decision_path, data)
+    helper.author(inputs, repo_root=repo, data_root=data)
+    queue = json.loads((repo / inputs["package_relpath"] / "queue-v1.json").read_text())
+    assert all(row["process_memory_diagnostics"] is enabled for row in queue)
+
+
+@pytest.mark.parametrize("value", [None, 1, "true"])
+def test_invalid_process_memory_diagnostics_refuses_before_mutation(
+    tmp_path, monkeypatch, value
+):
+    repo, data, inputs, _, _, _, _ = fixture(tmp_path, monkeypatch)
+    inputs["process_memory_diagnostics"] = value
+    before = {p: p.read_bytes() for p in (repo / "configs/experiment").glob("*.json")}
+    with pytest.raises(PolicyError, match="explicit boolean"):
+        helper.author(inputs, repo_root=repo, data_root=data)
+    assert not (repo / inputs["package_relpath"]).exists()
+    assert all(p.read_bytes() == raw for p, raw in before.items())
+
+
+@pytest.mark.parametrize("fault", ["floor", "diagnostics"])
+def test_decided_resource_policy_mismatch_refuses_before_mutation(
+    tmp_path, monkeypatch, fault
+):
+    repo, data, inputs, _, _, _, _ = fixture(tmp_path, monkeypatch)
+    before = {p: p.read_bytes() for p in (repo / "configs/experiment").glob("*.json")}
+    if fault == "floor":
+        inputs["process_guard"]["floor_gib"] = 1
+    else:
+        inputs["process_memory_diagnostics"] = False
+    with pytest.raises(PolicyError, match="decided resource policy"):
+        helper.author(inputs, repo_root=repo, data_root=data)
+    assert not (repo / inputs["package_relpath"]).exists()
+    assert all(p.read_bytes() == raw for p, raw in before.items())

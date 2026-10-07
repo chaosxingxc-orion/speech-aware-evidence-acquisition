@@ -236,6 +236,10 @@ def validate_inputs(spec, *, repo_root, data_root):
         "analysis stratum identity differs before authoring",
     )
     require(spec["read_run_id"] not in eligible, "READ cannot reuse a spend identity")
+    require(
+        type(spec.get("process_memory_diagnostics")) is bool,
+        "explicit boolean process_memory_diagnostics required",
+    )
     guard = spec["process_guard"]
     require(
         set(guard) == {"start_gib", "floor_gib", "wait_seconds", "stable_samples"}
@@ -249,6 +253,11 @@ def validate_inputs(spec, *, repo_root, data_root):
             for k in ("wait_seconds", "stable_samples")
         ),
         "explicit process memory/wait policy required",
+    )
+    require(
+        decision.get("resource_policy")
+        == {**guard, "process_memory_diagnostics": spec["process_memory_diagnostics"]},
+        "process memory/wait/instrumentation input differs from exact decided resource policy",
     )
     return package, stage, members, decision, template
 
@@ -468,6 +477,7 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
                     "ceiling_per_row": identity["model_per_trajectory"],
                     "notool": False,
                     "owner": spec["queue_owner"],
+                    "process_memory_diagnostics": spec["process_memory_diagnostics"],
                     "process_start_gib": guard["start_gib"],
                     "process_floor_gib": guard["floor_gib"],
                     "process_start_wait_seconds": guard["wait_seconds"],

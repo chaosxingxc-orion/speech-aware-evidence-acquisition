@@ -1,0 +1,22 @@
+{
+  "change": "Require explicit process_memory_diagnostics boolean and exact decided resource_policy equality; forward instrumentation unchanged to every queue row.",
+  "exposure_or_runtime_controls_mutated": false,
+  "files": {
+    "scripts/analysis/author_manual_architecture_package.py": "7c8d068248e37c691218358ac5e23063150e872ede80bc00e11adf5f3fde6d86",
+    "tests/unit/test_manual_architecture_authoring.py": "48be1a81e0f63a73b5d13cf5d1458ef001658c47eb10f271712b0a9e7f38b47b"
+  },
+  "generation_contacts": 0,
+  "real_authoring": false,
+  "schema": "saea-manual-architecture-authoring-engineering-validation-v1",
+  "scorer_contacts": 0,
+  "status": "MODEL-FREE SYNTHETIC SUCCESSOR VALIDATION; independent review pending",
+  "supersedes_commit": "b20a5296b673627bb5e72aada491c7abd8da33c5",
+  "task_results_read": false,
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 python -B -m pytest -q -p no:cacheprovider tests/unit/test_manual_architecture_authoring.py",
+  "test_result": {
+    "exit_code": 0,
+    "passed": 28,
+    "seconds": 5.33
+  },
+  "tokenizer_contacts": 0
+}
