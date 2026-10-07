@@ -94,13 +94,15 @@ read from ``SPEECHRL_DATA_DIR``; no vectors are ever committed to Git.
 
 from __future__ import annotations
 
+import codecs
 import hashlib
+import io
 import json
 import math
 import threading
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Mapping, Sequence
+from typing import Callable, Iterator, Mapping, Sequence
 
 from ..core.base import KNOWLEDGE_FUSERS, KNOWLEDGE_PROVIDERS, KNOWLEDGE_RANKERS, CoreError
 from . import knowledge_provider as _knowledge_provider  # noqa: F401 -- side-effect
@@ -896,6 +898,77 @@ def load_sealed_agreement(
     return table
 
 
+def _sealed_vector_lines(
+    resolved: Path, *, expected_sha256: str, label: str
+) -> Iterator[str]:
+    """Verify the whole source before parsing, then decode bounded records.
+
+    Retain the full validated table at the callers, but never a whole-file
+    bytes buffer or decoded line list. Match ``str.splitlines`` separators,
+    including CRLF and Unicode boundaries across I/O chunks. Recheck the
+    second pass before a caller can return a table from changed source bytes.
+    """
+
+    line_endings = (
+        "\n", "\r", "\v", "\f", "\x1c", "\x1d", "\x1e", "\x85", "\u2028", "\u2029"
+    )
+    with resolved.open("rb") as stream:
+        digest = hashlib.sha256()
+        decoder = codecs.getincrementaldecoder("utf-8")()
+        decode_error: UnicodeDecodeError | None = None
+        while chunk := stream.read(io.DEFAULT_BUFFER_SIZE):
+            digest.update(chunk)
+            if decode_error is None:
+                try:
+                    decoder.decode(chunk)
+                except UnicodeDecodeError as error:
+                    decode_error = error
+        if decode_error is None:
+            try:
+                decoder.decode(b"", final=True)
+            except UnicodeDecodeError as error:
+                decode_error = error
+        measured = digest.hexdigest()
+        expected = _require_sha256(expected_sha256, field="expected_sha256")
+        if measured != expected:
+            raise PhaseSupplyError(
+                f"{label} {resolved} hashes to {measured}, not the configured "
+                f"{expected_sha256}"
+            )
+        # The original loader hashes before decoding the entire UTF-8 source.
+        # Keep that refusal precedence, even for invalid UTF-8 late in a file.
+        if decode_error is not None:
+            raise decode_error
+
+        stream.seek(0)
+        digest = hashlib.sha256()
+        decoder = codecs.getincrementaldecoder("utf-8")()
+        pending = ""
+        while True:
+            chunk = stream.read(io.DEFAULT_BUFFER_SIZE)
+            digest.update(chunk)
+            pending += decoder.decode(chunk, final=not chunk)
+            parts = pending.splitlines(keepends=True)
+            pending = parts.pop() if parts else ""
+            for line in parts:
+                yield line[:-2] if line.endswith("\r\n") else line[:-1]
+            if pending.endswith(line_endings) and (
+                not pending.endswith("\r") or not chunk
+            ):
+                yield pending[:-2] if pending.endswith("\r\n") else pending[:-1]
+                pending = ""
+            if not chunk:
+                if pending:
+                    yield pending
+                break
+        measured = digest.hexdigest()
+        if measured != expected:
+            raise PhaseSupplyError(
+                f"{label} {resolved} changed during decoding: hashes to {measured}, "
+                f"not the configured {expected_sha256}"
+            )
+
+
 def load_sealed_vectors(
     path: Path, *, expected_sha256: str, dimensions: Sequence[str]
 ) -> Mapping[str, Mapping[str, tuple[float, ...]]]:
@@ -911,17 +984,13 @@ def load_sealed_vectors(
     resolved = Path(path)
     if not resolved.is_file():
         raise PhaseSupplyError(f"sealed vector file {resolved} does not exist")
-    raw = resolved.read_bytes()
-    measured = hashlib.sha256(raw).hexdigest()
-    if measured != _require_sha256(expected_sha256, field="expected_sha256"):
-        raise PhaseSupplyError(
-            f"sealed vector file {resolved} hashes to {measured}, not the configured "
-            f"{expected_sha256}"
-        )
     allowed = set(dimensions)
     widths: dict[str, int] = {}
     table: dict[str, Mapping[str, tuple[float, ...]]] = {}
-    for number, line in enumerate(raw.decode("utf-8").splitlines(), start=1):
+    for number, line in enumerate(
+        _sealed_vector_lines(resolved, expected_sha256=expected_sha256, label="sealed vector file"),
+        start=1,
+    ):
         if not line.strip():
             continue
         try:
@@ -989,13 +1058,6 @@ def load_sealed_segment_vectors(
     resolved = Path(path)
     if not resolved.is_file():
         raise PhaseSupplyError(f"sealed segment vector file {resolved} does not exist")
-    raw = resolved.read_bytes()
-    measured = hashlib.sha256(raw).hexdigest()
-    if measured != _require_sha256(expected_sha256, field="expected_sha256"):
-        raise PhaseSupplyError(
-            f"sealed segment vector file {resolved} hashes to {measured}, not the "
-            f"configured {expected_sha256}"
-        )
     allowed = set(dimensions)
     widths: dict[str, int] = {}
     table: dict[str, SealedSegmentQuery] = {}
@@ -1003,7 +1065,10 @@ def load_sealed_segment_vectors(
         "id", "audio_sha256", "source_frames", "source_sample_rate_hz", "segments"
     }
     segment_keys = {"id", "start_frame", "end_frame", "vectors"}
-    for number, line in enumerate(raw.decode("utf-8").splitlines(), start=1):
+    for number, line in enumerate(
+        _sealed_vector_lines(resolved, expected_sha256=expected_sha256, label="sealed segment vector file"),
+        start=1,
+    ):
         if not line.strip():
             continue
         try:

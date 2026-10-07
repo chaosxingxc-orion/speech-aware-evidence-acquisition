@@ -1,0 +1,8 @@
+{
+  "change": "Wrap only the line_endings tuple across three source lines; no executable values or control-flow changes.",
+  "final_source_sha256": "cb4716df8fd458fe931f90a157daeaa1c1d801b8aa91c072b88a926cb605bfd6",
+  "profile_raw_sha256": "3a32771f2151349809ba9d0037d0d80ccf81ed41c80aaffbcfbd137a70d1c12a",
+  "profile_relpath": "docs/readiness/2026-10-07-sealed-vector-streaming-memory-v1/synthetic-memory-profile-v1.json",
+  "profiled_source_sha256": "9fee56af23c3e582c5b412f4875b1d1675d89c93dec097dd40763d5d78007485",
+  "schema": "saea-model-free-source-format-succession-v1"
+}

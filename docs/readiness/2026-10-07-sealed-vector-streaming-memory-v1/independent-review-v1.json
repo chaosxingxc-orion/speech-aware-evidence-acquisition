@@ -1,0 +1,23 @@
+{
+  "authority": "Source and engineering validation review only; root serial integration and runtime admission remain required.",
+  "disposition": "GREEN",
+  "independent_focused_tests": {
+    "elapsed_seconds": 8.2,
+    "exit_code": 0,
+    "passed": 72,
+    "reported_output_identifier": "98b8a2"
+  },
+  "review_source_sha256": "cb4716df8fd458fe931f90a157daeaa1c1d801b8aa91c072b88a926cb605bfd6",
+  "review_test_sha256": "7c4df4756bb7a546f7789526fec97de6c7aa586e3f522351cd9601ae2e719e75",
+  "reviewer": "Astra independent source review",
+  "schema": "saea-sealed-vector-streaming-independent-review-v1",
+  "verified": [
+    "Full-file checksum refusal precedes UTF-8 and JSON refusal",
+    "Exact splitlines semantics across bounded chunks",
+    "Same-source second checksum required before table return",
+    "Late malformed, duplicate, dimension and segment refusals",
+    "Unchanged complete numerical validation",
+    "Eight synthetic full-table float.hex parity cases",
+    "Formatting succession matches exact profiled raw source and identical AST"
+  ]
+}

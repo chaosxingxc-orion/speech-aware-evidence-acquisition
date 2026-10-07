@@ -1,0 +1,44 @@
+{
+  "authority": "Engineering evidence only; no admission, attempt, exposure, dispatch, queue, lock or service authority.",
+  "checks": [
+    {
+      "bytecode": "disabled",
+      "cacheprovider": "disabled",
+      "elapsed_seconds": 7.56,
+      "files": [
+        "tests/unit/test_phase_supply_streaming.py",
+        "tests/unit/test_phase_supply.py"
+      ],
+      "kind": "focused_pytest",
+      "passed": 72
+    },
+    {
+      "files": [
+        "src/speech_aware_evidence_acquisition/rails/phase_supply.py",
+        "tests/unit/test_phase_supply_streaming.py"
+      ],
+      "kind": "focused_ruff",
+      "status": "PASS"
+    },
+    {
+      "cases": 8,
+      "kind": "synthetic_full_table_float_hex_parity",
+      "status": "PASS"
+    },
+    {
+      "all_splitlines_boundaries": "PASS",
+      "hash_before_UTF8_and_JSON": "PASS",
+      "kind": "source_order",
+      "late_duplicate_dimension_width_numeric_and_segment_validation": "PASS",
+      "second_pass_same_size_mutation_refusal": "PASS"
+    }
+  ],
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "schema": "saea-model-free-sealed-vector-validation-v1",
+  "status": "PASS"
+}

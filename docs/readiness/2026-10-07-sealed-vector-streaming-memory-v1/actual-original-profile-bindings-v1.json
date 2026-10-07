@@ -1,0 +1,63 @@
+{
+  "evidence_pins": [
+    {
+      "bytes": 9525,
+      "data_relpath": "coordination/simple-consumption-memory-diagnostic-v1/profile-frozen-vector-allocation-v1.py",
+      "sha256": "14dba598414ad6960bdabaa333f8df59bbae792275f2abd4a17bd9d762625b5d"
+    },
+    {
+      "bytes": 11508,
+      "data_relpath": "coordination/simple-consumption-memory-diagnostic-v1/frozen-original-profile-run-v1/stages-v1.jsonl",
+      "sha256": "40c5bd2c4b51ebb98db21f6fd4c714364fea6cd9f3fb607af7ef80beb9e85d6f"
+    },
+    {
+      "bytes": 1805,
+      "data_relpath": "coordination/simple-consumption-memory-diagnostic-v1/frozen-original-profile-run-v1/guard/events.jsonl",
+      "sha256": "f31d92c00ccfc8097cee1f82661415bc249163d8c1a398b22f76eb2747dee410"
+    },
+    {
+      "bytes": 1046,
+      "data_relpath": "coordination/simple-consumption-memory-diagnostic-v1/frozen-original-profile-run-v1/guard/finished.json",
+      "sha256": "29a73b8e234c78bf065bfda1660b1a5d8cbb077748825bb40bdac30a176bcea3"
+    }
+  ],
+  "frozen_commit": "3f3c30af26ad70086970876656ac5a36e1268cc4",
+  "guard_exit_code": 0,
+  "guard_policy": {
+    "floor_gib": 4,
+    "interval_seconds": 5.0,
+    "read_timeout_seconds": 10.0,
+    "start_gib": 4,
+    "stop_grace_seconds": 5.0
+  },
+  "guard_status": "completed",
+  "input_bytes": 528621826,
+  "input_sha256": "5dfe75231c12f2624913988e4643c51b74856465bdbd108358b4f371dacffc1e",
+  "interpretation": "Demonstrated original whole-file inflation; this component-only profile does not reproduce or establish the cause of the reported approximately 20 GiB Windows drop.",
+  "load_seconds": 7.79886269569397,
+  "matrix_nbytes": 140148736,
+  "matrix_shape": [
+    8554,
+    2048
+  ],
+  "peak_rss_kib": 2007896,
+  "post_load_rss_kib": 1491920,
+  "post_matrix_rss_kib": 1602208,
+  "producer_invoked_by": "root",
+  "released_rss_kib": 1534692,
+  "repeat_recall_digest": "1451dcd284f3032b02a74bf42d3803d7e82ffbddaf2ee523ac560b23f0441210",
+  "repeat_recall_equal": true,
+  "rows": 11514,
+  "same_matrix_identity": true,
+  "schema": "saea-model-free-frozen-vector-allocation-bindings-v1",
+  "scope": "Root-owned completed source allocation diagnostic; no task output, model/API/scorer contact or scientific result.",
+  "source_pins": {
+    "rails/kb_policy.py": "b0d8d9d46d69f57c3ee377af61a301ec7cd8078b2c2a4bdd47e5ed2cd8f6c32b",
+    "rails/knowledge.py": "e58f0d0f682405692d5b751038bd516ac4929434c67ff532a9ad80de51631bf1",
+    "rails/phase_supply.py": "5cf42534f370b66afdeaf6423cd82b71469b77619e908ba373058d5c33fab49f"
+  },
+  "widths": [
+    2048
+  ],
+  "windows_min_available_gib": 24.91585922241211
+}
