@@ -11,6 +11,7 @@ import hashlib
 import json
 import os
 import sys
+import subprocess
 from pathlib import Path
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -25,7 +26,48 @@ parser.add_argument("flight_commit")
 parser.add_argument(
     "--result-kind", choices=("task-answer", "artifact"), default="task-answer"
 )
+parser.add_argument("--repo-root", type=Path)
+parser.add_argument("--campaign-plan", type=Path)
 args = parser.parse_args()
+if args.campaign_plan is not None:
+    if args.mode != "arm" or args.repo_root is None:
+        parser.error("campaign inspection requires arm mode and exact repo-root")
+    repo = args.repo_root.resolve()
+    if repo != Path(__file__).resolve().parents[3]:
+        parser.error("campaign inspector must run from the exact frozen repo-root")
+    plan = args.campaign_plan.resolve()
+    if not plan.is_relative_to(repo):
+        parser.error("campaign inspection plan escapes repo-root")
+    from speech_aware_evidence_acquisition.core.flight.cli import load_campaign_plan
+    from speech_aware_evidence_acquisition.core.config import compose
+    from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+    from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config
+    results = []
+    for experiment, cell in load_campaign_plan(repo, plan):
+        c = cell.document
+        values = compose(repo, c["model_fragment"], c["dataset_fragment"],
+                         c["baseline_fragment"], experiment).values
+        native = load_native_episode_config(values, default_phase_program(values["policy"]))
+        rows = values["population"]["count"]
+        if type(rows) is not int or rows < 1 or native is None:
+            parser.error("campaign inspection requires registered positive rows and native contact ceiling")
+        member_notool = "1" if args.notool == "1" or not any(
+            role.tool_names for role in native.roles if role.max_iterations > 0) else "0"
+        child = subprocess.run([sys.executable, "-B", str(Path(__file__).resolve()), args.data_root,
+            cell.run_id, cell.attempt_id, "arm", str(rows), str(native.max_contacts), member_notool,
+            args.flight_commit, "--result-kind", args.result_kind], capture_output=True, text=True)
+        try:
+            report = json.loads(child.stdout)
+        except (json.JSONDecodeError, TypeError):
+            report = {"run_id": cell.run_id, "attempt_id": cell.attempt_id,
+                      "pass": False, "fails": ["member inspection did not return structural JSON"]}
+        results.append({"experiment": experiment, "cell": c["cell_id"], "exit_code": child.returncode,
+                        "report": report})
+    passed = all(row["exit_code"] == 0 and row["report"].get("pass") is True for row in results)
+    print(json.dumps({"mode": "campaign", "pass": passed, "members": results}, sort_keys=True))
+    sys.exit(0 if passed else 2)
+if args.repo_root is not None:
+    parser.error("repo-root is only used with an exact campaign plan")
 DATA, RUN, ATT, MODE = args.data_root, args.run_id, args.attempt_id, args.mode
 EXP_ROWS, CEIL, NOTOOL, COMMIT = (
     args.expected_rows,

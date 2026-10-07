@@ -605,3 +605,42 @@ def test_guard_node_panel_keeps_one_process_and_all_exact_owners(
             {"run_id": c.run_id, "attempt_id": c.attempt_id} for c in cells
         ]
         assert calls[0][1]["identity"]["panel_id"] == "panel"
+
+
+@pytest.mark.parametrize("fault", [None, "outside", "experiment", "token", "held", "worker", "dirty"])
+def test_guard_main_exact_campaign_plan_identity(tmp_path, monkeypatch, fault):
+    import hashlib
+    from types import SimpleNamespace
+    from speech_aware_evidence_acquisition.core.flight import process_guard as guard, campaign, cli
+    from speech_aware_evidence_acquisition.core.bundle import git_commit
+    repo, data = tmp_path / "repo", tmp_path / "data"
+    repo.mkdir()
+    plan=repo/"campaign.json"
+    plan.write_text('{"schema":"saea-campaign-plan-v1","cells":[]}',encoding="utf-8")
+    monkeypatch.setattr(guard,"__file__",str(repo/"src/speech_aware_evidence_acquisition/core/flight/process_guard.py"))
+    monkeypatch.setenv("PYTHONDONTWRITEBYTECODE","1")
+    cells=[SimpleNamespace(run_id=f"run-{i}",attempt_id=f"attempt-{i}",document={"cell_id":f"cell-{i}"},assert_mode=lambda mode:None) for i in (1,2)]
+    monkeypatch.setattr(cli,"load_campaign_plan",lambda root,path:tuple((f"experiment-{i}",c) for i,c in enumerate(cells,1)))
+    monkeypatch.setattr(campaign,"declared_readiness",lambda cell,data:SimpleNamespace(state="held" if fault=="held" else "ready",reason="fixture"))
+    def clean(root):
+        if fault=="dirty":raise ValueError("dirty source")
+        return "a"*40
+    monkeypatch.setattr(git_commit,"require_clean_study_repo",clean)
+    calls=[]
+    monkeypatch.setattr(guard,"run_guarded",lambda *a,**kw:(calls.append((a,kw)) or guard.GuardResult("completed",0,1,0)))
+    args=["--repo-root",str(repo),"--data-root",str(data),"--runtime-root","runtime","--lock-path","lock","--owner","owner","--expected-session-id","session","--receipt-dir",str(data/"coordination/guard"),"--start-gib","4","--floor-gib","4","--campaign-plan",str(plan)]
+    if fault=="outside":args[-1]=str(tmp_path/"outside.json")
+    elif fault=="experiment":args += ["--experiment","other"]
+    elif fault=="token":args += ["--lease-token-file","private-token"]
+    elif fault=="worker":args += ["--mode","worker"]
+    if fault is not None:
+        with pytest.raises((SystemExit,ValueError)):guard.main(args)
+        assert not calls
+        return
+    assert guard.main(args)==0
+    command,_,policy=calls[0][0]
+    assert "--experiment" not in command and command[command.index("--campaign-plan")+1]==str(plan)
+    identity=calls[0][1]["identity"]
+    assert identity["campaign_plan"]=={"relpath":"campaign.json","sha256":hashlib.sha256(plan.read_bytes()).hexdigest()}
+    assert identity["members"]==[{"experiment":f"experiment-{i}","cell":f"cell-{i}","run_id":f"run-{i}","attempt_id":f"attempt-{i}"}for i in (1,2)]
+    assert identity["study_head"]=="a"*40 and policy.start_gib==policy.floor_gib==4

@@ -412,6 +412,23 @@ def main(argv=None):
         cells = tuple(cell for _, cell in selected)
         ownership = {"panel_id": panel_id, "members": [
             {"run_id": cell.run_id, "attempt_id": cell.attempt_id} for cell in cells]}
+    elif args.mode == "campaign" and args.campaign_plan is not None:
+        from .cli import load_campaign_plan
+        import hashlib
+
+        if args.experiment or args.lease_token_file:
+            parser.error("campaign plan requires no experiment or external worker token")
+        plan_path = args.campaign_plan.resolve()
+        if not plan_path.is_relative_to(repo):
+            parser.error("campaign plan must be confined beneath repo-root")
+        plan_sha256 = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        selected = load_campaign_plan(repo, plan_path)
+        cells = tuple(cell for _, cell in selected)
+        ownership = {"campaign_plan": {"relpath": plan_path.relative_to(repo).as_posix(),
+                                      "sha256": plan_sha256},
+                     "members": [{"experiment": experiment, "cell": cell.document["cell_id"],
+                                  "run_id": cell.run_id, "attempt_id": cell.attempt_id}
+                                 for experiment, cell in selected]}
     else:
         if not args.experiment or args.campaign_plan is not None:
             parser.error("ordinary guarded workers require one experiment")
@@ -423,7 +440,7 @@ def main(argv=None):
         state = declared_readiness(cell, data)
         if state.state != "ready":
             parser.error("registered cell is not ready: " + state.reason)
-    if args.mode not in {"node-panel", "node-panel-worker"}:
+    if args.mode not in {"node-panel", "node-panel-worker"} and args.campaign_plan is None:
         ownership = {"run_id": cells[0].run_id, "attempt_id": cells[0].attempt_id}
     command = [
         sys.executable,
@@ -441,7 +458,7 @@ def main(argv=None):
         "expected-session-id",
     ):
         command.extend(["--" + name, getattr(args, name.replace("-", "_"))])
-    if args.mode in {"node-panel", "node-panel-worker"}:
+    if args.campaign_plan is not None:
         command.extend(["--campaign-plan", str(plan_path)])
     else:
         command.extend(["--experiment", args.experiment])
@@ -474,6 +491,9 @@ def main(argv=None):
     from ..bundle.git_commit import require_clean_study_repo
 
     study_head = require_clean_study_repo(repo)
+    if args.mode == "campaign" and args.campaign_plan is not None:
+        if hashlib.sha256(plan_path.read_bytes()).hexdigest() != plan_sha256:
+            parser.error("campaign plan changed during clean-source validation")
 
     def interrupted(signum, frame):
         raise InterruptedError("owned process supervisor interrupted")

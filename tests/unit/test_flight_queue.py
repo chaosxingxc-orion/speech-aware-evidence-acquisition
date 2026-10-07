@@ -20,7 +20,7 @@ from typing import Mapping
 
 import pytest
 
-from speech_aware_evidence_acquisition.core.flight.queue import FlightQueue
+from speech_aware_evidence_acquisition.core.flight.queue import FlightQueue, FlightQueueError
 from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime
 from speech_aware_evidence_acquisition.rails.task_adapter import TaskAdapter
 
@@ -472,6 +472,7 @@ def test_queue_overlaps_scoring_with_the_next_flights_generation(tmp_path):
     assert entries[0].score_future is not None
     assert not entries[0].score_future.done()
     assert entries[1].flight.receipts.has("seal")
+    assert entries[1].score_future is not None and not entries[1].score_future.done()
 
     score_release.set()
     results = queue.drain_scores()
@@ -772,3 +773,50 @@ def test_queue_does_not_abort_or_stop_coordinator_service_after_scoring_failure(
 
     assert aborts == []
     assert stops == []
+
+
+def test_completed_score_failure_refuses_next_admission(tmp_path):
+    def fail_score(jobs, **kwargs):
+        raise RuntimeError("synthetic official score failure")
+    first=_make_flight(tmp_path,run_id="SAEA-SCORE-FAIL-A",attempt_id="a",score_batch=fail_score)
+    second=_make_flight(tmp_path,run_id="SAEA-SCORE-FAIL-B",attempt_id="b")
+    queue=FlightQueue([first,second])
+    try:
+        (completed,)=queue.run(max_flights=1)
+        with pytest.raises(RuntimeError):completed.score_future.result(timeout=5)
+        with pytest.raises(FlightQueueError,match="official scoring failed"):
+            queue.run()
+        assert first.receipts.has("seal") and not second.receipts.has("seal")
+        assert queue.states[first.run_id].state=="failed"
+    finally:queue.shutdown()
+
+
+def test_delayed_score_failure_stops_after_current_generation_settles(tmp_path):
+    started,release=threading.Event(),threading.Event()
+    def fail_score(jobs, **kwargs):
+        started.set()
+        assert release.wait(timeout=5)
+        raise RuntimeError("delayed synthetic official score failure")
+    first=_make_flight(tmp_path,run_id="SAEA-DELAYED-FAIL-A",attempt_id="a",score_batch=fail_score)
+    second=_make_flight(tmp_path,run_id="SAEA-DELAYED-FAIL-B",attempt_id="b")
+    third=_make_flight(tmp_path,run_id="SAEA-DELAYED-FAIL-C",attempt_id="c")
+    queue=FlightQueue([first,second,third])
+    original=second.seal
+    def settle_then_release():
+        result=original()
+        assert started.wait(timeout=5)
+        release.set()
+        with pytest.raises(RuntimeError):queue.completed[0].score_future.result(timeout=5)
+        return result
+    second.seal=settle_then_release
+    try:
+        with pytest.raises(FlightQueueError,match="official scoring failed"):
+            queue.run()
+        assert first.receipts.has("seal") and second.receipts.has("seal")
+        assert not third.receipts.has("seal")
+        assert len(queue.completed)==2
+        assert queue.states[first.run_id].state=="failed"
+    finally:
+        release.set()
+        queue.shutdown()
+    assert second.receipts.has("score")

@@ -46,7 +46,7 @@ def run_batch_fixture(tmp_path, worker_exit, changes=None, wait_exit=0):
     )
     wrapper.chmod(0o755)
     (tmp_path / "batch_inspect.py").write_text(
-        'print(\'{"structural_check":"PASS"}\')\n'
+        "import os,sys,json\nwith open(os.environ['INSPECTIONS'],'a') as f:f.write(json.dumps(sys.argv[1:])+'\\n')\nprint('{}')\n"
     )
     (tmp_path / "node_panel_inspect.py").write_text(
         "import os,sys,json\nwith open(os.environ['PANEL_INSPECTIONS'],'a') as f:f.write(json.dumps(sys.argv[1:])+'\\n')\nprint('{}')\n"
@@ -80,6 +80,7 @@ sleep() { :; }
         WAITS=str(tmp_path / "waits"),
         STOP=str(tmp_path / "STOP"),
         PANEL_INSPECTIONS=str(tmp_path / "panel-inspections"),
+        INSPECTIONS=str(tmp_path / "inspections"),
     )
     result = subprocess.run(
         ["bash"],
@@ -119,7 +120,7 @@ def test_sequential_guarded_steps_preserve_order_and_stop_on_failure(
     [
         {"process_start_gib": None},
         {"process_floor_gib": None},
-        {"campaign_plan": "plans/multi.json"},
+        {"campaign_plan": "plans/multi.json", "smoke_experiment": "separate-smoke"},
         {"smoke_experiment": "separate-smoke"},
         {"kind": "invalid"},
         {"process_start_gib": None, "process_floor_gib": None},
@@ -239,3 +240,16 @@ def test_node_panel_refuses_incomplete_plan_or_resource_custody(tmp_path, change
         {"kind": kind, "campaign_plan": "docs/panel.json", **change},
     )
     assert result.returncode == 9 and not calls
+
+
+def test_guarded_campaign_plan_forwarding_and_complete_plan_inspection(tmp_path):
+    result,dispatches=run_batch_fixture(tmp_path,0,{"campaign_plan":"plans/registered.json"})
+    assert result.returncode==0 and len(dispatches)==2
+    for args in dispatches:
+        assert args[args.index("-m")+1]=="speech_aware_evidence_acquisition.core.flight.process_guard"
+        assert args[args.index("--campaign-plan")+1]==str(tmp_path/"plans/registered.json")
+        assert "--experiment" not in args and "--lease-token-file" not in args
+    inspections=[json.loads(x)for x in(tmp_path/"inspections").read_text().splitlines()]
+    assert len(inspections)==2
+    assert all(args[args.index("--campaign-plan")+1]==str(tmp_path/"plans/registered.json")for args in inspections)
+    assert all(args[args.index("--repo-root")+1]==str(tmp_path)for args in inspections)

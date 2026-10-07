@@ -151,6 +151,13 @@ class FlightQueue:
 
     def next_ready(self) -> FlightRuntime | None:
         self._refresh_scores()
+        if self._pending:
+            for entry in self.completed:
+                state = self._states.get(entry.flight.run_id)
+                if state is not None and state.state == "failed":
+                    raise FlightQueueError(
+                        f"Campaign admission refused after {entry.flight.run_id}: {state.reason}"
+                    )
         ready: list[FlightRuntime] = []
         for flight in self._pending:
             if id(flight) in self._preflight_failed:

@@ -23,7 +23,7 @@
 #   verified finalized artifact bytes. smoke_result_kind defaults to result_kind.
 #   Optional process_start_gib and process_floor_gib opt one ordinary member into
 #   the shared owned-process memory supervisor; both are required. An ordinary
-#   campaign member has no separate smoke or campaign_plan; an engineering member
+#   guarded campaign member has no separate smoke; an exact campaign_plan supervises all members. An engineering member
 #   guards only its identical four-row worker under the existing lease.
 #   Optional paired process_start_wait_seconds/process_start_stable_samples wait
 #   before prelaunch for stable memory. The observer starts no worker and never
@@ -196,7 +196,9 @@ for ((i=0; i<N; i++)); do
     [ -n "$process_start" ] && [ -n "$process_floor" ] || stop "step $order needs both process memory floors"
     case "$kind" in cell|resume|engineering|node-panel|node-panel-worker) ;; *) stop "step $order process guard requires campaign or identical engineering worker" ;; esac
     if [ "$kind" != "node-panel" ] && [ "$kind" != "node-panel-worker" ]; then
-      { [ -z "$plan" ] || [ "$plan" = "None" ]; } || stop "step $order process guard refuses a multi-member campaign_plan"
+      if [ -n "$plan" ] && [ "$plan" != "None" ]; then
+        [ "$kind" = "cell" ] || stop "step $order guarded campaign plan requires ordinary campaign kind"
+      fi
     fi
     if [ "$kind" != "engineering" ]; then
       { [ -z "$sexp" ] || [ "$sexp" = "None" ]; } || stop "step $order process guard cannot leave a separate smoke unsupervised"
@@ -241,9 +243,11 @@ for ((i=0; i<N; i++)); do
       "${diagnostic_args[@]}" --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
   elif [ -n "$process_start" ]; then
     GUARD_DIR="$DATA/coordination/process-guard/$(basename "$LOGF" .log)"
+    campaign_identity_args=(--experiment "$exp")
+    if [ -n "$plan" ] && [ "$plan" != "None" ]; then campaign_identity_args=(--campaign-plan "$REPO/$plan"); fi
     $PY -B -m speech_aware_evidence_acquisition.core.flight.process_guard \
       --repo-root "$REPO" --data-root "$DATA" --runtime-root /home/chao --lock-path "$LOCK" \
-      --experiment "$exp" --owner "$owner" --expected-session-id "$SESSION" \
+      "${campaign_identity_args[@]}" --owner "$owner" --expected-session-id "$SESSION" \
       "${diagnostic_args[@]}" --receipt-dir "$GUARD_DIR" --start-gib "$process_start" --floor-gib "$process_floor" > "$LOGF" 2>&1
   elif [ -n "$plan" ] && [ "$plan" != "None" ]; then
     $PY -B -m speech_aware_evidence_acquisition.core.flight.cli campaign \
@@ -259,7 +263,9 @@ for ((i=0; i<N; i++)); do
       --campaign-plan "$REPO/$plan" --flight-commit "$FLIGHT_COMMIT" \
       --ceiling-per-row "$ceil" --notool "$nt" --result-kind "$result_kind"); irc=$?
   else
-    out=$($PY -B $SP/batch_inspect.py "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT" --result-kind "$result_kind"); irc=$?
+    inspection_args=()
+    if [ -n "$plan" ] && [ "$plan" != "None" ]; then inspection_args=(--repo-root "$REPO" --campaign-plan "$REPO/$plan"); fi
+    out=$($PY -B $SP/batch_inspect.py "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT" --result-kind "$result_kind" "${inspection_args[@]}"); irc=$?
   fi
   log "arm-inspect" "$out"
   [ $rc -eq 0 ] && [ $irc -eq 0 ] || stop "arm failed on step $order (campaign rc $rc, inspect rc $irc); see $LOGF"

@@ -1,0 +1,39 @@
+{
+  "contacts": {
+    "model": 0,
+    "official_scorer": 0,
+    "tokenizer": 0
+  },
+  "elapsed_seconds": 11.55,
+  "engineer": "GPT-6.1 Sol",
+  "exit_code": 0,
+  "five_phase_supply_fingerprints_changed": false,
+  "focused_tests_passed": 17,
+  "independent_original_session": 9599,
+  "operational_invocation": false,
+  "reviewed_source_files": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/process_guard.py",
+      "sha256": "a12e025720bcf7fb7a1b44dceda06d01334e1cd5f792c2e1cab824d75a956898"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/queue.py",
+      "sha256": "a3aa77a704e1a04be5b8ec513cfdac5dab779f5eca20b12f95d9aec8c781a5c8"
+    },
+    {
+      "relpath": "scripts/flights/batch/batch_driver.sh",
+      "sha256": "0e715674c37718a6ad34e0930304e837d125b13a183a3462b6709c4e64f9e221"
+    },
+    {
+      "relpath": "scripts/flights/batch/batch_inspect.py",
+      "sha256": "a2cc7c3b364cf12111545212497819e7daba90666a4f0166fa63cf09a663686c"
+    }
+  ],
+  "reviewer": "GPT-6 Astra",
+  "scheduler_change": false,
+  "schema": "saea-model-free-engineering-review-v1",
+  "source_policy_change": false,
+  "start_chunk": "0eac93",
+  "status": "GREEN",
+  "terminal_chunk": "9aba0a"
+}
