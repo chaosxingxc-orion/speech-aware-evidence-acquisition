@@ -1,0 +1,61 @@
+{
+  "architecture_proof": "manual-architecture-n20-v1",
+  "attempts_or_exposure_registered": false,
+  "base_commit": "cb6e71d31eb6db0b740050737d610b47ad0c35f2",
+  "checks": [
+    {
+      "exit_code": 0,
+      "passed": 145,
+      "seconds": 29.54,
+      "suite": [
+        "test_system_architecture_read.py",
+        "test_system_text_pilot_read.py",
+        "test_system_text_context_read.py",
+        "test_review_applicability.py",
+        "test_system_process_report.py"
+      ]
+    },
+    {
+      "after_final_receipt_hash_and_early_process_pin_refusal_change": "test_system_architecture_read.py -k 'manual_cli or process_pin'",
+      "deselected": 34,
+      "exit_code": 0,
+      "passed": 7,
+      "seconds": 9.32
+    },
+    {
+      "check": "ruff check scoped reader/analyzer/tests",
+      "exit_code": 0
+    },
+    {
+      "check": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "dependency": "Integrate capacity engineering require_architecture_n20_registration with the shared pair signature and promised runtime_sample_ids result before enabling this selector; absence fails closed.",
+  "model_contacts_added": 0,
+  "optimizer_export": false,
+  "population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "real_task_results_read": false,
+  "runtime_controls_mutated": false,
+  "schema": "saea-manual-architecture-reader-engineering-validation-v1",
+  "scientific_read_authorized": false,
+  "scorer_contacts_added": 0,
+  "source_pins": {
+    "scripts/analysis/system_text_pilot_read.py": {
+      "relpath": "scripts/analysis/system_text_pilot_read.py",
+      "sha256": "1e8fcdbc31147fc9cb6e322383cf61353aa65ad02fac1020dd37abc450778a4c"
+    },
+    "src/speech_aware_evidence_acquisition/analysis/system_architecture_read.py": {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_architecture_read.py",
+      "sha256": "beb37575a06677e9ecc91b382cdc99fa223da0bbd22ba6fbf244e8785aed3e42"
+    },
+    "tests/unit/test_system_architecture_read.py": {
+      "relpath": "tests/unit/test_system_architecture_read.py",
+      "sha256": "ba30337c0c5760982deee903e3791f594509cd6c862e27e610b39d27da03dd82"
+    }
+  },
+  "status": "OFFLINE_TESTED_PENDING_ROOT_INTEGRATION_REVIEW"
+}

@@ -15,6 +15,7 @@ from pathlib import Path
 
 from speech_aware_evidence_acquisition.analysis import system_text_context as context
 from speech_aware_evidence_acquisition.analysis import system_text_panel as panel
+from speech_aware_evidence_acquisition.analysis import system_architecture_read as architecture
 from speech_aware_evidence_acquisition.analysis import system_context_read as context_read
 from speech_aware_evidence_acquisition.rails import system_context_learning as context_learning
 from speech_aware_evidence_acquisition.rails.system_text_feedback import CompleteSystemFeedback
@@ -34,6 +35,7 @@ from speech_aware_evidence_acquisition.rails.reward_link_io import (
 )
 from speech_aware_evidence_acquisition.rails.system_text_feedback import (
     preflight_family,
+    _absolute_json,
 )
 from speech_aware_evidence_acquisition.rails.system_text_policy import (
     _read_pin,
@@ -60,7 +62,9 @@ def load_documents(recipe_pin, supplement_pin, root):
     require(
         supplement.get("schema")
         == (
-            "saea-context-learning-analysis-supplement-v1"
+            "saea-manual-architecture-analysis-supplement-v1"
+            if "manual_architecture_registration" in recipe
+            else "saea-context-learning-analysis-supplement-v1"
             if "context_learning_registration" in recipe
             else "saea-system-panel-analysis-supplement-v1"
             if "system_panel_registration" in recipe
@@ -71,10 +75,26 @@ def load_documents(recipe_pin, supplement_pin, root):
         and supplement.get("recipe") == recipe_pin,
         "analysis supplement names another recipe",
     )
-    key = ("context_learning_registration" if "context_learning_registration" in recipe else
+    key = ("manual_architecture_registration" if "manual_architecture_registration" in recipe else
+           "context_learning_registration" if "context_learning_registration" in recipe else
            "system_panel_registration" if "system_panel_registration" in recipe else "pilot_registration")
     registration = json.loads(_read_pin(recipe[key], root))
-    if key == "context_learning_registration":
+    if key == "manual_architecture_registration":
+        require(recipe.get("architecture_proof") == architecture.SELECTOR
+                and supplement.get("registration") == recipe[key]
+                and supplement.get("process_diagnostics") == recipe.get("process_diagnostics"),
+                "manual selector, supplement or READ-pinned process binding differs")
+        require(supplement.get("source_code", {}).get("reader", {}).get("relpath")
+                == "scripts/analysis/system_text_pilot_read.py"
+                and supplement["source_code"].get("analyzer", {}).get("relpath")
+                == "src/speech_aware_evidence_acquisition/analysis/system_architecture_read.py"
+                and supplement["source_code"]["reader"]["sha256"] == pin(__file__)["sha256"]
+                and supplement["source_code"]["analyzer"]["sha256"] == pin(architecture.__file__)["sha256"],
+                "manual reader requires exact executing reader and analyzer pins")
+        for source_pin in supplement["source_code"].values():
+            _read_pin(source_pin, root)
+        owner = json.loads(_read_pin(supplement["owner_decision"], root))
+    elif key == "context_learning_registration":
         require(not any(k in recipe for k in ("system_panel_registration", "pilot_registration")),
                 "context recipe cannot mix family registration types")
         for source_pin in supplement.get("source_code", {}).values():
@@ -256,6 +276,10 @@ def run(
         "read_registration": recipe_pin,
     }
     authority = CLI.require_read_registration(family, repo_root=repo_root)
+    is_manual = "manual_architecture_registration" in recipe
+    if is_manual:
+        require(learning_amendment_pin is None and reference_family_path is None,
+                "manual architecture never exports optimizer feedback")
     is_learning_context = "context_learning_registration" in recipe
     is_context = recipe.get("family_id") in context.READ_IDS
     is_panel = "system_panel_registration" in recipe
@@ -281,7 +305,11 @@ def run(
             expected_learning = supplement["learning_owner_decision"] if "evaluation" in recovery_kwargs else supplement["growth_owner_decision"]
             require(learning_amendment_pin == expected_learning,
                     "panel learning export must use its exact approved growth authority")
-    if is_learning_context:
+    if is_manual:
+        recovery_kwargs = {"scope": architecture.validate_registration(
+            recipe, registration, owner, authority, repo_root=repo_root, data_root=data_root)}
+        evidence_reader, analyzer = architecture.read_evidence, architecture.analyze
+    elif is_learning_context:
         require(learning_amendment_pin is None, "context baseline input uses its own qualification")
         context_learning._validate_scope(recipe, registration, owner, root=repo_root)
     else:
@@ -325,6 +353,12 @@ def run(
         all(v.attempt_state == "FINALIZED" for v in verified),
         "every registered member seal must verify",
     )
+    if is_manual:
+        for binding, bundle in zip(preliminary, verified, strict=True):
+            member = registration["member_bindings"][binding["candidate_id"]]
+            require(bundle.manifest.get("study_commit") == member["source_commit"]
+                    and [r["sample_id"] for r in bundle.outputs_rows] == member["runtime_sample_ids"],
+                    "manual sealed source or production order differs")
     metadata_source = json.loads(_read_pin(supplement["stratum_metadata"], repo_root))
     items = metadata_source["items"]
     require(
@@ -388,12 +422,40 @@ def run(
             registration=registration,
             roster=strata,
             supplement=supplement,
+            **(recovery_kwargs if is_manual else {}),
         )
+    process_pin = supplement.get("process_diagnostics") if is_manual else None
+    if is_manual:
+        report["process_diagnostics_status"] = "UNAVAILABLE_UNTIL_QUALIFIED_PINNED_DERIVATIVE"
+        require(recipe.get("process_diagnostics") == process_pin,
+                "manual process derivative must be pinned by the exact root READ recipe")
+        if process_pin is not None:
+            process_document = json.loads(_read_pin(process_pin, data_root))
+            score_sources = {}
+            for binding in bindings:
+                cid = binding["candidate_id"]
+                receipt = _absolute_json(binding["config"]["complete_score_receipt"])
+                score_sources[cid] = {"manifest": binding["config"]["manifest"],
+                                     "score_result": receipt["score_result"],
+                                     "attempt_id": registration["member_bindings"][cid]["attempt_id"]}
+            report["process_comparison"] = architecture.combine_process(
+                recipe=recipe, business=report, process=process_document,
+                timing=process_document["timing"], scope=recovery_kwargs["scope"],
+                score_sources=score_sources)
+            report["process_diagnostics_status"] = "COMPLETE_SOURCE_BOUND_V2_DERIVATIVE"
     require(
         CLI.require_read_registration(family, repo_root=repo_root) == authority,
         "root READ changed during pilot analysis",
     )
     load_documents(recipe_pin, supplement_pin, repo_root)
+    if process_pin is not None:
+        _read_pin(process_pin, data_root)
+    if is_manual:
+        require(all(pin(b["config"]["manifest"]["path"]) == b["config"]["manifest"]
+                    for b in preliminary), "manual original manifest changed during read")
+        require(architecture.validate_registration(recipe, registration, owner, authority,
+                repo_root=repo_root, data_root=data_root) == recovery_kwargs["scope"],
+                "manual registration or source changed during read")
     if recovery_pin is not None:
         _read_pin(recovery_pin, repo_root)
     if is_context:
@@ -429,6 +491,8 @@ def run(
         "reader": pin(__file__),
         "analyzer": pin(Path(sys.modules[analyzer.__module__].__file__)),
     }
+    if process_pin is not None:
+        report["source_pins"]["process_diagnostics"] = process_pin
     if recovery_pin is not None:
         report["source_pins"]["recovery_authority"] = recovery_pin
     CLI.write_new(output / "family.json", {**family, "bindings": bindings})
