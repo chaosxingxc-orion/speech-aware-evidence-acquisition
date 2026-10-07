@@ -1,0 +1,18 @@
+{
+  "schema": "saea-root-offline-custody-disposition-v1",
+  "at_utc": "2026-10-07T00:51:11.062476+00:00",
+  "authority": "owner227",
+  "old_job": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-precontact-qualification-v1",
+  "old_exit": {
+    "exit_code": 1,
+    "at_utc": "2026-10-07T00:50:35.703913+00:00"
+  },
+  "cause": "New detached checkout differs from the absolute historical plan custody root. The private path confinement gate refused before source read.",
+  "old_evidence_preserved": true,
+  "new_job": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-precontact-qualification-v2",
+  "correction": "Use original frozen custody root for original private pins; keep original path confinement and exact file hashes. Use new detached source checkout for current code and repository receipt pins.",
+  "offline_pin_proof_count": 59,
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "proposal_slots_reserved": 0
+}

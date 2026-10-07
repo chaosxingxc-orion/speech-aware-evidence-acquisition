@@ -1,0 +1,28 @@
+{
+  "schema": "saea-matched-search-native-capsule-proof-v1",
+  "at_utc": "2026-10-07T00:54:19.804903+00:00",
+  "checks": [
+    {
+      "arm": "fixed-parent",
+      "manifest_sha256": "e3fc705b4a359413a9cdba8056a6155c0ebf049356e09eb55ed570fa77a6ca52",
+      "parents": 8,
+      "same_frozen_seed_config_sha256": "c9d3b296414551ce9efc8ba0f51c92ba969c3e57c57ff5eb99ec36d6a8d66a1f",
+      "native_contract_unchanged": true,
+      "all_file_hashes_valid": true
+    },
+    {
+      "arm": "multi-parent",
+      "manifest_sha256": "4a8cb1c8c5136e6d90311a20c84e6e5215c4e07bb29d9a92e9f5f60a34467ed1",
+      "parents": 4,
+      "same_frozen_seed_config_sha256": "c9d3b296414551ce9efc8ba0f51c92ba969c3e57c57ff5eb99ec36d6a8d66a1f",
+      "native_contract_unchanged": true,
+      "all_file_hashes_valid": true
+    }
+  ],
+  "reference_native_interface": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/partitioned-update6-diversity-v1/actor-capsule-v2/native-interface-v1.json",
+    "sha256": "b59bfa7ace2dedc8e7b63564f099c6856ab3e1163b4e3798223519cee445d6b0"
+  },
+  "contacts": 0,
+  "status": "MODEL_FREE_PASS_NOT_ACTOR_ADMISSION"
+}

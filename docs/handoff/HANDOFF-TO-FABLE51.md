@@ -1,5 +1,24 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Matched indexed proposals admitted; source authority requalified (2026-10-07)
+
+The [two proposer plans](../readiness/2026-10-07-matched-search-proposer-admission-v1/README.md)
+are root-countersigned before contact. All22 members in the three source families
+passed fresh complete qualification, and multi-parent source identity matches its
+registered selection. The earlier model-free custody-root refusal is preserved;
+its recorded correction retained path confinement and byte hashes. Successor
+session73213/PID275926 exited0 at00:54Z; do not restart it.
+
+Complete mandatory capsule counts are86104/75315 proxy tokens, not exact model
+context FIT. Both retain identical eighty-record feedback and110 detail objects.
+Each arm has one GPT-6.1 Sol/high fork-none opportunity and config-derived eight
+positions. Register/reserve before dispatch; original responses remain immutable.
+Current admission receipt records no contact or reservation yet; consult later
+launch/completion receipts and actual agents before acting. No GPU launch, scaling,
+parent adoption or new task-quality claim follows. Source worker remains detached
+atd1c3314d8. Keep Fable and root handoff aligned and preserve sole master branch.
+
+
 ## Shared aggregate complete; indexed actor input rehearsed (2026-10-07)
 
 Original aggregate session80121/PID271847 exited0 at00:35:28Z and is absent.

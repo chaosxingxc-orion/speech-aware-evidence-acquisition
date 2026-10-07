@@ -1,0 +1,55 @@
+{
+  "schema": "saea-matched-search-root-contact-admission-v1",
+  "at_utc": "2026-10-07T00:55:36.390357+00:00",
+  "status": "ROOT_COUNTERSIGNED_BEFORE_CONTACT",
+  "source_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-precontact-qualification-v2/qualified.json",
+    "sha256": "a1c42797857f7a2c5b4137753c602be7fcddbd3634f33f7bb2c52b266eb837af",
+    "bytes": 1922
+  },
+  "original_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-precontact-qualification-v2/exit.json",
+    "sha256": "dca3cf9154e989c64977e8d0e75e34cb2806dfb901cb2cbe0bbf839bdccb838a",
+    "bytes": 62
+  },
+  "arms": [
+    {
+      "arm": "fixed-parent",
+      "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-N20-UPDATE1-PROPOSE-V1",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-proposer-admission-v1/fixed-parent-actor-plan-v1.json",
+        "sha256": "856716843e5f270499e53a7bf75afb28431d9f293842850ba1acb789638b0e37"
+      },
+      "registration": {
+        "relpath": "registrations/fixed-parent-v1.json",
+        "sha256": "1af3234362cda45930920cb7a69f53a2a17a6277cf59655b3ea114b198466ddf"
+      },
+      "capsule": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/capsule",
+      "slots": 8,
+      "split_identity_hash": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "actor_input_sha256": "9b5816853e73410f7de5f96060c9e0fc9c492add0501de8c62cfc500a91e9b95"
+    },
+    {
+      "arm": "multi-parent",
+      "run_id": "SAEA-SLURP-MATCHED-SEARCH-MULTI-PARENT-N20-UPDATE1-PROPOSE-V1",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-proposer-admission-v1/multi-parent-actor-plan-v1.json",
+        "sha256": "d681e72c61872c900644077a213dcfa1349f28a7cc1021bf9a2bf11466f2e16f"
+      },
+      "registration": {
+        "relpath": "registrations/multi-parent-v1.json",
+        "sha256": "10d38e7276873feeeabdc63c94c8777d8928829070af51c125616f22d4f940d1"
+      },
+      "capsule": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/multi-parent/capsule",
+      "slots": 8,
+      "split_identity_hash": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+      "actor_input_sha256": "ddfe23f3cc78ad6684caf878c158aa8405e37f57bef4562f543309cbf33a827a"
+    }
+  ],
+  "contacts_occurred": false,
+  "slots_reserved": false,
+  "runtime_admission": false,
+  "qualification": "All three source families independently requalified; current source identity equals the admitted multi-parent selection identity. Fixed parents and all actual capsule/native identities checked.",
+  "private_registration_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/private-registration-root",
+  "scope": "One semantic authoring batch per arm; both feedback-aware, same numeric history and implemented scope. Config-derived positions. No blind-search or matched-compute claim."
+}

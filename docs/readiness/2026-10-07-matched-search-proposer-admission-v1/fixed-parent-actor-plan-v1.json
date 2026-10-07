@@ -1,0 +1,51 @@
+{
+  "schema": "saea-matched-search-proposer-contact-plan-v1",
+  "status": "ROOT_COUNTERSIGNED_BEFORE_CONTACT",
+  "at_utc": "2026-10-07T00:55:36.390357+00:00",
+  "authority": "Owner227 and direct GPT-6.1 Sol isolated whole-population template generation instruction",
+  "run_id": "SAEA-SLURP-MATCHED-SEARCH-FIXED-PARENT-N20-UPDATE1-PROPOSE-V1",
+  "execution_profile": "bounded-discovery-probe",
+  "split_role": "discovery",
+  "split_identity_hash": "8307b07426badb137b44a016efa4ee446c12da39219d7843c40f78e5b6790c8e",
+  "protocol_hash": "9b5816853e73410f7de5f96060c9e0fc9c492add0501de8c62cfc500a91e9b95",
+  "registration_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/private-registration-root",
+  "registration": {
+    "relpath": "registrations/fixed-parent-v1.json",
+    "sha256": "1af3234362cda45930920cb7a69f53a2a17a6277cf59655b3ea114b198466ddf"
+  },
+  "registration_sha256": "5ed5fcbe139b10bcf5f88ee9393fe9c982d9b1c6732e8b0bded73f9e51c28dee",
+  "manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/capsule/manifest.json",
+    "sha256": "e3fc705b4a359413a9cdba8056a6155c0ebf049356e09eb55ed570fa77a6ca52",
+    "bytes": 26130
+  },
+  "source_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/matched-search-precontact-qualification-v2/qualified.json",
+    "sha256": "a1c42797857f7a2c5b4137753c602be7fcddbd3634f33f7bb2c52b266eb837af",
+    "bytes": 1922
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+    "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+  },
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "fork_turns": "none",
+  "semantic_opportunities": 1,
+  "design_slots": 8,
+  "max_input_bytes": 2097152,
+  "max_output_bytes": 262144,
+  "soft_visible_input_target": 90000,
+  "mandatory_proxy_tokens": 86104,
+  "mandatory_bytes": 285216,
+  "max_single_tool_output_tokens": 6000,
+  "paid_api_spend": 0,
+  "runtime_admission": false,
+  "provider_usage_unknown_when_unavailable": true,
+  "provider_enforced_cap_claim": false,
+  "os_sandbox_claim": false,
+  "isolation": "Fresh context plus explicit file/tool allowlist and auditable read report; do not claim OS sandbox enforcement. No root/sibling conversation, raw case, knowledge, source roster or paid model access.",
+  "output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/original-response.json",
+  "access_report_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/context-template-k16-v1/matched-search-indexed-update1-v1/fixed-parent/access-report.json",
+  "invalid_or_no_change": "All positions spent; preserve original output without replacement or repair. Root attaches transport envelope without changing proposal content."
+}
