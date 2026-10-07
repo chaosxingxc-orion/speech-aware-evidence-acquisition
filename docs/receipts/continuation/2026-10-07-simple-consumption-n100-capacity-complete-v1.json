@@ -1,0 +1,25 @@
+{
+  "at_utc": "2026-10-07T20:16:00.871816+00:00",
+  "generation_contacts": 0,
+  "next": "Register the unchanged four-member N100 generation campaign and freeze its original complete plan. Preserve four-way within-member concurrency and overlap one CPU scorer with later serial member generation.",
+  "original_terminal": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v4/capacity-task-exit.json",
+    "sha256": "9c6a86b6c6b741097b38fc7762690665f04596b50237a2fe898b37d8356fdcd6"
+  },
+  "owner_decision": 227,
+  "qualification": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v4/capacity-qualified-v1.json",
+    "sha256": "7d9ebefcb6c86fefa1f2fcd5f9e43e6385b97c0c23bd899cd01be323ceb428c9"
+  },
+  "read_scope": "Capacity only; no task answers or quality.",
+  "registration": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v4/registration-v1.json",
+    "sha256": "180703b48dde278624e0da5e9fa01ea0694b12c70f865c81ca17adcb9c89e5f3"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-n100-capacity-complete-v1",
+  "scorer_contacts": 0,
+  "status": "FOUR_MEMBER_CAPACITY_QUALIFIED",
+  "worker": "/home/chao/saea-worktrees/codex-simple-consumption-n100-capacity-frozen-v2",
+  "worker_commit": "22c1a692a9421f52a3deaa4d0d0b699dc6882ca1"
+}

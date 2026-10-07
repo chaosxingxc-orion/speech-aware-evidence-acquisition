@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## N100 complete capacity qualified (2026-10-07T20:16:00.871816+00:00)
+
+All four original ENTRY2 capacity members completed successfully through the reviewed capacity-v4 wrapper on unchanged frozen source `22c1a692a9421f52a3deaa4d0d0b699dc6882ca1`. Original complete-family qualification passed; no generation or official scorer contact occurred. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-capacity-complete-v1.json`. Preserve the original v3 precontact Windows failure and all capacity sources/receipts. Generation remains pending exact prospective registration, frozen-source and live gates. Root continues the unchanged four-system100-input campaign: four concurrent samples per member, one serial generator, and overlapped CPU scoring/completed-member descriptive analysis. No learner export or early cross-member comparison is authorized.
+
+
 ## N100 capacity wrapper successor is running (2026-10-07T20:06:14.917871+00:00)
 
 Root227 preserved the original Windows precontact failure and used the independently reviewed process-local native PowerShell environment correction. The fresh capacity-v4 outer and inner processes started on the unchanged clean `22c1a692a9421f52a3deaa4d0d0b699dc6882ca1` worker with the same four previously unused ENTRY2 capacity identities. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-capacity-wrapper-successor-launch-v1.json`. The first actual tokenizer receipts are progressing; generation and scoring have not started. The source-check bytes and every original failed receipt remain immutable. The job-scoped fifteen-minute monitor is active and must be removed on terminal completion. Keep the completed N20 controls and resident service unchanged. After all four capacities qualify, continue the four-member N100 campaign with four concurrent samples per member, overlapping CPU scoring and exact separately authorized completed-member analysis; do not replace it with mixed-member dispatch.
