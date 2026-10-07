@@ -1,0 +1,45 @@
+{
+  "allowed_read": "Saved request/FIT/wire/control/custody form and original operational timing only after exact complete proof. No task quality, official score, scientific feedback or learner export. Preserve valid natural zero-lookup disposition.",
+  "architecture_member": "solver-lookup",
+  "at_utc": "2026-10-07T13:21:38.536827+00:00",
+  "expected_rows": 4,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "learner_export": false,
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-STRUCTURE-V4",
+  "root_read_receipt": {
+    "relpath": "coordination/simple-consumption-natural4-instrumented-v4/root-structural-read-v1.json",
+    "sha256": "7ac72e888bfa8ca1f8760e108e50f64cf5bd72fdf3575e3c39de0edae81d1f8a"
+  },
+  "run_ids": {
+    "fit": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-FIT-V4",
+    "generation": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4",
+    "read": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-STRUCTURE-V4"
+  },
+  "schema": "saea-system-text-engineering-analysis-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED STRUCTURAL READ COMPLETE",
+  "structural_qualification": {
+    "relpath": "coordination/simple-consumption-natural4-instrumented-v4/natural-family-qualified-v1.json",
+    "sha256": "9774e958f14fc46542243d23f33ec2c800467132177f61a2221893d3a52ee1a9"
+  },
+  "structural_report": {
+    "relpath": "coordination/simple-consumption-natural4-instrumented-v4/solver-lookup-structural-report-v1.json",
+    "sha256": "ad29a1d97b23cc86830d0674a0af75694124bd053a6ece1fea09b35fc4b07edf"
+  },
+  "supersedes": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/solver-lookup-analysis-recipe-v1.json",
+    "sha256": "08d8227fbe998c89d7f600b54025b08c9fc9404bef0aae39ddb4639121d6ca53"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "actual_fit_endpoints": 228,
+  "at_utc": "2026-10-07T13:21:38.536827+00:00",
+  "generation_contacts": 57,
+  "independent_review": {
+    "relpath": "coordination/simple-consumption-natural4-instrumented-v4/independent-structural-review-v1.json",
+    "sha256": "130517ded4e17510af6a1de46697b45988041a7397060201af2741644299edc8"
+  },
+  "learner_export": false,
+  "members": [
+    {
+      "label": "seed",
+      "model_contacts": 19,
+      "rows": 4,
+      "structural_report": {
+        "relpath": "coordination/simple-consumption-natural4-instrumented-v4/seed-structural-report-v1.json",
+        "sha256": "5328db41326d69e3bbc1134f4ae6e8b4447f918a93f4aed23faf9170887464c8"
+      }
+    },
+    {
+      "label": "seed-aa",
+      "model_contacts": 22,
+      "rows": 4,
+      "structural_report": {
+        "relpath": "coordination/simple-consumption-natural4-instrumented-v4/seed-aa-structural-report-v1.json",
+        "sha256": "f665928e09c4455b2a061aefd7a4476867ac9e83330a07e629e907f2b7ade935"
+      }
+    },
+    {
+      "label": "review-off",
+      "model_contacts": 8,
+      "rows": 4,
+      "structural_report": {
+        "relpath": "coordination/simple-consumption-natural4-instrumented-v4/review-off-structural-report-v1.json",
+        "sha256": "4122071eca4372550bede49854e15f62a1c8342ebd0c47e6728abf0bfff7e12b"
+      }
+    },
+    {
+      "label": "solver-lookup",
+      "model_contacts": 8,
+      "rows": 4,
+      "structural_report": {
+        "relpath": "coordination/simple-consumption-natural4-instrumented-v4/solver-lookup-structural-report-v1.json",
+        "sha256": "ad29a1d97b23cc86830d0674a0af75694124bd053a6ece1fea09b35fc4b07edf"
+      }
+    }
+  ],
+  "n20_admitted": false,
+  "new_model_contacts": 0,
+  "new_tokenizer_contacts": 0,
+  "notes": [
+    "All four existing worker custody checks pass, including deferred scoring specification and original bundle verification.",
+    "Every role contact joins source request/response/USE, original FIT boundary and registered plan. All terminal policies pass on frozen configuration.",
+    "Reviewer handoffs: 11 valid; disabled Reviewer is not applicable. One seed-AA revision-limit terminal is allowed by the original policy. Solver lookup was naturally unused; no active-tool efficacy claim.",
+    "The first model-free audit incorrectly assumed per-artifact journal sequence starts at one and stopped before authoring reports. Its successor validates the actual cumulative contact range. No flight retry or contact occurred."
+  ],
+  "official_score_jobs": 0,
+  "owner_decision": 227,
+  "qualification": {
+    "relpath": "coordination/simple-consumption-natural4-instrumented-v4/natural-family-qualified-v1.json",
+    "sha256": "9774e958f14fc46542243d23f33ec2c800467132177f61a2221893d3a52ee1a9"
+  },
+  "root_read_receipt": {
+    "relpath": "coordination/simple-consumption-natural4-instrumented-v4/root-structural-read-v1.json",
+    "sha256": "7ac72e888bfa8ca1f8760e108e50f64cf5bd72fdf3575e3c39de0edae81d1f8a"
+  },
+  "rows": 16,
+  "schema": "saea-root-natural-structural-acceptance-v1",
+  "scientific_feedback": false,
+  "source_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3"
+}

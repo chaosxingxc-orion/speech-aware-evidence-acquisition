@@ -1,5 +1,37 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Complete natural-four structural acceptance; N20 preparation continues (2026-10-07)
+
+Root countersigned all four exact structural READ scopes under owner227 after complete
+engineering closure. The original frozen d4ba0ec70 worker and unsigned recipes remain
+unchanged; mutable successor recipes and the exposure ledger bind the root receipt
+`coordination/simple-consumption-natural4-instrumented-v4/root-structural-read-v1.json`
+and whole-family qualification SHA-256 `9774e958f14fc46542243d23f33ec2c800467132177f61a2221893d3a52ee1a9`.
+
+All four shared worker custody verifications passed. The bounded root audit joined
+all 57 role contacts to their saved request/response/USE records and original FIT
+boundaries, registered identities and cumulative journals (228 endpoints). Exact
+rosters, output order and frozen configuration passed; all 16 deliveries satisfy the
+original terminal policy. Eleven Reviewer handoffs have valid form; disabled Reviewer
+is not applicable. One seed-AA revision-limit delivery is permitted. Zero natural
+lookup calls do not prove active-tool effectiveness. No quality read, official scorer,
+new model/tokenizer contact or learner export occurred.
+
+The model-free audit first refused an incorrect local assumption that each tokenizer
+journal starts at one. The original journals use cumulative sequence numbers; the
+successor producer validates their actual contiguous ranges. Preserve both producers.
+This was an audit-script correction, not an experiment failure or model retry.
+
+The memory correction already completed the 16-row engineering run without the old
+floor violation. Original approximately20GiB host growth remains unattributed; do not
+claim the streaming loader explains all of it. Keep the 4GiB floors and diagnostics.
+
+The configured four-member same20 comparison remains held for its narrow shared
+manual admission/reader, fresh source-bound output-equal supply envelopes and root
+admission. This acceptance closes the natural-proof prerequisite only. Preserve all
+historical bytes and return to the owner before8x400 or an equivalent split. See
+[structural acceptance evidence](../receipts/continuation/2026-10-07-simple-consumption-natural4-structural-qualified.json).
+
 ## Instrumented natural-four engineering run completed; structural READ pending (2026-10-07)
 
 The saved driver epoch ran from 12:36:27Z to 12:44:44Z on frozen
@@ -314,7 +346,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-07T12:55:43.218156+00:00
+Last refreshed: 2026-10-07T13:21:38.536827+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
