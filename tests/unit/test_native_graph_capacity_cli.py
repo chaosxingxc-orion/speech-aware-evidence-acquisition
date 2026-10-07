@@ -18,7 +18,8 @@ def cli():
 
 
 @pytest.mark.parametrize("cap", [None, 297])
-def test_native_capacity_forwards_cap_without_a_generation_path(cli, monkeypatch, tmp_path, cap):
+@pytest.mark.parametrize("profile", [None, "review-off-v1"])
+def test_native_capacity_forwards_cap_without_a_generation_path(cli, monkeypatch, tmp_path, cap, profile):
     data = tmp_path / "data"
     data.mkdir()
     token = tmp_path / "lease.json"
@@ -31,6 +32,8 @@ def test_native_capacity_forwards_cap_without_a_generation_path(cli, monkeypatch
         args.extend(["--" + key, str(value)])
     if cap is not None:
         args.extend(["--contact-cap", str(cap)])
+    if profile is not None:
+        args.extend(["--profile", profile])
     cell = SimpleNamespace(document={"model_fragment": "model", "dataset_fragment": "dataset",
         "baseline_fragment": "baseline"}, run_id="RUN-FIT-V1", attempt_id="attempt",
         assert_mode=lambda mode: None)
@@ -41,6 +44,7 @@ def test_native_capacity_forwards_cap_without_a_generation_path(cli, monkeypatch
     captured = []
     def fit(runtime, path, **kwargs):
         captured.append(kwargs["contact_cap"])
+        assert kwargs.get("profile") == profile
         assert kwargs["graph_factory"]() is not None
         path.write_text(json.dumps({"output": {"every_request_fits": True}}))
         return {"status": "synthetic"}

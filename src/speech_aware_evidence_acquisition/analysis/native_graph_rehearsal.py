@@ -17,6 +17,64 @@ from uuid import uuid4
 from ..core.preparation import canonical_bytes, digest
 
 PREFIX = "SAEA-WIRE-CHECK-"
+LEGACY_PROFILE = "legacy-four-path-v1"
+REVIEW_OFF_PROFILE = "review-off-v1"
+
+
+def rehearsal_profile(values, profile):
+    """Validate a prospective P/S graph before scratch or endpoint authorization."""
+    declared = values.get("native_graph_capacity_profile", LEGACY_PROFILE)
+    if declared not in (LEGACY_PROFILE, REVIEW_OFF_PROFILE) or declared != profile:
+        raise ValueError("Requested native rehearsal profile differs from its declared config profile")
+    if profile == LEGACY_PROFILE:
+        return None
+    if profile != REVIEW_OFF_PROFILE:
+        raise ValueError("Unknown native rehearsal profile")
+    from ..rails.controllers import default_phase_program
+    from ..rails.native_episode_config import load_native_episode_config
+
+    config = load_native_episode_config(values, default_phase_program(values["policy"]))
+    if (config is None or config.review_loop_enabled or config.max_revisions != 0
+            or config.role("perception").max_iterations != 1
+            or config.role("perception").perception_branches is not None
+            or config.role("solver").samples != 1 or config.role("solver").supply_variants is not None
+            or config.acquisition_enabled or config.refresh_action is not None or config.relisten_json is not None
+            or config.role("solver").max_iterations != (2 if config.solver_tool_access else 1)
+            or any(r.tool_names for r in config.roles if r.role_kind != "solver")):
+        raise ValueError("Review-off rehearsal requires the declared simple P/S graph")
+    return config
+
+
+class ReviewOffResponder:
+    """Four P/S paths: opt-out, empty result, rejected call and maximum lookup."""
+
+    def __init__(self, sample_ids, targets, *, texts, lookup, distinction="Capacity rehearsal only."):
+        if (len(sample_ids) != 4 or len(set(sample_ids)) != 4
+                or (lookup and (len(targets) != 2 or len(set(targets)) != 2))
+                or not isinstance(distinction, str) or not 0 < len(distinction) <= 512):
+            raise ValueError("Review-off proof needs four rows and bounded distinct targets")
+        self.modes = dict(zip(sample_ids, ("decline", "empty", "rejected", "lookup"), strict=True))
+        self.targets, self.texts, self.lookup, self.distinction = list(targets), texts, lookup, distinction
+        self.turns = Counter()
+
+    def __call__(self, payload):
+        sample = payload["sample_id"]
+        control = [h for h in payload["history"] if h.get("role") == "control"][-1]
+        role, = [r for r in ("perception", "solver", "reviewer", "planner") if ":" + r + ":" in control["contact_id"]]
+        if role not in ("perception", "solver"):
+            raise ValueError("Review-off rehearsal contacted an inactive role")
+        if role == "solver":
+            self.turns[sample] += 1
+            mode = self.modes[sample]
+            if self.lookup and mode != "decline" and self.turns[sample] == 1:
+                targets = (["synthetic_absent_slot_type"] if mode == "empty" else
+                           self.targets + ["synthetic_extra_slot_type"] if mode == "rejected" else self.targets)
+                args = {"store_id": "slot-contracts", "view": "text", "candidate_ids": targets,
+                        "distinction": self.distinction}
+                return {"role": "assistant", "content": None, "tool_calls": [{
+                    "id": "synthetic-lookup", "type": "function", "function": {
+                        "name": "saea-tool-knowledge-target-lookup-v1", "arguments": json.dumps(args)}}]}
+        return {"role": "assistant", "content": self.texts[role]}
 
 
 class FourPathResponder:
@@ -132,7 +190,7 @@ def synthetic_tool_contact(run_id, packets, record, facts):
             "source_completion_sha256": authority["completion_sha256"]}
 
 
-def rehearse_native_graph(runtime, *, session_path: Path, respond, output: Path):
+def rehearse_native_graph(runtime, *, session_path: Path, respond, output: Path, profile=LEGACY_PROFILE):
     """Run the complete configured roster with canned responses, never generation.
 
     Pass a fresh runtime. The role graph, state sealing, selection, tool
@@ -152,9 +210,12 @@ def rehearse_native_graph(runtime, *, session_path: Path, respond, output: Path)
     if context["execution_plan"].split_role != "discovery":
         raise ValueError("Synthetic rehearsal permits discovery rosters only")
     values = context["values"]
+    profile_config = rehearsal_profile(values, profile)
     tool_names = {name for spec in values.get("phase_tools", {}).values()
                   for name in spec.get("allowed_tools", ())}
-    if tool_names != {"saea-tool-knowledge-target-lookup-v1"}:
+    expected_tools = (set() if profile_config is not None and not profile_config.solver_tool_access
+                      else {"saea-tool-knowledge-target-lookup-v1"})
+    if tool_names != expected_tools:
         raise ValueError("Rehearsal permits only the released knowledge lookup")
     if values.get("live_speech_observations") or values.get("prepared_execution_units"):
         raise ValueError("Rehearsal does not admit live observations or execution units")
@@ -213,6 +274,8 @@ def rehearse_native_graph(runtime, *, session_path: Path, respond, output: Path)
                "tool_receipts": tool_receipts, "dispatch": dispatch, "phases": phases,
                "generation_contacts": 0, "tokenizer_contacts": 0, "official_score_jobs": 0,
                "capacity_verified": False, "scientific_results_read": False}
+    if profile != LEGACY_PROFILE:
+        receipt["rehearsal_profile"] = profile
     receipt["terminal_paths"] = [
         {"sample_id": row["sample_id"],
          "role_visits": [v["role_id"] for v in row["native_episode_receipt"]["role_visits"]],

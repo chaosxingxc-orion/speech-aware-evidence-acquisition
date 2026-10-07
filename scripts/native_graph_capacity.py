@@ -15,6 +15,7 @@ def main(argv=None):
         parser.add_argument("--" + key, required=True)
     parser.add_argument("--contact-cap", type=int, default=2048,
                         help="Exact separately registered tokenizer endpoint ceiling.")
+    parser.add_argument("--profile", choices=("legacy-four-path-v1", "review-off-v1"), default="legacy-four-path-v1")
     args = parser.parse_args(argv)
     if args.contact_cap < 1:
         parser.error("--contact-cap must be positive")
@@ -47,7 +48,8 @@ def main(argv=None):
             dataset=source.document["dataset_fragment"], baseline=source.document["baseline_fragment"],
             experiment=args.graph_experiment, run_id=source.run_id, attempt_id=source.attempt_id,
             runtime_root=Path(args.runtime_root), lock_path=Path(args.lock_path), campaign_active=False)
-    result = fit_native_graph(runtime, output, policy=policy, graph_factory=graph_factory, contact_cap=args.contact_cap)
+    options = {} if args.profile == "legacy-four-path-v1" else {"profile": args.profile}
+    result = fit_native_graph(runtime, output, policy=policy, graph_factory=graph_factory, contact_cap=args.contact_cap, **options)
     print(json.dumps(result, sort_keys=True))
     measured = json.loads(output.read_text())["output"]
     print(json.dumps(measured, sort_keys=True))
