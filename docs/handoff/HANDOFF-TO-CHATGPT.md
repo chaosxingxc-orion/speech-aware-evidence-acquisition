@@ -1,5 +1,28 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Original check complete; simple-consumption interfaces in preparation (2026-10-07)
+
+The original matched source checker session23645 exited0 at02:20:56Z. All20 members
+passed registration/runtime checks; root verified every stdout/stderr pin and the clean
+frozen worker. Zero runtime/model/tokenizer/scorer contacts. Preserve these successful
+original checks and prepared policies; do not rerun them. Actual matched GPU dispatch
+remains HELD for the newer simple-consumption priority.
+See [terminal evidence](../receipts/continuation/2026-10-07-matched-frozen-check-complete.json).
+
+The prospective [architecture contract](../readiness/2026-10-07-slurp-simple-consumption-direction-v1/architecture-contract.md)
+uses seed/A/A, review-off and bounded Solver lookup on the same twenty inputs.
+The shared population v4 manual profile binds whole execution configurations and
+member-specific roles/ceilings, with zero semantic proposals and no learner export.
+Generic template-learning paths reject it unless an architecture caller explicitly
+opts in; the negative reservation test proves no archive write. Astra/Ultra accepted
+the scoped interface;72 focused and117 historical tests pass, module coverage100percent.
+Astra/Ultra authored the minimal prospective tool-permission paragraph; it does not
+replace a spent proposal. See [interface evidence](../receipts/continuation/2026-10-07-simple-consumption-population-interface.json).
+Shared Solver access/module and review-applicability implementations are being tested
+in detached worktrees. Compile actual member identities only after serial integration;
+capacity, structural proof, admission and exact full-family READ remain ahead.
+No new GPU job or heartbeat is active for this preparation.
+
 ## Shared qualification extension reviewed and integrated (2026-10-07)
 
 Astra/Ultra independently accepted the scoped matched-capacity qualifier at43db6ef30;
@@ -6284,7 +6307,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T02:14:52.256118+00:00
+Last refreshed: 2026-10-07T02:29:44Z
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,0 +1,40 @@
+{
+  "schema": "saea-simple-consumption-population-interface-v1",
+  "at_utc": "2026-10-07T02:29:44Z",
+  "status": "MODEL_FREE_PREPARATION_ONLY",
+  "profile": "manually-specified-architecture-v1",
+  "review_model": "gpt-6-astra",
+  "review_reasoning_effort": "ultra",
+  "review_agent": "/root/matched_capacity_astra_review",
+  "review_disposition": "Accepted scoped integration after adding explicit architecture opt-in before generic loading and any template-search reservation.",
+  "tests": {
+    "population_and_negative_reservation_passed": 72,
+    "historical_template_and_search_regressions_passed": 117,
+    "population_module_statement_coverage_percent": 100,
+    "population_module_branch_coverage_percent": 100,
+    "engineering_base_check": "PASS",
+    "diff_check": "PASS",
+    "test_first": true
+  },
+  "template_amendment": {
+    "author_model": "gpt-6-astra",
+    "author_reasoning_effort": "ultra",
+    "original_solver_sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd",
+    "relpath": "configs/probes/slurp_simple_consumption_solver_lookup_v1.txt",
+    "sha256": "050c7b838b0b7628efa662e2bc448549075e5b4d3af90ea3bcccc2f804a083c6",
+    "scope": "Replace only the sentence prohibiting analytical tools with the prospective optional one-call/two-slot contract. Preserve the remaining seed instructions byte-for-byte.",
+    "is_learned_population_proposal": false,
+    "spent_search_slots_replaced": 0,
+    "provider_token_metering": null
+  },
+  "semantic_proposals_allocated": 0,
+  "learner_export": false,
+  "new_runtime_model_tokenizer_scorer_contacts": 0,
+  "remaining": [
+    "Integrate separately tested Solver access/module compilation and process applicability after independent review.",
+    "Compile and pin the complete member configurations and actual request differences.",
+    "Register and pass actual capacity and structural proofs before scientific admission."
+  ],
+  "runtime_admission": false,
+  "scientific_claim": "No new business gain or learning capability established."
+}

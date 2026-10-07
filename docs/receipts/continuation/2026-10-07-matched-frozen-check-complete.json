@@ -1,0 +1,26 @@
+{
+  "schema": "saea-matched-frozen-check-complete-v1",
+  "observed_at_utc": "2026-10-07T02:23:44Z",
+  "finished_at_utc": "2026-10-07T02:20:56.507930+00:00",
+  "original_session_id": 23645,
+  "exit_code": 0,
+  "frozen_worker": "/home/chao/saea-worktrees/codex-matched-search-capacity-v1",
+  "frozen_commit": "b14e894ff4d6087f56c9207ac5107605183fbb3b",
+  "frozen_worktree_clean": true,
+  "member_count": 20,
+  "registration_and_runtime_checks_per_member": 2,
+  "all_checks_exit_zero": true,
+  "all_recorded_stdout_stderr_hashes_verified": true,
+  "model_tokenizer_and_scorer_contacts": 0,
+  "report": {
+    "data_relpath": "coordination/matched-search-capacity-owner227-v1/frozen-check-v1.json",
+    "sha256": "deea74de9afb21d1bbb8e70d767c0416ac26f26eb6d9d0ddb31c53630efb0714"
+  },
+  "terminal": {
+    "data_relpath": "coordination/matched-search-capacity-owner227-v1/frozen-check-v1.exit.json",
+    "sha256": "24c8ad179dd9151e83a517564615568995e62736e4d10c5aceca1b3315099fa4"
+  },
+  "dispatch_disposition": "HELD: prioritize the newer simple-consumption architecture comparison; no capacity, engineering or scientific generation launched.",
+  "preservation": "Keep original policies, prepared files and spent proposal records immutable. Do not rerun create-only preparation or the successful checker.",
+  "scientific_claim": "No new task quality or learning result."
+}

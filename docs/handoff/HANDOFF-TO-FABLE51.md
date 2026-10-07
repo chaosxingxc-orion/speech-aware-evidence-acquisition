@@ -1,5 +1,28 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Original check complete; simple-consumption interfaces in preparation (2026-10-07)
+
+The original matched source checker session23645 exited0 at02:20:56Z. All20 members
+passed registration/runtime checks; root verified every stdout/stderr pin and the clean
+frozen worker. Zero runtime/model/tokenizer/scorer contacts. Preserve these successful
+original checks and prepared policies; do not rerun them. Actual matched GPU dispatch
+remains HELD for the newer simple-consumption priority.
+See [terminal evidence](../receipts/continuation/2026-10-07-matched-frozen-check-complete.json).
+
+The prospective [architecture contract](../readiness/2026-10-07-slurp-simple-consumption-direction-v1/architecture-contract.md)
+uses seed/A/A, review-off and bounded Solver lookup on the same twenty inputs.
+The shared population v4 manual profile binds whole execution configurations and
+member-specific roles/ceilings, with zero semantic proposals and no learner export.
+Generic template-learning paths reject it unless an architecture caller explicitly
+opts in; the negative reservation test proves no archive write. Astra/Ultra accepted
+the scoped interface;72 focused and117 historical tests pass, module coverage100percent.
+Astra/Ultra authored the minimal prospective tool-permission paragraph; it does not
+replace a spent proposal. See [interface evidence](../receipts/continuation/2026-10-07-simple-consumption-population-interface.json).
+Shared Solver access/module and review-applicability implementations are being tested
+in detached worktrees. Compile actual member identities only after serial integration;
+capacity, structural proof, admission and exact full-family READ remain ahead.
+No new GPU job or heartbeat is active for this preparation.
+
 ## Shared qualification extension reviewed and integrated (2026-10-07)
 
 Astra/Ultra independently accepted the scoped matched-capacity qualifier at43db6ef30;
