@@ -1,5 +1,36 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Same20 business and process review complete; retain seed (2026-10-07 16:12Z)
+
+The four-member80-trajectory GPU family and the separate source-bound process derivative
+are complete. The derivative exited0 at16:03:48Z with no model/scorer contacts. Independent
+Astra aggregate review confirmed denominators, unknowns, transitions and READ authority.
+Seed detects6/8 classifiable erroneous drafts, but final entity repair after revision is
+1/6 eligible erroneous drafts. Raw model entity repair is0 with3 unknowns; raw whole-answer
+repair is1; deterministic postprocessing repairs2 entity answers. Keep these endpoints
+separate. Delivered intent cards20/20 do not establish semantic slot-support sufficiency.
+Review-off and solver-lookup improve observed latency but do not establish preserved or
+improved official quality. Retain seed and stay at20; this manual panel is not a learner
+export. All original scores, signed rows and failed offline derivatives remain unchanged.
+
+Fresh read-only status at16:12Z: driver complete, task Ready/last result0, no next step;
+service healthy idle with0/4 busy slots, telemetry age2.804seconds, Windows free17.745GiB.
+The experiment15-minute monitor is deleted. Floors remain4GiB startup/running. The fixed
+streaming loader completed this campaign without reproducing the memory collapse; the
+entire earlier approximately20GiB decline is not root-caused.
+
+The complete Update3-6 population updates were rejected under their original criterion;
+Update2 search parents and the seed incumbent remain. The aggregate history contains80
+records (16 for each Update2-6). Fixed-parent and multi-parent next-algorithm arms each have
+8 compiled policies and prepared supplies, but runtime admission remains false. No benefit,
+matched total compute or isolation proof follows from preparation. Do not retrofit this
+new manual report into those original proposals. Prioritize a prospectively versioned
+minimal consumption/repair test with A/A and same20; root review precedes50/100/200 and
+human review precedes8x400 or equivalent split execution. Other carriers retain own gates.
+
+Read the [complete process and next-plan report](../results/2026-10-07-simple-consumption-process-and-next-plan-v1.md)
+and [source custody receipt](../receipts/continuation/2026-10-07-simple-consumption-complete-process-read.json).
+
 ## Same20 complete business read; retain seed pending process diagnostics (2026-10-07 15:45Z)
 
 All80 trajectories and four unique official scores are complete. The root reader passed
