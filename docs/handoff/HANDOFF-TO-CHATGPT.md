@@ -1,5 +1,18 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Shared qualification extension reviewed and integrated (2026-10-07)
+
+Astra/Ultra independently accepted the scoped matched-capacity qualifier at43db6ef30;
+root serially integrated it into sole master at3020be7e5. All204 reported focused and
+historical tests pass; root independently reran108 focused tests. New API coverage is
+reported100percent and module99.53percent. The opt-in helper preserves actual outer
+observer exits and child lease terminals separately, checks configured controls and
+candidates together, and returns runtime_admission=false. Historical behavior remains.
+See [review and evidence](../receipts/continuation/2026-10-07-astra-ultra-review-and-integration.json).
+This does not modify the active frozen capacity worker or qualify an unrun family.
+The newer simple-consumption priority below still holds actual GPU dispatch. Continue
+the original model-free checker by its recorded handle; do not restart it.
+
 ## Simple consumption priority and Astra Ultra templates (2026-10-07)
 
 Follow the [new owner direction](../receipts/owner/2026-10-07-astra-ultra-template-and-cognitive-scope.json)
@@ -6271,7 +6284,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T02:11:51.298551+00:00
+Last refreshed: 2026-10-07T02:14:52.256118+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

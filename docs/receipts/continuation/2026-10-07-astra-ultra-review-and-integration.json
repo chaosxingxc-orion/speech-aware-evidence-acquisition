@@ -1,0 +1,53 @@
+{
+  "schema": "saea-astra-ultra-review-and-integration-v1",
+  "at_utc": "2026-10-07T02:14:52.256118+00:00",
+  "requested_review_model": "gpt-6-astra",
+  "requested_reasoning_effort": "ultra",
+  "reviews": [
+    {
+      "agent": "/root/matched_capacity_astra_review",
+      "scope": "Original matched nongenerative capacity predispatch",
+      "disposition": "No concrete blocker; complete frozen/live qualification remains required."
+    },
+    {
+      "agent": "/root/astra_cognitive_simplification",
+      "scope": "Evidence-led runtime simplification and future template direction",
+      "disposition": "Test real review removal, then bounded Solver lookup. Do not attribute failures to model size without evidence."
+    },
+    {
+      "agent": "/root/matched_capacity_astra_review",
+      "scope": "Shared matched capacity qualifier commit43db6ef30da95978ba7839a2f971ae8fe2b7e8b8",
+      "disposition": "No blocking findings; scoped library integration acceptable."
+    }
+  ],
+  "implementation_commit": "43db6ef30da95978ba7839a2f971ae8fe2b7e8b8",
+  "integrated_commit": "3020be7e552dfd16093be72adefc9a1dae0cad9a",
+  "verification": {
+    "implementation_reported_tests_passed": 204,
+    "root_independent_focused_tests_passed": 108,
+    "root_focused_seconds": 5.71,
+    "reported_new_api_coverage_percent": 100,
+    "reported_module_coverage_percent": 99.53,
+    "reported_checks": [
+      "engineering-base",
+      "harness-admission",
+      "OpenJiuwen-native-reuse",
+      "lint",
+      "diff-check"
+    ]
+  },
+  "source_check": {
+    "session_id": 23645,
+    "wrapper_pid": 286584,
+    "started_at_utc": "2026-10-07T02:04:05.306368+00:00",
+    "frozen_worker_commit": "b14e894ff4d6087f56c9207ac5107605183fbb3b",
+    "passed_members_observed": 12,
+    "registered_members": 20,
+    "stderr_empty": true,
+    "terminal_receipt_exists": false
+  },
+  "runtime_contacts_added": 0,
+  "dispatch_disposition": "Hold actual capacity/GPU dispatch for the newer simple-consumption priority. Preserve original policies and complete the existing model-free check without restart.",
+  "scientific_claim": "No new business or learning gain established.",
+  "provider_usage": "Unavailable; do not claim exact provider token or compute matching."
+}

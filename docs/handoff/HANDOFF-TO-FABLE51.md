@@ -1,5 +1,18 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Shared qualification extension reviewed and integrated (2026-10-07)
+
+Astra/Ultra independently accepted the scoped matched-capacity qualifier at43db6ef30;
+root serially integrated it into sole master at3020be7e5. All204 reported focused and
+historical tests pass; root independently reran108 focused tests. New API coverage is
+reported100percent and module99.53percent. The opt-in helper preserves actual outer
+observer exits and child lease terminals separately, checks configured controls and
+candidates together, and returns runtime_admission=false. Historical behavior remains.
+See [review and evidence](../receipts/continuation/2026-10-07-astra-ultra-review-and-integration.json).
+This does not modify the active frozen capacity worker or qualify an unrun family.
+The newer simple-consumption priority below still holds actual GPU dispatch. Continue
+the original model-free checker by its recorded handle; do not restart it.
+
 ## Simple consumption priority and Astra Ultra templates (2026-10-07)
 
 Follow the [new owner direction](../receipts/owner/2026-10-07-astra-ultra-template-and-cognitive-scope.json)
