@@ -1,0 +1,60 @@
+{
+  "at_utc": "2026-10-07T08:15:57.089948+00:00",
+  "authority": "Owner227 bounded root engineering and the direct simpler cognitive/tool-use direction.",
+  "benefit_established": false,
+  "cache_incident": "The old D-state maintenance operation remained pending after identity-bound SIGKILL and was ended by the previously recorded single Ubuntu termination. Preserve its failed outcome; do not repeat the cache-clear path.",
+  "capacity_recovery": {
+    "endpoint_cap": 241,
+    "failed_lease_reconciled": false,
+    "generation_contacts": 0,
+    "launch_occurred": false,
+    "new_attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-recovery1-fit-v1",
+    "new_member": "solver-lookup",
+    "new_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-CAPACITY-RECOVERY1-FIT-V1",
+    "original_failure_preserved": true,
+    "reused_completed_members": [
+      "seed",
+      "seed-aa",
+      "review-off"
+    ],
+    "scorer_contacts": 0,
+    "status": "PROSPECTIVE_PREPARATION_ONLY"
+  },
+  "learner_export": false,
+  "main_source_commit": "7293f6170b1aff1ba5d517adcf5202f1ec6e5fbc",
+  "natural_four_row_registration": {
+    "change": "Bind paired generation/FIT plans to exact population, all member policies/ordered graph rosters and a complete capacity prerequisite.",
+    "implementation_commit": "dd1baa5ccea44c6ad641c48558a9f92f47471196",
+    "integration_commit": "9329b15f879584d3f8f3e90c6a07dc22952b62a1",
+    "runtime_admission": false,
+    "tests": {
+      "implementation_deselected": 1,
+      "implementation_passed": 320,
+      "independent_astra_ultra_passed": 207,
+      "independent_deselected": 1,
+      "scopes_overlap": true
+    }
+  },
+  "schema": "saea-root-engineering-integration-v1",
+  "scientific_quality_read": false,
+  "solver_routing": {
+    "actual_prepared_binding": {
+      "authored_slot_entries": 54,
+      "production_custodian_callable": true,
+      "status": "PASS_MODEL_FREE",
+      "tokenizer_generation_scorer_contacts": 0,
+      "unchanged_validator_passed": true
+    },
+    "change": "Derive the opted-in Solver phase through the validated native episode config and include it in on-demand knowledge routing; retain authority, authored-index and custodian validation.",
+    "implementation_commit": "9649529d8858ce4f6d7bcb8daa809ea9e0f887b6",
+    "integration_commit": "7293f6170b1aff1ba5d517adcf5202f1ec6e5fbc",
+    "tests": {
+      "changed_branch_coverage": "2/2",
+      "changed_statement_coverage": "6/6",
+      "implementation_passed": 161,
+      "independent_astra_ultra_passed": 67,
+      "scopes_overlap": true
+    }
+  },
+  "status": "REVIEWED_SOURCE_INTEGRATED_NEW_CAPACITY_PENDING"
+}

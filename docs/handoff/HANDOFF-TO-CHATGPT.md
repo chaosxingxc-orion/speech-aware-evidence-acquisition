@@ -1,5 +1,31 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Reviewed Solver routing and natural-proof registration integrated (2026-10-07)
+
+The narrow Solver on-demand routing repair is integrated at7293f6170. It uses the
+validated opt-in Solver phase, retains authored-index/tool custody checks and does
+not change historical Reviewer/Planner routing. Implementation reports161 passing
+tests; independent Astra/Ultra review passed67 (overlapping scopes). A real prepared
+model-free binding check obtained54 authored slot entries and the production
+custodian, passing the unchanged validator with zero service contacts.
+
+The paired natural-four-row generation/FIT registration extension is integrated
+at9329b15f8 after independent Astra/Ultra review. It binds every member's ordered
+graph roster and policy; the current failed capacity family still correctly refuses.
+No natural generation or scientific evaluation has been admitted.
+
+Root is preparing exactly one new Solver capacity identity under owner227, with
+endpoint cap241 and zero generation/scoring. Reuse the three original successes;
+preserve the original failed Solver, its143 spent endpoints and failed lease. A
+separate source-bound recovery qualifier and launcher are undergoing review. No
+new capacity launch or lease reconciliation has occurred. Runtime admission,
+complete-family structural qualification and natural proof remain pending.
+
+The old kernel-lock maintenance incident is closed by the previously recorded
+single Ubuntu termination; do not repeat the stalled cache path. The restored
+service remains subject to fresh live checks at launch. No task-quality or
+learning claim follows from these source checks. See [reviewed integration receipt](../receipts/continuation/2026-10-07-simple-consumption-routing-and-registration-integrated.json).
+
 ## Simple-consumption capacity stopped on Solver binding (2026-10-07)
 
 The original Windows task ended at04:51:24Z with exit1. Seed, seed A/A and
@@ -6457,7 +6483,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T04:58:23.535732+00:00
+Last refreshed: 2026-10-07T08:15:57.089948+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

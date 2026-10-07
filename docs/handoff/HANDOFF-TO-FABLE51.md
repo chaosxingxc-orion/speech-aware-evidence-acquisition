@@ -1,5 +1,31 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Reviewed Solver routing and natural-proof registration integrated (2026-10-07)
+
+The narrow Solver on-demand routing repair is integrated at7293f6170. It uses the
+validated opt-in Solver phase, retains authored-index/tool custody checks and does
+not change historical Reviewer/Planner routing. Implementation reports161 passing
+tests; independent Astra/Ultra review passed67 (overlapping scopes). A real prepared
+model-free binding check obtained54 authored slot entries and the production
+custodian, passing the unchanged validator with zero service contacts.
+
+The paired natural-four-row generation/FIT registration extension is integrated
+at9329b15f8 after independent Astra/Ultra review. It binds every member's ordered
+graph roster and policy; the current failed capacity family still correctly refuses.
+No natural generation or scientific evaluation has been admitted.
+
+Root is preparing exactly one new Solver capacity identity under owner227, with
+endpoint cap241 and zero generation/scoring. Reuse the three original successes;
+preserve the original failed Solver, its143 spent endpoints and failed lease. A
+separate source-bound recovery qualifier and launcher are undergoing review. No
+new capacity launch or lease reconciliation has occurred. Runtime admission,
+complete-family structural qualification and natural proof remain pending.
+
+The old kernel-lock maintenance incident is closed by the previously recorded
+single Ubuntu termination; do not repeat the stalled cache path. The restored
+service remains subject to fresh live checks at launch. No task-quality or
+learning claim follows from these source checks. See [reviewed integration receipt](../receipts/continuation/2026-10-07-simple-consumption-routing-and-registration-integrated.json).
+
 ## Simple-consumption capacity stopped on Solver binding (2026-10-07)
 
 The original Windows task ended at04:51:24Z with exit1. Seed, seed A/A and
@@ -79,7 +105,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-07T04:58:23.535732+00:00
+Last refreshed: 2026-10-07T08:15:57.089948+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
