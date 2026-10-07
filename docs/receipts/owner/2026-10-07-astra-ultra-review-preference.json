@@ -1,0 +1,12 @@
+{
+  "schema": "saea-owner-review-model-preference-v1",
+  "at_utc": "2026-10-07T02:02:23.432069+00:00",
+  "source": "Direct human instruction in the current chat",
+  "instruction_english": "Use GPT-6 Astra with Ultra reasoning for analysis, evaluation, summarization and filtering.",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "ultra",
+  "scope": "Future delegated analysis, evaluation, summarization and candidate filtering reviews.",
+  "application": "Record the actual model and reasoning setting. This preference is prospective; preserve frozen experimental protocols and spent proposal allocations. Do not silently substitute a model if the requested combination is unavailable.",
+  "runtime_model_changed": false,
+  "model_contact_added": false
+}

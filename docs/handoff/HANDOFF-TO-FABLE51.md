@@ -1,5 +1,39 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Owner review-model preference (2026-10-07)
+
+Use GPT-6 Astra with Ultra reasoning for future delegated analysis, evaluation,
+summarization and candidate filtering reviews. Record the actual model and reasoning
+setting. Preserve frozen experiments and spent proposal allocations; apply any
+experiment-facing model change prospectively through its exact registration.
+Do not claim this preference changes the current root model or silently substitute
+another model. No review contact was launched merely to record the preference.
+See [owner instruction](../receipts/owner/2026-10-07-astra-ultra-review-preference.json).
+
+## One-track integration and completed model-free preparation (2026-10-07)
+
+Retain master as the sole local branch. All48 original tips are preserved in the
+verified external Git bundle;47 non-master refs were removed. Twenty-four branches
+were previously integrated, and23 non-equivalent historical lines remain archived
+without activating superseded implementations. Preserve24 detached checkouts and
+all71 backed-up uncommitted files. Use detached temporary isolation and serial
+integration for future changes. Do not prune frozen or cross-environment worktrees.
+See [integration evidence](../receipts/continuation/2026-10-07-one-track-integration.json).
+
+The original preparation and conditional model-free successor have both exited0.
+All20 original systems completed60 graph/capacity/structural preparations. Independent
+verification passed, followed by complete capacity registration at01:57:31Z, with
+zero new contacts. All224 prepared configuration/evidence files are integrated at
+10f03a43b. All20 registered member plans, read recipes and population hashes pass;
+all member preparation exits are0 with empty stderr. Harness admission passes.
+
+Only nongenerative capacity is prospectively registered. Structural and scientific
+generation remain HELD. No GPU job or job heartbeat was started by this integration.
+Next freeze a clean detached capacity worker, finish frozen/live qualification and
+actual dispatch registration, and launch only through the registered resource and
+contact guards. Revalidate current service and memory; older snapshots are historical.
+Never replay completed create-only preparation entries or replace original policies.
+
 ## Matched search model-free continuation bound (2026-10-07)
 
 The original preparation session41351/PID277770 remains the only supply-preparation

@@ -1,5 +1,39 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner review-model preference (2026-10-07)
+
+Use GPT-6 Astra with Ultra reasoning for future delegated analysis, evaluation,
+summarization and candidate filtering reviews. Record the actual model and reasoning
+setting. Preserve frozen experiments and spent proposal allocations; apply any
+experiment-facing model change prospectively through its exact registration.
+Do not claim this preference changes the current root model or silently substitute
+another model. No review contact was launched merely to record the preference.
+See [owner instruction](../receipts/owner/2026-10-07-astra-ultra-review-preference.json).
+
+## One-track integration and completed model-free preparation (2026-10-07)
+
+Retain master as the sole local branch. All48 original tips are preserved in the
+verified external Git bundle;47 non-master refs were removed. Twenty-four branches
+were previously integrated, and23 non-equivalent historical lines remain archived
+without activating superseded implementations. Preserve24 detached checkouts and
+all71 backed-up uncommitted files. Use detached temporary isolation and serial
+integration for future changes. Do not prune frozen or cross-environment worktrees.
+See [integration evidence](../receipts/continuation/2026-10-07-one-track-integration.json).
+
+The original preparation and conditional model-free successor have both exited0.
+All20 original systems completed60 graph/capacity/structural preparations. Independent
+verification passed, followed by complete capacity registration at01:57:31Z, with
+zero new contacts. All224 prepared configuration/evidence files are integrated at
+10f03a43b. All20 registered member plans, read recipes and population hashes pass;
+all member preparation exits are0 with empty stderr. Harness admission passes.
+
+Only nongenerative capacity is prospectively registered. Structural and scientific
+generation remain HELD. No GPU job or job heartbeat was started by this integration.
+Next freeze a clean detached capacity worker, finish frozen/live qualification and
+actual dispatch registration, and launch only through the registered resource and
+contact guards. Revalidate current service and memory; older snapshots are historical.
+Never replay completed create-only preparation entries or replace original policies.
+
 ## Matched search model-free continuation bound (2026-10-07)
 
 The original preparation session41351/PID277770 remains the only supply-preparation
@@ -6214,7 +6248,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T01:16:07Z
+Last refreshed: 2026-10-07T02:02:03.640549+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
