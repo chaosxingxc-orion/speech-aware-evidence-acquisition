@@ -1,5 +1,10 @@
 # Experiment rules for the ChatGPT side
 
+## N100 Windows outer entry stopped before contacts (2026-10-07T19:40:20.292501+00:00)
+
+All four ENTRY2 frozen registration/runtime checks and finalizer passed on `22c1a692a9421f52a3deaa4d0d0b699dc6882ca1`. The independent Windows capacity entry then exited before child launch because `Get-FileHash` was unresolved. Exact underlying launch-environment cause remains under diagnosis; a direct command lookup succeeds. No capacity/member started receipt or attempt/run directory exists, and no tokenizer, generation or scorer contact occurred. Preserve registration, frozen source, original launch and exit1. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-windows-precontact-failure-v1.json`. Root227 is preparing a narrow prospective environment/capture disposition; do not repeat the original outer entry or overwrite its terminal. The failed job monitor was deleted. C7 completed controls and resident service remain unchanged; generation stays HELD.
+
+
 ## N100 fresh ENTRY2 capacity metadata; actual FIT pending (2026-10-07T19:11:05.411314+00:00)
 
 The original frozen capacity gate refused an uppercase carrier caption before any contact. Root227 preserved its source, failed exit and signed rows, then registered four fresh ENTRY2 capacity identities with the correct exact carrier binding. Original ledger bytes remain an exact prefix; capacity output bytes, source inputs, split and policies are unchanged. All four named registration checks passed. See `docs/receipts/continuation/2026-10-07-simple-consumption-n100-capacity-entry2-offline-v1.json`. Frozen checks and actual FIT remain pending; generation and graph are HELD. No model, tokenizer, scorer, queue or service contact/change occurred. Continue with 4 GiB floors and the reviewed continuous four-group GPU campaign, four concurrent samples per group, overlapping CPU scoring and exact separately authorized complete-member analysis.

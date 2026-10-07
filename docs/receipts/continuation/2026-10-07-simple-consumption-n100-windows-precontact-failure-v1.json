@@ -1,0 +1,55 @@
+{
+  "absent_runtime_directories": [
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-CAPACITY-ENTRY2-FIT-V1",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-CAPACITY-ENTRY2-FIT-V1",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-CAPACITY-ENTRY2-FIT-V1",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-CAPACITY-ENTRY2-FIT-V1",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-CAPACITY-ENTRY2-FIT-V1",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-CAPACITY-ENTRY2-FIT-V1",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-CAPACITY-ENTRY2-FIT-V1",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-CAPACITY-ENTRY2-FIT-V1"
+  ],
+  "absent_started_receipts": [
+    "capacity-task-started.json",
+    "capacity-started.json"
+  ],
+  "at_utc": "2026-10-07T19:40:20.292501+00:00",
+  "failure_component": "Windows outer launcher command resolution before child launch",
+  "finalizer_original_exit": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/root-finalize-v1.exit.json",
+    "sha256": "bdda708d37340da832d57389010b52361b3f67814bf93c157c147587e6e5477c"
+  },
+  "frozen_checks": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/frozen-check-v1.json",
+    "sha256": "569638623df2295b650cc6ca2f22740ca037602264e4208049cbb1bb8e149aa9"
+  },
+  "frozen_original_exit": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/frozen-check-v1.exit.json",
+    "sha256": "5abb5ccaa1a7b58ee0869482019ebbbbb7b8bc95082298385e74054ac68e9dee"
+  },
+  "generation_contacts": 0,
+  "launch": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/root-background-launch-v1.json",
+    "sha256": "b75a4af05ee6500f3de3dcc10aa93d32424bc728318ded88a747e310a6bcc538"
+  },
+  "monitor_deleted": "slurp-n100-capacity-health",
+  "next_action": "Root227 diagnoses and records a narrow environment/capture successor before any fresh invocation; no automatic retry and no source, policy, roster, budget, scoring or service change.",
+  "original_failed_evidence_preserved": true,
+  "original_identities_unspent": true,
+  "original_terminal": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/capacity-task-exit.json",
+    "sha256": "3f432aeec00490d5ed61f6f5f62cf395dfe998136c4410177560aa3572954891"
+  },
+  "owner_decision": 227,
+  "registration": {
+    "relpath": "coordination/simple-consumption-n100-capacity-v3/registration-v1.json",
+    "sha256": "0d73465a7b8ddf137b5db58ef8c2e0481afb6fcd16c40a1f203ea709c98c2a6a"
+  },
+  "schema": "saea-root-capacity-windows-precontact-failure-v1",
+  "scorer_contacts": 0,
+  "source_or_queue_changed": false,
+  "status": "PRESERVED_PRECONTACT_OUTER_EXIT_NO_CONTACTS",
+  "tokenizer_contacts": 0,
+  "translated_original_failure": "The Windows process could not resolve Get-FileHash as a cmdlet, function, script file or executable.",
+  "underlying_environment_cause": "Not yet established; direct PowerShell5.1 lookup succeeds. Exact hidden-launch diagnostics are pending."
+}
