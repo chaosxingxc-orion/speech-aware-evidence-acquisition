@@ -664,3 +664,13 @@ def test_manual_process_pin_drift_refuses_before_any_source_derivative(
             output=output,
         )
     assert not calls["verify"] and not calls["reuse"] and not output.exists()
+
+
+def test_manual_legacy_selector_cannot_downgrade_configured_extent(tmp_path, monkeypatch):
+    values = scope_fixture(tmp_path, monkeypatch)
+    registration = values[2]
+    monkeypatch.setattr(manual, "compose", lambda root, model, data, label, experiment:
+        SimpleNamespace(values={"label": label, "architecture_extent": {"count": 100}},
+                        config_hash=registration["member_bindings"][label]["config_hash"]))
+    with pytest.raises(PolicyError, match="configured extent"):
+        validate(values, tmp_path)

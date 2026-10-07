@@ -15,6 +15,8 @@ from .system_text_pilot import _attach_answer_changes, _read_complete_evidence
 from .system_text_update import _describe_complete_cohort
 
 SELECTOR = "manual-architecture-n20-v1"
+FIXED_ROSTER_SELECTOR = "manual-architecture-fixed-roster-v1"
+SELECTORS = (SELECTOR, FIXED_ROSTER_SELECTOR)
 REGISTRATION = "saea-manual-architecture-analysis-registration-v1"
 SCHEMA = "saea-complete-manual-architecture-evidence-v1"
 
@@ -40,7 +42,8 @@ def validate_registration(
     require(
         recipe.get("architecture_proof")
         == registration.get("architecture_proof")
-        == SELECTOR
+        and recipe.get("architecture_proof") in SELECTORS
+        and recipe.get("architecture_extent") == registration.get("architecture_extent")
         and registration.get("schema") == REGISTRATION
         and recipe.get("family_id") == registration.get("family_id")
         and recipe.get("learner_export") is False
@@ -147,6 +150,10 @@ def validate_registration(
             json.loads(_read_pin(b["registered_plans"][role], repo_root))
             for role in ("generation", "fit")
         ]
+        require(configured.values.get("architecture_extent") == recipe.get("architecture_extent")
+                and (configured.values.get("architecture_extent") is None
+                     or recipe["architecture_proof"] == FIXED_ROSTER_SELECTOR),
+                "manual configured extent or selector differs")
         checked = require_architecture_n20_registration(
             configured.values, c, pair, repo_root=repo_root, data_root=data_root
         )
@@ -163,6 +170,9 @@ def validate_registration(
             and all(
                 p["capacity_prerequisite"] == recipe["capacity_prerequisite"]
                 and p["natural_prerequisite"] == recipe["natural_prerequisite"]
+                and (recipe["architecture_proof"] != FIXED_ROSTER_SELECTOR or (
+                    p.get("architecture_proof") == FIXED_ROSTER_SELECTOR
+                    and p.get("architecture_extent") == recipe.get("architecture_extent")))
                 for p in pair
             ),
             "manual registered pair or immutable source binding differs",
@@ -260,14 +270,14 @@ def analyze(evidence, *, recipe, registration, roster, supplement, scope):
     _attach_answer_changes(report, d, recipe["sample_ids"], set(bindings))
     report.update(
         schema="saea-manual-architecture-read-v1",
-        status="FORM-PROOF-NO-ADOPTION",
+        status="FIXED-ROSTER-VALIDATION-NO-AUTOMATIC-ADOPTION" if scope["stage"]["N"] >= 400 else "FORM-PROOF-NO-ADOPTION",
         optimizer_feedback_allowed=False,
         learner_export=False,
         automatic_expansion=False,
         claims_feedback_learning_advantage=False,
         independent_validation=False,
         review_applicability=scope["review_applicability"],
-        interpretation="Manual architecture form and optimization evidence on the configured reused inputs. "
+        interpretation="Manual architecture validation on the complete configured reused input roster. "
         "Retain primary/A/A and both candidate comparisons, natural-mixture and equal-stratum summaries. "
         "No stable benefit, learned policy, node causal credit, automatic adoption or expansion is established.",
     )

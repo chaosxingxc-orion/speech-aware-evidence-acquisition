@@ -280,6 +280,58 @@ def require_architecture_natural_registration(values, cell, registered_plans, *,
     return result
 
 
+FIXED_ROSTER_SELECTOR = "manual-architecture-fixed-roster-v1"
+
+
+def _fixed400_basis(values, plans, population, *, repo_root):
+    """Bind an explicit stable prefix to the approved immutable UPDATE2fixed400."""
+    extent = values.get("architecture_extent")
+    require(isinstance(extent, dict) and set(extent) == {"schema", "source_population", "runtime_view", "count", "selection_seed"}
+            and extent["schema"] == "saea-manual-architecture-fixed-roster-extent-v1"
+            and type(extent["count"]) is int and extent["count"] in (100, 400)
+            and extent["selection_seed"] == 20261001
+            and all(p.get("architecture_extent") == extent
+                    and p.get("architecture_proof") == FIXED_ROSTER_SELECTOR for p in plans.values()),
+            "fixed400 extent or plan selector differs")
+    require(extent["source_population"]["relpath"] == "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json"
+            and extent["runtime_view"]["relpath"] == "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+            "fixed400 source identity is not the original configured basis")
+    require(extent["runtime_view"]["sha256"] == "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+            and extent["source_population"]["sha256"] == "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f",
+            "fixed-roster original frozen source raw pin differs")
+    basis = load_population_config(extent["source_population"], repo_root=repo_root, allow_architecture=True)
+    view = json.loads(_read_pin(extent["runtime_view"], repo_root))
+    from ..core.preparation import digest
+    ids = [r["sample_id"] for r in view["items"]]
+    require(view.get("runtime_view_sha256") == digest({k: v for k, v in view.items() if k != "runtime_view_sha256"})
+            and view.get("count") == len(ids) == len(set(ids)) == 400
+            and view.get("split_role") == "discovery" and view.get("carrier_lock_key") == "slurp"
+            and ids[:20] == basis["cohorts"][0]["sample_ids"]
+            and len(basis["cohorts"][0]["sample_ids"]) == 20,
+            "fixed400 runtime view seal, extent or original20 prefix differs")
+    from ..data.runtime_subset import build_runtime_subset
+    _, selected = build_runtime_subset(view, seed=extent["selection_seed"], count=extent["count"], name="extent-verification")
+    selected_ids = selected["sample_ids"]
+    require(ids[:extent["count"]] == selected_ids, "fixed-roster stable prefix differs")
+    expected = deepcopy(basis)
+    expected["experiment_id"] = "slurp-simple-consumption-architecture-n" + str(extent["count"]) + "-v1"
+    expected["cohorts"][0]["sample_ids"] = selected_ids
+    require(content_hash(population) == content_hash(expected),
+            "fixed400 population changed policies, roles, controls, geometry or roster")
+    return basis, extent["source_population"]
+
+
+def _fixed400_natural(values, plans, population, *, repo_root, data_root):
+    """Reuse original natural proof only after independent historical qualification."""
+    basis, pin = _fixed400_basis(values, plans, population, repo_root=repo_root)
+    prerequisite = plans["generation"]["natural_prerequisite"]
+    admission = json.loads(_read_pin(prerequisite["registration"], Path(data_root).resolve()))
+    historical_capacity = admission["capacity_prerequisite"]
+    capacity, _ = _qualified_capacity(basis, pin, historical_capacity, repo_root=repo_root, data_root=data_root)
+    return _qualified_natural_family(basis, pin, prerequisite, historical_capacity, capacity,
+                                    repo_root=repo_root, data_root=data_root)
+
+
 def require_architecture_n20_registration(values, cell, registered_plans, *, repo_root, data_root=None):
     """Bind one manual N20 pair to the completed N20 family and root READ.
 
@@ -294,6 +346,7 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
             and {p.get("plan_role") for p in registered_plans} == {"generation", "fit"},
             "N20 proof requires exactly one generation and one FIT plan")
     plans = {p["plan_role"]: p for p in registered_plans}
+    fixed400 = values.get("architecture_extent") is not None
     require(cell.get("allowed_execution_stages") == ["check", "prepare-supply", "worker", "campaign"],
             "N20 proof permits exactly check/prepare-supply/worker/campaign")
     require(not any(k in values for k in ("system_context_learning", "system_search_learning", "system_optimization"))
@@ -313,8 +366,9 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
     capacity, qualified = _qualified_capacity(population, pin, prerequisite, repo_root=repo_root, data_root=data_root)
     require(plans["generation"].get("natural_prerequisite") == plans["fit"].get("natural_prerequisite"),
             "N20 pair has different natural prerequisites")
-    natural = _qualified_natural_family(population, pin, plans["generation"]["natural_prerequisite"],
-                                       prerequisite, capacity, repo_root=repo_root, data_root=data_root)
+    natural = (_fixed400_natural(values, plans, population, repo_root=repo_root, data_root=data_root)
+               if fixed400 else _qualified_natural_family(population, pin, plans["generation"]["natural_prerequisite"],
+                   prerequisite, capacity, repo_root=repo_root, data_root=data_root))
     member, = [m for m in capacity["members"] if m["member_id"] == identity["member_id"]]
     roster = values["populations"][0]["ids"]
     require(len(values["populations"]) == 1 and type(values["population"]["count"]) is int
@@ -336,13 +390,33 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
             and receipt.get("source_policy") == identity["execution_config"], "N20 preparation provenance differs")
     _require_prepared_implementation(prepared, repo_root, values)
     require(prepared.get("output_sha256") == receipt.get("output_sha256"), "N20 prepared output binding differs")
-    require(receipt["source_prepared_phase_supply"]
+    require(fixed400 or receipt["source_prepared_phase_supply"]
             == member["prepared_artifact_verification"]["capacity"]["prepared_pin"],
             "N20 prepared output source differs from original qualified capacity")
     prior = json.loads(_read_pin(receipt["source_prepared_phase_supply"], Path(data_root).resolve()))
     from ..core.preparation import digest
-    require(prior.get("output_sha256") == prepared["output_sha256"] == digest(prior["output"]),
-            "N20 prepared output equality differs")
+    if fixed400:
+        require(receipt["source_prepared_phase_supply"] == {
+            "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-PARENT-V1/phase-supply-v1.json",
+            "sha256": "99ba974066d6a87f086e8850c316252857e205e5213387e9ae7ed030c22900f0"},
+            "fixed-roster original source supply raw pin differs")
+        require(prior.get("output_sha256") == digest(prior["output"])
+                and set(prior["output"]) == {"facets", "values"} and prior["output"]["facets"] == {}
+                and set(prior["output"]["values"]) == {"perception"}
+                and prepared["output"] == {"facets": {}, "values": {"perception": {
+                    sid: prior["output"]["values"]["perception"][sid] for sid in roster}}},
+                "fixed-roster prepared selection output equality differs")
+    else:
+        require(prior.get("output_sha256") == prepared["output_sha256"] == digest(prior["output"]),
+                "N20 prepared output equality differs")
+    if fixed400:
+        capacity_supply = json.loads(_read_pin(member["prepared_artifact_verification"]["capacity"]["prepared_pin"],
+                                               Path(data_root).resolve()))
+        require(capacity_supply.get("output_sha256") == prepared["output_sha256"]
+                == digest(capacity_supply["output"])
+                and capacity_supply["output"] == prepared["output"]
+                and receipt.get("architecture_extent") == values["architecture_extent"],
+                "fixed400 fresh capacity supply or preparation extent differs")
     runtime_roster = receipt["runtime_sample_ids"]
     require(isinstance(runtime_roster, list) and all(isinstance(x, str) for x in runtime_roster)
             and len(runtime_roster) == len(set(runtime_roster)) == len(roster)
@@ -385,7 +459,7 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
         bound_plan = expected if role == "generation" else replace(expected, run_id=fit["run_id"],
                                                                   attempt_id=fit["attempt_id"], planned_model_calls=fit_cap)
         require(document.get("schema") == f"saea-registered-{role}-plan-v1"
-                and document.get("architecture_proof") == "manual-architecture-n20-v1"
+                and document.get("architecture_proof") == (FIXED_ROSTER_SELECTOR if fixed400 else "manual-architecture-n20-v1")
                 and str(document.get("status", "")).upper().startswith("ROOT COUNTERSIGNED BEFORE CONTACT")
                 and document.get("architecture_member") == identity["member_id"]
                 and document.get("cell") == cell["cell_id"] and document.get("experiment") == cell["cell_id"]
@@ -401,7 +475,8 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
                 and document.get("learner_export") is False
                 and document.get("population_budget") == population_accounting(population, identity["cohort_id"]),
                 "N20 registered plan differs from its exact configuration, scope or identity")
-    _require_n20_root_decision(plans, population, natural, repo_root=repo_root, data_root=data_root)
+    _require_n20_root_decision(plans, population, natural, repo_root=repo_root, data_root=data_root,
+                               extent=values.get("architecture_extent"))
     return dict(member_id=identity["member_id"], sample_ids=deepcopy(roster),
                 runtime_sample_ids=deepcopy(runtime_roster), generation_cap=generation_cap, fit_cap=fit_cap,
                 capacity_registration_sha256=qualified["registration_sha256"],
@@ -431,7 +506,7 @@ def _require_prepared_implementation(prepared, repo_root, values):
                 for name, path in paths.items()), "N20 prepared implementation source differs")
 
 
-def _require_n20_root_decision(plans, population, natural, *, repo_root, data_root):
+def _require_n20_root_decision(plans, population, natural, *, repo_root, data_root, extent=None):
     """Require one decided owner227 admission for the exact prospective family."""
     decision_pin = plans["generation"].get("decision_receipt")
     require(decision_pin == plans["fit"].get("decision_receipt"), "N20 pair root decisions differ")
@@ -446,9 +521,12 @@ def _require_n20_root_decision(plans, population, natural, *, repo_root, data_ro
     source = receipt.get("prepared_source_commit")
     require(isinstance(source, str) and len(source) == 40 and all(x in "0123456789abcdef" for x in source)
             and decision.get("source_preparation_commit") == source, "N20 root preparation source differs")
+    require(decision.get("architecture_extent") == extent
+            and all(p.get("architecture_extent") == extent for p in plans.values()),
+            "manual root decision extent differs")
     expected_ids = []
     for member in population["architecture"]["members"]:
-        stem = "slurp-native-stage3-simple-consumption-" + member["member_id"] + "-n20-v2"
+        stem = "slurp-native-stage3-simple-consumption-" + member["member_id"] + ("-n" + str(extent["count"]) + "-v1" if extent is not None else "-n20-v2")
         cell, = load_campaign_cells(repo_root, stem)
         document = cell.document
         config = compose(repo_root, document["model_fragment"], document["dataset_fragment"],

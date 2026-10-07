@@ -80,7 +80,7 @@ def load_documents(recipe_pin, supplement_pin, root):
            "system_panel_registration" if "system_panel_registration" in recipe else "pilot_registration")
     registration = json.loads(_read_pin(recipe[key], root))
     if key == "manual_architecture_registration":
-        require(recipe.get("architecture_proof") == architecture.SELECTOR
+        require(recipe.get("architecture_proof") in architecture.SELECTORS
                 and supplement.get("registration") == recipe[key]
                 and supplement.get("process_diagnostics") == recipe.get("process_diagnostics"),
                 "manual selector, supplement or READ-pinned process binding differs")

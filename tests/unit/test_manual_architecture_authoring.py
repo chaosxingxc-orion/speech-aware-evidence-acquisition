@@ -766,3 +766,24 @@ def test_mismatched_family_measurement_profile_refuses_before_mutation(
         helper.author(inputs, repo_root=repo, data_root=data)
     assert not (repo / inputs["package_relpath"]).exists()
     assert all(p.read_bytes() == raw for p, raw in before.items())
+
+
+@pytest.mark.parametrize("case", ["selector-without-extent", "root-extent", "spec-extent"])
+def test_fixed_roster_metadata_refuses_before_write(tmp_path, monkeypatch, case):
+    repo, data, inputs, stage, originals, checks, warm = fixture(tmp_path, monkeypatch)
+    if case == "selector-without-extent":
+        inputs["architecture_proof"] = helper.reader.FIXED_ROSTER_SELECTOR
+    elif case == "root-extent":
+        path = data / inputs["decision_receipt"]["relpath"]
+        decision = json.loads(path.read_bytes())
+        decision["architecture_extent"] = {"count": 100}
+        path.write_text(json.dumps(decision), encoding="utf-8")
+        inputs["decision_receipt"] = helper.raw_pin(path, data)
+    else:
+        inputs["architecture_extent"] = {"count": 100}
+    with pytest.raises(PolicyError):
+        helper.validate_inputs(inputs, repo_root=repo, data_root=data)
+    assert not (repo / inputs["package_relpath"]).exists()
+    assert not warm and not checks
+    for label, raw in originals.items():
+        assert (repo / inputs["preparation_receipts"][label]["relpath"]).read_bytes() == raw

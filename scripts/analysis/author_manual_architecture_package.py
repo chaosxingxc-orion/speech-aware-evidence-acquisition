@@ -155,7 +155,7 @@ def validate_inputs(spec, *, repo_root, data_root):
     """Validate raw-pinned source metadata before any ready/configuration write."""
     require(
         spec.get("schema") == "saea-manual-architecture-authoring-input-v1"
-        and spec.get("architecture_proof") == reader.SELECTOR,
+        and spec.get("architecture_proof") in reader.SELECTORS,
         "explicit manual authoring input required",
     )
     package = (repo_root / spec["package_relpath"]).resolve()
@@ -190,6 +190,26 @@ def validate_inputs(spec, *, repo_root, data_root):
     )
     members, measurement_profile = _member_inputs(spec, stage, repo_root)
     decision = json.loads(_read_pin(spec["decision_receipt"], data_root))
+    extent = spec.get("architecture_extent")
+    require(decision.get("architecture_extent") == extent
+            and all(receipt.get("architecture_extent") == extent
+                    for _, _, receipt, _, _, _ in members),
+            "authoring configured or root decision extent differs")
+    require(all(compose(repo_root, c["model_fragment"], c["dataset_fragment"],
+                        c["baseline_fragment"], c["experiment"]).values.get("architecture_extent") == extent
+                for _, _, _, c, _, _ in members),
+            "authoring compiled configuration extent differs")
+    if extent is not None:
+        require(spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR,
+                "authoring extended configuration requires fixed-roster selector")
+        from speech_aware_evidence_acquisition.rails.architecture_natural_registration import _fixed400_basis
+        population = json.loads(_read_pin(spec["experiment_population"], repo_root))
+        _fixed400_basis({"architecture_extent": extent}, {role: {
+            "architecture_extent": extent, "architecture_proof": spec["architecture_proof"]}
+            for role in ("generation", "fit")}, population, repo_root=repo_root)
+    else:
+        require(spec["architecture_proof"] != reader.FIXED_ROSTER_SELECTOR,
+                "authoring fixed-roster selector requires explicit extent")
     eligible = [
         run for _, _, _, c, fit, _ in members for run in (c["run_id"], fit["run_id"])
     ]
@@ -406,7 +426,7 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
                     if root_countersign_plans
                     else "PROSPECTIVE UNSIGNED; root must countersign before contact",
                     "registered_at_utc": spec["registered_at_utc"],
-                    "architecture_proof": reader.SELECTOR,
+                    "architecture_proof": spec["architecture_proof"],
                     "architecture_member": label,
                     "cell": cell["cell_id"],
                     "experiment": member[3]["experiment"],
@@ -430,6 +450,8 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
                     ],
                     "read_run_id": spec["read_run_id"],
                 }
+                if spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR:
+                    document["architecture_extent"] = deepcopy(spec["architecture_extent"])
                 plans.append(document)
                 target = package / (label + "-" + role + "-plan-registered-v1.json")
                 write_new(target, document)
@@ -520,7 +542,7 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
             )
     wrapper = {
         "schema": "saea-manual-architecture-analysis-intent-v1",
-        "architecture_proof": reader.SELECTOR,
+        "architecture_proof": spec["architecture_proof"],
         "family_id": spec["family_id"],
         "read_id": spec["read_run_id"],
         "experiment_population": spec["experiment_population"],
@@ -546,7 +568,7 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
         )
     }
     recipe.update(
-        architecture_proof=reader.SELECTOR,
+        architecture_proof=spec["architecture_proof"],
         family_id=spec["family_id"],
         run_ids={"read": spec["read_run_id"]},
         status="DRAFT_ROOT_READ_NOT_COUNTERSIGNED",
@@ -566,6 +588,9 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
         capacity_prerequisite=spec["capacity_prerequisite"],
         natural_prerequisite=spec["natural_prerequisite"],
     )
+    if spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR:
+        wrapper["architecture_extent"] = deepcopy(spec["architecture_extent"])
+        recipe["architecture_extent"] = deepcopy(spec["architecture_extent"])
     source_code = {
         "reader": raw_pin(
             repo_root / "scripts/analysis/system_text_pilot_read.py", repo_root
@@ -705,7 +730,7 @@ def resolve_analysis(spec, *, repo_root, data_root, frozen_worker_root):
     intent = json.loads(intent_raw)
     require(
         intent.get("schema") == "saea-manual-architecture-analysis-intent-v1"
-        and intent.get("architecture_proof") == reader.SELECTOR
+        and intent.get("architecture_proof") in reader.SELECTORS
         and "source_commit" not in intent
         and all("source_commit" not in b for b in intent["member_bindings"].values()),
         "frozen intent must be explicitly source-unresolved",
