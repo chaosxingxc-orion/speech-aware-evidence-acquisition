@@ -1,5 +1,26 @@
 # Experiment rules for the ChatGPT side
 
+## N100 uses one shared trajectory queue; per-member CPU reads are authorized (2026-10-07)
+
+The owner directs CPU preparation/scoring/analysis to overlap GPU execution. One GPU
+experiment contains all four100-input members (400trajectories), with one globally
+bounded four-slot/four-workflow queue and lazy payload admission. The existing runner
+already parallelizes samples within each member; cross-member mixing and early owner
+completion require an explicit extension of the existing panel seam, not node batching.
+Keep original per-sample node order, role requests, tools, T0/seed and answer custody.
+Pin deterministic sample-major/member-rotated admission and a shared-load timing profile.
+Old serial-member timings are not an identical-condition latency comparison.
+
+A complete individual100-row member may be analyzed after its verified seal, unique
+complete official score and exact prospectively registered memberREAD countersignature.
+Run one official scorer; CPU analysis can overlap remaining generation. Member results
+cannot update any pending policy or sampling. Final contrasts still require the whole
+four-member family and its own exactREAD. On failure preserve completed members and stop
+new work, drain owned contacts, and record root disposition; never replay scores.
+Implementation, regression proof, fresh capacity/source gates and GPU admission remain
+pending. No N100 model, tokenizer or scorer contacts have started. Read the
+[concurrency scope](../readiness/2026-10-07-slurp-simple-consumption-n100-prospective-v1/concurrency-scope-v2.json).
+
 ## Owner reduces the next comparison to100 inputs; no launch yet (2026-10-07)
 
 The latest direct instruction supersedes the unlaunchedN400 direction. Reuse the
@@ -756,4 +777,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-07T15:48:56.278062+00:00
+Last refreshed: 2026-10-07T17:07:58.655853+00:00

@@ -1,0 +1,58 @@
+{
+  "contacts_at_registration": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "cpu_overlap": {
+    "analysis": "After a member independentlyFINALIZES with verifiedseal, exactlyonecompleteofficialscore andzerofailedjobs, root countersigns its prospectively registered memberREAD and delegates descriptiveanalysis.",
+    "preparation": "Overlap bounded CPU preparation with GPU work. Preserve immutable prepared source assets.",
+    "scoring": "One official complete-manifest scorer at a time; overlap it with remainingGPU generation after a member seals.",
+    "terminal_condition": "Member completion must wait until all its workflows, synchronous contacts/tools, timing sinks and trace flushes settle successfully; no closing a live owner."
+  },
+  "engineering_acceptance": [
+    "Globalconcurrencyneverexceedsslots/queuebound",
+    "Exactrequest/role/contextcustody under interleavedmembers",
+    "Pendingpayloadsremainlazy and releasedpayloadsnotretained",
+    "Membercompletioncallbackaftersynchronousworkandtimingsinksettlement",
+    "Firstmembersealing/scoringoverlapsremaininggeneration",
+    "Singleofficialscorer andno replay",
+    "Failurestop/drain preservecompletedmembers",
+    "Legacy node-stage andsingle-memberpathsunchanged",
+    "Guardedgloballease/memory/STOP ownership andsourcebinding",
+    "Separate memberREAD/familyREAD andno feedbacktopendingjobs"
+  ],
+  "failure": "Stopnewadmissions, drainownedlivecontacts, preserve all evidence. Keepalreadysealed/scoredmembersimmutable; abortonlyunfinishedowners. Noautomaticretry, reseal orscore replay. Rootrecordsnextdisposition.",
+  "global_execution": {
+    "admitted_workflows": 4,
+    "configuration": "Derive member/roster/queue/slot/budget values from one declared configuration; do not hardcodeK orN in dispatch scripts.",
+    "generator_experiments": 1,
+    "job_order": "Sample-major, rotate member precedence by sample index; pin exact global and local admission IDs before contact.",
+    "loading": "Keep pending jobs as identities; load sample request/context payloads on bounded admission. Do not materialize400full request bodies simultaneously.",
+    "owners": "Each member retains exact run/attempt, client, budget, trace context and output custody. Shared engine runs independently of every owner thread.",
+    "serving_slots": 4,
+    "within_trajectory": "Preserve original sequential node contacts, policy/request assembly and legal tool branches."
+  },
+  "human_return_boundary": "Returnbefore8x400orequivalentsplit;thisexact4x100iscurrentauthorizedscope.",
+  "implementation": "Extend the existingNativeWorkflowPanel and FlightRuntime/OpenJiuwen seams with explicit trajectory-mode scheduling; do not enable node-stage barriers or create independent competingGPU drivers.",
+  "measurement": "Prospectively bind a shared-load scheduling/timing profile. Preserve sample/globalqueuewait, admitted service latency, first/nonfirst andnode timings. Do not treat oldserial-member latency as same-condition causalcomparison.",
+  "owner_input_translation": "Do not serialize GPU and CPU experiments. Run GPU experiments one at a time; execute the4x100groups as400parallel sample jobs. Analysis and parsing agents can analyze each group as it completes.",
+  "population": {
+    "candidate_count": 2,
+    "complete_trajectories": 400,
+    "distinct_inputs": 100,
+    "systems": 4
+  },
+  "recorded_at_utc": "2026-10-07T17:07:58.655853+00:00",
+  "schema": "saea-manual-architecture-concurrency-scope-v1",
+  "scientific_read": {
+    "family_read": "Require allfour independentlyFINALIZED with verifiedseals, oneuniquecompleteofficialscoreeach andzerofailedjobs, then exactrootfamilyREAD forcomparisons.",
+    "member_read": "Separate exact memberREAD identities, registered beforecontact. Descriptive business/process aggregates only for that completed member. No other member quality is read.",
+    "no_midflight_feedback": "Analysis cannot modify pendingpolicies, sampling, admissionorder, prompts or budgets; no learnerexport during thisfrozenfamily."
+  },
+  "status": "OWNER_DIRECTED_IMPLEMENTATION_AND_EXECUTION_ADMISSION_PENDING",
+  "supersedes_completion_and_dispatch_rules": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-prospective-v1/prospective-scope-v1.json",
+    "sha256": "f8e1bf59d83ca0d0120b50f0b85625f4980d1cd924b7ff04341e9deb7931400a"
+  }
+}

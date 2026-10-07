@@ -1,5 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## N100 uses one shared trajectory queue; per-member CPU reads are authorized (2026-10-07)
+
+The owner directs CPU preparation/scoring/analysis to overlap GPU execution. One GPU
+experiment contains all four100-input members (400trajectories), with one globally
+bounded four-slot/four-workflow queue and lazy payload admission. The existing runner
+already parallelizes samples within each member; cross-member mixing and early owner
+completion require an explicit extension of the existing panel seam, not node batching.
+Keep original per-sample node order, role requests, tools, T0/seed and answer custody.
+Pin deterministic sample-major/member-rotated admission and a shared-load timing profile.
+Old serial-member timings are not an identical-condition latency comparison.
+
+A complete individual100-row member may be analyzed after its verified seal, unique
+complete official score and exact prospectively registered memberREAD countersignature.
+Run one official scorer; CPU analysis can overlap remaining generation. Member results
+cannot update any pending policy or sampling. Final contrasts still require the whole
+four-member family and its own exactREAD. On failure preserve completed members and stop
+new work, drain owned contacts, and record root disposition; never replay scores.
+Implementation, regression proof, fresh capacity/source gates and GPU admission remain
+pending. No N100 model, tokenizer or scorer contacts have started. Read the
+[concurrency scope](../readiness/2026-10-07-slurp-simple-consumption-n100-prospective-v1/concurrency-scope-v2.json).
+
 ## Owner reduces the next comparison to100 inputs; no launch yet (2026-10-07)
 
 The latest direct instruction supersedes the unlaunchedN400 direction. Reuse the
@@ -6932,7 +6953,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-07T16:52:27.454988+00:00
+Last refreshed: 2026-10-07T17:07:58.655853+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
