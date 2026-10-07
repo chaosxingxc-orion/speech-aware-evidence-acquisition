@@ -1,0 +1,19 @@
+{
+  "contacts": {
+    "gpu": 0,
+    "model": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "count": 4,
+  "parent_runtime_view_sha256": "ac85a8cce62a5e7d92b5943ad2f9ab59d741c54b7b50e3efc4a17aef20ea98c0",
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "schema": "saea-runtime-subset-receipt-v1",
+  "seed": 20261001,
+  "selection": "sha256(seed:sample_id)-ascending-v1"
+}

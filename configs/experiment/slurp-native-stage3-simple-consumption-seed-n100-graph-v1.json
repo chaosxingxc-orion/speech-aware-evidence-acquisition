@@ -1,0 +1,88 @@
+{
+  "architecture_member": "seed",
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-graph-v1-graph",
+      "baseline_fragment": "slurp-native-stage3-simple-consumption-seed-n100-graph-v1",
+      "cell_id": "slurp-native-stage3-simple-consumption-seed-n100-graph-v1",
+      "dataset_fragment": "slurp-speech-native-simple-consumption-n100-graph4-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Exact root admission, fresh N100 capacity and frozen/live gates pending.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Exact fixed400 selection outputs reused with current source identity; zero contacts.",
+            "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-GRAPH-V1/phase-supply-v1.json",
+            "sha256": "6f3c1417b5b3873fb1d466e034deebc38078701b7ed8858c17ea246b4d27066d"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-GRAPH-V1",
+      "system_text_policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    }
+  ],
+  "date": "2026-10-07",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 1500,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-GRAPH-V1",
+  "family_budget": {
+    "complete_system_trajectories": 0,
+    "generation_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "tokenizer_endpoint_cap": 0
+  },
+  "native_graph_capacity_profile": "legacy-four-path-v1",
+  "population": {
+    "count": 4,
+    "roster_receipt": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-preparation-v1/graph-roster-v1.json",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-simple-consumption-n100-graph4-v1",
+      "ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "split_id": "SLURP-SIMPLE-CONSUMPTION-N100-GRAPH4-V1",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "Manual architecture capacity; no learning or task-quality feedback.",
+    "operators_used": []
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0,
+    "measurement_design": "form-proof",
+    "note": "Four unchanged policies on registered prefix100: diagnostic form proof, no benefit or independent validation claim.",
+    "primary_metric": "official pooled SLU-F1",
+    "primary_metric_key": "slu",
+    "read_roster": "SLURP-SIMPLE-CONSUMPTION-N100-GRAPH4-V1",
+    "rows": 4,
+    "tuning_roster": "none"
+  }
+}

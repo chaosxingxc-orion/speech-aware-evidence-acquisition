@@ -1,0 +1,51 @@
+{
+  "audio_seconds_total": 8.7029375,
+  "carrier_lock_key": "slurp",
+  "count": 4,
+  "d1_manifest_sha256": "c770b5d4ab5e00393c8eadce8ad95d40a5de7b4ec11a5ee1e1544c7794b7db74",
+  "d1_media_supplement": "receipts/artifacts/d1-slurp-evo-fold-a-v2.json",
+  "d1_media_supplement_sha256": "2b3d22993cfbefa5eee54b883cee23477b9e445e3b74a5e95ed86a327eba8397",
+  "items": [
+    {
+      "audio_seconds": 2.17575,
+      "audio_sha256": "149bfcf4840ba34cf39210d51723e630436404a5f6d9b2457c76db5b827229dd",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1502374837.flac",
+      "packet_id": "slurp/train/005407/audio-1502374837",
+      "sample_id": "slurp:train:005407:audio-1502374837",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 1.5358125,
+      "audio_sha256": "924d227f49cc7a700b5f8667b3c002ab77d2b382d2672da1f99662167dbc5330",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1501686037.flac",
+      "packet_id": "slurp/train/003560/audio-1501686037",
+      "sample_id": "slurp:train:003560:audio-1501686037",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 2.5596875,
+      "audio_sha256": "4f04a65bc7db4bf5ed00e6e1928a90a847a069898e063aea116c234b9715abfa",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1494513310.flac",
+      "packet_id": "slurp/train/005513/audio-1494513310",
+      "sample_id": "slurp:train:005513:audio-1494513310",
+      "sample_rate_hz": 16000
+    },
+    {
+      "audio_seconds": 2.4316875,
+      "audio_sha256": "1bab89150eed6988186417afe00b4968fdf3ccabbfc421161c59739e8ded10cf",
+      "media_relpath": "datasets/slurp/slurp_real/audio-1490369500.flac",
+      "packet_id": "slurp/train/011838/audio-1490369500",
+      "sample_id": "slurp:train:011838:audio-1490369500",
+      "sample_rate_hz": 16000
+    }
+  ],
+  "runtime_view_sha256": "5b3caa48e3d04d1fbaf32977e43002faf94a7a4fb02d0a2b2596a771a5e2dcd8",
+  "schema": "saea-speech-native-runtime-view-v1",
+  "seed": 20261001,
+  "source_binding_sha256": "03e7fe7455d4c38d9876c359b48f92558c04c93c981c52b5dc91a232426ee5ef",
+  "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+  "split_name": "SLURP-SIMPLE-CONSUMPTION-N100-GRAPH4-V1",
+  "split_role": "discovery",
+  "status": "MODEL-FREE, LABEL-FREE ENGINEERING INPUT; NOT AN EXPOSURE REGISTRATION",
+  "study": "speech-aware-evidence-acquisition"
+}

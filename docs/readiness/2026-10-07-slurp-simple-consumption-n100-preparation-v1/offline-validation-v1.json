@@ -1,0 +1,59 @@
+{
+  "actual_source_value_counts": {
+    "intent-boundaries": 60,
+    "slot-contracts": 54
+  },
+  "capacity_ceilings": [
+    299,
+    299,
+    157,
+    241
+  ],
+  "contacts": {
+    "generation": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "descriptor": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-preparation-v1/capacity-prepared-members-v1.json",
+    "sha256": "68a1358669a9d6678d6dd5daf3059490507c6b7ed9cd6690d3fe66fb8792436f"
+  },
+  "dispatch": false,
+  "executed_producer": {
+    "relpath": "coordination/simple-consumption-n100-offline-preparation-v1/producer-v3.py",
+    "sha256": "5456b2c70369e4f7f6d12afea616b6aeddd5ac4a0f76bb453ae01c744131b4b9"
+  },
+  "exit_code": 0,
+  "implementation_raw_hashes": {
+    "core/flight/runtime.py": "fc7d8fab1e22f9421c81a37c251442dc19c6b42a1d74b274b338e35b884ea7ca",
+    "rails/kb_policy.py": "b0d8d9d46d69f57c3ee377af61a301ec7cd8078b2c2a4bdd47e5ed2cd8f6c32b",
+    "rails/knowledge_provider.py": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db",
+    "rails/knowledge_stores.py": "732c40d03f25c9797794affea1a04d7370d995551d8a2d5466faa75ed2b491af",
+    "rails/phase_supply.py": "cb4716df8fd458fe931f90a157daeaa1c1d801b8aa91c072b88a926cb605bfd6"
+  },
+  "original_producer_session": 75196,
+  "owner_superseded_n400_archive": {
+    "relpath": "coordination/simple-consumption-n400-offline-preparation-v1/stopped-preparation-bundle-v1/manifest-v1.json",
+    "sha256": "3f107b26da51128252975093b802188865c0466a2b8e34712945578f286333f1"
+  },
+  "phase_records": 12,
+  "portable_helper_metadata_successor": "Identical execution; two count literals replaced with selected/stage-derived count metadata after invocation.",
+  "producer": {
+    "relpath": "scripts/prepare_simple_consumption_n100.py",
+    "sha256": "b1762e24aafd63ea9204d4b4f7f10784d19c62a42099f97063cb38bbf9fbb419"
+  },
+  "refusals_preserved": {
+    "original_sessions": [
+      47716
+    ],
+    "relpath": "coordination/simple-consumption-n100-offline-preparation-v1",
+    "second_original_chunk": "719368"
+  },
+  "schema": "saea-model-free-preparation-validation-v1",
+  "source_commit": "50c9a3875e6ad798a59ea8626b6ebcb8d87721f7",
+  "status": "PASS",
+  "summary": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-preparation-v1/preparation-summary-v1.json",
+    "sha256": "25752fc805bb22b2d94960f4c3d5eb80ae35037412cf13e7958ae5830da5032a"
+  }
+}
