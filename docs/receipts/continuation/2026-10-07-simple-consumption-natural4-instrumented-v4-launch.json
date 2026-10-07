@@ -1,0 +1,536 @@
+{
+  "allowed_actual_fit_endpoint_ceiling": 496,
+  "allowed_generation_ceiling": 124,
+  "at_utc": "2026-10-07T12:44:29.755789+00:00",
+  "author": "GPT-6.1 Sol engineering documentation under root instruction",
+  "configured_members": [
+    {
+      "actual_fit_endpoint_ceiling": 208,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-generation-v4",
+      "ceiling_per_row": 13,
+      "config_hash": "5af58106a63ec2f1fb54aa3a4752a7ea0d8c71063846afa6e70b80b59651d079",
+      "configured_sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ],
+      "experiment": "slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v4",
+      "generation_ceiling": 52,
+      "label": "seed",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+        "sha256": "375cbbe60a1b98da3f64b5fc5ff4df397d16ccd87eefd3726e6ffe3c44d6f9fc"
+      },
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-ENGINEERING-SMOKE-4-V4",
+      "runtime_sample_ids": [
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    },
+    {
+      "actual_fit_endpoint_ceiling": 208,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-generation-v4",
+      "ceiling_per_row": 13,
+      "config_hash": "317b9f8fae66c7478b32cff6379228c48922a0c570bba9b03cbe0b6554118e8c",
+      "configured_sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ],
+      "experiment": "slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v4",
+      "generation_ceiling": 52,
+      "label": "seed-aa",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+        "sha256": "21e473e492e5c9f466183f7c4f7b58013649477ad7f91caab4b3f405f1ed2991"
+      },
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-ENGINEERING-SMOKE-4-V4",
+      "runtime_sample_ids": [
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    },
+    {
+      "actual_fit_endpoint_ceiling": 32,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-generation-v4",
+      "ceiling_per_row": 2,
+      "config_hash": "f318b67d469a55b61aad944f94de708abd0241d8f02f16b6f12decf52e91f8f3",
+      "configured_sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ],
+      "experiment": "slurp-native-stage3-simple-consumption-review-off-engineering-smoke-4-v4",
+      "generation_ceiling": 8,
+      "label": "review-off",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+        "sha256": "1d80180fab6909f3a97138daa60e3870575588edee85a4954932cabdee85c2ef"
+      },
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-ENGINEERING-SMOKE-4-V4",
+      "runtime_sample_ids": [
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    },
+    {
+      "actual_fit_endpoint_ceiling": 48,
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-generation-v4",
+      "ceiling_per_row": 3,
+      "config_hash": "3739952a5583e200980c86b5b8fb10f04c32b153805906a633dbbfced3d8a610",
+      "configured_sample_ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ],
+      "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-smoke-4-v4",
+      "generation_ceiling": 12,
+      "label": "solver-lookup",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4/phase-supply-v1.json",
+        "sha256": "0bee0a54c46e62f6d3fdd4d7c6c980ee88168243623fa1a62e11367000b60832"
+      },
+      "rows": 4,
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-SMOKE-4-V4",
+      "runtime_sample_ids": [
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    }
+  ],
+  "control_transition": {
+    "STOP_preserved_in_archive": true,
+    "admission_sha256": "65fd6313efa995247cb9f9a28c562801a8d41f9557c06eccf9b576f3ebbdaaa5",
+    "archive": "/home/chao/batch-archive-20261007-natural4-instrumented-v4",
+    "at_utc": "2026-10-07T12:35:20.550206+00:00",
+    "cache_cleared": false,
+    "contacts_added": 0,
+    "dispatches": 0,
+    "frozen_launch_binding_sha256": "6211f856f99c0d7bf05c1e892a93c0b36e6929acc3f4be93f6d1cb06ee8ce55b",
+    "old_attempt_outputs_changed": false,
+    "old_lease_sha256": "566efc105e41df37e6a0126607756641ebbd2bf5e138dc00d99c090885edbe9e",
+    "old_token_sha256": "c0ccfae9a4014c1782357498b6a7bcee46796671829f7d5f6a002ce19c5d7707",
+    "preserved_lease": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-natural4-instrumented-v4/preserved-v3-failed-flight.lock",
+    "preserved_token": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-natural4-instrumented-v4/preserved-v3-worker-lease.json",
+    "queue_sha256": "aa71189b5be9562a71ed923ca456929e9e9c54d66b47a6cf1a32dfc2331f9c30",
+    "service_restarted": false,
+    "status": "EXACT_DEAD_V3_CONTROLS_ARCHIVED_V4_INSTALLED",
+    "worker_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+    "worker_root": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-v4"
+  },
+  "dispatch_request": {
+    "action": "single Start-ScheduledTask request",
+    "actual_fit_endpoint_cap": 496,
+    "at_utc": "2026-10-07T12:36:25.8638844Z",
+    "generation_cap": 124,
+    "official_score_jobs": 0,
+    "process_memory_diagnostics": true,
+    "queue_sha256": "aa71189b5be9562a71ed923ca456929e9e9c54d66b47a6cf1a32dfc2331f9c30",
+    "root_admission_sha256": "65fd6313efa995247cb9f9a28c562801a8d41f9557c06eccf9b576f3ebbdaaa5",
+    "task": "SAEA-Batch-Driver",
+    "windows_free_gib": 21.23668670654297,
+    "worker_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+    "worker_root": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-v4"
+  },
+  "documentation_action": {
+    "live_health_observed": false,
+    "model_contacts": 0,
+    "owner_role_division": {
+      "admission_launch": "root",
+      "engineering": "GPT-6.1 Sol",
+      "planning_optimization_independent_review_template_analysis": "GPT-6 Astra/Ultra"
+    },
+    "runtime_controls_changed": false,
+    "scorer_contacts": 0,
+    "task_outputs_read": false,
+    "tokenizer_contacts": 0
+  },
+  "driver_start": {
+    "at_utc": "2026-10-07T12:36:27Z",
+    "provenance": "Root reported the actual saved driver epoch; this documentation task did not monitor the active driver."
+  },
+  "evidence": [
+    {
+      "bytes": 3188,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/root-admission-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "65fd6313efa995247cb9f9a28c562801a8d41f9557c06eccf9b576f3ebbdaaa5"
+    },
+    {
+      "bytes": 1940,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/root-incident-disposition-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "8a78d1ad7d3a25ced46b6e4a742c55e85a85a20b6f2b059a16379b822c6f1cb7"
+    },
+    {
+      "bytes": 953,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/root-frozen-launch-binding-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "6211f856f99c0d7bf05c1e892a93c0b36e6929acc3f4be93f6d1cb06ee8ce55b"
+    },
+    {
+      "bytes": 1693,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/root-preparation-disposition-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "40ecdf6fa36794fb91c92fdbc82bf0cc751657f7baaedf52bae842e9d4c9c203"
+    },
+    {
+      "bytes": 703,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/preparation-platform-disposition-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "38749c4b81b50f23c08e78e784b7ecf48ac9182bf9fdfebe1ccf190e802f583b"
+    },
+    {
+      "bytes": 708,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/root-transition-freshness-disposition-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "fc1f83769bb4a19aa8126882d98723e000dc6529f90b33ed507529b9ab9b6bc3"
+    },
+    {
+      "bytes": 59093,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/transition-started-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "8e0f0e71f4bfd63a921f848640926a33799f544e76389ceb6d2d3192b017f184"
+    },
+    {
+      "bytes": 1327,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/transition-finished-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "666d0e694ec8ab96786a37a16b242a30e99505db1fdc995ec1e459d2d9a8c938"
+    },
+    {
+      "bytes": 286,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/root-prelaunch-state-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "7616fb38895234255f70712804b85d8a53bc5d73347f9f998c4146f418c5ba65"
+    },
+    {
+      "bytes": 647,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/dispatch-requested-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "0a402b70a792ed15657178e04ef4d6607a4a046af6b5a032527009e3f342bc98"
+    },
+    {
+      "bytes": 416,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/windows-idle-before-transition-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "0add51837d80dc952eb81ab14f3e7d363a5d2a230b561f2c4cc0a66accb3260f"
+    },
+    {
+      "bytes": 10238,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/transition-exact-v3-controls-to-v4-v1.py",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "a4854473c1fc496299fd8544e5683013404e7facae88092d8b3869fa42ab8c38"
+    },
+    {
+      "bytes": 10547,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/transition-exact-v3-controls-to-v4-v2.py",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "ef62a8a5a050c0b46b816f698c9665bea48b497271255eacdad6d00646d6e90a"
+    },
+    {
+      "bytes": 638,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/preserved-v3-failed-flight.lock",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "566efc105e41df37e6a0126607756641ebbd2bf5e138dc00d99c090885edbe9e"
+    },
+    {
+      "bytes": 362,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/preserved-v3-worker-lease.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "c0ccfae9a4014c1782357498b6a7bcee46796671829f7d5f6a002ce19c5d7707"
+    },
+    {
+      "bytes": 9172,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/operational-server-memory-review-v1.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "f31d25140efe28c6853f4c46d8fede4ccdeddc0daa89056a41ddd13320e46de9"
+    },
+    {
+      "bytes": 2438,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/frozen-checks-v1.py",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "11531a557c7c0ccc20e65eba8dd96e08a21f8e9d9be5a02420d848b1e41caa35"
+    },
+    {
+      "bytes": 298,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/frozen-registration-v1.exit.json",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "f45f1f89efc4c50e1481c19451bca71113fb3541f850231416d6933d3594ad3c"
+    },
+    {
+      "bytes": 14774,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/frozen-registration-v1.stdout.log",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "3ead3ab98b7d9c1c4e2df0ff755961914ea2aa27119841ad7df9570f70596e3e"
+    }
+  ],
+  "family_registration": {
+    "blocking_cells": [],
+    "cells": 4,
+    "exit": {
+      "at_utc": "2026-10-07T12:31:27.035711+00:00",
+      "exit_code": 0,
+      "generation_contacts": 0,
+      "scorer_contacts": 0,
+      "source_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+      "stdout_sha256": "3ead3ab98b7d9c1c4e2df0ff755961914ea2aa27119841ad7df9570f70596e3e",
+      "tokenizer_contacts": 0
+    },
+    "passed": true,
+    "stdout_pin": {
+      "bytes": 14774,
+      "path": "coordination/simple-consumption-natural4-instrumented-v4/frozen-registration-v1.stdout.log",
+      "root": "SPEECHRL_DATA_DIR",
+      "sha256": "3ead3ab98b7d9c1c4e2df0ff755961914ea2aa27119841ad7df9570f70596e3e"
+    }
+  },
+  "frozen_cli_checks": [
+    {
+      "exit": {
+        "at_utc": "2026-10-07T12:32:10.439402+00:00",
+        "exit_code": 0,
+        "generation_contacts": 0,
+        "scorer_contacts": 0,
+        "source_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+        "stdout_sha256": "68b12ec7f23b9889c44ad13d1c7f9a0141a3f54eaf9172ee2fa44e234f6ed704",
+        "tokenizer_contacts": 0
+      },
+      "exit_pin": {
+        "bytes": 298,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-seed-v4-frozen-v1.exit.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "c8f1bd772f0843b2428b7b22de3a0edca9149af52c9fde1797ea60720c582148"
+      },
+      "label": "simple-natural4-seed-v4",
+      "stdout_pin": {
+        "bytes": 3584,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-seed-v4-frozen-v1.stdout.log",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "68b12ec7f23b9889c44ad13d1c7f9a0141a3f54eaf9172ee2fa44e234f6ed704"
+      }
+    },
+    {
+      "exit": {
+        "at_utc": "2026-10-07T12:32:10.686569+00:00",
+        "exit_code": 0,
+        "generation_contacts": 0,
+        "scorer_contacts": 0,
+        "source_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+        "stdout_sha256": "5f9ac3b2aba38dcc081d0b7d06bb873c2ecf450b56f85ca13fad176057c55823",
+        "tokenizer_contacts": 0
+      },
+      "exit_pin": {
+        "bytes": 298,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-seed-aa-v4-frozen-v1.exit.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "e0be86cf114bdab2757bdea713f7b21f29442a413815410b7ce97ec88ec07019"
+      },
+      "label": "simple-natural4-seed-aa-v4",
+      "stdout_pin": {
+        "bytes": 3593,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-seed-aa-v4-frozen-v1.stdout.log",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "5f9ac3b2aba38dcc081d0b7d06bb873c2ecf450b56f85ca13fad176057c55823"
+      }
+    },
+    {
+      "exit": {
+        "at_utc": "2026-10-07T12:32:46.578099+00:00",
+        "exit_code": 0,
+        "generation_contacts": 0,
+        "scorer_contacts": 0,
+        "source_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+        "stdout_sha256": "a48c23483a30e8df40d5f0b2e8136c20613e8014f12042ea260e9e61ea2a2daa",
+        "tokenizer_contacts": 0
+      },
+      "exit_pin": {
+        "bytes": 298,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-review-off-v4-frozen-v1.exit.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "db345f6d76c6f28d220b5e810e8a1fc47caa47f4bf20709f902bfd86e16254bd"
+      },
+      "label": "simple-natural4-review-off-v4",
+      "stdout_pin": {
+        "bytes": 3602,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-review-off-v4-frozen-v1.stdout.log",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "a48c23483a30e8df40d5f0b2e8136c20613e8014f12042ea260e9e61ea2a2daa"
+      }
+    },
+    {
+      "exit": {
+        "at_utc": "2026-10-07T12:32:46.511299+00:00",
+        "exit_code": 0,
+        "generation_contacts": 0,
+        "scorer_contacts": 0,
+        "source_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+        "stdout_sha256": "1685a9c1be71b6d885fcbeeb64ee57d5b244df20cb484fde5360709755665a4f",
+        "tokenizer_contacts": 0
+      },
+      "exit_pin": {
+        "bytes": 298,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-solver-lookup-v4-frozen-v1.exit.json",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "4fbedd217d0b2e470ec1cb06b659ed79e9c2957c4c43e14ea22d29dab5d6fad0"
+      },
+      "label": "simple-natural4-solver-lookup-v4",
+      "stdout_pin": {
+        "bytes": 3611,
+        "path": "coordination/simple-consumption-natural4-instrumented-v4/simple-natural4-solver-lookup-v4-frozen-v1.stdout.log",
+        "root": "SPEECHRL_DATA_DIR",
+        "sha256": "1685a9c1be71b6d885fcbeeb64ee57d5b244df20cb484fde5360709755665a4f"
+      }
+    }
+  ],
+  "memory_diagnosis": {
+    "evidence": {
+      "bytes": 2597,
+      "path": "docs/readiness/2026-10-07-sealed-vector-streaming-memory-v1/actual-original-profile-bindings-v1.json",
+      "root": "repository",
+      "sha256": "ecb7f6c964e10809a342ed8c7d1308274c2d75c2b518fa960ebc4164755eeecd"
+    },
+    "finding": "Whole-file vector buffer inflation was demonstrated and prospectively corrected while complete tables/validation and exact retrieval output remain. The component profile does not explain or establish the cause of the approximately 20 GiB Windows memory loss.",
+    "focused_tests_passed": 72,
+    "original_component_load_seconds": 7.79886269569397,
+    "original_component_peak_rss_mib": 1960.8359375,
+    "original_component_windows_min_available_gib": 24.91585922241211,
+    "synthetic_parity_evidence": {
+      "bytes": 4482,
+      "path": "docs/readiness/2026-10-07-sealed-vector-streaming-memory-v1/synthetic-memory-profile-v1.json",
+      "root": "repository",
+      "sha256": "3a32771f2151349809ba9d0037d0d80ccf81ed41c80aaffbcfbd137a70d1c12a"
+    }
+  },
+  "monitor": {
+    "interval_minutes": 15,
+    "name": "slurp-instrumented-natural4-monitor",
+    "owner": "root",
+    "provenance": "Root launch assignment; no automation inspection or monitoring performed by this task.",
+    "status_at_launch": "ACTIVE, confirmed by root automation tool",
+    "terminal_rule": "Delete after verified terminal and no admitted child; no automatic retry or control mutation."
+  },
+  "official_score_jobs": 0,
+  "preparation": {
+    "all_four_outputs_equal": true,
+    "configured_and_runtime_order_separately_preserved": true,
+    "evidence": [
+      {
+        "bytes": 12508,
+        "path": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/prepared-natural4-drafts-v1.json",
+        "root": "repository",
+        "sha256": "a0b49d39476bcc0e87cb557dc58f362aea3eb03d78f62cb560a7171f4caa8b22"
+      },
+      {
+        "bytes": 12075,
+        "path": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/natural4-prospective-members-v1.json",
+        "root": "repository",
+        "sha256": "02ae9e1776d18b6fde8fd6d1e0d573fb22881914d5f9abbe13cc603dedf95f40"
+      },
+      {
+        "bytes": 13418,
+        "path": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/natural4-prospective-validation-v1.json",
+        "root": "repository",
+        "sha256": "fdd8aed080a832b1626ea10628daa2d26c2812a21880dcc4f12f23087583aa5c"
+      },
+      {
+        "bytes": 5781,
+        "path": "docs/readiness/2026-10-07-slurp-simple-consumption-natural4-instrumented-v4/natural4-engineering-queue-v1.json",
+        "root": "repository",
+        "sha256": "aa71189b5be9562a71ed923ca456929e9e9c54d66b47a6cf1a32dfc2331f9c30"
+      }
+    ],
+    "non_envelope_policy_equal": true
+  },
+  "preserved_refusals": {
+    "cross_clock_freshness": {
+      "at_utc": "2026-10-07T12:35:06.2709734Z",
+      "authority": "Root owner227",
+      "contacts": 0,
+      "disposition": "Invoke unchanged reviewed transition against the same still-fresh proof; retain the original assertion and all gates. Do not weaken freshness or change clocks.",
+      "failure": "Cross-host timestamp freshness assertion refused before transition-started receipt or any control mutation. No contact or dispatch.",
+      "observation": "Later unchanged receipt age was 29.791692 seconds, within the original 0 to 120 second gate. No started/finished receipt or archive exists; STOP remains present.",
+      "original_tool_chunk": "a7e97f",
+      "status": "decided",
+      "verification_chunk": "090567"
+    },
+    "interpretation": "Both earlier refusals occurred before producer/control mutation or contacts. The clean-source and original 0-to-120-second freshness gates remained unchanged; prospective platform correction and later fresh proof passed.",
+    "preparation_platform": {
+      "at_utc": "2026-10-07T12:18:47.2685479Z",
+      "authority": "owner227",
+      "correction": "Use a fresh Linux-native detached preparation worktree at identical reviewed source 140c464d21997a59e2f19d6f06822280062cb751; do not alter or bypass the clean-source check.",
+      "failure": "Windows-created worktree metadata contains a D:/ path, which Linux Git cannot interpret. Clean-source check refused before any producer write or model contact.",
+      "generation_contacts": 0,
+      "original_worktree_preserved": true,
+      "runtime_admission": false,
+      "schema": "saea-root-precontact-disposition-v1",
+      "scorer_contacts": 0,
+      "status": "decided",
+      "tokenizer_contacts": 0,
+      "tool_chunk": "ca65e5"
+    }
+  },
+  "read_and_scope": {
+    "failure_policy": "Stop, preserve and obtain named root disposition; no automatic retry.",
+    "human_boundary": "Return to the human before 8x400 or an equivalent split.",
+    "learning_export": false,
+    "natural_zero_lookup": "Valid; synthetic coverage stays separate.",
+    "official_scoring_authorized": false,
+    "quality_read": false,
+    "scientific_comparison": "HELD",
+    "structural_read": "UNSIGNED_PENDING_EXACT_COMPLETE_FAMILY_AND_ROOT_COUNTERSIGNATURE"
+  },
+  "resource_policy": {
+    "floor_gib": 4,
+    "stable_samples": 3,
+    "start_gib": 4,
+    "wait_seconds": 600
+  },
+  "root_frozen_binding": {
+    "admission_sha256": "65fd6313efa995247cb9f9a28c562801a8d41f9557c06eccf9b576f3ebbdaaa5",
+    "at_utc": "2026-10-07T12:32:24.3045586Z",
+    "conditions": "All saved frozen check exit receipts must be zero; fresh service identity and idle health; no live original owner/flight/scorer; original failed controls archived under exact incident disposition before one launch.",
+    "generation_contacts": 0,
+    "owner_decisions": [
+      227
+    ],
+    "queue_sha256": "aa71189b5be9562a71ed923ca456929e9e9c54d66b47a6cf1a32dfc2331f9c30",
+    "root_actor": "ChatGPT root",
+    "schema": "saea-root-frozen-launch-binding-v1",
+    "scorer_contacts": 0,
+    "status": "decided",
+    "tokenizer_contacts": 0,
+    "transition_producer_sha256": "ef62a8a5a050c0b46b816f698c9665bea48b497271255eacdad6d00646d6e90a",
+    "worker_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+    "worker_root": "/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-v4"
+  },
+  "saved_prelaunch_state": {
+    "STOP_present": false,
+    "at_epoch": 1791376586.8727083,
+    "flight_lock_present": false,
+    "generation_contacts": 0,
+    "server_ok": true,
+    "service_epoch": "2026-10-07T04:42:57.499274+00:00",
+    "service_pid": 723,
+    "slots_busy": 0,
+    "telemetry_age_seconds": 11.038109540939331
+  },
+  "schema": "saea-instrumented-natural4-launch-continuation-v1",
+  "source_base_commit": "d4ba0ec70ee7634eceaf8c2b824a653894dde0b3",
+  "status": "HISTORICAL_LAUNCH_SNAPSHOT_NOT_LIVE_HEALTH"
+}

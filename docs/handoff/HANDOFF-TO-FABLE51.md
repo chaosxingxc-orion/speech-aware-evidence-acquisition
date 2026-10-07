@@ -1,5 +1,54 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Instrumented natural four-row continuation launched (2026-10-07)
+
+Root admitted and launched the exact separately registered v4 continuation through
+`SAEA-Batch-Driver`. The saved dispatch request is timestamped
+12:36:25.8638844Z; root reports the saved actual driver epoch as 12:36:27Z. The
+clean frozen worker is `/home/chao/saea-worktrees/codex-simple-consumption-natural4-instrumented-v4`
+at `d4ba0ec70ee7634eceaf8c2b824a653894dde0b3`, with root admission SHA-256
+`65fd6313efa995247cb9f9a28c562801a8d41f9557c06eccf9b576f3ebbdaaa5` and queue
+SHA-256 `aa71189b5be9562a71ed923ca456929e9e9c54d66b47a6cf1a32dfc2331f9c30`.
+All four actual frozen CLI checks and the family registration check exited zero;
+the family gate passed four cells with zero blockers. These are saved launch
+facts, not fresh liveness, whole-family completion or memory-safety assertions.
+
+The same four members retain the registered four-row subset, policies, production
+order and exact prepared-output equality. Their derived ceilings are 124 generation
+contacts and 496 actual FIT endpoints, with zero official score jobs. The startup
+and running Windows floors remain 4 GiB, with a 600-second/three-sample startup wait;
+process memory diagnostics are enabled. Saved Windows free memory at dispatch was
+21.236687 GiB. Root confirmed `slurp-instrumented-natural4-monitor` active every
+15 minutes at launch and owns script monitoring, final disposition and deletion
+on verified terminal with no admitted child. This documentation task did not
+monitor the active run or read task outputs.
+
+Preserve the zero-contact clean-source platform refusal: Linux Git could not read
+a Windows-created worktree's `D:/` metadata, so preparation moved prospectively to
+a fresh Linux-native detached checkout at the identical reviewed source. Preserve
+the cross-clock freshness refusal before transition-started/control mutation; a
+later unchanged observation was 29.791692 seconds old and passed the original
+0-to-120-second gate. Neither source/freshness gate was weakened. Root's completed
+transition archived exact failed-v3 controls under
+`/home/chao/batch-archive-20261007-natural4-instrumented-v4`, preserved the original
+STOP, lease and token, and installed only the admitted v4 queue. No old attempt
+output changed, cache cleared or service restarted.
+
+Measured original whole-file vector decoding peaked at 1,960.84 MiB for the
+504 MiB source. The bounded streaming correction preserved full-table float values
+and all checks, with 72 focused tests and independent Astra review passing. This
+component profile does not establish the cause of the earlier approximately
+20 GiB Windows loss. Keep process/guest/host attribution separate from that
+unresolved incident. See [engineering memory evidence](../readiness/2026-10-07-sealed-vector-streaming-memory-v1/README.md).
+
+Structural READ remains unsigned until the exact whole-family proof completes and
+root countersigns it; no scientific score, feedback or learner export is authorized.
+The same20 comparison remains held. Natural zero-lookup is valid. Any new failure
+stops and requires named root disposition; no automatic retry. GPT-6.1 Sol owns
+engineering/preparation/tests, GPT-6 Astra/Ultra owns optimization/planning/review,
+and root owns admission, launch and monitoring. Return to the human before 8x400
+or an equivalent split. See [saved v4 launch evidence](../receipts/continuation/2026-10-07-simple-consumption-natural4-instrumented-v4-launch.json).
+
 ## Natural four-row proof stopped at the first member's running memory floor (2026-10-07)
 
 The original seed guard finished `resource-stop`, exit 125, at 11:26:28.469447Z. Its final valid Windows free-memory observation was 1.744949 GiB against the 4 GiB running floor; preceding observations were 6.339710 and 4.606812 GiB. Observer sequence 13 has no reader error or refusal reason. The guard sent SIGTERM and then SIGKILL to its owned process group; the worker returned -15. This establishes a running memory-floor breach, not an observer failure. The guard does not establish the source of memory growth or actual contact count.
@@ -223,7 +272,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-07T11:30:05.823695+00:00
+Last refreshed: 2026-10-07T12:44:29.755789+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
