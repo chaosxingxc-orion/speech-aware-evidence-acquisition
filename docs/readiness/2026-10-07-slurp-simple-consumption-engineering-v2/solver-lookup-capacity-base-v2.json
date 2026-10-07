@@ -1,0 +1,69 @@
+{
+  "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-v2-capacity-fit-v1",
+  "baseline": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-v2",
+  "config_hash": "c40de5e37edb33d6800bf879129ee71df3eb045fb241f04cf0ffc08d0423c9c2",
+  "endpoint_budget": {
+    "captured_requests": 22,
+    "contact_cap": 241,
+    "graph_rows": 4,
+    "padding_tokenizer_endpoints": 60,
+    "profile": "review-off-v1",
+    "ranking_tokenizer_endpoints": 114,
+    "request_measurement_endpoints": 66,
+    "supply_modes": 2
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-engineering-v2-capacity-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 241,
+    "planned_speech_audio_seconds": 1500,
+    "protocol_hash": "1327659d02c522ee165954f621686b5da9887444e914ca1effb6534e4bf60c97",
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "d54efda596d18e8aa033fef95258ae1bb415a3342eacea1fbf12e0f633d9e011",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-capacity-v2",
+  "graph": "slurp-native-stage3-simple-consumption-solver-lookup-engineering-graph-v2",
+  "graph_config_hash": "ee2454cfcbe207d8b51ccfac60d53c2b9b14673a4119c0dba237ce59192e518e",
+  "kind": "capacity",
+  "member_id": "solver-lookup",
+  "native_graph_capacity_profile": "review-off-v1",
+  "no_model_tokenizer_scorer_contacts": true,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/simple-consumption-architecture-v1/policies/e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51.json",
+      "sha256": "496bec5e028d7dc502d7d6ed66767d60a9cadd440d17d4af5e5e778880ea4497"
+    },
+    "bundle_id": "e484c985f1f8b444a4a5565e0e27e958a0cfee5a9c11eda9b12c0a9af8352a51",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "a5b4178e50bbfd523d394959bdcc18e385fe79e5013819b5ee5f41c7a2445c88"
+  },
+  "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-ENGINEERING-V2-CAPACITY-FIT-V1",
+  "runtime_admission": false,
+  "source_blueprint": {
+    "relpath": "configs/experiment/slurp-native-stage3-context-initial4-coverage-ledger-capacity-v1.json",
+    "sha256": "9b09914aef6b18bf9c6d9b2803a3917439a6ef9217effa475ca870151517fead"
+  },
+  "source_policy": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-solver-lookup-policy-v2.json",
+    "sha256": "2e4c3a6e6d31a6760cf268852cdac05b93f2617b2db42bd892c08b974c0b2742"
+  },
+  "source_value_counts": {
+    "intent_value_count": 60,
+    "slot_value_count": 54
+  },
+  "status": "HELD",
+  "unchanged_source_selection": true,
+  "warm_verified": true
+}

@@ -1,5 +1,11 @@
 # Evidence-led simple consumption direction
 
+Current continuation: [V2 engineering preparation](../2026-10-07-slurp-simple-consumption-engineering-v2/README.md)
+supersedes only the two dormant Reviewer-format policy fields and population pins.
+All four graph/capacity/natural-four-row bases are prepared with zero contacts.
+Actual capacity, natural generation and the complete comparison remain HELD.
+Preserve original V1 files and interrupted preparation evidence.
+
 Status: shared implementation integrated and four policy fragments verified; actual
 capacity, structural proof and GPU comparison remain HELD. No new benefit claim.
 Owner direction: use GPT-6 Astra / Ultra for analysis, evaluation, summarization,

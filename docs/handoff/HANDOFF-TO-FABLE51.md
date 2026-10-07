@@ -1,5 +1,48 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+Last refreshed: 2026-10-07T03:29:47Z
+
+## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
+
+All four configured members now have separate graph, capacity and natural four-row
+cells prepared and warm-verified against the unchanged fixed-source selections.
+The [V2 package](../readiness/2026-10-07-slurp-simple-consumption-engineering-v2/README.md)
+binds population SHA256 f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f.
+Seed/A/A policy bytes remain unchanged; the two off policy successors clear only the
+dormant Reviewer output format. Role texts, knowledge, audio, packets, queries, votes,
+requested T0/seed, active interfaces and final Omni authority remain fixed.
+
+The original offline preparation correctly stopped before contact on a compiler
+format mismatch. Preserve every original V1 partial config, artifact and log; an
+external byte-identical config archive is also pinned. The reviewed compiler fix is
+integrated at efa8e9ff0, with168 focused and169 broad tests passing (overlapping
+scopes),91percent module statement and84percent branch coverage. Strict material
+and active-role validation stay enabled. This was a preparation defect, not evidence
+of task quality or model incapability.
+
+The review-off capacity extension is integrated at42c1c2b9b after independent
+Astra/Ultra review,49 independently rerun tests and historical default parity checks.
+Budgets derive from54 slot and60 intent values:299/299/157/241 endpoints,996 total.
+Separate four-row generation ceilings are52/52/8/12 (124 total) with496 actual-request
+FIT endpoints. These are ceilings; zero actual tokenizer/model/scorer contacts were
+made. No new GPU job or heartbeat was created.
+
+The architecture qualifier is integrated throughd150e5d71 after fixing an independent
+review finding: valid four-slot captures can interleave. Register graph_sample_ids
+from the same pinned graph config, validate per-sample branch counts and preserve
+global capture indexes. Never infer branch identity from completion order. The
+implementation reports345 tests; root reran155 integrated focused tests successfully.
+Historical qualifiers remain unchanged and the new helper returns no runtime admission.
+
+Every new cell remains HELD. Next perform exact capacity exposure/source registration,
+freeze and source/live admission, then actual nongenerative capacity and separately
+admitted natural four-row structural generation. Synthetic branch proof is not natural
+model tool-use evidence. The subsequent four-member same20 comparison needs80 complete
+trajectories and its exact complete-family READ. No benefit, tool-use competence or
+learning improvement has been established by this preparation. Keep Astra/Ultra for
+analysis/review/future templates and retain the human-before8x400 boundary.
+See [preserved failure, preparation and review evidence](../receipts/continuation/2026-10-07-simple-consumption-engineering-prepared-v2.json).
+
 ## Simple-consumption implementation integrated; exact policy preparation complete (2026-10-07)
 
 Astra/Ultra independently accepted the shared default-OFF Solver lookup/compiler and

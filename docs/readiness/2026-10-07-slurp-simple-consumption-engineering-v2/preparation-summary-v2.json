@@ -1,0 +1,83 @@
+{
+  "contacts": 0,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "members": [
+    {
+      "capacity_base": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/seed-capacity-base-v2.json",
+        "sha256": "d35249b90b32f16ad93175587396e3c81640bf1aea69b9ecae13112a988ffa91"
+      },
+      "capacity_endpoint_cap": 299,
+      "member_id": "seed",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "structural_actual_request_fit_cap": 208,
+      "structural_bases": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/seed-structural-bases-v2.json",
+        "sha256": "5feaf79b6fab8784f338a56a65b4cbb081c12d19b7145f9dc779010ee5fe4ad9"
+      },
+      "structural_generation_cap": 52
+    },
+    {
+      "capacity_base": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/seed-aa-capacity-base-v2.json",
+        "sha256": "aa1856bcf377db8ed61963d9b542fd95d0e9897389e204696ab8045903b83b56"
+      },
+      "capacity_endpoint_cap": 299,
+      "member_id": "seed-aa",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-aa-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "structural_actual_request_fit_cap": 208,
+      "structural_bases": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/seed-aa-structural-bases-v2.json",
+        "sha256": "8d6db39262a8621ccfa3f0a8c5b8fd1ca6fd7e527f64ee9c07337c54358d8275"
+      },
+      "structural_generation_cap": 52
+    },
+    {
+      "capacity_base": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/review-off-capacity-base-v2.json",
+        "sha256": "176ea2312881a9a3518ecd533016cf0f8b59c035061165b0c50379d52b6da09a"
+      },
+      "capacity_endpoint_cap": 157,
+      "member_id": "review-off",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-review-off-policy-v2.json",
+        "sha256": "55408431fc08e37231c179bd1c033377977a83654ca04dd3982a07b74f7579d7"
+      },
+      "structural_actual_request_fit_cap": 32,
+      "structural_bases": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/review-off-structural-bases-v2.json",
+        "sha256": "117870526d0f2ffcb8365a16c7c883c96b8d35b0ac832b25304d0d8ba84db58c"
+      },
+      "structural_generation_cap": 8
+    },
+    {
+      "capacity_base": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/solver-lookup-capacity-base-v2.json",
+        "sha256": "af6de7acc34cf0ca17cf28b3572eecf25390942dce6b161b530329bc1235a0ba"
+      },
+      "capacity_endpoint_cap": 241,
+      "member_id": "solver-lookup",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-solver-lookup-policy-v2.json",
+        "sha256": "2e4c3a6e6d31a6760cf268852cdac05b93f2617b2db42bd892c08b974c0b2742"
+      },
+      "structural_actual_request_fit_cap": 48,
+      "structural_bases": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/solver-lookup-structural-bases-v2.json",
+        "sha256": "613fb006be0ce68e7c6b781c1222550be3258b01dcb9c995b954cfb61d59cac8"
+      },
+      "structural_generation_cap": 12
+    }
+  ],
+  "runtime_admission": false,
+  "status": "ALL_CONFIGURED_MEMBERS_PREPARED_HELD"
+}

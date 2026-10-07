@@ -1,0 +1,220 @@
+{
+  "at_utc": "2026-10-07T03:29:47Z",
+  "capacity_integrated_commit": "42c1c2b9b",
+  "capacity_preparation_exit": {
+    "relpath": "coordination/simple-consumption-architecture-preparation-v1/capacity-bases-exit-v2.json",
+    "sha256": "a57b897b5c41817d1cd1615a979e4d2b904dd820ca28384768cfe567ed9a5bdb"
+  },
+  "capacity_preparation_source": {
+    "relpath": "coordination/simple-consumption-architecture-preparation-v1/prepare-capacity-bases-v2.py",
+    "sha256": "70ef0a181e499193419d0db3604dcd01456b95b5ef7459285521507ea341af96"
+  },
+  "capacity_source_commit": "fbd8b94ac1d1316de5334bf146eafe788d160258",
+  "capacity_tokenizer_endpoint_cap": 996,
+  "compiler_integrated_commit": "efa8e9ff0",
+  "compiler_source_commit": "b785eafd8684dee104b6200dd106996d665005d2",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+    "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+  },
+  "independent_review": {
+    "capacity": "Accepted code, actual prepared-policy fixtures, synthetic guards and historical default parity. Not a live capacity qualification.",
+    "compiler": "Accepted scoped dormant-contract correction.",
+    "model": "gpt-6-astra",
+    "population": "Accepted exact dormant-only policy supersession, pins, role bytes, preserved roster and budget arithmetic.",
+    "reasoning_effort": "ultra"
+  },
+  "learner_export": false,
+  "members": [
+    {
+      "capacity_base": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/seed-capacity-base-v2.json",
+        "sha256": "d35249b90b32f16ad93175587396e3c81640bf1aea69b9ecae13112a988ffa91"
+      },
+      "capacity_endpoint_cap": 299,
+      "member_id": "seed",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "structural_actual_request_fit_cap": 208,
+      "structural_bases": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/seed-structural-bases-v2.json",
+        "sha256": "5feaf79b6fab8784f338a56a65b4cbb081c12d19b7145f9dc779010ee5fe4ad9"
+      },
+      "structural_generation_cap": 52
+    },
+    {
+      "capacity_base": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/seed-aa-capacity-base-v2.json",
+        "sha256": "aa1856bcf377db8ed61963d9b542fd95d0e9897389e204696ab8045903b83b56"
+      },
+      "capacity_endpoint_cap": 299,
+      "member_id": "seed-aa",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-aa-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "structural_actual_request_fit_cap": 208,
+      "structural_bases": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/seed-aa-structural-bases-v2.json",
+        "sha256": "8d6db39262a8621ccfa3f0a8c5b8fd1ca6fd7e527f64ee9c07337c54358d8275"
+      },
+      "structural_generation_cap": 52
+    },
+    {
+      "capacity_base": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/review-off-capacity-base-v2.json",
+        "sha256": "176ea2312881a9a3518ecd533016cf0f8b59c035061165b0c50379d52b6da09a"
+      },
+      "capacity_endpoint_cap": 157,
+      "member_id": "review-off",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-review-off-policy-v2.json",
+        "sha256": "55408431fc08e37231c179bd1c033377977a83654ca04dd3982a07b74f7579d7"
+      },
+      "structural_actual_request_fit_cap": 32,
+      "structural_bases": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/review-off-structural-bases-v2.json",
+        "sha256": "117870526d0f2ffcb8365a16c7c883c96b8d35b0ac832b25304d0d8ba84db58c"
+      },
+      "structural_generation_cap": 8
+    },
+    {
+      "capacity_base": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/solver-lookup-capacity-base-v2.json",
+        "sha256": "af6de7acc34cf0ca17cf28b3572eecf25390942dce6b161b530329bc1235a0ba"
+      },
+      "capacity_endpoint_cap": 241,
+      "member_id": "solver-lookup",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-solver-lookup-policy-v2.json",
+        "sha256": "2e4c3a6e6d31a6760cf268852cdac05b93f2617b2db42bd892c08b974c0b2742"
+      },
+      "structural_actual_request_fit_cap": 48,
+      "structural_bases": {
+        "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-engineering-v2/solver-lookup-structural-bases-v2.json",
+        "sha256": "613fb006be0ce68e7c6b781c1222550be3258b01dcb9c995b954cfb61d59cac8"
+      },
+      "structural_generation_cap": 12
+    }
+  ],
+  "model_tokenizer_scorer_contacts_added": 0,
+  "new_gpu_monitor": false,
+  "no_semantic_proposals_spent": true,
+  "original_failure_disposition": {
+    "relpath": "coordination/simple-consumption-architecture-preparation-v1/structural-bases-failure-disposition-v1.json",
+    "sha256": "e63c64e677cf357ab8d617c32d1bff8f00bc4b261df54a9a36c6beddd7da7d41"
+  },
+  "preserved_original_partial_configurations": [
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/baseline/slurp-native-stage3-simple-consumption-review-off-engineering-graph-v1.json",
+      "sha256": "5e04f22a00abb6735663dcba178de2884b580242b6b66e37946e05f9a9762e04"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/baseline/slurp-native-stage3-simple-consumption-seed-aa-engineering-graph-v1.json",
+      "sha256": "db43a8c8bf4f46cefefee7ab4fe126e4cb63b08114374b0d12bc4577530d6e7e"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/baseline/slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v1.json",
+      "sha256": "847775fd960754364157e8f40cc17c0be2cac1d082fcd0c5ddf9ca64f9b052c8"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/baseline/slurp-native-stage3-simple-consumption-seed-engineering-graph-v1.json",
+      "sha256": "7fa20c4100cc13a16895c9cc7697e555721da3bcfb7b1faf90f5d367e792cc6e"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/baseline/slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v1.json",
+      "sha256": "339b5ad09b953d945e05a6327e74257dec0775e1f93c62b7560648d837f1985a"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/experiment/slurp-native-stage3-simple-consumption-review-off-engineering-graph-v1.json",
+      "sha256": "5aa289378820f6e49023b980b82eaa139fb6205d236a3de76134a4d80adf0f72"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/experiment/slurp-native-stage3-simple-consumption-seed-aa-engineering-graph-v1.json",
+      "sha256": "8678df1234f5c6d82e67501c1528c0a4d7da85d45b3f071b0cf0a4a3cb899760"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/experiment/slurp-native-stage3-simple-consumption-seed-aa-engineering-smoke-4-v1.json",
+      "sha256": "e3ddfb14e91521ee470e5ef063d4c4a09722621b0619f8097c5f7731e29c45e7"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/experiment/slurp-native-stage3-simple-consumption-seed-engineering-graph-v1.json",
+      "sha256": "c4c9c02edd090c0779daf5a43e29d74a6b7bfa3f070d0ad9988e3e4d8ea6ae2d"
+    },
+    {
+      "relpath": "coordination/simple-consumption-architecture-preparation-v1/preserved-structural-v1/configs/experiment/slurp-native-stage3-simple-consumption-seed-engineering-smoke-4-v1.json",
+      "sha256": "b910cd38a6354b937ab9c23a4986a3de498036d812e47f91b39e0adf1ad26909"
+    }
+  ],
+  "qualified_interface_integration": {
+    "author_and_independent_reviewer": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "ultra"
+    },
+    "branches_covered": 44,
+    "branches_total": 44,
+    "caller_obligation": "Independently bind the registered ordered graph_sample_ids and graph_config_hashes to the actual same graph configuration before capacity dispatch and qualification.",
+    "correction": "Require graph_sample_ids from the pinned graph configuration and validate per-sample branch counts independently of global interleaving. Keep exact capture indexes and final custody.",
+    "initial_review_finding": "Contiguous capture grouping and first-appearance ordering would reject legitimate concurrent four-slot receipts.",
+    "integrated_commits": [
+      "f2f206e9a",
+      "d150e5d71"
+    ],
+    "root_integrated_focused_tests": 155,
+    "runtime_admission": false,
+    "source_commits": [
+      "c3f3b4ba786fdc84563e0f7f54db94faceceb502",
+      "302715f2c484a00cb972669b63e28ab094f47ac7"
+    ],
+    "statements_covered": 280,
+    "statements_total": 281,
+    "tests_reported": 345
+  },
+  "remaining": [
+    "Exact capacity exposure and source registration",
+    "Clean frozen source check and fresh live admission",
+    "Actual nongenerative tokenizer capacity",
+    "Separately admitted natural four-row structural proof",
+    "Exact complete four-member N20 comparison and root READ"
+  ],
+  "runtime_admission": false,
+  "schema": "saea-simple-consumption-engineering-prepared-v2",
+  "scientific_claim": "No new task-quality, tool-use competence or learning improvement established.",
+  "separate_structural_actual_request_fit_cap": 496,
+  "separate_structural_generation_cap": 124,
+  "status": "ALL_CONFIGURED_MEMBERS_PREPARED_HELD",
+  "structural_preparation_exit": {
+    "relpath": "coordination/simple-consumption-architecture-preparation-v1/structural-bases-exit-v2.json",
+    "sha256": "cea892d8b0d4fa752f90363ee8ec319c081b414a785bd8315e0d9623ee1c7a9b"
+  },
+  "structural_preparation_source": {
+    "relpath": "coordination/simple-consumption-architecture-preparation-v1/prepare-structural-bases-v2.py",
+    "sha256": "22057ccb6637da5fd5256f2797ba331b58470abb6985d52ac9bd546210e43783"
+  },
+  "validation": {
+    "capacity_changed_branches": {
+      "covered": 67,
+      "total": 82
+    },
+    "capacity_changed_statements": {
+      "covered": 155,
+      "total": 163
+    },
+    "capacity_implementation_unique_tests": 81,
+    "capacity_independent_tests": 49,
+    "compiler_broad_tests": 169,
+    "compiler_coverage_branches": {
+      "covered": 252,
+      "total": 300
+    },
+    "compiler_coverage_statements": {
+      "covered": 588,
+      "total": 646
+    },
+    "compiler_focused_tests": 168,
+    "compiler_test_environment_correction": "One historical Git proof initially failed because the Windows detached worktree gitdir was not translated into WSL. The same test passed with explicit correct GIT_DIR/GIT_WORK_TREE, without changing the test or source.",
+    "count_note": "Scopes overlap; do not sum these into unique test counts."
+  }
+}
