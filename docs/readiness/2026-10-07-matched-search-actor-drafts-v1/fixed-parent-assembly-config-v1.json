@@ -1,0 +1,78 @@
+{
+  "batch_id": "algorithm-contrast-n20-fixed-parent-update1-v1",
+  "algorithm": "fixed-parent-aggregate-v1",
+  "iteration": 1,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-fixed-parent-v1.json",
+    "sha256": "a0d9b0fc549681788ada084284f0f9e24a4571640640476aaeb5e3544d15c4cd"
+  },
+  "slots": [
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-01",
+      "mode": "fixed",
+      "parent_bundle_ids": [
+        "0136f4381cf70905ad70fb648b639da884df9c8e0fbde75786d1b3efdf84898d"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-02",
+      "mode": "fixed",
+      "parent_bundle_ids": [
+        "958345cb641172ffc5b52ca01cc1dcf61d678f44a0e7a690f889071a732f2a99"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-03",
+      "mode": "fixed",
+      "parent_bundle_ids": [
+        "a1390d6298351f2ba374ff0512f855efd5746ce8fdd51f20e2b42c2112e56568"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-04",
+      "mode": "fixed",
+      "parent_bundle_ids": [
+        "a9b61b9a7c37b8610a497aebf2ef9996543f9308726b93d3438481e1d4c96709"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-05",
+      "mode": "fixed",
+      "parent_bundle_ids": [
+        "b17788c067a7bff3ba7753215e72af1e4b303e7c86aeb712105cb3137394c1b6"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-06",
+      "mode": "fixed",
+      "parent_bundle_ids": [
+        "98327a8b6b932e40021ad3e0175e79e8844c529b2464f888116277752705228c"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-07",
+      "mode": "fixed",
+      "parent_bundle_ids": [
+        "ce29134403c3214d9a8875d07a03cb00f68b94cd32b33ab8bcd147a8f9580ddd"
+      ]
+    },
+    {
+      "cohort_id": "comparison",
+      "candidate_id": "branch-08",
+      "mode": "fixed",
+      "parent_bundle_ids": [
+        "43e117be0bec8bb84c5065421dea92cf5e91a8a7f250ae73f8eac3ce52462c2d"
+      ]
+    }
+  ],
+  "parent_plan_sha256": "95bed974ab4b930ad2ed4309389828199a05ebb5fb7811ffcb887ca4cc84fb9c",
+  "instructions": "# Common aggregate template optimizer instructions\n\nOptimize complete node templates and their implemented context assembly for a frozen\nspeech task system. Treat current knowledge supply as fixed. Use the complete editable\nparent templates and every supplied aggregate observation; do not request concrete\nexamples, knowledge contents, source inventories, labels or raw trajectories. Do not\nspend calls summarizing individual samples. Each feedback record describes one whole\nsystem evaluated over its declared cohort, not one sample or one node rollout.\n\nPrioritize official business quality, intent and reliable completion. Use intermediate\nstatistics to propose testable explanations: support visibility, review detection and\nfalse alarms, repair and damage, raw model revision and postprocessing transitions.\nRespect denominators, missingness and uncertainty. An alarm is not necessarily a\ncorrect criticism; evidence visibility is not proof of semantic consumption. Do not\nassign causal node rewards from a terminal score. Consider measured cost after quality\nand reliability, including first-sample and non-first-sample latency separately.\n\nProduce exactly one ordered proposal for each configured slot. Use only its assigned\nparent identities and declared mode. In fixed/local slots improve the assigned system.\nIn recombination slots form a coherent joint policy from the two assigned parents;\navoid incompatible role contracts. In exploration slots test a distinct plausible\nconsumption behavior instead of a cosmetic paraphrase. All modes may change several\neditable node texts jointly. Preserve independent role contexts, legal output/tool\ncontracts and final Omni answer authority. Keep temperature, seed, knowledge, data,\nretrieval, execution, tools and scoring fixed.\n\nPropose changes in decision behavior: evidence-preserving solutions, selective review,\nrevision restraint, or explicit handoff ownership. Explain the expected tradeoff and\nwhich aggregate evidence supports or contradicts the hypothesis. Do not assert that\nnovel wording, more alarms, longer reasoning or a lower latency establishes benefit.\nUse only the implemented role_text, context_layout and node_context fields; include\nfull replacement text for each changed role. Do not invent new assembly options.\n\nUse the exact supplied response contract and reference aggregate record IDs. Empty\nchanges are a valid no-change proposal and consume the slot. Invalid, duplicate and\nno-change proposals are retained without replacement. Historical rejected systems are\nevidence, not permission to choose an unassigned parent. Keep source cohorts distinct;\ndo not combine unmatched scores into a global frontier. Small-panel observations are\noptimization evidence, not independent validation or proof of generalization.\n",
+  "max_actor_input_bytes": 2097152
+}

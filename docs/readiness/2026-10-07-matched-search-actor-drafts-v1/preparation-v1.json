@@ -1,0 +1,64 @@
+{
+  "schema": "saea-matched-search-actor-preparation-v1",
+  "status": "DRAFT_ASSEMBLY_ONLY_NO_CONTACT",
+  "arms": [
+    {
+      "mode": "fixed-parent",
+      "configuration": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-actor-drafts-v1/fixed-parent-assembly-config-v1.json",
+        "sha256": "dc2b3be3804b166d31332ccb9d9d70878b70eece285c4ad97f5d84d1f02117ce"
+      },
+      "population_budget": {
+        "candidate_trajectories": 160,
+        "control_trajectories": 40,
+        "family_trajectories": 200,
+        "generation_contacts_cap": 2600,
+        "fit_endpoints_cap": 10400
+      },
+      "unique_parents": 8,
+      "configured_slots": 8
+    },
+    {
+      "mode": "multi-parent",
+      "configuration": {
+        "relpath": "docs/readiness/2026-10-07-matched-search-actor-drafts-v1/multi-parent-assembly-config-v1.json",
+        "sha256": "2e44d29f7055a8915e1a6cbb4b71fbd38a7bf29a5763c2569b66aa8ec563d028"
+      },
+      "population_budget": {
+        "candidate_trajectories": 160,
+        "control_trajectories": 40,
+        "family_trajectories": 200,
+        "generation_contacts_cap": 2600,
+        "fit_endpoints_cap": 10400
+      },
+      "unique_parents": 4,
+      "configured_slots": 8
+    }
+  ],
+  "common_instructions": {
+    "relpath": "docs/readiness/2026-10-06-system-context-algorithm-contrast-n20-v1/common-proposer-instructions-v1.md",
+    "sha256": "39e116536562ee854ec75dd16052d395085170b2a059687a8dcdfe4771d1e9a1"
+  },
+  "max_actor_input_bytes_per_arm": 2097152,
+  "max_actor_output_bytes_per_arm": 262144,
+  "soft_visible_input_token_target_per_arm": 90000,
+  "max_tool_output_tokens_per_read": 6000,
+  "exact_tokenizer_available": false,
+  "provider_enforced_output_cap": false,
+  "measured_provider_usage": "Retain actual available values and null for unknown values; do not claim matched total compute.",
+  "isolation": "One fresh fork-none GPT-6.1 Sol/high actor per arm, explicit capsule allowlist only; no sibling/root chat or raw-source access.",
+  "complete_actor_fit": "PENDING_ACTUAL_AGGREGATE_COMPLETION_AND_ASSEMBLY",
+  "parent_plan_completion": {
+    "relpath": "docs/receipts/continuation/2026-10-06-multiparent-proposal-plan-complete.json",
+    "sha256": "aedc73ae394a520e3e13f22f606d3226c210b90fc9899b9baeb4131fe4cd979e"
+  },
+  "history_completion": {
+    "relpath": "docs/receipts/continuation/2026-10-07-update6-rejected-history-complete.json",
+    "sha256": "72fe356b7c6d962a443efd097d2c7034c46a290d9c3264b850507f8da1921dda"
+  },
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "proposal_slots_reserved": 0,
+  "runtime_admission": false,
+  "learner_exported": false
+}

@@ -1,0 +1,80 @@
+{
+  "batch_id": "algorithm-contrast-n20-multi-parent-update1-v1",
+  "algorithm": "bounded-multiparent-aggregate-v1",
+  "iteration": 1,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-system-context-algorithm-contrast-n20-multi-parent-v1.json",
+    "sha256": "83b95eb877405084215c0dc83e649bdd34c5150bffa99e3798a22b99849d7c33"
+  },
+  "slots": [
+    {
+      "candidate_id": "branch-01",
+      "cohort_id": "comparison",
+      "mode": "local",
+      "parent_bundle_ids": [
+        "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572"
+      ]
+    },
+    {
+      "candidate_id": "branch-02",
+      "cohort_id": "comparison",
+      "mode": "local",
+      "parent_bundle_ids": [
+        "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef"
+      ]
+    },
+    {
+      "candidate_id": "branch-03",
+      "cohort_id": "comparison",
+      "mode": "local",
+      "parent_bundle_ids": [
+        "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d"
+      ]
+    },
+    {
+      "candidate_id": "branch-04",
+      "cohort_id": "comparison",
+      "mode": "recombine",
+      "parent_bundle_ids": [
+        "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef"
+      ]
+    },
+    {
+      "candidate_id": "branch-05",
+      "cohort_id": "comparison",
+      "mode": "recombine",
+      "parent_bundle_ids": [
+        "48be2a6c8667a8141fb6811d4252abc0dcf3b32910ddbf78c9346c5c14de67ef",
+        "303941e8f4f3e0765db3825b55139bf6279b3b48ae4bac276295dbd17de4b06d"
+      ]
+    },
+    {
+      "candidate_id": "branch-06",
+      "cohort_id": "comparison",
+      "mode": "explore",
+      "parent_bundle_ids": [
+        "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d"
+      ]
+    },
+    {
+      "candidate_id": "branch-07",
+      "cohort_id": "comparison",
+      "mode": "explore",
+      "parent_bundle_ids": [
+        "18dd953c7148ad1cb5fe594056bb30f2404325cecd818139dd32bae21aa7da7d"
+      ]
+    },
+    {
+      "candidate_id": "branch-08",
+      "cohort_id": "comparison",
+      "mode": "local",
+      "parent_bundle_ids": [
+        "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572"
+      ]
+    }
+  ],
+  "parent_plan_sha256": "c8f9c32b045858591cade99a98e7c885356830dc14bf179d9d445c63629a4a4d",
+  "instructions": "# Common aggregate template optimizer instructions\n\nOptimize complete node templates and their implemented context assembly for a frozen\nspeech task system. Treat current knowledge supply as fixed. Use the complete editable\nparent templates and every supplied aggregate observation; do not request concrete\nexamples, knowledge contents, source inventories, labels or raw trajectories. Do not\nspend calls summarizing individual samples. Each feedback record describes one whole\nsystem evaluated over its declared cohort, not one sample or one node rollout.\n\nPrioritize official business quality, intent and reliable completion. Use intermediate\nstatistics to propose testable explanations: support visibility, review detection and\nfalse alarms, repair and damage, raw model revision and postprocessing transitions.\nRespect denominators, missingness and uncertainty. An alarm is not necessarily a\ncorrect criticism; evidence visibility is not proof of semantic consumption. Do not\nassign causal node rewards from a terminal score. Consider measured cost after quality\nand reliability, including first-sample and non-first-sample latency separately.\n\nProduce exactly one ordered proposal for each configured slot. Use only its assigned\nparent identities and declared mode. In fixed/local slots improve the assigned system.\nIn recombination slots form a coherent joint policy from the two assigned parents;\navoid incompatible role contracts. In exploration slots test a distinct plausible\nconsumption behavior instead of a cosmetic paraphrase. All modes may change several\neditable node texts jointly. Preserve independent role contexts, legal output/tool\ncontracts and final Omni answer authority. Keep temperature, seed, knowledge, data,\nretrieval, execution, tools and scoring fixed.\n\nPropose changes in decision behavior: evidence-preserving solutions, selective review,\nrevision restraint, or explicit handoff ownership. Explain the expected tradeoff and\nwhich aggregate evidence supports or contradicts the hypothesis. Do not assert that\nnovel wording, more alarms, longer reasoning or a lower latency establishes benefit.\nUse only the implemented role_text, context_layout and node_context fields; include\nfull replacement text for each changed role. Do not invent new assembly options.\n\nUse the exact supplied response contract and reference aggregate record IDs. Empty\nchanges are a valid no-change proposal and consume the slot. Invalid, duplicate and\nno-change proposals are retained without replacement. Historical rejected systems are\nevidence, not permission to choose an unassigned parent. Keep source cohorts distinct;\ndo not combine unmatched scores into a global frontier. Small-panel observations are\noptimization evidence, not independent validation or proof of generalization.\n",
+  "max_actor_input_bytes": 2097152
+}

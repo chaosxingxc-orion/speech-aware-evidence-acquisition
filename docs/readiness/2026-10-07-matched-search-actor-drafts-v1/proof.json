@@ -1,0 +1,31 @@
+{
+  "schema": "saea-model-free-actor-configuration-proof-v1",
+  "at_utc": "2026-10-07T00:35:47.761017+00:00",
+  "actual_configured_parent_checks": "PASS",
+  "arms": [
+    {
+      "mode": "fixed-parent",
+      "slots": 8,
+      "unique_parent_bundles": 8
+    },
+    {
+      "mode": "multi-parent",
+      "slots": 8,
+      "unique_parent_bundles": 4
+    }
+  ],
+  "checks": [
+    "Population config hash and ordered membership",
+    "History output file hash and retained parent identities",
+    "Qualified multi-parent record file hash, record identity and plan identity",
+    "All actual parent policies load from shared archive",
+    "Shared frozen-substrate compatibility",
+    "Each proposed slot validates with the existing proposal type"
+  ],
+  "scope": "Assembly configurations only; actual actor inputs and complete source requalification remain pending.",
+  "model_contacts": 0,
+  "scorer_contacts": 0,
+  "proposal_slots_reserved": 0,
+  "runtime_admission": false,
+  "learner_exported": false
+}

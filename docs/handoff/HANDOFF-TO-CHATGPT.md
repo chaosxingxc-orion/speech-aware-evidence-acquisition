@@ -1,6 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
 
+## Matched actor configurations verified against real parents (2026-10-07)
+
+Both [assembly configurations](../readiness/2026-10-07-matched-search-actor-drafts-v1/README.md)
+are prepared. Fixed-parent has eight configured positions with eight retained
+Update2 parents; multi-parent has eight positions across four source-qualified
+parents. Existing proposal and substrate validators pass on actual archive policies.
+Both configurations bind the same common instructions,2MiB input bound,256KiB
+output bound and soft90000-token target. Counts derive from pinned configs; historical
+K16 records remain intact. Actual aggregate serialization/FIT is not yet established.
+No real actor input, proposal reservation, model/scorer contact or GPU launch.
+
+Original aggregate successor session80121/PID271847 remains live atelapsed422s,
+CPU278s, with no exit and empty stdout/stderr. Preserve its detached source checkout
+at edf3d0492 and inspect its original durable files, never restart on observation
+timeout. After exact completion, assemble actual equal-feedback drafts and finish
+source/READ/capsule/contact admission. Sole active branch remains master; integrate
+this documentation serially from a temporary detached checkout.
+
+
+
 ## One active mainline; original aggregate successor remains live (2026-10-07)
 
 The latest owner directive is one track. Only local master remains after verified
