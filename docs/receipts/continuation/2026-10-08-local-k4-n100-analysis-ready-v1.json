@@ -1,0 +1,118 @@
+{
+  "all_READs_unsigned": true,
+  "at_utc": "2026-10-08T17:12:59.799864+00:00",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "independent_v2_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-n100-dispatch-astra-review-v1/analysis-input-review-v2.json",
+    "sha256": "088a7d4da5d49e34624ed2315d60ac9b894b0f2bac29e694e83c2eef4f70d07b"
+  },
+  "learner_export": false,
+  "owner_decision": 227,
+  "roles": {
+    "reviewer": {
+      "family_package": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-analysis-v1",
+      "member_package": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-member-analysis-v1",
+      "member_recipes": {
+        "candidate-1": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-member-analysis-v1/candidate-1-member-read-resolved-v1.json",
+          "sha256": "237c255e2ca404d9cb37e4095538d8994500fa36b6a131c29aad12e473e8f486"
+        },
+        "candidate-2": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-member-analysis-v1/candidate-2-member-read-resolved-v1.json",
+          "sha256": "cc0ef5bb92a8fdd47de030fe291113c9167f063805402140648a6eb759ad751b"
+        },
+        "candidate-3": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-member-analysis-v1/candidate-3-member-read-resolved-v1.json",
+          "sha256": "7ffa35288c1fd882af2eaaa895fefb78f0b096c0a18d0ee1b9e302ece8a65052"
+        },
+        "candidate-4": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-member-analysis-v1/candidate-4-member-read-resolved-v1.json",
+          "sha256": "6bc7846207649388d643353b14c4bbbe721b7002f49eaa1497ada06601fa5f29"
+        },
+        "control": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-member-analysis-v1/control-member-read-resolved-v1.json",
+          "sha256": "2ef9ab2ba40b8abe197b0576228c09888a8c550bb7367d22b99970bdc390bc2a"
+        },
+        "control-aa": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-member-analysis-v1/control-aa-member-read-resolved-v1.json",
+          "sha256": "1592bb0d106363ce7bff013114e6b0b2468bb39b2bd7b2dfc3a43c09bdca9777"
+        }
+      },
+      "source_only_preparation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-analysis-preparation-complete-v2.json",
+        "sha256": "0c77dd6b52fbe39f8e0f017bfe710810ae80bc9d8e18f14386842770e6ffd6f4"
+      },
+      "unsigned_READ_rebinding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-analysis-read-rebinding-v1.json",
+        "sha256": "24ad6479d90e742182ff058f55b103a85d1720a32de0f2e35c3132d09953163f"
+      }
+    },
+    "solver": {
+      "family_package": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-analysis-v1",
+      "member_package": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1",
+      "member_recipes": {
+        "candidate-1": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/candidate-1-member-read-resolved-v1.json",
+          "sha256": "ade0ba1ce683068c14d2ab406b2f50c7fc195a34ed1b73de22eafae231238189"
+        },
+        "candidate-2": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/candidate-2-member-read-resolved-v1.json",
+          "sha256": "269f4c4e2b3f022e9c0bbfa1a072a4e9dc9f5e87be0a8c091103c2a46c8deef6"
+        },
+        "candidate-3": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/candidate-3-member-read-resolved-v1.json",
+          "sha256": "d2b1392b9803d3720ce842527329d3511f0cd1dc05e809bed74c06a002beab86"
+        },
+        "candidate-4": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/candidate-4-member-read-resolved-v1.json",
+          "sha256": "df18f3d90c4447fcd8a84afcd4eaf3881adf43a73e4c20edc651fe9b0ed1eb99"
+        },
+        "control": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/control-member-read-resolved-v1.json",
+          "sha256": "afa8e814822fe55b0caef4a11d5e00d7edcae7c120fed0a6b11f80a6068a8106"
+        },
+        "control-aa": {
+          "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/control-aa-member-read-resolved-v1.json",
+          "sha256": "2b8dfe777bbc17a3528ea4fb5e4871bf9ce23a858ef48e96dbc56c1a58c6c79d"
+        }
+      },
+      "source_only_preparation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-analysis-preparation-complete-v2.json",
+        "sha256": "6ddcff671f67a27e61d31ec5b4c75ed029e74b08062561aada1994c759f96fb7"
+      },
+      "unsigned_READ_rebinding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-analysis-read-rebinding-v1.json",
+        "sha256": "9e411b59be843dfd8182a2ce5ee6d532294ba3c637d26635ac0acb76c6527bd6"
+      }
+    }
+  },
+  "root_disposition": {
+    "correction": "Derive the declared initial-Perception candidate supply across all knowledge stores, matching the unchanged established resolver; retain intent-boundaries release/snapshot proof. Both actual frozen source families are verified. Resume Solver member phase only; do not repeat its successful family resolution. Reviewer uses corrected builder on first invocation.",
+    "generation_restart": false,
+    "named_component": "source-only analysis-input candidate-supply declaration lookup",
+    "new_model_tokenizer_scorer_contacts": 0,
+    "preserved_first_member_input_failure": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-analysis-input-builder-v1.stderr.log",
+      "sha256": "52a2b6db0d1da25afc6acc7ee7651d54f480353f625a3b837086029e673d0e55"
+    },
+    "runtime_changed": false,
+    "score_replay": false,
+    "successful_original_family_resolution": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-family-analysis-source-resolution-v1.exit.json",
+      "sha256": "ab1a17f8fb1737750c360cb617a3ae22b637de13fc1b85329cef74bb847a0743"
+    }
+  },
+  "schema": "saea-local-k4-source-analysis-ready-v1",
+  "source_and_GPU_independent": true,
+  "source_only_actual_derivations": {
+    "reviewer": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-n100-dispatch-engineering-v1/actual-reviewer-source-derivation-v2.json",
+      "sha256": "c74f843ff8b6d00e82ee6c4231970836ebd5c65e32d2347520fe8ccf017a73d9"
+    },
+    "solver": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-n100-dispatch-engineering-v1/actual-solver-source-derivation-v2.json",
+      "sha256": "88abddf94869860a6d8d2675da09486c57b76ace4310a618c8c0d21ad822410b"
+    }
+  },
+  "task_quality_read": false
+}

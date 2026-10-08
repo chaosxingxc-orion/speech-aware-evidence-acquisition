@@ -1,0 +1,25 @@
+{
+  "execution_profile": "model-free-check",
+  "expected_members": {
+    "candidate-1": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-V1",
+    "candidate-2": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-V1",
+    "candidate-3": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-V1",
+    "candidate-4": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-V1",
+    "control": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-V1",
+    "control-aa": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-V1"
+  },
+  "frozen_analysis_intent": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-registered-entry2-v1/manual-architecture-analysis-intent-v1.json",
+    "sha256": "2aff5f33bca72f65d26620679d3589ac4168695983a4a6db427b8763e770151e"
+  },
+  "optimizer_export": false,
+  "planned_model_calls": 0,
+  "read_authorized": false,
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-analysis-v1/analysis-recipe-v1.json",
+    "sha256": "1198b333f261bcceb3ad9c33b9702d1b19e217fefada4dcfb052fd356972b62c"
+  },
+  "run_id": "SAEA-SLURP-LOCAL-REVIEWER-N100-K4-UPDATE1-READ-V1",
+  "split_role": "discovery",
+  "status": "DRAFT ROOT COUNTERSIGNATURE PENDING"
+}

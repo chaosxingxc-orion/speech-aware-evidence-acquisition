@@ -1,0 +1,20 @@
+{
+  "analysis_intent": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-registered-entry2-v1/manual-architecture-analysis-intent-v1.json",
+    "sha256": "2aff5f33bca72f65d26620679d3589ac4168695983a4a6db427b8763e770151e"
+  },
+  "comparisons_changed": false,
+  "contacts": 0,
+  "frozen_launch_binding": {
+    "relpath": "coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-frozen-launch-binding-v1.json",
+    "sha256": "879d6e3fccd199828b7ae7d854fa69f1a5b819e04742cc1a8bf6b3af5e1cf91e"
+  },
+  "read_authorized": false,
+  "schema": "saea-manual-architecture-source-resolution-v1",
+  "status": "SOURCE RESOLVED; root READ remains DRAFT",
+  "successor_recipe": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-analysis-v1/analysis-recipe-v1.json",
+    "sha256": "1198b333f261bcceb3ad9c33b9702d1b19e217fefada4dcfb052fd356972b62c"
+  },
+  "worker_commit": "b4086484e8448e87d2429824071649bf133feb67"
+}

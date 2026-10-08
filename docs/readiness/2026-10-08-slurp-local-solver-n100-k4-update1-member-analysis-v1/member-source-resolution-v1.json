@@ -1,0 +1,50 @@
+{
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "dispatches": 0,
+  "helper_sha256": "e37996bbccc6debf23c23a5391ff36b051e20e643c56f181df60accc02148b80",
+  "input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/member-analysis-inputs-v2/member-resolution-input-v1.json",
+    "sha256": "24fd79c8e08a89b2274547d0c1f34b38c5d89e1da3bdcb819f628bf8f9177ef4"
+  },
+  "intent_support_binding": {
+    "relpath": "coordination/local-solver-n100-k4-update1-generation-entry2-v1/intent-support-binding-v1.json",
+    "sha256": "b7466ea3e39f526ed47c47049496b44ccb004fe630261ec44d9730ae5fc362c8"
+  },
+  "ledger_modified": false,
+  "member_recipes": {
+    "candidate-1": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/candidate-1-member-read-resolved-v1.json",
+      "sha256": "ade0ba1ce683068c14d2ab406b2f50c7fc195a34ed1b73de22eafae231238189"
+    },
+    "candidate-2": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/candidate-2-member-read-resolved-v1.json",
+      "sha256": "269f4c4e2b3f022e9c0bbfa1a072a4e9dc9f5e87be0a8c091103c2a46c8deef6"
+    },
+    "candidate-3": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/candidate-3-member-read-resolved-v1.json",
+      "sha256": "d2b1392b9803d3720ce842527329d3511f0cd1dc05e809bed74c06a002beab86"
+    },
+    "candidate-4": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/candidate-4-member-read-resolved-v1.json",
+      "sha256": "df18f3d90c4447fcd8a84afcd4eaf3881adf43a73e4c20edc651fe9b0ed1eb99"
+    },
+    "control": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/control-member-read-resolved-v1.json",
+      "sha256": "afa8e814822fe55b0caef4a11d5e00d7edcae7c120fed0a6b11f80a6068a8106"
+    },
+    "control-aa": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-member-analysis-v1/control-aa-member-read-resolved-v1.json",
+      "sha256": "2b8dfe777bbc17a3528ea4fb5e4871bf9ce23a858ef48e96dbc56c1a58c6c79d"
+    }
+  },
+  "read_authorized": false,
+  "schema": "saea-manual-member-source-resolution-v1",
+  "status": "SOURCE RESOLVED; ALL MEMBER READS REMAIN UNSIGNED",
+  "task_outcomes_used": false,
+  "worker_commit": "b4086484e8448e87d2429824071649bf133feb67",
+  "worker_root": "/home/chao/saea-worktrees/codex-local-solver-k4-n100-frozen-v1"
+}
