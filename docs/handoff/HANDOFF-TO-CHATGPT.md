@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## N100 scaled-audio successor registered; frozen/live gates pending (2026-10-08T01:05:49.485122+00:00)
+
+Root227 preserved the original ABORTED N100 and the later zero-contact authoring refusal, then registered four fresh ENTRY2 generation/FIT identities on the unchanged100-input roster and policies. Derived complete-path audio allowances are3820/3820/1500/1500 seconds; model-contact bounds are1300/1300/200/300. The former1500 audio ceiling was a preparation defect, not an owner limit. The unchanged1.0 GPU-hour declaration is not an enforced elapsed-time cap or completion promise.
+
+Independent Astra Ultra review accepted the exact source compatibility proof: only the reviewed precontact audio guard differs in historical runtime AST, and the other four prepared modules remain byte-identical. Historical structural proof is checked against its original immutable source; current generation supplies remain checked against current source. Default strict validation remains. The fresh source-only compatibility record and its owner227 disposition are pinned in every admission/plan. No model, tokenizer or scorer contact occurred.
+
+See `docs/receipts/continuation/2026-10-08-simple-consumption-n100-audio-recovery1-entry2-preregistered-v1.json`. All eight generation/FIT and five unsigned READ rows are registered. The original STOP and controls remain preserved in place pending exact frozen/live checks and the reviewed root recovery transition. Four concurrent samples per serial member and overlapped single CPU scoring remain;4GiB startup/running floors apply. No quality read, learner export or benefit claim.
+
+
 ## Audio recovery authoring stopped before contacts (2026-10-08T00:40:26.636261+00:00)
 
 The budget guard and fresh held preparation passed independent review; the integrated focused suite passed197 tests, and all four100-input supplies retained exact original output bytes and runtime order. The derived registered audio allowances are3820/3820/1500/1500 seconds. No model, tokenizer or scorer contact occurred.

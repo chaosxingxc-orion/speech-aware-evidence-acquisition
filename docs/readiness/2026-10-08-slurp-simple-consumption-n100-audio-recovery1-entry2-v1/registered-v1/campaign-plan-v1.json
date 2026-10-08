@@ -1,0 +1,21 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1",
+      "experiment": "slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1",
+      "experiment": "slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1",
+      "experiment": "slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1",
+      "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1",
+    "contacts_per_row": 4,
+    "expected_rows": 100,
+    "experiment": "slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-ENTRY2-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1-generation",
+    "kind": "cell",
+    "notool": false,
+    "order": 1,
+    "owner": "root-slurp-simple-consumption-n100-audio-recovery1-entry2-v1",
+    "population_budget": {
+      "K": 2,
+      "N": 100,
+      "active_node_counts": {
+        "review-off": 2,
+        "seed": 4,
+        "seed-aa": 4,
+        "solver-lookup": 2
+      },
+      "candidate_trajectories": 200,
+      "control_trajectories": 200,
+      "family_trajectories": 400,
+      "fit_endpoints_cap": 12400,
+      "generation_contacts_cap": 3100
+    },
+    "population_cohort": "comparison",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-ENTRY2-V1",
+    "short": "slurp-simple-consumption-n100-audio-recovery1-entry2-v1-seed",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  },
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1",
+    "contacts_per_row": 4,
+    "expected_rows": 100,
+    "experiment": "slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-ENTRY2-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1-generation",
+    "kind": "cell",
+    "notool": false,
+    "order": 2,
+    "owner": "root-slurp-simple-consumption-n100-audio-recovery1-entry2-v1",
+    "population_budget": {
+      "K": 2,
+      "N": 100,
+      "active_node_counts": {
+        "review-off": 2,
+        "seed": 4,
+        "seed-aa": 4,
+        "solver-lookup": 2
+      },
+      "candidate_trajectories": 200,
+      "control_trajectories": 200,
+      "family_trajectories": 400,
+      "fit_endpoints_cap": 12400,
+      "generation_contacts_cap": 3100
+    },
+    "population_cohort": "comparison",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-ENTRY2-V1",
+    "short": "slurp-simple-consumption-n100-audio-recovery1-entry2-v1-seed-aa",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  },
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 2,
+    "cell": "slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1",
+    "contacts_per_row": 2,
+    "expected_rows": 100,
+    "experiment": "slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-ENTRY2-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1-generation",
+    "kind": "cell",
+    "notool": false,
+    "order": 3,
+    "owner": "root-slurp-simple-consumption-n100-audio-recovery1-entry2-v1",
+    "population_budget": {
+      "K": 2,
+      "N": 100,
+      "active_node_counts": {
+        "review-off": 2,
+        "seed": 4,
+        "seed-aa": 4,
+        "solver-lookup": 2
+      },
+      "candidate_trajectories": 200,
+      "control_trajectories": 200,
+      "family_trajectories": 400,
+      "fit_endpoints_cap": 12400,
+      "generation_contacts_cap": 3100
+    },
+    "population_cohort": "comparison",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-ENTRY2-V1",
+    "short": "slurp-simple-consumption-n100-audio-recovery1-entry2-v1-review-off",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  },
+  {
+    "campaign_plan": null,
+    "ceiling_per_row": 3,
+    "cell": "slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1",
+    "contacts_per_row": 2,
+    "expected_rows": 100,
+    "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-ENTRY2-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1-generation",
+    "kind": "cell",
+    "notool": false,
+    "order": 4,
+    "owner": "root-slurp-simple-consumption-n100-audio-recovery1-entry2-v1",
+    "population_budget": {
+      "K": 2,
+      "N": 100,
+      "active_node_counts": {
+        "review-off": 2,
+        "seed": 4,
+        "seed-aa": 4,
+        "solver-lookup": 2
+      },
+      "candidate_trajectories": 200,
+      "control_trajectories": 200,
+      "family_trajectories": 400,
+      "fit_endpoints_cap": 12400,
+      "generation_contacts_cap": 3100
+    },
+    "population_cohort": "comparison",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-ENTRY2-V1",
+    "short": "slurp-simple-consumption-n100-audio-recovery1-entry2-v1-solver-lookup",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  }
+]

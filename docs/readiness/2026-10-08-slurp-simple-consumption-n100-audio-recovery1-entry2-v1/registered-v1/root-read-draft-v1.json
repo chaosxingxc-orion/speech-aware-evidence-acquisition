@@ -1,0 +1,20 @@
+{
+  "complete_family_required": true,
+  "execution_profile": "model-free-check",
+  "expected_members": {
+    "review-off": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-ENTRY2-V1",
+    "seed": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-ENTRY2-V1",
+    "seed-aa": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-ENTRY2-V1",
+    "solver-lookup": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-ENTRY2-V1"
+  },
+  "optimizer_export": false,
+  "planned_model_calls": 0,
+  "read_authorized": false,
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/analysis-recipe-intent-v1.json",
+    "sha256": "dfba41224bb8660d823783004bc56705a9a0a2d4ed1d255ed3de6f3e6e50be18"
+  },
+  "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N100-AUDIO-RECOVERY1-ENTRY2-READ-V1",
+  "split_role": "discovery",
+  "status": "DRAFT ROOT COUNTERSIGNATURE PENDING"
+}
