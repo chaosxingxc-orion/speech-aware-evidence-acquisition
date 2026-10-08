@@ -1,0 +1,7 @@
+# Solver local update2: complete own aggregate feedback
+
+Root prospectively authorizes one isolated Astra Ultra opportunity jointly designing 4 Solver-only templates. The input contains exactly 4 prior candidate/template/statistics records and 2 separately labelled controls from the fully qualified and root-read Solver update1 family. Raw/reference task content, row IDs, knowledge, source inventories and peer outcomes are omitted. Complete source custody remains privately pinned. The capsule is 59823 bytes within the configured 65536-byte application bound; no provider-enforced cap is claimed.
+
+The original review-off parent and every surrounding component remain fixed. Preserve the exact local primary, tie-breaks and two-update review rule. A missing or unparsed draft remains in the configured-N primary denominator; available-case rates and unknowns are separately preserved. No result is an adoption or stable benefit claim. All old records, no-export dispositions and spent opportunities remain unchanged. The fresh four positions are spent by the one original proposer opportunity, including invalid/no-change responses; no replacement.
+
+K, N, member order and legal-path execution budgets derive from the original configuration. Compilation and later runtime admission remain pending. No GPU, tokenizer, scorer or proposer contact occurs in this registration. Root serializes GPU work while CPU preparation continues. The running independent Reviewer family is untouched. Keep cumulative exposure and return to the human before8x400.

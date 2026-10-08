@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Solver update2 own aggregate projection and fresh complete K4 opportunity (2026-10-08T18:51:05.773897+00:00)
+
+The complete qualified Solver update1 family now has a separate prospective own-aggregate projection authority and fresh four-position Astra Ultra opportunity. See `docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update2-v1/README.md`. Its input has four prior abstract Solver templates with complete compact process/business/timing statistics and two separately labelled controls. Missingness, inapplicability and fixed-N primary denominators remain explicit. The full capsule is 59823 bytes; no records are truncated. The source-only export checker was independently reviewed before use. Original source drafts and findings remain preserved.
+
+The original review-off parent, local selection and two-update review rule stay fixed. No Reviewer outcomes, raw task cases, references, knowledge or source inventories enter the proposer. Every prior opportunity stays spent; this is the next prospectively registered local update, not a replacement. Registration itself adds no model/tokenizer/scorer contact and no runtime admission. Only the exact isolated actor may consume the pinned capsule once; root later validates the original response and compiles through the unchanged shared path.
+
+The independent Reviewer original N100 family continues on its existing serial GPU queue and15minute job monitor; revalidate operational state. Completed-member descriptive reads do not authorize incomplete-family comparison or feedback. CPU preparation must not block later GPU members. One generating campaign and one official scorer remain. Preserve4GiB floors, frozen workers and all closed lines. No stable improvement or learning claim is established; the broad goal is active and incomplete. Human review remains required before8x400.
+
 ## Reviewer independently completed-member descriptive READ; original GPU campaign continues (2026-10-08T18:37:12.483083+00:00)
 
 Root independently qualified and countersigned the descriptive READ for control-aa. Each has 100 FINALIZED trajectories, a verified original seal, exactly one successful complete official score and zero failed jobs. The unchanged offline reader completed once using the saved score. Exact source custody and exits are in `docs/receipts/continuation/2026-10-08-local-reviewer-k4-n100-control-aa-member-read-v1.json`. No scorer, tokenizer or model contact was added.
@@ -7261,7 +7269,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T18:37:12.483083+00:00
+Last refreshed: 2026-10-08T18:51:05.773897+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
