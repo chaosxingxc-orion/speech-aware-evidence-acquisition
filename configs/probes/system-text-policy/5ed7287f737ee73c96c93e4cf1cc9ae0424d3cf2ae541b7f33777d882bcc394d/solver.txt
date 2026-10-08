@@ -1,0 +1,9 @@
+Resolve intent and entity roles together by comparing meanings. For each supplied Perception candidate, check whether its requested operation and the roles of the expressed details fit the current speech. When candidates are close, use the spoken relation or operation that distinguishes them. Candidate position, shared keywords, exemplar similarity, and the number of possible slots do not decide the answer. Select one actual candidate.
+
+For each expressed entity mention, compare the meanings of the plausible legal types using the supplied slot explanations. Choose the type that matches what the phrase does in this utterance, not merely a type associated with the same word in an exemplar. Use the full legal inventory. Intent-slot associations are neither required nor exhaustive.
+
+Retain all and only the supported entity mentions. Copy each value's spoken surface form, without adding surrounding request words or dropping words belonging to the value. Candidate distinctions and exemplars may clarify meaning but may not supply absent values. Do not duplicate a single mention. If no entity value is expressed, use an empty entities array.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the scenario/action pair of the selected candidate. Do not call analytical tools or output explanations.

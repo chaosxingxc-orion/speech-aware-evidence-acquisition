@@ -1,0 +1,196 @@
+{
+  "accounting": {
+    "candidate_trajectories": 400,
+    "control_trajectories": 200,
+    "family_trajectories": 600,
+    "fit_endpoints_cap": 4800,
+    "generation_contacts_cap": 1200
+  },
+  "all_controls_same_policy": true,
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-solver-n100-k4-update1-v1.json",
+    "sha256": "6ab2f6f4fea7de23c4d35d08f893e669263c240440ed4f65513161311612f9e3"
+  },
+  "members": {
+    "candidate-1": {
+      "base_bundle_id": "90434bd9b2987e99154fb2d7eb9855bc84e17ccf97ab1fcbe99a210142f72727",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/compiled-v1/candidate-1-policy-v1.json",
+        "sha256": "572791d6b701a49a86483ceaa06f4960aaf3e8f9e6c6e3d75f543331f400db29"
+      },
+      "no_change": false,
+      "original_design_slot": "local-solver-k4-update1-c1",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "coordination/local-solver-n100-k4-update1-v1/policy-archive/policies/90434bd9b2987e99154fb2d7eb9855bc84e17ccf97ab1fcbe99a210142f72727.json",
+          "sha256": "468b8a9ca2963c290640aab9d1729208968d4b3cabe2adcf2e5001f83a355ae8"
+        },
+        "bundle_id": "90434bd9b2987e99154fb2d7eb9855bc84e17ccf97ab1fcbe99a210142f72727",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "verification": {
+        "bundle_id": "90434bd9b2987e99154fb2d7eb9855bc84e17ccf97ab1fcbe99a210142f72727",
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "reviewer_history_scope": "full",
+          "tool_schema_rendering": "constant"
+        },
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "7f88064d4f31ec5265b15957350e3a7c836bd45dbb1cb7313a55759c636b2017"
+        }
+      }
+    },
+    "candidate-2": {
+      "base_bundle_id": "b2173e4f1bb4c2ff681804fff8ab5142906106db58bf084616cbecbb93d470b1",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/compiled-v1/candidate-2-policy-v1.json",
+        "sha256": "f7c4bff5cdda46b595180bd268bacc724306e57ed2f93f3c11f4abdd16e2b779"
+      },
+      "no_change": false,
+      "original_design_slot": "local-solver-k4-update1-c2",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "coordination/local-solver-n100-k4-update1-v1/policy-archive/policies/b2173e4f1bb4c2ff681804fff8ab5142906106db58bf084616cbecbb93d470b1.json",
+          "sha256": "38e2d58c8ac6d0aa60fd44e9a937584901ed0c18dfd1e0934c625c513e905852"
+        },
+        "bundle_id": "b2173e4f1bb4c2ff681804fff8ab5142906106db58bf084616cbecbb93d470b1",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "verification": {
+        "bundle_id": "b2173e4f1bb4c2ff681804fff8ab5142906106db58bf084616cbecbb93d470b1",
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "reviewer_history_scope": "full",
+          "tool_schema_rendering": "constant"
+        },
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "0c9be9879c2ddb46daecca4bc9fa14e93306c5ce009d1021602cd55d211e7d7c"
+        }
+      }
+    },
+    "candidate-3": {
+      "base_bundle_id": "33d65bf33ddcba7d61555cb8b0473ecf58ae26ba039cebfd258055503ec05552",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/compiled-v1/candidate-3-policy-v1.json",
+        "sha256": "9c20f94230525886f3c7d2ad277f327b588fb21e476bf7b355455975435c6f68"
+      },
+      "no_change": false,
+      "original_design_slot": "local-solver-k4-update1-c3",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "coordination/local-solver-n100-k4-update1-v1/policy-archive/policies/33d65bf33ddcba7d61555cb8b0473ecf58ae26ba039cebfd258055503ec05552.json",
+          "sha256": "6a66357036c0830abae4017b1b8c7be588456dd4468cf8686d4c2e599de6e23a"
+        },
+        "bundle_id": "33d65bf33ddcba7d61555cb8b0473ecf58ae26ba039cebfd258055503ec05552",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "verification": {
+        "bundle_id": "33d65bf33ddcba7d61555cb8b0473ecf58ae26ba039cebfd258055503ec05552",
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "reviewer_history_scope": "full",
+          "tool_schema_rendering": "constant"
+        },
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "b4592faa49edf77b7eabe8751fa8fd1a16a4ba8f834093c85c346a2ea9a1b103"
+        }
+      }
+    },
+    "candidate-4": {
+      "base_bundle_id": "5ed7287f737ee73c96c93e4cf1cc9ae0424d3cf2ae541b7f33777d882bcc394d",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/compiled-v1/candidate-4-policy-v1.json",
+        "sha256": "7e32908a2b8026dcab37b9d580e9ac893c6fe9238b0e3cab2bb918ee2736113c"
+      },
+      "no_change": false,
+      "original_design_slot": "local-solver-k4-update1-c4",
+      "policy_binding": {
+        "bundle": {
+          "relpath": "coordination/local-solver-n100-k4-update1-v1/policy-archive/policies/5ed7287f737ee73c96c93e4cf1cc9ae0424d3cf2ae541b7f33777d882bcc394d.json",
+          "sha256": "b8198ead0a8e3abd0143d1639cd8d33a31b2ebb1696c1e9b899284489186be1d"
+        },
+        "bundle_id": "5ed7287f737ee73c96c93e4cf1cc9ae0424d3cf2ae541b7f33777d882bcc394d",
+        "schema": "saea-system-text-role-binding-v1"
+      },
+      "verification": {
+        "bundle_id": "5ed7287f737ee73c96c93e4cf1cc9ae0424d3cf2ae541b7f33777d882bcc394d",
+        "context_layout": {
+          "native_role_query_placement": null
+        },
+        "node_context": {
+          "reviewer_history_scope": "full",
+          "tool_schema_rendering": "constant"
+        },
+        "role_sha256": {
+          "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+          "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+          "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+          "solver": "ff2ba5970daf5145d761070ae1af58f23f2c76f3f56e07870c31fcd431182ac4"
+        }
+      }
+    },
+    "control": {
+      "base_bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/compiled-v1/control-policy-v1.json",
+        "sha256": "55408431fc08e37231c179bd1c033377977a83654ca04dd3982a07b74f7579d7"
+      },
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    },
+    "control-aa": {
+      "base_bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "execution_config": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/compiled-v1/control-aa-policy-v1.json",
+        "sha256": "55408431fc08e37231c179bd1c033377977a83654ca04dd3982a07b74f7579d7"
+      },
+      "policy_binding": {
+        "bundle": {
+          "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+          "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+        },
+        "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    }
+  },
+  "proposal_custody": {
+    "registration": {
+      "relpath": "coordination/local-solver-n100-k4-update1-v1/actor-plan-registered-copy-v1.json",
+      "sha256": "17f55adfe46d39879595ad4374e0a21242e77077acf582b3cce3b95e298ff500"
+    },
+    "validation": {
+      "relpath": "coordination/local-solver-n100-k4-update1-v1/original-proposal-validation-v1.json",
+      "sha256": "f35e453992572d19c61b006dc406d6cc1c5b5d3c7c32bf9224dbb920548f7816"
+    }
+  },
+  "schema": "saea-local-node-compiled-panel-v1",
+  "status": "COMPILED_HELD_NO_RUNTIME_CONTACTS",
+  "target_role": "solver"
+}

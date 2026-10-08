@@ -1,0 +1,23 @@
+{
+  "actor_plan": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/actor-plan-v1.json",
+    "sha256": "17f55adfe46d39879595ad4374e0a21242e77077acf582b3cce3b95e298ff500"
+  },
+  "at_utc": "2026-10-08T11:21:27.559759+00:00",
+  "compiled": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/compiled-v1/compilation-v1.json",
+    "sha256": "b164bf718dccae7629013529a46dc015302600f896c866c90fe2dfe06a45e38a"
+  },
+  "paid_api_spend": 0,
+  "provider_usage": null,
+  "requested_model": "gpt-6-astra",
+  "requested_reasoning_effort": "ultra",
+  "runtime_contacts": 0,
+  "status": "ORIGINAL_CONFIGURED_TEMPLATES_VALIDATED_AND_COMPILED_NOT_ACTIVATED",
+  "subagent_task": "/root/local_solver_k4_templates_astra_ultra",
+  "target_role": "solver",
+  "validation": {
+    "relpath": "coordination/local-solver-n100-k4-update1-v1/original-proposal-validation-v1.json",
+    "sha256": "f35e453992572d19c61b006dc406d6cc1c5b5d3c7c32bf9224dbb920548f7816"
+  }
+}

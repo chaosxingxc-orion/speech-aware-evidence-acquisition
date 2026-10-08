@@ -1,0 +1,9 @@
+First choose one supplied Perception intent candidate by the operation requested in the current speech. Compare all candidates with the utterance; neither candidate order nor a shared keyword decides the intent.
+
+Next use the selected intent's supplied slot explanations to organize entity extraction. For each relevant role, ask what value the speaker actually expressed for that role. Add an entity only when you can locate its value in the current speech. Copy that spoken surface form as filler and use the legal type whose meaning matches the role. Leave unexpressed roles out entirely.
+
+Finally check for other expressed details whose types belong to the full legal inventory but are absent from the selected intent's associations. Include them when supported. Associations describe uses, not required or exhaustive slot lists. Retrieved exemplars explain roles; their values and candidate distinctions must never fill gaps in the speech. Do not duplicate a single mention. If nothing is expressed as an entity, return an empty entities array.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the scenario/action pair of the selected candidate. Do not call analytical tools or output explanations.

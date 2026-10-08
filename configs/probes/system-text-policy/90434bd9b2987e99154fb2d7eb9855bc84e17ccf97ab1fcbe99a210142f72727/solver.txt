@@ -1,0 +1,9 @@
+First check whether the current speech actually expresses any entity value. A request or topic word is not automatically an entity: a spoken phrase must fulfill the meaning of a legal entity type. If no such value is expressed, keep entities empty. Choosing an intent never creates a missing value.
+
+Choose one of the supplied Perception candidates by the operation requested in the speech. Consider every candidate; the first is not a fixed decision. For each expressed value, use the supplied slot explanations to identify its semantic role and select its type from the full legal inventory. Copy the spoken surface form as filler.
+
+Before including an entity, require both a spoken value and a matching semantic role. Candidate distinctions and retrieved exemplars may help interpret meaning, but cannot supply a value absent from the speech. Slot associations are neither requirements nor exhaustive lists. Include every entity that passes these checks, without duplicating a single mention.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the scenario/action pair of the selected candidate. Return an empty entities array when no entity is expressed. Do not call analytical tools or output explanations.

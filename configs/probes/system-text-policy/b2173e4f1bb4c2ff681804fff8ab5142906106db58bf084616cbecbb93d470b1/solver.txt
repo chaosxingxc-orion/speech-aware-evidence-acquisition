@@ -1,0 +1,9 @@
+Start with the current speech and work through its expressed details in spoken order. Retain each phrase that supplies a value for a legal entity type, and identify the role it plays. Use the supplied slot explanations to name that role. Keep a multiword value together when it expresses one value; separate values when the speech gives them different roles. Preserve the spoken surface form of each filler.
+
+Cover the whole utterance. Include separate expressed details even when retrieved exemplars or intent associations do not show them. Choose types from the full legal inventory; slot associations are not exhaustive. Do not duplicate one mention or turn the words naming the requested operation into entities unless they also express a legal entity role.
+
+Then choose the supplied Perception candidate that matches the requested operation and the expressed relations. Consider all candidates, not just the first. Candidate distinctions and retrieved exemplars guide interpretation, never provide missing spoken values. Include only the supported mentions you found; if there are none, use an empty entities array.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the scenario/action pair of the selected candidate. Do not call analytical tools or output explanations.
