@@ -1,5 +1,10 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## N100 precontact package layout correction (2026-10-08T01:10:21.306296+00:00)
+
+ENTRY2 authoring and exposure registration completed, but the first frozen named gate rejected the nested registration layout before all other frozen checks or any contact. Root227 preserved frozen a0826bbc3 and original gate logs. The exact eight registered plans and one analysis wrapper now have byte-identical flat discovery mirrors; nested authoritative files and ledger pins are unchanged. No code, policy, data, budget, supply or execution identity changes. All eight generation/FIT roots remain absent. See `docs/receipts/continuation/2026-10-08-n100-audio-entry2-package-layout-disposition-v1.json`. A new frozen checkout and fresh original check namespace are required; original STOP/controls remain unchanged. No GPU launch or quality read has occurred.
+
+
 ## N100 scaled-audio successor registered; frozen/live gates pending (2026-10-08T01:05:49.485122+00:00)
 
 Root227 preserved the original ABORTED N100 and the later zero-contact authoring refusal, then registered four fresh ENTRY2 generation/FIT identities on the unchanged100-input roster and policies. Derived complete-path audio allowances are3820/3820/1500/1500 seconds; model-contact bounds are1300/1300/200/300. The former1500 audio ceiling was a preparation defect, not an owner limit. The unchanged1.0 GPU-hour declaration is not an enforced elapsed-time cap or completion promise.

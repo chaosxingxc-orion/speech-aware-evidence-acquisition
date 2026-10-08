@@ -1,0 +1,135 @@
+{
+  "at_utc": "2026-10-08T01:10:21.306296+00:00",
+  "disposition": "Preserve all original nested authoritative bytes and ledger pins. Add exactly eight byte-identical plan discovery mirrors and one byte-identical analysis wrapper in the documented flat readiness directory. Use a new frozen source and fresh capture namespace for the same eight unused identities; never retry or overwrite original gate evidence.",
+  "failed_source": {
+    "commit": "a0826bbc37015824ff36145e678544454ecc9168",
+    "path": "/home/chao/saea-worktrees/codex-simple-consumption-n100-audio-recovery1-entry2-frozen-v1"
+  },
+  "invariants": {
+    "all_eight_attempt_and_run_roots_absent": true,
+    "budget_changed": false,
+    "contacts": 0,
+    "data_changed": false,
+    "dispatches": 0,
+    "generation_fit_identities_changed": false,
+    "learner_export": false,
+    "ledger_changed": false,
+    "policies_changed": false,
+    "registered_plan_bytes_changed": false,
+    "scientific_read": false,
+    "source_code_changed": false,
+    "stop_or_controls_changed": false
+  },
+  "mirrors": [
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/review-off-fit-plan-registered-v1.json",
+        "sha256": "50760170d9cdde278f20863a325c1aadd3eae848276744775605e2b3eda09a78"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/review-off-fit-plan-registered-v1.json",
+        "sha256": "50760170d9cdde278f20863a325c1aadd3eae848276744775605e2b3eda09a78"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/review-off-generation-plan-registered-v1.json",
+        "sha256": "eaee52f103df6c51b519b10fd591daadadc77cd705fc67f999379da3d4a2244e"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/review-off-generation-plan-registered-v1.json",
+        "sha256": "eaee52f103df6c51b519b10fd591daadadc77cd705fc67f999379da3d4a2244e"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-aa-fit-plan-registered-v1.json",
+        "sha256": "ea2f0b99f492fd40688b06ccfc9edbfec1c0125efe3894547c93c9655172df59"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/seed-aa-fit-plan-registered-v1.json",
+        "sha256": "ea2f0b99f492fd40688b06ccfc9edbfec1c0125efe3894547c93c9655172df59"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-aa-generation-plan-registered-v1.json",
+        "sha256": "7a3524fcb1150131906cd44a9d2c157b12a1c039ce35ec987aee5bf8e3ce06cf"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/seed-aa-generation-plan-registered-v1.json",
+        "sha256": "7a3524fcb1150131906cd44a9d2c157b12a1c039ce35ec987aee5bf8e3ce06cf"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-fit-plan-registered-v1.json",
+        "sha256": "3035069716bb144c46edd6b9656c6c15b80c2cabdc356ed9ca59f0ca71e31d78"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/seed-fit-plan-registered-v1.json",
+        "sha256": "3035069716bb144c46edd6b9656c6c15b80c2cabdc356ed9ca59f0ca71e31d78"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-generation-plan-registered-v1.json",
+        "sha256": "3e043d9738dc750cfffe79caa178401c49bbd352da3eb41d12c772ec0676f0a8"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/seed-generation-plan-registered-v1.json",
+        "sha256": "3e043d9738dc750cfffe79caa178401c49bbd352da3eb41d12c772ec0676f0a8"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/solver-lookup-fit-plan-registered-v1.json",
+        "sha256": "cd9992403623ab548513e0e35e42f86cf8d340c9aeca22567507a9a9e0e950d4"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/solver-lookup-fit-plan-registered-v1.json",
+        "sha256": "cd9992403623ab548513e0e35e42f86cf8d340c9aeca22567507a9a9e0e950d4"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/solver-lookup-generation-plan-registered-v1.json",
+        "sha256": "523cc69ba17d819c2b6f67f9f2620b7054a92e59bc2a173bd5231a25f8552e7e"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/solver-lookup-generation-plan-registered-v1.json",
+        "sha256": "523cc69ba17d819c2b6f67f9f2620b7054a92e59bc2a173bd5231a25f8552e7e"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/analysis-recipe-intent-v1.json",
+        "sha256": "dfba41224bb8660d823783004bc56705a9a0a2d4ed1d255ed3de6f3e6e50be18"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/analysis-recipe-intent-v1.json",
+        "sha256": "dfba41224bb8660d823783004bc56705a9a0a2d4ed1d255ed3de6f3e6e50be18"
+      }
+    }
+  ],
+  "original_failed_check": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/frozen-named-registration-v1.exit.json",
+    "sha256": "2d79f1bfcc461ec2092b51356f2c7200cc1ac4e63a081842b844880db1572656"
+  },
+  "original_failed_report": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/frozen-named-registration-v1.stdout.log",
+    "sha256": "87167766ef2443fc9017c8b50ea2ed5c6c300610d646ab432c8d254d0737e81e"
+  },
+  "owner_decision": {
+    "relpath": "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json",
+    "sha256": "595bbcef3c269c1ce10d8d87ce789b8e107ded54015164806b43017766e76d88"
+  },
+  "review": "Root source review plus independent Sol6.1 and Astra Ultra exact flat-package review; fresh actual gates remain mandatory.",
+  "root_admission": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-admission-v1.json",
+    "sha256": "be19301adbe641859a5288d1e087b039ed583ac2cac7db720b401709a9437fc5"
+  },
+  "root_cause": "Root authoring placed the package in registered-v1 beneath a readiness package; the documented named gate selects the top readiness directory and directly globs registered plans and the recipe. It found none. This is metadata discovery, not missing actual registration or a model failure.",
+  "schema": "saea-root-precontact-layout-disposition-v1",
+  "status": "ROOT DECIDED METADATA-ONLY SUCCESSOR; FRESH FROZEN AND LIVE GATES REQUIRED"
+}
