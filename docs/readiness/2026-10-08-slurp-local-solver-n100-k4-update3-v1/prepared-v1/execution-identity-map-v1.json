@@ -1,0 +1,92 @@
+{
+  "architecture_extent": null,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-solver-n100-k4-update3-v1.json",
+    "sha256": "63a049bc750964c2b7133175ff27bb7ce17dcf00efc12e50b7e6f6e30f0162f5"
+  },
+  "local_node_basis": {
+    "proposal_custody": {
+      "registration": {
+        "relpath": "coordination/local-solver-n100-k4-update3-v1/actor-plan-registered-copy-v1.json",
+        "sha256": "7dfd8c9a451e978f4f625e23f9b6fafceb56df5b94ed42a7e0bb4320a58c48c0"
+      },
+      "validation": {
+        "relpath": "coordination/local-solver-n100-k4-update3-v1/original-proposal-validation-v1.json",
+        "sha256": "e1f34001d1c138f438560db3785a61d74097342c934af56ab5ff58c3dfa9bc70"
+      }
+    },
+    "schema": "saea-local-node-panel-basis-v1",
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "source_preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/review-off-preparation-receipt-final-v1.json",
+      "sha256": "7ea5e10254f4c74282cd799500bb8b8c03dd3475f23703756386e983d6651f97"
+    },
+    "target_role": "solver"
+  },
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-local-solver-control-n100-k4-update3-v1",
+      "cell_id": "slurp-native-stage3-local-solver-control-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-control-n100-k4-update3-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-local-solver-control-n100-k4-update3-v1-fit",
+      "fit_run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-FIT-V1",
+      "member_id": "control",
+      "planned_speech_audio_seconds": 588,
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-local-solver-control-aa-n100-k4-update3-v1",
+      "cell_id": "slurp-native-stage3-local-solver-control-aa-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-control-aa-n100-k4-update3-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-local-solver-control-aa-n100-k4-update3-v1-fit",
+      "fit_run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-FIT-V1",
+      "member_id": "control-aa",
+      "planned_speech_audio_seconds": 588,
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-1-n100-k4-update3-v1",
+      "cell_id": "slurp-native-stage3-local-solver-candidate-1-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-candidate-1-n100-k4-update3-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-1-n100-k4-update3-v1-fit",
+      "fit_run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE3-FIT-V1",
+      "member_id": "candidate-1",
+      "planned_speech_audio_seconds": 588,
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE3-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-v1",
+      "cell_id": "slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-v1-fit",
+      "fit_run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-FIT-V1",
+      "member_id": "candidate-2",
+      "planned_speech_audio_seconds": 588,
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-v1",
+      "cell_id": "slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-v1-fit",
+      "fit_run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE3-FIT-V1",
+      "member_id": "candidate-3",
+      "planned_speech_audio_seconds": 588,
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE3-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-v1",
+      "cell_id": "slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-v1-fit",
+      "fit_run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-FIT-V1",
+      "member_id": "candidate-4",
+      "planned_speech_audio_seconds": 588,
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-V1"
+    }
+  ],
+  "schema": "saea-local-node-panel-execution-identity-map-v1"
+}

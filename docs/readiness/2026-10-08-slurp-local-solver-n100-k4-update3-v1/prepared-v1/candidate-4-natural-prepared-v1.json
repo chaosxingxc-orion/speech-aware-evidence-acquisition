@@ -1,0 +1,91 @@
+{
+  "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-natural-v1",
+  "baseline": "slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-natural-v1",
+  "config_hash": "6815ce84751b0a046b0d1a8f1d70118cc1f259a8326162f6dc2647629152c130",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "contacts": 0,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-natural-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 18,
+    "protocol_hash": "77dd5a20ea3d9df30394355c7b908ba8711c4c55da96864ffe038c286cac3cf4",
+    "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-NATURAL-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-natural-v1",
+  "kind": "natural",
+  "local_node_basis": {
+    "proposal_custody": {
+      "registration": {
+        "relpath": "coordination/local-solver-n100-k4-update3-v1/actor-plan-registered-copy-v1.json",
+        "sha256": "7dfd8c9a451e978f4f625e23f9b6fafceb56df5b94ed42a7e0bb4320a58c48c0"
+      },
+      "validation": {
+        "relpath": "coordination/local-solver-n100-k4-update3-v1/original-proposal-validation-v1.json",
+        "sha256": "e1f34001d1c138f438560db3785a61d74097342c934af56ab5ff58c3dfa9bc70"
+      }
+    },
+    "schema": "saea-local-node-panel-basis-v1",
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "source_preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/review-off-preparation-receipt-final-v1.json",
+      "sha256": "7ea5e10254f4c74282cd799500bb8b8c03dd3475f23703756386e983d6651f97"
+    },
+    "target_role": "solver"
+  },
+  "member_id": "candidate-4",
+  "output_equal": true,
+  "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "coordination/local-solver-n100-k4-update3-v1/policy-archive/policies/3fed5090255538a879aab48d0574ddee95ebfbe679c52667758991498dffe74a.json",
+      "sha256": "1595faeadfbd4305502653238f986f9f9cdf753b8852b60ae3a3d0f9e1f1eba0"
+    },
+    "bundle_id": "3fed5090255538a879aab48d0574ddee95ebfbe679c52667758991498dffe74a",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-NATURAL-V1/phase-supply-v1.json",
+    "sha256": "98c6eef62761d8abe79397a76a72c11e731fc2f26a3258ced29d4614535f640d"
+  },
+  "prepared_source_commit": "5ec6c6bf7473dd783a85faf0ee415a0d57a6dc1c",
+  "pure_capacity_budget": null,
+  "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-NATURAL-V1",
+  "runtime_admission": false,
+  "runtime_sample_ids": [
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "source_policy": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/compiled-v1/candidate-4-policy-v1.json",
+    "sha256": "afb2739575b36e7870c3c4ae91dd2de0500ba3157f12b62521bad8ba727e29f6"
+  },
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-NATURAL-V1/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "98c6eef62761d8abe79397a76a72c11e731fc2f26a3258ced29d4614535f640d"
+    }
+  ],
+  "warm_verified": true
+}

@@ -8564,3 +8564,17 @@ Preserve all prior immutable exposure rows. Counts are declared ceilings; genera
 | date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-10-08 | SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE3-PROPOSE-V1 | bounded-discovery-probe | 4 configured Solver-only positions in one isolated opportunity | GPT-6 Astra Ultra subscription subagent | slurp fixed N100 own aggregate feedback | discovery | 144b2f097bf70c0b274e7112e29fad2fcdaa3bc00c6e43bd6d7e533d61b3ef3c | yes | 1 | 0 | 0 | All original parent and source N100 feedback exposure; no peer or case export | docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/actor-plan-v1.json | ROOT COUNTERSIGNED 2026-10-08T19:18:09.390726+00:00 under owner227. Fresh complete batch reserved before contact; old slots remain spent; invalid/no-change positions preserved; no runtime admission or paid API spend. Original isolated actor dispatched once; all configured positions spent. docs/receipts/continuation/2026-10-08-local-solver-n100-k4-update3-v1-actor-dispatched-v1.json. |
+
+
+## Complete Reviewer aggregate interpretation review, 2026-10-08T19:31:19.605309+00:00
+
+| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-08 | SAEA-SLURP-LOCAL-REVIEWER-K4-UPDATE1-ROOT-AGGREGATE-REVIEW-V1 | bounded-discovery-probe | one complete-family aggregate interpretation review; zero proposal positions | GPT-6 Astra Ultra subscription subagent | slurp fixed N100 root-facing aggregate review | discovery | 144b2f097bf70c0b274e7112e29fad2fcdaa3bc00c6e43bd6d7e533d61b3ef3c | yes | 1 | 0 | 0 | Exact root-qualified complete Reviewer N100 family; no raw cases or optimizer export | /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-k4-update1-root-aggregate-review-v1/review-plan-v1.json | ROOT COUNTERSIGNED 2026-10-08T19:31:19.605309+00:00 under owner227 before review contact. Root retains interpretation; no policy activation, scorer/model-runtime contact or paid API spend. |
+
+
+## Reviewer update2 source engineering review, 2026-10-08T19:45:12.178306+00:00
+
+| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-08 | SAEA-SLURP-LOCAL-REVIEWER-UPDATE2-SOURCE-REVIEW-V1 | model-free-check | one source-only engineering review; zero proposal positions | GPT-6 Astra Ultra subscription subagent | slurp metadata only; no task outcomes | discovery | source-only | yes | 1 | 0 | 0 | Exact pinned source/helper and synthetic fixtures only | /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-update2-astra-review-v1/review-plan-v1.json | ROOT COUNTERSIGNED 2026-10-08T19:45:12.178306+00:00 under owner227 before review contact; no runtime/score/tokenizer contact or scientific read authority. |

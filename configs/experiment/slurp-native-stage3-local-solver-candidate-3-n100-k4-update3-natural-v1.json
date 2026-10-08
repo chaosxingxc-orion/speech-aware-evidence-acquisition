@@ -1,0 +1,82 @@
+{
+  "architecture_member": "candidate-3",
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-natural-v1",
+      "baseline_fragment": "slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-natural-v1",
+      "cell_id": "slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-natural-v1",
+      "dataset_fragment": "slurp-speech-native-simple-consumption-n100-graph4-v1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Fresh local node proof; exact root registration pending.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE3-NATURAL-V1",
+      "system_text_policy_binding": {
+        "bundle": {
+          "relpath": "coordination/local-solver-n100-k4-update3-v1/policy-archive/policies/324d4be56bec75acc98486bb1425450b8d1a4e7a4f0b64972f54224e5a3c0b03.json",
+          "sha256": "98673127c8323b7a34a7b341672b4a4560134a4f643064b81fc8fdcd522a2ee1"
+        },
+        "bundle_id": "324d4be56bec75acc98486bb1425450b8d1a4e7a4f0b64972f54224e5a3c0b03",
+        "schema": "saea-system-text-role-binding-v1"
+      }
+    }
+  ],
+  "date": "2026-10-07",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 18,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE3-NATURAL-V1",
+  "family_budget": {
+    "actual_request_fit_endpoint_cap": 32,
+    "complete_system_trajectories": 4,
+    "generation_calls_cap": 8,
+    "official_complete_scoring_jobs": 0
+  },
+  "native_graph_capacity_profile": "review-off-v1",
+  "population": {
+    "count": 4,
+    "roster_receipt": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-preparation-v1/graph-roster-v1.json",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-simple-consumption-n100-graph4-v1",
+      "ids": [
+        "slurp:train:005407:audio-1502374837",
+        "slurp:train:003560:audio-1501686037",
+        "slurp:train:005513:audio-1494513310",
+        "slurp:train:011838:audio-1490369500"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "split_id": "SLURP-SIMPLE-CONSUMPTION-N100-GRAPH4-V1",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "Manual architecture capacity; no learning or task-quality feedback.",
+    "operators_used": []
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0,
+    "measurement_design": "form-proof",
+    "note": "Four unchanged policies on registered prefix100: diagnostic form proof, no benefit or independent validation claim.",
+    "primary_metric": "official pooled SLU-F1",
+    "primary_metric_key": "slu",
+    "read_roster": "SLURP-SIMPLE-CONSUMPTION-N100-GRAPH4-V1",
+    "rows": 4,
+    "tuning_roster": "none"
+  }
+}

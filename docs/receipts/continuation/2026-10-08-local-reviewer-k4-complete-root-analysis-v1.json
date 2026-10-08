@@ -1,0 +1,68 @@
+{
+  "all_member_reader_exits": {
+    "candidate-1": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-reader-v1-exit.json",
+      "sha256": "433c728dec7bf53c203d75d050b5bef3da5944aa91e4c126a026831e78ecab9a"
+    },
+    "candidate-2": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-2-reader-v1-exit.json",
+      "sha256": "c2e9f77b5a5276c8525c3844733b5c0c046dd974318f76cbf3749e3b6b0d0efe"
+    },
+    "candidate-3": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-3-reader-v1-exit.json",
+      "sha256": "b204ab23f8c07f0fc51d10b5e80135c1de4e75b6af223145a3b83af29072e767"
+    },
+    "candidate-4": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-4-reader-v1-exit.json",
+      "sha256": "c6d87962735c6186cd8330f511b6c84eeb69f48d390c59284e745a80a561fa1a"
+    },
+    "control": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-reader-v1-exit.json",
+      "sha256": "26e4a34095e94809048521ad2c2f483b5e123e982d494080fca28ca8a31ac4b3"
+    },
+    "control-aa": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-aa-reader-v1-exit.json",
+      "sha256": "a1e8004c5a1f1e7cd1ba97d32ed87a1d358e0d5ed4b441d184cd3366c798cee5"
+    }
+  },
+  "at_utc": "2026-10-08T19:43:08.710740+00:00",
+  "contacts_added": {
+    "runtime_model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "independent_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-k4-update1-root-aggregate-review-v1/original-review-v1.json",
+    "sha256": "5058832b7997459734ec7bd76ae780adcc42c99e97104f6f9ed461a04f1c368d"
+  },
+  "interpretation": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-k4-update1-complete-analysis-v1/aggregate-summary-v1.json",
+    "sha256": "b8ee1eb9bdd25a47ae26906884131f8ca7cc64ef06b004dbbcfec8cb2b4a7ef5"
+  },
+  "learner_export": false,
+  "monitor": "slurp-local-reviewer-k4-n100-health deleted after original terminal",
+  "original_reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-family-read-v1/family-reader-v1-exit.json",
+    "sha256": "5c0655ab24bf424616dbcb11b32ff6aa33f33566c420515978ee202bc2b700e4"
+  },
+  "original_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-original-terminal-closure-v1.json",
+    "sha256": "2d4833751bc8deaddbf6c683cb17441781c4aabfdb4cbab786784d3c590da713"
+  },
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-family-read-v1/family-qualified-v1.json",
+    "sha256": "1d3c6196fa261fc24f0fd50a2a6ba32600f0957a51c137551540e1101ab7023c"
+  },
+  "report": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-k4-update1-complete-analysis-v1/README.md",
+    "sha256": "ea0b75091b593a097f555c6ad8ad173a111467a3e4d81eb1dfca49dba4dc3683"
+  },
+  "root_READ": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-family-read-v1/root-countersignature-v1.json",
+    "sha256": "4f36394c0d106ffa6c6be3619fe6e04677165b93ac8d3c6e6350b6b4672ec724"
+  },
+  "root_decision": "Keep the fixed parent; candidate-2 is only the registered exploratory tie-break choice; prepare the next prospectively registered Reviewer-only K4 opportunity.",
+  "schema": "saea-local-complete-family-root-analysis-receipt-v1",
+  "status": "COMPLETE_FIXED_N100_DEVELOPMENT_REVIEW_NO_ADOPTION",
+  "system_adoption": false
+}

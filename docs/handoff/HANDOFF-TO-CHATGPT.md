@@ -1,5 +1,21 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Solver opportunity3 held preparation complete; Reviewer next K4 source ready (2026-10-08T20:02:27.518597+00:00)
+
+Original canonical Solver preparation exited0. All six configured members and18 capacity/graph/natural companions have exact preserved asset outputs and pass warm verification. K4/N100 and all budgets derive from config. No model/tokenizer/scorer contact occurred; capacity, structural proof and exact GPU admission remain pending. See `docs/receipts/continuation/2026-10-08-local-solver-update3-held-preparation-complete-v1.json`.
+
+Reviewer update1 complete interpretation is recorded in `docs/readiness/2026-10-08-slurp-local-reviewer-k4-update1-complete-analysis-v1/README.md`. Its monitor was deleted. Keep the original parent; no raw entity primary improvement was found. The source-only Reviewer update2 helper passed96 independent tests and alternate-N checks. A complete own four-record/two-control input rehearsal is70930 bytes. Before reservation/contact, root227 prospectively amended only the next application input limit from65536 to81920 bytes, preserving all records, output bounds, K/N and execution budgets. Exact decision: DATA `coordination/local-reviewer-update2-input-capacity-v1/root-decision-v1.json`. No new Reviewer proposal is reserved or dispatched yet; exact own-projection registration remains required.
+
+Keep role edits and learning feedback isolated, same immutable N100 roster, one serial GPU campaign and overlapping CPU preparation/analysis/scoring. No stable benefit, system adoption or learning advantage is established. Preserve4GiB floors and every historical/frozen record. Create a15minute job monitor upon the next actual GPU launch only. Broad goal remains active and incomplete; return to the human before8x400.
+
+## Reviewer K4 update1 complete interpretation; next local K4 preparation (2026-10-08T19:43:08.710740+00:00)
+
+All six original Reviewer N100 members and their uniquely scored/sealed family are complete. Root qualified, countersigned and read the original full-family report once; all descriptive readers exited zero. The original driver/wrapper exited zero and its job monitor was deleted. See `docs/receipts/continuation/2026-10-08-local-reviewer-k4-complete-root-analysis-v1.json` and `docs/readiness/2026-10-08-slurp-local-reviewer-k4-update1-complete-analysis-v1/README.md`. No score was replayed.
+
+No candidate improves the registered raw entity net-repair primary: control/A/A/candidate-2/candidate-3 are0/100, candidate-1 is-2/100 and candidate-4 is-1/100. Candidate-2 is the exploratory lower-false-alarm tie-break choice, not an improved repair policy; keep the original parent. Candidate-3 detects32/38 known errors without positive raw entity net repair, while candidate-2 detects2/42. Preserve unknowns, fixed-N primary, conditional denominators and separate model/postprocessing stages. Official F1 paired intervals span zero. Full strata and A/A are retained. No stable benefit, learning advantage, system adoption or current learner export is authorized.
+
+One completed Reviewer local update leaves the prospective second update before plateau review. A fresh own-aggregate K4 proposal requires its exact registration; no Solver/raw-case/knowledge/milestone feedback enters it. Solver opportunity3 original four templates passed unchanged compilation; its independent canonical CPU preparation is in progress and does not yet authorize GPU execution. K/N and budgets derive from config; GPU serial, CPU analysis/preparation parallel, four concurrent samples per member,4GiB floors. Create a15minute job monitor only upon the next exact GPU launch. The broad goal remains active and incomplete; human review remains required before8x400.
+
 ## Reviewer original K4 N100 terminal verified; exact family READ admitted (2026-10-08T19:26:29.979374+00:00)
 
 All six original Reviewer members independently FINALIZED100 rows with verified seals, one unique successful complete official score each and zero failed jobs:600 trajectories. Original driver and Windows wrapper exited0; the terminal helper verified original process/control custody without altering it. Root countersigned the exact full-family READ and invoked the unchanged reader once; verify its original exit before interpretation. The last independent member descriptive reader likewise runs under its own prior qualification/signature. No official score is replayed. Evidence: `docs/receipts/continuation/2026-10-08-local-reviewer-k4-n100-original-terminal-read-admitted-v1.json`.
@@ -7323,7 +7339,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T19:26:29.979374+00:00
+Last refreshed: 2026-10-08T20:02:27.518597+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

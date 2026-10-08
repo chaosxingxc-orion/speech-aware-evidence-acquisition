@@ -1,0 +1,55 @@
+{
+  "accounting": {
+    "K": 4,
+    "N": 100,
+    "active_node_counts": {
+      "candidate-1": 2,
+      "candidate-2": 2,
+      "candidate-3": 2,
+      "candidate-4": 2,
+      "control": 2,
+      "control-aa": 2
+    },
+    "candidate_trajectories": 400,
+    "control_trajectories": 200,
+    "family_trajectories": 600,
+    "fit_endpoints_cap": 4800,
+    "generation_contacts_cap": 1200
+  },
+  "at_utc": "2026-10-08T20:02:27.518597+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "members": [
+    "candidate-1",
+    "candidate-2",
+    "candidate-3",
+    "candidate-4",
+    "control",
+    "control-aa"
+  ],
+  "original_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-engineering-helper-v1/solver-n100-k4-update3-v1-5ec6c6bf7473-plan/root-original-preparation-exit-v1.json",
+    "sha256": "35316bfe389560bb160971ec8d272a5bcc27fe047f7b314795cb7867a15ef7b8"
+  },
+  "original_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-engineering-helper-v1/solver-n100-k4-update3-v1-5ec6c6bf7473-plan/preparation-input-v1.json",
+    "sha256": "315fde7da2a7f06e4a39761dcbd4f2a24009f1ad7483a64b5aef9cc66c6ee191"
+  },
+  "population": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/configs/experiments/slurp-local-solver-n100-k4-update3-v1.json",
+    "sha256": "63a049bc750964c2b7133175ff27bb7ce17dcf00efc12e50b7e6f6e30f0162f5"
+  },
+  "preparation_summary": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "87c1227a35d4900f93372bbea10e59313ad7ace353f136a93291fe13d638690c"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-local-held-preparation-complete-v1",
+  "scope": "Reuse immutable original same-N100 assets; all output bytes equal and warm verification passed. No new data/knowledge construction, GPU/scorer/tokenizer call, control change or frozen source edit.",
+  "source_commit": "5ec6c6bf7473dd783a85faf0ee415a0d57a6dc1c",
+  "status": "ORIGINAL_CPU_PREPARATION_PASSED_HELD_FOR_CAPACITY_ENGINEERING_ADMISSION",
+  "verified_generation_and_companion_receipts": 24
+}
