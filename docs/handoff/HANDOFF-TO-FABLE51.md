@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Original Solver update2 proposal batch rejected; explicit response contract preparation (2026-10-08T19:01:33.567214+00:00)
+
+One isolated Astra Ultra opportunity returned all four configured Solver positions. The unchanged production parser rejected each literal dotted `role_text.solver` key; its contract requires `changes` containing `role_text` containing `solver`. The capsule stated the editable path without a nested serialization example. Root records this as a source-contract preparation defect, not a GPU or task-quality failure. Original responses, access report, plans and capsule are immutable; all four positions are spent. No response is normalized, repaired, compiled or activated. Provider verification, usage and duration remain unknown rather than inferred. See `docs/receipts/continuation/2026-10-08-local-solver-update2-proposer-rejected-v1.json`.
+
+Under owner227 root will prepare a prospectively registered fresh K4 opportunity with an explicit canonical JSON skeleton. Preserve the original parent, same N100 roster, complete own qualified Solver update1 aggregates, local selection and two evaluated-update review rule. Rejected proposals have no runtime outcomes and are not scientific history records. Proposal iteration and evaluated-update count are separate. No Reviewer outcome is exported. New source tests and exact registration must precede the new actor; no new allocation is silently substituted.
+
+The independent Reviewer campaign continues unchanged; at18:58Z control, A/A and candidates1/2 were FINALIZED and candidate3 OPENED. Revalidate actual state. Root has completed only independently qualified descriptive reads; full-family comparison and learning still wait for all six and exact READ. Keep four concurrent samples, overlapping CPU scoring,4GiB floors and the15minute job monitor until original terminal. The broad goal remains active and incomplete; return to the human before8x400.
+
 ## Reviewer independently completed-member descriptive READ; original GPU campaign continues (2026-10-08T18:58:44.255832+00:00)
 
 Root independently qualified and countersigned the descriptive READ for candidate-1. Each has 100 FINALIZED trajectories, a verified original seal, exactly one successful complete official score and zero failed jobs. The unchanged offline reader completed once using the saved score. Exact source custody and exits are in `docs/receipts/continuation/2026-10-08-local-reviewer-k4-n100-candidate-1-member-read-v1.json`. No scorer, tokenizer or model contact was added.
@@ -899,7 +907,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-08T18:58:44.255832+00:00
+Last refreshed: 2026-10-08T19:01:33.567214+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

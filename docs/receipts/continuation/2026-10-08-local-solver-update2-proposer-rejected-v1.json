@@ -1,0 +1,41 @@
+{
+  "access_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update2-v1/access-report.json",
+    "sha256": "2dd07a7cd094a46d237ec918319e8d9114cc1658165cff57b58020eb980eab71"
+  },
+  "actor_plan": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update2-v1/actor-plan-v1.json",
+    "sha256": "fefc2bb37eda206a3380cdb0c676018e24811caff83c2975d32e447ad3cc171a"
+  },
+  "at_utc": "2026-10-08T19:01:33.567214+00:00",
+  "authorized_next_scope": "Source-only contract preparation now; exact new proposal registration precedes any further actor contact. No runtime admission.",
+  "capsule": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update2-v1/actor-capsule.json",
+    "sha256": "3542b7f52591cd11a7edc6dfd4683cb8cbedc377f72bb2c774de595833d8225c"
+  },
+  "exact_provider_dispatch_time_unavailable": true,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "named_component": "The capsule described a role path but did not supply the canonical nested changes JSON example. The returned literal dotted key is invalid under the unchanged shared parser.",
+  "original_response": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update2-v1/original-response.json",
+    "sha256": "831f346dfed3258d600a37addc4903e747c5c608a8b03dc24b04564598c8a1d2"
+  },
+  "owner_decision": 227,
+  "paid_api_spend": 0,
+  "provider_duration_seconds": null,
+  "provider_usage": null,
+  "provider_verified_effort": null,
+  "provider_verified_model": null,
+  "requested_model": "gpt-6-astra",
+  "requested_reasoning_effort": "ultra",
+  "reviewer_interference": false,
+  "root_disposition": "Preserve all original bytes and count every position as spent. Do not normalize, repair, compile, activate or replace this batch. Prepare a prospectively registered fresh four-position opportunity with an explicit canonical nested response example and tested source contract. Keep the original parent, same N100 roster, own qualified update1 feedback, local objective and two evaluated-update review rule unchanged. Proposal iteration and number of completed evaluated updates remain distinct.",
+  "schema": "saea-root-local-proposer-completion-disposition-v1",
+  "semantic_opportunities_used": 1,
+  "status": "ORIGINAL_OPPORTUNITY_COMPLETE_ALL_FOUR_POSITIONS_SPENT_REJECTED",
+  "task": "/root/local_solver_k4_update2_templates_astra_ultra",
+  "validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update2-v1/original-proposal-rejection-v1.json",
+    "sha256": "ecfa567cab2927521e153c4ca50aeb55be4eb2969a02468b4ca173b04bdb9823"
+  }
+}
