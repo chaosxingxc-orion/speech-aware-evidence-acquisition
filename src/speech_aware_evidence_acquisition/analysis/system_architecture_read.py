@@ -58,6 +58,7 @@ def validate_source_registration(recipe, registration, owner, *, repo_root, data
         == registration.get("architecture_proof")
         and recipe.get("architecture_proof") in SELECTORS
         and recipe.get("architecture_extent") == registration.get("architecture_extent")
+        and recipe.get("natural_source_compatibility") == registration.get("natural_source_compatibility")
         and registration.get("schema") == REGISTRATION
         and recipe.get("family_id") == registration.get("family_id")
         and recipe.get("learner_export") is False
@@ -176,6 +177,7 @@ def validate_source_registration(recipe, registration, owner, *, repo_root, data
             and checked["fit_cap"] == stage["member_fit_endpoints_caps"][label]
             and all(
                 p["capacity_prerequisite"] == recipe["capacity_prerequisite"]
+                and p.get("natural_source_compatibility") == recipe.get("natural_source_compatibility")
                 and p["natural_prerequisite"] == recipe["natural_prerequisite"]
                 and (recipe["architecture_proof"] != FIXED_ROSTER_SELECTOR or (
                     p.get("architecture_proof") == FIXED_ROSTER_SELECTOR

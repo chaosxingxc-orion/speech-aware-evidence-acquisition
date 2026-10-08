@@ -329,7 +329,8 @@ def _fixed400_natural(values, plans, population, *, repo_root, data_root):
     historical_capacity = admission["capacity_prerequisite"]
     capacity, _ = _qualified_capacity(basis, pin, historical_capacity, repo_root=repo_root, data_root=data_root)
     return _qualified_natural_family(basis, pin, prerequisite, historical_capacity, capacity,
-                                    repo_root=repo_root, data_root=data_root)
+                                    repo_root=repo_root, data_root=data_root, compatibility=plans["generation"].get("natural_source_compatibility"),
+                                    decision_pin=plans["generation"].get("decision_receipt"))
 
 
 def require_architecture_n20_registration(values, cell, registered_plans, *, repo_root, data_root=None):
@@ -366,9 +367,18 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
     capacity, qualified = _qualified_capacity(population, pin, prerequisite, repo_root=repo_root, data_root=data_root)
     require(plans["generation"].get("natural_prerequisite") == plans["fit"].get("natural_prerequisite"),
             "N20 pair has different natural prerequisites")
+    compatibility = plans["generation"].get("natural_source_compatibility")
+    require(compatibility == plans["fit"].get("natural_source_compatibility"), "natural compatibility pair differs")
+    if compatibility is not None:
+        require(plans["generation"].get("decision_receipt") == plans["fit"].get("decision_receipt"), "natural compatibility decisions differ")
+        authority = json.loads(_read_pin(plans["generation"]["decision_receipt"], Path(data_root).resolve()))
+        require(authority.get("schema") == "saea-campaign-decision-v1" and authority.get("status") == "decided"
+                and 227 in authority.get("owner_decisions", []) and authority.get("natural_source_compatibility") == compatibility,
+                "natural compatibility root authority differs")
     natural = (_fixed400_natural(values, plans, population, repo_root=repo_root, data_root=data_root)
                if fixed400 else _qualified_natural_family(population, pin, plans["generation"]["natural_prerequisite"],
-                   prerequisite, capacity, repo_root=repo_root, data_root=data_root))
+                   prerequisite, capacity, repo_root=repo_root, data_root=data_root, compatibility=compatibility,
+                   decision_pin=plans["generation"].get("decision_receipt")))
     member, = [m for m in capacity["members"] if m["member_id"] == identity["member_id"]]
     roster = values["populations"][0]["ids"]
     require(len(values["populations"]) == 1 and type(values["population"]["count"]) is int
@@ -588,6 +598,8 @@ def _require_n20_root_decision(plans, population, natural, *, repo_root, data_ro
     decision_pin = plans["generation"].get("decision_receipt")
     require(decision_pin == plans["fit"].get("decision_receipt"), "N20 pair root decisions differ")
     decision = json.loads(_read_pin(decision_pin, Path(data_root).resolve()))
+    require(all(p.get("natural_source_compatibility") == decision.get("natural_source_compatibility") for p in plans.values()),
+            "natural compatibility decision and pair differ")
     require(decision.get("schema") == "saea-campaign-decision-v1" and decision.get("status") == "decided"
             and 227 in decision.get("owner_decisions", []) and decision.get("learner_export") is False
             and decision.get("experiment_population") == plans["generation"]["experiment_population"]
@@ -634,7 +646,7 @@ def _require_n20_root_decision(plans, population, natural, *, repo_root, data_ro
             "N20 root admission family eligibility differs")
 
 
-def _qualified_natural_family(population, pin, prerequisite, capacity_prerequisite, capacity, *, repo_root, data_root):
+def _qualified_natural_family(population, pin, prerequisite, capacity_prerequisite, capacity, *, repo_root, data_root, compatibility=None, decision_pin=None):
     """Validate all raw-pinned structural prerequisites without reading task answers."""
     require(data_root is not None and isinstance(prerequisite, dict)
             and set(prerequisite) == {"registration", "qualification"}, "exact N20 natural prerequisite required")
@@ -671,6 +683,13 @@ def _qualified_natural_family(population, pin, prerequisite, capacity_prerequisi
     require([m.get("label") for m in qualified["members"]] == labels
             and [m.get("label") for m in root_read["members"]] == labels,
             "N20 natural family incomplete, duplicated or reordered")
+    implementation_root = repo_root
+    if compatibility is not None:
+        from .natural_source_compatibility import validate_compatibility
+        decision = read(decision_pin)
+        require(decision.get("natural_source_compatibility") == compatibility, "natural compatibility authority differs")
+        implementation_root = validate_compatibility(read(compatibility), prerequisite, qualified, decision,
+            repo_root=repo_root, data_root=data_root, read_pin=_read_pin)
     eligible = []
     for identity, member, read_member in zip(population["architecture"]["members"], qualified["members"],
                                            root_read["members"], strict=True):
@@ -699,7 +718,10 @@ def _qualified_natural_family(population, pin, prerequisite, capacity_prerequisi
         policy = drop_null_arms(json.loads(_read_pin(identity["execution_config"], repo_root)))
         require(all(values.get(k) == v for k, v in policy.items() if k != "what_this_is"),
                 "N20 natural effective policy differs")
-        _require_prepared_implementation(read(member["prepared_phase_supply"]), repo_root, values)
+        if compatibility is not None:
+            from .architecture_audio_budget import manual_architecture_audio_budget_applies
+            require(not manual_architecture_audio_budget_applies(values), "historical natural audio guard must be inactive")
+        _require_prepared_implementation(read(member["prepared_phase_supply"]), implementation_root, values)
         require(all(read_member.get(k) == member[k] for k in ("run_id", "attempt_id", "manifest", "guard_finished")),
                 "N20 root READ member custody binding differs")
         manifest, attempt, inspection, guard, report = [read(member[k]) for k in

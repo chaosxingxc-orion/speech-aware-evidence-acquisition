@@ -194,6 +194,14 @@ def validate_inputs(spec, *, repo_root, data_root):
     decision = json.loads(_read_pin(spec["decision_receipt"], data_root))
     require(spec.get("execution_identity_map") == decision.get("execution_identity_map"),
             "authoring and root execution identity maps differ")
+    require(spec.get("natural_source_compatibility") == decision.get("natural_source_compatibility"),
+            "authoring natural source compatibility differs")
+    if spec.get("natural_source_compatibility") is not None:
+        from speech_aware_evidence_acquisition.rails.natural_source_compatibility import validate_compatibility
+        prerequisite = spec["natural_prerequisite"]
+        qualified = json.loads(_read_pin(prerequisite["qualification"], data_root))
+        validate_compatibility(json.loads(_read_pin(spec["natural_source_compatibility"], data_root)),
+            prerequisite, qualified, decision, repo_root=repo_root, data_root=data_root)
     extent = spec.get("architecture_extent")
     if spec.get("execution_identity_map") is not None:
         from speech_aware_evidence_acquisition.rails.architecture_natural_registration import _mapped_execution_cells
@@ -464,6 +472,8 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
                 }
                 if spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR:
                     document["architecture_extent"] = deepcopy(spec["architecture_extent"])
+                if spec.get("natural_source_compatibility") is not None:
+                    document["natural_source_compatibility"] = deepcopy(spec["natural_source_compatibility"])
                 if spec.get("execution_identity_map") is not None:
                     document["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
                 plans.append(document)
@@ -605,6 +615,9 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
     if spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR:
         wrapper["architecture_extent"] = deepcopy(spec["architecture_extent"])
         recipe["architecture_extent"] = deepcopy(spec["architecture_extent"])
+    if spec.get("natural_source_compatibility") is not None:
+        wrapper["natural_source_compatibility"] = deepcopy(spec["natural_source_compatibility"])
+        recipe["natural_source_compatibility"] = deepcopy(spec["natural_source_compatibility"])
     if spec.get("execution_identity_map") is not None:
         wrapper["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
         recipe["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
