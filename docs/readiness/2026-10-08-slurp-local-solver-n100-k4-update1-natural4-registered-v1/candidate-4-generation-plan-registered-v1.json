@@ -1,0 +1,65 @@
+{
+  "architecture_member": "candidate-4",
+  "architecture_proof": "natural-four-row-v1",
+  "at_utc": "2026-10-08T14:51:31.783194+00:00",
+  "capacity_prerequisite": {
+    "qualification": {
+      "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/capacity-qualified-v1.json",
+      "sha256": "3257672b0302ee6381b534f258f4eb26c75957499c71d30eac6e2519efaf8ef1"
+    },
+    "registration": {
+      "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/registration-v1.json",
+      "sha256": "6092d68423050428221b52a6ded56d7e9852459fe651b57d45a71cbea37a82fb"
+    }
+  },
+  "cell": "slurp-native-stage3-local-solver-candidate-4-n100-k4-update1-natural-v1",
+  "composed_config_hash": "6463836822ef963c29cb39b44bff5338bcaaf256c9fed212fadc5879b9d31e86",
+  "decision_receipt": {
+    "relpath": "coordination/local-solver-n100-k4-update1-natural4-v1/root-admission-v1.json",
+    "sha256": "6f58ce73fc42b8950c1ae5cb8965fc43edb55b740380b000f2756e059cff68d7"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-4-n100-k4-update1-natural-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 18,
+    "protocol_hash": "f0555be219b9e12b9db2c391c2711767a850daf0d3abcba36639debfdc6844a9",
+    "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-local-solver-candidate-4-n100-k4-update1-natural-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-solver-n100-k4-update1-v1.json",
+    "sha256": "6ab2f6f4fea7de23c4d35d08f893e669263c240440ed4f65513161311612f9e3"
+  },
+  "learner_export": false,
+  "official_score_jobs": 0,
+  "plan_role": "generation",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "coordination/local-solver-n100-k4-update1-v1/policy-archive/policies/5ed7287f737ee73c96c93e4cf1cc9ae0424d3cf2ae541b7f33777d882bcc394d.json",
+      "sha256": "b8198ead0a8e3abd0143d1639cd8d33a31b2ebb1696c1e9b899284489186be1d"
+    },
+    "bundle_id": "5ed7287f737ee73c96c93e4cf1cc9ae0424d3cf2ae541b7f33777d882bcc394d",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_cohort": "local-solver-k4-update1",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+    "sha256": "81352fd12ae53d136d9f1211c8ee177a601fe34a3ed18fea55bc5cbcceaff80a"
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "schema": "saea-registered-generation-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}
