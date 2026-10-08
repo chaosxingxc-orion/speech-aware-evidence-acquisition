@@ -1,5 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Solver K4 capacity qualified; Reviewer serial capacity launched (2026-10-08T14:36:50.532882+00:00)
+
+Solver's six-member original capacity family ended2026-10-08T14:24:00.7924704Z with all worker/lease/observer/outer exits0. The unchanged shared qualifier passed:936 tokenizer endpoints,48 measured requests, zero generation/scorer contacts, and minimum6748 tokens remaining after full output and structural reserves. Exact per-member evidence and the qualification pin are in `docs/receipts/continuation/2026-10-08-local-solver-capacity-qualified-reviewer-launched-v1.json`. The Solver job monitor was deleted; preserve every original receipt. This is capacity evidence, not task benefit.
+
+Reviewer is running from Windows launch2026-10-08T14:33:54.8949752Z, owner PID24596 (revalidate), DATA `coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1`. Frozen worker remains `codex-local-reviewer-k4-capacity-frozen-v2` ate03a13e6350b1515f64136f25c892da44fb85bbc; registration SHA9b9306b5ca1b969fb4234e763b4e3a546ed1e21bbed6ef82b4a2a0895d9c4d85. All six configured members must complete independently; cap1794 tokenizer endpoints, zero generation/official scoring. The15minute `slurp-local-reviewer-k4-capacity-health` monitor is ACTIVE, delete at verified original terminal. Solver and Reviewer capacity never overlap.
+
+Before Reviewer task creation, tool approval once timed out and a root-only cross-clock freshness assertion subsequently refused. Neither started an experiment or consumed contacts. The exact assertion-time delta was not captured, so permanent clock skew is unestablished. Root227 preserved original snapshots and replaced only the outer freshness comparison with a native Windows Stopwatch bound of120seconds; capture/check took1.27seconds, Windows free46.19GiB. Registered source/wrapper/runtime guards,4GiB floors, budgets and service remain unchanged. See its `root-prelaunch-clock-disposition-v1.json`. This is no monitor retry authority.
+
+Root now invokes the reviewed CPU-only Solver natural4 readiness preparation using its fresh complete capacity pair; its original started/exit/failure evidence will appear in DATA `coordination/local-solver-n100-k4-update1-natural4-v1`. Do not duplicate the original invocation or modify that mutable checkout while it runs. Reviewer capacity may overlap this CPU preparation; natural GPU work waits for serial admission. No natural/scientific generation, task-quality read or local selection has yet occurred. Keep K4 plus controls, role-isolated feedback and existing human8x400 boundary.
+
+
 ## Local K4 source checks complete; Solver capacity launched (2026-10-08T14:16:57.890716+00:00)
 
 Both successor frozen checks completed with every configured member passing the unchanged named registration/runtime gates. Root finalized separate Solver and Reviewer capacity registrations at frozen sourcee03a13e6350b1515f64136f25c892da44fb85bbc. Each role retains four candidates plus control/A/A. Exact input, lineage, original authoring, complete checker terminal and final registration pins are recorded in `docs/receipts/continuation/2026-10-08-local-k4-capacity-entry2-admitted-launch-v1.json`. Prior refusals and frozen workers remain immutable; no original authoring was repeated.

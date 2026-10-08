@@ -1,0 +1,103 @@
+{
+  "at_utc": "2026-10-08T14:36:50.532882+00:00",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "natural_preparation": {
+    "entry": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-v1",
+    "fresh_complete_capacity_required": true,
+    "role": "solver",
+    "root_capture_source": {
+      "path": "/mnt/c/Users/35686/AppData/Local/Temp/saea_local_k4_natural_prepare.py",
+      "sha256": "3740622a3c5ff1552d8be948c32ee00f35a8623fc183042df0d284cd3486462b"
+    },
+    "status": "READY_FOR_ORIGINAL_CPU_ONLY_INVOCATION"
+  },
+  "owner_decision": 227,
+  "reviewer": {
+    "interval_minutes": 15,
+    "launch": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/root-task-launch-v1.json",
+      "sha256": "a213701a415b0515a1c06ae215e1b41d833835c35f1047eb0563b7775f12411d"
+    },
+    "monitor_id": "slurp-local-reviewer-k4-capacity-health",
+    "monitor_status": "ACTIVE",
+    "original_terminal": null,
+    "original_terminal_observed": false,
+    "prelaunch": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/root-prelaunch-state-v3.json",
+      "sha256": "a2bde64430adc24adb295dcbe104e3251f9224e24c26f36e61c29505243b0b97"
+    },
+    "registration": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/registration-v1.json",
+      "sha256": "9b9306b5ca1b969fb4234e763b4e3a546ed1e21bbed6ef82b4a2a0895d9c4d85"
+    },
+    "root_precontact_disposition": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/root-prelaunch-clock-disposition-v1.json",
+      "sha256": "dc6077c8f8f14e3471fa5c8e74e238447923db56a71d7bb247110d6de4b51468"
+    },
+    "started": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/capacity-task-started.json",
+      "sha256": "321b92d84d4256385386d9f2353a9538419443a7ee8da03aceb1aeccd8b17f7a"
+    },
+    "windows_owner_pid": 24596
+  },
+  "schema": "saea-root-local-capacity-serial-transition-v1",
+  "scope": "Capacity qualification only, not task-quality or optimizer feedback. Natural and scientific generation remain unlaunched.",
+  "solver": {
+    "generation_contacts": 0,
+    "measured_requests": 48,
+    "members": [
+      {
+        "contacts": 156,
+        "label": "control",
+        "measured_requests": 8,
+        "minimum_margin_after_structural_reserve": 6798
+      },
+      {
+        "contacts": 156,
+        "label": "control-aa",
+        "measured_requests": 8,
+        "minimum_margin_after_structural_reserve": 6798
+      },
+      {
+        "contacts": 156,
+        "label": "candidate-1",
+        "measured_requests": 8,
+        "minimum_margin_after_structural_reserve": 6765
+      },
+      {
+        "contacts": 156,
+        "label": "candidate-2",
+        "measured_requests": 8,
+        "minimum_margin_after_structural_reserve": 6756
+      },
+      {
+        "contacts": 156,
+        "label": "candidate-3",
+        "measured_requests": 8,
+        "minimum_margin_after_structural_reserve": 6767
+      },
+      {
+        "contacts": 156,
+        "label": "candidate-4",
+        "measured_requests": 8,
+        "minimum_margin_after_structural_reserve": 6748
+      }
+    ],
+    "monitor_id": "slurp-local-solver-k4-capacity-health",
+    "monitor_status": "DELETED",
+    "original_terminal": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/capacity-task-exit.json",
+      "sha256": "ce326085ee06901456ceb567cf7744ae250eec68f70f8caebb8c543667280605"
+    },
+    "qualification": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/capacity-qualified-v1.json",
+      "sha256": "3257672b0302ee6381b534f258f4eb26c75957499c71d30eac6e2519efaf8ef1"
+    },
+    "registration": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/registration-v1.json",
+      "sha256": "6092d68423050428221b52a6ded56d7e9852459fe651b57d45a71cbea37a82fb"
+    },
+    "scorer_contacts": 0,
+    "tokenizer_endpoints": 936
+  }
+}
