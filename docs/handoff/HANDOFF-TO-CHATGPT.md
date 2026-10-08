@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Local K4 source checks: exact carrier caption corrected before contacts (2026-10-08T13:15:45.570994+00:00)
+
+Both original frozen checks stopped at the first named registration gate: Solver13:07:15Z and Reviewer13:10:55Z on2026-10-08. The original authorer emitted `SLURP declared immutable cohort`, while each plan declares the exact carrier key `slurp`. This is a root metadata preparation defect, with zero tokenizer/model/scorer contacts. Preserve both original frozen workers, checker outputs, successful CPU authoring and all original pins. The preceding snapshot raced Solver completion; its running-state prose is superseded here.
+
+Under227 root corrected only the24 newly registered capacity FIT/STRUCTURE carrier cells, preserving every other ledger line and all plan/config/template/data/source bytes. All12 actual named registration checks now pass with zero contacts. See `docs/receipts/continuation/2026-10-08-local-k4-capacity-caption-disposition-v1.json`. Root uses fresh successor checker/launch namespaces and clean frozen sources; original expensive authoring is reused through exact custody, not rerun. Full original frozen runtime/source checks remain mandatory. GPU capacity, natural proof and scientific generation remain unlaunched. Existing STOP/queue/service are untouched. No new owner decision is required for this bounded incident disposition.
+
+The independent prospective natural4 engineering approval remains valid; it does not confer live admission. Keep K4 per role plus control/A/A, the same100-input pool,4GiB floors, role-isolated feedback and serial GPU work. No quality or learning improvement is established.
+
 ## Local K4 capacity registration complete; original frozen checks running (2026-10-08T13:09:12.767486+00:00)
 
 Both original CPU capacity authorings exited0: Solver at13:02:09Z and Reviewer at13:06:23Z on2026-10-08. Each registered all six configured members (four original templates plus control/A/A), preserving old ledger rows and exact original preparation bytes. New-row UTC correction and12 exact-byte flat plan/recipe mirrors per role satisfy existing discovery; original nested pins remain authoritative. Root serially integrated the two records and froze separate workers. See `docs/receipts/continuation/2026-10-08-local-k4-capacity-registered-and-natural-base-v1.json` for raw original terminals, sources and member pins.

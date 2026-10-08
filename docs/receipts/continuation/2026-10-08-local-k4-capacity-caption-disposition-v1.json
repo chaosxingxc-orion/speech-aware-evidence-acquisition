@@ -1,0 +1,349 @@
+{
+  "actual_named_checks": [
+    {
+      "exit_code": 0,
+      "label": "control",
+      "role": "solver",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-control-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-control-registration.stdout.json",
+        "sha256": "2001d820b7cab92b43ce078f8195936d5261da9a45a547d1f53d646923adb8fc"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "control-aa",
+      "role": "solver",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-control-aa-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-control-aa-registration.stdout.json",
+        "sha256": "ebeaedfa38bdb909b9408cc1cc6e1bfa0179fd4a13cdb1ea5d3f8cc8f8ab2c9d"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-1",
+      "role": "solver",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-candidate-1-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-candidate-1-registration.stdout.json",
+        "sha256": "3d57bf3f83b3a47dd727fac12974409d803118bd115b79997617ca571a84f5ad"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-2",
+      "role": "solver",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-candidate-2-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-candidate-2-registration.stdout.json",
+        "sha256": "4610e9981d442822c7eb5a020cbc48e484ece36b2d26996f01b8706965a6ef78"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-3",
+      "role": "solver",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-candidate-3-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-candidate-3-registration.stdout.json",
+        "sha256": "e3956567f847201615c6a9b9c037dd73e39a422277442b3e94aa152f5ebd8d0f"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-4",
+      "role": "solver",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-candidate-4-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/solver-candidate-4-registration.stdout.json",
+        "sha256": "2cb066759624bb5e990848c317db9d7f703c1a71e2a35d91576356a147f2a5b0"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "control",
+      "role": "reviewer",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-control-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-control-registration.stdout.json",
+        "sha256": "0848404aaa003e515d370aecbca5e30dde702f928c40c1353a4bce08222bd050"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "control-aa",
+      "role": "reviewer",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-control-aa-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-control-aa-registration.stdout.json",
+        "sha256": "0e671651d1664941fcca9449fd950f6a16b3f39fcb56654ee196814458d08498"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-1",
+      "role": "reviewer",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-candidate-1-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-candidate-1-registration.stdout.json",
+        "sha256": "bddd9b6ca87a5ed7f84edf78e5c0f4d7254824f369976ef17874cea6c96216a6"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-2",
+      "role": "reviewer",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-candidate-2-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-candidate-2-registration.stdout.json",
+        "sha256": "da22bb555d0cd2427d745c7dfbaaf1290ddbf48bf4513edf5e76308ff6fa456c"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-3",
+      "role": "reviewer",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-candidate-3-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-candidate-3-registration.stdout.json",
+        "sha256": "4b01ea0b9831ca0f7771681d196c31197bdca00885eb5f3ddbadbee80448be50"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-4",
+      "role": "reviewer",
+      "stderr": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-candidate-4-registration.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-k4-capacity-caption-disposition-v1/reviewer-candidate-4-registration.stdout.json",
+        "sha256": "5b0a31bd4185299a052f02916aa1a6b72206074df66352ce50e45133a47c1bdc"
+      }
+    }
+  ],
+  "all_other_ledger_lines_byte_identical": true,
+  "at_utc": "2026-10-08T13:15:45.570994+00:00",
+  "changed_rows": [
+    {
+      "after_sha256": "c1d9ac36cb2b639414f6d918233a21489bc71c193df030111b01f90f73ad9991",
+      "before_sha256": "5f67d4fc5ff9dd1c1cb33282fa1be91575c5428f01fc094dd0227ea0b7e0c8d8",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "f8a881934c0ec6eea59dca664c74114f9a85e680da12a4d2106b1c20bd5a1988",
+      "before_sha256": "5389aed5fd78ef590c904b4695da570ed37bcd81a015008709ee425fb4c2dab1",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "23332eecd3cde636977c150ec7946ed7b4e4219dcafe5d148bda328fe3c4ebcd",
+      "before_sha256": "0033b87cdf241f947859c85a771afcfb43d58b7cc7fbd8c3b2a98d33ca4c689d",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "7619ee050cc4a7d80a1c2c97dfdabadaf12f8190d77e19e1ae6d5e34e9491db4",
+      "before_sha256": "bfc0ca620e008322f8698609426d818a6e8c72d28e7284e708cd240254be9822",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "7785645c89322daa678f3e3a8433da1d1a7e1af2d84f7d7f361c27d8a3fa67dd",
+      "before_sha256": "0edc2d17f608303edf1746ad1b236a916d306c1f74268e39294b233712434ff6",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "820ceda4d3444b5b42b2a21e6695d5e8ed84bd15c802c41ab27aa8338d5e1eae",
+      "before_sha256": "70db1d448f95f81f80b6ec41aa70fd79382952c99c55610915c27e6336888f58",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "8aedb190fbfa25d08a825d4432d479156dc78fc25371e6713deeb736a8eb3c09",
+      "before_sha256": "f0434641250b8f6d198389835702d1fa24a06c6fb8995592540bcc0bf2cf2681",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "022f49209b2f6628bdaf1a970a6a0ee3ce0bb8e29fa2043951f38e4c5c5a6978",
+      "before_sha256": "c7c4d4c6e65e76f148054aad08fac4f3724459da540ece18e06156176f39c7e1",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "5943cf57e3a01496cd2cd9d44b6946df02e7bcae9dd07da62a91ee2be760fe02",
+      "before_sha256": "32d15739437ab8ed798ddccf1f4e587d55f516b4a0d61445f799acbdab7d9d43",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "4c37f6edadd597cc82f7cd009d4dbc7a7ccf8713f89bb9162036fc45ddf5bde6",
+      "before_sha256": "21ff522f38038d968a8561820b8ac4670e3b2dfe518faf115d85636e33fa32fe",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "e2d4aa52d57e44b9bfcc19ef8d46827c43a11d8d821e63458d8f172c654b2cce",
+      "before_sha256": "5f67f111fa277c75e2d6ef3eb9a2679d91b95d8bf2e65b361be9d31d934497e7",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "0d2a91620341763ae49732a1748ed4562e170d117a7eaeaee600419e715abf64",
+      "before_sha256": "b63dcb082819a28e4256cf2a2dcbcd48a73333f21e58c70eca8b7708ca826630",
+      "role": "solver",
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "2388211d32c5fc10933f82fe2c7b76eeb386dfa9e95c50a983deca51f14a1e4f",
+      "before_sha256": "4747f493e6e20f739c19ea9642f28fd02711a11fc6a92927f4ba3a22d957d2e2",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "387e026a2bbc53cc42c5ad00f252378dff75f968482a6b97c7f2e63e8cc7d015",
+      "before_sha256": "8d41d9651af38e4ad84ca66d15a165b6b8fd013f56b141a4134bdcd0535d1e43",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "a23d19b62b10db5322d2c8c0befca2f0024a611006f4dbfb421e6294492dde27",
+      "before_sha256": "957f59d5ef0243ac2d9d681958a0613a805ac2ae01569e8c0f0cdd7c07d06232",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "9cbfcb29744f59908842f91c873bb7cb17634a7e1708468951fbeccc822b7771",
+      "before_sha256": "9fd42d74ca2d040e5c9ffd451a6c404c5025ddc206cd73229a10377028fc80fd",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "00467ad2226e8dae91beede814a6b5a600bcb66e56c68d9b1b5f5c6e34eb1637",
+      "before_sha256": "3eacadfc05d7cf2591a00e0bcdcb68d3f118cd13062e68a739eb6ed3671061a5",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "b5b5437afd922e3414ae68522b2c2198a7ff63c4af8ec8d5f3a8f9e11309a081",
+      "before_sha256": "1dda73b8f6aac02e3ad5d5261389f23bc4b92142c0062001e95b625f0e26699a",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "cacd440652f57e4ed8c80491850d02025f3032b79e703503dba9baeeeb1df3de",
+      "before_sha256": "b4e9747a4eefaa8f722f86afefad988b2420ed098bd185348b8f690841af1288",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "25d73eaa52329e8162c231dec59566642056d77d3666fe59e3acd0cc990ff345",
+      "before_sha256": "ed7dae0445f416a9decf7ae10871b8a70b9f7eebfaa7af7ab0851797b7b27bd7",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "ed3af35afe56df8187783fa57430254115b46017b6dbd17cd6a12488079d8cfe",
+      "before_sha256": "c40af38e4caf7be36c0363f9a1640a5723428d4d93651798a24ffbea13d17c82",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "29173877dac8637d9dfce79d4bf4ff36560e6d128851c767bebebad460f7731b",
+      "before_sha256": "f7fd142dee24e3b5a6d9c49f84901abc43818838618940bc19f3dfde80f90d69",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    },
+    {
+      "after_sha256": "211ee2b44e2eed386d7d2fce5305cf37c64c8c8878046af69420ed2ce73165b7",
+      "before_sha256": "3503c7b9c995806d82be0713379cb0261a785e6bfbbc6ef90cdc753d1f1fe68a",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "after_sha256": "2e5fc75453f02e64ad28003154cbfcb63e95c67fb865c38e83055fab18464ed2",
+      "before_sha256": "17fae85b5f11ffb42ac1f3442e01fd3cf184915e0009ba4829bfdff5947150de",
+      "role": "reviewer",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-CAPACITY-STRUCTURE-V1"
+    }
+  ],
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "ledger_after_sha256": "70e74bc6809e6a091fa3b4b55835941b5fc2d8bfe89de140f8aa48955dec9217",
+  "ledger_before_sha256": "9a59cc8e748b07d940610f58934728eed369f234ba324359c7af9fd0e0569174",
+  "originals": {
+    "reviewer": {
+      "frozen_commit": "94e1bd6aecc8a292b88b81a870326524af89c56a",
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-reviewer-k4-capacity-frozen-v1",
+      "original_frozen_terminal": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-v1/frozen-check-v1.exit.json",
+        "sha256": "08b74fbc75726ff3a6872db79d43561fbc6d30cb0ed7f80f2f02dd82148f6f93"
+      },
+      "original_named_refusal": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-v1/control-frozen-registration-v1.stdout.json",
+        "sha256": "0c9b035b1ad3316fcbc8e85a085f881a6c75487692115f1975ea5d3bebb9ae56"
+      }
+    },
+    "solver": {
+      "frozen_commit": "ec878fd45080666af52258f7b8979ea6cc5bea4f",
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-solver-k4-capacity-frozen-v1",
+      "original_frozen_terminal": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-v1/frozen-check-v1.exit.json",
+        "sha256": "8db95452990c153d0f422ba3dd46bbce9e0b6858296590dc8c51405da542bf9f"
+      },
+      "original_named_refusal": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-v1/control-frozen-registration-v1.stdout.json",
+        "sha256": "af83afe7d03aab11e0dc4c81a78805493a81afd8dc01ffe2f9f3161f6a677c29"
+      }
+    }
+  },
+  "owner_decision": 227,
+  "prior_status_correction": "The14771c4c handoff snapshot raced the Solver terminal and hardcoded RUNNING despite check_terminal_observed=true. This explicit terminal record supersedes that status without modifying the original snapshot.",
+  "root_disposition": "Preserve both original no-contact frozen refusals. Correct only exact new capacity FIT/STRUCTURE carrier caption cells from SLURP to the declared key slurp. Reuse unchanged successful original authoring/config/plans/prepared bytes through separately captured successor source checks and fresh workers/entry namespaces. Do not repeat original authoring or runtime attempts.",
+  "schema": "saea-root-local-k4-capacity-caption-disposition-v1",
+  "source_before": "14771c4c443f8988ec008e49d20f3bbf8a85c0f0",
+  "status": "DECIDED_METADATA_ONLY_SUCCESSOR_FROZEN_CHECKS_PENDING",
+  "stop_queue_service_changed": false,
+  "templates_data_and_budgets_changed": false
+}
