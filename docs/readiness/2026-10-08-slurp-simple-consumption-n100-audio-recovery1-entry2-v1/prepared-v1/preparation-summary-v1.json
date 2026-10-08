@@ -1,0 +1,42 @@
+{
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_identity_map": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/execution-identity-map-v1.json",
+    "sha256": "a59220b48bbc5ca94e8b31f0c52c74d289ab472054dea9c77be28328b8cc0c56"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+    "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+  },
+  "preparation_receipts": {
+    "review-off": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/review-off-generation-prepared-v1.json",
+      "sha256": "4634fc4fd84c35f0653a9bd33e2bb4d104f06e20a36c5dc3269ef5e54aaa72bf"
+    },
+    "seed": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/seed-generation-prepared-v1.json",
+      "sha256": "eecdefa257b16d1ed53c03fd18a4cb7f10369f05451ed479401452b837864bb2"
+    },
+    "seed-aa": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/seed-aa-generation-prepared-v1.json",
+      "sha256": "a61693acb6d01a787d147049d2c3b50c04a1eeef95c9abf691274c4114de2b47"
+    },
+    "solver-lookup": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/solver-lookup-generation-prepared-v1.json",
+      "sha256": "887bef6f93884e832e84bebe1b198d2e9a222f69def8c9fa9498560616e0421e"
+    }
+  },
+  "read_authorized": false,
+  "root_disposition": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-engineering-disposition-v1.json",
+    "sha256": "dfa42f545b28d0f7be30766f83731956ce0ee3c71af1bc7b0ab094e076fecf4e"
+  },
+  "runtime_admission": false,
+  "schema": "saea-manual-architecture-audio-recovery-preparation-v1",
+  "source_preparation_commit": "6e714962b618ce14fa7689234096449a3a030030",
+  "status": "PREPARED_HELD_NOT_ADMITTED"
+}

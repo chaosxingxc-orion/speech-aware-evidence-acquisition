@@ -1,0 +1,67 @@
+{
+  "architecture_extent": {
+    "count": 100,
+    "runtime_view": {
+      "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+      "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+    },
+    "schema": "saea-manual-architecture-fixed-roster-extent-v1",
+    "selection_seed": 20261001,
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+      "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+    }
+  },
+  "execution_identity_map": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/execution-identity-map-v1.json",
+    "sha256": "a59220b48bbc5ca94e8b31f0c52c74d289ab472054dea9c77be28328b8cc0c56"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+    "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+  },
+  "members": [
+    {
+      "generation": "slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1",
+      "label": "seed",
+      "preparation_receipts": {
+        "generation": {
+          "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/seed-generation-prepared-v1.json",
+          "sha256": "eecdefa257b16d1ed53c03fd18a4cb7f10369f05451ed479401452b837864bb2"
+        }
+      }
+    },
+    {
+      "generation": "slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1",
+      "label": "seed-aa",
+      "preparation_receipts": {
+        "generation": {
+          "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/seed-aa-generation-prepared-v1.json",
+          "sha256": "a61693acb6d01a787d147049d2c3b50c04a1eeef95c9abf691274c4114de2b47"
+        }
+      }
+    },
+    {
+      "generation": "slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1",
+      "label": "review-off",
+      "preparation_receipts": {
+        "generation": {
+          "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/review-off-generation-prepared-v1.json",
+          "sha256": "4634fc4fd84c35f0653a9bd33e2bb4d104f06e20a36c5dc3269ef5e54aaa72bf"
+        }
+      }
+    },
+    {
+      "generation": "slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1",
+      "label": "solver-lookup",
+      "preparation_receipts": {
+        "generation": {
+          "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/solver-lookup-generation-prepared-v1.json",
+          "sha256": "887bef6f93884e832e84bebe1b198d2e9a222f69def8c9fa9498560616e0421e"
+        }
+      }
+    }
+  ],
+  "prepared_source_commit": "6e714962b618ce14fa7689234096449a3a030030",
+  "schema": "saea-manual-architecture-audio-recovery-prepared-members-v1"
+}

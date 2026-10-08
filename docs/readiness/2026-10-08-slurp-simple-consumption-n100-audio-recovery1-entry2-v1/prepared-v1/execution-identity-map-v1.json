@@ -1,0 +1,94 @@
+{
+  "architecture_extent": {
+    "count": 100,
+    "runtime_view": {
+      "relpath": "configs/dataset/slurp-speech-native-system-text-update-2-400-v1.json",
+      "sha256": "1e5cd463fcad7bc6cdcb637de0fcc63ac16cfa6e7b9c1d835207366ac679e31c"
+    },
+    "schema": "saea-manual-architecture-fixed-roster-extent-v1",
+    "selection_seed": 20261001,
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n20-v2.json",
+      "sha256": "f127f9ed88299e4555631b469b598cae4dc67cf1982fcaed95484b794de7201f"
+    }
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+    "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+  },
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1-generation",
+      "cell_id": "slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1",
+      "experiment": "slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-entry2-v1-generation-fit",
+      "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-ENTRY2-FIT-V1",
+      "member_id": "seed",
+      "planned_speech_audio_seconds": 3820,
+      "predecessor_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-simple-consumption-seed-n100-v1.json",
+        "sha256": "544de8ea46c9d000bd5149a1e569612ca205cc01bb1f0c9a42f5366c4a68e123"
+      },
+      "predecessor_experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-seed-n100-v1.json",
+        "sha256": "0ee860bd51730452d97f1452914408e55ea08c353f31e7d3e2ae78742a6c51e4"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-ENTRY2-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1-generation",
+      "cell_id": "slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1",
+      "experiment": "slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-entry2-v1-generation-fit",
+      "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-ENTRY2-FIT-V1",
+      "member_id": "seed-aa",
+      "planned_speech_audio_seconds": 3820,
+      "predecessor_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-simple-consumption-seed-aa-n100-v1.json",
+        "sha256": "c5f210311e757a15d64d83603865d1004c25cfb0af9a8f24d9215ddcd28b87b6"
+      },
+      "predecessor_experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-seed-aa-n100-v1.json",
+        "sha256": "2b4dd4d41e0e504f257f06a9debd469ffd8b6917e7da72d428c49b41ab85a779"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-ENTRY2-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1-generation",
+      "cell_id": "slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1",
+      "experiment": "slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-entry2-v1-generation-fit",
+      "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-ENTRY2-FIT-V1",
+      "member_id": "review-off",
+      "planned_speech_audio_seconds": 1500,
+      "predecessor_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-simple-consumption-review-off-n100-v1.json",
+        "sha256": "81a94574ea3f1eec034782317cde9961cec38c0c1f39320c0066c9ef22f64dae"
+      },
+      "predecessor_experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-review-off-n100-v1.json",
+        "sha256": "c25e077d4d8220dc78e11c2613f50daf7cd2d06d9d058b8963f3c4977874e6f5"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-ENTRY2-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1-generation",
+      "cell_id": "slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1",
+      "experiment": "slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-entry2-v1-generation-fit",
+      "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-ENTRY2-FIT-V1",
+      "member_id": "solver-lookup",
+      "planned_speech_audio_seconds": 1500,
+      "predecessor_baseline": {
+        "relpath": "configs/baseline/slurp-native-stage3-simple-consumption-solver-lookup-n100-v1.json",
+        "sha256": "2afcffc7782d2695fde198dea99bc161de22498b8081c5a7379f4fee21ccec2c"
+      },
+      "predecessor_experiment": {
+        "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-solver-lookup-n100-v1.json",
+        "sha256": "c92258cf3d51fc54bb7aa0f6c752d6a4d8c97c7dd880aa776063f6cec42f2631"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-ENTRY2-V1"
+    }
+  ],
+  "schema": "saea-manual-architecture-execution-identity-map-v1"
+}

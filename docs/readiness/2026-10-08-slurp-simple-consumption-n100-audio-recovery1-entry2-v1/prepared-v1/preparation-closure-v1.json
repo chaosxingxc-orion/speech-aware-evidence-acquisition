@@ -1,0 +1,43 @@
+{
+  "budget_audit": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/audio-budget-audit-v1.json",
+    "sha256": "0e01350ee82d8d4f70d07ca840265adfbc76672b5e8c65a1fd01614f180742e4"
+  },
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "controls_or_ledger_mutated": false,
+  "descriptor": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/prepared-members-v1.json",
+    "sha256": "c945154cc96be28b7cb106262025338347de2ae2bb87bd4e04a70bcaf06bd2a5"
+  },
+  "identity_map": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/execution-identity-map-v1.json",
+    "sha256": "a59220b48bbc5ca94e8b31f0c52c74d289ab472054dea9c77be28328b8cc0c56"
+  },
+  "original_and_g2_tracked_repo_bytes_unchanged": true,
+  "original_frozen_source_commit": "2204cfb96e59bdaa0f83f92cd61d3adaf513aadd",
+  "original_preparation_exit": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-preparation-exit-v1.json",
+    "sha256": "7e95080b3f7e4419c0102045b795fcb258697f8240af19b2a44d4eabd9c73f82"
+  },
+  "original_preparation_input": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-preparation-input-v1.json",
+    "sha256": "a80c731eee3372831550206d59d25199f4c8b735c23e2b7905c3e899228d69bd"
+  },
+  "production_source_compatibility_gate": "INDEPENDENTLY PENDING; NOT IMPLIED BY PREPARATION",
+  "read_authorized": false,
+  "recorded_at_utc": "2026-10-08T00:51:14.962016+00:00",
+  "reviewed_producer_sha256": "af48aec74975e5913f7a9f3ed91f21b3baf8ef683b6f8a7c48e1ff82670c283c",
+  "runtime_admission": false,
+  "schema": "saea-manual-architecture-audio-recovery-preparation-closure-v1",
+  "scientific_read": false,
+  "source_preparation_commit": "6e714962b618ce14fa7689234096449a3a030030",
+  "status": "ALL FOUR STRICT OUTPUT-EQUAL WARM PREPARATIONS PASS; ENTRY2 HELD",
+  "summary": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "c4c24239d73044fd3911c3028905b6bc3c30aa63cf2261b76819a14f76f9a893"
+  }
+}
