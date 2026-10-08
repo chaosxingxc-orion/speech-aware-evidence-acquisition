@@ -1,0 +1,91 @@
+{
+  "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-4-n100-k4-update2-natural-v1",
+  "baseline": "slurp-native-stage3-local-reviewer-candidate-4-n100-k4-update2-natural-v1",
+  "config_hash": "29065fd86544c1828c488b0b99f8afe0be2c69c06ec6e7bc1de680404267552d",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "contacts": 0,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-4-n100-k4-update2-natural-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 114,
+    "protocol_hash": "94219dcacb64a522e09e4fbc4fd0f76306a2536b189928358bb9c39dd1a0ca78",
+    "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE2-NATURAL-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-local-reviewer-candidate-4-n100-k4-update2-natural-v1",
+  "kind": "natural",
+  "local_node_basis": {
+    "proposal_custody": {
+      "registration": {
+        "relpath": "coordination/local-reviewer-n100-k4-update2-v1/actor-plan-registered-copy-v1.json",
+        "sha256": "5824e57b572778275a94712434677dd67223034ef5b40cad55f889cb6ef28679"
+      },
+      "validation": {
+        "relpath": "coordination/local-reviewer-n100-k4-update2-v1/original-proposal-validation-v1.json",
+        "sha256": "fcef77c8c14db9f4bdf6c486a2c9337d4cce6a0fec2fabe016122ecbadaf4af9"
+      }
+    },
+    "schema": "saea-local-node-panel-basis-v1",
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "source_preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-preparation-receipt-final-v1.json",
+      "sha256": "fa1763cc40fb4f7f47851b755c5cbdaaad1a398bbfc9e50412f2bd8a5be91450"
+    },
+    "target_role": "reviewer"
+  },
+  "member_id": "candidate-4",
+  "output_equal": true,
+  "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "coordination/local-reviewer-n100-k4-update2-v1/policy-archive/policies/33368bcdfa0bac3428aea7b453a9d280e0d4bda1e51a919a1dc3a2986a41f481.json",
+      "sha256": "2d15189df2e79dd6a4c1678b28e3f106f05fbf52324750484a60b853913f0fe1"
+    },
+    "bundle_id": "33368bcdfa0bac3428aea7b453a9d280e0d4bda1e51a919a1dc3a2986a41f481",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE2-NATURAL-V1/phase-supply-v1.json",
+    "sha256": "134af4a603aef1c10a30ad7ccca0507f0caea052e69d64b04ff643ca730c7cba"
+  },
+  "prepared_source_commit": "72a99fcf1ec4f1643d7dad0284a61663e6eaae13",
+  "pure_capacity_budget": null,
+  "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE2-NATURAL-V1",
+  "runtime_admission": false,
+  "runtime_sample_ids": [
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "source_policy": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/compiled-v1/candidate-4-policy-v1.json",
+    "sha256": "05fa509c430db14266822f0002fde7642eaf36cabff6f991fcb35b251067776c"
+  },
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE2-NATURAL-V1/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "134af4a603aef1c10a30ad7ccca0507f0caea052e69d64b04ff643ca730c7cba"
+    }
+  ],
+  "warm_verified": true
+}

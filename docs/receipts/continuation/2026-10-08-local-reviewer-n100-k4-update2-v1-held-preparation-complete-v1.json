@@ -1,0 +1,56 @@
+{
+  "accounting": {
+    "K": 4,
+    "N": 100,
+    "active_node_counts": {
+      "candidate-1": 4,
+      "candidate-2": 4,
+      "candidate-3": 4,
+      "candidate-4": 4,
+      "control": 4,
+      "control-aa": 4
+    },
+    "candidate_trajectories": 400,
+    "control_trajectories": 200,
+    "family_trajectories": 600,
+    "fit_endpoints_cap": 31200,
+    "generation_contacts_cap": 7800
+  },
+  "at_utc": "2026-10-08T21:18:59.307749+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "integrated_summary": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "200a47a99a7a1fc800123bb4e9e31bf7eb1e4f9321fc1ee60e9e2e46c1dd8863"
+  },
+  "members": [
+    "control",
+    "control-aa",
+    "candidate-1",
+    "candidate-2",
+    "candidate-3",
+    "candidate-4"
+  ],
+  "original_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-engineering-helper-v1/reviewer-n100-k4-update2-v1-72a99fcf1ec4-plan/preparation-input-v1.json",
+    "sha256": "a82792e370fb56e3e1c09ccd1343d8fbff8504f3a6cf680e778bd2ede6eb1787"
+  },
+  "original_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-engineering-helper-v1/reviewer-n100-k4-update2-v1-72a99fcf1ec4-plan/root-original-preparation-exit-v1.json",
+    "sha256": "fb4f23b4ddbd137e10465b8c51b1ad15deadf3724774ee85f046ae4ffb3cc683"
+  },
+  "original_worker": "/home/chao/saea-worktrees/codex-local-reviewer-k4-update2-preparation-v1",
+  "producer_commit": "72a99fcf1ec4f1643d7dad0284a61663e6eaae13",
+  "runtime_admission": false,
+  "schema": "saea-root-isolated-local-preparation-complete-v1",
+  "scope": "Copy exact original generated metadata only. Reuse immutable audio, packets, queries, votes and knowledge; no raw data or outcomes enter Git.",
+  "source_summary": {
+    "path": "/home/chao/saea-worktrees/codex-local-reviewer-k4-update2-preparation-v1/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "200a47a99a7a1fc800123bb4e9e31bf7eb1e4f9321fc1ee60e9e2e46c1dd8863"
+  },
+  "status": "ORIGINAL_CPU_PREPARATION_PASSED_HELD",
+  "verified_receipt_count": 24
+}

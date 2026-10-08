@@ -1,5 +1,11 @@
 # Experiment rules for the ChatGPT side
 
+## Reviewer configured K4 original CPU preparation complete (2026-10-08T21:18:59.307749+00:00)
+
+The original isolated reviewer canonical preparation exited0; every configured candidate, control and A/A plus capacity/graph/natural companion passes original output-equality and warm checks. Metadata is integrated byte-for-byte from producer 72a99fcf1ec4f1643d7dad0284a61663e6eaae13; no model/tokenizer/scorer contacts or data/knowledge reconstruction occurred. Scope and all legal-path budgets derive from the pinned population. Exact receipt: `docs/receipts/continuation/2026-10-08-local-reviewer-n100-k4-update2-v1-held-preparation-complete-v1.json`.
+
+Capacity, natural structural proof and frozen runtime admission remain separate. Preserve local role and feedback isolation, one serial GPU campaign with four concurrent inputs and overlapping CPU work. Maintain4GiB resource floors and complete output reserves. Register a15minute job monitor only on actual GPU launch and delete it at its original terminal. No stable benefit or learning claim is established; broad goal remains active and incomplete, with human review before8x400.
+
 ## Solver opportunity3 maximum-request capacity registered (2026-10-08T21:17:55.825922+00:00)
 
 The reviewed metadata successor passed the actual canonical execution-map gate. All configured Solver candidates and two controls were registered once through the unchanged capacity registrar. Copied historical helpers passed57 tests with one explicitly excluded historical fixed-descriptor fixture; the narrow source correction passed73 independent tests. Exact new ledger date/carrier captions were corrected before freeze, preserving the complete original and all historical rows. See `docs/receipts/continuation/2026-10-08-local-solver-update3-capacity-registered-v1.json`.
@@ -1191,4 +1197,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T21:17:55.825922+00:00
+Last refreshed: 2026-10-08T21:18:59.307749+00:00
