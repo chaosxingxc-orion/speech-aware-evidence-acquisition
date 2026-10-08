@@ -1,0 +1,85 @@
+{
+  "analysis_intent": {
+    "relpath": "docs/receipts/continuation/2026-10-08-local-k4-analysis-intent-v1.json",
+    "sha256": "8c5dd904dde0da0184e8d58c9623b1652f59b456f1e7f82cfffee320cb102552"
+  },
+  "at_utc": "2026-10-08T13:40:20.455344+00:00",
+  "capacity_launch": "PENDING_COMPLETE_FROZEN_CHECKS_FINALIZATION_AND_EXACT_LIVE_TRANSITION",
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "controls_changed": false,
+  "independent_entry2_review": {
+    "relpath": "coordination/local-k4-capacity-caption-astra-review-v1/entry2-review-v1.json",
+    "sha256": "25c4852761957dfc4a541c4bf57022895eb5380da36c67bac43b50cfcc0b0fb4"
+  },
+  "natural_generation": "NOT_STARTED",
+  "owner_decision": 227,
+  "procedure": {
+    "relpath": "coordination/local-node-capacity-engineering-v1/ROOT-CAPACITY-ENTRY2-SEQUENCE-v1.md",
+    "sha256": "34906a469ab35adeb8f35920a43cc4d580aed66cd8e22c7794f84fc2177f92b6"
+  },
+  "roles": {
+    "reviewer": {
+      "fresh_input": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/root-authoring-inputs-v1.json",
+        "sha256": "1f39842090dd3e2621412704d93a06be2127162600dab4f0c3103d52712c6644"
+      },
+      "frozen_check_started": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/frozen-check-v1.started.json",
+        "sha256": "ba9a6ea62dbf8285651ab2c47eb84c2201dd3bbbae69e05092c376d54aa905e2"
+      },
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-reviewer-k4-capacity-frozen-v2",
+      "helper_validation": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/helper-validation-v1.json",
+        "sha256": "7a74a5f805ec2bb87714330b8005ebcee35deb6266a80fa3dbe3e4c7fbde1924"
+      },
+      "input_custody": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/root-registered-input-custody-v1.json",
+        "sha256": "0ae893032f0f33343761dc0870703b70a52b07ebe2165df4818fbcc7325521c7"
+      },
+      "original_authoring_repeated": false,
+      "root_process_id": 16886,
+      "source_commit": "e03a13e6350b1515f64136f25c892da44fb85bbc",
+      "status": "ORIGINAL_SUCCESSOR_FROZEN_CHECK_RUNNING_AT_SNAPSHOT",
+      "successor_lineage": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/successor-lineage-v1.json",
+        "sha256": "f08853ea2f1211b470b5c8668e19e476daab420b839afd33a8cc50fee35cccd2"
+      },
+      "terminal_observed": false
+    },
+    "solver": {
+      "fresh_input": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/root-authoring-inputs-v1.json",
+        "sha256": "de955c4881fa7df8850ab984b4d08ed732adda47395cd95369c17ad78d618ae3"
+      },
+      "frozen_check_started": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/frozen-check-v1.started.json",
+        "sha256": "456c993017bac9c9ac0b84c595700b6b1e1e4ccc49ef262b9f914c4087ee64db"
+      },
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-solver-k4-capacity-frozen-v2",
+      "helper_validation": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/helper-validation-v1.json",
+        "sha256": "c177ee1ffdb4218ff362a8e0fd2adce412f1d962467111c5e0d7792d4c0b2e71"
+      },
+      "input_custody": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/root-registered-input-custody-v1.json",
+        "sha256": "9b4416de295eccd0a2e52a4aba978b2e3888a1675bbd10cea4cf7c6baf452ad7"
+      },
+      "original_authoring_repeated": false,
+      "root_process_id": 16774,
+      "source_commit": "e03a13e6350b1515f64136f25c892da44fb85bbc",
+      "status": "ORIGINAL_SUCCESSOR_FROZEN_CHECK_RUNNING_AT_SNAPSHOT",
+      "successor_lineage": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/successor-lineage-v1.json",
+        "sha256": "f3327a000338a8b321749731117e163eb6c7fe9874cedc301febdd7d1ab86f91"
+      },
+      "terminal_observed": false
+    }
+  },
+  "schema": "saea-local-k4-capacity-entry2-source-checks-v1",
+  "scientific_generation": "HELD",
+  "status": "BOTH_FRESH_ORIGINAL_SOURCE_CHECKS_RUNNING"
+}
