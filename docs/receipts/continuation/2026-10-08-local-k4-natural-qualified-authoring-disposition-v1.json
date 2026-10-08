@@ -1,0 +1,104 @@
+{
+  "at_utc": "2026-10-08T16:00:00.493875+00:00",
+  "authoring_incident": {
+    "cause": "Root omitted decision_id from its newly constructed admission. Canonical finalize_member requires it before writing ready configuration.",
+    "disposition": "Preserve original entry and snapshot. Use one fresh generation-entry2 namespace and flat registered-entry2 package, with a superseding admission containing its exact unique decision_id. Reuse unchanged templates, prepared supply, roster, original complete capacity and natural qualification. Do not mutate original evidence or silently repeat original authoring.",
+    "new_contacts": 0,
+    "observed_footprint": "Only one byte-identical original-config snapshot; no tracked configuration/source edit, registered plan, attempt or model/tokenizer/scorer contact.",
+    "original_admission": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-v1/root-admission-v1.json",
+      "sha256": "353c2760206fec593fabac5c7e0b3e257e25264e36a29c6e7896f152255ec29b"
+    },
+    "original_exit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-v1/root-authoring-exit-v1.json",
+      "sha256": "500a73a9344b2e8ed10e1b902a9b9000191179b5219ef45c3876453a2bb42018"
+    },
+    "original_input": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-v1/root-authoring-input-v1.json",
+      "sha256": "cb83e15911e2b80e229aff85ae68d67d52e97140fdffc5bb03ced7b7651ee32f"
+    },
+    "original_procedure": {
+      "path": "/mnt/c/Users/35686/AppData/Local/Temp/saea_local_n100_author.py",
+      "sha256": "0beb1fbcb837a3b41532b1fce75343ecfc8555d46ae8847cca89033a10f3274a"
+    },
+    "original_stderr": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-v1/root-authoring.stderr.log",
+      "sha256": "c27c7d8cf93fc0e6c4903bd0162286df1b6dc4e4b0c7e3b673e78a33d0f3d1b4"
+    },
+    "preserved_snapshot": {
+      "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-v1/control-original-experiment-v1.json",
+      "sha256": "7bd8dbe9a125ff32a034336f73690c3eee234491d0d8a05b1243c29b231e60e2"
+    },
+    "runtime_changed": false
+  },
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "independent_completion_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-completion-astra-review-v1/final-review-v1.json",
+    "sha256": "9644a3ee48f86c26b16017a1b03180b067a5a2913eea1b04ab9caea3e99020e7"
+  },
+  "next": "Canonical N100 preparation with configured four candidates plus control/A/A per local role; full runtime admission still pending.",
+  "owner_decision": 227,
+  "roles": {
+    "reviewer": {
+      "actual_fit_accounting": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-natural4-entry2-v1/actual-fit-accounting-v1.json",
+        "sha256": "0ded376a9ddc01d2f0bd44fe84e45da164e2e9622242235f41ddeecd102fdc39"
+      },
+      "fit_endpoints": 540,
+      "members": 6,
+      "minimum_windows_free_gib": 23.602081298828125,
+      "model_contacts": 135,
+      "monitor_status": "DELETED",
+      "official_score_jobs": 0,
+      "operational_complete": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-natural4-entry2-v1/operational-complete-v1.json",
+        "sha256": "1065db45eea223d3b9c6c6b360725a388961e579116af80c70dd9d4239fc69cf"
+      },
+      "original_terminal_closure": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-natural4-entry2-v1/root-original-terminal-closure-v1.json",
+        "sha256": "35c01f260811bd93eac836e8003a9ec6aa8e6c902131f9084448ad807328e0c0"
+      },
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-natural4-entry2-v1/natural-family-qualified-v1.json",
+        "sha256": "b373056cfdbfe55f4dbb08941095bf716d8893c9b02144dfc85e7a743c4bad0c"
+      },
+      "root_structural_read": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-natural4-entry2-v1/root-structural-read-v1.json",
+        "sha256": "f4d8810ac5aa2719ec91e44cc9775921165974d38dba91c49b68d5b29f7fc5d2"
+      },
+      "rows": 24,
+      "task_quality_read": false
+    },
+    "solver": {
+      "actual_fit_accounting": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-entry2-v1/actual-fit-accounting-v1.json",
+        "sha256": "303dc8c68e1544277f88605f68c89abeffcb1d7023aebac8b8b13d7c5c1cac3a"
+      },
+      "fit_endpoints": 192,
+      "members": 6,
+      "minimum_windows_free_gib": 23.550212860107422,
+      "model_contacts": 48,
+      "monitor_status": "DELETED",
+      "official_score_jobs": 0,
+      "operational_complete": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-entry2-v1/operational-complete-v1.json",
+        "sha256": "c5b8c40a99d4be474aa9d119cf72c5dec46069ccaecc8d14e22c5c0248473aa7"
+      },
+      "original_terminal_closure": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-entry2-v1/root-original-terminal-closure-v1.json",
+        "sha256": "b897eb9721a995088baf743074be8221b4fa1fcf585384e7f40bd97e64024c2c"
+      },
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-entry2-v1/natural-family-qualified-v1.json",
+        "sha256": "05fd50b3ed91609e69b531eb7d5a963172f4875b13dcdd9820164df5bc64d2d8"
+      },
+      "root_structural_read": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-entry2-v1/root-structural-read-v1.json",
+        "sha256": "c3a3e09363de7d9ab5035edc541b889a2ab9447bef708d2cacd16ea13c272da5"
+      },
+      "rows": 24,
+      "task_quality_read": false
+    }
+  },
+  "schema": "saea-root-local-k4-natural-qualified-disposition-v1"
+}
