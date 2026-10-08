@@ -1,0 +1,106 @@
+{
+  "at_utc": "2026-10-08T15:16:24.565852+00:00",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "independent_measurement_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-review-v1/review-v1.json",
+    "sha256": "37f9276ec0065a30a6c8922f34f5ae01d34615ba78aa4117fed42b55e86e6581"
+  },
+  "last_driver_event_observed": {
+    "at": "2026-10-08T15:15:22Z",
+    "detail": {
+      "step": 2,
+      "warmup": "registered-model-work-only"
+    },
+    "event": "prelaunch-ok"
+  },
+  "learning_export_started": false,
+  "measurement_disposition": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/receipts/continuation/2026-10-08-local-natural-measurement-declaration-disposition-v1.json",
+    "sha256": "9dec64b4c1b9a7ee9df39b3c50fcc189475ac1288d98df8ed4cdd7b905a957e0"
+  },
+  "natural_official_scores_allowed": 0,
+  "owner_decision": 227,
+  "roles": {
+    "reviewer": {
+      "capacity_measured_requests": 264,
+      "capacity_monitor": "DELETED",
+      "capacity_original_terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/capacity-task-exit.json",
+        "sha256": "6bd20ff6bec218303625cc548baea27c953c75bb29ed0acf3a4c02dc70e8ca03"
+      },
+      "capacity_qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/capacity-qualified-v1.json",
+        "sha256": "a0a649c45aff9f4a201ae1a780665fe43d9e05b735d76120011f412e52ce41cc"
+      },
+      "capacity_registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/registration-v1.json",
+        "sha256": "9b9306b5ca1b969fb4234e763b4e3a546ed1e21bbed6ef82b4a2a0895d9c4d85"
+      },
+      "capacity_tokenizer_endpoints": 1782,
+      "frozen_commit": "396de96f4e748bcdd9dd76a91ee001091f3b3bf0",
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-reviewer-k4-natural4-frozen-v2",
+      "minimum_margin_after_reserves": 5494,
+      "named_check_count": 12,
+      "natural_frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-natural4-entry2-v1/root-natural-frozen-check-exit-v1.json",
+        "sha256": "8b0562153100a90bdc6b1147a4445f1e96b8e09310f4d65530854286bdc0e88f"
+      },
+      "natural_original_preparation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-natural4-v1/root-natural-preparation-exit-v1.json",
+        "sha256": "86d469e9946ca2354fec2911b873600f6323c09f7bd76ddaf172885af794c5c7"
+      },
+      "natural_registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-natural4-v1/root-natural-registration-exit-v1.json",
+        "sha256": "7bbb7417770386adf56fc60be36303852a4a6308a13edea8d77bd6ab468897cf"
+      },
+      "natural_status": "FROZEN_CHECKED_UNLAUNCHED"
+    },
+    "solver": {
+      "capacity_measured_requests": 48,
+      "capacity_monitor": "DELETED",
+      "capacity_original_terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/capacity-task-exit.json",
+        "sha256": "ce326085ee06901456ceb567cf7744ae250eec68f70f8caebb8c543667280605"
+      },
+      "capacity_qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/capacity-qualified-v1.json",
+        "sha256": "3257672b0302ee6381b534f258f4eb26c75957499c71d30eac6e2519efaf8ef1"
+      },
+      "capacity_registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/registration-v1.json",
+        "sha256": "6092d68423050428221b52a6ded56d7e9852459fe651b57d45a71cbea37a82fb"
+      },
+      "capacity_tokenizer_endpoints": 936,
+      "control_transition": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-entry2-v1/root-natural-control-transition-v1.json",
+        "sha256": "ce640683f2d7167066cb0e21936a765fa0f18a1ff252db1dd28d45d77336421a"
+      },
+      "driver_epoch": "2026-10-08T15:12:43Z",
+      "frozen_commit": "396de96f4e748bcdd9dd76a91ee001091f3b3bf0",
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-solver-k4-natural4-frozen-v2",
+      "minimum_margin_after_reserves": 6748,
+      "named_check_count": 12,
+      "natural_dispatch": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-entry2-v1/root-natural-dispatch-request-v1.json",
+        "sha256": "eee422c414d9f47f9be243389840107c0a1d36a24366a0da2f21f8deb2b3e91e"
+      },
+      "natural_frozen_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-entry2-v1/root-natural-frozen-check-exit-v1.json",
+        "sha256": "069aff168e9f72c2bb3a7974bff2d27d0a5757909554d1148a8f16dba3543871"
+      },
+      "natural_monitor_id": "slurp-local-solver-k4-natural-health",
+      "natural_monitor_status": "ACTIVE",
+      "natural_original_preparation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-v1/root-natural-preparation-exit-v1.json",
+        "sha256": "26823813ceb55788c31caaab5dcf3f3e62c2ca07bdf7287c4cf71175cef788e2"
+      },
+      "natural_registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-v1/root-natural-registration-exit-v1.json",
+        "sha256": "8664c57642270ec7d6db653455f304b66d5e250953a89a6ee555985efccda4df"
+      }
+    }
+  },
+  "schema": "saea-root-local-k4-serial-proof-progress-v1",
+  "scientific_generation_started": false,
+  "scope": "K4 per independent local module with additional control/A/A. Capacity and structural proofs do not establish task benefit."
+}
