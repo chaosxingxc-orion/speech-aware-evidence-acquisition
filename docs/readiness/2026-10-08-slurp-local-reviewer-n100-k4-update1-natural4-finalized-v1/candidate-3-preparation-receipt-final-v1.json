@@ -1,0 +1,127 @@
+{
+  "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-natural-v1",
+  "baseline": "slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-natural-v1",
+  "config_hash": "e73a7975d6ca66df1472cccb9603e829a2276de97a554f9237a4a0d0d2402578",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "contacts": 0,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-natural-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 114,
+    "protocol_hash": "db09d67a62c9b9b094cbe3e4f7d6b1548c6cbbe6948193d5f8e616aa90e0c177",
+    "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-natural-v1",
+  "final_experiment": {
+    "relpath": "configs/experiment/slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-natural-v1.json",
+    "sha256": "216f549208e11450f02f56689e6371c4c8506d4cc1d2d9deec9ecbd3d78b8aa3"
+  },
+  "final_ready_metadata": {
+    "reason": "Root countersigned fresh natural4 structural proof; complete capacity qualification and strict warm custody required.",
+    "requirements": [
+      {
+        "kind": "preparation",
+        "reason": "Exact reused prepared supply; strict warm identity verified before plans.",
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "b1f12e4eac06954199b0de92d989bb025d19bc0ec0d33e03f0bc501af027bfd5"
+      },
+      {
+        "expected_decision_id": "local-reviewer-n100-k4-update1-natural4-v1",
+        "kind": "decision",
+        "reason": "Root decided this exact configured generation/FIT family before contact.",
+        "relpath": "coordination/local-reviewer-n100-k4-update1-natural4-v1/root-admission-v1.json",
+        "sha256": "fc6f0b0abcf7eaddc13a30b8442f1566216594ab2f011fbc966bfa636461491f"
+      }
+    ],
+    "state": "ready"
+  },
+  "finalization_source_commit": null,
+  "fit_endpoint_cap": 208,
+  "generation_cap": 52,
+  "kind": "natural",
+  "local_node_basis": {
+    "proposal_custody": {
+      "registration": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-v1/actor-plan-registered-copy-v1.json",
+        "sha256": "0eb40d59816e3bf5cd0b6ee9d0ec524198d2e17aac46270bfd5330e40d8f5b23"
+      },
+      "validation": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-v1/original-proposal-validation-v1.json",
+        "sha256": "ec172233525f462367c6210f0a7c04c8b71553c798bea79e6b6461eaf535af69"
+      }
+    },
+    "schema": "saea-local-node-panel-basis-v1",
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "source_preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-preparation-receipt-final-v1.json",
+      "sha256": "fa1763cc40fb4f7f47851b755c5cbdaaad1a398bbfc9e50412f2bd8a5be91450"
+    },
+    "target_role": "reviewer"
+  },
+  "member_id": "candidate-3",
+  "original_experiment": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-finalized-v1/candidate-3-original-experiment-v1.json",
+    "sha256": "62d9b1550724ca98c668192ecd066508a2b2b21b076700bd0323e0c7e40f968b"
+  },
+  "original_preparation_receipt": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-3-natural-prepared-v1.json",
+    "sha256": "db7eaf46f4bc47602cb5d47bc331daf4bbc8723b48520aa73f69818888f90982"
+  },
+  "output_equal": true,
+  "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "coordination/local-reviewer-n100-k4-update1-v1/policy-archive/policies/5a4e51c914424581b3d3ee47cedc097305dcee72ab60b6c25b9b5cfe454386ff.json",
+      "sha256": "4c02aac72e006b6222f205aad3461e4fce578db3963d88a64b57697c122d9ff1"
+    },
+    "bundle_id": "5a4e51c914424581b3d3ee47cedc097305dcee72ab60b6c25b9b5cfe454386ff",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+    "sha256": "b1f12e4eac06954199b0de92d989bb025d19bc0ec0d33e03f0bc501af027bfd5"
+  },
+  "prepared_source_commit": "148f6fc3ab6ea8967a3f016a1ccaa9760ad05048",
+  "pure_capacity_budget": null,
+  "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1",
+  "runtime_admission": false,
+  "runtime_sample_ids": [
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "source_policy": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/compiled-v1/candidate-3-policy-v1.json",
+    "sha256": "61d9c6aa67bc1f8f68157d7c5317efc131de06add64a0aa6e54d03ce08e53204"
+  },
+  "source_resolution": "PENDING EXTERNAL ROOT FROZEN-LAUNCH BINDING",
+  "status": "READY METADATA FINALIZED; exact root registration remains separate",
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "b1f12e4eac06954199b0de92d989bb025d19bc0ec0d33e03f0bc501af027bfd5"
+    }
+  ],
+  "warm_verified": true
+}
