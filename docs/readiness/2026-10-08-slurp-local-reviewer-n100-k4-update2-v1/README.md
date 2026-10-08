@@ -1,0 +1,9 @@
+# Reviewer local update2: complete own aggregate feedback
+
+Root prospectively authorizes one isolated Astra Ultra opportunity jointly designing 4 Reviewer-only templates on the unchanged full-seed parent and same fixed 100 development inputs. Exactly 4 prior own template/statistics records and 2 separately labelled controls are included. Raw cases, references, row IDs, source inventories, knowledge and peer Solver search outcomes are omitted. All parent and feedback exposure is retained. Original records and no-export dispositions stay unchanged.
+
+The original first evaluated Reviewer update showed no primary improvement. Preserve the registered raw entity net-repair/fixed-N primary, available-case false-alarm tie-break and two-evaluated-update review rule. Unknowns remain explicit. This new opportunity has no runtime outcomes, and no formal adoption or stable learning claim follows its preparation.
+
+The complete capsule is 70930 bytes. Root prospectively amended only its application input bound from 65536 to 81920 bytes before export/reservation/contact, retaining every record. Output/text bounds, K/N, one opportunity, model settings and execution budgets remain unchanged. Source-helper approval covers the unchanged source; the exact metadata amendment is separately root-decided and verified at /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-update2-input-capacity-v1/root-decision-v1.json. No provider-enforced input/output cap is claimed.
+
+All configured positions are spent by the one original actor, including invalid/no-change responses. Compilation, capacity, structural proof and runtime admission follow separately. GPU campaigns remain serial with four concurrent inputs and overlapping CPU preparation/scoring. Return to the human before8x400.

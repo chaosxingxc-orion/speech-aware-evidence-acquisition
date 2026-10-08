@@ -1,0 +1,51 @@
+{
+  "actor_plan": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/actor-plan-v1.json",
+    "sha256": "5824e57b572778275a94712434677dd67223034ef5b40cad55f889cb6ef28679"
+  },
+  "at_utc": "2026-10-08T20:03:52.312927+00:00",
+  "budget": {
+    "K": 4,
+    "N": 100,
+    "active_node_counts": {
+      "candidate-1": 4,
+      "candidate-2": 4,
+      "candidate-3": 4,
+      "candidate-4": 4,
+      "control": 4,
+      "control-aa": 4
+    },
+    "candidate_trajectories": 400,
+    "control_trajectories": 200,
+    "family_trajectories": 600,
+    "fit_endpoints_cap": 31200,
+    "generation_contacts_cap": 7800
+  },
+  "candidate_history_records": 4,
+  "capsule_bytes": 70930,
+  "contacts_added": 0,
+  "independent_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-update2-astra-review-v1/original-review-v1.json",
+    "sha256": "a830f193cca8fe5f3ab686896865d5742d2e091cc396ed5d4b944f55402bf126"
+  },
+  "owner_decision": 227,
+  "runtime_admission": false,
+  "schema": "saea-root-local-update2-preparation-v1",
+  "separate_control_records": 2,
+  "source_family_READ": {
+    "ledger_row_sha256": "58587091e5e976ca19a2b34412d41e58d5248fc10c120c6bea53d53041bb4fb5",
+    "read_run_id": "SAEA-SLURP-LOCAL-REVIEWER-N100-K4-UPDATE1-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-analysis-v1/analysis-recipe-v1.json",
+      "sha256": "1198b333f261bcceb3ad9c33b9702d1b19e217fefada4dcfb052fd356972b62c"
+    }
+  },
+  "source_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-update2-engineering-v1/prepare_reviewer_update2_v1.py",
+    "sha256": "83ce91b8957276925c9e2c3051833d7b4fa2791b53c01ab49cf451c41c82319c"
+  },
+  "unsigned_manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-update2-input-capacity-v1/unsigned-template-package-v3/draft-manifest-v1.json",
+    "sha256": "666b5a15d5299f712e4d7cbfa98c9cdf2b5badb4956b199516f3153b487e87d5"
+  }
+}

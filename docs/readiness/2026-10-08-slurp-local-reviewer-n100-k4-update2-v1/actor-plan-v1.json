@@ -1,0 +1,56 @@
+{
+  "access_report_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-v1/access-report.json",
+  "actual_provider_duration": null,
+  "actual_provider_tokens": null,
+  "aggregate_record": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-v1/aggregate-record-v1.json",
+    "sha256": "f5955a8da068c2cb33e549093a95fffe1afabb077344cd9d1f54031626a6b465"
+  },
+  "algorithm": "fixed-parent-aggregate-v1",
+  "at_utc": "2026-10-08T20:03:52.312927+00:00",
+  "capsule": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-v1/actor-capsule.json",
+    "sha256": "cbc43b2643963f25500b463aa682ceaf94f57ab5433a2df7921bed3f8e955c60"
+  },
+  "design_slots": [
+    "local-reviewer-k4-update2-c1",
+    "local-reviewer-k4-update2-c2",
+    "local-reviewer-k4-update2-c3",
+    "local-reviewer-k4-update2-c4"
+  ],
+  "execution_profile": "bounded-discovery-probe",
+  "fork_turns": "none",
+  "max_input_bytes": 81920,
+  "max_output_bytes": 65536,
+  "max_reviewer_text_characters": 6000,
+  "model": "gpt-6-astra",
+  "model_contact_transport": "Codex isolated subagent, subscription, no paid API",
+  "old_allocations_unchanged": true,
+  "output_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-v1/original-response.json",
+  "paid_api_spend": 0,
+  "projection_authority": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/aggregate-projection-authority-v1.json",
+    "sha256": "b700fecfd14c0488c1e377f5b210568b8af49ef8ab013689722c8ac1af1d9a63"
+  },
+  "proposer_task_identity": "/root/local_reviewer_k4_update2_templates_astra_ultra",
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/protocol-v1.json",
+    "sha256": "7f55b2d1f657fd480655fd63673eb5bafbb13170abed486e5999a80b54af20c9"
+  },
+  "protocol_hash": "ea15f4eec27d7f7ba0aa6b236b0a9cb8e192416032aeca3421828dcae1fb4d4a",
+  "provider_enforced_cap_claim": false,
+  "reasoning_effort": "ultra",
+  "replacement_on_invalid_or_no_change": false,
+  "run_id": "SAEA-SLURP-LOCAL-REVIEWER-N100-K4-UPDATE2-PROPOSE-V1",
+  "runtime_admission": false,
+  "schema": "saea-local-reviewer-proposer-contact-plan-v1",
+  "semantic_opportunities": 1,
+  "split_identity_hash": "144b2f097bf70c0b274e7112e29fad2fcdaa3bc00c6e43bd6d7e533d61b3ef3c",
+  "split_role": "discovery",
+  "status": "ROOT_COUNTERSIGNED_AND_POSITIONS_RESERVED_BEFORE_CONTACT",
+  "template_parent": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+    "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+  },
+  "usage_unavailable_is_null": true
+}

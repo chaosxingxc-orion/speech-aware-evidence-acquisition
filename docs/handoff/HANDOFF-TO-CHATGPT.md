@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Reviewer update2 complete own K4 opportunity registered (2026-10-08T20:03:52.312927+00:00)
+
+Root prospectively registered one isolated four-position Reviewer-only Astra Ultra opportunity using the complete qualified/root-read update1 own aggregate records and two separately labelled controls. See `docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/README.md`. The fixed original full-seed parent, other roles, same N100 pool, raw entity net-repair primary, false-alarm tie-break and two-evaluated-update review rule remain unchanged. No Solver outcomes, raw cases, knowledge or source inventories enter the capsule.
+
+Source preparation passed96 independent tests plus alternate-N checks. Root's exact complete capsule is70930 bytes; before reservation, root separately amended only the application input bound to81920 bytes so no record is truncated. Output/text/opportunity/execution budgets stay fixed. This registration itself creates no proposer, tokenizer, runtime or scorer contact. The original actor must consume its exact capsule once; all positions remain spent after that original opportunity, including invalid/no-change outputs. No benefit, adoption or learning advantage is established.
+
+The prior Reviewer family is complete and its job monitor is deleted. Solver opportunity3 remains a separate preparation/admission route. Keep one serial GPU campaign, four concurrent samples, overlapping CPU work and4GiB floors. Create a job-scoped15minute monitor only upon actual GPU launch. The broad goal remains active and incomplete; return to the human before8x400.
+
 ## Solver opportunity3 held preparation complete; Reviewer next K4 source ready (2026-10-08T20:02:27.518597+00:00)
 
 Original canonical Solver preparation exited0. All six configured members and18 capacity/graph/natural companions have exact preserved asset outputs and pass warm verification. K4/N100 and all budgets derive from config. No model/tokenizer/scorer contact occurred; capacity, structural proof and exact GPU admission remain pending. See `docs/receipts/continuation/2026-10-08-local-solver-update3-held-preparation-complete-v1.json`.
@@ -7339,7 +7347,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T20:02:27.518597+00:00
+Last refreshed: 2026-10-08T20:03:52.312927+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
