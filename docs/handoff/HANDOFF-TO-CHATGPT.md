@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner clarification: ordinary local development first (2026-10-08T10:25:45.896043+00:00)
+
+Use the same fixed100-input development roster and engineering base. Stage1 names one local problem, freezes surrounding configuration/interfaces, evaluates a configured candidate batch, and selects/locks its best observed local version. The declared local objective decides this update. Other available metrics remain recorded; repeated whole-system adoption, noninferiority or Pareto approval is not a mandatory gate for each local iteration. Stage2 integrates the locked local versions and handles joint end-to-end tradeoffs. See `docs/readiness/2026-10-08-local-node-before-system-optimization-v1/README.md`. This supersedes the previous per-iteration acceptance wording, not original experiment/result custody.
+
+Start with short Solver first-answer/empty-entity templates using the existing review-off Perception-to-Solver shared workflow. Source-only inspection found no config-level exact fixed-upstream replay. Keep upstream configuration fixed and rerun it; do not claim identical upstream outputs. Next tackle the Reviewer-to-Solver repair interface. Keep K, budgets and runtime limits configured. Root227 covers routine preparation and local iteration; no further human approval is needed before its existing8x400 boundary. No new contact, allocation, source activation, STOP transition or GPU admission occurs merely from this clarification. The original completed N100 monitor remains deleted. Fable5.1 should use this local-development priority.
+
 ## Local contracts before joint system optimization (2026-10-08T02:41:35.411314+00:00)
 
 The owner now proposes two stages: first controlled node/interface optimization, then joint system optimization. Root adopts this prospective order under227; see `docs/readiness/2026-10-08-local-node-before-system-optimization-v1/README.md`. Keep the same100-input roster. Start with Solver first-answer/empty-entity handling, then the Reviewer-to-Solver useful-repair interface. Track false omission, damage to correct fields, raw parsing and official whole-system quality so local metrics cannot hide a compensating loss. Fixed upstream replay is conditional on existing shared-harness support; otherwise vary only the named role templates in complete shared-system runs. No second harness, runtime gold or future information.
@@ -7087,7 +7093,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T02:41:35.411314+00:00
+Last refreshed: 2026-10-08T10:25:45.896043+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
