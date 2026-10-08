@@ -1,0 +1,20 @@
+{
+  "analysis_intent": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/manual-architecture-analysis-intent-v1.json",
+    "sha256": "966dd1e3b0dd1b50be30f8155a1bbc6f976cfea7390e805cea01dd2308542585"
+  },
+  "comparisons_changed": false,
+  "contacts": 0,
+  "frozen_launch_binding": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-layout-v1/root-frozen-launch-binding-v1.json",
+    "sha256": "0b5ca2f60953dee216c708aca1e0702217c77cf3d5cae72c7c8498e2332694c1"
+  },
+  "read_authorized": false,
+  "schema": "saea-manual-architecture-source-resolution-v1",
+  "status": "SOURCE RESOLVED; root READ remains DRAFT",
+  "successor_recipe": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/analysis-recipe-v1.json",
+    "sha256": "07a1b99cc1be751145866d8bfc8a172625c839385f62dd2b94b3e08916219d47"
+  },
+  "worker_commit": "7cfdcf82bccec639f9ef57bc4a66b9ea0ba76407"
+}

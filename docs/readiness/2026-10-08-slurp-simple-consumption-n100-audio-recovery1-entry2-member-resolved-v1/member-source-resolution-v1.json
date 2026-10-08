@@ -1,0 +1,42 @@
+{
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "dispatches": 0,
+  "helper_sha256": "e37996bbccc6debf23c23a5391ff36b051e20e643c56f181df60accc02148b80",
+  "input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-member-resolution-input-v1.json",
+    "sha256": "58036b08dfc6cfd2b91dc489aa262855103f083a8338c8e2b225ed7e2ec2b7a8"
+  },
+  "intent_support_binding": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-intent-support-binding-v1.json",
+    "sha256": "2ac428da32b3a7d2fefd4d3589e0a1f91c42587c73e22fea1279f3f2944703ad"
+  },
+  "ledger_modified": false,
+  "member_recipes": {
+    "review-off": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/review-off-member-read-resolved-v1.json",
+      "sha256": "ffad70c4d54439495b35b15416e97fcd1345a36ad973a43ecf6e20a70fc493b0"
+    },
+    "seed": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/seed-member-read-resolved-v1.json",
+      "sha256": "a41933a6dfe8e9fd69634a28a4a7e01769eae41f5331075b30770ab7c44d06f8"
+    },
+    "seed-aa": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/seed-aa-member-read-resolved-v1.json",
+      "sha256": "c6acc4265ea88ea0de486d3c09e50a7abf81b33cdedd2866894950ab056b5e3c"
+    },
+    "solver-lookup": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/solver-lookup-member-read-resolved-v1.json",
+      "sha256": "ab46df24e16584397c91d5337cc23809ba72132802556229d1edc2fc030c47f7"
+    }
+  },
+  "read_authorized": false,
+  "schema": "saea-manual-member-source-resolution-v1",
+  "status": "SOURCE RESOLVED; ALL MEMBER READS REMAIN UNSIGNED",
+  "task_outcomes_used": false,
+  "worker_commit": "7cfdcf82bccec639f9ef57bc4a66b9ea0ba76407",
+  "worker_root": "/home/chao/saea-worktrees/codex-simple-consumption-n100-audio-recovery1-entry2-layout-v1"
+}

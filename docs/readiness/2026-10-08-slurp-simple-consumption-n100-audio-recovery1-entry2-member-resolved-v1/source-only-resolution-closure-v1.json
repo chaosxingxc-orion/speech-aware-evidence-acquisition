@@ -1,0 +1,121 @@
+{
+  "analysis_checkout": "/home/chao/saea-worktrees/codex-simple-consumption-n100-audio-recovery1-entry2-analysis-v1",
+  "authoritative_nested_intent": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/manual-architecture-analysis-intent-v1.json",
+    "sha256": "966dd1e3b0dd1b50be30f8155a1bbc6f976cfea7390e805cea01dd2308542585"
+  },
+  "contacts": 0,
+  "family_metadata": {
+    "analysis-recipe-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/analysis-recipe-v1.json",
+      "sha256": "07a1b99cc1be751145866d8bfc8a172625c839385f62dd2b94b3e08916219d47"
+    },
+    "analysis-supplement-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/analysis-supplement-v1.json",
+      "sha256": "1993c191312ac9924fb547ca4462257b4624ea1daabfc9988da025c8c1d4ada5"
+    },
+    "manual-architecture-registration-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/manual-architecture-registration-v1.json",
+      "sha256": "0c5a27faac0588605a6d59d81a3da9a2c97894879600c9838a6c457ad4dc4314"
+    },
+    "root-read-draft-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/root-read-draft-v1.json",
+      "sha256": "4ea9973cd5a5fbace67faf8ef306efe8834a6253f0e895a3bb9b80cecbd207cb"
+    },
+    "source-resolution-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/source-resolution-v1.json",
+      "sha256": "5e60f301169d2df726098af4d43d49f64027814cdc341fc4c4d82294d9312f99"
+    }
+  },
+  "frozen_launch_binding": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-layout-v1/root-frozen-launch-binding-v1.json",
+    "sha256": "0b5ca2f60953dee216c708aca1e0702217c77cf3d5cae72c7c8498e2332694c1"
+  },
+  "frozen_source_changed": false,
+  "frozen_source_commit": "7cfdcf82bccec639f9ef57bc4a66b9ea0ba76407",
+  "frozen_worker_root": "/home/chao/saea-worktrees/codex-simple-consumption-n100-audio-recovery1-entry2-layout-v1",
+  "intent_support_binding": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-intent-support-binding-v1.json",
+    "sha256": "2ac428da32b3a7d2fefd4d3589e0a1f91c42587c73e22fea1279f3f2944703ad"
+  },
+  "ledger_changed": false,
+  "main_changed": false,
+  "member_metadata": {
+    "member-source-resolution-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/member-source-resolution-v1.json",
+      "sha256": "bcff1e5f5b16c855baff5cb3f8b1d582999ab801b6032d64c684780de3524c77"
+    },
+    "review-off-member-read-resolved-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/review-off-member-read-resolved-v1.json",
+      "sha256": "ffad70c4d54439495b35b15416e97fcd1345a36ad973a43ecf6e20a70fc493b0"
+    },
+    "seed-aa-member-read-resolved-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/seed-aa-member-read-resolved-v1.json",
+      "sha256": "c6acc4265ea88ea0de486d3c09e50a7abf81b33cdedd2866894950ab056b5e3c"
+    },
+    "seed-member-read-resolved-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/seed-member-read-resolved-v1.json",
+      "sha256": "a41933a6dfe8e9fd69634a28a4a7e01769eae41f5331075b30770ab7c44d06f8"
+    },
+    "solver-lookup-member-read-resolved-v1.json": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/solver-lookup-member-read-resolved-v1.json",
+      "sha256": "ab46df24e16584397c91d5337cc23809ba72132802556229d1edc2fc030c47f7"
+    }
+  },
+  "original_captures": {
+    "sol-layout-analysis-implementation-exit-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-analysis-implementation-exit-v1.json",
+      "sha256": "a1ff61865576946708fcb61e318c91d6ef1842048785b99a10c0340e5ab61b69"
+    },
+    "sol-layout-analysis-implementation-inventory-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-analysis-implementation-inventory-v1.json",
+      "sha256": "64715ea5accfed39f9dc94f2cd9fe066dd2a4987d7946460f295f01729f148af"
+    },
+    "sol-layout-family-assembly-exit-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-family-assembly-exit-v1.json",
+      "sha256": "dc7d727f7cc75a06aab5ad8204d16e88eff8debab7dd7932317db29812ceeda7"
+    },
+    "sol-layout-family-assembly-manifest-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-family-assembly-manifest-v1.json",
+      "sha256": "5e0ac2966cb19f11a1e37c8888f4eff162e1411241e9dde8bcd2380c8f38a01f"
+    },
+    "sol-layout-family-resolution-exit-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-family-resolution-exit-v1.json",
+      "sha256": "75b1204a52838ce7100f790885d27c4f5a56fc23bba37cf47455d74ddec4ee22"
+    },
+    "sol-layout-family-resolution-input-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-family-resolution-input-v1.json",
+      "sha256": "d8ecd14d41339d00887e59cb7114118c9512220436f1b33d77d50629b95d1c5f"
+    },
+    "sol-layout-family-spec-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-family-spec-v1.json",
+      "sha256": "091e716916b9cb3bacdd105e3c1d2d4afd9f65886ccaae4e1153b7230e488a1f"
+    },
+    "sol-layout-member-assembly-exit-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-member-assembly-exit-v1.json",
+      "sha256": "376e6c770ca28136c2a5b60925481fe93c8e680c4cc7ddf754208dab014a2164"
+    },
+    "sol-layout-member-assembly-manifest-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-member-assembly-manifest-v1.json",
+      "sha256": "83b4b9981fe260da4d18cc630f7c68bea4ef5af9ab5ea26867eda1a7912eab83"
+    },
+    "sol-layout-member-resolution-exit-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-member-resolution-exit-v1.json",
+      "sha256": "cb0e99d91e05a0add0d8d6696cf3027347808a7164e943056f6219c7e036c864"
+    },
+    "sol-layout-member-resolution-input-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-member-resolution-input-v1.json",
+      "sha256": "58036b08dfc6cfd2b91dc489aa262855103f083a8338c8e2b225ed7e2ec2b7a8"
+    },
+    "sol-layout-member-spec-v1.json": {
+      "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-layout-member-spec-v1.json",
+      "sha256": "66dba4c5b1ecb2508830a71c2e738975335be482cb3fd0e47d9bca474851134c"
+    }
+  },
+  "read_countersigned": false,
+  "reference_answers_read": false,
+  "results_read": false,
+  "schema": "saea-source-only-analysis-resolution-closure-v1",
+  "scope": "Existing metadata resolvers only; no scientific READ, scoring or dispatch. Complete source-only validation is distinct from completed episode or official-score qualification.",
+  "status": "SOURCE RESOLVED; FAMILY AND MEMBER READS REMAIN UNSIGNED"
+}
