@@ -1,0 +1,72 @@
+{
+  "at_utc": "2026-10-08T13:21:47.989440+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "notes": "Counts, roster and budgets derive from exact existing population config. Preserve canonical standard scoring, process diagnostics and explicit local development selection. Future exact resolved recipes/READ remain required.",
+  "owner_decision": 227,
+  "roles": {
+    "reviewer": {
+      "protocol": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/protocol-v1.json",
+        "sha256": "e28dff91be84e79fc51913338c7dafae4ecf6a1bf5fc506412c508eb9e379584"
+      },
+      "stage_budget": {
+        "K": 4,
+        "N": 100,
+        "active_node_counts": {
+          "candidate-1": 4,
+          "candidate-2": 4,
+          "candidate-3": 4,
+          "candidate-4": 4,
+          "control": 4,
+          "control-aa": 4
+        },
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 31200,
+        "generation_contacts_cap": 7800
+      },
+      "template": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/analysis-metadata-v1/analysis-template-v1.json",
+        "sha256": "8136f036a662212cf9354980936cc8c734096a6a9f4b59a7203f96ae6c77ce9f"
+      }
+    },
+    "solver": {
+      "protocol": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/protocol-v1.json",
+        "sha256": "1a1d087c55299caa2da0168f2ee32e108aba25954921c3a2af8c9f8638b640f9"
+      },
+      "stage_budget": {
+        "K": 4,
+        "N": 100,
+        "active_node_counts": {
+          "candidate-1": 2,
+          "candidate-2": 2,
+          "candidate-3": 2,
+          "candidate-4": 2,
+          "control": 2,
+          "control-aa": 2
+        },
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 4800,
+        "generation_contacts_cap": 1200
+      },
+      "template": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/analysis-metadata-v1/analysis-template-v1.json",
+        "sha256": "00e91d4da9b2f3eb61a0fe5bc51412eac05380c710f32adbcfbd0ead334e2e87"
+      }
+    }
+  },
+  "schema": "saea-local-k4-held-analysis-intent-v1",
+  "source_template": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/analysis-metadata-v1/analysis-template-v1.json",
+    "sha256": "5e3f2b4a6590f24a87f6dcbd2264887931964ffe93c9aa5c1f77f94dbdd689a4"
+  },
+  "status": "DRAFT_LOCAL_ANALYSIS_NO_READ_OR_RUNTIME_ADMISSION"
+}
