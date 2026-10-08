@@ -1,0 +1,30 @@
+{
+  "all_reviewed_file_hashes_equal_integrated_source": true,
+  "at_utc": "2026-10-08T11:19:30.729160+00:00",
+  "author_tests_passed": 575,
+  "independent_configured_k4_both_roles_passed": true,
+  "independent_review": {
+    "relpath": "coordination/local-node-preparation-engineering-review-v1/final-review-v1.json",
+    "sha256": "33adfce3328b571a2f8d255b43ffd18367ec5b2e0a6efbd2faff6c9f9969c75c"
+  },
+  "independent_tests_passed": 430,
+  "integrated_commits": [
+    "8323b7124",
+    "b51e42b3f"
+  ],
+  "integrated_source_head": "b51e42b3feb339422181f12aad7e952f13f1933e",
+  "no_model_tokenizer_scorer_contacts": true,
+  "proofs_pending": [
+    "actual prepared immutable supplies",
+    "fresh full-request capacity",
+    "fresh natural structural qualification",
+    "exact family registration"
+  ],
+  "runtime_admission": false,
+  "schema": "saea-local-node-engineering-integration-v1",
+  "source_commits": [
+    "37dfb24dcd6b32bf785d798e1a62ed92518b058c",
+    "e5b235556638af6fd25b6ba4ec81fe5eb4bf0232"
+  ],
+  "status": "SOURCE_APPROVED_AND_SERIAL_INTEGRATION_VERIFIED"
+}
