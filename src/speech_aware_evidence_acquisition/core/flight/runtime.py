@@ -4639,6 +4639,14 @@ class FlightRuntime:
         adapter = self._adapter
         samples = self._samples
 
+        from ...rails.architecture_audio_budget import (
+            manual_architecture_audio_budget_applies, require_manual_architecture_audio_budget,
+        )
+        if manual_architecture_audio_budget_applies(values):
+            require_manual_architecture_audio_budget(values, [
+                {"sample_id": sample.sample_id, "audio_seconds": getattr(sample, "audio_seconds", None)}
+                for sample in samples
+            ])
         plan = self._build_execution_plan(values, carrier_lock_key, identity_hash)
         self._plan = plan
         if values.get("system_episode_policy") is not None:

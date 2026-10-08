@@ -107,6 +107,8 @@ def _member_inputs(spec, stage, repo_root):
             c["baseline_fragment"],
             receipt["experiment"],
         )
+        from speech_aware_evidence_acquisition.rails.architecture_audio_budget import require_manual_architecture_audio_budget
+        require_manual_architecture_audio_budget(configured.values)
         profiles.append(deepcopy(configured.values["system_search_measurement"]))
         runtime = receipt["runtime_sample_ids"]
         require(

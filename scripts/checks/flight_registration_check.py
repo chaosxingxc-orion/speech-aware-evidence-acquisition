@@ -1669,6 +1669,9 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
             )
             effective = compose(index.repo_root, cell["model_fragment"], cell["dataset_fragment"],
                                 cell["baseline_fragment"], report.experiment)
+            if manual_n20:
+                from speech_aware_evidence_acquisition.rails.architecture_audio_budget import require_manual_architecture_audio_budget
+                require_manual_architecture_audio_budget(effective.values)
             validator = require_architecture_n20_registration if manual_n20 else require_architecture_natural_registration
             validator(effective.values, cell, natural_plans,
                                                      repo_root=index.repo_root, data_root=data_root)
