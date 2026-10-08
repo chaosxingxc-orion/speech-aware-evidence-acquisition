@@ -1,0 +1,23 @@
+{
+  "allowed_read": "Structural capacity only; no task-quality or optimizer feedback.",
+  "expected_rows": 100,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-reviewer-n100-k4-update2-v1.json",
+    "sha256": "5fb53d7e8a8cf71c6b3180c6a9a0e8bfba652809ebe49868f561a276da74d045"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "run_ids": {
+    "capacity": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE2-CAPACITY-FIT-V1",
+    "read": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE2-CAPACITY-STRUCTURE-V1"
+  },
+  "schema": "saea-system-text-engineering-analysis-v1",
+  "score_jobs": 0,
+  "status": "ROOT COUNTERSIGNED structural-only capacity read under owner227"
+}
