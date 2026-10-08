@@ -1,0 +1,114 @@
+{
+  "at_utc": "2026-10-08T12:12:13.196772+00:00",
+  "bridge_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-capacity-engineering-v1/solver-bridge-packet-v1/bridge-receipt-v1.json",
+    "sha256": "538a56a05891479f0604cbcf1a3371746eb1d7017238401e1a3de954d177a2b8"
+  },
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "hardened_bridge_implementation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-capacity-engineering-v1/local_capacity_input_bridge_v2.py",
+    "sha256": "79539586173aad1730fe630a76e58e0e9806c2aab99255f5dc42dfb41339908e"
+  },
+  "helper_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-v1/helper-validation-v1.json",
+    "sha256": "e3756e257f7b2fec77b2ed9466c6f6ff38d81c6a70c378082ae780b9be9d5feb"
+  },
+  "metadata": [
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-1-capacity-capacity-chain-v1.json",
+      "sha256": "e6ea85d1e195bf4d1c60b332da5c4fd660edb993b912ff6edc6a3620bd0dc390"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-1-generation-capacity-chain-v1.json",
+      "sha256": "25e4c9f0c4b5ae21f2783b0c830bb14eba07bc69f44dade76e2d1a6351330dba"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-1-graph-capacity-chain-v1.json",
+      "sha256": "8b7fb5423024d9b03b7e8f8814c15ebadc0c1de337e82670eb8797d879a43211"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-2-capacity-capacity-chain-v1.json",
+      "sha256": "5c5e0ab3fbd92c1af61dc465ce2148483253f1bac7387d28e65dc7254b15f048"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-2-generation-capacity-chain-v1.json",
+      "sha256": "f8d0c645161dbb47f32c1ff8bd260edd356ad9111dd30ae31b29889b183d90e8"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-2-graph-capacity-chain-v1.json",
+      "sha256": "53b1a0e6b0fe18aa10b15c610f29abc1a335ad63f61cb1745fedddafbcb58411"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-3-capacity-capacity-chain-v1.json",
+      "sha256": "df34592777bb97e509aa23c7113b58d80dccdd938578882728f41c85bc6bc3ab"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-3-generation-capacity-chain-v1.json",
+      "sha256": "d2341a7e64e59fb1f7f40df275a7b67bc23a83a92cfc4fc2fb8f0b93bd92df65"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-3-graph-capacity-chain-v1.json",
+      "sha256": "482b66fc8c6f3206d85789fe2f95dbfff508006aab0ca4d5532c72f8c7d35b5b"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-4-capacity-capacity-chain-v1.json",
+      "sha256": "34325917f8c4de6da90dd739d0e6de56518bedad4a316bf6c8d11aac2bfd1b25"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-4-generation-capacity-chain-v1.json",
+      "sha256": "bf9a3b29d5ddbe7af76c706a0f0859abdb1c43a1a9f7df742be6c4403d7c8c17"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/candidate-4-graph-capacity-chain-v1.json",
+      "sha256": "3e6b81ec8b9560f537de831c9cbc2bf3302850f6e0223ab0ceb229abe299c968"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/capacity-prepared-members-v1.json",
+      "sha256": "12e064bf0c280c9803240bd459740260517e714a133fa158533cf53a1a23a5b4"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/control-aa-capacity-capacity-chain-v1.json",
+      "sha256": "7cdf4fa97a1f6192954ff5470cd705aac41ef1e6bcece59e9f7fa47fe2932157"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/control-aa-generation-capacity-chain-v1.json",
+      "sha256": "662d12fcffe4da013756d95a01f23eef76d0ff39bbf96102554a7da5d8772605"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/control-aa-graph-capacity-chain-v1.json",
+      "sha256": "cab9903adaeee594cfcdf55fb4bf82e27525c2c947d7c442f921f25e323a1095"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/control-capacity-capacity-chain-v1.json",
+      "sha256": "988b6c85e8ddaa432bf435d698f3be47f6d27f918dc5b2cc325c30d2474729d4"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/control-generation-capacity-chain-v1.json",
+      "sha256": "3a8b2976e538071da59a7fa6dc560519845e3c9723c03f996b58b5351cff6013"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-bridge-v1/control-graph-capacity-chain-v1.json",
+      "sha256": "a008408b0539c2add5d71c4542d304d2e621738c9c817552fd417ea8dda88707"
+    }
+  ],
+  "original_bridge_implementation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-capacity-engineering-v1/local_capacity_input_bridge_v1.py",
+    "sha256": "1d7ea9a89878473d9b8981ea2ef99c36c97533bd0e809a9e6e04afb72ccd3a05"
+  },
+  "original_summary": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "f4406b28135ae93a7d7c86811fc52e011cbfd27bbc2313b28908c4be86616fd8"
+  },
+  "root_admission": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-capacity-engineering-v1/solver-root-inputs-v1/root-capacity-admission-v1.json",
+    "sha256": "519003fddeb3bd7c8564ec443bdf4369e0776f0a6451656a4fe93ad41bdbbfd3"
+  },
+  "schema": "saea-local-capacity-bridge-root-staging-v1",
+  "scope": "Fresh custody-only metadata. Preserve original receipts/configuration/output and both original preflight diagnostics. No runtime controls changed.",
+  "status": "PROSPECTIVE_REGISTER_FREEZE_CHECK_BEFORE_CONTACT",
+  "valid_input_output_equivalence": true
+}
