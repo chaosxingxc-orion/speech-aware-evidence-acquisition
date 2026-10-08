@@ -1,0 +1,164 @@
+{
+  "at_utc": "2026-10-08T14:16:57.890716+00:00",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "last_telemetry_snapshot": {
+    "gpu": {
+      "clocks_sm_mhz": 180.0,
+      "memory_used_mib": 22954.0,
+      "power_watts": 5.5,
+      "pstate": "P8",
+      "utilization_percent": 0.0
+    },
+    "host_memory": {
+      "host_free_gb": 25.411300659179688,
+      "host_memory_error": null,
+      "host_memory_source": "windows+vm",
+      "host_total_gb": 63.43492889404297,
+      "vm_available_gb": 39.13276290893555,
+      "vm_total_gb": 43.1055793762207,
+      "vmmem_ws_gb": 23.160888671875
+    },
+    "metrics": null,
+    "requests_total": 0,
+    "sampled_at": 1791469008.8822622,
+    "sampled_at_iso": "2026-10-08T14:16:48.882262+00:00",
+    "schema": "saea-serving-monitor-sample-v1",
+    "server_ok": true,
+    "slots": {
+      "busy": 0,
+      "idle": 4,
+      "total": 4
+    }
+  },
+  "monitor": {
+    "delete_after_original_terminal": true,
+    "id": "slurp-local-solver-k4-capacity-health",
+    "interval_minutes": 15,
+    "status": "ACTIVE"
+  },
+  "natural_input_drafts": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-capacity-engineering-v1/root-natural-input-drafts-v1/held-root-input-index-v1.json",
+    "sha256": "24af098a513a0dbe73211b2c6adba56946d46bfeb3cbfcae5df8a6d6f95d9b34"
+  },
+  "next": "Qualify the complete original Solver capacity terminal; serialize Reviewer capacity after live gates; use qualified exact proofs with reviewed natural4 root procedure; then separately admit each six-member local N100 family.",
+  "old_control_decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-k4-capacity-control-transition-v1/root-control-disposition-v1.json",
+    "sha256": "34ff7114c1aeffc752ecaff65ad82bbe5ca776682bf3e3e42341be8269647ca9"
+  },
+  "old_control_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-k4-capacity-control-transition-v1/root-control-transition-v1.json",
+    "sha256": "ab706b0bd7d4d96ad5c3ad65a5047404850b0e4b47e9168d42b2219c81ac05f1"
+  },
+  "owner_decision": 227,
+  "preserved": "Both original authorings/failures and all frozen sources remain unchanged. Previous completed N100 STOP archived exactly; queue/status unchanged. No old work replayed.",
+  "roles": {
+    "reviewer": {
+      "budget": {
+        "generation_contacts": 0,
+        "scorer_contacts": 0,
+        "tokenizer_endpoint_caps": {
+          "candidate-1": 299,
+          "candidate-2": 299,
+          "candidate-3": 299,
+          "candidate-4": 299,
+          "control": 299,
+          "control-aa": 299
+        },
+        "tokenizer_endpoints_total": 1794
+      },
+      "custody": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/root-final-registration-custody-v1.json",
+        "sha256": "4b788122778ab60ebd7ab2a93653dc34b8fd1f732c2384b6f996be2e62f28e61"
+      },
+      "dispatched": false,
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-reviewer-k4-capacity-frozen-v2",
+      "members": [
+        "control",
+        "control-aa",
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ],
+      "original_source_terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/frozen-check-v1.exit.json",
+        "sha256": "9540ba1bc3a4d292ee7a05a3410673a634711955d6d71f68804aafa11c1a17eb"
+      },
+      "outer_source_terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/root-source-continuation-exit-v1.json",
+        "sha256": "7b97cc5af2415ea763c15d96490cf62953d9cf788f5b59883492629f26ed6bb3"
+      },
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/registration-v1.json",
+        "sha256": "9b9306b5ca1b969fb4234e763b4e3a546ed1e21bbed6ef82b4a2a0895d9c4d85"
+      },
+      "source_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-capacity-entry2-v1/frozen-check-v1.json",
+        "sha256": "a613bd5bc91fe45f71d17691c9100a06c37370c709e5fc33015447bd28dcaaf7"
+      },
+      "source_commit": "e03a13e6350b1515f64136f25c892da44fb85bbc"
+    },
+    "solver": {
+      "budget": {
+        "generation_contacts": 0,
+        "scorer_contacts": 0,
+        "tokenizer_endpoint_caps": {
+          "candidate-1": 157,
+          "candidate-2": 157,
+          "candidate-3": 157,
+          "candidate-4": 157,
+          "control": 157,
+          "control-aa": 157
+        },
+        "tokenizer_endpoints_total": 942
+      },
+      "custody": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/root-final-registration-custody-v1.json",
+        "sha256": "8bd0c7a9de2768159b772d5808a165c5181c136da777a571d38ef111723bbb24"
+      },
+      "dispatched": true,
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-solver-k4-capacity-frozen-v2",
+      "members": [
+        "control",
+        "control-aa",
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ],
+      "original_source_terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/frozen-check-v1.exit.json",
+        "sha256": "1ea419a7123d8c164025bfccfb32148c5607b33a1207bcb15196af78e16a7105"
+      },
+      "outer_source_terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/root-source-continuation-exit-v1.json",
+        "sha256": "bc501675e36d788831d6a6a6cb49d010ce3516819900bb814536efe25f765e43"
+      },
+      "registration": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/registration-v1.json",
+        "sha256": "6092d68423050428221b52a6ded56d7e9852459fe651b57d45a71cbea37a82fb"
+      },
+      "source_check": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/frozen-check-v1.json",
+        "sha256": "70bc7a2338dbb39fbf564755d2dab1e4d44ad2abf670be27981c8e6e8deadec2"
+      },
+      "source_commit": "e03a13e6350b1515f64136f25c892da44fb85bbc"
+    }
+  },
+  "schema": "saea-root-local-k4-capacity-entry2-launch-v1",
+  "scope": "Fresh maximum legal request capacity only; zero generation and official scoring admitted. No scientific read, benefit or learning claim.",
+  "solver_original_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/root-task-launch-v1.json",
+    "sha256": "6f3fcf0999ccc9cc990dd87dc5f5cd75fd76a7c321eb97fb81237899655a981e"
+  },
+  "solver_original_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/capacity-task-started.json",
+    "sha256": "5f58092f863caebf134142b9526d8f32716db39e72ca5b3f27ddd4acd7ff8073"
+  },
+  "solver_terminal": null,
+  "solver_terminal_observed": false,
+  "windows_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-capacity-entry2-v1/root-windows-prelaunch-v1.json",
+    "sha256": "3fabb3a6143fbbcfd65e697d136e1b0fd7d6c37a7d8c1b90185e7b2d70883e12"
+  }
+}
