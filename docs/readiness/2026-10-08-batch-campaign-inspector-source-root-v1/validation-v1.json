@@ -1,0 +1,48 @@
+{
+  "base_commit": "2c18a26b533c7f93021067f1fd7bb51c4800076d",
+  "checks": {
+    "focused_passed": 5,
+    "shell_syntax_exit": 0
+  },
+  "diagnosis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-terminal-inspect-diagnosis-v1/original-operational-diagnosis-v1.json",
+    "sha256": "eee873186d505f208536cfd9e8057edc535815050201241c504b9e84cd681a37"
+  },
+  "driver": {
+    "path": "/home/chao/saea-worktrees/codex-terminal-inspector-source-fix-v1/scripts/flights/batch/batch_driver.sh",
+    "sha256": "9d703ffad9b0999c2a778527a587c2a430c7196596a7947811d4367ea21ca6ad"
+  },
+  "frozen_or_runtime_controls_changed": false,
+  "model_scorer_contacts": 0,
+  "original_checks": {
+    "focused-exit-v1.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-terminal-inspect-diagnosis-v1/focused-exit-v1.json",
+      "sha256": "39f33fef2199406e72a13842c783c1e5209f8dbc1a48968879015204325820c2"
+    },
+    "shell-syntax-exit-v1.json": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-terminal-inspect-diagnosis-v1/shell-syntax-exit-v1.json",
+      "sha256": "9e239cde08404a3b63c5a20b1039110a3d07897a2e0370392a42b65a26f0c6f9"
+    }
+  },
+  "original_frozen_commit": "7cfdcf82bccec639f9ef57bc4a66b9ea0ba76407",
+  "original_rc2_stop_rewritten": false,
+  "patch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-terminal-inspect-diagnosis-v1/future-source-fix-v1.patch",
+    "sha256": "508714cd9071ad27719f7f16e176c1c19503772b77e8f8f7b9b8789203d01bf8"
+  },
+  "pre_write_setup_refusal": {
+    "correction": "Changed only generator string quoting before the focused test file existed.",
+    "exception": "SyntaxError from nested triple-quote test-generator text",
+    "test_file_or_production_write": false,
+    "tool_chunk": "10039f"
+  },
+  "quality_retrieved": false,
+  "real_campaign_inspection_replayed": false,
+  "regression_test": {
+    "path": "/home/chao/saea-worktrees/codex-terminal-inspector-source-fix-v1/tests/unit/test_batch_campaign_inspector_entrypoint.py",
+    "sha256": "8b7d710dc61c9884046d08421767cec697c9013a193762493557cff696096989"
+  },
+  "schema": "saea-future-campaign-inspector-source-fix-v1",
+  "scope": "Choose frozen REPO inspector for future campaign-plan arm inspection; retain legacy SP for noncampaign and smoke and retain strict inspector source-root guard.",
+  "status": "FUTURE SOURCE FIX; ORIGINAL TERMINAL REFUSAL PRESERVED"
+}

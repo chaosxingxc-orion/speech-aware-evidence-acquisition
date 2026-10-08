@@ -264,8 +264,12 @@ for ((i=0; i<N; i++)); do
       --ceiling-per-row "$ceil" --notool "$nt" --result-kind "$result_kind"); irc=$?
   else
     inspection_args=()
-    if [ -n "$plan" ] && [ "$plan" != "None" ]; then inspection_args=(--repo-root "$REPO" --campaign-plan "$REPO/$plan"); fi
-    out=$($PY -B $SP/batch_inspect.py "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT" --result-kind "$result_kind" "${inspection_args[@]}"); irc=$?
+    inspection_script="$SP/batch_inspect.py"
+    if [ -n "$plan" ] && [ "$plan" != "None" ]; then
+      inspection_script="$REPO/scripts/flights/batch/batch_inspect.py"
+      inspection_args=(--repo-root "$REPO" --campaign-plan "$REPO/$plan")
+    fi
+    out=$($PY -B "$inspection_script" "$DATA" "$run" "$gatt" arm "$rows" "$ceil" $nt "$FLIGHT_COMMIT" --result-kind "$result_kind" "${inspection_args[@]}"); irc=$?
   fi
   log "arm-inspect" "$out"
   [ $rc -eq 0 ] && [ $irc -eq 0 ] || stop "arm failed on step $order (campaign rc $rc, inspect rc $irc); see $LOGF"
