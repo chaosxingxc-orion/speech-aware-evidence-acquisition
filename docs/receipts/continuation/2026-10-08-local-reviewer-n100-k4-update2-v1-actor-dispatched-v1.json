@@ -1,0 +1,40 @@
+{
+  "actor_plan": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/actor-plan-v1.json",
+    "sha256": "5824e57b572778275a94712434677dd67223034ef5b40cad55f889cb6ef28679"
+  },
+  "at_utc": "2026-10-08T20:09:59.569288+00:00",
+  "capsule": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-v1/actor-capsule.json",
+    "sha256": "cbc43b2643963f25500b463aa682ceaf94f57ab5433a2df7921bed3f8e955c60"
+  },
+  "fork_turns": "none",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "owner_decision": 227,
+  "paid_api_spend": 0,
+  "positions_spent": [
+    "local-reviewer-k4-update2-c1",
+    "local-reviewer-k4-update2-c2",
+    "local-reviewer-k4-update2-c3",
+    "local-reviewer-k4-update2-c4"
+  ],
+  "provider_duration_seconds": null,
+  "provider_usage": null,
+  "provider_verified_effort": null,
+  "provider_verified_model": null,
+  "requested_model": "gpt-6-astra",
+  "requested_reasoning_effort": "ultra",
+  "response_read": false,
+  "runtime_admission": false,
+  "runtime_contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "schema": "saea-original-isolated-actor-dispatch-v1",
+  "semantic_opportunities_used": 1,
+  "spawn_returned_task": "/root/local_reviewer_k4_update2_templates_astra_ultra",
+  "status": "ORIGINAL_REGISTERED_ACTOR_DISPATCHED",
+  "task": "/root/local_reviewer_k4_update2_templates_astra_ultra",
+  "timestamp_semantics": "Root observation after the spawn tool returned the exact task identity; exact provider start is unavailable."
+}

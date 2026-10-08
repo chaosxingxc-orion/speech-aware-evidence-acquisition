@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Original configured reviewer actor dispatched after registration (2026-10-08T20:09:59.569288+00:00)
+
+The original isolated `/root/local_reviewer_k4_update2_templates_astra_ultra` was dispatched once with the exact registered English capsule, using requested GPT-6 Astra Ultra and no inherited chat. All 4 configured positions are now spent. It jointly proposes the complete batch from own qualified aggregate/template records and separate controls. The explicit canonical nested JSON contract passed independent source review. Original earlier failures and allocations stay preserved. Exact evidence: `docs/receipts/continuation/2026-10-08-local-reviewer-n100-k4-update2-v1-actor-dispatched-v1.json`.
+
+This is a proposal contact, not runtime admission or improvement evidence. Root has not read or repaired its response. Actual provider verification, tokens and duration remain unavailable. The prior Reviewer GPU family is complete and its experiment monitor has been deleted. Solver opportunity3 canonical CPU preparation is complete and awaits separate capacity, structural proof and GPU admission. Keep one serial GPU campaign and overlap independent CPU work. Root must validate the one original response and compile it through the existing shared path before any capacity/engineering admission. K and execution budgets remain configuration-derived. The broad goal remains active and incomplete, with human review before8x400.
+
 ## Reviewer update2 complete own K4 opportunity registered (2026-10-08T20:03:52.312927+00:00)
 
 Root prospectively registered one isolated four-position Reviewer-only Astra Ultra opportunity using the complete qualified/root-read update1 own aggregate records and two separately labelled controls. See `docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/README.md`. The fixed original full-seed parent, other roles, same N100 pool, raw entity net-repair primary, false-alarm tie-break and two-evaluated-update review rule remain unchanged. No Solver outcomes, raw cases, knowledge or source inventories enter the capsule.
@@ -969,7 +975,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-08T20:03:52.312927+00:00
+Last refreshed: 2026-10-08T20:09:59.569288+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
