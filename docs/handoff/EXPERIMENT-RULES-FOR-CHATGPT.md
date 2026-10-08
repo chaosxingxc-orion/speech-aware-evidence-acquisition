@@ -1,5 +1,11 @@
 # Experiment rules for the ChatGPT side
 
+## Solver opportunity3 maximum-request capacity registered (2026-10-08T21:17:55.825922+00:00)
+
+The reviewed metadata successor passed the actual canonical execution-map gate. All configured Solver candidates and two controls were registered once through the unchanged capacity registrar. Copied historical helpers passed57 tests with one explicitly excluded historical fixed-descriptor fixture; the narrow source correction passed73 independent tests. Exact new ledger date/carrier captions were corrected before freeze, preserving the complete original and all historical rows. See `docs/receipts/continuation/2026-10-08-local-solver-update3-capacity-registered-v1.json`.
+
+No tokenizer, generation or scorer contacts have occurred. Clean frozen checks, current service/lease/4GiB admission and the original capacity launch remain pending. Natural4 and N100 remain held behind complete capacity qualification and structural proof. Reviewer original CPU preparation has exited0 in its isolated checkout and remains pending serial metadata integration. Root observed ongoing logical I/O and CPU work in this original Solver registrar; the bounded operational observation is preserved in its capacity entry and does not prove a causal bottleneck or speedup. Preserve all role/feedback boundaries, fixed N100 assets and full reserves. GPU campaigns stay serial, CPU work overlaps, and a15minute job monitor starts only on actual launch. No benefit or learning claim is established; broad goal is active and incomplete, with human review before8x400.
+
 ## Configured local templates compiled; source metadata pin correction (2026-10-08T20:19:38.828712+00:00)
 
 Reviewer update2 returned exactly its four original configured positions and passed the unchanged parser/compiler. Other role text and runtime policy are verified unchanged; CPU preparation runs in isolated /home/chao/saea-worktrees/codex-local-reviewer-k4-update2-preparation-v1 at72a99fcf1ec4f1643d7dad0284a61663e6eaae13. Its original terminal remains required. No new runtime contacts or benefit follow proposal compilation.
@@ -1185,4 +1191,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T20:19:38.828712+00:00
+Last refreshed: 2026-10-08T21:17:55.825922+00:00

@@ -1,0 +1,53 @@
+{
+  "at_utc": "2026-10-08T21:03:53.536611+00:00",
+  "cell": "slurp-native-stage3-local-solver-control-aa-n100-k4-update3-capacity-v1",
+  "composed_config_hash": "96139055c25f5421f41ce2378e1adf8ef1659205ab46d0e39813118e9f62c876",
+  "decision_receipt": {
+    "relpath": "coordination/local-solver-n100-k4-update3-capacity-v1/root-capacity-admission-v1.json",
+    "sha256": "1926503d62b408e680b1f2144ed7488f869b6531a86976aa677e55649f1221dd"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-local-solver-control-aa-n100-k4-update3-capacity-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 157,
+    "planned_speech_audio_seconds": 588,
+    "protocol_hash": "ea181a18f52be62217ed52e749f6fcd1c0ae570ef33b473c3f0139c438ec84e2",
+    "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-CAPACITY-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-local-solver-control-aa-n100-k4-update3-capacity-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-solver-n100-k4-update3-v1.json",
+    "sha256": "63a049bc750964c2b7133175ff27bb7ce17dcf00efc12e50b7e6f6e30f0162f5"
+  },
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "policy_binding": {
+    "bundle": {
+      "relpath": "system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-CAPACITY-FIT-V1/phase-supply-v1.json",
+    "sha256": "f4a4a10de51d0cb38e823a9e21eddbae9e81bf64a0ff3aca1b9d74f977274f5b"
+  },
+  "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-CAPACITY-STRUCTURE-V1",
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

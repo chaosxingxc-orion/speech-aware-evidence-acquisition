@@ -1,0 +1,28 @@
+{
+  "at_utc": "2026-10-08T21:17:55.825922+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "correction_authority": "Root227 prospective correction of exact new date/carrier metadata only; original registrar output preserved.",
+  "ledger_correction": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-opportunity-stage-engineering-v1/solver-capacity-ledger-correction-v1/correction-receipt-v1.json",
+    "sha256": "f9ceb8a91f84040334cdf98fc2b45235332c3fb366a35d0449cbb49418d8d2ea"
+  },
+  "original_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-capacity-v1/root-authoring-inputs-v1.json",
+    "sha256": "91b4eb26f80f624c9c4e4049bbbfd5c4a43ba50ead4efee3878ff2d21de9a657"
+  },
+  "original_registration_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-capacity-v1/root-original-registration-exit-v1.json",
+    "sha256": "e22b9755a4fece6b7a6ba77cf656fca19e283a3e7cc98eb970e9d4d68f73b124"
+  },
+  "registered_members": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-capacity-registered-v1/registered-capacity-members-v1.json",
+    "sha256": "473ef5908463a45f082f87508db9fa16630e152ed44b87207593ef0e7abdf0ed"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-local-capacity-registered-v1",
+  "status": "REGISTERED_PENDING_FROZEN_AND_LIVE_ADMISSION"
+}

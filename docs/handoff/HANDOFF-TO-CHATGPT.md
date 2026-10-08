@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Solver opportunity3 maximum-request capacity registered (2026-10-08T21:17:55.825922+00:00)
+
+The reviewed metadata successor passed the actual canonical execution-map gate. All configured Solver candidates and two controls were registered once through the unchanged capacity registrar. Copied historical helpers passed57 tests with one explicitly excluded historical fixed-descriptor fixture; the narrow source correction passed73 independent tests. Exact new ledger date/carrier captions were corrected before freeze, preserving the complete original and all historical rows. See `docs/receipts/continuation/2026-10-08-local-solver-update3-capacity-registered-v1.json`.
+
+No tokenizer, generation or scorer contacts have occurred. Clean frozen checks, current service/lease/4GiB admission and the original capacity launch remain pending. Natural4 and N100 remain held behind complete capacity qualification and structural proof. Reviewer original CPU preparation has exited0 in its isolated checkout and remains pending serial metadata integration. Root observed ongoing logical I/O and CPU work in this original Solver registrar; the bounded operational observation is preserved in its capacity entry and does not prove a causal bottleneck or speedup. Preserve all role/feedback boundaries, fixed N100 assets and full reserves. GPU campaigns stay serial, CPU work overlaps, and a15minute job monitor starts only on actual launch. No benefit or learning claim is established; broad goal is active and incomplete, with human review before8x400.
+
 ## Configured local templates compiled; source metadata pin correction (2026-10-08T20:19:38.828712+00:00)
 
 Reviewer update2 returned exactly its four original configured positions and passed the unchanged parser/compiler. Other role text and runtime policy are verified unchanged; CPU preparation runs in isolated /home/chao/saea-worktrees/codex-local-reviewer-k4-update2-preparation-v1 at72a99fcf1ec4f1643d7dad0284a61663e6eaae13. Its original terminal remains required. No new runtime contacts or benefit follow proposal compilation.
@@ -7361,7 +7367,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T20:19:38.828712+00:00
+Last refreshed: 2026-10-08T21:17:55.825922+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
