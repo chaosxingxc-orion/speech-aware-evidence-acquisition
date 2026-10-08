@@ -1,5 +1,15 @@
 # Experiment rules for the ChatGPT side
 
+## Both local K4 preparations complete; fresh service ready (2026-10-08T12:23:44.090252+00:00)
+
+Both original CPU preparations independently completed with24 generation/capacity/graph/natural metadata receipts per role, unchanged prepared output bytes and zero model/tokenizer/scorer contacts. Solver and Reviewer each retain four original candidates plus unchanged control/A/A on the same100 inputs,600 trajectories per local family. See `docs/receipts/continuation/2026-10-08-local-k4-preparations-and-serving-ready-v1.json`. Candidate count and path budgets remain configuration-derived.
+
+Fresh capacity custody packets are staged through the shared authoring route. Independent Astra Ultra review approved the hardened metadata bridge and date-only correction;57 reusable helper tests pass with one explicitly excluded historical fixed-descriptor fixture. The unchanged actual per-member registration/frozen checks remain mandatory. Two isolated original CPU-only capacity authoring jobs are in progress; do not duplicate or mutate their checkouts. Preserve original source/test diagnostics. Natural4 structural validation and six-member scientific generation remain held. No new task result or improvement is established.
+
+The old serving epoch was already stopped. Root preserved its seven top-level files and verified an empty listener/process/GPU state before starting the existing Windows-owned service and10-second sampler. New service epoch2026-10-08T11:41:40.419945Z uses unchanged decoder-only4x24576,max512,T0,seed20260913; it is healthy and idle in the cited fresh snapshot. Revalidate live PIDs/memory before launch. Original completed N100 STOP and controls are preserved pending an exact root227 transition.4GiB floors remain. Create a job-scoped15minute script monitor only at actual GPU experiment launch; do not restart the old global monitor.
+
+Solver optimizes first-answer extraction on review-off; Reviewer optimizes useful repair on original full seed. Neither receives the peer ongoing feedback. Root serializes GPU work and later checks their combination. This is fixed-development-set local optimization, with no formal stable-learning or system-adoption claim and no authority beyond the existing human8x400 boundary.
+
 ## Both independent local K4 template batches compiled (2026-10-08T11:25:52.946759+00:00)
 
 The two isolated Astra Ultra actors each returned one original complete four-candidate batch. All eight templates are distinct within their own role, valid and changed; none was replaced. Shared compilation verifies that only the selected role's bytes differ and all other configuration/source material remains fixed. Original responses, capsule/access hashes, cumulative exposure and unavailable provider usage are retained. See `docs/receipts/continuation/2026-10-08-local-k4-original-batches-complete-v1.json`. Prior K2 proposals remain spent, preserved and unactivated.

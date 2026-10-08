@@ -1,0 +1,106 @@
+{
+  "at_utc": "2026-10-08T12:23:44.090252+00:00",
+  "current_serving_session": {
+    "relpath": "serving/serving-slurp-native-candidate-five-train-a-np4-v1/session.json",
+    "sha256": "8c8fe29c160ddb7d9da9c453c29212f605154b1d14a1e5b366ac11dd98193418"
+  },
+  "members": [
+    {
+      "budget": {
+        "K": 4,
+        "N": 100,
+        "active_node_counts": {
+          "candidate-1": 2,
+          "candidate-2": 2,
+          "candidate-3": 2,
+          "candidate-4": 2,
+          "control": 2,
+          "control-aa": 2
+        },
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 4800,
+        "generation_contacts_cap": 1200
+      },
+      "capacity_authoring_started": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-v1/root-original-registration-started-v1.json",
+        "sha256": "83af826abbe39cbec188c3fa6eab6f40debb40886912649cefdc8dc9479df3a1"
+      },
+      "capacity_authoring_terminal_observed": false,
+      "original_preparation_exit": {
+        "relpath": "coordination/local-node-engineering-helper-v1/solver-n100-k4-update1-v1-148f6fc3ab6e-plan/root-original-preparation-exit-v1.json",
+        "sha256": "0782a7c468cb183986fe27a499798c1a97e8c33e7e181cef418260a1ae898788"
+      },
+      "role": "solver",
+      "summary": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/preparation-summary-v1.json",
+        "sha256": "f4406b28135ae93a7d7c86811fc52e011cbfd27bbc2313b28908c4be86616fd8"
+      }
+    },
+    {
+      "budget": {
+        "K": 4,
+        "N": 100,
+        "active_node_counts": {
+          "candidate-1": 4,
+          "candidate-2": 4,
+          "candidate-3": 4,
+          "candidate-4": 4,
+          "control": 4,
+          "control-aa": 4
+        },
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 31200,
+        "generation_contacts_cap": 7800
+      },
+      "capacity_authoring_started": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-v1/root-original-registration-started-v1.json",
+        "sha256": "a53b0ff04ca58b87333c10ad9ab452a6bce79823122cb0f6622f7495af10cbba"
+      },
+      "capacity_authoring_terminal_observed": false,
+      "original_preparation_exit": {
+        "relpath": "coordination/local-node-engineering-helper-v1/reviewer-n100-k4-update1-v1-148f6fc3ab6e-plan/root-original-preparation-exit-v1.json",
+        "sha256": "0d31c0c16ff128a65ff645e451e77facd9cbe5d6d88fed9c54cfa7e1aa9369df"
+      },
+      "role": "reviewer",
+      "summary": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/preparation-summary-v1.json",
+        "sha256": "ff119f76e7519c1eb17780b3a5292fc5b7866e925006535484a3599a9a08198c"
+      }
+    }
+  ],
+  "notes": [
+    "Both preparations independently exited0,24receipts each; exact data/knowledge output equality and warm verification passed.",
+    "Original registration jobs are CPU-only with blocked model/network/scorer transports; retain their original terminal evidence.",
+    "Service launched as a fresh unchanged geometry epoch after old stopped files were hash-preserved and no competing process/listener was verified.",
+    "Root must finish capacity registration/frozen checks, actual FIT and natural4 proof before scientific generation.",
+    "Only actual GPU experiment launch creates a job-scoped15minute script monitor; old global heartbeat stays off.",
+    "Original K2 allocations remain spent and unactivated; each K4 candidate is part of one complete independent original batch."
+  ],
+  "prior_stop_preserved": true,
+  "runtime_admission": false,
+  "runtime_contacts_by_preparation": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "schema": "saea-local-k4-preparation-coordination-v1",
+  "serving_start_disposition": {
+    "relpath": "coordination/local-node-k4-serving-start-v1/root-start-disposition-v1.json",
+    "sha256": "cac2ed8974b42e9018b9ac481a04200fbf0ead05d2669cc6b0c6109da363a565"
+  },
+  "serving_telemetry_snapshot": {
+    "sampled_at_iso": "2026-10-08T12:23:35.563005+00:00",
+    "server_ok": true,
+    "slots": {
+      "busy": 0,
+      "idle": 4,
+      "total": 4
+    }
+  },
+  "status": "BOTH_ORIGINAL_CPU_PREPARATIONS_COMPLETE_CAPACITY_AUTHORING_IN_PROGRESS",
+  "windows_free_gib": 22.502727508544922
+}
