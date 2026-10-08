@@ -1,0 +1,51 @@
+{
+  "actor_plan": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/actor-plan-v1.json",
+    "sha256": "7dfd8c9a451e978f4f625e23f9b6fafceb56df5b94ed42a7e0bb4320a58c48c0"
+  },
+  "at_utc": "2026-10-08T19:18:09.390726+00:00",
+  "budget": {
+    "K": 4,
+    "N": 100,
+    "active_node_counts": {
+      "candidate-1": 2,
+      "candidate-2": 2,
+      "candidate-3": 2,
+      "candidate-4": 2,
+      "control": 2,
+      "control-aa": 2
+    },
+    "candidate_trajectories": 400,
+    "control_trajectories": 200,
+    "family_trajectories": 600,
+    "fit_endpoints_cap": 4800,
+    "generation_contacts_cap": 1200
+  },
+  "candidate_history_records": 4,
+  "capsule_bytes": 62533,
+  "contacts_added": 0,
+  "independent_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-update3-astra-review-v1/final-review-v1.json",
+    "sha256": "528d8d37f3e9f84bca1acdd45c65d6458eb498806abdb5609f4788c85298a25e"
+  },
+  "owner_decision": 227,
+  "runtime_admission": false,
+  "schema": "saea-root-local-update3-preparation-v1",
+  "separate_control_records": 2,
+  "source_family_READ": {
+    "ledger_row_sha256": "a9333342328f5dc8475d52d05c936960fb1e5ce57dddfc730359facff959116e",
+    "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE1-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-analysis-v1/analysis-recipe-v1.json",
+      "sha256": "d0347005599a3ffe5153a8ac215ae6d94344347018c8661475ebb454f82b7e7a"
+    }
+  },
+  "source_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-update3-engineering-v1/prepare_solver_update3_v3.py",
+    "sha256": "c0d64de369b410c9dd863681d2df1eda8c11ba52512952e269c257647e3f15e3"
+  },
+  "unsigned_manifest": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-update3-engineering-v1/unsigned-template-package-v1/draft-manifest-v1.json",
+    "sha256": "3fe46915dd19179f94a617af9788e6ee8e0f016ebe3767e9e42ad2c26b6c5899"
+  }
+}

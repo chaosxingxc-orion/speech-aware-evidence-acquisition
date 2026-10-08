@@ -1,5 +1,13 @@
 # Experiment rules for the ChatGPT side
 
+## Solver update3 own aggregate projection and fresh complete K4 opportunity (2026-10-08T19:18:09.390726+00:00)
+
+The complete qualified Solver update1 family now has a separate prospective own-aggregate projection authority and fresh four-position Astra Ultra opportunity. See `docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/README.md`. Its input has four prior abstract Solver templates with complete compact process/business/timing statistics and two separately labelled controls. Missingness, inapplicability and fixed-N primary denominators remain explicit. The full capsule is 62533 bytes; no records are truncated. The source-only export checker was independently reviewed before use. Original source drafts and findings remain preserved.
+
+The original review-off parent, local selection and two evaluated-update review rule stay fixed. No Reviewer outcomes, raw task cases, references, knowledge or source inventories enter the proposer. Every prior opportunity stays spent; this is the next prospectively registered local update, not a replacement. Registration itself adds no model/tokenizer/scorer contact and no runtime admission. Only the exact isolated actor may consume the pinned capsule once; root later validates the original response and compiles through the unchanged shared path.
+
+The independent Reviewer original N100 family continues on its existing serial GPU queue and15minute job monitor; revalidate operational state. Completed-member descriptive reads do not authorize incomplete-family comparison or feedback. CPU preparation must not block later GPU members. One generating campaign and one official scorer remain. Preserve4GiB floors, frozen workers and all closed lines. No stable improvement or learning claim is established; the broad goal is active and incomplete. Human review remains required before8x400.
+
 ## Reviewer independently completed-member descriptive READ; original GPU campaign continues (2026-10-08T19:15:01.368622+00:00)
 
 Root independently qualified and countersigned the descriptive READ for candidate-3. Each has 100 FINALIZED trajectories, a verified original seal, exactly one successful complete official score and zero failed jobs. The unchanged offline reader completed once using the saved score. Exact source custody and exits are in `docs/receipts/continuation/2026-10-08-local-reviewer-k4-n100-candidate-3-member-read-v1.json`. No scorer, tokenizer or model contact was added.
@@ -1125,4 +1133,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T19:15:01.368622+00:00
+Last refreshed: 2026-10-08T19:18:09.390726+00:00
