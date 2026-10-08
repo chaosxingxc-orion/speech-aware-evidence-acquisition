@@ -1,0 +1,112 @@
+{
+  "learner_export": false,
+  "members": [
+    {
+      "configured_sample_count": 100,
+      "derivation": {
+        "max_contacts_per_sample": 13,
+        "required_audio_seconds": 3819.1335,
+        "required_integer_audio_seconds": 3820,
+        "sample_count": 100,
+        "schema": "saea-manual-whole-utterance-audio-budget-v1"
+      },
+      "fit_audio_seconds": "Same allowance inherited by existing registered FIT replace; no metering semantic change",
+      "fit_endpoint_cap": 5200,
+      "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-FIT-V1",
+      "generation_audio_seconds": 3820,
+      "generation_contact_cap": 1300,
+      "generation_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-V1",
+      "member_id": "seed",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "bf4a1c6c5fc70009a98fbf3144a0c4e89541204f9c223e43fa1f45ea05710d56"
+      },
+      "runtime_admission": false,
+      "runtime_sample_count": 100
+    },
+    {
+      "configured_sample_count": 100,
+      "derivation": {
+        "max_contacts_per_sample": 13,
+        "required_audio_seconds": 3819.1335,
+        "required_integer_audio_seconds": 3820,
+        "sample_count": 100,
+        "schema": "saea-manual-whole-utterance-audio-budget-v1"
+      },
+      "fit_audio_seconds": "Same allowance inherited by existing registered FIT replace; no metering semantic change",
+      "fit_endpoint_cap": 5200,
+      "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-FIT-V1",
+      "generation_audio_seconds": 3820,
+      "generation_contact_cap": 1300,
+      "generation_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-V1",
+      "member_id": "seed-aa",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "c8ceff6f5a585b425f9594e80374f49340d12bd182d99aaaa78500a4d4259c56"
+      },
+      "runtime_admission": false,
+      "runtime_sample_count": 100
+    },
+    {
+      "configured_sample_count": 100,
+      "derivation": {
+        "max_contacts_per_sample": 2,
+        "required_audio_seconds": 587.559,
+        "required_integer_audio_seconds": 588,
+        "sample_count": 100,
+        "schema": "saea-manual-whole-utterance-audio-budget-v1"
+      },
+      "fit_audio_seconds": "Same allowance inherited by existing registered FIT replace; no metering semantic change",
+      "fit_endpoint_cap": 800,
+      "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-FIT-V1",
+      "generation_audio_seconds": 1500,
+      "generation_contact_cap": 200,
+      "generation_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-V1",
+      "member_id": "review-off",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "7d77e3685571f23f197d95d90fd37a8603e998b75a49783b90af99091d1d1231"
+      },
+      "runtime_admission": false,
+      "runtime_sample_count": 100
+    },
+    {
+      "configured_sample_count": 100,
+      "derivation": {
+        "max_contacts_per_sample": 3,
+        "required_audio_seconds": 881.3385,
+        "required_integer_audio_seconds": 882,
+        "sample_count": 100,
+        "schema": "saea-manual-whole-utterance-audio-budget-v1"
+      },
+      "fit_audio_seconds": "Same allowance inherited by existing registered FIT replace; no metering semantic change",
+      "fit_endpoint_cap": 1200,
+      "fit_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-FIT-V1",
+      "generation_audio_seconds": 1500,
+      "generation_contact_cap": 300,
+      "generation_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-V1",
+      "member_id": "solver-lookup",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_phase_supply": {
+        "relpath": "prepared/SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-V1/phase-supply-v1.json",
+        "sha256": "29f25c1e063eb8fbe4e833cc2053fc4418c98b9b89ad277cf0b9ca9e38a3e7a3"
+      },
+      "runtime_admission": false,
+      "runtime_sample_count": 100
+    }
+  ],
+  "metering_semantics_changed": false,
+  "original_attempt_and_failed_cost_preserved": true,
+  "planned_gpu_hours_per_member": 1.0,
+  "root_disposition": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/root-engineering-disposition-v1.json",
+    "sha256": "b5c246b2611076b03a3dffca9b9b39cae17a7674012cf053df07c4b8be45e8c2"
+  },
+  "schema": "saea-manual-architecture-audio-recovery-budget-audit-v1",
+  "source_preparation_commit": "902c2b12ac91712d370aa921b7e1da2e59256f11",
+  "status": "HELD; EXACT DERIVATION AND OUTPUT REUSE VERIFIED",
+  "task_quality_read": false
+}

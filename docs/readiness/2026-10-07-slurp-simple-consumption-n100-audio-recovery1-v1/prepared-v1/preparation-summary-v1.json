@@ -1,0 +1,42 @@
+{
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_identity_map": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/execution-identity-map-v1.json",
+    "sha256": "c1cf9ce9bfc88cfa206f639acd13b04bd8a1318d05d0fe70242f34171d1594af"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+    "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+  },
+  "preparation_receipts": {
+    "review-off": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/review-off-generation-prepared-v1.json",
+      "sha256": "c952ec5012abe043a8bcc0c9e21ae8c91dbaab0bb314c2719385e83e120792a7"
+    },
+    "seed": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/seed-generation-prepared-v1.json",
+      "sha256": "ef2fffadbcb901874d60dd326a4c819b88d6e2ef0ad98d6135f07875455d0692"
+    },
+    "seed-aa": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/seed-aa-generation-prepared-v1.json",
+      "sha256": "8de9f9eb4f3102157d98e9d1d89763b24b5eadb4ce2f88c9d4126f401f7c9520"
+    },
+    "solver-lookup": {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/solver-lookup-generation-prepared-v1.json",
+      "sha256": "f167630ba162b8e86379fc5e7c30d6a4ceff90ce2a7ff7ab927c7db6e8d5e2bc"
+    }
+  },
+  "read_authorized": false,
+  "root_disposition": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/root-engineering-disposition-v1.json",
+    "sha256": "b5c246b2611076b03a3dffca9b9b39cae17a7674012cf053df07c4b8be45e8c2"
+  },
+  "runtime_admission": false,
+  "schema": "saea-manual-architecture-audio-recovery-preparation-v1",
+  "source_preparation_commit": "902c2b12ac91712d370aa921b7e1da2e59256f11",
+  "status": "PREPARED_HELD_NOT_ADMITTED"
+}

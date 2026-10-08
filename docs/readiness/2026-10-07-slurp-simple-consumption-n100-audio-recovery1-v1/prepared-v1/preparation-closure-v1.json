@@ -1,0 +1,60 @@
+{
+  "budget_audit": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/audio-budget-audit-v1.json",
+    "sha256": "f9d6cba0d34755cb4419d223762e8af8db2b5ef250710a1633ad5248b5f78ff4"
+  },
+  "combined_focused_exit": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/sol-combined-focused-exit-v1.json",
+    "sha256": "de7e6a1aa76f0f3df6077cf1f973c677270302e99c36c4c9e37a06de6cb728e0"
+  },
+  "combined_focused_tests_passed": 197,
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "controls_or_ledger_mutated": false,
+  "descriptor": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/prepared-members-v1.json",
+    "sha256": "b04a7f2db345e94450661d1d67c0326f7b3907a2753cfa2fac8b59a529c4a2e8"
+  },
+  "identity_map": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/execution-identity-map-v1.json",
+    "sha256": "c1cf9ce9bfc88cfa206f639acd13b04bd8a1318d05d0fe70242f34171d1594af"
+  },
+  "original_preparation_exit": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/sol-preparation-exit-v1.json",
+    "sha256": "5c0f97a881acc1af26e9c9f7fc9b34280ee37bd55334cbe00401971768edbda5"
+  },
+  "original_preparation_input": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/sol-preparation-input-v1.json",
+    "sha256": "5413e1c3afe25eba484eb3e70700f104487c7ac419d67c285f38fad42194c535"
+  },
+  "previous_combined_fixture_refusal": {
+    "affected_test_result": {
+      "deselected": 17,
+      "passed": 1,
+      "tool_chunk": "481f18"
+    },
+    "exit_code": 1,
+    "failed": 1,
+    "fixture_fix_commit": "902c2b12ac91712d370aa921b7e1da2e59256f11",
+    "passed": 196,
+    "tool_chunks": [
+      "bef842",
+      "55bac4"
+    ]
+  },
+  "read_authorized": false,
+  "recorded_at_utc": "2026-10-08T00:33:27.341010+00:00",
+  "runtime_admission": false,
+  "schema": "saea-manual-architecture-audio-recovery-preparation-closure-v1",
+  "scientific_read": false,
+  "source_and_original_artifacts_rewritten": false,
+  "source_preparation_commit": "902c2b12ac91712d370aa921b7e1da2e59256f11",
+  "status": "ALL FOUR STRICT OUTPUT-EQUAL WARM PREPARATIONS PASS; HELD",
+  "summary": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "d497e8c51af850cfe1dc0663392323e764c3e0f38fda9fbe1290ab6dd483d04b"
+  }
+}
