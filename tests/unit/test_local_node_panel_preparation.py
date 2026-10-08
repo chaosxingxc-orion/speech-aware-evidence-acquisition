@@ -98,7 +98,7 @@ def test_non_solver_policy_drift_is_rejected(tmp_path, fault):
         require_local_role_policy(source, candidate, repo_root=tmp_path, target_role="solver")
 
 
-@pytest.mark.parametrize("k", [2, 3, 5])
+@pytest.mark.parametrize("k", [2, 3, 4, 5])
 def test_members_and_budgets_come_from_configuration(k):
     population = local_population(k)
     assert require_local_node_basis(BASIS, population, repo_root=ROOT) == RECEIPT
@@ -325,18 +325,21 @@ def test_local_selector_requires_new_capacity_before_historical_proof(monkeypatc
     with pytest.raises(RuntimeError, match="fresh-capacity-required"):
         gate.require_architecture_n20_registration(values, cell.document, plans, repo_root=ROOT, data_root=ROOT)
 
-def original_proposal_world(tmp_path, monkeypatch):
+def original_proposal_world(tmp_path, monkeypatch, k=2):
     from speech_aware_evidence_acquisition.rails import local_node_panel as local
     from speech_aware_evidence_acquisition.core.preparation import digest
-    population, basis = local_population(), deepcopy(BASIS)
+    population, basis = local_population(k), deepcopy(BASIS)
     registration = tmp_path / "registration.json"
-    prepare.save(registration, {"schema": "synthetic-original-allocation", "allocated_slots": 2})
+    prepare.save(registration, {"schema": "saea-local-solver-proposer-contact-plan-v1",
+        "status": "ROOT_COUNTERSIGNED_AND_POSITIONS_RESERVED_BEFORE_CONTACT", "runtime_admission": False,
+        "design_slots": ["original-" + candidate for candidate in population["cohorts"][0]["candidate_ids"]]})
     validation = {"schema": "saea-local-node-original-proposal-validation-v1",
         "status": "ROOT_VALIDATED_ORIGINAL_PROPOSALS", "target_role": "solver",
         "proposal_registration": prepare.pin(registration, tmp_path),
         "candidate_ids": deepcopy(population["cohorts"][0]["candidate_ids"]), "runtime_admission": False,
+        "original_design_slot": {candidate: "original-" + candidate for candidate in population["cohorts"][0]["candidate_ids"]},
         "members": {m["member_id"]: {"execution_config": m["execution_config"],
-                    "base_bundle_id": m["base_bundle_id"], "original_design_slot": "original-" + m["member_id"]}
+                    "base_bundle_id": m["base_bundle_id"]}
                     for m in population["architecture"]["members"]
                     if m["member_id"] in population["cohorts"][0]["candidate_ids"]}}
     ids = population["cohorts"][0]["sample_ids"]
@@ -355,9 +358,10 @@ def original_proposal_world(tmp_path, monkeypatch):
     return population, basis, validation
 
 
-@pytest.mark.parametrize("fault", [None, "role", "candidate-order", "runtime", "policy", "bundle", "duplicate-slot", "registration", "missing-member", "raw-pin"])
-def test_original_proposal_custody_is_independent_of_runtime_allocation(tmp_path, monkeypatch, fault):
-    population, basis, validation = original_proposal_world(tmp_path, monkeypatch)
+@pytest.mark.parametrize("fault", [None, "role", "candidate-order", "runtime", "policy", "bundle", "duplicate-slot", "registration", "missing-member", "raw-pin", "actor-schema", "actor-status", "actor-role", "actor-slots", "unregistered-slot", "slot-order", "actor-admission"])
+@pytest.mark.parametrize("k", [2, 4])
+def test_original_proposal_custody_is_independent_of_runtime_allocation(tmp_path, monkeypatch, fault, k):
+    population, basis, validation = original_proposal_world(tmp_path, monkeypatch, k)
     ids = population["cohorts"][0]["candidate_ids"]
     if fault == "role":
         validation["target_role"] = "reviewer"
@@ -370,11 +374,32 @@ def test_original_proposal_custody_is_independent_of_runtime_allocation(tmp_path
     elif fault == "bundle":
         validation["members"][ids[0]]["base_bundle_id"] = "changed"
     elif fault == "duplicate-slot":
-        validation["members"][ids[1]]["original_design_slot"] = validation["members"][ids[0]]["original_design_slot"]
+        validation["original_design_slot"][ids[1]] = validation["original_design_slot"][ids[0]]
     elif fault == "registration":
         validation["proposal_registration"]["sha256"] = "c" * 64
     elif fault == "missing-member":
         validation["members"].pop(ids[0])
+    if fault == "unregistered-slot":
+        validation["original_design_slot"][ids[0]] = "unregistered-new-opportunity"
+    elif fault == "slot-order":
+        validation["original_design_slot"][ids[0]], validation["original_design_slot"][ids[1]] = (
+            validation["original_design_slot"][ids[1]], validation["original_design_slot"][ids[0]])
+    elif fault is not None and fault.startswith("actor-"):
+        regpath = tmp_path / "registration.json"
+        actor = json.loads(regpath.read_bytes())
+        if fault == "actor-schema":
+            actor["schema"] = "foreign-plan"
+        elif fault == "actor-role":
+            actor["schema"] = "saea-local-reviewer-proposer-contact-plan-v1"
+        elif fault == "actor-status":
+            actor["status"] = "DRAFT"
+        elif fault == "actor-admission":
+            actor["runtime_admission"] = True
+        else:
+            actor["design_slots"].pop()
+        regpath.write_text(json.dumps(actor))
+        basis["proposal_custody"]["registration"] = prepare.pin(regpath, tmp_path)
+        validation["proposal_registration"] = deepcopy(basis["proposal_custody"]["registration"])
     path = tmp_path / "validation.json"
     prepare.save(path, validation)
     basis["proposal_custody"]["validation"] = prepare.pin(path, tmp_path)
@@ -395,3 +420,76 @@ def test_pure_capacity_budget_uses_explicit_carrier_and_experiment_profile():
                                             profile=ep["native_graph_capacity_profile"])
     actual = prepare.local_capacity_budget(ep, bp, slot_value_count=5, intent_value_count=7)
     assert actual == expected
+
+@pytest.mark.parametrize("target_role,label", [("solver", "review-off"), ("reviewer", "seed")])
+@pytest.mark.parametrize("obsolete_tokenizer_budget", [False, True])
+def test_generated_natural_budget_passes_actual_existing_gate(tmp_path, target_role, label, obsolete_tokenizer_budget):
+    from test_architecture_natural_registration import fixture, invoke
+    from speech_aware_evidence_acquisition.rails.local_node_panel import REVIEWER_SOURCE_RECEIPT
+    args = fixture(tmp_path, label)
+    source_receipt = RECEIPT if target_role == "solver" else json.loads((ROOT / REVIEWER_SOURCE_RECEIPT["relpath"]).read_bytes())
+    cell, = load_campaign_cells(ROOT, source_receipt["experiment"])
+    ep = json.loads((ROOT / "configs/experiment" / (source_receipt["experiment"] + ".json")).read_bytes())
+    bp = json.loads((ROOT / "configs/baseline" / (cell.document["baseline_fragment"] + ".json")).read_bytes())
+    row = dict(experiment="local-proof", cell_id="local-proof", run_id="LOCAL-PROOF-V1",
+               attempt_id="local-proof", fit_run_id="LOCAL-PROOF-FIT-V1", fit_attempt_id="local-proof-fit")
+    graph_name = "slurp-speech-native-simple-consumption-n100-graph4-v1"
+    view = json.loads((ROOT / "configs/dataset" / (graph_name + ".json")).read_bytes())
+    pp, pb = prepare.local_companion_documents(ep, bp, row, kind="natural", graph_view=view,
+                                               graph_dataset=graph_name, capacity_budget={})
+    args["values"]["family_budget"] = pp["family_budget"]
+    if obsolete_tokenizer_budget:
+        args["values"]["family_budget"] = {"complete_system_trajectories": 0, "generation_calls_cap": 0,
+                                           "official_complete_scoring_jobs": 0, "tokenizer_endpoint_cap": 0}
+        with pytest.raises(PolicyError, match="natural family budget"):
+            invoke(args)
+    else:
+        result = invoke(args)
+        assert result["generation_cap"] == pp["execution_plan"]["planned_model_calls"]
+        assert result["fit_cap"] == pb["native_contact_fit"]["contact_cap"]
+
+@pytest.mark.parametrize("role", ["solver", "reviewer"])
+@pytest.mark.parametrize("fault", [None, "cross-role", "pair-selector", "historical", "historical-pair-only"])
+def test_local_read_selector_is_bound_to_each_pair_and_role(tmp_path, monkeypatch, role, fault):
+    import hashlib
+    from types import SimpleNamespace
+    from test_system_architecture_read import scope_fixture, validate, manual
+    from speech_aware_evidence_acquisition.rails.hashing import content_hash
+    v = scope_fixture(tmp_path, monkeypatch)
+    _, recipe, registration, *_ = v
+    basis = {"schema": "saea-local-node-panel-basis-v1", "target_role": role}
+    selector = "local-" + role + "-panel-v1"
+    recipe.update(architecture_proof=selector, local_node_basis=basis)
+    registration.update(architecture_proof=selector, local_node_basis=basis)
+    for binding in registration["member_bindings"].values():
+        for pin in binding["registered_plans"].values():
+            path = tmp_path / pin["relpath"]
+            plan = json.loads(path.read_bytes())
+            plan.update(architecture_proof=selector, local_node_basis=basis)
+            if fault == "pair-selector":
+                plan["architecture_proof"] = "local-" + ("reviewer" if role == "solver" else "solver") + "-panel-v1"
+            path.write_text(json.dumps(plan))
+            pin["sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
+    configured_basis = basis
+    if fault == "cross-role":
+        recipe["architecture_proof"] = registration["architecture_proof"] = (
+            "local-" + ("reviewer" if role == "solver" else "solver") + "-panel-v1")
+    elif fault in ("historical", "historical-pair-only"):
+        recipe["architecture_proof"] = registration["architecture_proof"] = "manual-architecture-n20-v1"
+        if fault == "historical-pair-only":
+            recipe.pop("local_node_basis")
+            registration.pop("local_node_basis")
+            configured_basis = None
+    def configured(root, model, data, label, experiment):
+        values = {"label": label}
+        if configured_basis is not None:
+            values["local_node_basis"] = configured_basis
+        return SimpleNamespace(values=values, config_hash=registration["member_bindings"][label]["config_hash"])
+    monkeypatch.setattr(manual, "compose", configured)
+    registration["registration_sha256"] = content_hash(
+        {k: value for k, value in registration.items() if k != "registration_sha256"})
+    if fault is None:
+        assert validate(v, tmp_path)["labels"] == list(registration["member_bindings"])
+    else:
+        with pytest.raises(PolicyError, match="local node READ"):
+            validate(v, tmp_path)

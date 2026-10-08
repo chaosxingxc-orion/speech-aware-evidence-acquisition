@@ -83,8 +83,12 @@ Root validation schema is saea-local-node-original-proposal-validation-v1,
 status ROOT_VALIDATED_ORIGINAL_PROPOSALS. Require matching target_role,
 proposal_registration equal to registration pin, ordered candidate_ids equal
 to the configured cohort, and runtime_admission false. Its members object contains
-exactly candidate IDs. Each member binds execution_config, base_bundle_id, and
-nonempty unique original_design_slot. Preserve supplementary root provenance,
+exactly candidate IDs. Each member binds execution_config and base_bundle_id.
+The top-level original_design_slot object maps exactly candidate IDs to slots.
+In configured candidate order those slots must equal the pinned actor plan's
+ordered design_slots. The actor schema must match the target role and its status
+must be ROOT_COUNTERSIGNED_AND_POSITIONS_RESERVED_BEFORE_CONTACT with runtime
+admission false. Preserve supplementary root provenance,
 including original output pin and overlay description. Controls have no proposal
 allocation. Preserve the original actor output; these are model-authored templates.
 

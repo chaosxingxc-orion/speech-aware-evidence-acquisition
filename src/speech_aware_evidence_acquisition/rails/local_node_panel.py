@@ -111,7 +111,15 @@ def require_local_node_basis(basis, population, *, repo_root, data_root=None):
                 == population["contact_limits"]["model_per_trajectory"],
                 "local node topology or configured contact bound differs")
     if data_root is not None:
-        _read_pin(custody["registration"], data_root)
+        registration = json.loads(_read_pin(custody["registration"], data_root))
+        require(registration.get("schema") == "saea-local-" + basis["target_role"] + "-proposer-contact-plan-v1"
+                and registration.get("status") == "ROOT_COUNTERSIGNED_AND_POSITIONS_RESERVED_BEFORE_CONTACT"
+                and registration.get("runtime_admission") is False
+                and isinstance(registration.get("design_slots"), list)
+                and len(registration["design_slots"]) == len(cohort["candidate_ids"])
+                and all(isinstance(slot, str) and bool(slot) for slot in registration["design_slots"])
+                and len(set(registration["design_slots"])) == len(registration["design_slots"]),
+                "local node original actor allocation scope differs")
         validation = json.loads(_read_pin(custody["validation"], data_root))
         require(validation.get("schema") == "saea-local-node-original-proposal-validation-v1"
                 and validation.get("status") == "ROOT_VALIDATED_ORIGINAL_PROPOSALS"
@@ -120,18 +128,18 @@ def require_local_node_basis(basis, population, *, repo_root, data_root=None):
                 and validation.get("candidate_ids") == cohort["candidate_ids"]
                 and validation.get("runtime_admission") is False
                 and isinstance(validation.get("members"), dict)
-                and set(validation["members"]) == set(cohort["candidate_ids"]),
-                "local node original proposal validation scope differs")
+                and set(validation["members"]) == set(cohort["candidate_ids"])
+                and isinstance(validation.get("original_design_slot"), dict)
+                and set(validation["original_design_slot"]) == set(cohort["candidate_ids"])
+                and [validation["original_design_slot"][candidate] for candidate in cohort["candidate_ids"]]
+                == registration["design_slots"],
+                "local node original proposal validation scope or allocation mapping differs")
         for member in population["architecture"]["members"]:
             if member["member_id"] in cohort["candidate_ids"]:
                 proposal = validation["members"][member["member_id"]]
                 require(proposal.get("execution_config") == member["execution_config"]
-                        and proposal.get("base_bundle_id") == member["base_bundle_id"]
-                        and isinstance(proposal.get("original_design_slot"), str)
-                        and bool(proposal["original_design_slot"]),
+                        and proposal.get("base_bundle_id") == member["base_bundle_id"],
                         "local node original allocation or compiled policy binding differs")
-        slots = [m["original_design_slot"] for m in validation["members"].values()]
-        require(len(slots) == len(set(slots)), "local node original proposal slots repeat")
         from ..core.preparation import digest
         original = json.loads(_read_pin(receipt["prepared_phase_supply"], data_root))
         parent = json.loads(_read_pin(receipt["source_prepared_phase_supply"], data_root))

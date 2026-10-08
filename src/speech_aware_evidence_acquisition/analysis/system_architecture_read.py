@@ -188,10 +188,18 @@ def validate_source_registration(recipe, registration, owner, *, repo_root, data
             "manual registered pair or immutable source binding differs",
         )
         if recipe["architecture_proof"] in LOCAL_NODE_SELECTORS:
-            require(recipe.get("local_node_basis") == registration.get("local_node_basis")
-                    == configured.values.get("local_node_basis")
-                    and all(p.get("local_node_basis") == recipe.get("local_node_basis") for p in pair),
-                    "local node READ basis differs")
+            basis = recipe.get("local_node_basis")
+            require(isinstance(basis, dict) and basis.get("target_role") in {"solver", "reviewer"}
+                    and recipe["architecture_proof"] == "local-" + basis["target_role"] + "-panel-v1"
+                    and basis == registration.get("local_node_basis") == configured.values.get("local_node_basis")
+                    and all(p.get("local_node_basis") == basis
+                            and p.get("architecture_proof") == recipe["architecture_proof"] for p in pair),
+                    "local node READ selector or basis differs")
+        else:
+            require(recipe.get("local_node_basis") is None and registration.get("local_node_basis") is None
+                    and configured.values.get("local_node_basis") is None
+                    and all(p.get("local_node_basis") is None and p.get("architecture_proof") not in LOCAL_NODE_SELECTORS
+                            for p in pair), "local node READ requires its named opt-in selector")
         runtime = checked["runtime_sample_ids"]
         require(
             len(runtime) == len(set(runtime)) == stage["N"]

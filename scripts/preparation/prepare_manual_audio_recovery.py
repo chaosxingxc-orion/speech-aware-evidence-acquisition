@@ -266,8 +266,13 @@ def local_companion_documents(generation_experiment, generation_baseline, row, *
                 contact_cap=cap * (generation_baseline["native_contact_fit"]["contact_cap"]
                                    // generation_experiment["execution_plan"]["planned_model_calls"]))
     ep["execution_plan"]["planned_model_calls"] = cap
-    ep["family_budget"] = {"complete_system_trajectories": 0, "generation_calls_cap": 0,
-                          "official_complete_scoring_jobs": 0, "tokenizer_endpoint_cap": cap if kind == "capacity" else 0}
+    if kind == "natural":
+        ep["family_budget"] = {"complete_system_trajectories": len(ids), "generation_calls_cap": cap,
+                              "actual_request_fit_endpoint_cap": bp["native_contact_fit"]["contact_cap"],
+                              "official_complete_scoring_jobs": 0}
+    else:
+        ep["family_budget"] = {"complete_system_trajectories": 0, "generation_calls_cap": 0,
+                              "official_complete_scoring_jobs": 0, "tokenizer_endpoint_cap": cap if kind == "capacity" else 0}
     return ep, bp
 
 
