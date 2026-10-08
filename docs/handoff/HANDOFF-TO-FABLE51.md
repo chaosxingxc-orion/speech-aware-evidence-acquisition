@@ -1,5 +1,16 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Corrected N100 successor is running (2026-10-08T01:25:51.230820+00:00)
+
+Windows SAEA-Batch-Driver epoch2026-10-08T01:19:55Z, first campaign2026-10-08T01:20:29Z, uses immutable `/home/chao/saea-worktrees/codex-simple-consumption-n100-audio-recovery1-entry2-layout-v1` at `7cfdcf82bccec639f9ef57bc4a66b9ea0ba76407`. Root observed first seed OPENED, four busy slots,85percent GPU utilization and fresh healthy telemetry; Windows free memory was10.77GiB. Three later members were not yet opened. Startup stable-memory wait passed at the owner4GiB floor. See `docs/receipts/continuation/2026-10-08-simple-consumption-n100-audio-recovery-running-v1.json`.
+
+The four unchanged100-input systems run serially, four concurrent samples per member, with one CPU official scorer overlapping next generation. Registered cumulative audio caps are3820/3820/1500/1500seconds, computed from the actual roster and legal role paths; model caps1300/1300/200/300. The original1500-cap ABORTED attempt and all precontact refusals remain immutable. Root archived only its exact dead-PID82169 lease after kernel-guard/process/socket/service checks, then preserved its original STOP and controls in the approved archive and installed the fresh queue. No service restart, cache clear, score replay or failed-attempt reopening.
+
+The job-scoped15minute `slurp-n100-recovery-health` monitor is active; delete it after this original experiment terminal. It has operational-only read authority and never dispatches, recovers, reads scores or countersigns. The old global monitor stays off.
+
+CPU source-only family and all four member analysis recipes passed their actual resolvers and are integrated; five prospective READ rows now bind exact resolved recipes but remain unsigned. Root may describe a member only after its complete100, verified seal, unique successful complete official score, zero failed jobs and exact member READ. Full comparisons require all four and the family READ. No task quality was read, no learner export occurred, and no benefit is established. Keep fixed worker and frozen plan/roster/request bytes unchanged through scoring.
+
+
 ## N100 precontact package layout correction (2026-10-08T01:10:21.306296+00:00)
 
 ENTRY2 authoring and exposure registration completed, but the first frozen named gate rejected the nested registration layout before all other frozen checks or any contact. Root227 preserved frozen a0826bbc3 and original gate logs. The exact eight registered plans and one analysis wrapper now have byte-identical flat discovery mirrors; nested authoritative files and ledger pins are unchanged. No code, policy, data, budget, supply or execution identity changes. All eight generation/FIT roots remain absent. See `docs/receipts/continuation/2026-10-08-n100-audio-entry2-package-layout-disposition-v1.json`. A new frozen checkout and fresh original check namespace are required; original STOP/controls remain unchanged. No GPU launch or quality read has occurred.

@@ -1,0 +1,73 @@
+{
+  "after_ledger_sha256": "00c477ca185805d4f80af34a7aa7c00067cf0c050a59b63425005e6c2e03104b",
+  "all_other_lines_unchanged": true,
+  "at_utc": "2026-10-08T01:22:08.532345+00:00",
+  "before_ledger": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/ledger-before-prospective-read-binding-v1.md",
+    "sha256": "85769feeb5d1063d0ac4629d506c57fe84b4d47d022b38239368d2cd52708139"
+  },
+  "changes": [
+    {
+      "after_line_sha256": "ead44051010b25ee029de55240e1b0dcc13dad4321929a03a4c251e13fe7c68f",
+      "before_line_sha256": "f585e94e0550df7fc6087a85c85d119605bf66702a15d92cb929f68c7870f34a",
+      "prior_artifact": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/analysis-recipe-intent-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/analysis-recipe-v1.json",
+        "sha256": "07a1b99cc1be751145866d8bfc8a172625c839385f62dd2b94b3e08916219d47"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N100-AUDIO-RECOVERY1-ENTRY2-READ-V1"
+    },
+    {
+      "after_line_sha256": "39aba095e12263ab22c4739f541a9936ae9ad9c27d40a146270843be73216c3d",
+      "before_line_sha256": "408ea5ffc9830ad15c0e992a0749ebcec0e97fca1cfc4d5eb572f28da6b2db0a",
+      "prior_artifact": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/review-off-member-read-draft-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/review-off-member-read-resolved-v1.json",
+        "sha256": "ffad70c4d54439495b35b15416e97fcd1345a36ad973a43ecf6e20a70fc493b0"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-ENTRY2-DESCRIPTIVE-READ-V1"
+    },
+    {
+      "after_line_sha256": "0691b93514debe0c530edb4c48c69eab1badd1776fd4321bd37192ac8d41040f",
+      "before_line_sha256": "f707e074adb958c67ba55681fccd244a3a6cd8d62858b94d5fff03e49588105c",
+      "prior_artifact": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-member-read-draft-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/seed-member-read-resolved-v1.json",
+        "sha256": "a41933a6dfe8e9fd69634a28a4a7e01769eae41f5331075b30770ab7c44d06f8"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-ENTRY2-DESCRIPTIVE-READ-V1"
+    },
+    {
+      "after_line_sha256": "9207d3d9e9e10db2551dda24991ddfeb009b559e03b1d9b4f97ccb11908a7ba4",
+      "before_line_sha256": "be895059a85ced05d0ecce6dbcb39a9662ffd34e1ae067fc5fb300f65c9c436b",
+      "prior_artifact": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-aa-member-read-draft-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/seed-aa-member-read-resolved-v1.json",
+        "sha256": "c6acc4265ea88ea0de486d3c09e50a7abf81b33cdedd2866894950ab056b5e3c"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-ENTRY2-DESCRIPTIVE-READ-V1"
+    },
+    {
+      "after_line_sha256": "17f76f0ca17cfc70379090dd3dc1268fa8ce7a051c34be9db52fc3491da750f7",
+      "before_line_sha256": "b81fa6aac27d2d74cbba6220e9677853f5af0908920318ec977976263c191ffb",
+      "prior_artifact": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/solver-lookup-member-read-draft-v1.json",
+      "resolved_recipe": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/solver-lookup-member-read-resolved-v1.json",
+        "sha256": "ab46df24e16584397c91d5337cc23809ba72132802556229d1edc2fc030c47f7"
+      },
+      "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-ENTRY2-DESCRIPTIVE-READ-V1"
+    }
+  ],
+  "frozen_worker_changed": false,
+  "learner_export": false,
+  "owner_decision": 227,
+  "read_countersigned": false,
+  "runtime_gold": false,
+  "schema": "saea-root-prospective-read-source-binding-v1",
+  "source_resolution_closure": {
+    "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/source-only-resolution-closure-v1.json",
+    "sha256": "1095746b4e0aa82dc7745141068b45ab1d67cfbe71fd47e67a733acd6b22d835"
+  },
+  "status": "FIVE UNSIGNED READ ARTIFACTS RESOLVED; NO READ GRANTED",
+  "task_quality_read": false
+}

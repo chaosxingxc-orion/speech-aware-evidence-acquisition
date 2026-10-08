@@ -1,0 +1,84 @@
+{
+  "actual_source_only_analysis_commit": "03928e7ddf0e335aae9d63935e8918fe18cd0d25",
+  "analysis_source_binding": {
+    "relpath": "docs/receipts/continuation/2026-10-08-simple-consumption-n100-audio-entry2-analysis-source-binding-v1.json",
+    "sha256": "efb5178d6ff8ec680180840e0c708cd75eb15c19a79a57edde7e6ff978273831"
+  },
+  "at_utc": "2026-10-08T01:25:51.230820+00:00",
+  "budget_rule": "Derive cumulative source-audio exposure from exact roster durations and the configured maximum complete role path; refuse insufficient allowances before attempt opening. Model and FIT caps derive from the same configured contact bound. Cache reuse does not discount exposure.",
+  "control_transition": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-launch-v1/recovery-transition-finished-v1.json",
+    "sha256": "87c2d2d2fdd7077d9d3046a66251843d1f7ade071b794584e8fbedb8edae26ce"
+  },
+  "exact_frozen_checks": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-layout-v1/root-frozen-launch-binding-v1.json",
+    "sha256": "0b5ca2f60953dee216c708aca1e0702217c77cf3d5cae72c7c8498e2332694c1"
+  },
+  "failed_original_spend_preserved": {
+    "adapter_admissions": 511,
+    "audio_seconds": 1498.2348749999996
+  },
+  "gpu_hours_note": "The unchanged1.0 planned GPU-hour field is not an enforced elapsed-time cap or promise.",
+  "invariants": {
+    "benefit_or_learning_claim": false,
+    "cache_cleared": false,
+    "failed_precontact_receipts_preserved": true,
+    "kernel_guard_unchanged": true,
+    "learner_export": false,
+    "old_failed_artifacts_preserved": true,
+    "policies_roster_supply_changed": false,
+    "read_countersigned": false,
+    "score_replay": false,
+    "service_restarted": false,
+    "task_quality_read": false
+  },
+  "launch": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-launch-v1/root-generation-launch-receipt-v1.json",
+    "sha256": "91db4d99d0b705732fe0deec58f15c280d06167f09c7e505f95e0f6419f6c691"
+  },
+  "layout_disposition": {
+    "relpath": "docs/receipts/continuation/2026-10-08-n100-audio-entry2-package-layout-disposition-v1.json",
+    "sha256": "795838c69b1bf54be27c21b80bbd3aad68633e47c50ea8a7615728b922b9ac48"
+  },
+  "lease_archive": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-launch-v1/root-lease-archival-finished-v1.json",
+    "sha256": "f98b0501683bcdd930a15d15447cffd9ee2e06765ee202e001d59cea9b72d3d2"
+  },
+  "lease_disposition": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-launch-v1/root-lease-disposition-v1.json",
+    "sha256": "f5aa45b436b1f6653e9d6bc736ec5b9df8fd681ab3892acd982701c916aa0b44"
+  },
+  "monitor": {
+    "delete_after_original_terminal": true,
+    "global_monitor_restarted": false,
+    "id": "slurp-n100-recovery-health",
+    "interval_minutes": 15
+  },
+  "registered_audio_caps_seconds": {
+    "review-off": 1500,
+    "seed": 3820,
+    "seed-aa": 3820,
+    "solver-lookup": 1500
+  },
+  "review_evidence": {
+    "analysis_assembler": "Astra Ultra original1da0b0:12 tests passed; actual source-only family/member resolvers exited0 without task output reads.",
+    "lease_archive": "Root inspected and authored exact pinned own-lease checks before archival. Independent Astra review confirmed script d94f0dc and disposition f5aa45b4; its extra raw-closure recommendation arrived after archival. Exact script/disposition/helper hashes were then verified before Windows launch, not retroactively claimed as pre-archive wrapper validation.",
+    "metadata_layout": "Astra Ultra original4d86a8 exact9-file inventory plus independent Sol source review passed.",
+    "source_compatibility": "Astra Ultra original cd5d38:34 focused tests passed; c96fb7 actual raw record/source validation passed."
+  },
+  "root_admission": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-admission-v1.json",
+    "sha256": "be19301adbe641859a5288d1e087b039ed583ac2cac7db720b401709a9437fc5"
+  },
+  "root_authority": 227,
+  "schema": "saea-root-n100-budget-recovery-running-v1",
+  "source_compatibility": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-v1/natural-source-compatibility-v1.json",
+    "sha256": "bba573497e33573a8a6b9701f60bc1ff62e6931456635f4f09cf66ed828ee202"
+  },
+  "status": "RUNNING FIRST MEMBER; NO SCIENTIFIC READ",
+  "windows_observation": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-entry2-launch-v1/root-inference-windows-observation-v1.json",
+    "sha256": "54cfa832f41b73a0d192f9bff15011781bbf4d0ca89f4094c1e9f7e839bc84f1"
+  }
+}
