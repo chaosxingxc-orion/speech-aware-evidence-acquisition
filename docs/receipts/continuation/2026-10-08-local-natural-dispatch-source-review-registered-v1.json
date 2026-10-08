@@ -1,0 +1,11 @@
+{
+  "at_utc": "2026-10-08T22:41:06.975035+00:00",
+  "review_plan": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-dispatch-astra-review-v1/review-plan-v1.json",
+    "sha256": "93ea2f4b94c6b6c7e482feaa554e78cb6d31f4b1fec24636d64bb1d1af5ba3a4"
+  },
+  "run_id": "SAEA-SLURP-LOCAL-NATURAL-DISPATCH-SOURCE-REVIEW-V1",
+  "runtime_admission": false,
+  "schema": "saea-root-source-review-registration-v1",
+  "source_only": true
+}
