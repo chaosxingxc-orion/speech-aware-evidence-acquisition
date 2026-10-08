@@ -1,0 +1,135 @@
+{
+  "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-graph-v1",
+  "baseline": "slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-graph-v1",
+  "capacity_metadata_bridge": {
+    "contacts": {
+      "model": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "local_node_basis": {
+      "proposal_custody": {
+        "registration": {
+          "relpath": "coordination/local-reviewer-n100-k4-update1-v1/actor-plan-registered-copy-v1.json",
+          "sha256": "0eb40d59816e3bf5cd0b6ee9d0ec524198d2e17aac46270bfd5330e40d8f5b23"
+        },
+        "validation": {
+          "relpath": "coordination/local-reviewer-n100-k4-update1-v1/original-proposal-validation-v1.json",
+          "sha256": "ec172233525f462367c6210f0a7c04c8b71553c798bea79e6b6461eaf535af69"
+        }
+      },
+      "schema": "saea-local-node-panel-basis-v1",
+      "source_population": {
+        "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+        "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+      },
+      "source_preparation_receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-preparation-receipt-final-v1.json",
+        "sha256": "fa1763cc40fb4f7f47851b755c5cbdaaad1a398bbfc9e50412f2bd8a5be91450"
+      },
+      "target_role": "reviewer"
+    },
+    "original_preparation": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-3-graph-prepared-v1.json",
+      "sha256": "e991d4369be2ae1bea755f55c75f5a52b3828aef3a79d1cc7e0c1cfdbc25d511"
+    },
+    "runtime_admission": false,
+    "schema": "saea-local-node-capacity-receipt-bridge-v1",
+    "scope": "Add explicit original full-parent supply custody; all producer fields, config and output remain unchanged."
+  },
+  "config_hash": "020bb25cde4918a98c5e165c5bd235c9536d3cca5d582a71ac66664fe2486227",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "contacts": 0,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-graph-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 114,
+    "protocol_hash": "7543e5d1edb756503cc8c3c96486eb189680875145be0f1a5e1ca3029a924c89",
+    "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-GRAPH-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update1-graph-v1",
+  "kind": "graph",
+  "local_node_basis": {
+    "proposal_custody": {
+      "registration": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-v1/actor-plan-registered-copy-v1.json",
+        "sha256": "0eb40d59816e3bf5cd0b6ee9d0ec524198d2e17aac46270bfd5330e40d8f5b23"
+      },
+      "validation": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-v1/original-proposal-validation-v1.json",
+        "sha256": "ec172233525f462367c6210f0a7c04c8b71553c798bea79e6b6461eaf535af69"
+      }
+    },
+    "schema": "saea-local-node-panel-basis-v1",
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "source_preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/seed-preparation-receipt-final-v1.json",
+      "sha256": "fa1763cc40fb4f7f47851b755c5cbdaaad1a398bbfc9e50412f2bd8a5be91450"
+    },
+    "target_role": "reviewer"
+  },
+  "member_id": "candidate-3",
+  "output_equal": true,
+  "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "coordination/local-reviewer-n100-k4-update1-v1/policy-archive/policies/5a4e51c914424581b3d3ee47cedc097305dcee72ab60b6c25b9b5cfe454386ff.json",
+      "sha256": "4c02aac72e006b6222f205aad3461e4fce578db3963d88a64b57697c122d9ff1"
+    },
+    "bundle_id": "5a4e51c914424581b3d3ee47cedc097305dcee72ab60b6c25b9b5cfe454386ff",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+    "sha256": "78db6980bce42ffacd8f1df25cbef685be04815e25711e435ce96bb776f097e4"
+  },
+  "prepared_source_commit": "148f6fc3ab6ea8967a3f016a1ccaa9760ad05048",
+  "pure_capacity_budget": null,
+  "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-GRAPH-V1",
+  "runtime_admission": false,
+  "runtime_sample_ids": [
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "source_policy": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/compiled-v1/candidate-3-policy-v1.json",
+    "sha256": "61d9c6aa67bc1f8f68157d7c5317efc131de06add64a0aa6e54d03ce08e53204"
+  },
+  "source_prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-PARENT-V1/phase-supply-v1.json",
+    "sha256": "99ba974066d6a87f086e8850c316252857e205e5213387e9ae7ed030c22900f0"
+  },
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "78db6980bce42ffacd8f1df25cbef685be04815e25711e435ce96bb776f097e4"
+    }
+  ],
+  "supersedes_preparation": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-3-graph-prepared-v1.json",
+    "sha256": "e991d4369be2ae1bea755f55c75f5a52b3828aef3a79d1cc7e0c1cfdbc25d511"
+  },
+  "warm_verified": true
+}
