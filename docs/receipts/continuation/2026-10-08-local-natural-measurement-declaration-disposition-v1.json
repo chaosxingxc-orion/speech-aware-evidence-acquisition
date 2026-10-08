@@ -1,0 +1,409 @@
+{
+  "at_utc": "2026-10-08T15:03:47.702197+00:00",
+  "checks": [
+    {
+      "exit_code": 0,
+      "label": "control",
+      "role": "solver",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-control.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-control.stdout.json",
+        "sha256": "807b5d43d5bd268903392afb0886429120bc697b9432e4155faea8ed64a1bcce"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "control-aa",
+      "role": "solver",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-control-aa.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-control-aa.stdout.json",
+        "sha256": "57832411699269297cfbf16f671c016bc47a767bce2d73f4a6ff7a0459c6a4e7"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-1",
+      "role": "solver",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-candidate-1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-candidate-1.stdout.json",
+        "sha256": "e167d5c8a285bb0eb7bdfedf422be3ce96430fa2c4001a5e952163ae9a428075"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-2",
+      "role": "solver",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-candidate-2.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-candidate-2.stdout.json",
+        "sha256": "3a42a67631f9a1de16aabef7cc3e1f72a224efbd3397b51ed0b1444c04857e4e"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-3",
+      "role": "solver",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-candidate-3.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-candidate-3.stdout.json",
+        "sha256": "9cd50155cbce38910418cf5d8fb2f887af1c3104bf4f667138fae3cc241e74dc"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-4",
+      "role": "solver",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-candidate-4.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/solver-candidate-4.stdout.json",
+        "sha256": "faf2e3032d8e3387db1f06ce06099973cdf4b0be2cf48fbdaed26a95f2b3a7e8"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "control",
+      "role": "reviewer",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-control.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-control.stdout.json",
+        "sha256": "cf0b6c216f7dfeb9fa2a4ccd053cb5b2ad6eaa833f5e611814f84d6d688c6c39"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "control-aa",
+      "role": "reviewer",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-control-aa.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-control-aa.stdout.json",
+        "sha256": "58a060698297bab4c609f82c44e84c9431c5cc69ccf6c0f4f9ea4f0eb4eb0a01"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-1",
+      "role": "reviewer",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-candidate-1.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-candidate-1.stdout.json",
+        "sha256": "85949eaf478292a4c8188089a854f5d920cdd68e5b01a687607ed02858680650"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-2",
+      "role": "reviewer",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-candidate-2.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-candidate-2.stdout.json",
+        "sha256": "fbe9d9882c76b8605d8344e921b329121cb3d93a40af0ff9720ced34b7406e1a"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-3",
+      "role": "reviewer",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-candidate-3.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-candidate-3.stdout.json",
+        "sha256": "3d09bde1d7dca1083eee6787dabb3af6ffa6fbb1323c2af3076d94714769595d"
+      }
+    },
+    {
+      "exit_code": 0,
+      "label": "candidate-4",
+      "role": "reviewer",
+      "stderr": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-candidate-4.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-measurement-disposition-v1/reviewer-candidate-4.stdout.json",
+        "sha256": "3a0de2f45f701649506d8eb434de02edded59c0df57b624a8f4985fc32d4c1fd"
+      }
+    }
+  ],
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "historical_rows_unchanged_except_exact_new_unsigned_read_artifact_paths": true,
+  "named_cause": "Natural metadata builder omitted the runtime measurement profile from unsigned structural recipes. Original named gate refused before any model/tokenizer/scorer contact.",
+  "next_step": "Freeze a fresh corrected source and run all original registration/runtime checks. No automatic failure retry.",
+  "original_failure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-natural4-v1/control-natural-frozen-registration-v1.stdout.log",
+    "sha256": "f50d6013a9c2d9ffb74a60caefbc3dee28f2bca66002430ec88c5da84573042b"
+  },
+  "original_frozen_commit": "9f7a36a8e519527f6f2e037bfe28b0424921570f",
+  "original_frozen_worker": "/home/chao/saea-worktrees/codex-local-solver-k4-natural4-frozen-v1",
+  "owner_decision": 227,
+  "runtime_changes": false,
+  "schema": "saea-root-local-natural-measurement-disposition-v1",
+  "templates_data_budgets_sources_unchanged": true,
+  "updates": [
+    {
+      "config_hash": "459025d5bc3ccc749670ad2c691d92b93f1035fc3a4e651288a6bcf221f52cac",
+      "label": "control",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/control-analysis-recipe-v1.json",
+        "sha256": "9c7a8e3fccfae1065fb83522176774765158bfb94d60b372117512ce830282a5"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/preserved-original/control-analysis-recipe-v1.json",
+        "sha256": "9c7a8e3fccfae1065fb83522176774765158bfb94d60b372117512ce830282a5"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "solver",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/control-analysis-recipe-v2.json",
+        "sha256": "4f55b2702651f0c3c78c36fc18333afd2a6a515603de05b238b52dfd0ba49615"
+      }
+    },
+    {
+      "config_hash": "636c2d8c1faedbc97fb61f453c1d0088be11cd32948b81f002de8a77dbff3912",
+      "label": "control-aa",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/control-aa-analysis-recipe-v1.json",
+        "sha256": "ea9d545cf6cb372e3511d016149de4f9043b95c42d5928c01b6bcb7c300aae54"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/preserved-original/control-aa-analysis-recipe-v1.json",
+        "sha256": "ea9d545cf6cb372e3511d016149de4f9043b95c42d5928c01b6bcb7c300aae54"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "solver",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/control-aa-analysis-recipe-v2.json",
+        "sha256": "2d3c796cd911dfd8267328d9c7d5b7178fc31f05826a0a8daf651e51ec30d259"
+      }
+    },
+    {
+      "config_hash": "1b4b91fcbca935cf3cde0bdbaf5bfec419b52054772a88874ffa180a7eb9a44b",
+      "label": "candidate-1",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/candidate-1-analysis-recipe-v1.json",
+        "sha256": "f13dbda8b56fde79b70c55245beabd41cea3e9449b633d3ecbdb8b9ecadf0f23"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/preserved-original/candidate-1-analysis-recipe-v1.json",
+        "sha256": "f13dbda8b56fde79b70c55245beabd41cea3e9449b633d3ecbdb8b9ecadf0f23"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "solver",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/candidate-1-analysis-recipe-v2.json",
+        "sha256": "75ada3706cc3e354e92b09cbbd2e3796ac56112a46b77c34c4401498f3dc8454"
+      }
+    },
+    {
+      "config_hash": "a90992aab0c921a1cc08d277f7147003a1e8078701e54beedcb53364b17caf65",
+      "label": "candidate-2",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/candidate-2-analysis-recipe-v1.json",
+        "sha256": "46a2df5b69b65c29a55ad25c0c97da2124f6ded18a894f467700af44a48c6096"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/preserved-original/candidate-2-analysis-recipe-v1.json",
+        "sha256": "46a2df5b69b65c29a55ad25c0c97da2124f6ded18a894f467700af44a48c6096"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "solver",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/candidate-2-analysis-recipe-v2.json",
+        "sha256": "d573c5b3adbd984830ab58df7989f501b43f6aa41ed73b9bfdcc9fad34859423"
+      }
+    },
+    {
+      "config_hash": "f3f8de934550695e986c8394903c0d43ec1be5be190a940f53debb77151b2bba",
+      "label": "candidate-3",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/candidate-3-analysis-recipe-v1.json",
+        "sha256": "d7e9f83355c41c30d79de85dce2b99513a8c23c7a95db45b3febd78265b23c91"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/preserved-original/candidate-3-analysis-recipe-v1.json",
+        "sha256": "d7e9f83355c41c30d79de85dce2b99513a8c23c7a95db45b3febd78265b23c91"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "solver",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/candidate-3-analysis-recipe-v2.json",
+        "sha256": "8ed287ae6f59e5ba795e3cf22d3a63a045bac8db211061d81666e6c3fe3776ae"
+      }
+    },
+    {
+      "config_hash": "6463836822ef963c29cb39b44bff5338bcaaf256c9fed212fadc5879b9d31e86",
+      "label": "candidate-4",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/candidate-4-analysis-recipe-v1.json",
+        "sha256": "c13aae11f7c02ebe8fc072483fd76f8f009808c87a68f29f4f299fb35c5e9294"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/preserved-original/candidate-4-analysis-recipe-v1.json",
+        "sha256": "c13aae11f7c02ebe8fc072483fd76f8f009808c87a68f29f4f299fb35c5e9294"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "solver",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-natural4-registered-v1/candidate-4-analysis-recipe-v2.json",
+        "sha256": "910a2319a887d0ca74adc70f5f1f24271818feb5516f8344e821d3fa9afc7343"
+      }
+    },
+    {
+      "config_hash": "0b16d45b0b0c5e1c3e6a45dd6cfcfdfd7c1446557826171fbf056d87d1b20cf0",
+      "label": "control",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/control-analysis-recipe-v1.json",
+        "sha256": "c9b8a41de4005b1c2db7f2165ceddbd3e465b0fdf338dffdec1ee705c0577700"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/preserved-original/control-analysis-recipe-v1.json",
+        "sha256": "c9b8a41de4005b1c2db7f2165ceddbd3e465b0fdf338dffdec1ee705c0577700"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "reviewer",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/control-analysis-recipe-v2.json",
+        "sha256": "12ba3f32d2c5d33e057cc5283d57553bea69eb0c8731be265a2d11033df12f76"
+      }
+    },
+    {
+      "config_hash": "b30ef03e613186920a4b4bc7600968c825c100d1d974ef9d5d66cc19c527ce5d",
+      "label": "control-aa",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/control-aa-analysis-recipe-v1.json",
+        "sha256": "bc78225efd57e69fd5ecc1856ad7c5f927b6966c4a032eaba88db7cdfb31bae4"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/preserved-original/control-aa-analysis-recipe-v1.json",
+        "sha256": "bc78225efd57e69fd5ecc1856ad7c5f927b6966c4a032eaba88db7cdfb31bae4"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "reviewer",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/control-aa-analysis-recipe-v2.json",
+        "sha256": "92ca99f91fb791bd9373b3c914fd4fd9c7d0f7269e769241454308ce5d73130c"
+      }
+    },
+    {
+      "config_hash": "3a47af540c93cc849c1008e73b5b34d4a4f89cbfec8dabed3eccd8a7e9a921f3",
+      "label": "candidate-1",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/candidate-1-analysis-recipe-v1.json",
+        "sha256": "63de29169ba29d319345f2b09a37c7e3fbd50fbf504d47bebcd6523327eb691d"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/preserved-original/candidate-1-analysis-recipe-v1.json",
+        "sha256": "63de29169ba29d319345f2b09a37c7e3fbd50fbf504d47bebcd6523327eb691d"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "reviewer",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/candidate-1-analysis-recipe-v2.json",
+        "sha256": "74335a87f7d476a6a7ef477b7fe10e3afa002889fd4ddf6f54357576439e25ac"
+      }
+    },
+    {
+      "config_hash": "1c4809d9390e92ae615d751c9aac097fd97232fe720d71d4d19d937f6971d2c6",
+      "label": "candidate-2",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/candidate-2-analysis-recipe-v1.json",
+        "sha256": "7798c4dca4c6dddef1f01b3d23e76480ac8ed6e01d7298037c653a03cab09f53"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/preserved-original/candidate-2-analysis-recipe-v1.json",
+        "sha256": "7798c4dca4c6dddef1f01b3d23e76480ac8ed6e01d7298037c653a03cab09f53"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "reviewer",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/candidate-2-analysis-recipe-v2.json",
+        "sha256": "82997bdcaf1b181da2da5ae9c2bedd444a6915db0d72199ac0097952e6c2b644"
+      }
+    },
+    {
+      "config_hash": "e73a7975d6ca66df1472cccb9603e829a2276de97a554f9237a4a0d0d2402578",
+      "label": "candidate-3",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/candidate-3-analysis-recipe-v1.json",
+        "sha256": "0617da9fe191b064ded7eb31462cebf1694f80feafd3adf3352dcba3e5985721"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/preserved-original/candidate-3-analysis-recipe-v1.json",
+        "sha256": "0617da9fe191b064ded7eb31462cebf1694f80feafd3adf3352dcba3e5985721"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "reviewer",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/candidate-3-analysis-recipe-v2.json",
+        "sha256": "839d4d04cfecd06e233521199b3223b3bf37049f442ebfd8e383b99abb41955b"
+      }
+    },
+    {
+      "config_hash": "93602bd97a4eaa4da5e46ccee2b866696ff8b20f9d857217659bf6bc5306e644",
+      "label": "candidate-4",
+      "only_added_field": "measurement_profile",
+      "original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/candidate-4-analysis-recipe-v1.json",
+        "sha256": "f4291244a0178ddd416cc75936864676586e8db7db2faba31e13c55ff0d19344"
+      },
+      "preserved_original": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/preserved-original/candidate-4-analysis-recipe-v1.json",
+        "sha256": "f4291244a0178ddd416cc75936864676586e8db7db2faba31e13c55ff0d19344"
+      },
+      "read_run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1-STRUCTURAL-READ-V1",
+      "role": "reviewer",
+      "successor": {
+        "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-natural4-registered-v1/candidate-4-analysis-recipe-v2.json",
+        "sha256": "50a593a25b14a44ebe6a4c6ecfa63a0df8e559aff61b7fea4ea2adbd11e77140"
+      }
+    }
+  ]
+}
