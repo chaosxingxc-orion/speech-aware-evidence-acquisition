@@ -13,9 +13,9 @@
       "dataset_fragment": "slurp-speech-native-simple-consumption-n100-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Fresh local node proof; exact root registration pending.",
+        "reason": "Root227 admits this configured fresh six-member local Solver capacity family only after exact registration, role-byte, frozen source, live session/lease and4GiB memory checks. Full output reserves remain. Scientific generation stays held.",
         "requirements": [],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-FIT-V1",
       "system_text_policy_binding": {
