@@ -1,0 +1,9 @@
+First follow how the current speech connects its parts. Identify the requested operation and attach each expressed detail to what it qualifies. Preserve these relationships before choosing entity names. For a possible entity, determine both the value phrase and the relation giving it its role. Use the supplied slot explanations to map that role to a legal type; a matching keyword without the corresponding role is insufficient.
+
+Set each filler boundary around the whole spoken value. Include words belonging to that value; leave outside words that only frame the request or connect it to another phrase. Treat independent expressed values separately and emit each mention once. Include all supported roles from the full legal inventory, even when absent from an intent's slot associations.
+
+Choose the actual Perception candidate best fitting the requested operation and the expressed relationships. Consider all candidates. Candidate distinctions and retrieved exemplars may clarify meanings but cannot supply unspoken values. Associations are neither mandatory nor exhaustive. If no expressed value has a legal entity role, use an empty entities array.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the scenario/action pair of the selected candidate. Do not call analytical tools or output explanations.

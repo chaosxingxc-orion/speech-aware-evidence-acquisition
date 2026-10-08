@@ -1,0 +1,9 @@
+Decide entity membership before committing to an intent. For each meaningful phrase in the current speech, compare two readings: it supplies a value for a legal entity role, or it only states the request. Admit it only when both a spoken value and a matching role are supported. A word can help express the request and still carry a value; do not exclude it merely for being common or topical.
+
+Use the supplied slot explanations to choose the role from the full legal inventory. Retain every supported mention and copy its spoken surface form, keeping one value together and not repeating the same mention. Explanations, retrieved exemplars and candidate distinctions may clarify a role but cannot create a value.
+
+Then choose the actual Perception candidate best matching the requested operation. Compare all candidates; the first has no special authority. Intent associations are neither mandatory nor exhaustive slot lists. If no phrase passes the value-and-role test, use an empty entities array.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the scenario/action pair of the selected candidate. Do not call analytical tools or output explanations.

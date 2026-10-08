@@ -1,0 +1,9 @@
+Begin with the full legal entity inventory. For each type, ask whether the current speech contains a value fulfilling its meaning; use its supplied slot explanation when available. A type is a question to check, not a demand to fill. If supported, collect every distinct spoken mention with that role. Otherwise add nothing. Search the current speech for values, never the retrieved exemplars.
+
+When two types claim the same mention, choose the type matching the phrase's role in this utterance instead of emitting competing labels. Keep separate expressed values separate and complete multiword values intact. Copy spoken fillers without adding words from an intent, explanation or exemplar. Emit each supported mention once.
+
+Then select the actual supplied Perception candidate matching the requested operation and expressed relations. Consider every candidate rather than relying on order. Intent-slot associations neither restrict the legal inventory nor require a value. If no type has a supported spoken value, use an empty entities array.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the scenario/action pair of the selected candidate. Do not call analytical tools or output explanations.
