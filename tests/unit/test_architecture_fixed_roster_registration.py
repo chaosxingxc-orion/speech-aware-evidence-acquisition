@@ -104,6 +104,15 @@ def public_n100_fixture(tmp_path, monkeypatch):
         v["execution_plan"]["planned_model_calls"] = cap
         v["native_contact_fit"].update(run_id=f"N100-{label}-FIT",attempt_id=f"N100-{label}-FIT-attempt",contact_cap=cap*4)
         v["family_budget"].update(complete_system_trajectories=100,generation_calls_cap=cap,actual_request_fit_endpoint_cap=cap*4)
+        # The named audio gate consumes exact runtime-view duration metadata.
+        # Enlarging only ids would leave the inherited N20 duration inventory stale.
+        from speech_aware_evidence_acquisition.rails.architecture_audio_budget import derive_manual_architecture_audio_budget
+        view = json.loads((ROOT / extent["runtime_view"]["relpath"]).read_bytes())
+        by_id = {row["sample_id"]: row for row in view["items"]}
+        v["items"] = [deepcopy(by_id[sid]) for sid in roster]
+        derived = derive_manual_architecture_audio_budget(v)
+        v["execution_plan"]["planned_speech_audio_seconds"] = max(
+            v["execution_plan"]["planned_speech_audio_seconds"], derived["required_integer_audio_seconds"])
         cells[name] = SimpleNamespace(document=c)
         compositions[name] = SimpleNamespace(values=v,config_hash=_canonical_hash(v))
         eligible.extend([c["run_id"],v["native_contact_fit"]["run_id"]])
