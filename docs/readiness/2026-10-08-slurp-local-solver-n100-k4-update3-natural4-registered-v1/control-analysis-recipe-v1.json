@@ -1,0 +1,25 @@
+{
+  "architecture_member": "control",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-solver-n100-k4-update3-v1.json",
+    "sha256": "63a049bc750964c2b7133175ff27bb7ce17dcf00efc12e50b7e6f6e30f0162f5"
+  },
+  "learner_export": false,
+  "measurement_profile": {
+    "latency_scope": "sample-admission-to-settled-workflow-v1",
+    "minimum_reliable_completion_rate": 1.0,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "schema": "saea-system-search-measurement-v2",
+    "slot_count": 4
+  },
+  "official_score_jobs": 0,
+  "run_ids": {
+    "fit": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-NATURAL-FIT-V1",
+    "generation": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-NATURAL-V1",
+    "read": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-NATURAL-V1-STRUCTURAL-READ-V1"
+  },
+  "schema": "saea-system-text-engineering-analysis-v1",
+  "scientific_feedback": false,
+  "status": "DRAFT UNSIGNED READ; complete proof and root countersignature required"
+}
