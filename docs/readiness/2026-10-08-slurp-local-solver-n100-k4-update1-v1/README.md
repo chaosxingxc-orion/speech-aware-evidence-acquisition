@@ -1,0 +1,9 @@
+# Independent local Solver development, complete configured batch
+
+The owner requires one complete K=4 candidate batch from one isolated Astra Ultra actor. The two local modules have independent inputs, editable fields and namespaces. This branch changes only Solver text on its original registered basis; all surrounding role text, knowledge, source assets, model parameters and interfaces stay fixed. This does not establish statistical independence of model outputs or absence of interaction when both branches are later combined.
+
+Use the same 100-input roster with 4 candidates plus 2 unchanged control members, totaling 600 complete local trajectories. Candidate count, member order, limits and subsequent identities must be derived from the configuration. Preserve the earlier smaller batch as spent, unactivated history; this is a fresh prospectively registered opportunity, not a replacement. No earlier proposal output enters this capsule.
+
+The declared local objective drives local selection. Other process, business and timing metrics remain recorded; a new whole-system adoption test is not required for each local iteration. Root serializes GPU work, while proposal and CPU engineering run in parallel. Joint use of locked local versions needs a separate stage-boundary check.
+
+The exact prospective aggregate projection permits the qualified original own-basis numerical record and original templates only. Retain cumulative parent and roster exposure. No raw task cases, knowledge or peer feedback. Preserve invalid/no-change positions and unavailable provider metering. Application byte bounds do not claim provider-enforced caps. No paid API spend. Runtime remains held pending compilation, capacity, structural proof, exact registration and root admission; prior STOP and all frozen evidence remain untouched.

@@ -1,0 +1,19 @@
+{
+  "authority": "Direct owner instruction: each local module produces one complete K4 batch; Root227",
+  "candidate_count": 4,
+  "cohort_suffix": "k4-update1",
+  "control_ids": [
+    "control",
+    "control-aa"
+  ],
+  "expected_main": "bd5dc93569660a5d16d7d0c18c2313491ca11668",
+  "iteration": 1,
+  "namespace": "n100-k4-update1-v1",
+  "old_batches": "Preserve spent original K2 proposals and compiled artifacts without activation; register a fresh complete batch per role.",
+  "old_namespace": "n100-update1-v1",
+  "roles": [
+    "solver",
+    "reviewer"
+  ],
+  "schema": "saea-local-node-k-batch-owner-request-v1"
+}

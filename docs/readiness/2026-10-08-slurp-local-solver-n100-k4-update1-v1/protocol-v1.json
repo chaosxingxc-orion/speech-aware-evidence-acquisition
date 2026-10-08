@@ -1,0 +1,111 @@
+{
+  "authority": "Owner227; latest direct fixed-development-set local-first instructions",
+  "batch_design": "One isolated actor jointly designs the entire configured candidate batch. Controls are additional members and are not candidate slots. Prior smaller batches stay spent and unactivated.",
+  "candidate_count": 4,
+  "cohort_id": "local-solver-k4-update1",
+  "control_count": 2,
+  "editable": [
+    "role_text.solver"
+  ],
+  "execution": {
+    "cpu_scoring_overlaps_generation": true,
+    "queue_depth": 4,
+    "schedule": "sequential-trajectory",
+    "serial_gpu_members": true,
+    "slot_count": 4
+  },
+  "fixed": [
+    "knowledge",
+    "audio",
+    "packets",
+    "queries",
+    "votes",
+    "Perception text",
+    "retrieval",
+    "tool authority",
+    "scorer",
+    "answer normalizer",
+    "role topology",
+    "model weights"
+  ],
+  "independence": {
+    "baseline_changes_within_local_iteration": false,
+    "editable_role": "solver",
+    "peer_updates_visible": false,
+    "shared_interface_edit_allowed": false,
+    "source_branch": "original review-off",
+    "synchronization": "Root serializes integration and GPU campaigns. Each branch consumes only prospectively qualified own aggregate feedback. Joint use needs a separate integration check."
+  },
+  "input_count": 100,
+  "iteration": 1,
+  "learning_algorithm_claim": "Local template development; no GRPO, GEPA, stable learning or independent validation claim.",
+  "local_selection": {
+    "iteration_limit_before_local_review": 2,
+    "plateau_rule": "After two complete local updates without any primary improvement over the retained local version, lock the best observed version and move to the next named local problem. Any further update is a new prospective root decision.",
+    "primary": "draft_entity_correct.numerator / input_count; invalid or missing draft counts as incorrect",
+    "recorded_only": [
+      "empty_gold_false_fill",
+      "draft_parsed",
+      "final_entity_correct",
+      "postprocessing repair/harm",
+      "official SLU-F1",
+      "intent",
+      "reliable completion",
+      "first/nonfirst sample timing"
+    ],
+    "system_adoption_required_each_iteration": false,
+    "tie_breaks": [
+      "draft_full_correct.numerator / input_count",
+      "unchanged local control on exact tie"
+    ]
+  },
+  "members": [
+    "control",
+    "control-aa",
+    "candidate-1",
+    "candidate-2",
+    "candidate-3",
+    "candidate-4"
+  ],
+  "owner_batch_request": {
+    "relpath": "docs/readiness/2026-10-08-slurp-independent-local-k4-v1/owner-request-v1.json",
+    "sha256": "1964aea26a41b303a6b4484896ac454aecd65f4e0c353f8c8792ab0f70139dbd"
+  },
+  "population_source": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+    "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+  },
+  "proposal": {
+    "algorithm": "fixed-parent-aggregate-v1",
+    "design_slots": [
+      "local-solver-k4-update1-c1",
+      "local-solver-k4-update1-c2",
+      "local-solver-k4-update1-c3",
+      "local-solver-k4-update1-c4"
+    ],
+    "fork_turns": "none",
+    "max_input_bytes": 65536,
+    "max_output_bytes": 65536,
+    "max_solver_text_characters": 6000,
+    "model": "gpt-6-astra",
+    "paid_api_spend": 0,
+    "provider_enforced_cap_claim": false,
+    "reasoning_effort": "ultra",
+    "replacement_on_invalid_or_no_change": false,
+    "semantic_opportunities": 1,
+    "usage_unavailable_is_null": true
+  },
+  "runtime_admission": false,
+  "same_roster": {
+    "relpath": "docs/receipts/rosters/slurp-simple-consumption-n100-analysis-v1.json",
+    "sha256": "4c07be340c6a50711259a0682e64aa965d578c240e737f7c3ec2276cdef1fff9"
+  },
+  "same_upstream_outputs_claim": false,
+  "sampling": {
+    "seed": 20260913,
+    "temperature": 0
+  },
+  "schema": "saea-local-solver-development-protocol-v1",
+  "stage": "local-development",
+  "topology": "existing review-off Perception -> Solver -> accept"
+}

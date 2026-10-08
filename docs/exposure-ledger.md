@@ -8400,3 +8400,17 @@ Preserve all prior immutable exposure rows. Counts are declared ceilings; genera
 | date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-10-08 | SAEA-SLURP-LOCAL-REVIEWER-N100-UPDATE1-PROPOSE-V1 | bounded-discovery-probe | Independent local Reviewer templates; two configured slots in one isolated opportunity | GPT-6 Astra Ultra subscription subagent | SLURP fixed N100 aggregate only; no audio or cases | discovery | 144b2f097bf70c0b274e7112e29fad2fcdaa3bc00c6e43bd6d7e533d61b3ef3c | no | 1 | 0 | 0 | Original parent sources and qualified seed N100 aggregate; no peer Solver feedback | docs/readiness/2026-10-08-slurp-local-reviewer-n100-update1-v1/actor-plan-v1.json | Root countersigned 2026-10-08T10:43:45.306574+00:00; positions reserved; preserve no-change/invalid outcomes; no runtime admission; protocol SHA256 984fe4d64df11e60ef5df77261de22a05100b954f29d88d2bd7d1cb1b6b07358. |
+
+
+## Local Solver complete candidate batch, 2026-10-08T11:14:03.050330+00:00
+
+| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-08 | SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE1-PROPOSE-V1 | bounded-discovery-probe | 4 configured solver-only slots in one isolated opportunity | GPT-6 Astra Ultra subscription subagent | SLURP fixed N100 own-basis aggregate only | discovery | 144b2f097bf70c0b274e7112e29fad2fcdaa3bc00c6e43bd6d7e533d61b3ef3c | no | 1 | 0 | 0 | Original parent sources and qualified own-basis N100 aggregate; no peer or previous proposal export | docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/actor-plan-v1.json | Root countersigned 2026-10-08T11:14:03.050330+00:00; complete batch reserved before contact; controls extra; no runtime admission; preserve invalid/no-change slots; prior K2 unchanged. |
+
+
+## Local Reviewer complete candidate batch, 2026-10-08T11:14:03.050330+00:00
+
+| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-08 | SAEA-SLURP-LOCAL-REVIEWER-N100-K4-UPDATE1-PROPOSE-V1 | bounded-discovery-probe | 4 configured reviewer-only slots in one isolated opportunity | GPT-6 Astra Ultra subscription subagent | SLURP fixed N100 own-basis aggregate only | discovery | 144b2f097bf70c0b274e7112e29fad2fcdaa3bc00c6e43bd6d7e533d61b3ef3c | no | 1 | 0 | 0 | Original parent sources and qualified own-basis N100 aggregate; no peer or previous proposal export | docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/actor-plan-v1.json | Root countersigned 2026-10-08T11:14:03.050330+00:00; complete batch reserved before contact; controls extra; no runtime admission; preserve invalid/no-change slots; prior K2 unchanged. |

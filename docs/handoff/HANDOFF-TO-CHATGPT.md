@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Owner correction: one complete configured candidate batch per local module (2026-10-08T11:14:03.050330+00:00)
+
+Each independent Solver and Reviewer optimizer must jointly generate K=4 templates in one isolated Astra Ultra opportunity. Controls and A/A are additional members. Each local panel has 6 members on the same100 inputs; counts and downstream budgets follow configuration. Prior K2 proposals, reservations and compiled outputs remain spent and unactivated; the fresh K4 registrations preserve them and do not expose their outputs to proposers. See `docs/readiness/2026-10-08-slurp-independent-local-k4-v1/owner-request-v1.json` and the per-role K4 packages.
+
+Solver changes only Solver text on review-off; Reviewer changes only Reviewer text on original full seed. Separate immutable capsules prevent peer-update exposure. Root owns role-boundary checks, serial integration/GPU scheduling and later combination validation. Engineering isolation does not claim combined behavioral independence. Runtime remains held for fresh preparation/FIT/structural admission; no service, cache, STOP or frozen evidence changes occur in this registration. Human boundary before8x400 remains unchanged.
+
 ## Parallel local Solver and Reviewer development (2026-10-08T10:43:45.306574+00:00)
 
 The owner now explicitly requests two independent local optimization agents. Root assigns Astra Ultra to each role with fork-none aggregate-only capsules. Solver changes only Solver text on the frozen review-off basis; Reviewer changes only Reviewer text on the original full seed basis, preserving Solver/Planner/Perception bytes and the exact slot-issues handoff. The two branches do not consume each other's in-progress proposals or results. Existing original roles are the common source; no shared mutable templates or in-panel policy updates.
@@ -7099,7 +7105,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T10:43:45.306574+00:00
+Last refreshed: 2026-10-08T11:14:03.050330+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

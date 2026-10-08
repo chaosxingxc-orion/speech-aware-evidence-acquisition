@@ -1,0 +1,64 @@
+{
+  "allowlist": [
+    "business.natural_mixture",
+    "business.contacts",
+    "process.metrics",
+    "process.delivery_stages",
+    "process.role_counts",
+    "process.review_applicability",
+    "process.intent_support",
+    "process.statistical_scope",
+    "timing.all_samples",
+    "timing.excluding_first"
+  ],
+  "at_utc": "2026-10-08T11:14:03.050330+00:00",
+  "authority": "Direct owner instruction: each local module produces one complete K4 batch; Root227",
+  "complete_family_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-family-read-v1/qualification-v1.json",
+    "sha256": "f107edab85e4ba864f9ba11f2b4dbeb53f351fc1f7c2e88556ce3bc70da6a445"
+  },
+  "complete_family_read_authority": {
+    "ledger_row_sha256": "41cf948ea30ed55ee58f35cc2fe808443cd26d9c3f07c507feb7c1f8d0de3ba5",
+    "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N100-AUDIO-RECOVERY1-ENTRY2-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/analysis-recipe-v1.json",
+      "sha256": "07a1b99cc1be751145866d8bfc8a172625c839385f62dd2b94b3e08916219d47"
+    }
+  },
+  "complete_family_receipt": {
+    "relpath": "docs/receipts/continuation/2026-10-08-simple-consumption-n100-complete-family-read-v1.json",
+    "sha256": "2557050b0e21a0de876cfac7def2fe84cc99c341b5450acc2f443841e3afa415"
+  },
+  "cumulative_exposure": "Retain all original parent sources plus the entire original N100 roster as feedback exposure in every descendant bundle.",
+  "historical_read_scope_unchanged": true,
+  "new_scope": "Fresh complete K=4 solver-only local development batch. Reuse the same originally qualified own-basis numeric aggregate and original templates. No prior proposal outputs, peer updates, raw cases or knowledge are exported. The historical READ and earlier proposal opportunities remain unchanged.",
+  "omit": [
+    "raw answers",
+    "sample IDs",
+    "references",
+    "transcripts",
+    "knowledge content",
+    "source expansion lists",
+    "other historical comparison records",
+    "timing sample rows"
+  ],
+  "protocol": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/protocol-v1.json",
+    "sha256": "1a1d087c55299caa2da0168f2ee32e108aba25954921c3a2af8c9f8638b640f9"
+  },
+  "root_countersignature": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-family-read-v1/root-countersignature-v1.json",
+    "sha256": "de6226f8338c145cd08db0985f2ad0861df270b933099c41f160f22f32da34d3"
+  },
+  "schema": "saea-local-solver-aggregate-projection-authority-v1",
+  "selection_reason": "The existing review-off workflow is the chosen local Solver development basis, not a selected quality winner.",
+  "source_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-review-off-descriptive-v1/report.json",
+    "sha256": "73935e01869d0157e48d7c5ed4f6fec09989214cee1fee437d6ea980bbf4ab09"
+  },
+  "status": "ROOT_COUNTERSIGNED_BEFORE_PROPOSER_EXPORT",
+  "template_parent": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/system-text-search/four-node-seed-v1/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+    "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+  }
+}
