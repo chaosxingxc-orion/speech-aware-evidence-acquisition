@@ -1,0 +1,274 @@
+{
+  "plans": [
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-control-n100-k4-update1-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 200,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "36d59da07dbff0624937c7cbf5926a05ff7606651a2eab7f6a92c8d333585b7f",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "control",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/control-generation-plan-registered-v1.json",
+        "sha256": "a76fdb4d9e8d7e13853b7b0695604be97dea3865cfe635195428e036bdf593a5"
+      },
+      "role": "generation"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-control-n100-k4-update1-v1-fit",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 800,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "36d59da07dbff0624937c7cbf5926a05ff7606651a2eab7f6a92c8d333585b7f",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-FIT-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "control",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/control-fit-plan-registered-v1.json",
+        "sha256": "a6e81186b98e6db13e68d189b1e24cd5bfc3f3aa4cd18cadd6d4913a25b65415"
+      },
+      "role": "fit"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-control-aa-n100-k4-update1-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 200,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "3a2b214234797c91dcfd0c4d2d5840cbaa4c9e568a67f9d7ece72b02ceafed5b",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "control-aa",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/control-aa-generation-plan-registered-v1.json",
+        "sha256": "0837b4b324ea95a6ca7d2a41ca5261c86fd3cb31263782152cfa010397ec1d79"
+      },
+      "role": "generation"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-control-aa-n100-k4-update1-v1-fit",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 800,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "3a2b214234797c91dcfd0c4d2d5840cbaa4c9e568a67f9d7ece72b02ceafed5b",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-FIT-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "control-aa",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/control-aa-fit-plan-registered-v1.json",
+        "sha256": "3c662d27a49ac25967aeece05bdd0ddb54978de38e02ead79b382a468263a279"
+      },
+      "role": "fit"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-1-n100-k4-update1-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 200,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "00197e113d01e327b620fcd9c7cb36d6f6a7e88328fb797f237a6694be3a8b63",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "candidate-1",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/candidate-1-generation-plan-registered-v1.json",
+        "sha256": "6ed341b24d41831b14a551962c6c85b98ea4ff8687d1d61a323aee2062b24f3a"
+      },
+      "role": "generation"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-1-n100-k4-update1-v1-fit",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 800,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "00197e113d01e327b620fcd9c7cb36d6f6a7e88328fb797f237a6694be3a8b63",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-FIT-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "candidate-1",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/candidate-1-fit-plan-registered-v1.json",
+        "sha256": "ffd29145e731816f8fb7d73ab70cc3eb87480dfc53ecd06da3304515ef94c4aa"
+      },
+      "role": "fit"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-2-n100-k4-update1-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 200,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "3f0b4bf1efcab791a1aab3efb4b879c4be3a56534b0d02b3f7a4d4a893ddead8",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "candidate-2",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/candidate-2-generation-plan-registered-v1.json",
+        "sha256": "2dba3675516a86aa984f58605d3692ca31c362b48a9b49097278388dd79bc7c6"
+      },
+      "role": "generation"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-2-n100-k4-update1-v1-fit",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 800,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "3f0b4bf1efcab791a1aab3efb4b879c4be3a56534b0d02b3f7a4d4a893ddead8",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-FIT-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "candidate-2",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/candidate-2-fit-plan-registered-v1.json",
+        "sha256": "e0aaf6704336eee55bcd4ddce90b23446abddf3c4cb3ef75669ac00cae95681d"
+      },
+      "role": "fit"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-3-n100-k4-update1-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 200,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "bc0d3a60aa0751366362d10c4f935c0be55d93f3e4a85ece1bca9c17a6b1846c",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "candidate-3",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/candidate-3-generation-plan-registered-v1.json",
+        "sha256": "f040081c56439c71f554ecdaffbed92453b5719a533536cfaa90a3e2d56686d1"
+      },
+      "role": "generation"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-3-n100-k4-update1-v1-fit",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 800,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "bc0d3a60aa0751366362d10c4f935c0be55d93f3e4a85ece1bca9c17a6b1846c",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-FIT-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "candidate-3",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/candidate-3-fit-plan-registered-v1.json",
+        "sha256": "d15da0e951590f2cb7e88c6c6afb656d14d8cd26c43be96ac3c52f9c81de26b0"
+      },
+      "role": "fit"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-4-n100-k4-update1-v1",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 200,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "d539753fd2bc5235cc0fadc93c5b8a285d1a9cc328e9d9c51e7f19b0dc927562",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "candidate-4",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/candidate-4-generation-plan-registered-v1.json",
+        "sha256": "7e5ea102b6eb18f38d5a58cf93fbcce2af4f296c3cb5e5eef5fd6a9ce0cf770d"
+      },
+      "role": "generation"
+    },
+    {
+      "execution_plan": {
+        "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-4-n100-k4-update1-v1-fit",
+        "carrier_lock_key": "slurp",
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 800,
+        "planned_speech_audio_seconds": 588,
+        "protocol_hash": "d539753fd2bc5235cc0fadc93c5b8a285d1a9cc328e9d9c51e7f19b0dc927562",
+        "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-FIT-V1",
+        "schema": "saea-execution-plan-v1",
+        "split_identity_hash": "7bced710e19f50aee82e0299050ac238921439990a69cd29777d85a29846a859",
+        "split_role": "discovery",
+        "study": "speech-aware-evidence-acquisition"
+      },
+      "label": "candidate-4",
+      "plan": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/candidate-4-fit-plan-registered-v1.json",
+        "sha256": "4151f2a68c3f2f1ccd078cf7110be75140378c2b6db95522784e21dcaccc78e4"
+      },
+      "role": "fit"
+    }
+  ],
+  "read_recipe": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1/analysis-recipe-intent-v1.json",
+    "sha256": "fedf78634d2354197467d0772f3d3604a6e7a6e50c2794215984c98afa184d24"
+  },
+  "read_run_id": "SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE1-READ-V1",
+  "status": "DRAFT NOT INSERTED INTO LEDGER"
+}
