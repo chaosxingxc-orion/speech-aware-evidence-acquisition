@@ -13,9 +13,23 @@
       "dataset_fragment": "slurp-speech-native-simple-consumption-n100-graph4-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Fresh local node proof; exact root registration pending.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root countersigned fresh natural4 structural proof; complete capacity qualification and strict warm custody required.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Exact reused prepared supply; strict warm identity verified before plans.",
+            "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+            "sha256": "7ee22bbd7f75ffe4befc67d4ecf485bc0b0454b5faaa3682d233da892900da37"
+          },
+          {
+            "expected_decision_id": "local-solver-n100-k4-update1-natural4-v1",
+            "kind": "decision",
+            "reason": "Root decided this exact configured generation/FIT family before contact.",
+            "relpath": "coordination/local-solver-n100-k4-update1-natural4-v1/root-admission-v1.json",
+            "sha256": "6f58ce73fc42b8950c1ae5cb8965fc43edb55b740380b000f2756e059cff68d7"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1",
       "system_text_policy_binding": {
