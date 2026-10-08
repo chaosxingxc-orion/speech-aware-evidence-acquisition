@@ -1,0 +1,91 @@
+{
+  "at_utc": "2026-10-08T16:53:21.009542+00:00",
+  "driver_start": {
+    "at": "2026-10-08T16:50:18Z",
+    "detail": {
+      "flight_commit": "b4086484e8448e87d2429824071649bf133feb67",
+      "queue": "/home/chao/batch-queue.json"
+    },
+    "event": "driver-start"
+  },
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "independent_frozen_and_first_launch_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-n100-dispatch-astra-review-v1/final-review-v1.json",
+    "sha256": "ceb3af377664ab6a5a2f22ec7873ab73e66d65f8f113fb5109462cbabd8cb79d"
+  },
+  "independent_metadata_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-n100-dispatch-astra-review-v1/metadata-review-v1.json",
+    "sha256": "6a6317cfe9ec714990780c600ca5dee01d35ecc19ffad682a046a360ec360417"
+  },
+  "job_monitor": {
+    "delete_at_original_terminal": true,
+    "id": "slurp-local-solver-k4-n100-health",
+    "interval_minutes": 15,
+    "status": "ACTIVE"
+  },
+  "launch_queue_sha256": "1a36a208ac2ca25dd1580b3019bcb89f09d870f656908f97553f934cb0b8bc01",
+  "learner_export": false,
+  "original_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-generation-dispatch-request-v1.json",
+    "sha256": "128d7c08224446b3a76dd2d1bb57fd0a17982c06edbc16f1b23fd36ff1693272"
+  },
+  "original_task_request_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-generation-task-request-exit-v1.json",
+    "sha256": "640cbdcdea2d6eed02b05ae489194085ea07cc780bbafc906620f34f8fcc9aba"
+  },
+  "owner_decision": 227,
+  "prior_control_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-generation-control-disposition-v1.json",
+    "sha256": "c7d1243983781aa4370aea9f8dc00da5971c01696f9026b33810ab774e7a6b60"
+  },
+  "quality_read": false,
+  "roles": {
+    "reviewer": {
+      "configured_candidates": 4,
+      "configured_members": 6,
+      "family_trajectories": 600,
+      "frozen_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-frozen-launch-binding-v1.json",
+        "sha256": "879d6e3fccd199828b7ae7d854fa69f1a5b819e04742cc1a8bf6b3af5e1cf91e"
+      },
+      "frozen_checks_complete": true,
+      "metadata_terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-local-metadata-complete-v1.json",
+        "sha256": "5631c05fe1dc7a5a6e18625fcd0a670e6f0df2b50ad8dd93e1cae572924d4324"
+      },
+      "root_admission": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-admission-v1.json",
+        "sha256": "26feb2040051feb9c47e3cbf9257651caab55a8352ed1a36c006e02518e29921"
+      },
+      "rows_per_member": 100
+    },
+    "solver": {
+      "configured_candidates": 4,
+      "configured_members": 6,
+      "family_trajectories": 600,
+      "frozen_binding": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-frozen-launch-binding-v1.json",
+        "sha256": "66645b5bd40e1a8e298c28b04f6fba4ca40993cb0c0d34adb8e5ecc711d6d80c"
+      },
+      "frozen_checks_complete": true,
+      "metadata_terminal": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-local-metadata-complete-v1.json",
+        "sha256": "99822618e14f7ecc95450561c9952c1a7a3aa0a91f1a6f7176b3e8225e888b36"
+      },
+      "root_admission": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-admission-v1.json",
+        "sha256": "ff125d7a1ab2f95eabefb33e375e2e4772d8bb33017d3d76cb962e9be0289536"
+      },
+      "rows_per_member": 100
+    }
+  },
+  "runtime_model_free_prerequisites": true,
+  "schema": "saea-local-k4-n100-registered-solver-launch-v1",
+  "scope": "Independent local role comparisons; K4 candidates plus control and A/A per role on the same development N100. GPU campaigns serial; one CPU scorer overlaps later generation. No stable benefit or cross-role adoption claim.",
+  "source_commit": "b4086484e8448e87d2429824071649bf133feb67",
+  "windows_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-windows-generation-prelaunch-v1.json",
+    "sha256": "73e052648cef8b4c24a8e90119f329e6ff49c666e193b9a348623ccb83e33587"
+  },
+  "worker": "/home/chao/saea-worktrees/codex-local-solver-k4-n100-frozen-v1"
+}
