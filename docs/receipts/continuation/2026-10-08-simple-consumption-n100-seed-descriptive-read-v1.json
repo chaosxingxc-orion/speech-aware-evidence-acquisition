@@ -1,0 +1,515 @@
+{
+  "aggregate_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-seed-descriptive-v1/report.json",
+    "sha256": "777be3150098b6f807973101c1a9bac66fd63c5bc304aa7bb4a474149fa11110"
+  },
+  "analysis_orchestration": {
+    "actual_qualification_and_read_exit_codes": [
+      0,
+      0
+    ],
+    "astra_independent_tests": 16,
+    "astra_original_test_id": "bf95b6",
+    "helper": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-member-read-orchestration-v1/root-completed-member-v1.py",
+      "sha256": "7585e386188392341c87a9bec7838152b28dd5f859e8b207ed8d7675fe406186"
+    },
+    "sol_synthetic_tests": 16
+  },
+  "astra_ultra_interpretation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-seed-descriptive-v1/astra-seed-aggregate-interpretation-v1.json",
+    "sha256": "4791d64777829d66eb916899acfe4dc570dca7303bec6c7e9a6cc64964074a6c"
+  },
+  "at_utc": "2026-10-08T02:00:36.423039+00:00",
+  "business": {
+    "contacts": {
+      "model_calls": 610,
+      "tool_calls": 0
+    },
+    "equal_stratum": {
+      "intent": 0.8548059964726631,
+      "reliable_completion": 1.0,
+      "slu_f1": 0.5611548092689452
+    },
+    "natural_mixture": {
+      "intent": 0.83,
+      "n": 100,
+      "reliable_completion": 1.0,
+      "slu_f1": 0.6243950999809226
+    },
+    "strata": [
+      {
+        "intent": 0.8,
+        "n": 5,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.8421052631578947,
+        "stratum": "alarm"
+      },
+      {
+        "intent": 0.5555555555555556,
+        "n": 9,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.6666666666666666,
+        "stratum": "audio"
+      },
+      {
+        "intent": 1.0,
+        "n": 8,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5906468620656168,
+        "stratum": "calendar"
+      },
+      {
+        "intent": 0.7142857142857143,
+        "n": 7,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.6692160611854684,
+        "stratum": "cooking"
+      },
+      {
+        "intent": 1.0,
+        "n": 4,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.6666666666666666,
+        "stratum": "datetime"
+      },
+      {
+        "intent": 1.0,
+        "n": 3,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.0,
+        "stratum": "email"
+      },
+      {
+        "intent": 0.375,
+        "n": 8,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.18181818181818182,
+        "stratum": "general"
+      },
+      {
+        "intent": 1.0,
+        "n": 5,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5,
+        "stratum": "iot"
+      },
+      {
+        "intent": 0.875,
+        "n": 8,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5647058823529412,
+        "stratum": "lists"
+      },
+      {
+        "intent": 0.8,
+        "n": 5,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.0,
+        "stratum": "music"
+      },
+      {
+        "intent": 0.8,
+        "n": 5,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.9090909090909091,
+        "stratum": "news"
+      },
+      {
+        "intent": 0.8,
+        "n": 5,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.3973509933774834,
+        "stratum": "play"
+      },
+      {
+        "intent": 1.0,
+        "n": 5,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.7003367003367003,
+        "stratum": "qa"
+      },
+      {
+        "intent": 1.0,
+        "n": 4,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.7586206896551724,
+        "stratum": "recommendation"
+      },
+      {
+        "intent": 0.6666666666666666,
+        "n": 3,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5894736842105264,
+        "stratum": "social"
+      },
+      {
+        "intent": 1.0,
+        "n": 5,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.7082204155374888,
+        "stratum": "takeaway"
+      },
+      {
+        "intent": 1.0,
+        "n": 5,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5866368214885281,
+        "stratum": "transport"
+      },
+      {
+        "intent": 1.0,
+        "n": 6,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.7692307692307693,
+        "stratum": "weather"
+      }
+    ],
+    "tokens": {
+      "completion_tokens": {
+        "total": 43178,
+        "unknown_rows": 0
+      },
+      "prompt_tokens": {
+        "total": 6138580,
+        "unknown_rows": 0
+      }
+    }
+  },
+  "intent_support": {
+    "entity_type_value_support_status": "requires-separately-verified-actual-content-projection",
+    "metrics": {
+      "candidate_coverage_given_card": {
+        "ci95_wilson": [
+          0.8860754835396585,
+          0.9780126885959752
+        ],
+        "denominator": 98,
+        "eligible": 98,
+        "lower_missing_bound": 0.9489795918367347,
+        "numerator": 93,
+        "unknown": 0,
+        "upper_missing_bound": 0.9489795918367347,
+        "value": 0.9489795918367347
+      },
+      "gold_intent_card_in_initial_request": {
+        "ci95_wilson": [
+          0.929988209271456,
+          0.9944980324498376
+        ],
+        "denominator": 100,
+        "eligible": 100,
+        "lower_missing_bound": 0.98,
+        "numerator": 98,
+        "unknown": 0,
+        "upper_missing_bound": 0.98,
+        "value": 0.98
+      },
+      "gold_intent_in_initial_candidates": {
+        "ci95_wilson": [
+          0.8625048526092651,
+          0.9656807389327273
+        ],
+        "denominator": 100,
+        "eligible": 100,
+        "lower_missing_bound": 0.93,
+        "numerator": 93,
+        "unknown": 0,
+        "upper_missing_bound": 0.93,
+        "value": 0.93
+      }
+    },
+    "raw_retrieval_pool_status": "unavailable",
+    "semantics": {
+      "causal_claim": null,
+      "gold_or_reference_strings_exported": false,
+      "later_requests_included": false,
+      "mapping": "Declared store-local value ID suffix; no label inferred from content.",
+      "missing_c0_is_knowledge_absence": false,
+      "retrieval_availability_is_supply": false,
+      "semantic_use_proven": false,
+      "support": "A nonempty own-intent value block is present in the actual initial Perception request.",
+      "support_scope": "Own-intent card presence only; cross-intent contrasts in other cards are not counted."
+    },
+    "store_source": {
+      "release_sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+      "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+    }
+  },
+  "member_id": "seed",
+  "operational_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-member-reads-v1/operational-before-seed-record-v1.json",
+    "sha256": "28deb47a0e22009c3f4a22de460fcb17c754ab3d9e8699b94ca62e03f8c0a1ad"
+  },
+  "owner_decision": 227,
+  "process_metrics": {
+    "draft_parsed": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.7901964855992357,
+        0.9224283257275948
+      ],
+      "denominator": 100,
+      "eligible": 100,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 0.87,
+      "numerator": 87,
+      "unknown": 0,
+      "upper_missing_bound": 0.87,
+      "value": 0.87
+    },
+    "empty_gold_false_fill": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.1913164356402551,
+        0.49157105406091794
+      ],
+      "denominator": 34,
+      "eligible": 34,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 0.3235294117647059,
+      "numerator": 11,
+      "unknown": 0,
+      "upper_missing_bound": 0.3235294117647059,
+      "value": 0.3235294117647059
+    },
+    "entity_repair_after_alarm": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.005537860164003122,
+        0.15744263820012558
+      ],
+      "denominator": 32,
+      "eligible": 32,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 0.03125,
+      "numerator": 1,
+      "unknown": 0,
+      "upper_missing_bound": 0.03125,
+      "value": 0.03125
+    },
+    "handoff_visibility_given_valid_review": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.9630065017930143,
+        1.0
+      ],
+      "denominator": 100,
+      "eligible": 100,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 1.0,
+      "numerator": 100,
+      "unknown": 0,
+      "upper_missing_bound": 1.0,
+      "value": 1.0
+    },
+    "review_alarm_precision": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.5131119428697273,
+        0.7707560716546102
+      ],
+      "denominator": 49,
+      "eligible": 61,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 0.5245901639344263,
+      "numerator": 32,
+      "unknown": 12,
+      "upper_missing_bound": 0.7213114754098361,
+      "value": 0.6530612244897959
+    },
+    "review_error_detection": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.5815112690754881,
+        0.8365361837615662
+      ],
+      "denominator": 44,
+      "eligible": 44,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 0.7272727272727273,
+      "numerator": 32,
+      "unknown": 0,
+      "upper_missing_bound": 0.7272727272727273,
+      "value": 0.7272727272727273
+    },
+    "review_false_alarm": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.2636531475829744,
+        0.5442093693712609
+      ],
+      "denominator": 43,
+      "eligible": 43,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 0.3953488372093023,
+      "numerator": 17,
+      "unknown": 0,
+      "upper_missing_bound": 0.3953488372093023,
+      "value": 0.3953488372093023
+    },
+    "review_valid": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.9630065017930143,
+        1.0
+      ],
+      "denominator": 100,
+      "eligible": 100,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 1.0,
+      "numerator": 100,
+      "unknown": 0,
+      "upper_missing_bound": 1.0,
+      "value": 1.0
+    },
+    "revision_after_alarm": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.9128113995535841,
+        0.9971002692007002
+      ],
+      "denominator": 61,
+      "eligible": 61,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 0.9836065573770492,
+      "numerator": 60,
+      "unknown": 0,
+      "upper_missing_bound": 0.9836065573770492,
+      "value": 0.9836065573770492
+    },
+    "revision_of_correct_draft": {
+      "applicability": "applicable",
+      "ci95_wilson": [
+        0.34849928364395105,
+        0.6515007163560489
+      ],
+      "denominator": 38,
+      "eligible": 38,
+      "excluded_by_design": 0,
+      "lower_missing_bound": 0.5,
+      "numerator": 19,
+      "unknown": 0,
+      "upper_missing_bound": 0.5,
+      "value": 0.5
+    }
+  },
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-member-reads-v1/seed-qualification-v1.json",
+    "sha256": "00c4ff009ac992b5eaccbeca0b01c500272d0c72ff646d2f1ef52c722e83727e"
+  },
+  "raw_and_delivered_stage_separation": {
+    "model_endpoint": "First raw answer to selected raw answer; the first answer is after any within-visit tools.",
+    "model_revision": {
+      "entity": {
+        "correct_to_wrong": 0,
+        "net_repairs": 0,
+        "stable_correct": 43,
+        "stable_wrong": 44,
+        "unknown": 13,
+        "wrong_to_correct": 0
+      },
+      "full": {
+        "correct_to_wrong": 0,
+        "net_repairs": 3,
+        "stable_correct": 38,
+        "stable_wrong": 59,
+        "unknown": 0,
+        "wrong_to_correct": 3
+      }
+    },
+    "model_revision_applicability": "applicable",
+    "postprocessing": {
+      "entity": {
+        "correct_to_wrong": 0,
+        "net_repairs": 3,
+        "stable_correct": 46,
+        "stable_wrong": 51,
+        "unknown": 0,
+        "wrong_to_correct": 3
+      },
+      "full": {
+        "correct_to_wrong": 0,
+        "net_repairs": 1,
+        "stable_correct": 41,
+        "stable_wrong": 58,
+        "unknown": 0,
+        "wrong_to_correct": 1
+      }
+    },
+    "postprocessing_harm_rate": {
+      "ci95_wilson": [
+        0.0,
+        0.07707356308558039
+      ],
+      "denominator": 46,
+      "eligible": 46,
+      "lower_missing_bound": 0.0,
+      "numerator": 0,
+      "unknown": 0,
+      "upper_missing_bound": 0.0,
+      "value": 0.0
+    },
+    "postprocessing_repair_rate": {
+      "ci95_wilson": [
+        0.0190732684546909,
+        0.15107214318166143
+      ],
+      "denominator": 54,
+      "eligible": 54,
+      "lower_missing_bound": 0.05555555555555555,
+      "numerator": 3,
+      "unknown": 0,
+      "upper_missing_bound": 0.05555555555555555,
+      "value": 0.05555555555555555
+    },
+    "semantics": "Initial raw Solver to selected raw Solver, then selected raw Solver to final delivery; associations, not causal credit. Unparsed entity states stay unknown."
+  },
+  "read_authority": {
+    "ledger_row_sha256": "1a0d4a8f183ce7639057b5632cea700a36933321b4c9c3da9ea18816572ad055",
+    "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-ENTRY2-DESCRIPTIVE-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-member-resolved-v1/seed-member-read-resolved-v1.json",
+      "sha256": "a41933a6dfe8e9fd69634a28a4a7e01769eae41f5331075b30770ab7c44d06f8"
+    }
+  },
+  "reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-member-reads-v1/seed-read-outer-v1-exit.json",
+    "sha256": "11cf758f2428312f34701b6b3b97424bd8b4df667d49160e028ab2aa7e9aecfc"
+  },
+  "root_countersignature": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-member-reads-v1/seed-root-countersignature-v1.json",
+    "sha256": "e2a5188df140b27f80f8e1eb6f9ae915fce21de94aa4facbf0fc9db21d19d6ce"
+  },
+  "root_interpretation": "Prioritize alarm-to-repair conversion, empty-entity false fills and raw parsing/postprocessing separation as hypotheses. Narrow intent-card presence is measured; entity/value support and semantic use are not established. No causal Reviewer attribution or cross-member contrast before complete-family READ. Keep pending policies unchanged.",
+  "schema": "saea-root-complete-member-descriptive-record-v1",
+  "scope": {
+    "comparisons": false,
+    "contacts_added": {
+      "model": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "learner_export": false,
+    "policy_change": false,
+    "scoring_replay": false,
+    "stable_benefit_claim": false
+  },
+  "status": "SEED_DESCRIPTIVE_READ_COMPLETE_FULL_FAMILY_PENDING",
+  "timing": {
+    "all_samples": {
+      "count": 100,
+      "mean_seconds": 32.79029789884,
+      "p50_seconds": 32.310863859,
+      "p95_seconds": 55.039584271
+    },
+    "batch_dispatch_wall_seconds": 828.355490934,
+    "batch_dispatch_wall_seconds_per_sample": 8.283554909340001,
+    "excluding_first": {
+      "count": 99,
+      "mean_seconds": 32.82859195574748,
+      "p50_seconds": 32.411381585,
+      "p95_seconds": 55.204664438
+    }
+  }
+}

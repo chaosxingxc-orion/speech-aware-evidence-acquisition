@@ -1,5 +1,14 @@
 # Experiment rules for the ChatGPT side
 
+## First N100 member read; continuous campaign remains active (2026-10-08T02:00:36.423039+00:00)
+
+The corrected seed is independently FINALIZED with100 verified rows, one successful complete official score and zero failed jobs. Root countersigned only its exact member READ and completed the aggregate-only descriptive reader with no new model/tokenizer/scorer contacts. Astra Ultra independently reviewed the aggregates. See `docs/receipts/continuation/2026-10-08-simple-consumption-n100-seed-descriptive-read-v1.json`. The later A/A also qualified operationally and has its own exact root member READ; its descriptive reader is in progress. Full-family READ remains unsigned, and later-member comparisons and learner export remain closed.
+
+Seed alone has official SLU-F1 62.44percent, intent83/100 and reliable completion100/100. Review error alarms cover32/44 evaluable wrong drafts, but delivered entity repair after a true error alarm is1/32. Raw first-to-selected Solver entity transitions show zero known repairs with13unknown; postprocessing separately repairs3/54 raw-wrong cases. Do not attribute those delivered gains to Reviewer. False alarms are17/43 known entity-correct drafts; empty-gold false fills are11/34. Intent cards appear for98/100 own gold intents, with93/100 gold intents in initial candidates; this proves neither entity support nor semantic consumption. These are descriptive hypotheses, not policy adoption or evidence of learning.
+
+Operational observation at2026-10-08T02:00:36.380888+00:00: seed=FINALIZED, seed-aa=FINALIZED, review-off=OPENED, solver-lookup=ABSENT; STOP present=False. The fixed7cfdcf82 worker and driver epoch01:19:55Z continue unchanged with four concurrent samples per serial member and overlapped CPU scoring/analysis. A transient read-only WSL entry timeout did not stop the campaign; fresh DATA telemetry and subsequent successful WSL entry confirmed continuity. Preserve the original failed1500-cap evidence, current4GiB floors and job-scoped15minute monitor. No service/cache/control change occurred during these reads.
+
+
 ## Corrected N100 successor is running (2026-10-08T01:25:51.230820+00:00)
 
 Windows SAEA-Batch-Driver epoch2026-10-08T01:19:55Z, first campaign2026-10-08T01:20:29Z, uses immutable `/home/chao/saea-worktrees/codex-simple-consumption-n100-audio-recovery1-entry2-layout-v1` at `7cfdcf82bccec639f9ef57bc4a66b9ea0ba76407`. Root observed first seed OPENED, four busy slots,85percent GPU utilization and fresh healthy telemetry; Windows free memory was10.77GiB. Three later members were not yet opened. Startup stable-memory wait passed at the owner4GiB floor. See `docs/receipts/continuation/2026-10-08-simple-consumption-n100-audio-recovery-running-v1.json`.
@@ -877,4 +886,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-07T17:13:41.265166+00:00
+Last refreshed: 2026-10-08T02:00:36.423039+00:00
