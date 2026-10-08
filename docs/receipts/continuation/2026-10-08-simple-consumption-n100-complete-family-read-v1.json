@@ -1,0 +1,2229 @@
+{
+  "astra_ultra_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-family-v1/astra-complete-family-interpretation-v1.json",
+    "sha256": "593cd56a2e4d03b24d3f18df9c6cafd8c7f874c9b4b8de0f1ed39f4075b1c8f6"
+  },
+  "at_utc": "2026-10-08T02:31:48.551736+00:00",
+  "budget": {
+    "actual_audio_seconds": {
+      "review-off": 587.559,
+      "seed": 1810.6627500000004,
+      "seed-aa": 1782.6352499999998,
+      "solver-lookup": 635.1843124999999
+    },
+    "actual_model_contacts": {
+      "review-off": 200,
+      "seed": 610,
+      "seed-aa": 592,
+      "solver-lookup": 216
+    },
+    "max_model_visits_per_input": {
+      "review-off": 2,
+      "seed": 13,
+      "seed-aa": 13,
+      "solver-lookup": 3
+    },
+    "meaning": "Cumulative admitted source-audio exposure, not elapsed GPU time. Derived adequacy is checked before contacts; cached inputs do not discount accounting.",
+    "one_pass_audio_seconds": 293.7795,
+    "registered_audio_seconds": {
+      "review-off": 1500,
+      "seed": 3820,
+      "seed-aa": 3820,
+      "solver-lookup": 1500
+    },
+    "registered_model_contacts": {
+      "review-off": 200,
+      "seed": 1300,
+      "seed-aa": 1300,
+      "solver-lookup": 300
+    }
+  },
+  "business": {
+    "review-off": {
+      "contacts": {
+        "model_calls": 200,
+        "tool_calls": 0
+      },
+      "equal_stratum": {
+        "intent": 0.8965608465608467,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5516376388479947
+      },
+      "natural_mixture": {
+        "intent": 0.87,
+        "n": 100,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.6096067982013694
+      },
+      "strata": [
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.8421052631578947,
+          "stratum": "alarm"
+        },
+        {
+          "intent": 0.6666666666666666,
+          "n": 9,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6666666666666666,
+          "stratum": "audio"
+        },
+        {
+          "intent": 1.0,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5906468620656168,
+          "stratum": "calendar"
+        },
+        {
+          "intent": 0.5714285714285714,
+          "n": 7,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5656565656565656,
+          "stratum": "cooking"
+        },
+        {
+          "intent": 1.0,
+          "n": 4,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5678496868475993,
+          "stratum": "datetime"
+        },
+        {
+          "intent": 1.0,
+          "n": 3,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "email"
+        },
+        {
+          "intent": 0.625,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "general"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.8,
+          "stratum": "iot"
+        },
+        {
+          "intent": 0.875,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5647058823529412,
+          "stratum": "lists"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "music"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.9090909090909091,
+          "stratum": "news"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.40544145105361434,
+          "stratum": "play"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7541696881798405,
+          "stratum": "qa"
+        },
+        {
+          "intent": 1.0,
+          "n": 4,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7586206896551724,
+          "stratum": "recommendation"
+        },
+        {
+          "intent": 1.0,
+          "n": 3,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5137614678899083,
+          "stratum": "social"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7724137931034483,
+          "stratum": "takeaway"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.4491178043129568,
+          "stratum": "transport"
+        },
+        {
+          "intent": 1.0,
+          "n": 6,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7692307692307693,
+          "stratum": "weather"
+        }
+      ],
+      "tokens": {
+        "completion_tokens": {
+          "total": 14151,
+          "unknown_rows": 0
+        },
+        "prompt_tokens": {
+          "total": 1399873,
+          "unknown_rows": 0
+        }
+      }
+    },
+    "seed": {
+      "contacts": {
+        "model_calls": 610,
+        "tool_calls": 0
+      },
+      "equal_stratum": {
+        "intent": 0.8548059964726631,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5611548092689452
+      },
+      "natural_mixture": {
+        "intent": 0.83,
+        "n": 100,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.6243950999809226
+      },
+      "strata": [
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.8421052631578947,
+          "stratum": "alarm"
+        },
+        {
+          "intent": 0.5555555555555556,
+          "n": 9,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6666666666666666,
+          "stratum": "audio"
+        },
+        {
+          "intent": 1.0,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5906468620656168,
+          "stratum": "calendar"
+        },
+        {
+          "intent": 0.7142857142857143,
+          "n": 7,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6692160611854684,
+          "stratum": "cooking"
+        },
+        {
+          "intent": 1.0,
+          "n": 4,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6666666666666666,
+          "stratum": "datetime"
+        },
+        {
+          "intent": 1.0,
+          "n": 3,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "email"
+        },
+        {
+          "intent": 0.375,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.18181818181818182,
+          "stratum": "general"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5,
+          "stratum": "iot"
+        },
+        {
+          "intent": 0.875,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5647058823529412,
+          "stratum": "lists"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "music"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.9090909090909091,
+          "stratum": "news"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.3973509933774834,
+          "stratum": "play"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7003367003367003,
+          "stratum": "qa"
+        },
+        {
+          "intent": 1.0,
+          "n": 4,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7586206896551724,
+          "stratum": "recommendation"
+        },
+        {
+          "intent": 0.6666666666666666,
+          "n": 3,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5894736842105264,
+          "stratum": "social"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7082204155374888,
+          "stratum": "takeaway"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5866368214885281,
+          "stratum": "transport"
+        },
+        {
+          "intent": 1.0,
+          "n": 6,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7692307692307693,
+          "stratum": "weather"
+        }
+      ],
+      "tokens": {
+        "completion_tokens": {
+          "total": 43178,
+          "unknown_rows": 0
+        },
+        "prompt_tokens": {
+          "total": 6138580,
+          "unknown_rows": 0
+        }
+      }
+    },
+    "seed-aa": {
+      "contacts": {
+        "model_calls": 592,
+        "tool_calls": 0
+      },
+      "equal_stratum": {
+        "intent": 0.8748677248677249,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5755325388064413
+      },
+      "natural_mixture": {
+        "intent": 0.86,
+        "n": 100,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.6275073899974032
+      },
+      "strata": [
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.9,
+          "stratum": "alarm"
+        },
+        {
+          "intent": 0.6666666666666666,
+          "n": 9,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6666666666666666,
+          "stratum": "audio"
+        },
+        {
+          "intent": 1.0,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5906468620656168,
+          "stratum": "calendar"
+        },
+        {
+          "intent": 0.7142857142857143,
+          "n": 7,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6692160611854684,
+          "stratum": "cooking"
+        },
+        {
+          "intent": 1.0,
+          "n": 4,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6666666666666666,
+          "stratum": "datetime"
+        },
+        {
+          "intent": 1.0,
+          "n": 3,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "email"
+        },
+        {
+          "intent": 0.625,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.25,
+          "stratum": "general"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.8,
+          "stratum": "iot"
+        },
+        {
+          "intent": 0.875,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6075949367088608,
+          "stratum": "lists"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "music"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.9090909090909091,
+          "stratum": "news"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.421875,
+          "stratum": "play"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7541696881798405,
+          "stratum": "qa"
+        },
+        {
+          "intent": 1.0,
+          "n": 4,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7586206896551724,
+          "stratum": "recommendation"
+        },
+        {
+          "intent": 0.6666666666666666,
+          "n": 3,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5137614678899083,
+          "stratum": "social"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6201550387596899,
+          "stratum": "takeaway"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.46189094241637396,
+          "stratum": "transport"
+        },
+        {
+          "intent": 1.0,
+          "n": 6,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7692307692307693,
+          "stratum": "weather"
+        }
+      ],
+      "tokens": {
+        "completion_tokens": {
+          "total": 41628,
+          "unknown_rows": 0
+        },
+        "prompt_tokens": {
+          "total": 5933801,
+          "unknown_rows": 0
+        }
+      }
+    },
+    "solver-lookup": {
+      "contacts": {
+        "model_calls": 216,
+        "tool_calls": 16
+      },
+      "equal_stratum": {
+        "intent": 0.8599867724867725,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5100947284369399
+      },
+      "natural_mixture": {
+        "intent": 0.84,
+        "n": 100,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5762371888105546
+      },
+      "strata": [
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.8421052631578947,
+          "stratum": "alarm"
+        },
+        {
+          "intent": 0.6666666666666666,
+          "n": 9,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.3614457831325301,
+          "stratum": "audio"
+        },
+        {
+          "intent": 1.0,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5906468620656168,
+          "stratum": "calendar"
+        },
+        {
+          "intent": 0.5714285714285714,
+          "n": 7,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5656565656565656,
+          "stratum": "cooking"
+        },
+        {
+          "intent": 1.0,
+          "n": 4,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5678496868475993,
+          "stratum": "datetime"
+        },
+        {
+          "intent": 1.0,
+          "n": 3,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "email"
+        },
+        {
+          "intent": 0.5,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "general"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5,
+          "stratum": "iot"
+        },
+        {
+          "intent": 0.875,
+          "n": 8,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7058823529411765,
+          "stratum": "lists"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.0,
+          "stratum": "music"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.9090909090909091,
+          "stratum": "news"
+        },
+        {
+          "intent": 0.8,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.4099060631938514,
+          "stratum": "play"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7541696881798405,
+          "stratum": "qa"
+        },
+        {
+          "intent": 1.0,
+          "n": 4,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.7224669603524229,
+          "stratum": "recommendation"
+        },
+        {
+          "intent": 0.6666666666666666,
+          "n": 3,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.5894736842105264,
+          "stratum": "social"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6201550387596899,
+          "stratum": "takeaway"
+        },
+        {
+          "intent": 1.0,
+          "n": 5,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.37618958760962873,
+          "stratum": "transport"
+        },
+        {
+          "intent": 1.0,
+          "n": 6,
+          "reliable_completion": 1.0,
+          "slu_f1": 0.6666666666666666,
+          "stratum": "weather"
+        }
+      ],
+      "tokens": {
+        "completion_tokens": {
+          "total": 14706,
+          "unknown_rows": 0
+        },
+        "prompt_tokens": {
+          "total": 1648673,
+          "unknown_rows": 0
+        }
+      }
+    }
+  },
+  "contacts_added_by_analysis": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "family_process_derivative_status": "UNAVAILABLE_UNTIL_QUALIFIED_PINNED_DERIVATIVE",
+  "family_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-family-v1/report.json",
+    "sha256": "955d47517ddd8e7434395aa763452dc0534ce5d757b3385b06c343eb63bf1b2d"
+  },
+  "member_sources": {
+    "review-off": {
+      "aggregate": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-review-off-descriptive-v1/report.json",
+        "sha256": "73935e01869d0157e48d7c5ed4f6fec09989214cee1fee437d6ea980bbf4ab09"
+      },
+      "astra_ultra": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-review-off-descriptive-v1/astra-member-aggregate-interpretation-v1.json",
+        "sha256": "29d4089f14da1b8934990b5e8b3b0d58e451ce41db45687e6ea22a183ceac46f"
+      },
+      "root_signature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-member-reads-v1/review-off-root-countersignature-v1.json",
+        "sha256": "35b8be2a9de22abbd0a6cdb718e9a101d340cfcb681d29c54d7ffa4d07688892"
+      }
+    },
+    "seed": {
+      "aggregate": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-seed-descriptive-v1/report.json",
+        "sha256": "777be3150098b6f807973101c1a9bac66fd63c5bc304aa7bb4a474149fa11110"
+      },
+      "astra_ultra": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-seed-descriptive-v1/astra-seed-aggregate-interpretation-v1.json",
+        "sha256": "4791d64777829d66eb916899acfe4dc570dca7303bec6c7e9a6cc64964074a6c"
+      },
+      "root_signature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-member-reads-v1/seed-root-countersignature-v1.json",
+        "sha256": "e2a5188df140b27f80f8e1eb6f9ae915fce21de94aa4facbf0fc9db21d19d6ce"
+      }
+    },
+    "seed-aa": {
+      "aggregate": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-seed-aa-descriptive-v1/report.json",
+        "sha256": "4689548f8e3632fb3e91258afef21b731d4385974659b0a9986381370c4f74a4"
+      },
+      "astra_ultra": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-seed-aa-descriptive-v1/astra-member-aggregate-interpretation-v1.json",
+        "sha256": "1a80384cc8e61dc2c8bd059282a1280c306826796c85cb0b4ed526fba71b50e2"
+      },
+      "root_signature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-member-reads-v1/seed-aa-root-countersignature-v1.json",
+        "sha256": "c33989d357950ba29f83836f9cccbc8e2da064cc3fddcb37096a38116a06dcfa"
+      }
+    },
+    "solver-lookup": {
+      "aggregate": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-solver-lookup-descriptive-v1/report.json",
+        "sha256": "3b935a70c3cff0658ffb0751f96a978d41fa86d7e4b2fca317c3f22ee1473155"
+      },
+      "astra_ultra": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/simple-consumption-n100-audio-recovery1-entry2-solver-lookup-descriptive-v1/astra-member-aggregate-interpretation-v1.json",
+        "sha256": "b328b3c7a97a1cbfc9ac8bae0506bf255a5a6f23813ef8a0e8964bc58772cc1a"
+      },
+      "root_signature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-member-reads-v1/solver-lookup-root-countersignature-v1.json",
+        "sha256": "bb8668a1c9cb026f7f5dabccb64b47d22e2dd50f63dfd4788a9ccc096a4ece82"
+      }
+    }
+  },
+  "observed_frontier": [
+    {
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "candidate_id": "seed-aa",
+      "cohort_id": "e47d76752d5f88eeb79c1ee095aa84fb540eaa8aeb09edfd38e0fd44277476ae",
+      "intent": 0.86,
+      "model_calls": 592,
+      "slu_f1": 0.6275073899974032,
+      "tool_calls": 0
+    },
+    {
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "candidate_id": "review-off",
+      "cohort_id": "e47d76752d5f88eeb79c1ee095aa84fb540eaa8aeb09edfd38e0fd44277476ae",
+      "intent": 0.87,
+      "model_calls": 200,
+      "slu_f1": 0.6096067982013695,
+      "tool_calls": 0
+    }
+  ],
+  "own_null_half_width": {
+    "intent": 0.034999999999999976,
+    "slu_f1": 0.04937840617548099
+  },
+  "owner_decision": 227,
+  "paired_comparisons": {
+    "review-off-minus-aa": {
+      "intent": {
+        "ci_high": 0.04999999999999993,
+        "ci_level": 0.95,
+        "ci_low": -0.020000000000000018,
+        "n_replicates": 10000,
+        "point_estimate": 0.010000000000000009,
+        "seed": 20261001,
+        "sigma_hat": 0.017113822454378803
+      },
+      "left": "seed-aa",
+      "right": "review-off",
+      "slu_f1": {
+        "ci_high": 0.03509445453812676,
+        "ci_level": 0.95,
+        "ci_low": -0.06871361083551887,
+        "n_replicates": 10000,
+        "point_estimate": -0.01790059179603376,
+        "seed": 20261001,
+        "sigma_hat": 0.02625106015625268
+      },
+      "whole_answer_changes": {
+        "both_correct": 40,
+        "both_incorrect": 52,
+        "damaged": 2,
+        "repaired": 6
+      }
+    },
+    "review-off-minus-parent": {
+      "intent": {
+        "ci_high": 0.08999999999999997,
+        "ci_level": 0.95,
+        "ci_low": 0.0,
+        "n_replicates": 10000,
+        "point_estimate": 0.040000000000000036,
+        "seed": 20261001,
+        "sigma_hat": 0.023800732572759182
+      },
+      "left": "seed",
+      "right": "review-off",
+      "slu_f1": {
+        "ci_high": 0.027182254935345068,
+        "ci_level": 0.95,
+        "ci_low": -0.05330509799995809,
+        "n_replicates": 10000,
+        "point_estimate": -0.014788301779553148,
+        "seed": 20261001,
+        "sigma_hat": 0.020583722627283103
+      },
+      "whole_answer_changes": {
+        "both_correct": 39,
+        "both_incorrect": 51,
+        "damaged": 3,
+        "repaired": 7
+      }
+    },
+    "same-request-null": {
+      "intent": {
+        "ci_high": 0.06999999999999995,
+        "ci_level": 0.95,
+        "ci_low": 0.0,
+        "n_replicates": 10000,
+        "point_estimate": 0.030000000000000027,
+        "seed": 20261001,
+        "sigma_hat": 0.017069900526950937
+      },
+      "left": "seed",
+      "right": "seed-aa",
+      "slu_f1": {
+        "ci_high": 0.05277223826548037,
+        "ci_level": 0.95,
+        "ci_low": -0.0459845740854816,
+        "n_replicates": 10000,
+        "point_estimate": 0.003112290016480612,
+        "seed": 20261001,
+        "sigma_hat": 0.025487225764732068
+      },
+      "whole_answer_changes": {
+        "both_correct": 37,
+        "both_incorrect": 53,
+        "damaged": 5,
+        "repaired": 5
+      }
+    },
+    "solver-lookup-minus-aa": {
+      "intent": {
+        "ci_high": 0.0,
+        "ci_level": 0.95,
+        "ci_low": -0.050000000000000044,
+        "n_replicates": 10000,
+        "point_estimate": -0.020000000000000018,
+        "seed": 20261001,
+        "sigma_hat": 0.013839211502105167
+      },
+      "left": "seed-aa",
+      "right": "solver-lookup",
+      "slu_f1": {
+        "ci_high": -0.010375826798800853,
+        "ci_level": 0.95,
+        "ci_low": -0.09485119852779939,
+        "n_replicates": 10000,
+        "point_estimate": -0.05127020118684855,
+        "seed": 20261001,
+        "sigma_hat": 0.021402182500536736
+      },
+      "whole_answer_changes": {
+        "both_correct": 36,
+        "both_incorrect": 55,
+        "damaged": 6,
+        "repaired": 3
+      }
+    },
+    "solver-lookup-minus-parent": {
+      "intent": {
+        "ci_high": 0.040000000000000036,
+        "ci_level": 0.95,
+        "ci_low": -0.020000000000000018,
+        "n_replicates": 10000,
+        "point_estimate": 0.010000000000000009,
+        "seed": 20261001,
+        "sigma_hat": 0.01706586531647311
+      },
+      "left": "seed",
+      "right": "solver-lookup",
+      "slu_f1": {
+        "ci_high": 0.00041687302460370504,
+        "ci_level": 0.95,
+        "ci_low": -0.09692404175743397,
+        "n_replicates": 10000,
+        "point_estimate": -0.04815791117036794,
+        "seed": 20261001,
+        "sigma_hat": 0.024645239820126074
+      },
+      "whole_answer_changes": {
+        "both_correct": 36,
+        "both_incorrect": 55,
+        "damaged": 6,
+        "repaired": 3
+      }
+    }
+  },
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-family-read-v1/qualification-v1.json",
+    "sha256": "f107edab85e4ba864f9ba11f2b4dbeb53f351fc1f7c2e88556ce3bc70da6a445"
+  },
+  "read_authority": {
+    "ledger_row_sha256": "41cf948ea30ed55ee58f35cc2fe808443cd26d9c3f07c507feb7c1f8d0de3ba5",
+    "read_run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-N100-AUDIO-RECOVERY1-ENTRY2-READ-V1",
+    "recipe": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-resolved-v1/analysis-recipe-v1.json",
+      "sha256": "07a1b99cc1be751145866d8bfc8a172625c839385f62dd2b94b3e08916219d47"
+    }
+  },
+  "reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-family-read-v1/reader-original-v1-exit.json",
+    "sha256": "033be1890e6d93815a1e3aec8aae8c6b874fcc03d635f1c8015bd92d12570a01"
+  },
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "confidence": 0.95,
+    "seed": 20261001,
+    "unit": "paired utterance; keep all recording variants together"
+  },
+  "root_countersignature": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/root-family-read-v1/root-countersignature-v1.json",
+    "sha256": "de6226f8338c145cd08db0985f2ad0861df270b933099c41f160f22f32da34d3"
+  },
+  "root_decision": {
+    "automatic_expansion": false,
+    "formal_incumbent": "seed policy; never select favorable A/A draw",
+    "learning_gain": false,
+    "next_priorities": [
+      "Valid first-answer construction and empty-entity restraint with short executable English instructions.",
+      "Translate a detected error into one bounded field correction; preserve already supported fields.",
+      "Version source-bound aggregate process feedback separately before any learner input; keep current manual family unexported.",
+      "Reuse the same100-input panel for bounded prospective comparisons with same-chain A/A; do not expand to400 or8x400."
+    ],
+    "review_off": "Retain as prospective lower-cost template-development basis, without noninferiority or adoption claim. Recover entity quality before scale.",
+    "solver_lookup": "Do not promote this unchanged package. Tool activity is demonstrated; causal benefit is not measured.",
+    "stable_system_benefit": false
+  },
+  "schema": "saea-root-n100-complete-family-scientific-record-v1",
+  "separately_authorized_member_process": {
+    "review-off": {
+      "delivery_stages": {
+        "model_endpoint": "First raw answer to selected raw answer; the first answer is after any within-visit tools.",
+        "model_revision": {
+          "entity": {
+            "correct_to_wrong": 0,
+            "net_repairs": 0,
+            "stable_correct": 50,
+            "stable_wrong": 50,
+            "unknown": 0,
+            "wrong_to_correct": 0
+          },
+          "full": {
+            "correct_to_wrong": 0,
+            "net_repairs": 0,
+            "stable_correct": 45,
+            "stable_wrong": 55,
+            "unknown": 0,
+            "wrong_to_correct": 0
+          }
+        },
+        "model_revision_applicability": "not-applicable-by-design",
+        "postprocessing": {
+          "entity": {
+            "correct_to_wrong": 0,
+            "net_repairs": 2,
+            "stable_correct": 50,
+            "stable_wrong": 48,
+            "unknown": 0,
+            "wrong_to_correct": 2
+          },
+          "full": {
+            "correct_to_wrong": 0,
+            "net_repairs": 1,
+            "stable_correct": 45,
+            "stable_wrong": 54,
+            "unknown": 0,
+            "wrong_to_correct": 1
+          }
+        },
+        "postprocessing_harm_rate": {
+          "ci95_wilson": [
+            6.938893903907228e-18,
+            0.07134759913335872
+          ],
+          "denominator": 50,
+          "eligible": 50,
+          "lower_missing_bound": 0.0,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": 0.0,
+          "value": 0.0
+        },
+        "postprocessing_repair_rate": {
+          "ci95_wilson": [
+            0.011038884327619805,
+            0.1346009068750702
+          ],
+          "denominator": 50,
+          "eligible": 50,
+          "lower_missing_bound": 0.04,
+          "numerator": 2,
+          "unknown": 0,
+          "upper_missing_bound": 0.04,
+          "value": 0.04
+        },
+        "semantics": "Initial raw Solver to selected raw Solver, then selected raw Solver to final delivery; associations, not causal credit. Unparsed entity states stay unknown."
+      },
+      "intent_support": {
+        "entity_type_value_support_status": "requires-separately-verified-actual-content-projection",
+        "metrics": {
+          "candidate_coverage_given_card": {
+            "ci95_wilson": [
+              0.8860754835396585,
+              0.9780126885959752
+            ],
+            "denominator": 98,
+            "eligible": 98,
+            "lower_missing_bound": 0.9489795918367347,
+            "numerator": 93,
+            "unknown": 0,
+            "upper_missing_bound": 0.9489795918367347,
+            "value": 0.9489795918367347
+          },
+          "gold_intent_card_in_initial_request": {
+            "ci95_wilson": [
+              0.929988209271456,
+              0.9944980324498376
+            ],
+            "denominator": 100,
+            "eligible": 100,
+            "lower_missing_bound": 0.98,
+            "numerator": 98,
+            "unknown": 0,
+            "upper_missing_bound": 0.98,
+            "value": 0.98
+          },
+          "gold_intent_in_initial_candidates": {
+            "ci95_wilson": [
+              0.8625048526092651,
+              0.9656807389327273
+            ],
+            "denominator": 100,
+            "eligible": 100,
+            "lower_missing_bound": 0.93,
+            "numerator": 93,
+            "unknown": 0,
+            "upper_missing_bound": 0.93,
+            "value": 0.93
+          }
+        },
+        "raw_retrieval_pool_status": "unavailable",
+        "semantics": {
+          "causal_claim": null,
+          "gold_or_reference_strings_exported": false,
+          "later_requests_included": false,
+          "mapping": "Declared store-local value ID suffix; no label inferred from content.",
+          "missing_c0_is_knowledge_absence": false,
+          "retrieval_availability_is_supply": false,
+          "semantic_use_proven": false,
+          "support": "A nonempty own-intent value block is present in the actual initial Perception request.",
+          "support_scope": "Own-intent card presence only; cross-intent contrasts in other cards are not counted."
+        },
+        "store_source": {
+          "release_sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+          "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+        }
+      },
+      "metrics": {
+        "draft_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.4038315303659956,
+            0.5961684696340044
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.5,
+          "numerator": 50,
+          "unknown": 0,
+          "upper_missing_bound": 0.5,
+          "value": 0.5
+        },
+        "draft_parsed": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.9630065017930143,
+            1.0
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 1.0,
+          "numerator": 100,
+          "unknown": 0,
+          "upper_missing_bound": 1.0,
+          "value": 1.0
+        },
+        "empty_gold_false_fill": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.1683463067042242,
+            0.4616890979471443
+          ],
+          "denominator": 34,
+          "eligible": 34,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.29411764705882354,
+          "numerator": 10,
+          "unknown": 0,
+          "upper_missing_bound": 0.29411764705882354,
+          "value": 0.29411764705882354
+        },
+        "entity_repair_after_alarm": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "final_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.4231657776522397,
+            0.615354482419481
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.52,
+          "numerator": 52,
+          "unknown": 0,
+          "upper_missing_bound": 0.52,
+          "value": 0.52
+        },
+        "final_full_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.36560808309024106,
+            0.5573513967663177
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.46,
+          "numerator": 46,
+          "unknown": 0,
+          "upper_missing_bound": 0.46,
+          "value": 0.46
+        },
+        "final_parsed": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.9630065017930143,
+            1.0
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 1.0,
+          "numerator": 100,
+          "unknown": 0,
+          "upper_missing_bound": 1.0,
+          "value": 1.0
+        },
+        "review_alarm_precision": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "review_error_detection": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "review_false_alarm": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "review_valid": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "revision_after_alarm": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        }
+      },
+      "timing": {
+        "all_samples": {
+          "count": 100,
+          "mean_seconds": 17.23190308798,
+          "p50_seconds": 17.102841748,
+          "p95_seconds": 23.876670438
+        },
+        "batch_dispatch_wall_seconds": 434.99893262,
+        "batch_dispatch_wall_seconds_per_sample": 4.3499893262,
+        "excluding_first": {
+          "count": 99,
+          "mean_seconds": 17.23012496776768,
+          "p50_seconds": 17.095163734,
+          "p95_seconds": 25.511814275
+        }
+      }
+    },
+    "seed": {
+      "delivery_stages": {
+        "model_endpoint": "First raw answer to selected raw answer; the first answer is after any within-visit tools.",
+        "model_revision": {
+          "entity": {
+            "correct_to_wrong": 0,
+            "net_repairs": 0,
+            "stable_correct": 43,
+            "stable_wrong": 44,
+            "unknown": 13,
+            "wrong_to_correct": 0
+          },
+          "full": {
+            "correct_to_wrong": 0,
+            "net_repairs": 3,
+            "stable_correct": 38,
+            "stable_wrong": 59,
+            "unknown": 0,
+            "wrong_to_correct": 3
+          }
+        },
+        "model_revision_applicability": "applicable",
+        "postprocessing": {
+          "entity": {
+            "correct_to_wrong": 0,
+            "net_repairs": 3,
+            "stable_correct": 46,
+            "stable_wrong": 51,
+            "unknown": 0,
+            "wrong_to_correct": 3
+          },
+          "full": {
+            "correct_to_wrong": 0,
+            "net_repairs": 1,
+            "stable_correct": 41,
+            "stable_wrong": 58,
+            "unknown": 0,
+            "wrong_to_correct": 1
+          }
+        },
+        "postprocessing_harm_rate": {
+          "ci95_wilson": [
+            0.0,
+            0.07707356308558039
+          ],
+          "denominator": 46,
+          "eligible": 46,
+          "lower_missing_bound": 0.0,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": 0.0,
+          "value": 0.0
+        },
+        "postprocessing_repair_rate": {
+          "ci95_wilson": [
+            0.0190732684546909,
+            0.15107214318166143
+          ],
+          "denominator": 54,
+          "eligible": 54,
+          "lower_missing_bound": 0.05555555555555555,
+          "numerator": 3,
+          "unknown": 0,
+          "upper_missing_bound": 0.05555555555555555,
+          "value": 0.05555555555555555
+        },
+        "semantics": "Initial raw Solver to selected raw Solver, then selected raw Solver to final delivery; associations, not causal credit. Unparsed entity states stay unknown."
+      },
+      "intent_support": {
+        "entity_type_value_support_status": "requires-separately-verified-actual-content-projection",
+        "metrics": {
+          "candidate_coverage_given_card": {
+            "ci95_wilson": [
+              0.8860754835396585,
+              0.9780126885959752
+            ],
+            "denominator": 98,
+            "eligible": 98,
+            "lower_missing_bound": 0.9489795918367347,
+            "numerator": 93,
+            "unknown": 0,
+            "upper_missing_bound": 0.9489795918367347,
+            "value": 0.9489795918367347
+          },
+          "gold_intent_card_in_initial_request": {
+            "ci95_wilson": [
+              0.929988209271456,
+              0.9944980324498376
+            ],
+            "denominator": 100,
+            "eligible": 100,
+            "lower_missing_bound": 0.98,
+            "numerator": 98,
+            "unknown": 0,
+            "upper_missing_bound": 0.98,
+            "value": 0.98
+          },
+          "gold_intent_in_initial_candidates": {
+            "ci95_wilson": [
+              0.8625048526092651,
+              0.9656807389327273
+            ],
+            "denominator": 100,
+            "eligible": 100,
+            "lower_missing_bound": 0.93,
+            "numerator": 93,
+            "unknown": 0,
+            "upper_missing_bound": 0.93,
+            "value": 0.93
+          }
+        },
+        "raw_retrieval_pool_status": "unavailable",
+        "semantics": {
+          "causal_claim": null,
+          "gold_or_reference_strings_exported": false,
+          "later_requests_included": false,
+          "mapping": "Declared store-local value ID suffix; no label inferred from content.",
+          "missing_c0_is_knowledge_absence": false,
+          "retrieval_availability_is_supply": false,
+          "semantic_use_proven": false,
+          "support": "A nonempty own-intent value block is present in the actual initial Perception request.",
+          "support_scope": "Own-intent card presence only; cross-intent contrasts in other cards are not counted."
+        },
+        "store_source": {
+          "release_sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+          "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+        }
+      },
+      "metrics": {
+        "draft_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.3916827782936405,
+            0.5973090321310045
+          ],
+          "denominator": 87,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.43,
+          "numerator": 43,
+          "unknown": 13,
+          "upper_missing_bound": 0.56,
+          "value": 0.4942528735632184
+        },
+        "draft_parsed": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.7901964855992357,
+            0.9224283257275948
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.87,
+          "numerator": 87,
+          "unknown": 0,
+          "upper_missing_bound": 0.87,
+          "value": 0.87
+        },
+        "empty_gold_false_fill": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.1913164356402551,
+            0.49157105406091794
+          ],
+          "denominator": 34,
+          "eligible": 34,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.3235294117647059,
+          "numerator": 11,
+          "unknown": 0,
+          "upper_missing_bound": 0.3235294117647059,
+          "value": 0.3235294117647059
+        },
+        "entity_repair_after_alarm": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.005537860164003122,
+            0.15744263820012558
+          ],
+          "denominator": 32,
+          "eligible": 32,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.03125,
+          "numerator": 1,
+          "unknown": 0,
+          "upper_missing_bound": 0.03125,
+          "value": 0.03125
+        },
+        "final_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.3942199893044113,
+            0.5865198806597283
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.49,
+          "numerator": 49,
+          "unknown": 0,
+          "upper_missing_bound": 0.49,
+          "value": 0.49
+        },
+        "final_full_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.3279838267435473,
+            0.5179351329695703
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.42,
+          "numerator": 42,
+          "unknown": 0,
+          "upper_missing_bound": 0.42,
+          "value": 0.42
+        },
+        "final_parsed": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.9630065017930143,
+            1.0
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 1.0,
+          "numerator": 100,
+          "unknown": 0,
+          "upper_missing_bound": 1.0,
+          "value": 1.0
+        },
+        "review_alarm_precision": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.5131119428697273,
+            0.7707560716546102
+          ],
+          "denominator": 49,
+          "eligible": 61,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.5245901639344263,
+          "numerator": 32,
+          "unknown": 12,
+          "upper_missing_bound": 0.7213114754098361,
+          "value": 0.6530612244897959
+        },
+        "review_error_detection": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.5815112690754881,
+            0.8365361837615662
+          ],
+          "denominator": 44,
+          "eligible": 44,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.7272727272727273,
+          "numerator": 32,
+          "unknown": 0,
+          "upper_missing_bound": 0.7272727272727273,
+          "value": 0.7272727272727273
+        },
+        "review_false_alarm": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.2636531475829744,
+            0.5442093693712609
+          ],
+          "denominator": 43,
+          "eligible": 43,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.3953488372093023,
+          "numerator": 17,
+          "unknown": 0,
+          "upper_missing_bound": 0.3953488372093023,
+          "value": 0.3953488372093023
+        },
+        "review_valid": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.9630065017930143,
+            1.0
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 1.0,
+          "numerator": 100,
+          "unknown": 0,
+          "upper_missing_bound": 1.0,
+          "value": 1.0
+        },
+        "revision_after_alarm": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.9128113995535841,
+            0.9971002692007002
+          ],
+          "denominator": 61,
+          "eligible": 61,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.9836065573770492,
+          "numerator": 60,
+          "unknown": 0,
+          "upper_missing_bound": 0.9836065573770492,
+          "value": 0.9836065573770492
+        }
+      },
+      "timing": {
+        "all_samples": {
+          "count": 100,
+          "mean_seconds": 32.79029789884,
+          "p50_seconds": 32.310863859,
+          "p95_seconds": 55.039584271
+        },
+        "batch_dispatch_wall_seconds": 828.355490934,
+        "batch_dispatch_wall_seconds_per_sample": 8.283554909340001,
+        "excluding_first": {
+          "count": 99,
+          "mean_seconds": 32.82859195574748,
+          "p50_seconds": 32.411381585,
+          "p95_seconds": 55.204664438
+        }
+      }
+    },
+    "seed-aa": {
+      "delivery_stages": {
+        "model_endpoint": "First raw answer to selected raw answer; the first answer is after any within-visit tools.",
+        "model_revision": {
+          "entity": {
+            "correct_to_wrong": 0,
+            "net_repairs": 0,
+            "stable_correct": 46,
+            "stable_wrong": 44,
+            "unknown": 10,
+            "wrong_to_correct": 0
+          },
+          "full": {
+            "correct_to_wrong": 0,
+            "net_repairs": 2,
+            "stable_correct": 39,
+            "stable_wrong": 59,
+            "unknown": 0,
+            "wrong_to_correct": 2
+          }
+        },
+        "model_revision_applicability": "applicable",
+        "postprocessing": {
+          "entity": {
+            "correct_to_wrong": 0,
+            "net_repairs": 3,
+            "stable_correct": 48,
+            "stable_wrong": 49,
+            "unknown": 0,
+            "wrong_to_correct": 3
+          },
+          "full": {
+            "correct_to_wrong": 0,
+            "net_repairs": 1,
+            "stable_correct": 41,
+            "stable_wrong": 58,
+            "unknown": 0,
+            "wrong_to_correct": 1
+          }
+        },
+        "postprocessing_harm_rate": {
+          "ci95_wilson": [
+            6.938893903907228e-18,
+            0.07410012966611748
+          ],
+          "denominator": 48,
+          "eligible": 48,
+          "lower_missing_bound": 0.0,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": 0.0,
+          "value": 0.0
+        },
+        "postprocessing_repair_rate": {
+          "ci95_wilson": [
+            0.019814172112270614,
+            0.1564251136896076
+          ],
+          "denominator": 52,
+          "eligible": 52,
+          "lower_missing_bound": 0.057692307692307696,
+          "numerator": 3,
+          "unknown": 0,
+          "upper_missing_bound": 0.057692307692307696,
+          "value": 0.057692307692307696
+        },
+        "semantics": "Initial raw Solver to selected raw Solver, then selected raw Solver to final delivery; associations, not causal credit. Unparsed entity states stay unknown."
+      },
+      "intent_support": {
+        "entity_type_value_support_status": "requires-separately-verified-actual-content-projection",
+        "metrics": {
+          "candidate_coverage_given_card": {
+            "ci95_wilson": [
+              0.8860754835396585,
+              0.9780126885959752
+            ],
+            "denominator": 98,
+            "eligible": 98,
+            "lower_missing_bound": 0.9489795918367347,
+            "numerator": 93,
+            "unknown": 0,
+            "upper_missing_bound": 0.9489795918367347,
+            "value": 0.9489795918367347
+          },
+          "gold_intent_card_in_initial_request": {
+            "ci95_wilson": [
+              0.929988209271456,
+              0.9944980324498376
+            ],
+            "denominator": 100,
+            "eligible": 100,
+            "lower_missing_bound": 0.98,
+            "numerator": 98,
+            "unknown": 0,
+            "upper_missing_bound": 0.98,
+            "value": 0.98
+          },
+          "gold_intent_in_initial_candidates": {
+            "ci95_wilson": [
+              0.8625048526092651,
+              0.9656807389327273
+            ],
+            "denominator": 100,
+            "eligible": 100,
+            "lower_missing_bound": 0.93,
+            "numerator": 93,
+            "unknown": 0,
+            "upper_missing_bound": 0.93,
+            "value": 0.93
+          }
+        },
+        "raw_retrieval_pool_status": "unavailable",
+        "semantics": {
+          "causal_claim": null,
+          "gold_or_reference_strings_exported": false,
+          "later_requests_included": false,
+          "mapping": "Declared store-local value ID suffix; no label inferred from content.",
+          "missing_c0_is_knowledge_absence": false,
+          "retrieval_availability_is_supply": false,
+          "semantic_use_proven": false,
+          "support": "A nonempty own-intent value block is present in the actual initial Perception request.",
+          "support_scope": "Own-intent card presence only; cross-intent contrasts in other cards are not counted."
+        },
+        "store_source": {
+          "release_sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+          "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+        }
+      },
+      "metrics": {
+        "draft_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.409517457852855,
+            0.611795083801271
+          ],
+          "denominator": 90,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.46,
+          "numerator": 46,
+          "unknown": 10,
+          "upper_missing_bound": 0.56,
+          "value": 0.5111111111111111
+        },
+        "draft_parsed": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.8256343384950865,
+            0.9447708629393249
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.9,
+          "numerator": 90,
+          "unknown": 0,
+          "upper_missing_bound": 0.9,
+          "value": 0.9
+        },
+        "empty_gold_false_fill": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.1683463067042242,
+            0.4616890979471443
+          ],
+          "denominator": 34,
+          "eligible": 34,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.29411764705882354,
+          "numerator": 10,
+          "unknown": 0,
+          "upper_missing_bound": 0.29411764705882354,
+          "value": 0.29411764705882354
+        },
+        "entity_repair_after_alarm": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.019121266169433354,
+            0.21964580150275695
+          ],
+          "denominator": 29,
+          "eligible": 29,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.06896551724137931,
+          "numerator": 2,
+          "unknown": 0,
+          "upper_missing_bound": 0.06896551724137931,
+          "value": 0.06896551724137931
+        },
+        "final_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.4134801193402717,
+            0.6057800106955886
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.51,
+          "numerator": 51,
+          "unknown": 0,
+          "upper_missing_bound": 0.51,
+          "value": 0.51
+        },
+        "final_full_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.3279838267435473,
+            0.5179351329695703
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.42,
+          "numerator": 42,
+          "unknown": 0,
+          "upper_missing_bound": 0.42,
+          "value": 0.42
+        },
+        "final_parsed": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.9630065017930143,
+            1.0
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 1.0,
+          "numerator": 100,
+          "unknown": 0,
+          "upper_missing_bound": 1.0,
+          "value": 1.0
+        },
+        "review_alarm_precision": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.4631040849254725,
+            0.7297917213940862
+          ],
+          "denominator": 48,
+          "eligible": 58,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.5,
+          "numerator": 29,
+          "unknown": 10,
+          "upper_missing_bound": 0.6724137931034483,
+          "value": 0.6041666666666666
+        },
+        "review_error_detection": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.5113914121793823,
+            0.7812418048065555
+          ],
+          "denominator": 44,
+          "eligible": 44,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.6590909090909091,
+          "numerator": 29,
+          "unknown": 0,
+          "upper_missing_bound": 0.6590909090909091,
+          "value": 0.6590909090909091
+        },
+        "review_false_alarm": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.2968272340851781,
+            0.5777585300637057
+          ],
+          "denominator": 44,
+          "eligible": 46,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.41304347826086957,
+          "numerator": 19,
+          "unknown": 2,
+          "upper_missing_bound": 0.45652173913043476,
+          "value": 0.4318181818181818
+        },
+        "review_valid": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.929988209271456,
+            0.9944980324498376
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.98,
+          "numerator": 98,
+          "unknown": 0,
+          "upper_missing_bound": 0.98,
+          "value": 0.98
+        },
+        "revision_after_alarm": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.8827085453568732,
+            0.9904920716688347
+          ],
+          "denominator": 58,
+          "eligible": 58,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.9655172413793104,
+          "numerator": 56,
+          "unknown": 0,
+          "upper_missing_bound": 0.9655172413793104,
+          "value": 0.9655172413793104
+        }
+      },
+      "timing": {
+        "all_samples": {
+          "count": 100,
+          "mean_seconds": 31.79932365676,
+          "p50_seconds": 32.194644528,
+          "p95_seconds": 51.475613288
+        },
+        "batch_dispatch_wall_seconds": 803.559891263,
+        "batch_dispatch_wall_seconds_per_sample": 8.03559891263,
+        "excluding_first": {
+          "count": 99,
+          "mean_seconds": 31.844413443525255,
+          "p50_seconds": 32.238524832,
+          "p95_seconds": 54.395115892
+        }
+      }
+    },
+    "solver-lookup": {
+      "delivery_stages": {
+        "model_endpoint": "First raw answer to selected raw answer; the first answer is after any within-visit tools.",
+        "model_revision": {
+          "entity": {
+            "correct_to_wrong": 0,
+            "net_repairs": 0,
+            "stable_correct": 44,
+            "stable_wrong": 56,
+            "unknown": 0,
+            "wrong_to_correct": 0
+          },
+          "full": {
+            "correct_to_wrong": 0,
+            "net_repairs": 0,
+            "stable_correct": 38,
+            "stable_wrong": 62,
+            "unknown": 0,
+            "wrong_to_correct": 0
+          }
+        },
+        "model_revision_applicability": "not-applicable-by-design",
+        "postprocessing": {
+          "entity": {
+            "correct_to_wrong": 0,
+            "net_repairs": 2,
+            "stable_correct": 44,
+            "stable_wrong": 54,
+            "unknown": 0,
+            "wrong_to_correct": 2
+          },
+          "full": {
+            "correct_to_wrong": 0,
+            "net_repairs": 1,
+            "stable_correct": 38,
+            "stable_wrong": 61,
+            "unknown": 0,
+            "wrong_to_correct": 1
+          }
+        },
+        "postprocessing_harm_rate": {
+          "ci95_wilson": [
+            0.0,
+            0.08029560375848066
+          ],
+          "denominator": 44,
+          "eligible": 44,
+          "lower_missing_bound": 0.0,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": 0.0,
+          "value": 0.0
+        },
+        "postprocessing_repair_rate": {
+          "ci95_wilson": [
+            0.00984942514823639,
+            0.12118780180490107
+          ],
+          "denominator": 56,
+          "eligible": 56,
+          "lower_missing_bound": 0.03571428571428571,
+          "numerator": 2,
+          "unknown": 0,
+          "upper_missing_bound": 0.03571428571428571,
+          "value": 0.03571428571428571
+        },
+        "semantics": "Initial raw Solver to selected raw Solver, then selected raw Solver to final delivery; associations, not causal credit. Unparsed entity states stay unknown."
+      },
+      "intent_support": {
+        "entity_type_value_support_status": "requires-separately-verified-actual-content-projection",
+        "metrics": {
+          "candidate_coverage_given_card": {
+            "ci95_wilson": [
+              0.8598398906366204,
+              0.9649715464019392
+            ],
+            "denominator": 98,
+            "eligible": 98,
+            "lower_missing_bound": 0.9285714285714286,
+            "numerator": 91,
+            "unknown": 0,
+            "upper_missing_bound": 0.9285714285714286,
+            "value": 0.9285714285714286
+          },
+          "gold_intent_card_in_initial_request": {
+            "ci95_wilson": [
+              0.929988209271456,
+              0.9944980324498376
+            ],
+            "denominator": 100,
+            "eligible": 100,
+            "lower_missing_bound": 0.98,
+            "numerator": 98,
+            "unknown": 0,
+            "upper_missing_bound": 0.98,
+            "value": 0.98
+          },
+          "gold_intent_in_initial_candidates": {
+            "ci95_wilson": [
+              0.837737871472837,
+              0.9519274599974348
+            ],
+            "denominator": 100,
+            "eligible": 100,
+            "lower_missing_bound": 0.91,
+            "numerator": 91,
+            "unknown": 0,
+            "upper_missing_bound": 0.91,
+            "value": 0.91
+          }
+        },
+        "raw_retrieval_pool_status": "unavailable",
+        "semantics": {
+          "causal_claim": null,
+          "gold_or_reference_strings_exported": false,
+          "later_requests_included": false,
+          "mapping": "Declared store-local value ID suffix; no label inferred from content.",
+          "missing_c0_is_knowledge_absence": false,
+          "retrieval_availability_is_supply": false,
+          "semantic_use_proven": false,
+          "support": "A nonempty own-intent value block is present in the actual initial Perception request.",
+          "support_scope": "Own-intent card presence only; cross-intent contrasts in other cards are not counted."
+        },
+        "store_source": {
+          "release_sha256": "2e51c14b4f1c3a122968bc0fd7809523470aad80923ff87c1ce9992ed8d3beb4",
+          "snapshot_sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+        }
+      },
+      "metrics": {
+        "draft_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.34672026630160796,
+            0.5377189534832302
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.44,
+          "numerator": 44,
+          "unknown": 0,
+          "upper_missing_bound": 0.44,
+          "value": 0.44
+        },
+        "draft_parsed": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.9630065017930143,
+            1.0
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 1.0,
+          "numerator": 100,
+          "unknown": 0,
+          "upper_missing_bound": 1.0,
+          "value": 1.0
+        },
+        "empty_gold_false_fill": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.21487920594879492,
+            0.5208603688021826
+          ],
+          "denominator": 34,
+          "eligible": 34,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.35294117647058826,
+          "numerator": 12,
+          "unknown": 0,
+          "upper_missing_bound": 0.35294117647058826,
+          "value": 0.35294117647058826
+        },
+        "entity_repair_after_alarm": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "final_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.36560808309024106,
+            0.5573513967663177
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.46,
+          "numerator": 46,
+          "unknown": 0,
+          "upper_missing_bound": 0.46,
+          "value": 0.46
+        },
+        "final_full_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.3001687400639441,
+            0.4879698295415926
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.39,
+          "numerator": 39,
+          "unknown": 0,
+          "upper_missing_bound": 0.39,
+          "value": 0.39
+        },
+        "final_parsed": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.9630065017930143,
+            1.0
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 1.0,
+          "numerator": 100,
+          "unknown": 0,
+          "upper_missing_bound": 1.0,
+          "value": 1.0
+        },
+        "review_alarm_precision": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "review_error_detection": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "review_false_alarm": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "review_valid": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        },
+        "revision_after_alarm": {
+          "applicability": "not-applicable-by-design",
+          "ci95_wilson": null,
+          "denominator": 0,
+          "eligible": 0,
+          "excluded_by_design": 100,
+          "lower_missing_bound": null,
+          "numerator": 0,
+          "unknown": 0,
+          "upper_missing_bound": null,
+          "value": null
+        }
+      },
+      "timing": {
+        "all_samples": {
+          "count": 100,
+          "mean_seconds": 22.77599875936,
+          "p50_seconds": 22.0537899605,
+          "p95_seconds": 34.488020776
+        },
+        "batch_dispatch_wall_seconds": 573.138889351,
+        "batch_dispatch_wall_seconds_per_sample": 5.73138889351,
+        "excluding_first": {
+          "count": 99,
+          "mean_seconds": 22.79027537387879,
+          "p50_seconds": 22.178625318,
+          "p95_seconds": 34.512460554
+        }
+      }
+    }
+  },
+  "status": "COMPLETE_EXPLORATORY_NO_ADOPTION",
+  "terminal_incident": {
+    "diagnosis": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-terminal-inspect-diagnosis-v1/original-operational-diagnosis-v1.json",
+      "sha256": "eee873186d505f208536cfd9e8057edc535815050201241c504b9e84cd681a37"
+    },
+    "monitor_deleted": true,
+    "monitor_id": "slurp-n100-recovery-health",
+    "root_disposition": "Preserve original campaign rc0, inspector argparse rc2 and STOP. The outer wrong-source entrypoint did not inspect or invalidate member results. Independent exact full-family qualification and READ govern scientific access. Repair future launcher source selection only; no replay, rerun, reseal or control reconciliation.",
+    "windows_terminal_observation": {
+      "at_utc": "2026-10-08T02:16:24.9469133Z",
+      "last_task_result": 0,
+      "task_state": "Ready",
+      "windows_free_gib": 15.791
+    }
+  }
+}
