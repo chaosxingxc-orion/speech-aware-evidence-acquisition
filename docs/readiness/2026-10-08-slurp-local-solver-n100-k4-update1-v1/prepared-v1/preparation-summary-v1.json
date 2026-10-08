@@ -1,0 +1,172 @@
+{
+  "architecture_proof": "local-solver-panel-v1",
+  "companion_preparation_receipts": {
+    "candidate-1": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-1-capacity-prepared-v1.json",
+        "sha256": "74ffede71c79eedf2d4862f9c59b7144ac24cf5fba9cba385761669e6c287b5f"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-1-graph-prepared-v1.json",
+        "sha256": "7dde3c3703cc9b87dead4541c2cd6a09ec90a976b9c6edbc7119cff619c20b26"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-1-natural-prepared-v1.json",
+        "sha256": "263a67330eb3af894fa5ced7aab5d3d4853ce5cb72e6daa80d714e4a4bb0cd86"
+      }
+    },
+    "candidate-2": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-2-capacity-prepared-v1.json",
+        "sha256": "3e2bb2561a46ffbe6f837928f2dc9639cf0afb66d72310e140d748df6c35354b"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-2-graph-prepared-v1.json",
+        "sha256": "fba0251e392ff7bf8a6732fa3b8238e0b2332930d921799b95a8a2a5650d01dc"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-2-natural-prepared-v1.json",
+        "sha256": "fd6294953c53429f65df1167f47eb285f46d3fa0aaea9d39442cfd7cd2e05d67"
+      }
+    },
+    "candidate-3": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-3-capacity-prepared-v1.json",
+        "sha256": "5a1c48f3baf81659b0d42dbb5cc450990611b761fbf482f65cb1de627d1de8fc"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-3-graph-prepared-v1.json",
+        "sha256": "75afd54b4691e9154ba9f03e59069c2b88ca5f4a553ba3497a23115e4d41d9ad"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-3-natural-prepared-v1.json",
+        "sha256": "fb8d5f6bb55fdbfff3867e8c8d78726652c8b0db1a73ad533c334ec45a3c8046"
+      }
+    },
+    "candidate-4": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-4-capacity-prepared-v1.json",
+        "sha256": "9069fcacfec302670c3a64c37ace8b02c17f828c9b9235e2cdfdd4ef24cc4d7a"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-4-graph-prepared-v1.json",
+        "sha256": "5d1c736a456f8319f1ec1be6a468ccb1c6de1264ab0f6edcfb705641f5bb90cd"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-4-natural-prepared-v1.json",
+        "sha256": "a81df08646bd0f6a113cde0830f9892800a3f8a2f6ac9dd759d3e8a14cfeba5d"
+      }
+    },
+    "control": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-capacity-prepared-v1.json",
+        "sha256": "d601ca82af590d53970f0bd1e030cb09e1ec3d4323844b4d02abee845d8a3f04"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-graph-prepared-v1.json",
+        "sha256": "18d010c9068bc2ee5c9b146098f9daa53c87cdf5dffd8ac2fff2337e653876d4"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-natural-prepared-v1.json",
+        "sha256": "bc073fc51f549295bab03a5967c73ec60171219da2ef6c1d4ce878d9d116ac50"
+      }
+    },
+    "control-aa": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-aa-capacity-prepared-v1.json",
+        "sha256": "27c25597c5287182690de65e3ae8f8b6b28f3dccdca9aa09f7e088d6b769ee5e"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-aa-graph-prepared-v1.json",
+        "sha256": "8e9f799fb750f50a634e66ead37ca7bf4e0d222436906978dae4c7ab07846d66"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-aa-natural-prepared-v1.json",
+        "sha256": "71fdc7a1964b005490f47da0651f841f86a25c820447424eda7c17a337997403"
+      }
+    }
+  },
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "execution_identity_map": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/execution-identity-map-v1.json",
+    "sha256": "97b0f53555b83bb3fac736af15aea58138b4eff3d6996ca201de1bda191e3080"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-solver-n100-k4-update1-v1.json",
+    "sha256": "6ab2f6f4fea7de23c4d35d08f893e669263c240440ed4f65513161311612f9e3"
+  },
+  "local_node_basis": {
+    "proposal_custody": {
+      "registration": {
+        "relpath": "coordination/local-solver-n100-k4-update1-v1/actor-plan-registered-copy-v1.json",
+        "sha256": "17f55adfe46d39879595ad4374e0a21242e77077acf582b3cce3b95e298ff500"
+      },
+      "validation": {
+        "relpath": "coordination/local-solver-n100-k4-update1-v1/original-proposal-validation-v1.json",
+        "sha256": "f35e453992572d19c61b006dc406d6cc1c5b5d3c7c32bf9224dbb920548f7816"
+      }
+    },
+    "schema": "saea-local-node-panel-basis-v1",
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "source_preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/review-off-preparation-receipt-final-v1.json",
+      "sha256": "7ea5e10254f4c74282cd799500bb8b8c03dd3475f23703756386e983d6651f97"
+    },
+    "target_role": "solver"
+  },
+  "population_budget": {
+    "K": 4,
+    "N": 100,
+    "active_node_counts": {
+      "candidate-1": 2,
+      "candidate-2": 2,
+      "candidate-3": 2,
+      "candidate-4": 2,
+      "control": 2,
+      "control-aa": 2
+    },
+    "candidate_trajectories": 400,
+    "control_trajectories": 200,
+    "family_trajectories": 600,
+    "fit_endpoints_cap": 4800,
+    "generation_contacts_cap": 1200
+  },
+  "preparation_receipts": {
+    "candidate-1": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-1-generation-prepared-v1.json",
+      "sha256": "398d2cfafc8b780a578bbee3204d02fd9003f6aa13a450063b50ef2ff62d20f0"
+    },
+    "candidate-2": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-2-generation-prepared-v1.json",
+      "sha256": "0945e5179bacb3eb5afac1aa5c25b184a0502e0ab1fe6200f768fa3343b8845c"
+    },
+    "candidate-3": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-3-generation-prepared-v1.json",
+      "sha256": "c7be064e64b91f96a0ab97127a3308d03a9f6d0147b82d75ec7e3005c78c45ec"
+    },
+    "candidate-4": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-4-generation-prepared-v1.json",
+      "sha256": "953255676f73e2e196606e8efe81c1ed2d105433144fdc6771b021757384d207"
+    },
+    "control": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-generation-prepared-v1.json",
+      "sha256": "34d541226aba504ad19ff76fa2e4b8ce293337ad83618661a088509b5a0156bd"
+    },
+    "control-aa": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-aa-generation-prepared-v1.json",
+      "sha256": "0e16a2c4fbb0f8d99be165078e7e746deeb6b2398ed1c32d36fc0b3437d46b30"
+    }
+  },
+  "read_authorized": false,
+  "runtime_admission": false,
+  "schema": "saea-local-node-panel-preparation-v1",
+  "source_preparation_commit": "148f6fc3ab6ea8967a3f016a1ccaa9760ad05048",
+  "status": "PREPARED_HELD_NOT_ADMITTED"
+}

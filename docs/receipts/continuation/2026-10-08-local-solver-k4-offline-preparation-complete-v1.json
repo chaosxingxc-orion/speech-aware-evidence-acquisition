@@ -1,0 +1,375 @@
+{
+  "at_utc": "2026-10-08T12:03:19.956694+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "original_exit": {
+    "relpath": "coordination/local-node-engineering-helper-v1/solver-n100-k4-update1-v1-148f6fc3ab6e-plan/root-original-preparation-exit-v1.json",
+    "sha256": "0782a7c468cb183986fe27a499798c1a97e8c33e7e181cef418260a1ae898788"
+  },
+  "population_budget": {
+    "K": 4,
+    "N": 100,
+    "active_node_counts": {
+      "candidate-1": 2,
+      "candidate-2": 2,
+      "candidate-3": 2,
+      "candidate-4": 2,
+      "control": 2,
+      "control-aa": 2
+    },
+    "candidate_trajectories": 400,
+    "control_trajectories": 200,
+    "family_trajectories": 600,
+    "fit_endpoints_cap": 4800,
+    "generation_contacts_cap": 1200
+  },
+  "schema": "saea-local-node-offline-preparation-complete-v1",
+  "scope": "Verify original preparation metadata and unchanged reusable output bytes. Capacity and natural proofs remain prospective. No runtime controls changed.",
+  "source_preparation_commit": "148f6fc3ab6ea8967a3f016a1ccaa9760ad05048",
+  "status": "ORIGINAL_CPU_PREPARATION_COMPLETE_RUNTIME_HELD",
+  "summary": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "f4406b28135ae93a7d7c86811fc52e011cbfd27bbc2313b28908c4be86616fd8"
+  },
+  "verified_receipts": [
+    {
+      "kind": "generation",
+      "member": "control",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "4e4a3fd41898fa7e8166dcea3828f9f5d1c4b93afb9c27ec7974cf542cc69134"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-generation-prepared-v1.json",
+        "sha256": "34d541226aba504ad19ff76fa2e4b8ce293337ad83618661a088509b5a0156bd"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "control",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "b07f48ee6bc604066203192d7a9a699d6672ff8cb16d24b984486edcb9339fa1"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-capacity-prepared-v1.json",
+        "sha256": "d601ca82af590d53970f0bd1e030cb09e1ec3d4323844b4d02abee845d8a3f04"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "control",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "d142f3f162bb6dce553708942fba404934cb9f26ce15cee508c49b1027a4900c"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-graph-prepared-v1.json",
+        "sha256": "18d010c9068bc2ee5c9b146098f9daa53c87cdf5dffd8ac2fff2337e653876d4"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "control",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "a1b5e46cd807b08be66718eefb2eb4758361fd3e3b30ecf44b1e928b269708fd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-natural-prepared-v1.json",
+        "sha256": "bc073fc51f549295bab03a5967c73ec60171219da2ef6c1d4ce878d9d116ac50"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "control-aa",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "5e1e19c4e4dfaed8c7874a34521a5ec63d1e3ceeb863c46986b782da7f678cae"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-aa-generation-prepared-v1.json",
+        "sha256": "0e16a2c4fbb0f8d99be165078e7e746deeb6b2398ed1c32d36fc0b3437d46b30"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "control-aa",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "e2d1778418a5d7c4a5f7048959f950751c3e73e3982d613159acd39f13b49fb8"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-aa-capacity-prepared-v1.json",
+        "sha256": "27c25597c5287182690de65e3ae8f8b6b28f3dccdca9aa09f7e088d6b769ee5e"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "control-aa",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "1198bdbd6f7ebc394b6a63699efa9c739c8dbf0dbfa36859f3bc3f43663e6cd6"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-aa-graph-prepared-v1.json",
+        "sha256": "8e9f799fb750f50a634e66ead37ca7bf4e0d222436906978dae4c7ab07846d66"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "control-aa",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "2d3e9375e7d22693722de2a1644ce5f1c06f42a937ac78e5aaf93d1f6e204a6a"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/control-aa-natural-prepared-v1.json",
+        "sha256": "71fdc7a1964b005490f47da0651f841f86a25c820447424eda7c17a337997403"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "candidate-1",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "7be50cee2dd42eaf7edb6a0a4838258b879caf5f01e4ec32dadc3ff54d1294a2"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-1-generation-prepared-v1.json",
+        "sha256": "398d2cfafc8b780a578bbee3204d02fd9003f6aa13a450063b50ef2ff62d20f0"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "candidate-1",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "976a3b1bc2dcc63f191c3437231baea964a7fb9b973304f4494807a40165debd"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-1-capacity-prepared-v1.json",
+        "sha256": "74ffede71c79eedf2d4862f9c59b7144ac24cf5fba9cba385761669e6c287b5f"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "candidate-1",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "c67fe64a16cc3e307989b441205f321548296db4aaaf23701096584dc77d63b5"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-1-graph-prepared-v1.json",
+        "sha256": "7dde3c3703cc9b87dead4541c2cd6a09ec90a976b9c6edbc7119cff619c20b26"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "candidate-1",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "7ee22bbd7f75ffe4befc67d4ecf485bc0b0454b5faaa3682d233da892900da37"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-1-natural-prepared-v1.json",
+        "sha256": "263a67330eb3af894fa5ced7aab5d3d4853ce5cb72e6daa80d714e4a4bb0cd86"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "candidate-2",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "74b28f86f492b1647e14c90cb29b591663724e2f4da65027b168e2718af0c677"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-2-generation-prepared-v1.json",
+        "sha256": "0945e5179bacb3eb5afac1aa5c25b184a0502e0ab1fe6200f768fa3343b8845c"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "candidate-2",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "260c632bffea6e4952f5c7c35115a6ee0f677a5654734f38bc0696bd0aeb1390"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-2-capacity-prepared-v1.json",
+        "sha256": "3e2bb2561a46ffbe6f837928f2dc9639cf0afb66d72310e140d748df6c35354b"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "candidate-2",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "4e77424faef90d65099c30d2b39967c7d5f2a3e2905a1820e336bc79be0b1581"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-2-graph-prepared-v1.json",
+        "sha256": "fba0251e392ff7bf8a6732fa3b8238e0b2332930d921799b95a8a2a5650d01dc"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "candidate-2",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "8d4d8c3016228c647fc5f24a88b0a2970851f5ab361415204dd070a27e3c74d7"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-2-natural-prepared-v1.json",
+        "sha256": "fd6294953c53429f65df1167f47eb285f46d3fa0aaea9d39442cfd7cd2e05d67"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "candidate-3",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "f90a7a6b9be0f1141eee6e6fc07044aa94d5f283ac0ee46c0b6d4aba6276086f"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-3-generation-prepared-v1.json",
+        "sha256": "c7be064e64b91f96a0ab97127a3308d03a9f6d0147b82d75ec7e3005c78c45ec"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "candidate-3",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "a4f3277fa7259b0e5452eda10e871f00485734b4765afba0a0542469b4b7ef51"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-3-capacity-prepared-v1.json",
+        "sha256": "5a1c48f3baf81659b0d42dbb5cc450990611b761fbf482f65cb1de627d1de8fc"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "candidate-3",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "e93790f325e0ed5b633381678a987eb44a454334cde3cf74fb087da0559cc646"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-3-graph-prepared-v1.json",
+        "sha256": "75afd54b4691e9154ba9f03e59069c2b88ca5f4a553ba3497a23115e4d41d9ad"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "candidate-3",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "83588029c99bc56fecabb174f8f6d2668647fef35057a3a2d3d51a6a6720dfe1"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-3-natural-prepared-v1.json",
+        "sha256": "fb8d5f6bb55fdbfff3867e8c8d78726652c8b0db1a73ad533c334ec45a3c8046"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "candidate-4",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "e08f7b72a97276440be86c5bf17a57442f81cae01b69ff43d836dc15195bcf6c"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-4-generation-prepared-v1.json",
+        "sha256": "953255676f73e2e196606e8efe81c1ed2d105433144fdc6771b021757384d207"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "candidate-4",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "f36296d78d89c19fa581db1faba5e059d4453db8c3d0715d1593a2d12c767899"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-4-capacity-prepared-v1.json",
+        "sha256": "9069fcacfec302670c3a64c37ace8b02c17f828c9b9235e2cdfdd4ef24cc4d7a"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "candidate-4",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "c5d53295630b9437cd0466ef11ef5d6965f1489f2e78328607ea50b8f86950f3"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-4-graph-prepared-v1.json",
+        "sha256": "5d1c736a456f8319f1ec1be6a468ccb1c6de1264ab0f6edcfb705641f5bb90cd"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "candidate-4",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "81352fd12ae53d136d9f1211c8ee177a601fe34a3ed18fea55bc5cbcceaff80a"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/prepared-v1/candidate-4-natural-prepared-v1.json",
+        "sha256": "a81df08646bd0f6a113cde0830f9892800a3f8a2f6ac9dd759d3e8a14cfeba5d"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1"
+    }
+  ]
+}
