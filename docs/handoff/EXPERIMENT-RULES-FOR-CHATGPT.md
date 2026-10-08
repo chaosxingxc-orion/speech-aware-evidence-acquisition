@@ -1,5 +1,11 @@
 # Experiment rules for the ChatGPT side
 
+## Both independent local K4 template batches compiled (2026-10-08T11:25:52.946759+00:00)
+
+The two isolated Astra Ultra actors each returned one original complete four-candidate batch. All eight templates are distinct within their own role, valid and changed; none was replaced. Shared compilation verifies that only the selected role's bytes differ and all other configuration/source material remains fixed. Original responses, capsule/access hashes, cumulative exposure and unavailable provider usage are retained. See `docs/receipts/continuation/2026-10-08-local-k4-original-batches-complete-v1.json`. Prior K2 proposals remain spent, preserved and unactivated.
+
+Solver candidates test entity-presence gating, speech-order coverage, intent-first role coverage and joint semantic contrast. Reviewer candidates test presence, omission, type meaning and boundaries separately. Each local family has four candidates plus unchanged control/A/A on the same100 inputs (600 trajectories each). Generation caps derive from topology/configuration:1200 Solver and7800 Reviewer contacts; these are prospective complete-path ceilings, not observed costs. No runtime contacts, service/control changes or benefit claims have occurred. Fresh prepared supplies, capacity, natural proof and exact root admission remain. The shared preparation adapter is independently approved and serially integrated; source-only tests do not replace live proofs.
+
 ## Owner correction: one complete configured candidate batch per local module (2026-10-08T11:14:03.050330+00:00)
 
 Each independent Solver and Reviewer optimizer must jointly generate K=4 templates in one isolated Astra Ultra opportunity. Controls and A/A are additional members. Each local panel has 6 members on the same100 inputs; counts and downstream budgets follow configuration. Prior K2 proposals, reservations and compiled outputs remain spent and unactivated; the fresh K4 registrations preserve them and do not expose their outputs to proposers. See `docs/readiness/2026-10-08-slurp-independent-local-k4-v1/owner-request-v1.json` and the per-role K4 packages.
@@ -929,4 +935,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T11:14:03.050330+00:00
+Last refreshed: 2026-10-08T11:25:52.946759+00:00

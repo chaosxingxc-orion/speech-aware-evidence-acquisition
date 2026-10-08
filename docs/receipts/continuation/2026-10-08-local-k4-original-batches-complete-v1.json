@@ -1,0 +1,105 @@
+{
+  "at_utc": "2026-10-08T11:25:52.946759+00:00",
+  "authority": "Direct owner K4-per-module instruction and Root227",
+  "branches": {
+    "reviewer": {
+      "access_report": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-v1/access-report.json",
+        "sha256": "ae8bce2922ea5606da6f88ca1fa7589bc2b8d8cf73f4af2c271f0f1c26fc30d3"
+      },
+      "accounting": {
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 31200,
+        "generation_contacts_cap": 7800
+      },
+      "actual_provider_usage": null,
+      "candidate_count": 4,
+      "compiled": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/compiled-v1/compilation-v1.json",
+        "sha256": "2bcd59f463efd2dec2a65db01e7299172cfa1671d4a3c572f8bd611b941e9b6b"
+      },
+      "input_isolation_limit": "Separate fork-none capsules and audited access reports; no claim of provider OS-enforced filesystem isolation.",
+      "no_change_count": 0,
+      "no_peer_update_access_reported": true,
+      "only_declared_role_modified": true,
+      "original_response": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-v1/original-response.json",
+        "sha256": "3d75499e74db7cc1034a06aded07d4e118800fa718196a73e63e17238a317d81"
+      },
+      "original_slots_spent": [
+        "local-reviewer-k4-update1-c1",
+        "local-reviewer-k4-update1-c2",
+        "local-reviewer-k4-update1-c3",
+        "local-reviewer-k4-update1-c4"
+      ],
+      "requested_effort": "ultra",
+      "requested_model": "gpt-6-astra",
+      "role_text_characters": [
+        1673,
+        1759,
+        1881,
+        1790
+      ],
+      "unique_template_count": 4
+    },
+    "solver": {
+      "access_report": {
+        "relpath": "coordination/local-solver-n100-k4-update1-v1/access-report.json",
+        "sha256": "d1211a30647fe80f06f187bfbc455b5951a32991608749bd028ab6042213f84e"
+      },
+      "accounting": {
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 4800,
+        "generation_contacts_cap": 1200
+      },
+      "actual_provider_usage": null,
+      "candidate_count": 4,
+      "compiled": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/compiled-v1/compilation-v1.json",
+        "sha256": "b164bf718dccae7629013529a46dc015302600f896c866c90fe2dfe06a45e38a"
+      },
+      "input_isolation_limit": "Separate fork-none capsules and audited access reports; no claim of provider OS-enforced filesystem isolation.",
+      "no_change_count": 0,
+      "no_peer_update_access_reported": true,
+      "only_declared_role_modified": true,
+      "original_response": {
+        "relpath": "coordination/local-solver-n100-k4-update1-v1/original-response.json",
+        "sha256": "40aa67760d022cd001f8203007a9de055fcba1776a8b0f98413d7fb4513c51b9"
+      },
+      "original_slots_spent": [
+        "local-solver-k4-update1-c1",
+        "local-solver-k4-update1-c2",
+        "local-solver-k4-update1-c3",
+        "local-solver-k4-update1-c4"
+      ],
+      "requested_effort": "ultra",
+      "requested_model": "gpt-6-astra",
+      "role_text_characters": [
+        1313,
+        1378,
+        1307,
+        1408
+      ],
+      "unique_template_count": 4
+    }
+  },
+  "compiled_source_head": "bcfa094a9efa5e1bff56dda124921f5116759108",
+  "official_scorer_contacts": 0,
+  "prior_k2": "Preserved, spent, unactivated; no export to new proposers.",
+  "remaining": [
+    "fresh immutable supply preparation",
+    "maximum legal request capacity",
+    "natural structural proof",
+    "exact family registration and root admission"
+  ],
+  "runtime_model_contacts": 0,
+  "runtime_tokenizer_contacts": 0,
+  "schema": "saea-independent-local-k-batches-complete-v1",
+  "scientific_claim": "No improvement demonstrated by template generation or offline compilation.",
+  "service_queue_stop_changes": false,
+  "status": "BOTH_ORIGINAL_K4_BATCHES_COMPILED_RUNTIME_HELD"
+}
