@@ -8592,3 +8592,10 @@ Preserve all prior immutable exposure rows. Counts are declared ceilings; genera
 | date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-10-08 | SAEA-SLURP-LOCAL-OPPORTUNITY-STAGE-SOURCE-REVIEW-V1 | model-free-check | one source-only engineering review; zero proposal positions | GPT-6 Astra Ultra subscription subagent | slurp metadata only; no task outcomes | discovery | source-only | yes | 1 | 0 | 0 | Exact pinned source/helper and synthetic fixtures only | /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-opportunity-stage-astra-review-v1/review-plan-v1.json | ROOT COUNTERSIGNED 2026-10-08T20:10:42.829658+00:00 under owner227 before review contact; no runtime/score/tokenizer contact or scientific read authority. |
+
+
+## Local configured stages source engineering review, 2026-10-08T20:29:28.079126+00:00
+
+| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-08 | SAEA-SLURP-LOCAL-OPPORTUNITY-STAGE-SOURCE-REVIEW-V2 | model-free-check | one source-only engineering review; zero proposal positions | GPT-6 Astra Ultra subscription subagent | slurp metadata only; no task outcomes | discovery | source-only | yes | 1 | 0 | 0 | Exact pinned source/helper and synthetic fixtures only | /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-opportunity-stage-astra-review-v2/review-plan-v1.json | ROOT COUNTERSIGNED 2026-10-08T20:29:28.079126+00:00 under owner227 before review contact; no runtime/score/tokenizer contact or scientific read authority. |
