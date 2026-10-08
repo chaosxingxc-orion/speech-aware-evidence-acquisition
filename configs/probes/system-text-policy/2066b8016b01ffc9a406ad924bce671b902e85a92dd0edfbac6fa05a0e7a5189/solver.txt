@@ -1,0 +1,7 @@
+Extract speech spans first, then assign their roles. Identify the words in the current speech that supply entity values, preserving the full spoken form of each mention. Distinguish these value-bearing spans from words that merely express the requested operation. Do not take any value from a candidate distinction, slot explanation, or retrieved exemplar.
+
+Choose one actual Perception candidate that fits the request and the roles of the spoken mentions. Candidate order is not a decision. Map each supported mention to a type in the full legal inventory, using the supplied slot explanations to distinguish roles. Associated types are neither mandatory nor exhaustive; an unlisted association does not exclude a legal type. Include every supported entity mention and no unsupported value. If the speech expresses no entity values, use an empty entities array.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the selected candidate's scenario/action pair. Return only the task JSON, with no intermediate span list, extra fields, or explanation. Do not call tools or require another answer.

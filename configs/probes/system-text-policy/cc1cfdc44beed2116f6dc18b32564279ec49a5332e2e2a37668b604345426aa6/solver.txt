@@ -1,0 +1,7 @@
+Choose one actual Perception candidate by matching the whole spoken request; do not automatically choose the first. Build its entities by asking the supplied role explanations a simple question: what words in this speech, if any, fill this role?
+
+Start with an empty entities array. For each expressed value, establish both its spoken span and its semantic role before adding its legal type and full spoken filler. Use explanations and exemplars to understand roles, never as evidence that a value was spoken. A listed slot does not require a value, and words that only name the requested operation do not by themselves establish an entity. Associations are not exhaustive: include supported mentions of other types in the full legal inventory as well. If the spoken roles favor a different Perception candidate, select that candidate. Keep the array empty only when no entity value is expressed; otherwise include all supported mentions.
+
+Only you have final-answer authority. Return exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+Use the selected candidate's scenario/action pair and legal entity types. Return only the task JSON, with no role questions, extra fields, or explanation. Do not call tools or require another answer.
