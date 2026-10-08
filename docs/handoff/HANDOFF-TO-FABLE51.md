@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Reviewer configured capacity original Windows task started (2026-10-08T22:39:31.060498+00:00)
+
+The complete original frozen checker and finalizer exited zero. Root revalidated current process/service identity, absent STOP/flight, available generation guard, fresh healthy four-slot telemetry and the4GiB resource floor, then launched the exact registered capacity family once. Entry is DATA `coordination/local-reviewer-n100-k4-update2-capacity-v1`, registration SHA8fee4797b4d21dd85d2152bfc080a1f10975070f1a512309e5969b58973e2787, frozen worker `/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-capacity-frozen-v1` at94be0f2385a8d22486a975ca3d951e651c20b1a4. Original Windows owner PID26036 started2026-10-08T22:37:47.0293716+00:00; revalidate live identity. Source receipt: `docs/receipts/continuation/2026-10-08-local-reviewer-n100-k4-update2-v1-capacity-launched-v1.json`.
+
+The 6 configured members retain four candidates and separate control/A/A. This stage admits 1794 tokenizer endpoints at most, zero generation and zero official scoring. No model-answer, quality or learning read is admitted. Preserve original outer and every member exit; capacity is qualified only from complete original evidence. The15minute `slurp-reviewer-update2-capacity-health` monitor is active and must be deleted after the original terminal. The old completed batch queue belongs to the prior campaign and is not this capacity task.
+
+Solver natural structural family is frozen with all original checks passed and awaits separately reviewed normal-transition metadata and fresh live admission. It must not overlap this capacity run. CPU source engineering continues independently; all prepared/frozen policies and controls remain unchanged. Same fixed N100 assets, per-module feedback isolation,4GiB floors and full output reserves remain. No stable benefit or learning claim follows launch. Broad goal remains active and incomplete; return to the human before8x400.
+
 ## Solver configured natural frozen checks complete (2026-10-08T22:32:25.265750+00:00)
 
 All 12 original named registration/runtime checks exited zero on the immutable registered worker, with zero model, tokenizer or scorer contacts. Root revalidated each original exit pin and source identity. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-update3-natural-frozen-checks-complete-v1.json`. The complete configured natural family is ready for current live admission and serial dispatch through reviewed configuration-driven metadata; it has not launched. Its purpose is structural role/control and native terminal delivery proof, with worker-only lifecycle and no official scoring or quality read.
@@ -1021,7 +1029,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-08T22:32:25.265750+00:00
+Last refreshed: 2026-10-08T22:39:31.060498+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

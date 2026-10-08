@@ -1,0 +1,58 @@
+{
+  "at_utc": "2026-10-08T22:39:31.060498+00:00",
+  "budget": {
+    "generation_contacts": 0,
+    "scorer_contacts": 0,
+    "tokenizer_endpoint_caps": {
+      "candidate-1": 299,
+      "candidate-2": 299,
+      "candidate-3": 299,
+      "candidate-4": 299,
+      "control": 299,
+      "control-aa": 299
+    },
+    "tokenizer_endpoints_total": 1794
+  },
+  "controls_changed": false,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "labels": [
+    "control",
+    "control-aa",
+    "candidate-1",
+    "candidate-2",
+    "candidate-3",
+    "candidate-4"
+  ],
+  "live_prelaunch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-capacity-v1/root-live-prelaunch-v1.json",
+    "sha256": "11d9f5ce01ff7ef8cd8d3064a6fb99e4b87e33fa8c175122da2c96d9f8467840"
+  },
+  "monitor": {
+    "at_utc": "2026-10-08T22:39:31.060498+00:00",
+    "delete_after_original_terminal": true,
+    "id": "slurp-reviewer-update2-capacity-health",
+    "interval_minutes": 15,
+    "status": "ACTIVE"
+  },
+  "original_finalization": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-capacity-v1/root-original-finalization-v1-exit.json",
+    "sha256": "57e7f627628e6a10cec44b4906074bd387ff1a9851764e419991f54b6b9d881f"
+  },
+  "original_launch": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-capacity-v1/root-task-launch-v1.json",
+    "sha256": "64849bfd8fce3570ef1ea445ef51728838ae83b08d9a3f3fde2f1e8b026ba0b6"
+  },
+  "original_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-capacity-v1/capacity-task-started.json",
+    "sha256": "efc86656abd7d4cfb48c22fec18ea040e1fd0266be020a72775bf5a1d7726fd3"
+  },
+  "registration": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-capacity-v1/registration-v1.json",
+    "sha256": "8fee4797b4d21dd85d2152bfc080a1f10975070f1a512309e5969b58973e2787"
+  },
+  "schema": "saea-root-configured-capacity-launch-v1",
+  "scope": "Maximum legal request capacity only. No task generation, official scoring or scientific read. GPU work stays serial; independent CPU preparation continues. Original terminal and per-member exact receipts govern qualification.",
+  "source_commit": "94be0f2385a8d22486a975ca3d951e651c20b1a4",
+  "status": "ORIGINAL_WINDOWS_CAPACITY_STARTED_PENDING_COMPLETE_QUALIFICATION",
+  "worker": "/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-capacity-frozen-v1"
+}
