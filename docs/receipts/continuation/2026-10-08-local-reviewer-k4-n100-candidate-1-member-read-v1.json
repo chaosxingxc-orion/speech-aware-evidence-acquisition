@@ -1,0 +1,44 @@
+{
+  "at_utc": "2026-10-08T18:58:44.255832+00:00",
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "family_READ_signed": false,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "members": {
+    "candidate-1": {
+      "comparison_or_selection": false,
+      "countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-root-countersignature-v1.json",
+        "sha256": "fefbf5bb3d1aebbdbaa91c6ddaf0afc0690e1439d1a62690b5e9c5086e6c27a3"
+      },
+      "failed_jobs": 0,
+      "learner_export": false,
+      "original_read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-reader-v1-exit.json",
+        "sha256": "433c728dec7bf53c203d75d050b5bef3da5944aa91e4c126a026831e78ecab9a"
+      },
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-qualification-v1.json",
+        "sha256": "4e9c8fdf0d766a267011fc38d2ad90b8e0f35d99c87b75f2e9808c4ccb88012d"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-reviewer-n100-k4-update1-candidate-1-descriptive-v1/report.json",
+        "sha256": "84da3021f4b72269e93c7d7a3cb3cd1955089cd6da80d88dde2aa7968758c9b9"
+      },
+      "rows": 100,
+      "successful_official_jobs": 1
+    }
+  },
+  "owner_decision": 227,
+  "protocol": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/protocol-v1.json",
+    "sha256": "e28dff91be84e79fc51913338c7dafae4ecf6a1bf5fc506412c508eb9e379584"
+  },
+  "read_scope": "Only independently complete members. No comparisons, selection, sibling outcomes or learner export.",
+  "root_interpretation": "Separate raw initial correctness, Reviewer error detection, model revision repair/harm, and deterministic postprocessing. Preserve denominators and unknowns. Card presence is not proof of entity support or semantic use.",
+  "runtime_changed": false,
+  "schema": "saea-local-selected-member-read-progress-v1"
+}

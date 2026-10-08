@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Reviewer independently completed-member descriptive READ; original GPU campaign continues (2026-10-08T18:58:44.255832+00:00)
+
+Root independently qualified and countersigned the descriptive READ for candidate-1. Each has 100 FINALIZED trajectories, a verified original seal, exactly one successful complete official score and zero failed jobs. The unchanged offline reader completed once using the saved score. Exact source custody and exits are in `docs/receipts/continuation/2026-10-08-local-reviewer-k4-n100-candidate-1-member-read-v1.json`. No scorer, tokenizer or model contact was added.
+
+This is descriptive process/business/timing analysis only. Preserve raw first-answer correctness, error-detection recall/precision, model repair/harm and deterministic postprocessing as separate stages, with their eligible denominators and unknowns. Do not compare candidates or export learning feedback before the complete local family qualifies and its exact root READ is signed. No Reviewer outcome enters the independent Solver proposer route.
+
+The original Reviewer campaign continues through its already launched serial GPU queue, with four concurrent samples and overlapping CPU scoring. Revalidate actual progress. Its experiment-scoped15minute monitor remains active until original terminal; global monitoring stays off. The completed Solver update1 family remains unchanged; prospective Solver update2 own-aggregate preparation does not activate a policy or add a proposer contact. K, N and legal-path limits remain configuration-derived. No stable benefit or learning claim is established. The broad goal remains active and incomplete; return to the human before8x400.
+
 ## Solver update2 own aggregate projection and fresh complete K4 opportunity (2026-10-08T18:51:05.773897+00:00)
 
 The complete qualified Solver update1 family now has a separate prospective own-aggregate projection authority and fresh four-position Astra Ultra opportunity. See `docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update2-v1/README.md`. Its input has four prior abstract Solver templates with complete compact process/business/timing statistics and two separately labelled controls. Missingness, inapplicability and fixed-N primary denominators remain explicit. The full capsule is 59823 bytes; no records are truncated. The source-only export checker was independently reviewed before use. Original source drafts and findings remain preserved.
@@ -891,7 +899,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-08T18:51:05.773897+00:00
+Last refreshed: 2026-10-08T18:58:44.255832+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
