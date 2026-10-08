@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Reviewer original K4 N100 terminal verified; exact family READ admitted (2026-10-08T19:26:29.979374+00:00)
+
+All six original Reviewer members independently FINALIZED100 rows with verified seals, one unique successful complete official score each and zero failed jobs:600 trajectories. Original driver and Windows wrapper exited0; the terminal helper verified original process/control custody without altering it. Root countersigned the exact full-family READ and invoked the unchanged reader once; verify its original exit before interpretation. The last independent member descriptive reader likewise runs under its own prior qualification/signature. No official score is replayed. Evidence: `docs/receipts/continuation/2026-10-08-local-reviewer-k4-n100-original-terminal-read-admitted-v1.json`.
+
+The experiment-scoped `slurp-local-reviewer-k4-n100-health` automation was deleted after verified original terminal. Global monitoring stays off. The resident serving session and all original frozen sources, controls, attempts and scores remain unchanged. Expected idle service during CPU preparation is not an outage. Any next GPU task needs its exact capacity/engineering/admission and a new15minute job monitor.
+
+Solver opportunity3 is the separately registered isolated K4 actor already dispatched with an explicit canonical JSON contract and own qualified Solver feedback. Its previous rejected opportunity remains spent/immutable. No Reviewer outcomes enter that actor. Root will validate original outputs and prepare the next serial run through the existing shared base. No formal adoption, stable benefit or learning advantage is asserted. The broad goal remains active and incomplete; human review remains required before8x400.
+
 ## Original configured solver actor dispatched after registration (2026-10-08T19:20:09.147577+00:00)
 
 The original isolated `/root/local_solver_k4_update3_templates_astra_ultra` was dispatched once with the exact registered English capsule, using requested GPT-6 Astra Ultra and no inherited chat. All 4 configured positions are now spent. It jointly proposes the complete batch from own qualified aggregate/template records and separate controls. The explicit canonical nested JSON contract passed independent source review. Original earlier failures and allocations stay preserved. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-n100-k4-update3-v1-actor-dispatched-v1.json`.
@@ -937,7 +945,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-08T19:20:09.147577+00:00
+Last refreshed: 2026-10-08T19:26:29.979374+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

@@ -1,0 +1,48 @@
+{
+  "analysis_contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "at_utc": "2026-10-08T19:26:29.979374+00:00",
+  "countersignature": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-family-read-v1/root-countersignature-v1.json",
+    "sha256": "4f36394c0d106ffa6c6be3619fe6e04677165b93ac8d3c6e6350b6b4672ec724"
+  },
+  "global_monitor": "OFF",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "learner_export": false,
+  "member_count": 6,
+  "monitor": {
+    "id": "slurp-local-reviewer-k4-n100-health",
+    "status": "DELETED",
+    "tool_confirmation": "automation_update returned deleteStatus deleted after original terminal verification"
+  },
+  "official_score_replayed": false,
+  "original_capture": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-terminal-capture-v1.json",
+    "sha256": "9e097d34e7ff4e919cd01b341e8bb92bc2bdbacaeca26546ccb3fa4eb02c2247"
+  },
+  "original_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-original-terminal-closure-v1.json",
+    "sha256": "2d4833751bc8deaddbf6c683cb17441781c4aabfdb4cbab786784d3c590da713"
+  },
+  "original_windows_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-windows-terminal-v1.json",
+    "sha256": "bd4146693b79fcb5770f0a27ef3d366b0941358214b1a884dca80e2b949d17be"
+  },
+  "owner_decision": 227,
+  "qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-family-read-v1/family-qualified-v1.json",
+    "sha256": "1d3c6196fa261fc24f0fd50a2a6ba32600f0957a51c137551540e1101ab7023c"
+  },
+  "reader_invocation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-family-read-v1/read-outer-v1.started.json",
+    "sha256": "516a849f967fd259b710472480cc4f1eb7d7e32d42639d4b68af5d59db8eb416"
+  },
+  "readers_must_complete_before_interpretation": true,
+  "runtime_sources_or_controls_changed": false,
+  "schema": "saea-local-family-terminal-read-admission-v1",
+  "status": "ORIGINAL_FAMILY_COMPLETE_AND_ROOT_READ_ADMITTED",
+  "total_trajectories": 600
+}
