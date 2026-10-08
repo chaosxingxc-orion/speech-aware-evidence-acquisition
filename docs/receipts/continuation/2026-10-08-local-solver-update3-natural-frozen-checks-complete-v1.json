@@ -1,0 +1,19 @@
+{
+  "at_utc": "2026-10-08T22:32:25.265750+00:00",
+  "checks_count": 12,
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "next": "Use independently reviewed configured normal-transition metadata, exact prior original terminal/control custody and fresh live gates before one Windows dispatch. No STOP disposition, retry, scoring or task-quality read.",
+  "original_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-natural-frozen-check-exit-v1.json",
+    "sha256": "7bfc477a1b494fef155e114603f8b6b7c79a35ae67e41f1ab48cbc6ee00d1518"
+  },
+  "runtime_dispatch": false,
+  "schema": "saea-root-original-natural-frozen-checks-qualified-v1",
+  "source_commit": "bd5b4b8623c01803a53b8560c300e633953b36b2",
+  "status": "ORIGINAL_FROZEN_CHECKS_COMPLETE_PENDING_LIVE_SERIAL_DISPATCH",
+  "worker": "/home/chao/saea-worktrees/codex-local-solver-n100-k4-update3-natural4-frozen-v1"
+}

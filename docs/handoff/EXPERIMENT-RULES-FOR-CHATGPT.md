@@ -1,5 +1,11 @@
 # Experiment rules for the ChatGPT side
 
+## Solver configured natural frozen checks complete (2026-10-08T22:32:25.265750+00:00)
+
+All 12 original named registration/runtime checks exited zero on the immutable registered worker, with zero model, tokenizer or scorer contacts. Root revalidated each original exit pin and source identity. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-update3-natural-frozen-checks-complete-v1.json`. The complete configured natural family is ready for current live admission and serial dispatch through reviewed configuration-driven metadata; it has not launched. Its purpose is structural role/control and native terminal delivery proof, with worker-only lifecycle and no official scoring or quality read.
+
+Preserve the independent Reviewer original frozen checker/finalizer and all original controls. Root prepares a prospective normal transition only from the verified completed previous campaign. No automatic retry, STOP clearing, geometry change or queue mutation has occurred. K4 candidates and separate controls remain independent per module; N100 comparison follows complete structural qualification. GPU work stays serial, CPU work overlaps,4GiB floors and full reserves remain. Start the15minute job monitor on actual launch only. No benefit or learning claim follows these checks; broad goal remains active and incomplete, with human review before8x400.
+
 ## Solver next configured natural structural family registered (2026-10-08T22:20:00.069156+00:00)
 
 The original ready/warm authorer completed successfully with no contacts. Root verified that only the declared natural readiness fields changed, preserved all successor custody, and registered the complete configured family through the unchanged plan countersigner. Every member analysis recipe carries its actual composed measurement profile. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-n100-k4-update3-natural4-v1-registered-v1.json`. Member count, ordering, identities and legal-path budgets derive from the fixed population; no new proposal position or data/knowledge reconstruction occurred.
@@ -1217,4 +1223,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T22:20:00.069156+00:00
+Last refreshed: 2026-10-08T22:32:25.265750+00:00
