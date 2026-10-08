@@ -1,0 +1,47 @@
+{
+  "actual_preparation_summary": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "87c1227a35d4900f93372bbea10e59313ad7ace353f136a93291fe13d638690c"
+  },
+  "at_utc": "2026-10-08T20:19:38.828712+00:00",
+  "authorized_successor": "Preserve all original files; resolve and validate the exact canonical identity-map pin using current production semantics in a narrow fresh source successor. Independently test canonical-shaped, stale, missing and foreign map cases, then root may invoke one fresh metadata packet after source acceptance.",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "control_reconciliation": false,
+  "named_cause": "The new metadata adapter treated the canonical raw-pinned execution_identity_map reference as an inline member map. Synthetic fixtures replaced the actual canonical shape and did not detect the mismatch.",
+  "original_helper": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-opportunity-stage-engineering-v1/prepare_local_stage_metadata_v1.py",
+    "sha256": "0e542fffb44ff23c9efca6896326c3ee33efcf9690f7b0bd4da73a7852894653"
+  },
+  "original_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-opportunity-stage-engineering-v1/root-solver-update3-original-packet-input-v1.json",
+    "sha256": "939f379cb6bc20505c5beb7a3f60a2f2bcb99c0bf96b2f28ce4add2edf2d6807"
+  },
+  "original_output_packet_exists": false,
+  "original_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-opportunity-stage-astra-review-v1/original-review-v1.json",
+    "sha256": "137794c2cb23b5d0618a8333274b393815ea2732a0dd36fcc8e634aef52d7c5c"
+  },
+  "original_stderr": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-opportunity-stage-engineering-v1/root-solver-update3-original-packet.stderr.log",
+    "sha256": "e20881376776cb377208d48c5ff96a20819eec25c548e19ac51cc4e9297cc803"
+  },
+  "original_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-opportunity-stage-engineering-v1/root-solver-update3-original-packet-exit-v1.json",
+    "sha256": "0a4747abc0bff6c0d266af6290dd75082f6bd76c447b449c94528d687f9b98fa"
+  },
+  "owner_decision": 227,
+  "preserved": [
+    "Original v1 helper, tests, independent review, input, stdout/stderr and exit",
+    "Original Solver proposals, canonical preparation and dataset/knowledge assets",
+    "Every frozen worker, attempt, score, queue and STOP state"
+  ],
+  "root_actor": "ChatGPT root",
+  "runtime_admission": false,
+  "schema": "saea-root-precontact-source-preparation-disposition-v1",
+  "scientific_read": false,
+  "status": "ROOT_DECIDED_SOURCE_ONLY_SUCCESSOR_PENDING_VERIFICATION"
+}

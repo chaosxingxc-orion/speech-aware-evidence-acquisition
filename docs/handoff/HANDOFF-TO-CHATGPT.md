@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Configured local templates compiled; source metadata pin correction (2026-10-08T20:19:38.828712+00:00)
+
+Reviewer update2 returned exactly its four original configured positions and passed the unchanged parser/compiler. Other role text and runtime policy are verified unchanged; CPU preparation runs in isolated /home/chao/saea-worktrees/codex-local-reviewer-k4-update2-preparation-v1 at72a99fcf1ec4f1643d7dad0284a61663e6eaae13. Its original terminal remains required. No new runtime contacts or benefit follow proposal compilation.
+
+Solver opportunity3 canonical preparation remains complete. The first new stage-metadata adapter invocation stopped with zero contacts before creating its output packet: it treated the canonical execution-identity-map raw pin as an inline map. Root227 records the named source defect and authorizes a narrow source successor with actual-shape tests and separate independent review; preserve all originals. Exact disposition: `docs/receipts/continuation/2026-10-08-local-stage-identity-pin-precontact-disposition-v1.json`. This does not retry a model contact, alter prepared bytes or reconcile runtime controls. Capacity, natural engineering and N100 admission remain pending.
+
+Keep configured K4 and two controls per isolated module, same N100 development inputs, one serial GPU campaign and overlapping CPU work. Preserve4GiB floors and all full-request output reserves. Create a15minute scoped monitor on actual GPU launch only. No stable benefit or learning claim is established. Broad goal remains active and incomplete; human review is required before8x400.
+
 ## Original configured reviewer actor dispatched after registration (2026-10-08T20:09:59.569288+00:00)
 
 The original isolated `/root/local_reviewer_k4_update2_templates_astra_ultra` was dispatched once with the exact registered English capsule, using requested GPT-6 Astra Ultra and no inherited chat. All 4 configured positions are now spent. It jointly proposes the complete batch from own qualified aggregate/template records and separate controls. The explicit canonical nested JSON contract passed independent source review. Original earlier failures and allocations stay preserved. Exact evidence: `docs/receipts/continuation/2026-10-08-local-reviewer-n100-k4-update2-v1-actor-dispatched-v1.json`.
@@ -7353,7 +7361,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T20:09:59.569288+00:00
+Last refreshed: 2026-10-08T20:19:38.828712+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
