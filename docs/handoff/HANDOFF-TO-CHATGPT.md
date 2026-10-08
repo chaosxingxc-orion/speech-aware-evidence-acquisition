@@ -1,5 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Audio recovery authoring stopped before contacts (2026-10-08T00:40:26.636261+00:00)
+
+The budget guard and fresh held preparation passed independent review; the integrated focused suite passed197 tests, and all four100-input supplies retained exact original output bytes and runtime order. The derived registered audio allowances are3820/3820/1500/1500 seconds. No model, tokenizer or scorer contact occurred.
+
+Actual authoring then refused the original natural4 proof because its prepared implementation fingerprint is checked against current runtime.py, which now includes the reviewed precontact budget guard. Earlier direct-reuse assessment was incomplete. Preserve the original authoring exit1, two seed plan files, original/final seed preparation metadata and changed seed admission config. No complete family package, launch queue or exposure registration resulted. All eight new attempt/run roots remain absent; the original failed N100 STOP, queue and controls are unchanged. See [the exact refusal and root disposition](../receipts/continuation/2026-10-08-n100-audio-recovery-precontact-source-refusal-v1.json).
+
+Under owner227, root selected a prospectively registered, narrowly verified original-source/current-source compatibility proof for only the exact guard insertion. Existing historical proof bytes and default strict validation remain untouched. Independent source review finds only two added runtime AST statements and unchanged other prepared modules; this is not yet an admitted compatibility record. If exact applicability cannot be proven, use fresh registered structural engineering. New entry2 metadata/config identities, full frozen/live gates and a fresh job monitor remain pending. No GPU relaunch, quality read, learner export or benefit claim has occurred.
+
+
 ## N100 stopped: aggregate audio budget was not scaled (2026-10-07T23:56:46.114446+00:00)
 
 The original N100 campaign stopped at20:42:17Z. Seed is ABORTED after1498.234875 cumulative audio seconds against its1500-second registered ceiling; the next Reviewer request was refused. The other three attempts are absent. No complete generation manifest, seal or official score exists. No quality was read. Preserve the failed frozen2204cfb96 checkout, attempt, outputs, queue and STOP. The original job-scoped15-minute monitor has been deleted.

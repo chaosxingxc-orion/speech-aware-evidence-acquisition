@@ -1,0 +1,101 @@
+{
+  "admission_read_authority": false,
+  "at_utc": "2026-10-08T00:40:26.636261+00:00",
+  "authoring_exit": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/authoring-exit-v1.json",
+    "sha256": "29a0cf95269da47d7cb27bf20dcb84f78fa2fdad42812ba96a43cb5b5514dd3d"
+  },
+  "authoring_input": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/authoring-input-v1.json",
+    "sha256": "073bcd04f24c74181da4801cc944c65a45c7d8af35d77a5747348319495d4943"
+  },
+  "authoring_start": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/authoring-started-v1.json",
+    "sha256": "18301b7cde5f0b3b170717cd24bfd17fba4a8ce012c699500c36c23af0ce81bb"
+  },
+  "authoring_stderr": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/authoring-stderr-v1.log",
+    "sha256": "4417c500c122fcce3feb8ed1fb6c3871ec87ecf534547a3caa6f995443e44c5c"
+  },
+  "component": "architecture_natural_registration._qualified_natural_family checks the historical natural envelope against current runtime.py bytes. The reviewed audio precontact guard changed that fingerprint.",
+  "error": "PolicyError: N20 prepared implementation source differs",
+  "fresh_identity_inspection": {
+    "all_eight_attempt_and_run_roots_absent": true,
+    "identities": [
+      {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-v1-generation",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-v1-generation-fit",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-N100-AUDIO-RECOVERY1-FIT-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-v1-generation",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-seed-aa-n100-audio-recovery1-v1-generation-fit",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SEED-AA-N100-AUDIO-RECOVERY1-FIT-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-v1-generation",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-review-off-n100-audio-recovery1-v1-generation-fit",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-REVIEW-OFF-N100-AUDIO-RECOVERY1-FIT-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-v1-generation",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-V1"
+      },
+      {
+        "attempt_id": "attempt-slurp-native-stage3-simple-consumption-solver-lookup-n100-audio-recovery1-v1-generation-fit",
+        "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-AUDIO-RECOVERY1-FIT-V1"
+      }
+    ]
+  },
+  "incident_disposition": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/root-engineering-disposition-v1.json",
+    "sha256": "b5c246b2611076b03a3dffca9b9b39cae17a7674012cf053df07c4b8be45e8c2"
+  },
+  "model_tokenizer_scorer_contacts": 0,
+  "modified_config": {
+    "relpath": "configs/experiment/slurp-native-stage3-simple-consumption-seed-n100-audio-recovery1-v1.json",
+    "sha256": "4bd4d6a516f8bdc46fa2bd161dc2a4caebea8c62cb0ab584ea9064e07b6aade2"
+  },
+  "original_controls_unchanged": true,
+  "owner_decision": {
+    "relpath": "docs/receipts/owner/2026-10-03-decision227-autonomous-engineering-before-8x400.json",
+    "sha256": "595bbcef3c269c1ce10d8d87ce789b8e107ded54015164806b43017766e76d88"
+  },
+  "partial_files": [
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/registered-v1/seed-fit-plan-registered-v1.json",
+      "sha256": "fe47bb88d28e2a4d09b1e572ebc075fd4a2c382f0c24d8fb9b907f0ac9d31f11"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/registered-v1/seed-generation-plan-registered-v1.json",
+      "sha256": "271f1905d5c581b78caab8c2885f6df4cd4eb62cd21842a53fbaa8d58d919508"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/registered-v1/seed-original-experiment-v1.json",
+      "sha256": "c9007eb2baa4f592b68c584e93acf8f7a83c48b7475e5e28e3b35fe5277cce70"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-n100-audio-recovery1-v1/registered-v1/seed-preparation-receipt-final-v1.json",
+      "sha256": "9a6a3555827f2c3a977cc01837ec7521fcecf97ff015b4023cd82fb812989f0b"
+    }
+  ],
+  "quality_read": false,
+  "root_actor": "ChatGPT root",
+  "root_admission": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/root-admission-v1.json",
+    "sha256": "ae4b76e50657e1a672b2d4897e4dea17be574a8c937318fafc334047ceaa6b19"
+  },
+  "root_disposition": "Preserve this authoring invocation, partial files and source snapshot. Prospectively implement and independently verify a narrowly pinned original-source/current-source compatibility contract for the exact reviewed precontact guard, keeping default strict validation. If this exact proof cannot pass, register fresh complete structural engineering. Use new entry2 metadata/config identities; do not repeat this authoring input or rewrite historical proof bytes. No runtime dispatch follows from this record.",
+  "schema": "saea-precontact-source-qualification-refusal-v1",
+  "scientific_interpretation": "No completed N100 task result; source qualification refusal is not quality evidence.",
+  "status": "AUTHORING REFUSED BEFORE CONTACT; PARTIAL SOURCE METADATA PRESERVED"
+}
