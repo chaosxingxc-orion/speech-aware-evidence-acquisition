@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Reviewer first completed-member descriptive READ; original GPU campaign continues (2026-10-08T18:22:46.617176+00:00)
+
+Root independently qualified and countersigned the descriptive READ for control. Each has 100 FINALIZED trajectories, a verified original seal, exactly one successful complete official score and zero failed jobs. The unchanged offline reader completed once using the saved score. Exact source custody and exits are in `docs/receipts/continuation/2026-10-08-local-reviewer-k4-n100-first-member-read-v1.json`. No scorer, tokenizer or model contact was added.
+
+This is descriptive process/business/timing analysis only. Preserve raw first-answer correctness, error-detection recall/precision, model repair/harm and deterministic postprocessing as separate stages, with their eligible denominators and unknowns. Do not compare candidates or export learning feedback before the complete local family qualifies and its exact root READ is signed. No Reviewer outcome enters the independent Solver proposer route.
+
+The original Reviewer campaign continues through its already launched serial GPU queue, with four concurrent samples and overlapping CPU scoring. Revalidate actual progress. Its experiment-scoped15minute monitor remains active until original terminal; global monitoring stays off. The completed Solver update1 family remains unchanged; prospective Solver update2 own-aggregate preparation does not activate a policy or add a proposer contact. K, N and legal-path limits remain configuration-derived. No stable benefit or learning claim is established. The broad goal remains active and incomplete; return to the human before8x400.
+
 ## Solver local K4 complete and read; Reviewer original N100 launched (2026-10-08T18:02:14.808647+00:00)
 
 The Solver original six-member N100 family is complete:600 trajectories,1200 model contacts, independently verified seals,one successful complete official score per member,zero failed jobs and original driver/wrapper exit0. Root accepted the original terminal closure and countersigned/read the exact complete-family READ; all six descriptive process/timing readers also completed once. No scorer replay or new analysis model/tokenizer contact occurred. Exact evidence and root interpretation: `docs/receipts/continuation/2026-10-08-local-solver-k4-complete-reviewer-launched-v1.json`; report: `docs/readiness/2026-10-08-slurp-local-solver-k4-update1-complete-analysis-v1/README.md`.
@@ -867,7 +875,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-08T11:25:52.946759+00:00
+Last refreshed: 2026-10-08T18:22:46.617176+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
