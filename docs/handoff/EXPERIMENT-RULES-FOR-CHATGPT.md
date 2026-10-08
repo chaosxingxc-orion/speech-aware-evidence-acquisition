@@ -1,5 +1,11 @@
 # Experiment rules for the ChatGPT side
 
+## Parallel local Solver and Reviewer development (2026-10-08T10:43:45.306574+00:00)
+
+The owner now explicitly requests two independent local optimization agents. Root assigns Astra Ultra to each role with fork-none aggregate-only capsules. Solver changes only Solver text on the frozen review-off basis; Reviewer changes only Reviewer text on the original full seed basis, preserving Solver/Planner/Perception bytes and the exact slot-issues handoff. The two branches do not consume each other's in-progress proposals or results. Existing original roles are the common source; no shared mutable templates or in-panel policy updates.
+
+Each branch registers two candidates plus its own control/A/A on the same100 inputs. CPU proposal/engineering work may overlap; one serial GPU campaign and four concurrent samples remain. Root owns source integration, explicit per-role scope checks, schedule and stage-boundary combination validation. This is local development, not a new full-system acceptance gate on every iteration. Root227 remains sufficient; human boundary before8x400 is unchanged. See the local-solver and local-reviewer N100 update1 readiness packages. GPU admission is still pending; prior completed controls and STOP are preserved.
+
 ## Owner clarification: ordinary local development first (2026-10-08T10:25:45.896043+00:00)
 
 Use the same fixed100-input development roster and engineering base. Stage1 names one local problem, freezes surrounding configuration/interfaces, evaluates a configured candidate batch, and selects/locks its best observed local version. The declared local objective decides this update. Other available metrics remain recorded; repeated whole-system adoption, noninferiority or Pareto approval is not a mandatory gate for each local iteration. Stage2 integrates the locked local versions and handles joint end-to-end tradeoffs. See `docs/readiness/2026-10-08-local-node-before-system-optimization-v1/README.md`. This supersedes the previous per-iteration acceptance wording, not original experiment/result custody.
@@ -917,4 +923,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T10:25:45.896043+00:00
+Last refreshed: 2026-10-08T10:43:45.306574+00:00

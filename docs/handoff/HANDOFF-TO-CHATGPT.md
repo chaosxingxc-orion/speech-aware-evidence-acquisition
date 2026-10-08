@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Parallel local Solver and Reviewer development (2026-10-08T10:43:45.306574+00:00)
+
+The owner now explicitly requests two independent local optimization agents. Root assigns Astra Ultra to each role with fork-none aggregate-only capsules. Solver changes only Solver text on the frozen review-off basis; Reviewer changes only Reviewer text on the original full seed basis, preserving Solver/Planner/Perception bytes and the exact slot-issues handoff. The two branches do not consume each other's in-progress proposals or results. Existing original roles are the common source; no shared mutable templates or in-panel policy updates.
+
+Each branch registers two candidates plus its own control/A/A on the same100 inputs. CPU proposal/engineering work may overlap; one serial GPU campaign and four concurrent samples remain. Root owns source integration, explicit per-role scope checks, schedule and stage-boundary combination validation. This is local development, not a new full-system acceptance gate on every iteration. Root227 remains sufficient; human boundary before8x400 is unchanged. See the local-solver and local-reviewer N100 update1 readiness packages. GPU admission is still pending; prior completed controls and STOP are preserved.
+
 ## Owner clarification: ordinary local development first (2026-10-08T10:25:45.896043+00:00)
 
 Use the same fixed100-input development roster and engineering base. Stage1 names one local problem, freezes surrounding configuration/interfaces, evaluates a configured candidate batch, and selects/locks its best observed local version. The declared local objective decides this update. Other available metrics remain recorded; repeated whole-system adoption, noninferiority or Pareto approval is not a mandatory gate for each local iteration. Stage2 integrates the locked local versions and handles joint end-to-end tradeoffs. See `docs/readiness/2026-10-08-local-node-before-system-optimization-v1/README.md`. This supersedes the previous per-iteration acceptance wording, not original experiment/result custody.
@@ -7093,7 +7099,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T10:25:45.896043+00:00
+Last refreshed: 2026-10-08T10:43:45.306574+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
