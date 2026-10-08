@@ -1,0 +1,76 @@
+{
+  "capacity_prerequisite": {
+    "qualification": {
+      "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/capacity-qualified-v1.json",
+      "sha256": "3257672b0302ee6381b534f258f4eb26c75957499c71d30eac6e2519efaf8ef1"
+    },
+    "registration": {
+      "relpath": "coordination/local-solver-n100-k4-update1-capacity-entry2-v1/registration-v1.json",
+      "sha256": "6092d68423050428221b52a6ded56d7e9852459fe651b57d45a71cbea37a82fb"
+    }
+  },
+  "decision_id": "local-solver-n100-k4-update1-natural4-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-NATURAL-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE1-NATURAL-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-NATURAL-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE1-NATURAL-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-NATURAL-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE1-NATURAL-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-FIT-V1"
+  ],
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-solver-n100-k4-update1-v1.json",
+    "sha256": "6ab2f6f4fea7de23c4d35d08f893e669263c240440ed4f65513161311612f9e3"
+  },
+  "learner_export": false,
+  "learning": "HELD",
+  "local_node_basis": {
+    "proposal_custody": {
+      "registration": {
+        "relpath": "coordination/local-solver-n100-k4-update1-v1/actor-plan-registered-copy-v1.json",
+        "sha256": "17f55adfe46d39879595ad4374e0a21242e77077acf582b3cce3b95e298ff500"
+      },
+      "validation": {
+        "relpath": "coordination/local-solver-n100-k4-update1-v1/original-proposal-validation-v1.json",
+        "sha256": "f35e453992572d19c61b006dc406d6cc1c5b5d3c7c32bf9224dbb920548f7816"
+      }
+    },
+    "schema": "saea-local-node-panel-basis-v1",
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "source_preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/review-off-preparation-receipt-final-v1.json",
+      "sha256": "7ea5e10254f4c74282cd799500bb8b8c03dd3475f23703756386e983d6651f97"
+    },
+    "target_role": "solver"
+  },
+  "next_panel_authorized": false,
+  "owner_decisions": [
+    227
+  ],
+  "resource_policy": {
+    "floor_gib": 4,
+    "stable_samples": 3,
+    "start_gib": 4,
+    "wait_seconds": 600
+  },
+  "schema": "saea-campaign-decision-v1",
+  "scope": {
+    "actual_request_fit_endpoint_cap": 192,
+    "complete_system_trajectories": 24,
+    "generation_contacts": 48,
+    "official_score_jobs": 0,
+    "systems": 6
+  },
+  "source_preparation_commit": "148f6fc3ab6ea8967a3f016a1ccaa9760ad05048",
+  "status": "DRAFT UNSIGNED",
+  "structural_read_scope": "Original operational/FIT/custody/terminal structure only; no task-quality or optimizer feedback."
+}
