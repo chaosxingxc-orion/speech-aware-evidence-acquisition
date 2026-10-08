@@ -1,0 +1,15 @@
+{
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "decision_receipt": {
+    "relpath": "coordination/local-solver-n100-k4-update3-natural4-v1/root-admission-v1.json",
+    "sha256": "7461ca67d8f56b22e3fd3af19e66f938aa24814d6bfb32ebd216260c48d74b32"
+  },
+  "input_sha256": "01a80fbddd00881c50c9764c244b3a6401b9e1212a7eedb833b27dd2699a80d6",
+  "runtime_dispatch": false,
+  "schema": "saea-local-natural-finalization-started-v1",
+  "source_commit": "2e55fc456c110be693c0a6c259802851e5048d46"
+}

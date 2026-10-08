@@ -1,0 +1,127 @@
+{
+  "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-natural-v1",
+  "baseline": "slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-natural-v1",
+  "config_hash": "1842065430b5e73fadcf291bff782d6a9440e6245d1cc6677dee26f82e5b8242",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "contacts": 0,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-natural-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 18,
+    "protocol_hash": "2120f927f822b6d3750e4e29611d4d01a5ddec29704f89e864ea7d72daa2aff9",
+    "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-NATURAL-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-natural-v1",
+  "final_experiment": {
+    "relpath": "configs/experiment/slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-natural-v1.json",
+    "sha256": "526a80e513319a193e0d01663a9e50708bb96a6d85dc78831973d3290b95a3f1"
+  },
+  "final_ready_metadata": {
+    "reason": "Root countersigned fresh natural4 structural proof; complete capacity qualification and strict warm custody required.",
+    "requirements": [
+      {
+        "kind": "preparation",
+        "reason": "Exact reused prepared supply; strict warm identity verified before plans.",
+        "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "6f5105df8ef6952a0f81473ab62734e4796b4d2cef4bbc07d6dced348e4b17d8"
+      },
+      {
+        "expected_decision_id": "local-solver-n100-k4-update3-natural4-v1",
+        "kind": "decision",
+        "reason": "Root decided this exact configured generation/FIT family before contact.",
+        "relpath": "coordination/local-solver-n100-k4-update3-natural4-v1/root-admission-v1.json",
+        "sha256": "7461ca67d8f56b22e3fd3af19e66f938aa24814d6bfb32ebd216260c48d74b32"
+      }
+    ],
+    "state": "ready"
+  },
+  "finalization_source_commit": null,
+  "fit_endpoint_cap": 32,
+  "generation_cap": 8,
+  "kind": "natural",
+  "local_node_basis": {
+    "proposal_custody": {
+      "registration": {
+        "relpath": "coordination/local-solver-n100-k4-update3-v1/actor-plan-registered-copy-v1.json",
+        "sha256": "7dfd8c9a451e978f4f625e23f9b6fafceb56df5b94ed42a7e0bb4320a58c48c0"
+      },
+      "validation": {
+        "relpath": "coordination/local-solver-n100-k4-update3-v1/original-proposal-validation-v1.json",
+        "sha256": "e1f34001d1c138f438560db3785a61d74097342c934af56ab5ff58c3dfa9bc70"
+      }
+    },
+    "schema": "saea-local-node-panel-basis-v1",
+    "source_population": {
+      "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+      "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+    },
+    "source_preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-simple-consumption-n100-audio-recovery1-entry2-v1/registered-v1/review-off-preparation-receipt-final-v1.json",
+      "sha256": "7ea5e10254f4c74282cd799500bb8b8c03dd3475f23703756386e983d6651f97"
+    },
+    "target_role": "solver"
+  },
+  "member_id": "candidate-2",
+  "original_experiment": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-finalized-v1/candidate-2-original-experiment-v1.json",
+    "sha256": "16c32c1992acb1c6185988764d09d92d548d0c2f3185332b8a719622be7ddddf"
+  },
+  "original_preparation_receipt": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/prepared-v1/candidate-2-natural-prepared-v1.json",
+    "sha256": "920315f77c7d0cd19c7afd18497ab39feaa54a6e9bc5eb13a8e8c24a7fada7fa"
+  },
+  "output_equal": true,
+  "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "coordination/local-solver-n100-k4-update3-v1/policy-archive/policies/8a557b168cf6e20be7b0664e5884793c42bb2edf865edbfdcc10580a630a53ba.json",
+      "sha256": "44565ec553404d66a93c341d497de214a1008fa852151d523fc68d1642fc4d72"
+    },
+    "bundle_id": "8a557b168cf6e20be7b0664e5884793c42bb2edf865edbfdcc10580a630a53ba",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-NATURAL-V1/phase-supply-v1.json",
+    "sha256": "6f5105df8ef6952a0f81473ab62734e4796b4d2cef4bbc07d6dced348e4b17d8"
+  },
+  "prepared_source_commit": "5ec6c6bf7473dd783a85faf0ee415a0d57a6dc1c",
+  "pure_capacity_budget": null,
+  "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-NATURAL-V1",
+  "runtime_admission": false,
+  "runtime_sample_ids": [
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "source_policy": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/compiled-v1/candidate-2-policy-v1.json",
+    "sha256": "5d4eb3779e87057e18508fe12db306fe21332bb37922b0b85ff8b3fddad0deed"
+  },
+  "source_resolution": "PENDING EXTERNAL ROOT FROZEN-LAUNCH BINDING",
+  "status": "READY METADATA FINALIZED; exact root registration remains separate",
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-NATURAL-V1/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "6f5105df8ef6952a0f81473ab62734e4796b4d2cef4bbc07d6dced348e4b17d8"
+    }
+  ],
+  "warm_verified": true
+}
