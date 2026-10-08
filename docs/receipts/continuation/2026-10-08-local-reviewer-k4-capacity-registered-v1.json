@@ -1,0 +1,150 @@
+{
+  "at_utc": "2026-10-08T13:06:30.302188+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "controls_changed": false,
+  "date_correction": {
+    "relpath": "coordination/local-node-capacity-engineering-v1/reviewer-ledger-date-correction-v1/ledger-date-correction-v1.json",
+    "sha256": "cf956b60021f124b7cc3329447e0767c51725f1d355f7d73873487e5093f2827"
+  },
+  "discovery_mirrors": [
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/control-capacity-fit-plan-registered-v1.json",
+        "sha256": "33b7149bc1ae117cd356208df2fe513e69a8dce343e9577e49afac157cc387d2"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/control-capacity-fit-plan-registered-v1.json",
+        "sha256": "33b7149bc1ae117cd356208df2fe513e69a8dce343e9577e49afac157cc387d2"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/control-capacity-analysis-recipe-v1.json",
+        "sha256": "a4d38190aab213170bf0d1027715f9cf2f6918411c28dea2eecaf50e0be83813"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/control-capacity-analysis-recipe-v1.json",
+        "sha256": "a4d38190aab213170bf0d1027715f9cf2f6918411c28dea2eecaf50e0be83813"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/control-aa-capacity-fit-plan-registered-v1.json",
+        "sha256": "3156331af3db6f6edf7a96a2d3c6072b4f86d3ce7435b56a3cef7f5067cdaf10"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/control-aa-capacity-fit-plan-registered-v1.json",
+        "sha256": "3156331af3db6f6edf7a96a2d3c6072b4f86d3ce7435b56a3cef7f5067cdaf10"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/control-aa-capacity-analysis-recipe-v1.json",
+        "sha256": "7affe2f2901eaec4af7d868266169bef95144355ff125bca27b90dfec414db41"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/control-aa-capacity-analysis-recipe-v1.json",
+        "sha256": "7affe2f2901eaec4af7d868266169bef95144355ff125bca27b90dfec414db41"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/candidate-1-capacity-fit-plan-registered-v1.json",
+        "sha256": "ce67eb77ce1c68688d5abaf6642bf25b7e2a9ea9f73f99fe2850a9da799dc8d5"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/candidate-1-capacity-fit-plan-registered-v1.json",
+        "sha256": "ce67eb77ce1c68688d5abaf6642bf25b7e2a9ea9f73f99fe2850a9da799dc8d5"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/candidate-1-capacity-analysis-recipe-v1.json",
+        "sha256": "2a885e4cfc2e5566f8c3c735b9275b76fad29eab6f06ae4e621b25ebd82aedb8"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/candidate-1-capacity-analysis-recipe-v1.json",
+        "sha256": "2a885e4cfc2e5566f8c3c735b9275b76fad29eab6f06ae4e621b25ebd82aedb8"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/candidate-2-capacity-fit-plan-registered-v1.json",
+        "sha256": "e635be1c89ea13634da11e9bd889f2a7707aff0b88f5f08e68f5dbf0f063b03c"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/candidate-2-capacity-fit-plan-registered-v1.json",
+        "sha256": "e635be1c89ea13634da11e9bd889f2a7707aff0b88f5f08e68f5dbf0f063b03c"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/candidate-2-capacity-analysis-recipe-v1.json",
+        "sha256": "af1432f11654a9e3a06257b686db5be11bc760a406b6660a2a7b0fd837fda238"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/candidate-2-capacity-analysis-recipe-v1.json",
+        "sha256": "af1432f11654a9e3a06257b686db5be11bc760a406b6660a2a7b0fd837fda238"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/candidate-3-capacity-fit-plan-registered-v1.json",
+        "sha256": "07aadaa390ca4555a67e6ad7cbcaa08cb9e1fbd864b356c083f20838a7cd6d4f"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/candidate-3-capacity-fit-plan-registered-v1.json",
+        "sha256": "07aadaa390ca4555a67e6ad7cbcaa08cb9e1fbd864b356c083f20838a7cd6d4f"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/candidate-3-capacity-analysis-recipe-v1.json",
+        "sha256": "9c902587c8e4db12640a253febb7a730caaca8af364f1d28b3bee10813e270fa"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/candidate-3-capacity-analysis-recipe-v1.json",
+        "sha256": "9c902587c8e4db12640a253febb7a730caaca8af364f1d28b3bee10813e270fa"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/candidate-4-capacity-fit-plan-registered-v1.json",
+        "sha256": "0c81182a550891833e2290e581240537d4fddc665643ad0c5f8fec1b95a78af9"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/candidate-4-capacity-fit-plan-registered-v1.json",
+        "sha256": "0c81182a550891833e2290e581240537d4fddc665643ad0c5f8fec1b95a78af9"
+      }
+    },
+    {
+      "authoritative": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/candidate-4-capacity-analysis-recipe-v1.json",
+        "sha256": "85975f46b3ee5433cdff342515c9a4c7adadefe4dd2e07b25d35eeb81c81a7cd"
+      },
+      "discovery_mirror": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/candidate-4-capacity-analysis-recipe-v1.json",
+        "sha256": "85975f46b3ee5433cdff342515c9a4c7adadefe4dd2e07b25d35eeb81c81a7cd"
+      }
+    }
+  ],
+  "independent_bridge_review": {
+    "relpath": "coordination/local-node-capacity-engineering-astra-review-v1/review-v1.json",
+    "sha256": "312222e331f062f55b6228f784ba18fa4dd013bc7039cdf8b3f4577256da5339"
+  },
+  "original_registration_terminal": {
+    "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-v1/root-original-registration-exit-v1.json",
+    "sha256": "d035ca351bc8c36da757a1de6cc3ec074e38e54285b45d196fe8cabfaf6493bc"
+  },
+  "registered_members": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/registered-capacity-members-v1.json",
+    "sha256": "9346ac79b44fb3d598f99c6f79aa760b15e7256d8e8d39ea93cd9191daf5ed93"
+  },
+  "schema": "saea-local-capacity-root-registration-v1",
+  "scope": "Current UTC date corrects only new rows before freeze. Flat exact-byte mirrors satisfy existing registration discovery. Original nested authority and all historical rows/pins remain preserved.",
+  "status": "ORIGINAL_OFFLINE_REGISTRATION_COMPLETE_FROZEN_AND_LIVE_CHECKS_PENDING"
+}
