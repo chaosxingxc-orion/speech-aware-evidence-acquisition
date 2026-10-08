@@ -1,0 +1,564 @@
+{
+  "aggregate_rows": {
+    "candidate-1": {
+      "derived_final_nonempty_exact": {
+        "denominator": 66,
+        "numerator": 20
+      },
+      "final_empty_false_fill": {
+        "denominator": 34,
+        "numerator": 3
+      },
+      "final_nonempty_unknown": 1,
+      "final_parsed_count": 99,
+      "input_count": 100,
+      "intent_accuracy": 0.85,
+      "nonfirst_mean_seconds": 17.635320732757577,
+      "official_slu_f1": 0.5484974413400421,
+      "original_model_calls": 200,
+      "raw_entity_correct": 49,
+      "raw_full_correct": 42,
+      "raw_missing_or_unknown": 1,
+      "raw_parsed_count": 99,
+      "reliable_completion": 1.0
+    },
+    "candidate-2": {
+      "derived_final_nonempty_exact": {
+        "denominator": 66,
+        "numerator": 25
+      },
+      "final_empty_false_fill": {
+        "denominator": 34,
+        "numerator": 8
+      },
+      "final_nonempty_unknown": 0,
+      "final_parsed_count": 100,
+      "input_count": 100,
+      "intent_accuracy": 0.87,
+      "nonfirst_mean_seconds": 17.972185200383837,
+      "official_slu_f1": 0.5987550953279357,
+      "original_model_calls": 200,
+      "raw_entity_correct": 47,
+      "raw_full_correct": 42,
+      "raw_missing_or_unknown": 0,
+      "raw_parsed_count": 100,
+      "reliable_completion": 1.0
+    },
+    "candidate-3": {
+      "derived_final_nonempty_exact": {
+        "denominator": 66,
+        "numerator": 26
+      },
+      "final_empty_false_fill": {
+        "denominator": 34,
+        "numerator": 10
+      },
+      "final_nonempty_unknown": 0,
+      "final_parsed_count": 100,
+      "input_count": 100,
+      "intent_accuracy": 0.85,
+      "nonfirst_mean_seconds": 18.09832623059596,
+      "official_slu_f1": 0.608204835065271,
+      "original_model_calls": 200,
+      "raw_entity_correct": 47,
+      "raw_full_correct": 41,
+      "raw_missing_or_unknown": 0,
+      "raw_parsed_count": 100,
+      "reliable_completion": 1.0
+    },
+    "candidate-4": {
+      "derived_final_nonempty_exact": {
+        "denominator": 66,
+        "numerator": 25
+      },
+      "final_empty_false_fill": {
+        "denominator": 34,
+        "numerator": 9
+      },
+      "final_nonempty_unknown": 0,
+      "final_parsed_count": 100,
+      "input_count": 100,
+      "intent_accuracy": 0.84,
+      "nonfirst_mean_seconds": 18.053120947949495,
+      "official_slu_f1": 0.5972621710872558,
+      "original_model_calls": 200,
+      "raw_entity_correct": 48,
+      "raw_full_correct": 41,
+      "raw_missing_or_unknown": 0,
+      "raw_parsed_count": 100,
+      "reliable_completion": 1.0
+    },
+    "control": {
+      "derived_final_nonempty_exact": {
+        "denominator": 66,
+        "numerator": 24
+      },
+      "final_empty_false_fill": {
+        "denominator": 34,
+        "numerator": 9
+      },
+      "final_nonempty_unknown": 0,
+      "final_parsed_count": 100,
+      "input_count": 100,
+      "intent_accuracy": 0.85,
+      "nonfirst_mean_seconds": 17.452734072444443,
+      "official_slu_f1": 0.575142056044141,
+      "original_model_calls": 200,
+      "raw_entity_correct": 47,
+      "raw_full_correct": 43,
+      "raw_missing_or_unknown": 0,
+      "raw_parsed_count": 100,
+      "reliable_completion": 1.0
+    },
+    "control-aa": {
+      "derived_final_nonempty_exact": {
+        "denominator": 66,
+        "numerator": 24
+      },
+      "final_empty_false_fill": {
+        "denominator": 34,
+        "numerator": 7
+      },
+      "final_nonempty_unknown": 0,
+      "final_parsed_count": 100,
+      "input_count": 100,
+      "intent_accuracy": 0.86,
+      "nonfirst_mean_seconds": 17.89732058072727,
+      "official_slu_f1": 0.6015654651631471,
+      "original_model_calls": 200,
+      "raw_entity_correct": 49,
+      "raw_full_correct": 43,
+      "raw_missing_or_unknown": 0,
+      "raw_parsed_count": 100,
+      "reliable_completion": 1.0
+    }
+  },
+  "at_utc": "2026-10-08T18:02:14.808647+00:00",
+  "complete_family_report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-complete-family-v1/report.json",
+    "sha256": "c7dd59d8f51f0de109e654f7407df358c1f3f74bdb79c827e8f6f0a7f8b77437"
+  },
+  "family_countersignature": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-family-read-v1/root-countersignature-v1.json",
+    "sha256": "90deb5a53b573657975e5a8a9f6702cbe88506579cc80b083672a0b330525641"
+  },
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "independent_astra_review": {
+    "mode": "Astra Ultra aggregate-only interpretation review",
+    "result": "Candidate1 exploratory; control retained fixed parent. No posthoc A/A gate or F1 replacement of registered local primary.",
+    "source": "Current root-agent review message after complete family READ; no new template/proposer opportunity."
+  },
+  "member_sources": {
+    "candidate-1": {
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-qualification-v1.json",
+        "sha256": "14969deddaea3e08a4e3e1314df8a3e0a30a6979115893f2b6bffe1757633570"
+      },
+      "read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-reader-v1-exit.json",
+        "sha256": "c5ee55664ce8061606849a3a1a5acfa21ebfd989cdc5027094aba9500da9ed6b"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-candidate-1-descriptive-v1/report.json",
+        "sha256": "8d24db170454c970a2a6d54c9c13b70f423daa21fe2376d0f6dd43d604298234"
+      },
+      "root_countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-root-countersignature-v1.json",
+        "sha256": "10b373135142852e90880c0e423fca0851f406416255a65b7df5d98d14adc55b"
+      }
+    },
+    "candidate-2": {
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-2-qualification-v1.json",
+        "sha256": "fbda9c5bb441cbeee8fa397551fecafdace1d02553fe37ce260fc8a079f70415"
+      },
+      "read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-2-reader-v1-exit.json",
+        "sha256": "b18ac63f306cb26cc5481514006c97bb16f2b262b056c1b69dfbe2acabdc2dfe"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-candidate-2-descriptive-v1/report.json",
+        "sha256": "aa7544ccd9558ce4a75d193ccb2601a4837c912a5aabed69ff1152a771ac0a7f"
+      },
+      "root_countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-2-root-countersignature-v1.json",
+        "sha256": "ba9e39989755eb66be6970bc657a3d990c3dc0a7bc3cc0a6e648e6d0a9d3dcb6"
+      }
+    },
+    "candidate-3": {
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-3-qualification-v1.json",
+        "sha256": "88cd976d35936cf3e4878247fc1704fa7b42c4001eca70be7a316586d923dd71"
+      },
+      "read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-3-reader-v1-exit.json",
+        "sha256": "7809e8bff5c19ecf7bb9e1c2f8b6510da2f2f95d48d42762b148744fdc4376ce"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-candidate-3-descriptive-v1/report.json",
+        "sha256": "c74fb06f93abcb108301e01557ad32b779257128d58eeaebdeb25d17d847284e"
+      },
+      "root_countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-3-root-countersignature-v1.json",
+        "sha256": "48713611eff93bf1afbb744b74da86f93be5eb2d606af375283a1c23249d12bc"
+      }
+    },
+    "candidate-4": {
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-4-qualification-v1.json",
+        "sha256": "a41205406b333a92affc3bde1c5aa0a9eb7a85881b9df11da7cac295d87dec43"
+      },
+      "read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-4-reader-v1-exit.json",
+        "sha256": "5f12ab4184421139e468064b3f6189293e46bbfc30c324bd0cbf0ef33e5edd40"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-candidate-4-descriptive-v1/report.json",
+        "sha256": "d75051190ab3eab98cfadd0950c35492dea107f2f4ec4596a68c3a2f42a3fc8d"
+      },
+      "root_countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-4-root-countersignature-v1.json",
+        "sha256": "092ed0ad527fce8c6246f9eda7257aefe525d61b4001e124ba89254a7d74b6b3"
+      }
+    },
+    "control": {
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-qualification-v1.json",
+        "sha256": "9ced68e09b93d8629c869243564ac20ee0797f8243a1863ea222dc8283595da1"
+      },
+      "read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-reader-v1-exit.json",
+        "sha256": "cdedaff64e387b409284759138416e7f442c3ac45006621bf9c32a3a608e8141"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-control-descriptive-v1/report.json",
+        "sha256": "a3eb1159bc222ac7c0be0608456a70ef13f43633ffe457e0fbe7a445521e4908"
+      },
+      "root_countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-root-countersignature-v1.json",
+        "sha256": "05bc1aead67b50e73f7b03342df592ba704f7943352fd9bc14941a07667467f0"
+      }
+    },
+    "control-aa": {
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-aa-qualification-v1.json",
+        "sha256": "4e6e3b407758f5d03f046867b9bff42d78616476ca45226e20d12c9535128c8b"
+      },
+      "read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-aa-reader-v1-exit.json",
+        "sha256": "4dfdc9fa56856220ce057013f2e22452876140b1dde9951ecb5418e6902d19ca"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-control-aa-descriptive-v1/report.json",
+        "sha256": "02fe635f7db8f6b2929380eda42ee1bb5f172ab81663ffe26a5bab574e5f28e1"
+      },
+      "root_countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-aa-root-countersignature-v1.json",
+        "sha256": "46289931eb4f16ebbf9bfd68006b0179efbb46310d27c096324258f09275d498"
+      }
+    }
+  },
+  "monitor_disposition": {
+    "global": "remains off",
+    "reviewer": "slurp-local-reviewer-k4-n100-health ACTIVE every15minutes until original terminal",
+    "solver": "slurp-local-solver-k4-n100-health deleted after original terminal"
+  },
+  "new_analysis_model_scorer_tokenizer_contacts": 0,
+  "official_paired_contrasts": {
+    "candidate-1-minus-aa": {
+      "intent": {
+        "ci_high": 0.020000000000000018,
+        "ci_level": 0.95,
+        "ci_low": -0.040000000000000036,
+        "n_replicates": 10000,
+        "point_estimate": -0.010000000000000009,
+        "seed": 20261001,
+        "sigma_hat": 0.017400613523666345
+      },
+      "slu_f1": {
+        "ci_high": 0.01008594600337324,
+        "ci_level": 0.95,
+        "ci_low": -0.12014520213995,
+        "n_replicates": 10000,
+        "point_estimate": -0.05306802382310505,
+        "seed": 20261001,
+        "sigma_hat": 0.03345255761423027
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 39,
+        "both_incorrect": 52,
+        "damaged": 5,
+        "repaired": 4
+      }
+    },
+    "candidate-1-minus-parent": {
+      "intent": {
+        "ci_high": 0.030000000000000027,
+        "ci_level": 0.95,
+        "ci_low": -0.030000000000000027,
+        "n_replicates": 10000,
+        "point_estimate": 0.0,
+        "seed": 20261001,
+        "sigma_hat": 0.014176568696267797
+      },
+      "slu_f1": {
+        "ci_high": 0.03721623780605574,
+        "ci_level": 0.95,
+        "ci_low": -0.09264041180352783,
+        "n_replicates": 10000,
+        "point_estimate": -0.026644614704098957,
+        "seed": 20261001,
+        "sigma_hat": 0.03257721866452718
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 38,
+        "both_incorrect": 51,
+        "damaged": 6,
+        "repaired": 5
+      }
+    },
+    "candidate-2-minus-aa": {
+      "intent": {
+        "ci_high": 0.030000000000000027,
+        "ci_level": 0.95,
+        "ci_low": 0.0,
+        "n_replicates": 10000,
+        "point_estimate": 0.010000000000000009,
+        "seed": 20261001,
+        "sigma_hat": 0.009772768492090664
+      },
+      "slu_f1": {
+        "ci_high": 0.045999387492780104,
+        "ci_level": 0.95,
+        "ci_low": -0.05692915983554402,
+        "n_replicates": 10000,
+        "point_estimate": -0.002810369835211435,
+        "seed": 20261001,
+        "sigma_hat": 0.026102525934980376
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 40,
+        "both_incorrect": 51,
+        "damaged": 4,
+        "repaired": 5
+      }
+    },
+    "candidate-2-minus-parent": {
+      "intent": {
+        "ci_high": 0.06000000000000005,
+        "ci_level": 0.95,
+        "ci_low": -0.020000000000000018,
+        "n_replicates": 10000,
+        "point_estimate": 0.020000000000000018,
+        "seed": 20261001,
+        "sigma_hat": 0.020028260808168045
+      },
+      "slu_f1": {
+        "ci_high": 0.06368551794953944,
+        "ci_level": 0.95,
+        "ci_low": -0.01783460133355604,
+        "n_replicates": 10000,
+        "point_estimate": 0.023613039283794657,
+        "seed": 20261001,
+        "sigma_hat": 0.02052371647959557
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 42,
+        "both_incorrect": 53,
+        "damaged": 2,
+        "repaired": 3
+      }
+    },
+    "candidate-3-minus-aa": {
+      "intent": {
+        "ci_high": 0.020000000000000018,
+        "ci_level": 0.95,
+        "ci_low": -0.040000000000000036,
+        "n_replicates": 10000,
+        "point_estimate": -0.010000000000000009,
+        "seed": 20261001,
+        "sigma_hat": 0.017399974137911816
+      },
+      "slu_f1": {
+        "ci_high": 0.03783496390163279,
+        "ci_level": 0.95,
+        "ci_low": -0.026736891830101632,
+        "n_replicates": 10000,
+        "point_estimate": 0.006639369902123882,
+        "seed": 20261001,
+        "sigma_hat": 0.016406231869547077
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 38,
+        "both_incorrect": 51,
+        "damaged": 6,
+        "repaired": 5
+      }
+    },
+    "candidate-3-minus-parent": {
+      "intent": {
+        "ci_high": 0.030000000000000027,
+        "ci_level": 0.95,
+        "ci_low": -0.030000000000000027,
+        "n_replicates": 10000,
+        "point_estimate": 0.0,
+        "seed": 20261001,
+        "sigma_hat": 0.014174270739618317
+      },
+      "slu_f1": {
+        "ci_high": 0.0739570895427025,
+        "ci_level": 0.95,
+        "ci_low": -0.0074395211810318424,
+        "n_replicates": 10000,
+        "point_estimate": 0.03306277902112997,
+        "seed": 20261001,
+        "sigma_hat": 0.02054337719549753
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 38,
+        "both_incorrect": 51,
+        "damaged": 6,
+        "repaired": 5
+      }
+    },
+    "candidate-4-minus-aa": {
+      "intent": {
+        "ci_high": 0.0,
+        "ci_level": 0.95,
+        "ci_low": -0.050000000000000044,
+        "n_replicates": 10000,
+        "point_estimate": -0.020000000000000018,
+        "seed": 20261001,
+        "sigma_hat": 0.014056211580650029
+      },
+      "slu_f1": {
+        "ci_high": 0.04493061807915061,
+        "ci_level": 0.95,
+        "ci_low": -0.05356893312242929,
+        "n_replicates": 10000,
+        "point_estimate": -0.004303294075891362,
+        "seed": 20261001,
+        "sigma_hat": 0.02506474271672359
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 39,
+        "both_incorrect": 54,
+        "damaged": 5,
+        "repaired": 2
+      }
+    },
+    "candidate-4-minus-parent": {
+      "intent": {
+        "ci_high": 0.0,
+        "ci_level": 0.95,
+        "ci_low": -0.030000000000000027,
+        "n_replicates": 10000,
+        "point_estimate": -0.010000000000000009,
+        "seed": 20261001,
+        "sigma_hat": 0.010050078158900059
+      },
+      "slu_f1": {
+        "ci_high": 0.07747257262554294,
+        "ci_level": 0.95,
+        "ci_low": -0.031480585526509564,
+        "n_replicates": 10000,
+        "point_estimate": 0.02212011504311473,
+        "seed": 20261001,
+        "sigma_hat": 0.027617118623884447
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 38,
+        "both_incorrect": 53,
+        "damaged": 6,
+        "repaired": 3
+      }
+    },
+    "same-request-null": {
+      "intent": {
+        "ci_high": 0.04999999999999993,
+        "ci_level": 0.95,
+        "ci_low": -0.020000000000000018,
+        "n_replicates": 10000,
+        "point_estimate": 0.010000000000000009,
+        "seed": 20261001,
+        "sigma_hat": 0.017446761046108244
+      },
+      "slu_f1": {
+        "ci_high": 0.06166274472189049,
+        "ci_level": 0.95,
+        "ci_low": -0.005633876857071229,
+        "n_replicates": 10000,
+        "point_estimate": 0.02642340911900609,
+        "seed": 20261001,
+        "sigma_hat": 0.017129879104862675
+      },
+      "whole_answer_exact_change_counts": {
+        "both_correct": 41,
+        "both_incorrect": 53,
+        "damaged": 3,
+        "repaired": 3
+      }
+    }
+  },
+  "original_family_read_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-family-read-v1/family-reader-v1-exit.json",
+    "sha256": "84ff15510020ec8cbd9f13361e007fdb337b4c9fe00d1a15abf4eae53f6648c3"
+  },
+  "original_full_family_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-family-read-v1/family-qualified-v1.json",
+    "sha256": "2fb5c1dd65c204c999edf3dc8d36dc4caa032f8c3f2f9c2c8d247168b4f3579d"
+  },
+  "original_terminal_closure": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-original-terminal-closure-v1.json",
+    "sha256": "e293057a8a9eb914812dd51e9fa0c3f12af5fdb931826cebe8c1f25beeb1dc3a"
+  },
+  "owner_decision": 227,
+  "registered_protocol": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/protocol-v1.json",
+    "sha256": "1a1d087c55299caa2da0168f2ee32e108aba25954921c3a2af8c9f8638b640f9"
+  },
+  "reviewer_continuation": {
+    "dispatch": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-generation-dispatch-request-v1.json",
+      "sha256": "7f7301314e5b0aedce6e3217bbdfd80642cf2b073ea7d227b71eaf85797a4333"
+    },
+    "driver_epoch": "2026-10-08T17:52:14Z",
+    "first_operational_observation": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-operational-launch-observation-v1.json",
+      "sha256": "5dee6272c6f4cdd9ab4818ea5d7e7cbdb872dc3c8227cd841241dd2416f285f3"
+    },
+    "members": [
+      "control",
+      "control-aa",
+      "candidate-1",
+      "candidate-2",
+      "candidate-3",
+      "candidate-4"
+    ],
+    "queue_sha256": "1c8d3f8aa3e99a05160fc71af9f12de645734792fe81d39fc703851df9758e98",
+    "reviewer_outcomes_read": false,
+    "rows_per_member": 100,
+    "source_commit": "b4086484e8448e87d2429824071649bf133feb67",
+    "transition": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-generation-control-transition-v1.json",
+      "sha256": "5aef486273522e5c87a06679b5ee725e13bb44e329dbb680b8af95fe60678c78"
+    }
+  },
+  "root_interpretation": {
+    "claims_learning_gain": false,
+    "claims_stable_benefit": false,
+    "exploratory_candidate": "candidate-1",
+    "formal_system_adoption": false,
+    "learner_export_performed": false,
+    "next_local_problem": "Preserve the suppression of unsupported entity fills while retaining real entity coverage and raw complete-answer correctness. Prepare only qualified own aggregate K-record feedback under a separate prospective update registration; keep knowledge, upstream behavior and the fixed parent unchanged.",
+    "retained_fixed_parent": "control",
+    "selection_scope": "Best proposal on the registered raw-primary point estimate; not an unqualified winner over the unchanged version. A/A ties its primary and has higher secondary correctness. Fixed-parent local development remains unchanged.",
+    "tradeoff": "Candidate1 reduces final empty-entity false fills but has lower derived final exact correctness among nonempty examples, lower raw full correctness and lower official F1. The final-stage empty/nonempty metrics are not raw-draft metrics or causal credit. Candidate1 has one unparsed nonempty draft/final answer, retained in the denominator as non-correct; it is not silently excluded.",
+    "uncertainty": "Same-request A/A differs. Official F1 confidence intervals cross zero; these do not supply uncertainty for the raw primary. N100 reused development evidence is not independent validation or stable benefit."
+  },
+  "schema": "saea-local-k4-complete-family-root-interpretation-v1",
+  "terminal_transition_engineering_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-n100-terminal-transition-astra-review-v1/final-review-v1.json",
+    "sha256": "dbaeace92eba34d3dd35e2f6d61112b825391ca2882cf8fac777a0ec8ab9a9e9"
+  }
+}
