@@ -1,0 +1,113 @@
+{
+  "at_utc": "2026-10-08T13:09:12.767486+00:00",
+  "candidate_count_per_role": 4,
+  "controls_per_role": 2,
+  "interpretation": "Template diversity and source-only checks do not establish quality or learning improvement.",
+  "natural_engineering": {
+    "independent_new_tests": 66,
+    "independent_review": {
+      "relpath": "coordination/local-natural4-engineering-astra-review-v1/review-v1.json",
+      "sha256": "3459e6c143a48950f4b8a859a7d198256b40d59c735de79b0c9c2015d727a3a6"
+    },
+    "independent_shared_tests": 155,
+    "input_examples": {
+      "relpath": "coordination/local-node-capacity-engineering-v1/natural-root-input-examples-v1.json",
+      "sha256": "97f1e57a73fd6dbb42432c332014eff124ce41ca54aafc78636a6ac59b97c621"
+    },
+    "procedure": {
+      "relpath": "coordination/local-node-capacity-engineering-v1/ROOT-NATURAL-MANUAL-SEQUENCE-v1.md",
+      "sha256": "51a8a1dd605de5b28de88bffc9e38ff09929a922f70d63c3609e8ffbba9ce76e"
+    },
+    "scope": "Approved prospective metadata adapters around existing canonical authoring/runtime/qualification only. Actual completed capacity and exact root authority remain prerequisite.",
+    "snapshot": {
+      "relpath": "coordination/local-node-capacity-engineering-v1/natural-review-snapshot-v1.json",
+      "sha256": "f645dfd67ef03f865c94321023bc6566494fa95299ec82192f8f2a6e3ada57d1"
+    },
+    "source_pins": {
+      "relpath": "coordination/local-node-capacity-engineering-v1/natural-production-source-pins-v1.json",
+      "sha256": "4f29aa14f6f5257fdb319a663fd8168bfdb408b3a8b602fb245ff3c37ead757b"
+    }
+  },
+  "owner_decision": 227,
+  "roles": {
+    "reviewer": {
+      "check_terminal_observed": false,
+      "checks_status": "RUNNING_ORIGINAL_NO_RUNTIME_CONTACTS",
+      "configured_members": [
+        "control",
+        "control-aa",
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ],
+      "flat_discovery_mirrors": 12,
+      "frozen_check_started": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-v1/frozen-check-v1.started.json",
+        "sha256": "ab49a9af3d3c9603af809382354c51d5e671785603471558841da01699f23d3e"
+      },
+      "frozen_commit": "94e1bd6aecc8a292b88b81a870326524af89c56a",
+      "frozen_source": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-v1/root-frozen-source-v1.json",
+        "sha256": "eb4ba0b3c64a6c18185e5225472ea123ad4d18f4f6cc93844d69a761cbf1f8bd"
+      },
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-reviewer-k4-capacity-frozen-v1",
+      "old_ledger_prefix_preserved": true,
+      "original_authoring_terminal": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-capacity-v1/root-original-registration-exit-v1.json",
+        "sha256": "d035ca351bc8c36da757a1de6cc3ec074e38e54285b45d196fe8cabfaf6493bc"
+      },
+      "registered_members": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/capacity-registered-v1/registered-capacity-members-v1.json",
+        "sha256": "9346ac79b44fb3d598f99c6f79aa760b15e7256d8e8d39ea93cd9191daf5ed93"
+      }
+    },
+    "solver": {
+      "check_terminal_observed": true,
+      "checks_status": "RUNNING_ORIGINAL_NO_RUNTIME_CONTACTS",
+      "configured_members": [
+        "control",
+        "control-aa",
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ],
+      "flat_discovery_mirrors": 12,
+      "frozen_check_started": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-v1/frozen-check-v1.started.json",
+        "sha256": "a235e24154029909515b0fe1ed24b6b108274e47157007f93c209c5a28fafecb"
+      },
+      "frozen_commit": "ec878fd45080666af52258f7b8979ea6cc5bea4f",
+      "frozen_source": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-v1/root-frozen-source-v1.json",
+        "sha256": "d2e469652d2c1b57e8b766a5731568da6f417eb84d42d2a871a17dd0039c41f7"
+      },
+      "frozen_worker": "/home/chao/saea-worktrees/codex-local-solver-k4-capacity-frozen-v1",
+      "old_ledger_prefix_preserved": true,
+      "original_authoring_terminal": {
+        "relpath": "coordination/local-solver-n100-k4-update1-capacity-v1/root-original-registration-exit-v1.json",
+        "sha256": "9c3b70e1d63b90140a785eb607c1ed6d2cad6377eeb663c40b5b82258df09c97"
+      },
+      "registered_members": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-v1/capacity-registered-v1/registered-capacity-members-v1.json",
+        "sha256": "ea724a651e4dc84f7a6cf0c90ec76d73c5ae5b5c95d4779f768ad6ddbd1ae7e4"
+      }
+    }
+  },
+  "runtime": {
+    "capacity_launch": "NOT_STARTED",
+    "contacts_added": {
+      "model": 0,
+      "scorer": 0,
+      "tokenizer": 0
+    },
+    "natural_proof": "NOT_STARTED",
+    "original_frozen_workers_preserved": true,
+    "scientific_generation": "HELD",
+    "stop_queue_service_changed": false
+  },
+  "schema": "saea-local-k4-registered-and-natural-base-v1",
+  "status": "BOTH_ORIGINAL_CAPACITY_REGISTRATIONS_COMPLETE_FROZEN_CHECKS_RUNNING",
+  "trajectories_per_scientific_family": 600
+}

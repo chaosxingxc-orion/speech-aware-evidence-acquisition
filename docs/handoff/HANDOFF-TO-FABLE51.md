@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Local K4 capacity registration complete; original frozen checks running (2026-10-08T13:09:12.767486+00:00)
+
+Both original CPU capacity authorings exited0: Solver at13:02:09Z and Reviewer at13:06:23Z on2026-10-08. Each registered all six configured members (four original templates plus control/A/A), preserving old ledger rows and exact original preparation bytes. New-row UTC correction and12 exact-byte flat plan/recipe mirrors per role satisfy existing discovery; original nested pins remain authoritative. Root serially integrated the two records and froze separate workers. See `docs/receipts/continuation/2026-10-08-local-k4-capacity-registered-and-natural-base-v1.json` for raw original terminals, sources and member pins.
+
+The original frozen checks now run on the two isolated workers. Keep their process handles and outputs; do not duplicate, restart or edit frozen sources. CPU authoring performed repeated large-vector verification and emitted member records throughout; elapsed preparation time is not a GPU/model runtime measurement. No new tokenizer, generation or scorer contact occurred. The resident service and preserved prior STOP/queue remain unchanged. Capacity launch, natural structural proof and six-member N100 generation are still pending actual gates. No job-scoped monitor is created until actual GPU experiment launch.
+
+Independent Astra Ultra review approved the exact prospective natural4 metadata bridge after66 new and155 shared tests. The scope-binding defect was corrected: caller, decided record, package and actual composed member must agree on role/population/basis/source/budget. This is source-only engineering approval, not runtime admission. Root procedure and hashes are in DATA `coordination/local-node-capacity-engineering-v1/ROOT-NATURAL-MANUAL-SEQUENCE-v1.md`; independent report is `coordination/local-natural4-engineering-astra-review-v1/review-v1.json`. Reuse the shared canonical finalizer, countersigner, FlightRuntime and structural qualifier; no new execution harness.
+
+Each role remains an independent K4 local update on the same100 inputs. Solver changes only first-answer extraction on review-off; Reviewer changes only repair guidance on original full seed. Complete local feedback stays role-isolated. Root serializes GPU work and later tests the combination.4GiB floors and the human boundary before8x400 remain unchanged. No stable benefit or learning claim is established.
+
 ## Both local K4 preparations complete; fresh service ready (2026-10-08T12:23:44.090252+00:00)
 
 Both original CPU preparations independently completed with24 generation/capacity/graph/natural metadata receipts per role, unchanged prepared output bytes and zero model/tokenizer/scorer contacts. Solver and Reviewer each retain four original candidates plus unchanged control/A/A on the same100 inputs,600 trajectories per local family. See `docs/receipts/continuation/2026-10-08-local-k4-preparations-and-serving-ready-v1.json`. Candidate count and path budgets remain configuration-derived.
