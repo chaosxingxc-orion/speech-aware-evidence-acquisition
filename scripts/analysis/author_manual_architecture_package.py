@@ -192,7 +192,17 @@ def validate_inputs(spec, *, repo_root, data_root):
     )
     members, measurement_profile = _member_inputs(spec, stage, repo_root)
     decision = json.loads(_read_pin(spec["decision_receipt"], data_root))
+    require(spec.get("execution_identity_map") == decision.get("execution_identity_map"),
+            "authoring and root execution identity maps differ")
     extent = spec.get("architecture_extent")
+    if spec.get("execution_identity_map") is not None:
+        from speech_aware_evidence_acquisition.rails.architecture_natural_registration import _mapped_execution_cells
+        population = json.loads(_read_pin(spec["experiment_population"], repo_root))
+        mapped = _mapped_execution_cells(spec["execution_identity_map"], population,
+                                        spec["experiment_population"], extent, repo_root=repo_root)
+        require([(label, c.document["cell_id"], configured.config_hash) for label, c, configured in mapped]
+                == [(label, c["cell_id"], receipt["config_hash"]) for label, _, receipt, c, _, _ in members],
+                "authoring preparation differs from its complete pinned execution identity map")
     require(decision.get("architecture_extent") == extent
             and all(receipt.get("architecture_extent") == extent
                     for _, _, receipt, _, _, _ in members),
@@ -454,6 +464,8 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
                 }
                 if spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR:
                     document["architecture_extent"] = deepcopy(spec["architecture_extent"])
+                if spec.get("execution_identity_map") is not None:
+                    document["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
                 plans.append(document)
                 target = package / (label + "-" + role + "-plan-registered-v1.json")
                 write_new(target, document)
@@ -593,6 +605,9 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
     if spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR:
         wrapper["architecture_extent"] = deepcopy(spec["architecture_extent"])
         recipe["architecture_extent"] = deepcopy(spec["architecture_extent"])
+    if spec.get("execution_identity_map") is not None:
+        wrapper["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
+        recipe["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
     source_code = {
         "reader": raw_pin(
             repo_root / "scripts/analysis/system_text_pilot_read.py", repo_root

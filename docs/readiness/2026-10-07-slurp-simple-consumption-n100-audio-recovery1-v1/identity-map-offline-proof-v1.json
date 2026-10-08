@@ -1,0 +1,79 @@
+{
+  "actual_producer_invoked": false,
+  "checks": [
+    {
+      "deselected": 13,
+      "exit_code": 1,
+      "failed": 1,
+      "passed": 0,
+      "reason": "Approved map interface not implemented",
+      "stage": "red",
+      "tool_chunk": "df3483"
+    },
+    {
+      "exit_code": 1,
+      "failed": 1,
+      "passed": 78,
+      "reason": "New policy-mutation fixture addressed a decoding key absent from baseline; corrected to evidence_source mutation without changing source",
+      "stage": "first-complete-run",
+      "tool_chunk": "83921a"
+    },
+    {
+      "exit_code": 0,
+      "passed": 118,
+      "seconds": 9.29,
+      "stage": "final",
+      "suites": [
+        "test_manual_architecture_identity_map",
+        "test_architecture_fixed_roster_registration",
+        "test_architecture_n20_registration",
+        "test_manual_architecture_authoring"
+      ],
+      "tool_chunks": [
+        "7b75b1",
+        "99be85"
+      ]
+    }
+  ],
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "coverage_limit": "Producer tests exercise all four real predecessor config projections and real preparation API on synthetic sealed outputs. Native runtime/source acquisition and actual all-four fresh envelope preparation remain uninvoked until reviewed integrated audio source.",
+  "implementation_and_tests": {
+    "scripts/analysis/author_manual_architecture_package.py": "6221bce2622cd1010802d9c994136d834c50b2b7b5b74c3127ec57b81bc9cf04",
+    "src/speech_aware_evidence_acquisition/rails/architecture_natural_registration.py": "640ff0c24e2b165a4aea5c4a5cefd97ff71a537ce1bda766b44345b79335d1f9",
+    "tests/unit/test_manual_architecture_authoring.py": "74cf7abd81ff68d8797e793e75b1b9cb41696b2a8dbc1a96d7ef6cb96f4b71b9",
+    "tests/unit/test_manual_architecture_identity_map.py": "7f6e12e1c10f2363632d3d7e591c058fee9ed6a32df38690ddc56042ceb0a61c"
+  },
+  "old_source_or_output_bytes_rewritten": false,
+  "producer_and_test_pins": {
+    "scripts/preparation/prepare_manual_audio_recovery.py": "af48aec74975e5913f7a9f3ed91f21b3baf8ef683b6f8a7c48e1ff82670c283c",
+    "tests/unit/test_manual_audio_recovery_preparation.py": "3b3a0188b11249adebfdae311c2e15525495865b96ebe0bd137b3737f70fe24b"
+  },
+  "producer_checks": [
+    {
+      "exit_code": 1,
+      "failed": 1,
+      "passed": 13,
+      "reason": "Test fixture omitted load_artifact required raw SHA argument; actual producer already supplies it",
+      "tool_chunk": "90f098"
+    },
+    {
+      "exit_code": 0,
+      "passed": 14,
+      "seconds": 0.73,
+      "tool_chunk": "dc9626"
+    }
+  ],
+  "read_authorized": false,
+  "root_disposition": {
+    "relpath": "coordination/simple-consumption-n100-audio-recovery1-v1/root-engineering-disposition-v1.json",
+    "sha256": "b5c246b2611076b03a3dffca9b9b39cae17a7674012cf053df07c4b8be45e8c2"
+  },
+  "runtime_admission": false,
+  "schema": "saea-manual-architecture-identity-map-offline-proof-v1",
+  "status": "SOURCE AND SYNTHETIC PASS; RECOVERY PREPARATION PENDING",
+  "task_quality_read": false
+}

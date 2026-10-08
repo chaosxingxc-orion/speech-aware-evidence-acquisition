@@ -787,3 +787,47 @@ def test_fixed_roster_metadata_refuses_before_write(tmp_path, monkeypatch, case)
     assert not warm and not checks
     for label, raw in originals.items():
         assert (repo / inputs["preparation_receipts"][label]["relpath"]).read_bytes() == raw
+
+
+
+def test_optional_map_propagates_exactly_without_changing_unsigned_authority(tmp_path, monkeypatch):
+    repo, data, inputs, stage, _, _, _ = fixture(tmp_path, monkeypatch)
+    map_path = repo / "identity-map.json"
+    helper.write_new(map_path, {"schema": "synthetic map projection seam"})
+    map_pin = helper.raw_pin(map_path, repo)
+    inputs["execution_identity_map"] = map_pin
+    decision_path = data / inputs["decision_receipt"]["relpath"]
+    decision = json.loads(decision_path.read_bytes())
+    decision["execution_identity_map"] = map_pin
+    decision_path.write_bytes(helper.serialized(decision))
+    inputs["decision_receipt"] = helper.raw_pin(decision_path, data)
+    def mapped(pin, population, pop_pin, extent, *, repo_root):
+        assert pin == map_pin
+        rows = []
+        for label in stage["control_members"] + stage["candidate_members"]:
+            c, = helper.load_campaign_cells(repo_root, label)
+            d = c.document
+            config = helper.compose(repo_root, d["model_fragment"], d["dataset_fragment"], d["baseline_fragment"], label)
+            rows.append((label, c, config))
+        return rows
+    monkeypatch.setattr(pair_api, "_mapped_execution_cells", mapped)
+    helper.author(inputs, repo_root=repo, data_root=data)
+    package = repo / inputs["package_relpath"]
+    for label in stage["control_members"] + stage["candidate_members"]:
+        for role in ("generation", "fit"):
+            plan = json.loads((package / (label + "-" + role + "-plan-registered-v1.json")).read_bytes())
+            assert plan["execution_identity_map"] == map_pin
+            assert plan["status"].startswith("PROSPECTIVE UNSIGNED")
+    intent = json.loads((package / "manual-architecture-analysis-intent-v1.json").read_bytes())
+    assert intent["execution_identity_map"] == intent["analysis_definition"]["execution_identity_map"] == map_pin
+    assert not json.loads((package / "root-read-draft-v1.json").read_bytes())["read_authorized"]
+
+
+def test_root_map_mismatch_refuses_before_authoring_writes(tmp_path, monkeypatch):
+    repo, data, inputs, _, _, checks, warm = fixture(tmp_path, monkeypatch)
+    inputs["execution_identity_map"] = {"relpath": "missing.json", "sha256": "f" * 64}
+    before = {p: p.read_bytes() for p in (repo / "configs/experiment").glob("*.json")}
+    with pytest.raises(PolicyError, match="identity maps differ"):
+        helper.author(inputs, repo_root=repo, data_root=data)
+    assert not (repo / inputs["package_relpath"]).exists() and not warm and not checks
+    assert all(p.read_bytes() == raw for p, raw in before.items())

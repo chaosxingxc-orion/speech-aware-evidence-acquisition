@@ -506,6 +506,83 @@ def _require_prepared_implementation(prepared, repo_root, values):
                 for name, path in paths.items()), "N20 prepared implementation source differs")
 
 
+def _mapped_execution_cells(pin, population, population_pin, extent, *, repo_root):
+    """Compose a complete pinned successor map without pinning its future config."""
+    root = Path(repo_root).resolve()
+    mapping = json.loads(_read_pin(pin, root))
+    labels = [m["member_id"] for m in population["architecture"]["members"]]
+    require(isinstance(mapping, dict) and set(mapping) == {
+        "schema", "experiment_population", "architecture_extent", "members"}
+        and mapping["schema"] == "saea-manual-architecture-execution-identity-map-v1"
+        and mapping["experiment_population"] == population_pin
+        and mapping["architecture_extent"] == extent
+        and isinstance(mapping["members"], list)
+        and [m.get("member_id") for m in mapping["members"]] == labels,
+        "manual execution identity map scope or ordered membership differs")
+    keys = {"member_id", "experiment", "cell_id", "run_id", "attempt_id", "fit_run_id",
+            "fit_attempt_id", "planned_speech_audio_seconds", "predecessor_experiment", "predecessor_baseline"}
+    current_runs, current_attempts, old_runs, old_attempts, experiments, result = [], [], [], [], [], []
+    for row in mapping["members"]:
+        require(isinstance(row, dict) and set(row) == keys
+                and all(isinstance(row[k], str) and row[k].strip() for k in (
+                    "experiment", "cell_id", "run_id", "attempt_id", "fit_run_id", "fit_attempt_id"))
+                and type(row["planned_speech_audio_seconds"]) is int
+                and row["planned_speech_audio_seconds"] > 0,
+                "manual execution identity map fields differ")
+        prior_stem = "slurp-native-stage3-simple-consumption-" + row["member_id"] + (
+            "-n" + str(extent["count"]) + "-v1" if extent is not None else "-n20-v2")
+        require(row["predecessor_experiment"]["relpath"] == "configs/experiment/" + prior_stem + ".json"
+                and row["experiment"] != prior_stem and row["experiment"] == row["cell_id"]
+                and all(c.isalnum() or c == "-" for c in row["experiment"]),
+                "manual execution predecessor or successor stem differs")
+        old_exp = json.loads(_read_pin(row["predecessor_experiment"], root))
+        require(len(old_exp.get("cells", [])) == 1, "manual predecessor needs one exact cell")
+        old_cell = old_exp["cells"][0]
+        require(old_cell["cell_id"] == prior_stem
+                and row["predecessor_baseline"]["relpath"] == "configs/baseline/" + old_cell["baseline_fragment"] + ".json",
+                "manual predecessor baseline binding differs")
+        old_base = json.loads(_read_pin(row["predecessor_baseline"], root))
+        expected_exp, expected_base = deepcopy(old_exp), deepcopy(old_base)
+        expected_exp["experiment_id"] = row["run_id"]
+        require(row["planned_speech_audio_seconds"] >= old_exp["execution_plan"]["planned_speech_audio_seconds"],
+                "manual successor cannot reduce its declared audio allowance")
+        expected_exp["execution_plan"]["planned_speech_audio_seconds"] = row["planned_speech_audio_seconds"]
+        expected_cell = expected_exp["cells"][0]
+        expected_cell.update(cell_id=row["cell_id"], run_id=row["run_id"], attempt_id=row["attempt_id"],
+                             baseline_fragment=row["experiment"])
+        expected_cell.pop("readiness", None)
+        expected_base["native_contact_fit"].update(run_id=row["fit_run_id"], attempt_id=row["fit_attempt_id"])
+        expected_base.pop("prepared_phase_supply", None)
+        actual_exp = json.loads((root / "configs/experiment" / (row["experiment"] + ".json")).read_bytes())
+        actual_base = json.loads((root / "configs/baseline" / (row["experiment"] + ".json")).read_bytes())
+        projected_exp, projected_base = deepcopy(actual_exp), deepcopy(actual_base)
+        require(len(projected_exp.get("cells", [])) == 1, "manual successor needs one exact cell")
+        projected_exp["cells"][0].pop("readiness", None)
+        projected_base.pop("prepared_phase_supply", None)
+        require(projected_exp == expected_exp and projected_base == expected_base,
+                "manual successor changed fields outside the pinned identity/audio/admission projection")
+        cell, = load_campaign_cells(root, row["experiment"])
+        c = cell.document
+        configured = compose(root, c["model_fragment"], c["dataset_fragment"], c["baseline_fragment"], row["experiment"])
+        require(configured.values["experiment_population"] == population_pin
+                and configured.values.get("architecture_extent") == extent
+                and configured.values["architecture_member"] == row["member_id"],
+                "manual successor composed population or member differs")
+        current_runs.extend([row["run_id"], row["fit_run_id"]])
+        current_attempts.extend([row["attempt_id"], row["fit_attempt_id"]])
+        old_runs.extend([old_cell["run_id"], old_base["native_contact_fit"]["run_id"]])
+        old_attempts.extend([old_cell["attempt_id"], old_base["native_contact_fit"]["attempt_id"]])
+        experiments.append(row["experiment"])
+        result.append((row["member_id"], cell, configured))
+    require(len(current_runs) == len(set(current_runs))
+            and len(current_attempts) == len(set(current_attempts))
+            and len(experiments) == len(set(experiments))
+            and not set(current_runs).intersection(old_runs)
+            and not set(current_attempts).intersection(old_attempts),
+            "manual successor identities are duplicated or reuse a predecessor")
+    return result
+
+
 def _require_n20_root_decision(plans, population, natural, *, repo_root, data_root, extent=None):
     """Require one decided owner227 admission for the exact prospective family."""
     decision_pin = plans["generation"].get("decision_receipt")
@@ -524,16 +601,27 @@ def _require_n20_root_decision(plans, population, natural, *, repo_root, data_ro
     require(decision.get("architecture_extent") == extent
             and all(p.get("architecture_extent") == extent for p in plans.values()),
             "manual root decision extent differs")
+    map_pin = decision.get("execution_identity_map")
+    require(all(p.get("execution_identity_map") == map_pin for p in plans.values()),
+            "manual root decision identity maps differ")
+    if map_pin is not None:
+        cells = _mapped_execution_cells(map_pin, population, plans["generation"]["experiment_population"],
+                                        extent, repo_root=repo_root)
+    else:
+        cells = []
+        for member in population["architecture"]["members"]:
+            stem = "slurp-native-stage3-simple-consumption-" + member["member_id"] + ("-n" + str(extent["count"]) + "-v1" if extent is not None else "-n20-v2")
+            cell, = load_campaign_cells(repo_root, stem)
+            document = cell.document
+            config = compose(repo_root, document["model_fragment"], document["dataset_fragment"],
+                             document["baseline_fragment"], stem)
+            cells.append((member["member_id"], cell, config))
     expected_ids = []
-    for member in population["architecture"]["members"]:
-        stem = "slurp-native-stage3-simple-consumption-" + member["member_id"] + ("-n" + str(extent["count"]) + "-v1" if extent is not None else "-n20-v2")
-        cell, = load_campaign_cells(repo_root, stem)
+    for member_id, cell, config in cells:
         document = cell.document
-        config = compose(repo_root, document["model_fragment"], document["dataset_fragment"],
-                         document["baseline_fragment"], stem)
         fit = config.values["native_contact_fit"]
         expected_ids.extend([document["run_id"], fit["run_id"]])
-        if member["member_id"] == plans["generation"]["architecture_member"]:
+        if member_id == plans["generation"]["architecture_member"]:
             for role, run_id, attempt_id in (("generation", document["run_id"], document["attempt_id"]),
                                             ("fit", fit["run_id"], fit["attempt_id"])):
                 plan = plans[role]
