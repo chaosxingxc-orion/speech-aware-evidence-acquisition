@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Solver configured capacity qualified; Reviewer registration frozen (2026-10-08T22:10:52.950344+00:00)
+
+All six original Solver opportunity3 maximum-request capacity members and original Windows outer process exited0. The unchanged verifier qualified936 tokenizer endpoints and48 measured request shapes, with zero task generation or official scoring. Full output and structural reserves remain; minimum additional margin is6749 tokens. Its15minute monitor was deleted after terminal verification. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-update3-capacity-qualified-v1.json`. The exact next natural4 decision is prepared for24 complete structural trajectories with48 model/192 actual-request FIT endpoints at most and zero scores; original ready/warm, registered plans and frozen/live admission remain required. N100 remains held behind this proof.
+
+Reviewer update2 original capacity registration exited0 and its separate frozen worker was created before this evidence-only integration. Its original frozen checker/finalizer may still be running; use their exact original terminals before launch. Preserve all original workers and outputs. Candidate count remains configuration-derived K4 plus separate control/A/A for each module, with the same N100 development roster and isolated role edits/learning feedback. GPU execution stays serial; CPU preparation and analysis overlap.
+
+Independent Astra Ultra source review accepted the narrow scoped-assets error-parity successor at eabc8cb36ac4866626b5bd42066378c3374e2cca after152 synthetic tests and a predecessor/successor regression. Both review registrations and all originals are preserved. The optional implementation remains unmerged and inactive; no real preparation speedup is claimed. This evidence integration changes no production source or active policy. Keep4GiB floors and create a fresh15minute monitor only on actual GPU launch. No stable benefit, adoption or learning advantage is established; the broad goal remains active/incomplete and human review is required before8x400.
+
 ## Reviewer n100-k4-update2-v1 maximum-request capacity registered (2026-10-08T22:10:01.129538+00:00)
 
 The reviewed metadata successor passed the actual canonical execution-map gate. All configured reviewer candidates and controls were registered once through the unchanged capacity registrar. Copied historical helpers passed57 tests with one explicitly excluded historical fixed-descriptor fixture; the narrow source correction passed73 independent tests. Exact new ledger date/carrier captions were corrected before freeze, preserving the complete original and all historical rows. See `docs/receipts/continuation/2026-10-08-local-reviewer-n100-k4-update2-v1-capacity-registered-v1.json`.
@@ -7379,7 +7387,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T22:10:01.129538+00:00
+Last refreshed: 2026-10-08T22:10:52.950344+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

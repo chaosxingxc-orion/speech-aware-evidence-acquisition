@@ -1,0 +1,18 @@
+{
+  "at_utc": "2026-10-08T21:39:52.881857+00:00",
+  "current_experiment_sources_changed": false,
+  "main_integration": "PENDING_SERIAL_INTEGRATION",
+  "previous_ledger": {
+    "path": "/home/chao/saea-worktrees/codex-scoped-assets-source-review-v1/docs/exposure-ledger.md",
+    "sha256": "71485c821e846a1dbecda6e7d5d2b3d7634af285bd4710ebf9167b041085690b"
+  },
+  "registration_base": "28d927814aaed9cc16d105cd3119eb4fa2c1fe6d",
+  "review_plan": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-scoped-assets-astra-review-v1/review-plan-v1.json",
+    "sha256": "c5c77f8a2050cf4bbcdb5a9b0e8f080d39fc42b2b4da137b874128ee1a239054"
+  },
+  "run_id": "SAEA-SLURP-SCOPED-ASSETS-SOURCE-REVIEW-V1",
+  "schema": "saea-root-source-review-registration-v1",
+  "source_commit": "1937638d483d003ac35e73a43612b4b3f589578e",
+  "status": "REGISTERED_PENDING_ORIGINAL_REVIEW_CONTACT"
+}

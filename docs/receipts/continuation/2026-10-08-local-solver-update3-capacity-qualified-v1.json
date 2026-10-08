@@ -1,0 +1,22 @@
+{
+  "at_utc": "2026-10-08T22:10:52.950344+00:00",
+  "capacity_handoff": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-capacity-v1/root-complete-handoff-v1.json",
+    "sha256": "893d09c3c26264ff9f0b3039eed9eba373d644f244fef56ea5385bcc1ae7dfbf"
+  },
+  "registration_only_source_commit": "440353115f4e99d82ee8e221c64f4c4303c00b0a",
+  "reviewer_frozen_commit": "94be0f2385a8d22486a975ca3d951e651c20b1a4",
+  "reviewer_frozen_worker": "/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-capacity-frozen-v1",
+  "reviewer_registration_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-capacity-v1/root-original-registration-exit-v1.json",
+    "sha256": "4c4a7ac7c4a4cc20aace60d3f6001e44cc89a215c8839fbf0edf9a8f5382b488"
+  },
+  "runtime_dispatch": false,
+  "schema": "saea-root-local-capacity-qualified-v1",
+  "source_integration": "Review registration and evidence only. The optional scoped-asset implementation remains unmerged and inactive.",
+  "source_review_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-scoped-assets-astra-review-v2/root-review-disposition-v1.json",
+    "sha256": "6f2d3412facf46599920252bcdca58fd9fbb2915602cb3ba4246c48978a33aa3"
+  },
+  "status": "COMPLETE_ORIGINAL_CAPACITY_QUALIFIED"
+}
