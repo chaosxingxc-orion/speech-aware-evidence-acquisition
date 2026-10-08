@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Reviewer capacity qualified; Solver configured natural proof launched (2026-10-08T23:03:45.105163+00:00)
+
+All six original Reviewer update2 capacity members and Windows outer task exited zero. The unchanged complete-family qualifier passed1782 tokenizer endpoints and264 measured requests with zero generation and official scoring; minimum margin after full output and structural reserves is5494 tokens. Original owner processes were absent and its15minute monitor was deleted. Exact capacity evidence is DATA `coordination/local-reviewer-n100-k4-update2-capacity-v1/root-complete-handoff-v1.json`.
+
+Independent Astra Ultra source review approved the configured natural dispatch source after75 supplied tests plus33 additional synthetic cases. Source approval alone does not admit runtime. Root separately verified the intervening original capacity terminal/qualification, exact completed previous N100 control custody and fresh no-writer/service/task/resource state. The reviewed normal transition preserved old controls and made exactly one Windows task request. No capacity lifecycle was aliased to N100/natural, and no STOP or failed attempt was retried.
+
+Solver original natural driver epoch is2026-10-08T23:01:47Z, frozen worker `/home/chao/saea-worktrees/codex-local-solver-n100-k4-update3-natural4-frozen-v1` atbd5b4b8623c01803a53b8560c300e633953b36b2, queue SHAf823464b10445c272ee5b47d7cc4fd25e985d044865b6fb4a35b383583d9675c. Entry is DATA `coordination/local-solver-n100-k4-update3-natural4-v1`. Inspect every configured member, including control/A/A and all four candidates. This separate proof admits24 complete structural trajectories, at most48 model contacts and192 actual-request FIT endpoints, zero official scores. Successful attempts intentionally remain OPENED with COMPLETED generation and prepared score specifications. Only root complete structural qualification/READ may inspect role/control validity; no task quality or learner feedback is admitted. Its15minute `slurp-solver-update3-structural-health` monitor is active until the original terminal. Source/launch evidence: `docs/receipts/continuation/2026-10-08-reviewer-update2-capacity-qualified-solver-update3-natural-launched-v1.json`.
+
+Reviewer next natural readiness can proceed on CPU through its own completed capacity proof while Solver uses the one serial GPU. N100 remains behind each module's complete structural proof and exact admission. Keep four candidates and separate controls per module, fixed current N100 assets, feedback isolation,4GiB floors and full reserves. No stable benefit, adoption or learning gain is established; broad goal remains active and incomplete. Human review remains required before8x400. Preserve all closed carrier lines and held authorizations.
+
 ## Reviewer configured capacity original Windows task started (2026-10-08T22:39:31.060498+00:00)
 
 The complete original frozen checker and finalizer exited zero. Root revalidated current process/service identity, absent STOP/flight, available generation guard, fresh healthy four-slot telemetry and the4GiB resource floor, then launched the exact registered capacity family once. Entry is DATA `coordination/local-reviewer-n100-k4-update2-capacity-v1`, registration SHA8fee4797b4d21dd85d2152bfc080a1f10975070f1a512309e5969b58973e2787, frozen worker `/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-capacity-frozen-v1` at94be0f2385a8d22486a975ca3d951e651c20b1a4. Original Windows owner PID26036 started2026-10-08T22:37:47.0293716+00:00; revalidate live identity. Source receipt: `docs/receipts/continuation/2026-10-08-local-reviewer-n100-k4-update2-v1-capacity-launched-v1.json`.
@@ -7407,7 +7417,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T22:39:31.060498+00:00
+Last refreshed: 2026-10-08T23:03:45.105163+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

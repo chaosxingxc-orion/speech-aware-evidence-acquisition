@@ -1,0 +1,53 @@
+{
+  "actual_driver_start": {
+    "at": "2026-10-08T23:01:47Z",
+    "detail": {
+      "flight_commit": "bd5b4b8623c01803a53b8560c300e633953b36b2",
+      "queue": "/home/chao/batch-queue.json"
+    },
+    "event": "driver-start"
+  },
+  "at_utc": "2026-10-08T23:03:45.105163+00:00",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "monitor": {
+    "at_utc": "2026-10-08T23:03:45.105163+00:00",
+    "delete_after_original_terminal": true,
+    "id": "slurp-solver-update3-structural-health",
+    "interval_minutes": 15,
+    "status": "ACTIVE"
+  },
+  "original_source_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-dispatch-astra-review-v1/original-review-v1.json",
+    "sha256": "4ebba0be3ab9ab4ed4b71701c8459190031012d01c50be0ba4f5d793ee0f41b9"
+  },
+  "reviewer_capacity": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-capacity-v1/root-complete-handoff-v1.json",
+    "sha256": "7521922c0617bd3ceaba7ef0deb45e260ed23aa1829c42e2e5aac78c14d2176f"
+  },
+  "schema": "saea-root-local-capacity-to-natural-continuation-v1",
+  "scope": "Original configured natural structural family only, no official scores or quality read. Intervening capacity complete; genuine prior batch controls preserved and freshly verified. No old attempt replay or recovery.",
+  "solver_decided_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-natural-dispatch-input-v1.json",
+    "sha256": "fcb6a620da5b5325f12ce4e8fdc1e823a0c91c57e284fbd8d9a9e6de22f38721"
+  },
+  "solver_normal_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-natural-control-transition-v1.json",
+    "sha256": "36eb43e4b36e90465d5447a74c99e840a55a2b86d145d5bff7a64e23b8245b2b"
+  },
+  "solver_preparation_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-original-dispatch-preparation-exit-v1.json",
+    "sha256": "a4db7c2601bec5facc12b342952501e68b51efa3c638e0726d558de488634911"
+  },
+  "solver_request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-natural-dispatch-request-v1.json",
+    "sha256": "0fefbc02a497c57c9a53226ecc843523b8d8661fb46c7aa998d77fa0bd6db240"
+  },
+  "solver_request_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-natural-task-request-exit-v1.json",
+    "sha256": "f0049253faac74537d7ea51795a6e8d2d93d4a8eceddd2270f434ac2618f1d3e"
+  },
+  "source_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-natural-dispatch-astra-review-v1/root-review-disposition-v1.json",
+    "sha256": "cfc9d4ae2adcafa824a7f1e2febb617a49d6d33f83c710d8f14a47947657ecc3"
+  }
+}
