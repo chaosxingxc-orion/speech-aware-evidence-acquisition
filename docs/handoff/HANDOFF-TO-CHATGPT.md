@@ -1,5 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Corrected N100 complete; consume qualified results, preserve terminal incident (2026-10-08T02:31:49.519135+00:00)
+
+All four100-row members are independently FINALIZED with verified seals, exactly one successful complete original official score each and zero failed jobs. Root countersigned and completed all member reads and the exact whole-family READ. See `docs/results/2026-10-08-simple-consumption-n100-complete-family.md` and `docs/receipts/continuation/2026-10-08-simple-consumption-n100-complete-family-read-v1.json`. No new scoring/model/tokenizer contact or learner export occurred. Astra Ultra reviewed member aggregates and the complete comparison.
+
+Official seed/A/A/review-off/lookup SLU-F1 is62.4395/62.7507/60.9607/57.6237percent; intent83/86/87/84percent; all400 reliably deliver. Review-off cuts model calls610 to200 and mean sample32.790s to17.232s, but its F1 difference-1.479pp has95percent interval[-5.331,+2.718]. Do not claim noninferiority or adoption. Lookup is not promoted. Seed remains formal incumbent; the favorable A/A draw is not a new policy. Process evidence targets raw parsing, empty-entity false fills and alarm-to-repair conversion; distinguish deterministic postprocessing from model correction. Full-family process derivative remains unavailable; separately signed member diagnostics are explicit and source-bound.
+
+Campaign epoch2026-10-08T01:20:29Z returned zero at02:14:04Z. The outer inspector ran from MAIN while its repo-root pointed to frozen7cfdcf82, causing an argparse refusal before member inspection and preserving STOP. Root independently qualified all four results. Preserve original controls/logs/frozen worker; fix only future source selection, with no replay, rerun, reseal or score replay. The Windows task is terminal and its job-scoped15minute monitor is deleted. No cache/service/control change occurred.4GiB floors remain.
+
+The corrected audio bounds3820/3820/1500/1500 and call bounds1300/1300/200/300 follow actual roster durations and legal full role paths. All four completed within bounds. Next prepare short source-bound consumption templates on this same100-input panel, with prospective proposal/feedback registration, exact FIT/structural admission and same-chain A/A before another continuous four-system campaign. Keep current manual report out of learning inputs until separately admitted. No stable benefit/learning gain, no automatic400 growth, and human approval remains required before8x400 or equivalent split. Other-carrier holds remain separate.
+
+
 ## First N100 member read; continuous campaign remains active (2026-10-08T02:00:36.423039+00:00)
 
 The corrected seed is independently FINALIZED with100 verified rows, one successful complete official score and zero failed jobs. Root countersigned only its exact member READ and completed the aggregate-only descriptive reader with no new model/tokenizer/scorer contacts. Astra Ultra independently reviewed the aggregates. See `docs/receipts/continuation/2026-10-08-simple-consumption-n100-seed-descriptive-read-v1.json`. The later A/A also qualified operationally and has its own exact root member READ; its descriptive reader is in progress. Full-family READ remains unsigned, and later-member comparisons and learner export remain closed.
@@ -7062,7 +7073,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T02:00:36.423039+00:00
+Last refreshed: 2026-10-08T02:31:49.519135+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
