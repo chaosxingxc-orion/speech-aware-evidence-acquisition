@@ -202,6 +202,15 @@ def validate_inputs(spec, *, repo_root, data_root):
         qualified = json.loads(_read_pin(prerequisite["qualification"], data_root))
         validate_compatibility(json.loads(_read_pin(spec["natural_source_compatibility"], data_root)),
             prerequisite, qualified, decision, repo_root=repo_root, data_root=data_root)
+    if spec["architecture_proof"] in reader.LOCAL_NODE_SELECTORS:
+        from speech_aware_evidence_acquisition.rails.local_node_panel import require_local_node_basis
+        population = json.loads(_read_pin(spec["experiment_population"], repo_root))
+        require(spec.get("local_node_basis") == decision.get("local_node_basis")
+                and spec.get("natural_source_compatibility") is None,
+                "local node authoring requires its exact basis and fresh proof")
+        require_local_node_basis(spec["local_node_basis"], population, repo_root=repo_root, data_root=data_root)
+    else:
+        require(spec.get("local_node_basis") is None, "local node basis requires its named opt-in selector")
     extent = spec.get("architecture_extent")
     if spec.get("execution_identity_map") is not None:
         from speech_aware_evidence_acquisition.rails.architecture_natural_registration import _mapped_execution_cells
@@ -472,6 +481,8 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
                 }
                 if spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR:
                     document["architecture_extent"] = deepcopy(spec["architecture_extent"])
+                if spec["architecture_proof"] in reader.LOCAL_NODE_SELECTORS:
+                    document["local_node_basis"] = deepcopy(spec["local_node_basis"])
                 if spec.get("natural_source_compatibility") is not None:
                     document["natural_source_compatibility"] = deepcopy(spec["natural_source_compatibility"])
                 if spec.get("execution_identity_map") is not None:
@@ -612,6 +623,9 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
         capacity_prerequisite=spec["capacity_prerequisite"],
         natural_prerequisite=spec["natural_prerequisite"],
     )
+    if spec["architecture_proof"] in reader.LOCAL_NODE_SELECTORS:
+        wrapper["local_node_basis"] = deepcopy(spec["local_node_basis"])
+        recipe["local_node_basis"] = deepcopy(spec["local_node_basis"])
     if spec["architecture_proof"] == reader.FIXED_ROSTER_SELECTOR:
         wrapper["architecture_extent"] = deepcopy(spec["architecture_extent"])
         recipe["architecture_extent"] = deepcopy(spec["architecture_extent"])

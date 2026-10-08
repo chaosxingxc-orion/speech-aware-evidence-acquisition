@@ -16,7 +16,8 @@ from .system_text_update import _describe_complete_cohort
 
 SELECTOR = "manual-architecture-n20-v1"
 FIXED_ROSTER_SELECTOR = "manual-architecture-fixed-roster-v1"
-SELECTORS = (SELECTOR, FIXED_ROSTER_SELECTOR)
+from ..rails.local_node_panel import SELECTORS as LOCAL_NODE_SELECTORS
+SELECTORS = (SELECTOR, FIXED_ROSTER_SELECTOR, *LOCAL_NODE_SELECTORS)
 REGISTRATION = "saea-manual-architecture-analysis-registration-v1"
 SCHEMA = "saea-complete-manual-architecture-evidence-v1"
 
@@ -186,6 +187,11 @@ def validate_source_registration(recipe, registration, owner, *, repo_root, data
             ),
             "manual registered pair or immutable source binding differs",
         )
+        if recipe["architecture_proof"] in LOCAL_NODE_SELECTORS:
+            require(recipe.get("local_node_basis") == registration.get("local_node_basis")
+                    == configured.values.get("local_node_basis")
+                    and all(p.get("local_node_basis") == recipe.get("local_node_basis") for p in pair),
+                    "local node READ basis differs")
         runtime = checked["runtime_sample_ids"]
         require(
             len(runtime) == len(set(runtime)) == stage["N"]

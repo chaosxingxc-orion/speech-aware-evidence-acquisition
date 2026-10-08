@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Prepare held audio-recovery identities by re-enveloping unchanged supplied bytes."""
+"""Prepare held recovery/local-node identities with existing immutable supply bytes.
+
+The local schema accepts only root-compiled policies and pinned original proposal
+custody. It prepares fresh configurations; it never compiles templates or contacts
+a model, tokenizer, scorer or network service.
+"""
 import argparse
 from copy import deepcopy
 from dataclasses import asdict
@@ -34,7 +39,7 @@ def save(path, value):
 
 
 def refuse(*args, **kwargs):
-    raise RuntimeError("Audio recovery preparation forbids model, tokenizer, scorer and network contacts")
+    raise RuntimeError("Manual preparation forbids model, tokenizer, scorer and network contacts")
 
 
 def source_head(root, expected):
@@ -217,6 +222,282 @@ def prepare(spec, *, repo_root, data_root):
         return summary
 
 
+
+
+def local_companion_documents(generation_experiment, generation_baseline, row, *, kind, graph_view,
+                              graph_dataset, capacity_budget):
+    """Derive fresh proof cells from one held local policy; keep original data/knowledge."""
+    from speech_aware_evidence_acquisition.rails.controllers import default_phase_program
+    from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config
+    from speech_aware_evidence_acquisition.data.splits import prefixed, split_identity_hash
+    ep, bp = deepcopy(generation_experiment), deepcopy(generation_baseline)
+    bp.pop("prepared_phase_supply", None)
+    native = load_native_episode_config({**bp, "carrier_lock_key": "slurp"}, default_phase_program(bp["policy"]))
+    require(kind in {"capacity", "graph", "natural"}, "unknown local node proof companion")
+    c = ep["cells"][0]
+    c.update(cell_id=row["cell_id"], baseline_fragment=row["experiment"], run_id=row["run_id"],
+             attempt_id=row["attempt_id"], readiness={"state": "held", "reason": "Fresh local node proof; exact root registration pending.",
+                                                   "requirements": []})
+    ep["experiment_id"] = row["run_id"]
+    if kind == "capacity":
+        require(row["run_id"].endswith("-FIT-V1"), "local capacity must use a separately named FIT identity")
+        cap = capacity_budget["contact_cap"]
+        c["allowed_execution_stages"] = ["check", "prepare-supply", "prompt-fit"]
+        bp.pop("native_contact_fit", None)
+    else:
+        ids = [item["sample_id"] for item in graph_view["items"]]
+        require(len(ids) == len(set(ids)) == 4
+                and ids == ep["populations"][0]["ids"][:4], "local proof must preserve the existing graph4 prefix")
+        cap = len(ids) * native.max_contacts
+        c["dataset_fragment"] = graph_dataset
+        c["allowed_execution_stages"] = ["check", "prepare-supply"] if kind == "graph" else ["check", "prepare-supply", "worker"]
+        ep["populations"] = [{"dataset_fragment": graph_dataset, "ids": ids}]
+        ep["population"].update(count=len(ids), split_identity_hash=split_identity_hash(prefixed("slurp", ids)),
+                                roster_receipt="docs/readiness/2026-10-07-slurp-simple-consumption-n100-preparation-v1/graph-roster-v1.json")
+        ep["split_id"] = graph_view["split_name"]
+        ep["stage3_measurement"].update(rows=len(ids), read_roster=graph_view["split_name"])
+        import math
+        ep["execution_plan"]["planned_speech_audio_seconds"] = math.ceil(math.fsum(
+            item["audio_seconds"] * native.max_contacts for item in graph_view["items"]))
+        if kind == "graph":
+            bp.pop("native_contact_fit", None)
+        else:
+            bp["native_contact_fit"].update(run_id=row["fit_run_id"], attempt_id=row["fit_attempt_id"],
+                contact_cap=cap * (generation_baseline["native_contact_fit"]["contact_cap"]
+                                   // generation_experiment["execution_plan"]["planned_model_calls"]))
+    ep["execution_plan"]["planned_model_calls"] = cap
+    ep["family_budget"] = {"complete_system_trajectories": 0, "generation_calls_cap": 0,
+                          "official_complete_scoring_jobs": 0, "tokenizer_endpoint_cap": cap if kind == "capacity" else 0}
+    return ep, bp
+
+
+def local_capacity_budget(experiment, baseline, *, slot_value_count, intent_value_count):
+    """Supply explicit carrier and experiment profile to the shared pure estimator."""
+    from speech_aware_evidence_acquisition.analysis.native_graph_capacity import native_graph_capacity_budget
+    profile = experiment["native_graph_capacity_profile"]
+    return native_graph_capacity_budget({**baseline, "carrier_lock_key": "slurp",
+        "native_graph_capacity_profile": profile}, slot_value_count=slot_value_count,
+        intent_value_count=intent_value_count, graph_rows=4, media_parts=1, profile=profile)
+
+
+def prepare_local_companions(spec, *, root, data, pending, original, package):
+    """Prepare configured graph4/capacity/natural4 with the same supply wrapper path."""
+    from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot
+    graph_dataset = spec["graph_dataset_fragment"]
+    require(graph_dataset == "slurp-speech-native-simple-consumption-n100-graph4-v1",
+            "local node must reuse the original graph4 dataset fragment")
+    graph_view = json.loads((root / "configs/dataset" / (graph_dataset + ".json")).read_bytes())
+    all_runs, all_attempts, all_names = [], [], []
+    companions = []
+    for identity, row, ep, bp, _ in pending:
+        member = spec["member_specs"][identity["member_id"]]
+        require(set(member["companions"]) == {"capacity", "graph", "natural"},
+                "local node complete configured proof companions required")
+        counts = {}
+        for key in ("slot-contracts", "intent-boundaries"):
+            binding = bp["knowledge_stores"][key]["snapshot"]
+            snapshot = KnowledgeSnapshot.from_frozen_json(json.loads((data / binding["relpath"]).read_bytes()))
+            require(snapshot.content_hash() == binding["sha256"], "local node source snapshot identity differs")
+            counts[key] = len(snapshot.values)
+        budget = local_capacity_budget(ep, bp, slot_value_count=counts["slot-contracts"],
+                                      intent_value_count=counts["intent-boundaries"])
+        for kind, proof in member["companions"].items():
+            keys = {"experiment", "cell_id", "run_id", "attempt_id"}
+            if kind == "natural":
+                keys |= {"fit_run_id", "fit_attempt_id"}
+            require(set(proof) == keys and proof["experiment"] == proof["cell_id"],
+                    "local node companion identity fields differ")
+            import re
+            require(all(isinstance(v, str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", v)
+                        for v in proof.values()), "local node companion identity is not path-safe")
+            pp, pb = local_companion_documents(ep, bp, proof, kind=kind, graph_view=graph_view,
+                                               graph_dataset=graph_dataset, capacity_budget=budget)
+            all_runs.extend([proof["run_id"]] + ([proof["fit_run_id"]] if kind == "natural" else []))
+            all_attempts.extend([proof["attempt_id"]] + ([proof["fit_attempt_id"]] if kind == "natural" else []))
+            all_names.append(proof["experiment"])
+            for run in all_runs[-(2 if kind == "natural" else 1):]:
+                require(all(not (data / folder / run).exists() for folder in ("prepared", "attempts", "runs")),
+                        "local node proof run already exists")
+            for attempt in all_attempts[-(2 if kind == "natural" else 1):]:
+                require(not (data / "attempts" / attempt).exists(), "local node proof attempt already exists")
+            for fragment in ("baseline", "experiment"):
+                require(not (root / "configs" / fragment / (proof["experiment"] + ".json")).exists(),
+                        "local node proof config already exists")
+            companions.append((identity, kind, proof, pp, pb, budget))
+    generation_runs = [x for _, row, _, _, _ in pending for x in (row["run_id"], row["fit_run_id"])]
+    generation_attempts = [x for _, row, _, _, _ in pending for x in (row["attempt_id"], row["fit_attempt_id"])]
+    generation_names = [row["experiment"] for _, row, _, _, _ in pending]
+    require(len(set(all_runs + generation_runs)) == len(all_runs + generation_runs)
+            and len(set(all_attempts + generation_attempts)) == len(all_attempts + generation_attempts)
+            and len(set(all_names + generation_names)) == len(all_names + generation_names),
+            "local node proof and generation identities duplicate")
+    records = {}
+    for identity, kind, proof, ep, bp, budget in companions:
+        name, label = proof["experiment"], identity["member_id"]
+        exp_path, base_path = root / "configs/experiment" / (name + ".json"), root / "configs/baseline" / (name + ".json")
+        save(exp_path, ep); save(base_path, bp)
+        c = ep["cells"][0]
+        def runtime():
+            return build_flight_runtime(root, data, model=c["model_fragment"], dataset=c["dataset_fragment"],
+                baseline=name, experiment=name, run_id=c["run_id"], attempt_id=c["attempt_id"],
+                runtime_root=Path(spec["runtime_root"]), lock_path=Path(spec["datasets_lock_path"]),
+                campaign_active=False, score_batch=refuse)
+        rt = runtime(); context = rt.preparation_context()
+        ids = ep["populations"][0]["ids"]
+        output = {"facets": {}, "values": {"perception": {
+            sid: original["output"]["values"]["perception"][sid] for sid in ids}}}
+        *_, inputs = rt.phase_supply_artifact_identity()
+        path = data / "prepared" / proof["run_id"] / "phase-supply-v1.json"
+        prepare_artifact(path, kind="phase-supply", inputs=inputs, producer=lambda: deepcopy(output))
+        bp["prepared_phase_supply"] = pin(path, data)
+        base_path.write_text(json.dumps(bp, indent=2, sort_keys=True) + "\n")
+        rt = runtime(); context = rt.preparation_context()
+        *_, inputs = rt.phase_supply_artifact_identity()
+        require(load_artifact(path, expected_sha256=bp["prepared_phase_supply"]["sha256"],
+                kind="phase-supply", inputs=inputs) == output, "local node proof supplied output changed")
+        verified = list(rt.verify_prepared_artifacts())
+        record = dict(member_id=label, kind=kind, experiment=name, baseline=name,
+            run_id=proof["run_id"], attempt_id=proof["attempt_id"], config_hash=rt._composed.config_hash,
+            execution_plan=asdict(context["execution_plan"]), source_policy=identity["execution_config"],
+            policy_binding=c["system_text_policy_binding"], configured_sample_ids=ids,
+            runtime_sample_ids=list(context["sample_ids"]), prepared_phase_supply=bp["prepared_phase_supply"],
+            output_sha256=digest(output), output_equal=True, warm_verified=True, contacts=0,
+            prepared_source_commit=spec["source_preparation_commit"], runtime_admission=False,
+            pure_capacity_budget=budget if kind == "capacity" else None,
+            strict_prepared_artifacts=verified, local_node_basis=spec["local_node_basis"])
+        receipt_path = package / (label + "-" + kind + "-prepared-v1.json")
+        save(receipt_path, record)
+        records.setdefault(label, {})[kind] = pin(receipt_path, root)
+        del rt, context
+        gc.collect()
+    return records
+
+def prepare_local_node_panel(spec, *, repo_root, data_root):
+    """Re-envelope a configured local panel on original N100; never register or contact."""
+    from speech_aware_evidence_acquisition.rails.local_node_panel import (
+        SELECTOR, REVIEWER_SELECTOR, MAP_SCHEMA, require_local_node_basis, require_local_identities, local_node_documents,
+    )
+    from speech_aware_evidence_acquisition.rails.experiment_population import load_population_config
+    from speech_aware_evidence_acquisition.rails.architecture_audio_budget import derive_manual_architecture_audio_budget
+    root, data = Path(repo_root).resolve(), Path(data_root).resolve()
+    require(spec.get("schema") == "saea-local-node-panel-preparation-input-v1",
+            "explicit local node preparation input required")
+    source_head(root, spec["source_preparation_commit"])
+    require(spec.get("target_role") == spec["local_node_basis"].get("target_role"), "local target role and basis differ")
+    package = (root / spec["package_relpath"]).resolve()
+    require(package.is_relative_to(root / "docs/readiness") and package != root / "docs/readiness"
+            and not package.exists(), "fresh local node preparation package required")
+    population = load_population_config(spec["experiment_population"], repo_root=root, allow_architecture=True)
+    receipt = require_local_node_basis(spec["local_node_basis"], population, repo_root=root, data_root=data)
+    stage = population_stage_spec(spec["experiment_population"], repo_root=root,
+                                 cohort_id=spec["population_cohort"], allow_architecture=True)
+    labels = stage["control_members"] + stage["candidate_members"]
+    require(set(spec["member_specs"]) == set(labels), "local node complete configured membership required")
+    source_cell, = load_campaign_cells(root, receipt["experiment"])
+    c = source_cell.document
+    old = compose(root, c["model_fragment"], c["dataset_fragment"], c["baseline_fragment"], receipt["experiment"])
+    require(old.config_hash == receipt["config_hash"]
+            and old.values["populations"][0]["ids"] == stage["sample_ids"]
+            and old.values["prepared_phase_supply"] == receipt["prepared_phase_supply"],
+            "local node original composed preparation identity differs")
+    source_exp = json.loads((root / "configs/experiment" / (receipt["experiment"] + ".json")).read_bytes())
+    source_base = json.loads((root / "configs/baseline" / (c["baseline_fragment"] + ".json")).read_bytes())
+    original = verified_source_output(receipt, data, stage["sample_ids"])
+    rows = [dict(member_id=label, **spec["member_specs"][label]["identity"]) for label in labels]
+    require_local_identities(rows, source_cell=c, source_fit=source_base["native_contact_fit"])
+    pending = []
+    for identity in stage["architecture_members"]:
+        label = identity["member_id"]
+        row = rows[labels.index(label)]
+        member = spec["member_specs"][label]
+        require(set(member) == {"identity", "policy_binding", "companions"}
+                and member["policy_binding"]["bundle_id"] == identity["base_bundle_id"],
+                "local node policy binding differs from configured member")
+        policy = drop_null_arms(json.loads(_read_pin(identity["execution_config"], root)))
+        values = {**deepcopy(old.values), **{k: v for k, v in policy.items() if k != "what_this_is"}}
+        report = derive_manual_architecture_audio_budget(values)
+        require(report["sample_count"] == stage["N"], "local node duration roster differs")
+        ep, bp = local_node_documents(source_exp, source_base, policy, row,
+            policy_binding=member["policy_binding"], population_pin=spec["experiment_population"],
+            cohort_id=spec["population_cohort"], stage=stage, basis=spec["local_node_basis"], report=report)
+        verify_system_text_binding(bp, member["policy_binding"], repo_root=root, data_root=data)
+        for run in (row["run_id"], row["fit_run_id"]):
+            require(all(not (data / folder / run).exists() for folder in ("prepared", "attempts", "runs")),
+                    "local node fresh run already has DATA state")
+        for attempt in (row["attempt_id"], row["fit_attempt_id"]):
+            require(not (data / "attempts" / attempt).exists(), "local node fresh attempt already exists")
+        for kind in ("experiment", "baseline"):
+            require(not (root / "configs" / kind / (row["experiment"] + ".json")).exists(),
+                    "local node fresh config already exists")
+        pending.append((identity, row, ep, bp, report))
+    with (patch.object(socket.socket, "connect", refuse),
+          patch.object(socket.socket, "connect_ex", refuse),
+          patch("socket.create_connection", refuse)):
+        companion_receipts = prepare_local_companions(spec, root=root, data=data, pending=pending, original=original, package=package)
+    map_rows, receipts = [], {}
+    with (patch.object(socket.socket, "connect", refuse),
+          patch.object(socket.socket, "connect_ex", refuse),
+          patch("socket.create_connection", refuse)):
+        for identity, row, ep, bp, report in pending:
+            label, name = identity["member_id"], row["experiment"]
+            exp_path, base_path = root / "configs/experiment" / (name + ".json"), root / "configs/baseline" / (name + ".json")
+            save(exp_path, ep); save(base_path, bp)
+            def runtime():
+                return build_flight_runtime(root, data, model=c["model_fragment"], dataset=c["dataset_fragment"],
+                    baseline=name, experiment=name, run_id=row["run_id"], attempt_id=row["attempt_id"],
+                    runtime_root=Path(spec["runtime_root"]), lock_path=Path(spec["datasets_lock_path"]),
+                    campaign_active=False, score_batch=refuse)
+            rt = runtime()
+            context = rt.preparation_context()
+            require(list(context["sample_ids"]) == receipt["runtime_sample_ids"], "local node runtime order changed")
+            *_, inputs = rt.phase_supply_artifact_identity()
+            supply = data / "prepared" / row["run_id"] / "phase-supply-v1.json"
+            prepare_artifact(supply, kind="phase-supply", inputs=inputs, producer=lambda: deepcopy(original["output"]))
+            bp["prepared_phase_supply"] = pin(supply, data)
+            # Only this new held baseline is finalized. Historical bytes are untouched.
+            base_path.write_text(json.dumps(bp, indent=2, sort_keys=True) + "\n")
+            rt = runtime(); context = rt.preparation_context()
+            *_, final_inputs = rt.phase_supply_artifact_identity()
+            require(load_artifact(supply, expected_sha256=bp["prepared_phase_supply"]["sha256"],
+                    kind="phase-supply", inputs=final_inputs) == original["output"], "local node reused supply output changed")
+            verified = list(rt.verify_prepared_artifacts())
+            verify_system_text_binding(context["values"], ep["cells"][0]["system_text_policy_binding"],
+                                       repo_root=root, data_root=data)
+            record = {**receipt, "member_id": label, "experiment": name, "baseline": name,
+                "run_id": row["run_id"], "attempt_id": row["attempt_id"], "config_hash": rt._composed.config_hash,
+                "source_policy": identity["execution_config"], "policy_binding": ep["cells"][0]["system_text_policy_binding"],
+                "execution_plan": asdict(context["execution_plan"]), "prepared_phase_supply": bp["prepared_phase_supply"],
+                "prepared_source_commit": spec["source_preparation_commit"],
+                "predecessor_preparation_receipt": spec["local_node_basis"]["source_preparation_receipt"],
+                "predecessor_prepared_phase_supply": receipt["prepared_phase_supply"],
+                "configured_sample_ids": stage["sample_ids"], "runtime_sample_ids": list(context["sample_ids"]),
+                "generation_cap": stage["member_generation_contacts_caps"][label],
+                "fit_endpoint_cap": stage["member_fit_endpoints_caps"][label],
+                "audio_budget_derivation": report, "local_node_basis": spec["local_node_basis"],
+                "strict_prepared_artifacts": verified, "contacts": 0, "output_equal": True, "warm_verified": True,
+                "runtime_admission": False, "status": "HELD LOCAL NODE; FRESH PROOFS AND ROOT REGISTRATION PENDING",
+                "architecture_extent": None, "pure_capacity_budget": None, "draft_plans": {}}
+            save(package / (label + "-generation-prepared-v1.json"), record)
+            receipts[label] = pin(package / (label + "-generation-prepared-v1.json"), root)
+            map_rows.append({**row, "planned_speech_audio_seconds": report["required_integer_audio_seconds"]})
+            del rt, context
+            gc.collect()
+    mapping = dict(schema=MAP_SCHEMA, experiment_population=spec["experiment_population"], architecture_extent=None,
+                   local_node_basis=spec["local_node_basis"], members=map_rows)
+    map_path = package / "execution-identity-map-v1.json"
+    save(map_path, mapping)
+    _mapped_execution_cells(pin(map_path, root), population, spec["experiment_population"], None, repo_root=root)
+    require_local_node_basis(spec["local_node_basis"], population, repo_root=root, data_root=data)
+    summary = dict(schema="saea-local-node-panel-preparation-v1", status="PREPARED_HELD_NOT_ADMITTED",
+        architecture_proof=SELECTOR if spec["target_role"] == "solver" else REVIEWER_SELECTOR, experiment_population=spec["experiment_population"],
+        local_node_basis=spec["local_node_basis"], source_preparation_commit=spec["source_preparation_commit"],
+        execution_identity_map=pin(map_path, root), preparation_receipts=receipts,
+        companion_preparation_receipts=companion_receipts,
+        population_budget=stage["population_budget"], contacts={"model": 0, "tokenizer": 0, "scorer": 0},
+        runtime_admission=False, read_authorized=False)
+    save(package / "preparation-summary-v1.json", summary)
+    return summary
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("input", "input-sha256", "repo-root", "data-root"):
@@ -224,7 +505,9 @@ def main():
     args = parser.parse_args()
     p = Path(args.input)
     require(hashlib.sha256(p.read_bytes()).hexdigest() == args.input_sha256, "recovery input raw pin differs")
-    print(json.dumps(prepare(json.loads(p.read_bytes()), repo_root=args.repo_root, data_root=args.data_root), sort_keys=True))
+    document = json.loads(p.read_bytes())
+    operation = prepare_local_node_panel if document.get("schema") == "saea-local-node-panel-preparation-input-v1" else prepare
+    print(json.dumps(operation(document, repo_root=args.repo_root, data_root=args.data_root), sort_keys=True))
 
 
 if __name__ == "__main__":

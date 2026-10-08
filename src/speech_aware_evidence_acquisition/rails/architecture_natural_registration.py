@@ -347,7 +347,12 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
             and {p.get("plan_role") for p in registered_plans} == {"generation", "fit"},
             "N20 proof requires exactly one generation and one FIT plan")
     plans = {p["plan_role"]: p for p in registered_plans}
+    from .local_node_panel import SELECTORS as LOCAL_NODE_SELECTORS, require_local_node_basis
+    local = all(p.get("architecture_proof") in LOCAL_NODE_SELECTORS for p in plans.values())
+    require(not local or len({p["architecture_proof"] for p in plans.values()}) == 1, "local node selector pair differs")
     fixed400 = values.get("architecture_extent") is not None
+    require(not local or (not fixed400 and all(p.get("natural_source_compatibility") is None for p in plans.values())),
+            "local node requires fresh structural proof without historical compatibility")
     require(cell.get("allowed_execution_stages") == ["check", "prepare-supply", "worker", "campaign"],
             "N20 proof permits exactly check/prepare-supply/worker/campaign")
     require(not any(k in values for k in ("system_context_learning", "system_search_learning", "system_optimization"))
@@ -361,6 +366,16 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
     identity, = [m for m in population["architecture"]["members"]
                 if m["member_id"] == values["architecture_member"] and m["cohort_id"] == values["population_cohort"]]
     cohort = require_population_binding(population, pin, identity["cohort_id"], values, *registered_plans)
+    if local:
+        basis = values.get("local_node_basis")
+        require(basis is not None and plans["generation"]["architecture_proof"] == "local-" + basis.get("target_role", "") + "-panel-v1", "local node selector and target role differ")
+        require(all(p.get("local_node_basis") == basis for p in plans.values()),
+                "local node plan basis differs")
+        require_local_node_basis(basis, population, repo_root=repo_root, data_root=data_root)
+        from .system_text_policy import verify_system_text_binding
+        verify_system_text_binding(values, cell["system_text_policy_binding"], repo_root=repo_root, data_root=data_root)
+    else:
+        require(values.get("local_node_basis") is None, "local node basis requires its named opt-in selector")
     require(plans["generation"]["capacity_prerequisite"] == plans["fit"]["capacity_prerequisite"],
             "N20 plan pair has different capacity prerequisites")
     prerequisite = plans["generation"]["capacity_prerequisite"]
@@ -398,14 +413,19 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
             and receipt.get("output_equal") is True and receipt.get("warm_verified") is True
             and receipt.get("runtime_admission") is False
             and receipt.get("source_policy") == identity["execution_config"], "N20 preparation provenance differs")
+    if local:
+        require(receipt.get("local_node_basis") == values["local_node_basis"]
+                and receipt.get("predecessor_preparation_receipt")
+                == values["local_node_basis"]["source_preparation_receipt"],
+                "local node preparation receipt basis differs")
     _require_prepared_implementation(prepared, repo_root, values)
     require(prepared.get("output_sha256") == receipt.get("output_sha256"), "N20 prepared output binding differs")
-    require(fixed400 or receipt["source_prepared_phase_supply"]
+    require(fixed400 or local or receipt["source_prepared_phase_supply"]
             == member["prepared_artifact_verification"]["capacity"]["prepared_pin"],
             "N20 prepared output source differs from original qualified capacity")
     prior = json.loads(_read_pin(receipt["source_prepared_phase_supply"], Path(data_root).resolve()))
     from ..core.preparation import digest
-    if fixed400:
+    if fixed400 or local:
         require(receipt["source_prepared_phase_supply"] == {
             "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-PARENT-V1/phase-supply-v1.json",
             "sha256": "99ba974066d6a87f086e8850c316252857e205e5213387e9ae7ed030c22900f0"},
@@ -419,14 +439,14 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
     else:
         require(prior.get("output_sha256") == prepared["output_sha256"] == digest(prior["output"]),
                 "N20 prepared output equality differs")
-    if fixed400:
+    if fixed400 or local:
         capacity_supply = json.loads(_read_pin(member["prepared_artifact_verification"]["capacity"]["prepared_pin"],
                                                Path(data_root).resolve()))
         require(capacity_supply.get("output_sha256") == prepared["output_sha256"]
                 == digest(capacity_supply["output"])
                 and capacity_supply["output"] == prepared["output"]
-                and receipt.get("architecture_extent") == values["architecture_extent"],
-                "fixed400 fresh capacity supply or preparation extent differs")
+                and receipt.get("architecture_extent") == values.get("architecture_extent"),
+                "fresh capacity supply or preparation extent differs")
     runtime_roster = receipt["runtime_sample_ids"]
     require(isinstance(runtime_roster, list) and all(isinstance(x, str) for x in runtime_roster)
             and len(runtime_roster) == len(set(runtime_roster)) == len(roster)
@@ -469,7 +489,7 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
         bound_plan = expected if role == "generation" else replace(expected, run_id=fit["run_id"],
                                                                   attempt_id=fit["attempt_id"], planned_model_calls=fit_cap)
         require(document.get("schema") == f"saea-registered-{role}-plan-v1"
-                and document.get("architecture_proof") == (FIXED_ROSTER_SELECTOR if fixed400 else "manual-architecture-n20-v1")
+                and document.get("architecture_proof") == (plans["generation"]["architecture_proof"] if local else FIXED_ROSTER_SELECTOR if fixed400 else "manual-architecture-n20-v1")
                 and str(document.get("status", "")).upper().startswith("ROOT COUNTERSIGNED BEFORE CONTACT")
                 and document.get("architecture_member") == identity["member_id"]
                 and document.get("cell") == cell["cell_id"] and document.get("experiment") == cell["cell_id"]
@@ -520,6 +540,10 @@ def _mapped_execution_cells(pin, population, population_pin, extent, *, repo_roo
     """Compose a complete pinned successor map without pinning its future config."""
     root = Path(repo_root).resolve()
     mapping = json.loads(_read_pin(pin, root))
+    from .local_node_panel import MAP_SCHEMA, mapped_local_node_cells
+    if mapping.get("schema") == MAP_SCHEMA:
+        require(extent is None, "local node map cannot inherit historical fixed-roster extent")
+        return mapped_local_node_cells(mapping, population, population_pin, repo_root=root)
     labels = [m["member_id"] for m in population["architecture"]["members"]]
     require(isinstance(mapping, dict) and set(mapping) == {
         "schema", "experiment_population", "architecture_extent", "members"}
@@ -610,6 +634,10 @@ def _require_n20_root_decision(plans, population, natural, *, repo_root, data_ro
     source = receipt.get("prepared_source_commit")
     require(isinstance(source, str) and len(source) == 40 and all(x in "0123456789abcdef" for x in source)
             and decision.get("source_preparation_commit") == source, "N20 root preparation source differs")
+    if plans["generation"].get("architecture_proof") in ("local-solver-panel-v1", "local-reviewer-panel-v1"):
+        require(decision.get("local_node_basis") == plans["generation"].get("local_node_basis")
+                == plans["fit"].get("local_node_basis") and decision.get("natural_source_compatibility") is None,
+                "local node root basis or fresh proof differs")
     require(decision.get("architecture_extent") == extent
             and all(p.get("architecture_extent") == extent for p in plans.values()),
             "manual root decision extent differs")
