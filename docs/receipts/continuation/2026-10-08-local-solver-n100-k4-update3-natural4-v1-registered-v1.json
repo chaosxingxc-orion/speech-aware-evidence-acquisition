@@ -1,0 +1,30 @@
+{
+  "at_utc": "2026-10-08T22:20:00.069156+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "countersign_receipt": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/root-countersign-receipt-v1.json",
+    "sha256": "c2fc7c9ff29c6db39b9a4b1d708ed6cf976bb5b7233cb0c14720a4925774d09d"
+  },
+  "package_relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1",
+  "readiness_terminal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-original-readiness-exit-v1.json",
+    "sha256": "5900359617b437c6b93f6d364512c24a169d67d00681f0b19a64d26321f1365e"
+  },
+  "root_decision": {
+    "relpath": "coordination/local-solver-n100-k4-update3-natural4-v1/root-admission-v1.json",
+    "sha256": "7461ca67d8f56b22e3fd3af19e66f938aa24814d6bfb32ebd216260c48d74b32"
+  },
+  "schema": "saea-root-configured-local-natural-registration-v1",
+  "scope": {
+    "actual_request_fit_endpoint_cap": 192,
+    "complete_system_trajectories": 24,
+    "generation_contacts": 48,
+    "official_score_jobs": 0,
+    "systems": 6
+  },
+  "status": "REGISTERED_PENDING_EXACT_FROZEN_AND_LIVE_ADMISSION"
+}

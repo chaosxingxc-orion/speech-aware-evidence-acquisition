@@ -1,0 +1,65 @@
+{
+  "architecture_member": "candidate-2",
+  "architecture_proof": "natural-four-row-v1",
+  "at_utc": "2026-10-08T22:19:59.148988+00:00",
+  "capacity_prerequisite": {
+    "qualification": {
+      "relpath": "coordination/local-solver-n100-k4-update3-capacity-v1/capacity-qualified-v1.json",
+      "sha256": "ce582883fc76454467cf8ee498f79d528d41166eb1b6441d182123c61d9694ff"
+    },
+    "registration": {
+      "relpath": "coordination/local-solver-n100-k4-update3-capacity-v1/registration-v1.json",
+      "sha256": "d954b57750cb97864daf160a07b8df635c596c536a46e537288c960cddea5fb7"
+    }
+  },
+  "cell": "slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-natural-v1",
+  "composed_config_hash": "1842065430b5e73fadcf291bff782d6a9440e6245d1cc6677dee26f82e5b8242",
+  "decision_receipt": {
+    "relpath": "coordination/local-solver-n100-k4-update3-natural4-v1/root-admission-v1.json",
+    "sha256": "7461ca67d8f56b22e3fd3af19e66f938aa24814d6bfb32ebd216260c48d74b32"
+  },
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-natural-v1-fit",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 32,
+    "planned_speech_audio_seconds": 18,
+    "protocol_hash": "2120f927f822b6d3750e4e29611d4d01a5ddec29704f89e864ea7d72daa2aff9",
+    "run_id": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-NATURAL-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-natural-v1",
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-local-solver-n100-k4-update3-v1.json",
+    "sha256": "63a049bc750964c2b7133175ff27bb7ce17dcf00efc12e50b7e6f6e30f0162f5"
+  },
+  "learner_export": false,
+  "official_score_jobs": 0,
+  "plan_role": "fit",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "coordination/local-solver-n100-k4-update3-v1/policy-archive/policies/8a557b168cf6e20be7b0664e5884793c42bb2edf865edbfdcc10580a630a53ba.json",
+      "sha256": "44565ec553404d66a93c341d497de214a1008fa852151d523fc68d1642fc4d72"
+    },
+    "bundle_id": "8a557b168cf6e20be7b0664e5884793c42bb2edf865edbfdcc10580a630a53ba",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "population_cohort": "local-solver-k4-update3",
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-NATURAL-V1/phase-supply-v1.json",
+    "sha256": "6f5105df8ef6952a0f81473ab62734e4796b4d2cef4bbc07d6dced348e4b17d8"
+  },
+  "sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "schema": "saea-registered-fit-plan-v1",
+  "scientific_feedback": false,
+  "status": "ROOT COUNTERSIGNED BEFORE CONTACT under owner227"
+}

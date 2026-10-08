@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Solver next configured natural structural family registered (2026-10-08T22:20:00.069156+00:00)
+
+The original ready/warm authorer completed successfully with no contacts. Root verified that only the declared natural readiness fields changed, preserved all successor custody, and registered the complete configured family through the unchanged plan countersigner. Every member analysis recipe carries its actual composed measurement profile. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-n100-k4-update3-natural4-v1-registered-v1.json`. Member count, ordering, identities and legal-path budgets derive from the fixed population; no new proposal position or data/knowledge reconstruction occurred.
+
+Exact frozen named checks, current service/resources and one serial Windows dispatch remain pending. Structural proof uses worker-only lifecycle, no official score and no task-quality or learner read. Scientific N100 follows only after complete structural qualification and its own registration. Preserve the other module's original frozen checks and all current controls; use only source-reviewed configuration-driven launch metadata. GPU work stays serial with four concurrent inputs, CPU work overlaps,4GiB floors and full reserves remain. Create the15minute job monitor on actual launch and delete at original terminal. No benefit or learning claim follows preparation. The broad goal remains active/incomplete, with human review before8x400.
+
 ## Solver configured capacity qualified; Reviewer registration frozen (2026-10-08T22:10:52.950344+00:00)
 
 All six original Solver opportunity3 maximum-request capacity members and original Windows outer process exited0. The unchanged verifier qualified936 tokenizer endpoints and48 measured request shapes, with zero task generation or official scoring. Full output and structural reserves remain; minimum additional margin is6749 tokens. Its15minute monitor was deleted after terminal verification. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-update3-capacity-qualified-v1.json`. The exact next natural4 decision is prepared for24 complete structural trajectories with48 model/192 actual-request FIT endpoints at most and zero scores; original ready/warm, registered plans and frozen/live admission remain required. N100 remains held behind this proof.
@@ -1009,7 +1015,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-08T22:10:52.950344+00:00
+Last refreshed: 2026-10-08T22:20:00.069156+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

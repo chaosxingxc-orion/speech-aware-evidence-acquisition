@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Solver next configured natural structural family registered (2026-10-08T22:20:00.069156+00:00)
+
+The original ready/warm authorer completed successfully with no contacts. Root verified that only the declared natural readiness fields changed, preserved all successor custody, and registered the complete configured family through the unchanged plan countersigner. Every member analysis recipe carries its actual composed measurement profile. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-n100-k4-update3-natural4-v1-registered-v1.json`. Member count, ordering, identities and legal-path budgets derive from the fixed population; no new proposal position or data/knowledge reconstruction occurred.
+
+Exact frozen named checks, current service/resources and one serial Windows dispatch remain pending. Structural proof uses worker-only lifecycle, no official score and no task-quality or learner read. Scientific N100 follows only after complete structural qualification and its own registration. Preserve the other module's original frozen checks and all current controls; use only source-reviewed configuration-driven launch metadata. GPU work stays serial with four concurrent inputs, CPU work overlaps,4GiB floors and full reserves remain. Create the15minute job monitor on actual launch and delete at original terminal. No benefit or learning claim follows preparation. The broad goal remains active/incomplete, with human review before8x400.
+
 ## Solver configured capacity qualified; Reviewer registration frozen (2026-10-08T22:10:52.950344+00:00)
 
 All six original Solver opportunity3 maximum-request capacity members and original Windows outer process exited0. The unchanged verifier qualified936 tokenizer endpoints and48 measured request shapes, with zero task generation or official scoring. Full output and structural reserves remain; minimum additional margin is6749 tokens. Its15minute monitor was deleted after terminal verification. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-update3-capacity-qualified-v1.json`. The exact next natural4 decision is prepared for24 complete structural trajectories with48 model/192 actual-request FIT endpoints at most and zero scores; original ready/warm, registered plans and frozen/live admission remain required. N100 remains held behind this proof.
@@ -7387,7 +7393,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T22:10:52.950344+00:00
+Last refreshed: 2026-10-08T22:20:00.069156+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

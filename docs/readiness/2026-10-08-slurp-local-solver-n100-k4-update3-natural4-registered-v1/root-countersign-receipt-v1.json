@@ -1,0 +1,65 @@
+{
+  "canonical_source_sha256": "5863bb324ff1f962bb71b1e321bc2210c0f6510b3809414662603b6f98071db5",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "historical_prefix_byte_preserved": true,
+  "input_sha256": "0d1f6d50f143311812e505dbbd6b2870a9f42079f5969cff4d6065afe151f538",
+  "launches": 0,
+  "pre_register_ledger_sha256": "f2aba5346cc514413c5b7d37c2fbd4184059b88988aad40f4ee022a25cdbf7da",
+  "registered_ledger_sha256": "aa05141c8c0bf31cedb257d3d034f57f90b47fa8fdc78982ec65e352e2faf61e",
+  "registered_plans": [
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/control-generation-plan-registered-v1.json",
+      "sha256": "4102b1412154bb2af906bea305aedee138a1c49086512ae098cbfdae57007a12"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/control-fit-plan-registered-v1.json",
+      "sha256": "4a15f8bc5130d96eda5429dc20602d1534d3a64aa116397b7cc393ea06aee51b"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/control-aa-generation-plan-registered-v1.json",
+      "sha256": "98fe6264f15352ab2d3e9f1b6ab7753c2af47dfb6055ddd659c1c2f6c097a7c9"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/control-aa-fit-plan-registered-v1.json",
+      "sha256": "22d496561a82e48327c4912f6ba605a0a5fc566925f9e7feb2e7a6c19e55f3d8"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/candidate-1-generation-plan-registered-v1.json",
+      "sha256": "35d6c7c9915d6b8f101f0442e66fb0cdf4b0ed164e516277aedbfca393b1b3d3"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/candidate-1-fit-plan-registered-v1.json",
+      "sha256": "eb7673b36c86ef5e4a03220a97813ec150d109babf7b15b927e6b6fc3609571b"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/candidate-2-generation-plan-registered-v1.json",
+      "sha256": "df3441cbf4889b8f89d5c966284af2d69e2a6ddccede84e0a62e3e6c4dc32f15"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/candidate-2-fit-plan-registered-v1.json",
+      "sha256": "3a73cf70e1922df7d72c3945b74d278ea38da6696e9a1336279a74c779bdeabf"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/candidate-3-generation-plan-registered-v1.json",
+      "sha256": "321e626cfc316c8120f38df3f17d94db127be6f6a8eceeb4537d2d0dfa4d969e"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/candidate-3-fit-plan-registered-v1.json",
+      "sha256": "b92947ded54195dc088d336c9a02c316097cb0ec5d0a8f1fc933ebc8658ce501"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/candidate-4-generation-plan-registered-v1.json",
+      "sha256": "922af9dafac48a362073881a877110efaf0c0d64c51b259106bfbeb8f55d44d9"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-natural4-registered-v1/candidate-4-fit-plan-registered-v1.json",
+      "sha256": "82361e49672b4699c803cfbaffa7d6da85fefb68eb6b2f887d2d92d423291f8f"
+    }
+  ],
+  "registration_date": "2026-10-08",
+  "schema": "saea-local-natural-root-countersign-v1"
+}
