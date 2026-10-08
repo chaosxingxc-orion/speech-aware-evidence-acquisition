@@ -1,0 +1,375 @@
+{
+  "at_utc": "2026-10-08T12:10:22.771269+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "original_exit": {
+    "relpath": "coordination/local-node-engineering-helper-v1/reviewer-n100-k4-update1-v1-148f6fc3ab6e-plan/root-original-preparation-exit-v1.json",
+    "sha256": "0d31c0c16ff128a65ff645e451e77facd9cbe5d6d88fed9c54cfa7e1aa9369df"
+  },
+  "population_budget": {
+    "K": 4,
+    "N": 100,
+    "active_node_counts": {
+      "candidate-1": 4,
+      "candidate-2": 4,
+      "candidate-3": 4,
+      "candidate-4": 4,
+      "control": 4,
+      "control-aa": 4
+    },
+    "candidate_trajectories": 400,
+    "control_trajectories": 200,
+    "family_trajectories": 600,
+    "fit_endpoints_cap": 31200,
+    "generation_contacts_cap": 7800
+  },
+  "schema": "saea-local-node-offline-preparation-complete-v1",
+  "scope": "Verify original preparation metadata and unchanged reusable output bytes. Capacity and natural proofs remain prospective. No runtime controls changed.",
+  "source_preparation_commit": "148f6fc3ab6ea8967a3f016a1ccaa9760ad05048",
+  "status": "ORIGINAL_CPU_PREPARATION_COMPLETE_RUNTIME_HELD",
+  "summary": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "ff119f76e7519c1eb17780b3a5292fc5b7866e925006535484a3599a9a08198c"
+  },
+  "verified_receipts": [
+    {
+      "kind": "generation",
+      "member": "control",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "bddb40fd91688d5e19e4775af4780e61f0212055311df57ef79312647855d2d4"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/control-generation-prepared-v1.json",
+        "sha256": "0f70619de99d67f885fdbbe6f90a20abd0eea42c06daa50a06e5e1aab3a7e40c"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "control",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "614a127f3ca68926e698d52cab3809255a12980486c8465e10ba54d8b7bb6c89"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/control-capacity-prepared-v1.json",
+        "sha256": "55dd41840b4a5c2d810bca0c20418db5851ad8bdbeaf0011dfa17f964961780d"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "control",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "7426c89e800452b24a5ff4866a06f67ea7aa959e574ae297bc834149b656aab9"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/control-graph-prepared-v1.json",
+        "sha256": "d3f9cda5c0b98e6f203d7c6015b0e6fd6cf63661a8dd29ebebebf3b89c801df5"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "control",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "86fb7285d43d4a692095120d9fea291edfd8a5b823100e0ff37047c5cdb93625"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/control-natural-prepared-v1.json",
+        "sha256": "cddd3d3291cb7720a5433795b99587bb16c5b4da2a4187915ee272804fb0fc45"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "control-aa",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "c3f6ece136027a9a48df399d2f17d6bc253abf49df62b45e8343372e7d0d6265"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/control-aa-generation-prepared-v1.json",
+        "sha256": "aeb532bdd31a14e36a35a6b6e62a64b017eef5254993adef80055ceec806ab13"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "control-aa",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "f7155dd57aad85ea34c9e6b759b55e28e2132cf5bdcc9c00a76dcd869d9c0746"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/control-aa-capacity-prepared-v1.json",
+        "sha256": "3e89178cbaff49d263117adbcc7141ceae54f0b71ae1997470e691fde44c924a"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "control-aa",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "57b63a19e355b06751e2eb53221fa8b14caa76924c89a6f5a079fa00287d78a2"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/control-aa-graph-prepared-v1.json",
+        "sha256": "e1805074a59b3e204ab960a9263ea026cdb49cf6a1a090b20769430eb0ad5fba"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "control-aa",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "fee3d7a23c21b358a3af7d3f02a4af0a3e678adf9a3bf699bbe9d08dcb08e0cf"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/control-aa-natural-prepared-v1.json",
+        "sha256": "6bce40b31981373aec599df7113c1faf5588d5bb79addfa5cd588ae78f718c08"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "candidate-1",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "f26a2f5bb3f697bb465174a94055ad5f10c577a91386ae1c27d0294843bd3799"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-1-generation-prepared-v1.json",
+        "sha256": "26d6c5d8e2246b34a013b35f55edb1a9c14e126712d6c614e3de387581d0e81c"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "candidate-1",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "46f040a7f703c255e8c3f49742ace8faca4c242569b2a901c4daff64b7be88d8"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-1-capacity-prepared-v1.json",
+        "sha256": "5233c3462dda1df6f4b5800fc12dfb732395e6a9b79f9e3c3781b705aba6c660"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "candidate-1",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "022c8e5657da0a36bc75b356e74c688c8c00cfcf9c8144e555631c9047f6f8ae"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-1-graph-prepared-v1.json",
+        "sha256": "8a956e8a5d68b53259e291bf6f21ed7ebe756ab9742931b11ae7560a03120789"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "candidate-1",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "59b7c10f94dec451ea6183ffc2d880024cb06a2bb005b7896101ec1bda23226c"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-1-natural-prepared-v1.json",
+        "sha256": "f48cf4b09d3361ee350988e334d9f5997a21fa626b01a7fea4cf4136084975af"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "candidate-2",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "eea15727d288a1772664b4638ebdb0e299a28fbc738e1d9113378f7dac44ce7b"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-2-generation-prepared-v1.json",
+        "sha256": "1deb08e7383bb8a25b8f84b9fd786fb4c1fe392bb0df05c6a1de02b1478a309f"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "candidate-2",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "d068fa506e2661163acd7ecf93941721f28aa833f22e249b5cf7f194b9c6e5f1"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-2-capacity-prepared-v1.json",
+        "sha256": "1d1d2b76ac61c59c2600f3cd6fa8bf56c8ebfb7dd27972cb27ffa86cfeda0ff9"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "candidate-2",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "a895b181babc900dc752b0cf2b8cce9f228949e54c81032f54f00afd3456b43b"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-2-graph-prepared-v1.json",
+        "sha256": "b079cacad115a998d68f32b1d03e20982ae5ea67bca1e1680e0476d9e20c34d6"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "candidate-2",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "4532212631de7a6cfbb660bf25498ce99184a265e5f0e9f81c721b60b6ccf9be"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-2-natural-prepared-v1.json",
+        "sha256": "a2a57844562e427644b38399d766a1897b77b88d02656446a61ee0618ccd1b24"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "candidate-3",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "0ed85e625fd9a494e4a5dbc98e44d005b50e75ecf7df1714c38f615fceccdb23"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-3-generation-prepared-v1.json",
+        "sha256": "3474a03be96b46ee00b1c8c2bcef12e3953a7573c7757a174f7c3f45b0a0912d"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "candidate-3",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "6ae72e15e07eaef5f747362b351e2f560c2baf5aed9f44c58ac054b2e5fba539"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-3-capacity-prepared-v1.json",
+        "sha256": "bc18df1c066aac8854f391228e4ab6a6d1bdcb3497ac72feb175887d5e89223b"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "candidate-3",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "78db6980bce42ffacd8f1df25cbef685be04815e25711e435ce96bb776f097e4"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-3-graph-prepared-v1.json",
+        "sha256": "e991d4369be2ae1bea755f55c75f5a52b3828aef3a79d1cc7e0c1cfdbc25d511"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "candidate-3",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "b1f12e4eac06954199b0de92d989bb025d19bc0ec0d33e03f0bc501af027bfd5"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-3-natural-prepared-v1.json",
+        "sha256": "db7eaf46f4bc47602cb5d47bc331daf4bbc8723b48520aa73f69818888f90982"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-NATURAL-V1"
+    },
+    {
+      "kind": "generation",
+      "member": "candidate-4",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-V1/phase-supply-v1.json",
+        "sha256": "02f15dd50356b33651f1ddd0d34d3a01687142ba46849646dd29a118a772ce0f"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-4-generation-prepared-v1.json",
+        "sha256": "148a7afbb4493761a6adfa045816b2616ebbbd3a96e11dbf50dd5d555f682583"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-V1"
+    },
+    {
+      "kind": "capacity",
+      "member": "candidate-4",
+      "output_sha256": "d7a7828baa494ff112db827b4c1379bbc84633f80d32c968534677a3c84720d5",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-CAPACITY-FIT-V1/phase-supply-v1.json",
+        "sha256": "08954b944c2e3841149f062bd6e8c3c7bab76cfe3de13bb38571ec8882703521"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-4-capacity-prepared-v1.json",
+        "sha256": "0c615c28555d886d40e53fef591c290053b71da24f07162f6579767db080448e"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-CAPACITY-FIT-V1"
+    },
+    {
+      "kind": "graph",
+      "member": "candidate-4",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-GRAPH-V1/phase-supply-v1.json",
+        "sha256": "7a2d186c6c48c94d437581a42857917a4584f3bb7e5dc80d6e499981d7f8866b"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-4-graph-prepared-v1.json",
+        "sha256": "7dfae2fd1f5cfbd041338ddb498da26adc9d8d30c55f8f905acbeed2c953d527"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-GRAPH-V1"
+    },
+    {
+      "kind": "natural",
+      "member": "candidate-4",
+      "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+      "prepared_supply": {
+        "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1/phase-supply-v1.json",
+        "sha256": "3d184881021c2789854649939147132016b941cbbb910ba89f60c300d4463d54"
+      },
+      "receipt": {
+        "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-v1/prepared-v1/candidate-4-natural-prepared-v1.json",
+        "sha256": "7695fe79897894c426585c25949aa0a10b4429283e4fd261b429e600655ed20d"
+      },
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-NATURAL-V1"
+    }
+  ]
+}
