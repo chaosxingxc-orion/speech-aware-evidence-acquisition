@@ -1,5 +1,12 @@
 # Experiment rules for the ChatGPT side
 
+## Local contracts before joint system optimization (2026-10-08T02:41:35.411314+00:00)
+
+The owner now proposes two stages: first controlled node/interface optimization, then joint system optimization. Root adopts this prospective order under227; see `docs/readiness/2026-10-08-local-node-before-system-optimization-v1/README.md`. Keep the same100-input roster. Start with Solver first-answer/empty-entity handling, then the Reviewer-to-Solver useful-repair interface. Track false omission, damage to correct fields, raw parsing and official whole-system quality so local metrics cannot hide a compensating loss. Fixed upstream replay is conditional on existing shared-harness support; otherwise vary only the named role templates in complete shared-system runs. No second harness, runtime gold or future information.
+
+This is preparation only: no new template generation, allocation, model contact, policy activation, STOP transition or GPU admission. Candidate/configuration and aggregate-feedback scope must be registered prospectively. Local batches may iterate only after complete feedback; no within-panel edits or replacements. Keep lightweight end-to-end acceptance during local work, then separately register joint templates and training-free GRPO/GEPA. N100 remains diagnostic, seed remains incumbent, and human approval remains required before8x400. The current completed N100 monitor stays deleted; all historical holds and source custody remain.
+
+
 ## Future campaign terminal inspector source routing corrected (2026-10-08T02:35:07.607392+00:00)
 
 The narrow root227 future-only fix is integrated from reviewed1f3daf1c7. Campaign-plan inspection now launches the inspector from the exact frozen repo-root; the existing strict guard, smoke/noncampaign path and failure propagation remain unchanged. Five focused synthetic regressions pass independently under Sol and Astra Ultra, including reproduction of the original rc2 and corrected routing; shell syntax passes. See `docs/receipts/continuation/2026-10-08-n100-terminal-inspector-source-fix-v1.json`. This closes the named launcher preparation defect for future admissions, not an end-to-end proof of a new flight.
@@ -904,4 +911,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T02:35:07.607392+00:00
+Last refreshed: 2026-10-08T02:41:35.411314+00:00
