@@ -1,0 +1,88 @@
+{
+  "appended_bytes_sha256": "7f581c2621b3fa4a4673518500ddfd2183b8dbd1a5e47a3cf0d72ff93f0c3bba",
+  "authoring_chain": {
+    "canonical_author": {
+      "relpath": "scripts/analysis/author_manual_architecture_package.py",
+      "sha256": "ac43cdb41044e1956e9d8b32fbac5a0f0fb599b43b1f1ca2c631e585ec2fc7af"
+    },
+    "contacts": 0,
+    "evidence": {
+      "exit": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-authoring-exit-v1.json",
+        "sha256": "68452548e4ce9e730891226b20f5ed6b316cc407bb37780330e0581160678bb0"
+      },
+      "input": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-authoring-input-v1.json",
+        "sha256": "7de1887c865fe133666688580f9511893fe2ebefdcec45811ce298d677b0bd39"
+      },
+      "started": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-authoring-started-v1.json",
+        "sha256": "3202fb420620f33e4a0bf179de302db1bea05d74d4871216e2af9750791eb26c"
+      },
+      "stderr": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-authoring.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-authoring.stdout.json",
+        "sha256": "0cff4f35e9b005dec0f7aee6a6171410723e938e2434e028be30036e99d170af"
+      }
+    },
+    "original_source_commit": "ff86e5ca445336098d88321febeae63f7b6da50d",
+    "terminal_aliases_created": false,
+    "validation": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-registered-entry2-v1/authoring-validation-v1.json",
+      "sha256": "4d1043be5155eb0e3cd4de80e9e712036a9d208da6cfe809a68d0648bb528802"
+    }
+  },
+  "authoring_queue": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-registered-entry2-v1/queue-v1.json",
+    "sha256": "ba64866eddcbfa203491e9323ab39228bfdd0518a16bfdde117bd12de8952c17"
+  },
+  "contacts": 0,
+  "dispatches": 0,
+  "launch_queue": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-registered-entry2-v1/campaign-queue-v1.json",
+    "sha256": "1c8d3f8aa3e99a05160fc71af9f12de645734792fe81d39fc703851df9758e98"
+  },
+  "ledger_after_sha256": "e744f7812f8dead66b88efdf63764d2c4761f5868e2528f959a90884dda04ff3",
+  "ledger_before_sha256": "c4128f1b426ff55bf5f505d622507189d813d519c2df9c9f4cb6c5c54b07305e",
+  "member_labels": [
+    "control",
+    "control-aa",
+    "candidate-1",
+    "candidate-2",
+    "candidate-3",
+    "candidate-4"
+  ],
+  "read_countersigned": false,
+  "registered_at_utc": "2026-10-08T16:36:38.018453+00:00",
+  "registered_ids": [
+    "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-FIT-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-FIT-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-FIT-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-FIT-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-FIT-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-FIT-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-N100-K4-UPDATE1-READ-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE1-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE1-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE1-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE1-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE1-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE1-DESCRIPTIVE-READ-V1"
+  ],
+  "root_decision": {
+    "relpath": "coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-admission-v1.json",
+    "sha256": "26feb2040051feb9c47e3cbf9257651caab55a8352ed1a36c006e02518e29921"
+  },
+  "rows_per_member": 100,
+  "schema": "saea-local-manual-root-registration-v1",
+  "status": "REGISTERED BEFORE CONTACT; FROZEN AND LIVE GATES PENDING"
+}
