@@ -1,5 +1,11 @@
 # Experiment rules for the ChatGPT side
 
+## Original configured solver actor dispatched after registration (2026-10-08T19:20:09.147577+00:00)
+
+The original isolated `/root/local_solver_k4_update3_templates_astra_ultra` was dispatched once with the exact registered English capsule, using requested GPT-6 Astra Ultra and no inherited chat. All 4 configured positions are now spent. It jointly proposes the complete batch from own qualified aggregate/template records and separate controls. The explicit canonical nested JSON contract passed independent source review. Original earlier failures and allocations stay preserved. Exact evidence: `docs/receipts/continuation/2026-10-08-local-solver-n100-k4-update3-v1-actor-dispatched-v1.json`.
+
+This is a proposal contact, not runtime admission or improvement evidence. Root has not read or repaired its response. Actual provider verification, tokens and duration remain unavailable. The active independent Reviewer GPU campaign is unchanged; inspect its actual state, finish only separately qualified reads, and keep its job monitor until original terminal. Root must validate the one original response and compile it through the existing shared path before any capacity/engineering admission. K and execution budgets remain configuration-derived. The broad goal remains active and incomplete, with human review before8x400.
+
 ## Solver update3 own aggregate projection and fresh complete K4 opportunity (2026-10-08T19:18:09.390726+00:00)
 
 The complete qualified Solver update1 family now has a separate prospective own-aggregate projection authority and fresh four-position Astra Ultra opportunity. See `docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/README.md`. Its input has four prior abstract Solver templates with complete compact process/business/timing statistics and two separately labelled controls. Missingness, inapplicability and fixed-N primary denominators remain explicit. The full capsule is 62533 bytes; no records are truncated. The source-only export checker was independently reviewed before use. Original source drafts and findings remain preserved.
@@ -1133,4 +1139,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T19:18:09.390726+00:00
+Last refreshed: 2026-10-08T19:20:09.147577+00:00
