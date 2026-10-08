@@ -1,0 +1,277 @@
+{
+  "at_utc": "2026-10-08T17:37:01.336145+00:00",
+  "family_READ_signed": false,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "members": {
+    "candidate-1": {
+      "comparison_or_selection": false,
+      "countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-root-countersignature-v1.json",
+        "sha256": "10b373135142852e90880c0e423fca0851f406416255a65b7df5d98d14adc55b"
+      },
+      "descriptive_business": {
+        "intent": 0.85,
+        "n": 100,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.5484974413400421
+      },
+      "failed_jobs": 0,
+      "intent_card_presence": {
+        "ci95_wilson": [
+          0.929988209271456,
+          0.9944980324498376
+        ],
+        "denominator": 100,
+        "eligible": 100,
+        "lower_missing_bound": 0.98,
+        "numerator": 98,
+        "unknown": 0,
+        "upper_missing_bound": 0.98,
+        "value": 0.98
+      },
+      "original_read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-reader-v1-exit.json",
+        "sha256": "c5ee55664ce8061606849a3a1a5acfa21ebfd989cdc5027094aba9500da9ed6b"
+      },
+      "process_metrics": {
+        "draft_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.39850799791397756,
+            0.5917682971574147
+          ],
+          "denominator": 99,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.49,
+          "numerator": 49,
+          "unknown": 1,
+          "upper_missing_bound": 0.5,
+          "value": 0.494949494949495
+        },
+        "draft_full_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.3279838267435473,
+            0.5179351329695703
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.42,
+          "numerator": 42,
+          "unknown": 0,
+          "upper_missing_bound": 0.42,
+          "value": 0.42
+        },
+        "empty_gold_false_fill": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.030465943674648555,
+            0.22960486562808868
+          ],
+          "denominator": 34,
+          "eligible": 34,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.08823529411764706,
+          "numerator": 3,
+          "unknown": 0,
+          "upper_missing_bound": 0.08823529411764706,
+          "value": 0.08823529411764706
+        }
+      },
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/candidate-1-qualification-v1.json",
+        "sha256": "14969deddaea3e08a4e3e1314df8a3e0a30a6979115893f2b6bffe1757633570"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-candidate-1-descriptive-v1/report.json",
+        "sha256": "8d24db170454c970a2a6d54c9c13b70f423daa21fe2376d0f6dd43d604298234"
+      },
+      "rows": 100,
+      "successful_official_jobs": 1
+    },
+    "control": {
+      "comparison_or_selection": false,
+      "countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-root-countersignature-v1.json",
+        "sha256": "05bc1aead67b50e73f7b03342df592ba704f7943352fd9bc14941a07667467f0"
+      },
+      "descriptive_business": {
+        "intent": 0.85,
+        "n": 100,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.575142056044141
+      },
+      "failed_jobs": 0,
+      "intent_card_presence": {
+        "ci95_wilson": [
+          0.929988209271456,
+          0.9944980324498376
+        ],
+        "denominator": 100,
+        "eligible": 100,
+        "lower_missing_bound": 0.98,
+        "numerator": 98,
+        "unknown": 0,
+        "upper_missing_bound": 0.98,
+        "value": 0.98
+      },
+      "original_read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-reader-v1-exit.json",
+        "sha256": "cdedaff64e387b409284759138416e7f442c3ac45006621bf9c32a3a608e8141"
+      },
+      "process_metrics": {
+        "draft_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.3751081795934127,
+            0.5671114302990063
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.47,
+          "numerator": 47,
+          "unknown": 0,
+          "upper_missing_bound": 0.47,
+          "value": 0.47
+        },
+        "draft_full_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.33733298524110106,
+            0.5278461045078768
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.43,
+          "numerator": 43,
+          "unknown": 0,
+          "upper_missing_bound": 0.43,
+          "value": 0.43
+        },
+        "empty_gold_false_fill": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.14601190677211745,
+            0.43117141282944665
+          ],
+          "denominator": 34,
+          "eligible": 34,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.2647058823529412,
+          "numerator": 9,
+          "unknown": 0,
+          "upper_missing_bound": 0.2647058823529412,
+          "value": 0.2647058823529412
+        }
+      },
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-qualification-v1.json",
+        "sha256": "9ced68e09b93d8629c869243564ac20ee0797f8243a1863ea222dc8283595da1"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-control-descriptive-v1/report.json",
+        "sha256": "a3eb1159bc222ac7c0be0608456a70ef13f43633ffe457e0fbe7a445521e4908"
+      },
+      "rows": 100,
+      "successful_official_jobs": 1
+    },
+    "control-aa": {
+      "comparison_or_selection": false,
+      "countersignature": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-aa-root-countersignature-v1.json",
+        "sha256": "46289931eb4f16ebbf9bfd68006b0179efbb46310d27c096324258f09275d498"
+      },
+      "descriptive_business": {
+        "intent": 0.86,
+        "n": 100,
+        "reliable_completion": 1.0,
+        "slu_f1": 0.6015654651631471
+      },
+      "failed_jobs": 0,
+      "intent_card_presence": {
+        "ci95_wilson": [
+          0.929988209271456,
+          0.9944980324498376
+        ],
+        "denominator": 100,
+        "eligible": 100,
+        "lower_missing_bound": 0.98,
+        "numerator": 98,
+        "unknown": 0,
+        "upper_missing_bound": 0.98,
+        "value": 0.98
+      },
+      "original_read_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-aa-reader-v1-exit.json",
+        "sha256": "4dfdc9fa56856220ce057013f2e22452876140b1dde9951ecb5418e6902d19ca"
+      },
+      "process_metrics": {
+        "draft_entity_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.3942199893044113,
+            0.5865198806597283
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.49,
+          "numerator": 49,
+          "unknown": 0,
+          "upper_missing_bound": 0.49,
+          "value": 0.49
+        },
+        "draft_full_correct": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.33733298524110106,
+            0.5278461045078768
+          ],
+          "denominator": 100,
+          "eligible": 100,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.43,
+          "numerator": 43,
+          "unknown": 0,
+          "upper_missing_bound": 0.43,
+          "value": 0.43
+        },
+        "empty_gold_false_fill": {
+          "applicability": "applicable",
+          "ci95_wilson": [
+            0.10349526899031913,
+            0.36798388051163594
+          ],
+          "denominator": 34,
+          "eligible": 34,
+          "excluded_by_design": 0,
+          "lower_missing_bound": 0.20588235294117646,
+          "numerator": 7,
+          "unknown": 0,
+          "upper_missing_bound": 0.20588235294117646,
+          "value": 0.20588235294117646
+        }
+      },
+      "qualification": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-member-reads-v1/control-aa-qualification-v1.json",
+        "sha256": "4e6e3b407758f5d03f046867b9bff42d78616476ca45226e20d12c9535128c8b"
+      },
+      "report": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update1-control-aa-descriptive-v1/report.json",
+        "sha256": "02fe635f7db8f6b2929380eda42ee1bb5f172ab81663ffe26a5bab574e5f28e1"
+      },
+      "rows": 100,
+      "successful_official_jobs": 1
+    }
+  },
+  "model_scorer_tokenizer_contacts_added": 0,
+  "owner_decision": 227,
+  "read_scope": "Independently completed members only; no comparisons, selection, sibling outcomes or learner export. Each original standard score is reused without rerunning the scorer.",
+  "root_interpretation": "The process instrument distinguishes raw first-answer correctness from deterministic postprocessing and marks disabled Reviewer metrics not applicable. Intent-card presence does not prove entity type/value support or semantic consumption. No candidate superiority is inferred from incomplete-family descriptive reads.",
+  "runtime_changed": false,
+  "schema": "saea-local-selected-member-read-progress-v1"
+}
