@@ -1,0 +1,103 @@
+{
+  "at_utc": "2026-10-08T16:10:45.692038+00:00",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "gpu_generation_started": false,
+  "integration": "Separate CPU authoring checkouts; serial integration into one main track. Source and templates unchanged except exact ready admission metadata.",
+  "job_monitors": "Previous engineering monitors deleted. Create a separate 15-minute monitor at each actual next original launch.",
+  "learner_export": false,
+  "next_gates": [
+    "Exact configured continuous launch queue and prospective member READ drafts",
+    "Generation/FIT and unsigned READ exposure rows",
+    "Clean frozen source and original named runtime checks",
+    "Root live-resource/control transition and one-shot serial GPU launch"
+  ],
+  "owner_decision": 227,
+  "quality_read": false,
+  "roles": {
+    "reviewer": {
+      "authoring_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-authoring-exit-v1.json",
+        "sha256": "68452548e4ce9e730891226b20f5ed6b316cc407bb37780330e0581160678bb0"
+      },
+      "members": [
+        "control",
+        "control-aa",
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ],
+      "new_model_tokenizer_scorer_contacts": 0,
+      "package_relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update1-registered-entry2-v1",
+      "population_budget": {
+        "K": 4,
+        "N": 100,
+        "active_node_counts": {
+          "candidate-1": 4,
+          "candidate-2": 4,
+          "candidate-3": 4,
+          "candidate-4": 4,
+          "control": 4,
+          "control-aa": 4
+        },
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 31200,
+        "generation_contacts_cap": 7800
+      },
+      "root_admission": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-admission-v1.json",
+        "sha256": "26feb2040051feb9c47e3cbf9257651caab55a8352ed1a36c006e02518e29921"
+      },
+      "root_input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update1-generation-entry2-v1/root-authoring-input-v1.json",
+        "sha256": "7de1887c865fe133666688580f9511893fe2ebefdcec45811ce298d677b0bd39"
+      },
+      "source_commit": "4c87886e5595cb0d27310ad2313e1ece12469b33"
+    },
+    "solver": {
+      "authoring_exit": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-authoring-exit-v1.json",
+        "sha256": "154f18a111a97f1cea70441687e7c31eb7208ec208b566e97b34351d2501b860"
+      },
+      "members": [
+        "control",
+        "control-aa",
+        "candidate-1",
+        "candidate-2",
+        "candidate-3",
+        "candidate-4"
+      ],
+      "new_model_tokenizer_scorer_contacts": 0,
+      "package_relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update1-registered-entry2-v1",
+      "population_budget": {
+        "K": 4,
+        "N": 100,
+        "active_node_counts": {
+          "candidate-1": 2,
+          "candidate-2": 2,
+          "candidate-3": 2,
+          "candidate-4": 2,
+          "control": 2,
+          "control-aa": 2
+        },
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 4800,
+        "generation_contacts_cap": 1200
+      },
+      "root_admission": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-admission-v1.json",
+        "sha256": "ff125d7a1ab2f95eabefb33e375e2e4772d8bb33017d3d76cb962e9be0289536"
+      },
+      "root_input": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update1-generation-entry2-v1/root-authoring-input-v1.json",
+        "sha256": "76c1492614a5c41ff3c098139a55ae0051e6a5c7c4fc767d555efae74761a6d1"
+      },
+      "source_commit": "52943446172729cf8f821e2352d28b06c3b4f02b"
+    }
+  },
+  "schema": "saea-root-local-k4-n100-authoring-complete-v1"
+}
