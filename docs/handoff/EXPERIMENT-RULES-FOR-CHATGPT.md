@@ -1,5 +1,12 @@
 # Experiment rules for the ChatGPT side
 
+## Future campaign terminal inspector source routing corrected (2026-10-08T02:35:07.607392+00:00)
+
+The narrow root227 future-only fix is integrated from reviewed1f3daf1c7. Campaign-plan inspection now launches the inspector from the exact frozen repo-root; the existing strict guard, smoke/noncampaign path and failure propagation remain unchanged. Five focused synthetic regressions pass independently under Sol and Astra Ultra, including reproduction of the original rc2 and corrected routing; shell syntax passes. See `docs/receipts/continuation/2026-10-08-n100-terminal-inspector-source-fix-v1.json`. This closes the named launcher preparation defect for future admissions, not an end-to-end proof of a new flight.
+
+Current N100 result custody and scientific conclusions are unchanged. Preserve frozen7cfdcf82, original successful campaign rc0, terminal inspect rc2 and STOP. No inspection replay, source mutation in the frozen worker, rerun, reseal, score replay or runtime control transition occurred. The job monitor remains deleted. Next prospective templates/registration/FIT/structural checks and a separately recorded launch transition are still required before another experiment. No stable gain, automatic scale expansion or other-carrier release.
+
+
 ## Corrected N100 complete; consume qualified results, preserve terminal incident (2026-10-08T02:31:49.519135+00:00)
 
 All four100-row members are independently FINALIZED with verified seals, exactly one successful complete original official score each and zero failed jobs. Root countersigned and completed all member reads and the exact whole-family READ. See `docs/results/2026-10-08-simple-consumption-n100-complete-family.md` and `docs/receipts/continuation/2026-10-08-simple-consumption-n100-complete-family-read-v1.json`. No new scoring/model/tokenizer contact or learner export occurred. Astra Ultra reviewed member aggregates and the complete comparison.
@@ -897,4 +904,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-08T02:31:49.519135+00:00
+Last refreshed: 2026-10-08T02:35:07.607392+00:00

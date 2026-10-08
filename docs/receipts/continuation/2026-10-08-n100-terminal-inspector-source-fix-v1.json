@@ -1,0 +1,41 @@
+{
+  "at_utc": "2026-10-08T02:35:07.607392+00:00",
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "driver_source": {
+    "path": "/home/chao/saea-worktrees/codex-simple-consumption-n100-audio-recovery1-entry2-analysis-v1/scripts/flights/batch/batch_driver.sh",
+    "sha256": "9d703ffad9b0999c2a778527a587c2a430c7196596a7947811d4367ea21ca6ad"
+  },
+  "focused_original_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-terminal-inspect-diagnosis-v1/focused-exit-v1.json",
+    "sha256": "39f33fef2199406e72a13842c783c1e5209f8dbc1a48968879015204325820c2"
+  },
+  "future_execution_admitted": false,
+  "generation_or_score_replayed": false,
+  "independent_astra_ultra": {
+    "shell_exit": 0,
+    "shell_original": "3a8b17",
+    "status": "GREEN",
+    "synthetic_tests_passed": 5,
+    "test_original": "6f64c2"
+  },
+  "original_diagnosis": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-terminal-inspect-diagnosis-v1/original-operational-diagnosis-v1.json",
+    "sha256": "eee873186d505f208536cfd9e8057edc535815050201241c504b9e84cd681a37"
+  },
+  "original_inspection_replayed": false,
+  "original_stop_cleared": false,
+  "original_worker_edited": false,
+  "owner_decision": 227,
+  "root_disposition": "Use the exact frozen-repo inspector entrypoint only for future campaign-plan inspection. Preserve strict source-root guard, smoke/noncampaign behavior, original campaign rc0 and terminal inspect rc2. Root separately verified and read the complete original family.",
+  "schema": "saea-root-future-inspector-source-disposition-v1",
+  "serially_applied_commit": "ddc476c73e0e746d79b5270f9b2c58c4d8957f2e",
+  "shell_original_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/simple-consumption-n100-audio-recovery1-entry2-v1/sol-terminal-inspect-diagnosis-v1/shell-syntax-exit-v1.json",
+    "sha256": "9e239cde08404a3b63c5a20b1039110a3d07897a2e0370392a42b65a26f0c6f9"
+  },
+  "source_fix_commit": "1f3daf1c7ebb958c4fb09e448a8c0d14c1237749"
+}

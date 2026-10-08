@@ -1,5 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Future campaign terminal inspector source routing corrected (2026-10-08T02:35:07.607392+00:00)
+
+The narrow root227 future-only fix is integrated from reviewed1f3daf1c7. Campaign-plan inspection now launches the inspector from the exact frozen repo-root; the existing strict guard, smoke/noncampaign path and failure propagation remain unchanged. Five focused synthetic regressions pass independently under Sol and Astra Ultra, including reproduction of the original rc2 and corrected routing; shell syntax passes. See `docs/receipts/continuation/2026-10-08-n100-terminal-inspector-source-fix-v1.json`. This closes the named launcher preparation defect for future admissions, not an end-to-end proof of a new flight.
+
+Current N100 result custody and scientific conclusions are unchanged. Preserve frozen7cfdcf82, original successful campaign rc0, terminal inspect rc2 and STOP. No inspection replay, source mutation in the frozen worker, rerun, reseal, score replay or runtime control transition occurred. The job monitor remains deleted. Next prospective templates/registration/FIT/structural checks and a separately recorded launch transition are still required before another experiment. No stable gain, automatic scale expansion or other-carrier release.
+
+
 ## Corrected N100 complete; consume qualified results, preserve terminal incident (2026-10-08T02:31:49.519135+00:00)
 
 All four100-row members are independently FINALIZED with verified seals, exactly one successful complete original official score each and zero failed jobs. Root countersigned and completed all member reads and the exact whole-family READ. See `docs/results/2026-10-08-simple-consumption-n100-complete-family.md` and `docs/receipts/continuation/2026-10-08-simple-consumption-n100-complete-family-read-v1.json`. No new scoring/model/tokenizer contact or learner export occurred. Astra Ultra reviewed member aggregates and the complete comparison.
@@ -7073,7 +7080,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-08T02:31:49.519135+00:00
+Last refreshed: 2026-10-08T02:35:07.607392+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
