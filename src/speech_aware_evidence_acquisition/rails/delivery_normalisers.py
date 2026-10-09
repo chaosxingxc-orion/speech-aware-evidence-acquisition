@@ -44,6 +44,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from ..core.base import DELIVERY_NORMALISERS, DeliveryNormalisation, DeliveryNormaliserError
@@ -1088,11 +1089,50 @@ def default_v4_statistics() -> SlurpV4Statistics:
     return _DEFAULT_V4_STATISTICS[0]
 
 
-def v4_entity_stage(scenario, action, entities, stats: SlurpV4Statistics, table: ScopeRuleTable):
+@dataclass(frozen=True)
+class V4Guards:
+    """The two TRAIN-only guards of v4g (audio attribution note
+    ``docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md``).
+
+    ``ti1_min_exemplars``: ti1 fires only on an intent with at least this many
+    pool exemplars (1 / V4_TI_MIN_SHARE = 100), i.e. where "< 1 %" differs from
+    "never seen". ``ee_wilson_max_upper`` / ``ee_wilson_z``: ee10 fires only when
+    the Wilson upper bound of the intent's entity-carrying rate, at ``z``, is
+    below ``ee_wilson_max_upper`` (the rule's own 10 % threshold)."""
+
+    ti1_min_exemplars: int
+    ee_wilson_max_upper: float
+    ee_wilson_z: float
+
+    def to_document(self) -> dict:
+        return {
+            "ti-expressible": {"ti1_min_pool_exemplars": self.ti1_min_exemplars},
+            "ee-wilson": {"max_upper_bound": self.ee_wilson_max_upper, "z": self.ee_wilson_z,
+                          "interval": "wilson-score-upper"},
+        }
+
+
+def wilson_upper_bound(successes: int, n: int, z: float) -> float:
+    """The Wilson score interval's upper bound for ``successes`` of ``n`` (1.0 when n = 0)."""
+
+    if n == 0:
+        return 1.0
+    p = successes / n
+    centre = p + z * z / (2 * n)
+    half = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5)
+    return (centre + half) / (1 + z * z / n)
+
+
+def v4_entity_stage(scenario, action, entities, stats: SlurpV4Statistics, table: ScopeRuleTable,
+                    guards: "V4Guards | None" = None):
     """The five-rule entity stage over one parsed (v3-normalised) answer.
 
     Returns ``(entities_out, counts)``. Never changes a label and never adds an
-    entity; an empty entity list is returned as is (owner decision 199)."""
+    entity; an empty entity list is returned as is (owner decision 199).
+
+    ``guards`` is ``None`` for v4 (the rules as selected) and a :class:`V4Guards`
+    for v4g, which narrows ti1 and ee10 to the intents whose TRAIN statistics
+    resolve their thresholds (see :data:`V4G_GUARDS`)."""
 
     from ..analysis.sealed_credit.entity_states import fold  # noqa: PLC0415
     from ..reproduction.slurp_scoring import SlotEntity  # noqa: PLC0415
@@ -1122,13 +1162,19 @@ def v4_entity_stage(scenario, action, entities, stats: SlurpV4Statistics, table:
     current = [e for i, e in enumerate(current) if i not in drops]
     if intent is None or stats.intent_n.get(intent, 0) == 0:
         return current, counts
-    # ti1
-    kept = [e for e in current if stats.type_share(intent, e.type) >= V4_TI_MIN_SHARE]
-    counts["dropped_ti1"] = len(current) - len(kept)
-    current = kept
-    # ee10
-    rate = stats.entity_rate(intent)
-    if current and rate is not None and rate < V4_EE_MIN_ENTITY_RATE:
+    # ti1 (v4g: only on an intent whose pool is large enough for "< 1 %" to be expressible)
+    if guards is None or stats.intent_n[intent] >= guards.ti1_min_exemplars:
+        kept = [e for e in current if stats.type_share(intent, e.type) >= V4_TI_MIN_SHARE]
+        counts["dropped_ti1"] = len(current) - len(kept)
+        current = kept
+    # ee10 (v4g: only when the entity-carrying rate is RESOLVED below the threshold)
+    if guards is None:
+        fires = stats.entity_rate(intent) < V4_EE_MIN_ENTITY_RATE
+    else:
+        fires = wilson_upper_bound(
+            stats.intent_with_entities.get(intent, 0), stats.intent_n[intent], guards.ee_wilson_z
+        ) < guards.ee_wilson_max_upper
+    if current and fires:
         counts["dropped_ee10"] = len(current)
         current = []
     return current, counts
@@ -1150,7 +1196,10 @@ class SlurpProjectionV4DeliveryNormaliser:
 
     id = DELIVER_NORMALISE_V4
     version = DELIVER_NORMALISE_V4_VERSION
+    rule_id = V4_RULE_ID
     carrier_lock_key = "slurp"
+    #: ``None`` = the rules as selected; v4g overrides with :data:`V4G_GUARDS`.
+    guards: "V4Guards | None" = None
 
     def __call__(
         self,
@@ -1176,7 +1225,7 @@ class SlurpProjectionV4DeliveryNormaliser:
         counts = {"fillers_rewritten": 0, "dropped_scope": 0, "dropped_ti1": 0, "dropped_ee10": 0}
         delivered = base.text
         if parsed:
-            kept, counts = v4_entity_stage(scenario, action, entities, stats, table)
+            kept, counts = v4_entity_stage(scenario, action, entities, stats, table, self.guards)
             if list(kept) != list(entities):
                 delivered = render_slurp_answer(scenario, action, kept)
         changed = delivered != text
@@ -1184,7 +1233,7 @@ class SlurpProjectionV4DeliveryNormaliser:
             "schema": DELIVER_NORMALISER_RECEIPT_SCHEMA,
             "normaliser_id": self.id,
             "version": self.version,
-            "rule_id": V4_RULE_ID,
+            "rule_id": self.rule_id,
             "carrier_lock_key": self.carrier_lock_key,
             "applied": bool(parsed),
             "changed": changed,
@@ -1204,7 +1253,46 @@ class SlurpProjectionV4DeliveryNormaliser:
             "stages": [dict(base.receipt)],
             "reason": None if parsed else "unparsed",
         }
+        if self.guards is not None:
+            receipt["guards"] = self.guards.to_document()
         return DeliveryNormalisation(text=delivered, changed=changed, receipt=receipt).validate()
+
+
+# ---------------------------------------------------------------------------
+# Projection v4g (NX, 2026-10-09): ``saea-deliver-normalise-v4g``.
+#
+# v4 with the two TRAIN-only guards of the audio attribution note
+# (``docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md``):
+# ee-wilson (ee10 fires only when the Wilson 95 % upper bound of the intent's
+# pool entity-carrying rate is below 0.10) and ti-expressible (ti1 fires only
+# on intents with >= 100 pool exemplars). Everything else, including the
+# pinned tables (the Wilson bound needs only the intent exemplar and
+# entity-carrying counts the intent-entity-rate table already carries), is v4.
+# Receipt: ``docs/receipts/knowledge/slurp-v4g-registration-v1.json``.
+#
+# REGISTERED, NOT ARMED: no config, fragment, cell or lock names it.
+# ---------------------------------------------------------------------------
+
+DELIVER_NORMALISE_V4G = "saea-deliver-normalise-v4g"
+#: Bumped when the RULE, a guard constant or a pinned table changes.
+DELIVER_NORMALISE_V4G_VERSION = "1"
+V4G_RULE_ID = "slurp-use-projection-v4g"
+V4G_WILSON_Z = 1.959963984540054
+V4G_GUARDS = V4Guards(
+    ti1_min_exemplars=round(1 / V4_TI_MIN_SHARE),
+    ee_wilson_max_upper=V4_EE_MIN_ENTITY_RATE,
+    ee_wilson_z=V4G_WILSON_Z,
+)
+
+
+class SlurpProjectionV4GuardedDeliveryNormaliser(SlurpProjectionV4DeliveryNormaliser):
+    """``saea-deliver-normalise-v4g``: :class:`SlurpProjectionV4DeliveryNormaliser`
+    with :data:`V4G_GUARDS`. The receipt adds a ``guards`` field."""
+
+    id = DELIVER_NORMALISE_V4G
+    version = DELIVER_NORMALISE_V4G_VERSION
+    rule_id = V4G_RULE_ID
+    guards = V4G_GUARDS
 
 
 DELIVERY_NORMALISERS.register(
@@ -1231,6 +1319,7 @@ DELIVERY_NORMALISERS.register(
     CitedAnswerNormaliseV3ScopeRuleDeliveryNormaliser(),
 )
 DELIVERY_NORMALISERS.register(DELIVER_NORMALISE_V4, SlurpProjectionV4DeliveryNormaliser())
+DELIVERY_NORMALISERS.register(DELIVER_NORMALISE_V4G, SlurpProjectionV4GuardedDeliveryNormaliser())
 
 
 __all__ = [
@@ -1267,6 +1356,14 @@ __all__ = [
     "validate_scope_rule_receipt",
     "DELIVER_NORMALISE_V4",
     "DELIVER_NORMALISE_V4_VERSION",
+    "DELIVER_NORMALISE_V4G",
+    "DELIVER_NORMALISE_V4G_VERSION",
+    "V4G_GUARDS",
+    "V4G_RULE_ID",
+    "V4G_WILSON_Z",
+    "V4Guards",
+    "SlurpProjectionV4GuardedDeliveryNormaliser",
+    "wilson_upper_bound",
     "V4_STAGES",
     "V4_STATS_ARTIFACT_ID",
     "V4_STATS_SHA256",
