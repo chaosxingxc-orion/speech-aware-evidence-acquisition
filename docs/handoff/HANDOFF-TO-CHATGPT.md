@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T22:50:11Z
+Last refreshed: 2026-10-09T22:51:50Z
+
+## Module step 7 merged: lock v2.2 carries v4g; R5 package preparation starts, HELD (2026-10-09T22:51:50Z, Fable 5.1 root)
+
+Merge b9a4f1c1f (`docs/readiness/2026-10-09-slurp-module-step7-v4g-default-v1.md`): the slurp module profile gains lock `v2.2` = the v2.1 layer with `native_episode.deliver_normaliser.normaliser` moved to `saea-deliver-normalise-v4g` (component `delivery-normaliser`, state on (lock)); opt-in by lock id, `CURRENT_LOCK` stays v2.1; blocks naming no lock / v2.0 / v2.1 compile to the same bytes (the HELD module cell and both NX R1 cells pinned, composed hashes identical; carrier byte proofs a2t0 / e210 / all unchanged, ok true). The scope-rule stage and the citation contract are refused on v2.2 until a composition with v4g is registered. The R5 composed cell is being prepared model-free (HELD pending decision 238 and the iteration-2 verdict): chain on DEV-2000-ADDED = the request-identical replicate of A2 (`module-comp1b-aa-dev2000-added`, lock v2.1, the in-chain A/A) + the composed arm (lock v2.2, review-off, COMP-1b components on, Solver template = the lock or the iteration-2 pick), read against the sealed A2 with the replicate offset (cross-flight bar 2.5 pp) and with v4g applied offline to all columns.
+
+Superseded stamp: 2026-10-09T22:50:11Z
 
 ## Level-2 branch render defect fixed on master (2026-10-09T22:50:11Z, Fable 5.1 root)
 
