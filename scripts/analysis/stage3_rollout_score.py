@@ -241,6 +241,35 @@ def render_answer(payload: Mapping[str, Any] | None) -> str:
     return json.dumps(body, ensure_ascii=False, sort_keys=True)
 
 
+def normalise_arm_answer(raw: str, normaliser_id: str | None) -> tuple[str, bool]:
+    """One raw Solver answer -> the delivered-equivalent text, ``(text, ok)``.
+
+    The delivered row's OWN sealed normaliser (``core.base.DELIVERY_NORMALISERS``) when the row
+    names one: under the cited-answer contract it unwraps the envelope AND applies the SLURP
+    deliver projection as one composed call
+    (``rails.delivery_normalisers.CitedAnswerNormaliseV3DeliveryNormaliser``); a bare
+    projection-only cell resolves just the projection. Without a normaliser: the governed parser
+    (``parse_slu_response``) and ``render_answer``, the canonical empty answer when it refuses.
+    The first-visit column renderer and the NX node-local reader (E2) both call this function.
+    """
+
+    if normaliser_id is not None:
+        from speech_aware_evidence_acquisition.core.base import DELIVERY_NORMALISERS
+        from speech_aware_evidence_acquisition.rails import (  # noqa: F401 -- registration side effect
+            delivery_normalisers as _delivery_normalisers,
+        )
+
+        normalisation = DELIVERY_NORMALISERS.resolve(normaliser_id)(raw)
+        return normalisation.text, bool(normalisation.receipt.get("applied", False))
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import parse_slu_response
+
+    scenario, action, entities, ok = parse_slu_response(raw)
+    parsed = ({"scenario": scenario or "", "action": action or "",
+               "entities": [{"type": x.type, "filler": x.filler} for x in entities]}
+              if ok else None)
+    return render_answer(parsed), bool(ok)
+
+
 def sealed_per_sample(directory: Path, run_id: str, scorer_id: str) -> dict[str, dict[str, Any]]:
     """The arm's own sealed official per-row scores for the DELIVERED
     (committed) answer -- read, never recomputed (module docstring)."""
@@ -1009,22 +1038,10 @@ def render_supply_variant_first_visit(
                     != contact.get("response_text_sha256")
                     or response.get("response_text_sha256") != contact.get("response_text_sha256")):
                 raise Stage3ScoreError(f"{sid}: first Solver arm trace hash differs from custody")
-            if normaliser_id is not None:
-                # Section 3: the SAME registered rule the row's own delivery used, so an
-                # arm-vs-delivered contrast never partly measures the renderer. Under the
-                # cited-answer contract this rule unwraps the envelope AND applies the SLURP
-                # deliver projection as one composed call (rails.delivery_normalisers.
-                # CitedAnswerNormaliseV3DeliveryNormaliser); a bare projection-only cell resolves
-                # just the projection.
-                normalisation = DELIVERY_NORMALISERS.resolve(normaliser_id)(raw)
-                arm_text = normalisation.text
-                ok = bool(normalisation.receipt.get("applied", False))
-            else:
-                scenario, action, entities, ok = parse_slu_response(raw)
-                parsed = ({"scenario": scenario or "", "action": action or "",
-                           "entities": [{"type": x.type, "filler": x.filler} for x in entities]}
-                          if ok else None)
-                arm_text = render_answer(parsed)
+            # Section 3: the SAME registered rule the row's own delivery used (see
+            # ``normalise_arm_answer``), so an arm-vs-delivered contrast never partly measures
+            # the renderer.
+            arm_text, ok = normalise_arm_answer(raw, normaliser_id)
             if not ok:
                 malformed[arm.arm_id] += 1
             columns[arm.arm_id].append({"sample_id": sid, "text": arm_text})

@@ -266,7 +266,8 @@ def test_the_table_renders_every_arm_and_metric():
     report = _read()
     table = reader.render(report)
     for fragment in ("| t1 |", "| aa |", "| lock |", "exact_set", "empty_gold_false_fill",
-                     "Wilson95", "Mechanical screen", "## Per slot type (t1)"):
+                     "Wilson95", "mechanical screen", "## Per slot type, normalised (t1)", "NORMALISED (primary)",
+                     "RAW (diagnostic)", "Raw vs normalised"):
         assert fragment in table
 
 
@@ -274,7 +275,8 @@ def test_the_table_renders_every_arm_and_metric():
 # the sealed side: records shaped as E1 seals them
 
 
-def _sealed(*, twin=True, revisions=1, rows=None):
+def _sealed(*, twin=True, revisions=1, rows=None, answers=None, normaliser_id=None):
+    answers = ANSWERS if answers is None else answers
     group = _group(twin=twin)
     arm_ids = group.arm_ids
     outputs, trace = [], {}
@@ -282,7 +284,7 @@ def _sealed(*, twin=True, revisions=1, rows=None):
         contacts = []
         for index, arm_id in enumerate(arm_ids):
             rid = f"{sid}/{arm_id}"
-            raw = ANSWERS[arm_id][sid]
+            raw = answers[arm_id][sid]
             contact = {
                 "agent_contact_id": f"solver:{sid}:{index}", "request_id": rid,
                 "request_sha256": hashlib.sha256(rid.encode()).hexdigest(),
@@ -306,8 +308,10 @@ def _sealed(*, twin=True, revisions=1, rows=None):
             "contacts": [], "final_contact": None}},
             {"role_id": "solver", "stage": "solver", "execution_receipt": {
                 "contacts": contacts, "final_contact": contacts[-1]}}]
-        outputs.append({"sample_id": sid, "supply_variants": receipt,
-                        "native_episode_receipt": {"role_visits": visits}})
+        episode = {"role_visits": visits}
+        if normaliser_id is not None:
+            episode["deliver_normaliser"] = {"normaliser_id": normaliser_id}
+        outputs.append({"sample_id": sid, "supply_variants": receipt, "native_episode_receipt": episode})
     return outputs, trace
 
 
@@ -434,3 +438,121 @@ def test_main_writes_the_report_and_tables_without_text(tmp_path, monkeypatch, c
     assert SECRET not in (tmp_path / "out" / "tables.md").read_text(encoding="utf-8")
     assert "wrote" in capsys.readouterr().out
     _ = SimpleNamespace
+
+
+# ---------------------------------------------------------------------------
+# the normalised primary (schema v2): raw answers that differ from the delivered form only in
+# filler formatting
+
+FORMAT_GOLD = {
+    "slurp:train:11:a": (("date", "monday"),),
+    "slurp:train:12:a": (("date", "friday"),),
+    "slurp:train:13:a": (),
+}
+FORMAT_ANSWERS = {
+    # lock delivers the same filler, formatted the way the core tends to write it
+    "lock": {
+        "slurp:train:11:a": _answer(("date", "  Monday. ")),
+        "slurp:train:12:a": _answer(("date", "friday")),
+        "slurp:train:13:a": _answer(("date", "monday")),
+    },
+    # t1 writes clean lower-case fillers: raw-exact where the lock is raw-wrong
+    "t1": {
+        "slurp:train:11:a": _answer(("date", "monday")),
+        "slurp:train:12:a": _answer(("date", "friday")),
+        "slurp:train:13:a": _answer(("date", "monday")),
+    },
+    "t2": {
+        "slurp:train:11:a": _answer(("date", "monday")),
+        "slurp:train:12:a": _answer(("date", "friday")),
+        "slurp:train:13:a": _answer(),
+    },
+}
+FORMAT_ANSWERS["aa"] = dict(FORMAT_ANSWERS["lock"])
+NORMALISER = "saea-deliver-normalise-v3"
+
+
+def _format_read():
+    outputs, trace = _sealed(
+        rows=sorted(FORMAT_GOLD), answers=FORMAT_ANSWERS, normaliser_id=NORMALISER)
+    sealed = reader.load_sealed_arm_texts(outputs, trace)
+    normalised = reader.normalise_texts(sealed["texts"], sealed["normaliser_ids"])
+    gold = {sid: {"entities": tuple(SlotEntity(t, f) for t, f in ents)}
+            for sid, ents in FORMAT_GOLD.items()}
+    report = reader.read_columns(
+        sealed["texts"], gold, arm_ids=sealed["arm_ids"], delivering=sealed["delivering"],
+        twin=sealed["twin"], normalised_texts=normalised, draws=200,
+    )
+    return sealed, normalised, report
+
+
+def test_the_loader_reads_each_rows_sealed_delivery_normaliser():
+    sealed, _normalised, _report = _format_read()
+    assert set(sealed["normaliser_ids"].values()) == {NORMALISER}
+    assert set(sealed["normaliser_ids"]) == set(FORMAT_GOLD)
+    # a row sealing no normaliser maps to None (parse + render fallback)
+    outputs, trace = _sealed()
+    assert set(reader.load_sealed_arm_texts(outputs, trace)["normaliser_ids"].values()) == {None}
+
+
+def test_the_normalised_answer_is_what_the_column_scorers_function_returns():
+    from stage3_rollout_score import normalise_arm_answer
+
+    sealed, normalised, _report = _format_read()
+    for arm in sealed["arm_ids"]:
+        for sid, raw in sealed["texts"][arm].items():
+            assert normalised[arm][sid] == normalise_arm_answer(raw, NORMALISER)[0]
+    assert normalised["lock"]["slurp:train:11:a"] != sealed["texts"]["lock"]["slurp:train:11:a"]
+
+
+def test_formatting_only_gain_is_raw_exact_but_not_normalised_exact():
+    _sealed_, _normalised, report = _format_read()
+    raw = report["raw_diagnostic"]["arms"]["t1"]["paired_vs_delivering"]["exact_set"]
+    norm = report["arms"]["t1"]["paired_vs_delivering"]["exact_set"]
+    # raw: t1 fixes the lock's mis-formatted monday row (1 of 3 rows exact more)
+    assert (raw["b_arm_only"], raw["c_delivering_only"]) == (1, 0)
+    assert raw["diff_pp"] == pytest.approx(100.0 / 3)
+    # normalised: the lock's delivered answer is already exact there, so the arm gains nothing
+    assert (norm["b_arm_only"], norm["c_delivering_only"]) == (0, 0)
+    assert norm["diff_pp"] == pytest.approx(0.0)
+    assert norm["ci95_pp"] == [0.0, 0.0]
+
+
+def test_the_primary_and_the_screen_follow_the_normalised_view():
+    _sealed_, _normalised, report = _format_read()
+    assert report["primary_metric"] == "exact_set_normalised" and report["primary_view"] == "normalised"
+    assert report["schema_version"] == "saea-nx-solver-column-read-v2"
+    # t1's raw gain is formatting: the raw screen's primary diff is positive, the primary's is not
+    assert report["mechanical_screen"]["t1"]["primary_ci_lb_gt_0"] is False
+    assert report["mechanical_screen"]["t1"]["passes_mechanical_screen"] is False
+    # t2 removes the lock's false fill on the empty-gold row in BOTH views
+    fill = report["arms"]["t2"]["paired_vs_delivering"]["empty_gold_false_fill"]
+    assert fill["diff_pp"] == pytest.approx(-100.0)
+    # the delivering arm is exact on the formatted row only after normalisation
+    assert report["raw_diagnostic"]["arms"]["lock"]["marginal"]["exact_set"]["count"] == 1
+    assert report["arms"]["lock"]["marginal"]["exact_set"]["count"] == 2
+
+
+def test_the_flip_table_counts_rows_whose_raw_exact_flipped_after_normalisation():
+    _sealed_, _normalised, report = _format_read()
+    lock = report["raw_vs_normalised"]["lock"]
+    assert lock["text_changed"] >= 1
+    assert lock["exact_raw_false_to_normalised_true"] == 1
+    assert lock["exact_raw_true_to_normalised_false"] == 0
+    # t1 writes clean fillers: the normaliser leaves its exact rows exact and flips nothing
+    assert report["raw_vs_normalised"]["t1"]["exact_raw_false_to_normalised_true"] == 0
+
+
+def test_the_v2_tables_head_both_views_and_leak_nothing():
+    _sealed_, _normalised, report = _format_read()
+    table = reader.render(report)
+    assert "PRIMARY: `exact_set_normalised`" in table
+    assert table.index("NORMALISED (primary)") < table.index("RAW (diagnostic)")
+    for filler in ("monday", "friday", "Monday"):
+        assert filler not in table + json.dumps(report)
+
+
+def test_identity_normalisation_makes_both_views_equal():
+    report = _read()
+    assert report["arms"] == report["raw_diagnostic"]["arms"]
+    assert all(f["text_changed"] == 0 for f in report["raw_vs_normalised"].values())
