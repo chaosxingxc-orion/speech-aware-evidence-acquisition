@@ -131,7 +131,8 @@ def test_registered_plan_uses_config_even_without_supply_annotation(tmp_path, ro
     directory.mkdir(parents=True)
     (directory/"member-plan-registered-v1.json").write_text(json.dumps(document))
     report = SimpleNamespace(run_ids=run_ids, findings=[])
-    gate._check_registered_supply_binding(report, baseline, SimpleNamespace(repo_root=tmp_path), "package")
+    # The plans carry no carrier_lock_key, so the (required) exposure-ledger argument is never consulted.
+    gate._check_registered_supply_binding(report, baseline, SimpleNamespace(repo_root=tmp_path), "package", {})
     assert bool(report.findings) == (fault is not None)
 
 

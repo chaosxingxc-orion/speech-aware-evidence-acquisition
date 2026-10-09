@@ -29,7 +29,9 @@ def normalized_system(tmp_path):
         harness.close()
     result = summary.results[0]
     row = result.as_json()
+    # I7n: a normalised row names the normaliser's carrier, like the receipt block does.
     output = {"sample_id": "s1", "text": result.final_response_text,
+              "carrier_lock_key": row["native_episode_receipt"]["deliver_normaliser"]["carrier_lock_key"],
               "native_episode_receipt": deepcopy(row["native_episode_receipt"])}
     return dict(
         sample_ids=("s1",), controller_policy_id=summary.controller_policy_id,

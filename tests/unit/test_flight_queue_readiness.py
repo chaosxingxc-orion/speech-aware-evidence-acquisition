@@ -8,6 +8,9 @@ from speech_aware_evidence_acquisition.core.flight.queue import (
     FlightReadiness,
     FlightDependency,
 )
+import pytest
+
+from speech_aware_evidence_acquisition.core.flight.queue import FlightQueueError
 from test_flight_queue import _make_flight
 
 
@@ -122,7 +125,11 @@ def test_returned_scoring_failure_never_satisfies_a_dependency(tmp_path):
     queue.run(max_flights=1)
     queue.drain_scores()
     assert queue.states["first"].state == "failed"
-    assert queue.next_ready() is None
+    # Campaign admission is refused outright once a completed flight's scoring failed (the stricter
+    # successor of returning None): the dependent is never handed out as ready.
+    with pytest.raises(FlightQueueError, match="Campaign admission refused after first"):
+        queue.next_ready()
+    assert queue.states["first"].state == "failed"
 
 
 def test_first_ready_flight_does_not_wait_for_later_preflight(tmp_path):

@@ -85,6 +85,13 @@ _EXPECTED_PROGRAM_SHAPES = {
     ),
     # E1, 2026-09-16 (M0): the same four phases with the review loop off, so
     # Reviewer and Planner never get a node -- ceiling drops from 11 to 2.
+    # Slot-review contract program, 2026-10-02 (docs/readiness/2026-10-02-slot-review-contract-
+    # correction-v1): shipped and registered without extending this table. Shape read from
+    # configs/policy/phase-native-slot-review-contract-v1.json -- the four-role episode with the
+    # Reviewer on the registered slot-review handoff contract, ceiling 13.
+    "phase-native-slot-review-contract-v1": (
+        ("perception", "reviewer", "planner", "solver"), 13, "native-role-episode"
+    ),
     "phase-native-candidates-solve-v1": (
         ("perception", "reviewer", "planner", "solver"), 2, "native-role-episode"
     ),
