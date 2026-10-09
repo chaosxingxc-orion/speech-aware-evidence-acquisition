@@ -2495,6 +2495,19 @@ async def _invoke_native_role_episode(
     perception_branch_solver_contacts: list[tuple[AgentContactPlan, object, int]] = []
     perception_branch_solver_pending: dict[str, dict[str, object]] = {}
     perception_branch_solver_records: dict[str, dict[str, object]] = {}
+    # LEVEL 2 render-defect fix (2026-10-09): each non-A, non-twin branch's own
+    # resolved Solver-phase supply (its cumulative selected value ids), keyed
+    # by branch id, resolved ONCE in ``settle`` against the staged context
+    # whose sealed Perception state carries THAT branch's note; A's own
+    # node-acquired ids (what a branch removes before putting its own in); the
+    # rendered-content digest of each Solver contact (messages plus the exposed
+    # history, contact-id free), keyed by contact id and then by branch id, for
+    # the seal-time "a branch that saw a different note must not replicate A"
+    # refusal.
+    perception_branch_solver_selections: dict[str, tuple[str, ...]] = {}
+    perception_branch_solver_node_acquired: list[str] = []
+    perception_branch_solver_render: dict[str, str] = {}
+    perception_branch_solver_render_by_branch: dict[str, str] = {}
     pending = {}
     visits = {}
     completed = {}
@@ -2932,6 +2945,68 @@ async def _invoke_native_role_episode(
             )
         return messages
 
+    def _perception_branch_solver_view(ctx, request):
+        """LEVEL 2: the context ONE Perception branch's Solver contact is
+        RENDERED from -- the whole of it, not just the messages.
+
+        A and the twin take ``ctx`` unchanged. Every other branch gets a VIEW
+        in which (1) the sealed Perception state's content is that branch's
+        own note, and (2) the QueryState's ``retrieved_value_ids`` carry that
+        branch's own Solver-phase supply (resolved in ``settle`` from the
+        branch's note) in place of A's. Everything downstream of the messages
+        -- the exposed history (``agent_state``), the role/node context
+        compilers and the candidate-proposal block -- must read THIS view, not
+        ``ctx``; that is the 2026-10-09 render defect (they read ``ctx`` and
+        so every branch Solver column replicated A's request).
+        The view is used for rendering only and never for custody.
+        """
+
+        from .supply_variants import (
+            PERCEPTION_BRANCH_LEVEL_SOLVER, PerceptionBranchError,
+            SupplyVariantError, arm_supplied_value_ids,
+        )
+
+        branch_id = request.context.perception_branch_id
+        if (
+            branch_id is None or perception_branch_group is None
+            or perception_branch_group.level != PERCEPTION_BRANCH_LEVEL_SOLVER
+            or request.role_id != solver_phase_id
+        ):
+            return ctx
+        try:
+            branch = perception_branch_group.branch(branch_id)
+        except PerceptionBranchError as error:
+            raise RailsRunnerError(str(error)) from error
+        if branch.deliver or branch.is_twin:
+            return ctx
+        note_text = perception_branch_notes.get(branch_id)
+        if not isinstance(note_text, str) or not note_text:
+            raise RailsRunnerError(
+                f"perception branch {branch_id!r} has no sealed note to "
+                "render into the Solver's history"
+            )
+        query_state = ctx.query_state
+        if binding.perception_branch_solver_supply is not None:
+            if branch_id not in perception_branch_solver_selections:
+                raise RailsRunnerError(
+                    f"perception branch {branch_id!r} was contacted before its "
+                    "Solver-phase supply was resolved from its own note"
+                )
+            try:
+                supplied = arm_supplied_value_ids(
+                    retrieved_value_ids=ctx.query_state.retrieved_value_ids,
+                    node_acquired_value_ids=tuple(perception_branch_solver_node_acquired),
+                    arm_selected_value_ids=perception_branch_solver_selections[branch_id],
+                )
+            except SupplyVariantError as error:
+                raise RailsRunnerError(str(error)) from error
+            query_state = replace(query_state, retrieved_value_ids=supplied)
+        return replace(
+            ctx,
+            query_state=query_state,
+            agent_states=_perception_note_view(ctx.agent_states, note_text=note_text),
+        )
+
     def _perception_note_view(agent_states, *, note_text):
         """LEVEL 2: a VIEW of ``agent_states`` with the sealed Perception
         state's own ``content`` (A's note) replaced by ``note_text`` (a
@@ -3013,19 +3088,10 @@ async def _invoke_native_role_episode(
             branch = perception_branch_group.branch(branch_id)
         except PerceptionBranchError as error:
             raise RailsRunnerError(str(error)) from error
-        if branch.deliver or branch.is_twin:
-            messages = base_messages(ctx)
-        else:
-            note_text = perception_branch_notes.get(branch_id)
-            if not isinstance(note_text, str) or not note_text:
-                raise RailsRunnerError(
-                    f"perception branch {branch_id!r} has no sealed note to "
-                    "render into the Solver's history"
-                )
-            messages = base_messages(replace(
-                ctx,
-                agent_states=_perception_note_view(ctx.agent_states, note_text=note_text),
-            ))
+        # The WHOLE contact context is the branch's view (see
+        # ``_perception_branch_solver_view``): A and the twin get ``ctx`` back
+        # unchanged, so their messages stay ``base_messages(ctx)``.
+        messages = base_messages(_perception_branch_solver_view(ctx, request))
         record = {
             "branch_id": branch_id,
             "candidate_supply_value_ids": _rendered_candidate_value_ids(messages),
@@ -3297,6 +3363,44 @@ async def _invoke_native_role_episode(
             # ride the accumulated QueryState. Acquire only what is new; the
             # first visit of every phase is returned unchanged.
             supply = restrict_repeat_visit_supply(supply, before, phase_name=next_phase)
+        if (
+            next_phase is not None and next_phase == solver_phase_id
+            and perception_branch_group is not None
+            and perception_branch_group.level == PERCEPTION_BRANCH_LEVEL_SOLVER
+            and binding.perception_branch_solver_supply is not None
+            and not perception_branch_solver_selections
+        ):
+            # LEVEL 2 render-defect fix (2026-10-09): the first Solver visit's
+            # branch fan-out. Every non-A, non-twin branch's own Solver-phase
+            # supply is resolved HERE, against the SAME staged context this
+            # row's ordinary supply step was -- except that the sealed
+            # Perception state carries THAT branch's own note -- so a branch's
+            # candidate supply is a function of its own note, exactly as A's is
+            # a function of A's. (A and the twin render A's supply.)
+            perception_branch_solver_node_acquired.extend(
+                () if supply is None else supply.fusion_decision.selected_value_ids
+            )
+            for branch in perception_branch_group.branches:
+                if branch.deliver or branch.is_twin:
+                    continue
+                note_text = perception_branch_notes.get(branch.branch_id)
+                if not isinstance(note_text, str) or not note_text:
+                    raise RailsRunnerError(
+                        f"perception branch {branch.branch_id!r} has no sealed note "
+                        "to resolve its Solver-phase supply from"
+                    )
+                branch_source = replace(source, content=note_text)
+                branch_staged = replace(
+                    staged, agent_states=before.agent_states + (branch_source,),
+                )
+                branch_supply = binding.perception_branch_solver_supply(
+                    branch_id=branch.branch_id, phase_id=next_phase,
+                    context=branch_staged,
+                )
+                perception_branch_solver_selections[branch.branch_id] = (
+                    () if branch_supply is None
+                    else tuple(branch_supply.fusion_decision.selected_value_ids)
+                )
         if (
             next_phase is not None and next_phase == supply_variant_phase_id
             and not template_variant_mode
@@ -3730,9 +3834,14 @@ async def _invoke_native_role_episode(
                     "an armed knowledge index composed no assembly for this contact"
                 )
             record["system_message"] = messages[0]["content"]
+        # LEVEL 2: everything below that reads the row's states reads the
+        # branch's own view for a non-A, non-twin Solver branch contact (the
+        # exposed history and the compilers); ``ctx`` itself stays the row's
+        # custody context. Identity (``ctx``) for every other contact.
+        render_ctx = _perception_branch_solver_view(ctx, request)
         exposed_states = select_native_role_history(
             role=role, solver_phase_id=config.role("solver").phase_id,
-            states=ctx.agent_states, local_tool_result_ids=tuple(visit["local_ids"]),
+            states=render_ctx.agent_states, local_tool_result_ids=tuple(visit["local_ids"]),
         )
         if config.role_context_json is not None:
             if context_binding is None:
@@ -3745,7 +3854,7 @@ async def _invoke_native_role_episode(
             compiled = context_binding.compiler.compile(
                 role_kind=role.role_kind,
                 phase_ids={item.role_kind: item.phase_id for item in config.roles},
-                sample_id=ctx.sample_id, states=ctx.agent_states,
+                sample_id=ctx.sample_id, states=render_ctx.agent_states,
                 local_tool_result_ids=tuple(visit["local_ids"]),
                 available_evidence_ids=tuple(dict.fromkeys(available_ids)),
                 draft_response_schema=context_binding.draft_response_schema,
@@ -3879,6 +3988,22 @@ async def _invoke_native_role_episode(
             if prior_citation != citation_record:
                 raise RailsRunnerError(
                     "one native contact changed its cited-answer supplied set"
+                )
+        if (
+            request.context.perception_branch_id is not None
+            and request.role_id == solver_phase_id
+        ):
+            # LEVEL 2: the contact-id-free digest of everything this branch
+            # Solver contact will actually carry -- both messages and the
+            # exposed history -- so the seal can refuse a branch column that
+            # saw a different note yet rendered A's request.
+            digest = hashlib.sha256(json.dumps(
+                {"messages": list(messages), "agent_state": [a.as_json() for a in exposed_states]},
+                sort_keys=True, separators=(",", ":"), default=str,
+            ).encode("utf-8")).hexdigest()
+            if perception_branch_solver_render.setdefault(plan.contact_id, digest) != digest:
+                raise RailsRunnerError(
+                    "one perception-branch Solver contact composed two different renderings"
                 )
         return NativeRoleSpeechBinding(
             role_id=request.role_id, sample_id=ctx.sample_id,
@@ -4238,6 +4363,9 @@ async def _invoke_native_role_episode(
             "candidate_supply_value_ids": list(pending_row["candidate_supply_value_ids"]),
         }
         perception_branch_solver_records[branch.branch_id] = record
+        rendered = perception_branch_solver_render.get(contact_id)
+        if rendered is not None:
+            perception_branch_solver_render_by_branch[branch.branch_id] = rendered
         return record
 
     def cleaning_binding_provider(request):
@@ -4743,6 +4871,35 @@ async def _invoke_native_role_episode(
             f"template arms roles.solver.template_variants declares "
             f"{sorted(declared_template_arms)}; an instruction no config hash "
             "claims would move request bytes outside the cell identity"
+        )
+    # LEVEL 2 render-defect fix (2026-10-09): the branch Solver supply resolver
+    # and the level-2 branch group are ONE module in both directions (the
+    # same rule as the arm resolver above). A level-2 group beside a Solver
+    # supply with NO resolver would render every branch Solver column over
+    # A's supply -- the defect this seam closes -- so it is refused by name.
+    level2_group = (
+        perception_branch_group is not None
+        and perception_branch_group.level == PERCEPTION_BRANCH_LEVEL_SOLVER
+    )
+    if (
+        level2_group and binding.supply_for_phase is not None
+        and binding.perception_branch_solver_supply is None
+    ):
+        raise RailsRunnerError(
+            "roles.perception.branches declares level 2 beside a Solver supply but "
+            "the episode binding carries no perception_branch_solver_supply "
+            "resolver; every branch Solver column would render A's supply"
+        )
+    if not level2_group and binding.perception_branch_solver_supply is not None:
+        raise RailsRunnerError(
+            "the episode binding carries a perception_branch_solver_supply resolver "
+            "but no level-2 roles.perception.branches group is declared; a supply no "
+            "config hash claims would move request bytes outside the cell identity"
+        )
+    if level2_group and getattr(binding.supply_for_phase, "candidate_proposal_for_context", None) is not None:
+        raise RailsRunnerError(
+            "level-2 perception branches cannot combine with a candidate proposal: "
+            "a branch's proposal would have to be re-derived from its own note"
         )
     expected_proposal = getattr(binding.supply_for_phase, "candidate_proposal_for_context", None)
     if binding.candidate_proposal_for_context != expected_proposal:
@@ -5971,6 +6128,39 @@ async def _invoke_native_role_episode(
                 # rather than patched by a raw dict update.
                 from .supply_variants import perception_branch_record
 
+                # LEVEL 2 render-defect guard (2026-10-09): a non-delivering
+                # branch whose own Perception note differs from A's must have
+                # RENDERED a different Solver request (its history carries its
+                # own note), and the twin must have rendered exactly A's. A
+                # column that replicated A's rendering although its note
+                # differs is the defect itself, refused by name so it cannot
+                # recur as a silent A/A replicate.
+                _rows_by_branch = {
+                    item["branch_id"]: item for item in branches_block.get("branches", [])
+                }
+                _delivering_id = perception_branch_group.delivering_branch.branch_id
+                _a_render = perception_branch_solver_render_by_branch.get(_delivering_id)
+                _a_note = _rows_by_branch[_delivering_id]["note_sha256"]
+                for _row in branches_block.get("branches", []):
+                    _branch = perception_branch_group.branch_at(_row["branch_index"])
+                    if _branch.deliver or _a_render is None:
+                        continue
+                    _render = perception_branch_solver_render_by_branch.get(_branch.branch_id)
+                    if _render is None:
+                        continue
+                    if _branch.is_twin:
+                        if _render != _a_render:
+                            raise RailsRunnerError(
+                                f"level-2 perception branch {_branch.branch_id!r} (the twin) "
+                                "rendered a Solver request different from branch A's"
+                            )
+                    elif _row["note_sha256"] != _a_note and _render == _a_render:
+                        raise RailsRunnerError(
+                            f"level-2 perception branch {_branch.branch_id!r} Solver column "
+                            "replicated branch A's rendered request although its own "
+                            "Perception note differs from A's (the 2026-10-09 level-2 "
+                            "render defect: the branch Solver never saw its own note)"
+                        )
                 sealed_branches = []
                 for row in branches_block.get("branches", []):
                     branch = perception_branch_group.branch_at(row["branch_index"])

@@ -3494,6 +3494,56 @@ class FlightRuntime:
             }
         return resolve
 
+    def _perception_branch_solver_supply_binding(self, native_config, program):
+        """LEVEL 2 Perception-branch Solver supply resolver (2026-10-09).
+
+        ``None`` unless the cell declares a level-2 ``roles.perception.
+        branches`` group (every cell written before level 2 and every level-1
+        cell). Armed, this builds ONE independent knowledge-store router per
+        non-delivering, non-twin branch -- over the SAME released, hash-pinned
+        stores, with NO knob override -- so a branch's own first-visit Solver
+        contact can re-resolve its candidate supply from ITS OWN Perception
+        note. Branch A takes the flight's own ``supply_for_phase`` and the
+        twin repeats A's request, so neither needs a router here. Each branch
+        owns its router because the candidate router records one selection
+        audit per (phase, row, query state): sharing the flight's router (or
+        one router between branches) would make a second note's selection
+        collide with the first and be refused as "changed within one query".
+
+        Model-free: nothing here touches a model, a tokenizer or the network.
+        """
+
+        group = None if native_config is None else native_config.perception_branch_group
+        if group is None:
+            return None
+        from ...rails.supply_variants import PERCEPTION_BRANCH_LEVEL_SOLVER  # noqa: PLC0415
+
+        if group.level != PERCEPTION_BRANCH_LEVEL_SOLVER:
+            return None
+        if getattr(self, "_knowledge_store_binding", None) is None:
+            # No named-store router: the Solver has no candidate supply to
+            # re-resolve from a note (a history-only level-2 cell).
+            return None
+        routers = {}
+        for branch in group.branches:
+            if branch.deliver or branch.is_twin:
+                continue
+            routers[branch.branch_id] = self._supply_action_router(
+                program, branch.branch_id, (),
+            ).automatic_for_phase
+
+        def resolve(*, branch_id, phase_id, context):
+            """One branch's own Solver supply decision for its first visit."""
+
+            route = routers.get(branch_id)
+            if route is None:
+                raise FlightRuntimeError(
+                    f"unknown level-2 perception branch {branch_id!r}"
+                )
+            return route(phase_id, context)
+
+        return resolve
+
     def _template_variant_materials(self, native_config, program, binding):
         """NX programme E1 (2026-10-09): the per-arm material builders of a
         node-template group, or ``None`` for every other cell.
@@ -7677,6 +7727,13 @@ class FlightRuntime:
                 # byte-identical to the pre-E42 tree -- unless
                 # ``roles.solver.supply_variants`` is declared.
                 supply_variant_for_phase=self._supply_variant_binding(
+                    native_config, program,
+                ),
+                # LEVEL 2 (2026-10-09 render-defect fix): each non-A, non-twin
+                # branch's own Solver-phase supply resolver. None -- and
+                # therefore byte-identical to before -- unless a level-2
+                # ``roles.perception.branches`` group is declared.
+                perception_branch_solver_supply=self._perception_branch_solver_supply_binding(
                     native_config, program,
                 ),
                 # Owner decision 159: None unless ``dispatch`` is declared.
