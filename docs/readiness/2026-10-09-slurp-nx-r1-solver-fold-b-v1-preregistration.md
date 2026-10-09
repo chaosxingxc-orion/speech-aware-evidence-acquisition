@@ -12,8 +12,8 @@ Registered 2026-10-09 at study commit `50777775b2f6fe0b5e8356d3606fd32aecb0f725`
 | expected effect | 1.8 pp (the ROUND, carried by r1-c1), `claims_benefit` true; provisional floor SLU 1.49 pp |
 | rosters | tuning `SLURP-EVO-FOLD-A-V2`; read `SLURP-EVO-FOLD-B-V2` |
 | runs | `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1` |
-| composed config hashes | arm `a31825ae0c0f8b03312911403c86cee3ee8f03420d2a5cf21860c6ea7284eae2`; smoke `f956a0bbac8a1e568e1df30fcccc2117df1f31d8f22e5d915ad77c88f58aa8b5` |
-| protocol hashes | arm `82c4f0a521eeb83e88b6dac0187ce2fb0e03514ffa95971cd50a75c76f1002ae`; smoke `e1583b774b7b75de6e4a14c587e7529fc7e59088927487fa05170f2eed114261` |
+| composed config hashes | arm `a31825ae0c0f8b03312911403c86cee3ee8f03420d2a5cf21860c6ea7284eae2`; smoke `c8113a731bb5e5ff3ceccd8640c087e209e1d636409708fc6f4601c6e51a6206` |
+| protocol hashes | arm `82c4f0a521eeb83e88b6dac0187ce2fb0e03514ffa95971cd50a75c76f1002ae`; smoke `8a95086d08721cb13eeed5712c97af2fbc7fd44289ca529fa8245cdc16989f25` |
 | split identity | arm `4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a`; smoke `bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32` |
 
 ## Smoke recovery (the cell's single recovery re-registration)

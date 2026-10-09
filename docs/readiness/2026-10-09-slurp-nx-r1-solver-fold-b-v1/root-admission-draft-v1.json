@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "7ef9b7a0908fb3e10b5d8c7eaa0d294d8c9373296f369d833680e5fe475993ce"
+      "sha256": "7fe09939e90b91c9ddd9e9b6dd89afeec777a213ac7e69262695b2ac5786407a"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/README.md",
@@ -109,8 +109,8 @@
       "protocol": "82c4f0a521eeb83e88b6dac0187ce2fb0e03514ffa95971cd50a75c76f1002ae"
     },
     "smoke": {
-      "composed_config": "f956a0bbac8a1e568e1df30fcccc2117df1f31d8f22e5d915ad77c88f58aa8b5",
-      "protocol": "e1583b774b7b75de6e4a14c587e7529fc7e59088927487fa05170f2eed114261"
+      "composed_config": "c8113a731bb5e5ff3ceccd8640c087e209e1d636409708fc6f4601c6e51a6206",
+      "protocol": "8a95086d08721cb13eeed5712c97af2fbc7fd44289ca529fa8245cdc16989f25"
     }
   },
   "schema": "saea-campaign-decision-v1",

@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
-  "composed_config_hash": "f956a0bbac8a1e568e1df30fcccc2117df1f31d8f22e5d915ad77c88f58aa8b5",
+  "composed_config_hash": "c8113a731bb5e5ff3ceccd8640c087e209e1d636409708fc6f4601c6e51a6206",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec2-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 64,
     "planned_speech_audio_seconds": 164,
-    "protocol_hash": "e1583b774b7b75de6e4a14c587e7529fc7e59088927487fa05170f2eed114261",
+    "protocol_hash": "8a95086d08721cb13eeed5712c97af2fbc7fd44289ca529fa8245cdc16989f25",
     "recovery": {
       "amended_from_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
       "amended_from_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec1-v1",
@@ -45,12 +45,12 @@
   "plan_kind": "generation",
   "preparation_base_commit": "50777775b2f6fe0b5e8356d3606fd32aecb0f725",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1/phase-supply-v2.json",
-    "sha256": "47ff02cea5f583d5816ca5754f8b682fd00b41add2ba236bda081290a8fecfd7"
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1/phase-supply-v3.json",
+    "sha256": "b4c340b40181915e8e006d22d6551cdd63962cf68f9926482028b44c5f0d0750"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "7ef9b7a0908fb3e10b5d8c7eaa0d294d8c9373296f369d833680e5fe475993ce"
+    "sha256": "7fe09939e90b91c9ddd9e9b6dd89afeec777a213ac7e69262695b2ac5786407a"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1: structural form proof only: no score and no read.",
   "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",

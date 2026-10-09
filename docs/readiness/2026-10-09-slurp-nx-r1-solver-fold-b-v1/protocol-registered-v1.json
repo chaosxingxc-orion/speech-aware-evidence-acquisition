@@ -15,11 +15,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec2-v1",
       "cell": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
-      "composed_config_hash": "f956a0bbac8a1e568e1df30fcccc2117df1f31d8f22e5d915ad77c88f58aa8b5",
+      "composed_config_hash": "c8113a731bb5e5ff3ceccd8640c087e209e1d636409708fc6f4601c6e51a6206",
       "experiment": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec2-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "e1583b774b7b75de6e4a14c587e7529fc7e59088927487fa05170f2eed114261",
+      "protocol_hash": "8a95086d08721cb13eeed5712c97af2fbc7fd44289ca529fa8245cdc16989f25",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
