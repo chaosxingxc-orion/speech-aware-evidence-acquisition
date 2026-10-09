@@ -1,0 +1,135 @@
+{
+  "all_declared_role_bytes_verified": true,
+  "at_utc": "2026-10-09T06:54:11.843119+00:00",
+  "candidate_count": 3,
+  "canonical_compiler_used": true,
+  "complete_trajectories": 500,
+  "control_count": 2,
+  "cumulative_source_records": 10,
+  "current_seed_effective_fixed_fields_unchanged": true,
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-joint-role-consumption-n100-v1.json",
+    "sha256": "2c697ae866a6536411d38516b63ac2a071d518265025c4f4f860edbc87597de3"
+  },
+  "joint_role_basis": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/joint-role-basis-v1.json",
+    "sha256": "d41c47ff6d0e2fba59f6ce1fae5650e240943ba8e36753ad5de57d1b5787a20c"
+  },
+  "members": [
+    {
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "cumulative_source_records": 3,
+      "imports": [],
+      "member_id": "control",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/policies/control-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "role_sha256": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      }
+    },
+    {
+      "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+      "cumulative_source_records": 3,
+      "imports": [],
+      "member_id": "control-aa",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/policies/control-aa-policy-v1.json",
+        "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+      },
+      "role_sha256": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      }
+    },
+    {
+      "bundle_id": "92e08502a07da78e3ce63ab19194d4e8e5ddf43adad766808ffbad10a2210444",
+      "cumulative_source_records": 10,
+      "imports": [
+        "solver"
+      ],
+      "member_id": "solver-import",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/policies/solver-import-policy-v1.json",
+        "sha256": "9a501abb5666d73bfc6704f2c077f5d52f7b1eebb791ed1cf89f1e114177bc97"
+      },
+      "role_sha256": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "41a268504b95db342fb8fe022ee48f602225ed54402f3586c4346f4fd32553fb",
+        "solver": "8045debaaaace8aef1ef753c4e5a525020b134a7edec1ec2e8392fd8c0a7a5ab"
+      }
+    },
+    {
+      "bundle_id": "cb97f5d35d5f9f6d4e1e42380c9b48f695d20690f50344c128be714b7c17418b",
+      "cumulative_source_records": 10,
+      "imports": [
+        "reviewer"
+      ],
+      "member_id": "reviewer-import",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/policies/reviewer-import-policy-v1.json",
+        "sha256": "07c36007ca2cad874a82eeb6b500372f3b91b3bd9a722531ff51b386e80af534"
+      },
+      "role_sha256": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "0ad1b5fdca603e278106d99d680e38d1ec6ced99d3712de21029160a9ddd0e79",
+        "solver": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      }
+    },
+    {
+      "bundle_id": "177ac64f74b454864ffa04cf1cbc3b1f81bfc1acb6a8e2510487612328edd5d6",
+      "cumulative_source_records": 10,
+      "imports": [
+        "solver",
+        "reviewer"
+      ],
+      "member_id": "joint-import",
+      "policy": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/policies/joint-import-policy-v1.json",
+        "sha256": "9c0778d463a505219ecf2c8d66b9330031eb40592ff9ef13357806468d729ece"
+      },
+      "role_sha256": {
+        "perception": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+        "planner": "f5d385fa2d359e2f6bc9cd2a570a2bc7343ba932121eefa93526e40d4791e569",
+        "reviewer": "0ad1b5fdca603e278106d99d680e38d1ec6ced99d3712de21029160a9ddd0e79",
+        "solver": "8045debaaaace8aef1ef753c4e5a525020b134a7edec1ec2e8392fd8c0a7a5ab"
+      }
+    }
+  ],
+  "new_contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "no_new_knowledge_or_data": true,
+  "original_compiler_baseline": {
+    "relpath": "configs/baseline/slurp-native-stage3-system-text-review-contract-seed-v1.json",
+    "sha256": "2d7596c9b3c91e50f9881d95d65b2d69d19e4d314416bd7b3e19b6abb37df512"
+  },
+  "original_effective_seed": {
+    "relpath": "docs/readiness/2026-10-07-slurp-simple-consumption-direction-v1/prepared-seed-policy-v1.json",
+    "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+  },
+  "parent_archive_records": 4,
+  "root_decision": {
+    "relpath": "docs/readiness/2026-10-09-slurp-local-to-joint-n100-v1/root-decision-v1.json",
+    "sha256": "68f4ab8ce4d71e8731f743e357738786fc78fb086022a135245cbcf413dd3d51"
+  },
+  "runtime_admission": false,
+  "same_roster_inputs": 100,
+  "schema": "saea-root-joint-policies-materialized-v1",
+  "source_commit": "15daba1249029d82065be163a9ad907e788cc013",
+  "source_script": {
+    "relpath": "coordination/local-joint-n100-v1/root-materialize-policy-v1.py",
+    "sha256": "12390c6e6e00ba812e5f63dfbf41e60a469630a7530c64ab0c5d3d728ff99106"
+  },
+  "status": "MATERIALIZED_HELD_NOT_REGISTERED"
+}

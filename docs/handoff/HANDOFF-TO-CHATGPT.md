@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Five exact joint policies materialized and held (2026-10-09T07:03:19.106286+00:00)
+
+Root prepared full-seed control/A/A, Solver import, Reviewer import and joint import on the same original N100. Canonical compilation, complete ancestry/basis validation and actual role-byte verification passed. Controls preserve original policy bytes; candidates preserve every other full-seed field and retain ten cumulative source records including root selection. Evidence: `docs/receipts/continuation/2026-10-09-joint-policies-materialized-held-v1.json`.
+
+The original model-free authoring process completed all artifacts but exited1 at final stdout formatting. Root preserved the source/nonzero exit and verified the existing complete outputs; no compiler/materialization replay occurred. All policies remain HELD. Next prepare fresh generation/capacity/graph/natural identities and supplies from this exact source, then qualify reviewed capacity registration, real FIT and complete structural proof. Paired-analysis review proceeds independently; final N100 intent waits for its final reviewed analyzer.
+
+No new model/tokenizer/scorer contact, registration or READ occurred. Keep fixed data/knowledge, one serial GPU campaign/four concurrent inputs, overlapping CPU work,4GiB floors/full reserves, scoped monitoring at actual launch and the human boundary before8x400. The goal remains active/incomplete; no stable system benefit or learning gain is established and other-carrier holds remain.
+
 ## Joint role custody source accepted (2026-10-09T06:46:35.129676+00:00)
 
 Root accepted and serially integrates the exact deterministic joint-role custody source at869626749 after all four original fenced shards completed:717 distinct passes, one named real-tree deselection, zero observed fence refusals. Independent GPT-6 Astra Ultra review passed112 cases including26 additional challenges and verified21 source pins. The original390-case mixed-scope run remains preserved and excluded from synthetic evidence; no original-file access is inferred from it. Evidence: `docs/receipts/continuation/2026-10-09-joint-custody-source-approved-v1.json`. The accepted raw-stage statistics and all five prepared-runtime dependency bytes remain unchanged.
@@ -7554,7 +7562,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-09T06:46:35.129676+00:00
+Last refreshed: 2026-10-09T07:03:19.106286+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

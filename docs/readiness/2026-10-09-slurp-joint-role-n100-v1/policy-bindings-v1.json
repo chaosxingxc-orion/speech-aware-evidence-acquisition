@@ -1,0 +1,42 @@
+{
+  "control": {
+    "bundle": {
+      "relpath": "coordination/local-joint-n100-v1/policy-archive/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "control-aa": {
+    "bundle": {
+      "relpath": "coordination/local-joint-n100-v1/policy-archive/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "joint-import": {
+    "bundle": {
+      "relpath": "coordination/local-joint-n100-v1/policy-archive/policies/177ac64f74b454864ffa04cf1cbc3b1f81bfc1acb6a8e2510487612328edd5d6.json",
+      "sha256": "e99d06339a2945cb60fe57d5ec258dbf72848e55798b770f4935b794192ddecc"
+    },
+    "bundle_id": "177ac64f74b454864ffa04cf1cbc3b1f81bfc1acb6a8e2510487612328edd5d6",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "reviewer-import": {
+    "bundle": {
+      "relpath": "coordination/local-joint-n100-v1/policy-archive/policies/cb97f5d35d5f9f6d4e1e42380c9b48f695d20690f50344c128be714b7c17418b.json",
+      "sha256": "a7f7b50153e071baf763448ba2f687425081e83489a0590574dadb23e93a6c98"
+    },
+    "bundle_id": "cb97f5d35d5f9f6d4e1e42380c9b48f695d20690f50344c128be714b7c17418b",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "solver-import": {
+    "bundle": {
+      "relpath": "coordination/local-joint-n100-v1/policy-archive/policies/92e08502a07da78e3ce63ab19194d4e8e5ddf43adad766808ffbad10a2210444.json",
+      "sha256": "d3e4dc9c537f0217951b7f5169e276d8e4e873d3d16a1015eccc65bb1e0268bb"
+    },
+    "bundle_id": "92e08502a07da78e3ce63ab19194d4e8e5ddf43adad766808ffbad10a2210444",
+    "schema": "saea-system-text-role-binding-v1"
+  }
+}

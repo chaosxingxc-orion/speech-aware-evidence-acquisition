@@ -1,0 +1,38 @@
+{
+  "at_utc": "2026-10-09T07:03:19.106286+00:00",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "joint_role_basis": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/joint-role-basis-v1.json",
+    "sha256": "d41c47ff6d0e2fba59f6ce1fae5650e240943ba8e36753ad5de57d1b5787a20c"
+  },
+  "materialization": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/materialization-receipt-v1.json",
+    "sha256": "380b3c5b77f1316398889d6618dd66889b37f8347dcbcccb67d06d3bf9a800d4"
+  },
+  "members": 5,
+  "new_contacts": {
+    "model": 0,
+    "proposer": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "original_nonzero_outer_exit": {
+    "relpath": "coordination/local-joint-n100-v1/root-materialization-process-exit-v1.json",
+    "sha256": "f6aa35e001231077e56c789d24e9433e39ed4a6b974449f392f30374c8eb816b"
+  },
+  "owner_decision": 227,
+  "policy_materialization_replayed": false,
+  "population": {
+    "relpath": "configs/experiments/slurp-joint-role-consumption-n100-v1.json",
+    "sha256": "2c697ae866a6536411d38516b63ac2a071d518265025c4f4f860edbc87597de3"
+  },
+  "postwrite_disposition": {
+    "relpath": "coordination/local-joint-n100-v1/root-materialization-postwrite-disposition-v1.json",
+    "sha256": "b2541493708c76cd6259c1e7a4a1adfd867bf44d40e99189cb3d36d52ee47bc0"
+  },
+  "rows_per_member": 100,
+  "runtime_admission": false,
+  "schema": "saea-root-joint-policy-preparation-checkpoint-v1",
+  "source_commit": "15daba1249029d82065be163a9ad907e788cc013",
+  "status": "FIVE_EXACT_POLICIES_MATERIALIZED_HELD"
+}
