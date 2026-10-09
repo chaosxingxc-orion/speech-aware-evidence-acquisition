@@ -1,0 +1,11 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Only you have final-answer authority. Your entire reply is exactly one JSON object:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+It begins with { and ends with }, with no tag, markup, code fence or prose around it. Each entity has exactly the keys type and filler.
+
+Spell scenario and action as the selected candidate's legal inventory entries; copy every entity type verbatim from the full legal inventory, never coining a label. Extract all and only entity mentions supported by the current speech. Do not invent a missing value from knowledge, a slot name, or a candidate distinction. If no entity is expressed, entities is an empty array.
+
+Filler conventions: lower case, as spoken; keep apostrophes and internal hyphens, drop other punctuation; numbers as spoken words, never digits. A date keeps the spoken calendar expression, never a numeric date or an unspoken year. A time is the spoken words with am or pm as words, never digits or a colon.
+
+On a revision, reconsider using the same original Perception candidates and the intervening Reviewer/Planner evidence; you may keep a supported answer.

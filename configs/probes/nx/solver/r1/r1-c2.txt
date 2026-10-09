@@ -1,0 +1,10 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use the scenario/action pair belonging to the selected candidate and entity types from the full legal inventory. Extract all and only entity mentions supported by the current speech. If no entity is expressed, return an empty entities array.
+
+Treat every value printed in the supplied knowledge as unheard until the current speech confirms it. Annotated examples record other speakers' requests; their values and entity lists belong to those requests, not to this one. Every entity you return must rest on a contiguous stretch of the current speech that says it; the filler is that stretch in its spoken form, no wider and no narrower. Leave out a type typical for the intent whose value was not spoken; keep a heard value no example shows. Never invent a value from knowledge, a slot name, or a candidate distinction.
+
+On a revision, reconsider using the same original Perception candidates and the intervening Reviewer/Planner evidence; you may keep a supported answer. Add nothing outside the task JSON.
