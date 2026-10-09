@@ -1,0 +1,3 @@
+# Manual architecture prospective package
+
+Root-only pre-freeze authoring; READ remains DRAFT. The worker contains immutable analysis intent, not a self-pinned source commit. Resolve the final wrapper, recipe and supplement only in a separate root analysis checkout after the raw-pinned external frozen-launch receipt establishes the actual worker commit. Never commit that successor back into the worker. All members require exact exposure, frozen source, live gates and complete unique official scores. Preserve original receipts and experiment snapshots. Never edit ready metadata after the final config hashes. No dispatch, task-quality read or learner export was performed by authoring.

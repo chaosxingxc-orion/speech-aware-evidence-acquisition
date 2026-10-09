@@ -1,0 +1,29 @@
+{
+  "cells": [
+    {
+      "cell": "slurp-native-stage3-local-solver-control-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-control-n100-k4-update3-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-local-solver-control-aa-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-control-aa-n100-k4-update3-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-local-solver-candidate-1-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-candidate-1-n100-k4-update3-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-candidate-2-n100-k4-update3-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-candidate-3-n100-k4-update3-v1"
+    },
+    {
+      "cell": "slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-v1",
+      "experiment": "slurp-native-stage3-local-solver-candidate-4-n100-k4-update3-v1"
+    }
+  ],
+  "schema": "saea-campaign-plan-v1"
+}
