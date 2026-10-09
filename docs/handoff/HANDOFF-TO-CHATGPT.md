@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T10:51:12Z
+Last refreshed: 2026-10-09T11:09:08Z
+
+## v4g registered; serving restarted under the 12-h rule (2026-10-09T11:09:08Z, Fable 5.1 root)
+
+`saea-deliver-normalise-v4g` (guarded v4: ti1 only on intents with >= 100 pool exemplars; ee10 only when the Wilson 95 % upper bound of the intent entity-carrying rate is < 0.10) is registered beside v4 with the same pinned tables (receipt `docs/receipts/knowledge/slurp-v4g-registration-v1.json`, note `docs/readiness/2026-10-09-slurp-nx-postprocessing-v4g-registration-v1.md`); on A2 it reproduces the attribution read exactly (+0.976 [+0.245, +1.712], 115 rows edited; v4 +0.977 [+0.212, +1.744], 124 rows). `scripts/analysis/slurp_nx_postproc_v4_apply.py --apply {v4,v4g} --pool <run>/<attempt> [--column <arm>]` applies a registered id to any sealed delivered column through the runtime replay path and scores a derived copy once; it refuses the test split and Fold B until the R1 run exists. No cell is armed with v4/v4g. Serving: the resident slurp-np4 session (pid 6135, 23 h uptime) was restarted at idle by the uptime-guard task after the coordinator released the stale `queue_milestone` filler hold; READY 10:58:12Z, new pid 722447; the guard keeps looping for later 12-h marks.
+
+Superseded stamp: 2026-10-09T10:51:12Z
 
 ## E1/E2 harness merged; R1 candidates merged; v4 audio loss attributed and v4 registered (2026-10-09T10:51:12Z, Fable 5.1 root)
 
