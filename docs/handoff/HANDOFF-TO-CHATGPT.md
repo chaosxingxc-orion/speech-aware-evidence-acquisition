@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T11:09:08Z
+Last refreshed: 2026-10-09T11:19:31Z
+
+## Engineering-base cleanup, first pass (2026-10-09T11:19:31Z, Fable 5.1 root; owner instruction of 2026-10-09 "clean up the engineering base")
+
+Done at zero risk to evidence: 155 inert one-shot SAEA scheduled tasks unregistered (kept: SAEA-Serving, SAEA-Serving-UptimeGuard, SAEA-Serving-A2T/E21/DET, SAEA-Monitor, SAEA-Monitor-A2T/E21/DET, SAEA-Batch-Driver, SAEA-Watchdog, SAEA-Queue-PSV4); worktrees 237 -> 225 (six merged clean fable-nx-* trees, four codex trees referenced by no document or script, three dangling registrations pruned FROM WSL); stale queue scripts moved to `/home/chao/saea-queue/archive-20261009/` (live: `queue_psv4.sh`, `serving_uptime_guard.sh`, `filler_queue.sh`, `gap_hook_e5_sampleprep.sh`). Not done, put to the owner as decision 237: 187 codex-* worktrees (about 120 GB) are clean detached checkouts of commits already in master history, referenced by receipts as "frozen workers"; the ChatGPT handoff asks to preserve them, the custody is the commit hash, and each is reproducible with `git worktree add --detach`. A repair agent is fixing the 21 + 2 pre-existing unit-suite failures, the 42 blocking `flight_registration_check` cells and the SLOTFILL ledger finding on branch fable/base-cleanup.
+
+Superseded stamp: 2026-10-09T11:09:08Z
 
 ## v4g registered; serving restarted under the 12-h rule (2026-10-09T11:09:08Z, Fable 5.1 root)
 
