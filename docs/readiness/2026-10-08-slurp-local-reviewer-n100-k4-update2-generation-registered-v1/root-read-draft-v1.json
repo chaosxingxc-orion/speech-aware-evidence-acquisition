@@ -1,0 +1,22 @@
+{
+  "complete_family_required": true,
+  "execution_profile": "model-free-check",
+  "expected_members": {
+    "candidate-1": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE2-V1",
+    "candidate-2": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE2-V1",
+    "candidate-3": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE2-V1",
+    "candidate-4": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE2-V1",
+    "control": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE2-V1",
+    "control-aa": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE2-V1"
+  },
+  "optimizer_export": false,
+  "planned_model_calls": 0,
+  "read_authorized": false,
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-generation-registered-v1/analysis-recipe-intent-v1.json",
+    "sha256": "9fd4a20942964ea7530464a9d3c3999d3c1c6c4fc4fe529d88deef55fe59930c"
+  },
+  "run_id": "SAEA-SLURP-LOCAL-REVIEWER-N100-K4-UPDATE2-READ-V1",
+  "split_role": "discovery",
+  "status": "DRAFT ROOT COUNTERSIGNATURE PENDING"
+}

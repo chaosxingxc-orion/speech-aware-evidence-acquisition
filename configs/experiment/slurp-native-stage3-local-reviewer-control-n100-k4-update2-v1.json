@@ -14,9 +14,23 @@
       "dataset_fragment": "slurp-speech-native-simple-consumption-n100-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Local node preparation; fresh capacity, structural proof and exact root admission pending.",
-        "requirements": [],
-        "state": "held"
+        "reason": "Root227 configured Reviewer-only development comparison after complete original capacity and natural structural qualification; preserve frozen N100 assets and registered local primary.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "Exact reused prepared supply; strict warm identity verified before plans.",
+            "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE2-V1/phase-supply-v1.json",
+            "sha256": "e31462bfcfa51f3b785caf1911633a820e713feaf41a35d8f315653f58cd91b8"
+          },
+          {
+            "expected_decision_id": "local-reviewer-n100-k4-update2-generation-v1",
+            "kind": "decision",
+            "reason": "Root decided this exact configured generation/FIT family before contact.",
+            "relpath": "coordination/local-reviewer-n100-k4-update2-generation-v1/root-admission-v1.json",
+            "sha256": "1e4eea0f06a15981aef117116de3ccd1e74d3bfe21fbfffe38b7779f8d0c64c2"
+          }
+        ],
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE2-V1",
       "system_text_policy_binding": {
