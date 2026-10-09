@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T22:23:01Z
+Last refreshed: 2026-10-09T22:25:36Z
+
+## P-SV-4 results note on file; level-2 branch instrument defect found (2026-10-09T22:25:36Z, Fable 5.1 root)
+
+`docs/results/2026-10-09-slurp-psv4-fold-b-branch-read.md` (+ ledger entry): level-2 official intent b-k6p minus a-agree -0.19 [-0.56, +0.19] (1 save / 3 harms; twin bar 0.23); level 1: the K6p key lifted gold to boundary-block rank 1 on 815 vs 800 rows exactly as the pinned proof predicted, but Perception's note did not pass it on (note rank 1 887 vs 888; gold-on-list +0.46 [-0.65, +1.57] inside the 0.56 twin bar). NOT NOMINATED; the K6p line is closed on level 1. INSTRUMENT DEFECT: the level-2 branch Solver columns (B, T) never saw their own branch note -- prompt tokens and rendered candidate supply equal A's on all 1,080 rows, in P-SV-4 and in the sealed P-SV-1..3 outputs -- so every level-2 branch column flown so far was an A/A replicate; the presence-based (level-1) verdicts of P-SV-1..3 stand, their level-2 side readings (incl. the P-SV-2 `min_candidates = 3` SLU +0.81) are struck. A root cause and a model-free render test are required before any level-2 branch cell is registered again (likely `rails/runner.py` `perception_branch_solver_messages` / `_perception_note_view`). The six Reviewer length-truncations were 6 contacts (7 log lines each), handled by deliver-latest-or-abstain after the branch contacts.
+
+Superseded stamp: 2026-10-09T22:23:01Z
 
 ## Stage S design: no Solver-node supply arm reaches the bar; decision 238 proposed (2026-10-09T22:23:01Z, Fable 5.1 root)
 
