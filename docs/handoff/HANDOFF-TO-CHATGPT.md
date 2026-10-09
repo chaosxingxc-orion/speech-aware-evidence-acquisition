@@ -1,6 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T10:09:32Z
+Last refreshed: 2026-10-09T10:51:12Z
+
+## E1/E2 harness merged; R1 candidates merged; v4 audio loss attributed and v4 registered (2026-10-09T10:51:12Z, Fable 5.1 root)
+
+E1 `template_variants` (K instruction-template arms at ONE node over the same sealed state; delivering arm last and untemplated; byte identity of the delivering request proven on 4 rows; `measurement_design: same-flight-node-column`) and the E2 node-local Solver reader are on master (`docs/readiness/2026-10-09-slurp-nx-template-variant-instrument-v1/README.md`, spec `docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-design.md`). Note for every pinned ready cell: `core/flight/runtime.py`, `rails/runner.py` and `rails/supply_variants.py` changed, so prepared-artifact identities re-pin at the next flight commit (loop-form flip). R1 candidates (`configs/probes/nx/solver/r1/r1-c1..c5.txt`, `docs/readiness/2026-10-09-slurp-nx-r1-solver-candidates-v1/README.md`): five hand-written Solver templates from aggregate tables only; round declared effect +1.80 pp (c1, value-in-supply extraction at M1 0.2471; break-even precision 32 %). The R1 registration package is being prepared (cell `slurp-native-stage3-nx-r1-solver-fold-b-v1`, TRAIN Fold B 1,080, review-off COMP-1b module base, 5 candidates + aa twin + lock).
+
+`docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md`: the Fold-A audio loss (-17.47 on 60 rows) is entirely ee10 firing on one intent whose TRAIN entity rate (4/45 = 8.9 %) has a Wilson 95 % upper bound of 20.7 %; a TRAIN-only guard (ee-wilson: fire only when the upper bound < 0.10; ti-expressible: ti1 only on intents with >= 100 exemplars) keeps A2 at +0.98 [+0.25, +1.71] (equal-scenario +0.23) and needs a fresh confirmation roster. Coordinator ruling: the guarded set v4g is the lock candidate; its confirmation is read OFFLINE on the R1 cell's delivering-arm column (Fold B, 0 GPU), not on Fold A. The v4 TRAIN statistics are pinned (`prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/`, receipt `docs/receipts/knowledge/slurp-v4-train-statistics-v1.json`) and `saea-deliver-normalise-v4` is registered, reproducing both sealed v4 columns byte for byte; no cell uses it yet.
+
+Superseded stamp: 2026-10-09T10:09:32Z
 
 ## R0.2 exchange rates and R0.3 Solver parse root cause landed (2026-10-09T10:09:32Z, Fable 5.1 root)
 
