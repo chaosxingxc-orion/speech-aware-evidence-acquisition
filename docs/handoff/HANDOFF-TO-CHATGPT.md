@@ -1,5 +1,11 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Raw-stage statistics source approved; joint experiment remains prospective (2026-10-09T05:14:48.967026+00:00)
+
+Root preserved the unadmitted optional statistics v1 patch and its synthetic identity-consistency rejection, then accepted the separately frozen v2 after227 supplied tests and15 independent checks passed. Exact-text endpoint hashes now imply identical numeric measurements; normalisation input/output hashes must join raw and delivered text. The optional root-only projection keeps initial raw, selected raw and final delivery statistics, unknown states, fixed-N denominators, strata and existing registered paired counts distinct. Legacy defaults, official scoring and K-only learner exports remain unchanged. Evidence: `docs/receipts/continuation/2026-10-09-raw-stage-v1-source-review-disposition.json` and `docs/receipts/continuation/2026-10-09-raw-stage-v2-source-approved-v1.json`. No original result was re-read, regenerated, resealed or rescored for this source work.
+
+The completed Solver/Reviewer local choices and full-seed parent remain unchanged. Joint source engineering proceeds in a separate checkout for the already decided five full-topology N100 members; exact donor ancestry, fixed400-to-N100 custody, fresh identity mapping, authenticated visible adaptive reuse and explicit paired contrasts remain required. Preparation does not admit a GPU task. Preserve source pins, existing data/knowledge, one serial GPU campaign/four concurrent inputs, overlapping CPU work,4GiB floors/full reserves, scoped monitoring only on launch, and the human boundary before8x400. The broad goal remains active/incomplete, with no stable benefit or learning advantage established and all other-carrier holds unchanged.
+
 ## Reviewer second local checkpoint complete; joint N100 source work approved (2026-10-09T05:00:48.324681+00:00)
 
 All six original Reviewer update2 members independently FINALIZED100 trajectories with verified seals, one successful complete official score each and zero failed jobs:600 rows and3507 model contacts. The original Windows driver ended04:27:56Z. Root preserved terminal custody, verified no original worker/scorer/observer remained, and deleted `slurp-reviewer-update2-n100-health`. Every member descriptive READ and the separately qualified/countersigned whole-family READ completed once. No scorer or generation was replayed. Evidence: `docs/receipts/continuation/2026-10-09-local-reviewer-update2-complete-root-analysis-v1.json`.
@@ -7524,7 +7530,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-09T05:00:48.324681+00:00
+Last refreshed: 2026-10-09T05:16:38.777998+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

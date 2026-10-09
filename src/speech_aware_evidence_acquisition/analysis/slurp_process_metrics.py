@@ -7,6 +7,11 @@ from __future__ import annotations
 
 import math
 from collections.abc import Set
+from copy import deepcopy
+import re
+
+from ..rails.hashing import content_hash
+from ..rails.reward_links import SLURP_NATIVE_FIELDS
 
 from .review_findings import analyze_slot_review_episode
 from .slurp_solver_stage_attribution import build_slurp_solver_stage_attribution
@@ -183,7 +188,7 @@ def aggregate_process_metrics(rows):
 def build_slurp_process_metrics(source, *, reference_records, official_final_rows,
                                reference_binding_sha256, official_score_result_sha256,
                                legal_slot_types, intent_support_configuration=None,
-                               review_applicability=None):
+                               review_applicability=None, solver_stage_statistics=False):
     """Join first-draft review and final delivery with verified saved source custody.
 
     Count at most one review per input: the first completed Reviewer between the
@@ -194,6 +199,8 @@ def build_slurp_process_metrics(source, *, reference_records, official_final_row
     It excludes disabled review from review denominators, retains actual activity
     counts, and disables learner export. Omission preserves the historical v1 view.
     """
+    if type(solver_stage_statistics) is not bool:
+        raise ValueError("solver stage persistence requires an explicit boolean")
     references = tuple(reference_records)
     audit = analyze_slot_review_episode(source, legal_slot_types=legal_slot_types,
                                        review_applicability=review_applicability)
@@ -247,6 +254,8 @@ def build_slurp_process_metrics(source, *, reference_records, official_final_row
                   contacts_added={"model": 0, "official_scorer": 0},
                   authorization="caller-qualified complete family and exact root READ required",
                   distribution="root-only; no automatic learner export")
+    if solver_stage_statistics:
+        report["solver_stage_statistics"] = project_solver_stage_statistics(stage, rows, custody)
     if intent_support_configuration is not None:
         report["intent_support"] = _intent_support(source, references, intent_support_configuration)
         report["recall_status"] = "initial-request-card-and-candidate-projection-only"
@@ -317,3 +326,235 @@ def _delivery_stages(samples):
         "rows": rows,
         "semantics": "Initial raw Solver to selected raw Solver, then selected raw Solver to final delivery; associations, not causal credit. Unparsed entity states stay unknown.",
     }
+
+
+SOLVER_STAGE_STATISTICS_DECLARATION = {
+    "schema": "saea-root-solver-stage-statistics-v1",
+    "root_only": True,
+    "learner_export": False,
+}
+SOLVER_STAGE_STATISTICS_SEMANTICS = 'Diagnostic first raw Solver after within-visit tools, selected raw Solver before postprocessing, and final delivery; not all intermediate visits or causal credit. Unknown states remain explicit; fixed-N rates count unknown as zero. Saved complete official scores retain corpus authority.'
+STAGE_NAMES = ("draft", "pre_delivery", "final")
+STAGE_AXES = ("intent", "entity", "full")
+_STAGE_METRIC_FIELDS = {"parsed", "intent_exact", "entity_exact", "full_exact",
+                        "slot_f1_exact_f1", "slu_f1_diagnostic_f1", "native_fields"}
+_STAGE_SOURCE_HASHES = {"phase_artifact_sha256", "reference_binding_sha256",
+    "official_score_result_sha256", "config_hash", "protocol_hash",
+    "split_identity_hash", "ordered_sample_ids_sha256"}
+_STAGE_REVISION_FIELDS = {"solver_attempt_count", "completed_solver_visits",
+    "attempted_solver_revision", "completed_solver_revision",
+    "delivered_solver_revision", "response_changed"}
+
+
+def validate_solver_stage_statistics_declaration(value):
+    """Opt in only through an exact prospective root-only declaration."""
+    if value is None:
+        return False
+    if (not isinstance(value, dict) or value != SOLVER_STAGE_STATISTICS_DECLARATION
+            or type(value.get("root_only")) is not bool
+            or type(value.get("learner_export")) is not bool):
+        raise ValueError("exact root-only solver stage declaration required")
+    return True
+
+
+def _stage_hash(value):
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+
+
+def _stage_metrics(value, *, final=False):
+    if value is None and not final:
+        return
+    if not isinstance(value, dict) or set(value) != _STAGE_METRIC_FIELDS:
+        raise ValueError("exact numeric stage metric fields required")
+    if type(value["parsed"]) is not bool or any(type(value[k+"_exact"]) is not int
+            or value[k+"_exact"] not in (0, 1) for k in STAGE_AXES):
+        raise ValueError("typed parse and exactness states required")
+    counts = value["native_fields"]
+    if not isinstance(counts, dict) or set(counts) != set(SLURP_NATIVE_FIELDS):
+        raise ValueError("complete diagnostic native stage fields required")
+    for number in list(counts.values()) + [value["slot_f1_exact_f1"], value["slu_f1_diagnostic_f1"]]:
+        if type(number) not in (int, float) or not math.isfinite(number) or number < 0:
+            raise ValueError("finite nonnegative diagnostic stage numbers required")
+    if (any(counts[k] not in (0, 1) for k in ("scenario_action_exact", "scenario_exact", "action_exact"))
+            or any(value[k] > 1 for k in ("slot_f1_exact_f1", "slu_f1_diagnostic_f1"))
+            or value["intent_exact"] != counts["scenario_action_exact"]
+            or value["entity_exact"] != int(counts["slot_f1_exact_fp"] == counts["slot_f1_exact_fn"] == 0)
+            or value["full_exact"] != int(value["intent_exact"] == value["entity_exact"] == 1)):
+        raise ValueError("diagnostic exactness and native counts differ")
+    from ..reproduction.slurp_scoring import _prf
+    for metric, prefixes in (("slot_f1_exact_f1", ("slot_f1_exact",)),
+                             ("slu_f1_diagnostic_f1", ("slu_f1_word", "slu_f1_char"))):
+        totals = [sum(counts[p+"_"+axis] for p in prefixes) for axis in ("tp", "fp", "fn")]
+        if value[metric] != _prf(*totals)[2]:
+            raise ValueError("diagnostic stage F1 differs from native counts")
+
+
+def _stage_correctness(value, axis):
+    if value is None or (axis == "entity" and not value["parsed"]):
+        return None
+    return bool(value[axis+"_exact"]) if value["parsed"] else False
+
+
+def _stage_custody(custody):
+    if not isinstance(custody, dict) or set(custody) != {"initial_solver", "final_delivery"}:
+        raise ValueError("exact first and delivered response custody required")
+    role_fields = {"status", "role_id", "visit_index", "contact_index", "agent_contact_id",
+                   "request_id", "request_sha256", "response_sha256", "response_text_sha256"}
+    for name, value in custody.items():
+        if name == "initial_solver" and value == {"status": "missing"}:
+            continue
+        if not isinstance(value, dict):
+            raise ValueError("stage response custody must be a mapping")
+        if name == "final_delivery" and value.get("status") == "abstention":
+            expected = {"status", "delivery_kind", "request_id", "request_sha256",
+                        "response_sha256", "response_text_sha256"}
+            if set(value) != expected or value["delivery_kind"] != "abstention":
+                raise ValueError("exact abstention custody required")
+        else:
+            expected = role_fields | ({"delivery_kind", "delivered_text_sha256"} if name == "final_delivery" else set())
+            if (not expected <= set(value) or not set(value) <= expected | ({"normalisation"} if name == "final_delivery" else set())
+                    or value["status"] != "completed" or value["role_id"] != "solver"
+                    or any(type(value[k]) is not int or value[k] < 0 for k in ("visit_index", "contact_index"))):
+                raise ValueError("exact completed Solver custody required")
+            if "normalisation" in value:
+                norm = value["normalisation"]
+                if (not isinstance(norm, dict) or set(norm) != {"normaliser_id", "carrier_lock_key", "input_sha256", "output_sha256"}
+                        or norm["carrier_lock_key"] != "slurp"
+                        or not isinstance(norm["normaliser_id"], str) or not norm["normaliser_id"]
+                        or not all(_stage_hash(norm[k]) for k in ("input_sha256", "output_sha256"))):
+                    raise ValueError("exact normalisation hash custody required")
+                if (norm["input_sha256"] != value["response_text_sha256"]
+                        or norm["output_sha256"] != value["delivered_text_sha256"]):
+                    raise ValueError("normalisation input/output differs from raw/delivered hashes")
+            elif name == "final_delivery" and value["response_text_sha256"] != value["delivered_text_sha256"]:
+                raise ValueError("unmodified delivery must retain selected raw text hash")
+        if any(not _stage_hash(v) for k, v in value.items() if k.endswith("sha256")):
+            raise ValueError("exact response hashes required")
+        if not isinstance(value.get("request_id"), str) or not value["request_id"]:
+            raise ValueError("exact response request identity required")
+
+
+def aggregate_solver_stage_statistics(observations, rows):
+    """Rebuild diagnostic sufficient counts; retain fixed N and unknown states."""
+    def group(selected):
+        summary = {}
+        for name in STAGE_NAMES:
+            values = [r["metrics"][name] for r in selected]
+            summary[name] = {
+                "sample_count": len(selected),
+                "parse": {"parsed": sum(v is not None and v["parsed"] for v in values),
+                          "unparsed": sum(v is not None and not v["parsed"] for v in values),
+                          "unavailable": sum(v is None for v in values)},
+                "exactness": {},
+                "diagnostic_native_totals": {k: math.fsum(v["native_fields"][k] for v in values if v is not None)
+                                             for k in SLURP_NATIVE_FIELDS},
+            }
+            for axis in STAGE_AXES:
+                states = [_stage_correctness(v, axis) for v in values]
+                correct = sum(v is True for v in states)
+                summary[name]["exactness"][axis] = {
+                    "correct": correct, "known": sum(v is not None for v in states),
+                    "unknown": sum(v is None for v in states), "fixed_n": len(states),
+                    "fixed_n_value": correct / len(states) if states else None,
+                }
+        transitions = {}
+        for transition, start, end in (("raw_model", "draft", "pre_delivery"),
+                                        ("postprocessing", "pre_delivery", "final")):
+            transitions[transition] = {}
+            for axis in STAGE_AXES:
+                paired = [{"draft_"+axis+"_correct": _stage_correctness(r["metrics"][start], axis),
+                           "final_"+axis+"_correct": _stage_correctness(r["metrics"][end], axis)} for r in selected]
+                transitions[transition][axis] = _transitions(paired, axis) | {"fixed_n": len(selected)}
+        return {"sample_count": len(selected), "stages": summary, "transitions": transitions,
+                "model_revision_completed": sum(r["revision"]["completed_solver_revision"] for r in selected)}
+    return group(observations) | {
+        "by_scenario": {scenario: group([v for v, r in zip(observations, rows, strict=True) if r["scenario"] == scenario])
+                        for scenario in sorted({r["scenario"] for r in rows})},
+        "review_applicability": {"applicable": sum(r.get("review_applicable") is True for r in rows),
+                                 "not_applicable": sum(r.get("review_applicable") is False for r in rows),
+                                 "undeclared": sum("review_applicable" not in r for r in rows)},
+    }
+
+
+def project_solver_stage_statistics(stage, rows, custody):
+    """Persist verified numeric endpoints and hashes, never answer/reference text."""
+    observations = [{"sample_id": sample["sample_id"], "metrics": deepcopy(sample["metrics"]),
+                     "revision": deepcopy(sample["revision"]), "custody": deepcopy(sample["source"])}
+                    for sample in stage["samples"]]
+    result = {"schema": "saea-slurp-root-solver-stage-statistics-v1", "root_only": True,
+              "learner_export_allowed": False, "source": deepcopy(stage["source"]),
+              "rows": observations, "rows_sha256": content_hash(observations),
+              "semantics": SOLVER_STAGE_STATISTICS_SEMANTICS}
+    result["aggregate"] = aggregate_solver_stage_statistics(observations, rows)
+    validate_solver_stage_statistics(result, rows=rows, custody=custody, source=stage["source"])
+    return result
+
+
+def validate_solver_stage_statistics(value, *, rows, custody, source):
+    """Reject partial/tampered persisted stages before complete-family presentation."""
+    fields = {"schema", "root_only", "learner_export_allowed", "source", "rows", "rows_sha256", "semantics", "aggregate"}
+    if (not isinstance(value, dict) or set(value) != fields
+            or value["schema"] != "saea-slurp-root-solver-stage-statistics-v1"
+            or value["root_only"] is not True or value["learner_export_allowed"] is not False
+            or value["semantics"] != SOLVER_STAGE_STATISTICS_SEMANTICS
+            or value["source"] != source or set(source) != _STAGE_SOURCE_HASHES | {"run_id", "attempt_id"}
+            or not all(_stage_hash(source[k]) for k in _STAGE_SOURCE_HASHES)
+            or any(not isinstance(source[k], str) or not source[k] for k in ("run_id", "attempt_id"))):
+        raise ValueError("exact root-only stage source and fields required")
+    observations = value["rows"]
+    ids = [r["sample_id"] for r in rows]
+    if (not isinstance(observations, list) or not ids or len(set(ids)) != len(ids)
+            or len(custody) != len(ids) or any(not isinstance(r, dict) for r in observations)
+            or [r.get("sample_id") for r in observations] != ids
+            or [r.get("sample_id") for r in custody] != ids
+            or source["ordered_sample_ids_sha256"] != content_hash(ids)
+            or value["rows_sha256"] != content_hash(observations)):
+        raise ValueError("complete exact ordered stage roster and raw row digest required")
+    for observed, row, original in zip(observations, rows, custody, strict=True):
+        if not isinstance(observed, dict) or set(observed) != {"sample_id", "metrics", "revision", "custody"}:
+            raise ValueError("exact numeric stage observation required")
+        if (observed["custody"] != {k: original[k] for k in ("initial_solver", "final_delivery")}
+                or not isinstance(observed["metrics"], dict) or set(observed["metrics"]) != set(STAGE_NAMES)):
+            raise ValueError("stage endpoint custody or metric vector differs")
+        _stage_custody(observed["custody"])
+        for name, metrics in observed["metrics"].items():
+            _stage_metrics(metrics, final=name == "final")
+        revision = observed["revision"]
+        if (not isinstance(revision, dict) or set(revision) != _STAGE_REVISION_FIELDS
+                or any(type(revision[k]) is not int or revision[k] < 0 for k in ("solver_attempt_count", "completed_solver_visits"))
+                or any(type(revision[k]) is not bool for k in ("attempted_solver_revision", "completed_solver_revision"))
+                or any(revision[k] is not None and type(revision[k]) is not bool for k in ("delivered_solver_revision", "response_changed"))
+                or revision["attempted_solver_revision"] != (revision["solver_attempt_count"] > 1)
+                or revision["completed_solver_revision"] != (revision["completed_solver_visits"] > 1)
+                or revision["completed_solver_revision"] is not row["revised"]):
+            raise ValueError("typed original Solver revision states required")
+        initial, delivered = (observed["custody"][k] for k in ("initial_solver", "final_delivery"))
+        endpoint_hashes = {
+            "draft": initial.get("response_text_sha256"),
+            "pre_delivery": (delivered.get("response_text_sha256")
+                             if delivered["status"] != "abstention" else None),
+            "final": delivered.get("delivered_text_sha256", delivered.get("response_text_sha256")),
+        }
+        for start, end in (("draft", "pre_delivery"), ("pre_delivery", "final"), ("draft", "final")):
+            if (endpoint_hashes[start] is not None and endpoint_hashes[start] == endpoint_hashes[end]
+                    and observed["metrics"][start] != observed["metrics"][end]):
+                raise ValueError("identical stage text hashes require identical numeric endpoints")
+        unavailable = initial["status"] == "missing" or delivered["status"] == "abstention"
+        if ((observed["metrics"]["draft"] is None) != (initial["status"] == "missing")
+                or (observed["metrics"]["pre_delivery"] is None) != (delivered["status"] == "abstention")
+                or revision["solver_attempt_count"] < revision["completed_solver_visits"]
+                or revision["delivered_solver_revision"] != (None if unavailable else initial["visit_index"] != delivered["visit_index"])
+                or revision["response_changed"] != (None if unavailable else initial["response_text_sha256"] != delivered["response_text_sha256"])):
+            raise ValueError("stage availability/revision differs from exact response custody")
+        for name, prefix in (("draft", "draft"), ("final", "final")):
+            metrics = observed["metrics"][name]
+            parsed = None if metrics is None else metrics["parsed"]
+            if parsed is not row.get(prefix+"_parsed"):
+                raise ValueError("stage parse state differs from bound process row")
+            for axis in ("entity", "full"):
+                if _stage_correctness(metrics, axis) is not row[prefix+"_"+axis+"_correct"]:
+                    raise ValueError("stage correctness differs from bound process row")
+    rebuilt = aggregate_solver_stage_statistics(observations, rows)
+    if value["aggregate"] != rebuilt or content_hash(value["aggregate"]) != content_hash(rebuilt):
+        raise ValueError("stage aggregates differ from complete numeric observations")
+    return value["aggregate"]

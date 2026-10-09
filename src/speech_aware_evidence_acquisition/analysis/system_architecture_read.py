@@ -307,9 +307,13 @@ def analyze(evidence, *, recipe, registration, roster, supplement, scope):
     return report
 
 
-def combine_process(*, recipe, business, process, timing, scope, score_sources):
+def combine_process(*, recipe, business, process, timing, scope, score_sources,
+                    solver_stage_statistics_declaration=None):
     """Reuse qualified v2 process arithmetic and presentation; retain root custody."""
-    from .slurp_process_metrics import aggregate_process_metrics
+    from .slurp_process_metrics import (
+        aggregate_process_metrics, validate_solver_stage_statistics,
+        validate_solver_stage_statistics_declaration,
+    )
     from .system_process_report import build_process_comparison
 
     require(
@@ -321,6 +325,10 @@ def combine_process(*, recipe, business, process, timing, scope, score_sources):
         set(process.get("members", {})) == set(scope["labels"]),
         "complete architecture process family required",
     )
+    retained = validate_solver_stage_statistics_declaration(solver_stage_statistics_declaration)
+    validate_solver_stage_statistics_declaration(process.get("solver_stage_statistics_declaration"))
+    require(process.get("solver_stage_statistics_declaration") == solver_stage_statistics_declaration,
+            "explicit prospective stage declaration required")
     for label, source in process["members"].items():
         binding = score_sources[label]
         rows = source["rows"]
@@ -342,6 +350,13 @@ def combine_process(*, recipe, business, process, timing, scope, score_sources):
             ),
             "process source, production order or Reviewer applicability differs",
         )
+        require(retained == ("solver_stage_statistics" in source),
+                "complete declared stage coverage required; unsolicited stages refused")
+        if retained:
+            require(source["source"] == binding.get("stage_source"),
+                    "stage source differs from verified original source hashes")
+            validate_solver_stage_statistics(source["solver_stage_statistics"], rows=rows,
+                                             custody=source["custody"], source=binding["stage_source"])
         rebuilt = aggregate_process_metrics(rows)
         require(
             all(source.get(k) == v for k, v in rebuilt.items()),

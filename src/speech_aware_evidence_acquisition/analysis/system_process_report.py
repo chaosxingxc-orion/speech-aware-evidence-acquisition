@@ -55,6 +55,13 @@ def build_process_comparison(*, recipe, business, process, timing):
         diagnostic[member]["delivery_stages"] = {
             k: v for k, v in source["delivery_stages"].items() if k != "rows"
         }
+        if "solver_stage_statistics" in source:
+            diagnostic[member]["solver_stage_statistics"] = {
+                "schema": source["solver_stage_statistics"]["schema"],
+                "aggregate": deepcopy(source["solver_stage_statistics"]["aggregate"]),
+                "semantics": source["solver_stage_statistics"]["semantics"],
+                "root_only": True, "learner_export_allowed": False,
+            }
         clock = timing[member]
         completed, failed = clock["completed_samples"], clock["failed_samples"]
         _require(type(completed) is int and type(failed) is int
@@ -69,7 +76,7 @@ def build_process_comparison(*, recipe, business, process, timing):
             "scope": clock.get("timing_scope"),
             "cold_start_limit": clock.get("cold_start_limit"),
         }
-    return deepcopy({
+    result = deepcopy({
         "schema": "saea-business-process-cost-comparison-v2" if prospective else "saea-business-process-cost-comparison-v1",
         "family_id": recipe["family_id"], "read_id": process["read_id"],
         "members": list(expected), "unique_inputs": len(ids),
@@ -87,6 +94,46 @@ def build_process_comparison(*, recipe, business, process, timing):
         "Process Wilson intervals are descriptive, not paired policy effects. "
         "Keep registered business comparisons and A/A variability unchanged.",
     })
+    if process.get("solver_stage_statistics_declaration") is not None:
+        result["solver_stage_comparisons"] = _paired_solver_stage_counts(recipe, process)
+    return result
+
+
+def _paired_solver_stage_counts(recipe, process):
+    """Persist sufficient paired diagnostic counts for registered contrasts only."""
+    from .slurp_process_metrics import STAGE_NAMES, STAGE_AXES, _stage_correctness
+    ids = recipe["sample_ids"]
+    members = {label: {r["sample_id"]: r for r in value["solver_stage_statistics"]["rows"]}
+               for label, value in process["members"].items()}
+    result = {}
+    for group, (primary, aa, candidates) in recipe.get("comparison_groups", {}).items():
+        pairs = [("same-request-null", aa, primary)]
+        for candidate in candidates:
+            pairs.extend([(candidate+"-minus-parent", candidate, primary),
+                          (candidate+"-minus-aa", candidate, aa)])
+        result[group] = {}
+        for label, member, comparator in pairs:
+            _require(member in members and comparator in members,
+                     "registered stage comparator is outside complete family")
+            values = {}
+            for stage in STAGE_NAMES:
+                values[stage] = {}
+                for axis in STAGE_AXES:
+                    paired = [(_stage_correctness(members[member][sid]["metrics"][stage], axis),
+                               _stage_correctness(members[comparator][sid]["metrics"][stage], axis)) for sid in ids]
+                    values[stage][axis] = {
+                        "fixed_n": len(ids), "both_correct": paired.count((True, True)),
+                        "member_only_correct": paired.count((True, False)),
+                        "comparator_only_correct": paired.count((False, True)),
+                        "both_incorrect": paired.count((False, False)),
+                        "unknown_pairs": sum(a is None or b is None for a, b in paired),
+                        "member_unknown": sum(a is None for a, b in paired),
+                        "comparator_unknown": sum(b is None for a, b in paired),
+                        "fixed_n_correct_difference": sum(a is True for a, b in paired) - sum(b is True for a, b in paired),
+                    }
+            result[group][label] = {"member": member, "comparator": comparator,
+                                   "diagnostic_sufficient_counts": values}
+    return {"groups": result, "semantics": "Registered paired input diagnostic counts only; unknown contributes zero to fixed-N correctness. No new confidence interval, selection rule, official corpus score or causal claim."}
 
 
 def _number(value, scale=1):
@@ -164,6 +211,18 @@ def render_process_comparison(report):
                              f'{values.get("wrong_to_correct", "unavailable")} | '
                              f'{values.get("correct_to_wrong", "unavailable")} | '
                              f'{values.get("unknown", "unavailable")} |')
+    if "solver_stage_comparisons" in report:
+        lines += ["", "## Root-only diagnostic Solver endpoints", "",
+                  "| Member | Endpoint | Axis | Correct / fixed N | Unknown |",
+                  "|---|---|---|---|---:|"]
+        for member in report["members"]:
+            stages = report["process"][member]["solver_stage_statistics"]["aggregate"]["stages"]
+            for stage, values in stages.items():
+                for axis, counts in values["exactness"].items():
+                    lines.append(f'| {member} | {stage} | {axis} | {counts["correct"]}/{counts["fixed_n"]} | {counts["unknown"]} |')
+        lines += ["", "Native sufficient totals, strata and registered paired diagnostic counts are retained in JSON.",
+                  "First raw is after within-visit tools; selected raw is before postprocessing.",
+                  "These diagnostics neither replace saved official corpus scores nor add confidence intervals or causal credit."]
     lines += ["", "## Latency and cost", "",
               "| Member | Mean s | First s | Non-first mean s | Model calls | Tool calls |",
               "|---|---:|---:|---:|---:|---:|"]

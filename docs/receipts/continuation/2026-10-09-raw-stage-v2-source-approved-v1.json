@@ -1,0 +1,61 @@
+{
+  "at_utc": "2026-10-09T05:14:48.967026+00:00",
+  "base_before": "09491c6c0f8dc23d753854d47808e5868e4a8fb2",
+  "changed_source_pins": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py",
+      "sha256": "4459fadc98738b432c7f4dd11c78ec839e3c717d7cdafcc62e78df814c3203b8"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_architecture_read.py",
+      "sha256": "fcf0e4c40ae8f50e1eb8808bfcf6f946434eeafe83ea40ce8cc6722b67741c6f"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_process_report.py",
+      "sha256": "6a556faf73ae72da04e9a725a91e4e2e4721696a03ccd3c91cfd003733a2caed"
+    },
+    {
+      "relpath": "scripts/analysis/manual_architecture_process_derivative.py",
+      "sha256": "b52595582e03c041fcd6803ea8af5d884170b8865f4fe5195a84993397118f2f"
+    },
+    {
+      "relpath": "tests/unit/test_solver_stage_statistics.py",
+      "sha256": "480dd8bbf3d38dc8659ace896986257df1b143ce6c72011c67acbb335fa75a65"
+    },
+    {
+      "relpath": "tests/unit/test_solver_stage_statistics_identity_v2.py",
+      "sha256": "fc0bfc9a0ac7bba063b1e585e8f386a15210beb1e8637000fb76fbc0f98b42b5"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-root-stage-statistics-engineering-v2/README.md",
+      "sha256": "f0001bdcf0b57c1d1bf465685dd004120d87c0d980bd4ab9bfb8fa32fd3e5505"
+    }
+  ],
+  "engineering_snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-engineering-v2/source-review-snapshot-v2.json",
+    "sha256": "d375b8513d1eea970f4c6f32ca778885086bc235f775349e51a70a9e43620cc8"
+  },
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "historical_derivative_replayed": false,
+  "independent_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-astra-review-v2/review-result-v2.json",
+    "sha256": "fea6f7f017a58fefcc95609d5ec16be648043b403fac8f8f71ea8a998cf8d5a9"
+  },
+  "learner_export": false,
+  "next": "Continue separately source-reviewed exact joint role imports, complete ancestry and fixed-roster custody, narrow adaptive-overlap admission and explicit paired contrast support before any actual authoring or GPU admission.",
+  "owner_decision": 227,
+  "preserved_v1_rejection": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-astra-review-v1/review-result-v1.json",
+    "sha256": "3c0f78d48b3aa3f451daaeea476e631a831bf6992ac8a6d4a8dcfbedab80b35f"
+  },
+  "runtime_admission": false,
+  "runtime_contacts_added": 0,
+  "schema": "saea-root-stage-statistics-source-integration-v2",
+  "status": "EXACT_REVIEWED_SOURCE_ACCEPTED_FOR_SERIAL_INTEGRATION",
+  "validation": {
+    "independent_synthetic_tests": 15,
+    "legacy_defaults_unchanged": true,
+    "source_pins_matched": true,
+    "supplied_synthetic_tests": 227
+  }
+}

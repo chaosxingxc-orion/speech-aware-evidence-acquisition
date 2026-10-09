@@ -1,0 +1,54 @@
+{
+  "actual_result_or_runtime_failure": false,
+  "allowed_successor": "A separately addressed v2 source/worktree preserving frozen v1. Enforce deterministic equal-text/equal-numeric endpoints and exact normalization joins, with unchanged producer/scorer/legacy defaults and independent review.",
+  "at_utc": "2026-10-09T05:07:27.248328+00:00",
+  "component": "optional root-only raw-stage statistics persistence",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-astra-review-v1/source-pin-audit-v1.json",
+      "sha256": "bfb61b805a5f2dacaa83335b92ece6a27f95ab46fb3a6e033ff4aa1df5be438b"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-astra-review-v1/supplied-suite-summary.json",
+      "sha256": "3d2138a4aa0cb2c5817484bc07362d3acdcb1f87745ebde462601bc5273bacf7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-astra-review-v1/independent-suite-v2-summary.json",
+      "sha256": "9cd30d1c72bd18048d77bb2ed6ae29fb04d137c3c1d3ef50c5a93c182685c104"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-astra-review-v1/serialized-trust-boundary-observation-v2.json",
+      "sha256": "befe85149a10ed3030762aa415026f91135c9cd86ec34e26efb06028670a5288"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-astra-review-v1/identity-refusals-summary.json",
+      "sha256": "0bea67984589eeb127d947df1a38421a75a07512518a28f05de6d578c229a671"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-astra-review-v1/test_expected_identity_refusals.py",
+      "sha256": "4b31d5fb8e2b151ef7f8af7767c7ccdb3bde8df07160f0d6742434bab4f64b30"
+    }
+  ],
+  "forbidden": [
+    "in-place frozen-v1 edit",
+    "historical derivative replay",
+    "runtime dispatch",
+    "score replay",
+    "old READ/signature change",
+    "paid API spend"
+  ],
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "named_defect": "Serialized stage validator accepts coherent repinned numeric endpoints that contradict identical response text hashes or the declared normalizer input/output hash join. Fresh producer did not exhibit this condition.",
+  "next_stage": "Hold joint source implementation until this narrow fix freezes; then continue approved joint custody source work.",
+  "original_evidence_preserved": true,
+  "original_source_snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-raw-stage-statistics-engineering-v1/source-review-snapshot-v1.json",
+    "sha256": "6b146113753b4f6f0ceb66666c95a4fb5f6a8aca754e75c78b606ce1f2148c65"
+  },
+  "owner_decision": 227,
+  "reasoning_effort": "ultra",
+  "review_model": "gpt-6-astra",
+  "schema": "saea-root-source-review-disposition-v1",
+  "status": "V1_NOT_ADMITTED_SOURCE_ONLY_CORRECTION_AUTHORIZED",
+  "synthetic_only": true
+}

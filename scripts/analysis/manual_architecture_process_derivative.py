@@ -24,6 +24,7 @@ from speech_aware_evidence_acquisition.analysis.native_intent_support import (
 )
 from speech_aware_evidence_acquisition.analysis.slurp_process_metrics import (
     build_slurp_process_metrics,
+    validate_solver_stage_statistics_declaration,
 )
 from speech_aware_evidence_acquisition.analysis.slurp_topn_diagnostics_cli import (
     load_verified_slurp_reference_records,
@@ -83,6 +84,7 @@ def implementation_pins():
     functions = [
         verify_native_episode_source,
         build_slurp_process_metrics,
+    validate_solver_stage_statistics_declaration,
         load_verified_slurp_reference_records,
         export_system_sample_timing,
         export_system_node_timing,
@@ -327,6 +329,11 @@ def run(
     bindings = normalize_inputs(raw_bindings, execution, data_root=data_root)
     fixed_scope = json.loads(_read_pin(bindings["diagnostic_scope"], data_root))
     root_read = json.loads(_read_pin(bindings["root_read_authority"], data_root))
+    stage_declaration = fixed_scope.get("solver_stage_statistics")
+    require(stage_declaration == execution.get("solver_stage_statistics"),
+            "prospective scope and execution stage declaration differ")
+    retain_stages = validate_solver_stage_statistics_declaration(stage_declaration)
+    validate_solver_stage_statistics_declaration(execution.get("solver_stage_statistics"))
     require(
         fixed_scope.get("schema")
         == "saea-manual-family-prospective-root-diagnostic-scope-v1"
@@ -553,6 +560,20 @@ def run(
             "score_result": score_pin,
             "attempt_id": registration["member_bindings"][label]["attempt_id"],
         }
+        if retain_stages:
+            require(source.phase_artifact_sha256 == bound["phase"]["sha256"],
+                    "verified stage phase custody differs")
+            score_sources[label]["stage_source"] = {
+                "phase_artifact_sha256": bound["phase"]["sha256"],
+                "reference_binding_sha256": content_hash(reference_binding),
+                "official_score_result_sha256": score_pin["sha256"],
+                "config_hash": source.composed.config_hash,
+                "protocol_hash": source.plan.protocol_hash,
+                "split_identity_hash": source.plan.split_identity_hash,
+                "ordered_sample_ids_sha256": content_hash(list(source.sample_ids)),
+                "run_id": source.plan.run_id,
+                "attempt_id": source.plan.attempt_id,
+            }
         prepared[label] = (
             source,
             records,
@@ -572,6 +593,7 @@ def run(
             legal_slot_types=legal_slot_types,
             intent_support_configuration=support,
             review_applicability=scope["review_applicability"][label],
+            solver_stage_statistics=retain_stages,
         )
     process = {
         "schema": "saea-manual-architecture-process-derivative-v1",
@@ -583,6 +605,8 @@ def run(
         "learner_export_allowed": False,
         "contacts_added": {"model": 0, "official_scorer": 0},
     }
+    if retain_stages:
+        process["solver_stage_statistics_declaration"] = stage_declaration
     combined = architecture.combine_process(
         recipe=recipe,
         business=business,
@@ -590,6 +614,7 @@ def run(
         timing=timing,
         scope=scope,
         score_sources=score_sources,
+        solver_stage_statistics_declaration=stage_declaration,
     )
     require(
         reader.CLI.require_read_registration(family, repo_root=repo_root) == authority,
