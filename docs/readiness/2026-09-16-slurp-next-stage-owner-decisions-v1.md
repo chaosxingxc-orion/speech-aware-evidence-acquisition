@@ -532,3 +532,23 @@ The direct owner now asks for space-for-time node batching: process one node for
 The owner clarified that node2 preparation is CPU-only and can overlap current-node inference, but node2 model calls wait for all node1 requests and the final prepared group. The full8x20 panel contains160 independent jobs. The owner then emphasized maximizing prefix-cache reuse across nodes as the essence of this design. The complete English translations and source location are preserved in the [clarification receipt](../receipts/owner/2026-10-03-node-stage-cache-reuse-clarification.json).
 
 Implement continuous full-panel node stages with fixed20-job preparation groups, all four slots available to the active node, and independent node text/context. Exact token-prefix compatibility determines reusable KV; CPU prefetch supports the cache objective and does not establish it. Preserve independent experiment and sample identities, budgets, source custody, official scoring, original sample latency and business quality. This supersedes the smaller cohort-through-whole-graph schedule as the next engineering target, not its immutable completed evidence. Root only; learning HELD; heartbeat PAUSED; human before8x400. The shared scheduler is verified offline; eight-member runtime ownership and real measurement remain prerequisites to admission.
+
+
+## Decisions 228-236 PROPOSED by the coordinator (Fable 5.1), 2026-10-09 -- the NX node-extreme programme
+
+Programme: `2026-10-09-slurp-nx-node-extreme-programme-v1.md` (approved as the plan of record by the owner on
+2026-10-09; owner clarifications of the same day in its section F: template-plus-statistics learning in two
+stages, knowledge USE before knowledge SUPPLY; the Reviewer-class capability is beyond the 30B-A3B core; the
+Qwen ASR question). Each row below is awaiting its own ruling. Status: PROPOSED.
+
+| # | question | coordinator recommendation |
+| --- | --- | --- |
+| 228 | One base for every NX round. A: the COMP-1b lock as flown in the milestone (replicated on the signed test sample: intent +5.80 [+4.04, +7.42], DEV +4.60 [+2.58, +6.73]); B: the ChatGPT seed bundle `ba18a4a8...` (TRAIN N100 incumbent). | A. R0.1 byte-diffs the two either way. |
+| 229 | Rule for decision 210 and the partial lock: "replicated" = CI95 lower bound > 0 on DEV-2000-ADDED AND on the signed test sample for the same metric. Under it SLURP INTENT is LOCKED at COMP-1b; SLU-F1 stays OPEN (the NX slot line). Does the intent lock reopen the Audio2Tool / Earnings-21 all-off A/A cells (decision 211)? | Adopt the rule and the partial lock; carriers wait for R5 (the composed read); model-free carrier preparation continues under 196. |
+| 230 | Do not fly the joint N100 five-policy composition (`2026-10-09-slurp-local-to-joint-n100-v1`): n = 100 cannot resolve the +1.23 / +1 effects it would test and the Solver donor carries no revision paragraph. | Agree; the Solver donor becomes an R1 candidate at n = 1,080; the Reviewer donor retires with the loop (F2). |
+| 231 | Measurement floor for every NX round: no read below n = 1,080 same-flight paired (4-row dry runs are form proofs only). Supersedes the 20/50/100/200 ladder of decisions 220/223 for SLURP node work. | Agree. |
+| 232 | Reviewer loop: superseded by section F2 (removed as an optimisation round; review-off is the NX base graph; one resolved twin read at n = 1,080 inside the first R1 cell; revisit only if the full graph wins > 1.49 pp SLU with CI-LB > 0). | Agree with F2. |
+| 233 | A second test-sample allowance (successor-2, same terms as v2: one attempt per id, aggregate-only, no smoke, no re-fly) for the R5 composed read, drafted only after R5 reads NOMINATED on DEV. | Agree in principle now; sign later. |
+| 234 | Cadence: one registration / countersign / read per round (K arms in one cell); job-scoped monitor at launch only; the ChatGPT root keeps the N100 custody but opens no new N20/N100 GPU family during NX. | Agree. |
+| 235 | E6, the ASR capability probe: one pinned Qwen3-ASR-1.7B pass over the Fold A and Fold B rosters as a logged tool contact of the E5-0 class (0 core contacts), then the E5-1 oracle re-run (WER vs reference transcripts; gold-span containment vs Whisper 0.7513 / 0.7606). Needs `qwen-asr` in the WSL venv (owner authorisation for the install). | Approve; thresholds 0.90 (reopen S2, pin the tool) / 0.85 (one cascade probe on DEV as thesis evidence). |
+| 236 | The thesis question "cascade core (Qwen3-ASR + frozen text LLM) instead of the Omni core" is NOT decided now; it is put to the owner only if E6 clears 0.85. | Defer. |
