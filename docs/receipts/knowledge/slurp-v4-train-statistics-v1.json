@@ -1,0 +1,105 @@
+{
+  "artifact_id": "SAEA-SLURP-V4-TRAIN-STATISTICS-V1",
+  "boundary": "No filler, utterance, value or card text appears in this receipt or the tables: slot type names, determiner words, intent ids, counts and hashes only.",
+  "builder": {
+    "relpath": "scripts/build_slurp_v4_train_statistics.py",
+    "sha256": "fbf56f3bcf7b2a59e842a7d7909fb15d0f386df70122c9adc711b0460df238bc"
+  },
+  "builder_id": "saea-slurp-v4-train-statistics-v1",
+  "contacts": {
+    "asr": 0,
+    "embedder": 0,
+    "encoder": 0,
+    "gpu": 0,
+    "model": 0,
+    "network": 0,
+    "paid_api": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "counts": {
+    "article_pairs_observed": 243,
+    "article_strip_pairs": 73,
+    "intent_type_bindings": 360,
+    "intents": 59,
+    "intents_entity_rate_below_10pct": 4,
+    "oclock": {
+      "excluded": 5,
+      "included": 0,
+      "strip": true
+    },
+    "pool_exemplars": 8554
+  },
+  "exposure_ledger_row": "SAEA-SLURP-V4-TRAIN-STATISTICS-BUILD-V1",
+  "inputs": {
+    "construction_pool": {
+      "content_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+      "exemplars": 8554,
+      "file_sha256": "f549466f22bb0cae00a99849a1a811889eb82af9b632305c815fa123ad5795ca",
+      "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+      "utterances": 8554
+    },
+    "forbidden_rosters": {
+      "docs/receipts/rosters/slurp-evo-fold-a-v2.json": {
+        "overlap": 0,
+        "sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
+        "utterances": 1080
+      },
+      "docs/receipts/rosters/slurp-evo-fold-b-v2.json": {
+        "overlap": 0,
+        "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+        "utterances": 1080
+      },
+      "docs/receipts/rosters/slurp-stage3-construction-r01.json": {
+        "overlap": 0,
+        "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
+        "utterances": 800
+      },
+      "docs/receipts/rosters/slurp-stage3-construction-r01c.json": {
+        "overlap": 0,
+        "sha256": "e8abc65ba4626cccb4aae9d2eb1bd73f077a6e9a407b3dba9c18bbe4c03eeddd",
+        "utterances": 625
+      }
+    }
+  },
+  "method": {
+    "arithmetic": "rails.delivery_normalisers.v4_pool_counts / v4_table_bytes, proved equal to scripts/analysis/slurp_nx_postproc_v4_search.py TrainStats on this pool",
+    "ee10": "empty a row whose delivered intent carries entities in < 0.1 of its pool exemplars (intent absent: left alone; an empty list is never filled)",
+    "fx_article": "strip (type, w) when pool spans include w in < 0.1 of >= 10 opportunities (w precedes or opens the span)",
+    "fx_oclock": "strip a trailing o'clock from a time filler when the pool includes it in < 0.1 of >= 5 opportunities",
+    "roster_ruling": "R5: TRAIN minus Fold A, minus Fold B, minus R01/R01C (the scope table's pool)",
+    "ti1": "drop an entity whose type occurs in < 0.01 of the delivered intent's pool exemplars (intent absent from the pool: left alone)"
+  },
+  "normaliser": {
+    "entity_stage": [
+      "fx-article",
+      "fx-oclock",
+      "scope",
+      "ti1",
+      "ee10"
+    ],
+    "id": "saea-deliver-normalise-v4",
+    "version": "1"
+  },
+  "outputs": {
+    "article-strip": {
+      "relpath": "prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/article-strip-v1.json",
+      "sha256": "db42bf10a08ae9ccc51c656fd5cbbf8a636ee88a12b4c37100b5d69cf4d51b79"
+    },
+    "intent-entity-rate": {
+      "relpath": "prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/intent-entity-rate-v1.json",
+      "sha256": "bd43804dd23868d2e4d6531f2ff305c1b0fd7a3a96cef4afaa28ab63793fac59"
+    },
+    "oclock": {
+      "relpath": "prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/oclock-v1.json",
+      "sha256": "36779d582b0da541f55b90d3dcfc55ef7d3cfd6c4e3dfbec402daec5226399c7"
+    },
+    "type-by-intent": {
+      "relpath": "prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/type-by-intent-v1.json",
+      "sha256": "41a57d45bc434a3e42f3950590985d86f8598c38fdd8aba443d161c57059329d"
+    }
+  },
+  "schema": "saea-slurp-v4-train-statistics-receipt-v1",
+  "statistics_sha256": "01e6a019c91f52bcd2941f593cfec9e8db120543334d46b9e643c29e4023f223"
+}
