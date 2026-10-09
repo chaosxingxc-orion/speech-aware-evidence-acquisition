@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T19:03:03Z
+Last refreshed: 2026-10-09T19:19:36Z
+
+## E2 reader v2 merged: node primary is the post-normaliser exact-set; no iteration-1 arm passes (2026-10-09T19:19:36Z, Fable 5.1 root)
+
+Merge 52b053fed: `scripts/analysis/slurp_nx_solver_column_read.py` schema v2 measures every arm after the cell's own delivery normaliser through the SAME function the column scorer uses (`stage3_rollout_score.py` `normalise_arm_answer`); raw metrics stay as diagnostics. Scratch re-read of R1 iteration 1 (pp vs lock, CI95): c5 normalised exact-set +1.30 [-0.19, +2.78] (raw +2.50), c3 +4.63 [+2.87, +6.39] with false fill -15.82 and non-empty exact -1.74 [-3.34, -0.15], c2 +0.83, c4 -0.65, c1 -1.67, aa twin +0.19 [-0.65, +1.02]: no arm passes the normalised screen. Decision rule for iteration 2 (and retroactively for the iteration-1 verdict): the node-local screen is diagnostic; an arm is NOMINATED only on its OFFICIAL pooled SLU-F1 column (CI95 lower bound > 0 and above the aa twin's delta) with the intent guard; the iteration-2 package is re-declared accordingly before its flip. The registered R1 read (official columns, offline v4/v4g) is still running on master.
+
+Superseded stamp: 2026-10-09T19:03:03Z
 
 ## R1 official columns (scratch): the raw node gain of r1-c5 is formatting the normaliser already repairs (2026-10-09T19:03:03Z, Fable 5.1 root)
 
