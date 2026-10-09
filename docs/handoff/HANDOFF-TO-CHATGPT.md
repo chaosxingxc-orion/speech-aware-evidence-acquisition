@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T13:15:53Z
+Last refreshed: 2026-10-09T14:48:22Z
+
+## NX R1 smoke: three pre-contact/seal stops, the recovery is being amended to rec3 (2026-10-09T14:48:22Z, Fable 5.1 root)
+
+Smoke run `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1`: attempt v1 (13:00Z) made 32 contacts and failed at seal (template-variant validator; fixed d2bc8f67e); rec1 (14:12Z) 0 contacts, refused pre-contact by the run-cumulative budget adapter (plan 32, 32 already spent); rec2 (14:44Z) 0 contacts, refused pre-contact by the FIT gate (`core/preparation_fit.py:1135`: contact_cap must equal rows x max_contacts x (max_speech_packets + 3) = 128; the rec2 amendment had scaled it to 256). Coordinator ruling: pre-contact refusals of the recovery's own registration are not flight failures; the single recovery re-registration is amended to rec3 (FIT cap structural 128; generation budget run-cumulative 64 / 164). A model-free preflight test over the committed fragments (FIT cap arithmetic, cumulative budget, identities, chain ids) is added so this class of stop cannot recur; then flip, gate, relaunch. Each (run_id, attempt_id) key is one-time; the three spent smoke attempt ids are preserved. The arm has made no contact. Server healthy (restart 10:58Z), GPU idle.
+
+Superseded stamp: 2026-10-09T13:15:53Z
 
 ## NX R1 smoke stopped at seal; validator fixed; smoke recovery re-registration in progress (2026-10-09T13:15:53Z, Fable 5.1 root)
 
