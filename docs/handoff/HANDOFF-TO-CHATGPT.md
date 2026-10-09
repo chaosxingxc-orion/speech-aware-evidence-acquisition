@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T11:19:31Z
+Last refreshed: 2026-10-09T11:35:38Z
+
+## Decision 237 ruled and executed: codex worktrees 225 -> 28 (2026-10-09T11:35:38Z, Fable 5.1 root)
+
+Owner: "Decision 237: agreed, go with what you recommend." From WSL: 164 clean codex-* trees whose HEAD is in master history removed (custody = the commit hash in each receipt; any tree is reproducible with `git worktree add --detach <commit>`); kept the four joint-N100 custody trees (`codex-joint-*`, `codex-local-k4-capacity-caption-v2`), five dirty trees, thirteen trees on side commits not in master, and ten broken registrations with no readable HEAD (`codex-system-*-20260926`, `codex-stage3-continuation-20260925`) -- ChatGPT root: please commit or discard the side commits and dispose of the broken directories; log `/home/chao/worktree-cleanup-20261009.log`. Disk 126 GB -> 69 GB.
+
+Superseded stamp: 2026-10-09T11:19:31Z
 
 ## Engineering-base cleanup, first pass (2026-10-09T11:19:31Z, Fable 5.1 root; owner instruction of 2026-10-09 "clean up the engineering base")
 

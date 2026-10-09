@@ -552,3 +552,17 @@ Qwen ASR question). Owner ruling 2026-10-09 (English translation of the chat mes
 | 234 | Cadence: one registration / countersign / read per round (K arms in one cell); job-scoped monitor at launch only; the ChatGPT root keeps the N100 custody but opens no new N20/N100 GPU family during NX. | Agree. |
 | 235 | E6, the ASR capability probe (one pinned Qwen3-ASR-1.7B pass as a logged tool contact, 0 core contacts). | **WITHDRAWN by the owner, 2026-10-09** (English translation of the chat message: "Cancel the Qwen3-ASR exploration; there is no need to explore the engineering scheme and implementation path for that mode. Return to focusing on the gains the agent system and the learning algorithm can bring."). Status: ruled -- NOT approved. No install, no tool pass, no transcript catalog. Programme section F3 stays as the factual record of why an ASR model cannot replace the Omni core. |
 | 236 | The thesis question "cascade core (Qwen3-ASR + frozen text LLM) instead of the Omni core". | MOOT by the same owner message of 2026-10-09: the core stays the frozen Qwen3-Omni; NX focuses on the agent system and the learning algorithm. Status: closed. |
+
+## Decision 237: codex-era worktree cleanup (owner 2026-10-09)
+
+Question (coordinator, under the owner's instruction "clean up the engineering base"): remove the 187 referenced
+codex-* worktrees under `/home/chao/saea-worktrees/` (about 120 GB; clean detached checkouts of commits already in
+master history, reproducible with `git worktree add --detach <commit>`; custody = the commit hash in each receipt),
+keeping only the joint-N100 custody trees the ChatGPT root still holds? Owner (English translation): "Decision 237:
+agreed, go with what you recommend." Executed 2026-10-09 ~11:40Z from WSL (never from Windows): removed 164 clean
+trees whose HEAD is an ancestor of master; kept 32 -- the four joint-N100 custody trees (`codex-joint-*`,
+`codex-local-k4-capacity-caption-v2`), five dirty trees, thirteen trees whose HEAD commit is not in master (ChatGPT
+side commits; listed in `/home/chao/worktree-cleanup-20261009.log`) and ten broken registrations with no readable
+HEAD (September 26 `codex-system-*` and `codex-stage3-continuation-20260925`; directories left in place for the
+ChatGPT root to dispose). Worktrees 225 -> 28; disk 126 GB -> 69 GB. Earlier the same day: 155 inert scheduled
+tasks unregistered, six merged fable-nx-* trees removed, stale queue scripts archived.
