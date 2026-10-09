@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T11:35:38Z
+Last refreshed: 2026-10-09T13:03:07Z
+
+## NX R1 is flying (2026-10-09T13:03:07Z, Fable 5.1 root)
+
+Cell `slurp-native-stage3-nx-r1-solver-fold-b-v1` (run `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1`, TRAIN Fold B 1,080 rows, review-off COMP-1b module base, seven Solver template arms r1-c1..c5 + aa twin + lock delivering, 8 contacts per row, planned 8,640 generation calls / ~3.5 GPU-h; package `docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/`) was countersigned (4f9a84b62), minted (`coordination/slurp-nx-r1-solver-fold-b-v1/root-admission-v1.json`, sha256 5cce191b...), flipped in loop form and queued through the batch driver by the Windows task SAEA-Queue-NXR1: chain start 13:00:31Z at flight commit `e4c7d600f`, registration gate OK, four-row smoke first then the one-cell campaign on the resident slurp-np4 session (restarted 10:58Z). Two launch blockers were cleared on the way: the stale `/home/chao/batch-flight-repo.txt` override left by the ChatGPT driver (archived as `.stale-20261009T1226Z.bak`; the driver now falls back to fable-batch-flight), and the 2026-10-03 gate `registered-supply-binding` (38ff537f2), which requires the registered plan copies to carry EXACTLY the minted supply pin: the NX writer now copies the baseline pin verbatim after the flip (30dcd48f2) and the flip loop re-converged (e4c7d600f). The P-SV-4 package still carries the placeholder pin and will need the same refresh before it flies. Read after the seal: countersign the READ row, `scripts/analysis/nx_r1_read.sh` (E2 node-local reader + official per-arm columns + offline v4/v4g columns; the apply driver now admits Fold B runs named by their registered recipe, merge d99509a2e).
+
+Superseded stamp: 2026-10-09T11:35:38Z
 
 ## Decision 237 ruled and executed: codex worktrees 225 -> 28 (2026-10-09T11:35:38Z, Fable 5.1 root)
 
