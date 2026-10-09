@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "33f8a0bdc40aeace588b705cd8c1e451375afd7f4bdb922fedcd20514b7b460f"
+      "sha256": "5ae6e0f4caa54529c3078650363e27f2d1035953d0647fdc8a995d0fa2f749fb"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/README.md",
@@ -105,8 +105,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "a64b8bb3e94ec46793449a613671f5398bbccc0a569e8f3b1be01e3ab3397655",
-      "protocol": "624daa5437f6b5739c105e1a23a2334c72aa8a5d633efacd2cc9a138dea7bde1"
+      "composed_config": "a31825ae0c0f8b03312911403c86cee3ee8f03420d2a5cf21860c6ea7284eae2",
+      "protocol": "82c4f0a521eeb83e88b6dac0187ce2fb0e03514ffa95971cd50a75c76f1002ae"
     },
     "smoke": {
       "composed_config": "c965ae63b990732a1f7bf537dd892fda4543d197b9eb7f66f33f9f493c93fbf1",

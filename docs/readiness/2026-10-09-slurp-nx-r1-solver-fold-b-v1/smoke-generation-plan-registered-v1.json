@@ -46,7 +46,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "33f8a0bdc40aeace588b705cd8c1e451375afd7f4bdb922fedcd20514b7b460f"
+    "sha256": "5ae6e0f4caa54529c3078650363e27f2d1035953d0647fdc8a995d0fa2f749fb"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1: structural form proof only: no score and no read.",
   "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",

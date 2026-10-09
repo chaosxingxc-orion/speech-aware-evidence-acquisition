@@ -31,8 +31,8 @@
           {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed TRAIN Fold B speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the Fold B agreement table, with zero model, tokenizer, encoder, scorer or server contacts. E16: this cell pins its own. --allow-output-change must never be passed.",
-            "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1/phase-supply-v1.json",
-            "sha256": "3f10e5b69b2f890405d01c0b54af3ce0077a2faa802a111e42e2ed73ded2e191"
+            "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1/phase-supply-v2.json",
+            "sha256": "bdc6a1970a0ee44088d061748e318158e18fcd5e8686214209fcc2a01e546e71"
           }
         ],
         "state": "ready"
