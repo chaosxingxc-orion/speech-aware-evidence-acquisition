@@ -27,7 +27,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-09-30-slurp-stage3-psv4-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "4c2813a675249b864bc99134885bd040172705b48afdc393ab0524d31dfc19fa"
+      "sha256": "a3d4a30f12d01964dc5ad2adfcf37c0bf5365b36ba101ff8ae68700f3bb125be"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-09-30-slurp-stage3-psv4-fold-b-v1/README.md",
@@ -100,8 +100,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "e039482f54580660eedba29ad782b4048a5e2ac59662cdf8ff15a1df2a490219",
-      "protocol": "ab3bb77cad4c119bb9cf85f85ba9a882d7b2929c09deed25a1f6e610fd37d8c2"
+      "composed_config": "02ed6409e04341152a11738eaafe4779d066769b3af09483d10e2577c0dc643a",
+      "protocol": "6e095615dd9a246219709d4345cc3bb08f593a5dd0c9edb6d25a92386074ae6b"
     },
     "smoke": {
       "composed_config": "4cc3cdd03cc2922b39a8abe15539e0d1cd54fb5b5ac7de1bf872603e40d80fb0",
