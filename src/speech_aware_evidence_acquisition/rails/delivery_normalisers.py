@@ -724,6 +724,248 @@ SCOPE_RULE_COMPOSITIONS.update({
 })
 
 
+# ---------------------------------------------------------------------------
+# DRAFT -- projection v4 (NX round R0.4, 2026-10-09). NOT REGISTERED.
+#
+# Selected offline on cell A2 and confirmed once on TRAIN Fold A
+# (``docs/results/2026-10-09-slurp-nx-postprocessing-v4-offline-read.md``,
+# driver ``scripts/analysis/slurp_nx_postproc_v4_search.py``): v3, then a
+# deterministic ENTITY stage of five rules in a fixed order. The class is
+# deliberately absent from ``core.base.DELIVERY_NORMALISERS``: no config can
+# arm it until (a) the owner locks v4 and (b) its TRAIN statistics are frozen
+# as a pinned table with a receipt, as the scope table is. Until then the
+# statistics are INJECTED (``stats=``) and a call without them is refused.
+# ---------------------------------------------------------------------------
+
+DELIVER_NORMALISE_V4 = "saea-deliver-normalise-v4"
+DELIVER_NORMALISE_V4_VERSION = "0-draft"
+V4_RULE_ID = "slurp-use-projection-v4"
+#: The entity stage, in its one application order (the offline read's order).
+V4_STAGES: tuple[str, ...] = ("fx-article", "fx-oclock", "scope", "ti1", "ee10")
+#: The determiners fx-article may strip (the offline read's candidate set).
+V4_DETERMINERS: tuple[str, ...] = (
+    "the", "a", "an", "my", "this", "next", "at", "in", "on", "to", "for", "your", "our",
+)
+V4_ARTICLE_MAX_INCLUDED_SHARE = 0.10
+V4_ARTICLE_MIN_OPPORTUNITIES = 10
+V4_OCLOCK_MIN_OPPORTUNITIES = 5
+V4_OCLOCK_TOKENS = ("o'clock", "oclock")
+V4_TI_MIN_SHARE = 0.01
+V4_EE_MIN_ENTITY_RATE = 0.10
+V4_STATS_SCHEMA = "saea-slurp-v4-train-statistics-v1"
+
+
+def _v4_span_preceded_by(words: list, tokens: list, word: str) -> bool:
+    n = len(tokens)
+    return any(words[i:i + n] == tokens and words[i - 1] == word for i in range(1, len(words) - n + 1))
+
+
+def _v4_span_followed_by(words: list, tokens: list, following: tuple) -> bool:
+    n = len(tokens)
+    return any(words[i:i + n] == tokens and words[i + n] in following for i in range(0, len(words) - n))
+
+
+class SlurpV4Statistics:
+    """The TRAIN statistics v4's entity stage consults, computed from an
+    annotated exemplar pool (the R5 pool: TRAIN minus Fold A, Fold B, R01 and
+    R01C). Pure counts: no filler, utterance or value is retained, only slot
+    TYPE names, determiner words and intent ids.
+
+    ``from_pool_values`` takes the shape
+    ``scripts/analysis/slurp_gold_position_and_solver_freedom_read.load_exemplar_pool``
+    returns under ``values`` -- ``{key: {"intent", "utterance" (folded),
+    "fillers": {type: [folded filler, ...]}}}`` -- and its arithmetic is the
+    offline driver's ``TrainStats``, operand for operand (pinned by test).
+    """
+
+    __slots__ = ("article_strip", "oclock_strip", "intent_n", "intent_with_entities", "intent_type", "sha256")
+
+    def __init__(self, *, article_strip, oclock_strip: bool, intent_n: dict, intent_with_entities: dict,
+                 intent_type: dict) -> None:
+        self.article_strip = frozenset((str(t), str(w)) for t, w in article_strip)
+        self.oclock_strip = bool(oclock_strip)
+        self.intent_n = {str(k): int(v) for k, v in intent_n.items()}
+        self.intent_with_entities = {str(k): int(v) for k, v in intent_with_entities.items()}
+        self.intent_type = {str(i): {str(t): int(n) for t, n in types.items()} for i, types in intent_type.items()}
+        self.sha256 = hashlib.sha256(
+            json.dumps(self.to_document(), sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+
+    @classmethod
+    def from_pool_values(cls, values) -> "SlurpV4Statistics":
+        intent_n: dict[str, int] = {}
+        with_entities: dict[str, int] = {}
+        intent_type: dict[str, dict[str, int]] = {}
+        included: dict[tuple, int] = {}
+        excluded: dict[tuple, int] = {}
+        oclock_in = oclock_out = 0
+        for value in values.values():
+            intent = value["intent"]
+            intent_n[intent] = intent_n.get(intent, 0) + 1
+            with_entities[intent] = with_entities.get(intent, 0) + int(bool(value["fillers"]))
+            words = value["utterance"].split()
+            for slot_type, fillers in value["fillers"].items():
+                types = intent_type.setdefault(intent, {})
+                types[slot_type] = types.get(slot_type, 0) + 1
+                for filler in fillers:
+                    tokens = filler.split()
+                    if not tokens:
+                        continue
+                    for word in V4_DETERMINERS:
+                        key = (slot_type, word)
+                        if tokens[0] == word and len(tokens) > 1:
+                            included[key] = included.get(key, 0) + 1
+                        elif _v4_span_preceded_by(words, tokens, word):
+                            excluded[key] = excluded.get(key, 0) + 1
+                    if slot_type == "time":
+                        if tokens[-1] in V4_OCLOCK_TOKENS:
+                            oclock_in += 1
+                        elif _v4_span_followed_by(words, tokens, V4_OCLOCK_TOKENS):
+                            oclock_out += 1
+        strip = set()
+        for key in set(included) | set(excluded):
+            n = included.get(key, 0) + excluded.get(key, 0)
+            if n >= V4_ARTICLE_MIN_OPPORTUNITIES and included.get(key, 0) / n < V4_ARTICLE_MAX_INCLUDED_SHARE:
+                strip.add(key)
+        n_oclock = oclock_in + oclock_out
+        oclock = n_oclock >= V4_OCLOCK_MIN_OPPORTUNITIES and oclock_in / n_oclock < V4_ARTICLE_MAX_INCLUDED_SHARE
+        return cls(article_strip=strip, oclock_strip=oclock, intent_n=intent_n,
+                   intent_with_entities=with_entities, intent_type=intent_type)
+
+    def to_document(self) -> dict:
+        return {
+            "schema": V4_STATS_SCHEMA,
+            "article_strip": sorted([t, w] for t, w in self.article_strip),
+            "oclock_strip": self.oclock_strip,
+            "intent_n": dict(sorted(self.intent_n.items())),
+            "intent_with_entities": dict(sorted(self.intent_with_entities.items())),
+            "intent_type": {i: dict(sorted(t.items())) for i, t in sorted(self.intent_type.items())},
+        }
+
+    def type_share(self, intent: str, slot_type: str) -> "float | None":
+        n = self.intent_n.get(intent, 0)
+        return None if n == 0 else self.intent_type.get(intent, {}).get(slot_type, 0) / n
+
+    def entity_rate(self, intent: str) -> "float | None":
+        n = self.intent_n.get(intent, 0)
+        return None if n == 0 else self.intent_with_entities.get(intent, 0) / n
+
+
+def v4_entity_stage(scenario, action, entities, stats: SlurpV4Statistics, table: ScopeRuleTable):
+    """The five-rule entity stage over one parsed (v3-normalised) answer.
+
+    Returns ``(entities_out, counts)``. Never changes a label and never adds an
+    entity; an empty entity list is returned as is (owner decision 199)."""
+
+    from ..analysis.sealed_credit.entity_states import fold  # noqa: PLC0415
+    from ..reproduction.slurp_scoring import SlotEntity  # noqa: PLC0415
+
+    counts = {"fillers_rewritten": 0, "dropped_scope": 0, "dropped_ti1": 0, "dropped_ee10": 0}
+    current = list(entities)
+    if not current:
+        return current, counts
+    intent = f"{scenario}_{action}" if scenario is not None and action is not None else None
+    # fx-article, then fx-oclock (filler rewrites)
+    rewritten = []
+    for entity in current:
+        tokens = entity.filler.split()
+        new = entity
+        if len(tokens) > 1 and (entity.type, fold(tokens[0])) in stats.article_strip:
+            new = SlotEntity(type=entity.type, filler=" ".join(tokens[1:]))
+        tokens = new.filler.split()
+        if (stats.oclock_strip and new.type == "time" and len(tokens) > 1
+                and tokens[-1].lower() in V4_OCLOCK_TOKENS):
+            new = SlotEntity(type=new.type, filler=" ".join(tokens[:-1]))
+        counts["fillers_rewritten"] += int(new != entity)
+        rewritten.append(new)
+    current = rewritten
+    # scope
+    drops = set(scope_rule_drops([e.filler for e in current], table))
+    counts["dropped_scope"] = len(drops)
+    current = [e for i, e in enumerate(current) if i not in drops]
+    if intent is None or stats.intent_n.get(intent, 0) == 0:
+        return current, counts
+    # ti1
+    kept = [e for e in current if stats.type_share(intent, e.type) >= V4_TI_MIN_SHARE]
+    counts["dropped_ti1"] = len(current) - len(kept)
+    current = kept
+    # ee10
+    rate = stats.entity_rate(intent)
+    if current and rate is not None and rate < V4_EE_MIN_ENTITY_RATE:
+        counts["dropped_ee10"] = len(current)
+        current = []
+    return current, counts
+
+
+class SlurpProjectionV4DeliveryNormaliser:
+    """``saea-deliver-normalise-v4`` (DRAFT, unregistered): the registered
+    ``saea-deliver-normalise-v3`` first, then :func:`v4_entity_stage`.
+
+    One implementation per rule: v3 is resolved from the registry, the scope
+    step is :func:`scope_rule_drops` over the pinned table. A row the entity
+    stage leaves alone is delivered as v3 delivered it (byte-identical, so a
+    v4 arm differs from a v3 arm exactly on the rows the stage edits); an
+    edited row is re-rendered canonically. An unparsed answer is delivered
+    verbatim with ``applied: false``. Zero contact.
+    """
+
+    id = DELIVER_NORMALISE_V4
+    version = DELIVER_NORMALISE_V4_VERSION
+    carrier_lock_key = "slurp"
+
+    def __call__(
+        self,
+        text: str,
+        *,
+        stats: "SlurpV4Statistics | None" = None,
+        table: ScopeRuleTable | None = None,
+        inventory: "LegalIntentInventory | None" = None,
+    ) -> DeliveryNormalisation:
+        if not isinstance(text, str):
+            raise TypeError("a delivery normaliser takes the delivered answer text")
+        if not isinstance(stats, SlurpV4Statistics):
+            raise DeliveryNormaliserError(
+                f"{DELIVER_NORMALISE_V4} is a draft: its TRAIN statistics have no pinned table yet, "
+                "so they must be injected (stats=SlurpV4Statistics)"
+            )
+        from ..reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
+        from .slurp_projection_v3 import render_slurp_answer  # noqa: PLC0415
+
+        if table is None:
+            table = default_scope_rule_table()
+        base = DELIVERY_NORMALISERS.resolve(DELIVER_NORMALISE_V3)(text, inventory=inventory)
+        scenario, action, entities, parsed = parse_slu_response(base.text)
+        counts = {"fillers_rewritten": 0, "dropped_scope": 0, "dropped_ti1": 0, "dropped_ee10": 0}
+        delivered = base.text
+        if parsed:
+            kept, counts = v4_entity_stage(scenario, action, entities, stats, table)
+            if list(kept) != list(entities):
+                delivered = render_slurp_answer(scenario, action, kept)
+        changed = delivered != text
+        receipt: dict[str, object] = {
+            "schema": DELIVER_NORMALISER_RECEIPT_SCHEMA,
+            "normaliser_id": self.id,
+            "version": self.version,
+            "rule_id": V4_RULE_ID,
+            "carrier_lock_key": self.carrier_lock_key,
+            "applied": bool(parsed),
+            "changed": changed,
+            "input_sha256": _sha256(text),
+            "output_sha256": _sha256(delivered),
+            "labels_changed": base.receipt["labels_changed"],
+            "label_branch": base.receipt["label_branch"],
+            "fillers_changed": base.receipt["fillers_changed"],
+            "entity_stage": list(V4_STAGES),
+            "entity_stage_counts": dict(counts),
+            "stats_schema": V4_STATS_SCHEMA,
+            "stats_sha256": stats.sha256,
+            "table_sha256": table.sha256,
+            "stages": [dict(base.receipt)],
+            "reason": None if parsed else "unparsed",
+        }
+        return DeliveryNormalisation(text=delivered, changed=changed, receipt=receipt).validate()
+
+
 DELIVERY_NORMALISERS.register(
     DELIVER_NORMALISE_V3, SlurpProjectionV3DeliveryNormaliser()
 )
@@ -781,4 +1023,10 @@ __all__ = [
     "scope_rule_drops",
     "scope_rule_phrase",
     "validate_scope_rule_receipt",
+    "DELIVER_NORMALISE_V4",
+    "DELIVER_NORMALISE_V4_VERSION",
+    "V4_STAGES",
+    "SlurpV4Statistics",
+    "SlurpProjectionV4DeliveryNormaliser",
+    "v4_entity_stage",
 ]
