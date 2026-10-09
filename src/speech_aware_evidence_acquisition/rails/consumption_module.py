@@ -97,6 +97,7 @@ _PROFILE = re.compile(r"^[a-z][a-z0-9]*$")
 NODE_RECEIPT_SCHEMAS = frozenset({
     "saea-perception-branch-arms-v1",
     "saea-supply-variant-arms-v3",
+    "saea-supply-variant-arms-v4",
     "saea-solver-citations-v1",
     "saea-deliver-normaliser-v1",
     "saea-relisten-v1",
