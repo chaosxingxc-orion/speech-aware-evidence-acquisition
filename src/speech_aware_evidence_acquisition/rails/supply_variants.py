@@ -409,7 +409,7 @@ class SupplyVariantFitEstimate:
 
         return (
             self.base_prompt_tokens
-            + arm.template_tokens
+            + getattr(arm, "template_tokens", 0)
             + arm.max_supplied_items * self.tokens_per_supplied_item
         )
 

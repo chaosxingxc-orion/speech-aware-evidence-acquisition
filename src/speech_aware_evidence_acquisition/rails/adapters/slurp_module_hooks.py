@@ -169,6 +169,16 @@ PERCEPTION_BRANCH_FRAME: Mapping[str, object] = {
     },
 }
 
+#: Where and at which node template columns compile (NX programme E1,
+#: 2026-10-09): the Solver's ``template_variants`` block, the delivering arm
+#: ``lock`` (it renders the node's own locked template) and the A/A twin ``aa``.
+TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {
+    "block_path": ("native_episode", "roles", "solver", "template_variants"),
+    "node": "solver",
+    "delivering_arm_id": "lock",
+    "twin_arm_id": "aa",
+}
+
 #: Ruling R3: ``{component id: admitting record}`` of the Perception
 #: components admitted to the delivered path. EMPTY: no column read has
 #: nominated one yet, so ``top2-contrast`` / ``forced-candidate-list`` may be
@@ -247,4 +257,5 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         lock_versions={LOCK_V2_0: lock_layer, LOCK_V2_1: lock_layer_v2_1},
         current_lock=CURRENT_LOCK,
         roster_pin_paths=ROSTER_PIN_PATHS,
+        template_variant_frame=TEMPLATE_VARIANT_FRAME,
     )
