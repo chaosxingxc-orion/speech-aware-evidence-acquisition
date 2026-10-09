@@ -1,5 +1,11 @@
 # Experiment rules for the ChatGPT side
 
+## Joint capacity bridge staged without contact (2026-10-09T07:48:41.060314+00:00)
+
+The approved exact v2 bridge completed once with exit0, preserving all original preparation receipts and distinct original full400, selected N100 and immediate fresh-capacity supply edges. Root copied sixteen exact metadata files and the complete reviewed helper/wrapper set into a fresh entry. Every helper byte matches the independently approved source; its original125 supplied and13 focused independent test evidence is reused, with no copied-entry test rerun claimed. Evidence: `docs/receipts/continuation/2026-10-09-joint-capacity-bridge-staged-v1.json`.
+
+This is prospective staging only. Next produce the unsigned all-member ready projection, bind the final capacity map and exact root adaptive-development decision, then perform one original registration and frozen checks before any capacity contact. Scientific generation, quality reads and other-carrier releases remain held. Retain fixed data/knowledge, one serial GPU campaign/four concurrent inputs,4GiB floors/full reserves, overlapping CPU work and scoped monitoring only on launch. The goal remains active/incomplete and the human8x400 boundary remains.
+
 ## Complete joint held preparation; exact capacity adapter v2 accepted (2026-10-09T07:42:47.043358+00:00)
 
 The original corrected model-free preparation completed at07:35:08Z with exit0: five decided policies times capacity, graph, natural and generation stages,20 independently prepared cells. All existing supply outputs compare equal and warm verification passed; no model, tokenizer or scorer contact occurred. Root verified all summary receipt/map pins and the original terminal. Preserve the earlier prewrite identifier refusal and its exact correction. Evidence: `docs/receipts/continuation/2026-10-09-joint-held-preparation-complete-v1.json`. Original preparation source remains561562aec; the later analysis-only integration changes no runtime/preparation dependency.
@@ -1404,4 +1410,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-09T07:42:47.043358+00:00
+Last refreshed: 2026-10-09T07:48:41.060314+00:00

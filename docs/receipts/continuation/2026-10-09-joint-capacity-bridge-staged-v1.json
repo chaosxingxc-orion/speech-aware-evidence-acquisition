@@ -1,0 +1,100 @@
+{
+  "at_utc": "2026-10-09T07:48:41.060314+00:00",
+  "bridge_receipt": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-registration-engineering-v1/root-bridge-v2-source-v1/bridge-receipt-v1.json",
+    "sha256": "c6d76006e15b1e5ea873ce0e0ee94756e6a2841c35ab6b0d1f107c954ec75cfe"
+  },
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "entry": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-capacity-v1",
+  "helper_validation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-capacity-v1/helper-validation-v1.json",
+    "sha256": "b10d90908fdcfe85861e981adf0b56daf83118f7d97edc65ccb012a5f2011e44"
+  },
+  "original_bridge_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-bridge-v1-exit.json",
+    "sha256": "5bc9e0608b8e8d0e975030dd39dcd319cc192cab383a438413d0ed698241a78e"
+  },
+  "owner_decision": 227,
+  "registration_complete": false,
+  "repository_metadata": [
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/control-generation-joint-capacity-chain-v1.json",
+      "sha256": "404daa937e0ce1a361891417a3c6fda48935e91fda8bfa1f2d6fa5df0dc14fed"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/control-capacity-joint-capacity-chain-v1.json",
+      "sha256": "7a366bf1dbe98fdf4acfd92926d7612a7b9a532ace77cbb16686917e920b7514"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/control-graph-joint-capacity-chain-v1.json",
+      "sha256": "3b54f3dfb48457b06d1fefbd40abd9531df4b26c59745fd81af3d31f7c44e6bc"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/control-aa-generation-joint-capacity-chain-v1.json",
+      "sha256": "d9cde2ff301a78b23eb9576c35f09defdfc8dc435e08493e082680bceecf4f5c"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/control-aa-capacity-joint-capacity-chain-v1.json",
+      "sha256": "a159f45d74bf7610ec8790a1579034f9559bcb967fd6ca4e031d3512527a4e9e"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/control-aa-graph-joint-capacity-chain-v1.json",
+      "sha256": "059d64f7d9f13c6a535bfd47e98f74488ac29872fbf86e95e45d320cc34a637b"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/solver-import-generation-joint-capacity-chain-v1.json",
+      "sha256": "7462cd8ab0cdbbfe664ceb55df0b5d06c6394aca71f2c83d6d3516079d1dfb4a"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/solver-import-capacity-joint-capacity-chain-v1.json",
+      "sha256": "9b6dff17d69be15adb70793e64b8711604f2e8c20ad1fbaf1d3e9b836b6c8267"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/solver-import-graph-joint-capacity-chain-v1.json",
+      "sha256": "b9ceb64441e82ca849402ae3243f7f11cd50d9b74fe8a7245204e6043c701324"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/reviewer-import-generation-joint-capacity-chain-v1.json",
+      "sha256": "1b38aa0fb9eda5da877eac9a0c70bdef3c8f9ec3d5b67bf1592118241c65da55"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/reviewer-import-capacity-joint-capacity-chain-v1.json",
+      "sha256": "2b2a4a2556f575edcfbd59f477c72cb29e681a2eb63788e5fd4697e798fe1e94"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/reviewer-import-graph-joint-capacity-chain-v1.json",
+      "sha256": "1ae3af20d32d83f35944f2d487b7a780ed1722cf8f46649719bb9bdf74edd6df"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/joint-import-generation-joint-capacity-chain-v1.json",
+      "sha256": "b8f0012a1cf2ec971696ceda4a203868353f5b2ab453b9ef4dfe824acf87248d"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/joint-import-capacity-joint-capacity-chain-v1.json",
+      "sha256": "dd4bddf9532cc6929beec4135351973274e38e9d7a25ce91a7d524e79145938f"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/joint-import-graph-joint-capacity-chain-v1.json",
+      "sha256": "36bee51bbb8c0603cbbc2b0fb7e52f38fa80b81e289f464f57ab23a07e76a6d0"
+    },
+    {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/capacity-bridge-v1/capacity-prepared-members-v1.json",
+      "sha256": "98e0ba34e1b71a3a8286a0635a6fe3a063141899316ff6576a7c95d59fdc9e59"
+    }
+  ],
+  "root_parameters": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-bridge-parameters-v1.json",
+    "sha256": "86076d297d75388bfe059144f0dab6b02cb44c53a3c920c553688bd398e7bec7"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-joint-capacity-bridge-staging-v1",
+  "source_inputs": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-bridge-sources-v1.json",
+    "sha256": "dd2b0842221fa88dfa4e5640f684ba674c936e7633d7bf453a6aa41a0d17aa90"
+  },
+  "unchanged_supplies_and_policies": true
+}
