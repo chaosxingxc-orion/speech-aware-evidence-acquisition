@@ -148,6 +148,19 @@ the GPU, which is what the smoke is for. Rule: a second failure closes the cell;
 run unchanged (the flip loop rewrites the smoke plan hash and composed config hash; the minted supply pin and admission receipt stay valid, the
 receipt being keyed by run id).
 
+**Recovery 1 amended (smoke), 2026-10-09 -- rec1 -> rec2, run-cumulative budget.** The recovery attempt
+`attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1` was registered with the same plan budget as the failed first
+attempt (32 calls / 82 speech-seconds), but `core/model/adapter.py` enforces `planned_model_calls` and `planned_speech_audio_seconds` of the
+registered plan run-cumulatively across all attempts of a run id (it counts what other attempts already spent). The first attempt had spent 32
+calls / 81.453 speech-seconds, so rec1 was refused PRE-CONTACT ("call budget exhausted: ... allows 32 calls (32 already spent by other
+attempts on this run)"); its attempt record is OPENED with 0 contacts and, a (run_id, attempt_id) pair being a one-time key, it cannot be
+reused. Coordinator ruling (Fable 5.1, 2026-10-09): the rec1 refusal is a pre-contact registration defect of the recovery itself, not a second
+flight failure; the single recovery re-registration is AMENDED to attempt ids `...-smoke-4-generation-rec2-v1` and `...-smoke-4-fit-rec2-v1`
+with a run-cumulative budget over the attempts (`nx_r1_family.SMOKE_ATTEMPTS_BUDGETED = 2`): `planned_model_calls` 64 (32 spent by attempt 1 +
+32 for rec2; rec1 spent 0), `planned_speech_audio_seconds` 164, family caps generation 64 / native 64 / FIT 256 / audio 164, GPU-hours 1.0
+unchanged. The arm's numbers (8,640 / 25,239 / 34,560) are untouched. The minted `prepared_phase_supply` pin is preserved byte for byte; the
+rest of Recovery 1 stands.
+
 ## 9. Offline verification (2026-10-09, WSL, worktree; zero model, server, GPU or tokenizer contact)
 
 * Dry run on the four-row smoke (`scripts/flights/nx/nx_r1_dry_run.py`, the harness's `analysis/native_episode_dry_run` walk, canned Perception and

@@ -31,14 +31,14 @@
   },
   "one_factor": "the Solver instruction template (phase_material.solver.instruction_template) of each non-delivering arm: ONE hash-pinned path per arm under probes/nx/solver/r1/, nothing else (no supply knob, decoding, response format or tool authority); the base, the Fold B pins, the review-off program and the module block are the instrument's carrier, shared by every arm",
   "plan_kind": "fit",
-  "preparation_base_commit": "f8360070bc3e23f49bd2af4b6eadf216288bc71e",
+  "preparation_base_commit": "50777775b2f6fe0b5e8356d3606fd32aecb0f725",
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1/phase-supply-v2.json",
     "sha256": "bdc6a1970a0ee44088d061748e318158e18fcd5e8686214209fcc2a01e546e71"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "5ae6e0f4caa54529c3078650363e27f2d1035953d0647fdc8a995d0fa2f749fb"
+    "sha256": "7ef9b7a0908fb3e10b5d8c7eaa0d294d8c9373296f369d833680e5fe475993ce"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",

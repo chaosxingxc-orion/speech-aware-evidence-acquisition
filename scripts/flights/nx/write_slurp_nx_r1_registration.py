@@ -530,6 +530,10 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         f"| composed config hashes | arm `{arm['composed_config_hash']}`; smoke `{smoke['composed_config_hash']}` |\n"
         f"| protocol hashes | arm `{arm['protocol_hash']}`; smoke `{smoke['protocol_hash']}` |\n"
         f"| split identity | arm `{arm['split_identity_hash']}`; smoke `{smoke['split_identity_hash']}` |\n\n"
+        f"## Smoke recovery (the cell's single recovery re-registration)\n\n{nf.SMOKE_RECOVERY['reason']}\n\n"
+        f"{nf.SMOKE_RECOVERY['amendment']} The smoke plans therefore carry run-cumulative budgets of 64 model calls / 164 "
+        "speech-seconds (FIT endpoint cap 256): the failed attempt spent 32 / 81.453, rec1 spent 0, rec2 is budgeted 32 / 82. "
+        "The arm's budgets are unchanged.\n\n"
         f"## Decision rule (fixed here)\n\n{DECISION_RULE}\n\n## The measurement declaration\n\n```json\n"
         + json.dumps({"stage3_measurement": blocks}, indent=2, ensure_ascii=False, sort_keys=True)
         + "\n```\n"
