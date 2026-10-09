@@ -132,8 +132,8 @@
     }
   },
   "native_contact_fit": {
-    "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec1-v1",
-    "contact_cap": 128,
+    "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec2-v1",
+    "contact_cap": 256,
     "max_speech_packets": 1,
     "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1"
   },

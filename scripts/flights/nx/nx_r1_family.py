@@ -26,7 +26,7 @@ def names(kind: str) -> dict:
     smoke = kind == "smoke"
     lo = "-smoke-4" if smoke else ""
     up = "-SMOKE-4" if smoke else ""
-    rec = "-rec1" if smoke else ""                  # the smoke's single recovery re-registration (SMOKE_RECOVERY)
+    rec = "-rec2" if smoke else ""                  # the smoke's single recovery re-registration (SMOKE_RECOVERY)
     return {
         "experiment": f"slurp-native-stage3-{SLUG}{lo}-v1",
         "baseline": f"slurp-native-stage3-{SLUG}{lo}-baseline-v1",
@@ -38,21 +38,39 @@ def names(kind: str) -> dict:
     }
 
 
-#: The smoke's single root-diagnosed recovery re-registration (2026-10-09). A (run_id, attempt_id) pair is a one-time
-#: key, so the smoke is re-flown whole under the rec1 attempt ids; the arm never started and keeps its attempt ids.
+#: The smoke's single root-diagnosed recovery re-registration (2026-10-09), AMENDED the same day from rec1 to rec2. A
+#: (run_id, attempt_id) pair is a one-time key, so the smoke is re-flown whole under the rec2 attempt ids; the arm never
+#: started and keeps its attempt ids.
 SMOKE_RECOVERY = {
     "recovery_index": 1,
     "predecessor_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
     "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-v1",
-    "predecessor_state": "OPENED; 32 contacts / 81.453 speech-seconds spent; preserved unread",
+    "predecessor_state": "OPENED; 32 contacts / 81.453 speech-seconds spent; failed at seal; preserved unread",
+    "amended_from_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
+    "amended_from_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec1-v1",
+    "amended_from_state": (
+        "OPENED; 0 contacts; refused pre-contact by the run-cumulative budget adapter (core/model/adapter.py: the plan "
+        "allowed 32 calls and 32 were already spent by the failed attempt on this run id)"
+    ),
     "reason": (
         "The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery "
         "validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests "
-        "tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec1 attempt; the arm "
+        "tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec2 attempt; the arm "
         "is untouched."
+    ),
+    "amendment": (
+        "AMENDED 2026-10-09 (coordinator ruling, Fable 5.1): the rec1 registration carried the SAME plan budget as the "
+        "failed attempt although the adapter enforces planned_model_calls and planned_speech_audio_seconds run-"
+        "cumulatively across attempts, so rec1 was refused before any contact (0 contacts). That is a pre-contact "
+        "registration defect of the recovery itself, not a second flight failure; the single recovery re-registration "
+        "is amended to rec2 with a run-cumulative budget over the attempts (SMOKE_ATTEMPTS_BUDGETED)."
     ),
     "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
 }
+
+#: Attempts the smoke's run-cumulative plan budget covers: the failed first attempt (32 calls spent) plus rec2 (rec1
+#: spent nothing). The arm is a single attempt and keeps its multiplier of 1.
+SMOKE_ATTEMPTS_BUDGETED = 2
 
 ARM, SMOKE = names("arm"), names("smoke")
 READ_RUN_ID = "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1"

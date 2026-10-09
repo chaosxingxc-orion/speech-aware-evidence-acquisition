@@ -6,7 +6,7 @@
         "prepare-supply",
         "worker"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
+      "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec2-v1",
       "baseline_fragment": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-baseline-v1",
       "cell_id": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
@@ -43,8 +43,8 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
-    "planned_model_calls": 32,
-    "planned_speech_audio_seconds": 82,
+    "planned_model_calls": 64,
+    "planned_speech_audio_seconds": 164,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
@@ -54,12 +54,12 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "fit_endpoint_calls_cap": 128,
-    "generation_calls_cap": 32,
+    "fit_endpoint_calls_cap": 256,
+    "generation_calls_cap": 64,
     "gpu_hours_fit_inclusive": 1.0,
-    "native_task_contract_calls_cap": 32,
+    "native_task_contract_calls_cap": 64,
     "official_complete_scoring_jobs": 0,
-    "repeated_speech_audio_seconds_cap": 82
+    "repeated_speech_audio_seconds_cap": 164
   },
   "fragment_kind": "saea-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
   "population": {

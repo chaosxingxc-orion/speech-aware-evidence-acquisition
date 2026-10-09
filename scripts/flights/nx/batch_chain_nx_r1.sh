@@ -36,7 +36,7 @@ steps = [{
     "fit_run_id": f"SAEA-SLURP-STAGE3-{upper}-FIT-V1",
     "gen_attempt_id": f"attempt-slurp-native-stage3-{slug}-generation-v1",
     "smoke_run_id": f"SAEA-SLURP-STAGE3-{upper}-SMOKE-4-V1",
-    "smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation-rec1-v1",
+    "smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation-rec2-v1",
     "expected_rows": 1080, "contacts_per_row": 8, "ceiling_per_row": 8, "notool": True,
     "owner": f"root-slurp-native-stage3-{slug}-v1",
 }]

@@ -176,7 +176,7 @@ def derive_baseline(kind: str, comp1b: dict) -> str:
     fit = document["native_contact_fit"]
     names = nf.names(kind)
     fit.update(run_id=names["fit_run_id"], attempt_id=names["fit_attempt_id"],
-               contact_cap=rows * nf.CEILING * nf.FIT_ENDPOINTS_PER_CONTACT)
+               contact_cap=rows * nf.CEILING * nf.FIT_ENDPOINTS_PER_CONTACT * attempts_budgeted(kind))
     # The K6p receipts belong to P-SV-4's key_source branch; the centroid key's receipts are COMP-1b's.
     receipts = [e for e in document["preparation_source_receipts"] if "CENTRED" not in e["relpath"]]
     have = {e["relpath"] for e in receipts}
@@ -207,17 +207,23 @@ def arm_audio() -> float:
     return sum(float(i["audio_seconds"]) for i in doc["items"])
 
 
+def attempts_budgeted(kind: str) -> int:
+    """The adapter's budget is run-cumulative: the smoke covers its failed first attempt plus the recovery."""
+    return nf.SMOKE_ATTEMPTS_BUDGETED if kind == "smoke" else 1
+
+
 def budgets(kind: str) -> tuple[dict, dict]:
     rows = 4 if kind == "smoke" else nf.ROWS
+    mult = attempts_budgeted(kind)
     audio = smoke_audio() if kind == "smoke" else arm_audio()
-    cap_audio = math.ceil(audio * nf.CEILING - 1e-9)
+    cap_audio = math.ceil(audio * nf.CEILING - 1e-9) * mult
     gpu = nf.PLANNED_GPU_HOURS_SMOKE if kind == "smoke" else nf.PLANNED_GPU_HOURS_ARM
     fam = {
         "asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0,
-        "fit_endpoint_calls_cap": rows * nf.CEILING * nf.FIT_ENDPOINTS_PER_CONTACT,
-        "generation_calls_cap": rows * nf.CEILING,
+        "fit_endpoint_calls_cap": rows * nf.CEILING * nf.FIT_ENDPOINTS_PER_CONTACT * mult,
+        "generation_calls_cap": rows * nf.CEILING * mult,
         "gpu_hours_fit_inclusive": gpu,
-        "native_task_contract_calls_cap": rows * nf.CEILING,
+        "native_task_contract_calls_cap": rows * nf.CEILING * mult,
         "official_complete_scoring_jobs": 0 if kind == "smoke" else 1,
         "repeated_speech_audio_seconds_cap": cap_audio,
     }
