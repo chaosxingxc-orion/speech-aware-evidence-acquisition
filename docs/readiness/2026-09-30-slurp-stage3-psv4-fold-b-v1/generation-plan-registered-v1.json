@@ -33,9 +33,8 @@
   "plan_kind": "generation",
   "preparation_base_commit": "2df3fcf0d3e6797a98dc4b030e3caaf3f1811656",
   "prepared_phase_supply": {
-    "note": "the first Fold B first-phase supply at w_agree 1.0 on this roster; branch A's router must reproduce it on every row (spec section 3, AT-P6)",
-    "relpath": "prepared/SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1/phase-supply-v2.json",
-    "sha256": "MINTED_AT_THE_FLIP"
+    "relpath": "prepared/SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1/phase-supply-v1.json",
+    "sha256": "deb1d57dc37df4017785d68c309203090adad9b1368d9a3d8d224518b6eb0c87"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-30-slurp-stage3-psv4-fold-b-v1/protocol-registered-v1.json",
