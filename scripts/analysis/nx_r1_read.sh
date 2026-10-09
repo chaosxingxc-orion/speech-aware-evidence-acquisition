@@ -1,10 +1,15 @@
 #!/bin/bash
 # The same-flight Solver template-column read of NX round R1 (NX programme C2 R1; instrument E1/E2).
 #
-#   bash scripts/analysis/nx_r1_read.sh [--rescore] [--dry-run] [--skip-offline]
+#   bash scripts/analysis/nx_r1_read.sh [--iteration 1|2] [--rescore] [--dry-run] [--skip-offline]
+#
+# --iteration N selects the R1 iteration (default 1) and with it the registered recipe; nothing else is iteration-specific here:
+# the run, attempt, READ run, recipe id and candidate arm ids are all read FROM the recipe. Iteration 2 additionally runs the
+# recipe's DESCRIPTIVE cross-iteration pass (step 2b; non-gating, skipped with a notice when iteration 1's official column
+# scoring is absent).
 #
 # RECIPE-DRIVEN. The recipe is the registered one (docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/analysis-recipe-v1.json,
-# recipe id slurp-nx-r1-solver-fold-b-column-analysis-v1). The run id, the sealed attempt and the READ run id are read FROM the
+# recipe id slurp-nx-r1-solver-fold-b-column-analysis-v1; iteration 2: ...-slurp-nx-r1-i2-solver-fold-b-v1/analysis-recipe-v1.json). The run id, the sealed attempt and the READ run id are read FROM the
 # recipe, never hard-coded here.
 #
 # --dry-run: no countersign needed. Resolves the recipe, the sealed run and its arm group and prints identities only; opens no
@@ -42,19 +47,25 @@ LOCK=${SAEA_DATASETS_LOCK:-/mnt/d/chao_workspace/exploring-l4-intelligence/docs/
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 source "$MAIN/scripts/flights/batch/read_lib.sh"
-usage() { echo "usage: nx_r1_read.sh [--rescore] [--dry-run] [--skip-offline]"; exit 2; }
+usage() { echo "usage: nx_r1_read.sh [--iteration 1|2] [--rescore] [--dry-run] [--skip-offline]"; exit 2; }
 RESCORE=0
 DRY=0
 SKIP_OFFLINE=0
-for arg in "$@"; do
-  case "$arg" in
+ITER=1
+while [ $# -gt 0 ]; do
+  case "$1" in
     --rescore) RESCORE=1 ;;
     --dry-run) DRY=1 ;;
     --skip-offline) SKIP_OFFLINE=1 ;;
+    --iteration) shift; ITER=${1:-}; [ "$ITER" = 1 ] || [ "$ITER" = 2 ] || usage ;;
     *) usage ;;
   esac
+  shift
 done
-RECIPE=docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/analysis-recipe-v1.json
+case "$ITER" in
+  1) RECIPE=docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/analysis-recipe-v1.json ;;
+  2) RECIPE=docs/readiness/2026-10-09-slurp-nx-r1-i2-solver-fold-b-v1/analysis-recipe-v1.json ;;
+esac
 ROSTER=docs/receipts/rosters/slurp-evo-fold-b-v2.json
 SPLIT=4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a
 SCORER=slurp-slu-official-train
@@ -64,20 +75,24 @@ cd "$MAIN" || exit 1
 [ -f "$RECIPE" ] && [ -f "$NODE_READ" ] || { echo "REFUSED: $RECIPE or $NODE_READ is missing"; exit 8; }
 "$PY" -B -c "import speech_aware_evidence_acquisition as m, sys; sys.exit(0 if m.__file__.startswith('$MAIN') else 9)" \
   || { echo "REFUSED: the package under test is not $MAIN (shared-venv hijack)"; exit 9; }
-read -r RUN ATT READ_RUN CANDIDATES < <("$PY" -B - "$RECIPE" <<'PY'
+read -r RUN ATT READ_RUN CANDIDATES RECIPE_ID XRUN XATT XCOL < <("$PY" -B - "$RECIPE" <<'PY'
 import json, sys
 r = json.load(open(sys.argv[1], encoding="utf-8"))
 arm = r["arms"]["arm"]
-cands = [k for k in r["arms"]["columns"] if k.startswith("r1-c")]
-print(arm["run_id"], arm["attempt_id"], r["read_run_id"], ",".join(cands))
+# Candidates are the pinned template columns; the twin aa and the delivering lock arm are not candidates.
+cands = [k for k, v in r["arms"]["columns"].items() if k not in ("aa", "lock") and "relpath" in v]
+cross = (r.get("cross_iteration_contrast") or {}).get("comparator") or {}
+print(arm["run_id"], arm["attempt_id"], r["read_run_id"], ",".join(cands), r["recipe_id"],
+      cross.get("run_id", "-"), cross.get("attempt_id", "-"), cross.get("column", "-"))
 PY
 )
-[ -n "$RUN" ] && [ -n "$ATT" ] && [ -n "$READ_RUN" ] && [ -n "$CANDIDATES" ] || { echo "REFUSED: $RECIPE names no run / attempt / READ run / candidates"; exit 8; }
+[ -n "$RUN" ] && [ -n "$ATT" ] && [ -n "$READ_RUN" ] && [ -n "$CANDIDATES" ] && [ -n "$RECIPE_ID" ] || { echo "REFUSED: $RECIPE names no run / attempt / READ run / candidates"; exit 8; }
 RUNDIR=$SPEECHRL_DATA_DIR/runs/$RUN/$ATT
 OUT=$SPEECHRL_DATA_DIR/analysis/$READ_RUN
 echo "nx-r1: run $RUN attempt $ATT read $READ_RUN candidates $CANDIDATES"
 [ -f "$RUNDIR/$RUN.run-manifest.json" ] || { echo "REFUSED: no sealed run manifest under $RUNDIR"; exit 3; }
 if [ "$DRY" = 1 ]; then
+  echo "(dry) recipe $RECIPE_ID (iteration $ITER)"
   echo "(dry) sealed run present at $RUNDIR; would read: node-local -> $OUT/node-local, official passes aa-vs-lock then <candidate>-vs-lock under $OUT, offline v4/v4g under $OUT/offline-v4"
   exit 0
 fi
@@ -113,9 +128,31 @@ for right in aa ${CANDIDATES//,/ }; do
     --right-run "$RUN" --right-attempt "$ATT" --right-column "$right" --right-label "$LABEL" \
     --scorer-id "$SCORER" --expected-split-role discovery --roster "$ROSTER" --cluster-key sample_id \
     --split-identity-hash "$SPLIT" --repo-root "$MAIN" --data-root "$SPEECHRL_DATA_DIR" \
-    --seed 20260915 --draws 10000 --recipe-id slurp-nx-r1-solver-fold-b-column-analysis-v1 \
+    --seed 20260915 --draws 10000 --recipe-id "$RECIPE_ID" \
     --title "NX R1 Solver template column read ($pass)" --analysis-root "$OUT/$pass" || { echo "READ FAILED ($pass)"; exit 7; }
 done
+# 2b. DESCRIPTIVE cross-iteration pass (iteration 2 only; recipe cross_iteration_contrast; gates nothing, never fails the read)
+if [ "$ITER" = 2 ] && [ "$XRUN" != "-" ]; then
+  XDIR=$SPEECHRL_DATA_DIR/runs/$XRUN/$XATT
+  if ! read_scoring_done "$XDIR/supply-variants/score-summary.json" "$SCORE_SCHEMA"; then
+    echo "(cross-iteration pass skipped: iteration 1's official column scoring is absent under $XDIR/supply-variants)"
+  else
+    for right in lock ${CANDIDATES//,/ }; do
+      if [ "$right" = lock ]; then left_col=lock; else left_col=$XCOL; fi
+      pass="cross-iteration/$right-vs-i1-$left_col"
+      if [ -d "$OUT/$pass" ] && [ -n "$(ls -A "$OUT/$pass")" ]; then echo "(cross-iteration $pass already holds files; skipping)"; continue; fi
+      mkdir -p "$OUT/$pass"
+      "$PY" -B scripts/analysis/stage3_paired_read.py --per-scenario \
+        --stage all --left-run "$XRUN" --left-attempt "$XATT" --left-column "$left_col" --left-label "iteration-1 $left_col (descriptive)" \
+        --right-run "$RUN" --right-attempt "$ATT" --right-column "$right" --right-label "iteration-2 $right (descriptive)" \
+        --scorer-id "$SCORER" --expected-split-role discovery --roster "$ROSTER" --cluster-key sample_id \
+        --split-identity-hash "$SPLIT" --repo-root "$MAIN" --data-root "$SPEECHRL_DATA_DIR" \
+        --seed 20260915 --draws 10000 --recipe-id "$RECIPE_ID" \
+        --title "NX R1 iteration 2 cross-iteration descriptive contrast ($pass)" --analysis-root "$OUT/$pass" \
+        || echo "(cross-iteration $pass FAILED; non-gating, the read continues)"
+    done
+  fi
+fi
 # 3. offline v4 / v4g columns over every arm's delivered column
 if [ "$SKIP_OFFLINE" = 1 ]; then
   echo "offline v4/v4g columns skipped (--skip-offline); run this driver again without it, or the V4 driver by hand"
