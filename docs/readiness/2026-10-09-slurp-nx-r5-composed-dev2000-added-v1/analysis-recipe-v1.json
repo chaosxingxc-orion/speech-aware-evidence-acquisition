@@ -1,0 +1,104 @@
+{
+  "arms": {
+    "a2_aa": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1-aa-dev2000-added-generation-v1",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1"
+    },
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-nx-r5-composed-dev2000-added-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-native-stage3-comp1b-dev2000-added-generation-v1",
+      "role": "the sealed A2 arm (COMP-1b, full graph, lock v2.0 + v3): the cross-flight comparator the registered claim is read against (vs-comparator pass); read beyond the replicate offset",
+      "run_id": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1"
+    },
+    "in_chain_replicate": {
+      "attempt_id": "attempt-slurp-native-stage3-module-comp1b-aa-dev2000-added-generation-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "role": "the module OFF arm (lock v2.1 + v3, full graph) flown in the SAME chain: the flight-to-flight offset instrument and the composed arm's same-chain base (vs-aa pass)",
+      "run_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "offset_pair": {
+      "left": {
+        "attempt_id": "attempt-slurp-native-stage3-comp1-aa-dev2000-added-generation-v1",
+        "role": "the sealed A2 in-chain A/A",
+        "run_id": "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1"
+      },
+      "pass": "offset-replicate-vs-a2aa",
+      "right": {
+        "attempt_id": "attempt-slurp-native-stage3-module-comp1b-aa-dev2000-added-generation-v1",
+        "role": "the replicate",
+        "run_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1"
+      }
+    }
+  },
+  "boundary": "A development read on the DEV-2000-ADDED evaluation roster (owner decisions 28 and 86); never a test claim. No utterance text, transcript, gold label string or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "offline_columns": {
+    "applied_to": [],
+    "applied_to_pools": [
+      "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1/attempt-slurp-native-stage3-comp1b-dev2000-added-generation-v1",
+      "SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1/attempt-slurp-native-stage3-comp1-aa-dev2000-added-generation-v1",
+      "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1/attempt-slurp-native-stage3-module-comp1b-aa-dev2000-added-generation-v1"
+    ],
+    "columns": {
+      "v4g": {
+        "guards": [
+          "ee-wilson",
+          "ti-expressible"
+        ],
+        "normaliser": "saea-deliver-normalise-v4g"
+      }
+    },
+    "note": "v4g (scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g) applied to the DELIVERED column of each v3 pool so the composed arm (v4g at delivery) is compared with v4g(A2 arm), v4g(A2 A/A) and v4g(replicate) under ONE normaliser; the contrasts are computed by scripts/analysis/nx_r5_v4g_contrast.py over the same scored vectors the apply script uses.",
+    "statistics": {
+      "artifact_id": "SAEA-SLURP-V4-TRAIN-STATISTICS-V1",
+      "sha256": "01e6a019c91f52bcd2941f593cfec9e8db120543334d46b9e643c29e4023f223"
+    }
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-PAIRED-ANALYSIS-V1"
+  },
+  "read_driver": {
+    "command": "bash scripts/flights/nx/nx_r5_read.sh",
+    "passes": [
+      "vs-aa (composed minus the in-chain replicate; same chain; CONTEXT, the whole composition against its base)",
+      "vs-comparator (composed minus the sealed A2 arm; cross-flight; THE REGISTERED CLAIM, read beyond the offset)",
+      "offset-replicate-vs-a2aa (replicate minus the sealed A2 A/A; the flight-to-flight offset)",
+      "composed-vs-a2aa (composed minus the sealed A2 A/A; cross-flight; context)"
+    ],
+    "refusal": "the driver refuses before any score is opened unless this READ row is root countersigned",
+    "scorer": "slurp-slu-official"
+  },
+  "read_run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-PAIRED-ANALYSIS-V1",
+  "recipe_id": "slurp-nx-r5-composed-dev2000-added-paired-analysis-v1",
+  "registered_at_utc": "2026-10-09T23:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260915,
+    "unit": "utterance cluster (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless BOTH the composed-arm and the replicate manifests are COMPLETE at 1,000 rows with this registration's composed config hashes (the replicate's the module package's), sealed, each with one successful complete official slurp-slu-official score, and unless the READ row is root countersigned.",
+    "2. THE DELIVERY CHECK (gold-free): each cell's flown first-phase boundary selections must equal its own prepared supply (arm ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08; replicate d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19). A mismatch is an engineering defect and closes the read.",
+    "3. The structural check (gold-free): the composed arm made exactly 2 contacts per row (perception, solver), no Reviewer or Planner row, and delivered through saea-deliver-normalise-v4g on every row; the replicate's contacts per row against the A2 flight's.",
+    "4. Passes vs-aa and vs-comparator through scripts/flights/read_paired_cell.sh (whole-utterance cluster, 10,000 draws, seed 20260915); passes offset-replicate-vs-a2aa and composed-vs-a2aa through stage3_paired_read.py in pair mode.",
+    "5. Apply the offline v4g column to the A2 arm, the A2 A/A and the replicate; compare all columns under v4g (nx_r5_v4g_contrast.py) with per-scenario tables in natural-mixture and equal-stratum weightings.",
+    "6. Cost table: contacts per row, prompt and completion tokens per row, GPU hours per 1,000 rows, per cell, with composed-minus-A2 and composed-minus-replicate.",
+    "7. Apply the decision rule (protocol decision_rule_fixed_here) to the composed-minus-A2 SLU-F1 and intent contrasts beyond the replicate offset; every verdict carries the per-stratum table.",
+    "8. Write the read under its own id; every number is a DEV-2000-ADDED development number, never a test claim."
+  ],
+  "title": "NX Stage J round R5 -- the composed system (COMP-1b, lock v2.2 with v4g, review-off) on DEV-2000-ADDED against the sealed A2 flight, with the module OFF-arm replicate in the same chain"
+}
