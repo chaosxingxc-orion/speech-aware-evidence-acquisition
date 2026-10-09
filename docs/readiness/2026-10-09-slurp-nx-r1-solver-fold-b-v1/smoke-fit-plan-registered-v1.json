@@ -1,19 +1,23 @@
 {
   "cell": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
-  "composed_config_hash": "c965ae63b990732a1f7bf537dd892fda4543d197b9eb7f66f33f9f493c93fbf1",
+  "composed_config_hash": "f956a0bbac8a1e568e1df30fcccc2117df1f31d8f22e5d915ad77c88f58aa8b5",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec1-v1",
+    "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec2-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
-    "planned_model_calls": 128,
-    "planned_speech_audio_seconds": 82,
-    "protocol_hash": "4c3f7de1b0b5f903a406dee9a6b60b9dc92206169e91a5d364a6e9d8db35a8d4",
+    "planned_model_calls": 256,
+    "planned_speech_audio_seconds": 164,
+    "protocol_hash": "e1583b774b7b75de6e4a14c587e7529fc7e59088927487fa05170f2eed114261",
     "recovery": {
+      "amended_from_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
+      "amended_from_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec1-v1",
+      "amended_from_state": "OPENED; 0 contacts; refused pre-contact by the run-cumulative budget adapter (core/model/adapter.py: the plan allowed 32 calls and 32 were already spent by the failed attempt on this run id)",
+      "amendment": "AMENDED 2026-10-09 (coordinator ruling, Fable 5.1): the rec1 registration carried the SAME plan budget as the failed attempt although the adapter enforces planned_model_calls and planned_speech_audio_seconds run-cumulatively across attempts, so rec1 was refused before any contact (0 contacts). That is a pre-contact registration defect of the recovery itself, not a second flight failure; the single recovery re-registration is amended to rec2 with a run-cumulative budget over the attempts (SMOKE_ATTEMPTS_BUDGETED).",
       "predecessor_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
       "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-v1",
-      "predecessor_state": "OPENED; 32 contacts / 81.453 speech-seconds spent; preserved unread",
-      "reason": "The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec1 attempt; the arm is untouched.",
+      "predecessor_state": "OPENED; 32 contacts / 81.453 speech-seconds spent; failed at seal; preserved unread",
+      "reason": "The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec2 attempt; the arm is untouched.",
       "recovery_index": 1,
       "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
     },
@@ -30,23 +34,23 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "fit_endpoint_calls_cap": 128,
-    "generation_calls_cap": 32,
+    "fit_endpoint_calls_cap": 256,
+    "generation_calls_cap": 64,
     "gpu_hours_fit_inclusive": 1.0,
-    "native_task_contract_calls_cap": 32,
+    "native_task_contract_calls_cap": 64,
     "official_complete_scoring_jobs": 0,
-    "repeated_speech_audio_seconds_cap": 82
+    "repeated_speech_audio_seconds_cap": 164
   },
   "one_factor": "the Solver instruction template (phase_material.solver.instruction_template) of each non-delivering arm: ONE hash-pinned path per arm under probes/nx/solver/r1/, nothing else (no supply knob, decoding, response format or tool authority); the base, the Fold B pins, the review-off program and the module block are the instrument's carrier, shared by every arm",
   "plan_kind": "fit",
-  "preparation_base_commit": "f8360070bc3e23f49bd2af4b6eadf216288bc71e",
+  "preparation_base_commit": "50777775b2f6fe0b5e8356d3606fd32aecb0f725",
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1/phase-supply-v2.json",
     "sha256": "47ff02cea5f583d5816ca5754f8b682fd00b41add2ba236bda081290a8fecfd7"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "5ae6e0f4caa54529c3078650363e27f2d1035953d0647fdc8a995d0fa2f749fb"
+    "sha256": "7ef9b7a0908fb3e10b5d8c7eaa0d294d8c9373296f369d833680e5fe475993ce"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",

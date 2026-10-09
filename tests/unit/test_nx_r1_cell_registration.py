@@ -64,12 +64,24 @@ def test_solver_template_arms_are_pinned_to_the_committed_candidate_files():
 def test_budgets_are_the_ceiling_arithmetic_and_the_fit_estimate_holds():
     arm = json.loads((REPO / "configs" / "experiment" / f"{nf.ARM['experiment']}.json").read_text(encoding="utf-8"))
     smoke = json.loads((REPO / "configs" / "experiment" / f"{nf.SMOKE['experiment']}.json").read_text(encoding="utf-8"))
-    for document, rows in ((arm, 1080), (smoke, 4)):
+    # The model adapter enforces planned_model_calls / planned_speech_audio_seconds run-cumulatively across the attempts
+    # of a run id, so the smoke budget covers the failed first attempt plus the recovery (SMOKE_ATTEMPTS_BUDGETED = 2).
+    for document, rows, mult in ((arm, 1080, 1), (smoke, 4, nf.SMOKE_ATTEMPTS_BUDGETED)):
         fam = document["family_budget"]
-        assert fam["generation_calls_cap"] == rows * nf.CEILING == document["execution_plan"]["planned_model_calls"]
-        assert fam["fit_endpoint_calls_cap"] == rows * nf.CEILING * 4
-        assert document["cells"][0]["readiness"]["state"] == "held"
+        assert fam["generation_calls_cap"] == rows * nf.CEILING * mult == document["execution_plan"]["planned_model_calls"]
+        assert fam["native_task_contract_calls_cap"] == rows * nf.CEILING * mult
+        assert fam["fit_endpoint_calls_cap"] == rows * nf.CEILING * 4 * mult
+        assert document["cells"][0]["readiness"]["state"] in ("held", "ready")
         assert document["stage3_algorithm"]["id"] == "none"
+    assert nf.SMOKE_ATTEMPTS_BUDGETED == 2
+    assert (smoke["execution_plan"]["planned_model_calls"], smoke["execution_plan"]["planned_speech_audio_seconds"],
+            smoke["family_budget"]["fit_endpoint_calls_cap"]) == (64, 164, 256)
+    assert smoke["family_budget"]["repeated_speech_audio_seconds_cap"] == 164
+    assert smoke["family_budget"]["gpu_hours_fit_inclusive"] == 1.0
+    assert (arm["execution_plan"]["planned_model_calls"], arm["execution_plan"]["planned_speech_audio_seconds"],
+            arm["family_budget"]["fit_endpoint_calls_cap"]) == (8640, 25239, 34560)
+    assert nf.SMOKE["attempt_id"].endswith("-generation-rec2-v1") and nf.SMOKE["fit_attempt_id"].endswith("-fit-rec2-v1")
+    assert nf.ARM["attempt_id"].endswith("-generation-v1") and nf.ARM["fit_attempt_id"].endswith("-fit-v1")
     measure = nf.fit_measure()
     limit = measure["prompt_limit_tokens"]
     assert max(measure["arm_prompt_estimates"].values()) <= limit

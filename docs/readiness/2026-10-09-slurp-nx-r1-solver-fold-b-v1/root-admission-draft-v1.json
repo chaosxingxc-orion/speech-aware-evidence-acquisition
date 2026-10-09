@@ -11,7 +11,7 @@
     },
     "derive_script": {
       "path": "scripts/flights/nx/derive_slurp_nx_r1_cells.py",
-      "sha256": "7f8b2faad8b2eec06a9df48b46ac2d2c3ce369abe9f98eedcfef3702baebb067"
+      "sha256": "e2c1c1c97bc1d4dcb1f18efff2fe5148eb7c5ef1b5c00d874d9811c6abccbf2e"
     },
     "exchange_rates": {
       "path": "docs/results/2026-10-09-slurp-nx-exchange-rates-offline.md",
@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "5ae6e0f4caa54529c3078650363e27f2d1035953d0647fdc8a995d0fa2f749fb"
+      "sha256": "7ef9b7a0908fb3e10b5d8c7eaa0d294d8c9373296f369d833680e5fe475993ce"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/README.md",
@@ -43,9 +43,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/registered-facts-v1.json",
-      "sha256": "7a0333d413d32e2522f7c6856f376ce6e18629ab227d1f2356bf5d191be37987"
+      "sha256": "7ecd0df898c000ed166edd2d606e4e0c3fa546e87cdd78dc244b76fd07c3b652"
     },
-    "registration_base_commit": "f8360070bc3e23f49bd2af4b6eadf216288bc71e"
+    "registration_base_commit": "50777775b2f6fe0b5e8356d3606fd32aecb0f725"
   },
   "authorization_basis": "Owner decisions 228-234 (programme approved 2026-10-09), 139, 192, 28/86; the node-template instrument (docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-design.md); docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md section Decisions 228-236.",
   "budget": {
@@ -64,12 +64,12 @@
       "asr_calls": 0,
       "ceilings_are_not_targets": true,
       "encoder_calls": 0,
-      "fit_endpoint_calls_cap": 128,
-      "generation_calls_cap": 32,
+      "fit_endpoint_calls_cap": 256,
+      "generation_calls_cap": 64,
       "gpu_hours_fit_inclusive": 1.0,
-      "native_task_contract_calls_cap": 32,
+      "native_task_contract_calls_cap": 64,
       "official_complete_scoring_jobs": 0,
-      "repeated_speech_audio_seconds_cap": 82
+      "repeated_speech_audio_seconds_cap": 164
     }
   },
   "cell_kind": "Stage-3 same-flight NODE-TEMPLATE column cell (NX instrument E1, label none), claim ceiling 'nominated'. One arm on TRAIN Fold B 1,080 with seven Solver template arms (five candidates, aa twin, lock delivering), and a four-row form smoke.",
@@ -109,8 +109,8 @@
       "protocol": "82c4f0a521eeb83e88b6dac0187ce2fb0e03514ffa95971cd50a75c76f1002ae"
     },
     "smoke": {
-      "composed_config": "c965ae63b990732a1f7bf537dd892fda4543d197b9eb7f66f33f9f493c93fbf1",
-      "protocol": "4c3f7de1b0b5f903a406dee9a6b60b9dc92206169e91a5d364a6e9d8db35a8d4"
+      "composed_config": "f956a0bbac8a1e568e1df30fcccc2117df1f31d8f22e5d915ad77c88f58aa8b5",
+      "protocol": "e1583b774b7b75de6e4a14c587e7529fc7e59088927487fa05170f2eed114261"
     }
   },
   "schema": "saea-campaign-decision-v1",

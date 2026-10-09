@@ -1,6 +1,6 @@
 # Cell NX-R1-SOLVER (node-extreme programme round R1, Solver template column): preregistration
 
-Registered 2026-10-09 at study commit `f8360070bc3e23f49bd2af4b6eadf216288bc71e`, before any contact, by script (decision 58) from the P-SV-4 Fold B fragments and the consumption-module compiler under the NX programme (owner decisions 228-234). Development numbers only.
+Registered 2026-10-09 at study commit `50777775b2f6fe0b5e8356d3606fd32aecb0f725`, before any contact, by script (decision 58) from the P-SV-4 Fold B fragments and the consumption-module compiler under the NX programme (owner decisions 228-234). Development numbers only.
 
 | item | value |
 | --- | --- |
@@ -12,9 +12,15 @@ Registered 2026-10-09 at study commit `f8360070bc3e23f49bd2af4b6eadf216288bc71e`
 | expected effect | 1.8 pp (the ROUND, carried by r1-c1), `claims_benefit` true; provisional floor SLU 1.49 pp |
 | rosters | tuning `SLURP-EVO-FOLD-A-V2`; read `SLURP-EVO-FOLD-B-V2` |
 | runs | `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1` |
-| composed config hashes | arm `a31825ae0c0f8b03312911403c86cee3ee8f03420d2a5cf21860c6ea7284eae2`; smoke `c965ae63b990732a1f7bf537dd892fda4543d197b9eb7f66f33f9f493c93fbf1` |
-| protocol hashes | arm `82c4f0a521eeb83e88b6dac0187ce2fb0e03514ffa95971cd50a75c76f1002ae`; smoke `4c3f7de1b0b5f903a406dee9a6b60b9dc92206169e91a5d364a6e9d8db35a8d4` |
+| composed config hashes | arm `a31825ae0c0f8b03312911403c86cee3ee8f03420d2a5cf21860c6ea7284eae2`; smoke `f956a0bbac8a1e568e1df30fcccc2117df1f31d8f22e5d915ad77c88f58aa8b5` |
+| protocol hashes | arm `82c4f0a521eeb83e88b6dac0187ce2fb0e03514ffa95971cd50a75c76f1002ae`; smoke `e1583b774b7b75de6e4a14c587e7529fc7e59088927487fa05170f2eed114261` |
 | split identity | arm `4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a`; smoke `bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32` |
+
+## Smoke recovery (the cell's single recovery re-registration)
+
+The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec2 attempt; the arm is untouched.
+
+AMENDED 2026-10-09 (coordinator ruling, Fable 5.1): the rec1 registration carried the SAME plan budget as the failed attempt although the adapter enforces planned_model_calls and planned_speech_audio_seconds run-cumulatively across attempts, so rec1 was refused before any contact (0 contacts). That is a pre-contact registration defect of the recovery itself, not a second flight failure; the single recovery re-registration is amended to rec2 with a run-cumulative budget over the attempts (SMOKE_ATTEMPTS_BUDGETED). The smoke plans therefore carry run-cumulative budgets of 64 model calls / 164 speech-seconds (FIT endpoint cap 256): the failed attempt spent 32 / 81.453, rec1 spent 0, rec2 is budgeted 32 / 82. The arm's budgets are unchanged.
 
 ## Decision rule (fixed here)
 
