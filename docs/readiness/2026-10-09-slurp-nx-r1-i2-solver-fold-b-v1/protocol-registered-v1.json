@@ -44,6 +44,6 @@
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-nx-r1-i2-register, branch fable/nx-r1-i2-register",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "c87662de068d7b5bd896db2afd8e285e5ff8f334",
+  "study_commit_at_registration": "a9874bde16db1ecf52c6195922c20a171ef7c989",
   "the_question": "At the one Solver visit of every TRAIN Fold B row of the review-off COMP-1b module graph, does any of five hand-written Solver instruction templates raise the OFFICIAL pooled SLU-F1 of the delivered column over the locked template (paired per row inside one flight, CI95 lower bound above zero), by more than the in-flight twin's delta, without an intent loss beyond the floor? (The node-local exact-set read is diagnostic.)"
 }
