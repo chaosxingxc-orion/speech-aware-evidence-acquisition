@@ -48,6 +48,11 @@ def run_batch_fixture(tmp_path, worker_exit, changes=None, wait_exit=0):
     (tmp_path / "batch_inspect.py").write_text(
         "import os,sys,json\nwith open(os.environ['INSPECTIONS'],'a') as f:f.write(json.dumps(sys.argv[1:])+'\\n')\nprint('{}')\n"
     )
+    # A plan-routed step inspects through the repository's own copy ($REPO/scripts/flights/batch),
+    # not the fixture-level $SP stub, so the fixture repo carries the same recording stub there.
+    plan_inspect = tmp_path / "scripts/flights/batch/batch_inspect.py"
+    plan_inspect.parent.mkdir(parents=True, exist_ok=True)
+    plan_inspect.write_text((tmp_path / "batch_inspect.py").read_text())
     (tmp_path / "node_panel_inspect.py").write_text(
         "import os,sys,json\nwith open(os.environ['PANEL_INSPECTIONS'],'a') as f:f.write(json.dumps(sys.argv[1:])+'\\n')\nprint('{}')\n"
     )

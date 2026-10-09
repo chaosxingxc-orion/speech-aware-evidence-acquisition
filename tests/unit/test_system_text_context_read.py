@@ -8,6 +8,7 @@ from test_system_text_pilot_read import fixture as pilot_fixture
 from speech_aware_evidence_acquisition.analysis import system_text_context as context
 from speech_aware_evidence_acquisition.analysis import system_text_pilot as pilot
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
+from speech_aware_evidence_acquisition.rails.reward_links import RewardProjection, SLURP_NATIVE_FIELDS
 from speech_aware_evidence_acquisition.rails.system_text_policy import (
     PolicyError,
     canonical,
@@ -241,7 +242,10 @@ def test_context_cli_reuses_saved_scores_and_refuses_wrong_pool(tmp_path, monkey
         recipe=rp,
         owner_decision=save("owner.json", o),
         stratum_metadata=save("strata.json", {"items": list(roster.values())}),
-        projection={"scorer": "slurp-slu-official-train"},
+        projection=RewardProjection(
+            "synthetic-official-counts-v1", "slurp-slu-official-train",
+            ("port_micro.slu_f1", "port_micro.intent_accuracy"), SLURP_NATIVE_FIELDS,
+        ).as_json(),
     )
     sp = save("supplement.json", s)
     monkeypatch.setattr(cli.CLI, "require_read_registration", lambda *args, **kwargs: a)

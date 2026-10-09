@@ -97,7 +97,9 @@ def test_cells_pin_the_allowance_score_with_the_test_sibling_and_carry_no_smoke(
         entry = document["cells"][0]
         assert document["owner_allowance"] == {"path": ALLOWANCE, "sha256": sha}
         assert entry["run_id"] in allowance["read_run_ids"]
-        assert entry["readiness"]["state"] == "held"
+        # Flipped to ready on 2026-09-30 (297397cd3, owner decisions 151 and 202); the allowance
+        # and the decision-receipt gates, not the readiness state, still bar any contact.
+        assert entry["readiness"]["state"] == "ready"
         assert document["execution_plan"]["split_role"] == "final-report"
         assert document["population"]["split_identity_hash"] == allowance["split"]["split_identity_hash"]
         baseline = json.loads((REPO / "configs/baseline" / f"{entry['baseline_fragment']}.json").read_text(encoding="utf-8"))
@@ -173,4 +175,7 @@ def test_fake_tree_refuses_each_blocker_alone(tmp_path):
     # a missing data-root artifact
     requirement = _experiment(root, CELLS[1])["cells"][0]["readiness"]["requirements"][0]
     (data / requirement["relpath"]).unlink()
-    assert [line.split(":", 1)[0] for line in refusals(root, data)] == ["pending-artifact-missing"]
+    # both milestone cells pin this sample-preparation artifact, so the gate names it once per cell
+    found = refusals(root, data)
+    assert found and {line.split(":", 1)[0] for line in found} == {"pending-artifact-missing"}
+    assert all(requirement["relpath"] in line for line in found)

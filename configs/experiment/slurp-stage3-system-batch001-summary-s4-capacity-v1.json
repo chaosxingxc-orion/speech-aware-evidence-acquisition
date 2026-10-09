@@ -15,8 +15,8 @@
         "prompt-fit"
       ],
       "readiness": {
-        "state": "ready",
-        "reason": "Four complete actor sources are finalized and source-bound; admit only capacity diagnosis.",
+        "state": "superseded",
+        "reason": "Four complete actor sources are finalized and source-bound; admit only capacity diagnosis. Superseded 2026-10-09 by the engineering-base cleanup (docs/readiness/2026-10-09-engineering-base-cleanup-v1.md): this cell never flew and made zero model contacts; it was refused in model-free request materialization before any contact (docs/receipts/continuation/2026-09-26-system-summary-fit-precontact-refusal.json: zero fit and generation contacts) and is superseded by the corrected capacity-v2 cell.",
         "requirements": []
       }
     }

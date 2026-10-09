@@ -7,6 +7,7 @@ import pytest
 from test_system_text_context_read import fixture as context_fixture
 from speech_aware_evidence_acquisition.analysis import system_text_context as context
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
+from speech_aware_evidence_acquisition.rails.reward_links import RewardProjection, SLURP_NATIVE_FIELDS
 from speech_aware_evidence_acquisition.rails.system_text_policy import (
     PolicyError,
     canonical,
@@ -223,7 +224,10 @@ def test_recovery_cli_checks_authority_before_sources_and_reuses_scores(
         owner_decision=save("owner.json", o),
         recovery_owner_decision=recovery_pin,
         stratum_metadata=save("strata.json", {"items": list(roster.values())}),
-        projection={"scorer": "slurp-slu-official-train"},
+        projection=RewardProjection(
+            "synthetic-official-counts-v1", "slurp-slu-official-train",
+            ("port_micro.slu_f1", "port_micro.intent_accuracy"), SLURP_NATIVE_FIELDS,
+        ).as_json(),
     )
     if state == "pin-mismatch":
         supplement["recovery_owner_decision"] = save("other-recovery.json", recovery)

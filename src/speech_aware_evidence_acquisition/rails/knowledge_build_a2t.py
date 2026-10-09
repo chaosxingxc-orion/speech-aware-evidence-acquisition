@@ -877,10 +877,17 @@ def _d1_supplement_source(path: Path) -> dict[str, object]:
     }
 
 
+#: ``data.runtime_subset``'s receipt schema: a SLURP seeded subset of a runtime view.
+RUNTIME_SUBSET_RECEIPT_SCHEMAS = frozenset({
+    "saea-runtime-subset-receipt-v1", "saea-runtime-subset-receipt-v2",
+})
+
+
 def _roster_receipt_source(path: Path) -> dict[str, object] | None:
     """One committed ``saea-roster-receipt-v1`` as an identity source.
 
-    Returns ``None`` for another carrier's roster, and also for a
+    Returns ``None`` for another carrier's roster, for a SLURP ``saea-runtime-subset-receipt-v1``/``-v2``
+    filed in the same directory (every id must be a ``slurp:`` id), and also for a
     ``saea-a2t-paired-roster-comparator-rows-v1`` companion file committed
     beside a roster receipt in the same directory (it carries no sample
     identities). An Audio2Tool roster
@@ -905,6 +912,18 @@ def _roster_receipt_source(path: Path) -> dict[str, object] | None:
             # A comparator-rows companion, not a roster receipt: no sample
             # identities to contribute to the exposure union.
             return None
+        if document.get("schema") in RUNTIME_SUBSET_RECEIPT_SCHEMAS:
+            # A SLURP runtime-subset receipt filed in the shared roster directory. It names no
+            # Audio2Tool identity; fail closed if any id is not a SLURP id, so an Audio2Tool
+            # subset can never hide behind this schema.
+            ids = document.get("sample_ids")
+            if (isinstance(ids, list) and ids
+                    and all(isinstance(i, str) and i.startswith("slurp:") for i in ids)):
+                return None
+            raise RailsError(
+                f"runtime-subset receipt {path} names a non-SLURP or empty identity list "
+                "(fail-closed)"
+            )
         raise RailsError(
             f"roster receipt {path} schema {document.get('schema')!r} is not "
             f"{RECEIPT_SCHEMA!r}"
