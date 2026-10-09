@@ -894,7 +894,8 @@ def render_supply_variant_first_visit(
     Revision visits are counted separately and never enter these copies.
     """
     from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
-        validate_native_episode_delivery_receipt, validate_supply_variant_receipt,
+        SUPPLY_VARIANT_RECEIPT_SCHEMA_V4, validate_native_episode_delivery_receipt,
+        validate_supply_variant_receipt,
     )
     from speech_aware_evidence_acquisition.reproduction.slurp_scoring import parse_slu_response
     from speech_aware_evidence_acquisition.core.base import DELIVERY_NORMALISERS
@@ -918,6 +919,7 @@ def render_supply_variant_first_visit(
         raise Stage3ScoreError("bundle outputs have missing, extra, or duplicate roster rows")
     if bundle.manifest.get("config", {}).get("config_hash") != config_hash:
         raise Stage3ScoreError("composed config hash differs from sealed manifest")
+    is_template = bool(getattr(group, "is_template", False))
     arms = tuple(group.arms)
     if not arms or not arms[-1].deliver:
         raise Stage3ScoreError("declared supply arms lack a final delivering arm")
@@ -967,6 +969,12 @@ def render_supply_variant_first_visit(
         final = row.get("supply_variants")
         if not isinstance(final, Mapping):
             raise Stage3ScoreError(f"{sid}: Solver visit has no final supply-variant custody")
+        if (final.get("schema") == SUPPLY_VARIANT_RECEIPT_SCHEMA_V4) != is_template:
+            raise Stage3ScoreError(
+                f"{sid}: the sealed arm receipt kind does not match the declared arm group kind "
+                f"(receipt {final.get('schema')!r}, declared "
+                f"{'template_variants' if is_template else 'supply_variants'})"
+            )
         validate_supply_variant_receipt(
             final, arm_ids=names, delivered_arm_id=names[-1],
             phase_id=solver[-1].get("role_id"), error_type=Stage3ScoreError,
@@ -1077,9 +1085,13 @@ def render_supply_variant_first_visit(
         "arm_declarations": [
             {"arm_id": arm.arm_id, "deliver": arm.deliver,
              "resolved_knobs": [{"path": k.path, "value": k.value} for k in arm.knobs],
-             "max_supplied_items": arm.max_supplied_items}
+             "max_supplied_items": arm.max_supplied_items,
+             **({"instruction_template": (None if arm.instruction_template is None
+                                          else arm.instruction_template.as_json())}
+                if is_template else {})}
             for arm in arms
         ],
+        **({"arm_group_kind": group.kind} if is_template else {}),
         "no_solver_visit_rows": absent, "malformed_first_visit_by_arm": malformed,
         "later_solver_visit_count": revisions,
         "meaning": "first Solver visit local arm outputs; not full-system returns",
@@ -1834,10 +1846,57 @@ def perception_branch_main(args, repo_root: Path, root: Path, lock) -> int:
     return 0
 
 
+def parse_solver_arm_group(values: Mapping[str, Any], solver: Mapping[str, Any],
+                           perception: Mapping[str, Any], stores: Mapping[str, Any]):
+    """The Solver's validated arm group, dispatched on its DECLARATION KIND (NX programme E1).
+
+    ``roles.solver.supply_variants`` (a supply group, parsed by ``parse_supply_variants``) and
+    ``roles.solver.template_variants`` (a node-template group, parsed by ``parse_template_variants``
+    against the node's own locked ``phase_material`` template) are mutually exclusive; a Solver
+    declaring both, or neither, is refused by name -- the reader never feeds one kind's block to the
+    other kind's parser (the cross-kind refusal ``parse_supply_variants`` raised on the R1 read). The
+    returned ``SupplyVariantGroup`` carries ``.kind``; the render treats both kinds alike because a
+    template group's v4 receipt is the v3 arm record plus ``instruction_template``.
+    """
+
+    from speech_aware_evidence_acquisition.rails.supply_variants import (
+        SupplyVariantError, parse_supply_variants, parse_template_variants,
+    )
+
+    declares_supply = "supply_variants" in solver
+    declares_template = "template_variants" in solver
+    if declares_supply and declares_template:
+        raise Stage3ScoreError(
+            "the Solver role declares both supply_variants and template_variants; "
+            "one fan-out mechanism per node"
+        )
+    try:
+        if declares_template:
+            phase_id = solver.get("phase_id")
+            material = values.get("phase_material")
+            entry = material.get(phase_id) if isinstance(material, Mapping) else None
+            locked = entry.get("instruction_template") if isinstance(entry, Mapping) else None
+            if not isinstance(locked, str):
+                raise Stage3ScoreError(
+                    "template_variants needs the node's own phase_material instruction_template"
+                )
+            return parse_template_variants(
+                solver["template_variants"], role_kind="solver", phase_id=phase_id,
+                locked_template=locked,
+            )
+        if declares_supply:
+            return parse_supply_variants(
+                solver["supply_variants"], phase_id=solver.get("phase_id"),
+                first_phase_id=perception.get("phase_id"), declared_stores=tuple(stores),
+            )
+    except SupplyVariantError as error:
+        raise Stage3ScoreError(f"the declared Solver arm group is invalid: {error}") from error
+    raise Stage3ScoreError("the Solver role declares neither supply_variants nor template_variants")
+
+
 def supply_variant_main(args, repo_root: Path, root: Path, lock) -> int:
     from speech_aware_evidence_acquisition.core.bundle import verify_bundle
     from speech_aware_evidence_acquisition.core.config import compose
-    from speech_aware_evidence_acquisition.rails.supply_variants import parse_supply_variants
 
     if args.stage == "pairs" or args.samples is not None:
         raise Stage3ScoreError("supply-variants mode supports render/score/all, not pairs or samples")
@@ -1858,10 +1917,7 @@ def supply_variant_main(args, repo_root: Path, root: Path, lock) -> int:
     stores = composed.values.get("knowledge_stores")
     if not isinstance(stores, Mapping):
         raise Stage3ScoreError("composed config lacks declared knowledge stores")
-    group = parse_supply_variants(
-        solver.get("supply_variants"), phase_id=solver.get("phase_id"),
-        first_phase_id=perception.get("phase_id"), declared_stores=tuple(stores),
-    )
+    group = parse_solver_arm_group(composed.values, solver, perception, stores)
     roster, roster_sha256, _ = load_roster(repo_root, args.roster)
     out_dir = Path(args.analysis_root)
     if args.stage in ("render", "all"):
