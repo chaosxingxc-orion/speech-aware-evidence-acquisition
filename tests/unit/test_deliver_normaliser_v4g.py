@@ -90,11 +90,16 @@ def test_v4g_carries_its_identity_and_is_registered():
     assert (V4.id, V4.version, V4.rule_id, V4.guards) == (dn.DELIVER_NORMALISE_V4, "1", dn.V4_RULE_ID, None)
 
 
-def test_v4g_is_registered_but_armed_by_no_config_fragment_or_lock():
+def test_v4g_is_armed_only_by_the_nx_r5_composed_fragments():
+    """v4g became the delivery normaliser of lock v2.2 (module step 7). The only config files that name it are the NX R5 composed cells'
+    own fragments (registered 2026-10-09: the arm and its smoke, baseline and experiment); every other registered cell keeps v3."""
+
     roots = [_REPO / "configs"]
-    hits = [p for root in roots for p in root.rglob("*")
-            if p.is_file() and dn.DELIVER_NORMALISE_V4G in p.read_text(encoding="utf-8", errors="ignore")]
-    assert hits == []
+    hits = sorted(p.name for root in roots for p in root.rglob("*")
+                  if p.is_file() and dn.DELIVER_NORMALISE_V4G in p.read_text(encoding="utf-8", errors="ignore"))
+    assert hits and all("nx-r5-composed-dev2000-added" in name for name in hits), hits
+    assert "slurp-native-stage3-nx-r5-composed-dev2000-added-baseline-v1.json" in hits
+    assert "slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-baseline-v1.json" in hits
 
 
 def test_the_guard_constants_are_pinned_in_code():

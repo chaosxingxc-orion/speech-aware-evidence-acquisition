@@ -85,7 +85,14 @@ def main(argv=None) -> int:
         rows.append({"walked": walked})
     if binding["program"].program_id != nf.PROGRAM or binding["program"].max_contacts != nf.CEILING:
         problems.append(f"program {binding['program'].program_id} / {binding['program'].max_contacts}, expected {nf.PROGRAM} / {nf.CEILING}")
-    normaliser = runtime.config.get("native_episode", {}).get("deliver_normaliser", {}).get("normaliser") if hasattr(runtime, "config") else None
+    baseline = json.loads((repo / "configs" / "baseline" / f"{cell['baseline_fragment']}.json").read_text(encoding="utf-8"))
+    normaliser = baseline["native_episode"]["deliver_normaliser"]["normaliser"]
+    if normaliser != nf.NORMALISER:
+        problems.append(f"the smoke cell delivers through {normaliser!r}, expected {nf.NORMALISER!r}")
+    from speech_aware_evidence_acquisition.core.base import DELIVERY_NORMALISERS
+    from speech_aware_evidence_acquisition.rails import delivery_normalisers  # noqa: F401
+
+    DELIVERY_NORMALISERS.resolve(normaliser)  # the registered entry the runtime resolves at delivery
     summary = {
         "ok": not problems, "problems": problems, "rows": len(rows), "program_id": binding["program"].program_id,
         "program_max_contacts": binding["program"].max_contacts, "expected_ceiling": nf.CEILING,
