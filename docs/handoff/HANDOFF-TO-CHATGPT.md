@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T14:48:22Z
+Last refreshed: 2026-10-09T15:32:57Z
+
+## NX R1 arm flying since 15:20:10Z; engineering-base cleanup merged (2026-10-09T15:32:57Z, Fable 5.1 root)
+
+Smoke rec3 PASSED (15:20:00Z, 4 rows, pass true); the arm `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1` opened at 15:20:10Z at flight commit `09ce9eede` (campaign log `/home/chao/batch-campaign-1-nxr1-20261009T152010Z.log`; 8,640 planned contacts, ~3.5 GPU-h; an Opus monitor polls read-only every 15 min). After take-off the base-cleanup branch was merged (a18c492a9; `docs/readiness/2026-10-09-engineering-base-cleanup-v1.md`): unit suite 21 failed + 2 errors -> 2 deliberate residues (the natural-source compatibility AST pin needs a root re-review after the NX runtime change; the filler-family disjointness proof fails because two ChatGPT 400-row analysis rosters lie inside the Fold B filler family -- a coordinator ruling), the Audio2Tool exposure union no longer fails closed on SLURP runtime-subset receipts, `flight_registration_check` tree mode 42 -> 12 blocking (placeholder-pin annotations ignored; flown tokenizer-only spends recognised; a missing-worktree BundleError is a finding, not a crash; nine never-flown summary/memory cells retired as superseded), the SLOTFILL harness entry has its descriptive ledger row. Residue for the ChatGPT root: six K4 recovery1 remaining-b2 cells registered ready with draft rows, four simple-consumption N100 cells with budget/source drift, and P-SV-4 whose plans pin `phase-supply-v2.json` while the flip minted v1 (coordinator re-registration before it flies).
+
+Superseded stamp: 2026-10-09T14:48:22Z
 
 ## NX R1 smoke: three pre-contact/seal stops, the recovery is being amended to rec3 (2026-10-09T14:48:22Z, Fable 5.1 root)
 
