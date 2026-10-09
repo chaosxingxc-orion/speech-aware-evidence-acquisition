@@ -1,5 +1,14 @@
 # Experiment rules for the ChatGPT side
 
+## Reviewer update2 structural qualification; Solver update3 N100 frozen checks (2026-10-09T01:16:56.383458+00:00)
+
+The original Reviewer natural family completed all six configured members: 24 trajectories,126 model contacts, zero official scoring. Complete original terminal closure and the unchanged root structural audit passed. Omni retains terminal delivery; preserve intentional OPENED engineering attempts and completed manifests. Its scoped monitor is deleted. This is structural evidence only, with no task-quality or learner read. Exact receipt: `docs/receipts/continuation/2026-10-09-reviewer-update2-structural-qualified-solver-update3-n100-frozen-v1.json`.
+
+Solver update3 N100 authoring, whole-family registration and all original frozen gates/member checks completed successfully. Worker `/home/chao/saea-worktrees/codex-local-solver-n100-k4-update3-frozen-v1` remains immutable at b36e51a976b850d5f655bd548841f922e217d1b7. The configured family has four candidates and control/A/A on the same100 inputs,600 trajectories, at most1200 model contacts and4800 actual-request FIT endpoints. These are preparation facts, not a launch. A source-reviewed configuration-driven normal transition and fresh live admission remain required. The metadata integration wrapper earlier misparsed the leading Git porcelain status space after all metadata actions succeeded; root preserved that failure and integrated the already completed exact files once using raw NUL-delimited status. No authoring, registration or contact was repeated.
+
+The prospective Reviewer analysis template retains its unchanged raw entity net-repair primary, false-alarm tie-break, all process statistics and two-evaluated-update review rule. Reviewer N100 CPU preparation can overlap the next serial GPU campaign. Preserve same fixed data and knowledge, per-module isolation, four concurrent samples,4GiB floors and full reserves. Create a15minute scoped monitor only on actual launch. No stable benefit, system adoption or learning superiority is established. The broad goal remains active/incomplete, and human review remains required before8x400.
+
+
 ## Solver update3 structural qualification; Reviewer update2 natural launch (2026-10-09T00:45:16.624901+00:00)
 
 The complete Solver update3 natural family passed the unchanged structural audit after original terminal closure and the exact root structural READ: six configured members,24 rows,48 model contacts and192 actual-request FIT endpoints, zero official scores. Omni retains terminal delivery. Its original monitor is deleted. Preserve the worker-only OPENED attempts, completed manifests and unscored specifications; this qualification is engineering evidence, not task benefit. Exact evidence: `docs/receipts/continuation/2026-10-09-solver-update3-structural-qualified-reviewer-update2-launched-v1.json`.
@@ -1258,4 +1267,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-09T00:45:16.624901+00:00
+Last refreshed: 2026-10-09T01:16:56.398856+00:00

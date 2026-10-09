@@ -1,0 +1,53 @@
+{
+  "at_utc": "2026-10-09T01:16:56.371715+00:00",
+  "goal_status": "active and incomplete",
+  "learning_or_quality_read": false,
+  "new_contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "next": "Source-reviewed normal serial N100 launch and independent Reviewer N100 CPU authoring. Preserve local selection, same roster, isolated role feedback and human boundary before 8x400.",
+  "reviewer_analysis_template": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/analysis-metadata-v1/analysis-template-v1.json",
+    "sha256": "9d0074470f990e14d6b28ac459658be5aff300e89796f43ae653f219142ef797"
+  },
+  "reviewer_structural": {
+    "actual_fit_accounting": {
+      "relpath": "coordination/local-reviewer-n100-k4-update2-natural4-v1/actual-fit-accounting-v1.json",
+      "sha256": "1645c00a1077a86074604c2f5f471813385844335243d11a6fd13e04f85a5340"
+    },
+    "monitor_deleted": {
+      "relpath": "coordination/local-reviewer-n100-k4-update2-natural4-v1/root-monitor-deleted-v1.json",
+      "sha256": "5b2d1d7ad12796c3f34a16e0c4fca8b8f1e1284430f4a79355f83c70baabc10f"
+    },
+    "original_terminal": {
+      "relpath": "coordination/local-reviewer-n100-k4-update2-natural4-v1/root-original-terminal-closure-v1.json",
+      "sha256": "e89c62cd784f25f277990329e2805bb3fdb904aa962c76dfe98fc9390eb9baa4"
+    },
+    "qualification": {
+      "relpath": "coordination/local-reviewer-n100-k4-update2-natural4-v1/natural-family-qualified-v1.json",
+      "sha256": "a3e85f1de2afefd86e04c4cf78f4b852ad78fa86cf16f044017ac609f9580848"
+    },
+    "qualification_exit": {
+      "relpath": "coordination/local-reviewer-n100-k4-update2-natural4-v1/root-original-structural-qualification-exit-v1.json",
+      "sha256": "b4dc7ca877cf076b9ffb388f23f31005eb9c3bd938866bb94cea16697b4b0655"
+    }
+  },
+  "schema": "saea-root-local-serial-progress-v1",
+  "solver_n100": {
+    "frozen_launch_binding": {
+      "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-frozen-launch-binding-v1.json",
+      "sha256": "8fdb3b79b8600ad9b82e518700283f8d084d62fffe5b838d3264ce9601bd538d"
+    },
+    "metadata_integration_disposition": {
+      "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-metadata-integration-disposition-v1.json",
+      "sha256": "2dee301cfa9f122144d690e5b9806f24b90699095544b881b6aee5694b00cebc"
+    },
+    "original_frozen_exit": {
+      "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-frozen-capture-exit-v1.json",
+      "sha256": "56bc6889483fa9901fdc4f63bc1085c529c8cd8b1ea9d07413666a15d91bb455"
+    },
+    "runtime_dispatch": false
+  }
+}
