@@ -1,0 +1,35 @@
+{
+  "approved_helper_sha256": "393726bd5dc220ae1a4ccd1cd44eace9950f3f210507b80224c2aa4095d1fb19",
+  "at_utc": "2026-10-09T07:42:47.043358+00:00",
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "guide": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-registration-engineering-v2/ROOT-GUIDE-v2.txt",
+    "sha256": "f38cc3fcfad495532a9f0f21269a38f09ae5a6db803509323be6e82e603d87d0"
+  },
+  "independent_focused_tests": 13,
+  "independent_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-registration-astra-review-v2/review-result-v2.json",
+    "sha256": "bfd9226e3d2cb4065ba2b33571aa0536ce691d3f8c06f821affaeaead9c72925"
+  },
+  "meaning": "Exact original full400 source identity is required for the bridge-added predecessor. Original generation immediate fresh-capacity predecessor remains separately exact. Use the complete reviewed nine-helper source set and unchanged indexed wrappers.",
+  "owner_decision": 227,
+  "preserved_v1_finding_and_counterexamples": true,
+  "registration_complete": false,
+  "runtime_admission": false,
+  "schema": "saea-root-exact-source-approval-v1",
+  "source_index": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-registration-engineering-v2/source-pins-v2.json",
+    "sha256": "f4d87c7326b4c9a7747d212fd251a155958d053eecafb64a976ad26468137bc5"
+  },
+  "source_snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-registration-engineering-v2/source-review-snapshot-v2.json",
+    "sha256": "2d00e7ee5823ee2f1fcbf2d7ac8a4b2d06a7d2ab7477f338eb32a7ef5cd1519c"
+  },
+  "status": "APPROVED_EXACT_V2_SOURCE_ONLY",
+  "supplied_tests": 125,
+  "test_counts_not_claimed_distinct": true
+}

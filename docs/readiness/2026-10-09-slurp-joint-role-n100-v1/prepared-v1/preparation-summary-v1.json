@@ -1,0 +1,197 @@
+{
+  "architecture_proof": "manual-architecture-n20-v1",
+  "companion_preparation_receipts": {
+    "control": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/control-capacity-prepared-v1.json",
+        "sha256": "b940a9fde98585f2d79ccb15cc8bdf1477920ba8fc1c3f3a35c531da8331124f"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/control-graph-prepared-v1.json",
+        "sha256": "830f2e853ce566f6e50a9f7af5881c5a3df8a062444192f2e49ca432374dc87c"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/control-natural-prepared-v1.json",
+        "sha256": "e3507aedceba7c8d416f79c31634735411556891c99851c89cc5a2d04326a65a"
+      }
+    },
+    "control-aa": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/control-aa-capacity-prepared-v1.json",
+        "sha256": "2a36cabd909e7b97832ceec4ea7c6d742261529edeaa34e3142cc8b496dbeefd"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/control-aa-graph-prepared-v1.json",
+        "sha256": "b09e3b4c556b54db0280bf3680a6174f7aa75e6e723dcb5fec97e71303716c00"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/control-aa-natural-prepared-v1.json",
+        "sha256": "a584f4ad0c6318a2b567c1a6334dc0602404e299985b972f5e34235a17a68687"
+      }
+    },
+    "joint-import": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/joint-import-capacity-prepared-v1.json",
+        "sha256": "c06c52df3f95c46226d18fc385dfc1b8a8a9c164509f3b7765bdabffc9951c4a"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/joint-import-graph-prepared-v1.json",
+        "sha256": "251118db962ac07453cc8a309474aa1e312506adea31e6aba607bd7f19ad0f6b"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/joint-import-natural-prepared-v1.json",
+        "sha256": "a68047a8cc7134f029f847361652ed4d6e0c317aef5a3f9c04131b8b12c878b3"
+      }
+    },
+    "reviewer-import": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/reviewer-import-capacity-prepared-v1.json",
+        "sha256": "489b606a32e7bba41e4346f31c0b2b9060ebccdb0312150d5e5d91a05b5fe9e9"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/reviewer-import-graph-prepared-v1.json",
+        "sha256": "de3cb949c77522de58c5efed1d26fd8308b152b9e3778eac0a09893d393586aa"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/reviewer-import-natural-prepared-v1.json",
+        "sha256": "ecbb9c5553ce30054796422eb03fd2e5eb8bbbf175bda9a6c4345066cf34dcda"
+      }
+    },
+    "solver-import": {
+      "capacity": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/solver-import-capacity-prepared-v1.json",
+        "sha256": "8c66a9daf138566a045acd83d269ba7cbd68e99604d3e65969ad54896e61fe6a"
+      },
+      "graph": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/solver-import-graph-prepared-v1.json",
+        "sha256": "b98304719e24635bed835e6c5683bedc26e3829aaa5ec78d103b9d2c3fe4a1b9"
+      },
+      "natural": {
+        "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/solver-import-natural-prepared-v1.json",
+        "sha256": "db501ff5a9dd2d44a9e712f3622a7f86808d3e8d5820c7e3c7ae567811b98959"
+      }
+    }
+  },
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "cumulative_source_summary": [
+    {
+      "kind": "feedback",
+      "sample_count": 100,
+      "sha256": "7850eb393bda94330777f5eea3c996c6bfd2c4c8b37c0154e3e9261844b1ebcf"
+    },
+    {
+      "kind": "feedback",
+      "sample_count": 100,
+      "sha256": "f5955a8da068c2cb33e549093a95fffe1afabb077344cd9d1f54031626a6b465"
+    },
+    {
+      "kind": "knowledge",
+      "sample_count": 2037,
+      "sha256": "5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe"
+    },
+    {
+      "kind": "knowledge",
+      "sample_count": 34474,
+      "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
+    },
+    {
+      "kind": "knowledge",
+      "sample_count": 3162,
+      "sha256": "d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec"
+    },
+    {
+      "kind": "proposal",
+      "sample_count": 100,
+      "sha256": "29b7b60a776fc2125a0d7f33d6cbe333b9fd289bd77850e027bbbbc2697b5d70"
+    },
+    {
+      "kind": "proposal",
+      "sample_count": 100,
+      "sha256": "5e94522808df576c2c4dacc3e8939aab09c44ab76534207857824422e8e57b2d"
+    },
+    {
+      "kind": "selection",
+      "sample_count": 100,
+      "sha256": "3e3fd4aa915f471ee83b6a5c89703ed6b558e0b0f02681b32fc2b19d394c64e4"
+    },
+    {
+      "kind": "selection",
+      "sample_count": 100,
+      "sha256": "4599d29579b25d4f49d6c9270b00094f50f04f01839f1ea5cdc2cd6785d3c234"
+    },
+    {
+      "kind": "selection",
+      "sample_count": 100,
+      "sha256": "68f4ab8ce4d71e8731f743e357738786fc78fb086022a135245cbcf413dd3d51"
+    }
+  ],
+  "execution_identity_map": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/execution-identity-map-v1.json",
+    "sha256": "c03c503ba5f1792bc8ace2efadbd6ec6eef9475633dc82ee5e9b163d574c631a"
+  },
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-joint-role-consumption-n100-v1.json",
+    "sha256": "2c697ae866a6536411d38516b63ac2a071d518265025c4f4f860edbc87597de3"
+  },
+  "joint_proof_identity_maps": {
+    "capacity": {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/capacity-identity-map-v1.json",
+      "sha256": "cb64bd93d5a497d8a2b23e25225902a4f0df913956e593a3b8d7dd18b8d67e42"
+    },
+    "natural": {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/natural-identity-map-v1.json",
+      "sha256": "3e02cf3df7ee56ec9916f52cd8927fe66f267a24c1d70570f7a552f301ba7f67"
+    }
+  },
+  "joint_role_basis": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/joint-role-basis-v1.json",
+    "sha256": "d41c47ff6d0e2fba59f6ce1fae5650e240943ba8e36753ad5de57d1b5787a20c"
+  },
+  "population_budget": {
+    "K": 3,
+    "N": 100,
+    "active_node_counts": {
+      "control": 4,
+      "control-aa": 4,
+      "joint-import": 4,
+      "reviewer-import": 4,
+      "solver-import": 4
+    },
+    "candidate_trajectories": 300,
+    "control_trajectories": 200,
+    "family_trajectories": 500,
+    "fit_endpoints_cap": 26000,
+    "generation_contacts_cap": 6500
+  },
+  "preparation_receipts": {
+    "control": {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/control-generation-prepared-v1.json",
+      "sha256": "0232161b74da301fea5857effe354353721db94860589bad79df489afeabab33"
+    },
+    "control-aa": {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/control-aa-generation-prepared-v1.json",
+      "sha256": "df126752e895e9a7783e5d88e5b7008fa471a0c04cc8ba16d56747935b8710cc"
+    },
+    "joint-import": {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/joint-import-generation-prepared-v1.json",
+      "sha256": "b04e8794e565bbf23aa174589f30926daa690bb316d781e21954c153eeb61864"
+    },
+    "reviewer-import": {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/reviewer-import-generation-prepared-v1.json",
+      "sha256": "44f00f3b53213befe535108441e05f4cff3840c3d531b8f0e588a1f6b12d02c7"
+    },
+    "solver-import": {
+      "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/solver-import-generation-prepared-v1.json",
+      "sha256": "0b7cff3c65d31310174ccce317941de5a54cf0535c94d5c3ad44ec24c972850d"
+    }
+  },
+  "read_authorized": false,
+  "runtime_admission": false,
+  "schema": "saea-joint-role-import-preparation-v1",
+  "source_preparation_commit": "561562aec877e30633731bdf036cbab330f60583",
+  "status": "PREPARED_HELD_NOT_ADMITTED"
+}

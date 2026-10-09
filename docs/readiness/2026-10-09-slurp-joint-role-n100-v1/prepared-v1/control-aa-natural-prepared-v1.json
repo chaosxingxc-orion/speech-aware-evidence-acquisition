@@ -1,0 +1,73 @@
+{
+  "attempt_id": "attempt-slurp-native-stage3-joint-role-control-aa-n100-natural-v1",
+  "baseline": "slurp-native-stage3-joint-role-control-aa-n100-natural-v1",
+  "config_hash": "1ed6f2913d87f28d4841fe241da07e1346c464a23abe7f4d12b4415d43c80412",
+  "configured_sample_ids": [
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "contacts": 0,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-joint-role-control-aa-n100-natural-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 52,
+    "planned_speech_audio_seconds": 114,
+    "protocol_hash": "4878d8cb2577791bddfaeb2ea6457590243161f4ee2299f8660dd72d3a50ff05",
+    "run_id": "SAEA-SLURP-JOINT-ROLE-CONTROL-AA-N100-NATURAL-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "experiment": "slurp-native-stage3-joint-role-control-aa-n100-natural-v1",
+  "joint_role_basis": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/joint-role-basis-v1.json",
+    "sha256": "d41c47ff6d0e2fba59f6ce1fae5650e240943ba8e36753ad5de57d1b5787a20c"
+  },
+  "kind": "natural",
+  "member_id": "control-aa",
+  "output_equal": true,
+  "output_sha256": "d0ca4459b0040fc26a3def2c735e4b685cf86b7cded68851007fb9b3d68b1bc0",
+  "policy_binding": {
+    "bundle": {
+      "relpath": "coordination/local-joint-n100-v1/policy-archive/policies/ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572.json",
+      "sha256": "ad98dcbaa75b431121848f4cd5ee82dd58705b2cf71fa6e0fedfbe2cf5734e31"
+    },
+    "bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+    "schema": "saea-system-text-role-binding-v1"
+  },
+  "prepared_phase_supply": {
+    "relpath": "prepared/SAEA-SLURP-JOINT-ROLE-CONTROL-AA-N100-NATURAL-V1/phase-supply-v1.json",
+    "sha256": "7e4af8fdf957ed78447e12533c88b2c896df5c472462eab3420c505551725bd8"
+  },
+  "prepared_source_commit": "561562aec877e30633731bdf036cbab330f60583",
+  "pure_capacity_budget": null,
+  "run_id": "SAEA-SLURP-JOINT-ROLE-CONTROL-AA-N100-NATURAL-V1",
+  "runtime_admission": false,
+  "runtime_sample_ids": [
+    "slurp:train:003560:audio-1501686037",
+    "slurp:train:005407:audio-1502374837",
+    "slurp:train:005513:audio-1494513310",
+    "slurp:train:011838:audio-1490369500"
+  ],
+  "source_policy": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/policies/control-aa-policy-v1.json",
+    "sha256": "2a939816ad784ed1b44cdb59463e87a13c0d4774749f951057b74a365e412bcb"
+  },
+  "strict_prepared_artifacts": [
+    {
+      "difference": null,
+      "identity_ok": true,
+      "key": "prepared_phase_supply",
+      "reason": null,
+      "relpath": "prepared/SAEA-SLURP-JOINT-ROLE-CONTROL-AA-N100-NATURAL-V1/phase-supply-v1.json",
+      "seed_ok": true,
+      "sha256": "7e4af8fdf957ed78447e12533c88b2c896df5c472462eab3420c505551725bd8"
+    }
+  ],
+  "warm_verified": true
+}

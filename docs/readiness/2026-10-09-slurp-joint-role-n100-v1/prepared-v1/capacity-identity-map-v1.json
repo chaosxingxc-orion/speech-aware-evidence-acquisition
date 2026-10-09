@@ -1,0 +1,62 @@
+{
+  "experiment_population": {
+    "relpath": "configs/experiments/slurp-joint-role-consumption-n100-v1.json",
+    "sha256": "2c697ae866a6536411d38516b63ac2a071d518265025c4f4f860edbc87597de3"
+  },
+  "generation_identity_map": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/execution-identity-map-v1.json",
+    "sha256": "c03c503ba5f1792bc8ace2efadbd6ec6eef9475633dc82ee5e9b163d574c631a"
+  },
+  "joint_role_basis": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/joint-role-basis-v1.json",
+    "sha256": "d41c47ff6d0e2fba59f6ce1fae5650e240943ba8e36753ad5de57d1b5787a20c"
+  },
+  "members": [
+    {
+      "attempt_id": "attempt-slurp-native-stage3-joint-role-control-n100-capacity-v1",
+      "cell_id": "slurp-native-stage3-joint-role-control-n100-capacity-v1",
+      "config_hash": "8838c8d42fd7ec88c687bcd48178539984b69e770018e7a51dfa4eb6f8dcb29f",
+      "experiment": "slurp-native-stage3-joint-role-control-n100-capacity-v1",
+      "member_id": "control",
+      "run_id": "SAEA-SLURP-JOINT-ROLE-CONTROL-N100-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-joint-role-control-aa-n100-capacity-v1",
+      "cell_id": "slurp-native-stage3-joint-role-control-aa-n100-capacity-v1",
+      "config_hash": "df1ac928a30c3dca3139eff9b5cc95c615fe57b503f4038126298f339b5c5021",
+      "experiment": "slurp-native-stage3-joint-role-control-aa-n100-capacity-v1",
+      "member_id": "control-aa",
+      "run_id": "SAEA-SLURP-JOINT-ROLE-CONTROL-AA-N100-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-joint-role-solver-import-n100-capacity-v1",
+      "cell_id": "slurp-native-stage3-joint-role-solver-import-n100-capacity-v1",
+      "config_hash": "f91231ec4d136c897d03778a1f06c6fa228b1308fdaccfc5d4bc9c9e84fc2e2c",
+      "experiment": "slurp-native-stage3-joint-role-solver-import-n100-capacity-v1",
+      "member_id": "solver-import",
+      "run_id": "SAEA-SLURP-JOINT-ROLE-SOLVER-IMPORT-N100-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-joint-role-reviewer-import-n100-capacity-v1",
+      "cell_id": "slurp-native-stage3-joint-role-reviewer-import-n100-capacity-v1",
+      "config_hash": "153f0695670db7b70c605bb08b595e9034fb8737679444357853f8ba31b20d58",
+      "experiment": "slurp-native-stage3-joint-role-reviewer-import-n100-capacity-v1",
+      "member_id": "reviewer-import",
+      "run_id": "SAEA-SLURP-JOINT-ROLE-REVIEWER-IMPORT-N100-CAPACITY-FIT-V1"
+    },
+    {
+      "attempt_id": "attempt-slurp-native-stage3-joint-role-joint-import-n100-capacity-v1",
+      "cell_id": "slurp-native-stage3-joint-role-joint-import-n100-capacity-v1",
+      "config_hash": "ae916a3ad0b2a965825b539a59a9ae234dd1e125cfb78e173c993617c97c8282",
+      "experiment": "slurp-native-stage3-joint-role-joint-import-n100-capacity-v1",
+      "member_id": "joint-import",
+      "run_id": "SAEA-SLURP-JOINT-ROLE-JOINT-IMPORT-N100-CAPACITY-FIT-V1"
+    }
+  ],
+  "proof_roster": {
+    "relpath": "configs/dataset/slurp-speech-native-simple-consumption-n100-graph4-v1.json",
+    "sha256": "fe35d4a89f4ddac7c4a3f4b32da1ed244f9c1f1d422d56098d6118085190d80d"
+  },
+  "schema": "saea-joint-role-import-proof-identity-map-v1",
+  "stage": "capacity"
+}

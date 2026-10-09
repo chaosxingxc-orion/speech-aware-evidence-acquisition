@@ -1,0 +1,78 @@
+{
+  "actual_capacity_passed": false,
+  "all_original_summary_pins_verified": true,
+  "all_prepared_output_equal_and_warm_verified": true,
+  "at_utc": "2026-10-09T07:42:47.043358+00:00",
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "later_analysis_only_integration": "c28e97460da30ac90afadbeca5d43fc9f60fdfd0",
+  "members": [
+    "control",
+    "control-aa",
+    "solver-import",
+    "reviewer-import",
+    "joint-import"
+  ],
+  "original_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-preparation-v2-exit.json",
+    "sha256": "06cf6493da6034e1341be18ef903d195e11215ef6ea17a7b2ba343282a3137a8"
+  },
+  "original_exit_code": 0,
+  "original_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-preparation-input-v2.json",
+    "sha256": "b969ffb606cda2ca6d554c5b47cb78c64be7d60206634c4a02fd33771c65497b"
+  },
+  "original_pid": 153417,
+  "original_pid_absent_after_terminal": true,
+  "original_start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-preparation-v2-started.json",
+    "sha256": "22ced7ff857d439f48469a880d946168ea50b52983c877d4238952ef04a2d16e"
+  },
+  "originals_preserved": true,
+  "owner_decision": 227,
+  "population_budget": {
+    "K": 3,
+    "N": 100,
+    "active_node_counts": {
+      "control": 4,
+      "control-aa": 4,
+      "joint-import": 4,
+      "reviewer-import": 4,
+      "solver-import": 4
+    },
+    "candidate_trajectories": 300,
+    "control_trajectories": 200,
+    "family_trajectories": 500,
+    "fit_endpoints_cap": 26000,
+    "generation_contacts_cap": 6500
+  },
+  "preparation_summary": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-role-n100-v1/prepared-v1/preparation-summary-v1.json",
+    "sha256": "240ca660bc0eb6b01fc17d3f6cd36acfc37c66b1863c478a5164489b43b747ec"
+  },
+  "prepared_cells": 20,
+  "prewrite_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-preparation-prewrite-disposition-v1.json",
+    "sha256": "e850df4b42431441298269f8e0fe0db181970127a2e264c3c4a23c2a6786903f"
+  },
+  "prewrite_refusal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-preparation-exit-v1.json",
+    "sha256": "ffe68dba4d8eced25f6e2aa4d431d222139dca0c6f8f5c4534ca25245f7c8b62"
+  },
+  "runtime_admission": false,
+  "runtime_dependency_diff_empty": true,
+  "schema": "saea-root-joint-held-preparation-completion-v1",
+  "scientific_read": false,
+  "source_preparation_commit": "561562aec877e30633731bdf036cbab330f60583",
+  "stages": [
+    "capacity",
+    "graph",
+    "natural",
+    "generation"
+  ],
+  "status": "COMPLETE_HELD_NOT_ADMITTED"
+}
