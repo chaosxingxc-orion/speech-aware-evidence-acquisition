@@ -145,6 +145,45 @@ def test_registered_measurement_block_is_a_node_column_with_a_twin_and_the_nomin
     assert recipe["offline_columns"]["statistics"]["sha256"] == nf.V4_STATS_SHA256
 
 
+ITER1_PINNED_SHA256 = {
+    "analysis-recipe-v1.json": "7a4ac48450c601323817a5488826354fdac3d0847ae45ddc369a5a0ba32ef8b5",
+    "protocol-registered-v1.json": "736551c7d6ed022c5016039ea9fedc271ed9eb9a61e72c1af16e4192c47b3663",
+    "registered-facts-v1.json": "dc9c62ad4476cdb5b9ee357fe14064a2de6e57bfb313f566f03ae5beacaeae19",
+}
+
+
+def test_nomination_rule_is_official_column_in_iteration_2_and_iteration_1_is_unchanged():
+    package = REPO / nf.PACKAGE
+    recipe = json.loads((package / "analysis-recipe-v1.json").read_text(encoding="utf-8"))
+    facts = json.loads((package / "registered-facts-v1.json").read_text(encoding="utf-8"))
+    protocol = json.loads((package / "protocol-registered-v1.json").read_text(encoding="utf-8"))
+    block = facts["stage3_measurement"][nf.ARM["run_id"]]
+    if nf.ITERATION == 1:
+        # The flown iteration keeps its registered bytes and its raw-primary rule.
+        for name, digest in ITER1_PINNED_SHA256.items():
+            assert hashlib.sha256((package / name).read_bytes()).hexdigest() == digest, name
+        assert "nomination" not in recipe and "nomination_rule" not in block
+        assert recipe["node_local"]["primary"] == "exact_set" and "role" not in recipe["node_local"]
+        assert "official-column" not in recipe["decision_rule"]
+        return
+    assert block["primary_metric_key"] == "slu" and block["nomination_rule"] == "official-column"
+    nomination = recipe["nomination"]
+    assert nomination["rule"] == "official-column"
+    assert nomination["ci95_lower_bound_above"] == 0.0 and nomination["above_twin_delta"] is True
+    assert nomination["intent_guard_floor_pp"] == nf.FLOOR_INTENT_PP == 0.65 and nomination["intent_guard_rows"] == 7
+    assert nomination["within_flight"] is True and "delivering lock arm" in nomination["contrast"] + "delivering lock arm"
+    assert nomination["node_local_role"].startswith("diagnostic")
+    assert recipe["node_local"]["role"].startswith("diagnostic")
+    for text in (recipe["decision_rule"], protocol["decision_rule_fixed_here"], facts["decision_rule"]):
+        assert "NOMINATED iff (a) the official pooled SLU-F1 delta" in text
+        assert "CI95 lower bound > 0" in text and "above the aa twin's official pooled SLU-F1 delta" in text
+        assert "<= 7" in text and "0.65 pp" in text and "DIAGNOSTIC AND GATES NOTHING" in text
+        assert "SECOND AND LAST EVALUATED ROUND" in text
+    assert "OFFICIAL pooled SLU-F1" in protocol["the_question"]
+    assert "official-column" in block["primary_metric"]
+    assert "gates nothing" in " ".join(recipe["steps"])
+
+
 # --- Pre-contact preflight: every model-free gate the worker applies before its first contact -------------------------
 #
 # Three consecutive smoke stops (failed seal, run-cumulative budget refusal, FIT cap refusal) were registration defects that a

@@ -56,11 +56,25 @@ programme caps candidates at K <= 6); it is set beside the iteration-2 arms only
 | `r1-c4` (ChatGPT donor port) | -0.19 [-1.76, +1.30] | | | no |
 | `r1-c1` (value-in-supply extraction, the declared +1.80 arm) | -1.85 [-3.43, -0.37] | +7.91 | | HARM |
 
-Source: the iteration-1 candidates-README section 1 and the hand-off entry "NX R1 sealed; node-local read". The **official per-arm columns,
-the intent guard and the offline v4/v4g columns of iteration 1 were not yet read** when this package was written (the official column step
-was being fixed), so iteration 1's nomination status is not final here and nothing in this package depends on it. The plateau rule
-(programme C0.4) counts this as the **second and last evaluated round**: if no iteration-2 arm is NOMINATED, the delivering template is
-locked and the node closes.
+Source: the iteration-1 candidates-README section 1 and the hand-off entry "NX R1 sealed; node-local read". The raw node-local screen above
+was iteration 1's registered primary. It was later re-read with the E2 reader v2 (delivered-equivalent, i.e. after the delivered row's own
+normaliser) and the official columns were scored once; the two views disagree, which is why iteration 2 decides on the official column
+(section 5). Iteration-1 facts, development numbers only, paired vs `lock`, 1,080 rows, CI95 where available:
+
+| arm | node-local normalised exact-set pp [CI95] | other normalised node-local | OFFICIAL pooled SLU-F1 delta pp [CI95] |
+| --- | --- | --- | --- |
+| `aa` twin | +0.19 | | +0.57 [-0.10, +1.27] (the twin null) |
+| `r1-c5` | +1.30 [-0.19, +2.78] | | -0.15 [-1.23, +0.89] |
+| `r1-c3` | +4.63 [+2.87, +6.39] | empty-gold false fill -15.82; non-empty exact -1.74 [-3.34, -0.15] | +0.96 [-0.16, +2.09] |
+| `r1-c2` | +0.83 | | +0.22 |
+| `r1-c4` | -0.65 | | -0.20 |
+| `r1-c1` | -1.67 | | -0.73 |
+
+The official columns above are scratch reads (not yet the registered, countersigned read). Reading: no iteration-1 arm clears the
+official rule of this round (CI95 lower bound > 0 AND above the twin's +0.57); the best node-local arm (`r1-c3`) is a formatting and
+false-fill gain that does not survive into the official column, and `r1-c5`, which cleared the raw screen, is null officially. The
+plateau rule (programme C0.4) counts this round as the **second and last evaluated round**: if no iteration-2 arm is NOMINATED, the
+delivering template is locked and the node closes.
 
 ## 3. Iteration-2 hypotheses and the declared effect (decision 192: on file before flight)
 
@@ -85,7 +99,8 @@ of about 5 rows per candidate is applied), so the **Fold A two-arm confirmation*
 ## 4. Measurement and FIT numbers
 
 `registered-facts-v1.json` carries the canonical `stage3_measurement` block keyed by run id: `same-flight-node-column`, primary metric key
-`slu` with the node-local primary named (**raw first-answer entity exact-set per row**, E2 reader, paired per row against `lock`), intent as the
+`slu` with `nomination_rule: official-column` (**the official pooled SLU-F1 delta of the arm's column vs `lock`, paired, within the flight**; the
+node-local normalised exact-set of the E2 reader v2 is diagnostic and gates nothing), intent as the
 guard (rows differing from `lock` <= 7 = the 0.65 pp floor at 1,080), `expected_effect_pp` **1.54**, `claim` `nominated`, in-chain A/A = the
 `aa` twin, tuning roster `SLURP-EVO-FOLD-A-V2`, read roster `SLURP-EVO-FOLD-B-V2`, floors SLU **1.49** / intent **0.65** (borrowed, provisional).
 `variant_cost`: +6 Solver contacts per row, +18,928.78 speech seconds per flight. The smoke is a `form-proof` (fewer than 200 rows, no benefit
@@ -117,8 +132,11 @@ fill, non-empty exact, per-slot-type counts; whole-utterance bootstrap 10,000 dr
 per-arm columns** (`scripts/analysis/stage3_rollout_score.py --mode supply-variants`, `slurp-slu-official-train`, seven jobs, never sharded;
 then the twin null `aa-vs-lock` and each `<candidate>-vs-lock` through `stage3_paired_read.py`, row bootstrap, cluster key `sample_id`);
 (3) the **offline v4 / v4g columns** over every arm's delivered column (0 GPU; the apply driver admits this Fold B run through the registered
-recipe). Rule (fixed in the protocol and preregistration): a candidate is NOMINATED iff the node-local exact-set CI95 lower bound > 0, no
-secondary loss, the intent guard holds, and the official SLU-F1 point delta exceeds the twin bar; **second and last evaluated round**.
+recipe). Rule (fixed in the protocol, recipe `nomination` block and preregistration; **decided on the official column**): a candidate X is
+NOMINATED iff (a) the official pooled SLU-F1 delta X minus `lock` has a CI95 lower bound > 0, AND (b) that delta is above the `aa` twin's
+delta (aa minus lock, same flight), AND (c) the intent guard holds (rows whose official intent correctness differs from `lock` <= 7, the
+0.65 pp floor at 1,080); HARM iff the delta CI95 upper bound < 0; ties go to the larger delta, then fewer words. The node-local read
+(family 1) is **diagnostic** and gates nothing. This is the **second and last evaluated round**.
 
 **Additionally, a cross-iteration contrast, DESCRIPTIVE only:** each iteration-2 arm (and `lock`) minus iteration-1 `r1-c5` (`lock` minus
 `lock`) on the same 1,080 Fold B rows, through `stage3_paired_read.py` with left run = iteration 1 and right run = iteration 2
