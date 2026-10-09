@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T13:03:07Z
+Last refreshed: 2026-10-09T13:15:53Z
+
+## NX R1 smoke stopped at seal; validator fixed; smoke recovery re-registration in progress (2026-10-09T13:15:53Z, Fable 5.1 root)
+
+The four-row smoke made its 32 contacts (trace 184 records) and failed at `runtime.seal()`: `_canonical_output_rows` rebuilt the declared arm list from `roles.solver.supply_variants.arms` only, while the cell declares `template_variants` (STOP 13:02:34Z; the arm never opened; server healthy, GPU idle). Fix on master d2bc8f67e (`core/flight/runtime.py`: the seal-time validator chooses the raw block by the receipt kind, refuses cross-kind and double declarations; `tests/unit/test_template_variants_delivery.py` seals four template-variant rows through the production validator and fails on the old code with the exact smoke message). Recovery: the (run_id, attempt_id) pair is a one-time key, so the smoke is re-flown whole under `...-smoke-4-generation-rec1-v1` as the cell's single root-diagnosed recovery re-registration (32 contacts; the failed attempt is preserved unread; the arm keeps its attempt id); then the flip loop re-converges (runtime.py is in the identity set), the launch gate is re-run and SAEA-Queue-NXR1 restarts. The smoke did its job: the 8,640-contact arm would have failed the same way at seal.
+
+Superseded stamp: 2026-10-09T13:03:07Z
 
 ## NX R1 is flying (2026-10-09T13:03:07Z, Fable 5.1 root)
 
