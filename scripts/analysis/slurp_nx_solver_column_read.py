@@ -6,11 +6,21 @@ A sealed run whose Solver node carries a ``template_variants`` group (item E1, r
 ``saea-supply-variant-arms-v4``) holds K RAW first-visit Solver answers per row, one per
 instruction-template arm, all composed over the SAME QueryState and the SAME evidence. This reader
 scores each arm against the DELIVERING (locked-template) arm, PAIRED per row, on the node-local
-metrics the programme names for the Solver:
+metrics the programme names for the Solver, in TWO views of the same answers (schema v2):
 
-* ``parse_valid``           -- the raw answer parses through the governed SLURP parser
+* the NORMALISED view (PRIMARY, ``exact_set_normalised``): the answer after the delivered row's OWN
+  sealed delivery normaliser, derived through the SAME function the official column scorer calls
+  (``stage3_rollout_score.normalise_arm_answer``: normaliser id -> v3 cited-answer unwrap -> SLURP
+  deliver projection; fallback ``parse_slu_response`` + ``render_answer``). This is what the cell
+  would deliver, so a gain here is not formatting the normaliser already repairs (R1 iteration 1:
+  r1-c5 read +2.50 raw yet -0.15 on the official column);
+* the RAW view (diagnostic): the sealed first-visit text exactly as the core wrote it.
+
+The four metrics, each computed on both views:
+
+* ``parse_valid``           -- the answer parses through the governed SLURP parser
                                (``reproduction.slurp_scoring.parse_slu_response``);
-* ``exact_set``             -- the raw first answer's entity set equals the gold set EXACTLY
+* ``exact_set``             -- the answer's entity set equals the gold set EXACTLY
                                (the official exact matcher's ``{type, filler}`` equality, via
                                ``analysis.sealed_credit.entity_states.entity_items``: no error
                                item at all); an unparsed answer is not exact;
@@ -60,7 +70,10 @@ for _p in (str(REPO_ROOT / "src"), str(REPO_ROOT / "scripts" / "analysis")):
         sys.path.insert(0, _p)
 
 READ_ID = "SAEA-NX-SOLVER-TEMPLATE-COLUMN-READ-V1"
-RECIPE = "slurp-nx-solver-column-read-v1"
+RECIPE = "slurp-nx-solver-column-read-v2"
+#: The ``report.json`` schema. v1 (single raw view) is superseded: v2 carries both views, the
+#: normalised one primary, and the per-arm raw-vs-normalised flip table.
+SCHEMA_VERSION = "saea-nx-solver-column-read-v2"
 SEED = 20260915
 DRAWS = 10_000
 CI_LEVEL = 0.95
@@ -75,7 +88,9 @@ METRICS = (
     ("empty_gold_false_fill", "empty_gold", False),
     ("nonempty_exact", "nonempty_gold", True),
 )
-PRIMARY = "exact_set"
+#: The registered primary is the exact-set of the NORMALISED (delivered-equivalent) answer.
+PRIMARY = "exact_set_normalised"
+VIEW_PRIMARY_METRIC = "exact_set"
 SECONDARIES = ("parse_valid", "empty_gold_false_fill", "nonempty_exact")
 V4_SCHEMA = "saea-supply-variant-arms-v4"
 
@@ -209,31 +224,16 @@ def type_table(scored_arm: Mapping[str, Mapping], ids: Sequence[str]) -> dict:
     return {t: {k: int(total[t].get(k, 0)) for k in keys} for t in sorted(total)}
 
 
-def read_columns(
-    texts: Mapping[str, Mapping[str, str]], gold: Mapping[str, Mapping], *,
-    arm_ids: Sequence[str], delivering: str, twin: str | None = None,
-    seed: int = SEED, draws: int = DRAWS,
-) -> dict:
-    """The whole column read over ``texts[arm_id][sample_id] -> raw answer``."""
+def _view(
+    texts: Mapping[str, Mapping[str, str]], gold: Mapping[str, Mapping], *, arm_ids: Sequence[str],
+    delivering: str, twin: str | None, ids: Sequence[str], subsets: Mapping[str, Sequence[str]],
+    seed: int, draws: int,
+) -> tuple[dict, dict]:
+    """One view (raw or normalised) of the whole column: per-arm tables and the scored rows."""
 
-    arm_ids = list(arm_ids)
-    if delivering not in arm_ids:
-        raise ColumnReadError("the delivering arm is not among the arms")
-    ids = sorted(texts[delivering])
-    for arm in arm_ids:
-        if sorted(texts[arm]) != ids:
-            raise ColumnReadError(f"arm {arm!r} does not cover the delivering arm's rows")
-    missing = [s for s in ids if s not in gold]
-    if missing:
-        raise ColumnReadError(f"{len(missing)} roster ids are absent from the gold")
     scored = {
         arm: {sid: score_answer(texts[arm][sid], gold[sid]["entities"]) for sid in ids}
         for arm in arm_ids
-    }
-    subsets = {
-        "all": ids,
-        "empty_gold": [s for s in ids if not gold[s]["entities"]],
-        "nonempty_gold": [s for s in ids if gold[s]["entities"]],
     }
     arms_out = {}
     for arm in arm_ids:
@@ -260,6 +260,11 @@ def read_columns(
             "by_slot_type": type_table(row_stats, ids),
             "predicted_items": sum(row_stats[s]["n_pred"] for s in ids),
         }
+    return arms_out, scored
+
+
+def _screen(arms_out: Mapping[str, Mapping], arm_ids: Sequence[str], delivering: str,
+            twin: str | None) -> dict:
     screen = {}
     for arm in arm_ids:
         if arm == delivering or arm == twin:
@@ -267,14 +272,14 @@ def read_columns(
         paired = arms_out[arm]["paired_vs_delivering"]
         against = []
         for metric, _subset, higher in METRICS:
-            if metric == PRIMARY:
+            if metric == VIEW_PRIMARY_METRIC:
                 continue
             ci = paired[metric]["ci95_pp"]
             if ci is None:
                 continue
             if (higher and ci[1] < 0) or (not higher and ci[0] > 0):
                 against.append(metric)
-        primary_ci = paired[PRIMARY]["ci95_pp"]
+        primary_ci = paired[VIEW_PRIMARY_METRIC]["ci95_pp"]
         screen[arm] = {
             "primary_ci_lb_gt_0": bool(primary_ci is not None and primary_ci[0] > 0),
             "secondaries_with_ci_against": against,
@@ -282,17 +287,80 @@ def read_columns(
                 primary_ci is not None and primary_ci[0] > 0 and not against
             ),
         }
+    return screen
+
+
+def read_columns(
+    texts: Mapping[str, Mapping[str, str]], gold: Mapping[str, Mapping], *,
+    arm_ids: Sequence[str], delivering: str, twin: str | None = None,
+    normalised_texts: Mapping[str, Mapping[str, str]] | None = None,
+    seed: int = SEED, draws: int = DRAWS,
+) -> dict:
+    """The whole column read over ``texts[arm_id][sample_id] -> raw answer``.
+
+    ``normalised_texts`` is the same grid after the delivered row's normaliser
+    (:func:`normalise_texts`); left ``None`` it is the raw grid (an identity normalisation, for a
+    caller whose cell delivers raw answers).
+    """
+
+    arm_ids = list(arm_ids)
+    if delivering not in arm_ids:
+        raise ColumnReadError("the delivering arm is not among the arms")
+    ids = sorted(texts[delivering])
+    normalised = texts if normalised_texts is None else normalised_texts
+    for grid_name, grid in (("raw", texts), ("normalised", normalised)):
+        for arm in arm_ids:
+            if sorted(grid[arm]) != ids:
+                raise ColumnReadError(
+                    f"arm {arm!r} does not cover the delivering arm's rows ({grid_name} grid)"
+                )
+    missing = [s for s in ids if s not in gold]
+    if missing:
+        raise ColumnReadError(f"{len(missing)} roster ids are absent from the gold")
+    subsets = {
+        "all": ids,
+        "empty_gold": [s for s in ids if not gold[s]["entities"]],
+        "nonempty_gold": [s for s in ids if gold[s]["entities"]],
+    }
+    raw_arms, raw_scored = _view(texts, gold, arm_ids=arm_ids, delivering=delivering, twin=twin,
+                                 ids=ids, subsets=subsets, seed=seed, draws=draws)
+    norm_arms, norm_scored = _view(normalised, gold, arm_ids=arm_ids, delivering=delivering,
+                                   twin=twin, ids=ids, subsets=subsets, seed=seed, draws=draws)
+    flips = {}
+    for arm in arm_ids:
+        raw_s, norm_s = raw_scored[arm], norm_scored[arm]
+        flips[arm] = {
+            "rows": len(ids),
+            "text_changed": sum(1 for s in ids if texts[arm][s] != normalised[arm][s]),
+            "exact_raw_false_to_normalised_true": sum(
+                1 for s in ids if not raw_s[s]["exact_set"] and norm_s[s]["exact_set"]),
+            "exact_raw_true_to_normalised_false": sum(
+                1 for s in ids if raw_s[s]["exact_set"] and not norm_s[s]["exact_set"]),
+            "parse_raw_false_to_normalised_true": sum(
+                1 for s in ids if not raw_s[s]["parsed"] and norm_s[s]["parsed"]),
+            "parse_raw_true_to_normalised_false": sum(
+                1 for s in ids if raw_s[s]["parsed"] and not norm_s[s]["parsed"]),
+        }
     return {
-        "read_id": READ_ID, "recipe": RECIPE, "status": "DESCRIPTIVE",
+        "read_id": READ_ID, "recipe": RECIPE, "schema_version": SCHEMA_VERSION,
+        "status": "DESCRIPTIVE",
         "rows": len(ids),
         "rows_empty_gold": len(subsets["empty_gold"]),
         "rows_nonempty_gold": len(subsets["nonempty_gold"]),
         "bootstrap": {"draws": draws, "seed": seed, "ci_level": CI_LEVEL,
                       "cluster": "whole utterance (first three colon segments of the sample id)"},
         "arm_order": arm_ids, "delivering_arm": delivering, "twin_arm": twin,
-        "primary_metric": PRIMARY, "secondary_metrics": list(SECONDARIES),
-        "mechanical_screen": screen,
-        "arms": arms_out,
+        "primary_metric": PRIMARY, "primary_view": "normalised",
+        "secondary_metrics": list(SECONDARIES),
+        "mechanical_screen": _screen(norm_arms, arm_ids, delivering, twin),
+        "arms": norm_arms,
+        "raw_diagnostic": {
+            "view": "raw (the sealed first-visit text, before the delivery normaliser)",
+            "diagnostic_primary": "exact_set",
+            "mechanical_screen": _screen(raw_arms, arm_ids, delivering, twin),
+            "arms": raw_arms,
+        },
+        "raw_vs_normalised": flips,
     }
 
 
@@ -318,6 +386,7 @@ def load_sealed_arm_texts(outputs_rows: Sequence[Mapping], trace_records: Mappin
     delivering: str | None = None
     twin: str | None = None
     texts: dict[str, dict[str, str]] = {}
+    normaliser_ids: dict[str, str | None] = {}
     skipped: list[str] = []
     for row in outputs_rows:
         sid = row.get("sample_id")
@@ -351,6 +420,11 @@ def load_sealed_arm_texts(outputs_rows: Sequence[Mapping], trace_records: Mappin
             raise ColumnReadError(f"{sid}: the arm group or its templates differ from the first row's")
         if not solver:
             raise ColumnReadError(f"{sid}: template custody without a Solver visit")
+        # the delivered row's OWN sealed normaliser, exactly where the column scorer reads it
+        deliver_receipt = episode.get("deliver_normaliser")
+        normaliser_ids[sid] = (
+            deliver_receipt.get("normaliser_id") if isinstance(deliver_receipt, Mapping) else None
+        )
         first = solver[0].get("execution_receipt")
         contacts = first.get("contacts") if isinstance(first, Mapping) else None
         if not isinstance(contacts, list) or len(contacts) != len(arm_ids):
@@ -374,7 +448,22 @@ def load_sealed_arm_texts(outputs_rows: Sequence[Mapping], trace_records: Mappin
     if arm_ids is None:
         raise ColumnReadError("no row of the run carries template-variant custody")
     return {"arm_ids": arm_ids, "templates": templates, "delivering": delivering, "twin": twin,
-            "texts": texts, "rows_without_solver_visit": sorted(skipped)}
+            "texts": texts, "normaliser_ids": normaliser_ids,
+            "rows_without_solver_visit": sorted(skipped)}
+
+
+def normalise_texts(
+    texts: Mapping[str, Mapping[str, str]], normaliser_ids: Mapping[str, str | None],
+) -> dict[str, dict[str, str]]:
+    """Every raw answer through the delivered row's own normaliser, by the column scorer's function
+    (``stage3_rollout_score.normalise_arm_answer``) -- reused, not re-implemented."""
+
+    from stage3_rollout_score import normalise_arm_answer
+
+    return {
+        arm: {sid: normalise_arm_answer(raw, normaliser_ids.get(sid))[0] for sid, raw in rows.items()}
+        for arm, rows in texts.items()
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -385,16 +474,9 @@ def _pct(value: float | None) -> str:
     return "-" if value is None else f"{100.0 * value:.2f}"
 
 
-def render(report: Mapping) -> str:
-    arms = report["arms"]
+def _render_view(report: Mapping, arms: Mapping, screen: Mapping, heading: str) -> list[str]:
     lines = [
-        f"# {report['read_id']} tables", "",
-        f"{report['rows']} rows ({report['rows_empty_gold']} empty-gold, {report['rows_nonempty_gold']} "
-        f"non-empty-gold). Delivering arm `{report['delivering_arm']}`"
-        + (f", twin `{report['twin_arm']}`" if report["twin_arm"] else "")
-        + f". Bootstrap: {report['bootstrap']['draws']} draws, seed {report['bootstrap']['seed']}, "
-        "whole-utterance clusters, CI95. DESCRIPTIVE; development numbers.", "",
-        "## Marginal rates (%)", "",
+        f"## {heading}: marginal rates (%)", "",
         "| arm | role | parse valid | exact set | empty-gold false fill | non-empty exact | predicted items |",
         "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
     ]
@@ -405,7 +487,7 @@ def render(report: Mapping) -> str:
             f"{_pct(m['exact_set']['rate'])} | {_pct(m['empty_gold_false_fill']['rate'])} | "
             f"{_pct(m['nonempty_exact']['rate'])} | {arms[arm]['predicted_items']} |"
         )
-    lines += ["", "## Paired difference vs the delivering arm (pp, CI95) and discordant rows", "",
+    lines += ["", f"## {heading}: paired difference vs the delivering arm (pp, CI95) and discordant rows", "",
               "| arm | metric | n | diff pp | CI95 pp | b (arm only) | c (delivering only) | share b/(b+c) | Wilson95 |",
               "| --- | --- | ---: | ---: | --- | ---: | ---: | ---: | --- |"]
     for arm in report["arm_order"]:
@@ -421,15 +503,45 @@ def render(report: Mapping) -> str:
                 f"| {arm} | {metric} | {p['n']} | {diff} | {ci} | {p['b_arm_only']} | "
                 f"{p['c_delivering_only']} | {share} | {wil} |"
             )
-    lines += ["", "## Mechanical screen (primary CI lower bound above 0, no secondary CI against)", "",
-              "| arm | primary CI-LB > 0 | secondaries against | passes |", "| --- | --- | --- | --- |"]
-    for arm, s in report["mechanical_screen"].items():
+    lines += ["", f"## {heading}: mechanical screen (exact-set CI lower bound above 0, no secondary CI against)", "",
+              "| arm | exact-set CI-LB > 0 | secondaries against | passes |", "| --- | --- | --- | --- |"]
+    for arm, s in screen.items():
         lines.append(
             f"| {arm} | {s['primary_ci_lb_gt_0']} | {', '.join(s['secondaries_with_ci_against']) or '-'} | "
             f"{s['passes_mechanical_screen']} |"
         )
+    return lines
+
+
+def render(report: Mapping) -> str:
+    arms = report["arms"]
+    raw = report["raw_diagnostic"]
+    lines = [
+        f"# {report['read_id']} tables ({report['schema_version']})", "",
+        f"{report['rows']} rows ({report['rows_empty_gold']} empty-gold, {report['rows_nonempty_gold']} "
+        f"non-empty-gold). Delivering arm `{report['delivering_arm']}`"
+        + (f", twin `{report['twin_arm']}`" if report["twin_arm"] else "")
+        + f". Bootstrap: {report['bootstrap']['draws']} draws, seed {report['bootstrap']['seed']}, "
+        "whole-utterance clusters, CI95. DESCRIPTIVE; development numbers.", "",
+        f"PRIMARY: `{report['primary_metric']}` -- the exact-set of the answer AFTER the delivered row's own "
+        "delivery normaliser. The raw view below it is a diagnostic only.", "",
+    ]
+    lines += _render_view(report, arms, report["mechanical_screen"], "NORMALISED (primary)")
+    lines += ["", "## Raw vs normalised: rows changed by the delivery normaliser (per arm)", "",
+              "| arm | rows | text changed | exact raw false -> normalised true | exact raw true -> normalised false "
+              "| parse false -> true | parse true -> false |",
+              "| --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for arm in report["arm_order"]:
-        lines += ["", f"## Per slot type ({arm})", "",
+        f = report["raw_vs_normalised"][arm]
+        lines.append(
+            f"| {arm} | {f['rows']} | {f['text_changed']} | {f['exact_raw_false_to_normalised_true']} | "
+            f"{f['exact_raw_true_to_normalised_false']} | {f['parse_raw_false_to_normalised_true']} | "
+            f"{f['parse_raw_true_to_normalised_false']} |"
+        )
+    lines += [""]
+    lines += _render_view(report, raw["arms"], raw["mechanical_screen"], "RAW (diagnostic)")
+    for arm in report["arm_order"]:
+        lines += ["", f"## Per slot type, normalised ({arm})", "",
                   "| type | gold | gold exact | gold missing | gold wrong | predicted | spurious |",
                   "| --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
         for entity_type, c in arms[arm]["by_slot_type"].items():
@@ -482,9 +594,10 @@ def build(args) -> dict:
     bundle = verify_bundle(directory / f"{args.run_id}.run-manifest.json")
     sealed = load_sealed_arm_texts(bundle.outputs_rows, bundle.trace_records)
     gold = load_gold(load_lock(Path(args.lock)), data_root, args.split)
+    normalised = normalise_texts(sealed["texts"], sealed["normaliser_ids"])
     report = read_columns(
         sealed["texts"], gold, arm_ids=sealed["arm_ids"], delivering=sealed["delivering"],
-        twin=sealed["twin"], seed=args.seed, draws=args.draws,
+        twin=sealed["twin"], normalised_texts=normalised, seed=args.seed, draws=args.draws,
     )
     report["inputs"] = {
         "run_id": args.run_id, "attempt_id": args.attempt_id, "split": args.split,
@@ -493,6 +606,8 @@ def build(args) -> dict:
         ).hexdigest(),
         "templates": dict(zip(sealed["arm_ids"], sealed["templates"], strict=True)),
         "rows_without_solver_visit": len(sealed["rows_without_solver_visit"]),
+        "deliver_normaliser_ids": dict(sorted(Counter(
+            str(v) for v in sealed["normaliser_ids"].values()).items())),
     }
     return report
 
