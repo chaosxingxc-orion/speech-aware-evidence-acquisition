@@ -1,0 +1,62 @@
+{
+  "arm_prompt_estimates": {
+    "lock": 15248,
+    "r1-c1": 15355,
+    "r1-c2": 15338,
+    "r1-c3": 15359,
+    "r1-c4": 15356,
+    "r1-c5": 15338
+  },
+  "chars_per_token_least_squares": 5.0013,
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "first_solver_visits": 1080,
+  "headroom_items": 2,
+  "item_chars": {
+    "max": 3828
+  },
+  "items": {
+    "max": 53,
+    "mean": 41.617,
+    "min": 29
+  },
+  "method": "``rails.supply_variants.parse_template_variants`` refuses, before any contact, an arm whose\n``base_prompt_tokens + template_tokens + max_supplied_items * tokens_per_supplied_item`` exceeds the live\nslot minus its reserve, the completion ceiling and the special-token reserve. The R1 cell's delivering arm\nrenders the COMP-1b module request (same supply, same templates), so its first Solver visit already flew in\nthe sealed COMP-1b Fold A arm (TRAIN Fold A, the sibling roster of Fold B). Measured per row, on the ONE first\nSolver visit (contact index 0) of the sealed trace: the number of supplied evidence items, the characters of\neach item, and the realised ``usage.prompt_tokens`` of its ``MODEL_RESPONSE``.",
+  "prompt_limit_tokens": 20990,
+  "prompt_tokens": {
+    "max": 14641,
+    "mean": 10486.3,
+    "min": 4987
+  },
+  "schema": "saea-slurp-nx-r1-solver-fit-measure-v1",
+  "source": {
+    "attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-generation-v1",
+    "roster": "TRAIN Fold A (the Fold B sibling)",
+    "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1",
+    "trace_sha256": "7b2d7cfd5ae2d95d44344a7b1cbefc4709514b752aaff379d358e193575dc5aa"
+  },
+  "template_frame": {
+    "delivering_template_tokens": 323,
+    "fit_estimate": {
+      "base_prompt_tokens": 2000,
+      "completion_ceiling": 512,
+      "slot_tokens": 24576,
+      "tokens_per_supplied_item": 235
+    },
+    "max_supplied_items": 55,
+    "twin": true
+  },
+  "template_tokens": {
+    "lock": 323,
+    "r1-c1": 430,
+    "r1-c2": 413,
+    "r1-c3": 434,
+    "r1-c4": 431,
+    "r1-c5": 413
+  },
+  "template_tokens_estimated_at_chars_per_token": 3.5
+}
