@@ -1,6 +1,6 @@
 # Cell NX-R1-SOLVER (node-extreme programme round R1, Solver template column): preregistration
 
-Registered 2026-10-09 at study commit `3b86164f957a333e78243b4478329b37e997cf01`, before any contact, by script (decision 58) from the P-SV-4 Fold B fragments and the consumption-module compiler under the NX programme (owner decisions 228-234). Development numbers only.
+Registered 2026-10-09 at study commit `f8360070bc3e23f49bd2af4b6eadf216288bc71e`, before any contact, by script (decision 58) from the P-SV-4 Fold B fragments and the consumption-module compiler under the NX programme (owner decisions 228-234). Development numbers only.
 
 | item | value |
 | --- | --- |
@@ -12,8 +12,8 @@ Registered 2026-10-09 at study commit `3b86164f957a333e78243b4478329b37e997cf01`
 | expected effect | 1.8 pp (the ROUND, carried by r1-c1), `claims_benefit` true; provisional floor SLU 1.49 pp |
 | rosters | tuning `SLURP-EVO-FOLD-A-V2`; read `SLURP-EVO-FOLD-B-V2` |
 | runs | `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1` |
-| composed config hashes | arm `a64b8bb3e94ec46793449a613671f5398bbccc0a569e8f3b1be01e3ab3397655`; smoke `38e1ff33869e13ba426dc3c8d22e324f1bf91a47597f1cfbc2fa0024be2c59fe` |
-| protocol hashes | arm `624daa5437f6b5739c105e1a23a2334c72aa8a5d633efacd2cc9a138dea7bde1`; smoke `4f5c5342986f2fdecb6a15bccc21bf57600dd8fec81676595340b561f9cd5f37` |
+| composed config hashes | arm `a64b8bb3e94ec46793449a613671f5398bbccc0a569e8f3b1be01e3ab3397655`; smoke `04ef225ba9109e247e83bb7cb0d94e88a124d29d5fe5b025351436db6794f8b9` |
+| protocol hashes | arm `624daa5437f6b5739c105e1a23a2334c72aa8a5d633efacd2cc9a138dea7bde1`; smoke `de8c5416792e068cc08e7b09aa9cfa19753b099385746c4d46735a6937b6d030` |
 | split identity | arm `4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a`; smoke `bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32` |
 
 ## Decision rule (fixed here)

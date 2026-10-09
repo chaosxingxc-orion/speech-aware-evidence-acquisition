@@ -260,6 +260,8 @@ def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> d
         gen_plan = dict(i["execution_plan"], attempt_id=i["attempt_id"], carrier_lock_key=i["carrier_lock_key"],
                         protocol_hash=i["protocol_hash"], run_id=i["run_id"], schema="saea-execution-plan-v1",
                         split_identity_hash=i["split_identity_hash"], study="speech-aware-evidence-acquisition")
+        if kind == "smoke":
+            gen_plan["recovery"] = nf.SMOKE_RECOVERY
         fit_plan = dict(gen_plan, attempt_id=i["fit_attempt_id"], run_id=i["fit_run_id"],
                         planned_model_calls=i["family_budget"]["fit_endpoint_calls_cap"])
         route_gen = (
@@ -303,6 +305,7 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
                            "second failure closes the cell and the fix is proven on a four-row dry run. The budget is "
                            "run-cumulative across attempts."),
         "one_factor": ONE_FACTOR, "prohibitions": PROHIBITIONS,
+        "recovery": {"smoke": nf.SMOKE_RECOVERY},
         "protocol_id": "slurp-nx-r1-solver-fold-b-protocol-v1", "registered_at_utc": at,
         "schema": "saea-registered-protocol-v1",
         "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-nx-r1-register, branch fable/nx-r1-register",
