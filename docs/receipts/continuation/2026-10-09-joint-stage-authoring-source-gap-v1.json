@@ -1,0 +1,58 @@
+{
+  "at_utc": "2026-10-09T06:07:15.241335+00:00",
+  "findings": [
+    {
+      "component": "historical capacity register()",
+      "disposition": "Preserve the original helper. Review a narrow metadata/registration adapter or an explicit canonical authoring path before actual joint capacity preparation. Keep the capacity runtime, broker, complete qualifier and all canonical guards.",
+      "evidence": "The registered plan constructor at line341 does not propagate joint_role_basis or joint_proof_identity_map. The prospective joint proof gate requires explicit full-family stage declarations; unchanged convenience authoring cannot provide them."
+    },
+    {
+      "component": "historical local input bridge",
+      "disposition": "Do not alias joint policies to a local role. Use the reviewed exact-role joint basis and original full400/N100 custody.",
+      "evidence": "build_bridge() requires local_node_basis.target_role in solver/reviewer. Joint inputs do not satisfy that contract."
+    }
+  ],
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "historical_artifacts_changed": false,
+  "model_contacts": 0,
+  "other_carrier_holds_unchanged": true,
+  "owner_decision": 227,
+  "prospective_analysis_input_design": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-analysis-input-design-v1/root-analysis-input-design-v1.json",
+    "sha256": "61fdbac1b475447860a84f417e9b273938e650efa5dbf5fdc5690317840bd6d2"
+  },
+  "prospective_analysis_input_review": {
+    "decision": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-analysis-input-astra-audit-v1/review-result-v1.json",
+      "sha256": "289399152539cc7f9255658cced8a6d483740b32c781f0667e90b2108ecd8e1a"
+    },
+    "source_pins": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-analysis-input-astra-audit-v1/source-pins-v1.json",
+      "sha256": "c9afa29bb645161563b0b6265fd1bb9fa0d1c98f44b097d885b908e67530438e"
+    }
+  },
+  "read_authorized": false,
+  "runtime_admission": false,
+  "schema": "saea-root-joint-stage-authoring-source-gap-v1",
+  "scorer_contacts": 0,
+  "sequence": [
+    "Finish and independently review the combined joint custody source on the integrated raw-stage base.",
+    "Prioritize the narrow stage metadata/registration propagation seam before optional paired-analysis source work.",
+    "Root authors fresh exact registered capacity/natural inputs only after the relevant source path is approved.",
+    "Overlap reviewed GPU prerequisites with separate CPU analysis-only engineering; preserve every bound implementation/config/policy byte.",
+    "Freeze the final reviewed paired definitions and analyzer before final N100 analysis intent and worker."
+  ],
+  "source_commit": "ad4c8f18398f40b4cf02bc429024ee79d53848f1",
+  "source_files": {
+    "historical_capacity_helper": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-capacity-v1/n100_capacity_helpers_v1.py",
+      "sha256": "0241662afec6feb961f1935d552f820d3da5c125c22f07f88c31a90864c9296c"
+    },
+    "historical_local_bridge": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-node-capacity-engineering-v1/local_capacity_input_bridge_v2.py",
+      "sha256": "79539586173aad1730fe630a76e58e0e9806c2aab99255f5dc42dfb41339908e"
+    }
+  },
+  "status": "SOURCE GAP IDENTIFIED BEFORE ANY JOINT PREPARATION OR CONTACT",
+  "tokenizer_contacts": 0
+}

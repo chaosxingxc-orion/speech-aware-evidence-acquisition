@@ -1,5 +1,13 @@
 # Experiment rules for the ChatGPT side
 
+## Joint stage authoring gap identified before contact (2026-10-09T06:07:15.241335+00:00)
+
+Root source inspection found that the unchanged historical capacity convenience helper omits joint basis/proof-map declarations, while the local bridge requires a single target role. Do not pass the joint family through those unchanged local wrappers. The canonical runtime and complete qualifiers remain reusable; the missing work is a narrow reviewed metadata/registration adapter with exact final configuration and decision bindings. Preserve all historical helpers. Evidence: `docs/receipts/continuation/2026-10-09-joint-stage-authoring-source-gap-v1.json`. Sol prioritizes this seam after the combined custody source freeze, ahead of optional paired-analysis implementation. No joint policy authoring, capacity contact or generation has occurred.
+
+The prospective root analysis input design is DATA `coordination/local-joint-n100-analysis-input-design-v1/root-analysis-input-design-v1.json`, SHA256 `61fdbac1b475447860a84f417e9b273938e650efa5dbf5fdc5690317840bd6d2`. It fixes the already decided three additional pooled contrasts, original paired resampling, root-only raw-stage declaration, unknown/eligible denominators and business/process/cost distinctions. Astra Ultra independently approved this exact input design; see DATA `coordination/local-joint-n100-analysis-input-astra-audit-v1/review-result-v1.json`. It remains nonexecutable, not a registered recipe or READ. Actual population/budget and final reviewed analyzer pins remain required.
+
+After the exact relevant sources are approved, root may separately prepare and qualify fresh capacity/natural stages while analysis-only CPU work proceeds. Preserve all bound runtime bytes; freeze the final analysis intent only with the final reviewed analyzer. Keep the five-member N100 plan, unchanged data/knowledge, cumulative adaptive exposure, one serial GPU campaign/four concurrent inputs,4GiB floors/full reserves and scoped15minute monitoring only on actual launch. The broad goal remains active/incomplete; no stable system benefit or learning gain is established, other-carrier holds remain and human review is required before8x400.
+
 ## Joint original ancestry verified; targeted carrier composition gap closed (2026-10-09T05:38:52.760691+00:00)
 
 Root verified the exact selected Solver/Reviewer donor files and eight original ancestor files with the existing immutable bundle validator. Each donor changes only its declared role text among task-facing fields; construction, knowledge, supply, context and other role texts remain seed-identical, while lineage and cumulative exposure stay explicit. The cumulative union retains seven source records. All100 development inputs overlap donor feedback/proposals by design, while the three knowledge sources have zero utterance overlap. A prospective joint policy must additionally retain root selection exposure. This inventory grants no runtime admission and exports no answers, roster arrays or knowledge text. Evidence: `docs/receipts/continuation/2026-10-09-joint-source-inventory-and-compose-check-v1.json`.
@@ -1362,4 +1370,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-09T05:38:52.760691+00:00
+Last refreshed: 2026-10-09T06:07:15.241335+00:00
