@@ -1,0 +1,296 @@
+[
+  {
+    "config_hash": "7e55309b7ab83ac009d74d93340b00abbbfe28fee8f2a40835dfbb9c11a2b6e5",
+    "configured_sample_ids": [
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-control-n100-k4-update2-natural-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 114,
+      "protocol_hash": "4f213e96883541cd1b473b4dbbd3e894b0af20a7d67343a1d88d30e6358d4d17",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE2-NATURAL-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-local-reviewer-control-n100-k4-update2-natural-v1",
+    "generation_contacts": 0,
+    "label": "control",
+    "native_contact_fit": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-control-n100-k4-update2-natural-v1-fit",
+      "contact_cap": 208,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE2-NATURAL-FIT-V1"
+    },
+    "preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-natural4-finalized-v1/control-preparation-receipt-final-v1.json",
+      "sha256": "d4f939195ec3c6be7cbbcbcfafc0e26d9659c86f73fbabdd5e3cee31dc4e18fc"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE2-NATURAL-V1/phase-supply-v1.json",
+      "sha256": "7040aab836c035d24e111181452b257c6311c9a12e6d940b1357d7dd8136754f"
+    },
+    "runtime_sample_ids": [
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "scorer_contacts": 0,
+    "status": "PROSPECTIVE UNSIGNED",
+    "tokenizer_contacts": 0
+  },
+  {
+    "config_hash": "cb8d9076d269be4ce693f93d1f033d0829456b53921766bed8b939b70cb07f57",
+    "configured_sample_ids": [
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-control-aa-n100-k4-update2-natural-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 114,
+      "protocol_hash": "f14e635cdea8663c6a9337ed3e80ec0e452d6a791999faa593eb8be7f4417a58",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE2-NATURAL-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-local-reviewer-control-aa-n100-k4-update2-natural-v1",
+    "generation_contacts": 0,
+    "label": "control-aa",
+    "native_contact_fit": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-control-aa-n100-k4-update2-natural-v1-fit",
+      "contact_cap": 208,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE2-NATURAL-FIT-V1"
+    },
+    "preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-natural4-finalized-v1/control-aa-preparation-receipt-final-v1.json",
+      "sha256": "cdf589fd3bc63c238d63b9ecaeff4b077c2defe0a2471a41bd3fae2a8b03b6bd"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CONTROL-AA-N100-K4-UPDATE2-NATURAL-V1/phase-supply-v1.json",
+      "sha256": "5d6dfe0bf9f41ce2fbadc46ffee339141793f1e95fef972625b41541ddb7862a"
+    },
+    "runtime_sample_ids": [
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "scorer_contacts": 0,
+    "status": "PROSPECTIVE UNSIGNED",
+    "tokenizer_contacts": 0
+  },
+  {
+    "config_hash": "b7e0342eff7821d755d711b3510d24bdb73d9392cf2855110245715d1c16f6c2",
+    "configured_sample_ids": [
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-1-n100-k4-update2-natural-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 114,
+      "protocol_hash": "4ced9673b06a98ec4d2386d5521e41d051daa56aea7ba3fecdcb3f3561b242df",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE2-NATURAL-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-local-reviewer-candidate-1-n100-k4-update2-natural-v1",
+    "generation_contacts": 0,
+    "label": "candidate-1",
+    "native_contact_fit": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-1-n100-k4-update2-natural-v1-fit",
+      "contact_cap": 208,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE2-NATURAL-FIT-V1"
+    },
+    "preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-natural4-finalized-v1/candidate-1-preparation-receipt-final-v1.json",
+      "sha256": "b69c314c4138ddc045bce34bb37d96508a9bd537d03171a2ac1bda9dcbef744b"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-1-N100-K4-UPDATE2-NATURAL-V1/phase-supply-v1.json",
+      "sha256": "69d631c76ac28343f45cddc9410cdf4370e6118234af409fc5ec1f663a277379"
+    },
+    "runtime_sample_ids": [
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "scorer_contacts": 0,
+    "status": "PROSPECTIVE UNSIGNED",
+    "tokenizer_contacts": 0
+  },
+  {
+    "config_hash": "6a6e7823aa6f8b42285038b117a04fbbec21818a8b129d85ef6401be379c43a6",
+    "configured_sample_ids": [
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-2-n100-k4-update2-natural-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 114,
+      "protocol_hash": "f2de0d86a15f2549ba008efbdf0ad41ece1278554f1e4a9b3345b31f3d2bab1f",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE2-NATURAL-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-local-reviewer-candidate-2-n100-k4-update2-natural-v1",
+    "generation_contacts": 0,
+    "label": "candidate-2",
+    "native_contact_fit": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-2-n100-k4-update2-natural-v1-fit",
+      "contact_cap": 208,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE2-NATURAL-FIT-V1"
+    },
+    "preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-natural4-finalized-v1/candidate-2-preparation-receipt-final-v1.json",
+      "sha256": "fd483bb9fc6277ec1519117c2585982a0cdaed82511e7a293cb00d78e2482d1a"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-2-N100-K4-UPDATE2-NATURAL-V1/phase-supply-v1.json",
+      "sha256": "01db98194ecf60bff2a26de333a0a129a0b32c4713cb379fb56e029ce076b12c"
+    },
+    "runtime_sample_ids": [
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "scorer_contacts": 0,
+    "status": "PROSPECTIVE UNSIGNED",
+    "tokenizer_contacts": 0
+  },
+  {
+    "config_hash": "a4ec24007af7410c0ca38bf735b9bd4d6014571e37d2bb5d4ef1cb87e91ee8f9",
+    "configured_sample_ids": [
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update2-natural-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 114,
+      "protocol_hash": "d1ae2ee16cebb9755921c4b41d749d5c9c8c647617c95f66162f50a0f54935ba",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE2-NATURAL-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update2-natural-v1",
+    "generation_contacts": 0,
+    "label": "candidate-3",
+    "native_contact_fit": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-3-n100-k4-update2-natural-v1-fit",
+      "contact_cap": 208,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE2-NATURAL-FIT-V1"
+    },
+    "preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-natural4-finalized-v1/candidate-3-preparation-receipt-final-v1.json",
+      "sha256": "37c595ca3fe594c3d7ab8633d9109309a82a67d7d8ce1154d959dcf6df28af9e"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-3-N100-K4-UPDATE2-NATURAL-V1/phase-supply-v1.json",
+      "sha256": "a58350067ef000771d4f8e5f57a12498c13c59b6d83b8d92082b13e7919d8054"
+    },
+    "runtime_sample_ids": [
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "scorer_contacts": 0,
+    "status": "PROSPECTIVE UNSIGNED",
+    "tokenizer_contacts": 0
+  },
+  {
+    "config_hash": "256c01ad05599507057c52a5aa0ca36a3aaca3dbc58673372eb7fe903065916e",
+    "configured_sample_ids": [
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "execution_plan": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-4-n100-k4-update2-natural-v1",
+      "carrier_lock_key": "slurp",
+      "execution_profile": "bounded-discovery-probe",
+      "planned_gpu_hours": 1.0,
+      "planned_model_calls": 52,
+      "planned_speech_audio_seconds": 114,
+      "protocol_hash": "bc83e7efaf0cdd6f0abb619750f0bcd824615a89f491459749a4ddc086ca8e27",
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE2-NATURAL-V1",
+      "schema": "saea-execution-plan-v1",
+      "split_identity_hash": "002c986f8a830e0880fa3e4f60354f4ba2ae50cd7453956f68f07a84cab68961",
+      "split_role": "discovery",
+      "study": "speech-aware-evidence-acquisition"
+    },
+    "experiment": "slurp-native-stage3-local-reviewer-candidate-4-n100-k4-update2-natural-v1",
+    "generation_contacts": 0,
+    "label": "candidate-4",
+    "native_contact_fit": {
+      "attempt_id": "attempt-slurp-native-stage3-local-reviewer-candidate-4-n100-k4-update2-natural-v1-fit",
+      "contact_cap": 208,
+      "max_speech_packets": 1,
+      "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE2-NATURAL-FIT-V1"
+    },
+    "preparation_receipt": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-natural4-finalized-v1/candidate-4-preparation-receipt-final-v1.json",
+      "sha256": "0cfc0afe402c30470e9c9cb23ed91a68954e90e6bf26fafddd67fe6f73405a5a"
+    },
+    "prepared_phase_supply": {
+      "relpath": "prepared/SAEA-SLURP-LOCAL-REVIEWER-CANDIDATE-4-N100-K4-UPDATE2-NATURAL-V1/phase-supply-v1.json",
+      "sha256": "134af4a603aef1c10a30ad7ccca0507f0caea052e69d64b04ff643ca730c7cba"
+    },
+    "runtime_sample_ids": [
+      "slurp:train:003560:audio-1501686037",
+      "slurp:train:005407:audio-1502374837",
+      "slurp:train:005513:audio-1494513310",
+      "slurp:train:011838:audio-1490369500"
+    ],
+    "scorer_contacts": 0,
+    "status": "PROSPECTIVE UNSIGNED",
+    "tokenizer_contacts": 0
+  }
+]
