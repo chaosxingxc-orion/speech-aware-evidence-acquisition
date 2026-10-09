@@ -1,0 +1,49 @@
+{
+  "at_utc": "2026-10-09T03:52:26.193891+00:00",
+  "comparisons": false,
+  "family_read_signed": false,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "independent_review": {
+    "agent": "/root/solver_control_descriptive_astra",
+    "requested_model": "gpt-6-astra",
+    "requested_reasoning_effort": "ultra",
+    "result": "Confirmed observed denominators, missing bounds, raw model versus delivered repair distinction, full strata, support limits and secondary timing.",
+    "scope": "Current control aggregate only; no comparison, selection, template generation, raw cases or learning export."
+  },
+  "learner_export": false,
+  "member_id": "control",
+  "model_tokenizer_scorer_contacts_added": 0,
+  "note": {
+    "relpath": "docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/control-descriptive-note-v1.md",
+    "sha256": "847f05f235a3f04693e6e42d25aed1d58a5d5a9f1f497dd5b3790ea7666af2ff"
+  },
+  "original_qualification": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/control-qualification-v1.json",
+    "sha256": "b2265b66d0377ff172d058f40b8031ba2ba78aa1396d4f1244a7de433699d26f"
+  },
+  "original_reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/control-read-outer-v1.exit.json",
+    "sha256": "84fd2a21b4198559de48150ac0af8693706a8068c7c4ce181cd3cafabfe3343d"
+  },
+  "owner_decision": 227,
+  "pending_completed_member_qualifications": {
+    "candidate-1": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/candidate-1-qualification-v1.json",
+      "sha256": "009d6405a5552ecb81c26a6541406af1991264979e63ddbb46c6012a75f03e5f"
+    },
+    "control-aa": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/control-aa-qualification-v1.json",
+      "sha256": "f307499aab91aa8d2932d3fca016f6f2c9fab8034b64d33f9f451790ecc7b4e7"
+    }
+  },
+  "report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-reviewer-n100-k4-update2-control-descriptive-v1/report.json",
+    "sha256": "2c31c046b00492e0851b62b680e28f7ae54e3d7a5ddd7debf5d34813902d39e0"
+  },
+  "schema": "saea-root-local-reviewer-update2-control-descriptive-v1",
+  "selection": false,
+  "separate_root_signature": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/control-root-countersignature-v1.json",
+    "sha256": "a35d51e45a3b13b602e2299633169719d1f2228a571437f7daa0f138ca44de08"
+  }
+}

@@ -1,5 +1,15 @@
 # Experiment rules for the ChatGPT side
 
+## Reviewer independently completed control process read (2026-10-09T03:53:33.271376+00:00)
+
+The original Reviewer update2 control independently FINALIZED100 rows with a verified seal, exactly one successful complete official score and zero failed jobs. Root separately qualified, countersigned and read its original descriptive process report; the reader exited0 without scorer/model/tokenizer contacts. Evidence: `docs/receipts/continuation/2026-10-09-reviewer-update2-control-descriptive-read-v1.json`; full single-member statistics and strata are in `docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/control-descriptive-note-v1.md`.
+
+Describe this member only. First raw Solver parsing is87/100, leaving13 unknown entity states. Review error detection is28/43 known errors; false alarms16/42 observed with2 unknown among44 eligible correct drafts. All57 alarmed inputs revise. The raw model entity net-repair primary is0/100, with13 unknown transitions counted zero and reported separately. Deterministic postprocessing repairs3/52 and harms0/48, yielding51 final exact entities. The final-delivery conditional repair statistic is a different endpoint and must not replace raw model-revision credit. These are process descriptions, not sibling contrasts or causal credit.
+
+The original Reviewer GPU campaign continues on epoch2026-10-09T02:58:12Z. Last whole-member operational observation has control,A/A,candidate-1 FINALIZED; candidate-2 OPENED; candidates3/4 ABSENT. Revalidate actual state. A/A and candidate-1 have separately successful operational qualifications preserved under DATA `coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1`; their signatures/reads remain pending and must not replay qualification. The15minute scoped monitor stays active until original terminal. Preserve one serial GPU campaign/four concurrent inputs and overlapping CPU scoring/analysis,4GiB floors and full reserves.
+
+The complete Reviewer family READ remains unsigned. No comparison, selection, learning projection or current template change follows this single-member read. Solver candidate-4 remains the separately recorded local exploratory choice; it is not applied to the running Reviewer. Finish own Reviewer review, then prospectively admit any joint use. The broad objective remains active/incomplete, with human review before8x400 and unchanged other-carrier holds.
+
 Historical exposure evidence remains immutable. English successors for the sixteen preserved historical owner quotations are addressable in `docs/handoff/historical-exposure-english-successor-2026-10-09.json`; these translations grant no new authority.
 
 ## Solver second evaluated local update reviewed; Reviewer N100 continues (2026-10-09T03:32:30.964000+00:00)
@@ -1328,4 +1338,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-09T03:32:30.964000+00:00
+Last refreshed: 2026-10-09T03:53:33.271376+00:00
