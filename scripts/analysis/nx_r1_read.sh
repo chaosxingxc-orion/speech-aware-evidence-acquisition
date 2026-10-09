@@ -39,7 +39,7 @@
 #    first-visit schema; --rescore forces it. Then the twin null (aa vs lock) and each candidate vs lock through
 #    scripts/analysis/stage3_paired_read.py column arms (row bootstrap, cluster key sample_id -- the tool's constraint for
 #    column arms -- 10,000 draws, seed 20260915, per-scenario tables) under <analysis root>/<pass>/. A pass directory that
-#    already holds files is never overwritten.
+#    already holds files is never overwritten; one that sealed its verdict.json is skipped on a re-run (RESUME), a partial one refuses (exit 6).
 # 3. OFFLINE POST-PROCESSING COLUMNS (0 GPU): v4 (saea-deliver-normalise-v4, the five-rule set of
 #    docs/results/2026-10-09-slurp-nx-postprocessing-v4-offline-read.md section 6) and v4g (v4 with the TRAIN-only guards
 #    ee-wilson and ti-expressible of docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md) applied to every
@@ -158,7 +158,11 @@ fi
 for right in aa ${CANDIDATES//,/ }; do
   pass="$right-vs-lock"
   if [ "$right" = aa ]; then LABEL="the twin aa (the null)"; else LABEL="candidate $right (gating)"; fi
-  if [ -d "$OUT/$pass" ] && [ -n "$(ls -A "$OUT/$pass")" ]; then echo "REFUSED: $OUT/$pass already holds files"; exit 6; fi
+  if [ -d "$OUT/$pass" ] && [ -n "$(ls -A "$OUT/$pass")" ]; then
+    # RESUME: a pass that sealed its verdict is complete and is never overwritten or redone; a partial one still refuses.
+    if [ -f "$OUT/$pass/verdict.json" ]; then echo "official pass $pass already complete under $OUT/$pass; skipping"; continue; fi
+    echo "REFUSED: $OUT/$pass already holds files but no verdict.json (a partial pass)"; exit 6
+  fi
   mkdir -p "$OUT/$pass"
   "$PY" -B scripts/analysis/stage3_paired_read.py --per-scenario \
     --stage all --left-run "$RUN" --left-attempt "$ATT" --left-column lock --left-label "the delivering lock arm" \
@@ -203,6 +207,9 @@ else
   for variant in v4 v4g; do
     for column in lock aa ${CANDIDATES//,/ }; do
       label="offline-v4/$variant-$column"
+      # RESUME: an apply report is write-once; one already written is complete and is not redone.
+      if [ -f "$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-NX-POSTPROC-V4-APPLY-V1/$label/report.json" ]; then
+        echo "offline $variant ($column) already written; skipping"; continue; fi
       "$PY" -B "$V4_DRIVER" --apply "$variant" --pool "$RUN/$ATT" --column "$column" --label "$label" \
         --data-root "$SPEECHRL_DATA_DIR" --lock "$LOCK" ${V4_APPLY_ARGS:-} || { echo "OFFLINE $variant ($column) FAILED"; exit 11; }
     done

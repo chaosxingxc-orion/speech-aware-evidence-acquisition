@@ -12,9 +12,13 @@ Inputs. ``--pool <run id>/<attempt>`` names a sealed run under ``$SPEECHRL_DATA_
 aliases ``a2`` and ``fold-a`` of the search driver's POOLS also resolve). Without ``--column`` the
 column is the run's DELIVERED answers (``<run>.outputs.jsonl``); the unmodified column is those
 answers as sealed, proved row by row against the sealed official per-sample fields. With
-``--column <arm id>`` the column is the RAW first-visit answer of that arm of a same-flight
+``--column <arm id>`` the column is the first-visit answer of that arm of a same-flight
 node-template group (item E1, receipt ``saea-supply-variant-arms-v4``), read through the E2 reader's
-``load_sealed_arm_texts`` over a verified bundle; the unmodified column is that raw answer.
+``load_sealed_arm_texts`` over a verified bundle and then rendered through the delivered row's OWN sealed
+normaliser (``stage3_rollout_score.normalise_arm_answer``: v3 cited-answer unwrap + SLURP projection v3, the
+function the official column scorer calls). That NORMALISED answer is the unmodified column and the base the
+registered v4/v4g normaliser is applied to; the RAW answer is never the base, because v4/v4g begin with the full
+v3 chain, which legitimately rewrites labels relative to raw text. The label guard compares against the base.
 
 Path. Every answer goes through ``DELIVERY_NORMALISERS.resolve(<id>)`` and the offline replay row
 (``analysis.deliver_normaliser_replay.replay_row``), i.e. the SAME registered entry the runtime and
@@ -68,6 +72,9 @@ SCORER_SPLITS = {
 }
 FOLD_B_ROSTER = "docs/receipts/rosters/slurp-evo-fold-b-v2.json"
 RESERVED_LABELS = ("select-a2", "confirm-fold-a")
+BASE_DELIVERED = "the delivered column as sealed"
+BASE_NORMALISED_COLUMN = ("the arm's first-visit answer after the delivered row's sealed normaliser "
+                          "(stage3_rollout_score.normalise_arm_answer), the column as the column scorer scored it")
 
 
 class ApplyError(RuntimeError):
@@ -166,7 +173,11 @@ def refuse_fold_b(ids, admission: dict | None = None) -> None:
 
 
 def column_texts(data_root: Path, spec: dict, column: str | None):
-    """sample_id -> unmodified column text (delivered answers, or one arm's raw answer)."""
+    """sample_id -> unmodified column text.
+
+    Delivered answers as sealed, or -- for ``column`` -- that arm's first-visit answer rendered through the
+    delivered row's own sealed normaliser (the column scorer's ``normalise_arm_answer``): the NORMALISED column.
+    """
     directory = data_root / "runs" / spec["run_id"] / spec["attempt"]
     if column is None:
         outputs = directory / f"{spec['run_id']}.outputs.jsonl"
@@ -180,9 +191,11 @@ def column_texts(data_root: Path, spec: dict, column: str | None):
     sealed = reader.load_sealed_arm_texts(bundle.outputs_rows, bundle.trace_records)
     if column not in sealed["texts"]:
         raise ApplyError(f"arm {column!r} is not in the run's arm group {list(sealed['arm_ids'])}")
-    return dict(sealed["texts"][column]), {
+    normalised = reader.normalise_texts({column: sealed["texts"][column]}, sealed["normaliser_ids"])[column]
+    return dict(normalised), {
         "kind": "template-arm", "arm_id": column, "delivering_arm": sealed["delivering"],
-        "arm_ids": list(sealed["arm_ids"]), "manifest_sha256": sha256_file(manifest)}
+        "arm_ids": list(sealed["arm_ids"]), "manifest_sha256": sha256_file(manifest),
+        "base": BASE_NORMALISED_COLUMN, "base_rows": len(normalised)}
 
 
 def score_vectors(ids, texts, gold):
@@ -219,6 +232,14 @@ def registered_score(copy: Path, spec: dict, lock, data_root: Path, in_process: 
 def write_jsonl(path: Path, ids, texts) -> None:
     lines = [json.dumps({"sample_id": sid, "text": texts[sid]}, ensure_ascii=False, sort_keys=True) for sid in ids]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+
+
+def check_labels_untouched(base, new, base_name: str, apply_name: str) -> None:
+    """The label guard: v4/v4g add entity rules only, so no row's intent score may differ from the base column."""
+    changed = [k for k in range(len(base)) if base[k][9] != new[k][9]]
+    if changed:
+        raise ApplyError(f"the normaliser changed an intent label on {len(changed)} rows relative to the base column "
+                         f"({base_name}); {apply_name} must never touch labels beyond that base")
 
 
 def apply(args) -> tuple[dict, str]:
@@ -270,8 +291,7 @@ def apply(args) -> tuple[dict, str]:
         changed_rows += int(replayed["changed"])
         applied_rows += int(bool(replayed["applied"]))
     new, _unparsed = score_vectors(ids, edited, gold)
-    if new[:, 9].tolist() != base[:, 9].tolist():
-        raise ApplyError("the normaliser changed an intent label; v4/v4g must never touch labels")
+    check_labels_untouched(base, new, column_block.get("base", BASE_DELIVERED), args.apply)
     cluster_of = {sid: gold[sid]["utterance_id"] for sid in ids}
     boot = DRV.Bootstrap(ids, cluster_of)
     contrast = boot.contrast(base, new)
