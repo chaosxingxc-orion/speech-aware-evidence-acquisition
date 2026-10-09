@@ -78,14 +78,6 @@ _DECISION_RULE_BASE = (
     "v4g are read beside (analysis recipe, offline_columns)."
 )
 
-ITER2_RULE_TAIL = (
-    " THIS IS THE SECOND AND LAST EVALUATED ROUND of R1 under the plateau rule: if no arm is NOMINATED here the delivering "
-    "template is locked and the node closes. The iteration-1 arm r1-c5 does NOT fly in this column; each iteration-2 arm is "
-    "also set beside iteration-1 r1-c5 in a cross-iteration table that is DESCRIPTIVE only (different flights, different "
-    "offsets: no claim, no nomination, no input to the rule above)."
-)
-
-
 def norm_text(iteration1_text: str, iteration2_text: str) -> str:
     """Iteration 1 keeps its registered (flown) wording byte for byte; iteration 2 declares the node-local primary as
     ``exact_set_normalised`` (the exact-set of the answer AFTER the cell's own delivery normaliser), the raw exact-set being
@@ -94,43 +86,65 @@ def norm_text(iteration1_text: str, iteration2_text: str) -> str:
     return iteration2_text if nf.ITERATION >= 2 else iteration1_text
 
 
-ITER2_NORMALISED_SWAPS = (
-    ("Each arm's RAW "
-     "first answer is read through the E2 reader (scripts/analysis/slurp_nx_solver_column_read.py): node-local primary = "
-     "raw first-answer entity exact-set per row, paired per row against lock, with the whole-utterance cluster bootstrap "
-     "CI95 (10,000 draws, seed 20260915) and the paired Wilson share of the discordant rows; secondaries parse_valid, "
-     "empty_gold_false_fill, nonempty_exact and per-slot-type counts. ",
-     "Each arm's first "
-     "answer is read through the E2 reader (scripts/analysis/slurp_nx_solver_column_read.py, schema v2) in two views: the "
-     "node-local primary is exact_set_normalised = the entity exact-set per row of the answer AFTER the cell's own delivery "
-     "normaliser (the delivered-equivalent answer, derived by the official column scorer's own function: the delivered "
-     "row's sealed normaliser, v3 cited-answer unwrap, SLURP deliver projection), paired per row against lock, with the "
-     "whole-utterance cluster bootstrap CI95 (10,000 draws, seed 20260915) and the paired Wilson share of the discordant "
-     "rows; secondaries parse_valid, empty_gold_false_fill and nonempty_exact, likewise on the normalised answers, with "
-     "per-slot-type counts. The RAW first-answer exact-set and its secondaries, and the per-arm table of rows whose raw "
-     "exact-set flipped after normalisation, are reported as diagnostics and gate nothing. "),
-    ("(a) the node-local exact-set CI95 lower bound > 0, AND (b) no "
-     "secondary loss (parse_valid",
-     "(a) the node-local normalised exact-set (exact_set_normalised) CI95 lower bound > 0, AND (b) no "
-     "normalised secondary loss (parse_valid"),
-    ("HARM iff (a') the exact-set CI95 upper bound < 0.", "HARM iff (a') the normalised exact-set CI95 upper bound < 0."),
+ITER2_OFFICIAL_RULE = (
+    "SAME-FLIGHT NODE-TEMPLATE COLUMN READ (NX programme C0.2/C2 R1 iteration 2; instrument E1/E2; claim ceiling 'nominated'). "
+    "One flight, one Solver visit per row, seven arms over the SAME QueryState and evidence: r1-i2-c1 .. r1-i2-c5 "
+    "(hand-written candidates), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last). "
+    "NOMINATION IS DECIDED ON THE OFFICIAL COLUMN. Each arm's first-visit Solver answer is rendered through the delivered "
+    "row's normaliser and projection and scored ONCE with slurp-slu-official-train (never sharded); every contrast is the "
+    "paired ROW bootstrap of that arm's column against the delivering lock arm (cluster key sample_id, 10,000 draws, seed "
+    "20260915; scripts/analysis/stage3_rollout_score.py then stage3_paired_read.py), all read within this one flight. "
+    "NOMINATION RULE: candidate X is NOMINATED iff (a) the official pooled SLU-F1 delta X minus lock has a CI95 lower bound "
+    "> 0, AND (b) that delta is above the aa twin's official pooled SLU-F1 delta (aa minus lock, same flight), AND (c) the "
+    "intent guard holds: rows whose official intent correctness differs from lock <= 7 (the floor 0.65 pp of 1,080). "
+    "HARM iff the official pooled SLU-F1 delta CI95 upper bound < 0. The twin null (aa minus lock) is read first and "
+    "reported beside the design's provisional floor (SLU-F1 1.49 pp, intent 0.65 pp at n = 1,080; borrowed from "
+    "same-flight-supply-variant until this cell measures its own null). Among several NOMINATED arms the largest official "
+    "SLU-F1 delta wins (ties: fewer words). THE NODE-LOCAL READ IS DIAGNOSTIC AND GATES NOTHING: the E2 reader (schema v2; "
+    "scripts/analysis/slurp_nx_solver_column_read.py) reports exact_set_normalised (the entity exact-set per row of the "
+    "answer after the delivered row's own normaliser), parse_valid, empty_gold_false_fill, nonempty_exact, per-slot-type "
+    "counts and the raw-vs-normalised flip table, paired per row against lock, to localise where an official delta comes "
+    "from; a node-local gain without an official gain is not a nomination, and a nomination needs no node-local screen. "
+    "(Why: in iteration 1 the node-local screen and the official column disagreed: normalised node-local c5 +1.30 [-0.19, "
+    "+2.78] vs official -0.15 [-1.23, +0.89]; c3 +4.63 [+2.87, +6.39] vs official +0.96 [-0.16, +2.09].) PLATEAU RULE "
+    "(programme C0.4): two evaluated rounds without a NOMINATED arm lock the delivering template and close the node. A "
+    "nomination is confirmed once on TRAIN Fold A as a two-arm column before any lock; it admits nothing by itself. The "
+    "delivering lock arm's own offline post-processing columns v4 and v4g are read beside (analysis recipe, offline_columns)."
 )
 
-ITER2_NORMALISED_TAIL = (
-    " NODE-LOCAL PRIMARY MEASURED AFTER THE DELIVERY NORMALISER (registered here because iteration 1 showed the raw primary "
-    "can be formatting the normaliser already repairs: r1-c5 read raw exact-set +2.50 [+1.02, +4.07] yet -0.15 [-1.23, +0.89] "
-    "on the official pooled SLU-F1 column). Iteration 1's registered rule and verdict stand as written."
+ITER2_RULE_TAIL = (
+    " THIS IS THE SECOND AND LAST EVALUATED ROUND of R1 under the plateau rule: if no arm is NOMINATED here the delivering "
+    "template is locked and the node closes. The iteration-1 arm r1-c5 does NOT fly in this column; each iteration-2 arm is "
+    "also set beside iteration-1 r1-c5 in a cross-iteration table that is DESCRIPTIVE only (different flights, different "
+    "offsets: no claim, no nomination, no input to the rule above). Iteration 1's registered rule and verdict stand as written."
 )
+
+
+NOMINATION_BLOCK = {
+    "rule": "official-column",
+    "metric": "official pooled SLU-F1 (slurp-slu-official-train) of the arm's column",
+    "contrast": "candidate minus the delivering lock arm, paired per row, same flight",
+    "nominated_iff": [
+        "the official pooled SLU-F1 delta (candidate minus lock) has a CI95 lower bound > 0",
+        "that delta is above the aa twin's official pooled SLU-F1 delta (aa minus lock, same flight)",
+        "the intent guard holds: rows whose official intent correctness differs from lock <= 7 (floor 0.65 pp of 1,080)",
+    ],
+    "harm_iff": "the official pooled SLU-F1 delta CI95 upper bound < 0",
+    "ci95_lower_bound_above": 0.0,
+    "above_twin_delta": True,
+    "intent_guard_floor_pp": 0.65,
+    "intent_guard_rows": 7,
+    "within_flight": True,
+    "tie_break": "largest official SLU-F1 delta, then fewer words",
+    "official_delta_source": "scripts/analysis/stage3_rollout_score.py --mode supply-variants, then scripts/analysis/stage3_paired_read.py (column arms)",
+    "node_local_role": "diagnostic only; gates nothing",
+}
 
 
 def decision_rule() -> str:
-    text = nf.localize(_DECISION_RULE_BASE)
     if nf.ITERATION >= 2:
-        for old, new in ITER2_NORMALISED_SWAPS:
-            old, new = nf.localize(old), nf.localize(new)
-            assert text.count(old) == 1, old[:60]
-            text = text.replace(old, new)
-    return text + ITER2_RULE_TAIL + ITER2_NORMALISED_TAIL if nf.ITERATION == 2 else text
+        return ITER2_OFFICIAL_RULE + ITER2_RULE_TAIL
+    return nf.localize(_DECISION_RULE_BASE)
 
 
 ONE_FACTOR = (
@@ -266,12 +280,13 @@ def measurement_blocks(ids: dict, measure: dict, pins: dict) -> dict:
                 "node-local: raw first-answer entity exact-set per row (E2 reader, per arm minus lock, paired per row); "
                 "official: pooled SLU-F1 of the arm's column (slurp-slu-official-train) is the quoted effect through the "
                 "E3 exchange rate (+0.056 pp per raw-exact row); guard: official intent (rows differing <= floor 0.65 pp = 7 rows)",
-                "node-local: exact_set_normalised, the entity exact-set per row of the answer after the cell's own delivery normaliser "
-                "(E2 reader schema v2, per arm minus lock, paired per row; the raw exact-set is a diagnostic); "
-                "official: pooled SLU-F1 of the arm's column (slurp-slu-official-train) is the quoted effect through the "
-                "E3 exchange rate (+0.056 pp per exact-set row); guard: official intent (rows differing <= floor 0.65 pp = 7 rows)",
+                "official: pooled SLU-F1 of the arm's column (slurp-slu-official-train), delta vs the delivering lock arm "
+                "(paired row bootstrap, CI95 lower bound > 0) and above the aa twin's delta, within the flight (nomination_rule "
+                "official-column); guard: official intent (rows differing <= floor 0.65 pp = 7 rows); node-local exact_set_normalised "
+                "(E2 reader schema v2) is diagnostic and gates nothing",
             ),
             "primary_metric_key": "slu",
+            **({"nomination_rule": "official-column"} if nf.ITERATION >= 2 else {}),
             "provisional_floor_pp": {
                 "arithmetic": "SLU 1.49 * sqrt(1080 / 1080) = 1.4900 pp (primary), intent 0.65 * sqrt(1080 / 1080) = 0.6500 pp (guard)",
                 "intent_accuracy": nf.FLOOR_INTENT_PP, "slu_f1": nf.FLOOR_SLU_PP,
@@ -459,9 +474,9 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
                 "locked template, paired per row inside one flight, beyond the in-flight twin's null, without a secondary or "
                 "intent loss?",
                 "At the one Solver visit of every TRAIN Fold B row of the review-off COMP-1b module graph, does any of five "
-                "hand-written Solver instruction templates raise the Solver's first-answer entity exact-set per row, measured "
-                "after the cell's own delivery normaliser, over the locked template, paired per row inside one flight, beyond "
-                "the in-flight twin's null, without a secondary or intent loss?",
+                "hand-written Solver instruction templates raise the OFFICIAL pooled SLU-F1 of the delivered column over the locked "
+                "template (paired per row inside one flight, CI95 lower bound above zero), by more than the in-flight twin's "
+                "delta, without an intent loss beyond the floor? (The node-local exact-set read is diagnostic.)",
             )
         ),
     }
@@ -483,7 +498,9 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         "boundary": ("A development read on a TRAIN fold (owner decisions 28 and 86); never a test claim; node-local, never a "
                      "system-level claim. No utterance text, transcript, gold label or model output is printed or persisted."),
         "decision_rule": decision_rule(),
+        **({"nomination": NOMINATION_BLOCK} if nf.ITERATION >= 2 else {}),
         "node_local": {
+            **({"role": "diagnostic: localises where an official delta comes from; gates nothing"} if nf.ITERATION >= 2 else {}),
             "driver": "scripts/analysis/slurp_nx_solver_column_read.py",
             **norm_text(
                 {"primary": "exact_set", "secondaries": ["parse_valid", "empty_gold_false_fill", "nonempty_exact"]},
@@ -561,9 +578,10 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
             f"0. Refuse unless the READ row {nf.READ_RUN_ID} is root countersigned.",
             "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one complete official TRAIN score and the saea-supply-variant-arms-v4 receipt on every row, verified by the bundle (invariant I7v).",
             norm_text("2. Node-local (E2): per arm raw parse validity, entity exact-set, empty-gold false fill, non-empty exact and per-slot-type counts, paired per row against lock, whole-utterance bootstrap and paired Wilson.",
-                      "2. Node-local (E2, schema v2): per arm, on the answer after the cell's own delivery normaliser (primary exact_set_normalised) and on the raw answer (diagnostic), parse validity, entity exact-set, empty-gold false fill, non-empty exact and per-slot-type counts, paired per row against lock, whole-utterance bootstrap and paired Wilson; plus the per-arm raw-vs-normalised flip table."),
+                      "2. Node-local (E2, schema v2; DIAGNOSTIC, gates nothing): per arm, on the answer after the cell's own delivery normaliser (primary exact_set_normalised) and on the raw answer (diagnostic), parse validity, entity exact-set, empty-gold false fill, non-empty exact and per-slot-type counts, paired per row against lock, whole-utterance bootstrap and paired Wilson; plus the per-arm raw-vs-normalised flip table."),
             "3. Official: render each arm's first-visit Solver answer through the delivered row's normaliser and projection and score it ONCE with slurp-slu-official-train (seven jobs, never sharded).",
-            "4. Twin null (aa vs lock) first, then each candidate vs lock under the rule; per-scenario tables.",
+            norm_text("4. Twin null (aa vs lock) first, then each candidate vs lock under the rule; per-scenario tables.",
+                      "4. Twin null (aa vs lock) first, then each candidate vs lock on the OFFICIAL pooled SLU-F1 column (nomination rule: CI95 lower bound > 0, above the aa delta, intent guard 0.65 pp, within the flight); per-scenario tables."),
             "5. Offline v4 / v4g columns over every arm's delivered column (0 GPU), the lock row v4g(lock) - lock being the v4g confirmation.",
             "6. The review-off vs full-graph comparison against the P-SV-3 a-agree delivered column (cross-flight; no extra flight).",
         ] + ([
@@ -681,7 +699,7 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         f"| arms | `{nf.ARMS[0]}` .. `{nf.ARMS[-1]}` (candidates, pinned under `configs/probes/nx/solver/r1/`), `aa` (twin of `lock`), `lock` (delivering, `{nf.LOCKED_TEMPLATE}`) |\n"
         "| design / claim | `same-flight-node-column` / `nominated` |\n"
         + norm_text("| primary | node-local raw first-answer entity exact-set per row (E2), quoted on official pooled SLU-F1 through the E3 exchange rate; guard official intent (rows differing <= 7) |\n",
-                    "| primary | node-local exact_set_normalised (E2 v2: entity exact-set per row after the cell's delivery normaliser; raw exact-set diagnostic), quoted on official pooled SLU-F1 through the E3 exchange rate; guard official intent (rows differing <= 7) |\n") +
+                    "| primary | official pooled SLU-F1 delta of the arm column vs lock (nomination_rule official-column: CI95 lower bound > 0, above the aa twin delta, intent rows differing <= 7 = 0.65 pp, within the flight); node-local exact_set_normalised (E2 v2) and the raw exact-set are diagnostic |\n") +
         f"| expected effect | {nf.EXPECTED_EFFECT_PP} pp (the ROUND, carried by {carrier()}), `claims_benefit` true; provisional floor SLU {nf.FLOOR_SLU_PP} pp |\n"
         f"| rosters | tuning `{nf.TUNING_ROSTER}`; read `{nf.READ_ROSTER}` |\n"
         f"| runs | `{arm['run_id']}` / `{arm['fit_run_id']}`; `{smoke['run_id']}` / `{smoke['fit_run_id']}`; read `{nf.READ_RUN_ID}` |\n"
@@ -748,9 +766,11 @@ def ledger_rows(ids: dict, commit: str, at: str, shas: dict) -> str:
         at[:10], nf.READ_RUN_ID, "model-free-check",
         (f"The same-flight Solver template-column read of {nf.ROUND_LABEL}: per arm ({nf.ARMS[0]} .. {nf.ARMS[-1]}, aa; lock the delivering reference) the "
          + norm_text("node-local raw entity exact-set and secondaries (E2 reader), ",
-                     "node-local normalised entity exact-set (primary; raw diagnostic) and secondaries (E2 reader v2), ") +
+                     "node-local normalised entity exact-set and secondaries (E2 reader v2; DIAGNOSTIC, gates nothing), ") +
          "the official pooled SLU-F1 and intent of each arm's column scored ONCE with "
-         "slurp-slu-official-train (seven column scorings, never sharded), paired bootstraps against lock with the aa twin as the bar, and the "
+         "slurp-slu-official-train (seven column scorings, never sharded), paired bootstraps against lock with the aa twin as the bar"
+         + norm_text(", ", " (NOMINATION on the official column: CI95 lower bound of the SLU-F1 delta > 0, above the aa delta, intent guard 0.65 pp, within the flight), ") +
+         "and the "
          "OFFLINE v4 / v4g delivery-normaliser columns over every arm's delivered column; by the recipe "
          f"{pkg}/analysis-recipe-v1.json through scripts/analysis/nx_r1_read.sh. Zero model, server, encoder, embedder, tokenizer and GPU contacts."),
         "no model or tool contact; read of sealed bytes and seven official column scorings plus the offline v4/v4g scorings",
