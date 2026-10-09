@@ -1,0 +1,91 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell NX-R5-COMPOSED registered before contact on 2026-10-09 by script (decision 58) from the HELD module COMP-1b fragments and the module compiler: the COMP-1b composition on lock v2.2 (v4g at delivery) with the Reviewer loop off (programme R5, Stage J; decision 238 PROPOSED). HELD: decision 238 is PROPOSED (not ruled) and the R1 iteration-2 verdict is pending; this cell registers the composition that decision A names. If it flies: root countersigns the DRAFT rows (this package AND the replicate's two rows in the module package), mints both admission receipts and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/nx/nx_r5_flip.sh), which mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "kind": "preparation",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with: THIS roster's own table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1, built model-free by scripts/build_slurp_intent_exemplar_agreement.py against the sealed DEV-2000-ADDED plan cell with the builder, vote store, vote phase and target store of the Fold A table cell AGREE registered, from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,000 rows, every row 20 votes, 0 self-excluded exemplars (the TRAIN-built pool shares no utterance with the roster), 0 rows with no vote, 59 distinct boundary facets ever voted for. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/agreement.jsonl",
+            "sha256": "283bd9f58025b98a7c92f3b5f3495fce1e4b352bae52a3fc62bb8781b79e92d8"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed DEV-2000-ADDED speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and this roster's sealed agreement table, with zero model, tokenizer, encoder, scorer or server contacts. The review-off graph, the lock-v2.2 normaliser and the lock-v2.1 Reviewer pin never touch the first-phase supply, so the output digest is expected to equal d5ec9b1516cb6b389d39aebec32b2b700b663ff21d15303a4789893415e3e083 (the HELD module cell's); the flip's re-derivation checks this and a different digest means the knowledge channel moved -- stop and report. E16: this cell pins its own. --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-10-09",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 17,
+    "split_role": "dev"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell NX-R5-COMPOSED and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 32,
+    "generation_calls_cap": 8,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 8,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 17
+  },
+  "fragment_kind": "saea-slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-v1",
+  "generation_budget": {
+    "cap": 8,
+    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited, max_revisions 0) under program phase-native-module-v1-c2: the bounded graph ceiling is 2 contacts per row (rails.native_episode_config), so 4 x 2 = 8 is the exact program maximum and the expected spend (one Perception and one Solver contact per row). The budget is RUN-CUMULATIVE across every attempt of this run id.",
+    "target": 8
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-dev2000-added",
+    "decision_population": "The first 4 rows, by roster order, of the unchanged DEV-2000-ADDED roster docs/receipts/rosters/slurp-dev-2000-added-v1.json: slurp:devel:000017:audio-1501773854-headset, slurp:devel:000024:audio-1490195864-headset, slurp:devel:000026:audio-1502216425-headset, slurp:devel:000026:audio-1502301875 (8.1276875 s of audio), split identity fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0 -- exactly the rows and split identity cell ROLL-3's four-row smoke registered (configs/experiment/slurp-native-stage3-roll-3-dev2000-added-smoke-4-v1.json), re-verified here against the roster order. Structural form proof only: no score and no read.",
+    "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-dev2000-added",
+      "ids": [
+        "slurp:devel:000017:audio-1501773854-headset",
+        "slurp:devel:000024:audio-1490195864-headset",
+        "slurp:devel:000026:audio-1502216425-headset",
+        "slurp:devel:000026:audio-1502301875"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of the NX R5 composed cell: that the declared consumption_module block (lock v2.2, review_loop off) loads and verifies against the fragment's policy blocks, that phase-native-module-v1-c2 (ceiling 2) is the bound, that the delivery node renders saea-deliver-normalise-v4g, that no Reviewer or Planner is visited and no tool schema is rendered, that every request fits and that the episode completes. Scored by no one and read by no one: four rows are never evidence of benefit or harm.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "DEV-2000-ADDED",
+  "stage3_algorithm": {
+    "id": "sealed-credit-system-policy-v1",
+    "note": "The module composes the SAME two typed, executable consumption actions A2 flew -- a rank weight over a pre-computed vote and a retrieval key file -- each chosen and credited OFFLINE over sealed bytes (CONV, KPROBE) and admitted by the A2 read, removes the Reviewer and Planner visits (review-off) and delivers through the registered v4g normaliser (a deterministic stage selected offline on the A2 DEV pool and confirmed on Fold A). Operator context_application. No rollout, per-sample scoring, credit assignment or update of its own.",
+    "operators_used": [
+      "context_application"
+    ]
+  }
+}
