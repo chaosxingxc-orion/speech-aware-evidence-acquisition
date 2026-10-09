@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T21:52:14Z
+Last refreshed: 2026-10-09T22:08:32Z
+
+## P-SV-4 read: NOT NOMINATED; the K6p key-source line closes (2026-10-09T22:08:32Z, Fable 5.1 root)
+
+Registered read `analysis/SAEA-SLURP-STAGE3-PSV4-FOLD-B-BRANCH-READ-V1/` (zero contacts; `scripts/flights/psv/psv_read.sh psv4`): level-2 official intent b-k6p minus a-agree **-0.19 pp [-0.56, +0.19]** against the declared +1.1; verdict NOT NOMINATED under the registered presence rule and the twin bar. The K6p centred-centroid + agreement key (the last registered intent item, owner decision 208) is CLOSED; results note and ledger entry in progress. Intent stays LOCKED at COMP-1b (decision 229); the programme continues on the slot line (R1 iteration 2 flying; v4g locked; Stage S supply rounds next).
+
+Superseded stamp: 2026-10-09T21:52:14Z
 
 ## v4g LOCKED (component); P-SV-4 sealed and countersigned for its read; NX R1 iteration 2 flying (2026-10-09T21:52:14Z, Fable 5.1 root)
 
