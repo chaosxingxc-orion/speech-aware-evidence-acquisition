@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Original joint capacity projection complete; exact prospective admission recorded (2026-10-09T08:23:05.302017+00:00)
+
+The original v3 unsigned projection completed once at08:18:20Z with exit0. Root verified its original terminal and raw log pins, then staged its exact complete ready projection and final capacity identity map. All five configurations and the full adaptive-development source union pass the unchanged canonical disposition validator. The separately recorded root227 capacity decision admits only the source-derived1495 tokenizer endpoints after complete registration, frozen checks and fresh live admission; generation and official scoring remain zero. Evidence: `docs/receipts/continuation/2026-10-09-joint-capacity-projection-complete-v1.json`. Preserve the two earlier root source-identity refusals and all held original maps.
+
+Next perform one original capacity registration from a clean pinned source, preserving durable terminal receipts, then freeze and qualify the exact worker before actual contact. Natural-stage source successors continue independently under Sol engineering and Astra review; their two distinct readiness-only and final contact decisions remain necessary. Keep the same five-policy N100 composition, fixed data/knowledge, cumulative exposure, one serial GPU campaign/four inputs,4GiB floors/full reserves and scoped monitoring on launch. The broad goal remains active/incomplete; no system benefit, adoption or learning gain is established and all other-carrier holds remain. Human review remains required before8x400 or equivalent split.
+
 ## Original capacity projection running; root source-pin refusals preserved (2026-10-09T08:00:38.531249+00:00)
 
 Two unsigned preview inputs correctly failed the unchanged source identity guard before producing metadata: root first named an isolated non-ancestor commit, then used the integrated custody commit without the later approved analysis changes. Root preserved both failures and separately recorded the corrections; no registration or model/tokenizer/scorer contact occurred. The complete approved implementation base is nowc28e97460, with all src/scripts/project dependency equality and ancestry verified before the original v3 request. Evidence: `docs/receipts/continuation/2026-10-09-joint-capacity-projection-continuation-v1.json`.
@@ -1216,7 +1222,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-09T08:00:38.531249+00:00
+Last refreshed: 2026-10-09T08:23:05.302017+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

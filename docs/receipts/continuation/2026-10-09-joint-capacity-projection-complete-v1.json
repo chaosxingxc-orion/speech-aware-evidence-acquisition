@@ -1,0 +1,42 @@
+{
+  "at_utc": "2026-10-09T08:21:55.227341+00:00",
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "final_capacity_identity_map": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-n100-capacity-prospective-v1/final-capacity-identity-map-v1.json",
+    "sha256": "2839c94e8e9d29cf52b9467901442e76ea55c7fe9b94112c941fdee503469dac"
+  },
+  "generation_held": true,
+  "member_count": 5,
+  "original_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-projection-v3-exit.json",
+    "sha256": "a941870eab21bafdb40024642ea5323578be722153bb78bebda90e028b5a1f46"
+  },
+  "original_projection": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-ready-projection-v3.json",
+    "sha256": "9bae9e35a2418e536ed8a2517a6a6bdae0f7086a29f41279cdf5309375a7aff4"
+  },
+  "owner_decision": 227,
+  "projection": {
+    "relpath": "docs/readiness/2026-10-09-slurp-joint-n100-capacity-prospective-v1/ready-projection-v1.json",
+    "sha256": "9bae9e35a2418e536ed8a2517a6a6bdae0f7086a29f41279cdf5309375a7aff4"
+  },
+  "root_capacity_decision": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-capacity-v1/root-capacity-admission-v1.json",
+    "sha256": "d6698c0d4fba7b67a2b834f9a0a433cd68417913ddb83eac6d1538290d803172"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-joint-capacity-prospective-stage-v1",
+  "status": "PROSPECTIVE_CAPACITY_DECISION_VALIDATED_REGISTRATION_PENDING",
+  "tokenizer_endpoint_cap_total": 1495,
+  "tokenizer_endpoint_caps": {
+    "control": 299,
+    "control-aa": 299,
+    "joint-import": 299,
+    "reviewer-import": 299,
+    "solver-import": 299
+  }
+}
