@@ -1,6 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T10:05:01Z
+Last refreshed: 2026-10-09T10:09:32Z
+
+## R0.2 exchange rates and R0.3 Solver parse root cause landed (2026-10-09T10:09:32Z, Fable 5.1 root)
+
+`docs/results/2026-10-09-slurp-nx-exchange-rates-offline.md` (zero contacts, COMP-1b Fold A 1,080 and A2 DEV 1,000): one extra raw-exact Solver row = +0.056 pp pooled SLU-F1, so the 1.5 pp target = about 27 extra raw-exact rows per 1,080; the raw first answer predicts the delivered answer (99.4 % of raw-exact rows deliver exact); one false fill removed on an empty-gold row = +0.033; one MISSING recovered = +0.062; one SPURIOUS removed = +0.029. Intent errors sit before the Solver: of 155 wrong rows on Fold A, gold off the Perception shortlist 75, on the list but not rank 1 70, rank 1 but the Solver chose otherwise 9 -- Perception is the intent lever. Contrast table for the R1 authors: MISSING with the value printed in the row's own supplied exemplars 103/188 (Fold A) and 94/187 (DEV); SPURIOUS (type, value) pairs copied from the exemplars 100/264 and 86/245; false fills on empty-gold rows 161/414 and 138/314.
+
+`docs/results/2026-10-09-slurp-nx-solver-parse-root-cause.md`: all 13 unparsed seed first drafts (and 10 in the seed A/A) are `<tool_call>` strings to the Planner's lookup tool, which the seed graph exposes to every role (+410 prompt tokens per contact) while the Solver runs with tool_choice none and no response format; not truncation, not fences; review-off and COMP-1b show 0 in 2,180 first drafts. The tool array also changes Perception's output on 94/100 rows, so the ChatGPT seed vs review-off pair was never a clean Reviewer-loop contrast. Fix: show tools only to roles that may call them (free on the review-off base).
+
+Superseded stamp: 2026-10-09T10:05:01Z
 
 ## Owner rules 228-234 as recommended (2026-10-09T09:38:58Z, Fable 5.1 root)
 
