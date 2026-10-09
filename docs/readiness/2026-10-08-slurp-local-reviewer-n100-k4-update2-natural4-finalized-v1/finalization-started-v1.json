@@ -1,0 +1,15 @@
+{
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "decision_receipt": {
+    "relpath": "coordination/local-reviewer-n100-k4-update2-natural4-v1/root-admission-v1.json",
+    "sha256": "e7dc9dadfab78b372720e5e4a74f8a046245ffc4f42eaa27d63490e74c7834a5"
+  },
+  "input_sha256": "a8da74cddf56b09957a00a131cbdb1719ff2d885832f57d306dca684f99ba28b",
+  "runtime_dispatch": false,
+  "schema": "saea-local-natural-finalization-started-v1",
+  "source_commit": "963a6749e49cfd79cad46686da3adb83f60208e0"
+}
