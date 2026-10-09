@@ -970,6 +970,18 @@ class NativeEpisodeRunBinding:
     # ``roles.solver.template_variants`` is declared. Declared LAST, for the
     # same reason the two fields above are.
     template_variant_materials: Mapping[str, Callable] | None = None
+    # LEVEL 2 Perception-branch Solver supply (2026-10-09, the level-2 render
+    # defect fix; docs/readiness/2026-10-09-slurp-psv-level2-render-defect-v1.md):
+    # ``(*, branch_id, phase_id, context) -> rails.controllers.PhaseSupply |
+    # None``, answered by the flight from a router built over the SAME
+    # released, pinned stores as the delivering router (one independent router
+    # per non-A, non-twin branch), so a branch's own first-visit Solver
+    # contact re-resolves its candidate supply from ITS OWN note. Required
+    # exactly when a level-2 branch group is declared beside a Solver
+    # ``supply_for_phase``; every other binding leaves it None, byte-
+    # identically to before. Declared LAST, after ``template_variant_
+    # materials``, for the same reason that field is.
+    perception_branch_solver_supply: Callable | None = None
     # Optional execution envelope, outside the policy dataclass so an absent
     # factor preserves existing whole-policy hashes and request semantics.
     prefix_slots: object = None
