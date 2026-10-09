@@ -172,27 +172,34 @@ def test_reserved_labels_are_still_refused_for_an_admitted_run(tmp_path):
 # ---------------------------------------------------------------------------
 # --column on a synthetic sealed run carrying a template-arm group
 
-def _column_fixture(tmp_path, monkeypatch):
+def _column_fixture(tmp_path, monkeypatch, answers=None):
     import speech_aware_evidence_acquisition.core.bundle as bundle_module
     from test_slurp_nx_solver_column_read import ANSWERS, _sealed
 
-    outputs, trace = _sealed()
+    answers = ANSWERS if answers is None else answers
+
+    outputs, trace = _sealed(answers=answers)
     directory = tmp_path / "runs" / "RUN" / "attempt"
     directory.mkdir(parents=True)
     (directory / "RUN.run-manifest.json").write_text("{}", encoding="utf-8")
     monkeypatch.setattr(bundle_module, "verify_bundle",
                         lambda path: SimpleNamespace(outputs_rows=outputs, trace_records=trace))
-    return {"run_id": "RUN", "attempt": "attempt"}, ANSWERS
+    return {"run_id": "RUN", "attempt": "attempt"}, answers
 
 
-def test_column_reads_one_arms_raw_first_visit_answers_from_the_sealed_group(tmp_path, monkeypatch):
+def test_column_reads_one_arms_first_visit_answers_from_the_sealed_group(tmp_path, monkeypatch):
     spec, answers = _column_fixture(tmp_path, monkeypatch)
+    from stage3_rollout_score import normalise_arm_answer
+
     texts, block = A.column_texts(tmp_path, spec, "t1")
-    assert texts == answers["t1"]
+    # the base is the NORMALISED column (here the no-normaliser parse + render fallback), never the raw text
+    assert texts == {sid: normalise_arm_answer(raw, None)[0] for sid, raw in answers["t1"].items()}
+    assert block["base"] == A.BASE_NORMALISED_COLUMN and block["base_rows"] == len(texts)
     assert block["kind"] == "template-arm" and block["arm_id"] == "t1" and block["delivering_arm"] == "lock"
     assert block["arm_ids"] == ["t1", "t2", "aa", "lock"] and len(block["manifest_sha256"]) == 64
-    assert A.column_texts(tmp_path, spec, "lock")[0] == answers["lock"]
-    assert A.column_texts(tmp_path, spec, "aa")[0] == answers["aa"]
+    assert A.column_texts(tmp_path, spec, "lock")[0] == {
+        sid: normalise_arm_answer(raw, None)[0] for sid, raw in answers["lock"].items()}
+    assert A.column_texts(tmp_path, spec, "aa")[0] == A.column_texts(tmp_path, spec, "lock")[0]
 
 
 def test_column_naming_an_arm_outside_the_group_is_refused(tmp_path, monkeypatch):
@@ -216,3 +223,68 @@ def test_column_texts_score_through_the_driver_vectors(tmp_path, monkeypatch):
         matrix[arm], _unparsed = A.score_vectors(ids, texts, gold)
         assert matrix[arm].shape == (len(GOLD), 10)
     assert (matrix["t1"] != matrix["lock"]).any()
+
+
+# ---------------------------------------------------------------------------
+# the base column of a template arm is the NORMALISED column; the label guard compares against it
+
+def _relabelled_answers():
+    """Every raw answer carries the action label 'setalarm', which the (stand-in) v3 projection rewrites to 'set'."""
+    from test_slurp_nx_solver_column_read import ANSWERS
+
+    return {arm: {sid: raw.replace('"action": "set"', '"action": "setalarm"') for sid, raw in rows.items()}
+            for arm, rows in ANSWERS.items()}
+
+
+def _stand_in_v3(monkeypatch):
+    """The sealed delivery normaliser's label half: 'setalarm' -> 'set' (the real one needs the TRAIN-mined inventory)."""
+    import stage3_rollout_score
+
+    def normalise(raw, normaliser_id):
+        return raw.replace('"setalarm"', '"set"'), True
+
+    monkeypatch.setattr(stage3_rollout_score, "normalise_arm_answer", normalise)
+
+
+def _gold(ids):
+    from speech_aware_evidence_acquisition.reproduction.slurp_scoring import SlotEntity
+    from test_slurp_nx_solver_column_read import GOLD
+
+    return {sid: {"scenario": "calendar", "action": "set", "entities": [SlotEntity(t, f) for t, f in GOLD[sid]]}
+            for sid in ids}
+
+
+def test_a_template_arm_bases_on_the_normalised_column_and_the_guard_does_not_refuse(tmp_path, monkeypatch):
+    answers = _relabelled_answers()
+    spec, _ = _column_fixture(tmp_path, monkeypatch, answers=answers)
+    _stand_in_v3(monkeypatch)
+    texts, block = A.column_texts(tmp_path, spec, "lock")
+    ids = sorted(texts)
+    assert all('"setalarm"' not in text for text in texts.values()) and any('"set"' in text for text in texts.values())
+    gold = _gold(ids)
+    base, _ = A.score_vectors(ids, texts, gold)
+    raw, _ = A.score_vectors(ids, answers["lock"], gold)
+    # the RAW answer has a different (wrong) label on the parsed rows: comparing against it was the defect
+    assert (raw[:, 9] != base[:, 9]).any()
+    # v4/v4g add entity rules only: a stand-in that leaves labels alone is accepted against the normalised base
+    entity_only = {sid: text.replace('"monday"', '"tuesday"') for sid, text in texts.items()}
+    new, _ = A.score_vectors(ids, entity_only, gold)
+    A.check_labels_untouched(base, new, block["base"], "v4")
+    # and the old comparison against the raw text refuses, naming the base
+    with pytest.raises(A.ApplyError, match="relative to the base column .*delivered column as sealed"):
+        A.check_labels_untouched(raw, new, A.BASE_DELIVERED, "v4")
+
+
+def test_a_rule_editing_a_label_relative_to_the_normalised_base_is_refused(tmp_path, monkeypatch):
+    spec, _ = _column_fixture(tmp_path, monkeypatch, answers=_relabelled_answers())
+    _stand_in_v3(monkeypatch)
+    texts, block = A.column_texts(tmp_path, spec, "lock")
+    ids = sorted(texts)
+    gold = _gold(ids)
+    base, _ = A.score_vectors(ids, texts, gold)
+    relabelled = {sid: text.replace('"action": "set"', '"action": "remove"') for sid, text in texts.items()}
+    new, _ = A.score_vectors(ids, relabelled, gold)
+    with pytest.raises(A.ApplyError) as raised:
+        A.check_labels_untouched(base, new, block["base"], "v4g")
+    message = str(raised.value)
+    assert "changed an intent label" in message and "v4g" in message and "stage3_rollout_score.normalise_arm_answer" in message
