@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Reviewer second local checkpoint complete; joint N100 source work approved (2026-10-09T05:00:48.324681+00:00)
+
+All six original Reviewer update2 members independently FINALIZED100 trajectories with verified seals, one successful complete official score each and zero failed jobs:600 rows and3507 model contacts. The original Windows driver ended04:27:56Z. Root preserved terminal custody, verified no original worker/scorer/observer remained, and deleted `slurp-reviewer-update2-n100-health`. Every member descriptive READ and the separately qualified/countersigned whole-family READ completed once. No scorer or generation was replayed. Evidence: `docs/receipts/continuation/2026-10-09-local-reviewer-update2-complete-root-analysis-v1.json`.
+
+Root and GPT-6 Astra Ultra retain candidate-1 as the local exploratory choice on the unchanged raw entity net primary:(2 repairs-1 harm)/100=+1/100, versus control0 and A/A-1. Its final F1 is0.617696 versus control0.620860; difference-0.316pp CI[-4.476,+3.545]. Candidate-4 has the highest F1 point0.625560 but detection1/44 and no verified raw entity repair. Neither replaces the full-seed runtime parent. Preserve16 unknown candidate-1 raw transitions, all conditional denominators, raw/postprocessing separation,18 strata and node/first/nonfirst timing. Current point improvement closes the second evaluated-update checkpoint without triggering the no-gain plateau; no stable benefit or learning advantage is established.
+
+Solver candidate-4 remains the separately retained exploratory donor. Root prospectively approved source work for five full-topology N100 members: unchanged seed/A/A, Solver-text import, Reviewer-text import, both imports. K=3 deterministic candidates is a new composition comparison, not replacement of a spent local K4 family. Exact decision: `docs/readiness/2026-10-09-slurp-local-to-joint-n100-v1/root-decision-v1.json`. Runtime remains HELD behind optional raw-stage source review, strict joint/N100/ancestry/fresh-map custody, narrow visible adaptive-overlap admission, declared paired contrast support, fresh capacity/structural proof and complete registration. Reuse exact existing data/knowledge; do not import review-off topology or rewrite role text. No new proposer contact or runtime admission yet.
+
+Sol's isolated raw-stage implementation is frozen for Astra review with219 distinct synthetic cases passing; source approval/integration remains pending. Preserve all original sources/results and the existing process derivative; do not retrofit historical outputs or export per-input records to learners. The previous candidate-3 CLI hash typo was refused before entry, separately preserved, and corrected for one original qualification; it was not a runtime retry. The broad goal is active/incomplete; other-carrier holds remain and human review is required before8x400. Keep one serial GPU experiment/four concurrent inputs, overlapping CPU work,4GiB floors/full reserves and job-scoped monitoring only at actual launch.
+
 ## Reviewer independently completed control process read (2026-10-09T03:53:33.271376+00:00)
 
 The original Reviewer update2 control independently FINALIZED100 rows with a verified seal, exactly one successful complete official score and zero failed jobs. Root separately qualified, countersigned and read its original descriptive process report; the reader exited0 without scorer/model/tokenizer contacts. Evidence: `docs/receipts/continuation/2026-10-09-reviewer-update2-control-descriptive-read-v1.json`; full single-member statistics and strata are in `docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/control-descriptive-note-v1.md`.
@@ -1136,7 +1146,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-09T03:53:33.271376+00:00
+Last refreshed: 2026-10-09T05:00:48.324681+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

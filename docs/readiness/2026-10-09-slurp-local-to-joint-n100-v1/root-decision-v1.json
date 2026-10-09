@@ -1,0 +1,137 @@
+{
+  "analysis": {
+    "also_report": [
+      "intent",
+      "completion",
+      "parsing and unknowns",
+      "raw entity/full repair and harm",
+      "postprocessing repair and harm",
+      "review detection/false alarm/precision",
+      "knowledge presence and coverage limits",
+      "natural and equal-scenario quality",
+      "all strata",
+      "first/nonfirst and per-node timing",
+      "actual costs"
+    ],
+    "claims_benefit": false,
+    "existing_secondary_contrasts": "Every candidate minus designated control and its identical-policy A/A; do not select or average controls after outcomes.",
+    "independent_validation": false,
+    "learner_export": false,
+    "primary": "joint-import minus designated control on official pooled SLU-F1",
+    "prospective_extended_contrasts": [
+      "joint-import minus solver-import",
+      "joint-import minus reviewer-import"
+    ],
+    "prospective_interaction": "F1(joint-import)-F1(solver-import)-F1(reviewer-import)+F1(control), computed on the same paired utterance-cluster draws from pooled sufficient counts; only available after reviewed explicit shared resampler support and prospective registration.",
+    "raw_stages": "Preserve root-only numeric/hash-bound first raw, selected raw and final stages, fixed-N unknowns and paired sufficient counts through the existing complete-family derivative. No per-input learner export.",
+    "runtime_adoption": false
+  },
+  "ancestry": "Keep immutable original donors and exact union of all parent cumulative exposure records; include root-selection exposure and reject conflicting source identities. The Solver donor review-off topology is never imported.",
+  "at_utc": "2026-10-09T05:00:48.324681+00:00",
+  "candidate_count": 3,
+  "complete_trajectories": 500,
+  "control_count": 2,
+  "donors": {
+    "reviewer": {
+      "bundle_id": "1a3a9ea48339f7134f1e6ed1fa5795e019fb3c6a4cd1932467e497014c78b6a0",
+      "role": "reviewer",
+      "runtime_adopted": false,
+      "selected_by": "current registered raw entity model-revision net primary"
+    },
+    "solver": {
+      "bundle_id": "3fed5090255538a879aab48d0574ddee95ebfbe679c52667758991498dffe74a",
+      "import_topology": false,
+      "role": "solver",
+      "selected_by": "prior registered raw first-Solver entity primary"
+    }
+  },
+  "full_seed_bundle_id": "ba18a4a89893801df9c64e33bfaa52f20c957889ee91f156f33f9eded80c4572",
+  "human_boundary": "Return before8x400 or an equivalent split. No scale expansion or automatic failure recovery from this source decision.",
+  "operational_limits": {
+    "concurrent_samples_per_member": 4,
+    "create_scoped_15min_monitor_on_actual_launch": true,
+    "delete_monitor_after_original_terminal": true,
+    "overlapping_cpu_scorers": 1,
+    "serial_gpu_campaigns": 1,
+    "windows_min_free_gib": 4
+  },
+  "ordered_members": [
+    {
+      "id": "control",
+      "imports": []
+    },
+    {
+      "id": "control-aa",
+      "imports": []
+    },
+    {
+      "id": "solver-import",
+      "imports": [
+        "solver"
+      ]
+    },
+    {
+      "id": "reviewer-import",
+      "imports": [
+        "reviewer"
+      ]
+    },
+    {
+      "id": "joint-import",
+      "imports": [
+        "solver",
+        "reviewer"
+      ]
+    }
+  ],
+  "other_carrier_holds_unchanged": true,
+  "owner_decision": 227,
+  "prior_evidence": [
+    {
+      "relpath": "docs/receipts/continuation/2026-10-09-local-solver-update3-complete-root-analysis-v1.json",
+      "sha256": "3e3fd4aa915f471ee83b6a5c89703ed6b558e0b0f02681b32fc2b19d394c64e4"
+    },
+    {
+      "relpath": "docs/receipts/continuation/2026-10-09-local-reviewer-update2-complete-root-analysis-v1.json",
+      "sha256": "4599d29579b25d4f49d6c9270b00094f50f04f01839f1ea5cdc2cd6785d3c234"
+    }
+  ],
+  "purpose": "Test whether exact locally selected role texts coexist and improve the complete system on the same fixed development roster. Component improvement is not an eligibility requirement.",
+  "root_decision_id": "root-local-to-joint-n100-v1",
+  "roster_basis": {
+    "relpath": "configs/experiments/slurp-simple-consumption-architecture-n100-v1.json",
+    "sha256": "de6bf4b06433f04b16b10bda04d6691d9db93705b92a48f280dc948ce73c4c9d"
+  },
+  "rows_per_member": 100,
+  "runtime_budget": "Derive all per-stage capacities, model/FIT/scorer ceilings from the actual configured cohort, legal paths and N. The present full-seed ceiling is13 model contacts per trajectory; an unchanged five-member N100 legal path would cap6500 generation contacts and26000 actual-request FIT endpoints, but this draft arithmetic is not an execution plan.",
+  "runtime_prerequisites": [
+    "actual policy compile and full ancestry verification",
+    "exact prospective population and measurement registration",
+    "new maximum-request FIT with complete output reserves",
+    "new natural structural proof for every distinct full policy and controls",
+    "all frozen checks and fresh operational admission",
+    "one original serial Windows GPU campaign",
+    "exact complete-family root READ before comparisons"
+  ],
+  "same_for_every_member": [
+    "full seed topology",
+    "Perception and Planner texts",
+    "context layout and node context",
+    "knowledge snapshot/release",
+    "audio, packets, queries and votes",
+    "retrieval and tool authority",
+    "normalizer and official scorer",
+    "temperature0 and registered seed",
+    "four-slot geometry and full reserves"
+  ],
+  "schema": "saea-root-local-to-joint-development-decision-v1",
+  "semantic_proposal_calls": 0,
+  "source_engineering_scope": [
+    "Finish independent review of optional raw-stage statistics persistence; integrate serially only when approved.",
+    "Implement a thin exact-role importer and joint basis in existing policy and architecture validation, retaining original full400-to-N100 supply custody and fresh identities.",
+    "Bind narrow owner227 adaptive same-roster disposition at the existing overlap gate; keep overlap visible and every unrelated/confirmatory rejection unchanged.",
+    "Add explicit configuration-driven paired candidate contrasts/interaction to the existing shared resampler; no second evaluation framework.",
+    "Preserve source-only synthetic tests and independent Astra review before real authoring."
+  ],
+  "status": "SOURCE_ENGINEERING_APPROVED_RUNTIME_HELD"
+}

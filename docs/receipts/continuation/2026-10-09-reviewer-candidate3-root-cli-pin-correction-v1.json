@@ -1,0 +1,29 @@
+{
+  "at_utc": "2026-10-09T04:20:10.853764+00:00",
+  "contacts": 0,
+  "disposition": "Issue the original qualifier action once with the verified full raw hash. Preserve this pre-entry refusal and unchanged input. No experiment retry or score replay.",
+  "failure": "Root CLI hash transcription omitted characters. Adapter main rejected exact input pin before action dispatch.",
+  "helper_invoked": false,
+  "incorrect_cli_hash": "7fdafc3eab50cde170e873e41ec6069b0a92c64d7b1d9b475db51d552",
+  "member": "candidate-3",
+  "original_qualifier_after_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/candidate-3-qualify-outer-v1.exit.json",
+    "sha256": "34ffc6b2a0593d1dd5e2865305c77e4c8d73f7c92410c76a4d855975053e070d"
+  },
+  "owner_decision": 227,
+  "qualification_after_disposition_succeeded": true,
+  "qualification_and_capture_absent": [
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/candidate-3-qualification-v1.json",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/candidate-3-qualify-outer-v1.started.json",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/candidate-3-qualify-outer-v1.exit.json",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/candidate-3-qualify-outer-v1.stdout.log",
+    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-member-reads-v1/candidate-3-qualify-outer-v1.stderr.log"
+  ],
+  "quality_read": false,
+  "runtime_controls_changed": false,
+  "schema": "saea-root-preentry-command-pin-disposition-v1",
+  "unchanged_decided_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-configured-candidate-3-qualify-input-v2.json",
+    "sha256": "7fdafc3eab50cde170e873e41ec6069b0a92c64d7b1d76c4b1d9b475db51d552"
+  }
+}

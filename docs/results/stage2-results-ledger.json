@@ -2,7 +2,7 @@
   "schema": "saea-stage2-results-ledger-v1",
   "study": "speech-aware-evidence-acquisition",
   "authority": "owner Decision 14-Q, 2026-09-09",
-  "generated_on": "2026-09-27",
+  "generated_on": "2026-10-09",
   "profile": "model-free-check: zero model, GPU, tool, embedder, tokenizer, network and audio-decode contacts",
   "scope": "every cell decided by a verdict note dated 2026-09-04 to 2026-09-09, plus the four entries of docs/receipts/harness-admission.json and registered cells whose scientific decisions remain pending; the 2026-09-09 owner recovery adds operational completion for all seven KV flights without inspecting their score values; and, added 2026-09-26, one row per Stage-3 cell (2026-09-22 to 2026-09-26) so this machine-readable authority covers the stage its markdown twin already carries. A Stage-3 row's numbers and status word are that cell's own verdict note's, cited in the row's source fields; where a cell has no verdict note the row is PENDING and states no number.",
   "sign_convention": "minus signs are ASCII; every value is the cited verdict's or receipt's own",
@@ -2590,7 +2590,7 @@
       "preregistration": "docs/readiness/2026-09-08-slurp-logprob-judge-probe-v1-preregistration.md",
       "status": "NOT ADMITTED",
       "status_source": "h1",
-      "status_quote": "# Verdict — the SLURP logprob-as-judge probe: **NOT ADMITTED**",
+      "status_quote": "# Verdict \u2014 the SLURP logprob-as-judge probe: **NOT ADMITTED**",
       "pending": false,
       "comparator": {
         "text": "The sealed closed-list direct request is unchanged except for decoding_params.logprobs=true and top_logprobs=5. The admission bars concern the confidence signal; the greedy own-null replicate is the latency reference, not a replacement task baseline.",
@@ -7172,6 +7172,32 @@
         "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR1-AA-V1",
         "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-PRIMARY-V1",
         "SAEA-SLURP-NODE-PANEL-SCHEDULE-N20-BEFORE-SPEECH-PANEL-PAIR2-AA-V1"
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "cell_id": "SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE3-READ-V1",
+      "status": "COMPLETE_EXPLORATORY_LOCAL_CHOICE_NO_SYSTEM_ADOPTION",
+      "source": "docs/receipts/continuation/2026-10-09-local-solver-update3-complete-root-analysis-v1.json",
+      "source_sha256": "3e3fd4aa915f471ee83b6a5c89703ed6b558e0b0f02681b32fc2b19d394c64e4",
+      "receipt": "docs/receipts/continuation/2026-10-09-local-solver-update3-complete-root-analysis-v1.json",
+      "verdict_note": "docs/readiness/2026-10-09-slurp-local-solver-k4-update3-complete-analysis-v1/README.md",
+      "meaning": "All six original solver members independently finalized100 rows with verified seals and unique complete official scores; exact root family READ and six descriptive reads complete. Registered local selection is exploratory only, with no runtime adoption, stable benefit or learner export.",
+      "run_ids": [
+        "SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE3-READ-V1"
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "cell_id": "SAEA-SLURP-LOCAL-REVIEWER-N100-K4-UPDATE2-READ-V1",
+      "status": "COMPLETE_EXPLORATORY_LOCAL_CHOICE_NO_SYSTEM_ADOPTION",
+      "source": "docs/receipts/continuation/2026-10-09-local-reviewer-update2-complete-root-analysis-v1.json",
+      "source_sha256": "4599d29579b25d4f49d6c9270b00094f50f04f01839f1ea5cdc2cd6785d3c234",
+      "receipt": "docs/receipts/continuation/2026-10-09-local-reviewer-update2-complete-root-analysis-v1.json",
+      "verdict_note": "docs/readiness/2026-10-09-slurp-local-reviewer-k4-update2-complete-analysis-v1/README.md",
+      "meaning": "All six original reviewer members independently finalized100 rows with verified seals and unique complete official scores; exact root family READ and six descriptive reads complete. Registered local selection is exploratory only, with no runtime adoption, stable benefit or learner export.",
+      "run_ids": [
+        "SAEA-SLURP-LOCAL-REVIEWER-N100-K4-UPDATE2-READ-V1"
       ]
     }
   ],
