@@ -1601,6 +1601,17 @@ def _check_declared_carrier_binding(report, document, run_id, ledger):
         ))
 
 
+def _report_authorized_joint_overlap(report, stage):
+    """Retain overlaps visibly only after exact canonical joint authentication."""
+    for finding in report.findings:
+        if finding.kind == "tuning-read-overlap" and finding.run_id == report.run_id:
+            finding.kind = "authorized-adaptive-joint-roster-overlap"
+            finding.severity = "advisory"
+            finding.message += (f"; exact owner227 complete joint {stage} basis authorizes adaptive discovery "
+                                "on this original roster; no benefit, independent-validation, "
+                                "adoption or learner-export claim")
+
+
 def _check_registered_supply_binding(report, baseline, index, package, ledger, *, cell=None, fragment=None,
                                      data_root=None):
     """Refuse a plan that declares another member's prepared supply envelope.
@@ -1641,7 +1652,10 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
                     effective = compose(index.repo_root, cell["model_fragment"], cell["dataset_fragment"],
                                         cell["baseline_fragment"], report.experiment)
                     require_architecture_capacity_registration(effective.values, cell, document,
-                                                              repo_root=index.repo_root)
+                                                              repo_root=index.repo_root,
+                        **({"data_root":data_root} if effective.values.get("joint_role_basis") is not None else {}))
+                    if effective.values.get("joint_role_basis") is not None:
+                        _report_authorized_joint_overlap(report, "capacity")
                 else:
                     population_pin = baseline["experiment_population"]
                     population = load_population_config(population_pin, repo_root=index.repo_root)
@@ -1675,6 +1689,8 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
             validator = require_architecture_n20_registration if manual_n20 else require_architecture_natural_registration
             validator(effective.values, cell, natural_plans,
                                                      repo_root=index.repo_root, data_root=data_root)
+            if effective.values.get("joint_role_basis") is not None:
+                _report_authorized_joint_overlap(report, "generation" if manual_n20 else "natural")
         except (ValueError, KeyError, TypeError, OSError) as error:
             report.findings.append(Finding("population-config-binding", str(error), report.run_id))
 

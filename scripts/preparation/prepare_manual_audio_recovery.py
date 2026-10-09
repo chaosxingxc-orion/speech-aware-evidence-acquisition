@@ -336,6 +336,15 @@ def prepare_local_companions(spec, *, root, data, pending, original, package):
             and len(set(all_attempts + generation_attempts)) == len(all_attempts + generation_attempts)
             and len(set(all_names + generation_names)) == len(all_names + generation_names),
             "local node proof and generation identities duplicate")
+    if spec.get("joint_role_basis") is not None:
+        from speech_aware_evidence_acquisition.rails.architecture_natural_registration import require_joint_role_basis, _joint_original_spend
+        from speech_aware_evidence_acquisition.rails.experiment_population import load_population_config
+        population = load_population_config(spec["experiment_population"], repo_root=root, allow_architecture=True)
+        bound = require_joint_role_basis(spec["joint_role_basis"], population, repo_root=root, data_root=data)
+        original_runs, original_attempts = _joint_original_spend(bound, repo_root=root)
+        require(not set(all_runs + generation_runs).intersection(original_runs)
+                and not set(all_attempts + generation_attempts).intersection(original_attempts),
+                "joint preparation cannot reuse original generation/FIT spend")
     records = {}
     for identity, kind, proof, ep, bp, budget in companions:
         name, label = proof["experiment"], identity["member_id"]
@@ -369,7 +378,8 @@ def prepare_local_companions(spec, *, root, data, pending, original, package):
             output_sha256=digest(output), output_equal=True, warm_verified=True, contacts=0,
             prepared_source_commit=spec["source_preparation_commit"], runtime_admission=False,
             pure_capacity_budget=budget if kind == "capacity" else None,
-            strict_prepared_artifacts=verified, local_node_basis=spec["local_node_basis"])
+            strict_prepared_artifacts=verified, **({"joint_role_basis":spec["joint_role_basis"]}
+                if spec.get("joint_role_basis") is not None else {"local_node_basis":spec["local_node_basis"]}))
         receipt_path = package / (label + "-" + kind + "-prepared-v1.json")
         save(receipt_path, record)
         records.setdefault(label, {})[kind] = pin(receipt_path, root)
@@ -385,15 +395,26 @@ def prepare_local_node_panel(spec, *, repo_root, data_root):
     from speech_aware_evidence_acquisition.rails.experiment_population import load_population_config
     from speech_aware_evidence_acquisition.rails.architecture_audio_budget import derive_manual_architecture_audio_budget
     root, data = Path(repo_root).resolve(), Path(data_root).resolve()
-    require(spec.get("schema") == "saea-local-node-panel-preparation-input-v1",
-            "explicit local node preparation input required")
+    joint_mode = spec.get("schema") == "saea-joint-role-import-preparation-input-v1"
+    require(joint_mode or spec.get("schema") == "saea-local-node-panel-preparation-input-v1",
+            "explicit local or joint preparation input required")
     source_head(root, spec["source_preparation_commit"])
-    require(spec.get("target_role") == spec["local_node_basis"].get("target_role"), "local target role and basis differ")
+    if not joint_mode:
+        require(spec.get("joint_role_basis") is None, "unsolicited joint preparation basis refused")
+        require(spec.get("target_role") == spec["local_node_basis"].get("target_role"), "local target role and basis differ")
+    else:
+        require(spec.get("local_node_basis") is None and spec.get("target_role") is None,
+                "joint preparation cannot inherit local-role topology")
     package = (root / spec["package_relpath"]).resolve()
     require(package.is_relative_to(root / "docs/readiness") and package != root / "docs/readiness"
             and not package.exists(), "fresh local node preparation package required")
     population = load_population_config(spec["experiment_population"], repo_root=root, allow_architecture=True)
-    receipt = require_local_node_basis(spec["local_node_basis"], population, repo_root=root, data_root=data)
+    if joint_mode:
+        from speech_aware_evidence_acquisition.rails.architecture_natural_registration import require_joint_role_basis, JOINT_MAP_SCHEMA
+        joint_bound = require_joint_role_basis(spec["joint_role_basis"],population,repo_root=root,data_root=data)
+        receipt = joint_bound["receipt"]
+    else:
+        receipt = require_local_node_basis(spec["local_node_basis"], population, repo_root=root, data_root=data)
     stage = population_stage_spec(spec["experiment_population"], repo_root=root,
                                  cohort_id=spec["population_cohort"], allow_architecture=True)
     labels = stage["control_members"] + stage["candidate_members"]
@@ -424,7 +445,12 @@ def prepare_local_node_panel(spec, *, repo_root, data_root):
         require(report["sample_count"] == stage["N"], "local node duration roster differs")
         ep, bp = local_node_documents(source_exp, source_base, policy, row,
             policy_binding=member["policy_binding"], population_pin=spec["experiment_population"],
-            cohort_id=spec["population_cohort"], stage=stage, basis=spec["local_node_basis"], report=report)
+            cohort_id=spec["population_cohort"], stage=stage, basis={} if joint_mode else spec["local_node_basis"], report=report)
+        if joint_mode:
+            bp.pop("local_node_basis");bp["joint_role_basis"] = spec["joint_role_basis"]
+            ep["stage3_measurement"].update(tuning_roster=source_exp["stage3_measurement"]["read_roster"],
+                read_roster=source_exp["stage3_measurement"]["read_roster"],
+                independent_validation=False,runtime_adoption=False,learner_export=False)
         verify_system_text_binding(bp, member["policy_binding"], repo_root=root, data_root=data)
         for run in (row["run_id"], row["fit_run_id"]):
             require(all(not (data / folder / run).exists() for folder in ("prepared", "attempts", "runs")),
@@ -473,33 +499,62 @@ def prepare_local_node_panel(spec, *, repo_root, data_root):
                 "source_policy": identity["execution_config"], "policy_binding": ep["cells"][0]["system_text_policy_binding"],
                 "execution_plan": asdict(context["execution_plan"]), "prepared_phase_supply": bp["prepared_phase_supply"],
                 "prepared_source_commit": spec["source_preparation_commit"],
-                "predecessor_preparation_receipt": spec["local_node_basis"]["source_preparation_receipt"],
+                "predecessor_preparation_receipt": (json.loads(_read_pin(spec["joint_role_basis"],root))["source_preparation_receipt"]
+                    if joint_mode else spec["local_node_basis"]["source_preparation_receipt"]),
                 "predecessor_prepared_phase_supply": receipt["prepared_phase_supply"],
                 "configured_sample_ids": stage["sample_ids"], "runtime_sample_ids": list(context["sample_ids"]),
                 "generation_cap": stage["member_generation_contacts_caps"][label],
                 "fit_endpoint_cap": stage["member_fit_endpoints_caps"][label],
-                "audio_budget_derivation": report, "local_node_basis": spec["local_node_basis"],
+                "audio_budget_derivation": report, **({"joint_role_basis":spec["joint_role_basis"]} if joint_mode else {"local_node_basis":spec["local_node_basis"]}),
                 "strict_prepared_artifacts": verified, "contacts": 0, "output_equal": True, "warm_verified": True,
                 "runtime_admission": False, "status": "HELD LOCAL NODE; FRESH PROOFS AND ROOT REGISTRATION PENDING",
                 "architecture_extent": None, "pure_capacity_budget": None, "draft_plans": {}}
+            if joint_mode:
+                capacity_record = json.loads(_read_pin(companion_receipts[label]["capacity"], root))
+                record["source_prepared_phase_supply"] = capacity_record["prepared_phase_supply"]
+                record["status"] = "HELD JOINT IMPORT; FRESH PROOFS AND ROOT REGISTRATION PENDING"
             save(package / (label + "-generation-prepared-v1.json"), record)
             receipts[label] = pin(package / (label + "-generation-prepared-v1.json"), root)
             map_rows.append({**row, "planned_speech_audio_seconds": report["required_integer_audio_seconds"]})
             del rt, context
             gc.collect()
-    mapping = dict(schema=MAP_SCHEMA, experiment_population=spec["experiment_population"], architecture_extent=None,
-                   local_node_basis=spec["local_node_basis"], members=map_rows)
+    mapping = dict(schema=JOINT_MAP_SCHEMA if joint_mode else MAP_SCHEMA,
+                   experiment_population=spec["experiment_population"], architecture_extent=None, members=map_rows,
+                   **({"joint_role_basis":spec["joint_role_basis"]} if joint_mode else {"local_node_basis":spec["local_node_basis"]}))
     map_path = package / "execution-identity-map-v1.json"
     save(map_path, mapping)
-    _mapped_execution_cells(pin(map_path, root), population, spec["experiment_population"], None, repo_root=root)
-    require_local_node_basis(spec["local_node_basis"], population, repo_root=root, data_root=data)
-    summary = dict(schema="saea-local-node-panel-preparation-v1", status="PREPARED_HELD_NOT_ADMITTED",
-        architecture_proof=SELECTOR if spec["target_role"] == "solver" else REVIEWER_SELECTOR, experiment_population=spec["experiment_population"],
-        local_node_basis=spec["local_node_basis"], source_preparation_commit=spec["source_preparation_commit"],
+    _mapped_execution_cells(pin(map_path, root), population, spec["experiment_population"], None, repo_root=root,
+                            **({"data_root":data} if joint_mode else {}))
+    if joint_mode:
+        require_joint_role_basis(spec["joint_role_basis"],population,repo_root=root,data_root=data)
+    else:
+        require_local_node_basis(spec["local_node_basis"], population, repo_root=root, data_root=data)
+    summary = dict(schema="saea-joint-role-import-preparation-v1" if joint_mode else "saea-local-node-panel-preparation-v1", status="PREPARED_HELD_NOT_ADMITTED",
+        architecture_proof="manual-architecture-n20-v1" if joint_mode else SELECTOR if spec["target_role"] == "solver" else REVIEWER_SELECTOR,
+        experiment_population=spec["experiment_population"],
+        **({"joint_role_basis":spec["joint_role_basis"]} if joint_mode else {"local_node_basis":spec["local_node_basis"]}),
+        source_preparation_commit=spec["source_preparation_commit"],
         execution_identity_map=pin(map_path, root), preparation_receipts=receipts,
         companion_preparation_receipts=companion_receipts,
         population_budget=stage["population_budget"], contacts={"model": 0, "tokenizer": 0, "scorer": 0},
         runtime_admission=False, read_authorized=False)
+    if joint_mode:
+        from speech_aware_evidence_acquisition.rails.architecture_natural_registration import JOINT_PROOF_MAP_SCHEMA, JOINT_PROOF_ROSTER
+        proof_maps={}
+        for stage_name in ("capacity","natural"):
+            proof_rows=[]
+            for label in labels:
+                record=json.loads(_read_pin(companion_receipts[label][stage_name],root))
+                declared=spec["member_specs"][label]["companions"][stage_name]
+                proof_rows.append(dict(member_id=label,config_hash=record["config_hash"],**declared))
+            proof_map=dict(schema=JOINT_PROOF_MAP_SCHEMA,stage=stage_name,experiment_population=spec["experiment_population"],
+                joint_role_basis=spec["joint_role_basis"],generation_identity_map=pin(map_path,root),
+                proof_roster=JOINT_PROOF_ROSTER,members=proof_rows)
+            proof_path=package/(stage_name+"-identity-map-v1.json")
+            save(proof_path,proof_map);proof_maps[stage_name]=pin(proof_path,root)
+        summary["joint_proof_identity_maps"]=proof_maps
+        summary["cumulative_source_summary"] = [{"kind":x["kind"],"sha256":x["sha256"],"sample_count":len(x["sample_ids"])}
+                                                for x in joint_bound["cumulative_sources"]]
     save(package / "preparation-summary-v1.json", summary)
     return summary
 
@@ -511,7 +566,7 @@ def main():
     p = Path(args.input)
     require(hashlib.sha256(p.read_bytes()).hexdigest() == args.input_sha256, "recovery input raw pin differs")
     document = json.loads(p.read_bytes())
-    operation = prepare_local_node_panel if document.get("schema") == "saea-local-node-panel-preparation-input-v1" else prepare
+    operation = prepare_local_node_panel if document.get("schema") in {"saea-local-node-panel-preparation-input-v1","saea-joint-role-import-preparation-input-v1"} else prepare
     print(json.dumps(operation(document, repo_root=args.repo_root, data_root=args.data_root), sort_keys=True))
 
 

@@ -1,0 +1,163 @@
+{
+  "at_utc": "2026-10-09T06:46:35.129676+00:00",
+  "base_commit": "98e9352508c927ac3cfad90e45e5023bf63d0c75",
+  "engineering_snapshot": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-custody-engineering-v1/source-review-snapshot-v1.json",
+    "sha256": "dbbeab25ce8efad7c546887e1dd1afb3db028ebfdb9c9ea63cf3e8e46f32768b"
+  },
+  "engineering_tests": {
+    "all_original_shards_exit_zero": true,
+    "collected": 718,
+    "deselected": 1,
+    "distinct_passed_nodeids": 717,
+    "excluded_test": "tests/unit/test_flight_registration_check.py::test_the_real_tree_terminates_with_a_documented_exit_code",
+    "network_refusals": 0,
+    "original_data_refusals": 0,
+    "passed": 717,
+    "shard_passed": [
+      97,
+      158,
+      206,
+      256
+    ]
+  },
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "independent_additional_cases": 26,
+  "independent_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-custody-astra-review-v1/review-result-v1.json",
+    "sha256": "c16e557b3ccb5dab2a4f61ce2d6f7c3c7bed1dd4d3f775eeff7e98a1873d74d7"
+  },
+  "independent_test_passes": 112,
+  "new_contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "owner_decision": 227,
+  "primary_sources": [
+    {
+      "relpath": "docs/readiness/2026-10-09-joint-role-import-source-engineering-v1/README.md",
+      "sha256": "adc97ede3ec871bc5010a0e03b0e0b10c5667dbac772118d2d7a7d27489feafe"
+    },
+    {
+      "relpath": "scripts/analysis/author_manual_architecture_package.py",
+      "sha256": "82e0f9059e3f73870d900e41deec10133aa7d4e7231906ea0b64e3099874238f"
+    },
+    {
+      "relpath": "scripts/checks/flight_registration_check.py",
+      "sha256": "5f794ae16ae8fed83c52f0736e0e44125c674b84eafde6130f8142c86c4c8c48"
+    },
+    {
+      "relpath": "scripts/preparation/prepare_manual_audio_recovery.py",
+      "sha256": "1b51f5ca975f6d897048e99879a82e4ce15e80c008ccd0e663c80bfb37546e41"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_architecture_read.py",
+      "sha256": "a665fa6fd8ea547fc625e352f3117c8c6c28b5b834c3d5bde77e6f8af1c17911"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/architecture_natural_registration.py",
+      "sha256": "7b7c9bda94f63b4e19475527a91971e0235ebd1b725957c2bc13a5f3d82cda47"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/experiment_population.py",
+      "sha256": "17b703261e5ee9bab82365f3cfef3e3fe7fb1235fdf41b0feefb4c01f8ee796d"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_text_policy.py",
+      "sha256": "5699ef7847fbf9e7239708704e5499a386bc0f34225a22f56b30f51c280c99fb"
+    },
+    {
+      "relpath": "tests/unit/test_joint_role_import.py",
+      "sha256": "6bc635f6528e091d0704d612316c7cd4e8bfba49b5e27f285d78ad74ae50205a"
+    },
+    {
+      "relpath": "tests/unit/test_joint_role_stage_admission.py",
+      "sha256": "083c4e68764630dd499c6d03a0ba3e2e71e265dbe9a6427d730ca3d769503e61"
+    }
+  ],
+  "read_countersigned": false,
+  "remaining": [
+    "Root exact policy compile and held preparation",
+    "Separate capacity metadata adapter review and registration",
+    "Fresh complete capacity and natural structural proof",
+    "Separately reviewed paired analyzer and final N100 intent",
+    "Full joint N100 comparison and complete-family interpretation",
+    "Current complete other-carrier execution remains unproved under existing holds"
+  ],
+  "reviewed_commit": "869626749a5100f3878a00bb1c4b621d43b187ec",
+  "runtime_admission": false,
+  "schema": "saea-root-joint-custody-source-disposition-v1",
+  "source_index": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-custody-engineering-v1/source-pins-v1.json",
+    "sha256": "cc0f95a431c77b30ec9a55d09ed35b3ce43fd17fea4649a12c676d570f5db131"
+  },
+  "status": "ROOT_ACCEPTED_EXACT_REVIEWED_SOURCE_FOR_SERIAL_INTEGRATION",
+  "unchanged_dependencies": [
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py",
+      "sha256": "4459fadc98738b432c7f4dd11c78ec839e3c717d7cdafcc62e78df814c3203b8"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_process_report.py",
+      "sha256": "6a556faf73ae72da04e9a725a91e4e2e4721696a03ccd3c91cfd003733a2caed"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/core/flight/runtime.py",
+      "sha256": "d5b547f5477a2f2e6c21239f54e0a161ba880c7ae758c28d402034e62a8321a2"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/kb_policy.py",
+      "sha256": "b0d8d9d46d69f57c3ee377af61a301ec7cd8078b2c2a4bdd47e5ed2cd8f6c32b"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_provider.py",
+      "sha256": "5c7f1ae485f62fc8dc64ad4c24a2ef6846f5372d923bc80c0d69b31876b245db"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/knowledge_stores.py",
+      "sha256": "732c40d03f25c9797794affea1a04d7370d995551d8a2d5466faa75ed2b491af"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/phase_supply.py",
+      "sha256": "cb4716df8fd458fe931f90a157daeaa1c1d801b8aa91c072b88a926cb605bfd6"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_context_structural_entry.py",
+      "sha256": "34fcb6c947ef4a3f5d64562e30483265376672d078cd2752e0f4dd1f6b3b452d"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/contracts/__init__.py",
+      "sha256": "b9fa3aae5f081ba9de1aaf8732ddd9a434d5d71cf19b1b36083197c1d43692f5"
+    },
+    {
+      "relpath": "scripts/analysis/manual_architecture_process_derivative.py",
+      "sha256": "b52595582e03c041fcd6803ea8af5d884170b8865f4fe5195a84993397118f2f"
+    },
+    {
+      "relpath": "tests/unit/test_flight_registration_check.py",
+      "sha256": "cab6eb65dfb3dc2d97f23f23b0e37caaf0db0092d1e6a1038ba4323fdaefe19b"
+    }
+  ],
+  "verification_deviation": {
+    "cause": "Existing opt-in real-tree registration test was included under inherited materialized SPEECHRL_DATA_DIR",
+    "classification": "Mixed-scope initial baseline; not source-only synthetic evidence",
+    "correction": "Original log/test preserved; final rerun removes every DATA-named alias and explicitly deselects that case",
+    "original_data_files_accessed": "Not inferred; no detailed actual DATA output inspected; root audits gate source independently",
+    "original_log": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-custody-engineering-v1/synthetic-run2.stdout.log",
+      "sha256": "89f623c4f9d19822f927144ae04a74f72d16e6805c6f15383863d6ac13e5fb6d"
+    },
+    "original_reported_cases": 390,
+    "original_stderr": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-custody-engineering-v1/synthetic-run2.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "original_test_source": {
+      "path": "/mnt/c/Users/35686/.codex/worktrees/joint-n100-custody-v1/speech-aware-evidence-acquisition/tests/unit/test_flight_registration_check.py",
+      "relpath": "tests/unit/test_flight_registration_check.py",
+      "sha256": "cab6eb65dfb3dc2d97f23f23b0e37caaf0db0092d1e6a1038ba4323fdaefe19b",
+      "unchanged_from_integrated_base": true
+    }
+  }
+}

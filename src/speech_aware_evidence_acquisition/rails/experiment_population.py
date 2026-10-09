@@ -232,7 +232,7 @@ def population_stage_spec(pin, *, repo_root, cohort_id, allow_architecture=False
     return result
 
 
-def require_architecture_capacity_registration(values, cell, registered_plan, *, repo_root):
+def require_architecture_capacity_registration(values, cell, registered_plan, *, repo_root, data_root=None):
     """Validate an explicitly declared manual, nongenerative capacity registration.
 
     This opt-in is restricted to check/prepare-supply/prompt-fit cells. It neither
@@ -303,6 +303,12 @@ def require_architecture_capacity_registration(values, cell, registered_plan, *,
             and registered_plan["official_score_jobs"] == 0
             and registered_plan.get("scientific_feedback") is False,
             "manual capacity registered cap or read scope differs")
+    if values.get("joint_role_basis") is not None:
+        from .architecture_natural_registration import require_joint_proof_registration
+        require_joint_proof_registration(values,cell,[registered_plan],population,
+                repo_root=repo_root,data_root=data_root,stage="capacity")
+    else:
+        require(registered_plan.get("joint_role_basis") is None, "unsolicited joint capacity basis refused")
     return dict(member_id=member["member_id"], execution_config=deepcopy(member["execution_config"]),
                 execution_identity_sha256=content_hash(member), model_per_trajectory=native.max_contacts,
                 rehearsal_profile=profile, contact_cap=plan["planned_model_calls"], runtime_admission=False)

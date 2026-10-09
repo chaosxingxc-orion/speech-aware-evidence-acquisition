@@ -211,12 +211,30 @@ def validate_inputs(spec, *, repo_root, data_root):
         require_local_node_basis(spec["local_node_basis"], population, repo_root=repo_root, data_root=data_root)
     else:
         require(spec.get("local_node_basis") is None, "local node basis requires its named opt-in selector")
+    joint_pin = spec.get("joint_role_basis")
+    if joint_pin is not None:
+        from speech_aware_evidence_acquisition.rails.architecture_natural_registration import require_joint_role_basis
+        require(spec["architecture_proof"] == reader.SELECTOR
+                and decision.get("joint_role_basis") == joint_pin
+                and spec.get("natural_source_compatibility") is None,
+                "joint authoring requires exact generic basis and fresh proof")
+        population = json.loads(_read_pin(spec["experiment_population"], repo_root))
+        require_joint_role_basis(joint_pin,population,repo_root=repo_root,data_root=data_root)
+        require(all(receipt.get("joint_role_basis") == joint_pin
+                    and compose(repo_root,c["model_fragment"],c["dataset_fragment"],c["baseline_fragment"],c["experiment"]).values.get("joint_role_basis") == joint_pin
+                    for _,_,receipt,c,_,_ in members),
+                "joint complete preparation/configuration basis differs")
+    else:
+        require(decision.get("joint_role_basis") is None
+                and all(receipt.get("joint_role_basis") is None for _,_,receipt,_,_,_ in members),
+                "unsolicited joint authoring custody refused")
     extent = spec.get("architecture_extent")
     if spec.get("execution_identity_map") is not None:
         from speech_aware_evidence_acquisition.rails.architecture_natural_registration import _mapped_execution_cells
         population = json.loads(_read_pin(spec["experiment_population"], repo_root))
         mapped = _mapped_execution_cells(spec["execution_identity_map"], population,
-                                        spec["experiment_population"], extent, repo_root=repo_root)
+                                        spec["experiment_population"], extent, repo_root=repo_root,
+                                         **({"data_root":data_root} if joint_pin is not None else {}))
         require([(label, c.document["cell_id"], configured.config_hash) for label, c, configured in mapped]
                 == [(label, c["cell_id"], receipt["config_hash"]) for label, _, receipt, c, _, _ in members],
                 "authoring preparation differs from its complete pinned execution identity map")
@@ -485,6 +503,8 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
                     document["local_node_basis"] = deepcopy(spec["local_node_basis"])
                 if spec.get("natural_source_compatibility") is not None:
                     document["natural_source_compatibility"] = deepcopy(spec["natural_source_compatibility"])
+                if spec.get("joint_role_basis") is not None:
+                    document["joint_role_basis"] = deepcopy(spec["joint_role_basis"])
                 if spec.get("execution_identity_map") is not None:
                     document["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
                 plans.append(document)
@@ -632,6 +652,9 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
     if spec.get("natural_source_compatibility") is not None:
         wrapper["natural_source_compatibility"] = deepcopy(spec["natural_source_compatibility"])
         recipe["natural_source_compatibility"] = deepcopy(spec["natural_source_compatibility"])
+    if spec.get("joint_role_basis") is not None:
+        wrapper["joint_role_basis"] = deepcopy(spec["joint_role_basis"])
+        recipe["joint_role_basis"] = deepcopy(spec["joint_role_basis"])
     if spec.get("execution_identity_map") is not None:
         wrapper["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
         recipe["execution_identity_map"] = deepcopy(spec["execution_identity_map"])

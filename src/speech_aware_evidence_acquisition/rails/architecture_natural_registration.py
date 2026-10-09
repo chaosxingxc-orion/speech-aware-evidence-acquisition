@@ -269,6 +269,15 @@ def require_architecture_natural_registration(values, cell, registered_plans, *,
                 and type(document.get("official_score_jobs")) is int and document["official_score_jobs"] == 0
                 and document.get("scientific_feedback") is False and document.get("learner_export") is False,
                 "natural registered plan differs from its exact configuration, scope or identity")
+    joint_pin = values.get("joint_role_basis")
+    if joint_pin is not None:
+        require(all(p.get("joint_role_basis") == joint_pin for p in plans.values()),
+                "joint natural pair basis differs")
+        require_joint_proof_registration(values,cell,list(plans.values()),population,
+                repo_root=repo_root,data_root=data_root,stage="natural")
+    else:
+        require(all(p.get("joint_role_basis") is None for p in plans.values()),
+                "unsolicited joint natural basis refused")
     result = dict(member_id=identity["member_id"], sample_ids=deepcopy(roster), generation_cap=generation_cap,
                   fit_cap=fit_cap, capacity_registration_sha256=content_hash(capacity) if recovered else qualified["registration_sha256"],
                   capacity_source_commit=capacity["worker_commit"], runtime_admission=False, read_authorized=False)
@@ -351,6 +360,14 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
     local = all(p.get("architecture_proof") in LOCAL_NODE_SELECTORS for p in plans.values())
     require(not local or len({p["architecture_proof"] for p in plans.values()}) == 1, "local node selector pair differs")
     fixed400 = values.get("architecture_extent") is not None
+    joint = values.get("joint_role_basis") is not None
+    require(not joint or (not local and not fixed400
+            and all(p.get("architecture_proof") == "manual-architecture-n20-v1"
+                    and p.get("natural_source_compatibility") is None
+                    and p.get("joint_role_basis") == values["joint_role_basis"] for p in plans.values())),
+            "joint imports require their exact generic manual basis and fresh proofs")
+    require(joint or all(p.get("joint_role_basis") is None for p in plans.values()),
+            "unsolicited joint plan basis refused")
     require(not local or (not fixed400 and all(p.get("natural_source_compatibility") is None for p in plans.values())),
             "local node requires fresh structural proof without historical compatibility")
     require(cell.get("allowed_execution_stages") == ["check", "prepare-supply", "worker", "campaign"],
@@ -366,6 +383,11 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
     identity, = [m for m in population["architecture"]["members"]
                 if m["member_id"] == values["architecture_member"] and m["cohort_id"] == values["population_cohort"]]
     cohort = require_population_binding(population, pin, identity["cohort_id"], values, *registered_plans)
+    joint_basis = (require_joint_role_basis(values["joint_role_basis"], population,
+                    repo_root=repo_root, data_root=data_root) if joint else None)
+    if joint:
+        from .system_text_policy import verify_system_text_binding
+        verify_system_text_binding(values, cell["system_text_policy_binding"], repo_root=repo_root, data_root=data_root)
     if local:
         basis = values.get("local_node_basis")
         require(basis is not None and plans["generation"]["architecture_proof"] == "local-" + basis.get("target_role", "") + "-panel-v1", "local node selector and target role differ")
@@ -393,7 +415,8 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
     natural = (_fixed400_natural(values, plans, population, repo_root=repo_root, data_root=data_root)
                if fixed400 else _qualified_natural_family(population, pin, plans["generation"]["natural_prerequisite"],
                    prerequisite, capacity, repo_root=repo_root, data_root=data_root, compatibility=compatibility,
-                   decision_pin=plans["generation"].get("decision_receipt")))
+                   decision_pin=plans["generation"].get("decision_receipt"),
+                   joint_basis=values.get("joint_role_basis")))
     member, = [m for m in capacity["members"] if m["member_id"] == identity["member_id"]]
     roster = values["populations"][0]["ids"]
     require(len(values["populations"]) == 1 and type(values["population"]["count"]) is int
@@ -418,6 +441,12 @@ def require_architecture_n20_registration(values, cell, registered_plans, *, rep
                 and receipt.get("predecessor_preparation_receipt")
                 == values["local_node_basis"]["source_preparation_receipt"],
                 "local node preparation receipt basis differs")
+    if joint:
+        require(receipt.get("joint_role_basis") == values["joint_role_basis"]
+                and receipt.get("predecessor_preparation_receipt")
+                == json.loads(_read_pin(values["joint_role_basis"], repo_root))["source_preparation_receipt"]
+                and prepared.get("output") == joint_basis["output"],
+                "joint preparation lost original full400/N100 custody")
     _require_prepared_implementation(prepared, repo_root, values)
     require(prepared.get("output_sha256") == receipt.get("output_sha256"), "N20 prepared output binding differs")
     require(fixed400 or local or receipt["source_prepared_phase_supply"]
@@ -536,11 +565,14 @@ def _require_prepared_implementation(prepared, repo_root, values):
                 for name, path in paths.items()), "N20 prepared implementation source differs")
 
 
-def _mapped_execution_cells(pin, population, population_pin, extent, *, repo_root):
+def _mapped_execution_cells(pin, population, population_pin, extent, *, repo_root, data_root=None):
     """Compose a complete pinned successor map without pinning its future config."""
     root = Path(repo_root).resolve()
     mapping = json.loads(_read_pin(pin, root))
     from .local_node_panel import MAP_SCHEMA, mapped_local_node_cells
+    if mapping.get("schema") == JOINT_MAP_SCHEMA:
+        require(extent is None, "joint map cannot inherit historical extent")
+        return _mapped_joint_cells(mapping, population, population_pin, repo_root=root, data_root=data_root)
     if mapping.get("schema") == MAP_SCHEMA:
         require(extent is None, "local node map cannot inherit historical fixed-roster extent")
         return mapped_local_node_cells(mapping, population, population_pin, repo_root=root)
@@ -644,9 +676,16 @@ def _require_n20_root_decision(plans, population, natural, *, repo_root, data_ro
     map_pin = decision.get("execution_identity_map")
     require(all(p.get("execution_identity_map") == map_pin for p in plans.values()),
             "manual root decision identity maps differ")
+    joint_pin = plans["generation"].get("joint_role_basis")
+    if joint_pin is not None:
+        require(decision.get("joint_role_basis") == joint_pin == plans["fit"].get("joint_role_basis")
+                and map_pin is not None and decision.get("natural_source_compatibility") is None,
+                "joint root admission requires exact basis/map and fresh proof")
+    else:
+        require(decision.get("joint_role_basis") is None, "unsolicited joint root admission refused")
     if map_pin is not None:
         cells = _mapped_execution_cells(map_pin, population, plans["generation"]["experiment_population"],
-                                        extent, repo_root=repo_root)
+                                        extent, repo_root=repo_root, **({"data_root":data_root} if joint_pin is not None else {}))
     else:
         cells = []
         for member in population["architecture"]["members"]:
@@ -672,9 +711,12 @@ def _require_n20_root_decision(plans, population, natural, *, repo_root, data_ro
                         "N20 root member identity differs from its independently composed cell")
     require(decision.get("eligible_run_ids") == expected_ids and len(set(expected_ids)) == len(expected_ids),
             "N20 root admission family eligibility differs")
+    if joint_pin is not None:
+        require_joint_adaptive_disposition(decision, joint_pin, population, cells,
+                repo_root=repo_root, data_root=data_root)
 
 
-def _qualified_natural_family(population, pin, prerequisite, capacity_prerequisite, capacity, *, repo_root, data_root, compatibility=None, decision_pin=None):
+def _qualified_natural_family(population, pin, prerequisite, capacity_prerequisite, capacity, *, repo_root, data_root, compatibility=None, decision_pin=None, joint_basis=None):
     """Validate all raw-pinned structural prerequisites without reading task answers."""
     require(data_root is not None and isinstance(prerequisite, dict)
             and set(prerequisite) == {"registration", "qualification"}, "exact N20 natural prerequisite required")
@@ -834,4 +876,448 @@ def _qualified_natural_family(population, pin, prerequisite, capacity_prerequisi
         eligible.extend([member["run_id"], member["fit_run_id"]])
     require(admission.get("eligible_run_ids") == eligible and len(set(eligible)) == len(eligible),
             "N20 natural admission eligibility differs")
+    if joint_basis is not None:
+        require(compatibility is None and decision_pin is not None,
+                "joint natural proof cannot reuse historical source compatibility")
+        next_decision = read(decision_pin)
+        require(next_decision.get("joint_role_basis") == joint_basis,
+                "joint N100 natural prerequisite authority differs")
+        _require_joint_completed_natural(admission, qualified, next_decision, population, pin,
+                repo_root=repo_root, data_root=data_root)
+    else:
+        require(admission.get("joint_role_basis") is None, "unsolicited joint natural prerequisite refused")
     return qualified
+
+
+def _require_joint_completed_natural(admission, qualified, next_decision, population, population_pin, *, repo_root, data_root):
+    """Join the completed original proof to its full prospective N100 parent map."""
+    basis_pin = next_decision.get("joint_role_basis")
+    require(basis_pin is not None and admission.get("joint_role_basis") == basis_pin,
+            "joint N100 and original natural admission basis differ")
+    map_pin = admission.get("joint_proof_identity_map")
+    mapping = json.loads(_read_pin(map_pin, repo_root))
+    require(mapping.get("generation_identity_map") == next_decision.get("execution_identity_map"),
+            "joint natural proof belongs to another N100 parent family")
+    cells = _mapped_joint_proof_cells(map_pin, population, population_pin,
+            repo_root=repo_root, data_root=data_root, stage="natural")
+    require_joint_adaptive_disposition(admission, basis_pin, population, cells,
+            repo_root=repo_root, data_root=data_root, stage="natural")
+    expected = []
+    require(len(qualified["members"]) == len(cells), "joint original natural family is partial")
+    for member, (label, cell, config) in zip(qualified["members"], cells, strict=True):
+        c = cell.document
+        require(member["label"] == label and member["experiment"] == c["cell_id"]
+                and member["run_id"] == c["run_id"] and member["attempt_id"] == c["attempt_id"]
+                and member["config_hash"] == config.config_hash
+                and member["configured_sample_ids"] == config.values["populations"][0]["ids"]
+                and member["fit_run_id"] == config.values["native_contact_fit"]["run_id"],
+                "joint qualified original natural member differs from its separate registration")
+        expected.extend((c["run_id"], config.values["native_contact_fit"]["run_id"]))
+    require(admission.get("eligible_run_ids") == expected,
+            "joint complete natural eligibility differs from original proof map")
+
+
+JOINT_BASIS_SCHEMA = "saea-joint-role-import-n100-basis-v1"
+JOINT_MAP_SCHEMA = "saea-joint-role-import-execution-identity-map-v1"
+JOINT_SOURCE_DECISION = {
+    "relpath": "docs/readiness/2026-10-09-slurp-local-to-joint-n100-v1/root-decision-v1.json",
+    "sha256": "68f4ab8ce4d71e8731f743e357738786fc78fb086022a135245cbcf413dd3d51",
+}
+JOINT_DONOR_PREPARATIONS = {
+    "solver": {"relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/prepared-v1/candidate-4-generation-prepared-v1.json",
+               "sha256": "0577d4b04c7f9a162cf5ba041c2e7021644318360e336d1c859e57d6fdabdf5b"},
+    "reviewer": {"relpath": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-v1/prepared-v1/candidate-1-generation-prepared-v1.json",
+                 "sha256": "21a535092ca6bf9697ed2d78f29803c46b362c2d5f99241c78c05442572f9f18"},
+}
+JOINT_FULL_SUPPLY = {
+    "relpath": "prepared/SAEA-SLURP-SYSTEM-TEXT-UPDATE2-RH1-L-PARENT-V1/phase-supply-v1.json",
+    "sha256": "99ba974066d6a87f086e8850c316252857e205e5213387e9ae7ed030c22900f0",
+}
+JOINT_PROOF_ROSTER = {
+    "relpath": "configs/dataset/slurp-speech-native-simple-consumption-n100-graph4-v1.json",
+    "sha256": "fe35d4a89f4ddac7c4a3f4b32da1ed244f9c1f1d422d56098d6118085190d80d",
+}
+
+
+def _joint_original_spend(bound, *, repo_root):
+    """Retain all original generation/FIT identities without reading outcomes."""
+    runs, attempts = set(), set()
+    for receipt in [bound["receipt"], *bound["donor_receipts"].values()]:
+        cell, = load_campaign_cells(repo_root, receipt["experiment"])
+        c = cell.document
+        config = compose(repo_root, c["model_fragment"], c["dataset_fragment"],
+                         c["baseline_fragment"], receipt["experiment"])
+        require(c["run_id"] == receipt["run_id"] and c["attempt_id"] == receipt["attempt_id"],
+                "joint original spend metadata differs")
+        fit = config.values["native_contact_fit"]
+        runs.update((c["run_id"], fit["run_id"]))
+        attempts.update((c["attempt_id"], fit["attempt_id"]))
+    return runs, attempts
+
+
+def _joint_proof_roster(population, *, repo_root):
+    """Use the original raw-pinned graph proof rather than an arbitrary subset."""
+    view = json.loads(_read_pin(JOINT_PROOF_ROSTER, repo_root))
+    ids = [item["sample_id"] for item in view["items"]]
+    require(view.get("split_role") == "discovery" and len(ids) == len(set(ids)) == view["count"]
+            and ids == population["cohorts"][0]["sample_ids"][:len(ids)],
+            "joint original complete graph proof roster differs")
+    return view, ids
+
+
+def _joint_archived_policy(binding, data_root):
+    """Resolve the exact original canonical archive without selecting a policy."""
+    from .system_search_archive import SystemSearchArchive
+    require(isinstance(binding, dict)
+            and binding.get("schema") == "saea-system-text-role-binding-v1",
+            "joint original role binding required")
+    policy_pin = binding["bundle"]
+    path = Path(data_root).resolve() / policy_pin["relpath"]
+    require(path.resolve().is_relative_to(Path(data_root).resolve())
+            and path.parent.name == "policies" and path.name == binding["bundle_id"] + ".json",
+            "joint original policy must retain its canonical archive path")
+    _read_pin(policy_pin, data_root)
+    return SystemSearchArchive(path.parent.parent).load_policy(binding["bundle_id"])
+
+
+def _joint_policy_projection(source, candidate, texts, *, repo_root):
+    """Refuse every effective change beyond content-addressed exact role text."""
+    normalized, actual_texts = [], []
+    for policy in (source, candidate):
+        value = drop_null_arms(deepcopy(policy))
+        value.pop("what_this_is", None)
+        material = value["phase_material"]
+        params, = [c["params"] for c in value["native_episode"]["consumption_module"]["components"]
+                   if c["component_id"] == "knowledge-consumption-opportunity"]
+        role_text = {}
+        for role in ("perception", "solver", "reviewer", "planner"):
+            relative = material[role]["instruction_template"]
+            path = (Path(repo_root) / "configs" / relative).resolve()
+            require(path.is_relative_to(Path(repo_root).resolve() / "configs")
+                    and params.get(role + "_template") == relative,
+                    "joint role template custody differs")
+            role_text[role] = path.read_bytes()
+            material[role]["instruction_template"] = "<bound-" + role + "-template>"
+            params[role + "_template"] = material[role]["instruction_template"]
+        normalized.append(value)
+        actual_texts.append(role_text)
+    require(normalized[0] == normalized[1], "joint import changed full-seed topology or fixed configuration")
+    require(actual_texts[1] == {r: texts[r].encode("utf-8") for r in actual_texts[0]},
+            "joint compiled role bytes differ from exact seed/import mask")
+
+
+def require_joint_role_basis(basis_pin, population, *, repo_root, data_root):
+    """Bind adaptive deterministic imports to original full400/N100 custody.
+
+    This metadata validator grants no contacts, registration, READ or adoption.
+    """
+    from .local_node_panel import SOURCE_POPULATION, REVIEWER_SOURCE_RECEIPT
+    from .system_text_policy import import_exact_role_texts, cumulative_sources
+    require(data_root is not None, "joint basis requires original DATA custody")
+    basis = json.loads(_read_pin(basis_pin, repo_root))
+    require(isinstance(basis, dict) and set(basis) == {
+        "schema", "root_decision", "source_population", "source_preparation_receipt",
+        "donor_preparation_receipts", "root_selection_sources"}
+        and basis["schema"] == JOINT_BASIS_SCHEMA
+        and basis["root_decision"] == JOINT_SOURCE_DECISION
+        and basis["source_population"] == SOURCE_POPULATION
+        and basis["source_preparation_receipt"] == REVIEWER_SOURCE_RECEIPT
+        and basis["donor_preparation_receipts"] == JOINT_DONOR_PREPARATIONS,
+        "joint exact owner/source/preparation basis differs")
+    decision = json.loads(_read_pin(JOINT_SOURCE_DECISION, repo_root))
+    require(decision.get("schema") == "saea-root-local-to-joint-development-decision-v1"
+            and decision.get("status") == "SOURCE_ENGINEERING_APPROVED_RUNTIME_HELD"
+            and type(decision.get("owner_decision")) is int and decision["owner_decision"] == 227
+            and decision.get("roster_basis") == SOURCE_POPULATION
+            and decision.get("analysis", {}).get("claims_benefit") is False
+            and decision["analysis"].get("independent_validation") is False
+            and decision["analysis"].get("runtime_adoption") is False
+            and decision["analysis"].get("learner_export") is False,
+            "joint development authority does not permit broader claims")
+    original = load_population_config(SOURCE_POPULATION, repo_root=repo_root, allow_architecture=True)
+    require(len(population["cohorts"]) == len(original["cohorts"]) == 1,
+            "joint requires the complete original singleton cohort")
+    cohort, = population["cohorts"]
+    old, = original["cohorts"]
+    ids = old["sample_ids"]
+    members = population["architecture"]["members"]
+    ordered = decision["ordered_members"]
+    require(cohort["sample_ids"] == ids and len(ids) == len(set(ids)) == decision["rows_per_member"]
+            and [m["member_id"] for m in members] == [m["id"] for m in ordered]
+            and cohort["control_ids"] == [m["id"] for m in ordered if not m["imports"]]
+            and cohort["candidate_ids"] == [m["id"] for m in ordered if m["imports"]]
+            and len(cohort["control_ids"]) == decision["control_count"]
+            and len(cohort["candidate_ids"]) == decision["candidate_count"]
+            and population["sampling"] == original["sampling"]
+            and population["execution"] == original["execution"]
+            and population["contact_limits"] == original["contact_limits"],
+            "joint cohort/order/count/sampling/geometry/contact accounting differs")
+    receipt = json.loads(_read_pin(REVIEWER_SOURCE_RECEIPT, repo_root))
+    require(receipt.get("configured_sample_ids") == ids
+            and type(receipt.get("contacts")) is int and receipt["contacts"] == 0
+            and receipt.get("warm_verified") is True and receipt.get("output_equal") is True
+            and receipt.get("runtime_admission") is False
+            and receipt.get("source_prepared_phase_supply") == JOINT_FULL_SUPPLY,
+            "joint original full-seed preparation custody differs")
+    sources = [{"kind":"selection", "sha256":JOINT_SOURCE_DECISION["sha256"], "sample_ids":ids}]
+    for evidence in decision["prior_evidence"]:
+        _read_pin(evidence, repo_root)  # Raw custody only; never parse quality.
+        sources.append({"kind":"selection", "sha256":evidence["sha256"], "sample_ids":ids})
+    require(basis["root_selection_sources"] == cumulative_sources([], sources),
+            "joint root-visible complete family selection exposure is partial or changed")
+    seed = _joint_archived_policy(receipt["policy_binding"], data_root)
+    require(seed.bundle_id == decision["full_seed_bundle_id"], "joint full seed identity differs")
+    donors, donor_receipts = {}, {}
+    for role, pin in JOINT_DONOR_PREPARATIONS.items():
+        donor_receipt = json.loads(_read_pin(pin, repo_root))
+        require(donor_receipt.get("configured_sample_ids") == ids
+                and donor_receipt.get("source_prepared_phase_supply") == JOINT_FULL_SUPPLY
+                and donor_receipt.get("policy_binding", {}).get("bundle_id") == decision["donors"][role]["bundle_id"],
+                "joint original selected donor preparation or full400 basis differs")
+        donors[role] = _joint_archived_policy(donor_receipt["policy_binding"], data_root)
+        donor_receipts[role] = donor_receipt
+    source_policy = drop_null_arms(json.loads(_read_pin(receipt["source_policy"], repo_root)))
+    policies = {}
+    for identity, declared in zip(members, ordered, strict=True):
+        bundle = (import_exact_role_texts(seed, donors, roles=declared["imports"],
+                  decision=decision, selection_sources=basis["root_selection_sources"])
+                  if declared["imports"] else seed)
+        require(identity["base_bundle_id"] == bundle.bundle_id
+                and identity["active_roles"] == ["perception", "solver", "reviewer", "planner"],
+                "joint actual import identity or full-seed active roles differ")
+        candidate = drop_null_arms(json.loads(_read_pin(identity["execution_config"], repo_root)))
+        _joint_policy_projection(source_policy, candidate, bundle.as_json()["role_text"], repo_root=repo_root)
+        native = load_native_episode_config({**candidate,"carrier_lock_key":"slurp"}, default_phase_program(candidate["policy"]))
+        require(native.review_loop_enabled is True
+                and native.max_contacts == identity["model_per_trajectory"] == population["contact_limits"]["model_per_trajectory"],
+                "joint complete full-seed contact topology differs")
+        policies[identity["member_id"]] = bundle
+    from ..core.preparation import digest
+    parent = json.loads(_read_pin(JOINT_FULL_SUPPLY, data_root))
+    selected = json.loads(_read_pin(receipt["prepared_phase_supply"], data_root))
+    require(parent.get("output_sha256") == digest(parent["output"])
+            and set(parent["output"]) == {"facets","values"} and parent["output"]["facets"] == {}
+            and set(parent["output"]["values"]) == {"perception"}
+            and set(ids) <= set(parent["output"]["values"]["perception"]),
+            "joint original full400 supply seal or complete coverage differs")
+    output = {"facets":{},"values":{"perception":{sid:parent["output"]["values"]["perception"][sid] for sid in ids}}}
+    require(selected["output"] == output and selected.get("output_sha256") == receipt["output_sha256"] == digest(output),
+            "joint original same-N100 selected supply differs")
+    return {"decision":decision,"receipt":receipt,"donor_receipts":donor_receipts,
+            "policies":policies,"output":output,"source_policy":source_policy,
+            "cumulative_sources":cumulative_sources([seed,*donors.values()],basis["root_selection_sources"])}
+
+
+
+def _mapped_joint_cells(mapping, population, population_pin, *, repo_root, data_root):
+    """Validate exact seed-derived fresh identities through the existing projection."""
+    from .local_node_panel import require_local_identities, local_node_documents
+    from .experiment_population import population_stage_spec
+    from .architecture_audio_budget import derive_manual_architecture_audio_budget
+    require(isinstance(mapping,dict) and set(mapping) == {
+        "schema","experiment_population","architecture_extent","joint_role_basis","members"}
+        and mapping["schema"] == JOINT_MAP_SCHEMA and mapping["experiment_population"] == population_pin
+        and mapping["architecture_extent"] is None,
+        "joint complete fresh execution map scope differs")
+    bound = require_joint_role_basis(mapping["joint_role_basis"],population,repo_root=repo_root,data_root=data_root)
+    receipt = bound["receipt"]
+    source_cell, = load_campaign_cells(repo_root,receipt["experiment"])
+    c = source_cell.document
+    source = compose(repo_root,c["model_fragment"],c["dataset_fragment"],c["baseline_fragment"],receipt["experiment"])
+    require(source.config_hash == receipt["config_hash"], "joint original full-seed composed identity differs")
+    rows = mapping["members"]
+    require([r.get("member_id") for r in rows] == [m["member_id"] for m in population["architecture"]["members"]],
+            "joint map requires complete ordered configured family")
+    identities = [{k:v for k,v in row.items() if k != "planned_speech_audio_seconds"} for row in rows]
+    require_local_identities(identities,source_cell=c,source_fit=source.values["native_contact_fit"])
+    result = []
+    original_exp = json.loads((Path(repo_root)/"configs/experiment"/(receipt["experiment"]+".json")).read_bytes())
+    original_base = json.loads((Path(repo_root)/"configs/baseline"/(c["baseline_fragment"]+".json")).read_bytes())
+    prior_runs, prior_attempts = _joint_original_spend(bound, repo_root=repo_root)
+    for row,identity in zip(rows,identities,strict=True):
+        require(set(row) == set(identity)|{"planned_speech_audio_seconds"}
+                and type(row["planned_speech_audio_seconds"]) is int and row["planned_speech_audio_seconds"] > 0
+                and not {row["run_id"],row["fit_run_id"]}.intersection(prior_runs)
+                and not {row["attempt_id"],row["fit_attempt_id"]}.intersection(prior_attempts),
+                "joint fresh identities reuse original spend or differ in audio allowance")
+        cell, = load_campaign_cells(repo_root,row["experiment"])
+        d = cell.document
+        require(d["cell_id"] == row["cell_id"] and d["run_id"] == row["run_id"]
+                and d["attempt_id"] == row["attempt_id"] and d["baseline_fragment"] == row["experiment"]
+                and d["model_fragment"] == c["model_fragment"] and d["dataset_fragment"] == c["dataset_fragment"],
+                "joint fresh cell differs from full-seed geometry/carrier identity")
+        config = compose(repo_root,d["model_fragment"],d["dataset_fragment"],d["baseline_fragment"],row["experiment"])
+        member, = [m for m in population["architecture"]["members"] if m["member_id"] == row["member_id"]]
+        stage = population_stage_spec(population_pin,repo_root=repo_root,cohort_id=member["cohort_id"],allow_architecture=True)
+        policy = json.loads(_read_pin(member["execution_config"],repo_root))
+        report = derive_manual_architecture_audio_budget(config.values)
+        ep,bp = local_node_documents(original_exp,original_base,policy,identity,
+                policy_binding=d["system_text_policy_binding"],population_pin=population_pin,
+                cohort_id=member["cohort_id"],stage=stage,basis={},report=report)
+        bp.pop("local_node_basis");bp["joint_role_basis"] = mapping["joint_role_basis"]
+        ep["stage3_measurement"].update(tuning_roster=original_exp["stage3_measurement"]["read_roster"],
+                read_roster=original_exp["stage3_measurement"]["read_roster"],
+                independent_validation=False,runtime_adoption=False,learner_export=False)
+        actual_exp = json.loads((Path(repo_root)/"configs/experiment"/(row["experiment"]+".json")).read_bytes())
+        actual_base = json.loads((Path(repo_root)/"configs/baseline"/(row["experiment"]+".json")).read_bytes())
+        for experiment in (ep,actual_exp):experiment["cells"][0].pop("readiness",None)
+        actual_base.pop("prepared_phase_supply",None)
+        require(ep == actual_exp and bp == actual_base
+                and config.values.get("joint_role_basis") == mapping["joint_role_basis"]
+                and config.values.get("local_node_basis") is None and config.values.get("architecture_extent") is None,
+                "joint composed configuration drifted beyond exact held seed/import projection")
+        result.append((row["member_id"],cell,config))
+    return result
+
+
+def require_joint_adaptive_disposition(decision,basis_pin,population,cells,*,repo_root,data_root,stage="generation"):
+    """Authenticate only explicit adaptive discovery on the exact original roster."""
+    require(decision.get("schema") == "saea-campaign-decision-v1" and decision.get("status") == "decided"
+            and 227 in decision.get("owner_decisions",[]) and decision.get("learner_export") is False
+            and decision.get("joint_role_basis") == basis_pin,
+            "decided owner227 joint admission required")
+    bound = require_joint_role_basis(basis_pin,population,repo_root=repo_root,data_root=data_root)
+    require(stage in {"generation", "capacity", "natural"}, "unknown joint admission stage")
+    disposition = decision.get("adaptive_joint_roster_reuse")
+    ids = population["cohorts"][0]["sample_ids"]
+    proof_ids = _joint_proof_roster(population, repo_root=repo_root)[1] if stage == "natural" else None
+    require([label for label, _, _ in cells] == [m["member_id"] for m in population["architecture"]["members"]],
+            "joint adaptive disposition requires the complete ordered family")
+    expected = []
+    for label,cell,config in cells:
+        values = config.values
+        measurement = values["stage3_measurement"]
+        plan = values["execution_plan"]
+        allowed_profiles = {"bounded-discovery-probe", "model-free-check"} if stage == "capacity" else {"bounded-discovery-probe"}
+        actual_ids = values["populations"][0]["ids"]
+        require(plan.get("execution_profile") in allowed_profiles and plan.get("split_role") == "discovery"
+                and measurement.get("claims_benefit") is False and measurement.get("independent_validation") is False
+                and measurement.get("runtime_adoption") is False and measurement.get("learner_export") is False
+                and measurement.get("tuning_roster") is not None and measurement.get("read_roster") is not None
+                and (stage == "natural" or (measurement["tuning_roster"] == measurement["read_roster"] and actual_ids == ids))
+                and (stage != "natural" or actual_ids == proof_ids),
+                "joint adaptive reuse cannot broaden scope, claim benefit, hide tuning or change roster")
+        d=cell.document
+        expected.append({"member_id":label,"cell_id":d["cell_id"],"run_id":d["run_id"],"attempt_id":d["attempt_id"],
+            "config_hash":config.config_hash,"tuning_roster":measurement["tuning_roster"],
+            "read_roster":measurement["read_roster"],"intersection_sample_ids":actual_ids})
+    require(isinstance(disposition,dict) and set(disposition) == {
+        "schema","root_decision","joint_role_basis","scope","claims_benefit","independent_validation",
+        "runtime_adoption","learner_export","members","cumulative_sources","stage"}
+        and disposition["stage"] == stage
+        and disposition["schema"] == "saea-owner227-adaptive-joint-roster-reuse-v1"
+        and disposition["root_decision"] == JOINT_SOURCE_DECISION and disposition["joint_role_basis"] == basis_pin
+        and disposition["scope"] == "adaptive-development-discovery-only"
+        and all(disposition[k] is False for k in ("claims_benefit","independent_validation","runtime_adoption","learner_export"))
+        and disposition["members"] == expected
+        and disposition["cumulative_sources"] == bound["cumulative_sources"],
+        "exact root-decided complete adaptive overlap disposition required")
+    return disposition
+
+
+JOINT_PROOF_MAP_SCHEMA = "saea-joint-role-import-proof-identity-map-v1"
+
+
+def _mapped_joint_proof_cells(map_pin,population,population_pin,*,repo_root,data_root,stage):
+    """Bind exact complete fresh capacity/natural companions; never arbitrary subsets."""
+    import importlib.util
+    require(stage in {"capacity","natural"}, "unknown joint proof stage")
+    mapping=json.loads(_read_pin(map_pin,repo_root))
+    require(isinstance(mapping,dict) and set(mapping) == {
+        "schema","stage","experiment_population","joint_role_basis","generation_identity_map","proof_roster","members"}
+        and mapping["schema"] == JOINT_PROOF_MAP_SCHEMA and mapping["stage"] == stage
+        and mapping["experiment_population"] == population_pin and mapping["proof_roster"] == JOINT_PROOF_ROSTER,
+        "joint exact proof identity map scope differs")
+    generation_map=json.loads(_read_pin(mapping["generation_identity_map"],repo_root))
+    require(generation_map.get("joint_role_basis") == mapping["joint_role_basis"], "joint proof parent map basis differs")
+    parents=_mapped_joint_cells(generation_map,population,population_pin,repo_root=repo_root,data_root=data_root)
+    rows=mapping["members"]
+    require(isinstance(rows,list) and [r.get("member_id") for r in rows] == [r[0] for r in parents],
+            "joint proof requires complete ordered controls/A/A/import family")
+    path=Path(repo_root)/"scripts/preparation/prepare_manual_audio_recovery.py"
+    spec=importlib.util.spec_from_file_location("_joint_existing_preparation",path)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    graph_dataset="slurp-speech-native-simple-consumption-n100-graph4-v1"
+    graph_view, _ = _joint_proof_roster(population, repo_root=repo_root)
+    result=[];runs=[];attempts=[];names=[]
+    parent_runs={v for _,c,config in parents for v in (c.document["run_id"],config.values["native_contact_fit"]["run_id"])}
+    parent_attempts={v for _,c,config in parents for v in (c.document["attempt_id"],config.values["native_contact_fit"]["attempt_id"])}
+    bound = require_joint_role_basis(mapping["joint_role_basis"],population,repo_root=repo_root,data_root=data_root)
+    original_runs, original_attempts = _joint_original_spend(bound, repo_root=repo_root)
+    parent_runs.update(original_runs); parent_attempts.update(original_attempts)
+    for row,(label,parent,parent_config) in zip(rows,parents,strict=True):
+        fields={"member_id","experiment","cell_id","run_id","attempt_id","config_hash"}
+        if stage == "natural":fields|={"fit_run_id","fit_attempt_id"}
+        require(isinstance(row,dict) and set(row) == fields and row["member_id"] == label
+                and row["experiment"] == row["cell_id"], "joint proof identity fields differ")
+        import re
+        require(all(isinstance(row[k],str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*",row[k])
+                    for k in fields-{"config_hash"})
+                and re.fullmatch(r"[a-f0-9]{64}",row["config_hash"]), "joint proof identity is not path-safe")
+        cell,=load_campaign_cells(repo_root,row["experiment"]);c=cell.document
+        config=compose(repo_root,c["model_fragment"],c["dataset_fragment"],c["baseline_fragment"],row["experiment"])
+        require(config.config_hash == row["config_hash"] and c["cell_id"] == row["cell_id"]
+                and c["run_id"] == row["run_id"] and c["attempt_id"] == row["attempt_id"]
+                and c["baseline_fragment"] == row["experiment"]
+                and config.values.get("joint_role_basis") == mapping["joint_role_basis"],
+                "joint proof composed identity/basis differs")
+        pc=parent.document
+        ep=json.loads((Path(repo_root)/"configs/experiment"/(pc["cell_id"]+".json")).read_bytes())
+        bp=json.loads((Path(repo_root)/"configs/baseline"/(pc["baseline_fragment"]+".json")).read_bytes())
+        budget={} if stage == "natural" else module.local_capacity_budget(ep,bp,
+                    **_joint_knowledge_counts(bp,data_root))
+        identity={k:row[k] for k in fields-{"member_id","config_hash"}}
+        expected_exp,expected_base=module.local_companion_documents(ep,bp,identity,kind=stage,
+            graph_view=graph_view,graph_dataset=graph_dataset,capacity_budget=budget)
+        actual_exp=json.loads((Path(repo_root)/"configs/experiment"/(row["experiment"]+".json")).read_bytes())
+        actual_base=json.loads((Path(repo_root)/"configs/baseline"/(row["experiment"]+".json")).read_bytes())
+        for document in (expected_exp,actual_exp):document["cells"][0].pop("readiness",None)
+        actual_base.pop("prepared_phase_supply",None)
+        require(expected_exp == actual_exp and expected_base == actual_base,
+                "joint proof changed fields outside the exact existing companion projection")
+        runs.append(row["run_id"]);attempts.append(row["attempt_id"]);names.append(row["experiment"])
+        if stage == "natural":runs.append(row["fit_run_id"]);attempts.append(row["fit_attempt_id"])
+        result.append((label,cell,config))
+    require(len(set(runs)) == len(runs) and len(set(attempts)) == len(attempts)
+            and len(set(names)) == len(names) and not set(runs).intersection(parent_runs)
+            and not set(attempts).intersection(parent_attempts), "joint proof repeats generation or proof spend identities")
+    return result
+
+
+def _joint_knowledge_counts(baseline,data_root):
+    """Count original released snapshots for the existing pure capacity estimator."""
+    from .knowledge import KnowledgeSnapshot
+    result={}
+    for key,name in (("slot-contracts","slot_value_count"),("intent-boundaries","intent_value_count")):
+        pin=baseline["knowledge_stores"][key]["snapshot"]
+        snapshot=KnowledgeSnapshot.from_frozen_json(json.loads((Path(data_root)/pin["relpath"]).read_bytes()))
+        require(snapshot.content_hash() == pin["sha256"], "joint original capacity snapshot identity differs")
+        result[name]=len(snapshot.values)
+    return result
+
+
+def require_joint_proof_registration(values,cell,plans,population,*,repo_root,data_root,stage):
+    """Authenticate the separately decided full structural/FIT family after its canonical gate."""
+    basis_pin=values["joint_role_basis"]
+    require(all(p.get("joint_role_basis") == basis_pin for p in plans), "joint proof plan basis differs")
+    pins={json.dumps(p.get("joint_proof_identity_map"),sort_keys=True) for p in plans}
+    decisions={json.dumps(p.get("decision_receipt"),sort_keys=True) for p in plans}
+    require(len(pins) == len(decisions) == 1 and "null" not in pins|decisions,
+            "joint proof pair requires exact map and separate decided root admission")
+    map_pin=plans[0]["joint_proof_identity_map"]
+    cells=_mapped_joint_proof_cells(map_pin,population,values["experiment_population"],
+                repo_root=repo_root,data_root=data_root,stage=stage)
+    matches=[(c,config) for label,c,config in cells if label == values["architecture_member"]]
+    require(len(matches) == 1 and matches[0][0].document == cell
+            and matches[0][1].config_hash == _canonical_hash(values), "joint proof plan names another original member")
+    decision=json.loads(_read_pin(plans[0]["decision_receipt"],data_root))
+    expected=[]
+    for _,c,config in cells:
+        expected.append(c.document["run_id"])
+        if stage == "natural":expected.append(config.values["native_contact_fit"]["run_id"])
+    require(decision.get("joint_proof_identity_map") == map_pin
+            and decision.get("experiment_population") == values["experiment_population"]
+            and decision.get("eligible_run_ids") == expected and len(set(expected)) == len(expected),
+            "joint separate proof admission eligibility differs")
+    require_joint_adaptive_disposition(decision,basis_pin,population,cells,
+            repo_root=repo_root,data_root=data_root,stage=stage)

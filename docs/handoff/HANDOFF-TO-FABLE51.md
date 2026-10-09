@@ -1,5 +1,13 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Joint role custody source accepted (2026-10-09T06:46:35.129676+00:00)
+
+Root accepted and serially integrates the exact deterministic joint-role custody source at869626749 after all four original fenced shards completed:717 distinct passes, one named real-tree deselection, zero observed fence refusals. Independent GPT-6 Astra Ultra review passed112 cases including26 additional challenges and verified21 source pins. The original390-case mixed-scope run remains preserved and excluded from synthetic evidence; no original-file access is inferred from it. Evidence: `docs/receipts/continuation/2026-10-09-joint-custody-source-approved-v1.json`. The accepted raw-stage statistics and all five prepared-runtime dependency bytes remain unchanged.
+
+The joint path now preserves exact seed/donor role imports, full ancestry and root-selection exposure, original full400-to-N100 supply, complete proof rosters, fresh stage identities and an explicit narrowly authenticated adaptive-roster disposition. Root may next compile the decided five policies and prepare held inputs. Capacity registration adaptation and optional paired contrasts are separate source reviews proceeding in parallel; no new GPU/model/tokenizer/scorer contact, registration or READ follows from source approval alone. Preserve the full five-member N100 decision and final reviewed analysis binding before scientific launch.
+
+Keep one serial GPU campaign/four concurrent inputs, overlapping CPU engineering/scoring,4GiB floors/full output reserves and scoped15minute monitoring only on actual launch. Use Linux-local synthetic fixtures for subsequent tests. The goal remains active/incomplete; no stable system benefit or learning gain is established, other-carrier holds remain, and human review is required before8x400 or equivalent split.
+
 ## Joint stage authoring gap identified before contact (2026-10-09T06:07:15.241335+00:00)
 
 Root source inspection found that the unchanged historical capacity convenience helper omits joint basis/proof-map declarations, while the local bridge requires a single target role. Do not pass the joint family through those unchanged local wrappers. The canonical runtime and complete qualifiers remain reusable; the missing work is a narrow reviewed metadata/registration adapter with exact final configuration and decision bindings. Preserve all historical helpers. Evidence: `docs/receipts/continuation/2026-10-09-joint-stage-authoring-source-gap-v1.json`. Sol prioritizes this seam after the combined custody source freeze, ahead of optional paired-analysis implementation. No joint policy authoring, capacity contact or generation has occurred.
@@ -1168,7 +1176,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-09T06:07:15.241335+00:00
+Last refreshed: 2026-10-09T06:46:35.129676+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

@@ -60,6 +60,7 @@ def validate_source_registration(recipe, registration, owner, *, repo_root, data
         and recipe.get("architecture_proof") in SELECTORS
         and recipe.get("architecture_extent") == registration.get("architecture_extent")
         and recipe.get("natural_source_compatibility") == registration.get("natural_source_compatibility")
+        and recipe.get("joint_role_basis") == registration.get("joint_role_basis")
         and registration.get("schema") == REGISTRATION
         and recipe.get("family_id") == registration.get("family_id")
         and recipe.get("learner_export") is False
@@ -187,6 +188,9 @@ def validate_source_registration(recipe, registration, owner, *, repo_root, data
             ),
             "manual registered pair or immutable source binding differs",
         )
+        require(configured.values.get("joint_role_basis") == recipe.get("joint_role_basis")
+                and all(p.get("joint_role_basis") == recipe.get("joint_role_basis") for p in pair),
+                "joint source recipe/registration/configuration/plan custody differs")
         if recipe["architecture_proof"] in LOCAL_NODE_SELECTORS:
             basis = recipe.get("local_node_basis")
             require(isinstance(basis, dict) and basis.get("target_role") in {"solver", "reviewer"}

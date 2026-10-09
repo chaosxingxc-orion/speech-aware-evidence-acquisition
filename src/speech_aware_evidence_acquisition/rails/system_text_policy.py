@@ -494,6 +494,57 @@ def apply_text_proposal(proposal, *, parents, added_sources, knowledge=None, con
     return SystemTextPolicyBundle.from_json(d, parents=parents)
 
 
+def import_exact_role_texts(seed, donors, *, roles, decision, selection_sources):
+    """Materialize deterministic role imports; grant no proposal or runtime authority.
+
+    All selected parents remain direct custody even for a one-role import. Runtime
+    settings and optimizer experience remain the full seed's exact fields.
+    """
+    require(isinstance(decision, dict)
+            and decision.get("schema") == "saea-root-local-to-joint-development-decision-v1"
+            and decision.get("status") == "SOURCE_ENGINEERING_APPROVED_RUNTIME_HELD"
+            and type(decision.get("owner_decision")) is int and decision["owner_decision"] == 227
+            and decision.get("semantic_proposal_calls") == 0
+            and type(decision["semantic_proposal_calls"]) is int,
+            "explicit held owner227 role import decision required")
+    require(isinstance(donors, dict) and set(donors) == {"solver", "reviewer"}
+            and seed.bundle_id == decision.get("full_seed_bundle_id")
+            and all(donors[r].bundle_id == decision.get("donors", {}).get(r, {}).get("bundle_id")
+                    and decision["donors"][r].get("role") == r for r in donors),
+            "exact full seed and both selected donor identities required")
+    require(isinstance(roles, list) and roles
+            and roles == [r for r in ("solver", "reviewer") if r in roles],
+            "ordered unique Solver/Reviewer import mask required")
+    original = seed.as_json()
+    require(original["schema"] == NODE_BUNDLE_SCHEMA, "role import requires complete four-role seed")
+    fixed = set(original) - {"parent_ids", "role_text", "cumulative_sources"}
+    for role, donor in donors.items():
+        d = donor.as_json()
+        require(set(d) == set(original) and all(d[k] == original[k] for k in fixed),
+                "role donor differs in seed, context, knowledge, construction or experience substrate")
+        require(seed.bundle_id in d["parent_ids"]
+                and all(d["role_text"][other] == original["role_text"][other]
+                        for other in original["role_text"] if other != role),
+                "role donor changed another role or lacks original full-seed parent custody")
+    validate_sources(selection_sources)
+    require(selection_sources and all(s["kind"] == "selection" and s["sample_ids"] for s in selection_sources),
+            "complete root-selection exposure required")
+    parents = [seed, donors["solver"], donors["reviewer"]]
+    require(len({p.bundle_id for p in parents}) == len(parents), "actual distinct role donor parents required")
+    result = copy.deepcopy(original)
+    for role in roles:
+        result["role_text"][role] = donors[role].as_json()["role_text"][role]
+        require(result["role_text"][role] != original["role_text"][role],
+                "declared role import must contain actual changed donor text")
+    result["parent_ids"] = [p.bundle_id for p in parents]
+    result["cumulative_sources"] = cumulative_sources(parents, selection_sources)
+    require(all(result[k] == original[k] for k in fixed)
+            and all(result["role_text"][r] == original["role_text"][r]
+                    for r in original["role_text"] if r not in roles),
+            "exact role import changed a nonimported seed field")
+    return SystemTextPolicyBundle.from_json(result, parents=parents)
+
+
 def compile_system_text_policy(baseline, bundle, *, repo_root, output_root, enabled=True, data_root=None):
     """Stage content-addressed role texts and compile with the shared module.
 
