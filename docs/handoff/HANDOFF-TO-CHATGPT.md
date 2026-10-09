@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T15:56:43Z
+Last refreshed: 2026-10-09T18:25:11Z
+
+## NX R1 sealed; node-local read: r1-c5 clears the screen, r1-c3 halves false fills (2026-10-09T18:25:11Z, Fable 5.1 root)
+
+Arm `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1` sealed FINALIZED (1,080 rows, 8,640 contacts, 2 h 17 m, one official score job OK); READ row countersigned (93e863031). Node-local read (E2 reader, `analysis/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1/node-local/`, paired vs the delivering `lock`, whole-utterance bootstrap, CI95; development numbers): twin `aa` exact_set +0.00 [-0.74, +0.74] (9/9 discordant) -- the node column's own null is tight. **r1-c5** (strict one-object contract + filler conventions) raw exact_set **+2.50 [+1.02, +4.07]**, empty-gold false fill -3.06 [-6.12, +0.00], non-empty exact +2.18 [+0.44, +3.92]: passes the mechanical screen (primary CI-LB > 0, no secondary loss) = the first node-level gain of the programme; at +0.056 pp per raw-exact row it predicts about +1.5 pp official SLU-F1. **r1-c3** (explicit empty-entity decision) exact_set +4.63 [+2.87, +6.48] with false fill 34.4 % -> 18.6 % (-15.82 [-19.64, -12.24]) but non-empty exact -1.74 [-3.34, -0.15]: fails the screen on the secondary. r1-c1 (value-in-supply extraction, the declared +1.80 arm) HARMFUL (exact -1.85, false fill +7.91: more copying, not less); r1-c2 +1.11 [-0.28, +2.59] unresolved; r1-c4 (ChatGPT donor) -0.19. The official per-arm column scoring step failed on a second raw-`supply_variants` reader (`scripts/analysis/stage3_rollout_score.py` `supply_variant_main`); a fix is in progress, then the read resumes (official SLU-F1/intent per arm, offline v4/v4g columns, the v4g confirmation on `lock`). Iteration-2 candidates (c5 + c3's empty decision gated by owner rule 199, c5 ablations, c5 + c2 anti-copy) are being authored from the tables (plateau rule: two evaluated rounds). P-SV-4 (R4) is flying since 18:20Z.
+
+Superseded stamp: 2026-10-09T15:56:43Z
 
 ## P-SV-4 (round R4) ready for the gate; flies after NX R1 seals (2026-10-09T15:56:43Z, Fable 5.1 root)
 
