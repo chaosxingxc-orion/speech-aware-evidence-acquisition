@@ -311,6 +311,13 @@ class CarrierHooks:
     delivered_path_admissions: Mapping[str, str] | None = None
     lock_versions: Mapping[str, Callable[[], Mapping[str, object]]] | None = None
     current_lock: str | None = None
+    #: Module step 7 (NX, 2026-10-09): ``{lock version: a callable returning
+    #: the deliver normaliser id THAT lock's layer carries}``. A lock version
+    #: absent from the mapping (or a block naming no ``lock``) is checked
+    #: against ``default_deliver_normaliser`` as before, so every lock
+    #: written before step 7 compiles unchanged. ``None``: no per-lock
+    #: normaliser on this carrier.
+    lock_deliver_normalisers: Mapping[str, Callable[[], str]] | None = None
     roster_pin_paths: tuple[tuple[str, ...], ...] | None = None
     #: NX programme E1: where and at which node template columns compile --
     #: ``{"block_path": the key path of the node's ``template_variants`` block,
@@ -1033,6 +1040,9 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         )
     layer = json.loads(_canonical(dict(lock_layer)))
     direct_layer = "native_episode" not in layer
+    #: Step 7: the lock's deliver normaliser is not the carrier's default
+    #: (a lock version that moved it); no stage or contract composes onto it.
+    lock_normaliser_moved = False
     lock_program = default_phase_program(str(layer["policy"]))
     if direct_layer:
         # Design 3.2 "bare" / 2b.3: the direct baseline of the shared
@@ -1047,11 +1057,16 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         if CONSUMPTION_MODULE_CONFIG_KEY in layer["native_episode"]:
             raise ConsumptionModuleConfigError("the lock layer must not itself declare a module")
         if hooks.default_deliver_normaliser is not None:
+            expected = hooks.default_deliver_normaliser()
+            per_lock = hooks.lock_deliver_normalisers
+            if block.lock is not None and per_lock is not None and block.lock in per_lock:
+                expected = per_lock[block.lock]()
+                lock_normaliser_moved = expected != hooks.default_deliver_normaliser()
             deliver = layer["native_episode"].get("deliver_normaliser")
-            if not isinstance(deliver, Mapping) or deliver.get("normaliser") != hooks.default_deliver_normaliser():
+            if not isinstance(deliver, Mapping) or deliver.get("normaliser") != expected:
                 raise ConsumptionModuleConfigError(
                     "the lock layer's deliver node is not the carrier's default deliver "
-                    f"normaliser {hooks.default_deliver_normaliser()!r}"
+                    f"normaliser {expected!r}"
                 )
     ceiling = lock_program.max_contacts
     if direct_layer and (block.armed() or block.columns):
@@ -1192,6 +1207,11 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             }}, component_id=cid, replace_only=False)
             ceiling += 2
         elif cid == SOLVER_CITATION_CONTRACT:
+            if lock_normaliser_moved:
+                raise ConsumptionModuleConfigError(
+                    f"{cid}: no registered composition of the cited-answer normaliser with lock "
+                    f"{block.lock!r}'s deliver normaliser"
+                )
             writer.set(("phase_material", "solver", "instruction_template"),
                        params["instruction_template"], component_id=cid, replace_only=True)
             writer.set(("phase_material", "solver", "response_format_id"),

@@ -32,6 +32,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from ..consumption_module import POLICY_OWNED_KEYS, CarrierHooks
+from . import slurp_module_lock_v2_2 as lock_v2_2
 
 PROFILE = "slurp"
 
@@ -183,7 +184,6 @@ DELIVERED_PATH_ADMISSIONS: Mapping[str, str] = {}
 
 #: SLURP's delivered-row normaliser (``rails/delivery_normalisers.py``).
 DEFAULT_DELIVER_NORMALISER = "saea-deliver-normalise-v3"
-
 _REPO_ROOT = Path(__file__).resolve().parents[4]
 
 
@@ -223,6 +223,8 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         reviewer["instruction_template"] = LOCK_V2_1_REVIEWER_TEMPLATE[0]
         return layer
 
+    def lock_layer_v2_2() -> Mapping[str, object]:  # module step 7: v2.1 + the v4g normaliser
+        return lock_v2_2.layer_from_v2_1(lock_layer_v2_1())
     def deliver_stages() -> Mapping[str, Mapping[str, object]]:
         from .. import delivery_normalisers as dn  # noqa: PLC0415
 
@@ -250,7 +252,8 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         perception_branch_frame=PERCEPTION_BRANCH_FRAME,
         flown_branch_programs=FLOWN_BRANCH_PROGRAMS,
         delivered_path_admissions=DELIVERED_PATH_ADMISSIONS,
-        lock_versions={LOCK_V2_0: lock_layer, LOCK_V2_1: lock_layer_v2_1},
+        lock_versions={LOCK_V2_0: lock_layer, LOCK_V2_1: lock_layer_v2_1, lock_v2_2.LOCK_V2_2: lock_layer_v2_2},
+        lock_deliver_normalisers=lock_v2_2.lock_deliver_normalisers(),
         current_lock=CURRENT_LOCK,
         roster_pin_paths=ROSTER_PIN_PATHS,
         template_variant_frame=TEMPLATE_VARIANT_FRAME,
