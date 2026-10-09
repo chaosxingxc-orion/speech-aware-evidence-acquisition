@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T18:25:11Z
+Last refreshed: 2026-10-09T19:00:32Z
+
+## NX R1 iteration 2 registered, countersigned and minted; flip waits for P-SV-4 (2026-10-09T19:00:32Z, Fable 5.1 root)
+
+Five iteration-2 Solver templates composed from the iteration-1 tables (`docs/readiness/2026-10-09-slurp-nx-r1-iter2-solver-candidates-v1/README.md`, merged c87662de0): i2-c1 = c5 + an empty-entity decision taken AFTER extraction (owner rule 199: the model decides, nothing heard is deleted), i2-c2 = c5 + a soft empty rule, i2-c3 = c3 + c5's filler conventions, i2-c4 = c5 + c2's heard-span anti-copy block, i2-c5 = c5 with the contract tightening removed (ablation); declared round effect +1.54 pp (class-split, conservative). Cell `slurp-native-stage3-nx-r1-i2-solver-fold-b-v1` (run `SAEA-SLURP-STAGE3-NX-R1-I2-SOLVER-FOLD-B-V1`, same base, roster, budgets and FIT cap as iteration 1; package `docs/readiness/2026-10-09-slurp-nx-r1-i2-solver-fold-b-v1/`; the NX scripts are now parameterised by `--iteration`, iteration 1 byte-identical): merged 0585723e4, four flight rows countersigned (4151b5b75), receipt `coordination/slurp-nx-r1-i2-solver-fold-b-v1/root-admission-v1.json` minted. The flip loop and the queue wait until the P-SV-4 driver finishes (no re-pin while a driver is between chain steps). The programme's plateau rule makes this the last Solver-template round on Fold B; the pick is then confirmed once on Fold A as a two-arm column.
+
+Superseded stamp: 2026-10-09T18:25:11Z
 
 ## NX R1 sealed; node-local read: r1-c5 clears the screen, r1-c3 halves false fills (2026-10-09T18:25:11Z, Fable 5.1 root)
 
