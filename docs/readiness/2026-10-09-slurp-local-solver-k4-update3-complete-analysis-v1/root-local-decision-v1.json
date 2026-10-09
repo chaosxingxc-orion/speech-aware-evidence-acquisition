@@ -1,0 +1,46 @@
+{
+  "at_utc": "2026-10-09T03:32:30.964000+00:00",
+  "combined_system_use_admitted": false,
+  "completed_evaluated_local_updates": 2,
+  "evidence": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/readiness/2026-10-09-slurp-local-solver-k4-update3-complete-analysis-v1/aggregate-summary-v1.json",
+    "sha256": "3ca6383f9b2032634fc18921d2f34ef082955a189a354dfcdc846bdedbc292a6"
+  },
+  "fixed_runtime_parent_changed": false,
+  "further_update_requires_prospective_root_decision": true,
+  "independent_review": {
+    "agent": "/root/solver_control_descriptive_astra",
+    "requested_model": "gpt-6-astra",
+    "requested_reasoning_effort": "ultra",
+    "result": "Agrees on candidate-4 as unique local primary leader; distinguishes missingness, postprocessing, final partitions, uncertainty, secondary time and no runtime adoption.",
+    "scope": "Authorized aggregate reports and existing local rule only; no raw cases or proposal contact."
+  },
+  "learner_export": false,
+  "next_step": "Complete independent Reviewer update2 and its own primary review, then prospectively define and admit a bounded joint system comparison on the same N100 pool.",
+  "no_primary_improvement_plateau_condition_met": false,
+  "owner_decision": 227,
+  "peer_reviewer_modified": false,
+  "proposal_opportunity_iteration": 3,
+  "raw_full_tie_break": {
+    "denominator": 100,
+    "numerator": 44,
+    "value": 0.44
+  },
+  "registered_primary": {
+    "denominator": 100,
+    "invalid_or_unknown_incorrect": true,
+    "numerator": 50,
+    "unknown": 0,
+    "value": 0.5
+  },
+  "review_checkpoint_closed": true,
+  "runtime_activation": false,
+  "schema": "saea-root-local-solver-selection-v1",
+  "selected_bundle_id": "3fed5090255538a879aab48d0574ddee95ebfbe679c52667758991498dffe74a",
+  "selected_member": "candidate-4",
+  "selected_original_config_hash": "d441fd212a3e2fec11a1597bb329af3b1b9e2c0fc268aa904cce9198115faf16",
+  "source_commit": "b36e51a976b850d5f655bd548841f922e217d1b7",
+  "stable_benefit_or_learning_claim": false,
+  "status": "EXPLORATORY_LOCAL_SELECTION_RECORDED",
+  "tie_break_required": false
+}

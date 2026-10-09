@@ -1,5 +1,17 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+Historical exposure evidence remains immutable. English successors for the sixteen preserved historical owner quotations are addressable in `docs/handoff/historical-exposure-english-successor-2026-10-09.json`; these translations grant no new authority.
+
+## Solver second evaluated local update reviewed; Reviewer N100 continues (2026-10-09T03:32:30.964000+00:00)
+
+All six original Solver update3 members and the complete family have independently qualified original seals/scores and exact root READs. The original full-family reader and all six descriptive process readers exited0, with no model/tokenizer contact or scoring replay. Root and GPT-6 Astra Ultra reviewed the complete aggregate evidence. See `docs/receipts/continuation/2026-10-09-local-solver-update3-complete-root-analysis-v1.json` and `docs/readiness/2026-10-09-slurp-local-solver-k4-update3-complete-analysis-v1/README.md`.
+
+Under the unchanged fixed-N raw entity primary, retain candidate-4 as the local exploratory selection:50/100 versus control47 and A/A46, with raw full44/100. Final empty false fills are7/34 versus10/34; final nonempty exact25/66 versus24/66(control) and25/66(A/A). Its unchanged postprocessing repairs2 raw entity errors and harms0, yielding52 final exact entities. Candidate-2 has one unknown state and remains45/100, not45/99. Official F1 is0.611195, +1.234 percentage points over control with paired95percent interval[-2.059,+4.516]; stable benefit is unproved. Full strata, missingness, A/A, process stages and first/nonfirst/node timing are retained. No raw paired-primary interval is inferred from marginal counts.
+
+Proposal opportunity3 is the second evaluated update. The no-primary-gain plateau condition is not met, but the registered review checkpoint is closed; another local template update requires a new prospective root decision. This selection changes no runtime parent or peer module and exports no learner feedback. Preserve exact selected bundle3fed5090255538a879aab48d0574ddee95ebfbe679c52667758991498dffe74a and every original candidate/control. Joint use still needs a separately registered integration proof and full-system comparison.
+
+The original independent Reviewer update2 N100 campaign continues through Windows SAEA-Batch-Driver epoch2026-10-09T02:58:12Z on frozen5bc19ac89623ac1abb5c4b536c66f5eaf51096e8. Latest operational observation has control FINALIZED, A/A OPENED and all candidates ABSENT; revalidate actual state. Its15minute monitor stays active until verified original terminal. GPU work stays serial with four concurrent inputs; CPU analysis/scoring overlaps. Next finish its complete own local review, then prospectively prepare a bounded combined-system comparison using the same fixed N100 pool. Preserve4GiB floors, full output reserves, other-carrier holds and the human boundary before8x400. The broad objective remains active/incomplete; no stable system benefit or learning superiority is established.
+
 ## Solver original N100 terminal and family READ; Reviewer update2 N100 launched (2026-10-09T03:04:41.900300+00:00)
 
 All six original Solver update3 members independently FINALIZED100 trajectories with verified seals, one unique successful complete official score each and zero failed jobs:600 rows and1200 model contacts. Root captured and verified original driver/Windows terminal, guards, complete scoring metadata and preserved controls, then deleted `slurp-solver-update3-n100-health`. The source-reviewed unchanged configured READ v2 successfully qualified the complete family; root separately countersigned `SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE3-READ-V1` and invoked the original full-family reader once. That CPU read remains in progress: verify its original exit before interpreting results. No score was replayed. Evidence: `docs/receipts/continuation/2026-10-09-solver-update3-terminal-reviewer-update2-n100-launched-v1.json`.
@@ -7492,7 +7504,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-09T03:04:41.900300+00:00
+Last refreshed: 2026-10-09T03:32:30.964000+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The
