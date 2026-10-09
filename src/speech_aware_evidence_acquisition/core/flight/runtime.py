@@ -11345,8 +11345,46 @@ class FlightRuntime:
                     raw_solver_role = (
                         raw_roles.get("solver") if isinstance(raw_roles, Mapping) else None
                     )
+                    # NX programme E1: a node-TEMPLATE group is declared under
+                    # ``template_variants`` and sealed as the v4 receipt; a
+                    # SUPPLY group under ``supply_variants`` (v1-v3). Each
+                    # kind is validated ONLY against its own declaration -- a
+                    # receipt of one kind never passes against the other
+                    # kind's block, and a cell declaring both is refused.
+                    from ...rails.native_episode_receipt import (  # noqa: PLC0415
+                        SUPPLY_VARIANT_RECEIPT_SCHEMA_V4,
+                    )
+                    from ...rails.supply_variants import (  # noqa: PLC0415
+                        SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT,
+                    )
+
+                    declares_supply = isinstance(
+                        raw_solver_role, Mapping
+                    ) and "supply_variants" in raw_solver_role
+                    declares_template = isinstance(
+                        raw_solver_role, Mapping
+                    ) and "template_variants" in raw_solver_role
+                    if declares_supply and declares_template:
+                        raise FlightRuntimeError(
+                            "supply-variant delivery: a Solver role declares both "
+                            "supply_variants and template_variants"
+                        )
+                    receipt_is_template = (
+                        isinstance(supply_variants, Mapping)
+                        and supply_variants.get("schema")
+                        == SUPPLY_VARIANT_RECEIPT_SCHEMA_V4
+                    )
+                    if receipt_is_template != declares_template:
+                        raise FlightRuntimeError(
+                            "supply-variant delivery: the sealed arm receipt kind "
+                            "does not match the declared arm group kind "
+                            f"(receipt template={receipt_is_template}, declared "
+                            f"template_variants={declares_template})"
+                        )
                     raw_variants = (
-                        raw_solver_role.get("supply_variants")
+                        raw_solver_role.get(
+                            "template_variants" if declares_template else "supply_variants"
+                        )
                         if isinstance(raw_solver_role, Mapping) else None
                     )
                     raw_arms = (
@@ -11380,8 +11418,13 @@ class FlightRuntime:
                         # re-made HERE against the RAW declared arm_visits --
                         # a sealed row can never describe an arm-fan-out
                         # policy other than the one the cell's own fragment
-                        # declares.
-                        arm_visits=raw_variants.get("arm_visits", "every"),
+                        # declares. A template block has no arm_visits key: its
+                        # fan-out is the instrument constant, exactly as
+                        # ``parse_template_variants`` fixes it.
+                        arm_visits=(
+                            SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT if declares_template
+                            else raw_variants.get("arm_visits", "every")
+                        ),
                         error_type=FlightRuntimeError,
                     )
                 if delivery.kind == "abstention":
