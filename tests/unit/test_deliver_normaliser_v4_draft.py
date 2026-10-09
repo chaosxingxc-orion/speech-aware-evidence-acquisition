@@ -129,7 +129,7 @@ def test_v4_carries_its_identity_and_is_registered():
 def test_v4_is_registered_but_armed_by_no_config():
     """Registration is for replay; which cells use v4 is a separate wiring step."""
     hits = [p for p in (_REPO / "configs").rglob("*.json")
-            if dn.DELIVER_NORMALISE_V4 in p.read_text(encoding="utf-8")]
+            if f"\"{dn.DELIVER_NORMALISE_V4}\"" in p.read_text(encoding="utf-8")]  # exact id: v4g (lock v2.2) is a different normaliser
     assert hits == []
 
 
