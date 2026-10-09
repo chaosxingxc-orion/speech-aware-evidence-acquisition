@@ -8,7 +8,10 @@ Root's act, never an agent's. Copies ``docs/readiness/2026-10-09-slurp-nx-r1-sol
 refuses to overwrite an existing receipt. The FOUR ``eligible_run_ids`` (arm, smoke and their FIT identities) and the budget
 caps are the draft's and are not edited here. No A/A cell: the twin arm flies inside every row.
 
-    python scripts/flights/nx/nx_r1_mint_receipt.py [--coordinator "Fable5.1"] [--dry]
+    python scripts/flights/nx/nx_r1_mint_receipt.py [--iteration 1|2] [--coordinator "Fable5.1"] [--dry]
+
+``--iteration 2`` mints ``coordination/slurp-nx-r1-i2-solver-fold-b-v1/root-admission-v1.json`` (decision id
+``slurp-nx-r1-i2-solver-fold-b-admission-v1``) from the iteration-2 package draft.
 """
 
 from __future__ import annotations
@@ -52,7 +55,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--coordinator", default="Fable5.1")
     parser.add_argument("--dry", action="store_true", help="print the receipt, write nothing")
+    parser.add_argument("--iteration", type=int, default=nf.ITERATION, choices=(1, 2),
+                        help="the R1 iteration whose package draft is minted (default 1)")
     args = parser.parse_args()
+    nf.configure(args.iteration)
     root = ROOT.rstrip("/")
     arm, smoke = nf.ARM, nf.SMOKE
     draft_path = f"{nf.PACKAGE}/root-admission-draft-v1.json"
@@ -67,6 +73,8 @@ def main() -> int:
     receipt["recorded_at_utc"] = datetime.now(timezone.utc).isoformat()
     receipt["coordinator"] = args.coordinator
     receipt["minted_from"] = {"template_receipt": draft_path, "tool": "scripts/flights/nx/nx_r1_mint_receipt.py"}
+    if nf.ITERATION != 1:
+        receipt["minted_from"]["iteration"] = nf.ITERATION
     receipt.pop("_draft_note", None)
     rehashed = rehash(receipt, root)
     out = os.path.join(DATA, nf.DECISION_RELPATH)

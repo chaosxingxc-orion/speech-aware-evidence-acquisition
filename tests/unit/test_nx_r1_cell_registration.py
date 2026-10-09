@@ -1,9 +1,13 @@
-"""NX round R1: the registered cell is exactly what its package says it is (model-free).
+"""NX round R1, BOTH iterations: the registered cell is exactly what its package says it is (model-free).
+
+Every test runs once per iteration (the autouse ``iteration`` fixture calls ``nf.configure``): iteration 1 (the flown
+Solver template column) and iteration 2 (the second and last evaluated round, registered before contact).
 
 Reads the committed fragments, candidate templates and package files. Proves: the declared module block compiles to the
 fragments' policy blocks (the loader's own check), the program is the compiled review-off c8, the Solver template group has the
 seven arms in order with the delivering lock last, every pinned template hashes to its file, the plan budgets are the ceiling
-arithmetic, and the stage3_measurement block is a node column with a twin and the nominated ceiling.
+arithmetic, the FIT cap is structural, the identities (run, attempt, chain, flip, repin, recipe, ledger) agree, and the
+stage3_measurement block is a node column with a twin and the nominated ceiling.
 """
 
 from __future__ import annotations
@@ -11,8 +15,11 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 import sys
 from pathlib import Path
+
+import pytest
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "scripts" / "flights" / "nx"))
@@ -23,6 +30,13 @@ import nx_r1_family as nf  # noqa: E402
 from speech_aware_evidence_acquisition.rails import consumption_module as cm  # noqa: E402
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program  # noqa: E402
 from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config  # noqa: E402
+
+
+@pytest.fixture(autouse=True, params=[1, 2], ids=["iter1", "iter2"])
+def iteration(request):
+    nf.configure(request.param)
+    yield request.param
+    nf.configure(1)
 
 
 def _baseline(kind: str) -> dict:
@@ -74,14 +88,24 @@ def test_budgets_are_the_ceiling_arithmetic_and_the_fit_estimate_holds():
         assert fam["fit_endpoint_calls_cap"] == nf.fit_contact_cap(rows) == rows * nf.CEILING * 4  # structural, never x mult
         assert document["cells"][0]["readiness"]["state"] in ("held", "ready")
         assert document["stage3_algorithm"]["id"] == "none"
-    assert nf.SMOKE_ATTEMPTS_BUDGETED == 2
+    if nf.ITERATION == 1:
+        # Iteration 1's smoke is the recovery attempt: run-cumulative over the failed first attempt plus the recovery.
+        assert nf.SMOKE_ATTEMPTS_BUDGETED == 2
+        smoke_expected = (64, 164, 128)
+        assert nf.SMOKE["attempt_id"].endswith("-generation-rec3-v1") and nf.SMOKE["fit_attempt_id"].endswith("-fit-rec3-v1")
+    else:
+        # Iteration 2's smoke is a FIRST attempt of its fresh run id: one attempt, no recovery multiplier, no rec suffix.
+        assert nf.SMOKE_ATTEMPTS_BUDGETED == 1 and nf.SMOKE_RECOVERY is None
+        smoke_expected = (32, 82, 128)
+        assert nf.SMOKE["attempt_id"].endswith("-smoke-4-generation-v1") and nf.SMOKE["fit_attempt_id"].endswith("-smoke-4-fit-v1")
+        assert "rec" not in nf.SMOKE["attempt_id"] and "rec" not in nf.SMOKE["fit_attempt_id"]
     assert (smoke["execution_plan"]["planned_model_calls"], smoke["execution_plan"]["planned_speech_audio_seconds"],
-            smoke["family_budget"]["fit_endpoint_calls_cap"]) == (64, 164, 128)
-    assert smoke["family_budget"]["repeated_speech_audio_seconds_cap"] == 164
+            smoke["family_budget"]["fit_endpoint_calls_cap"]) == smoke_expected
+    assert smoke["family_budget"]["repeated_speech_audio_seconds_cap"] == smoke_expected[1]
     assert smoke["family_budget"]["gpu_hours_fit_inclusive"] == 1.0
     assert (arm["execution_plan"]["planned_model_calls"], arm["execution_plan"]["planned_speech_audio_seconds"],
             arm["family_budget"]["fit_endpoint_calls_cap"]) == (8640, 25239, 34560)
-    assert nf.SMOKE["attempt_id"].endswith("-generation-rec3-v1") and nf.SMOKE["fit_attempt_id"].endswith("-fit-rec3-v1")
+    assert arm["family_budget"]["gpu_hours_fit_inclusive"] == arm["execution_plan"]["planned_gpu_hours"] == 3.5
     assert nf.ARM["attempt_id"].endswith("-generation-v1") and nf.ARM["fit_attempt_id"].endswith("-fit-v1")
     measure = nf.fit_measure()
     limit = measure["prompt_limit_tokens"]
@@ -100,7 +124,23 @@ def test_registered_measurement_block_is_a_node_column_with_a_twin_and_the_nomin
     smoke = facts["stage3_measurement"][nf.SMOKE["run_id"]]
     assert smoke["measurement_design"] == "form-proof" and smoke["claims_benefit"] is False
     recipe = json.loads((REPO / nf.PACKAGE / "analysis-recipe-v1.json").read_text(encoding="utf-8"))
-    assert recipe["read_run_id"] == nf.READ_RUN_ID
+    assert recipe["read_run_id"] == nf.READ_RUN_ID and recipe["recipe_id"] == nf.RECIPE_ID
+    assert recipe["arms"]["arm"]["run_id"] == nf.ARM["run_id"] and recipe["arms"]["arm"]["attempt_id"] == nf.ARM["attempt_id"]
+    columns = recipe["arms"]["columns"]
+    assert [k for k in columns if k not in ("aa", "lock")] == list(nf.ARMS)  # the read driver derives candidates this way
+    assert all("relpath" in columns[a] for a in nf.ARMS) and "relpath" in columns["lock"]
+    assert set(recipe["official_columns"]["passes"]) == {f"{a}-vs-lock" for a in nf.ARMS} | {"aa-vs-lock"}
+    cross = recipe.get("cross_iteration_contrast")
+    if nf.ITERATION == 1:
+        assert cross is None
+    else:
+        # Declared, DESCRIPTIVE only, and pointing at iteration 1's flown arm.
+        assert cross["status"].startswith("DESCRIPTIVE ONLY")
+        assert cross["comparator"]["run_id"] == nf.ITER1_RUN_ID == "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1"
+        assert cross["comparator"]["attempt_id"] == nf.ITER1_ATTEMPT_ID and cross["comparator"]["column"] == "r1-c5"
+        assert "gates nothing" in recipe["steps"][-1]
+        assert "SECOND AND LAST" in recipe["decision_rule"]
+        assert nf.ITER1_RUN_ID not in (nf.ARM["run_id"], nf.SMOKE["run_id"])
     assert recipe["offline_columns"]["columns"]["v4g"]["guards"] == nf.V4G_GUARDS
     assert recipe["offline_columns"]["statistics"]["sha256"] == nf.V4_STATS_SHA256
 
@@ -137,7 +177,7 @@ def _ledger_rows() -> list:
 
 
 def _recovery_spend(kind: str) -> tuple:
-    if kind != "smoke":
+    if kind != "smoke" or not nf.SMOKE_RECOVERY:
         return 0, 0.0, set()
     ids = {p["attempt_id"] for p in nf.SMOKE_RECOVERY["predecessors"]}
     return nf.SMOKE_PREDECESSOR_CONTACTS_SPENT, nf.SMOKE_PREDECESSOR_SPEECH_SECONDS_SPENT, ids
@@ -218,7 +258,6 @@ def test_pre_contact_preflight_plans_budgets_and_ledger_rows():
 
 
 def test_pre_contact_preflight_identities_agree_and_are_fresh():
-    chain = (REPO / "scripts" / "flights" / "nx" / "batch_chain_nx_r1.sh").read_text(encoding="utf-8")
     for kind in ("arm", "smoke"):
         names = nf.names(kind)
         experiment = _load(f"configs/experiment/{names['experiment']}.json")
@@ -233,10 +272,8 @@ def test_pre_contact_preflight_identities_agree_and_are_fresh():
         assert fit_block["attempt_id"] == names["fit_attempt_id"] == fit["attempt_id"] == protocol["fit_attempt_id"]
         assert cell["run_id"] == names["run_id"] == gen["run_id"] == protocol["run_id"]
         assert fit_block["run_id"] == names["fit_run_id"] == fit["run_id"] == protocol["fit_run_id"]
-        # The chain script drives the same generation attempt id (it spells the slug as a variable).
-        key = "smoke_attempt_id" if kind == "smoke" else "gen_attempt_id"
-        spelled = names["attempt_id"].replace(nf.SLUG, "{slug}")
-        assert f'"{key}": f"{spelled}"' in chain, (kind, spelled)
+        # The chain script drives the same attempt ids (test_chain_flip_and_repin_scripts_agree_with_the_family).
+        assert nf.SLUG in names["attempt_id"] and nf.SLUG in names["run_id"].lower().replace("saea-slurp-stage3-", "")
         # FIT and generation identities are distinct on BOTH axes.
         assert names["run_id"] != names["fit_run_id"] and names["attempt_id"] != names["fit_attempt_id"]
         # Family caps: FIT is structural (== block cap == FIT plan calls); generation is the run-cumulative plan budget.
@@ -247,5 +284,111 @@ def test_pre_contact_preflight_identities_agree_and_are_fresh():
         _, _, predecessors = _recovery_spend(kind)
         assert names["attempt_id"] not in predecessors
         assert names["fit_attempt_id"] not in {p.replace("-generation-", "-fit-") for p in predecessors}
-    assert len(nf.SMOKE_RECOVERY["predecessors"]) == 3 and nf.SMOKE_PREDECESSOR_CONTACTS_SPENT == 32
-    assert nf.SMOKE_RECOVERY["fit_cap_rule"].endswith("rows x max_contacts x (max_speech_packets + 3).")
+    if nf.ITERATION == 1:
+        assert len(nf.SMOKE_RECOVERY["predecessors"]) == 3 and nf.SMOKE_PREDECESSOR_CONTACTS_SPENT == 32
+        assert nf.SMOKE_RECOVERY["fit_cap_rule"].endswith("rows x max_contacts x (max_speech_packets + 3).")
+    else:
+        # A fresh run id starts at one attempt: nothing spent, nothing to recover from.
+        assert nf.SMOKE_RECOVERY is None and nf.SMOKE_PREDECESSOR_CONTACTS_SPENT == 0
+        assert nf.SMOKE_PREDECESSOR_SPEECH_SECONDS_SPENT == 0.0
+        protocol = _load(f"{nf.PACKAGE}/protocol-registered-v1.json")
+        assert "recovery" not in protocol
+        assert "recovery" not in _load(f"{nf.PACKAGE}/smoke-generation-plan-registered-v1.json")["execution_plan"]
+
+
+def _case_rows(text: str, pattern: str) -> dict:
+    return {int(m.group(1)): m.groups()[1:] for m in re.finditer(pattern, text)}
+
+
+def test_chain_flip_and_repin_scripts_agree_with_the_family():
+    scripts = REPO / "scripts" / "flights" / "nx"
+    chain = (scripts / "batch_chain_nx_r1.sh").read_text(encoding="utf-8")
+    flip = (scripts / "nx_r1_flip.sh").read_text(encoding="utf-8")
+    repin = (scripts / "nx_r1_repin_cell.sh").read_text(encoding="utf-8")
+    # chain: ITER -> (slug, smoke recovery suffix, short); the python heredoc composes the ids from them.
+    rows = _case_rows(chain, r"(?m)^  (\d)\) SLUG=([^;\s]+); SMOKE_REC=([^;\s]*); SHORT=(\w+) ;;$")
+    slug, smoke_rec, short = rows[nf.ITERATION]
+    assert slug == nf.SLUG and short == nf.SHORT
+    gen_smoke = nf.SMOKE["attempt_id"]
+    assert gen_smoke == f"attempt-slurp-native-stage3-{slug}-smoke-4-generation{smoke_rec}-v1"
+    assert '"smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation{rec}-v1"' in chain
+    assert '"gen_attempt_id": f"attempt-slurp-native-stage3-{slug}-generation-v1"' in chain
+    assert nf.ARM["attempt_id"] == f"attempt-slurp-native-stage3-{slug}-generation-v1"
+    assert '"owner": f"root-slurp-native-stage3-{slug}-v1"' in chain
+    assert 'LOG=/home/chao/batch-chain-$SHORT.out' in chain and "$SHORT-flight-commit.txt" in chain
+    # Each iteration owns its log, flight-commit file and queue short name.
+    assert {rows[1][2], rows[2][2]} == {"nxr1", "nxr1i2"}
+    # flip and repin carry the same table.
+    flip_rows = _case_rows(flip, r"(?m)^  (\d)\) SLUG=([^;\s]+); SHORT=(\w+); LABEL=(\S+) ;;$")
+    assert flip_rows[nf.ITERATION][:2] == (nf.SLUG, nf.SHORT)
+    repin_rows = _case_rows(repin, r"(?m)^  (\d)\) SLUG=([^;\s]+); SHORT=(\w+) ;;$")
+    assert repin_rows[nf.ITERATION] == (nf.SLUG, nf.SHORT)
+    assert "export NX_ITER=$ITER" in flip and "NX_ITER" in repin
+    # The read driver takes the iteration and reads every id from the recipe.
+    read = (REPO / "scripts" / "analysis" / "nx_r1_read.sh").read_text(encoding="utf-8")
+    assert f"{nf.PACKAGE}/analysis-recipe-v1.json".replace("docs/readiness/2026-10-09-", "") in read.replace(
+        "docs/readiness/2026-10-09-", "")
+    assert "--iteration" in read and '--recipe-id "$RECIPE_ID"' in read
+
+
+def test_family_identities_are_frozen_per_iteration():
+    """Iteration 1 keeps its flown identities byte for byte; iteration 2 derives its own from the same code."""
+    expected = {
+        1: ("slurp-native-stage3-nx-r1-solver-fold-b-v1", "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1",
+            "slurp-nx-r1-solver-fold-b-admission-v1", "coordination/slurp-nx-r1-solver-fold-b-v1/root-admission-v1.json",
+            "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1", ("r1-c1", "r1-c2", "r1-c3", "r1-c4", "r1-c5")),
+        2: ("slurp-native-stage3-nx-r1-i2-solver-fold-b-v1", "SAEA-SLURP-STAGE3-NX-R1-I2-SOLVER-FOLD-B-V1",
+            "slurp-nx-r1-i2-solver-fold-b-admission-v1", "coordination/slurp-nx-r1-i2-solver-fold-b-v1/root-admission-v1.json",
+            "SAEA-SLURP-STAGE3-NX-R1-I2-SOLVER-FOLD-B-COLUMN-READ-V1", ("r1-i2-c1", "r1-i2-c2", "r1-i2-c3", "r1-i2-c4", "r1-i2-c5")),
+    }[nf.ITERATION]
+    assert (nf.ARM["experiment"], nf.ARM["run_id"], nf.DECISION_ID, nf.DECISION_RELPATH, nf.READ_RUN_ID, nf.ARMS) == expected
+    assert nf.ARM["fit_run_id"] == nf.ARM["run_id"].replace("-V1", "-FIT-V1")
+    assert nf.SMOKE["run_id"] == nf.ARM["run_id"].replace("-V1", "-SMOKE-4-V1")
+    assert nf.SMOKE["fit_run_id"] == nf.ARM["run_id"].replace("-V1", "-SMOKE-4-FIT-V1")
+    assert nf.SMOKE["experiment"] == nf.ARM["experiment"].replace("-v1", "-smoke-4-v1")
+    assert nf.CEILING == 8 and nf.ARM_ORDER[-2:] == ("aa", "lock") and len(nf.ARM_ORDER) == 7
+    # The iteration-2 declared round effect: class-split +1.54 pp from i2-c3 (candidates README section 4), at the floor.
+    assert nf.EXPECTED_EFFECT_PP == {1: 1.80, 2: 1.54}[nf.ITERATION]
+    assert (nf.FLOOR_SLU_PP, nf.FLOOR_INTENT_PP) == (1.49, 0.65)
+
+
+def test_candidate_templates_and_readme_hashes_agree():
+    readme = (REPO / nf.CANDIDATES_README).read_text(encoding="utf-8")
+    for arm, pin in nf.candidate_pins().items():
+        assert pin["relpath"] == f"configs/probes/nx/solver/r1/{arm}.txt"
+        if nf.ITERATION == 2:
+            # The iteration-2 README prints the full sha256 of each file.
+            assert pin["sha256"] in readme, arm
+    measure = nf.fit_measure()
+    assert set(measure["template_tokens"]) == {"lock", *nf.ARMS}
+    assert measure["template_frame"]["max_supplied_items"] == 55
+    if nf.ITERATION == 2:
+        assert measure["reused_from"]["relpath"] == nf.ITER1_FIT_MEASURE
+        assert hashlib.sha256((REPO / nf.ITER1_FIT_MEASURE).read_bytes()).hexdigest() == measure["reused_from"]["sha256"]
+
+
+def test_iteration_ledger_rows_are_present_unconsumed_and_draft_or_countersigned():
+    import flight_registration_check as frc
+    from speech_aware_evidence_acquisition.contracts import _parse_ledger_tables
+
+    text = (REPO / "docs" / "exposure-ledger.md").read_text(encoding="utf-8")
+    assert text.count(nf.LEDGER_MARK) == 1
+    assert nf.LEDGER_MARK.startswith("## NX round R1")
+    rows = _parse_ledger_tables(text)
+    ids = [nf.ARM["run_id"], nf.ARM["fit_run_id"], nf.SMOKE["run_id"], nf.SMOKE["fit_run_id"], nf.READ_RUN_ID]
+    for run_id in ids:
+        matched = [r for r in rows if r.get("run/experiment id") == run_id]
+        assert len(matched) == 1, run_id
+        row = matched[0]
+        notes = row.get("notes", "")
+        # A registration row is either still a DRAFT or has been root countersigned: never silently both absent.
+        assert "DRAFT" in notes or frc.is_countersigned(row), run_id
+        if run_id != nf.READ_RUN_ID:
+            assert row["consumed"].strip().lower() in ("no", "yes"), run_id
+        else:
+            assert row["execution profile"] == "model-free-check"
+    if nf.ITERATION == 2:
+        # Registered before contact: every flight row is an unconsumed DRAFT.
+        for run_id in ids[:4]:
+            row = next(r for r in rows if r.get("run/experiment id") == run_id)
+            assert row["consumed"].strip().lower() == "no" and "DRAFT" in row["notes"]

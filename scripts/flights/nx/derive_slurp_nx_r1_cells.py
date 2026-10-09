@@ -18,11 +18,15 @@ dropped by the compiler (the Perception branch block, the 15-ceiling program, th
 
 CONFIG ONLY: no contact, no ledger row, no receipt, no flip. Both cells are HELD.
 
-    python -B scripts/flights/nx/derive_slurp_nx_r1_cells.py
+    python -B scripts/flights/nx/derive_slurp_nx_r1_cells.py [--iteration 1|2]
+
+ITERATION 2 (the second and last evaluated round) derives the same cell from the same parent with its own five candidates
+r1-i2-c1 .. r1-i2-c5 (nx_r1_family.configure); iteration 1's outputs are unchanged by the parameterisation.
 """
 
 from __future__ import annotations
 
+import argparse
 import copy
 import hashlib
 import io
@@ -184,7 +188,8 @@ def derive_baseline(kind: str, comp1b: dict) -> str:
         if "CENTROID" in entry["relpath"] and entry["relpath"] not in have:
             receipts.append(dict(entry))
     document["preparation_source_receipts"] = receipts
-    document["what_this_is"] = (("Four-row form smoke of cell " if kind == "smoke" else "Cell ") + "NX-R1-SOLVER. " + WHAT_THIS_IS)
+    document["what_this_is"] = nf.localize(
+        ("Four-row form smoke of cell " if kind == "smoke" else "Cell ") + "NX-R1-SOLVER. " + WHAT_THIS_IS)
     cm.verify_declared_module(block, document, repo_root=REPO_ROOT)
     for key in parent:
         if key in ("policy", "native_episode", "prepared_phase_supply", "what_this_is", "native_contact_fit",
@@ -208,7 +213,8 @@ def arm_audio() -> float:
 
 
 def attempts_budgeted(kind: str) -> int:
-    """The adapter's budget is run-cumulative: the smoke covers its failed first attempt plus the recovery."""
+    """The adapter's budget is run-cumulative: iteration 1's smoke covers its failed first attempt plus the recovery;
+    iteration 2's smoke is a first attempt (multiplier 1)."""
     return nf.SMOKE_ATTEMPTS_BUDGETED if kind == "smoke" else 1
 
 
@@ -250,7 +256,7 @@ def derive_experiment(kind: str, comp1b_exp: dict) -> str:
     names = nf.names(kind)
     document["date"] = nf.DATE
     document["family_budget"], document["execution_plan"] = budgets(kind)
-    document["stage3_algorithm"] = {"id": "none", "operators_used": [], "note": STAGE3_ALGORITHM_NOTE}
+    document["stage3_algorithm"] = {"id": "none", "operators_used": [], "note": nf.localize(STAGE3_ALGORITHM_NOTE)}
     if "generation_budget" in document:
         rows = nf.ROWS
         document["generation_budget"] = {
@@ -289,17 +295,17 @@ def derive_experiment(kind: str, comp1b_exp: dict) -> str:
     }
     cell["readiness"] = {
         "reason": (
-            f"{'Four-row form smoke of cell' if kind == 'smoke' else 'Cell'} NX-R1-SOLVER registered before contact on "
+            f"{'Four-row form smoke of cell' if kind == 'smoke' else 'Cell'} {nf.CELL_LABEL} registered before contact on "
             f"{nf.DATE} by script (decision 58) from the P-SV-4 Fold B fragments and the module compiler: the COMP-1b "
             f"composition on lock v2.1 with the Reviewer loop off and a Solver template column of five candidates, an "
-            f"in-chain twin and the locked delivering arm (programme rounds R1; owner decisions 228-234)." + HELD
+            f"in-chain twin and the locked delivering arm (programme rounds R1; owner decisions 228-234)." + nf.localize(HELD)
         ),
         "requirements": [decision, agreement, supply],
         "state": "held",
     }
     if kind == "smoke":
         document["purpose"] = (
-            "Four-row structural form smoke of NX round R1: that the declared consumption_module block loads and verifies "
+            "Four-row structural form smoke of " + nf.ROUND_LABEL + ": that the declared consumption_module block loads and verifies "
             f"against the fragment's policy blocks, that {nf.PROGRAM} (ceiling {nf.CEILING}) is the bound, that the seven "
             "Solver template arms fan out at the one Solver visit with the delivering lock arm last, that every arm fits "
             "its estimated bound, that the arm receipt (saea-supply-variant-arms-v4) seals and invariant I7v holds, and "
@@ -308,14 +314,14 @@ def derive_experiment(kind: str, comp1b_exp: dict) -> str:
         )
         document["failure_policy"] = (
             "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed "
-            "smoke stops cell NX-R1-SOLVER and the arm does not open. The resume-recovery clause of owner decision 22 "
+            "smoke stops cell " + nf.CELL_LABEL + " and the arm does not open. The resume-recovery clause of owner decision 22 "
             "applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all."
         )
     else:
         document["purpose"] = (
-            "NX round R1 on TRAIN Fold B 1,080 (programme docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md, "
+            nf.ROUND_LABEL + " on TRAIN Fold B 1,080 (programme docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md, "
             "owner decisions 228-234): at the one Solver visit of every row, which of five hand-written Solver "
-            "instruction templates (r1-c1 .. r1-c5, docs/readiness/2026-10-09-slurp-nx-r1-solver-candidates-v1) raises the "
+            f"instruction templates ({nf.ARMS[0]} .. {nf.ARMS[-1]}, {nf.CANDIDATES_README.rsplit('/', 1)[0]}) raises the "
             "Solver's raw first-answer entity exact-set per row over the delivering locked template, paired per row inside "
             "one flight, with the in-chain twin aa as the null? Primary: node-local raw entity exact-set per row "
             "(scripts/analysis/slurp_nx_solver_column_read.py), effect quoted on official pooled SLU-F1 through the E3 "
@@ -323,14 +329,17 @@ def derive_experiment(kind: str, comp1b_exp: dict) -> str:
             "tables that shaped the candidates), read roster TRAIN Fold B. Development numbers only (owner decisions 28 and "
             "86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry."
         )
-        document["failure_policy"] = document["failure_policy"].replace("cell P-SV-4", "cell NX-R1-SOLVER").replace(
-            "P-SV-4", "NX-R1-SOLVER")
+        document["failure_policy"] = document["failure_policy"].replace("cell P-SV-4", "cell " + nf.CELL_LABEL).replace(
+            "P-SV-4", nf.CELL_LABEL)
     out = f"configs/experiment/{names['experiment']}.json"
     wr(out, dump_like(raw, document))
     return out
 
 
-def main() -> int:
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
+    parser.add_argument("--iteration", type=int, default=nf.ITERATION, choices=(1, 2))
+    nf.configure(parser.parse_args(argv).iteration)
     comp1b_exp = json.loads(rd(f"configs/experiment/{nf.COMP1B_EXPERIMENT}.json"))
     comp1b = json.loads(rd(f"configs/baseline/{comp1b_exp['cells'][0]['baseline_fragment']}.json"))
     written = []

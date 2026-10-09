@@ -24,6 +24,12 @@ Only counts, token numbers and hashes are printed and written -- never supplied 
 model output.
 
     python scripts/flights/nx/nx_r1_fit_measure.py --data-root "$SPEECHRL_DATA_DIR" [--output PATH]
+
+ITERATION 2 (``--iteration 2``) does NOT reopen the sealed trace: the measured quantities (items, prompt tokens, the linear
+envelope, the base floor) belong to the delivering arm's COMP-1b request, which iteration 2 shares byte for byte with iteration 1
+(same supply, same locked template). Only the five candidate template token estimates change, so the iteration-2 measure is the
+iteration-1 measure re-derived with the iteration-2 templates (template_tokens, arm_prompt_estimates, ``reused_from``). It needs
+no data root.
 """
 
 from __future__ import annotations
@@ -36,6 +42,9 @@ import sys
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import nx_r1_family as nf  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
 SOURCE_RUN = "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1"
@@ -46,12 +55,37 @@ HEADROOM_ITEMS = 2
 TEMPLATE_CHARS_PER_TOKEN = 3.5
 BASE_FLOOR_TOKENS = 2000
 LOCKED_TEMPLATE = "configs/probes/slurp_native_role_solver_v2.txt"
-CANDIDATES = [f"configs/probes/nx/solver/r1/r1-c{i}.txt" for i in range(1, 6)]
-DEFAULT_OUTPUT = "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/fit-measure-v1.json"
+ITER1_CANDIDATES = [f"configs/probes/nx/solver/r1/r1-c{i}.txt" for i in range(1, 6)]
 
 
 def template_tokens(relpath: str) -> int:
     return math.ceil(len((REPO / relpath).read_bytes()) / TEMPLATE_CHARS_PER_TOKEN)
+
+
+def rederive(previous: dict) -> dict:
+    """Iteration >= 2: the previous measure with this iteration's template token estimates (no trace is opened)."""
+
+    result = json.loads(json.dumps(previous))
+    frame = result["template_frame"]
+    locked_tokens = template_tokens(LOCKED_TEMPLATE)
+    if locked_tokens != frame["delivering_template_tokens"]:
+        raise SystemExit("the locked template's token estimate moved; re-measure from the sealed trace")
+    fit = frame["fit_estimate"]
+    arms = {"lock": locked_tokens, **{a: template_tokens(p) for a, p in nf.CANDIDATE_PATHS.items()}}
+    bound = frame["max_supplied_items"]
+    result["template_tokens"] = arms
+    result["arm_prompt_estimates"] = {
+        k: fit["base_prompt_tokens"] + v + bound * fit["tokens_per_supplied_item"] for k, v in arms.items()}
+    result["reused_from"] = {
+        "relpath": nf.ITER1_FIT_MEASURE,
+        "sha256": hashlib.sha256((REPO / nf.ITER1_FIT_MEASURE).read_bytes()).hexdigest(),
+        "reason": ("the delivering arm's COMP-1b request (supply, locked template, items, prompt tokens) is iteration 1's, so "
+                   "the measured envelope is reused; only the candidate templates differ"),
+    }
+    result["schema"] = "saea-slurp-nx-r1-solver-fit-measure-v1"
+    if max(result["arm_prompt_estimates"].values()) > result["prompt_limit_tokens"]:
+        raise SystemExit("an iteration-2 arm estimate exceeds the prompt limit")
+    return result
 
 
 def measure(data_root: Path) -> dict:
@@ -99,7 +133,7 @@ def measure(data_root: Path) -> dict:
     bound = items_max + HEADROOM_ITEMS
     reserve = SLOT_TOKENS // 8
     limit = SLOT_TOKENS - reserve - COMPLETION_CEILING - 2
-    arms = {"lock": locked_tokens, **{Path(p).stem: template_tokens(p) for p in CANDIDATES}}
+    arms = {"lock": locked_tokens, **{Path(p).stem: template_tokens(p) for p in ITER1_CANDIDATES}}
     return {
         "schema": "saea-slurp-nx-r1-solver-fit-measure-v1",
         "source": {"run_id": SOURCE_RUN, "attempt_id": SOURCE_ATTEMPT, "roster": "TRAIN Fold A (the Fold B sibling)",
@@ -128,10 +162,19 @@ def measure(data_root: Path) -> dict:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
-    parser.add_argument("--data-root", required=True, type=Path)
-    parser.add_argument("--output", default=str(REPO / DEFAULT_OUTPUT))
+    parser.add_argument("--data-root", type=Path, help="required for iteration 1 (opens the sealed COMP-1b trace read-only)")
+    parser.add_argument("--iteration", type=int, default=nf.ITERATION, choices=(1, 2))
+    parser.add_argument("--output")
     args = parser.parse_args(argv)
-    result = measure(args.data_root)
+    nf.configure(args.iteration)
+    if args.output is None:
+        args.output = str(REPO / nf.FIT_MEASURE)
+    if args.iteration == 1:
+        if args.data_root is None:
+            parser.error("--data-root is required for iteration 1")
+        result = measure(args.data_root)
+    else:
+        result = rederive(json.loads((REPO / nf.ITER1_FIT_MEASURE).read_text(encoding="utf-8")))
     text = json.dumps(result, indent=2, sort_keys=True) + "\n"
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)

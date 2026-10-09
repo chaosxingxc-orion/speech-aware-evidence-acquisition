@@ -37,7 +37,10 @@ def main(argv=None) -> int:
     parser.add_argument("--data-root", required=True)
     parser.add_argument("--lock-path", required=True)
     parser.add_argument("--runtime-root", default=str(Path.home()))
+    parser.add_argument("--iteration", type=int, default=nf.ITERATION, choices=(1, 2),
+                        help="the R1 iteration whose smoke cell is walked (default 1)")
     args = parser.parse_args(argv)
+    nf.configure(args.iteration)
     repo = Path(args.repo_root).resolve()
     sys.path.insert(0, str(repo / "src"))
 

@@ -12,7 +12,11 @@ CANONICAL ``stage3_measurement`` block keyed by run id), ``protocol-registered-v
 ledger rows (arm, arm FIT, smoke, smoke FIT, READ). The README is hand-written.
 
     python -B scripts/flights/nx/write_slurp_nx_r1_registration.py --study-commit <sha> \\
-        --registered-at 2026-10-09T12:00:00.000000+00:00 [--ledger-only | --no-ledger]
+        --registered-at 2026-10-09T12:00:00.000000+00:00 [--iteration 1|2] [--no-ledger]
+
+``--iteration 2`` writes the iteration-2 package (nx_r1_family.configure): its own candidates r1-i2-c1 .. r1-i2-c5, no smoke
+recovery, the cross-iteration descriptive contrast in the recipe and its own ledger section. The iteration-1 ledger rows are
+never touched: a section is replaced only between its own heading and the next ``## `` heading.
 """
 
 from __future__ import annotations
@@ -41,7 +45,6 @@ for _p in (REPO_ROOT / "src", REPO_ROOT / "scripts" / "checks"):
 from speech_aware_evidence_acquisition.core.config import compose, protocol_hash  # noqa: E402
 
 LEDGER = "docs/exposure-ledger.md"
-LEDGER_MARK = "## NX round R1: the Solver instruction-template column on TRAIN Fold B"
 SPEC = "docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-design.md"
 PROGRAMME = "docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md"
 EXCHANGE = "docs/results/2026-10-09-slurp-nx-exchange-rates-offline.md"
@@ -51,7 +54,7 @@ V4_ATTR = "docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.
 OWNER_DECISIONS = "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md"
 INSTRUMENT_NOTE = "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md"
 
-DECISION_RULE = (
+_DECISION_RULE_BASE = (
     "SAME-FLIGHT NODE-TEMPLATE COLUMN READ (NX programme C0.2/C2 R1; instrument E1/E2; claim ceiling 'nominated'). One "
     "flight, one Solver visit per row, seven arms over the SAME QueryState and evidence: r1-c1 .. r1-c5 (hand-written "
     "candidates), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last). Each arm's RAW "
@@ -74,6 +77,19 @@ DECISION_RULE = (
     "before any lock; it admits nothing by itself. The delivering lock arm's own offline post-processing columns v4 and "
     "v4g are read beside (analysis recipe, offline_columns)."
 )
+
+ITER2_RULE_TAIL = (
+    " THIS IS THE SECOND AND LAST EVALUATED ROUND of R1 under the plateau rule: if no arm is NOMINATED here the delivering "
+    "template is locked and the node closes. The iteration-1 arm r1-c5 does NOT fly in this column; each iteration-2 arm is "
+    "also set beside iteration-1 r1-c5 in a cross-iteration table that is DESCRIPTIVE only (different flights, different "
+    "offsets: no claim, no nomination, no input to the rule above)."
+)
+
+
+def decision_rule() -> str:
+    text = nf.localize(_DECISION_RULE_BASE)
+    return text + ITER2_RULE_TAIL if nf.ITERATION == 2 else text
+
 
 ONE_FACTOR = (
     "the Solver instruction template (phase_material.solver.instruction_template) of each non-delivering arm: ONE "
@@ -138,11 +154,30 @@ def identities() -> dict:
     return out
 
 
+ITER2_BASIS = (
+    "Declared round effect +1.54 pp official pooled SLU-F1 (class-split, the conservative figure; +2.69 pp at the uniform node "
+    "rate 0.056 pp per raw-exact row) = candidate r1-i2-c3 alone: +48 predicted raw-exact rows on Fold B (candidates README "
+    "sections 3 and 4), built from the MEASURED iteration-1 paired discordant counts (c3: empty-gold stratum +62, non-empty "
+    "-12; plus two thirds of c5's +15 carried by the conventions block; less a winner's-curse shrink of about 5 rows). "
+    "Class-split conversion: an empty-gold row made exact is an emptied false-fill row, worth 0.0333 pp; a non-empty row "
+    "0.0563 pp (exchange-rate note). Iteration-1 declared vs measured raw-exact rows were c1 +32 vs -20, c3 +35 gross vs +50, "
+    "c5 +5 vs +27, c2 +11 vs +12, so conversion-based priors were poorly calibrated and iteration 2 predicts from measured "
+    "discordant counts instead; the roster is reused (shaped on Fold B tables, read on Fold B again), so the Fold A two-arm "
+    "confirmation (programme C0.6) is the real guard. The other candidates declare +1.51 (i2-c1), +1.31 (i2-c2), +1.27 (i2-c4), "
+    "+0.72 (i2-c5) class-split (+2.13, +1.74, +1.57, +0.90 uniform). claims_benefit is true for the ROUND only, carried by "
+    "i2-c3. The declaration is a registered expectation, never a claim."
+)
+ITER2_CEILING_WHAT = (
+    "the predicted +48 raw-exact rows of r1-i2-c3 on Fold B (range [+38, +65]) at the class-split conversion (empty-gold "
+    "0.0333 pp, non-empty 0.0563 pp) = +1.54 pp; +2.69 pp at the uniform 0.056 pp per row"
+)
+
+
 def measurement_blocks(ids: dict, measure: dict, pins: dict) -> dict:
     arm, smoke = ids["arm"], ids["smoke"]
     extra_audio = round((nf.CEILING - 2) * arm["audio_seconds"], 2)
     tokens = measure["template_tokens"]
-    basis = (
+    basis = ITER2_BASIS if nf.ITERATION == 2 else (
         "Declared round effect +1.80 pp official pooled SLU-F1 = candidate r1-c1 alone (the value-in-supply extraction "
         f"arm): {EXCHANGE} section 6 counts 117 MISSING entities whose value is in the Solver's view on Fold A (108 on "
         "DEV-2000-ADDED), recovered at the measured M1 delivered-filler conversion 0.2471 (docs/results/2026-09-28-"
@@ -157,8 +192,8 @@ def measurement_blocks(ids: dict, measure: dict, pins: dict) -> dict:
         arm["run_id"]: {
             "aa_arm_id": nf.TWIN,
             "ceiling": {
-                "pp": nf.EXPECTED_EFFECT_PP, "roster": nf.READ_ROSTER, "rows": 32,
-                "what": (
+                "pp": nf.EXPECTED_EFFECT_PP, "roster": nf.READ_ROSTER, "rows": 48 if nf.ITERATION == 2 else 32,
+                "what": ITER2_CEILING_WHAT if nf.ITERATION == 2 else (
                     "the 117 Fold A MISSING entities with the value in the Solver's view (proxy for Fold B), ~32 raw-exact "
                     "row equivalents at 0.0563 pp per row; the range for c1 is [-0.72, +1.80] pp depending on the precision "
                     "of its new emissions"
@@ -170,11 +205,16 @@ def measurement_blocks(ids: dict, measure: dict, pins: dict) -> dict:
             "expected_effect_pp": nf.EXPECTED_EFFECT_PP,
             "measurement_design": "same-flight-node-column",
             "note": (
-                "NX round R1 (level: node column, K = 7 Solver template arms). Expected effect declared from measured "
-                f"numbers ({EXCHANGE}; docs/readiness/2026-10-09-slurp-nx-r1-solver-candidates-v1/README.md section 4), "
+                nf.ROUND_LABEL + " (level: node column, K = 7 Solver template arms). Expected effect declared from measured "
+                f"numbers ({EXCHANGE}; {nf.CANDIDATES_README} section 4), "
                 f"{basis} Provisional floor SLU {nf.FLOOR_SLU_PP} pp (1.49 x sqrt(1080/1080), borrowed from "
-                f"same-flight-supply-variant, programme/instrument README: no node-column cell has flown yet), so "
-                f"expected_effect_pp {nf.EXPECTED_EFFECT_PP} sits at about 1.2 x the floor, knowingly near it; the read's "
+                + ("same-flight-supply-variant, programme/instrument README: iteration 1 has flown but the official-score "
+                   "twin null is read only after this flight, so the borrowed floor stands until the READ measures it)"
+                   if nf.ITERATION == 2 else
+                   "same-flight-supply-variant, programme/instrument README: no node-column cell has flown yet)")
+                + f", so expected_effect_pp {nf.EXPECTED_EFFECT_PP} sits at about {nf.EXPECTED_EFFECT_PP / nf.FLOOR_SLU_PP:.{2 if nf.ITERATION == 2 else 1}f} x the floor, "
+                + ("knowingly at it" if nf.ITERATION == 2 else "knowingly near it")
+                + "; the read's "
                 "bar is the aa twin null measured in this flight, |aa - lock offset| + its CI95 half-width. The delivered "
                 "row is the lock arm: delivered intent and SLU are identical by construction at the request level (invariant "
                 "I7; reported, never contrasted). Tuning roster TRAIN Fold A (the contrast tables that shaped the "
@@ -224,7 +264,7 @@ def measurement_blocks(ids: dict, measure: dict, pins: dict) -> dict:
 
 def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> dict:
     docs = {}
-    source_tree = "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-nx-r1-register, branch fable/nx-r1-register"
+    source_tree = nf.SOURCE_TREE
     for kind in ("arm", "smoke"):
         i = ids[kind]
         n = nf.names(kind)
@@ -260,7 +300,7 @@ def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> d
         gen_plan = dict(i["execution_plan"], attempt_id=i["attempt_id"], carrier_lock_key=i["carrier_lock_key"],
                         protocol_hash=i["protocol_hash"], run_id=i["run_id"], schema="saea-execution-plan-v1",
                         split_identity_hash=i["split_identity_hash"], study="speech-aware-evidence-acquisition")
-        if kind == "smoke":
+        if kind == "smoke" and nf.SMOKE_RECOVERY:
             gen_plan["recovery"] = nf.SMOKE_RECOVERY
         fit_plan = dict(gen_plan, attempt_id=i["fit_attempt_id"], run_id=i["fit_run_id"],
                         planned_model_calls=i["family_budget"]["fit_endpoint_calls_cap"])
@@ -271,7 +311,7 @@ def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> d
             "Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored."
         )
         gen_purpose = (
-            f"{i['run_id']}: " + (DECISION_RULE if kind == "arm" else "structural form proof only: no score and no read.")
+            f"{i['run_id']}: " + (decision_rule() if kind == "arm" else "structural form proof only: no score and no read.")
         )
         docs[f"{prefix}generation-plan-registered-v1.json"] = {
             **base, "execution_plan": gen_plan, "execution_route": route_gen, "plan_kind": "generation",
@@ -289,6 +329,61 @@ def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> d
     return docs
 
 
+def cross_iteration_block() -> dict:
+    """Iteration 2 only: the DESCRIPTIVE contrast of each iteration-2 arm with iteration 1's r1-c5 (different flights)."""
+
+    if nf.ITERATION != 2:
+        return {}
+    return {
+        "iteration": 2,
+        "cross_iteration_contrast": {
+            "status": "DESCRIPTIVE ONLY: no claim, no nomination, no input to the decision rule",
+            "contrast": f"each iteration-2 arm X ({', '.join(nf.ARMS)}) minus iteration-1 {nf.ITER1_COMPARATOR_ARM}, the iteration-1 arm that cleared the node screen; plus iteration-2 lock minus iteration-1 lock as the flight-offset descriptor of the unchanged locked template",
+            "comparator": {
+                "run_id": nf.ITER1_RUN_ID, "attempt_id": nf.ITER1_ATTEMPT_ID, "column": nf.ITER1_COMPARATOR_ARM,
+                "lock_column": nf.DELIVERING, "read_run_id": nf.ITER1_READ_RUN_ID,
+                "recipe": f"{nf.ITER1_PACKAGE}/analysis-recipe-v1.json",
+            },
+            "same_roster": nf.READ_ROSTER, "same_row_set": "the 1,080 TRAIN Fold B sample ids of both flights",
+            "official_pass": {
+                "driver": "scripts/analysis/stage3_paired_read.py (column arms, left run = iteration 1, right run = iteration 2; non-gating; skipped with a notice when iteration 1's official column scoring is absent)",
+                "left": {"run_id": nf.ITER1_RUN_ID, "attempt_id": nf.ITER1_ATTEMPT_ID, "column": nf.ITER1_COMPARATOR_ARM},
+                "right": "each iteration-2 arm, and lock against iteration-1 lock",
+                "bootstrap": {"cluster_key": "sample_id", "draws": 10000, "seed": 20260915},
+                "output": "analysis/" + nf.READ_RUN_ID + "/cross-iteration/<arm>-vs-i1-" + nf.ITER1_COMPARATOR_ARM,
+            },
+            "node_local_pass": "read by hand from the two node-local reports on file (iteration 1: analysis/" + nf.ITER1_READ_RUN_ID + "/node-local; iteration 2: analysis/" + nf.READ_RUN_ID + "/node-local); no new driver",
+            "caveats": [
+                "Different flights have different request-level offsets; the same-flight twin null of either flight does not bound a cross-flight difference (the lock-minus-lock row is the descriptor).",
+                "r1-c5 was the best of five arms on this same roster in iteration 1 (winner's curse); a positive difference is not evidence of superiority and a negative one is not evidence of harm.",
+                "Iteration 1's r1-c5 does not fly in iteration 2: this table is the only place the two rounds meet, and it gates nothing.",
+            ],
+        },
+    }
+
+
+def carrier() -> str:
+    """The arm that carries the declared round effect."""
+    return nf.ARMS[0] if nf.ITERATION == 1 else nf.ARMS[2]
+
+
+def smoke_section() -> str:
+    if nf.SMOKE_RECOVERY:
+        return (
+            f"## Smoke recovery (the cell's single recovery re-registration)\n\n{nf.SMOKE_RECOVERY['reason']}\n\n"
+            f"{nf.SMOKE_RECOVERY['amendment']} The smoke plans therefore carry run-cumulative budgets of 64 model calls / 164 "
+            "speech-seconds; the FIT endpoint cap is structural, not run-cumulative (128 = 4 rows x 8 contacts x 4 endpoints): the failed attempt spent 32 / 81.453, rec1 and rec2 spent 0, rec3 is budgeted 32 / 82. "
+            "The arm's budgets are unchanged.\n\n"
+        )
+    return (
+        "## Attempt state (no recovery)\n\nThe smoke and the arm are FIRST attempts of their run ids. Budgets are therefore "
+        "single-attempt: smoke 32 model calls / 82 speech-seconds, FIT endpoint cap 128 (structural: 4 rows x 8 contacts x 4 "
+        "endpoints); arm 8,640 / 25,239 speech-seconds, FIT cap 34,560. A recovery re-registration, if one is ever needed, "
+        "must re-derive the run-cumulative generation budget (earlier attempts' spend plus the new attempt's worst case) and "
+        "keep the FIT cap structural. At most one recovery re-registration per cell.\n\n"
+    )
+
+
 def write_package(ids: dict, commit: str, at: str) -> dict:
     pkg = nf.PACKAGE
     measure = nf.fit_measure()
@@ -299,16 +394,16 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         "cells": {k: {kk: v[kk] for kk in ("attempt_id", "cell", "composed_config_hash", "experiment", "fit_attempt_id",
                                            "fit_run_id", "protocol_hash", "rows", "run_id", "split_identity_hash")}
                   for k, v in ids.items()},
-        "decision_rule_fixed_here": DECISION_RULE,
+        "decision_rule_fixed_here": decision_rule(),
         "development_numbers_only": "Every number is a TRAIN Fold B development number (owner decisions 28 and 86), never a test claim.",
         "failure_policy": ("Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a "
                            "second failure closes the cell and the fix is proven on a four-row dry run. The budget is "
                            "run-cumulative across attempts."),
         "one_factor": ONE_FACTOR, "prohibitions": PROHIBITIONS,
-        "recovery": {"smoke": nf.SMOKE_RECOVERY},
-        "protocol_id": "slurp-nx-r1-solver-fold-b-protocol-v1", "registered_at_utc": at,
+        **({"recovery": {"smoke": nf.SMOKE_RECOVERY}} if nf.SMOKE_RECOVERY else {}),
+        "protocol_id": f"slurp-{nf.SLUG}-protocol-v1", "registered_at_utc": at,
         "schema": "saea-registered-protocol-v1",
-        "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-nx-r1-register, branch fable/nx-r1-register",
+        "source_tree": nf.SOURCE_TREE,
         "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
         "study_commit_at_registration": commit,
         "the_question": (
@@ -335,7 +430,7 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         },
         "boundary": ("A development read on a TRAIN fold (owner decisions 28 and 86); never a test claim; node-local, never a "
                      "system-level claim. No utterance text, transcript, gold label or model output is printed or persisted."),
-        "decision_rule": DECISION_RULE,
+        "decision_rule": decision_rule(),
         "node_local": {
             "driver": "scripts/analysis/slurp_nx_solver_column_read.py",
             "primary": "exact_set", "secondaries": ["parse_valid", "empty_gold_false_fill", "nonempty_exact"],
@@ -412,8 +507,11 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
             "4. Twin null (aa vs lock) first, then each candidate vs lock under the rule; per-scenario tables.",
             "5. Offline v4 / v4g columns over every arm's delivered column (0 GPU), the lock row v4g(lock) - lock being the v4g confirmation.",
             "6. The review-off vs full-graph comparison against the P-SV-3 a-agree delivered column (cross-flight; no extra flight).",
-        ],
-        "title": "Cell NX-R1-SOLVER -- the same-flight Solver instruction-template column read: five candidates and the twin, each against the delivering lock arm",
+        ] + ([
+            "7. Iteration 2 only, DESCRIPTIVE: each iteration-2 arm and lock against iteration-1 r1-c5 / lock (cross-flight; gates nothing; recipe cross_iteration_contrast).",
+        ] if nf.ITERATION == 2 else []),
+        **cross_iteration_block(),
+        "title": nf.localize("Cell NX-R1-SOLVER -- the same-flight Solver instruction-template column read: five candidates and the twin, each against the delivering lock arm"),
     }
     shas["analysis-recipe-v1.json"] = wjson(f"{pkg}/analysis-recipe-v1.json", recipe)
     facts = {
@@ -429,7 +527,7 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         "candidates": {a: {"author": "hand (Opus 5.5 from aggregate tables)", **pins[a], "template_tokens_estimated": measure["template_tokens"][a]}
                        for a in nf.ARMS},
         "composed_config_hashes": {k: v["composed_config_hash"] for k, v in ids.items()},
-        "decision_rule": DECISION_RULE,
+        "decision_rule": decision_rule(),
         "delivering_template": {"relpath": nf.LOCKED_TEMPLATE, "sha256": nf.LOCKED_TEMPLATE_SHA,
                                 "template_tokens_estimated": measure["template_tokens"]["lock"]},
         "fit": {"status": "PENDING_CHECK"},
@@ -448,7 +546,7 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         },
         "prohibitions": PROHIBITIONS,
         "registered_at_utc": at,
-        "registration_basis": (f"coordinator brief 2026-10-09: register NX round R1 from {PROGRAMME} (C0, C1 E1/E2/E5, C2 R1, C4, F2). "
+        "registration_basis": (f"coordinator brief 2026-10-09: register {nf.ROUND_LABEL} from {PROGRAMME} (C0, C1 E1/E2/E5, C2 R1, C4, F2). "
                                "HELD: the owner / root admission is still required; nothing here authorises a flip or a flight."),
         "rows": nf.ROWS,
         "schema": "saea-registered-facts-v1",
@@ -488,8 +586,8 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         "claim_boundary": ("No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a "
                            "node column read on a development fold whose ceiling is 'nominated'."),
         "coordinator": "Fable5.1",
-        "decision": ("Fly cell NX-R1-SOLVER: the COMP-1b module composition with the Reviewer loop off on TRAIN Fold B under "
-                     f"{nf.PROGRAM} with a Solver template column; read r1-c1 .. r1-c5 and aa against lock in the same flight; nominate or not at the twin bar."),
+        "decision": (f"Fly cell {nf.CELL_LABEL}: the COMP-1b module composition with the Reviewer loop off on TRAIN Fold B under "
+                     f"{nf.PROGRAM} with a Solver template column; read {nf.ARMS[0]} .. {nf.ARMS[-1]} and aa against lock in the same flight; nominate or not at the twin bar."),
         "decision_id": nf.DECISION_ID,
         "eligible_run_ids": [arm["run_id"], arm["fit_run_id"], smoke["run_id"], smoke["fit_run_id"]],
         "failure_policy": protocol["failure_policy"],
@@ -515,26 +613,23 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
     }
     shas["root-admission-draft-v1.json"] = wjson(f"{pkg}/root-admission-draft-v1.json", draft)
     prereg = (
-        f"# Cell NX-R1-SOLVER (node-extreme programme round R1, Solver template column): preregistration\n\n"
+        f"# Cell {nf.CELL_LABEL} (node-extreme programme {nf.ROUND_LABEL.replace('NX ', '')}, Solver template column): preregistration\n\n"
         f"Registered {at[:10]} at study commit `{commit}`, before any contact, by script (decision 58) from the P-SV-4 Fold B fragments "
         f"and the consumption-module compiler under the NX programme (owner decisions 228-234). Development numbers only.\n\n"
         "| item | value |\n| --- | --- |\n"
         "| base | the COMP-1b composition as a module block on lock v2.1 (agree-vote-seed + centroid-boundary-key ON), Reviewer loop OFF, no tool schema on any role |\n"
         f"| program | `{nf.PROGRAM}` (ceiling {nf.CEILING} = 2 + (7 - 1)) |\n"
-        f"| arms | `r1-c1` .. `r1-c5` (candidates, pinned under `configs/probes/nx/solver/r1/`), `aa` (twin of `lock`), `lock` (delivering, `{nf.LOCKED_TEMPLATE}`) |\n"
+        f"| arms | `{nf.ARMS[0]}` .. `{nf.ARMS[-1]}` (candidates, pinned under `configs/probes/nx/solver/r1/`), `aa` (twin of `lock`), `lock` (delivering, `{nf.LOCKED_TEMPLATE}`) |\n"
         "| design / claim | `same-flight-node-column` / `nominated` |\n"
         "| primary | node-local raw first-answer entity exact-set per row (E2), quoted on official pooled SLU-F1 through the E3 exchange rate; guard official intent (rows differing <= 7) |\n"
-        f"| expected effect | {nf.EXPECTED_EFFECT_PP} pp (the ROUND, carried by r1-c1), `claims_benefit` true; provisional floor SLU {nf.FLOOR_SLU_PP} pp |\n"
+        f"| expected effect | {nf.EXPECTED_EFFECT_PP} pp (the ROUND, carried by {carrier()}), `claims_benefit` true; provisional floor SLU {nf.FLOOR_SLU_PP} pp |\n"
         f"| rosters | tuning `{nf.TUNING_ROSTER}`; read `{nf.READ_ROSTER}` |\n"
         f"| runs | `{arm['run_id']}` / `{arm['fit_run_id']}`; `{smoke['run_id']}` / `{smoke['fit_run_id']}`; read `{nf.READ_RUN_ID}` |\n"
         f"| composed config hashes | arm `{arm['composed_config_hash']}`; smoke `{smoke['composed_config_hash']}` |\n"
         f"| protocol hashes | arm `{arm['protocol_hash']}`; smoke `{smoke['protocol_hash']}` |\n"
         f"| split identity | arm `{arm['split_identity_hash']}`; smoke `{smoke['split_identity_hash']}` |\n\n"
-        f"## Smoke recovery (the cell's single recovery re-registration)\n\n{nf.SMOKE_RECOVERY['reason']}\n\n"
-        f"{nf.SMOKE_RECOVERY['amendment']} The smoke plans therefore carry run-cumulative budgets of 64 model calls / 164 "
-        "speech-seconds; the FIT endpoint cap is structural, not run-cumulative (128 = 4 rows x 8 contacts x 4 endpoints): the failed attempt spent 32 / 81.453, rec1 and rec2 spent 0, rec3 is budgeted 32 / 82. "
-        "The arm's budgets are unchanged.\n\n"
-        f"## Decision rule (fixed here)\n\n{DECISION_RULE}\n\n## The measurement declaration\n\n```json\n"
+        + smoke_section() +
+        f"## Decision rule (fixed here)\n\n{decision_rule()}\n\n## The measurement declaration\n\n```json\n"
         + json.dumps({"stage3_measurement": blocks}, indent=2, ensure_ascii=False, sort_keys=True)
         + "\n```\n"
     )
@@ -553,13 +648,13 @@ def ledger_rows(ids: dict, commit: str, at: str, shas: dict) -> str:
                  "SAEA-SLURP-TFRL-FOLD-B-SPEECH-QUERY-ENCODING-V1, the model-free W2 offline guard read against Fold B gold and the "
                  "P-SV-1..P-SV-4 Fold B cells registered on these rows; this cell opens no split. Prior exposure is inherited in full.")
     note_common = (
-        f"REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) {at[:10]} at study commit {commit} by the NX R1 registration agent "
-        "(worktree /home/chao/saea-worktrees/fable-nx-r1-register, branch fable/nx-r1-register); NX programme owner decisions 228-234. "
+        f"REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) {at[:10]} at study commit {commit} by the {nf.ROUND_LABEL} registration agent "
+        f"(worktree {nf.WORKTREE}, branch {nf.BRANCH}); NX programme owner decisions 228-234. "
         "HELD: this registration performs no contact and authorises none. READINESS HELD: root countersigns the five DRAFT rows, mints "
         f"{nf.DECISION_RELPATH} (decision id {nf.DECISION_ID}) from the package's root-admission-draft-v1.json with scripts/flights/nx/nx_r1_mint_receipt.py "
         "(four eligible run ids), then scripts/flights/nx/nx_r1_flip.sh re-pins with scripts/flights/repin_cell.py --set-ready, re-minting each "
         "cell's OWN first-phase supply (item E16); --allow-output-change must never be passed; every hash in this row moves at the flip. "
-        "Measurement declaration: same-flight-node-column, expected_effect_pp 1.8, claims_benefit true (the round, carried by r1-c1), "
+        f"Measurement declaration: same-flight-node-column, expected_effect_pp {nf.EXPECTED_EFFECT_PP}, claims_benefit true (the round, carried by {carrier()}), "
         "primary_metric_key slu, floor SLU 1.49 / intent 0.65 (provisional, borrowed), claim nominated, aa twin. "
         f"Read: {nf.READ_RUN_ID} by scripts/analysis/nx_r1_read.sh. Stop and preserve on the first failure; AT MOST ONE root-diagnosed "
         "recovery re-registration. No paper-scale profile, no test-split contact, no comparator re-flight and no admission entry from this row."
@@ -574,8 +669,8 @@ def ledger_rows(ids: dict, commit: str, at: str, shas: dict) -> str:
         n = nf.names(kind)
         prefix = n["prefix"]
         rows = i["rows"]
-        what = ("NX round R1: the Solver instruction-template column on TRAIN Fold B" if kind == "arm" else
-                "Four-row form smoke of NX round R1")
+        what = (nf.ROUND_LABEL + ": the Solver instruction-template column on TRAIN Fold B" if kind == "arm" else
+                "Four-row form smoke of " + nf.ROUND_LABEL)
         if fit:
             what += " -- FIT spend identity, request envelopes only, no generation"
         plan = f"{pkg}/{prefix}{'fit' if fit else 'generation'}-plan-registered-v1.json"
@@ -591,20 +686,20 @@ def ledger_rows(ids: dict, commit: str, at: str, shas: dict) -> str:
 
     read = row(
         at[:10], nf.READ_RUN_ID, "model-free-check",
-        ("The same-flight Solver template-column read of NX round R1: per arm (r1-c1 .. r1-c5, aa; lock the delivering reference) the "
+        (f"The same-flight Solver template-column read of {nf.ROUND_LABEL}: per arm ({nf.ARMS[0]} .. {nf.ARMS[-1]}, aa; lock the delivering reference) the "
          "node-local raw entity exact-set and secondaries (E2 reader), the official pooled SLU-F1 and intent of each arm's column scored ONCE with "
          "slurp-slu-official-train (seven column scorings, never sharded), paired bootstraps against lock with the aa twin as the bar, and the "
          "OFFLINE v4 / v4g delivery-normaliser columns over every arm's delivered column; by the recipe "
          f"{pkg}/analysis-recipe-v1.json through scripts/analysis/nx_r1_read.sh. Zero model, server, encoder, embedder, tokenizer and GPU contacts."),
         "no model or tool contact; read of sealed bytes and seven official column scorings plus the offline v4/v4g scorings",
-        f"slurp TRAIN Fold B {nf.ROWS}, the sealed NX R1 flight's Solver template columns (after the seal)", ids["arm"]["split_identity_hash"], "no", 0, 0, 0,
+        f"slurp TRAIN Fold B {nf.ROWS}, the sealed {nf.ROUND_LABEL} flight's Solver template columns (after the seal)", ids["arm"]["split_identity_hash"], "no", 0, 0, 0,
         f"{pkg}/analysis-recipe-v1.json",
         (f"REGISTERED WITH THE FLIGHT (DRAFT, root countersignature pending; countersigned after the seal and before any arm column is opened) "
          f"{at[:10]} at study commit {commit}. Recipe {nf.RECIPE_ID}; output analysis/{nf.READ_RUN_ID}. One READ row covers the candidate "
          "contrasts, the twin null and the offline v4/v4g columns. Its ceiling is a nomination; it admits nothing."),
     )
     lines = [
-        LEDGER_MARK + " (owner decisions 228-234) -- the arm, its four-row smoke and the READ row (DRAFT, root countersignature pending)",
+        nf.LEDGER_MARK + " (owner decisions 228-234) -- the arm, its four-row smoke and the READ row (DRAFT, root countersignature pending)",
         "",
         "Four unconsumed flight rows and one READ row registered with the flight. No A/A cell: the twin arm aa flies inside every row. None of "
         "these rows is countersigned and none authorises a contact.",
@@ -617,13 +712,22 @@ def ledger_rows(ids: dict, commit: str, at: str, shas: dict) -> str:
 
 
 def write_ledger(text: str) -> None:
+    """Replace this iteration's section (its heading up to the next ``## `` heading, or the end); append when absent.
+    Other sections, including the other iteration's rows, are never touched."""
     current = rd(LEDGER)
-    if LEDGER_MARK in current:
-        head = current[: current.index(LEDGER_MARK)].rstrip("\n")
-        current = head + "\n"
+    tail = ""
+    if nf.LEDGER_MARK in current:
+        start = current.index(nf.LEDGER_MARK)
+        following = current.find("\n## ", start + len(nf.LEDGER_MARK))
+        if following != -1:
+            tail = current[following + 1:]
+        current = current[:start].rstrip("\n") + "\n"
     if not current.endswith("\n"):
         current += "\n"
-    io.open(REPO_ROOT / LEDGER, "w", encoding="utf-8", newline="").write(current + "\n" + text)
+    out = current + "\n" + text.rstrip("\n") + "\n"
+    if tail:
+        out += "\n" + tail
+    io.open(REPO_ROOT / LEDGER, "w", encoding="utf-8", newline="").write(out)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -631,7 +735,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--study-commit", required=True)
     parser.add_argument("--registered-at", required=True)
     parser.add_argument("--no-ledger", action="store_true")
+    parser.add_argument("--iteration", type=int, default=nf.ITERATION, choices=(1, 2))
     args = parser.parse_args(argv)
+    nf.configure(args.iteration)
     ids = identities()
     result = write_package(ids, args.study_commit, args.registered_at)
     if not args.no_ledger:
