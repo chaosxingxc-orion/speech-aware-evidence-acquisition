@@ -146,6 +146,16 @@ NX-DRYRUN-SUMMARY {"delivered_arm_id": "lock", "arms": [
 The delivering arm and the twin render the node's locked instruction (equal digests); each template arm renders its own.
 The review-off rehearsal profile (`analysis/native_graph_rehearsal.rehearsal_profile`) admits a template group.
 
+### Verification run (2026-10-09, WSL `Ubuntu-24.04`, worktree only)
+
+* New and touched test files plus the neighbouring supply-variant, consumption-module, runner, dry-run, rehearsal and
+  floor-gate suites: `545 passed`.
+* Full `tests/unit`: `22 failed, 24423 passed, 10 skipped, 2 errors` before one fix; the 21 failures and 2 errors that
+  remain are present on a pristine export of the base commit `e5adeb3b2` (same test ids), and the 22nd (an adapter line
+  budget, `slurp_module_hooks.py` 261 > 260) was introduced by this change and fixed.
+* Gates: `engineering_base_check.py` PASS, `tool_catalog_check.py` PASS (34 tools), `finite_completion_policy_check.py`
+  PASS (575 in-scope plans), `stage3_effect_floor_check.py` PASS (0 blocking), `stage3_algorithm_label_check.py` PASS.
+
 ## 6. What remains
 
 1. **The real FIT.** Measure, on the first cell's own `native_contact_fit` pass at the new ceiling, the four

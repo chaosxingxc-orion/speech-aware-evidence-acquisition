@@ -169,14 +169,10 @@ PERCEPTION_BRANCH_FRAME: Mapping[str, object] = {
     },
 }
 
-#: Where and at which node template columns compile (NX programme E1,
-#: 2026-10-09): the Solver's ``template_variants`` block, the delivering arm
-#: ``lock`` (it renders the node's own locked template) and the A/A twin ``aa``.
+#: Where template columns compile (NX E1): the Solver's block, the delivering arm ``lock``, the twin ``aa``.
 TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {
     "block_path": ("native_episode", "roles", "solver", "template_variants"),
-    "node": "solver",
-    "delivering_arm_id": "lock",
-    "twin_arm_id": "aa",
+    "node": "solver", "delivering_arm_id": "lock", "twin_arm_id": "aa",
 }
 
 #: Ruling R3: ``{component id: admitting record}`` of the Perception
