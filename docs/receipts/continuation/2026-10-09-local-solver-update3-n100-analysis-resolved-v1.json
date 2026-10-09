@@ -1,0 +1,21 @@
+{
+  "at_utc": "2026-10-09T01:24:22.618919+00:00",
+  "frozen_binding": {
+    "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-frozen-launch-binding-v1.json",
+    "sha256": "8fdb3b79b8600ad9b82e518700283f8d084d62fffe5b838d3264ce9601bd538d"
+  },
+  "new_model_tokenizer_scorer_contacts": 0,
+  "next": "Keep member/family READ unsigned until original complete sealed uniquely scored evidence and exact root qualification. Descriptive member CPU analysis may overlap later GPU members.",
+  "original_preparation_complete": {
+    "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-analysis-preparation-complete-v2.json",
+    "sha256": "9e88d0e3f6a9d0d9ab30f38162ac3f1715a5e917dca4def12c2993161b208838"
+  },
+  "read_authorized": false,
+  "role": "solver",
+  "schema": "saea-root-local-analysis-source-ready-v1",
+  "source_only": true,
+  "unsigned_read_artifact_rebinding": {
+    "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-analysis-read-rebinding-v1.json",
+    "sha256": "3de146956d6b08d63635b6eae31a8ad6519623ecde58aa36849d6c0c790acc89"
+  }
+}

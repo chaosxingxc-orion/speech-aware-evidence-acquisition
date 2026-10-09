@@ -1,0 +1,25 @@
+{
+  "execution_profile": "model-free-check",
+  "expected_members": {
+    "candidate-1": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE3-V1",
+    "candidate-2": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-V1",
+    "candidate-3": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE3-V1",
+    "candidate-4": "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-V1",
+    "control": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-V1",
+    "control-aa": "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-V1"
+  },
+  "frozen_analysis_intent": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-generation-registered-v1/manual-architecture-analysis-intent-v1.json",
+    "sha256": "15975b725eacec4e0dc14d7e0745b161fa55552f0e84f0468fcff2c01466077a"
+  },
+  "optimizer_export": false,
+  "planned_model_calls": 0,
+  "read_authorized": false,
+  "recipe": {
+    "relpath": "docs/readiness/2026-10-09-slurp-local-solver-n100-k4-update3-analysis-v1/analysis-recipe-v1.json",
+    "sha256": "16189883cdc677356ea5a98ea19879d86cfdd8e88c2a805b48a43e674b0f540a"
+  },
+  "run_id": "SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE3-READ-V1",
+  "split_role": "discovery",
+  "status": "DRAFT ROOT COUNTERSIGNATURE PENDING"
+}

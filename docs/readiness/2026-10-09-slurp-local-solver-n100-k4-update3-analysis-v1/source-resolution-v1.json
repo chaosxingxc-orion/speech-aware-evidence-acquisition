@@ -1,0 +1,20 @@
+{
+  "analysis_intent": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-generation-registered-v1/manual-architecture-analysis-intent-v1.json",
+    "sha256": "15975b725eacec4e0dc14d7e0745b161fa55552f0e84f0468fcff2c01466077a"
+  },
+  "comparisons_changed": false,
+  "contacts": 0,
+  "frozen_launch_binding": {
+    "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-frozen-launch-binding-v1.json",
+    "sha256": "8fdb3b79b8600ad9b82e518700283f8d084d62fffe5b838d3264ce9601bd538d"
+  },
+  "read_authorized": false,
+  "schema": "saea-manual-architecture-source-resolution-v1",
+  "status": "SOURCE RESOLVED; root READ remains DRAFT",
+  "successor_recipe": {
+    "relpath": "docs/readiness/2026-10-09-slurp-local-solver-n100-k4-update3-analysis-v1/analysis-recipe-v1.json",
+    "sha256": "16189883cdc677356ea5a98ea19879d86cfdd8e88c2a805b48a43e674b0f540a"
+  },
+  "worker_commit": "b36e51a976b850d5f655bd548841f922e217d1b7"
+}
