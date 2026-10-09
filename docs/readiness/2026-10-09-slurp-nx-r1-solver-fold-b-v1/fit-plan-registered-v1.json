@@ -38,7 +38,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "7fe09939e90b91c9ddd9e9b6dd89afeec777a213ac7e69262695b2ac5786407a"
+    "sha256": "2edb858559902c1ba359d2cd803e08558bc869063b394a8ddabb0a27775612b0"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",
