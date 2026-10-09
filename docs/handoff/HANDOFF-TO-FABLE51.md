@@ -1,5 +1,16 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Both local N100 families frozen and source-bound analysis ready (2026-10-09T01:34:33.111409+00:00)
+
+Both original configured N100 preparations, complete exposure registrations, frozen gates and all member runtime checks succeeded. Solver update3 frozen worker is `/home/chao/saea-worktrees/codex-local-solver-n100-k4-update3-frozen-v1` at b36e51a976b850d5f655bd548841f922e217d1b7; Reviewer update2 frozen worker is `/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-frozen-v1` at5bc19ac89623ac1abb5c4b536c66f5eaf51096e8. Their DATA entries are `coordination/local-solver-n100-k4-update3-generation-v1` and `coordination/local-reviewer-n100-k4-update2-generation-v1`. No generation or scoring has launched. Exact readiness evidence: `docs/receipts/continuation/2026-10-09-both-local-n100-frozen-and-analysis-ready-v1.json`.
+
+Each family keeps four candidates plus control/A/A on the same100 inputs,600 complete trajectories. Solver ceilings are1200 model contacts/4800 actual-request FIT endpoints; Reviewer ceilings are7800/31200, derived from configured legal paths. Both source-bound full-family and per-complete-member analysis recipes are resolved and their exact draft exposure artifact paths updated. Every READ remains unsigned. Complete sealed uniquely scored members may receive root-qualified descriptive CPU analysis while the next GPU member runs; comparison, local selection and learning feedback require the whole family. Preserve the registered local primary, strata, A/A, fixed-N denominators, missingness and all process statistics.
+
+Independent Astra Ultra source review rejected configured launcher v1 for original natural observer-log custody, original request namespace and the missing repeat process scan under the held guard. Root preserved all original source/test/input bytes and recorded a source-only v2 correction under227. No v1 helper preparation, install or task request occurred; no failed runtime attempt is being retried. Sol is preparing the narrow successor for independent review. Original completed Reviewer natural controls and the resident service remain unchanged. This source repair is the remaining dispatch prerequisite before fresh live admission; monitors have no recovery or dispatch authority.
+
+Launch Solver first only through the reviewed exact successor; keep one serial GPU campaign with four concurrent inputs and overlapping one CPU scorer. Reviewer follows after original Solver terminal custody. Create a15minute scoped monitor at each actual launch and delete at its original terminal. Keep4GiB floors/full reserves, per-module role/feedback isolation and all fixed assets. The broad goal remains active/incomplete; no stable benefit, adoption or learning superiority is established. Human review remains required before8x400, and other-carrier holds remain unchanged.
+
+
 ## Reviewer update2 structural qualification; Solver update3 N100 frozen checks (2026-10-09T01:16:56.383458+00:00)
 
 The original Reviewer natural family completed all six configured members: 24 trajectories,126 model contacts, zero official scoring. Complete original terminal closure and the unchanged root structural audit passed. Omni retains terminal delivery; preserve intentional OPENED engineering attempts and completed manifests. Its scoped monitor is deleted. This is structural evidence only, with no task-quality or learner read. Exact receipt: `docs/receipts/continuation/2026-10-09-reviewer-update2-structural-qualified-solver-update3-n100-frozen-v1.json`.
@@ -1065,7 +1076,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-09T01:16:56.385858+00:00
+Last refreshed: 2026-10-09T01:34:33.111409+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

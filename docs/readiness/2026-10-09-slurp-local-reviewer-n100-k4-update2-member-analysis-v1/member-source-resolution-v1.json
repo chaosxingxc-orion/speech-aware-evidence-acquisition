@@ -1,0 +1,50 @@
+{
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "dispatches": 0,
+  "helper_sha256": "e37996bbccc6debf23c23a5391ff36b051e20e643c56f181df60accc02148b80",
+  "input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/member-analysis-inputs-v2/member-resolution-input-v1.json",
+    "sha256": "54832dbe003bc63c95674b78e96ab75c06a8df7d0436975d1175921fd00f1dcd"
+  },
+  "intent_support_binding": {
+    "relpath": "coordination/local-reviewer-n100-k4-update2-generation-v1/intent-support-binding-v1.json",
+    "sha256": "01e78e730934e762f30932fe2c9e5034f4a769b44e4a933f01a9f00aea9a63e3"
+  },
+  "ledger_modified": false,
+  "member_recipes": {
+    "candidate-1": {
+      "relpath": "docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/candidate-1-member-read-resolved-v1.json",
+      "sha256": "a6c9c2384f4e3d10439e4703b9999fd152fd12b5eed0d9dddb1ad36da7faf729"
+    },
+    "candidate-2": {
+      "relpath": "docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/candidate-2-member-read-resolved-v1.json",
+      "sha256": "271a8c79b9804b3dd211a785e1376f167d2c616235b2a795aa2cc2d27c28dae7"
+    },
+    "candidate-3": {
+      "relpath": "docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/candidate-3-member-read-resolved-v1.json",
+      "sha256": "88777a40286deb3fe03699d3b9b3d01944fe0555ebdbcb10aa1f314743ffdc96"
+    },
+    "candidate-4": {
+      "relpath": "docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/candidate-4-member-read-resolved-v1.json",
+      "sha256": "f45d7cfcf1e66ceeef11a4fc2e024b6d09bd86de76181bcd2b2699657e5e1891"
+    },
+    "control": {
+      "relpath": "docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/control-member-read-resolved-v1.json",
+      "sha256": "93cf93d24b12deab89da7ac61d214219a1701dbc703bed78d0302f6009a91413"
+    },
+    "control-aa": {
+      "relpath": "docs/readiness/2026-10-09-slurp-local-reviewer-n100-k4-update2-member-analysis-v1/control-aa-member-read-resolved-v1.json",
+      "sha256": "4b7aa069b56cbf23580de4b9a97bc193544ef1fd0b65386db6aaa8672e6f3800"
+    }
+  },
+  "read_authorized": false,
+  "schema": "saea-manual-member-source-resolution-v1",
+  "status": "SOURCE RESOLVED; ALL MEMBER READS REMAIN UNSIGNED",
+  "task_outcomes_used": false,
+  "worker_commit": "5bc19ac89623ac1abb5c4b536c66f5eaf51096e8",
+  "worker_root": "/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-frozen-v1"
+}

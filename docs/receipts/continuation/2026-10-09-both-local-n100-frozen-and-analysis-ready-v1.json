@@ -1,0 +1,87 @@
+{
+  "at_utc": "2026-10-09T01:34:33.111409+00:00",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "new_model_tokenizer_scorer_contacts": 0,
+  "next": "Approve exact source successor, perform fresh live normal transition and dispatch Solver first. Reviewer follows serially after the original Solver terminal. Read independently qualified complete members descriptively without changing pending policies; full-family local selection remains gated.",
+  "read_authorized": false,
+  "roles": {
+    "reviewer": {
+      "analysis_source_complete": {
+        "relpath": "coordination/local-reviewer-n100-k4-update2-generation-v1/root-analysis-preparation-complete-v2.json",
+        "sha256": "e1eab85162bc2481c479dbcb3de46e53e6c857e91ccebb7702a91ff7054a6db1"
+      },
+      "frozen_binding": {
+        "relpath": "coordination/local-reviewer-n100-k4-update2-generation-v1/root-frozen-launch-binding-v1.json",
+        "sha256": "955ba2bf84d12eefa1d73efe0a5f3416a0f1347dbd1741ad82e2eb891c436d50"
+      },
+      "original_frozen_exit": {
+        "relpath": "coordination/local-reviewer-n100-k4-update2-generation-v1/root-frozen-capture-exit-v1.json",
+        "sha256": "7eeed1f0d7a27f70f4879ab021604c06f322374bc9b55a21ecf860f3d080cb9d"
+      },
+      "population_budget": {
+        "K": 4,
+        "N": 100,
+        "active_node_counts": {
+          "candidate-1": 4,
+          "candidate-2": 4,
+          "candidate-3": 4,
+          "candidate-4": 4,
+          "control": 4,
+          "control-aa": 4
+        },
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 31200,
+        "generation_contacts_cap": 7800
+      },
+      "prospective_member_scope": {
+        "relpath": "coordination/local-reviewer-n100-k4-update2-generation-v1/member-read-prospective-scope-v1.json",
+        "sha256": "e358d15523a5e189a401eb36d4c844ea1a5fbc374fbee9f5f741cb89394744a9"
+      },
+      "runtime_dispatch": false,
+      "source_commit": "5bc19ac89623ac1abb5c4b536c66f5eaf51096e8",
+      "worker": "/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-frozen-v1"
+    },
+    "solver": {
+      "analysis_source_complete": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-analysis-preparation-complete-v2.json",
+        "sha256": "9e88d0e3f6a9d0d9ab30f38162ac3f1715a5e917dca4def12c2993161b208838"
+      },
+      "frozen_binding": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-frozen-launch-binding-v1.json",
+        "sha256": "8fdb3b79b8600ad9b82e518700283f8d084d62fffe5b838d3264ce9601bd538d"
+      },
+      "original_frozen_exit": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-frozen-capture-exit-v1.json",
+        "sha256": "56bc6889483fa9901fdc4f63bc1085c529c8cd8b1ea9d07413666a15d91bb455"
+      },
+      "population_budget": {
+        "K": 4,
+        "N": 100,
+        "active_node_counts": {
+          "candidate-1": 2,
+          "candidate-2": 2,
+          "candidate-3": 2,
+          "candidate-4": 2,
+          "control": 2,
+          "control-aa": 2
+        },
+        "candidate_trajectories": 400,
+        "control_trajectories": 200,
+        "family_trajectories": 600,
+        "fit_endpoints_cap": 4800,
+        "generation_contacts_cap": 1200
+      },
+      "prospective_member_scope": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/member-read-prospective-scope-v1.json",
+        "sha256": "75dd36de9fd6fc96477f0003c4f46ec40ce66a88eb13335f01903ba16f6301f2"
+      },
+      "runtime_dispatch": false,
+      "source_commit": "b36e51a976b850d5f655bd548841f922e217d1b7",
+      "worker": "/home/chao/saea-worktrees/codex-local-solver-n100-k4-update3-frozen-v1"
+    }
+  },
+  "schema": "saea-root-configured-local-n100-readiness-v1",
+  "source_review_disposition": "docs/receipts/continuation/2026-10-09-configured-n100-launcher-v1-source-review-disposition.json"
+}
