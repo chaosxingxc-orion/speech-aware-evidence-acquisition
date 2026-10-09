@@ -118,8 +118,8 @@
       "rejected": 9,
       "instrument": 20,
       "closed_unread": 3,
-      "pending": 13,
-      "rows": 55,
+      "pending": 14,
+      "rows": 56,
       "stage_note": "These counts span this carrier's Stage-1, Stage-2 and Stage-3 rows; a row's own `layer` says which stage it belongs to. comparator_locked_at and own_null_measured above describe the Stage-1/Stage-2 comparator only; each Stage-3 row names the null its own verdict used.",
       "reclassification_2026_09_27": "CELL-3's tally moved from rejected to neutral with its adjusted status word (item A6 of the reclassification note)."
     },
@@ -5623,6 +5623,68 @@
       },
       "umbrella_values": [],
       "notes": "Added 2026-09-30 so the harness-admission entry SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1 has its row (results_ledger_check cross-check C). Held, proof-only: the byte proof m6 is ok and accepted by the coordinator ruling (Fable 5.1, 2026-09-30, merge 9ccf62e2); not flown, no number read. The COMP-1b component numbers the module composes are cell A2's (docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md), not this cell's.",
+      "tally": "pending",
+      "flown": false,
+      "pending": true,
+      "provisional": null
+    },
+    {
+      "cell_id": "SLURP-SLOTFILL",
+      "carrier": "SLURP",
+      "layer": "Stage-3 engineering (held, never flown)",
+      "title": "SLOTFILL - the dispatcher slot-fill key (recall prefetch, role input off the shared event loop, frozen static heap) on the locked PLAN plan, TRAIN Fold A, read on no harm and throughput against an in-chain A/A",
+      "date": "2026-09-27",
+      "run_ids": [
+        "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1",
+        "SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-V1",
+        "SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-SMOKE-4-V1"
+      ],
+      "verdict_note": null,
+      "receipt": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1/",
+      "preregistration": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1-preregistration.md",
+      "status": "PENDING",
+      "status_source": "registered and held on 2026-09-27; never flown: no run, attempt or sealed output exists on the data root for any of its run ids, the exposure rows are DRAFT with consumed = no, and no verdict note exists",
+      "status_quote": "all three cells **held**. Nothing here authorises a flight, a flip or an admission entry.",
+      "comparator": {
+        "text": "the sealed PLAN arm SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1 (63.6304 / 82.2222) and the in-chain A/A SAEA-SLURP-STAGE3-SLOTFILL-AA-FOLD-A-V1 (the locked form without the key) - not flown.",
+        "source": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1/README.md"
+      },
+      "rule": {
+        "text": "NO HARM (owner decision 127): intent CI95 lower bound against the in-chain A/A not below -0.9943 pp and official SLU-F1 lower bound not below -1.2485 pp; throughput (contacts per GPU-hour, empty slot-seconds) read against the A/A; never reported as a gain - registered, not applied: nothing has flown.",
+        "source": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1-preregistration.md"
+      },
+      "primary": {
+        "text": "not measured. Only the model-free byte-identity proof exists (key on equals key off, request bodies identical with the slot number masked) and an offline throughput estimate on the proof bench.",
+        "source": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1/README.md"
+      },
+      "margin": {
+        "text": "none measured; the registered no-harm margins are the Fold A own-null half-widths 0.9943 (intent) and 1.2485 (SLU-F1).",
+        "source": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1-preregistration.md"
+      },
+      "margin_kind": "none - held, not flown",
+      "guards": {
+        "text": "not evaluated.",
+        "source": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1/README.md"
+      },
+      "harness_admission": {
+        "module": "dispatcher slot fill (dispatch: recall prefetch, role input off the shared event loop, frozen static heap)",
+        "carrier": "slurp",
+        "switch": "dispatch (rails.dispatch_slot_fill, read by core.flight.FlightRuntime._dispatch_phase_program)",
+        "status": "PENDING",
+        "plan_entry": "none - registered and held; nothing here enters a plan",
+        "source": "docs/receipts/harness-admission.json"
+      },
+      "citable_sentence": "none",
+      "cost": {
+        "text": "registered ceilings (unconsumed): the arm and the in-chain A/A on 1,080 TRAIN Fold A rows, each with a FIT spend identity, and a four-row smoke; the model-free proof row is closed with zero contacts.",
+        "source": "docs/exposure-ledger.md"
+      },
+      "next_step": {
+        "text": "none queued: flying needs the DRAFT exposure rows countersigned, the admission receipt minted and the flip (scripts/flights/slotfill/slotfill_flip.sh), per the package README.",
+        "source": "docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1/README.md"
+      },
+      "umbrella_values": [],
+      "notes": "Added 2026-10-09 by the engineering-base cleanup so the harness-admission entry SAEA-SLURP-STAGE3-SLOTFILL-FOLD-A-V1 has its row (results_ledger_check cross-check C). The cell was registered and held on 2026-09-27 and has never flown: the WIRECHECK-SLOTFILL-* directories on the data root are model-free wire checks, not generation runs. No number was read.",
       "tally": "pending",
       "flown": false,
       "pending": true,
