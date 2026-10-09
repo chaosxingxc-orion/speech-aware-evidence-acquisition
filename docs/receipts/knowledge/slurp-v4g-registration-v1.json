@@ -1,0 +1,34 @@
+{
+  "schema": "saea-slurp-v4g-registration-v1",
+  "normaliser": {
+    "id": "saea-deliver-normalise-v4g",
+    "version": "1",
+    "rule_id": "slurp-use-projection-v4g",
+    "base_normaliser": "saea-deliver-normalise-v4",
+    "entity_stage": ["fx-article", "fx-oclock", "scope", "ti1", "ee10"]
+  },
+  "guards": {
+    "ti-expressible": {"ti1_min_pool_exemplars": 100},
+    "ee-wilson": {"max_upper_bound": 0.1, "z": 1.959963984540054, "interval": "wilson-score-upper"}
+  },
+  "stats_tables": {
+    "article-strip": {"relpath": "prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/article-strip-v1.json", "sha256": "db42bf10a08ae9ccc51c656fd5cbbf8a636ee88a12b4c37100b5d69cf4d51b79"},
+    "oclock": {"relpath": "prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/oclock-v1.json", "sha256": "36779d582b0da541f55b90d3dcfc55ef7d3cfd6c4e3dfbec402daec5226399c7"},
+    "type-by-intent": {"relpath": "prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/type-by-intent-v1.json", "sha256": "41a57d45bc434a3e42f3950590985d86f8598c38fdd8aba443d161c57059329d"},
+    "intent-entity-rate": {"relpath": "prepared/SAEA-SLURP-V4-TRAIN-STATISTICS-V1/intent-entity-rate-v1.json", "sha256": "bd43804dd23868d2e4d6531f2ff305c1b0fd7a3a96cef4afaa28ab63793fac59"}
+  },
+  "stats_sha256": "01e6a019c91f52bcd2941f593cfec9e8db120543334d46b9e643c29e4023f223",
+  "stats_receipt": "docs/receipts/knowledge/slurp-v4-train-statistics-v1.json",
+  "new_tables": [],
+  "new_tables_reason": "The Wilson bound needs only each intent's exemplar count and entity-carrying count; the pinned intent-entity-rate table already carries both (intent_n, intent_with_entities). No table was rebuilt or written; the v1 tables are untouched.",
+  "armed_by": [],
+  "boundary": "Registered for replay and offline application only. No config, fragment, cell or lock names it. Slot type names, intent ids, counts, hashes and pp only.",
+  "a2_reproduction": {
+    "pool": "SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1",
+    "attribution_report": {"relpath": "analysis/SAEA-SLURP-NX-POSTPROC-V4-AUDIO-ATTRIBUTION-V1/a2/report.json", "sha256": "f5e486a814a33398bce8969fac653b0488dae5bcc25e35f9ae9ba24411d950c0", "entry": "guards['ti-expressible + ee-wilson']"},
+    "v4": {"rows_edited": 124, "delta_slu_pp": 0.9771, "ci95_slu_pp": [0.2116, 1.7443], "column_copy_sha256": "2104239a2aa51ee949036a20295f4754ca12793202dcda362374adf8758b14d6"},
+    "v4g": {"rows_edited": 115, "delta_slu_pp": 0.9761, "ci95_slu_pp": [0.2453, 1.712], "delta_span_pp": 2.0143, "column_copy_sha256": "6e50951c3486a77c491da551b6b9cfeffa691b24c216eb2f1d734561601903f2"},
+    "apply_command": "python -B scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g --pool a2"
+  },
+  "contacts": {"asr": 0, "embedder": 0, "encoder": 0, "gpu": 0, "model": 0, "network": 0, "paid_api": 0, "server": 0, "tokenizer": 0, "scorer": 1}
+}
