@@ -1,0 +1,207 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-generation-v1",
+      "role": "the sealed flight: every arm below is a column of it",
+      "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1"
+    },
+    "columns": {
+      "aa": {
+        "role": "the in-flight twin: replicate_of lock, the null of every contrast"
+      },
+      "lock": {
+        "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+        "role": "the delivering arm: LEFT of every contrast (the locked template, untemplated)",
+        "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "r1-c1": {
+        "relpath": "configs/probes/nx/solver/r1/r1-c1.txt",
+        "role": "candidate Solver instruction template (hash-pinned)",
+        "sha256": "715e6bb1248f6e99828b08ac0b1e190e59306fe97d6ec05a5f2a52f9303daf58"
+      },
+      "r1-c2": {
+        "relpath": "configs/probes/nx/solver/r1/r1-c2.txt",
+        "role": "candidate Solver instruction template (hash-pinned)",
+        "sha256": "45bb164de465f71eb8adb11c2121a95164cace1b36b5ad2c7c5204bea35ac8cf"
+      },
+      "r1-c3": {
+        "relpath": "configs/probes/nx/solver/r1/r1-c3.txt",
+        "role": "candidate Solver instruction template (hash-pinned)",
+        "sha256": "89b81e97c0c8d5377eff2892fac548ac83fd6a24f61ceb25396a57196bb262dc"
+      },
+      "r1-c4": {
+        "relpath": "configs/probes/nx/solver/r1/r1-c4.txt",
+        "role": "candidate Solver instruction template (hash-pinned)",
+        "sha256": "d375f16d5e7d988c5d7482c905a486b94f8be058b8d8483ff3a64c2985d09e05"
+      },
+      "r1-c5": {
+        "relpath": "configs/probes/nx/solver/r1/r1-c5.txt",
+        "role": "candidate Solver instruction template (hash-pinned)",
+        "sha256": "3b4cb0f10c06f99b1a2ac9b1b833c93a309ffc26a70a0dad45d73126196be190"
+      }
+    }
+  },
+  "boundary": "A development read on a TRAIN fold (owner decisions 28 and 86); never a test claim; node-local, never a system-level claim. No utterance text, transcript, gold label or model output is printed or persisted.",
+  "decision_rule": "SAME-FLIGHT NODE-TEMPLATE COLUMN READ (NX programme C0.2/C2 R1; instrument E1/E2; claim ceiling 'nominated'). One flight, one Solver visit per row, seven arms over the SAME QueryState and evidence: r1-c1 .. r1-c5 (hand-written candidates), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last). Each arm's RAW first answer is read through the E2 reader (scripts/analysis/slurp_nx_solver_column_read.py): node-local primary = raw first-answer entity exact-set per row, paired per row against lock, with the whole-utterance cluster bootstrap CI95 (10,000 draws, seed 20260915) and the paired Wilson share of the discordant rows; secondaries parse_valid, empty_gold_false_fill, nonempty_exact and per-slot-type counts. Each arm's column is also rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (never sharded); official contrasts are paired ROW bootstraps (cluster key sample_id, the stage3_paired_read constraint for column arms, 10,000 draws, seed 20260915), the whole-utterance number beside. (1) THE TWIN NULL: aa minus lock on every metric; the bar = |aa - lock offset| + its CI95 half-width, reported beside the design's provisional floor (SLU-F1 1.49 pp, intent 0.65 pp at n = 1,080; borrowed from same-flight-supply-variant until this cell measures its own null). (2) THE CONTRAST per candidate X: NOMINATED iff (a) the node-local exact-set CI95 lower bound > 0, AND (b) no secondary loss (parse_valid or nonempty_exact lower, or empty_gold_false_fill higher, with a CI95 excluding zero), AND (c) the intent guard holds: rows whose official intent correctness differs from lock <= 7 (0.65 pp of 1,080) or the official intent delta CI95 contains zero, AND (d) the official pooled SLU-F1 point delta exceeds the twin's SLU bar. HARM iff (a') the exact-set CI95 upper bound < 0. Among several NOMINATED arms the best node-local point estimate wins (ties: fewer words). PLATEAU RULE (programme C0.4): two evaluated rounds without a NOMINATED arm lock the delivering template and close the node. A nomination is confirmed once on TRAIN Fold A as a two-arm column before any lock; it admits nothing by itself. The delivering lock arm's own offline post-processing columns v4 and v4g are read beside (analysis recipe, offline_columns).",
+  "node_local": {
+    "bootstrap": {
+      "cluster": "whole utterance",
+      "draws": 10000,
+      "seed": 20260915
+    },
+    "driver": "scripts/analysis/slurp_nx_solver_column_read.py",
+    "output": "analysis/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1/node-local",
+    "primary": "exact_set",
+    "secondaries": [
+      "parse_valid",
+      "empty_gold_false_fill",
+      "nonempty_exact"
+    ]
+  },
+  "official_columns": {
+    "bootstrap": {
+      "cluster_key": "sample_id",
+      "draws": 10000,
+      "seed": 20260915,
+      "unit": "row (paired); the whole-utterance number is the node-local and offline reads' own"
+    },
+    "output": "analysis/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1/<pass>",
+    "paired_driver": "scripts/analysis/stage3_paired_read.py (column arms; --cluster-key sample_id)",
+    "passes": {
+      "aa-vs-lock": {
+        "gating": "sets the bar",
+        "left": "lock",
+        "right": "aa"
+      },
+      "r1-c1-vs-lock": {
+        "gating": true,
+        "left": "lock",
+        "right": "r1-c1"
+      },
+      "r1-c2-vs-lock": {
+        "gating": true,
+        "left": "lock",
+        "right": "r1-c2"
+      },
+      "r1-c3-vs-lock": {
+        "gating": true,
+        "left": "lock",
+        "right": "r1-c3"
+      },
+      "r1-c4-vs-lock": {
+        "gating": true,
+        "left": "lock",
+        "right": "r1-c4"
+      },
+      "r1-c5-vs-lock": {
+        "gating": true,
+        "left": "lock",
+        "right": "r1-c5"
+      }
+    },
+    "render": "scripts/analysis/stage3_rollout_score.py --mode supply-variants",
+    "scorer": "slurp-slu-official-train",
+    "scoring_jobs": 7
+  },
+  "offline_columns": {
+    "applied_to": [
+      "r1-c1",
+      "r1-c2",
+      "r1-c3",
+      "r1-c4",
+      "r1-c5",
+      "aa",
+      "lock"
+    ],
+    "bootstrap": {
+      "cluster": "whole utterance",
+      "draws": 10000,
+      "seed": 20260915
+    },
+    "columns": {
+      "v4": {
+        "definition": "the five-rule set of docs/results/2026-10-09-slurp-nx-postprocessing-v4-offline-read.md section 6, in the registered order",
+        "normaliser": "saea-deliver-normalise-v4",
+        "rules": [
+          "fx-article",
+          "fx-oclock",
+          "scope",
+          "ti1",
+          "ee10"
+        ]
+      },
+      "v4g": {
+        "definition": "v4 with the two TRAIN-only guards ee-wilson and ti-expressible of docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md section 4",
+        "guards": [
+          "ee-wilson",
+          "ti-expressible"
+        ],
+        "normaliser": "saea-deliver-normalise-v4g",
+        "rules": [
+          "fx-article",
+          "fx-oclock",
+          "scope",
+          "ti1",
+          "ee10"
+        ]
+      }
+    },
+    "contrasts": [
+      "v4(X) - X",
+      "v4g(X) - X",
+      "v4g(X) - lock (candidates; composition)"
+    ],
+    "driver": "scripts/analysis/slurp_nx_postproc_v4_apply.py",
+    "driver_interface_status": "the rule definitions and their offline selection live in scripts/analysis/slurp_nx_postproc_v4_search.py (the separate agent's driver); the application of the REGISTERED normalisers saea-deliver-normalise-v4 / -v4g to a sealed column is scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4|v4g --pool <run>/<attempt> [--column <arm id>] (on master since merge 7bfc09b3b). KNOWN BLOCKER: that driver refuses any run whose roster intersects TRAIN Fold B ('Fold B is not read by this script'); the R1 run IS Fold B, so the refusal must be lifted for this one recipe before the offline step can run (nx_r1_read.sh reports it and exits 10 rather than skipping silently)",
+    "lock_rule_row": {
+      "contrast": "v4g(lock) - lock",
+      "rule": "The R1 delivering-arm (lock) column on TRAIN Fold B is the FRESH CONFIRMATION roster for v4g (the guards were derived from Fold A and A2 attribution, so neither can confirm them): lock v4g iff the CI95 lower bound of the paired pooled SLU-F1 delta is above 0 here."
+    },
+    "note": "0 GPU, zero model contacts. Two deterministic delivery-normaliser variants applied OFFLINE to every arm's delivered column; the cell's runtime delivery normaliser stays the COMP-1b module cell's (saea-deliver-normalise-v3) and neither variant is wired into the cell.",
+    "output": "analysis/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1/offline-v4",
+    "rule_driver": "scripts/analysis/slurp_nx_postproc_v4_search.py",
+    "statistics": {
+      "artifact_id": "SAEA-SLURP-V4-TRAIN-STATISTICS-V1",
+      "sha256": "01e6a019c91f52bcd2941f593cfec9e8db120543334d46b9e643c29e4023f223"
+    }
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1"
+  },
+  "read_driver": "scripts/analysis/nx_r1_read.sh",
+  "read_run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1",
+  "recipe_id": "slurp-nx-r1-solver-fold-b-column-analysis-v1",
+  "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "seed": 20260915
+  },
+  "review_off_vs_full_graph": {
+    "bar_pp": 2.5,
+    "comparator": {
+      "column": "a-agree (delivered)",
+      "official_slu_columns": "on file",
+      "read": "docs/results/2026-09-30-slurp-psv3-fold-b-branch-read.md"
+    },
+    "contrast": "the delivering lock arm of this flight (review-off, Fold B) vs the P-SV-3 a-agree DELIVERED column on the same Fold B",
+    "extra_flight": false,
+    "offset_bound": "the P-SV-3 t-twin offset (flight offset between two identical-request flights)",
+    "rule": "If the lock arm minus the P-SV-3 a-agree delivered column is within the bar (2.5 pp; the P-SV-3 t-twin offset reported beside as the flight-offset bound), review-off is locked (owner decision 232 / programme F2); if the full graph wins by more than 1.49 pp SLU with CI95 lower bound > 0 the drop is revisited. Cross-flight and therefore never a gating number of this flight's column read."
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1",
+    "context_comparator": "SAEA-SLURP-STAGE3-PSV3-FOLD-B-V1",
+    "read": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "0. Refuse unless the READ row SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1 is root countersigned.",
+    "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one complete official TRAIN score and the saea-supply-variant-arms-v4 receipt on every row, verified by the bundle (invariant I7v).",
+    "2. Node-local (E2): per arm raw parse validity, entity exact-set, empty-gold false fill, non-empty exact and per-slot-type counts, paired per row against lock, whole-utterance bootstrap and paired Wilson.",
+    "3. Official: render each arm's first-visit Solver answer through the delivered row's normaliser and projection and score it ONCE with slurp-slu-official-train (seven jobs, never sharded).",
+    "4. Twin null (aa vs lock) first, then each candidate vs lock under the rule; per-scenario tables.",
+    "5. Offline v4 / v4g columns over every arm's delivered column (0 GPU), the lock row v4g(lock) - lock being the v4g confirmation.",
+    "6. The review-off vs full-graph comparison against the P-SV-3 a-agree delivered column (cross-flight; no extra flight)."
+  ],
+  "title": "Cell NX-R1-SOLVER -- the same-flight Solver instruction-template column read: five candidates and the twin, each against the delivering lock arm"
+}

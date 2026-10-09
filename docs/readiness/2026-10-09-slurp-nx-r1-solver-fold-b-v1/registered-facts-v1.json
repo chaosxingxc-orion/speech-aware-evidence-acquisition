@@ -1,0 +1,349 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+  "budget_arithmetic": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 34560,
+      "generation_calls_cap": 8640,
+      "gpu_hours_fit_inclusive": 3.5,
+      "native_task_contract_calls_cap": 8640,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 25239
+    },
+    "note": "review-off graph: perception 1 + solver 1 + (K - 1) = 8 contacts per row (K = 7 arms); generation rows x 8, FIT rows x 8 x 4, speech ceil(audio x 8), planned GPU hours 3.5 (arm; at the measured 50 contacts per minute 8640 contacts need about 2.9 h, the programme's ~2.5 GPU-h per round) and 1.0 (smoke); native task-contract calls = every contact; run-cumulative",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 128,
+      "generation_calls_cap": 32,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 32,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 82
+    }
+  },
+  "candidates": {
+    "r1-c1": {
+      "author": "hand (Opus 5.5 from aggregate tables)",
+      "relpath": "configs/probes/nx/solver/r1/r1-c1.txt",
+      "sha256": "715e6bb1248f6e99828b08ac0b1e190e59306fe97d6ec05a5f2a52f9303daf58",
+      "template_tokens_estimated": 430
+    },
+    "r1-c2": {
+      "author": "hand (Opus 5.5 from aggregate tables)",
+      "relpath": "configs/probes/nx/solver/r1/r1-c2.txt",
+      "sha256": "45bb164de465f71eb8adb11c2121a95164cace1b36b5ad2c7c5204bea35ac8cf",
+      "template_tokens_estimated": 413
+    },
+    "r1-c3": {
+      "author": "hand (Opus 5.5 from aggregate tables)",
+      "relpath": "configs/probes/nx/solver/r1/r1-c3.txt",
+      "sha256": "89b81e97c0c8d5377eff2892fac548ac83fd6a24f61ceb25396a57196bb262dc",
+      "template_tokens_estimated": 434
+    },
+    "r1-c4": {
+      "author": "hand (Opus 5.5 from aggregate tables)",
+      "relpath": "configs/probes/nx/solver/r1/r1-c4.txt",
+      "sha256": "d375f16d5e7d988c5d7482c905a486b94f8be058b8d8483ff3a64c2985d09e05",
+      "template_tokens_estimated": 431
+    },
+    "r1-c5": {
+      "author": "hand (Opus 5.5 from aggregate tables)",
+      "relpath": "configs/probes/nx/solver/r1/r1-c5.txt",
+      "sha256": "3b4cb0f10c06f99b1a2ac9b1b833c93a309ffc26a70a0dad45d73126196be190",
+      "template_tokens_estimated": 413
+    }
+  },
+  "composed_config_hashes": {
+    "arm": "5be18a36eff0e3205ec9a84c31068a9847f78545e59a659ee8d5e42749dbfb33",
+    "smoke": "e657fc792f65b613d892a5960160298bc7d964d6c41ed2ba4bb4073d2df7a059"
+  },
+  "decision_rule": "SAME-FLIGHT NODE-TEMPLATE COLUMN READ (NX programme C0.2/C2 R1; instrument E1/E2; claim ceiling 'nominated'). One flight, one Solver visit per row, seven arms over the SAME QueryState and evidence: r1-c1 .. r1-c5 (hand-written candidates), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last). Each arm's RAW first answer is read through the E2 reader (scripts/analysis/slurp_nx_solver_column_read.py): node-local primary = raw first-answer entity exact-set per row, paired per row against lock, with the whole-utterance cluster bootstrap CI95 (10,000 draws, seed 20260915) and the paired Wilson share of the discordant rows; secondaries parse_valid, empty_gold_false_fill, nonempty_exact and per-slot-type counts. Each arm's column is also rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (never sharded); official contrasts are paired ROW bootstraps (cluster key sample_id, the stage3_paired_read constraint for column arms, 10,000 draws, seed 20260915), the whole-utterance number beside. (1) THE TWIN NULL: aa minus lock on every metric; the bar = |aa - lock offset| + its CI95 half-width, reported beside the design's provisional floor (SLU-F1 1.49 pp, intent 0.65 pp at n = 1,080; borrowed from same-flight-supply-variant until this cell measures its own null). (2) THE CONTRAST per candidate X: NOMINATED iff (a) the node-local exact-set CI95 lower bound > 0, AND (b) no secondary loss (parse_valid or nonempty_exact lower, or empty_gold_false_fill higher, with a CI95 excluding zero), AND (c) the intent guard holds: rows whose official intent correctness differs from lock <= 7 (0.65 pp of 1,080) or the official intent delta CI95 contains zero, AND (d) the official pooled SLU-F1 point delta exceeds the twin's SLU bar. HARM iff (a') the exact-set CI95 upper bound < 0. Among several NOMINATED arms the best node-local point estimate wins (ties: fewer words). PLATEAU RULE (programme C0.4): two evaluated rounds without a NOMINATED arm lock the delivering template and close the node. A nomination is confirmed once on TRAIN Fold A as a two-arm column before any lock; it admits nothing by itself. The delivering lock arm's own offline post-processing columns v4 and v4g are read beside (analysis recipe, offline_columns).",
+  "delivering_template": {
+    "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+    "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd",
+    "template_tokens_estimated": 323
+  },
+  "fit": {
+    "status": "PENDING_CHECK"
+  },
+  "fit_measure": {
+    "relpath": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/fit-measure-v1.json",
+    "sha256": "d95635ace6c067cc04866fc50a2055e40e92c621092d2131574a9e90e986fe0b",
+    "summary": {
+      "arm_prompt_estimates": {
+        "lock": 15248,
+        "r1-c1": 15355,
+        "r1-c2": 15338,
+        "r1-c3": 15359,
+        "r1-c4": 15356,
+        "r1-c5": 15338
+      },
+      "chars_per_token_least_squares": 5.0013,
+      "first_solver_visits": 1080,
+      "items": {
+        "max": 53,
+        "mean": 41.617,
+        "min": 29
+      },
+      "prompt_limit_tokens": 20990,
+      "prompt_tokens": {
+        "max": 14641,
+        "mean": 10486.3,
+        "min": 4987
+      },
+      "source": {
+        "attempt_id": "attempt-slurp-native-stage3-comp1b-fold-a-generation-v1",
+        "roster": "TRAIN Fold A (the Fold B sibling)",
+        "run_id": "SAEA-SLURP-STAGE3-COMP1B-FOLD-A-V1",
+        "trace_sha256": "7b2d7cfd5ae2d95d44344a7b1cbefc4709514b752aaff379d358e193575dc5aa"
+      },
+      "template_frame": {
+        "delivering_template_tokens": 323,
+        "fit_estimate": {
+          "base_prompt_tokens": 2000,
+          "completion_ceiling": 512,
+          "slot_tokens": 24576,
+          "tokens_per_supplied_item": 235
+        },
+        "max_supplied_items": 55,
+        "twin": true
+      }
+    },
+    "tool": "scripts/flights/nx/nx_r1_fit_measure.py"
+  },
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-generation-v1",
+      "audio_seconds": 3154.797375,
+      "baseline_fragment": "slurp-native-stage3-nx-r1-solver-fold-b-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-nx-r1-solver-fold-b-v1",
+      "composed_config_hash": "5be18a36eff0e3205ec9a84c31068a9847f78545e59a659ee8d5e42749dbfb33",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 3.5,
+        "planned_model_calls": 8640,
+        "planned_speech_audio_seconds": 25239,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-nx-r1-solver-fold-b-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 34560,
+        "generation_calls_cap": 8640,
+        "gpu_hours_fit_inclusive": 3.5,
+        "native_task_contract_calls_cap": 8640,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 25239
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-fit-v1",
+        "contact_cap": 34560,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "program": "phase-native-module-v1-c8",
+      "protocol_hash": "8a6680de1d20ddeaf4092cfe8acbe14cfe0a2e21bfeab6a662c570fce6b6073d",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
+      "audio_seconds": 10.181625,
+      "baseline_fragment": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
+      "composed_config_hash": "e657fc792f65b613d892a5960160298bc7d964d6c41ed2ba4bb4073d2df7a059",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 32,
+        "planned_speech_audio_seconds": 82,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 128,
+        "generation_calls_cap": 32,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 32,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 82
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-v1",
+        "contact_cap": 128,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "program": "phase-native-module-v1-c8",
+      "protocol_hash": "8d48f6d0189b2b33cea6bf57eb024b521a31f542e8f2c49dc832fc6b56df2ce3",
+      "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "owner_decisions": {
+    "139": "no prior: the expectation is declared from measured numbers (the E3 exchange rates and the candidates README)",
+    "192": "the declared effect is on file BEFORE flight",
+    "228-234": "NX programme: base = the COMP-1b lock; one registration, countersign and read per round; n >= 1,080 same-flight paired",
+    "229-232": "as ruled in docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md section Decisions 228-236; the Reviewer loop is off (F2)",
+    "28/86": "TRAIN numbers are development numbers, never a test claim"
+  },
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact or read (Fold A confirms only a later two-arm column, under its own registration).",
+    "No second factor: one axis (the Solver instruction template), none on aa or lock.",
+    "No tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "No v4 or v4g normaliser wired into the cell: the runtime delivery normaliser is the COMP-1b module cell's (v3); v4 and v4g are OFFLINE read columns only.",
+    "No paper-scale profile.",
+    "No flight before root countersigns the DRAFT rows, mints the decision receipt and the cells are flipped.",
+    "No arm score opened before the READ row is root countersigned.",
+    "No system-level claim: a column effect may only nominate."
+  ],
+  "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",
+  "registration_basis": "coordinator brief 2026-10-09: register NX round R1 from docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md (C0, C1 E1/E2/E5, C2 R1, C4, F2). HELD: the owner / root admission is still required; nothing here authorises a flip or a flight.",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four Fold B rows (the committed prefix receipt) prove FORM and nothing else: the phase-native-module-v1-c8 program loads, the seven Solver template arms fan out at the one Solver visit, every arm fits its estimated bound, the arm receipt (saea-supply-variant-arms-v4) and I7v seal, and the episode completes. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1": {
+      "aa_arm_id": "aa",
+      "ceiling": {
+        "pp": 1.8,
+        "roster": "SLURP-EVO-FOLD-B-V2",
+        "rows": 32,
+        "what": "the 117 Fold A MISSING entities with the value in the Solver's view (proxy for Fold B), ~32 raw-exact row equivalents at 0.0563 pp per row; the range for c1 is [-0.72, +1.80] pp depending on the precision of its new emissions"
+      },
+      "claim": "nominated",
+      "claims_benefit": true,
+      "conversion_basis": "Declared round effect +1.80 pp official pooled SLU-F1 = candidate r1-c1 alone (the value-in-supply extraction arm): docs/results/2026-10-09-slurp-nx-exchange-rates-offline.md section 6 counts 117 MISSING entities whose value is in the Solver's view on Fold A (108 on DEV-2000-ADDED), recovered at the measured M1 delivered-filler conversion 0.2471 (docs/results/2026-09-28-slurp-w5-slot-exemplar-offline-estimate.md) = 28.9 entities x 0.0621 pp per recovered MISSING entity = +1.80 pp, about 32 raw-exact row equivalents at the node rate 0.0563 pp per raw-exact row (Fold A; DEV sensitivity +1.53 pp, 27 rows). Fold B has no sealed table, so the Fold A counts are its proxy. Harm netting (candidates README section 3): break-even precision of the new emissions 0.318; at the E5-1 precision 0.25 the arm is -0.72 pp. The other candidates declare +0.63 (c2), +0.89 (c3), +0.6 (c4, author prior), +0.28 (c5) and are below the floor alone; claims_benefit is true for the ROUND only, carried by c1. The declaration is a registered expectation, never a claim.",
+      "expected_effect_pp": 1.8,
+      "measurement_design": "same-flight-node-column",
+      "note": "NX round R1 (level: node column, K = 7 Solver template arms). Expected effect declared from measured numbers (docs/results/2026-10-09-slurp-nx-exchange-rates-offline.md; docs/readiness/2026-10-09-slurp-nx-r1-solver-candidates-v1/README.md section 4), Declared round effect +1.80 pp official pooled SLU-F1 = candidate r1-c1 alone (the value-in-supply extraction arm): docs/results/2026-10-09-slurp-nx-exchange-rates-offline.md section 6 counts 117 MISSING entities whose value is in the Solver's view on Fold A (108 on DEV-2000-ADDED), recovered at the measured M1 delivered-filler conversion 0.2471 (docs/results/2026-09-28-slurp-w5-slot-exemplar-offline-estimate.md) = 28.9 entities x 0.0621 pp per recovered MISSING entity = +1.80 pp, about 32 raw-exact row equivalents at the node rate 0.0563 pp per raw-exact row (Fold A; DEV sensitivity +1.53 pp, 27 rows). Fold B has no sealed table, so the Fold A counts are its proxy. Harm netting (candidates README section 3): break-even precision of the new emissions 0.318; at the E5-1 precision 0.25 the arm is -0.72 pp. The other candidates declare +0.63 (c2), +0.89 (c3), +0.6 (c4, author prior), +0.28 (c5) and are below the floor alone; claims_benefit is true for the ROUND only, carried by c1. The declaration is a registered expectation, never a claim. Provisional floor SLU 1.49 pp (1.49 x sqrt(1080/1080), borrowed from same-flight-supply-variant, programme/instrument README: no node-column cell has flown yet), so expected_effect_pp 1.8 sits at about 1.2 x the floor, knowingly near it; the read's bar is the aa twin null measured in this flight, |aa - lock offset| + its CI95 half-width. The delivered row is the lock arm: delivered intent and SLU are identical by construction at the request level (invariant I7; reported, never contrasted). Tuning roster TRAIN Fold A (the contrast tables that shaped the candidates), read roster TRAIN Fold B.",
+      "primary_metric": "node-local: raw first-answer entity exact-set per row (E2 reader, per arm minus lock, paired per row); official: pooled SLU-F1 of the arm's column (slurp-slu-official-train) is the quoted effect through the E3 exchange rate (+0.056 pp per raw-exact row); guard: official intent (rows differing <= floor 0.65 pp = 7 rows)",
+      "primary_metric_key": "slu",
+      "provisional_floor_pp": {
+        "arithmetic": "SLU 1.49 * sqrt(1080 / 1080) = 1.4900 pp (primary), intent 0.65 * sqrt(1080 / 1080) = 0.6500 pp (guard)",
+        "intent_accuracy": 0.65,
+        "slu_f1": 1.49
+      },
+      "read_bar": "|aa twin offset| + twin CI95 half-width, per metric, measured in this flight",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 1080,
+      "template_variants": {
+        "candidate_arms": 5,
+        "node": "solver",
+        "twin": true
+      },
+      "tuning_roster": "SLURP-EVO-FOLD-A-V2",
+      "variant_cost": {
+        "extra_audio_seconds": 18928.78,
+        "extra_audio_seconds_per_row_mean": 17.5267,
+        "extra_contacts_per_row": 6,
+        "extra_perception_contacts_per_row": 0,
+        "extra_solver_contacts_per_row": 6,
+        "note": "K - 1 = 6 non-delivering Solver arms (five candidates and the twin), each one Solver contact at the one Solver visit; every contact re-sends the row's speech packet, so 6 x the Fold B total 3154.797375 s per flight (review-off base: 2 contacts per row, ceiling 8)"
+      }
+    }
+  },
+  "study_commit_at_registration": "e6345dd26e821624746f38b5f7d2627dce961418",
+  "the_cell": {
+    "base": "the COMP-1b composition (agree-vote-seed + centroid-boundary-key) as a consumption-module block on lock v2.1, review loop OFF",
+    "ceiling": 8,
+    "program": "phase-native-module-v1-c8",
+    "template_variants": {
+      "arms": [
+        {
+          "arm_id": "r1-c1",
+          "instruction_template": {
+            "relpath": "configs/probes/nx/solver/r1/r1-c1.txt",
+            "sha256": "715e6bb1248f6e99828b08ac0b1e190e59306fe97d6ec05a5f2a52f9303daf58"
+          },
+          "template_tokens": 430
+        },
+        {
+          "arm_id": "r1-c2",
+          "instruction_template": {
+            "relpath": "configs/probes/nx/solver/r1/r1-c2.txt",
+            "sha256": "45bb164de465f71eb8adb11c2121a95164cace1b36b5ad2c7c5204bea35ac8cf"
+          },
+          "template_tokens": 413
+        },
+        {
+          "arm_id": "r1-c3",
+          "instruction_template": {
+            "relpath": "configs/probes/nx/solver/r1/r1-c3.txt",
+            "sha256": "89b81e97c0c8d5377eff2892fac548ac83fd6a24f61ceb25396a57196bb262dc"
+          },
+          "template_tokens": 434
+        },
+        {
+          "arm_id": "r1-c4",
+          "instruction_template": {
+            "relpath": "configs/probes/nx/solver/r1/r1-c4.txt",
+            "sha256": "d375f16d5e7d988c5d7482c905a486b94f8be058b8d8483ff3a64c2985d09e05"
+          },
+          "template_tokens": 431
+        },
+        {
+          "arm_id": "r1-c5",
+          "instruction_template": {
+            "relpath": "configs/probes/nx/solver/r1/r1-c5.txt",
+            "sha256": "3b4cb0f10c06f99b1a2ac9b1b833c93a309ffc26a70a0dad45d73126196be190"
+          },
+          "template_tokens": 413
+        },
+        {
+          "arm_id": "aa",
+          "replicate_of": "lock"
+        },
+        {
+          "arm_id": "lock",
+          "deliver": true,
+          "template_tokens": 323
+        }
+      ],
+      "fit_estimate": {
+        "base_prompt_tokens": 2000,
+        "completion_ceiling": 512,
+        "slot_tokens": 24576,
+        "tokens_per_supplied_item": 235
+      },
+      "max_supplied_items": 55,
+      "node": "solver"
+    }
+  }
+}

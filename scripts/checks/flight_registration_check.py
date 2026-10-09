@@ -253,6 +253,10 @@ class CellReport:
     #: variants-design.md section 4).
     perception_branch: dict[str, Any] | None = None
     #: Set only for a cell whose ``stage3_measurement.measurement_design`` is
+    #: ``same-flight-node-column`` -- the NX node-template column (instrument E1; design
+    #: docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-design.md section 7).
+    node_column: dict[str, Any] | None = None
+    #: Set only for a cell whose ``stage3_measurement.measurement_design`` is
     #: ``same-flight-shadow-relisten`` -- owner decision 185, design docs/superpowers/specs/
     #: 2026-09-28-e4-core-native-targeted-relisten-design.md section 8 rulings 2 and 7.
     relisten: dict[str, Any] | None = None
@@ -283,6 +287,7 @@ class CellReport:
             "findings": [finding.as_dict() for finding in self.findings],
             "supply_variant": self.supply_variant,
             "perception_branch": self.perception_branch,
+            "node_column": self.node_column,
             "relisten": self.relisten,
             "roster_split": self.roster_split,
             "resume_replay_proof": self.resume_replay_proof,
@@ -968,6 +973,139 @@ def _check_perception_branch_registration(
                     f"{problem}",
                     report.run_id,
                 ))
+
+
+# --------------------------------------------------------------------------
+# Node-template column registration (NX programme instrument E1, 2026-10-09)
+# --------------------------------------------------------------------------
+
+#: The one design whose cells declare a ``roles.<node>.template_variants`` group.
+NODE_COLUMN_DESIGNS = ("same-flight-node-column",)
+
+#: Where the Solver's ``template_variants`` block is composed in a baseline fragment
+#: (``rails.supply_variants.TEMPLATE_VARIANT_NODES``; Solver first).
+NODE_COLUMN_PATH = ("native_episode", "roles", "solver", "template_variants")
+
+#: A node column, like every same-flight instrument design, may claim only a nomination.
+NODE_COLUMN_CLAIM_CEILING = "nominated"
+
+
+def _node_column_block(baseline: dict[str, Any] | None) -> Any:
+    node: Any = baseline
+    for key in NODE_COLUMN_PATH:
+        if not isinstance(node, dict):
+            return None
+        node = node.get(key)
+    return node
+
+
+def _check_node_column_registration(
+    report: CellReport,
+    fragment: dict[str, Any],
+    baseline: dict[str, Any] | None,
+    floor_gate: Any,
+    repo_root: Path,
+) -> None:
+    """Registration findings for a ``same-flight-node-column`` cell (the three the instrument README
+    listed as not done): ``aa-arm-missing``, ``variant-cost-mismatch`` and ``variant-claim-not-nominated``,
+    plus ``template-summary-mismatch`` (the declared ``template_variants`` summary must agree with the
+    arm list). A no-op when the declaration is absent, names another design, or the cell declares no
+    ``template_variants`` block -- the same three-guard shape the supply-variant check uses. The arm
+    group itself is parsed, and refused by name, by the rails at config load; this surfaces the
+    REGISTRATION half of the contract before launch.
+    """
+
+    block = _measurement_block(floor_gate, repo_root, report.run_id, report.cell_id, fragment)
+    if not isinstance(block, dict) or block.get("measurement_design") not in NODE_COLUMN_DESIGNS:
+        return
+    group = _node_column_block(baseline)
+    if not isinstance(group, dict):
+        return
+    arms = group.get("arms")
+    arm_rows = [a for a in arms if isinstance(a, dict)] if isinstance(arms, list) else []
+    twin_ids = [a.get("arm_id") for a in arm_rows if a.get("replicate_of") is not None]
+    candidates = [a for a in arm_rows if a.get("instruction_template") is not None]
+    report.node_column = {
+        "measurement_design": block.get("measurement_design"),
+        "arms": len(arm_rows),
+        "candidate_arms": len(candidates),
+        "twin": twin_ids[0] if twin_ids else None,
+        "variant_cost": block.get("variant_cost"),
+        "claim": block.get("claim"),
+        "tuning_roster": block.get("tuning_roster"),
+        "read_roster": block.get("read_roster"),
+        "aa_arm_id": block.get("aa_arm_id"),
+    }
+    aa_arm_id = block.get("aa_arm_id")
+    if not twin_ids:
+        report.findings.append(Finding(
+            "aa-arm-missing",
+            f"{report.run_id}: measurement_design 'same-flight-node-column' declares no twin arm -- no arm "
+            "names replicate_of -- but the node-column read needs its in-chain A/A (the twin of the delivering arm)",
+            report.run_id,
+        ))
+    elif aa_arm_id != twin_ids[0]:
+        report.findings.append(Finding(
+            "aa-arm-missing",
+            f"{report.run_id}: stage3_measurement.aa_arm_id is {aa_arm_id!r}, but the arm group's own twin "
+            f"(the arm naming replicate_of) is {twin_ids[0]!r}",
+            report.run_id,
+        ))
+    cost = block.get("variant_cost")
+    expected_extra = len(arm_rows) - 1 if arm_rows else None
+    if not isinstance(cost, dict):
+        report.findings.append(Finding(
+            "variant-cost-mismatch",
+            f"{report.run_id}: measurement_design 'same-flight-node-column' declares no variant_cost block; the "
+            "package must declare variant_cost.extra_contacts_per_row and variant_cost.extra_audio_seconds",
+            report.run_id,
+        ))
+    else:
+        extra_contacts = cost.get("extra_contacts_per_row")
+        if expected_extra is not None and (
+            isinstance(extra_contacts, bool) or not isinstance(extra_contacts, int)
+            or extra_contacts != expected_extra
+        ):
+            report.findings.append(Finding(
+                "variant-cost-mismatch",
+                f"{report.run_id}: variant_cost.extra_contacts_per_row is {extra_contacts!r}, but the arm list "
+                f"({len(arm_rows)} arms, twin and delivering arm included) makes it {expected_extra} (K - 1)",
+                report.run_id,
+            ))
+        extra_audio = cost.get("extra_audio_seconds")
+        if isinstance(extra_audio, bool) or not isinstance(extra_audio, (int, float)) or extra_audio < 0:
+            report.findings.append(Finding(
+                "variant-cost-mismatch",
+                f"{report.run_id}: variant_cost.extra_audio_seconds is {extra_audio!r}; it must be a "
+                "non-negative number ((K - 1) * row audio: every arm re-sends the speech packet)",
+                report.run_id,
+            ))
+        elif expected_extra is not None and expected_extra > 0 and extra_audio == 0:
+            report.findings.append(Finding(
+                "variant-cost-mismatch",
+                f"{report.run_id}: variant_cost.extra_audio_seconds is 0 but extra_contacts_per_row is "
+                f"{expected_extra}; every extra arm re-sends the row's speech packet",
+                report.run_id,
+            ))
+    summary = block.get("template_variants")
+    if not isinstance(summary, dict) or summary.get("candidate_arms") != len(candidates) or bool(
+        summary.get("twin")
+    ) != bool(twin_ids):
+        report.findings.append(Finding(
+            "template-summary-mismatch",
+            f"{report.run_id}: stage3_measurement.template_variants is {summary!r}, but the arm list has "
+            f"{len(candidates)} candidate arm(s) and {'a' if twin_ids else 'no'} twin",
+            report.run_id,
+        ))
+    claim = block.get("claim")
+    if claim != NODE_COLUMN_CLAIM_CEILING:
+        report.findings.append(Finding(
+            "variant-claim-not-nominated",
+            f"{report.run_id}: measurement_design 'same-flight-node-column' may claim only "
+            f"{NODE_COLUMN_CLAIM_CEILING!r} (a node-local effect never supports a system-level claim), "
+            f"but claim is {claim!r}",
+            report.run_id,
+        ))
 
 
 #: The three retrieval-key pins a ``key_source`` branch may swap
@@ -1710,6 +1848,7 @@ def check_cell(
     _check_perception_branch_registration(
         report, fragment, baseline, floor_gate, index.repo_root, data_root=data_root,
     )
+    _check_node_column_registration(report, fragment, baseline, floor_gate, index.repo_root)
     _check_relisten_registration(report, fragment, baseline, floor_gate, index.repo_root)
     # Item D3's roster-split check still runs for a NAMED sealed/flown cell (a resume step
     # re-launching an already-consumed run id, gated the same as any other launch-mode cell --

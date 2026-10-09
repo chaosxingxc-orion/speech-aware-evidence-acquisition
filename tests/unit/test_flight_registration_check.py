@@ -118,6 +118,9 @@ class World:
         # baseline's native_episode.roles.perception.branches, exactly where the real
         # baselines will carry it once a phase-2 fragment is minted.
         self.perception_branches: dict | None = None
+        # NX programme instrument E1: written into the EXPERIMENT baseline's
+        # native_episode.roles.solver.template_variants (a node-template column cell).
+        self.template_variants: dict | None = None
 
     def write_roster_receipt(
         self, roster_id: str, disjointness_proof: dict | None = None, **extra: object
@@ -147,6 +150,11 @@ class World:
                 baseline["native_episode"] = {
                     "roles": {"solver": {"supply_variants": self.supply_variants}}
                 }
+            if experiment == EXPERIMENT and self.template_variants is not None:
+                native_episode = baseline.setdefault("native_episode", {})
+                native_episode.setdefault("roles", {}).setdefault("solver", {})[
+                    "template_variants"
+                ] = self.template_variants
             if experiment == EXPERIMENT and self.perception_branches is not None:
                 native_episode = baseline.setdefault("native_episode", {})
                 native_episode.setdefault("roles", {})["perception"] = {
@@ -1329,3 +1337,99 @@ def test_context_read_scope_does_not_reinterpret_other_recipe_schemas(world):
     result = world.build().run(cells=[EXPERIMENT])
     assert result["passed"]
     assert "context-read-scope" not in _kinds(result)
+
+
+# --------------------------------------------------------------------------
+# Node-template column registration (NX programme instrument E1): aa-arm-missing,
+# variant-cost-mismatch, variant-claim-not-nominated, template-summary-mismatch
+# --------------------------------------------------------------------------
+
+
+def _template_arms(*, candidates: int = 2, twin_id: str | None = "aa") -> dict:
+    arms = [
+        {"arm_id": f"t{i}", "instruction_template": {"relpath": f"configs/probes/nx/t{i}.txt", "sha256": "a" * 64},
+         "template_tokens": 400}
+        for i in range(1, candidates + 1)
+    ]
+    if twin_id is not None:
+        arms.append({"arm_id": twin_id, "replicate_of": "lock"})
+    arms.append({"arm_id": "lock", "deliver": True, "template_tokens": 380})
+    return {"node": "solver", "arms": arms, "max_supplied_items": 48, "fit_estimate": {}}
+
+
+def _node_column_measurement(*, candidates: int = 2, twin: bool = True, **over: object) -> dict:
+    block = {
+        "measurement_design": "same-flight-node-column",
+        "expected_effect_pp": 2.0,
+        "primary_metric_key": "slu",
+        "claim": "nominated",
+        "aa_arm_id": "aa",
+        "template_variants": {"node": "solver", "candidate_arms": candidates, "twin": twin},
+        "variant_cost": {"extra_contacts_per_row": candidates + (1 if twin else 0), "extra_audio_seconds": 100.0},
+    }
+    block.update(over)
+    return block
+
+
+def test_a_well_formed_node_column_cell_passes_and_records_fields(world: World) -> None:
+    world.measurement = _node_column_measurement()
+    world.template_variants = _template_arms()
+    data = world.build().run(cells=[EXPERIMENT])
+    kinds = _kinds(data)
+    for kind in ("aa-arm-missing", "variant-cost-mismatch", "variant-claim-not-nominated", "template-summary-mismatch"):
+        assert kind not in kinds
+    cell = next(c for c in data["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["node_column"]["arms"] == 4
+    assert cell["node_column"]["candidate_arms"] == 2
+    assert cell["node_column"]["twin"] == "aa"
+
+
+def test_node_column_aa_arm_missing_without_a_twin_or_with_a_disagreeing_id(world: World) -> None:
+    world.measurement = _node_column_measurement(twin=False)
+    world.template_variants = _template_arms(twin_id=None)
+    assert "aa-arm-missing" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+    world.measurement = _node_column_measurement(aa_arm_id="not-the-twin")
+    world.template_variants = _template_arms()
+    assert "aa-arm-missing" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+
+def test_node_column_variant_cost_must_match_the_arm_list(world: World) -> None:
+    world.template_variants = _template_arms()
+    world.measurement = _node_column_measurement(variant_cost={"extra_contacts_per_row": 5, "extra_audio_seconds": 10.0})
+    assert "variant-cost-mismatch" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+    world.measurement = _node_column_measurement(variant_cost={"extra_contacts_per_row": 3, "extra_audio_seconds": 0})
+    assert "variant-cost-mismatch" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+    world.measurement = _node_column_measurement()
+    del world.measurement["variant_cost"]
+    assert "variant-cost-mismatch" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+
+def test_node_column_claim_is_capped_at_nominated(world: World) -> None:
+    world.template_variants = _template_arms()
+    world.measurement = _node_column_measurement(claim="admitted")
+    assert "variant-claim-not-nominated" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+    del world.measurement["claim"]
+    assert "variant-claim-not-nominated" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+
+def test_node_column_summary_must_agree_with_the_arm_list(world: World) -> None:
+    world.template_variants = _template_arms(candidates=2)
+    world.measurement = _node_column_measurement(
+        template_variants={"node": "solver", "candidate_arms": 5, "twin": True})
+    assert "template-summary-mismatch" in _kinds(world.build().run(cells=[EXPERIMENT]))
+
+
+def test_a_design_outside_the_node_column_skips_the_node_checks(world: World) -> None:
+    world.measurement = {
+        "measurement_design": "cross-flight-with-in-chain-replicate",
+        "expected_effect_pp": 5.0,
+        "replicate_run_id": "SAEA-SLURP-STAGE3-SOME-REPLICATE-V1",
+    }
+    world.template_variants = _template_arms(twin_id=None)
+    kinds = _kinds(world.build().run(cells=[EXPERIMENT]))
+    for kind in ("aa-arm-missing", "template-summary-mismatch"):
+        assert kind not in kinds
