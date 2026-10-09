@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T22:51:50Z
+Last refreshed: 2026-10-09T23:25:17Z
+
+## R5 composed-read package on master, HELD (2026-10-09T23:25:17Z, Fable 5.1 root)
+
+Merge d4b396170: `docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/` -- composed arm `slurp-native-stage3-nx-r5-composed-dev2000-added-v1` (COMP-1b on lock v2.2 = v4g at delivery, review-off program c2 = 2 contacts per row, locked Solver template with a documented swap point; 2,000 generation calls, FIT cap 8,000, ~1.5 GPU-h) chained after the HELD module OFF arm `module-comp1b-aa-dev2000-added-v1` (lock v2.1, full graph; its recomposed hashes still equal the registered ones, no re-pin needed) on DEV-2000-ADDED; read against the sealed A2 arm with the replicate's offset (design `cross-flight-with-in-chain-replicate`, no-harm declaration, harm margin 2.5 pp, expected +0.07 = N100 review-off -1.48 + v4g +1.55; verdict words NOMINATED / NEUTRAL (no loss at ~half the contacts) / HARM / UNRESOLVED defined in the README; v4g applied offline to all columns with a declared tuning exception: v4 rules were selected on this DEV pool, v4g confirmed on Fold B). HELD pending decision 238 and the iteration-2 verdict; before a flight: countersign the R5 rows AND the module package's two replicate rows, mint both receipts, flip, chain. A harness entry for R5 would need `CURRENT_LOCK` -> v2.2 (not needed unless R5 nominates).
+
+Superseded stamp: 2026-10-09T22:51:50Z
 
 ## Module step 7 merged: lock v2.2 carries v4g; R5 package preparation starts, HELD (2026-10-09T22:51:50Z, Fable 5.1 root)
 
