@@ -234,6 +234,19 @@ def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> d
                      "flip mints it under this cell's own run id (item E16), there is no earlier digest to reproduce"),
             "relpath": f"prepared/{i['run_id']}/phase-supply-v1.json", "sha256": "MINTED_AT_THE_FLIP",
         }
+        # After the flip the cell baseline carries the minted pin; the registered plan must declare EXACTLY that
+        # (scripts/checks/flight_registration_check.py "registered-supply-binding", 2026-10-03): copy it verbatim.
+        exp_path = Path("configs/experiment") / f"{i['experiment']}.json"
+        baseline_name = ""
+        if exp_path.exists():
+            cells = json.loads(exp_path.read_text(encoding="utf-8")).get("cells", {})
+            entry = cells.get(i["cell"], {}) if isinstance(cells, dict) else next((c for c in cells if c.get("cell_id", c.get("cell")) == i["cell"]), {})
+            baseline_name = entry.get("baseline", "") or entry.get("baseline_fragment", "")
+        baseline_path = Path("configs/baseline") / f"{baseline_name}.json"
+        if baseline_name and baseline_path.exists():
+            pinned = json.loads(baseline_path.read_text(encoding="utf-8")).get("prepared_phase_supply")
+            if isinstance(pinned, dict) and pinned.get("sha256") not in (None, "", "MINTED_AT_THE_FLIP"):
+                supply = dict(pinned)
         base = {
             "cell": i["cell"], "composed_config_hash": i["composed_config_hash"],
             "expected_session_id": nf.SESSION, "experiment": i["experiment"], "family_budget": i["family_budget"],

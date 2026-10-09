@@ -23,7 +23,7 @@
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "0e4e26f2654102c9be732dcda338ec80c2c6cea7a46d5d733aeabd9755db8e60"
+      "sha256": "ba3ba2dc3a22d85da999fad72ab53016e8a4e90a843a742d2380caaa3724b37d"
     },
     "preregistration": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1-preregistration.md",
@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "d9144bb6dc45c285f78451a07c8ed19b6d6959a675636f577eac9f081827d5c8"
+      "sha256": "7cfc1f6a4350dde7abb34f89a435d7aebf36610f1cffb81b79317983fb11ac62"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/README.md",
@@ -43,9 +43,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/registered-facts-v1.json",
-      "sha256": "9be878c122c4fdb3337d642c2fafe9548bdab6134c59a55c4307b7eae448ce7b"
+      "sha256": "31258ce44e147247ccfcd4b5c0075522f2bcc54c6fbb8dc26be3b33d0e419554"
     },
-    "registration_base_commit": "e6345dd26e821624746f38b5f7d2627dce961418"
+    "registration_base_commit": "3b86164f957a333e78243b4478329b37e997cf01"
   },
   "authorization_basis": "Owner decisions 228-234 (programme approved 2026-10-09), 139, 192, 28/86; the node-template instrument (docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-design.md); docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md section Decisions 228-236.",
   "budget": {

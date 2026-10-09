@@ -44,6 +44,6 @@
   "schema": "saea-registered-protocol-v1",
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/fable-nx-r1-register, branch fable/nx-r1-register",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "e6345dd26e821624746f38b5f7d2627dce961418",
+  "study_commit_at_registration": "3b86164f957a333e78243b4478329b37e997cf01",
   "the_question": "At the one Solver visit of every TRAIN Fold B row of the review-off COMP-1b module graph, does any of five hand-written Solver instruction templates raise the Solver's raw first-answer entity exact-set per row over the locked template, paired per row inside one flight, beyond the in-flight twin's null, without a secondary or intent loss?"
 }

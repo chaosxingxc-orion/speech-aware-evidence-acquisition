@@ -279,7 +279,7 @@
       }
     }
   },
-  "study_commit_at_registration": "e6345dd26e821624746f38b5f7d2627dce961418",
+  "study_commit_at_registration": "3b86164f957a333e78243b4478329b37e997cf01",
   "the_cell": {
     "base": "the COMP-1b composition (agree-vote-seed + centroid-boundary-key) as a consumption-module block on lock v2.1, review loop OFF",
     "ceiling": 8,

@@ -1,6 +1,6 @@
 # Cell NX-R1-SOLVER (node-extreme programme round R1, Solver template column): preregistration
 
-Registered 2026-10-09 at study commit `e6345dd26e821624746f38b5f7d2627dce961418`, before any contact, by script (decision 58) from the P-SV-4 Fold B fragments and the consumption-module compiler under the NX programme (owner decisions 228-234). Development numbers only.
+Registered 2026-10-09 at study commit `3b86164f957a333e78243b4478329b37e997cf01`, before any contact, by script (decision 58) from the P-SV-4 Fold B fragments and the consumption-module compiler under the NX programme (owner decisions 228-234). Development numbers only.
 
 | item | value |
 | --- | --- |
