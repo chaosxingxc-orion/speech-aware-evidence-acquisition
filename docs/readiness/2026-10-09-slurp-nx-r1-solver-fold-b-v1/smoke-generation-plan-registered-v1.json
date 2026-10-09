@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
-  "composed_config_hash": "e657fc792f65b613d892a5960160298bc7d964d6c41ed2ba4bb4073d2df7a059",
+  "composed_config_hash": "38e1ff33869e13ba426dc3c8d22e324f1bf91a47597f1cfbc2fa0024be2c59fe",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 32,
     "planned_speech_audio_seconds": 82,
-    "protocol_hash": "8d48f6d0189b2b33cea6bf57eb024b521a31f542e8f2c49dc832fc6b56df2ce3",
+    "protocol_hash": "4f5c5342986f2fdecb6a15bccc21bf57600dd8fec81676595340b561f9cd5f37",
     "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "93fcde5d7f0638c5c49e8ec1dbb79bf24b1f754a29a5af3c1709790eb118c2d6"
+    "sha256": "0b0be17d9ade80419e7c52bdb5572f40f81c630aac330af985da0b5220a35b2a"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1: structural form proof only: no score and no read.",
   "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",
