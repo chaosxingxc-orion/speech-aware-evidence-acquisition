@@ -1,5 +1,13 @@
 # Experiment rules for the ChatGPT side
 
+## Original capacity projection running; root source-pin refusals preserved (2026-10-09T08:00:38.531249+00:00)
+
+Two unsigned preview inputs correctly failed the unchanged source identity guard before producing metadata: root first named an isolated non-ancestor commit, then used the integrated custody commit without the later approved analysis changes. Root preserved both failures and separately recorded the corrections; no registration or model/tokenizer/scorer contact occurred. The complete approved implementation base is nowc28e97460, with all src/scripts/project dependency equality and ancestry verified before the original v3 request. Evidence: `docs/receipts/continuation/2026-10-09-joint-capacity-projection-continuation-v1.json`.
+
+The original v3 CPU projection is live at this checkpoint: PID157625/start_ticks7815485, exec session41079, source2a5e2d755 in `/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2`. Verify its original exit at DATA `coordination/local-joint-n100-v1/root-capacity-projection-v3-exit.json`; do not edit that checkout or restart because an observation times out. All five-member GPU stages remain held until exact registration, frozen checks and fresh admission.
+
+Source-only follow-through is parallel: existing local natural4 convenience wrappers require joint metadata/ready/countersign/dispatch/completion successors although canonical joint proof gates already exist. Sol implements narrow successors and Astra audits the source. Canonical readiness embeds a decision pin in the config hash, so preserve two distinct root records: zero-contact readiness/warm transformation first, then final-map stage=natural contact admission. No current source, controls or runtime are changed by this engineering. Preserve fixed data/knowledge, exact five-member N100 scope,4GiB floors/full reserves, one serial GPU campaign/four inputs, CPU overlap and the human boundary before8x400. The broad goal remains active/incomplete.
+
 ## Joint capacity bridge staged without contact (2026-10-09T07:48:41.060314+00:00)
 
 The approved exact v2 bridge completed once with exit0, preserving all original preparation receipts and distinct original full400, selected N100 and immediate fresh-capacity supply edges. Root copied sixteen exact metadata files and the complete reviewed helper/wrapper set into a fresh entry. Every helper byte matches the independently approved source; its original125 supplied and13 focused independent test evidence is reused, with no copied-entry test rerun claimed. Evidence: `docs/receipts/continuation/2026-10-09-joint-capacity-bridge-staged-v1.json`.
@@ -1410,4 +1418,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-09T07:48:41.060314+00:00
+Last refreshed: 2026-10-09T08:00:38.531249+00:00

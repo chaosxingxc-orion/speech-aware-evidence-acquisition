@@ -1,0 +1,43 @@
+{
+  "at_utc": "2026-10-09T08:00:38.531249+00:00",
+  "complete_implementation_base": "c28e97460da30ac90afadbeca5d43fc9f60fdfd0",
+  "current_input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-preview-input-v3.json",
+    "sha256": "9f796edd33dab0b8acea15965ef9b1a10267b6021ca7629622d810df38e4f330"
+  },
+  "exec_session": 41079,
+  "first_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-projection-ancestry-disposition-v1.json",
+    "sha256": "8b2970706496dfc6088d3efdaf159f4e2626c022ef88a2d75f541225f979ae27"
+  },
+  "first_refusal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-projection-v1-exit.json",
+    "sha256": "4f6cea3065b28ad616ab653e546dc60a54c3e5fce1ba41eef2d734ec7ee0d44f"
+  },
+  "frozen_source_during_preview": "2a5e2d7554884c0a5340feb3b52c6226ce2fe087",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "live_pid": 157625,
+  "live_start_ticks": "7815485",
+  "meaning": "Both prior unsigned previews were refused by the unchanged source identity guard before metadata production. Root initially chose an isolated non-ancestor implementation commit and then omitted the separately approved analysis-only source integration. Exact complete-source ancestry and equality were verified for c28e97460 before the separately preserved v3 invocation. No source guard, actual registration, model/tokenizer/scorer contact or runtime state changed.",
+  "natural_contract": "Use distinct pinned zero-contact readiness and later final-map contact-admission decisions to keep the canonical readiness configuration hash acyclic. Final exact source review and actual root records remain required.",
+  "natural_successor_source_scope": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-natural-engineering-v1/root-source-scope-v1.json",
+    "sha256": "18fd2051b3f2c6e394fa354a84afa42a3026909c91b98ed027224fb60096e2be"
+  },
+  "original_running_start": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-projection-v3-started.json",
+    "sha256": "116da69bd9ac665049ffb0e9a12cb0a88d350215b5022bd7efa2a18cd571926f"
+  },
+  "owner_decision": 227,
+  "runtime_admission": false,
+  "schema": "saea-root-capacity-projection-continuation-v1",
+  "second_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-projection-complete-source-disposition-v1.json",
+    "sha256": "dd8b5f9f4e55f09600e4161449e69fc11554fc507531037658ef72c2e08b4b6a"
+  },
+  "second_refusal": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-projection-v2-exit.json",
+    "sha256": "24d7273c95b9e2e0f9e4ad2f0b1d8a792bd7bb1359d6b167a53b0ade92f47a04"
+  },
+  "status": "ORIGINAL_UNSIGNED_PROJECTION_RUNNING"
+}
