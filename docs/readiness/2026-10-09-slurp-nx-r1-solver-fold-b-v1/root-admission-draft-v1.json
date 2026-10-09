@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "7cfc1f6a4350dde7abb34f89a435d7aebf36610f1cffb81b79317983fb11ac62"
+      "sha256": "c4da00f27afeedf309872a5489eb90313fb137d39a1ae08642fe24b4b476b9e6"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/README.md",
@@ -43,9 +43,9 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/registered-facts-v1.json",
-      "sha256": "31258ce44e147247ccfcd4b5c0075522f2bcc54c6fbb8dc26be3b33d0e419554"
+      "sha256": "7a0333d413d32e2522f7c6856f376ce6e18629ab227d1f2356bf5d191be37987"
     },
-    "registration_base_commit": "3b86164f957a333e78243b4478329b37e997cf01"
+    "registration_base_commit": "f8360070bc3e23f49bd2af4b6eadf216288bc71e"
   },
   "authorization_basis": "Owner decisions 228-234 (programme approved 2026-10-09), 139, 192, 28/86; the node-template instrument (docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-design.md); docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md section Decisions 228-236.",
   "budget": {
@@ -109,8 +109,8 @@
       "protocol": "624daa5437f6b5739c105e1a23a2334c72aa8a5d633efacd2cc9a138dea7bde1"
     },
     "smoke": {
-      "composed_config": "38e1ff33869e13ba426dc3c8d22e324f1bf91a47597f1cfbc2fa0024be2c59fe",
-      "protocol": "4f5c5342986f2fdecb6a15bccc21bf57600dd8fec81676595340b561f9cd5f37"
+      "composed_config": "04ef225ba9109e247e83bb7cb0d94e88a124d29d5fe5b025351436db6794f8b9",
+      "protocol": "de8c5416792e068cc08e7b09aa9cfa19753b099385746c4d46735a6937b6d030"
     }
   },
   "schema": "saea-campaign-decision-v1",

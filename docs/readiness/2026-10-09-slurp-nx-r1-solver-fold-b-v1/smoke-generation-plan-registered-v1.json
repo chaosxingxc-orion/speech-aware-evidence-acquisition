@@ -1,14 +1,22 @@
 {
   "cell": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
-  "composed_config_hash": "38e1ff33869e13ba426dc3c8d22e324f1bf91a47597f1cfbc2fa0024be2c59fe",
+  "composed_config_hash": "04ef225ba9109e247e83bb7cb0d94e88a124d29d5fe5b025351436db6794f8b9",
   "execution_plan": {
-    "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
+    "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 32,
     "planned_speech_audio_seconds": 82,
-    "protocol_hash": "4f5c5342986f2fdecb6a15bccc21bf57600dd8fec81676595340b561f9cd5f37",
+    "protocol_hash": "de8c5416792e068cc08e7b09aa9cfa19753b099385746c4d46735a6937b6d030",
+    "recovery": {
+      "predecessor_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
+      "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-v1",
+      "predecessor_state": "OPENED; 32 contacts / 81.453 speech-seconds spent; preserved unread",
+      "reason": "The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec1 attempt; the arm is untouched.",
+      "recovery_index": 1,
+      "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
+    },
     "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
@@ -31,14 +39,14 @@
   },
   "one_factor": "the Solver instruction template (phase_material.solver.instruction_template) of each non-delivering arm: ONE hash-pinned path per arm under probes/nx/solver/r1/, nothing else (no supply knob, decoding, response format or tool authority); the base, the Fold B pins, the review-off program and the module block are the instrument's carrier, shared by every arm",
   "plan_kind": "generation",
-  "preparation_base_commit": "3b86164f957a333e78243b4478329b37e997cf01",
+  "preparation_base_commit": "f8360070bc3e23f49bd2af4b6eadf216288bc71e",
   "prepared_phase_supply": {
     "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
     "sha256": "f9716523544af1bdac1a62e9711fe830aa82a7b676a171204ee81256462c66e3"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "7cfc1f6a4350dde7abb34f89a435d7aebf36610f1cffb81b79317983fb11ac62"
+    "sha256": "c4da00f27afeedf309872a5489eb90313fb137d39a1ae08642fe24b4b476b9e6"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1: structural form proof only: no score and no read.",
   "registered_at_utc": "2026-10-09T12:00:00.000000+00:00",
