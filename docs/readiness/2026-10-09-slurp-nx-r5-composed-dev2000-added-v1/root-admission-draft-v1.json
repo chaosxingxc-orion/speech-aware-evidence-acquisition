@@ -1,0 +1,125 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/nx/nx_r5_mint_receipt.py, which sets status 'decided', stamps recorded_at_utc, re-hashes every antecedent path at mint time and refuses to overwrite. It authorises nothing while its status is not 'decided'. The replicate's receipt is the module package's own (mint it too).",
+  "antecedents": {
+    "a2_read": {
+      "path": "docs/results/2026-09-30-slurp-a2-comp1b-dev2000-read.md",
+      "sha256": "87eba97d9e21175c126e6365c8b12557be1fe453f55e8b1cc64e581ec5c9ee9c"
+    },
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/analysis-recipe-v1.json",
+      "sha256": "f54b5a0d16701f6cc2b189b57087602fea9d1dcdb1fec5b3b7dab940b6ab5758"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "7396b72ab1af635d84b373b4e014b8519336189e847f7ead041651cc47592892"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1-preregistration.md",
+      "sha256": null
+    },
+    "programme": {
+      "path": "docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md",
+      "sha256": "ece3e9b93f60fa03b9453d577984cbc3891f1be512ac389d4e6859fb8cadfdf0"
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/protocol-registered-v1.json",
+      "sha256": "cb4236f60f7dc841fb4c68a3241258d445966eea80c97c4fff68375240e3f73f"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/registered-facts-v1.json",
+      "sha256": "67321a0763f9d44ee4ce8582a7a8cd808835ba41b3e63461f9457eaa99d088a1"
+    },
+    "registration_base_commit": "4434a89b71cc9ff6de4ac502b8aa6a6d521f5893",
+    "step7": {
+      "path": "docs/readiness/2026-10-09-slurp-module-step7-v4g-default-v1.md",
+      "sha256": "b05b503a57e53d79e66d27cfe44eb20ca44ae7de8c71a62866d1063a3576815f"
+    },
+    "v4g_lock": {
+      "path": "docs/results/2026-10-09-slurp-postprocessing-v4g-lock-v1.md",
+      "sha256": "e54bb33dd0f3e6113af3ba1737150fe0add8d03977d8324dd8024aeacbe874c6"
+    }
+  },
+  "authorization_basis": "Owner decisions 228-234 and, once ruled, 238; the programme docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md; module step 7; decisions 25, 133, 139, 169, 190.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 8000,
+    "generation_calls_cap": 2000,
+    "gpu_hours_fit_inclusive": 1.5,
+    "native_task_contract_calls_cap": 2000,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 5968,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 32,
+      "generation_calls_cap": 8,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 8,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 17
+    }
+  },
+  "cell_kind": "Stage-3 composed system-policy arm expressed as a consumption-module block (sealed-credit-system-policy-v1, operator context_application): COMP-1b on lock v2.2 (v4g at delivery), review-off, on DEV-2000-ADDED, with its four-row smoke; its in-chain replicate is the module OFF arm under the module package's own receipt.",
+  "claim_boundary": "No superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim. Development numbers only. No benefit is claimed (claims_benefit false).",
+  "coordinator": "Fable5.1",
+  "decision": "Fly the smoke, then the replicate and the composed arm in one campaign on DEV-2000-ADDED 1,000, ONLY after decision 238 is ruled and the R1 iteration-2 verdict is on file; read at official pooled SLU-F1 against the sealed A2 arm beyond the replicate offset, intent the guard, declared effect +0.07 pp, claims_benefit false, harm margin 2.5 pp.",
+  "decision_id": "slurp-nx-r5-composed-dev2000-added-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1",
+    "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-FIT-V1",
+    "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. Budgets are run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before decision 238 is ruled, the coordinator decides it, BOTH receipts are minted and the three cells are flipped",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any policy change outside the declared module block"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1000,
+    "fold_b_contact_authorized": false,
+    "roster": "SLURP-DEV-2000-ADDED-V1",
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
+    "split_role": "dev",
+    "test_contact_authorized": false
+  },
+  "prepared_phase_supply": {
+    "note": "each cell's own, minted at the flip (item E16); not pinned by this receipt"
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "1643378d03685ba2589ecb6e8654a95fd1ee0bfe7dcac975f5542297dd06d8af",
+      "protocol": "68b06428642d629ad2f34ba30e9b86087bf39e4fd6f2aa0b6b03848cb63e76c4"
+    },
+    "note": "the values of the fragments exactly as committed at 4434a89b71cc9ff6de4ac502b8aa6a6d521f5893; repin_cell.py recomputes them at the flip",
+    "smoke": {
+      "composed_config": "1a12df2462ec91e70282ef04bbbc4385c3c8ce25f2a8418848bc80c143757cc8",
+      "protocol": "a6ad7589ce1691de61092c7ff578d5c693dbccd4e294e2eeaf3983554c3a589d"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "decoder_only": true,
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}
