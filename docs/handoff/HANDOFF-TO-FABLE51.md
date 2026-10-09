@@ -1,5 +1,15 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Solver original N100 terminal and family READ; Reviewer update2 N100 launched (2026-10-09T03:04:41.900300+00:00)
+
+All six original Solver update3 members independently FINALIZED100 trajectories with verified seals, one unique successful complete official score each and zero failed jobs:600 rows and1200 model contacts. Root captured and verified original driver/Windows terminal, guards, complete scoring metadata and preserved controls, then deleted `slurp-solver-update3-n100-health`. The source-reviewed unchanged configured READ v2 successfully qualified the complete family; root separately countersigned `SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE3-READ-V1` and invoked the original full-family reader once. That CPU read remains in progress: verify its original exit before interpreting results. No score was replayed. Evidence: `docs/receipts/continuation/2026-10-09-solver-update3-terminal-reviewer-update2-n100-launched-v1.json`.
+
+Root performed the independently reviewed normal serial transition after complete Solver terminal custody and fresh live admission, then made one Windows SAEA-Batch-Driver request for Reviewer. Original Reviewer driver epoch is2026-10-09T02:58:12Z; campaign starts02:58:51Z. Frozen worker `/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-frozen-v1` remains at5bc19ac89623ac1abb5c4b536c66f5eaf51096e8. DATA entry is `coordination/local-reviewer-n100-k4-update2-generation-v1`; singleton queue SHA00e81c002deebca7e9caec51cda440e9e525de71083a18f5c58675a6a14de3da. Configured order is control,control-aa,candidate-1,candidate-2,candidate-3,candidate-4,100 rows each. Legal-path ceilings are7800 model contacts,31200 FIT endpoints and six complete official score jobs. Inspect every original member; service totals are not completed rows. Initial memory wait passed20.410seconds, and the original driver/campaign processes were live at03:01:31Z. Revalidate current identities.
+
+The fresh15minute `slurp-reviewer-update2-n100-health` monitor is active and must be deleted at verified original terminal. It has operational read-only authority, no dispatch/recovery/scientific READ. Initial CPU admission may leave the resident service idle. Maintain one serial GPU campaign,four concurrent inputs and one overlapping CPU official scorer; root CPU analysis of completed Solver is independent. Preserve4GiB floors, full output reserves and all frozen assets. Full Reviewer comparisons and learning require its independently complete family and exact root READ.
+
+The earlier alleged missing preparation map was a root filtered-display error, explicitly corrected; actual source-reviewed v2 passed real whole-family qualification/signature. No v3 was created, activated or needed. Preserve the correction and all historical source evidence. Apply the already registered local primary/tie-breaks, per-stratum/process measurements and two-evaluated-update review rule after complete reads. No stable benefit, adoption or learning superiority is established. The broad goal remains active/incomplete; human review before8x400 and all other-carrier holds remain.
+
 ## Solver control-AA descriptive analysis and source integration check (2026-10-09T02:50:46.451171+00:00)
 
 The original Solver control-AA independently finalized100 rows and passed its unique-score/seal qualification. Root separately countersigned its exact descriptive READ and invoked the unchanged canonical reader once. GPT-6 Astra Ultra audited only this aggregate member. Raw entity correctness is46/100; postprocessing repairs3/54 and harms0/46, delivering49/100; empty-gold false filling is10/34. Full strata and timing are retained in `docs/readiness/2026-10-09-slurp-local-solver-n100-k4-update3-member-analysis-v1/control-aa-descriptive-note-v1.md`. Receipt: `docs/receipts/continuation/2026-10-09-solver-update3-control-aa-descriptive-read-v1.json`. There is no contrast, A/A interpretation, selection or learner export before the full family qualifies and its exact READ is signed.
@@ -1104,7 +1114,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-09T02:53:07.390381+00:00
+Last refreshed: 2026-10-09T03:04:41.900300+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
