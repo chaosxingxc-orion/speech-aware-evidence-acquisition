@@ -429,6 +429,47 @@ def test_four_rows_are_walked_model_free_through_the_production_graph(
     assert sum(TEMPLATE_TEXT["t1"] in text for text in instructions) == 4
     assert sum(TEMPLATE_TEXT["t2"] in text for text in instructions) == 4
 
+    # The byte statement, per row: the delivering arm's request equals the same row's request in an
+    # UNARMED 4-row run under the same program ceiling.
+    plain = _ActualEpisodeHarness(
+        tmp_path / "plain", sample_count=4, max_revisions=0, max_contacts=1 + group.arm_count,
+        planner_actions=(),
+    )
+    plain.config = _live_config(group=None, max_contacts=1 + group.arm_count)
+    plain._output = _arm_output
+    _run(plain)
+
+    def by_sample(requests):
+        grouped = {}
+        for request in requests:
+            grouped.setdefault(request["sample_id"], []).append(request)
+        return grouped
+
+    armed_rows, plain_rows = by_sample(_requests(harness)), by_sample(_requests(plain))
+    assert set(armed_rows) == set(plain_rows) == {"s1", "s2", "s3", "s4"}
+    identical = 0
+    for sample_id, armed_requests in armed_rows.items():
+        assert len(armed_requests) == 1 + group.arm_count and len(plain_rows[sample_id]) == 2
+        delivering, unarmed = armed_requests[-1], plain_rows[sample_id][1]
+        for field in FIELDS_EQUAL + ("task_instruction",):
+            assert delivering[field] == unarmed[field], (sample_id, field)
+        assert delivering["history"][:-1] == unarmed["history"][:-1]
+        assert _instruction(delivering) == _instruction(unarmed)
+        assert _control_without_instruction(delivering) == _control_without_instruction(unarmed)
+        identical += 1
+    print("NX-REHEARSAL-SUMMARY " + json.dumps({
+        "rows": len(summary.results),
+        "arms_per_row": list(group.arm_ids),
+        "model_free_requests": close["request_count"],
+        "contacts_per_row": [len(r.contacts) for r in summary.results],
+        "receipt_schema": summary.results[0].supply_variants["schema"],
+        "templates": {
+            row["arm_id"]: row["instruction_template"]
+            for row in summary.results[0].supply_variants["arms"]
+        },
+        "delivering_request_identical_to_unarmed_plan": f"{identical}/4 rows",
+    }, sort_keys=True))
+
 
 @pytest.mark.skipif(not openjiuwen_available(), reason="OpenJiuwen unavailable")
 def test_a_revision_visit_contacts_the_delivering_arm_alone(tmp_path):
@@ -631,6 +672,14 @@ def test_the_dry_run_walks_every_template_arm_model_free(tmp_path):
     assert len(digests) == 3
     perception = next(n for n in document["nodes"] if n["phase"] == "perception")
     assert perception["supply_variant_arms"] == []
+    print("NX-DRYRUN-SUMMARY " + json.dumps({
+        "delivered_arm_id": document["delivered_arm_id"],
+        "arms": [
+            {k: arm[k] for k in ("arm_id", "deliver", "instruction_template", "instruction_sha256",
+                                 "supplied_item_count")}
+            for arm in arms
+        ],
+    }, sort_keys=True))
 
 
 # ---------------------------------------------------------------------------
