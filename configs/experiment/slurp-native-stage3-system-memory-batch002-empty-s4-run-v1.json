@@ -17,8 +17,8 @@
         "prepare-supply"
       ],
       "readiness": {
-        "state": "ready",
-        "reason": "Disjoint source-bound provisional memory evaluation with the same common capability and real per-contact fits.",
+        "state": "superseded",
+        "reason": "Disjoint source-bound provisional memory evaluation with the same common capability and real per-contact fits. Superseded 2026-10-09 by the engineering-base cleanup (docs/readiness/2026-10-09-engineering-base-cleanup-v1.md): this cell never flew and made zero model contacts; its arm was recorded not_started when the batch stopped on the resource-read failure (docs/receipts/continuation/2026-09-26-system-memory-batch002-resource-read-failure.json: zero new model or tool contacts) and it is superseded by the empty-s4 recovery1 cell.",
         "requirements": [
           {
             "kind": "decision",

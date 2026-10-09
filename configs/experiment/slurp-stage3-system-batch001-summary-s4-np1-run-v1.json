@@ -16,8 +16,8 @@
         "campaign"
       ],
       "readiness": {
-        "state": "ready",
-        "reason": "All16 exact compact requests fit the registered one-slot service with full output and reserve. Recheck each source through live fit before generation.",
+        "state": "superseded",
+        "reason": "All16 exact compact requests fit the registered one-slot service with full output and reserve. Recheck each source through live fit before generation. Superseded 2026-10-09 by the engineering-base cleanup (docs/readiness/2026-10-09-engineering-base-cleanup-v1.md): this cell never flew and made zero model contacts; its registration was closed after a pre-contact refusal that opened no attempt (docs/receipts/continuation/2026-09-26-system-summary001-precontact-refusal.json: zero fit, generation and scoring contacts) and it is superseded by the corrected np1-run-v2 cell.",
         "requirements": [
           {
             "kind": "decision",
