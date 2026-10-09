@@ -1,0 +1,68 @@
+{
+  "at_utc": "2026-10-09T00:45:16.624901+00:00",
+  "benefit_or_learning_claim": false,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "owner_decision": 227,
+  "reviewer": {
+    "completed_frozen_checks": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-natural4-v1/root-natural-frozen-check-continuation1-exit-v1.json",
+      "sha256": "08a5d07ea53e0f53f5e98d87d07460fdb8b105cd00e13bb33edab6be5be3f2a7"
+    },
+    "driver_epoch": "2026-10-09T00:42:04Z",
+    "monitor": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-natural4-v1/root-monitor-created-v1.json",
+      "sha256": "687bae5aee7c8200d0dc17adb5ae3d0e0332ad734060871acd0ffe75dec1b35b"
+    },
+    "official_scores": 0,
+    "original_continuation_terminal": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-natural4-v1/root-frozen-check-continuation1-windows-exit.json",
+      "sha256": "ea7d0740c722c2631b6979bc64634d7ab5256431fd4c25e35eb5b5f246f000ee"
+    },
+    "original_cpu_check_incident": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-natural4-v1/frozen-check-continuation1/root-disposition-v1.json",
+      "sha256": "4d394eaf07e5031c0da22b2dd5eea4b5821ea27c5ec7721376bbdc150eb3060b"
+    },
+    "original_dispatch": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-natural4-v1/root-natural-dispatch-request-v1.json",
+      "sha256": "b48e7dfdc598d1e98314464ac174fa45d0d6727bbbecfa1a69b2250c53c0cc54"
+    },
+    "runtime_status": "STARTED; complete structural evidence pending",
+    "transition": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-natural4-v1/root-natural-control-transition-v1.json",
+      "sha256": "c450b36c67383ba1e55f27fe6dd663c929f47c30297fe638b4a8a22455e1adf8"
+    }
+  },
+  "schema": "saea-root-local-structural-serial-continuation-v1",
+  "solver": {
+    "fit_endpoints": 192,
+    "model_contacts": 48,
+    "monitor_deleted": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/monitor-terminal-20261008T231751Z/automation-deleted.json",
+      "sha256": "7fcff3d3774c5e20b2576d5d1976afe3cb34e47ffef4a9947b0ea10b292ff03c"
+    },
+    "official_scores": 0,
+    "original_qualification_exit": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-original-structural-qualification-exit-v1.json",
+      "sha256": "538329a3594f4e9663c68cf4d04d5d111e49e1cbcfa73f522d3fab8f17efe28c"
+    },
+    "original_terminal": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-original-terminal-closure-v1.json",
+      "sha256": "1b076065afd8f9fde7d7e934649029c6e3cd8a8faf5f339293b5baba94873757"
+    },
+    "qualification": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/natural-family-qualified-v1.json",
+      "sha256": "8e78aa1395ec77f4a5fad2c781bc38342396dc616c09f1da77ceb712379cd040"
+    },
+    "rows": 24,
+    "scientific_feedback": false,
+    "structural_read": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-natural4-v1/root-structural-read-v1.json",
+      "sha256": "ec608a2d9a7bcbfc3d8d3a00c5c66bb7da745aef307be3ab72e9993abe158b80"
+    }
+  },
+  "solver_next_analysis_template": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-v1/analysis-metadata-v1/analysis-template-v1.json",
+    "sha256": "df6b1c251c9f18493d8288c7ea625ef197838ae4bc58404470af567ce8c0d788"
+  },
+  "unchanged_local_primary_and_roster": true
+}

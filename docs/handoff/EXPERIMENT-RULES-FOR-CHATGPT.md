@@ -1,5 +1,16 @@
 # Experiment rules for the ChatGPT side
 
+## Solver update3 structural qualification; Reviewer update2 natural launch (2026-10-09T00:45:16.624901+00:00)
+
+The complete Solver update3 natural family passed the unchanged structural audit after original terminal closure and the exact root structural READ: six configured members,24 rows,48 model contacts and192 actual-request FIT endpoints, zero official scores. Omni retains terminal delivery. Its original monitor is deleted. Preserve the worker-only OPENED attempts, completed manifests and unscored specifications; this qualification is engineering evidence, not task benefit. Exact evidence: `docs/receipts/continuation/2026-10-09-solver-update3-structural-qualified-reviewer-update2-launched-v1.json`.
+
+The original Reviewer CPU checker disappeared without a complete terminal; its cause remains unestablished. Root227 preserved every original file and five successful checks, then explicitly disposed one continuation of only the seven unchanged missing checks. That independent Windows continuation exited0; all12 exact checks and logs are pinned. No model/tokenizer/scorer contact or frozen-source edit occurred. This completed disposition grants no monitor recovery authority.
+
+Root validated the complete natural Solver predecessor through the separately reviewed natural lifecycle verifier, normally archived its controls and made one Windows dispatch request for Reviewer. Actual driver epoch is2026-10-09T00:42:04Z, frozen `/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-natural4-frozen-v1` at eb24444567f42df3d2961a8c1475e7b3a809618e. Queue SHA a3b32ef80b0da5878543cb2341f5a4cc1356226db181832a300a0aa8b562fb7e; DATA entry `coordination/local-reviewer-n100-k4-update2-natural4-v1`. Inspect all six configured members. The separate proof admits24 structural trajectories, at most312 model contacts and1248 actual-request FIT endpoints, zero scores. Its15minute `slurp-reviewer-update2-structural-health` monitor is active until the verified original terminal. Revalidate live state; monitors never qualify or read quality.
+
+Solver N100 comparison preparation can overlap this serial GPU proof. Its new analysis template preserves the same fixed roster, registered raw first-answer entity primary, secondary process measures, A/A, strata and local two-evaluated-update review rule. Candidate count and budgets derive from config. Complete authoring, exposure, frozen admission and exact scientific READ remain required. Preserve per-module feedback isolation,4GiB floors, full reserves and four concurrent inputs. The broad SLURP/system-learning/cross-carrier goal remains active/incomplete; no stable benefit or learning gain is established and human review remains required before8x400.
+
+
 ## Reviewer next configured natural structural family registered (2026-10-09T00:25:06.599166+00:00)
 
 The original ready/warm authorer completed successfully with no contacts. Root verified that only the declared natural readiness fields changed, preserved all successor custody, and registered the complete configured family through the unchanged plan countersigner. Every member analysis recipe carries its actual composed measurement profile. Exact evidence: `docs/receipts/continuation/2026-10-09-local-reviewer-n100-k4-update2-natural4-v1-registered-v1.json`. Member count, ordering, identities and legal-path budgets derive from the fixed population; no new proposal position or data/knowledge reconstruction occurred.
@@ -1247,4 +1258,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-09T00:25:06.599166+00:00
+Last refreshed: 2026-10-09T00:45:16.624901+00:00
