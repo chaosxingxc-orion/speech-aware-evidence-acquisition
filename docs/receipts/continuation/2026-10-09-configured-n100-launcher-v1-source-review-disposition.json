@@ -1,0 +1,27 @@
+{
+  "at_utc": "2026-10-09T01:27:42.485709+00:00",
+  "controls_changed": false,
+  "current_gpu_dispatches": 0,
+  "disposition": "Preserve v1 source, tests, review and actual uninvoked input. Sol may prepare only a separate configuration-derived successor; Astra Ultra must independently approve its exact source. Root then authors a fresh input preserving original predecessor custody and performs the existing live admission. This is not a runtime failure recovery or permission to rerun any attempt.",
+  "findings": [
+    "Bind natural observer closure to original nonempty canonical guard event streams and complete lifecycle.",
+    "Bind the natural dispatch request to the original launch namespace and original control/input/packet custody.",
+    "Repeat the approved admitted-process predicate under the same held generation guard immediately before mutation."
+  ],
+  "frozen_experimental_bytes_changed": false,
+  "new_model_tokenizer_scorer_contacts": 0,
+  "owner_decisions": [
+    227
+  ],
+  "preserved_actual_uninvoked_input": {
+    "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-configured-dispatch-input-v1.json",
+    "sha256": "ae8cc01677768567d8339859efa36ace7fda4b92df8cd20b40d4e4c6b3f07814"
+  },
+  "review": {
+    "relpath": "coordination/local-configured-n100-dispatch-astra-review-v1/review-result-v1.json",
+    "sha256": "6f2189f99e0388195d496b576fa0a35bf793b4c5d972969a142ac8f76415b980"
+  },
+  "schema": "saea-root-source-review-disposition-v1",
+  "scientific_feedback": false,
+  "status": "REJECT V1; PREPARE AND INDEPENDENTLY REVIEW V2"
+}
