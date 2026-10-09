@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T19:00:32Z
+Last refreshed: 2026-10-09T19:03:03Z
+
+## R1 official columns (scratch): the raw node gain of r1-c5 is formatting the normaliser already repairs (2026-10-09T19:03:03Z, Fable 5.1 root)
+
+Column scorer fixed for template groups (merge c0586c48b; `scripts/analysis/stage3_rollout_score.py` dispatches on the declaration kind). Scratch official columns on the sealed R1 run (row-cluster bootstrap, 10,000 draws, seed 20260915; pooled official SLU-F1 / intent vs lock 62.13 / 82.22): aa twin +0.57 [-0.10, +1.27] / +0.19; r1-c3 +0.96 [-0.16, +2.09] / +0.28; r1-c2 +0.22; r1-c4 -0.20; r1-c5 **-0.15 [-1.23, +0.89]** / +0.28; r1-c1 -0.73. So no iteration-1 arm clears the official floor (1.49) or even the twin bar; r1-c5's raw exact_set +2.50 was filler formatting that the v3 delivery normaliser already repairs (the candidates README had flagged this risk). Instrument correction: the E2 node-local PRIMARY becomes the exact-set measured AFTER the cell's delivery normaliser (raw kept as diagnostic); the iteration-2 recipe is being re-declared accordingly before its flip; the registered R1 read (official columns + offline v4/v4g, incl. the v4g confirmation on lock) is resuming on master. The real lever on this node is the empty-entity decision (c3: false fill 34 % -> 19 %, official +0.96 at n = 1,080), which iteration 2 composes with the gate of owner rule 199.
+
+Superseded stamp: 2026-10-09T19:00:32Z
 
 ## NX R1 iteration 2 registered, countersigned and minted; flip waits for P-SV-4 (2026-10-09T19:00:32Z, Fable 5.1 root)
 
