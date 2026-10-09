@@ -539,7 +539,7 @@ Implement continuous full-panel node stages with fixed20-job preparation groups,
 Programme: `2026-10-09-slurp-nx-node-extreme-programme-v1.md` (approved as the plan of record by the owner on
 2026-10-09; owner clarifications of the same day in its section F: template-plus-statistics learning in two
 stages, knowledge USE before knowledge SUPPLY; the Reviewer-class capability is beyond the 30B-A3B core; the
-Qwen ASR question). Each row below is awaiting its own ruling. Status: PROPOSED.
+Qwen ASR question). Owner ruling 2026-10-09 (English translation of the chat message): "Decision 228: A; 229-234: agreed, go with what you recommend." Status: rows 228-234 RULED as recommended (228 = A, the COMP-1b lock as flown in the milestone); 235/236 withdrawn (below). Consequences: SLURP INTENT is LOCKED at COMP-1b (`docs/results/2026-10-09-slurp-intent-lock-comp1b-v1.md`); SLU-F1 stays open as the NX slot line; the joint N100 composition is not flown; every NX read is n >= 1,080 same-flight paired; the Reviewer loop is removed (F2); carriers stay HELD until the R5 composed read; the second test-sample allowance is drafted only after R5 reads NOMINATED on DEV; one registration / countersign / read per round.
 
 | # | question | coordinator recommendation |
 | --- | --- | --- |

@@ -1944,3 +1944,11 @@ All400 trajectories independently finalized, sealed and scored once; exact famil
 ## 2026-10-09: independent local Solver and Reviewer N100 checkpoints - EXPLORATORY, NO SYSTEM ADOPTION
 
 Both six-member families independently finalized600 trajectories, sealed and scored once per complete member, with separately qualified full-family and descriptive READs. Solver update3 selects candidate-4 on raw entity50/100 versus47/100 control; official-F1 difference+1.234 points has interval[-2.059,+4.516]. Reviewer update2 selects candidate-1 on raw entity net(2 repairs-1 harm)/100 versus0 control; final F1 difference-0.316 points has interval[-4.476,+3.545]. These are local exploratory choices, not runtime adoption or proof of stable system/learning benefit. All strata, missingness, model/postprocess stages and node timing are retained in the [Solver report](../readiness/2026-10-09-slurp-local-solver-k4-update3-complete-analysis-v1/README.md) and [Reviewer report](../readiness/2026-10-09-slurp-local-reviewer-k4-update2-complete-analysis-v1/README.md). The Reviewer original terminal is verified and its monitor deleted. Next separately admit exact role imports on the full topology after numeric-stage persistence and custody checks; same fixed N100 remains adaptive development. No other-carrier release or automatic8x400.
+
+## 2026-10-09 -- SLURP intent lock at COMP-1b (owner decision 229)
+
+Model-free lock record `docs/results/2026-10-09-slurp-intent-lock-comp1b-v1.md`: the replication rule of decision
+229 (CI95 lower bound > 0 on DEV-2000-ADDED and on the signed test sample for the same metric) is met for
+INTENT by A2 (+4.60 [+2.58, +6.73], n = 1,000) and the milestone successor read (+5.80 [+4.04, +7.42], n = 3,010);
+not met for SLU-F1 (+0.53 / +0.79 [-0.44, +2.02]). SLURP intent is LOCKED at the COMP-1b bytes; SLU-F1 stays open
+under the NX programme (decision 228 = A: COMP-1b is the one NX base). Zero contacts.

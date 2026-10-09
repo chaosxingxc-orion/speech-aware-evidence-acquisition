@@ -1,8 +1,9 @@
 # NX node-extreme programme v1 (SLURP, Stage 3): audit of 2026-09-30 -> 10-09 and the next-stage design
 
 Status: the owner approved this programme as the plan of record on 2026-10-09 (chat, Chinese; English
-rendering in section F). Decisions 228-236 are PROPOSED and await individual rulings; nothing with a GPU
-cost flies before rows 228, 230 and 231 are ruled. Model-free work (E1-E4, R0.x) starts at once.
+rendering in section F). Owner ruling 2026-10-09: "Decision 228: A; 229-234: agreed, go with what you recommend" -- rows 228-234
+are RULED as recommended (base = the COMP-1b lock); 235/236 withdrawn. GPU rounds may now be registered once
+E1 and E3 land. Model-free work (E1-E4, R0.x) starts at once.
 Registry: `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md` (section "Decisions 228-236").
 
 

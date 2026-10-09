@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T09:35:01Z
+Last refreshed: 2026-10-09T09:38:58Z
+
+## Owner rules 228-234 as recommended (2026-10-09T09:38:58Z, Fable 5.1 root)
+
+Owner (English translation): "Decision 228: A; 229-234: agreed, go with what you recommend." Base = the COMP-1b lock as flown in the milestone; SLURP INTENT is LOCKED (`docs/results/2026-10-09-slurp-intent-lock-comp1b-v1.md`: DEV +4.60 [+2.58, +6.73], test +5.80 [+4.04, +7.42]); SLU-F1 stays open; the joint N100 composition is NOT flown (its Solver donor becomes an R1 candidate at n = 1,080); every NX read is n >= 1,080 same-flight paired; the Reviewer loop is removed; carriers stay HELD until the R5 composed read; one registration / countersign / read per round; no new N20/N100 GPU family. The earlier stamp line follows.
+
+Superseded stamp: 2026-10-09T09:35:01Z
 
 ## NX node-extreme programme approved as the plan of record; decisions 228-236 proposed (2026-10-09T09:35:01Z, Fable 5.1 root)
 
