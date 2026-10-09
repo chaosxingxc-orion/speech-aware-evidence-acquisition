@@ -59,7 +59,7 @@
   },
   "composed_config_hashes": {
     "arm": "a64b8bb3e94ec46793449a613671f5398bbccc0a569e8f3b1be01e3ab3397655",
-    "smoke": "04ef225ba9109e247e83bb7cb0d94e88a124d29d5fe5b025351436db6794f8b9"
+    "smoke": "c965ae63b990732a1f7bf537dd892fda4543d197b9eb7f66f33f9f493c93fbf1"
   },
   "decision_rule": "SAME-FLIGHT NODE-TEMPLATE COLUMN READ (NX programme C0.2/C2 R1; instrument E1/E2; claim ceiling 'nominated'). One flight, one Solver visit per row, seven arms over the SAME QueryState and evidence: r1-c1 .. r1-c5 (hand-written candidates), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last). Each arm's RAW first answer is read through the E2 reader (scripts/analysis/slurp_nx_solver_column_read.py): node-local primary = raw first-answer entity exact-set per row, paired per row against lock, with the whole-utterance cluster bootstrap CI95 (10,000 draws, seed 20260915) and the paired Wilson share of the discordant rows; secondaries parse_valid, empty_gold_false_fill, nonempty_exact and per-slot-type counts. Each arm's column is also rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train (never sharded); official contrasts are paired ROW bootstraps (cluster key sample_id, the stage3_paired_read constraint for column arms, 10,000 draws, seed 20260915), the whole-utterance number beside. (1) THE TWIN NULL: aa minus lock on every metric; the bar = |aa - lock offset| + its CI95 half-width, reported beside the design's provisional floor (SLU-F1 1.49 pp, intent 0.65 pp at n = 1,080; borrowed from same-flight-supply-variant until this cell measures its own null). (2) THE CONTRAST per candidate X: NOMINATED iff (a) the node-local exact-set CI95 lower bound > 0, AND (b) no secondary loss (parse_valid or nonempty_exact lower, or empty_gold_false_fill higher, with a CI95 excluding zero), AND (c) the intent guard holds: rows whose official intent correctness differs from lock <= 7 (0.65 pp of 1,080) or the official intent delta CI95 contains zero, AND (d) the official pooled SLU-F1 point delta exceeds the twin's SLU bar. HARM iff (a') the exact-set CI95 upper bound < 0. Among several NOMINATED arms the best node-local point estimate wins (ties: fewer words). PLATEAU RULE (programme C0.4): two evaluated rounds without a NOMINATED arm lock the delivering template and close the node. A nomination is confirmed once on TRAIN Fold A as a two-arm column before any lock; it admits nothing by itself. The delivering lock arm's own offline post-processing columns v4 and v4g are read beside (analysis recipe, offline_columns).",
   "delivering_template": {
@@ -168,7 +168,7 @@
       "baseline_fragment": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
-      "composed_config_hash": "04ef225ba9109e247e83bb7cb0d94e88a124d29d5fe5b025351436db6794f8b9",
+      "composed_config_hash": "c965ae63b990732a1f7bf537dd892fda4543d197b9eb7f66f33f9f493c93fbf1",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -200,7 +200,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "program": "phase-native-module-v1-c8",
-      "protocol_hash": "de8c5416792e068cc08e7b09aa9cfa19753b099385746c4d46735a6937b6d030",
+      "protocol_hash": "4c3f7de1b0b5f903a406dee9a6b60b9dc92206169e91a5d364a6e9d8db35a8d4",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1",
