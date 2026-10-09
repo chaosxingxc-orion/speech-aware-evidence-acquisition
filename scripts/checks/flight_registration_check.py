@@ -1612,6 +1612,40 @@ def _report_authorized_joint_overlap(report, stage):
                                 "adoption or learner-export claim")
 
 
+_HEX64 = re.compile(r"[0-9a-f]{64}")
+#: Annotation-only members of a registered ``prepared_phase_supply`` declaration. They describe
+#: the pin (provenance note, the minted artifact's output hash) and are never part of its identity.
+_SUPPLY_PIN_ANNOTATIONS = ("note", "output_sha256")
+
+
+def _supply_pins_agree(declared: Any, expected: Any) -> bool:
+    """Whether a registered plan's ``prepared_phase_supply`` names the cell baseline's supply.
+
+    A plan registered BEFORE the flip cannot carry the minted hash: it declares the artifact's
+    ``relpath`` with an explicit placeholder (``"0" * 64`` or ``MINTED_AT_THE_FLIP``), and the flip
+    later writes the real pin into the baseline. Annotation members (``note``, ``output_sha256``)
+    never identify the pin. So the identity compared is the ``relpath`` always, and the ``sha256``
+    only when the plan declares a real (64 lowercase hex, non-zero) one. A sibling's relpath or a
+    real, different hash is still a disagreement.
+    """
+
+    if not isinstance(declared, dict) or not isinstance(expected, dict):
+        return declared == expected
+
+    def identity(pin: dict[str, Any]) -> dict[str, Any]:
+        view = {k: v for k, v in pin.items() if k not in _SUPPLY_PIN_ANNOTATIONS}
+        sha = view.get("sha256")
+        if not (isinstance(sha, str) and _HEX64.fullmatch(sha) and set(sha) != {"0"}):
+            view.pop("sha256", None)
+        return view
+
+    declared_view = identity(declared)
+    if "sha256" not in declared_view:
+        expected_view = {k: v for k, v in identity(expected).items() if k != "sha256"}
+        return declared_view == expected_view
+    return declared_view == identity(expected)
+
+
 def _check_registered_supply_binding(report, baseline, index, package, ledger, *, cell=None, fragment=None,
                                      data_root=None):
     """Refuse a plan that declares another member's prepared supply envelope.
@@ -1666,10 +1700,10 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
                         cap *= population["contact_limits"]["fit_endpoints_per_model_contact"]
                     require(isinstance(plan, dict) and plan.get("planned_model_calls") == cap,
                             "registered plan contact cap differs from config")
-            except (ValueError, KeyError, TypeError, OSError) as error:
+            except (ValueError, KeyError, TypeError, OSError, RuntimeError) as error:  # RuntimeError: BundleError (unreadable source custody) is a finding, never a gate crash
                 report.findings.append(Finding("population-config-binding", f"{run_id}: {error}", run_id))
         if (run_id in report.run_ids.values() and "prepared_phase_supply" in document
-                and document["prepared_phase_supply"] != expected):
+                and not _supply_pins_agree(document["prepared_phase_supply"], expected)):
             report.findings.append(Finding(
                 "registered-supply-binding",
                 f"{run_id}: {path.name} declares a prepared supply different from its cell baseline",
@@ -1691,7 +1725,7 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
                                                      repo_root=index.repo_root, data_root=data_root)
             if effective.values.get("joint_role_basis") is not None:
                 _report_authorized_joint_overlap(report, "generation" if manual_n20 else "natural")
-        except (ValueError, KeyError, TypeError, OSError) as error:
+        except (ValueError, KeyError, TypeError, OSError, RuntimeError) as error:  # RuntimeError: BundleError (unreadable source custody) is a finding, never a gate crash
             report.findings.append(Finding("population-config-binding", str(error), report.run_id))
 
 
@@ -1954,6 +1988,28 @@ def _cell_blocks(report_severity: str, finding_severities: Iterable[str | None])
     return any((severity or report_severity) == "blocking" for severity in finding_severities)
 
 
+def _ledger_completed_sole_attempt(
+    cell: dict[str, Any], run_id: str, rows: list[dict[str, str]], registered_attempts: set[str],
+) -> str | None:
+    """Tree-mode historical evidence for a spend that leaves no ``attempts/``/``runs/`` record.
+
+    Tokenizer-only and zero-generation diagnostics (capacity and fit measurements) are spent
+    without ever creating an attempt directory, so the attempt-aware :func:`consumption` finds
+    nothing for them. Their evidence of record is the exposure-ledger row, closed
+    ``consumed = yes`` and a recorded ``COMPLETED`` / ``Verdict:`` disposition. That row waives the cell ONLY in whole-tree
+    mode and ONLY while this cell is the sole attempt registered for the run id anywhere in
+    ``configs/experiment``: a second attempt sharing the run id is a new attempt and never inherits
+    the waiver, and a named (launch-mode) cell is always gated in full.
+    """
+
+    attempt_id = cell.get("attempt_id")
+    if not isinstance(attempt_id, str) or registered_attempts != {attempt_id}:
+        return None
+    if any(row_consumed(row) and re.search(r"\b(?:completed|verdict:)", row_text(row), re.IGNORECASE) for row in rows):
+        return "ledger consumed=yes + COMPLETED (sole registered attempt, no attempt record)"
+    return None
+
+
 def evaluate(
     repo_root: Path,
     data_root: Path,
@@ -1993,6 +2049,14 @@ def evaluate(
                 if state in GATED_STATES or (include_held and state in PREVIEW_STATES):
                     targets.append((experiment, cell, False))
 
+    attempts_by_run: dict[str, set[str]] = {}
+    for entry in fragments.values():
+        for member in entry.fragment["cells"]:
+            if isinstance(member, dict) and member.get("run_id"):
+                attempts_by_run.setdefault(str(member["run_id"]).strip(), set()).add(
+                    str(member.get("attempt_id") or "")
+                )
+
     reports: list[CellReport] = []
     for experiment, cell, named in targets:
         entry = fragments[experiment]
@@ -2013,6 +2077,10 @@ def evaluate(
         registered = registered or date_in(entry.fragment.get("date"))
         report.registration_date = registered.isoformat() if registered else None
         report.consumed_by = consumption(data_root, run_id, rows, attempt_id=cell.get("attempt_id"))
+        if report.consumed_by is None and not named:
+            report.consumed_by = _ledger_completed_sole_attempt(
+                cell, run_id, rows, attempts_by_run.get(run_id, set())
+            )
         baseline = entry.baseline
         if baseline is None and cell.get("baseline_fragment") is not None:
             # A multi-member family may intentionally use different policy bundles.

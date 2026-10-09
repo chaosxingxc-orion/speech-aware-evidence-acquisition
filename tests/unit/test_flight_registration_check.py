@@ -1329,3 +1329,73 @@ def test_context_read_scope_does_not_reinterpret_other_recipe_schemas(world):
     result = world.build().run(cells=[EXPERIMENT])
     assert result["passed"]
     assert "context-read-scope" not in _kinds(result)
+
+
+# ---- engineering-base cleanup 2026-10-09: placeholder supply pins and completed tokenizer-only spends ----
+
+
+@pytest.mark.parametrize("declared, expected, agree", [
+    # a pre-flip plan: the artifact path with an explicit placeholder hash and a provenance note
+    ({"relpath": "prepared/a/phase-supply-v1.json", "sha256": "0" * 64, "note": "minted at the flip"},
+     {"relpath": "prepared/a/phase-supply-v1.json", "sha256": "a" * 64}, True),
+    ({"relpath": "prepared/a/phase-supply-v1.json", "sha256": "MINTED_AT_THE_FLIP"},
+     {"relpath": "prepared/a/phase-supply-v1.json", "sha256": "a" * 64}, True),
+    # annotation-only members never identify a pin
+    ({"relpath": "prepared/a/phase-supply-v1.json", "sha256": "a" * 64, "output_sha256": "b" * 64, "note": "n"},
+     {"relpath": "prepared/a/phase-supply-v1.json", "sha256": "a" * 64}, True),
+    # a real, different hash is still a disagreement
+    ({"relpath": "prepared/a/phase-supply-v1.json", "sha256": "c" * 64},
+     {"relpath": "prepared/a/phase-supply-v1.json", "sha256": "a" * 64}, False),
+    # a placeholder never excuses another path (a sibling member, or a different supply version)
+    ({"relpath": "prepared/b/phase-supply-v1.json", "sha256": "0" * 64},
+     {"relpath": "prepared/a/phase-supply-v1.json", "sha256": "a" * 64}, False),
+    ({"relpath": "prepared/a/phase-supply-v2.json", "sha256": "MINTED_AT_THE_FLIP"},
+     {"relpath": "prepared/a/phase-supply-v1.json", "sha256": "a" * 64}, False),
+    # non-mapping declarations fall back to plain equality
+    ("x", "x", True),
+    ("x", {"relpath": "r"}, False),
+])
+def test_supply_pin_comparison_treats_placeholders_and_notes_as_unminted(declared, expected, agree):
+    assert gate._supply_pins_agree(declared, expected) is agree
+
+
+def _with_attempt(world: World, attempt: str = "attempt-proof-v1") -> None:
+    path = world.repo / "configs" / "experiment" / f"{EXPERIMENT}.json"
+    fragment = json.loads(path.read_text(encoding="utf-8"))
+    fragment["cells"][0]["attempt_id"] = attempt
+    _write(path, fragment)
+
+
+def test_tree_mode_treats_a_completed_ledger_spend_without_an_attempt_record_as_historical(world: World) -> None:
+    """Tokenizer-only capacity spends leave no attempts/ record; the ledger row is their evidence."""
+
+    world.rows[RUN] = _row(RUN, "Zero generation. Completed 3 endpoints; no generation.", consumed="yes")
+    world.build()
+    _with_attempt(world)
+    tree = world.run()
+    cell = next(c for c in tree["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["severity"] == "advisory" and cell["consumed_by"].startswith("ledger consumed=yes + ")
+    assert EXPERIMENT not in tree["blocking_cells"]
+    # a named (launch-mode) cell is always gated in full, whatever the ledger says
+    launch = world.run(cells=[f"{EXPERIMENT}:{EXPERIMENT}"])
+    assert next(c for c in launch["cells"] if c["cell_id"] == EXPERIMENT)["consumed_by"] is None
+
+
+def test_a_consumed_row_without_a_recorded_completion_does_not_waive_the_cell(world: World) -> None:
+    world.rows[RUN] = _row(RUN, DRAFT, consumed="yes")
+    world.build()
+    _with_attempt(world)
+    cell = next(c for c in world.run()["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["consumed_by"] is None
+
+
+def test_a_second_attempt_sharing_the_run_id_never_inherits_the_ledger_waiver(world: World) -> None:
+    world.rows[RUN] = _row(RUN, "Zero generation. COMPLETED: 9 endpoints.", consumed="yes")
+    world.build()
+    _with_attempt(world)
+    twin = world.repo / "configs" / "experiment" / "twin-attempt.json"
+    fragment = json.loads((world.repo / "configs" / "experiment" / f"{EXPERIMENT}.json").read_text(encoding="utf-8"))
+    fragment["cells"][0].update(cell_id="twin-attempt", attempt_id="attempt-proof-v2")
+    _write(twin, fragment)
+    cell = next(c for c in world.run()["cells"] if c["cell_id"] == EXPERIMENT)
+    assert cell["consumed_by"] is None
