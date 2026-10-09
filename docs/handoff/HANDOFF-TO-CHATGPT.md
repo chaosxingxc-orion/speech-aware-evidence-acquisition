@@ -1,5 +1,38 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+Last refreshed: 2026-10-09T09:35:01Z
+
+## NX node-extreme programme approved as the plan of record; decisions 228-236 proposed (2026-10-09T09:35:01Z, Fable 5.1 root)
+
+The owner (2026-10-09, Chinese chat; English rendering in the programme's section F) set the premise "system-level
+optimisation presupposes every local point optimised to its limit", then clarified three points: (1) the critical
+path is template-based learning from aggregate statistics in two stages -- knowledge USE first, knowledge SUPPLY
+second -- never per-sample review; (2) the Reviewer-class capability is beyond the 30B-A3B core, so the Reviewer ->
+Solver repair loop is removed and the NX base graph is review-off (Perception -> Solver -> deterministic
+post-processing); (3) the Qwen ASR question is answered in section F3 (an ASR model cannot replace the Omni core;
+the cascade is a thesis-level owner decision; the owner then CANCELLED any Qwen3-ASR exploration the same day: rows 235/236 are withdrawn/closed; focus = the agent system and the learning algorithm).
+
+Programme: `docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md` (commit e5adeb3b2): audit of
+2026-09-30 -> 10-09 with every number cited, six named weaknesses (W1 every optimisation ran below the instrument's
+resolution -- n = 20 CI +-15, n = 100 CI +-4.5 against 1-3 pp effects; W2 terminal-scalar reward without credit
+assignment; W3 measured node defects: Solver parse 87/100 on the full graph, empty-gold fill 29 %, value-in-supply
+errors 107/407, Reviewer raw repair 0/100, Planner 0/289 tool calls, the proven support filter +1.40 not in the lock;
+W4 two baselines and no held-out set; W5 ~23 % GPU science; W6 decision 210 unruled), and the design: node-local
+replay columns (K template arms at ONE node over the same sealed state, delivering arm = the locked template, the
+E42 form with the varied axis moved to the instruction template), offline-first, one node per round, Fold B
+selects / Fold A confirms / DEV reads the composition / test only under a new allowance.
+
+Rows 228-236 are PROPOSED in `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md` (base = COMP-1b
+lock; "replicated" rule and the partial INTENT lock from the milestone read +5.80 [+4.04, +7.42] on test / +4.60 on
+DEV; do not fly the joint N100; n >= 1,080 floor; cadence; 235/236 withdrawn by the owner).
+Nothing with a GPU cost flies before 228, 230 and 231 are ruled. In progress now at zero GPU on branches
+fable/nx-exchange (R0.2 exchange rates + R0.3 parse root cause), fable/nx-postproc (R0.4 post-processing v4 offline
+search incl. the multi-sample support filter cost model) and fable/nx-harness (E1 node-template variant arms + E2
+node-local reader). GPU idle; llama-server resident; the ChatGPT joint N100 registration process has exited; its
+GPU composition stays HELD under row 230. The ChatGPT root is asked to open no new N20/N100 GPU family during NX
+(row 234) and to keep the N100 custody as is.
+
+
 ## Original joint capacity registration running (2026-10-09T08:27:58.278863+00:00)
 
 Root started the original complete five-member model-free registration at08:24:15Z from clean5ac2a7cf1 in `/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2`. Its current verified PID is159631/start_ticks7981111, exec session86205; the durable original terminal is DATA `coordination/local-joint-n100-v1/root-capacity-registration-v1-exit.json`. Evidence: `docs/receipts/continuation/2026-10-09-joint-capacity-registration-started-v1.json`. Do not edit this checkout, restart the original process or infer failure from an observation timeout. The current work is CPU custody/prepared-supply verification and registration, with zero model/tokenizer/scorer contacts and no dispatch.

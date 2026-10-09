@@ -316,8 +316,11 @@ revisited, otherwise review-off is locked (calls 610 -> 200 per 100 rows, latenc
   no pip without it), ~4 GB VRAM beside the resident server (22.9 GB used of 32 GB) or CPU, minutes of
   runtime per 1,080 rows; for Earnings-21/22 the same pass yields a WER reference point for the carrier later.
 
-Decisions added: **235** approve E6 (Qwen3-ASR probe, tool-class contact, 0 core contacts, venv install);
-**236** the thesis question (cascade core) is NOT decided now; it is put to the owner only if E6 clears 0.85.
+Decisions 235 (E6 probe) and 236 (cascade thesis question) were proposed here and then **WITHDRAWN / closed by
+the owner on 2026-10-09** ("Cancel the Qwen3-ASR exploration; there is no need to explore the engineering scheme
+and implementation path for that mode. Return to focusing on the gains the agent system and the learning algorithm
+can bring."). E6 is not run; the core stays the frozen Qwen3-Omni; the S2 missing-slot tool line stays closed at
+the Whisper containment (decision 212 record). F3 remains as the factual answer to the question.
 
 ## E. Execution order and roles
 1. (today, 0 GPU) Fable: this plan -> registry rows 228-234 proposed, handoff refresh (both handoff files).
