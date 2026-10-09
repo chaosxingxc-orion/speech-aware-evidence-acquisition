@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T19:55:45Z
+Last refreshed: 2026-10-09T20:02:06Z
+
+## v4g post-processing on the R1 lock column (scratch): +1.55 [+0.81, +2.33] on Fold B (2026-10-09T20:02:06Z, Fable 5.1 root)
+
+Merge 7dada1270: `scripts/analysis/slurp_nx_postproc_v4_apply.py` bases a template arm on its NORMALISED column (the cell's sealed v3 delivery normaliser, via `stage3_rollout_score.normalise_arm_answer`), so the label guard compares v4/v4g against the right base; `nx_r1_read.sh` resumes finished passes. Scratch proofs on the sealed R1 run (whole-utterance clusters, 10,000 draws, seed 20260915, registered scorer on derived copies, intent delta 0): v4(lock) - lock +1.44 [+0.62, +2.27] (118 rows edited); **v4g(lock) - lock +1.55 [+0.81, +2.33]** (104 rows); v4g(r1-c3) - r1-c3 +0.81 [+0.12, +1.53]. TRAIN Fold B never saw the v4 rule search (selection on A2 DEV, Fold A found the audio defect), so this is the fresh-roster confirmation the v4g lock rule asked for; the registered read is filling its `offline-v4` step now, after which the results note gets its successor paragraph and v4g is recorded as the locked delivery normaliser for the NX composition (R5) -- iteration 2 keeps v3 at delivery as registered and reads v4g offline.
+
+Superseded stamp: 2026-10-09T19:55:45Z
 
 ## NX R1 iteration 1 read: NOT NOMINATED (results note on file) (2026-10-09T19:55:45Z, Fable 5.1 root)
 
