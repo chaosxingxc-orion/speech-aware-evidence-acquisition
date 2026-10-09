@@ -1,6 +1,6 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T09:38:58Z
+Last refreshed: 2026-10-09T09:39:22Z
 
 ## Owner rules 228-234 as recommended (2026-10-09T09:38:58Z, Fable 5.1 root)
 
