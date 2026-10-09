@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T20:02:06Z
+Last refreshed: 2026-10-09T21:52:14Z
+
+## v4g LOCKED (component); P-SV-4 sealed and countersigned for its read; NX R1 iteration 2 flying (2026-10-09T21:52:14Z, Fable 5.1 root)
+
+`docs/results/2026-10-09-slurp-postprocessing-v4g-lock-v1.md` (merge 3177c998b): `saea-deliver-normalise-v4g` is LOCKED as the delivery normaliser of the NX composition -- A2 selection +0.98 [+0.21, +1.74] -> Fold A +1.67 with the audio defect -> TRAIN-only guards (A2 +0.98 [+0.25, +1.71]) -> fresh-roster confirmation on the R1 lock column (TRAIN Fold B) **+1.55 [+0.81, +2.33]** (62.13 -> 63.69, 104 rows edited, intent 0 rows changed); zero GPU; registered offline table on all seven R1 arms (+0.81 .. +2.21; the audio stratum loss of unguarded v4 reappears on Fold B, v4g removes it). Not claimed: test numbers. Next registered step before R5: `default_deliver_normaliser` of the slurp module profile (`rails/adapters/slurp_module_hooks.py`, v3 today) -> v4g. R1 note section 7 carries the table. P-SV-4 (`SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1`, flight 684f970ef) sealed 21:05Z: 1,080 rows, 8,727 contacts (8.1 per row of a 15 ceiling), 2 h 42 m, score job OK; 6 finite-completion and 7 revision-limit rows and 42 Reviewer length-truncated completions (new vs R1, which had none; described in the read). READ row countersigned; `psv_read.sh psv4` runs next on CPU. NX R1 iteration 2 (`SAEA-SLURP-STAGE3-NX-R1-I2-SOLVER-FOLD-B-V1`) flipped in loop form (flight commit 3910c77c8; registered plans carry the minted pins 2e86c8f5c), gate PASS, launched by SAEA-Queue-NXR1-I2 at ~21:43Z (smoke then arm; Opus monitor read-only). The serving uptime guard is armed again (12-h mark ~22:58Z; defers under the flight).
+
+Superseded stamp: 2026-10-09T20:02:06Z
 
 ## v4g post-processing on the R1 lock column (scratch): +1.55 [+0.81, +2.33] on Fold B (2026-10-09T20:02:06Z, Fable 5.1 root)
 
