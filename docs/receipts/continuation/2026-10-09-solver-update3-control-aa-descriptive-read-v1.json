@@ -1,0 +1,39 @@
+{
+  "analysis_effort": "ultra",
+  "analysis_model": "gpt-6-astra",
+  "at_utc": "2026-10-09T02:50:46.451171+00:00",
+  "comparisons": null,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "internal_analysis_task": "/root/solver_control_descriptive_astra",
+  "learner_export": false,
+  "member": "control-aa",
+  "model_contacts_added": 0,
+  "note_relpath": "docs/readiness/2026-10-09-slurp-local-solver-n100-k4-update3-member-analysis-v1/control-aa-descriptive-note-v1.md",
+  "original_reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-aa-reader-v1-exit.json",
+    "sha256": "bef42d2b1b9dbe4d6f8050e5863008bc6a7beac732c0bab0e258144985c218d4"
+  },
+  "outer_reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-aa-read-outer-v1.exit.json",
+    "sha256": "b89c89444c5ce6fb43829631494cdb226e586ac3009a8a024177f0887b4a15de"
+  },
+  "owner_decision": 227,
+  "qualification_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-aa-qualify-outer-v1.exit.json",
+    "sha256": "2cc1a3d86fb87c0e0e3be09dd8808ef71b745ae6b5490f52009c0105960d21a7"
+  },
+  "qualified": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-aa-qualification-v1.json",
+    "sha256": "8b965da59b327452b5b9b848badf6e29a62cce96a08e37c78e8b7e677a194b7d"
+  },
+  "report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update3-control-aa-descriptive-v1/report.json",
+    "sha256": "7cb90ce08e7a3dbff71cb64be6481acdf412921cd3d176b7700a376a9ac19478"
+  },
+  "root_signature": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-aa-root-countersignature-v1.json",
+    "sha256": "67f2c240fba26babec911414e577e65bad5e5a8c831c12bbe076f8425281f28d"
+  },
+  "schema": "saea-root-complete-member-descriptive-read-record-v1",
+  "scorer_replayed": false
+}

@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Solver control-AA descriptive analysis and source integration check (2026-10-09T02:50:46.451171+00:00)
+
+The original Solver control-AA independently finalized100 rows and passed its unique-score/seal qualification. Root separately countersigned its exact descriptive READ and invoked the unchanged canonical reader once. GPT-6 Astra Ultra audited only this aggregate member. Raw entity correctness is46/100; postprocessing repairs3/54 and harms0/46, delivering49/100; empty-gold false filling is10/34. Full strata and timing are retained in `docs/readiness/2026-10-09-slurp-local-solver-n100-k4-update3-member-analysis-v1/control-aa-descriptive-note-v1.md`. Receipt: `docs/receipts/continuation/2026-10-09-solver-update3-control-aa-descriptive-read-v1.json`. There is no contrast, A/A interpretation, selection or learner export before the full family qualifies and its exact READ is signed.
+
+The continuous Solver N100 campaign remains the original01:57:16Z epoch, with five finalized members and the last candidate running at02:46Z; revalidate actual state. Keep its scoped monitor until original terminal. Reviewer N100 stays frozen and prepared for the normal serial transition; CPU analysis overlaps GPU work.
+
+Independent Astra Ultra approved the exact READ v2 source:107 supplied adapter cases,34 unchanged helper cases and20 independent custody cases passed;52 source/evidence pins matched. Root subsequently mistook its own filtered display for a missing preparation field. Full raw reinspection confirmed both unchanged original receipts include the complete member recipe map; no adapter defect was established, and unnecessary v3 work is canceled. Preserve the superseded root interpretation and its explicit correction in `docs/receipts/continuation/2026-10-09-configured-read-v2-root-observation-correction.json`. No actual v2 invocation, runtime change or retry preceded this correction. Each actual qualification, signature and READ remains a separate root action through the canonical gates.
+
+Preserve the registered local primary/tie-breaks, own-module feedback isolation,4GiB floors, full reserves and one serial GPU campaign/four concurrent inputs. No stable benefit, adoption or learning superiority is established. The broad goal remains active/incomplete; human review remains required before8x400 and other-carrier holds are unchanged.
+
 ## Solver control descriptive analysis overlaps the continuous N100 campaign (2026-10-09T02:26:07.381328+00:00)
 
 The Solver control independently finalized100 rows with verified seal, exactly one successful complete official score and zero failed jobs. Root ran the unchanged canonical selected-member qualifier, verified original custody, separately countersigned its exact descriptive READ and invoked the original reader once. GPU generation continued with following members. Exact evidence: `docs/receipts/continuation/2026-10-09-solver-update3-control-descriptive-read-v1.json`; aggregate-only note with per-stratum table: `docs/readiness/2026-10-09-slurp-local-solver-n100-k4-update3-member-analysis-v1/control-descriptive-note-v1.md`. Raw entity exactness is47/100; postprocessing yields48/100; empty-gold false filling is10/34. This is one-member description, with no candidate contrasts, selection or learning export. Full-family comparison still requires all six independently qualified members and its exact root READ.
@@ -7472,7 +7482,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-09T02:26:07.381328+00:00
+Last refreshed: 2026-10-09T02:53:07.390381+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

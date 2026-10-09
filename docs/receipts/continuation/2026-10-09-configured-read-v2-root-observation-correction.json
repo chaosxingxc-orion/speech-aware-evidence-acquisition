@@ -1,0 +1,55 @@
+{
+  "actual_v2_invocations": 0,
+  "at_utc": "2026-10-09T02:52:18.135901+00:00",
+  "disposition": "Use unchanged independently approved READ v2 through separate actual canonical root gates. Cancel unnecessary v3 work; preserve any inactive draft. No source requirement is removed and no original receipt is edited.",
+  "finding": "Root displayed a filtered projection omitting member_recipes, then incorrectly treated that projection as the complete original receipt. Full raw reinspection confirms the unchanged original receipts contain all six member recipes. The previous mismatch diagnosis and v3 instruction are withdrawn.",
+  "model_tokenizer_scorer_contacts": 0,
+  "original_evidence": [
+    {
+      "complete_keys": [
+        "at_utc",
+        "contacts",
+        "family_package",
+        "member_package",
+        "member_recipes",
+        "quality_read",
+        "read_authorized",
+        "returncode",
+        "role",
+        "source_commit_before"
+      ],
+      "configured_member_count": 6,
+      "original_preparation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-analysis-preparation-complete-v2.json",
+        "sha256": "9e88d0e3f6a9d0d9ab30f38162ac3f1715a5e917dca4def12c2993161b208838"
+      }
+    },
+    {
+      "complete_keys": [
+        "at_utc",
+        "contacts",
+        "family_package",
+        "member_package",
+        "member_recipes",
+        "quality_read",
+        "read_authorized",
+        "returncode",
+        "role",
+        "source_commit_before"
+      ],
+      "configured_member_count": 6,
+      "original_preparation": {
+        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-reviewer-n100-k4-update2-generation-v1/root-analysis-preparation-complete-v2.json",
+        "sha256": "e1eab85162bc2481c479dbcb3de46e53e6c857e91ccebb7702a91ff7054a6db1"
+      }
+    }
+  ],
+  "owner_decision": 227,
+  "runtime_changed": false,
+  "runtime_failure": false,
+  "schema": "saea-root-observation-correction-v1",
+  "superseded_interpretation": {
+    "path": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2/docs/receipts/continuation/2026-10-09-configured-read-v2-integration-shape-disposition.json",
+    "sha256": "cb66789396fc0dc5e3cf6f824d8b9469d11b866049381895ded3b292b87b6a84"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "actual_adapter_invocations": 0,
+  "actual_preparation_keys": [
+    "at_utc",
+    "contacts",
+    "family_package",
+    "member_package",
+    "member_recipes",
+    "quality_read",
+    "read_authorized",
+    "returncode",
+    "role",
+    "source_commit_before"
+  ],
+  "adapter": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-configured-n100-read-engineering-v2/root_configured_n100_read_v2.py",
+    "sha256": "cf6cb8c0f94ae228e3da9fd41fa6ab1902cf44e7e7c5bbb683980b7c16aaaace"
+  },
+  "at_utc": "2026-10-09T02:50:46.451171+00:00",
+  "disposition": "Preserve all v2 and original preparation bytes. Build a separate narrow v3 binding original package/source-resolution metadata and deriving the complete recipe map without adding fields to immutable receipts. Independent review is required before use. Root canonical qualification/sign/read remains available.",
+  "finding": "The source-reviewed adapter expects member_recipes in the original preparation success receipt; the actual canonical minimal receipt records package paths instead. Root detected this before authoring or invoking an actual v2 input.",
+  "independent_source_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-configured-n100-read-astra-review-v2/review-result-v2.json",
+    "sha256": "c6fcfe46fdae5d14b993f460d2a2c552b4f93a0ed3889fd62db2f894a6ba2c80"
+  },
+  "model_tokenizer_scorer_contacts": 0,
+  "original_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-analysis-preparation-complete-v2.json",
+    "sha256": "9e88d0e3f6a9d0d9ab30f38162ac3f1715a5e917dca4def12c2993161b208838"
+  },
+  "owner_decision": 227,
+  "runtime_failure": false,
+  "runtime_or_scientific_policy_changed": false,
+  "schema": "saea-root-source-only-integration-disposition-v1"
+}
