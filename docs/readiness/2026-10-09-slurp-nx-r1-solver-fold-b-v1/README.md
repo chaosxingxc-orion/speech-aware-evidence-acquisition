@@ -139,7 +139,23 @@ them): the lock rule is `v4g(lock) - lock` with CI95 lower bound > 0 here. The c
 7. After the read: the v4g lock check (section 7), the review-off comparison (section 6) and, for a NOMINATED arm, the Fold A two-arm
    confirmation registration.
 
-## 9. Files
+## 9. Offline verification (2026-10-09, WSL, worktree; zero model, server, GPU or tokenizer contact)
+
+* Dry run on the four-row smoke (`scripts/flights/nx/nx_r1_dry_run.py`, the harness's `analysis/native_episode_dry_run` walk, canned Perception and
+  Solver answers only): 4/4 rows walk `perception -> solver`, the Solver node carries the seven arms in declared order
+  `r1-c1 r1-c2 r1-c3 r1-c4 r1-c5 aa lock` with `lock` delivering and last, the twin and `lock` render the locked instruction
+  (`18bff5c5...`, 1,129 characters), the five candidates render their own distinct instructions (1,505 / 1,443 / 1,517 / 1,508 / 1,444 characters),
+  every arm is supplied the same 39 evidence items, program `phase-native-module-v1-c8`, max contacts 8.
+* `core.flight.cli check` (report-only preflight) on both cells: composed config hashes equal the registered ones (arm `5be18a36...`,
+  smoke `e657fc79...`), 1,080 / 4 samples, geometry 4 x 24,576, `blockers` none. Its synthetic worst-case Solver render reads `COMPACT_REQUIRED`
+  (operational margin -330 arm / -305 smoke), the same profile as the flown COMP-1b cell's own ready check (-317); realised prompts are far
+  lower (section 4).
+* Gates and tests: see the hand-off report; `flight_registration_check.py` launch mode on the two held cells reports exactly the expected
+  pre-countersignature findings (`not-ready`, `row-not-countersigned`, `receipt-missing`, `registered-supply-binding` until the flip) and
+  none of the node-column findings added with this package (`aa-arm-missing`, `variant-cost-mismatch`, `variant-claim-not-nominated`,
+  `template-summary-mismatch`).
+
+## 10. Files
 
 `README.md` (this), `registered-facts-v1.json`, `protocol-registered-v1.json`, `generation-plan-registered-v1.json`, `fit-plan-registered-v1.json`,
 `smoke-generation-plan-registered-v1.json`, `smoke-fit-plan-registered-v1.json`, `analysis-recipe-v1.json`, `root-admission-draft-v1.json`,
