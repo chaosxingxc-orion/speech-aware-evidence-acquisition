@@ -725,20 +725,35 @@ SCOPE_RULE_COMPOSITIONS.update({
 
 
 # ---------------------------------------------------------------------------
-# DRAFT -- projection v4 (NX round R0.4, 2026-10-09). NOT REGISTERED.
+# Projection v4 (NX round R0.4, 2026-10-09): ``saea-deliver-normalise-v4``.
 #
 # Selected offline on cell A2 and confirmed once on TRAIN Fold A
 # (``docs/results/2026-10-09-slurp-nx-postprocessing-v4-offline-read.md``,
 # driver ``scripts/analysis/slurp_nx_postproc_v4_search.py``): v3, then a
-# deterministic ENTITY stage of five rules in a fixed order. The class is
-# deliberately absent from ``core.base.DELIVERY_NORMALISERS``: no config can
-# arm it until (a) the owner locks v4 and (b) its TRAIN statistics are frozen
-# as a pinned table with a receipt, as the scope table is. Until then the
-# statistics are INJECTED (``stats=``) and a call without them is refused.
+# deterministic ENTITY stage of five rules in a fixed order. Its TRAIN
+# statistics are frozen as four pinned tables
+# (``scripts/build_slurp_v4_train_statistics.py``, receipt
+# ``docs/receipts/knowledge/slurp-v4-train-statistics-v1.json``, exposure row
+# ``SAEA-SLURP-V4-TRAIN-STATISTICS-BUILD-V1``), built model-free from the same
+# R5 pool the scope table was built from. They live under the data root, like
+# the scope table, and each table's sha256 is part of the rule's identity.
+#
+# REGISTERED, NOT ARMED. The id resolves in ``core.base.DELIVERY_NORMALISERS``
+# so a config CAN name it and the bundle verifier CAN replay it. No cell,
+# fragment or lock names it yet: which cells use v4 is the owner's lock
+# decision and a separate wiring step. The audio attribution
+# (``docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md``)
+# must be read before that decision.
+#
+# Statistics may still be INJECTED (``stats=``), for tests. A call without
+# them loads the pinned tables, and refuses any table that does not hash to
+# its pin.
 # ---------------------------------------------------------------------------
 
 DELIVER_NORMALISE_V4 = "saea-deliver-normalise-v4"
-DELIVER_NORMALISE_V4_VERSION = "0-draft"
+#: Bumped when the RULE or a pinned table changes, never when this file is
+#: merely edited.
+DELIVER_NORMALISE_V4_VERSION = "1"
 V4_RULE_ID = "slurp-use-projection-v4"
 #: The entity stage, in its one application order (the offline read's order).
 V4_STAGES: tuple[str, ...] = ("fx-article", "fx-oclock", "scope", "ti1", "ee10")
@@ -754,6 +769,28 @@ V4_TI_MIN_SHARE = 0.01
 V4_EE_MIN_ENTITY_RATE = 0.10
 V4_STATS_SCHEMA = "saea-slurp-v4-train-statistics-v1"
 
+#: The pinned TRAIN statistics (``scripts/build_slurp_v4_train_statistics.py``).
+V4_STATS_ARTIFACT_ID = "SAEA-SLURP-V4-TRAIN-STATISTICS-V1"
+#: The pool the tables were built from: the R5 pool of the scope table
+#: (TRAIN minus Fold A, Fold B, R01 and R01C), by content hash.
+V4_STATS_CONSTRUCTION_POOL = {
+    "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+    "content_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+}
+#: One table per TRAIN statistic, in a fixed order.
+V4_TABLES: tuple[str, ...] = ("article-strip", "oclock", "type-by-intent", "intent-entity-rate")
+V4_TABLE_SCHEMAS = {name: f"saea-slurp-v4-{name}-table-v1" for name in V4_TABLES}
+V4_TABLE_RELPATHS = {name: f"prepared/{V4_STATS_ARTIFACT_ID}/{name}-v1.json" for name in V4_TABLES}
+V4_TABLE_SHA256 = {
+    "article-strip": "db42bf10a08ae9ccc51c656fd5cbbf8a636ee88a12b4c37100b5d69cf4d51b79",
+    "oclock": "36779d582b0da541f55b90d3dcfc55ef7d3cfd6c4e3dfbec402daec5226399c7",
+    "type-by-intent": "41a57d45bc434a3e42f3950590985d86f8598c38fdd8aba443d161c57059329d",
+    "intent-entity-rate": "bd43804dd23868d2e4d6531f2ff305c1b0fd7a3a96cef4afaa28ab63793fac59",
+}
+#: The digest of the statistics the four pinned tables load into
+#: (:attr:`SlurpV4Statistics.sha256`), recorded beside the table pins.
+V4_STATS_SHA256 = "01e6a019c91f52bcd2941f593cfec9e8db120543334d46b9e643c29e4023f223"
+
 
 def _v4_span_preceded_by(words: list, tokens: list, word: str) -> bool:
     n = len(tokens)
@@ -765,72 +802,249 @@ def _v4_span_followed_by(words: list, tokens: list, following: tuple) -> bool:
     return any(words[i:i + n] == tokens and words[i + n] in following for i in range(0, len(words) - n))
 
 
-class SlurpV4Statistics:
-    """The TRAIN statistics v4's entity stage consults, computed from an
-    annotated exemplar pool (the R5 pool: TRAIN minus Fold A, Fold B, R01 and
-    R01C). Pure counts: no filler, utterance or value is retained, only slot
-    TYPE names, determiner words and intent ids.
+def v4_pool_counts(values) -> dict:
+    """The raw TRAIN counts every v4 statistic is derived from, over an
+    annotated exemplar pool in ``load_exemplar_pool``'s ``values`` shape. Slot
+    TYPE names, determiner words and intent ids only; no filler, utterance or
+    value survives. The arithmetic is the offline driver's ``TrainStats``,
+    operand for operand (pinned by test)."""
 
-    ``from_pool_values`` takes the shape
-    ``scripts/analysis/slurp_gold_position_and_solver_freedom_read.load_exemplar_pool``
-    returns under ``values`` -- ``{key: {"intent", "utterance" (folded),
-    "fillers": {type: [folded filler, ...]}}}`` -- and its arithmetic is the
-    offline driver's ``TrainStats``, operand for operand (pinned by test).
+    intent_n: dict[str, int] = {}
+    with_entities: dict[str, int] = {}
+    intent_type: dict[str, dict[str, int]] = {}
+    included: dict[tuple, int] = {}
+    excluded: dict[tuple, int] = {}
+    oclock_in = oclock_out = 0
+    for value in values.values():
+        intent = value["intent"]
+        intent_n[intent] = intent_n.get(intent, 0) + 1
+        with_entities[intent] = with_entities.get(intent, 0) + int(bool(value["fillers"]))
+        words = value["utterance"].split()
+        for slot_type, fillers in value["fillers"].items():
+            types = intent_type.setdefault(intent, {})
+            types[slot_type] = types.get(slot_type, 0) + 1
+            for filler in fillers:
+                tokens = filler.split()
+                if not tokens:
+                    continue
+                for word in V4_DETERMINERS:
+                    key = (slot_type, word)
+                    if tokens[0] == word and len(tokens) > 1:
+                        included[key] = included.get(key, 0) + 1
+                    elif _v4_span_preceded_by(words, tokens, word):
+                        excluded[key] = excluded.get(key, 0) + 1
+                if slot_type == "time":
+                    if tokens[-1] in V4_OCLOCK_TOKENS:
+                        oclock_in += 1
+                    elif _v4_span_followed_by(words, tokens, V4_OCLOCK_TOKENS):
+                        oclock_out += 1
+    return {"intent_n": intent_n, "intent_with_entities": with_entities, "intent_type": intent_type,
+            "article_included": included, "article_excluded": excluded,
+            "oclock_included": oclock_in, "oclock_excluded": oclock_out}
+
+
+def _v4_article_strip(rows: "dict[tuple, tuple[int, int]]") -> set:
+    """``{(type, word)}`` whose pool span includes the word in < 10 % of >= 10
+    opportunities; ``rows`` maps ``(type, word) -> (included, excluded)``."""
+
+    strip = set()
+    for key, (inc, exc) in rows.items():
+        n = inc + exc
+        if n >= V4_ARTICLE_MIN_OPPORTUNITIES and inc / n < V4_ARTICLE_MAX_INCLUDED_SHARE:
+            strip.add(key)
+    return strip
+
+
+def _v4_oclock_strip(inc: int, exc: int) -> bool:
+    n = inc + exc
+    return n >= V4_OCLOCK_MIN_OPPORTUNITIES and inc / n < V4_ARTICLE_MAX_INCLUDED_SHARE
+
+
+def _v4_table_bytes(document: dict) -> bytes:
+    return (json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+
+
+def v4_table_bytes(counts: dict, construction_pool: dict) -> "dict[str, bytes]":
+    """The four pinned tables, as the bytes the builder writes, from
+    :func:`v4_pool_counts`. Counts, thresholds and the derived decision only;
+    the runtime re-derives every decision from the counts and refuses a table
+    whose listed decision disagrees."""
+
+    pool = {"relpath": str(construction_pool["relpath"]),
+            "content_sha256": str(construction_pool["content_sha256"])}
+    keys = set(counts["article_included"]) | set(counts["article_excluded"])
+    rows = {k: (counts["article_included"].get(k, 0), counts["article_excluded"].get(k, 0)) for k in keys}
+    common = {"artifact_id": V4_STATS_ARTIFACT_ID, "construction_pool": pool}
+    intent_n = dict(sorted(counts["intent_n"].items()))
+    documents = {
+        "article-strip": {
+            **common, "schema": V4_TABLE_SCHEMAS["article-strip"],
+            "determiners": list(V4_DETERMINERS),
+            "max_included_share": V4_ARTICLE_MAX_INCLUDED_SHARE,
+            "min_opportunities": V4_ARTICLE_MIN_OPPORTUNITIES,
+            "row_key": "slot type|determiner -> [included, excluded]",
+            "rows": {f"{t}|{w}": list(rows[(t, w)]) for t, w in sorted(rows)},
+            "strip": sorted([t, w] for t, w in _v4_article_strip(rows)),
+        },
+        "oclock": {
+            **common, "schema": V4_TABLE_SCHEMAS["oclock"],
+            "tokens": list(V4_OCLOCK_TOKENS), "slot_type": "time",
+            "max_included_share": V4_ARTICLE_MAX_INCLUDED_SHARE,
+            "min_opportunities": V4_OCLOCK_MIN_OPPORTUNITIES,
+            "included": int(counts["oclock_included"]), "excluded": int(counts["oclock_excluded"]),
+            "strip": _v4_oclock_strip(counts["oclock_included"], counts["oclock_excluded"]),
+        },
+        "type-by-intent": {
+            **common, "schema": V4_TABLE_SCHEMAS["type-by-intent"],
+            "min_share": V4_TI_MIN_SHARE, "intent_n": intent_n,
+            "intent_type": {i: dict(sorted(t.items())) for i, t in sorted(counts["intent_type"].items())},
+        },
+        "intent-entity-rate": {
+            **common, "schema": V4_TABLE_SCHEMAS["intent-entity-rate"],
+            "min_entity_rate": V4_EE_MIN_ENTITY_RATE, "intent_n": intent_n,
+            "intent_with_entities": dict(sorted(counts["intent_with_entities"].items())),
+        },
+    }
+    return {name: _v4_table_bytes(documents[name]) for name in V4_TABLES}
+
+
+def _v4_refuse(message: str) -> DeliveryNormaliserError:
+    return DeliveryNormaliserError(f"{DELIVER_NORMALISE_V4}: {message}")
+
+
+def _v4_counts_map(raw, label: str) -> "dict[str, int]":
+    if not isinstance(raw, dict) or not all(
+        isinstance(k, str) and isinstance(v, int) and not isinstance(v, bool) and v >= 0 for k, v in raw.items()
+    ):
+        raise _v4_refuse(f"malformed {label}")
+    return dict(raw)
+
+
+class SlurpV4Statistics:
+    """The TRAIN statistics v4's entity stage consults: the fx-article strip
+    set, the fx-oclock decision, the per-intent type counts (ti1) and the
+    per-intent entity-carrying counts (ee10). Pure counts: no filler,
+    utterance or value is retained, only slot TYPE names, determiner words and
+    intent ids.
+
+    Two constructors. :meth:`from_pool_values` computes them from an annotated
+    pool (tests, the builder). :meth:`from_table_bytes` loads the four pinned
+    tables, checks each against its pin, schema and the rule's own thresholds,
+    and re-derives every decision from the counts. ``tables`` records the
+    table digests a loaded instance came from (empty when computed).
     """
 
-    __slots__ = ("article_strip", "oclock_strip", "intent_n", "intent_with_entities", "intent_type", "sha256")
+    __slots__ = ("article_strip", "oclock_strip", "intent_n", "intent_with_entities", "intent_type", "sha256",
+                 "tables")
 
     def __init__(self, *, article_strip, oclock_strip: bool, intent_n: dict, intent_with_entities: dict,
-                 intent_type: dict) -> None:
+                 intent_type: dict, tables: "dict[str, str] | None" = None) -> None:
         self.article_strip = frozenset((str(t), str(w)) for t, w in article_strip)
         self.oclock_strip = bool(oclock_strip)
         self.intent_n = {str(k): int(v) for k, v in intent_n.items()}
         self.intent_with_entities = {str(k): int(v) for k, v in intent_with_entities.items()}
         self.intent_type = {str(i): {str(t): int(n) for t, n in types.items()} for i, types in intent_type.items()}
+        self.tables = dict(sorted((tables or {}).items()))
         self.sha256 = hashlib.sha256(
             json.dumps(self.to_document(), sort_keys=True, separators=(",", ":")).encode("utf-8")
         ).hexdigest()
 
     @classmethod
     def from_pool_values(cls, values) -> "SlurpV4Statistics":
-        intent_n: dict[str, int] = {}
-        with_entities: dict[str, int] = {}
-        intent_type: dict[str, dict[str, int]] = {}
-        included: dict[tuple, int] = {}
-        excluded: dict[tuple, int] = {}
-        oclock_in = oclock_out = 0
-        for value in values.values():
-            intent = value["intent"]
-            intent_n[intent] = intent_n.get(intent, 0) + 1
-            with_entities[intent] = with_entities.get(intent, 0) + int(bool(value["fillers"]))
-            words = value["utterance"].split()
-            for slot_type, fillers in value["fillers"].items():
-                types = intent_type.setdefault(intent, {})
-                types[slot_type] = types.get(slot_type, 0) + 1
-                for filler in fillers:
-                    tokens = filler.split()
-                    if not tokens:
-                        continue
-                    for word in V4_DETERMINERS:
-                        key = (slot_type, word)
-                        if tokens[0] == word and len(tokens) > 1:
-                            included[key] = included.get(key, 0) + 1
-                        elif _v4_span_preceded_by(words, tokens, word):
-                            excluded[key] = excluded.get(key, 0) + 1
-                    if slot_type == "time":
-                        if tokens[-1] in V4_OCLOCK_TOKENS:
-                            oclock_in += 1
-                        elif _v4_span_followed_by(words, tokens, V4_OCLOCK_TOKENS):
-                            oclock_out += 1
-        strip = set()
-        for key in set(included) | set(excluded):
-            n = included.get(key, 0) + excluded.get(key, 0)
-            if n >= V4_ARTICLE_MIN_OPPORTUNITIES and included.get(key, 0) / n < V4_ARTICLE_MAX_INCLUDED_SHARE:
-                strip.add(key)
-        n_oclock = oclock_in + oclock_out
-        oclock = n_oclock >= V4_OCLOCK_MIN_OPPORTUNITIES and oclock_in / n_oclock < V4_ARTICLE_MAX_INCLUDED_SHARE
+        counts = v4_pool_counts(values)
+        keys = set(counts["article_included"]) | set(counts["article_excluded"])
+        rows = {k: (counts["article_included"].get(k, 0), counts["article_excluded"].get(k, 0)) for k in keys}
+        return cls(article_strip=_v4_article_strip(rows),
+                   oclock_strip=_v4_oclock_strip(counts["oclock_included"], counts["oclock_excluded"]),
+                   intent_n=counts["intent_n"], intent_with_entities=counts["intent_with_entities"],
+                   intent_type=counts["intent_type"])
+
+    @classmethod
+    def from_table_bytes(
+        cls,
+        blobs: "dict[str, bytes]",
+        *,
+        expected_sha256: "dict[str, str] | None",
+    ) -> "SlurpV4Statistics":
+        """Load the four tables. ``expected_sha256`` is the pin map (the
+        registered :data:`V4_TABLE_SHA256`); ``None`` skips the pin check
+        (tests of table construction only)."""
+
+        if set(blobs) != set(V4_TABLES):
+            raise _v4_refuse(f"the statistics are exactly the tables {list(V4_TABLES)}")
+        documents, digests = {}, {}
+        for name in V4_TABLES:
+            digest = hashlib.sha256(blobs[name]).hexdigest()
+            if expected_sha256 is not None and digest != expected_sha256.get(name):
+                raise _v4_refuse(
+                    f"the {name} table hashes to {digest[:12]}..., not the pinned "
+                    f"{str(expected_sha256.get(name))[:12]}..."
+                )
+            try:
+                document = json.loads(blobs[name].decode("utf-8"))
+            except (UnicodeError, json.JSONDecodeError) as error:
+                raise _v4_refuse(f"the {name} table is not JSON: {error}") from error
+            if not isinstance(document, dict) or document.get("schema") != V4_TABLE_SCHEMAS[name]:
+                raise _v4_refuse(f"the {name} table schema must be {V4_TABLE_SCHEMAS[name]!r}")
+            if document.get("artifact_id") != V4_STATS_ARTIFACT_ID:
+                raise _v4_refuse(f"the {name} table is not artifact {V4_STATS_ARTIFACT_ID}")
+            documents[name], digests[name] = document, digest
+        pools = {json.dumps(d.get("construction_pool"), sort_keys=True) for d in documents.values()}
+        if len(pools) != 1:
+            raise _v4_refuse("the four tables were not built from one construction pool")
+        # fx-article: thresholds are the rule's; the strip set is re-derived.
+        art = documents["article-strip"]
+        if (art.get("determiners") != list(V4_DETERMINERS)
+                or art.get("max_included_share") != V4_ARTICLE_MAX_INCLUDED_SHARE
+                or art.get("min_opportunities") != V4_ARTICLE_MIN_OPPORTUNITIES):
+            raise _v4_refuse("the article-strip table does not carry the rule's determiners and thresholds")
+        rows: dict[tuple, tuple[int, int]] = {}
+        raw_rows = art.get("rows")
+        if not isinstance(raw_rows, dict):
+            raise _v4_refuse("malformed article-strip rows")
+        for key, pair in raw_rows.items():
+            slot_type, sep, word = str(key).partition("|")
+            if (not sep or word not in V4_DETERMINERS or not isinstance(pair, list) or len(pair) != 2
+                    or not all(isinstance(c, int) and not isinstance(c, bool) and c >= 0 for c in pair)):
+                raise _v4_refuse("malformed article-strip row")
+            rows[(slot_type, word)] = (pair[0], pair[1])
+        strip = _v4_article_strip(rows)
+        if sorted([t, w] for t, w in strip) != art.get("strip"):
+            raise _v4_refuse("the article-strip table's listed strip set does not follow from its counts")
+        # fx-oclock
+        ocl = documents["oclock"]
+        if (ocl.get("tokens") != list(V4_OCLOCK_TOKENS) or ocl.get("slot_type") != "time"
+                or ocl.get("max_included_share") != V4_ARTICLE_MAX_INCLUDED_SHARE
+                or ocl.get("min_opportunities") != V4_OCLOCK_MIN_OPPORTUNITIES):
+            raise _v4_refuse("the oclock table does not carry the rule's tokens and thresholds")
+        inc, exc = ocl.get("included"), ocl.get("excluded")
+        if not all(isinstance(c, int) and not isinstance(c, bool) and c >= 0 for c in (inc, exc)):
+            raise _v4_refuse("malformed oclock counts")
+        oclock = _v4_oclock_strip(inc, exc)
+        if ocl.get("strip") is not oclock:
+            raise _v4_refuse("the oclock table's listed decision does not follow from its counts")
+        # ti1
+        tbi = documents["type-by-intent"]
+        if tbi.get("min_share") != V4_TI_MIN_SHARE:
+            raise _v4_refuse("the type-by-intent table does not carry the rule's 1 % threshold")
+        intent_n = _v4_counts_map(tbi.get("intent_n"), "type-by-intent intent_n")
+        raw_types = tbi.get("intent_type")
+        if not isinstance(raw_types, dict) or not set(raw_types) <= set(intent_n):
+            raise _v4_refuse("malformed type-by-intent counts")
+        intent_type = {i: _v4_counts_map(t, "type-by-intent row") for i, t in raw_types.items()}
+        if any(c > intent_n[i] for i, t in intent_type.items() for c in t.values()):
+            raise _v4_refuse("a type count exceeds its intent's exemplar count")
+        # ee10
+        rate = documents["intent-entity-rate"]
+        if rate.get("min_entity_rate") != V4_EE_MIN_ENTITY_RATE:
+            raise _v4_refuse("the intent-entity-rate table does not carry the rule's 10 % threshold")
+        if _v4_counts_map(rate.get("intent_n"), "intent-entity-rate intent_n") != intent_n:
+            raise _v4_refuse("the two intent tables disagree on the intent exemplar counts")
+        with_entities = _v4_counts_map(rate.get("intent_with_entities"), "intent_with_entities")
+        if set(with_entities) != set(intent_n) or any(with_entities[i] > intent_n[i] for i in intent_n):
+            raise _v4_refuse("malformed intent-entity-rate counts")
         return cls(article_strip=strip, oclock_strip=oclock, intent_n=intent_n,
-                   intent_with_entities=with_entities, intent_type=intent_type)
+                   intent_with_entities=with_entities, intent_type=intent_type, tables=digests)
 
     def to_document(self) -> dict:
         return {
@@ -849,6 +1063,29 @@ class SlurpV4Statistics:
     def entity_rate(self, intent: str) -> "float | None":
         n = self.intent_n.get(intent, 0)
         return None if n == 0 else self.intent_with_entities.get(intent, 0) / n
+
+
+_DEFAULT_V4_STATISTICS: list[SlurpV4Statistics] = []
+
+
+def default_v4_statistics() -> SlurpV4Statistics:
+    """The four pinned tables under ``SPEECHRL_DATA_DIR``, loaded once per
+    process and refused unless each hashes to its :data:`V4_TABLE_SHA256` pin
+    and the loaded statistics hash to :data:`V4_STATS_SHA256`."""
+
+    if not _DEFAULT_V4_STATISTICS:
+        from ..data.lock import data_root  # noqa: PLC0415
+
+        root = data_root()
+        blobs = {name: (root / V4_TABLE_RELPATHS[name]).read_bytes() for name in V4_TABLES}
+        stats = SlurpV4Statistics.from_table_bytes(blobs, expected_sha256=V4_TABLE_SHA256)
+        if stats.sha256 != V4_STATS_SHA256:
+            raise _v4_refuse(
+                f"the pinned tables load into statistics {stats.sha256[:12]}..., not the pinned "
+                f"{V4_STATS_SHA256[:12]}..."
+            )
+        _DEFAULT_V4_STATISTICS.append(stats)
+    return _DEFAULT_V4_STATISTICS[0]
 
 
 def v4_entity_stage(scenario, action, entities, stats: SlurpV4Statistics, table: ScopeRuleTable):
@@ -898,8 +1135,10 @@ def v4_entity_stage(scenario, action, entities, stats: SlurpV4Statistics, table:
 
 
 class SlurpProjectionV4DeliveryNormaliser:
-    """``saea-deliver-normalise-v4`` (DRAFT, unregistered): the registered
-    ``saea-deliver-normalise-v3`` first, then :func:`v4_entity_stage`.
+    """``saea-deliver-normalise-v4``: the registered
+    ``saea-deliver-normalise-v3`` first, then :func:`v4_entity_stage` over the
+    pinned TRAIN statistics (:func:`default_v4_statistics`) and the pinned
+    scope table (:func:`default_scope_rule_table`).
 
     One implementation per rule: v3 is resolved from the registry, the scope
     step is :func:`scope_rule_drops` over the pinned table. A row the entity
@@ -923,11 +1162,10 @@ class SlurpProjectionV4DeliveryNormaliser:
     ) -> DeliveryNormalisation:
         if not isinstance(text, str):
             raise TypeError("a delivery normaliser takes the delivered answer text")
+        if stats is None:
+            stats = default_v4_statistics()
         if not isinstance(stats, SlurpV4Statistics):
-            raise DeliveryNormaliserError(
-                f"{DELIVER_NORMALISE_V4} is a draft: its TRAIN statistics have no pinned table yet, "
-                "so they must be injected (stats=SlurpV4Statistics)"
-            )
+            raise _v4_refuse("stats must be a SlurpV4Statistics")
         from ..reproduction.slurp_scoring import parse_slu_response  # noqa: PLC0415
         from .slurp_projection_v3 import render_slurp_answer  # noqa: PLC0415
 
@@ -959,6 +1197,9 @@ class SlurpProjectionV4DeliveryNormaliser:
             "entity_stage_counts": dict(counts),
             "stats_schema": V4_STATS_SCHEMA,
             "stats_sha256": stats.sha256,
+            # The pinned table digests the statistics were loaded from; empty
+            # only for injected (test) statistics.
+            "stats_tables": dict(stats.tables),
             "table_sha256": table.sha256,
             "stages": [dict(base.receipt)],
             "reason": None if parsed else "unparsed",
@@ -989,6 +1230,7 @@ DELIVERY_NORMALISERS.register(
     DELIVER_CITED_ANSWER_NORMALISE_V3_SCOPE_RULE_V1,
     CitedAnswerNormaliseV3ScopeRuleDeliveryNormaliser(),
 )
+DELIVERY_NORMALISERS.register(DELIVER_NORMALISE_V4, SlurpProjectionV4DeliveryNormaliser())
 
 
 __all__ = [
@@ -1026,7 +1268,15 @@ __all__ = [
     "DELIVER_NORMALISE_V4",
     "DELIVER_NORMALISE_V4_VERSION",
     "V4_STAGES",
+    "V4_STATS_ARTIFACT_ID",
+    "V4_STATS_SHA256",
+    "V4_TABLES",
+    "V4_TABLE_RELPATHS",
+    "V4_TABLE_SHA256",
     "SlurpV4Statistics",
     "SlurpProjectionV4DeliveryNormaliser",
+    "default_v4_statistics",
     "v4_entity_stage",
+    "v4_pool_counts",
+    "v4_table_bytes",
 ]
