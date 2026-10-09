@@ -3,7 +3,7 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-i2-solver-fold-b-v1/analysis-recipe-v1.json",
-      "sha256": "89a62a4776574d07449aabd6fa71404d79ea0690acf155728efb37411c5d04f4"
+      "sha256": "a5acbd89fb4229cd17a4173b25bdec911509783d83f6fc7d5223441c1dd56ed1"
     },
     "candidates_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-iter2-solver-candidates-v1/README.md",
@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-i2-solver-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "fa624e64a0e5a614d0a1f4aa6ba6dc3680b3fa191a505cb6dc1c52acffcaf5ce"
+      "sha256": "3379d4bc4414f601e8663e82d6ef74273c64bbca024201d0dbe600cd66c2f848"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-i2-solver-fold-b-v1/README.md",
@@ -43,7 +43,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-i2-solver-fold-b-v1/registered-facts-v1.json",
-      "sha256": "c7801733f51244de58c564859212d1138f49cc63865b6d7fb2ac2038cb346093"
+      "sha256": "dbc42c8e61a283e89b9a09bb4610ab713ce67f631d79202aa5552ec0c3a120cc"
     },
     "registration_base_commit": "c87662de068d7b5bd896db2afd8e285e5ff8f334"
   },

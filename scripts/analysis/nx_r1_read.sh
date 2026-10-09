@@ -16,10 +16,15 @@
 #   gold, runs no scorer. Writes nothing.
 # Otherwise:
 # 0. REFUSES before anything is opened unless the READ row is ROOT COUNTERSIGNED and the sealed run manifest exists.
-# 1. NODE-LOCAL (E2): scripts/analysis/slurp_nx_solver_column_read.py reads every arm's RAW first Solver answer paired per row
-#    against the delivering lock arm (parse validity, entity exact-set = the primary, empty-gold false fill, non-empty exact,
-#    per-slot-type counts; whole-utterance bootstrap 10,000 draws seed 20260915 and the paired Wilson share), gold only through
-#    the governed TRAIN loader. Output <analysis root>/node-local/.
+# 1. NODE-LOCAL (E2, report schema saea-nx-solver-column-read-v2): scripts/analysis/slurp_nx_solver_column_read.py reads every arm's
+#    first Solver answer paired per row against the delivering lock arm in two views: the NORMALISED view (the answer after the
+#    delivered row's own sealed normaliser, derived by stage3_rollout_score.normalise_arm_answer -- the same function the step-2
+#    column renderer calls) carries the PRIMARY exact_set_normalised and the mechanical screen; the RAW view and a per-arm
+#    raw-vs-normalised flip table are diagnostics. Metrics: parse validity, entity exact-set, empty-gold false fill, non-empty
+#    exact, per-slot-type counts; whole-utterance bootstrap 10,000 draws seed 20260915 and the paired Wilson share; gold only
+#    through the governed TRAIN loader. The reader needs no new argument (the normaliser id is read from each sealed row).
+#    Output <analysis root>/node-local/. Iteration 1 was registered with the raw primary; its node-local pass is re-read with
+#    this reader into a SEPARATE subfolder (node-local-v2) only on the coordinator's word, never into node-local/.
 # 2. OFFICIAL COLUMNS: each arm's first-visit Solver answer is rendered through the delivered row's normaliser and projection
 #    and scored ONCE with slurp-slu-official-train (scripts/analysis/stage3_rollout_score.py --mode supply-variants, seven
 #    jobs, never sharded) into <run dir>/supply-variants/. IDEMPOTENT: skipped when score-summary.json already carries the
