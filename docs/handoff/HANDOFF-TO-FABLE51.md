@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Reviewer next configured natural structural family registered (2026-10-09T00:25:06.599166+00:00)
+
+The original ready/warm authorer completed successfully with no contacts. Root verified that only the declared natural readiness fields changed, preserved all successor custody, and registered the complete configured family through the unchanged plan countersigner. Every member analysis recipe carries its actual composed measurement profile. Exact evidence: `docs/receipts/continuation/2026-10-09-local-reviewer-n100-k4-update2-natural4-v1-registered-v1.json`. Member count, ordering, identities and legal-path budgets derive from the fixed population; no new proposal position or data/knowledge reconstruction occurred.
+
+Exact frozen named checks, current service/resources and one serial Windows dispatch remain pending. Structural proof uses worker-only lifecycle, no official score and no task-quality or learner read. Scientific N100 follows only after complete structural qualification and its own registration. Preserve the other module's original frozen checks and all current controls; use only source-reviewed configuration-driven launch metadata. GPU work stays serial with four concurrent inputs, CPU work overlaps,4GiB floors and full reserves remain. Create the15minute job monitor on actual launch and delete at original terminal. No benefit or learning claim follows preparation. The broad goal remains active/incomplete, with human review before8x400.
+
 ## Reviewer capacity qualified; Solver configured natural proof launched (2026-10-08T23:03:45.105163+00:00)
 
 All six original Reviewer update2 capacity members and Windows outer task exited zero. The unchanged complete-family qualifier passed1782 tokenizer endpoints and264 measured requests with zero generation and official scoring; minimum margin after full output and structural reserves is5494 tokens. Original owner processes were absent and its15minute monitor was deleted. Exact capacity evidence is DATA `coordination/local-reviewer-n100-k4-update2-capacity-v1/root-complete-handoff-v1.json`.
@@ -1039,7 +1045,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-08T23:03:45.105163+00:00
+Last refreshed: 2026-10-09T00:25:06.599166+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 
