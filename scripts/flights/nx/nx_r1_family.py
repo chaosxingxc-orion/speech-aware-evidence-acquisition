@@ -26,16 +26,33 @@ def names(kind: str) -> dict:
     smoke = kind == "smoke"
     lo = "-smoke-4" if smoke else ""
     up = "-SMOKE-4" if smoke else ""
+    rec = "-rec1" if smoke else ""                  # the smoke's single recovery re-registration (SMOKE_RECOVERY)
     return {
         "experiment": f"slurp-native-stage3-{SLUG}{lo}-v1",
         "baseline": f"slurp-native-stage3-{SLUG}{lo}-baseline-v1",
         "run_id": f"SAEA-SLURP-STAGE3-{SLUG.upper()}{up}-V1",
         "fit_run_id": f"SAEA-SLURP-STAGE3-{SLUG.upper()}{up}-FIT-V1",
-        "attempt_id": f"attempt-slurp-native-stage3-{SLUG}{lo}-generation-v1",
-        "fit_attempt_id": f"attempt-slurp-native-stage3-{SLUG}{lo}-fit-v1",
+        "attempt_id": f"attempt-slurp-native-stage3-{SLUG}{lo}-generation{rec}-v1",
+        "fit_attempt_id": f"attempt-slurp-native-stage3-{SLUG}{lo}-fit{rec}-v1",
         "prefix": "smoke-" if smoke else "",
     }
 
+
+#: The smoke's single root-diagnosed recovery re-registration (2026-10-09). A (run_id, attempt_id) pair is a one-time
+#: key, so the smoke is re-flown whole under the rec1 attempt ids; the arm never started and keeps its attempt ids.
+SMOKE_RECOVERY = {
+    "recovery_index": 1,
+    "predecessor_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
+    "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-v1",
+    "predecessor_state": "OPENED; 32 contacts / 81.453 speech-seconds spent; preserved unread",
+    "reason": (
+        "The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery "
+        "validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests "
+        "tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec1 attempt; the arm "
+        "is untouched."
+    ),
+    "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
+}
 
 ARM, SMOKE = names("arm"), names("smoke")
 READ_RUN_ID = "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1"

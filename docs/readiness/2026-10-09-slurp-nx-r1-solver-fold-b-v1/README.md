@@ -138,6 +138,16 @@ them): the lock rule is `v4g(lock) - lock` with CI95 lower bound > 0 here. The c
 7. After the read: the v4g lock check (section 7), the review-off comparison (section 6) and, for a NOMINATED arm, the Fold A two-arm
    confirmation registration.
 
+**Recovery 1 (smoke), 2026-10-09 -- the cell's single root-diagnosed recovery re-registration.** The four-row smoke attempt
+`attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1` (run `SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1`) was OPENED,
+spent 32 contacts / 81.453 speech-seconds and failed at `runtime.seal()` on the template-variant delivery validator (fixed on master in
+`6633c9251`; tests `tests/unit/test_template_variants_delivery.py`). A (run_id, attempt_id) pair is a one-time key, so the smoke is re-flown
+WHOLE under the new attempt ids `...-smoke-4-generation-rec1-v1` and `...-smoke-4-fit-rec1-v1` (`nx_r1_family.SMOKE_RECOVERY`); the failed
+attempt stays preserved and unread. The arm never started and keeps its attempt id and its rows. The re-fly also proves the fixed seal path on
+the GPU, which is what the smoke is for. Rule: a second failure closes the cell; the fix is proven on a four-row dry run. Steps 4 and 5 above
+run unchanged (the flip loop rewrites the smoke plan hash and composed config hash; the minted supply pin and admission receipt stay valid, the
+receipt being keyed by run id).
+
 ## 9. Offline verification (2026-10-09, WSL, worktree; zero model, server, GPU or tokenizer contact)
 
 * Dry run on the four-row smoke (`scripts/flights/nx/nx_r1_dry_run.py`, the harness's `analysis/native_episode_dry_run` walk, canned Perception and
