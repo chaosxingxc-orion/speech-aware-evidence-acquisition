@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T15:32:57Z
+Last refreshed: 2026-10-09T15:56:43Z
+
+## P-SV-4 (round R4) ready for the gate; flies after NX R1 seals (2026-10-09T15:56:43Z, Fable 5.1 root)
+
+Merged 396d2ac26: the P-SV writer copies the baseline's minted supply pin into the registered plans (the same rule as the NX writer), the four P-SV-4 plan files now declare `phase-supply-v1.json` with its real sha; launch gate PASS on both cells (arm: the `tuning-roster-unverified` advisory only). New model-free preflight test `tests/unit/test_psv4_cell_registration.py` (FIT cap structural, budgets, identities, supply binding). Plan: after the R1 arm seals, `scripts/flights/psv/psv_flip.sh psv4` re-pins at the new flight commit (the instrument merge changed hashed sources), then `batch_chain_psv.sh psv4` is launched directly by a Windows task (the old `queue_psv4.sh` waited on the milestone queue and pins the stale commit 4f536851; it is not used). Post-merge gates on master: all PASS except `flight_registration_check` tree mode (12 documented ChatGPT-era blockers); merged test files 161 passed.
+
+Superseded stamp: 2026-10-09T15:32:57Z
 
 ## NX R1 arm flying since 15:20:10Z; engineering-base cleanup merged (2026-10-09T15:32:57Z, Fable 5.1 root)
 
