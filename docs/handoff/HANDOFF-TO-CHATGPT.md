@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T19:19:36Z
+Last refreshed: 2026-10-09T19:28:38Z
+
+## Iteration-2 nomination rule fixed on the official column; receipt re-minted (2026-10-09T19:28:38Z, Fable 5.1 root)
+
+Merge f89c58b7e: for `SAEA-SLURP-STAGE3-NX-R1-I2-SOLVER-FOLD-B-V1` a candidate is NOMINATED iff its official pooled SLU-F1 delta vs lock has CI95 lower bound > 0, exceeds the aa twin's delta in the same flight, and the intent guard holds (<= 7 rows differing = 0.65 pp of 1,080); HARM iff the CI95 upper bound < 0; the node-local (normalised) read is diagnostic and gates nothing; the pick is confirmed once on Fold A as a two-arm column. `nx_r1_read.sh --iteration 1 --node-local-out node-local-v2` re-reads iteration 1 with the v2 reader after the registered read finishes. The iteration-2 receipt was re-minted against the regenerated package (the earlier receipt, under which no contact was made, is archived beside it as `root-admission-v1.json.superseded-20261009T192820Z`); the countersigned flight rows' plan SHAs are rewritten by the flip loop, which waits for the P-SV-4 driver to finish.
+
+Superseded stamp: 2026-10-09T19:19:36Z
 
 ## E2 reader v2 merged: node primary is the post-normaliser exact-set; no iteration-1 arm passes (2026-10-09T19:19:36Z, Fable 5.1 root)
 
