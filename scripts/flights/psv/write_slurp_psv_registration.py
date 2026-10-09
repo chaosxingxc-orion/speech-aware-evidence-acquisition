@@ -171,6 +171,24 @@ def identities(key: str) -> dict:
     return out
 
 
+def registered_supply(identity: dict) -> dict:
+    """The prepared first-phase supply a registered plan declares. Before the flip: the placeholder. After the
+    flip the cell baseline fragment carries the minted pin, and ``registered-supply-binding``
+    (scripts/checks/flight_registration_check.py, 2026-10-03) requires the plan to declare EXACTLY that, so it is
+    copied verbatim (same rule as scripts/flights/nx/write_slurp_nx_r1_registration.py)."""
+
+    supply = {
+        "relpath": f"prepared/{identity['run_id']}/phase-supply-v2.json", "sha256": "MINTED_AT_THE_FLIP",
+        "note": "the first Fold B first-phase supply at w_agree 1.0 on this roster; branch A's router must reproduce it on every row (spec section 3, AT-P6)",
+    }
+    baseline_path = REPO_ROOT / "configs" / "baseline" / f"{identity['baseline_fragment']}.json"
+    if baseline_path.is_file():
+        pinned = json.loads(baseline_path.read_text(encoding="utf-8")).get("prepared_phase_supply")
+        if isinstance(pinned, dict) and pinned.get("sha256") not in (None, "", "MINTED_AT_THE_FLIP"):
+            supply = dict(pinned)
+    return supply
+
+
 def fold_check(key: str, check_dir: str | None, measure: dict) -> dict:
     if not check_dir:
         return {"status": "PENDING_CHECK"}
@@ -611,8 +629,7 @@ def write_cell(key: str, args, data: Path, measure: dict) -> dict:
                     f"Shared core.flight.cli campaign over {n['campaign']} (this arm alone; no A/A cell -- the twin branch T flies inside every row) through scripts/flights/psv/batch_chain_psv.sh and the batch driver." if kind == "arm" else
                     "Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored."
                 ),
-                "prepared_phase_supply": {"relpath": f"prepared/{identity['run_id']}/phase-supply-v2.json", "sha256": "MINTED_AT_THE_FLIP",
-                                          "note": "the first Fold B first-phase supply at w_agree 1.0 on this roster; branch A's router must reproduce it on every row (spec section 3, AT-P6)"},
+                "prepared_phase_supply": registered_supply(identity),
                 "protocol_document": {"relpath": package + "/protocol-registered-v1.json", "sha256": protocol_sha},
                 "one_factor": protocol["one_factor"],
                 "purpose": f"{run_id}: " + ("request envelopes only; reads nothing." if is_fit else rule if kind == "arm" else "structural form proof only: no score and no read."),
