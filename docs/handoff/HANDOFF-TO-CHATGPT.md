@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T22:08:32Z
+Last refreshed: 2026-10-09T22:23:01Z
+
+## Stage S design: no Solver-node supply arm reaches the bar; decision 238 proposed (2026-10-09T22:23:01Z, Fable 5.1 root)
+
+`docs/superpowers/specs/2026-10-09-slurp-nx-stage-s1-supply-round-design.md` (c45e99d28): six declarable supply arms (exemplar k/m/c/top_l knobs, slot-card candidates 3 -> 1, a TRAIN-only entity-free release for the N1 none signal, combinations) predict +0.07 .. +0.20 pp at measured conversions (upper bounds <= +1.04 at the M1 rate) against the 1.5 pp bar; the review-off module base would also need a `supply` column kind and reader support. Decision 238 proposed: close Stage S at the Solver and compose Stage J (R5) = review-off COMP-1b base + v4g (+ the iteration-2 Solver template if nominated and Fold-A-confirmed), read on DEV-2000-ADDED with an in-chain A/A, then the second test-sample allowance (233). Coordinator recommends A.
+
+Superseded stamp: 2026-10-09T22:08:32Z
 
 ## P-SV-4 read: NOT NOMINATED; the K6p key-source line closes (2026-10-09T22:08:32Z, Fable 5.1 root)
 

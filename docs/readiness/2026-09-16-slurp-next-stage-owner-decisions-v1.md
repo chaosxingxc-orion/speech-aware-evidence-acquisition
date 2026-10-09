@@ -566,3 +566,16 @@ side commits; listed in `/home/chao/worktree-cleanup-20261009.log`) and ten brok
 HEAD (September 26 `codex-system-*` and `codex-stage3-continuation-20260925`; directories left in place for the
 ChatGPT root to dispose). Worktrees 225 -> 28; disk 126 GB -> 69 GB. Earlier the same day: 155 inert scheduled
 tasks unregistered, six merged fable-nx-* trees removed, stale queue scripts archived.
+
+## Decision 238 (PROPOSED by the coordinator, 2026-10-09): close Stage S at the Solver node; go to Stage J (R5)
+
+Evidence: `docs/superpowers/specs/2026-10-09-slurp-nx-stage-s1-supply-round-design.md` (merged c45e99d28). Every
+supply arm declarable at the Solver node (exemplar k / per-intent cap / intent-count cap, slot-card candidates, a
+TRAIN-only entity-free exemplar release for the N1 none signal, and their combination) predicts at most +0.20 pp
+official SLU-F1 at a MEASURED conversion (upper bound +1.04 at the M1 rate), against the 1.5 pp registration bar of
+decision 192 and the 1.49 floor; two engineering items (a module `supply` column kind on the review-off base; reader
+support) would be needed even to fly it. Options: (A) close Stage S now, record the ceiling, and compose Stage J =
+R5 (review-off COMP-1b base + v4g [+ the R1 iteration-2 template if NOMINATED and confirmed on Fold A]) read on
+DEV-2000-ADDED with an in-chain A/A, then the second test-sample allowance (233); (B) fly S1 as a no-claim
+measurement cell (~2.6 GPU-h, cannot nominate); (C) open a code-level supply mechanism whose on-file ceiling is also
+below the bar. Coordinator recommends A.
