@@ -118,8 +118,7 @@ The recipe declares two OFFLINE columns over **every arm's delivered column**: *
 fx-article, fx-oclock, scope, ti1, ee10 of `docs/results/2026-10-09-slurp-nx-postprocessing-v4-offline-read.md` section 6) and **v4g** (v4 with the
 two TRAIN-only guards `ee-wilson` and `ti-expressible` of `docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md` section 4),
 with the pinned TRAIN statistics `SAEA-SLURP-V4-TRAIN-STATISTICS-V1` (sha256 `01e6a019...`). Contrasts: `v4(X) - X`, `v4g(X) - X`,
-`v4g(X) - lock`. The rule application lives in `scripts/analysis/slurp_nx_postproc_v4_search.py` (implemented by a separate agent; this
-package only calls it from `nx_r1_read.sh` and refuses the offline step if the interface is not advertised). **The R1 delivering-arm
+`v4g(X) - lock`. The rule definitions live in `scripts/analysis/slurp_nx_postproc_v4_search.py`; the application of the registered normalisers to a sealed column is `scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4|v4g --pool <run>/<attempt> --column <arm id>` (on master since merge `7bfc09b3b`, after this branch's base), which `nx_r1_read.sh` calls and which the package does not implement. **Known blocker:** that driver refuses any run whose roster intersects TRAIN Fold B ("Fold B is not read by this script"); the R1 run is Fold B, so the refusal must be lifted for this one recipe before the offline step runs (the read driver exits 10 and names it; `--skip-offline` defers the step). **The R1 delivering-arm
 (`lock`) column on Fold B is the fresh confirmation roster for v4g** (Fold A located the failure the guards address, so it cannot confirm
 them): the lock rule is `v4g(lock) - lock` with CI95 lower bound > 0 here. The cell's runtime delivery normaliser stays v3.
 

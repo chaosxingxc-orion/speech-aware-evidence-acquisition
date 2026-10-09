@@ -25,10 +25,13 @@
 # 3. OFFLINE POST-PROCESSING COLUMNS (0 GPU): v4 (saea-deliver-normalise-v4, the five-rule set of
 #    docs/results/2026-10-09-slurp-nx-postprocessing-v4-offline-read.md section 6) and v4g (v4 with the TRAIN-only guards
 #    ee-wilson and ti-expressible of docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md) applied to every
-#    arm's delivered column through scripts/analysis/slurp_nx_postproc_v4_search.py (implemented by a separate agent; this
-#    driver only CALLS it, with the interface in V4_APPLY_ARGS below -- confirm at integration). The lock row v4g(lock) - lock is
-#    the fresh-roster confirmation of v4g (lock rule: CI95 lower bound > 0 here). The CELL's runtime delivery normaliser is
-#    untouched. Skipped with --skip-offline, and refused (not skipped silently) when the driver does not advertise the interface.
+#    arm's delivered column. The rules live in scripts/analysis/slurp_nx_postproc_v4_search.py (the separate agent's driver); the
+#    application of the REGISTERED normalisers to a sealed column is scripts/analysis/slurp_nx_postproc_v4_apply.py
+#    (--apply v4|v4g --pool <run>/<attempt> --column <arm id>), called here with the interface in the loop below. KNOWN BLOCKER:
+#    that script refuses a run whose roster intersects TRAIN Fold B, and this run IS Fold B; the refusal must be lifted for the
+#    R1 recipe first (the step then exits 10 with a message rather than skipping silently). The lock row v4g(lock) - lock is the
+#    fresh-roster confirmation of v4g (lock rule: CI95 lower bound > 0 here). The CELL's runtime delivery normaliser is untouched.
+#    Skipped with --skip-offline.
 # 4. REVIEW-OFF vs FULL GRAPH is NOT computed here: it is the cross-flight comparison of the lock arm's official column with
 #    the P-SV-3 a-agree delivered column on the same Fold B (docs/results/2026-09-30-slurp-psv3-fold-b-branch-read.md), read by
 #    hand from files on record (README section "Review-off vs full graph"); no extra flight.
@@ -57,7 +60,7 @@ ROSTER=docs/receipts/rosters/slurp-evo-fold-b-v2.json
 SPLIT=4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a
 SCORER=slurp-slu-official-train
 NODE_READ=scripts/analysis/slurp_nx_solver_column_read.py
-V4_DRIVER=scripts/analysis/slurp_nx_postproc_v4_search.py
+V4_DRIVER=${V4_DRIVER:-scripts/analysis/slurp_nx_postproc_v4_apply.py}
 cd "$MAIN" || exit 1
 [ -f "$RECIPE" ] && [ -f "$NODE_READ" ] || { echo "REFUSED: $RECIPE or $NODE_READ is missing"; exit 8; }
 "$PY" -B -c "import speech_aware_evidence_acquisition as m, sys; sys.exit(0 if m.__file__.startswith('$MAIN') else 9)" \
@@ -118,11 +121,12 @@ done
 if [ "$SKIP_OFFLINE" = 1 ]; then
   echo "offline v4/v4g columns skipped (--skip-offline); run this driver again without it, or the V4 driver by hand"
 else
-  # Interface of the separate agent's application driver (branch fable/nx-v4g): --apply v4|v4g --pool <run>/<attempt>
-  # [--column <arm id>] [--label <dir>]. Override V4_APPLY_ARGS if the final spelling differs.
+  # Interface of the application driver on master (merge 7bfc09b3b): --apply v4|v4g --pool <run>/<attempt> [--column <arm id>]
+  # [--label <dir>]. Override V4_DRIVER / V4_APPLY_ARGS if the final spelling differs.
   "$PY" -B "$V4_DRIVER" --help 2>&1 | grep -q -- "--apply" || {
     echo "REFUSED (offline step): $V4_DRIVER does not advertise --apply v4|v4g --pool --column yet; the v4/v4g application"
-    echo "  is implemented by a separate agent (see README). Re-run with --skip-offline now and without it after integration."; exit 10; }
+    echo "  (scripts/analysis/slurp_nx_postproc_v4_apply.py is on master since merge 7bfc09b3b; this branch predates it). Re-run with"
+    echo "  --skip-offline now and without it after the merge; note that driver also refuses Fold B rosters until lifted for this recipe."; exit 10; }
   for variant in v4 v4g; do
     for column in lock aa ${CANDIDATES//,/ }; do
       label="offline-v4/$variant-$column"

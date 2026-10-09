@@ -330,10 +330,15 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
             "note": ("0 GPU, zero model contacts. Two deterministic delivery-normaliser variants applied OFFLINE to every arm's "
                      "delivered column; the cell's runtime delivery normaliser stays the COMP-1b module cell's "
                      "(saea-deliver-normalise-v3) and neither variant is wired into the cell."),
-            "driver": "scripts/analysis/slurp_nx_postproc_v4_search.py",
-            "driver_interface_status": ("implemented by a separate agent; the sibling application driver on branch "
-                                        "fable/nx-v4g exposes --apply v4|v4g --pool <run>/<attempt> [--column <arm id>]; "
-                                        "confirm the final flag spelling at integration (nx_r1_read.sh reads it from V4_APPLY_ARGS)"),
+            "driver": "scripts/analysis/slurp_nx_postproc_v4_apply.py",
+            "rule_driver": "scripts/analysis/slurp_nx_postproc_v4_search.py",
+            "driver_interface_status": (
+                "the rule definitions and their offline selection live in scripts/analysis/slurp_nx_postproc_v4_search.py (the "
+                "separate agent's driver); the application of the REGISTERED normalisers saea-deliver-normalise-v4 / -v4g to a sealed "
+                "column is scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4|v4g --pool <run>/<attempt> [--column <arm id>] "
+                "(on master since merge 7bfc09b3b). KNOWN BLOCKER: that driver refuses any run whose roster intersects TRAIN Fold B "
+                "('Fold B is not read by this script'); the R1 run IS Fold B, so the refusal must be lifted for this one recipe before "
+                "the offline step can run (nx_r1_read.sh reports it and exits 10 rather than skipping silently)"),
             "columns": {
                 "v4": {"normaliser": "saea-deliver-normalise-v4", "rules": nf.V4_RULES,
                        "definition": f"the five-rule set of {V4_READ} section 6, in the registered order"},

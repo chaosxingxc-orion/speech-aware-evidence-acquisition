@@ -3,7 +3,7 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/analysis-recipe-v1.json",
-      "sha256": "781a45982210c38f0d471fd298df08b3b9b7699f91b291ee86ca0cb710159c5a"
+      "sha256": "7a4ac48450c601323817a5488826354fdac3d0847ae45ddc369a5a0ba32ef8b5"
     },
     "candidates_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r1-solver-candidates-v1/README.md",
