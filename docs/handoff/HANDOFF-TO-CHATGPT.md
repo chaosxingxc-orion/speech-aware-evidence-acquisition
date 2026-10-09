@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T19:28:38Z
+Last refreshed: 2026-10-09T19:55:45Z
+
+## NX R1 iteration 1 read: NOT NOMINATED (results note on file) (2026-10-09T19:55:45Z, Fable 5.1 root)
+
+`docs/results/2026-10-09-slurp-nx-r1-solver-fold-b-column-read.md` (+ ledger entry): official pooled SLU-F1 vs lock (62.13): aa +0.57 [-0.10, +1.27], r1-c3 +0.96 [-0.17, +2.09] (per-row F1 -2.22 [-3.27, -1.19]: it empties rows -- FP 484 -> 378 but correct values 498 -> 473; equal-scenario +1.96 [+0.42, +3.55] reported, not gating), r1-c2 +0.22, r1-c4 -0.20, r1-c5 -0.15 (its raw +2.50 was v3-repairable formatting; normalised +1.30 [-0.19, +2.78]), r1-c1 -0.73 (the declared +1.80 mechanism refuted; false fill +7.9 pp). Every candidate also fails the intent guard (9-13 rows differ vs the 7-row floor; the twin differs on 2). Verdict: no arm NOMINATED, none HARM; the declared round effect was not met. Instrument findings: the per-row SLU-F1 gives 0 to every empty-gold row and must never be quoted for a mechanism that changes how often the Solver answers empty; the node primary is post-normaliser; the official column decides. Iteration 2 (registered, receipt re-minted) tests the gated empty-entity decision; it flips and queues when the P-SV-4 driver finishes. Offline v4/v4g columns (and the v4g confirmation on lock) follow the apply-driver base-column fix.
+
+Superseded stamp: 2026-10-09T19:28:38Z
 
 ## Iteration-2 nomination rule fixed on the official column; receipt re-minted (2026-10-09T19:28:38Z, Fable 5.1 root)
 
