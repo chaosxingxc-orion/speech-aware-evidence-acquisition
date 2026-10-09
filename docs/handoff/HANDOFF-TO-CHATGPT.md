@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T22:25:36Z
+Last refreshed: 2026-10-09T22:50:11Z
+
+## Level-2 branch render defect fixed on master (2026-10-09T22:50:11Z, Fable 5.1 root)
+
+`docs/readiness/2026-10-09-slurp-psv-level2-render-defect-v1.md`: root cause in `rails/runner.py` -- the branch Solver contact rendered A's exposed history and A's once-settled supply (the note swap only reached `base_messages`); confirmed on the sealed bytes of P-SV-1..4 (rendered candidate supply equal to A on 1,080/1,080 rows in every B/T column). Fix: one `_perception_branch_solver_view` per non-A branch (own note, own Solver supply via a per-branch router), A and the twin unchanged; pre-contact and seal-time refusals (a non-twin branch whose note differs but whose rendering equals A's is refused by name). Tests through the production graph pass; the old runner fails them. Ledger successor notes on P-SV-1..3 (level-2 side readings struck). Any future level-2 cell re-pins at the merged commit; cells with candidate proposals at level 2 are refused until a per-branch proposal derivation exists.
+
+Superseded stamp: 2026-10-09T22:25:36Z
 
 ## P-SV-4 results note on file; level-2 branch instrument defect found (2026-10-09T22:25:36Z, Fable 5.1 root)
 
