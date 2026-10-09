@@ -1,0 +1,35 @@
+{
+  "analysis_effort": "ultra",
+  "analysis_model": "gpt-6-astra",
+  "at_utc": "2026-10-09T02:26:07.381328+00:00",
+  "comparisons": null,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "internal_analysis_task": "/root/solver_control_descriptive_astra",
+  "learner_export": false,
+  "member": "control",
+  "model_contacts_added": 0,
+  "note_relpath": "docs/readiness/2026-10-09-slurp-local-solver-n100-k4-update3-member-analysis-v1/control-descriptive-note-v1.md",
+  "original_reader_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-reader-v1-exit.json",
+    "sha256": "c03164b51f6e93155cee6bd705276a0cbc55492028df215fc2937c0c71a199e5"
+  },
+  "owner_decision": 227,
+  "qualification_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-qualify-outer-v1.exit.json",
+    "sha256": "c8014441341294b9c69cfefd5b230fee46dfbbebcbb59ea9724f3ab790952960"
+  },
+  "qualified": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-qualification-v1.json",
+    "sha256": "b8f1dd36bbb49413964b7b6c1dc1c6c3fbbb414a264f773795b8cf331566154f"
+  },
+  "report": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/local-solver-n100-k4-update3-control-descriptive-v1/report.json",
+    "sha256": "ce7ed557504abce7ea8a071433d2bd7a222bab567aafbe2131ef9437c362cd35"
+  },
+  "root_signature": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-member-reads-v1/control-root-countersignature-v1.json",
+    "sha256": "7b1be53c2eafddd28003bd5516074966a4ae4749a71bcb09643d964769963bbb"
+  },
+  "schema": "saea-root-complete-member-descriptive-read-record-v1",
+  "scorer_replayed": false
+}

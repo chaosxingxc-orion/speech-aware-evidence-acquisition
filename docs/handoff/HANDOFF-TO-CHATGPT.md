@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Solver control descriptive analysis overlaps the continuous N100 campaign (2026-10-09T02:26:07.381328+00:00)
+
+The Solver control independently finalized100 rows with verified seal, exactly one successful complete official score and zero failed jobs. Root ran the unchanged canonical selected-member qualifier, verified original custody, separately countersigned its exact descriptive READ and invoked the original reader once. GPU generation continued with following members. Exact evidence: `docs/receipts/continuation/2026-10-09-solver-update3-control-descriptive-read-v1.json`; aggregate-only note with per-stratum table: `docs/readiness/2026-10-09-slurp-local-solver-n100-k4-update3-member-analysis-v1/control-descriptive-note-v1.md`. Raw entity exactness is47/100; postprocessing yields48/100; empty-gold false filling is10/34. This is one-member description, with no candidate contrasts, selection or learning export. Full-family comparison still requires all six independently qualified members and its exact root READ.
+
+Independent Astra Ultra rejected the new generic READ adapter v1 before any actual invocation: its pre-sign boundary admitted incomplete/aliased custody or a coherent partial cohort in synthetic counterexamples. Root227 preserved it and authorized a separate narrow v2 with complete original qualifier and canonical population checks. See `docs/receipts/continuation/2026-10-09-configured-read-v1-source-review-disposition.json`. Sol repairs the source and Astra independently reviews; no live experiment, scorer, frozen worker or control changed. Direct use of the previously approved canonical helper retains all original gates and does not depend on the unapproved adapter.
+
+The Solver original campaign remains the01:57:16Z epoch; its15minute monitor stays active until verified original terminal. Keep every completed-member read separately qualified and descriptive, four concurrent inputs, one serial GPU campaign and overlapping one CPU scorer. Reviewer N100 remains fully prepared/frozen for the normal serial transition. Existing local review rules remain pinned; no stable benefit, adoption, algorithm advantage or cross-carrier release is established. The full goal remains active/incomplete, with human review before8x400.
+
 ## Solver update3 configured N100 campaign launched (2026-10-09T02:00:46.580217+00:00)
 
 Independent Astra Ultra approved the exact configured v2 launch source after126 supplied cases,16 additional custody cases and32 targeted regressions. Root separately revalidated the original completed Reviewer natural lifecycle, actual frozen Solver family, exact source/receipt bindings and current process/guard/task/service/resource state. Original preparation and the explicit normal transition succeeded; one Windows SAEA-Batch-Driver request was made. No v1 launch was attempted and no failed runtime was retried. Exact evidence: `docs/receipts/continuation/2026-10-09-local-solver-update3-n100-launched-v1.json`.
@@ -7464,7 +7472,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-09T02:00:46.580217+00:00
+Last refreshed: 2026-10-09T02:26:07.381328+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

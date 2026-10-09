@@ -1,0 +1,20 @@
+{
+  "actual_v1_invocations": 0,
+  "at_utc": "2026-10-09T02:26:07.381328+00:00",
+  "direct_member_read": "Root separately used the already approved unchanged canonical helper, verified original complete qualifier capture and exact real artifacts, countersigned its exact member READ, and read once. New adapter was not invoked.",
+  "disposition": "Require unchanged canonical source/population scope and complete successful original qualifier/artifact/job custody before any ledger mutation. Preserve every v1 byte and prove a narrow v2 with independent review.",
+  "failure_recovery_of_runtime": false,
+  "independent_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-configured-n100-read-astra-review-v1/review-result-v1.json",
+    "sha256": "baa572a1289acebe3bab31945b6adf373b63ebe3c61d6f7da453b5a8087726e9"
+  },
+  "named_findings": [
+    "Unproven successful original qualifier or incomplete/aliased official artifact custody could reach signing.",
+    "Recipe/registration/qualification could consistently shrink N despite fixed population cohort."
+  ],
+  "ongoing_gpu_unchanged": true,
+  "owner_decision": 227,
+  "runtime_controls_changed": false,
+  "schema": "saea-root-source-only-read-adapter-disposition-v1",
+  "status": "V1 UNINVOKED; PRESERVE AND REPAIR IN SEPARATE V2"
+}
