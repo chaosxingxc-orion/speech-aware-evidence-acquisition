@@ -176,7 +176,7 @@ def derive_baseline(kind: str, comp1b: dict) -> str:
     fit = document["native_contact_fit"]
     names = nf.names(kind)
     fit.update(run_id=names["fit_run_id"], attempt_id=names["fit_attempt_id"],
-               contact_cap=rows * nf.CEILING * nf.FIT_ENDPOINTS_PER_CONTACT * attempts_budgeted(kind))
+               contact_cap=nf.fit_contact_cap(rows))
     # The K6p receipts belong to P-SV-4's key_source branch; the centroid key's receipts are COMP-1b's.
     receipts = [e for e in document["preparation_source_receipts"] if "CENTRED" not in e["relpath"]]
     have = {e["relpath"] for e in receipts}
@@ -220,7 +220,7 @@ def budgets(kind: str) -> tuple[dict, dict]:
     gpu = nf.PLANNED_GPU_HOURS_SMOKE if kind == "smoke" else nf.PLANNED_GPU_HOURS_ARM
     fam = {
         "asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0,
-        "fit_endpoint_calls_cap": rows * nf.CEILING * nf.FIT_ENDPOINTS_PER_CONTACT * mult,
+        "fit_endpoint_calls_cap": nf.fit_contact_cap(rows),
         "generation_calls_cap": rows * nf.CEILING * mult,
         "gpu_hours_fit_inclusive": gpu,
         "native_task_contract_calls_cap": rows * nf.CEILING * mult,

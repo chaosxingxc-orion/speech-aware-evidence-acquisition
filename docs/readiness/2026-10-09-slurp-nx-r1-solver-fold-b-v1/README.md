@@ -161,6 +161,17 @@ with a run-cumulative budget over the attempts (`nx_r1_family.SMOKE_ATTEMPTS_BUD
 unchanged. The arm's numbers (8,640 / 25,239 / 34,560) are untouched. The minted `prepared_phase_supply` pin is preserved byte for byte; the
 rest of Recovery 1 stands.
 
+**Recovery 1 amended again (smoke), 2026-10-09 -- rec2 -> rec3, structural FIT cap.** The rec2 attempt
+`...-smoke-4-generation-rec2-v1` (reserved 64 calls) was refused PRE-CONTACT (0 contacts; no FIT attempt records exist) at
+`core/preparation_fit.py` `build_native_contact_fit_gate`: the FIT `contact_cap` must equal `rows x program.max_contacts x
+endpoints_per_contact` = 4 x 8 x (max_speech_packets + 3 = 4) = 128 exactly, and the rec2 amendment had scaled it by the attempts multiplier
+to 256. The FIT cap is a structural per-attempt number, never run-cumulative. Coordinator ruling: a second pre-contact registration defect of
+the recovery itself, not a flight failure; the single recovery re-registration is AMENDED to `...-generation-rec3-v1` / `...-fit-rec3-v1`.
+Numbers: FIT `contact_cap` and family `fit_endpoint_calls_cap` 128 (`nx_r1_family.fit_contact_cap`); the generation budget stays
+run-cumulative (`planned_model_calls` 64, audio 164, generation/native caps 64); the FIT plan's `planned_model_calls` is 128. The arm is
+unchanged. `tests/unit/test_nx_r1_cell_registration.py::test_pre_contact_preflight_*` now asserts every model-free gate the worker applies
+before its first contact, for both cells. The minted `prepared_phase_supply` pin is preserved byte for byte.
+
 ## 9. Offline verification (2026-10-09, WSL, worktree; zero model, server, GPU or tokenizer contact)
 
 * Dry run on the four-row smoke (`scripts/flights/nx/nx_r1_dry_run.py`, the harness's `analysis/native_episode_dry_run` walk, canned Perception and

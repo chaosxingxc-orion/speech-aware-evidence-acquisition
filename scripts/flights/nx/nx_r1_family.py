@@ -26,7 +26,7 @@ def names(kind: str) -> dict:
     smoke = kind == "smoke"
     lo = "-smoke-4" if smoke else ""
     up = "-SMOKE-4" if smoke else ""
-    rec = "-rec2" if smoke else ""                  # the smoke's single recovery re-registration (SMOKE_RECOVERY)
+    rec = "-rec3" if smoke else ""                  # the smoke's single recovery re-registration (SMOKE_RECOVERY)
     return {
         "experiment": f"slurp-native-stage3-{SLUG}{lo}-v1",
         "baseline": f"slurp-native-stage3-{SLUG}{lo}-baseline-v1",
@@ -38,39 +38,61 @@ def names(kind: str) -> dict:
     }
 
 
-#: The smoke's single root-diagnosed recovery re-registration (2026-10-09), AMENDED the same day from rec1 to rec2. A
-#: (run_id, attempt_id) pair is a one-time key, so the smoke is re-flown whole under the rec2 attempt ids; the arm never
+#: The smoke's single root-diagnosed recovery re-registration (2026-10-09), AMENDED the same day twice (rec1, rec2, now rec3). A
+#: (run_id, attempt_id) pair is a one-time key, so the smoke is re-flown whole under the rec3 attempt ids; the arm never
 #: started and keeps its attempt ids.
 SMOKE_RECOVERY = {
     "recovery_index": 1,
     "predecessor_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
     "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-v1",
     "predecessor_state": "OPENED; 32 contacts / 81.453 speech-seconds spent; failed at seal; preserved unread",
-    "amended_from_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
-    "amended_from_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec1-v1",
+    "predecessors": [
+        {
+            "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
+            "state": "failed at seal after 32 contacts",
+            "contacts_spent": 32,
+            "speech_seconds_spent": 81.453,
+        },
+        {
+            "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
+            "state": "refused pre-contact by the run-cumulative budget adapter",
+            "contacts_spent": 0,
+        },
+        {
+            "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec2-v1",
+            "state": "refused pre-contact by the FIT gate (contact_cap 256 != the structural maximum endpoint count 128)",
+            "contacts_spent": 0,
+        },
+    ],
+    "amended_from_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec2-v1",
+    "amended_from_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec2-v1",
     "amended_from_state": (
-        "OPENED; 0 contacts; refused pre-contact by the run-cumulative budget adapter (core/model/adapter.py: the plan "
-        "allowed 32 calls and 32 were already spent by the failed attempt on this run id)"
+        "OPENED; 0 contacts; refused pre-contact by core/preparation_fit.py build_native_contact_fit_gate: the FIT "
+        "contact_cap was scaled to 256 but must equal rows x max_contacts x (max_speech_packets + 3) = 4 x 8 x 4 = 128"
     ),
     "reason": (
         "The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery "
         "validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests "
-        "tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec2 attempt; the arm "
+        "tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec3 attempt; the arm "
         "is untouched."
     ),
     "amendment": (
-        "AMENDED 2026-10-09 (coordinator ruling, Fable 5.1): the rec1 registration carried the SAME plan budget as the "
-        "failed attempt although the adapter enforces planned_model_calls and planned_speech_audio_seconds run-"
-        "cumulatively across attempts, so rec1 was refused before any contact (0 contacts). That is a pre-contact "
-        "registration defect of the recovery itself, not a second flight failure; the single recovery re-registration "
-        "is amended to rec2 with a run-cumulative budget over the attempts (SMOKE_ATTEMPTS_BUDGETED)."
+        "AMENDED 2026-10-09 (coordinator ruling, Fable 5.1), twice. rec1 carried the SAME plan budget as the failed "
+        "attempt although the adapter enforces planned_model_calls and planned_speech_audio_seconds run-cumulatively, "
+        "so it was refused before any contact (0 contacts). rec2 fixed the generation budget but also scaled the FIT "
+        "contact_cap by the attempts multiplier (256); the FIT cap is a structural per-attempt number, never run-"
+        "cumulative, so rec2 was refused pre-contact by the FIT gate (0 contacts; no FIT attempt records exist). Both "
+        "are pre-contact registration defects of the recovery itself, not flight failures; the single recovery "
+        "re-registration is amended to rec3: the generation budget stays run-cumulative (64 calls, 164 speech-"
+        "seconds, SMOKE_ATTEMPTS_BUDGETED) and the FIT cap is the structural formula (fit_contact_cap)."
     ),
     "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
+    "fit_cap_rule": "The FIT cap is structural: rows x max_contacts x (max_speech_packets + 3).",
 }
 
-#: Attempts the smoke's run-cumulative plan budget covers: the failed first attempt (32 calls spent) plus rec2 (rec1
-#: spent nothing). The arm is a single attempt and keeps its multiplier of 1.
 SMOKE_ATTEMPTS_BUDGETED = 2
+SMOKE_PREDECESSOR_CONTACTS_SPENT = sum(p["contacts_spent"] for p in SMOKE_RECOVERY["predecessors"])  # 32
+SMOKE_PREDECESSOR_SPEECH_SECONDS_SPENT = sum(p.get("speech_seconds_spent", 0.0) for p in SMOKE_RECOVERY["predecessors"])  # 81.453
 
 ARM, SMOKE = names("arm"), names("smoke")
 READ_RUN_ID = "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-COLUMN-READ-V1"
@@ -83,7 +105,7 @@ ARMS = ("r1-c1", "r1-c2", "r1-c3", "r1-c4", "r1-c5")
 DELIVERING, TWIN = "lock", "aa"
 ARM_ORDER = (*ARMS, TWIN, DELIVERING)
 CEILING = 2 + (len(ARM_ORDER) - 1)                 # perception 1 + solver 1 + (K - 1) = 8
-FIT_ENDPOINTS_PER_CONTACT = 4
+FIT_ENDPOINTS_PER_CONTACT = 4                      # max_speech_packets (1) + 3, the gate's endpoints_per_contact
 PLANNED_GPU_HOURS_ARM, PLANNED_GPU_HOURS_SMOKE = 3.5, 1.0
 PROGRAM = f"phase-native-module-v1-c{CEILING}"
 
@@ -121,3 +143,8 @@ def candidate_pins() -> dict[str, dict]:
 
 def fit_measure() -> dict:
     return json.loads((REPO_ROOT / FIT_MEASURE).read_text(encoding="utf-8"))
+
+
+def fit_contact_cap(rows: int) -> int:
+    """The FIT contact_cap the gate demands: rows x max_contacts x endpoints per contact (never run-cumulative)."""
+    return rows * CEILING * FIT_ENDPOINTS_PER_CONTACT

@@ -13,13 +13,13 @@
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
     },
     "smoke": {
-      "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec2-v1",
+      "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec3-v1",
       "cell": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
-      "composed_config_hash": "c8113a731bb5e5ff3ceccd8640c087e209e1d636409708fc6f4601c6e51a6206",
+      "composed_config_hash": "865d3443c80304663d3c94f4d40e6be8f97c8a775a96aeaff51d3d95a8ff6ec6",
       "experiment": "slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-v1",
-      "fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec2-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec3-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "8a95086d08721cb13eeed5712c97af2fbc7fd44289ca529fa8245cdc16989f25",
+      "protocol_hash": "d9b0f757e2a6c62578b624c3afe30a90572d4e84913386064e4f3a6a8028a35d",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
@@ -42,14 +42,33 @@
   "protocol_id": "slurp-nx-r1-solver-fold-b-protocol-v1",
   "recovery": {
     "smoke": {
-      "amended_from_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
-      "amended_from_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec1-v1",
-      "amended_from_state": "OPENED; 0 contacts; refused pre-contact by the run-cumulative budget adapter (core/model/adapter.py: the plan allowed 32 calls and 32 were already spent by the failed attempt on this run id)",
-      "amendment": "AMENDED 2026-10-09 (coordinator ruling, Fable 5.1): the rec1 registration carried the SAME plan budget as the failed attempt although the adapter enforces planned_model_calls and planned_speech_audio_seconds run-cumulatively across attempts, so rec1 was refused before any contact (0 contacts). That is a pre-contact registration defect of the recovery itself, not a second flight failure; the single recovery re-registration is amended to rec2 with a run-cumulative budget over the attempts (SMOKE_ATTEMPTS_BUDGETED).",
+      "amended_from_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec2-v1",
+      "amended_from_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-rec2-v1",
+      "amended_from_state": "OPENED; 0 contacts; refused pre-contact by core/preparation_fit.py build_native_contact_fit_gate: the FIT contact_cap was scaled to 256 but must equal rows x max_contacts x (max_speech_packets + 3) = 4 x 8 x 4 = 128",
+      "amendment": "AMENDED 2026-10-09 (coordinator ruling, Fable 5.1), twice. rec1 carried the SAME plan budget as the failed attempt although the adapter enforces planned_model_calls and planned_speech_audio_seconds run-cumulatively, so it was refused before any contact (0 contacts). rec2 fixed the generation budget but also scaled the FIT contact_cap by the attempts multiplier (256); the FIT cap is a structural per-attempt number, never run-cumulative, so rec2 was refused pre-contact by the FIT gate (0 contacts; no FIT attempt records exist). Both are pre-contact registration defects of the recovery itself, not flight failures; the single recovery re-registration is amended to rec3: the generation budget stays run-cumulative (64 calls, 164 speech-seconds, SMOKE_ATTEMPTS_BUDGETED) and the FIT cap is the structural formula (fit_contact_cap).",
+      "fit_cap_rule": "The FIT cap is structural: rows x max_contacts x (max_speech_packets + 3).",
       "predecessor_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
       "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-fit-v1",
       "predecessor_state": "OPENED; 32 contacts / 81.453 speech-seconds spent; failed at seal; preserved unread",
-      "reason": "The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec2 attempt; the arm is untouched.",
+      "predecessors": [
+        {
+          "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-v1",
+          "contacts_spent": 32,
+          "speech_seconds_spent": 81.453,
+          "state": "failed at seal after 32 contacts"
+        },
+        {
+          "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec1-v1",
+          "contacts_spent": 0,
+          "state": "refused pre-contact by the run-cumulative budget adapter"
+        },
+        {
+          "attempt_id": "attempt-slurp-native-stage3-nx-r1-solver-fold-b-smoke-4-generation-rec2-v1",
+          "contacts_spent": 0,
+          "state": "refused pre-contact by the FIT gate (contact_cap 256 != the structural maximum endpoint count 128)"
+        }
+      ],
+      "reason": "The predecessor attempt made its 32 contacts and failed at runtime.seal() on the template-variant delivery validator (root cause fixed on master in commit 6633c9251, core/flight/runtime.py; tests tests/unit/test_template_variants_delivery.py). The smoke is re-flown whole under the rec3 attempt; the arm is untouched.",
       "recovery_index": 1,
       "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
     }
