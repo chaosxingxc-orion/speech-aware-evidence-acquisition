@@ -1,5 +1,11 @@
 # Handoff to Fable 5.1: active Stage-3 continuation
 
+## Original joint capacity registration running (2026-10-09T08:27:58.278863+00:00)
+
+Root started the original complete five-member model-free registration at08:24:15Z from clean5ac2a7cf1 in `/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2`. Its current verified PID is159631/start_ticks7981111, exec session86205; the durable original terminal is DATA `coordination/local-joint-n100-v1/root-capacity-registration-v1-exit.json`. Evidence: `docs/receipts/continuation/2026-10-09-joint-capacity-registration-started-v1.json`. Do not edit this checkout, restart the original process or infer failure from an observation timeout. The current work is CPU custody/prepared-supply verification and registration, with zero model/tokenizer/scorer contacts and no dispatch.
+
+The exact prospective capacity decision and1495-endpoint complete family scope are already validated. On successful original closure, verify all output plans and bindings, commit metadata, freeze and check the exact worker before fresh capacity admission. Natural source engineering/review continues separately. Preserve the same five full-topology N100 members, immutable data/knowledge, cumulative adaptive exposure, one serial GPU task/four inputs,4GiB floors/full reserves and scoped monitoring only at launch. The full goal remains active/incomplete; all other-carrier holds and the human boundary before8x400 remain.
+
 ## Original joint capacity projection complete; exact prospective admission recorded (2026-10-09T08:23:05.302017+00:00)
 
 The original v3 unsigned projection completed once at08:18:20Z with exit0. Root verified its original terminal and raw log pins, then staged its exact complete ready projection and final capacity identity map. All five configurations and the full adaptive-development source union pass the unchanged canonical disposition validator. The separately recorded root227 capacity decision admits only the source-derived1495 tokenizer endpoints after complete registration, frozen checks and fresh live admission; generation and official scoring remain zero. Evidence: `docs/receipts/continuation/2026-10-09-joint-capacity-projection-complete-v1.json`. Preserve the two earlier root source-identity refusals and all held original maps.
@@ -1222,7 +1228,7 @@ passed ten pure checks, with98percent combined helper coverage, original observe
 byte parity and an independent Astra/Ultra review. These are engineering proofs,
 not runtime admission or business performance.
 
-Last refreshed: 2026-10-09T08:23:05.302017+00:00
+Last refreshed: 2026-10-09T08:27:58.278863+00:00
 
 ## Simple-consumption V2 engineering bases complete; real contacts remain pending (2026-10-07)
 

@@ -1,0 +1,27 @@
+{
+  "at_utc": "2026-10-09T08:27:58.278863+00:00",
+  "exec_session": 86205,
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "input": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-registration-input-v1.json",
+    "sha256": "cbeee07b865197c2df8ce50baa435587862f6794ccd87b0a45b54351602f5c68"
+  },
+  "model_contacts": 0,
+  "next_action": "Verify the original terminal, complete ordered plans and all final bindings, then commit metadata, freeze/check the original worker and admit capacity separately.",
+  "original_exit_path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-registration-v1-exit.json",
+  "original_started": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-v1/root-capacity-registration-v1-started.json",
+    "sha256": "6a6cebd907c398088fc5dc44a45c8238a578bea9c790ef79c609c45c3ca73b5c"
+  },
+  "owner_decision": 227,
+  "pid": 159631,
+  "runtime_dispatch": false,
+  "schema": "saea-root-joint-capacity-registration-continuation-v1",
+  "scorer_contacts": 0,
+  "source_commit": "5ac2a7cf15a6348421fdcc07289dd3ed9ff9cfb4",
+  "source_rule": "Preserve the original live checkout and handle until its durable terminal. Observation expiry does not authorize retry. Registration readiness mutations are expected only after complete original verification.",
+  "source_worktree": "/home/chao/saea-worktrees/codex-local-k4-capacity-caption-v2",
+  "start_ticks": "7981111",
+  "status": "ORIGINAL_MODEL_FREE_REGISTRATION_RUNNING",
+  "tokenizer_contacts": 0
+}
