@@ -1,0 +1,49 @@
+[
+  {
+    "campaign_plan": "docs/readiness/2026-10-08-slurp-local-reviewer-n100-k4-update2-generation-registered-v1/campaign-plan-v1.json",
+    "ceiling_per_row": 13,
+    "cell": "slurp-native-stage3-local-reviewer-control-n100-k4-update2-v1",
+    "contacts_per_row": 4,
+    "expected_rows": 100,
+    "experiment": "slurp-native-stage3-local-reviewer-control-n100-k4-update2-v1",
+    "experiment_population": {
+      "relpath": "configs/experiments/slurp-local-reviewer-n100-k4-update2-v1.json",
+      "sha256": "5fb53d7e8a8cf71c6b3180c6a9a0e8bfba652809ebe49868f561a276da74d045"
+    },
+    "fit_run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE2-FIT-V1",
+    "gen_attempt_id": "attempt-slurp-native-stage3-local-reviewer-control-n100-k4-update2-v1",
+    "kind": "cell",
+    "notool": false,
+    "order": 1,
+    "owner": "root-owner227-local-reviewer-n100-k4-update2",
+    "population_budget": {
+      "K": 4,
+      "N": 100,
+      "active_node_counts": {
+        "candidate-1": 4,
+        "candidate-2": 4,
+        "candidate-3": 4,
+        "candidate-4": 4,
+        "control": 4,
+        "control-aa": 4
+      },
+      "candidate_trajectories": 400,
+      "control_trajectories": 200,
+      "family_trajectories": 600,
+      "fit_endpoints_cap": 31200,
+      "generation_contacts_cap": 7800
+    },
+    "population_cohort": "local-reviewer-k4-update2",
+    "process_floor_gib": 4,
+    "process_memory_diagnostics": true,
+    "process_start_gib": 4,
+    "process_start_stable_samples": 3,
+    "process_start_wait_seconds": 600,
+    "run_id": "SAEA-SLURP-LOCAL-REVIEWER-CONTROL-N100-K4-UPDATE2-V1",
+    "short": "continuous-local-reviewer-n100-k4-update2-v1-control",
+    "smoke_attempt_id": null,
+    "smoke_cell": null,
+    "smoke_experiment": null,
+    "smoke_run_id": null
+  }
+]
