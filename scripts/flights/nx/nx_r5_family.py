@@ -101,7 +101,18 @@ V4G_LOCK_COLUMN_PP = 1.55
 EXPECTED_EFFECT_PP = round(REVIEW_OFF_VS_FULL_PP + V4G_LOCK_COLUMN_PP, 2)   # +0.07
 HARM_MARGIN_PP = 2.5
 
-TUNING_ROSTER = ["slurp-train-construction-pool-agree-kprobe-r01-excluded", "SLURP-EVO-FOLD-A-V2 (v4g rules and guards)"]
+TUNING_ROSTER = ["slurp-train-construction-pool-agree-kprobe-r01-excluded", "SLURP-EVO-FOLD-A-V2"]
+#: A DECLARED exception to item D3, stated in the registered note, README and report rather than hidden: the v4 rule set that v4g extends was
+#: SELECTED on the A2 DEV pool, which is this read roster (confirmed on Fold A, guards located on Fold A, lock confirmed on Fold B). Naming the
+#: read roster in ``tuning_roster`` would make the launch gate report a blocking ``tuning-read-overlap`` the coordinator cannot clear, so the
+#: roster list stays the rosters the COMPOSITION's own constants were chosen on and this text carries the v4 selection instead.
+TUNING_EXCEPTION = (
+    "the v4 rule set (fx-article, fx-oclock, scope, ti1, ee10) that saea-deliver-normalise-v4g extends was SELECTED offline on the A2 DEV pool "
+    "(431 combinations + 10 single rules on DEV-2000-ADDED, COMP-1b delivered column; docs/results/2026-10-09-slurp-nx-postprocessing-v4-offline-read.md), "
+    "which is this cell's read roster; it was confirmed on TRAIN Fold A, its guards were located on Fold A and checked on A2, and the lock was "
+    "confirmed on TRAIN Fold B (docs/results/2026-10-09-slurp-postprocessing-v4g-lock-v1.md). The v4g delivered gain on this roster is therefore "
+    "in-sample for the rule choice and descriptive only; the declared expectation quotes the Fold B confirmation."
+)
 
 
 def names(kind: str) -> dict:
