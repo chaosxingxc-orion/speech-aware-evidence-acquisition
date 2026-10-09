@@ -1,0 +1,46 @@
+{
+  "at_utc": "2026-10-09T02:00:46.580217+00:00",
+  "configured_candidate_count": 4,
+  "driver_epoch": "2026-10-09T01:57:16Z",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "live_observation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-launch-live-observation-v1.json",
+    "sha256": "39e0caf781dda78a16a10e1f46741b2856b7417592a6b10f9ee52d15ea4c0477"
+  },
+  "maximum_fit_endpoints": 4800,
+  "maximum_model_contacts": 1200,
+  "members": 6,
+  "monitor": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-monitor-created-v1.json",
+    "sha256": "4cd4d19b794883619b542725a75640e601c13fb04888380857959254a9db9d86"
+  },
+  "official_score_jobs_cap": 6,
+  "original_preparation": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-original-configured-preparation-v2-exit.json",
+    "sha256": "c00cac85bf9c2adaf83fb31066b2c86d6f61aa6dfd60f6d5c75247f38ba3c0a3"
+  },
+  "original_request": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-generation-dispatch-request-v1.json",
+    "sha256": "7b75a2ee03383419bf88ee6a22a452b32cf7c8ceef00e82f58eb1f092aff6b4d"
+  },
+  "original_request_exit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-generation-task-request-exit-v1.json",
+    "sha256": "6c5a721b87a8e499bc36fb381242ff89af48ba8de4e889871c3220ca1a22b851"
+  },
+  "original_transition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-solver-n100-k4-update3-generation-v1/root-generation-control-transition-v1.json",
+    "sha256": "6e5d643d17f5fb3c34971460c1e3f478cf412df9f025f1abd35c437056692599"
+  },
+  "owner_decision": 227,
+  "reviewer_followup": "Prepared and frozen; normal serial transition only after original Solver complete terminal.",
+  "role": "solver",
+  "rows_per_member": 100,
+  "schema": "saea-root-configured-local-n100-launch-v1",
+  "source_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-configured-n100-dispatch-astra-review-v2/review-result-v2.json",
+    "sha256": "22cc341245434a263258c3e1caee183ba77f1fb9308db74272328cfc1314245a"
+  },
+  "stable_benefit_or_learning_claim": false,
+  "task_quality_read": false,
+  "trajectories": 600
+}

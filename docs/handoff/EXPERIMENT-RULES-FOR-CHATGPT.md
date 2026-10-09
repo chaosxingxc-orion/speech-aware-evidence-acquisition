@@ -1,5 +1,15 @@
 # Experiment rules for the ChatGPT side
 
+## Solver update3 configured N100 campaign launched (2026-10-09T02:00:46.580217+00:00)
+
+Independent Astra Ultra approved the exact configured v2 launch source after126 supplied cases,16 additional custody cases and32 targeted regressions. Root separately revalidated the original completed Reviewer natural lifecycle, actual frozen Solver family, exact source/receipt bindings and current process/guard/task/service/resource state. Original preparation and the explicit normal transition succeeded; one Windows SAEA-Batch-Driver request was made. No v1 launch was attempted and no failed runtime was retried. Exact evidence: `docs/receipts/continuation/2026-10-09-local-solver-update3-n100-launched-v1.json`.
+
+Original driver epoch is2026-10-09T01:57:16Z. The immutable worker is `/home/chao/saea-worktrees/codex-local-solver-n100-k4-update3-frozen-v1` at b36e51a976b850d5f655bd548841f922e217d1b7; DATA entry is `coordination/local-solver-n100-k4-update3-generation-v1`. Singleton queue SHAd950809bed103b0ba96718f82d6d224d6c4104e143813a45b839da010379ab46 binds all six configured members: control,control-aa,candidate-1,candidate-2,candidate-3,candidate-4. Each runs100 fixed inputs,600 trajectories total, with1200 model contacts/4800 FIT endpoints at most and exactly one official score per complete member. Inspect every member through its own operational evidence; service totals are not completed rows.
+
+The15minute `slurp-solver-update3-n100-health` monitor is active until the verified original terminal. It has read-only operational authority, no recovery or scientific READ. GPU work remains one serial campaign with four concurrent inputs per member; one CPU official scorer overlaps following generation. Keep4GiB floors and full output reserves. Initial Windows free memory was43.5GiB; revalidate live telemetry rather than treating that sample as current health.
+
+Both module analysis packages and the next Reviewer update2 N100 family are already frozen/resolved. Complete independently sealed uniquely scored Solver members may receive root-qualified descriptive CPU analysis while later GPU members run. Comparisons, local selection and learning require the whole configured family and its exact root READ. Reviewer dispatch follows original Solver terminal custody. No stable benefit, adoption or learning superiority is established. The full goal remains active/incomplete; human review before8x400 and other-carrier holds remain unchanged.
+
 ## Both local N100 families frozen and source-bound analysis ready (2026-10-09T01:34:33.111409+00:00)
 
 Both original configured N100 preparations, complete exposure registrations, frozen gates and all member runtime checks succeeded. Solver update3 frozen worker is `/home/chao/saea-worktrees/codex-local-solver-n100-k4-update3-frozen-v1` at b36e51a976b850d5f655bd548841f922e217d1b7; Reviewer update2 frozen worker is `/home/chao/saea-worktrees/codex-local-reviewer-n100-k4-update2-frozen-v1` at5bc19ac89623ac1abb5c4b536c66f5eaf51096e8. Their DATA entries are `coordination/local-solver-n100-k4-update3-generation-v1` and `coordination/local-reviewer-n100-k4-update2-generation-v1`. No generation or scoring has launched. Exact readiness evidence: `docs/receipts/continuation/2026-10-09-both-local-n100-frozen-and-analysis-ready-v1.json`.
@@ -1278,4 +1288,4 @@ The study guide's research boundary is unchanged: human speech only; the frozen 
 service boundary; zero parameter training; no second answering model; gold, reference transcripts and future turns
 never enter runtime; zero paid API spend; paper-scale work belongs to a separately admitted paper repository.
 
-Last refreshed: 2026-10-09T01:34:33.111409+00:00
+Last refreshed: 2026-10-09T02:00:46.580217+00:00
