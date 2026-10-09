@@ -2,6 +2,14 @@
 # The same-flight Solver template-column read of NX round R1 (NX programme C2 R1; instrument E1/E2).
 #
 #   bash scripts/analysis/nx_r1_read.sh [--iteration 1|2] [--rescore] [--dry-run] [--skip-offline]
+#   bash scripts/analysis/nx_r1_read.sh --iteration N --node-local-out <subfolder> [--dry-run]     (RE-READ mode)
+#
+# RE-READ mode (--node-local-out NAME): for a FLOWN iteration, re-runs ONLY the node-local step (step 1) with the current reader
+# (schema v2) into a NEW subfolder <analysis root>/NAME and exits. It never touches node-local/, supply-variants/, the official
+# passes (aa-vs-lock, <candidate>-vs-lock), cross-iteration/ or offline-v4/, and it runs no scorer. It REFUSES: a NAME that is not a
+# plain folder name or that equals one of those registered outputs (exit 2); an iteration whose sealed run manifest is absent
+# (exit 3); a NAME that already holds files, or that is not a directory (exit 6; checked also with --dry-run); a READ row that is
+# not root countersigned (exit 3, not with --dry-run). It does not combine with --rescore or --skip-offline (exit 2).
 #
 # --iteration N selects the R1 iteration (default 1) and with it the registered recipe; nothing else is iteration-specific here:
 # the run, attempt, READ run, recipe id and candidate arm ids are all read FROM the recipe. Iteration 2 additionally runs the
@@ -52,8 +60,9 @@ LOCK=${SAEA_DATASETS_LOCK:-/mnt/d/chao_workspace/exploring-l4-intelligence/docs/
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 source "$MAIN/scripts/flights/batch/read_lib.sh"
-usage() { echo "usage: nx_r1_read.sh [--iteration 1|2] [--rescore] [--dry-run] [--skip-offline]"; exit 2; }
+usage() { echo "usage: nx_r1_read.sh [--iteration 1|2] [--rescore] [--dry-run] [--skip-offline] | --iteration N --node-local-out <subfolder> [--dry-run]"; exit 2; }
 RESCORE=0
+NODE_OUT=
 DRY=0
 SKIP_OFFLINE=0
 ITER=1
@@ -63,10 +72,18 @@ while [ $# -gt 0 ]; do
     --dry-run) DRY=1 ;;
     --skip-offline) SKIP_OFFLINE=1 ;;
     --iteration) shift; ITER=${1:-}; [ "$ITER" = 1 ] || [ "$ITER" = 2 ] || usage ;;
+    --node-local-out) shift; NODE_OUT=${1:-}; [ -n "$NODE_OUT" ] || usage ;;
     *) usage ;;
   esac
   shift
 done
+if [ -n "$NODE_OUT" ]; then
+  [ "$RESCORE" = 0 ] && [ "$SKIP_OFFLINE" = 0 ] || { echo "REFUSED: --node-local-out re-runs the node-local step only; it does not combine with --rescore or --skip-offline"; exit 2; }
+  case "$NODE_OUT" in
+    node-local|supply-variants|offline-v4|cross-iteration|aa-vs-lock|*-vs-lock|.*|*/*|*[!A-Za-z0-9._-]*)
+      echo "REFUSED: --node-local-out '$NODE_OUT' is not a plain new folder name (reserved: node-local, supply-variants, offline-v4, cross-iteration, aa-vs-lock, <arm>-vs-lock)"; exit 2 ;;
+  esac
+fi
 case "$ITER" in
   1) RECIPE=docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/analysis-recipe-v1.json ;;
   2) RECIPE=docs/readiness/2026-10-09-slurp-nx-r1-i2-solver-fold-b-v1/analysis-recipe-v1.json ;;
@@ -96,6 +113,21 @@ RUNDIR=$SPEECHRL_DATA_DIR/runs/$RUN/$ATT
 OUT=$SPEECHRL_DATA_DIR/analysis/$READ_RUN
 echo "nx-r1: run $RUN attempt $ATT read $READ_RUN candidates $CANDIDATES"
 [ -f "$RUNDIR/$RUN.run-manifest.json" ] || { echo "REFUSED: no sealed run manifest under $RUNDIR"; exit 3; }
+if [ -n "$NODE_OUT" ]; then
+  # RE-READ mode: the node-local step only, into a NEW subfolder; every registered output stays untouched.
+  if [ -e "$OUT/$NODE_OUT" ] && { [ ! -d "$OUT/$NODE_OUT" ] || [ -n "$(ls -A "$OUT/$NODE_OUT")" ]; }; then
+    echo "REFUSED: $OUT/$NODE_OUT already exists and is not an empty directory"; exit 6
+  fi
+  if [ "$DRY" = 1 ]; then
+    echo "(dry) re-read mode: would run ONLY the node-local step (reader $NODE_READ) for iteration $ITER into $OUT/$NODE_OUT; node-local/, supply-variants/, the official passes and offline-v4 are untouched"
+    exit 0
+  fi
+  read_require_countersigned docs/exposure-ledger.md "$READ_RUN" || exit 3
+  mkdir -p "$OUT/$NODE_OUT"
+  "$PY" -B "$NODE_READ" --data-root "$SPEECHRL_DATA_DIR" --lock "$LOCK" --run-id "$RUN" --attempt-id "$ATT" --split train     --out-dir "$OUT/$NODE_OUT" || { echo "NODE-LOCAL RE-READ FAILED"; exit 5; }
+  echo "node-local re-read (iteration $ITER) written under $OUT/$NODE_OUT"
+  exit 0
+fi
 if [ "$DRY" = 1 ]; then
   echo "(dry) recipe $RECIPE_ID (iteration $ITER)"
   echo "(dry) sealed run present at $RUNDIR; would read: node-local -> $OUT/node-local, official passes aa-vs-lock then <candidate>-vs-lock under $OUT, offline v4/v4g under $OUT/offline-v4"
