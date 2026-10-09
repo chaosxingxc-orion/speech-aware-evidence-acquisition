@@ -156,9 +156,18 @@ class DryRunArm(object):
     resolved_knobs: tuple[Mapping[str, object], ...]
     supplied_value_ids: tuple[str, ...]
     max_supplied_items: int
+    #: NX programme E1 (node-template arms): the arm's pinned template, or
+    #: ``None``; and the digest and length of the instruction text this arm's
+    #: request would carry (the delivering arm's and the twin's are the node's
+    #: own locked instruction -- which is what the walk proves). Declared LAST
+    #: and defaulted, so a supply-kind walk produces exactly the receipt it
+    #: always did.
+    instruction_template: Mapping[str, str] | None = None
+    instruction_sha256: str | None = None
+    instruction_chars: int | None = None
 
     def as_json(self) -> dict[str, object]:
-        return {
+        row: dict[str, object] = {
             "arm_id": self.arm_id,
             "arm_index": self.arm_index,
             "deliver": self.deliver,
@@ -167,6 +176,14 @@ class DryRunArm(object):
             "supplied_item_count": len(self.supplied_value_ids),
             "max_supplied_items": self.max_supplied_items,
         }
+        if self.instruction_sha256 is not None:
+            row["instruction_template"] = (
+                None if self.instruction_template is None
+                else dict(self.instruction_template)
+            )
+            row["instruction_sha256"] = self.instruction_sha256
+            row["instruction_chars"] = self.instruction_chars
+        return row
 
 
 @dataclass(frozen=True)
@@ -549,6 +566,13 @@ def compose_dry_run(runtime, *, sample_limit: int = 1) -> Mapping[str, object]:
         # routers the flight would use, not a stand-in. None for every cell that
         # declares no arm group.
         "supply_variant_for_phase": runtime._supply_variant_binding(episode, program),
+        # NX programme E1: the SAME flight-owned per-arm material builders a
+        # live flight binds (after the declared sha256 of every pinned
+        # template was verified against its file's bytes). None for every cell
+        # that declares no template group.
+        "template_variant_materials": runtime._template_variant_materials(
+            episode, program, phase_binding,
+        ),
     }
     runtime._dry_run_binding = binding
     return binding
@@ -596,6 +620,15 @@ def dry_run_native_episode(
     supply_variant_group = binding["episode"].supply_variant_group
     supply_variant_phase = binding["episode"].supply_variant_phase_id
     supply_variant_resolver = binding.get("supply_variant_for_phase")
+    # NX programme E1: a node-template group varies the instruction, never the
+    # supply, so the walk resolves no per-arm supply for it; the arms are walked
+    # at the node itself, against the node's own material inputs.
+    template_group = (
+        supply_variant_group
+        if supply_variant_group is not None and supply_variant_group.is_template
+        else None
+    )
+    template_materials = binding.get("template_variant_materials") or {}
     # Cell RANKVIS (owner decision 171): honour native_episode.
     # knowledge_value_rendering exactly as rails.runner.
     # _invoke_native_role_episode does -- the stores whose newly supplied
@@ -706,6 +739,43 @@ def dry_run_native_episode(
         if not isinstance(material, PhaseMaterial):
             raise NativeEpisodeDryRunError("phase material must be a PhaseMaterial")
         material.validate()
+        template_arms: tuple = ()
+        if template_group is not None and phase == supply_variant_phase:
+            # NX programme E1: the template arms of THIS visit, walked at the
+            # node. Every arm supplies the row's own accumulated evidence (the
+            # supply is unvaried); the delivering arm and the twin render the
+            # node's locked instruction, every other arm its own pinned
+            # template through the flight-owned builder, over the same
+            # predecessor binding, fill and response format.
+            sealed_arg = {sample.sample_id: states[-1]} if states else {}
+            walked_template = []
+            for arm_index, arm in enumerate(template_group.arms):
+                if arm.instruction_template is not None:
+                    arm_material = template_materials[arm.arm_id](
+                        phase, context, sealed_arg,
+                    )
+                    arm_material.validate()
+                    if arm_material.response_format != material.response_format:
+                        raise NativeEpisodeDryRunError(
+                            f"template arm {arm.arm_id!r} changed the node's response "
+                            "format; an arm overrides the instruction template only"
+                        )
+                    instruction = arm_material.instruction
+                else:
+                    instruction = material.instruction
+                walked_template.append(DryRunArm(
+                    arm_id=arm.arm_id, arm_index=arm_index, deliver=arm.deliver,
+                    resolved_knobs=(),
+                    supplied_value_ids=tuple(query_state.retrieved_value_ids),
+                    max_supplied_items=arm.max_supplied_items,
+                    instruction_template=(
+                        None if arm.instruction_template is None
+                        else arm.instruction_template.as_json()
+                    ),
+                    instruction_sha256=_sha256(instruction),
+                    instruction_chars=len(instruction),
+                ))
+            template_arms = tuple(walked_template)
         text = answer(phase, visits[phase])
         contact_id = f"{CONTACT_NAMESPACE}:{phase}:{visits[phase]:02d}"
         state = seal_phase_response_state(
@@ -755,6 +825,7 @@ def dry_run_native_episode(
         if (
             next_phase is not None
             and supply_variant_group is not None
+            and template_group is None
             and next_phase == supply_variant_phase
         ):
             # Item E42: every declared arm's own supply, resolved against the
@@ -844,7 +915,7 @@ def dry_run_native_episode(
                 state_id=state.state_id,
                 state_kind=state.state_kind,
                 state_content_sha256=_sha256(state.content),
-                supply_variant_arms=pending_arms,
+                supply_variant_arms=template_arms or pending_arms,
             )
         )
         query_state, _transition = advance_phase_response_state(

@@ -960,6 +960,16 @@ class NativeEpisodeRunBinding:
     # ``contrast_pairs`` pin. Declared LAST, after ``perception_branch_
     # seeds``, for the same reason that field is.
     perception_contrast_pairs: Mapping[str, Mapping] | None = None
+    # NX programme E1 (2026-10-09, node-template arms): ``{arm_id: material
+    # builder}`` for every arm of a template group that declares an
+    # ``instruction_template`` -- each builder is the flight's own
+    # ``material_for_phase`` with ONLY that arm's pinned template swapped in
+    # (``core.flight.runtime.FlightRuntime._template_variant_materials``),
+    # after the template's bytes were hashed against the declared sha256.
+    # None -- and therefore byte-identical to the pre-programme tree -- unless
+    # ``roles.solver.template_variants`` is declared. Declared LAST, for the
+    # same reason the two fields above are.
+    template_variant_materials: Mapping[str, Callable] | None = None
     # Optional execution envelope, outside the policy dataclass so an absent
     # factor preserves existing whole-policy hashes and request semantics.
     prefix_slots: object = None
@@ -1365,6 +1375,24 @@ def load_native_episode_config(
         # Perception-only row fields for the same reason -- it forks the FIRST
         # phase's own visit and nothing else may declare it.
         perception_fields = {"branches"} if kind == "perception" else set()
+        # NX programme E1 (2026-10-09): ``template_variants`` joins the row
+        # fields of exactly the nodes ``rails.supply_variants.
+        # TEMPLATE_VARIANT_NODES`` names (the Solver today). Declared on any
+        # other node it is refused BY NAME rather than as an unknown key.
+        if isinstance(row, Mapping) and "template_variants" in row:
+            from .supply_variants import TEMPLATE_VARIANT_NODES  # noqa: PLC0415
+
+            if kind not in TEMPLATE_VARIANT_NODES:
+                raise ValueError(
+                    f"roles.{kind}.template_variants is refused: a node-template "
+                    f"arm group may sit only at {list(TEMPLATE_VARIANT_NODES)}"
+                )
+            if "supply_variants" in row:
+                raise ValueError(
+                    f"roles.{kind}.template_variants cannot combine with "
+                    f"roles.{kind}.supply_variants: one fan-out mechanism per node"
+                )
+            solver_fields = solver_fields | {"template_variants"}
         if (
             not isinstance(row, Mapping)
             or not {"phase_id", "max_iterations"} <= set(row)
@@ -1489,6 +1517,45 @@ def load_native_episode_config(
                 "roles.solver.supply_variants cannot combine with "
                 "native_episode.knowledge_index: the index replaces the very "
                 "value blocks an arm varies"
+            )
+    # NX programme E1 (2026-10-09): the Solver's NODE-TEMPLATE arm group,
+    # parsed HERE -- before any contact -- into the SAME group slot the supply
+    # arm group fills (``roles.solver.supply_variants`` and ``template_variants``
+    # are mutually exclusive), kind ``template``. Every arm renders the
+    # delivering arm's own evidence and differs only in its pinned instruction
+    # template, so the ceiling term, the contact batch, the receipt and the
+    # bundle invariant I7v are the supply form's own.
+    if "template_variants" in raw_roles["solver"]:
+        from .supply_variants import SupplyVariantError, parse_template_variants
+
+        solver_phase = raw_roles["solver"]["phase_id"]
+        material = values.get("phase_material")
+        locked_entry = material.get(solver_phase) if isinstance(material, Mapping) else None
+        locked_template = (
+            locked_entry.get("instruction_template")
+            if isinstance(locked_entry, Mapping) else None
+        )
+        if not isinstance(locked_template, str):
+            raise ValueError(
+                "roles.solver.template_variants requires the node's own "
+                f"phase_material[{solver_phase!r}].instruction_template: the "
+                "delivering arm renders it"
+            )
+        try:
+            supply_variant_group = parse_template_variants(
+                raw_roles["solver"]["template_variants"],
+                role_kind="solver", phase_id=solver_phase,
+                locked_template=locked_template,
+            )
+        except SupplyVariantError as error:
+            raise ValueError(
+                f"roles.solver.template_variants is invalid: {error}"
+            ) from error
+        if knowledge_index_armed:
+            raise ValueError(
+                "roles.solver.template_variants cannot combine with "
+                "native_episode.knowledge_index: the index appends to the system "
+                "message every arm shares and has no per-arm custody form"
             )
     # Same-flight instrument, PHASE 2 (merge set C, design docs/superpowers/
     # specs/2026-09-28-same-flight-instrument-phase2-perception-variants-

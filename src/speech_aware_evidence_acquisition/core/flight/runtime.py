@@ -3441,6 +3441,11 @@ class FlightRuntime:
 
         if native_config is None or native_config.supply_variant_group is None:
             return None
+        if native_config.supply_variant_group.is_template:
+            # NX programme E1: a node-template group varies the instruction and
+            # never the supply, so there is no per-arm router to build; its
+            # arms are bound by :meth:`_template_variant_materials`.
+            return None
         group = native_config.supply_variant_group
         store_binding = getattr(self, "_knowledge_store_binding", None)
         if store_binding is None:
@@ -3488,6 +3493,83 @@ class FlightRuntime:
                 "supply_variant_release_swaps": release_swap_receipts,
             }
         return resolve
+
+    def _template_variant_materials(self, native_config, program, binding):
+        """NX programme E1 (2026-10-09): the per-arm material builders of a
+        node-template group, or ``None`` for every other cell.
+
+        For each arm that declares an ``instruction_template`` this (1) reads
+        the pinned file and refuses, BEFORE any contact, a missing file or a
+        digest other than the declared one; (2) renders it through the node's
+        own ``instruction_fill`` and ``fill_params`` exactly as the node's
+        locked template is rendered (``render_static_instruction`` over the
+        node's spec with ONLY ``instruction_template`` replaced); (3) refuses
+        text that embeds frozen knowledge payloads, by the rule
+        :meth:`_default_phase_program_binding` applies to the locked text; and
+        (4) returns the flight's own ``material_for_phase`` over that text
+        through the builder :meth:`_default_phase_program_binding` published,
+        so the arm shares the node's predecessor binding, state fill and
+        response format. The delivering arm and the twin get no builder: they
+        render the node's own locked material.
+
+        The resolved pins and the rendered text's digest are folded into the
+        phase-material receipt under ``template_variants``, keyed by arm id.
+        """
+
+        group = None if native_config is None else native_config.supply_variant_group
+        if group is None or not group.is_template:
+            return None
+        import dataclasses  # noqa: PLC0415
+
+        from ...rails.phase_material import render_static_instruction  # noqa: PLC0415
+
+        builder = binding.get("material_with_static_text")
+        specs = binding.get("phase_specs")
+        protected = binding.get("protected_material")
+        phase = native_config.supply_variant_phase_id
+        if builder is None or specs is None or protected is None or phase not in specs:
+            raise FlightRuntimeError(
+                "roles.solver.template_variants needs the phase-program material "
+                "builder this flight binds; none was published"
+            )
+        builders: dict[str, object] = {}
+        receipts: dict[str, object] = {}
+        for arm in group.arms:
+            pin = arm.instruction_template
+            if pin is None:
+                continue
+            path = self._repo_root / "configs" / pin.relpath
+            if not path.is_file():
+                raise FlightRuntimeError(
+                    f"template_variants arm {arm.arm_id!r}: pinned template {path} is missing"
+                )
+            measured = _sha256_file(path)
+            if measured != pin.sha256:
+                raise FlightRuntimeError(
+                    f"template_variants arm {arm.arm_id!r}: {path} hashes to {measured}, "
+                    f"not the declared {pin.sha256}"
+                )
+            spec = dataclasses.replace(specs[phase], instruction_template=pin.relpath)
+            text = render_static_instruction(
+                spec, self._repo_root, self._lock, self._data_root
+            )
+            lowered = text.casefold()
+            if any(material in lowered for material in protected):
+                raise FlightRuntimeError(
+                    f"template_variants arm {arm.arm_id!r}: the rendered template "
+                    "embeds frozen knowledge key/value payloads; rails.runner "
+                    "refuses such a contact instruction at request time"
+                )
+            builders[arm.arm_id] = builder({phase: text})
+            receipts[arm.arm_id] = {
+                **pin.as_json(),
+                "rendered_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
+            }
+        self._phase_material_receipt = {
+            **(self._phase_material_receipt or {}),
+            "template_variants": receipts,
+        }
+        return MappingProxyType(builders)
 
     def _perception_branch_seeds(
         self, program, binding, group, value_seed_for_first_phase, plan, max_workers=1,
@@ -7613,6 +7695,12 @@ class FlightRuntime:
                 # None -- and therefore byte-identical to before this table
                 # existed -- unless some branch declares ``contrast_pairs``.
                 perception_contrast_pairs=perception_contrast_pairs,
+                # NX programme E1: one material builder per template arm. None
+                # -- byte-identical to the pre-programme tree -- unless
+                # ``roles.solver.template_variants`` is declared.
+                template_variant_materials=self._template_variant_materials(
+                    native_config, program, binding,
+                ),
             )
         catalog = self._load_system_policy_catalog(program)
         if catalog is not None:
@@ -10311,6 +10399,20 @@ class FlightRuntime:
                 specs,
                 program_id=prepared_text_control_namespace(self._composed.values, program.program_id),
                 static_text_by_phase=static_text,
+                response_format_by_phase=formats,
+                per_sample_states=per_sample_states,
+            ),
+            # NX programme E1: what :meth:`_template_variant_materials` builds a
+            # template arm's material from -- the node's specs, the protected
+            # knowledge material, and the SAME ``build_material_for_phase``
+            # call with only the named phases' static text replaced. Unread by
+            # every cell that declares no template group.
+            "phase_specs": specs,
+            "protected_material": protected,
+            "material_with_static_text": lambda overrides: build_material_for_phase(
+                specs,
+                program_id=prepared_text_control_namespace(self._composed.values, program.program_id),
+                static_text_by_phase={**static_text, **overrides},
                 response_format_by_phase=formats,
                 per_sample_states=per_sample_states,
             ),

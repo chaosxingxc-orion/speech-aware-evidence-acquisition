@@ -544,6 +544,10 @@ class _ActualEpisodeHarness:
             # that declares no ``contrast_pairs`` branch -- leaves this
             # binding byte-identical to its pre-existing self.
             perception_contrast_pairs=getattr(self, "perception_contrast_pairs", None),
+            # NX programme E1: one material builder per template arm. None --
+            # every harness written before the programme and every episode
+            # that declares no template group -- binds byte-identically.
+            template_variant_materials=getattr(self, "template_variant_materials", None),
             prefix_slots=getattr(self, "prefix_slots", None),
             node_batch=getattr(self, "node_batch", None),
             node_pipeline=getattr(self, "node_pipeline", None),

@@ -95,6 +95,9 @@ class _FakeSample:
 
 
 class _World:
+    # NX programme E1: the rows the fixture writes; a subclass may widen the roster.
+    SAMPLE_SPECS = (("s1", 2.0), ("s2", 3.5))
+
     def __init__(
         self, tmp_path: Path, *, sample_rate_hz: int = 16000, data_root: Path | None = None
     ) -> None:
@@ -103,7 +106,7 @@ class _World:
         self.media_dir = self.carrier_root / "media"
         self.run_dir = tmp_path / "run"
         self.samples: list[_FakeSample] = []
-        for sample_id, seconds in (("s1", 2.0), ("s2", 3.5)):
+        for sample_id, seconds in self.SAMPLE_SPECS:
             relpath = f"datasets/fake-carrier/media/{sample_id}.wav"
             path = self.data_root / relpath
             _write_wav(path, sample_rate_hz=sample_rate_hz, seconds=seconds)

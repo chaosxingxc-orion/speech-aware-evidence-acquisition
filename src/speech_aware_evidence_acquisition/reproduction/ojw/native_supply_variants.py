@@ -199,6 +199,7 @@ class SupplyVariantRoleNode(WorkflowComponent):
         group,
         arm_record: Callable[[int, Mapping[str, Any]], Mapping[str, object]],
         delivery_allowed: Callable[[str, str], bool] = _default_delivery_allowed,
+        query_for_arm: Callable[[int, str], str] | None = None,
     ) -> None:
         super().__init__()
         if not isinstance(inner, NativeRoleNode) or inner.spec.role_kind != "solver":
@@ -209,10 +210,16 @@ class SupplyVariantRoleNode(WorkflowComponent):
             raise SupplyVariantNodeError("arm_record must be callable")
         if not callable(delivery_allowed):
             raise SupplyVariantNodeError("delivery_allowed must be callable")
+        if query_for_arm is not None and not callable(query_for_arm):
+            raise SupplyVariantNodeError("query_for_arm must be callable")
         self._inner = inner
         self._group = group
         self._arm_record = arm_record
         self._delivery_allowed = delivery_allowed
+        # NX programme E1 (node-template arms): the framework query ARM ``i``
+        # is contacted with. None -- every supply-kind group -- hands every arm
+        # the visit's own query, exactly as before.
+        self._query_for_arm = query_for_arm
         # Owner decision 172 (2026-09-27, merge set B): counts REAL visits of
         # this node (not contacts). Under ``group.arm_visits == "first"`` only
         # visit 0 fans out; see ``invoke`` below.
@@ -245,8 +252,14 @@ class SupplyVariantRoleNode(WorkflowComponent):
             # result even when a LATER visit is the one actually delivered.
             return await inner.invoke_direct(query)
 
-        async def invoke_arm(_arm_index: int) -> dict[str, object]:
-            return await inner.invoke_direct(query)
+        async def invoke_arm(arm_index: int) -> dict[str, object]:
+            arm_query = (
+                query if self._query_for_arm is None
+                else self._query_for_arm(arm_index, query)
+            )
+            if not isinstance(arm_query, str) or not arm_query:
+                raise SupplyVariantNodeError("an arm query must be non-empty text")
+            return await inner.invoke_direct(arm_query)
 
         return await run_supply_variant_arms(
             invoke_arm,

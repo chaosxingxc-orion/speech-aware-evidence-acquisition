@@ -2395,6 +2395,13 @@ async def _invoke_native_role_episode(
     supply_variant_group = config.supply_variant_group
     supply_variant_phase_id = config.supply_variant_phase_id
     supply_variant_arms = config.supply_variant_arm_count
+    # NX programme E1 (2026-10-09): True when the arm group is the NODE-TEMPLATE
+    # kind -- every arm renders the delivering arm's own evidence and differs
+    # only in its pinned instruction template. False (and every branch keyed on
+    # it unreachable) for every config written before the programme.
+    template_variant_mode = bool(
+        supply_variant_group is not None and supply_variant_group.is_template
+    )
     # The ``(plan, completion, slot_id)`` of the arms of the visit in flight, in
     # arm order, so the visit's ONE wave can name every one of its K contacts.
     # Emptied when that wave is recorded.
@@ -2746,6 +2753,37 @@ async def _invoke_native_role_episode(
         if existing != record:
             raise RailsRunnerError(
                 "one supply-variant contact has conflicting arm records"
+            )
+        return messages
+
+    def template_variant_messages(ctx, *, arm, plan):
+        """NX programme E1: ONE template arm's two messages, plus its receipt row.
+
+        Every arm -- the delivering arm, the twin and each template arm --
+        renders ``base_messages(ctx)``: the SAME evidence blocks over the SAME
+        QueryState, because a template arm varies the node's instruction and
+        nothing else. The instruction (and the original query that carries it)
+        was set by the caller, before the contact plan was minted. The arm's own
+        receipt row records the pinned template it rendered.
+        """
+
+        from .supply_variants import SupplyVariantError, supply_variant_arm_record
+
+        messages = base_messages(ctx)
+        try:
+            record = supply_variant_arm_record(
+                arm=arm,
+                arm_index=supply_variant_group.arm_ids.index(arm.arm_id),
+                contact_id=plan.contact_id,
+                supplied_value_ids=tuple(ctx.query_state.retrieved_value_ids),
+                template_group=True,
+            )
+        except SupplyVariantError as error:
+            raise RailsRunnerError(str(error)) from error
+        existing = supply_variant_records.setdefault(plan.contact_id, record)
+        if existing != record:
+            raise RailsRunnerError(
+                "one template-variant contact has conflicting arm records"
             )
         return messages
 
@@ -3259,7 +3297,10 @@ async def _invoke_native_role_episode(
             # ride the accumulated QueryState. Acquire only what is new; the
             # first visit of every phase is returned unchanged.
             supply = restrict_repeat_visit_supply(supply, before, phase_name=next_phase)
-        if next_phase is not None and next_phase == supply_variant_phase_id:
+        if (
+            next_phase is not None and next_phase == supply_variant_phase_id
+            and not template_variant_mode
+        ):
             # Item E42, and THE reason an arm's supply is resolved here rather
             # than at binding composition: every arm is resolved against the
             # SAME ``staged`` context this row's ordinary supply step was, so
@@ -3522,8 +3563,65 @@ async def _invoke_native_role_episode(
             # without inventing one (revision index, revision bound, the
             # actions still open to the Planner).
             "limits": dict(limits),
+            # NX programme E1: the (context, sealed predecessor) this visit's
+            # delivering material was built from, and the cache of each
+            # template arm's own instruction -- the SAME inputs, only the
+            # node's pinned instruction template differs.
+            "material_inputs": (ctx, {} if previous is None else {ctx.sample_id: previous}),
+            "arm_instructions": {},
         }
         return material.instruction
+
+    def template_arm_instruction(arm_id, visit):
+        """NX programme E1: ONE template arm's complete instruction text.
+
+        The arm's material is built by the flight-owned per-arm builder
+        (``binding.template_variant_materials``: the node's phase material with
+        ONLY ``instruction_template`` swapped, over the same fill, response
+        format and predecessor state) from the SAME inputs the visit's
+        delivering material was built from, then the visit's own bounded
+        "Native episode limits" suffix is appended, so an arm and the
+        delivering arm differ in the template text and in nothing else.
+        Cached per visit: the node asks for it as the arm's query and the
+        binding provider asks for it again as the arm's contact instruction,
+        and the two must be the same string.
+        """
+
+        cached = visit["arm_instructions"].get(arm_id)
+        if cached is not None:
+            return cached
+        builders = binding.template_variant_materials or {}
+        builder = builders.get(arm_id)
+        if builder is None:
+            raise RailsRunnerError(
+                f"template-variant arm {arm_id!r} has no flight-owned material builder"
+            )
+        arm_ctx, sealed = visit["material_inputs"]
+        arm_material = builder(supply_variant_phase_id, arm_ctx, sealed)
+        if not isinstance(arm_material, PhaseMaterial):
+            raise RailsRunnerError("template-variant arm material must be PhaseMaterial")
+        arm_material.validate()
+        if arm_material.response_format != visit["material"].response_format:
+            raise RailsRunnerError(
+                f"template-variant arm {arm_id!r} changed the node's response format; "
+                "an arm overrides the instruction template and nothing else"
+            )
+        instruction = (
+            arm_material.instruction + "\n\nNative episode limits: "
+            + json.dumps(visit["limits"], sort_keys=True)
+        )
+        visit["arm_instructions"][arm_id] = instruction
+        return instruction
+
+    def template_arm_query(arm_index, default_query):
+        """The query the node hands the framework for arm ``arm_index``: the
+        arm's own instruction for a template arm, the visit's own query for
+        the delivering arm and the twin (which render the locked template)."""
+
+        arm = supply_variant_group.arms[arm_index]
+        if arm.instruction_template is None:
+            return default_query
+        return template_arm_instruction(arm.arm_id, visits[supply_variant_phase_id])
 
     def speech_binding(request):
         from .native_episode_config import select_native_role_history
@@ -3542,17 +3640,39 @@ async def _invoke_native_role_episode(
         if request.visible_tool_names != names:
             raise RailsRunnerError("framework tool scope differs from the configured report turn")
         decoding.update(tool_choice="auto" if names else "none", parallel_tool_calls=False)
+        contact_instruction, contact_query = material.instruction, visit["query"]
+        template_arm = None
+        if template_variant_mode and request.context.variant_arm_id is not None:
+            # NX programme E1: the arm's contact instruction and original query
+            # are its own template's; the delivering arm and the twin (no
+            # template) keep the visit's, byte for byte.
+            from .supply_variants import SupplyVariantError
+
+            if request.role_id != supply_variant_phase_id:
+                raise RailsRunnerError(
+                    "only the registered template-variant node may bind a variant arm"
+                )
+            try:
+                template_arm = supply_variant_group.arm(request.context.variant_arm_id)
+            except SupplyVariantError as error:
+                raise RailsRunnerError(str(error)) from error
+            if template_arm.instruction_template is not None:
+                contact_instruction = contact_query = template_arm_instruction(
+                    template_arm.arm_id, visit,
+                )
         plan = AgentContactPlan(
             contact_id=request.context.agent_contact_id,
             query_state_sha256=ctx.query_state.content_hash(),
             purpose=program.phase(request.role_id).purpose,
-            instruction=material.instruction,
+            instruction=contact_instruction,
             key_representation_id=f"{program.program_id}:{request.role_id}",
             matcher_policy_id=program.program_id, decoding_params=decoding,
         ).validate()
         _assert_agent_control_excludes_knowledge_payloads(plan, protected_material)
         state.current_context, state.current_contact = ctx, plan
-        if knowledge_index is None and request.context.variant_arm_id is not None:
+        if template_arm is not None:
+            messages = template_variant_messages(ctx, arm=template_arm, plan=plan)
+        elif knowledge_index is None and request.context.variant_arm_id is not None:
             # Item E42 (2026-09-25, family VAR-2): THE seam this whole form
             # lives at. One arm's knowledge construction is composed HERE, at
             # binding composition, and nowhere else -- the same place item E2
@@ -3762,7 +3882,7 @@ async def _invoke_native_role_episode(
                 )
         return NativeRoleSpeechBinding(
             role_id=request.role_id, sample_id=ctx.sample_id,
-            role_query=visit["query"], base_messages=messages,
+            role_query=contact_query, base_messages=messages,
             core_kwargs={
                 "decoding_params": {**decoding, "id_slot": visit["slot_id"]},
                 **({
@@ -4593,16 +4713,35 @@ async def _invoke_native_role_episode(
     # from nothing, and a resolver with no declared group would move request
     # bytes no config hash claims. Both are refused by name before any contact,
     # exactly as E21w's index binding is just above.
-    if supply_variant_group is not None and binding.supply_variant_for_phase is None:
+    if (
+        supply_variant_group is not None and not template_variant_mode
+        and binding.supply_variant_for_phase is None
+    ):
         raise RailsRunnerError(
             "roles.solver.supply_variants is declared but the episode binding "
             "carries no supply_variant_for_phase resolver; an arm's own supply is "
             "flight-owned, exactly as supply_for_phase is"
         )
-    if supply_variant_group is None and binding.supply_variant_for_phase is not None:
+    if (
+        supply_variant_group is None or template_variant_mode
+    ) and binding.supply_variant_for_phase is not None:
         raise RailsRunnerError(
             "the episode binding carries a supply_variant_for_phase resolver but "
             "roles.solver.supply_variants is not declared; an arm no config hash "
+            "claims would move request bytes outside the cell identity"
+        )
+    # NX programme E1: a template group and its per-arm material builders are
+    # ONE module in both directions, exactly as the supply resolver above is.
+    declared_template_arms = {
+        arm.arm_id for arm in (supply_variant_group.arms if template_variant_mode else ())
+        if arm.instruction_template is not None
+    }
+    if set(binding.template_variant_materials or {}) != declared_template_arms:
+        raise RailsRunnerError(
+            "the episode binding's template_variant_materials "
+            f"{sorted(binding.template_variant_materials or {})} differ from the "
+            f"template arms roles.solver.template_variants declares "
+            f"{sorted(declared_template_arms)}; an instruction no config hash "
             "claims would move request bytes outside the cell identity"
         )
     expected_proposal = getattr(binding.supply_for_phase, "candidate_proposal_for_context", None)
@@ -5075,6 +5214,11 @@ async def _invoke_native_role_episode(
                     inner=solver_node, group=role.supply_variants,
                     arm_record=read_supply_variant_arm_record,
                     delivery_allowed=role_delivery_allowed,
+                    # NX programme E1: a template arm's framework query is its
+                    # own instruction; None for the supply kind.
+                    query_for_arm=(
+                        template_arm_query if template_variant_mode else None
+                    ),
                 )
             elif (
                 role.role_kind == "solver"
@@ -5561,6 +5705,17 @@ async def _invoke_native_role_episode(
                 phase_id=solver_role_config.phase_id,
                 error_type=RailsRunnerError,
             )
+            if template_variant_mode and [
+                row.get("instruction_template") for row in supply_variants["arms"]
+            ] != [
+                None if arm.instruction_template is None
+                else arm.instruction_template.as_json()
+                for arm in supply_variant_group.arms
+            ]:
+                raise RailsRunnerError(
+                    "the sealed template-variant receipt names templates other "
+                    "than the ones roles.solver.template_variants declared"
+                )
         if supply_variant_records:
             raise RailsRunnerError(
                 "supply-variant arm records were composed but never sealed"
