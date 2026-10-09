@@ -1,0 +1,88 @@
+{
+  "appended_bytes_sha256": "bc8785ee81d33b7a5fe367af125a13f9c331a433d7afbc624d5cf804a32a0aa2",
+  "authoring_chain": {
+    "canonical_author": {
+      "relpath": "scripts/analysis/author_manual_architecture_package.py",
+      "sha256": "ac43cdb41044e1956e9d8b32fbac5a0f0fb599b43b1f1ca2c631e585ec2fc7af"
+    },
+    "contacts": 0,
+    "evidence": {
+      "exit": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-authoring-exit-v1.json",
+        "sha256": "aa5ee4c1439a47395f24855615419c3e55f1a724ab2475bfd816dade44b44eca"
+      },
+      "input": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-authoring-input-v1.json",
+        "sha256": "0a31f3091334580c125f189a226f42513b53f9d5d35e5dd6fb121ab802b77cd9"
+      },
+      "started": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-authoring-started-v1.json",
+        "sha256": "7a1b063bdc6eee9a713339d5c8b9846006c5e23fe29f60aa06c5bf4f69876458"
+      },
+      "stderr": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-authoring.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-authoring.stdout.json",
+        "sha256": "2b3b04b16eab181a787e9ae766d832793a7ce9cd8e06496195b5b859a3b68f9e"
+      }
+    },
+    "original_source_commit": "d07a193dfccd0726343f547fa1c9a537c1c24796",
+    "terminal_aliases_created": false,
+    "validation": {
+      "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-generation-registered-v1/authoring-validation-v1.json",
+      "sha256": "67d1090aa6ef9275fdfe3ecd77249cfa1779f21e39746728ba69b20f58b63c28"
+    }
+  },
+  "authoring_queue": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-generation-registered-v1/queue-v1.json",
+    "sha256": "cfd49bb97a62a0efec5c8f10462bb25385d341f3bd29da0acfefda8a4ca7bc35"
+  },
+  "contacts": 0,
+  "dispatches": 0,
+  "launch_queue": {
+    "relpath": "docs/readiness/2026-10-08-slurp-local-solver-n100-k4-update3-generation-registered-v1/campaign-queue-v1.json",
+    "sha256": "d950809bed103b0ba96718f82d6d224d6c4104e143813a45b839da010379ab46"
+  },
+  "ledger_after_sha256": "dcff380827be77614b1cb0fec28e998e9b040aace5ab14c79011e7d7bb1a5cb1",
+  "ledger_before_sha256": "6f5c8241ff3400ee28963ffc42411af46128b698299b8f790e9192815c7f1800",
+  "member_labels": [
+    "control",
+    "control-aa",
+    "candidate-1",
+    "candidate-2",
+    "candidate-3",
+    "candidate-4"
+  ],
+  "read_countersigned": false,
+  "registered_at_utc": "2026-10-09T00:50:44.913907+00:00",
+  "registered_ids": [
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE3-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE3-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE3-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE3-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-FIT-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-N100-K4-UPDATE3-READ-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-1-N100-K4-UPDATE3-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-2-N100-K4-UPDATE3-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-3-N100-K4-UPDATE3-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CANDIDATE-4-N100-K4-UPDATE3-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-N100-K4-UPDATE3-DESCRIPTIVE-READ-V1",
+    "SAEA-SLURP-LOCAL-SOLVER-CONTROL-AA-N100-K4-UPDATE3-DESCRIPTIVE-READ-V1"
+  ],
+  "root_decision": {
+    "relpath": "coordination/local-solver-n100-k4-update3-generation-v1/root-admission-v1.json",
+    "sha256": "48f8eb3954063b089ae10c912fa618caf25815fc8617174c0afaf6a25bfe6fb2"
+  },
+  "rows_per_member": 100,
+  "schema": "saea-local-manual-root-registration-v1",
+  "status": "REGISTERED BEFORE CONTACT; FROZEN AND LIVE GATES PENDING"
+}
