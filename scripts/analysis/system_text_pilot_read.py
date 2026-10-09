@@ -57,7 +57,9 @@ def pin(path):
 
 
 def load_documents(recipe_pin, supplement_pin, root):
-    recipe = json.loads(_read_pin(recipe_pin, root))
+    from speech_aware_evidence_acquisition.analysis.system_text_update import load_additional_contrast_document
+
+    recipe = load_additional_contrast_document(_read_pin(recipe_pin, root))
     supplement = json.loads(_read_pin(supplement_pin, root))
     require(
         supplement.get("schema")
@@ -78,7 +80,7 @@ def load_documents(recipe_pin, supplement_pin, root):
     key = ("manual_architecture_registration" if "manual_architecture_registration" in recipe else
            "context_learning_registration" if "context_learning_registration" in recipe else
            "system_panel_registration" if "system_panel_registration" in recipe else "pilot_registration")
-    registration = json.loads(_read_pin(recipe[key], root))
+    registration = load_additional_contrast_document(_read_pin(recipe[key], root))
     if key == "manual_architecture_registration":
         require(recipe.get("architecture_proof") in architecture.SELECTORS
                 and supplement.get("registration") == recipe[key]
@@ -91,6 +93,21 @@ def load_documents(recipe_pin, supplement_pin, root):
                 and supplement["source_code"]["reader"]["sha256"] == pin(__file__)["sha256"]
                 and supplement["source_code"]["analyzer"]["sha256"] == pin(architecture.__file__)["sha256"],
                 "manual reader requires exact executing reader and analyzer pins")
+        architecture.require_additional_contrast_binding(recipe, registration)
+        architecture.validate_additional_paired_contrasts(recipe, recipe.get("comparison_groups", {}))
+        if "additional_paired_contrasts" in recipe:
+            require(content_hash(recipe["resampling"]) == content_hash(supplement["resampling"]),
+                    "additional paired contrast recipe/supplement resampling differs")
+            from speech_aware_evidence_acquisition.analysis import (
+                system_text_update, paired, bootstrap, null_calibration,
+            )
+            for module in (system_text_update, paired, bootstrap, null_calibration):
+                name = module.__name__.rsplit(".", 1)[-1]
+                source_pin = supplement["source_code"].get(name, {})
+                require(source_pin.get("relpath")
+                        == "src/speech_aware_evidence_acquisition/analysis/" + name + ".py"
+                        and source_pin.get("sha256") == pin(module.__file__)["sha256"],
+                        "additional pooled contrast requires exact executing shared dependency pins")
         for source_pin in supplement["source_code"].values():
             _read_pin(source_pin, root)
         owner = json.loads(_read_pin(supplement["owner_decision"], root))

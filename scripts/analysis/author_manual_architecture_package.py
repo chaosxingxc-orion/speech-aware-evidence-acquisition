@@ -22,6 +22,10 @@ from unittest.mock import patch
 from speech_aware_evidence_acquisition.analysis.native_graph_rehearsal import (
     require_prepared_graph_artifacts,
 )
+from speech_aware_evidence_acquisition.analysis.system_text_update import (
+    load_additional_contrast_document, require_additional_contrast_binding,
+    validate_additional_paired_contrasts,
+)
 from speech_aware_evidence_acquisition.core.config import compose
 from speech_aware_evidence_acquisition.core.flight.campaign import load_campaign_cells
 from speech_aware_evidence_acquisition.core.flight.factory import build_flight_runtime
@@ -288,13 +292,16 @@ def validate_inputs(spec, *, repo_root, data_root):
         )
         for p in prerequisite.values():
             _read_pin(p, data_root)
-    template = json.loads(_read_pin(spec["analysis_template"], repo_root))
+    template = load_additional_contrast_document(_read_pin(spec["analysis_template"], repo_root))
     require(
         template["experiment_population"] == spec["experiment_population"]
         and template["population_cohort"] == spec["population_cohort"]
         and template["sample_ids"] == stage["sample_ids"]
         and template["population_budget"] == stage["population_budget"],
         "held analysis template differs",
+    )
+    validate_additional_paired_contrasts(
+        template, {"architecture": (*stage["control_members"], stage["candidate_members"])}
     )
     for pin in (
         template["analysis_roster"],
@@ -658,6 +665,9 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
     if spec.get("execution_identity_map") is not None:
         wrapper["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
         recipe["execution_identity_map"] = deepcopy(spec["execution_identity_map"])
+    if "additional_paired_contrasts" in template:
+        wrapper["additional_paired_contrasts"] = deepcopy(template["additional_paired_contrasts"])
+        recipe["additional_paired_contrasts"] = deepcopy(template["additional_paired_contrasts"])
     source_code = {
         "reader": raw_pin(
             repo_root / "scripts/analysis/system_text_pilot_read.py", repo_root
@@ -668,6 +678,11 @@ def author(spec, *, repo_root, data_root, root_countersign_plans=False):
             repo_root,
         ),
     }
+    if "additional_paired_contrasts" in template:
+        for name in ("system_text_update", "paired", "bootstrap", "null_calibration"):
+            source_code[name] = raw_pin(
+                repo_root / ("src/speech_aware_evidence_acquisition/analysis/" + name + ".py"), repo_root
+            )
     wrapper.update(
         status="HELD; source-unresolved immutable pre-freeze analysis intent",
         analysis_definition=deepcopy(recipe),
@@ -794,7 +809,7 @@ def resolve_analysis(spec, *, repo_root, data_root, frozen_worker_root):
         _read_pin(spec["analysis_intent"], worker) == intent_raw,
         "analysis intent differs from immutable worker bytes",
     )
-    intent = json.loads(intent_raw)
+    intent = load_additional_contrast_document(intent_raw)
     require(
         intent.get("schema") == "saea-manual-architecture-analysis-intent-v1"
         and intent.get("architecture_proof") in reader.SELECTORS
@@ -823,6 +838,11 @@ def resolve_analysis(spec, *, repo_root, data_root, frozen_worker_root):
     )
     definition = intent["analysis_definition"]
     supplement = intent["supplement_definition"]
+    require_additional_contrast_binding(definition, intent)
+    validate_additional_paired_contrasts(definition, definition.get("comparison_groups", {}))
+    if "additional_paired_contrasts" in definition:
+        require(content_hash(definition["resampling"]) == content_hash(supplement["resampling"]),
+                "additional paired contrast immutable recipe/supplement resampling differs")
     RewardProjection.from_json(supplement["projection"])
     require(
         intent.get("measurement_profile") == definition.get("measurement_profile")

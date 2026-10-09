@@ -4,8 +4,10 @@ This module calculates evidence for root review. It neither selects a policy,
 infers node credit, changes an archive nor grants scientific-read authority.
 """
 
+import json
 import math
 from collections import Counter
+from copy import deepcopy
 
 from .null_calibration import pooled_f1
 from .paired import resampled_statistic
@@ -20,6 +22,75 @@ FIELDS = tuple(
     tuple(f"slu_f1_{axis}_{kind}" for axis in ("word", "char"))
     for kind in ("tp", "fp", "fn")
 )
+
+
+def load_additional_contrast_document(raw):
+    """Observe every raw object property before duplicate keys can erase an opt-in."""
+    has_optional, has_duplicates = False, False
+
+    def observe(pairs):
+        nonlocal has_optional, has_duplicates
+        result = {}
+        for name, value in pairs:
+            has_optional = has_optional or name == "additional_paired_contrasts"
+            has_duplicates = has_duplicates or name in result
+            result[name] = value
+        return result
+
+    document = json.loads(raw, object_pairs_hook=observe)
+    require(not has_optional or not has_duplicates,
+            "duplicate JSON field in additional contrast document")
+    return document
+
+
+def validate_additional_paired_contrasts(recipe, comparison_groups):
+    """Validate the optional signed combination of existing architecture F1 metrics."""
+    if "additional_paired_contrasts" not in recipe:
+        return None
+    block = recipe["additional_paired_contrasts"]
+    require(
+        isinstance(block, dict)
+        and set(block) == {"schema", "comparison_group", "metric", "contrasts"}
+        and block["schema"] == "saea-additional-pooled-contrasts-v1"
+        and block["comparison_group"] == "architecture"
+        and "architecture" in comparison_groups
+        and block["metric"] == "slu_f1"
+        and isinstance(block["contrasts"], list) and block["contrasts"],
+        "additional paired contrasts require the exact architecture pooled-F1 schema",
+    )
+    parent, aa, candidates = comparison_groups["architecture"]
+    members = {parent, aa, *candidates}
+    reserved = {"same-request-null"}
+    for group, (_, _, group_candidates) in comparison_groups.items():
+        for cid in group_candidates:
+            suffix = cid.removeprefix(group + "-")
+            reserved.update({suffix + "-minus-parent", suffix + "-minus-aa"})
+    names, definitions = set(), set()
+    for contrast in block["contrasts"]:
+        require(isinstance(contrast, dict) and set(contrast) == {"id", "coefficients"},
+                "additional contrast requires exact id and coefficients keys")
+        name, coefficients = contrast["id"], contrast["coefficients"]
+        require(isinstance(name, str) and name.strip() and name not in names | reserved,
+                "additional contrast id is empty, duplicated or reserved")
+        require(isinstance(coefficients, dict) and len(coefficients) in {2, 4}
+                and all(isinstance(member, str) and member in members
+                        and type(weight) is int and weight in {-1, 1}
+                        for member, weight in coefficients.items())
+                and sum(coefficients.values()) == 0,
+                "additional contrast needs two opposite or four balanced integer member weights")
+        definition = tuple(sorted(coefficients.items()))
+        require(definition not in definitions, "duplicate additional contrast definition")
+        names.add(name)
+        definitions.add(definition)
+    return block
+
+
+def require_additional_contrast_binding(recipe, registration):
+    """Retain exact optional presence and definition through immutable registration."""
+    key = "additional_paired_contrasts"
+    require((key in recipe) == (key in registration)
+            and (key not in recipe or content_hash(recipe[key]) == content_hash(registration[key])),
+            "additional paired contrast recipe/registration definition differs")
 
 
 def analyze_update(feedback, *, protocol, recipe, roster):
@@ -255,6 +326,7 @@ def _describe_complete_cohort(d, *, ids, bindings, recipe, roster, branch_names=
                     "comparison group members differ")
             declared.extend(selected)
         require(set(declared) == set(bindings), "comparisons must cover every member")
+    additional = validate_additional_paired_contrasts(recipe, comparison_groups)
     branches = {}
     for branch, (parent, aa, candidates) in comparison_groups.items():
         pairs = {"same-request-null": (parent, aa)}
@@ -297,7 +369,7 @@ def _describe_complete_cohort(d, *, ids, bindings, recipe, roster, branch_names=
             },
             "replicate_policy": "A/A remains a separate measurement, not a selectable policy; use the designated parent for retention.",
         }
-    return {
+    report = {
         "schema": "saea-system-text-update-read-v1",
         "status": "DESCRIPTIVE-ROOT-REVIEW-REQUIRED",
         "family_id": stage_name,
@@ -317,3 +389,47 @@ def _describe_complete_cohort(d, *, ids, bindings, recipe, roster, branch_names=
         "interpretation": "Root applies the preregistered own-A/A protection and tie-breaks. No automatic selection, adoption, node-level causal credit or cross-cohort frontier.",
         "contacts_added": {"model": 0, "scorer": 0},
     }
+    if additional is not None:
+        entries = {}
+        for contrast in additional["contrasts"]:
+            coefficients = contrast["coefficients"]
+            result = resampled_statistic(
+                sample_ids=ids,
+                statistic=lambda selected, coefficients=coefficients: math.fsum(
+                    weight * metric(cid, selected, "slu_f1")
+                    for cid, weight in sorted(coefficients.items())
+                ),
+                cluster_of=lambda sid: roster[sid]["utterance_id"],
+                seed=resampling["seed"],
+                n_replicates=resampling["bootstrap_draws"],
+                ci_level=resampling["confidence"],
+            )
+            entries[contrast["id"]] = {
+                "coefficients": deepcopy(coefficients), "slu_f1": result.as_json(),
+            }
+        stratum_points = [
+            {"stratum": row["stratum"], "n": row["n"], "contrasts": {
+                contrast["id"]: math.fsum(
+                    weight * row["members"][cid]["slu_f1"]
+                    for cid, weight in sorted(contrast["coefficients"].items())
+                ) for contrast in additional["contrasts"]
+            }} for row in strata
+        ]
+        report["additional_paired_contrasts"] = {
+            "definition": deepcopy(additional),
+            "contrasts": entries,
+            "per_stratum": stratum_points,
+            "equal_stratum_macro": {
+                name: math.fsum(row["contrasts"][name] for row in stratum_points) / len(stratum_points)
+                for name in entries
+            },
+            "estimand": "Signed sum of separately pooled member SLU-F1 on each identical paired utterance-cluster draw.",
+            "units": "Zero-to-one F1 scale; signed contrasts can exceed a single member's range.",
+            "stratum_definition": "Within-stratum signed pooled-F1 points and their arithmetic macro mean are descriptive; no stratum intervals or official pooled substitution.",
+            "interpretation": "Additional descriptive endpoints with nominal 95% paired intervals. "
+            "They do not adjust for donor selection, prior search, multiplicity or unobserved run variation. "
+            "Pooled F1 is nonlinear; the interaction is departure from additivity for fixed whole-system policies, "
+            "not causal node credit, semantic synergy, independent validation, stable benefit or adoption. "
+            "The designated control and A/A remain separate; neither is automatically selected, averaged or used as an unregistered calibration adjustment.",
+        }
+    return report

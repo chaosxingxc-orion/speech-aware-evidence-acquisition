@@ -1,0 +1,22 @@
+{
+  "actual_adapter_invocation": false,
+  "at_utc": "2026-10-09T07:31:14.734274+00:00",
+  "finding": "The v1 validator discards a bridge-added source predecessor before requiring its exact original full400 identity. Two synthetic foreign-pin counterexamples established this gap.",
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "live_preparation_unchanged": true,
+  "model_tokenizer_scorer_contacts": 0,
+  "originals_preserved": true,
+  "owner_decision": 227,
+  "review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-registration-astra-review-v1/review-result-v1.json",
+    "sha256": "a0dfb0bef3eb3781adaba544f615a090ce42d5174ca068f4b8b2cc31a3850f55"
+  },
+  "root_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-registration-engineering-v1/root-source-review-disposition-v1.json",
+    "sha256": "110663051087b9d3f57adcd55acf4840d80010394e0ba40e6f741dc8686bd661"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-source-review-disposition-v1",
+  "status": "ORIGINAL_PRESERVED_SOURCE_SUCCESSOR_AUTHORIZED",
+  "successor_scope": "Require exact canonical original source pin for an added field, retaining original field comparisons including the generation immediate fresh-capacity edge. Separate successor and independent review required."
+}

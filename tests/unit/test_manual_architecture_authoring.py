@@ -309,13 +309,33 @@ def fixture(tmp_path, monkeypatch, *, candidates=2, rows=5):
     return repo, data, values, stage, originals, checks, warm
 
 
+@pytest.mark.parametrize("additional", [False, True])
 @pytest.mark.parametrize("candidates,rows", [(1, 3), (3, 7)])
 def test_dynamic_full_package_preserves_originals_and_final_hashes(
-    tmp_path, monkeypatch, candidates, rows
+    tmp_path, monkeypatch, candidates, rows, additional
 ):
     repo, data, s, stage, originals, checks, warm = fixture(
         tmp_path, monkeypatch, candidates=candidates, rows=rows
     )
+    block = None
+    if additional:
+        block = {
+            "schema": "saea-additional-pooled-contrasts-v1",
+            "comparison_group": "architecture", "metric": "slu_f1",
+            "contrasts": [{"id": "candidate-minus-control",
+                           "coefficients": {stage["candidate_members"][0]: 1, "seed": -1}}],
+        }
+        # Copy only synthetic source dependencies.
+        template_path = repo / s["analysis_template"]["relpath"]
+        template = json.loads(template_path.read_text())
+        template["additional_paired_contrasts"] = block
+        template_path.write_bytes(helper.serialized(template))
+        s["analysis_template"] = helper.raw_pin(template_path, repo)
+        for name in ("system_text_update", "paired", "bootstrap", "null_calibration"):
+            rel = "src/speech_aware_evidence_acquisition/analysis/" + name + ".py"
+            target = repo / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((SOURCE / rel).read_bytes())
     result = helper.author(s, repo_root=repo, data_root=data)
     package = repo / result["package"]
     labels = stage["control_members"] + stage["candidate_members"]
@@ -369,6 +389,14 @@ def test_dynamic_full_package_preserves_originals_and_final_hashes(
     assert projection.scorer == "slurp-slu-official-train"
     assert projection.aggregate_fields == ("port_micro.slu_f1", "port_micro.intent_accuracy")
     assert projection.per_sample_fields == SLURP_NATIVE_FIELDS
+    if additional:
+        assert intent["additional_paired_contrasts"] == intent["analysis_definition"]["additional_paired_contrasts"] == block
+        assert set(intent["supplement_definition"]["source_code"]) == {
+            "reader", "analyzer", "system_text_update", "paired", "bootstrap", "null_calibration"}
+    else:
+        assert "additional_paired_contrasts" not in intent
+        assert "additional_paired_contrasts" not in intent["analysis_definition"]
+        assert set(intent["supplement_definition"]["source_code"]) == {"reader", "analyzer"}
     assert "source_commit" not in intent
     assert (
         intent["measurement_profile"]
@@ -424,6 +452,8 @@ def test_dynamic_full_package_preserves_originals_and_final_hashes(
     assert docs[0]["expected_members"] == docs[1]["expected_members"]
     assert docs[1]["measurement_profile"] == docs[0]["measurement_profile"]
     assert RewardProjection.from_json(docs[3]["projection"]) == projection
+    if additional:
+        assert docs[0]["additional_paired_contrasts"] == docs[1]["additional_paired_contrasts"] == block
     assert docs[1]["source_commit"] == "a" * 40
     assert all(
         m["source_commit"] == "a" * 40 for m in docs[1]["member_bindings"].values()
@@ -831,3 +861,17 @@ def test_root_map_mismatch_refuses_before_authoring_writes(tmp_path, monkeypatch
         helper.author(inputs, repo_root=repo, data_root=data)
     assert not (repo / inputs["package_relpath"]).exists() and not warm and not checks
     assert all(p.read_bytes() == raw for p, raw in before.items())
+
+
+@pytest.mark.parametrize("bad", [None, {}, {"schema": "unknown"}])
+def test_additional_contrast_template_refuses_before_authoring_writes(tmp_path, monkeypatch, bad):
+    repo, data, s, _, _, checks, warm = fixture(tmp_path, monkeypatch)
+    path = repo / s["analysis_template"]["relpath"]
+    template = json.loads(path.read_text())
+    template["additional_paired_contrasts"] = bad
+    path.write_bytes(helper.serialized(template))
+    s["analysis_template"] = helper.raw_pin(path, repo)
+    with pytest.raises(PolicyError):
+        helper.author(s, repo_root=repo, data_root=data)
+    assert checks == warm == []
+    assert not (repo / s["package_relpath"]).exists()

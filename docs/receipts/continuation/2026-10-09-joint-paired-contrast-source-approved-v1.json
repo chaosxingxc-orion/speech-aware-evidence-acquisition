@@ -1,0 +1,158 @@
+{
+  "actual_analysis_authoring": false,
+  "at_utc": "2026-10-09T07:31:14.734274+00:00",
+  "benefit_or_learning_claim": false,
+  "contacts_added": {
+    "model": 0,
+    "scorer": 0,
+    "tokenizer": 0
+  },
+  "exact_changed_sources": [
+    {
+      "bytes": 46335,
+      "git_blob": "7a970f1d73c8f39619303944072efe00d1e491b4",
+      "relpath": "scripts/analysis/author_manual_architecture_package.py",
+      "sha256": "32791a28a83381ca2c4c88c6c461ead8d3a7ec7b6368d44b3256dc94192b28ef"
+    },
+    {
+      "bytes": 28690,
+      "git_blob": "179a8831e57ee7b1bb934b372358b04c943dc6f2",
+      "relpath": "scripts/analysis/system_text_pilot_read.py",
+      "sha256": "88bfa93d8cba075cd39793911214c72bc127bfb4c7b486aa63feba379a599e7f"
+    },
+    {
+      "bytes": 17258,
+      "git_blob": "31f9c5901da47aa65f7933097e6d4e9df2a44602",
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_architecture_read.py",
+      "sha256": "feff1d437239f4de1e4f6d3b49d75d6155b770c74876fbcf956f97dbacffdd6a"
+    },
+    {
+      "bytes": 19809,
+      "git_blob": "e4c53cca1b06b3ef7b32f0456d0d334b57dfbe1b",
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_text_update.py",
+      "sha256": "94a0873513a2fd7485a99328026344487e011c14d269c7fa1e68556375680e5e"
+    },
+    {
+      "bytes": 24079,
+      "git_blob": "9f9eb082e51f48693c0a5783124d1ff713a72452",
+      "relpath": "tests/unit/test_additional_pooled_contrasts.py",
+      "sha256": "e2e75d2642618562e95a92bbe7992b32a99e936bc2ed90bf5169bde8e2957e04"
+    },
+    {
+      "bytes": 37214,
+      "git_blob": "f2a8b8ab0bf6de25eff82e594b057ea7d29a06bb",
+      "relpath": "tests/unit/test_manual_architecture_authoring.py",
+      "sha256": "2a3921ba5dc6259ddac2bfce20e0aa37470b68f96542875512e3d074550bf5b2"
+    }
+  ],
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "independent_review": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-paired-contrast-astra-review-v2/review-result-v2.json",
+    "sha256": "7de322aae7168cbddaea4f40525d0b5a565d63eee5fa1d89e46d1ac7d8dabaf9"
+  },
+  "integration_base": "561562aec877e30633731bdf036cbab330f60583",
+  "meaning": "Optional signed contrasts use separately pooled official member counts on identical paired utterance-cluster resamples. Exact definition and resampling propagate through authoring and registration. Duplicate JSON object keys cannot erase the opt-in before validation. Absent opt-in preserves legacy decoding and default comparisons. A/A and raw-stage diagnostics remain separate.",
+  "original_source_preserved": true,
+  "owner_decision": 227,
+  "prior_rejection": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-paired-contrast-astra-review-v1/review-result-v1.json",
+    "sha256": "e5c771436431869995bbdb20e5f3579930c55f6a001c4e8e651646fa6e0cc7af"
+  },
+  "runtime_admission": false,
+  "schema": "saea-root-exact-source-approval-v1",
+  "scientific_read_authorized": false,
+  "source_commit": "3d29f1a81a9765f02617dbd19bc96769a6188b69",
+  "source_freezes": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-paired-contrast-engineering-v1/source-freeze-v2.json",
+      "sha256": "e28ec7b832092e7a0a46359266d48dfce162e333b6999f5993f2ff9c0c4ead98"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-paired-contrast-engineering-v2/source-freeze-v1.json",
+      "sha256": "8c572dc7c8d81abcf1cd97e17565d387cebd835966d3ad6d3202e1d6c74cba42"
+    }
+  ],
+  "status": "APPROVED_EXACT_SOURCE_FOR_SERIAL_INTEGRATION",
+  "unchanged_dependencies": [
+    {
+      "bytes": 46335,
+      "git_blob": "7a970f1d73c8f39619303944072efe00d1e491b4",
+      "relpath": "scripts/analysis/author_manual_architecture_package.py",
+      "sha256": "32791a28a83381ca2c4c88c6c461ead8d3a7ec7b6368d44b3256dc94192b28ef"
+    },
+    {
+      "bytes": 28690,
+      "git_blob": "179a8831e57ee7b1bb934b372358b04c943dc6f2",
+      "relpath": "scripts/analysis/system_text_pilot_read.py",
+      "sha256": "88bfa93d8cba075cd39793911214c72bc127bfb4c7b486aa63feba379a599e7f"
+    },
+    {
+      "bytes": 17258,
+      "git_blob": "31f9c5901da47aa65f7933097e6d4e9df2a44602",
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_architecture_read.py",
+      "sha256": "feff1d437239f4de1e4f6d3b49d75d6155b770c74876fbcf956f97dbacffdd6a"
+    },
+    {
+      "bytes": 35673,
+      "git_blob": "d572f19e348b543deb84cc674362f05fd7b7327f",
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/paired.py",
+      "sha256": "3bdee27d4e65f66b44f7e3fc6466dd65e04f68dcc9bbb51b6361d2724e0efea4"
+    },
+    {
+      "bytes": 8123,
+      "git_blob": "1b859ded2d0cda9594efc09deb699601bc7272d8",
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/bootstrap.py",
+      "sha256": "552e9a00a0f2c3cfcd887afb17f54abeaf5df68453dedbec69717f18bb2634dc"
+    },
+    {
+      "bytes": 7464,
+      "git_blob": "a4cd78bf313772813a63a56d62de07de6d5b3bb6",
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/null_calibration.py",
+      "sha256": "e33a32f09cb049cf79c71f402e3d5bc845490ea9a33b1d955403435559e118ce"
+    },
+    {
+      "bytes": 35460,
+      "git_blob": "69be1863346b67f6b4950490dd69ec074536a8a1",
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/slurp_process_metrics.py",
+      "sha256": "4459fadc98738b432c7f4dd11c78ec839e3c717d7cdafcc62e78df814c3203b8"
+    },
+    {
+      "bytes": 14018,
+      "git_blob": "c3e545c286d637746df2e05a7d975b119d0353c4",
+      "relpath": "src/speech_aware_evidence_acquisition/analysis/system_process_report.py",
+      "sha256": "6a556faf73ae72da04e9a725a91e4e2e4721696a03ccd3c91cfd003733a2caed"
+    },
+    {
+      "bytes": 32006,
+      "git_blob": "c43b0879aacc8bd52877bd9b4e7584f322a2f56b",
+      "relpath": "scripts/analysis/manual_architecture_process_derivative.py",
+      "sha256": "b52595582e03c041fcd6803ea8af5d884170b8865f4fe5195a84993397118f2f"
+    },
+    {
+      "bytes": 99092,
+      "git_blob": "ece68a7b89a5c7e5c18b92c7719784079260b0cf",
+      "relpath": "src/speech_aware_evidence_acquisition/rails/architecture_natural_registration.py",
+      "sha256": "7b7c9bda94f63b4e19475527a91971e0235ebd1b725957c2bc13a5f3d82cda47"
+    },
+    {
+      "bytes": 19686,
+      "git_blob": "90aaea9a580f0ba1357d7ee482071afd613003c6",
+      "relpath": "src/speech_aware_evidence_acquisition/rails/experiment_population.py",
+      "sha256": "17b703261e5ee9bab82365f3cfef3e3fe7fb1235fdf41b0feefb4c01f8ee796d"
+    },
+    {
+      "bytes": 40156,
+      "git_blob": "4bdef7674e571b6474fa9f903eb1cf13d1dae3eb",
+      "relpath": "src/speech_aware_evidence_acquisition/rails/system_text_policy.py",
+      "sha256": "5699ef7847fbf9e7239708704e5499a386bc0f34225a22f56b30f51c280c99fb"
+    }
+  ],
+  "validation": {
+    "counts_not_claimed_distinct_across_suites": true,
+    "original_supplied_tests": 233,
+    "root_all_reviewed_integration_bytes_verified": true,
+    "successor_independent_tests": 19,
+    "successor_targeted_tests": 32,
+    "unchanged_arithmetic_independent_cases_reused": 8
+  }
+}

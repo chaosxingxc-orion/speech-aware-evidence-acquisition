@@ -1,5 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Joint paired analysis source accepted; capacity adapter correction isolated (2026-10-09T07:31:14.734274+00:00)
+
+Root accepted exact optional paired-contrast source at3d29f1a81 after independent GPT-6 Astra Ultra review. The prior duplicate-key decoder finding is repaired in a separate preserved successor;19 independent and32 targeted successor cases pass, with unchanged arithmetic evidence reused. Root verified all six integrated source bytes and dependency pins. Evidence: `docs/receipts/continuation/2026-10-09-joint-paired-contrast-source-approved-v1.json`. The analysis preserves separately pooled official F1, shared paired draws, the designated control/A/A, raw-stage diagnostics and legacy behavior without the opt-in. Additional contrasts remain descriptive, with no causal synergy, stable benefit or learning claim.
+
+Independent review withheld capacity adapter v1 approval: two synthetic cases showed that a bridge-added source predecessor could carry a foreign pin. Root227 recorded a narrow separate-source correction requiring exact original full400 identity while preserving the generation immediate fresh-capacity edge. See `docs/receipts/continuation/2026-10-09-joint-capacity-adapter-source-review-disposition-v1.json`. No actual adapter authoring, registration or contact occurred. Sol corrects this seam and Astra reviews the frozen successor before use.
+
+The original canonical model-free five-policy held preparation continues separately on561562aec in its unchanged root checkout. Its first input refused an invalid capacity identifier before writes; the preserved root disposition changed only five unspent capacity IDs to the required FIT suffix and started one corrected input. Verify its original handle and terminal; do not edit its source or replay it. This analysis integration does not alter that checkout or any prepared-runtime dependency. All runtime stages remain HELD pending complete preparation, reviewed registration, actual capacity, structural proof and final scientific admission.
+
+Preserve the five-member N100 plan, exact existing data/knowledge and cumulative adaptive exposure; one serial GPU campaign/four concurrent inputs, overlapping CPU work,4GiB floors/full output reserves, scoped15minute monitoring on actual launch, and the human boundary before8x400. The broad goal remains active/incomplete and other-carrier holds remain.
+
 ## Five exact joint policies materialized and held (2026-10-09T07:03:19.106286+00:00)
 
 Root prepared full-seed control/A/A, Solver import, Reviewer import and joint import on the same original N100. Canonical compilation, complete ancestry/basis validation and actual role-byte verification passed. Controls preserve original policy bytes; candidates preserve every other full-seed field and retain ten cumulative source records including root selection. Evidence: `docs/receipts/continuation/2026-10-09-joint-policies-materialized-held-v1.json`.
@@ -7562,7 +7572,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-09T07:03:19.106286+00:00
+Last refreshed: 2026-10-09T07:31:14.734274+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -12,7 +12,10 @@ from ..rails.experiment_population import population_stage_spec
 from ..rails.hashing import content_hash
 from ..rails.system_text_policy import _read_pin, require
 from .system_text_pilot import _attach_answer_changes, _read_complete_evidence
-from .system_text_update import _describe_complete_cohort
+from .system_text_update import (
+    _describe_complete_cohort, require_additional_contrast_binding,
+    validate_additional_paired_contrasts,
+)
 
 SELECTOR = "manual-architecture-n20-v1"
 FIXED_ROSTER_SELECTOR = "manual-architecture-fixed-roster-v1"
@@ -54,6 +57,7 @@ def validate_source_registration(recipe, registration, owner, *, repo_root, data
         require_architecture_n20_registration,
     )
 
+    require_additional_contrast_binding(recipe, registration)
     require(
         recipe.get("architecture_proof")
         == registration.get("architecture_proof")
@@ -135,6 +139,7 @@ def validate_source_registration(recipe, registration, owner, *, repo_root, data
         == {"architecture": [*stage["control_members"], stage["candidate_members"]]},
         "manual complete family, roster, budget or comparators differ from configuration",
     )
+    validate_additional_paired_contrasts(recipe, recipe["comparison_groups"])
     commits = set()
     runtime_orders = {}
     for label in labels:
@@ -286,6 +291,11 @@ def analyze(evidence, *, recipe, registration, roster, supplement, scope):
         scope["stage"]["control_members"],
         scope["stage"]["candidate_members"],
     )
+    require_additional_contrast_binding(recipe, registration)
+    validate_additional_paired_contrasts(recipe, {"architecture": (*controls, candidates)})
+    if "additional_paired_contrasts" in recipe:
+        require(content_hash(recipe["resampling"]) == content_hash(supplement["resampling"]),
+                "additional paired contrast recipe/supplement resampling differs")
     report = _describe_complete_cohort(
         d,
         ids=recipe["sample_ids"],
