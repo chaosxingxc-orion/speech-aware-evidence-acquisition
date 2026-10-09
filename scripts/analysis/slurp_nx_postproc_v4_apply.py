@@ -28,7 +28,9 @@ records the copy's sha256 and the result's sha256 in the report. The paired delt
 whole-utterance cluster bootstrap of the search driver (10,000 draws, seed 20260915).
 
 Refusals (all before any scoring). The test split (the scorer must be a devel/train SLURP scorer);
-a run whose roster intersects TRAIN Fold B (not read here); a ``--label`` that would reuse a search
+a run whose roster intersects TRAIN Fold B unless a registered analysis recipe
+(docs/readiness/*/analysis-recipe-*.json) names the run and attempt as its sealed arm run, declares the requested
+normaliser under offline_columns.columns (and the --column under applied_to) and the attempt is sealed; a ``--label`` that would reuse a search
 driver report directory (``select-a2``, ``confirm-*``); an existing report (write-once unless the
 bytes are identical, as for the search driver's ``confirm-fold-a``).
 
@@ -121,11 +123,45 @@ def resolve_run(pool: str, data_root: Path) -> dict:
     return spec
 
 
-def refuse_fold_b(ids) -> None:
+def recipe_admission(run_id: str, attempt: str, apply_name: str, column: str | None,
+                     data_root: Path, recipe_root: Path | None = None) -> dict | None:
+    """The registered analysis recipe that admits a Fold B read of this run, or None.
+
+    A recipe admits ONLY when it (a) names the run as its sealed arm run (``arms.arm``: run id and attempt),
+    (b) declares the requested normaliser under ``offline_columns.columns`` with the registered normaliser id,
+    (c) lists ``--column`` (when given) in ``offline_columns.applied_to``, and (d) the attempt is sealed
+    (a run manifest beside the sealed scores).
+    """
+    root = recipe_root or REPO_ROOT
+    for path in sorted((root / "docs" / "readiness").glob("*/analysis-recipe-*.json")):
+        try:
+            recipe = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        arm = (recipe.get("arms") or {}).get("arm") or {}
+        offline = recipe.get("offline_columns") or {}
+        declared = (offline.get("columns") or {}).get(apply_name) or {}
+        if arm.get("run_id") != run_id or arm.get("attempt_id") != attempt:
+            continue
+        if declared.get("normaliser") != NORMALISERS[apply_name]:
+            continue
+        if column is not None and column not in (offline.get("applied_to") or []):
+            continue
+        manifest = data_root / "runs" / run_id / attempt / f"{run_id}.run-manifest.json"
+        if not manifest.is_file():
+            raise ApplyError(f"recipe {recipe.get('recipe_id')!r} names this run but the attempt is not sealed "
+                             f"(no run manifest at {manifest})")
+        return {"recipe_id": recipe.get("recipe_id"), "recipe": str(path.relative_to(root)),
+                "recipe_sha256": sha256_file(path)}
+    return None
+
+
+def refuse_fold_b(ids, admission: dict | None = None) -> None:
+    """Refuse a Fold B roster unless a registered recipe admitted this read (``recipe_admission``)."""
     roster = json.loads((REPO_ROOT / FOLD_B_ROSTER).read_text(encoding="utf-8"))
     fold_b = {":".join(str(item["sample_id"]).split(":")[:3]) for item in roster["items"]}
     hit = sum(1 for sid in ids if ":".join(str(sid).split(":")[:3]) in fold_b)
-    if hit:
+    if hit and admission is None:
         raise ApplyError(f"the run's roster intersects TRAIN Fold B on {hit} rows; Fold B is not read by this script")
 
 
@@ -205,7 +241,8 @@ def apply(args) -> tuple[dict, str]:
     lock = load_lock(Path(args.lock))
     texts, column_block = column_texts(data_root, spec, args.column)
     ids = sorted(texts)
-    refuse_fold_b(ids)
+    admission = recipe_admission(spec["run_id"], spec["attempt"], args.apply, args.column, data_root)
+    refuse_fold_b(ids, admission)
     gold = DRV.load_gold(lock, data_root, spec["split"])
     missing = [s for s in ids if s not in gold]
     if missing:
@@ -256,7 +293,7 @@ def apply(args) -> tuple[dict, str]:
         "apply": args.apply, "normaliser_id": normaliser_id, "normaliser_version": str(normaliser.version),
         "pool": {"run_id": spec["run_id"], "attempt": spec["attempt"], "scorer": spec["scorer"],
                  "split": spec["split"], "rows": len(ids), "clusters": boot.clusters},
-        "column": column_block, "unmodified_in_process": {k: round(v, 4) for k, v in DRV.pooled(base).items()},
+        "column": column_block, "fold_b_admission": admission, "unmodified_in_process": {k: round(v, 4) for k, v in DRV.pooled(base).items()},
         "edited_in_process": {k: round(v, 4) for k, v in DRV.pooled(new).items()},
         "unmodified_column_proof": base_proof, "unparsed_rows_unmodified": unparsed,
         "rows_applied": applied_rows, "rows_edited": changed_rows, "contrast": contrast,
@@ -264,7 +301,7 @@ def apply(args) -> tuple[dict, str]:
         "bootstrap": {"draws": DRV.BOOT_DRAWS, "seed": DRV.BOOT_SEED, "cluster": "utterance_id",
                       "clusters": boot.clusters},
         "scorer_runs": scorer_runs,
-        "refusals_held": ["test split (scorer allow-list)", "Fold B roster intersection",
+        "refusals_held": ["test split (scorer allow-list)", "Fold B roster intersection (unless a registered recipe admits the run)",
                           "reserved search-driver labels", "write-once report"],
         "read_id": READ_ID, "schema": SCHEMA, "status": "DESCRIPTIVE",
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),

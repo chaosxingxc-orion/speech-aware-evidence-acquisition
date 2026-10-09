@@ -27,9 +27,8 @@
 #    ee-wilson and ti-expressible of docs/results/2026-10-09-slurp-nx-postprocessing-v4-audio-attribution.md) applied to every
 #    arm's delivered column. The rules live in scripts/analysis/slurp_nx_postproc_v4_search.py (the separate agent's driver); the
 #    application of the REGISTERED normalisers to a sealed column is scripts/analysis/slurp_nx_postproc_v4_apply.py
-#    (--apply v4|v4g --pool <run>/<attempt> --column <arm id>), called here with the interface in the loop below. KNOWN BLOCKER:
-#    that script refuses a run whose roster intersects TRAIN Fold B, and this run IS Fold B; the refusal must be lifted for the
-#    R1 recipe first (the step then exits 10 with a message rather than skipping silently). The lock row v4g(lock) - lock is the
+#    (--apply v4|v4g --pool <run>/<attempt> --column <arm id>), called here with the interface in the loop below. The driver admits this Fold B run because the registered recipe
+#    names it and declares the v4/v4g columns (recipe_admission; the test split and unnamed Fold B pools stay refused). The lock row v4g(lock) - lock is the
 #    fresh-roster confirmation of v4g (lock rule: CI95 lower bound > 0 here). The CELL's runtime delivery normaliser is untouched.
 #    Skipped with --skip-offline.
 # 4. REVIEW-OFF vs FULL GRAPH is NOT computed here: it is the cross-flight comparison of the lock arm's official column with
@@ -126,7 +125,7 @@ else
   "$PY" -B "$V4_DRIVER" --help 2>&1 | grep -q -- "--apply" || {
     echo "REFUSED (offline step): $V4_DRIVER does not advertise --apply v4|v4g --pool --column yet; the v4/v4g application"
     echo "  (scripts/analysis/slurp_nx_postproc_v4_apply.py is on master since merge 7bfc09b3b; this branch predates it). Re-run with"
-    echo "  --skip-offline now and without it after the merge; note that driver also refuses Fold B rosters until lifted for this recipe."; exit 10; }
+    echo "  --skip-offline now and without it after the merge; the driver admits this run by its registered recipe."; exit 10; }
   for variant in v4 v4g; do
     for column in lock aa ${CANDIDATES//,/ }; do
       label="offline-v4/$variant-$column"
