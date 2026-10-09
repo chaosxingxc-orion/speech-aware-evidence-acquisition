@@ -240,6 +240,9 @@ CI95 lower bound > 0 on this Fold B column), is not on file: no `offline-v4/` fo
 the time of writing. These columns are appended to this note by a successor paragraph once the apply driver's
 base-column fix lands. No number is stated here for them.
 
+*Superseded for the post-processing family by "7 (successor)" at the end of this note, appended 2026-10-09 after the
+registered `offline-v4/` reports landed. The paragraph above is kept as written.*
+
 The review-off vs full-graph comparison (package README section 6, cross-flight against the P-SV-3 `a-agree` column) is
 likewise not part of this note.
 
@@ -262,3 +265,69 @@ sha256sum $A/node-local/report.json $A/node-local-v2/report.json $A/*-vs-lock/sc
 
 The official column step is idempotent (skipped when `supply-variants/score-summary.json` carries the first-visit
 schema; `--rescore` forces it) and a pass directory that already holds files is never overwritten.
+
+## 7 (successor). Offline post-processing columns v4 and v4g (registered, appended 2026-10-09)
+
+Appended by Claude Opus 5.5 (analysis agent, on the coordinator's brief, Fable 5.1) in the worktree
+`fable/nx-v4g-lock`. This section only reads the fourteen write-once reports of the registered apply read
+`SAEA-SLURP-NX-POSTPROC-V4-APPLY-V1` (driver `scripts/analysis/slurp_nx_postproc_v4_apply.py`, sha256
+`4b979a8a4320b6c85497ab0f948670d13628d5e1601f030b5d01adfcb5d98717`; admitted on Fold B by this cell's recipe
+`slurp-nx-r1-solver-fold-b-column-analysis-v1`, sha256 `7a4ac484...`); it opened no model, server, encoder, embedder,
+tokenizer or GPU and ran no scorer. Every report is status DESCRIPTIVE and records contacts `model 0, gpu 0, network
+0, paid_api 0` and two registered-scorer-on-copy runs (`slurp-slu-official-train`, CPU). **The verdict of section 5
+is unchanged**: post-processing is a delivery-side component read beside the Solver arms, not a Solver arm.
+
+**Construction.** For each arm X of the run, the base is X's NORMALISED column (X's first-visit Solver answer after
+the cell's sealed `saea-deliver-normalise-v3`, via `stage3_rollout_score.normalise_arm_answer`); `v4(X)` / `v4g(X)`
+apply the registered `saea-deliver-normalise-v4` / `saea-deliver-normalise-v4g` (version 1, the pinned TRAIN tables of
+`docs/receipts/knowledge/slurp-v4-train-statistics-v1.json`) on top. Both the edited and the unmodified column are
+written as derived copies and scored by the registered scorer; the scorer reproduces the in-process pooled SLU-F1 to
+1e-6 on every copy, and every unmodified column reproduces the official column of section 2 (lock 62.13, aa 62.70,
+c1 61.40, c2 62.35, c3 63.09, c4 61.93, c5 61.98; intent identical). Paired delta edited minus unmodified,
+whole-utterance cluster bootstrap (1,080 clusters, 10,000 draws, seed 20260915), CI95. Rows applied 1,077 to 1,080
+(the 0 to 3 unparsed rows per arm stay unmodified). Neither normaliser moves an intent label: the intent delta is
+0.00 [0.00, 0.00] on all fourteen columns. Report path:
+`$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-NX-POSTPROC-V4-APPLY-V1/offline-v4/<v4|v4g>-<arm>/report.json`.
+
+| arm X | X official SLU-F1 | v4(X) - X pp [CI95] (rows edited) | v4(X) SLU-F1 | v4g(X) - X pp [CI95] (rows edited) | v4g(X) SLU-F1 | intent delta (both) | v4g(X) - lock, point only |
+| --- | ---: | --- | ---: | --- | ---: | --- | ---: |
+| `lock` | 62.13 | +1.44 [+0.62, +2.27] (118) | 63.57 | **+1.55 [+0.81, +2.33]** (104) | **63.69** | 0.00 | +1.55 |
+| `aa` | 62.70 | +1.25 [+0.42, +2.09] (112) | 63.95 | +1.52 [+0.81, +2.29] (97) | 64.22 | 0.00 | +2.09 |
+| `r1-c1` | 61.40 | +2.19 [+1.32, +3.07] (139) | 63.59 | +2.21 [+1.44, +3.03] (119) | 63.61 | 0.00 | +1.48 |
+| `r1-c2` | 62.35 | +1.83 [+0.98, +2.69] (116) | 64.18 | +1.84 [+1.08, +2.64] (99) | 64.19 | 0.00 | +2.06 |
+| `r1-c3` | 63.09 | +0.44 [-0.35, +1.23] (79) | 63.53 | +0.81 [+0.12, +1.53] (69) | 63.90 | 0.00 | +1.77 |
+| `r1-c4` | 61.93 | +1.42 [+0.64, +2.22] (114) | 63.36 | +1.51 [+0.82, +2.24] (97) | 63.44 | 0.00 | +1.31 |
+| `r1-c5` | 61.98 | +1.47 [+0.63, +2.33] (112) | 63.44 | +1.58 [+0.82, +2.37] (98) | 63.56 | 0.00 | +1.43 |
+
+The SLU-F1 columns are the registered scorer's official pooled SLU-F1 on the derived copy. The last column is
+arithmetic on two absolute levels of the same 1,080 rows (v4g(X) minus lock's 62.13); it was not bootstrapped and is
+not a nomination input.
+
+**The fresh-roster confirmation.** `v4g(lock) - lock` = **+1.55 pp [+0.81, +2.33]** (104 rows edited, intent 0
+rows; official SLU-F1 62.13 -> 63.69; span-F1 +2.08 pp; equal-scenario +1.76). Its CI95 lower bound is **above 0**.
+This is the registered confirmation of the guarded post-processing set on a roster that had not seen the rule
+question: the v4 rules were selected on A2 (DEV-2000-ADDED), Fold A located the audio defect that the guards answer,
+and TRAIN Fold B entered neither step. Report `offline-v4/v4g-lock/report.json` sha256
+`7f2d22be05a4d36be484b13e0a34ed4066753d9c9bb337b4e042479faa6af6c4`; edited copy
+`2f74c0727aae64f766305c4735937be5e627aa2ce8687cbe79d503c1e0434e87` (scorer result `a4c47abe...`), unmodified copy
+`63d26c02da7ef946f5c37f5d75ccfe4e160f824b67821f737b2f65c6251378a4` (byte-identical to the v4-lock report's unmodified
+copy). The lock itself is recorded in `docs/results/2026-10-09-slurp-postprocessing-v4g-lock-v1.md`.
+
+**The audio stratum (60 rows; why the guards matter).** Unguarded v4 repeats on Fold B the loss Fold A found: audio
+-10.13 (lock, 13 rows edited), -15.58 (aa), -16.35 (c1), -14.04 (c2), -26.62 (c3), -14.02 (c4), -13.41 (c5). Under
+v4g the audio delta is +7.05 (lock, 6 rows), +6.55, +7.05, +4.92, 0.00 (c3, 0 rows edited), +4.69, +3.96. v4g(lock)
+scenario losses are three small ones: datetime -0.84, lists -1.10, takeaway -1.15 (15 up, 3 down). Equal-scenario
+deltas, v4 -> v4g: lock +1.11 -> +1.76, aa +0.69 -> +1.71, c1 +1.50 -> +2.22, c2 +1.27 -> +1.85, c3 -0.84 -> +0.52,
+c4 +0.82 -> +1.49, c5 +0.92 -> +1.57.
+
+**Why c3's v4g gain is smaller.** `r1-c3` already takes an explicit empty-entity decision in the Solver; that
+decision overlaps what ee10 (and in part ti1) do downstream, so v4g has less left to remove on c3 (69 rows edited
+against 97 to 119 on the other arms; +0.81 against +1.51 to +2.21; no audio row edited). In the composed point
+column the advantage c3 showed over lock on the v3 column (+0.96) shrinks to +0.21 once both carry v4g (63.90 vs
+63.69, arithmetic, not bootstrapped). This is consistent with section 5: c3's pooled gain is largely
+false-positive removal that the guarded normaliser also delivers without the Solver's non-empty losses.
+
+Report sha256 (all under `offline-v4/`): v4-lock `8e475293...`, v4g-lock `7f2d22be...`, v4-aa `47564117...`, v4g-aa
+`4f175d3f...`, v4-r1-c1 `0da928c2...`, v4g-r1-c1 `afb7b964...`, v4-r1-c2 `5d99077a...`, v4g-r1-c2 `d61d947c...`,
+v4-r1-c3 `173696a9...`, v4g-r1-c3 `8749741a...`, v4-r1-c4 `710d82c9...`, v4g-r1-c4 `29a54291...`, v4-r1-c5
+`e82c8632...`, v4g-r1-c5 `c1e94910...`.
