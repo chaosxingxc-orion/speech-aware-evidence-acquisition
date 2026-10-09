@@ -1,0 +1,35 @@
+{
+  "adaptive_feedback_and_proposal_overlap_count_per_donor": 100,
+  "at_utc": "2026-10-09T05:38:52.760691+00:00",
+  "contacts_added": 0,
+  "contrast_design_disposition": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/joint-n100-paired-contrasts-astra-source-design-v1/root-source-design-disposition-v1.json",
+    "sha256": "6d7da021472293325778a8bac3a3b8441f4f091e47e3f859d0602a5bcf770cae"
+  },
+  "cross_carrier_targeted_check": {
+    "relpath": "docs/readiness/2026-10-09-cross-carrier-compose-check-v1/receipt-v1.json",
+    "sha256": "3ac3ba2ba9d2f1b7d80bfb58f5eca03826066472077da8d91299452ca4df9f92"
+  },
+  "cumulative_union_sources": 7,
+  "current_progress": "Verified original selected donors, complete ancestor files and exact same N100 exposure; closed the named cross-carrier composition test environment gap.",
+  "donor_role_edits": {
+    "reviewer": [
+      "reviewer"
+    ],
+    "solver": [
+      "solver"
+    ]
+  },
+  "goal_status": "ACTIVE_INCOMPLETE",
+  "joint_original_source_inventory": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/local-joint-n100-original-source-custody-v1/root-original-source-inventory-v1.json",
+    "sha256": "9a2448d7f8de640248a2af6e3e9e036fdbda3ee47a045239e42ef9bf601c949e"
+  },
+  "joint_source_status": "Engineering in isolated checkout; no actual joint authoring/admission.",
+  "knowledge_utterance_overlap_count": 0,
+  "original_ancestor_files_verified": 8,
+  "other_carrier_holds_unchanged": true,
+  "owner_decision": 227,
+  "previous_goal_turn": "PROGRESS: exact reviewed raw-stage statistics source integrated atcc961f857; optional defaults and learner exports unchanged.",
+  "schema": "saea-root-next-joint-source-progress-v1"
+}

@@ -1,0 +1,76 @@
+{
+  "at_utc": "2026-10-09T05:38:52.760691+00:00",
+  "evidence": [
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/cross-carrier-compose-current-base-20261009-v1/started-v1.json",
+      "sha256": "d3be2b6018c55100bf3323745e3722d24800287d5ed57c0f98af38e85520e469"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/cross-carrier-compose-current-base-20261009-v1/run-original-compose-check-v1.py",
+      "sha256": "edcfc65f928d6c5572148dfe3f240fb15482efa9c274a3719c1650059b93ec41"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/cross-carrier-compose-current-base-20261009-v1/process-v1.json",
+      "sha256": "432edc3bab3231ff2c80f43e9015fcdabec091d771263dc291f278f146442ee4"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/cross-carrier-compose-current-base-20261009-v1/stdout-v1.log",
+      "sha256": "bd3d9e0d97161ef1a40efa0091aca86b3a0cabd53ac50bef539b5f1f7049a9e7"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/cross-carrier-compose-current-base-20261009-v1/stderr-v1.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/cross-carrier-compose-current-base-20261009-v1/junit-v1.xml",
+      "sha256": "9842716cdb1998551639840299507bd99179e6c0730e03d4555c49c6b01747bc"
+    },
+    {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/cross-carrier-compose-current-base-20261009-v1/exit-v1.json",
+      "sha256": "ee69c3f48a231f009a5b10ae6116b6b50a28c8fcfde7ad2e6c163ae0b8a20810"
+    }
+  ],
+  "goal_complete": false,
+  "historical_sealed_pool_reverification": false,
+  "holds_released": false,
+  "model_or_tool_or_official_scorer_contacts": 0,
+  "native_five_suite_rerun": false,
+  "passing_cases": 35,
+  "previous_gap": "The October7 combined test result retained one historical git -C wrapper refusal; the exact missing composition test now passes under native Linux Git without inherited GIT variables.",
+  "production_code_changed": false,
+  "purpose": "Resolve the explicitly unclosed historical git -C composition-proof setup defect in a clean native Linux checkout; retain model-free carrier all-off equivalence only. This does not requalify complete native carrier execution.",
+  "real_data_read": false,
+  "runtime_admission": false,
+  "schema": "saea-root-cross-carrier-targeted-compose-check-v1",
+  "source_commit": "cc961f857acfa7d969e0343f7b30303c6aa63eea",
+  "source_pins": [
+    {
+      "relpath": "scripts/analysis/module_equivalence_proof.py",
+      "sha256": "12c87e1f6618fa257be90396ba47bb7e44a0846a90d4a5c0b3624ac299a54d33"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/consumption_module.py",
+      "sha256": "e4eacfae270c6a826da6495293dca49c8b93d9de47cf4c9bd265916735957715"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/audio2tool_module_hooks.py",
+      "sha256": "39f0e4691a3a2389646b3a30261c48b8a1e63a772b91732a1ea5e571f20a9d79"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/earnings_module_hooks.py",
+      "sha256": "50d8227031f734882f1e63aaf3137e4019b953aa586ba4db9af87fdd4d15fdf9"
+    },
+    {
+      "relpath": "src/speech_aware_evidence_acquisition/rails/adapters/slurp_module_hooks.py",
+      "sha256": "80b3b538586168b8000f7c3cf4aa26809ee2ac26a1ad719377fc25fe047784a1"
+    },
+    {
+      "relpath": "tests/unit/test_consumption_module_carrier_hooks.py",
+      "sha256": "27d985ea651cf59bc79fa3900a1b6b5abb3fe6cc7b89126fc3d120b4949f729c"
+    },
+    {
+      "relpath": "tests/unit/test_consumption_module_carrier_transfer.py",
+      "sha256": "f252e71bd34b6ff94480b5a2282d6f86d089074f5b2f8bbcc50938d4bbdbcd58"
+    }
+  ]
+}

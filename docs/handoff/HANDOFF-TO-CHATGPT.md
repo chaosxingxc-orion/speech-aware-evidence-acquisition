@@ -1,5 +1,13 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
+## Joint original ancestry verified; targeted carrier composition gap closed (2026-10-09T05:38:52.760691+00:00)
+
+Root verified the exact selected Solver/Reviewer donor files and eight original ancestor files with the existing immutable bundle validator. Each donor changes only its declared role text among task-facing fields; construction, knowledge, supply, context and other role texts remain seed-identical, while lineage and cumulative exposure stay explicit. The cumulative union retains seven source records. All100 development inputs overlap donor feedback/proposals by design, while the three knowledge sources have zero utterance overlap. A prospective joint policy must additionally retain root selection exposure. This inventory grants no runtime admission and exports no answers, roster arrays or knowledge text. Evidence: `docs/receipts/continuation/2026-10-09-joint-source-inventory-and-compose-check-v1.json`.
+
+The previously unclosed native Git composition test now passes together with the carrier transfer suite:35 targeted cases oncc961f857, network denied, empty isolated data root and no conftest cache mutation. See `docs/readiness/2026-10-09-cross-carrier-compose-check-v1/README.md`. This closes the named setup gap only; it is not a rerun of the five native suites or proof of current complete Audio2Tool/E21/E22 execution. Their original holds and missing current-runtime evidence remain.
+
+Joint custody and explicit paired-contrast source work remain under independent review before actual authoring. Keep the full five-member N100 plan, existing data/knowledge and cumulative exposure; fresh capacity, separately registered complete natural proof and scientific admission are still required. Keep one serial GPU campaign/four concurrent inputs, overlapping CPU work,4GiB floors/full reserves and job-scoped15minute monitoring only on launch. No GPU task or learner export is started by this checkpoint. The broad goal remains active/incomplete; no stable system benefit or learning advantage is established, and human review remains required before8x400.
+
 ## Raw-stage statistics source approved; joint experiment remains prospective (2026-10-09T05:14:48.967026+00:00)
 
 Root preserved the unadmitted optional statistics v1 patch and its synthetic identity-consistency rejection, then accepted the separately frozen v2 after227 supplied tests and15 independent checks passed. Exact-text endpoint hashes now imply identical numeric measurements; normalisation input/output hashes must join raw and delivered text. The optional root-only projection keeps initial raw, selected raw and final delivery statistics, unknown states, fixed-N denominators, strata and existing registered paired counts distinct. Legacy defaults, official scoring and K-only learner exports remain unchanged. Evidence: `docs/receipts/continuation/2026-10-09-raw-stage-v1-source-review-disposition.json` and `docs/receipts/continuation/2026-10-09-raw-stage-v2-source-approved-v1.json`. No original result was re-read, regenerated, resealed or rescored for this source work.
@@ -7530,7 +7538,7 @@ The separate capacity flight failed its first integration attempt after 56 nonge
 
 Corrected initial seed/A/A400 supplies are prepared under their own CONTROL2 identities but remain HELD with zero generation contacts. A production-native reachable-branch capacity proof is still needed. The independent milestone remains sealed and scientifically unread by this optimizer; proposer version/isolation and all later updates remain pending. The [operational receipt](../receipts/continuation/2026-10-01-system-text-control-and-capacity.json) supersedes older launch snapshots. No task answers, gold, quality or rewards were read in this continuation. Preserve the current service, geometry, historical bytes and all other holds. Monitor every30 minutes, read-only, and do not repeat this already reported state.
 
-Last refreshed: 2026-10-09T05:16:38.777998+00:00
+Last refreshed: 2026-10-09T05:38:52.760691+00:00
 
 **Current state:** owner decision 214 approves the joint whole-system text-policy
 search, replacing the old finite-action F2/F3 sequence. The

@@ -1,0 +1,9 @@
+# Targeted cross-carrier composition check on the current base
+
+The previously unclosed historical Git invocation check now passes in a native Linux checkout. The exact SLURP module equivalence test and the carrier transfer suite pass all35 cases on source `cc961f857acfa7d969e0343f7b30303c6aa63eea`. The existing Audio2Tool and Earnings21 all-off compositions retain their direct-policy bytes; registered hook mappings and rejection of unsupported armed components remain covered. [The receipt](receipt-v1.json) pins the original command, source, logs, JUnit and exit.
+
+This follows the named environment limitation in the [October7 audit](../2026-10-07-cross-carrier-current-base-audit-v1/README.md). The run removes inherited Git variables and disables repository conftest and pytest cache writes. All network connections are denied. An empty isolated data root prevents historical manifest or task-data reads; consequently this is a composition proof, not re-verification of the historical sealed AGREE pool. No scoring cache, frozen source, runtime control or serving state is changed.
+
+These35 targeted cases do not substitute for the five native suites or claim that the earlier combined133-case invocation passed. Their132-pass/one-setup-failure record remains intact. This successor closes only that named composition/setup gap and refreshes the existing carrier all-off contract checks at the stated source.
+
+The broader objective is incomplete. Audio2Tool, Earnings21 and Earnings22 still lack completed current consumption-profile execution and the corresponding qualified standard-score/read evidence. Their holds, serving geometry, source/roster prerequisites and missing own nulls remain as recorded in the prior audit. No component-on policy, live carrier contact, reopening, transfer gain or learned capability follows from these tests. Keep SLURP as the one active engineering/experiment sequence.
