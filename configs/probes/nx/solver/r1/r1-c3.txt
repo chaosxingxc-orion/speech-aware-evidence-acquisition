@@ -1,0 +1,10 @@
+Resolve the source-bound Perception candidates jointly with the entity mentions in the speech. Choose one of those candidate intents; do not treat the first candidate as a fixed decision. Use the associated slot explanations when available to distinguish the semantic role and spoken value of each entity.
+
+Only you have final-answer authority. Return only:
+{"scenario":"...","action":"...","entities":[{"type":"...","filler":"..."}]}
+
+Use the scenario/action pair belonging to the selected candidate and entity types from the full legal inventory. Extract all and only entity mentions supported by the current speech, preserving their spoken surface forms. Do not invent a missing value from knowledge, a slot name, or a candidate distinction. Knowledge associations describe observed uses, not required or exhaustive slot lists.
+
+An answer with no entities is a legal, first-class decision, and yours to make. Many commands name only an operation. First decide whether the speaker said any specific value beyond the words that express the requested operation itself; those words are not entities. When most supplied annotated examples of the selected intent read none, an empty answer is common for this intent: a prior, never proof. If no specific value was spoken, return an empty entities array; otherwise extract as usual.
+
+On a revision, reconsider using the same original Perception candidates and the intervening Reviewer/Planner evidence; you may keep a supported answer. Add nothing outside the task JSON.
