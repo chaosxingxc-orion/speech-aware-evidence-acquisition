@@ -1247,6 +1247,10 @@ _SUPPLY_VARIANT_ARM_FIELDS_V1 = frozenset(
 )
 _SUPPLY_VARIANT_ARM_FIELDS_V2 = _SUPPLY_VARIANT_ARM_FIELDS_V1 | {"replicate_of"}
 _SUPPLY_VARIANT_ARM_FIELDS_V3 = _SUPPLY_VARIANT_ARM_FIELDS_V2 | {"release_swap"}
+#: NX programme E1 (2026-10-09): the node-template kind. v4 = v3 plus
+#: ``instruction_template`` on every arm row.
+SUPPLY_VARIANT_RECEIPT_SCHEMA_V4 = "saea-supply-variant-arms-v4"
+_SUPPLY_VARIANT_ARM_FIELDS_V4 = _SUPPLY_VARIANT_ARM_FIELDS_V3 | {"instruction_template"}
 _SUPPLY_VARIANT_FIT_FIELDS = frozenset(
     {
         "slot_tokens", "completion_ceiling", "base_prompt_tokens",
@@ -1311,6 +1315,14 @@ def validate_supply_variant_receipt(
     ``"every"`` (v1) must equal it. Omitted, no such cross-check is made
     (``core.bundle.outputs`` reads a sealed row with no composed configuration
     to compare against).
+
+    A v4 receipt (``saea-supply-variant-arms-v4``, NX programme E1) is the
+    NODE-TEMPLATE kind: the arms vary the node's instruction template and
+    nothing else. Every arm therefore resolves NO knob and NO release_swap and
+    supplies EXACTLY the delivering arm's ids (the supply is unvaried); the
+    delivering arm and the twin carry ``instruction_template`` ``None``; every
+    other arm carries a ``{relpath, sha256}`` pin, distinct from every other
+    arm's. The "at least one knob" rule is replaced by "exactly one template".
     """
 
     declared = list(arm_ids)
@@ -1325,6 +1337,7 @@ def validate_supply_variant_receipt(
     if not isinstance(supply_variants, Mapping):
         _raise(error_type, "supply variant receipt has an invalid shape")
     schema = supply_variants.get("schema")
+    is_v4 = False
     if schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V1:
         is_v2_or_later = False
         is_v3 = False
@@ -1340,6 +1353,12 @@ def validate_supply_variant_receipt(
         is_v3 = True
         expected_fields = _SUPPLY_VARIANT_FIELDS_V2
         arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V3
+    elif schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V4:
+        is_v2_or_later = True
+        is_v3 = True
+        is_v4 = True
+        expected_fields = _SUPPLY_VARIANT_FIELDS_V2
+        arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V4
     else:
         _raise(error_type, "supply variant receipt has an unregistered schema")
     if set(supply_variants) != expected_fields:
@@ -1381,6 +1400,8 @@ def validate_supply_variant_receipt(
     contact_ids: list[str] = []
     delivering_ids: tuple[str, ...] | None = None
     twin_checks: list[tuple[str, tuple[str, ...]]] = []
+    arm_id_lists: list[tuple[str, tuple[str, ...]]] = []
+    template_pins: list[tuple[str, str]] = []
     for index, row in enumerate(rows):
         if not isinstance(row, Mapping) or set(row) != arm_fields:
             _raise(error_type, "supply variant arm record has an invalid shape")
@@ -1490,7 +1511,48 @@ def validate_supply_variant_receipt(
                     "release_swap: it resolves exactly the delivering arm's "
                     "ids",
                 )
-        if not deliver and not paths and replicate_of is None and release_swap is None:
+        if is_v4:
+            if paths:
+                _raise(
+                    error_type,
+                    "a node-template supply variant arm must resolve no knobs: "
+                    "the only thing it varies is its instruction template",
+                )
+            if release_swap is not None:
+                _raise(
+                    error_type,
+                    "a node-template supply variant arm must declare no "
+                    "release_swap: the supply is unvaried",
+                )
+            template = row["instruction_template"]
+            if deliver or replicate_of is not None:
+                if template is not None:
+                    _raise(
+                        error_type,
+                        "the delivering arm and the twin of a node-template "
+                        "receipt must declare no instruction_template: they "
+                        "render the node's own locked template",
+                    )
+            else:
+                if (
+                    not isinstance(template, Mapping)
+                    or set(template) != {"relpath", "sha256"}
+                    or not isinstance(template["relpath"], str)
+                    or not template["relpath"]
+                    or not isinstance(template["sha256"], str)
+                    or len(template["sha256"]) != 64
+                    or any(
+                        character not in "0123456789abcdef"
+                        for character in template["sha256"]
+                    )
+                ):
+                    _raise(
+                        error_type,
+                        "a candidate node-template arm must carry exactly one "
+                        "{relpath, sha256} instruction_template",
+                    )
+                template_pins.append((template["relpath"], template["sha256"]))
+        elif not deliver and not paths and replicate_of is None and release_swap is None:
             _raise(
                 error_type,
                 "a non-delivering supply variant arm must resolve at least one "
@@ -1537,6 +1599,23 @@ def validate_supply_variant_receipt(
                     )
         if replicate_of is not None:
             twin_checks.append((row["arm_id"], tuple(ids)))
+        arm_id_lists.append((row["arm_id"], tuple(ids)))
+    if is_v4:
+        if len({pin[0] for pin in template_pins}) != len(template_pins) or len(
+            {pin[1] for pin in template_pins}
+        ) != len(template_pins):
+            _raise(
+                error_type,
+                "node-template supply variant arms must name distinct templates",
+            )
+        for arm_id, arm_ids_seen in arm_id_lists:
+            if delivering_ids is None or arm_ids_seen != delivering_ids:
+                _raise(
+                    error_type,
+                    f"node-template supply variant arm {arm_id!r} does not "
+                    "supply exactly the delivering arm's ids: a template arm "
+                    "varies the instruction, never the evidence",
+                )
     if len(set(contact_ids)) != len(contact_ids):
         _raise(error_type, "supply variant arms must have distinct contact ids")
     for twin_arm_id, twin_ids in twin_checks:
@@ -2148,6 +2227,7 @@ __all__ = [
     "validate_native_candidate_refresh_receipt", "validate_native_episode_terminal_policy",
     "validate_native_episode_finite_path", "validate_solver_group_receipt",
     "validate_supply_variant_receipt",
+    "SUPPLY_VARIANT_RECEIPT_SCHEMA_V4",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2",

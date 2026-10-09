@@ -56,6 +56,19 @@ sentence in this docstring, and every refusal below, still holds for the
 knob-tail route. The delivering arm and its twin (``replicate_of``) never
 carry one, for the same reason neither carries a knob override.
 
+THE NODE-TEMPLATE KIND (NX programme, items E1/E2, 2026-10-09). A group
+parsed by :func:`parse_template_variants` is the same form with the varied axis
+moved from SUPPLY to the node's INSTRUCTION TEMPLATE: each non-delivering,
+non-twin arm overrides exactly ONE thing -- ``phase_material.<role>.
+instruction_template``, a hash-pinned relpath under ``probes/`` -- and nothing
+else (no knob, no release swap, no supply of its own). The supply is therefore
+UNVARIED: every arm renders the delivering arm's own evidence, which the v4
+receipt (:data:`SUPPLY_VARIANT_RECEIPT_SCHEMA_V4`) states and its validator
+checks. The delivering arm is still LAST and carries no override, so invariants
+I7 and I7v hold unchanged and the delivered request is the locked plan's, byte
+for byte. Design: docs/superpowers/specs/2026-10-09-slurp-nx-node-template-
+variant-instrument-design.md.
+
 CUSTODY, AND THE ONE DIVERGENCE THIS FORM INTRODUCES. Every arm's request,
 resolved knobs, supplied value ids and item count are sealed under the arm's
 own id, and the K contacts are recorded as ONE ``AgentContactBatch`` with
@@ -75,6 +88,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
@@ -186,6 +200,56 @@ MIN_SUPPLY_VARIANT_ARMS = 2
 MAX_SUPPLY_VARIANT_ARMS = 8
 
 
+#: The receipt schema a NODE-TEMPLATE group seals under (NX programme E1):
+#: v3's arm rows plus ``instruction_template`` -- ``None`` for the delivering
+#: arm and the twin, the declared ``{relpath, sha256}`` for every other arm.
+SUPPLY_VARIANT_RECEIPT_SCHEMA_V4 = "saea-supply-variant-arms-v4"
+
+#: The group kinds. ``"supply"`` is every group written before the NX
+#: programme; ``"template"`` is the node-template kind.
+SUPPLY_VARIANT_KIND_SUPPLY = "supply"
+SUPPLY_VARIANT_KIND_TEMPLATE = "template"
+
+#: The nodes a template group may sit at. Solver first (NX round R1); the
+#: parser, the materials builder and the arm record are keyed on the node's
+#: own ``phase_id`` and are node-agnostic -- widening this tuple is the config
+#: half of admitting the Reviewer or the Planner (the runtime wiring half is
+#: listed in the instrument README).
+TEMPLATE_VARIANT_NODES: tuple[str, ...] = ("solver",)
+
+#: Keys the ``template_variants`` block carries, exactly.
+TEMPLATE_VARIANT_BLOCK_KEYS = frozenset({
+    "node", "arms", "max_supplied_items", "fit_estimate",
+})
+#: Keys one template arm row may carry. ``arm_id`` is required;
+#: ``instruction_template`` and ``template_tokens`` are required on every arm
+#: but the twin (the delivering arm declares its own LOCKED template's token
+#: count only, never a path -- the path is the node's own ``phase_material``).
+TEMPLATE_VARIANT_ARM_KEYS = frozenset({
+    "arm_id", "deliver", "replicate_of", "instruction_template", "template_tokens",
+})
+#: Keys an arm of the SUPPLY kind may carry that a template arm may NOT, named
+#: so the refusal says which knob the arm tried to reach.
+TEMPLATE_VARIANT_REFUSED_KNOB_KEYS = frozenset({
+    "overrides", "release_swap", "knobs", "max_supplied_items",
+})
+#: The roots an arm's template may live under, relative to ``configs/`` (the
+#: base of every ``phase_material.instruction_template``). A declaration may
+#: spell the path with or without the ``configs/`` prefix.
+TEMPLATE_VARIANT_ROOTS: tuple[str, ...] = ("probes/",)
+#: Candidate (non-delivering, non-twin) template arms per group, inclusive:
+#: programme C0.5 caps a round at six candidates. With the delivering arm and
+#: the optional twin the group spans at most
+#: :data:`MAX_SUPPLY_VARIANT_ARMS` (8) contacts.
+MIN_TEMPLATE_CANDIDATE_ARMS = 1
+MAX_TEMPLATE_CANDIDATE_ARMS = 6
+
+_TEMPLATE_RELPATH_RE = re.compile(
+    r"[A-Za-z0-9][A-Za-z0-9._-]*(?:/[A-Za-z0-9][A-Za-z0-9._-]*)*"
+)
+_SHA256_RE = re.compile(r"[0-9a-f]{64}")
+
+
 class SupplyVariantError(RailsError):
     """An arm, its knob path, its fit estimate or its receipt is invalid."""
 
@@ -246,6 +310,24 @@ class SupplyVariantReleaseSwap:
 
 
 @dataclass(frozen=True)
+class SupplyVariantTemplate:
+    """One arm's pinned instruction template (NX programme E1).
+
+    ``relpath`` is relative to ``configs/`` -- the exact form a
+    ``phase_material.<role>.instruction_template`` carries -- and ``sha256``
+    is the lowercase digest of the file's bytes, verified by the flight
+    before any contact (``core.flight.runtime.FlightRuntime.
+    _template_variant_materials``).
+    """
+
+    relpath: str
+    sha256: str
+
+    def as_json(self) -> dict[str, str]:
+        return {"relpath": self.relpath, "sha256": self.sha256}
+
+
+@dataclass(frozen=True)
 class SupplyVariantArm:
     """One arm of one node's supply-variant group."""
 
@@ -264,9 +346,19 @@ class SupplyVariantArm:
     # that re-caps only a knob tail. Declared LAST, so every arm parsed before
     # this field existed composes byte-identically.
     release_swap: SupplyVariantReleaseSwap | None = None
+    # NX programme E1 (2026-10-09): this arm's INSTRUCTION-TEMPLATE override --
+    # the pinned template it renders in place of the node's own -- or ``None``
+    # for every arm of the SUPPLY kind, the delivering arm and the twin.
+    # Declared LAST, so every arm parsed before this field existed composes
+    # byte-identically (``as_json`` omits the key while it is ``None``).
+    instruction_template: "SupplyVariantTemplate | None" = None
+    # The measured token count of the template this arm renders (the template
+    # arm's own, or the delivering arm's locked template); 0 on the SUPPLY
+    # kind. Enters only the fit estimate.
+    template_tokens: int = 0
 
     def as_json(self) -> dict[str, object]:
-        return {
+        row = {
             "arm_id": self.arm_id,
             "deliver": self.deliver,
             "overrides": {knob.path: knob.value for knob in self.knobs},
@@ -275,6 +367,9 @@ class SupplyVariantArm:
             "replicate_of": self.replicate_of,
             "release_swap": None if self.release_swap is None else self.release_swap.as_json(),
         }
+        if self.instruction_template is not None:
+            row["instruction_template"] = self.instruction_template.as_json()
+        return row
 
 
 @dataclass(frozen=True)
@@ -314,6 +409,7 @@ class SupplyVariantFitEstimate:
 
         return (
             self.base_prompt_tokens
+            + getattr(arm, "template_tokens", 0)
             + arm.max_supplied_items * self.tokens_per_supplied_item
         )
 
@@ -340,6 +436,14 @@ class SupplyVariantGroup:
     # the delivering arm alone). Declared LAST, so every group parsed before
     # this field existed composes to "every" byte-identically.
     arm_visits: str = SUPPLY_VARIANT_ARM_VISITS_DEFAULT
+    # NX programme E1: :data:`SUPPLY_VARIANT_KIND_SUPPLY` for every group
+    # written before the programme, :data:`SUPPLY_VARIANT_KIND_TEMPLATE` for a
+    # group :func:`parse_template_variants` returned.
+    kind: str = SUPPLY_VARIANT_KIND_SUPPLY
+
+    @property
+    def is_template(self) -> bool:
+        return self.kind == SUPPLY_VARIANT_KIND_TEMPLATE
 
     @property
     def arm_count(self) -> int:
@@ -369,11 +473,14 @@ class SupplyVariantGroup:
         return self.arms[index]
 
     def as_json(self) -> dict[str, object]:
-        return {
+        document = {
             "arms": [arm.as_json() for arm in self.arms],
             "fit_estimate": self.fit_estimate.as_json(),
             "arm_visits": self.arm_visits,
         }
+        if self.is_template:
+            document["kind"] = self.kind
+        return document
 
 
 def parse_supply_variant_knob(
@@ -741,6 +848,243 @@ def parse_supply_variants(
     )
 
 
+def _template_pin(value: object, *, field: str) -> SupplyVariantTemplate:
+    """Parse one ``{relpath, sha256}`` template pin, refusing every other shape.
+
+    A leading ``configs/`` is accepted and stripped (a declaration may spell
+    the repository-relative path); what remains must be a plain relative path
+    under one of :data:`TEMPLATE_VARIANT_ROOTS`. The digest must be lowercase
+    64-hex. The BYTES are not read here -- this parser is pure; the flight
+    hashes the file before any contact.
+    """
+
+    if not isinstance(value, Mapping) or set(value) != {"relpath", "sha256"}:
+        raise SupplyVariantError(
+            f"{field} must be exactly {{relpath, sha256}}: a template override is "
+            "hash-pinned"
+        )
+    relpath, digest = value["relpath"], value["sha256"]
+    if not isinstance(relpath, str) or not relpath.strip():
+        raise SupplyVariantError(f"{field}.relpath must be a non-empty string")
+    if not isinstance(digest, str) or _SHA256_RE.fullmatch(digest) is None:
+        raise SupplyVariantError(
+            f"{field}.sha256 must be a lowercase 64-hex digest; an unpinned "
+            "template is not evidence"
+        )
+    path = relpath[len("configs/"):] if relpath.startswith("configs/") else relpath
+    if (
+        "\\" in path or path.startswith("/") or re.match(r"^[A-Za-z]:", path)
+        or ".." in path.split("/") or _TEMPLATE_RELPATH_RE.fullmatch(path) is None
+    ):
+        raise SupplyVariantError(
+            f"{field}.relpath {relpath!r} is not a plain repository-relative path"
+        )
+    if not any(path.startswith(root) for root in TEMPLATE_VARIANT_ROOTS):
+        raise SupplyVariantError(
+            f"{field}.relpath {relpath!r} is outside the allowed template roots "
+            f"{['configs/' + root for root in TEMPLATE_VARIANT_ROOTS]}"
+        )
+    return SupplyVariantTemplate(relpath=path, sha256=digest)
+
+
+def parse_template_variants(
+    block: object,
+    *,
+    role_kind: str,
+    phase_id: str,
+    locked_template: str | None = None,
+) -> SupplyVariantGroup:
+    """Parse ``roles.<role>.template_variants`` into a template-kind group,
+    fail-closed (NX programme E1).
+
+    The refusals, each raised by name BEFORE any contact:
+
+    1. a block that is not an object with exactly ``node``, ``arms``,
+       ``max_supplied_items`` and ``fit_estimate``;
+    2. a ``node`` that is not the role the block sits on, or a role outside
+       :data:`TEMPLATE_VARIANT_NODES` (a variant declared on a node other than
+       the one named);
+    3. an arm count outside 1..:data:`MAX_TEMPLATE_CANDIDATE_ARMS` candidate
+       arms (plus the delivering arm and at most one twin);
+    4. an arm row with an unknown key -- and a supply knob (``overrides``,
+       ``release_swap``, ``knobs``, a per-arm ``max_supplied_items``) named as
+       such: the ONLY thing an arm overrides is its instruction template;
+    5. an arm id collision, zero or several delivering arms, a delivering arm
+       that is not LAST or that carries a template override, several twins or a
+       twin that is not the delivering arm's;
+    6. a candidate arm with a missing, mismatched-shape or unpinned template
+       (``{relpath, sha256}``, lowercase 64-hex), a template outside
+       :data:`TEMPLATE_VARIANT_ROOTS`, or a missing/non-positive
+       ``template_tokens`` (on every arm but the twin);
+    7. two arms naming the same template path or digest, or a candidate whose
+       path equals the node's own locked template (``locked_template``: that
+       arm would be a second spelling of the delivering arm);
+    8. an arm whose estimated prompt exceeds the live slot with the registered
+       reserve (:class:`SupplyVariantFitEstimate`).
+
+    Every arm renders the SAME supplied evidence (the delivering arm's), so one
+    ``max_supplied_items`` bounds them all.
+    """
+
+    keys = set(block) if isinstance(block, Mapping) else set()
+    if not isinstance(block, Mapping) or keys != TEMPLATE_VARIANT_BLOCK_KEYS:
+        raise SupplyVariantError(
+            "roles.<role>.template_variants must be an object with exactly "
+            f"{sorted(TEMPLATE_VARIANT_BLOCK_KEYS)}"
+        )
+    node = block["node"]
+    if role_kind not in TEMPLATE_VARIANT_NODES:
+        raise SupplyVariantError(
+            f"template_variants may sit only at {list(TEMPLATE_VARIANT_NODES)}, "
+            f"not the {role_kind!r} role"
+        )
+    if node != role_kind:
+        raise SupplyVariantError(
+            f"template_variants names node {node!r} but sits on the {role_kind!r} "
+            "role; a variant is declared on exactly the node it names"
+        )
+    max_items = _positive_int(
+        block["max_supplied_items"], field="template_variants.max_supplied_items"
+    )
+    rows = block["arms"]
+    if (
+        not isinstance(rows, Sequence) or isinstance(rows, (str, bytes))
+        or not all(isinstance(row, Mapping) for row in rows)
+    ):
+        raise SupplyVariantError(
+            "template_variants.arms must be an ordered list of arm objects"
+        )
+    twins = [row for row in rows if row.get("replicate_of") is not None]
+    candidates = len(rows) - len(twins) - 1
+    if len(twins) > 1:
+        raise SupplyVariantError(
+            "template_variants admits at most one replicate_of twin"
+        )
+    if not MIN_TEMPLATE_CANDIDATE_ARMS <= candidates <= MAX_TEMPLATE_CANDIDATE_ARMS:
+        raise SupplyVariantError(
+            "template_variants must declare between "
+            f"{MIN_TEMPLATE_CANDIDATE_ARMS} and {MAX_TEMPLATE_CANDIDATE_ARMS} "
+            "candidate template arms (plus the delivering arm and at most one "
+            f"twin); this block declares {max(candidates, 0)}"
+        )
+    fit_estimate = parse_supply_variant_fit_estimate(block["fit_estimate"])
+    arms: list[SupplyVariantArm] = []
+    for position, row in enumerate(rows):
+        where = f"template_variants.arms[{position}]"
+        refused = sorted(set(row) & TEMPLATE_VARIANT_REFUSED_KNOB_KEYS)
+        if refused:
+            raise SupplyVariantError(
+                f"{where} names {refused}: a template arm overrides exactly its "
+                "instruction_template and nothing else (no supply knob, no "
+                "release swap, no bound of its own)"
+            )
+        unknown = sorted(set(row) - TEMPLATE_VARIANT_ARM_KEYS)
+        if unknown or "arm_id" not in row:
+            raise SupplyVariantError(
+                f"{where} must carry arm_id plus optional "
+                f"{sorted(TEMPLATE_VARIANT_ARM_KEYS - {'arm_id'})}; unknown keys: "
+                f"{unknown}"
+            )
+        arm_id = _nonempty_str(row["arm_id"], field=f"{where}.arm_id")
+        deliver = row.get("deliver", False)
+        if not isinstance(deliver, bool):
+            raise SupplyVariantError(f"{where}.deliver must be a bool")
+        raw_replicate = row.get("replicate_of")
+        replicate_of = (
+            None if raw_replicate is None
+            else _nonempty_str(raw_replicate, field=f"{where}.replicate_of")
+        )
+        if deliver and replicate_of is not None:
+            raise SupplyVariantError(
+                f"{where} declares both deliver: true and replicate_of"
+            )
+        pin = None
+        if "instruction_template" in row:
+            if deliver or replicate_of is not None:
+                raise SupplyVariantError(
+                    f"{where} is the delivering arm or the twin and must declare "
+                    "no instruction_template: it renders the node's own locked "
+                    "template, so its request is the locked plan's byte for byte"
+                )
+            pin = _template_pin(
+                row["instruction_template"], field=f"{where}.instruction_template",
+            )
+        elif not deliver and replicate_of is None:
+            raise SupplyVariantError(
+                f"{where} is a candidate arm and must declare an "
+                "instruction_template"
+            )
+        tokens = 0
+        if replicate_of is None:
+            tokens = _positive_int(
+                row.get("template_tokens"), field=f"{where}.template_tokens"
+            )
+        elif "template_tokens" in row:
+            raise SupplyVariantError(
+                f"{where} is a twin and declares no template_tokens: it renders "
+                "the delivering arm's template"
+            )
+        arms.append(SupplyVariantArm(
+            arm_id=arm_id, deliver=deliver, knobs=(), max_supplied_items=max_items,
+            replicate_of=replicate_of, instruction_template=pin,
+            template_tokens=tokens,
+        ))
+    ids = [arm.arm_id for arm in arms]
+    if len(set(ids)) != len(ids):
+        raise SupplyVariantError("template_variants arm ids must be distinct")
+    delivering = [arm.arm_id for arm in arms if arm.deliver]
+    if len(delivering) != 1:
+        raise SupplyVariantError(
+            "template_variants must declare exactly one arm with deliver: true; "
+            f"this block declares {len(delivering)}"
+        )
+    if not arms[-1].deliver:
+        raise SupplyVariantError(
+            f"template_variants delivering arm {delivering[0]!r} must be the LAST "
+            "arm: the delivered text is then the group's final contact's own "
+            "response, so invariant I7 holds with no new exception"
+        )
+    for arm in arms:
+        if arm.replicate_of is not None and arm.replicate_of != arms[-1].arm_id:
+            raise SupplyVariantError(
+                f"template_variants arm {arm.arm_id!r} names replicate_of "
+                f"{arm.replicate_of!r}, which is not the delivering arm "
+                f"{arms[-1].arm_id!r}"
+            )
+    pins = [arm.instruction_template for arm in arms if arm.instruction_template]
+    if len({pin.relpath for pin in pins}) != len(pins) or len(
+        {pin.sha256 for pin in pins}
+    ) != len(pins):
+        raise SupplyVariantError(
+            "two template_variants arms name the same template; two spellings of "
+            "one construction spend a contact per row and measure nothing"
+        )
+    if locked_template is not None and any(
+        pin.relpath == locked_template for pin in pins
+    ):
+        raise SupplyVariantError(
+            f"a template_variants arm names the node's own locked template "
+            f"{locked_template!r}; that arm is a second spelling of the "
+            "delivering arm"
+        )
+    for arm in arms:
+        estimated = fit_estimate.estimated_prompt_tokens(arm)
+        if estimated > fit_estimate.prompt_limit_tokens:
+            raise SupplyVariantError(
+                f"template_variants arm {arm.arm_id!r} estimates {estimated} prompt "
+                f"tokens, which exceeds the {fit_estimate.prompt_limit_tokens}-token "
+                f"limit of a {fit_estimate.slot_tokens}-token slot with its "
+                f"registered {fit_estimate.reserve_tokens}-token reserve, the "
+                f"{fit_estimate.completion_ceiling}-token completion ceiling and "
+                f"the {REGISTERED_SPECIAL_TOKEN_RESERVE}-token special reserve"
+            )
+    return SupplyVariantGroup(
+        arms=tuple(arms), fit_estimate=fit_estimate,
+        arm_visits=SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT,
+        kind=SUPPLY_VARIANT_KIND_TEMPLATE,
+    )
+
+
 def accumulate_arm_selection(
     previous: Sequence[str], resolved: Sequence[str],
 ) -> tuple[str, ...]:
@@ -824,8 +1168,14 @@ def supply_variant_arm_record(
     contact_id: str,
     supplied_value_ids: Sequence[str],
     resolved_knobs: Mapping[str, int] | None = None,
+    template_group: bool = False,
 ) -> dict[str, object]:
-    """One arm's receipt row: labels, ids and counts, never supplied text."""
+    """One arm's receipt row: labels, ids and counts, never supplied text.
+
+    ``template_group`` (NX programme E1) selects the v4 row shape: the same
+    row plus ``instruction_template`` -- ``None`` for the delivering arm and
+    the twin, the declared ``{relpath, sha256}`` for every other arm.
+    """
 
     ids = tuple(supplied_value_ids)
     if len(set(ids)) != len(ids):
@@ -843,7 +1193,7 @@ def supply_variant_arm_record(
             f"supply-variant arm {arm.arm_id!r} resolved knobs {sorted(resolved)} "
             f"differ from the knobs it declared {sorted(declared)}"
         )
-    return {
+    row = {
         "arm_index": int(arm_index),
         "arm_id": arm.arm_id,
         "deliver": bool(arm.deliver),
@@ -875,6 +1225,12 @@ def supply_variant_arm_record(
         "supplied_item_count": len(ids),
         "max_supplied_items": arm.max_supplied_items,
     }
+    if template_group:
+        row["instruction_template"] = (
+            None if arm.instruction_template is None
+            else arm.instruction_template.as_json()
+        )
+    return row
 
 
 def supply_variant_receipt(
@@ -897,7 +1253,10 @@ def supply_variant_receipt(
     """
 
     return {
-        "schema": SUPPLY_VARIANT_RECEIPT_SCHEMA,
+        "schema": (
+            SUPPLY_VARIANT_RECEIPT_SCHEMA_V4 if group.is_template
+            else SUPPLY_VARIANT_RECEIPT_SCHEMA
+        ),
         "phase_id": _nonempty_str(
             phase_id, field="supply_variant_receipt.phase_id"
         ),
@@ -2293,6 +2652,15 @@ __all__ = [
     "SUPPLY_VARIANT_KNOB_ROOT",
     "SUPPLY_VARIANT_KNOB_TAILS",
     "SUPPLY_VARIANT_RECEIPT_SCHEMA",
+    "SUPPLY_VARIANT_RECEIPT_SCHEMA_V4",
+    "SUPPLY_VARIANT_KIND_SUPPLY",
+    "SUPPLY_VARIANT_KIND_TEMPLATE",
+    "TEMPLATE_VARIANT_NODES",
+    "TEMPLATE_VARIANT_ROOTS",
+    "MIN_TEMPLATE_CANDIDATE_ARMS",
+    "MAX_TEMPLATE_CANDIDATE_ARMS",
+    "SupplyVariantTemplate",
+    "parse_template_variants",
     "SupplyVariantArm",
     "SupplyVariantError",
     "SupplyVariantFitEstimate",

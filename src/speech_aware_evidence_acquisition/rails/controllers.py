@@ -1771,6 +1771,17 @@ MODULE_PROGRAM_FAMILY_BASE = "phase-native-candidates-review-revise-v1"
 MODULE_PROGRAM_FAMILY_IDS: tuple[str, ...] = (
     "phase-native-module-v1-c2",
     "phase-native-module-v1-c3",
+    # NX programme E1 (2026-10-09): the review-off graph (perception 1 +
+    # solver 1 = 2) with a node-template arm group of K contacts at the Solver's
+    # first visit has ceiling 2 + (K - 1); K runs 2..8 (one candidate to six,
+    # the delivering arm and a twin), plus the lookup profile's one extra.
+    "phase-native-module-v1-c4",
+    "phase-native-module-v1-c5",
+    "phase-native-module-v1-c6",
+    "phase-native-module-v1-c7",
+    "phase-native-module-v1-c8",
+    "phase-native-module-v1-c9",
+    "phase-native-module-v1-c10",
     "phase-native-module-v1-c11",
     "phase-native-module-v1-c12",
     "phase-native-module-v1-c13",

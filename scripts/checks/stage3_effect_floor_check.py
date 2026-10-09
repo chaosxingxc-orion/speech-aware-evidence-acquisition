@@ -35,6 +35,18 @@ DECLARED effect, before the GPU hours are spent rather than after.
   ``supply_variants`` arms read against their in-flight twin; it may claim
   only ``"nominated"`` in ``flight_registration_check.py``, never
   ``"admitted"``.
+* ``same-flight-node-column`` (NX programme E1/E2, 2026-10-09) is the NODE-TEMPLATE
+  column read: K instruction-template arms at ONE node over the same sealed
+  predecessor state, paired per row against the delivering (locked-template) arm
+  inside one flight (``rails.supply_variants.parse_template_variants``,
+  docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-
+  design.md). A cell of this design must carry a ``template_variants`` summary
+  beside ``measurement_design`` -- ``{"node": "solver", "candidate_arms": 1..6,
+  "twin": true|false}`` -- which this gate checks for shape only (the arm group
+  itself is parsed, and refused by name, by the rails at config load). Its floor
+  is the same-flight CONTRAST floor, borrowed from ``same-flight-supply-variant``
+  (the same estimand width: a per-row paired contrast inside one flight, n =
+  1,080) until a node-column cell has flown and measured its own twin null.
 * ``expected_effect_pp`` -- a number: the effect, in percentage points on the
   cell's primary metric, the cell is registered to LOOK FOR. Not a hope and
   not a bound; the size the mechanism is believed to produce.
@@ -115,6 +127,8 @@ design                                floor at n rows (CI95 half-width, pp)
 ``same-flight-supply-variant``        per metric (owner decision 190): intent
                                        ``0.65 * sqrt(1080 / rows)``, slu
                                        ``1.49 * sqrt(1080 / rows)``
+``same-flight-node-column``           per metric: borrowed from the row above
+                                       until a node-column cell measures its null
 ``same-flight-perception-variant``    per metric (owner decision 190): same
                                        two anchors as same-flight-supply-variant
 ``same-flight-shadow-relisten``       slu only (owner decision 190):
@@ -342,6 +356,26 @@ FLOOR_TABLE: dict[str, Floor] = {
             "on intent, 4.70x short on SLU). The estimand (Solver-local, non-delivering "
             "arms never reach Reviewer/Planner) and the claim ceiling (nominated only, "
             "never admitted) are unchanged by this recalibration"
+        ),
+        sampling_by_metric={"intent": ((1080, 0.65),), "slu": ((1080, 1.49),)},
+    ),
+    # NX programme E1/E2 (2026-10-09): the node-template column read -- K
+    # instruction-template arms at one node over the SAME sealed predecessor
+    # state in one flight, paired per row against the delivering arm. The
+    # estimand is the node-local answer under each template (not the delivered
+    # full-system answer), exactly as ``same-flight-supply-variant``'s is, and
+    # the contrast width at n = 1,080 is the same paired-contrast width, so the
+    # floor is that design's, borrowed and labelled as such until a node-column
+    # cell has flown and measured its own twin/contrast null.
+    "same-flight-node-column": Floor(
+        source=(
+            "NX programme E1 (2026-10-09, docs/readiness/2026-10-09-slurp-nx-node-"
+            "extreme-programme-v1.md section C0.2/C1): borrowed from "
+            "same-flight-supply-variant (owner decision 190): intent 0.65, SLU 1.49 at "
+            "n = 1,080, the larger of the two measured same-flight CONTRAST half-widths "
+            "(cell W-SV-1 and cell W4-SV; docs/results/2026-09-29-slurp-same-flight-"
+            "floor-recalibration.md). PROVISIONAL: replaced by the first node-column "
+            "cell's own twin null on its node-local estimand"
         ),
         sampling_by_metric={"intent": ((1080, 0.65),), "slu": ((1080, 1.49),)},
     ),
@@ -731,6 +765,14 @@ def _block_for(blocks: Any, run_id: str | None, cell_id: str | None) -> Any:
 #: reported as one, and its margin may not be tighter than what its design can actually see.
 _ADMISSIONS: frozenset[str] = frozenset({"benefit", "no-harm"})
 
+#: NX programme E1: the design a node-template column read declares, the nodes a template
+#: group may sit at (mirrors ``rails.supply_variants.TEMPLATE_VARIANT_NODES``, which a unit test
+#: compares) and the candidate-arm bound (mirrors ``MAX_TEMPLATE_CANDIDATE_ARMS``). This gate
+#: reads no package source, so it restates them.
+NODE_COLUMN_DESIGN = "same-flight-node-column"
+TEMPLATE_VARIANT_NODES: tuple[str, ...] = ("solver",)
+MIN_TEMPLATE_CANDIDATE_ARMS, MAX_TEMPLATE_CANDIDATE_ARMS = 1, 6
+
 #: Owner decision 190 (2026-09-29): the closed set ``primary_metric_key`` may name. ``intent``
 #: and ``slu`` each resolve a design's own ``sampling_by_metric`` anchor (:data:`FLOOR_TABLE`);
 #: ``present`` (gold-on-list, e.g. P-SV-2's level-1 read) carries no numeric floor at all.
@@ -753,6 +795,9 @@ class Declaration:
     primary_metric: str | None = None
     primary_metric_key: str | None = None
     note: str | None = None
+    #: NX programme E1: the node-template summary a ``same-flight-node-column``
+    #: cell declares (``node``, ``candidate_arms``, ``twin``); ``None`` otherwise.
+    template_variants: dict[str, Any] | None = None
     problems: list[str] = field(default_factory=list)
 
 
@@ -837,11 +882,58 @@ def _parse_declaration(
         else:
             parsed.primary_metric_key = primary_metric_key
 
+    template_variants = block.get("template_variants")
+    if parsed.design == NODE_COLUMN_DESIGN and template_variants is None:
+        parsed.problems.append(
+            f"measurement_design {NODE_COLUMN_DESIGN!r} requires a template_variants block "
+            '({"node", "candidate_arms", "twin"}) naming the node, the number of candidate '
+            "template arms and whether an A/A twin flies"
+        )
+    elif template_variants is not None and parsed.design != NODE_COLUMN_DESIGN:
+        parsed.problems.append(
+            f"template_variants is declared but measurement_design is {parsed.design!r}; a "
+            f"node-template column read declares {NODE_COLUMN_DESIGN!r}"
+        )
+    elif template_variants is not None:
+        parsed.template_variants = _parse_template_variants_summary(template_variants, parsed)
+
     for key in ("primary_metric", "note"):
         value = block.get(key)
         if isinstance(value, str) and value.strip():
             setattr(parsed, key, value.strip())
     return parsed
+
+
+def _parse_template_variants_summary(block: Any, parsed: Declaration) -> dict[str, Any] | None:
+    """Shape of the ``template_variants`` summary; each defect is a problem of
+    ``parsed``. The arm group itself is the rails' to parse."""
+
+    if not isinstance(block, dict) or set(block) != {"node", "candidate_arms", "twin"}:
+        parsed.problems.append(
+            'template_variants must be exactly {"node", "candidate_arms", "twin"}'
+        )
+        return None
+    ok = True
+    if block["node"] not in TEMPLATE_VARIANT_NODES:
+        parsed.problems.append(
+            f"template_variants.node is {block['node']!r}; a template group may sit only at "
+            f"{list(TEMPLATE_VARIANT_NODES)}"
+        )
+        ok = False
+    arms = block["candidate_arms"]
+    if (
+        isinstance(arms, bool) or not isinstance(arms, int)
+        or not MIN_TEMPLATE_CANDIDATE_ARMS <= arms <= MAX_TEMPLATE_CANDIDATE_ARMS
+    ):
+        parsed.problems.append(
+            f"template_variants.candidate_arms is {arms!r}; it must be an integer from "
+            f"{MIN_TEMPLATE_CANDIDATE_ARMS} to {MAX_TEMPLATE_CANDIDATE_ARMS}"
+        )
+        ok = False
+    if not isinstance(block["twin"], bool):
+        parsed.problems.append(f"template_variants.twin is {block['twin']!r}; it must be true or false")
+        ok = False
+    return dict(block) if ok else None
 
 
 # --------------------------------------------------------------------------
@@ -1256,6 +1348,10 @@ def evaluate(
                     "primary_metric_key": parsed.primary_metric_key,
                     "note": parsed.note,
                     "problems": list(parsed.problems),
+                    **(
+                        {} if parsed.template_variants is None
+                        else {"template_variants": parsed.template_variants}
+                    ),
                 }
             )
             cell_findings = _findings_for(record, parsed)

@@ -85,7 +85,9 @@ STATE_COLUMN = "column"
 COMPONENT_STATES: tuple[str, ...] = (STATE_ON, STATE_OFF, STATE_SHADOW, STATE_COLUMN)
 
 _BLOCK_REQUIRED = frozenset({"module_id", "profile", "components"})
-_BLOCK_OPTIONAL = frozenset({"columns", "lock", "review_loop", "solver_tool_access"})
+_BLOCK_OPTIONAL = frozenset({
+    "columns", "lock", "review_loop", "solver_tool_access", "template_frame",
+})
 #: A lock-version name a block may declare (migration step 6, owner decision
 #: 204): ``v<major>.<minor>``, resolved through the carrier's ``lock_versions``.
 _LOCK_VERSION = re.compile(r"^v[0-9]+\.[0-9]+$")
@@ -97,6 +99,7 @@ _PROFILE = re.compile(r"^[a-z][a-z0-9]*$")
 NODE_RECEIPT_SCHEMAS = frozenset({
     "saea-perception-branch-arms-v1",
     "saea-supply-variant-arms-v3",
+    "saea-supply-variant-arms-v4",
     "saea-solver-citations-v1",
     "saea-deliver-normaliser-v1",
     "saea-relisten-v1",
@@ -154,6 +157,19 @@ PERCEPTION_AXIS_COMPONENTS: dict[str, tuple[str, ...]] = {
     KEY_SOURCE_K6P: ("key_source",),
 }
 _COLUMN_REQUIRED = frozenset({"column_id", "toggle", "to", "level"})
+#: NX programme E1 (2026-10-09): the node-template column. It toggles no
+#: component: it IS one arm of the node's ``template_variants`` block -- the
+#: arm named ``column_id``, rendering the pinned ``template`` in place of the
+#: node's locked instruction template. ``node`` names the node (the carrier's
+#: ``template_variant_frame`` hook names the one it admits).
+COLUMN_KIND_TEMPLATE = "template"
+_TEMPLATE_COLUMN_KEYS = frozenset({"column_id", "kind", "node", "template", "template_tokens"})
+#: The block-level frame every template column set shares (measured by the cell
+#: author, never a placeholder: it enters the fail-closed fit refusal). ``twin``
+#: adds the A/A arm the carrier's hook names.
+_TEMPLATE_FRAME_KEYS = frozenset({
+    "max_supplied_items", "delivering_template_tokens", "twin", "fit_estimate",
+})
 #: ``prepared_seed`` is the receipt of an artifact prepared FROM the compiled
 #: identity (design 2.6, the branch-seed lesson): it is written into the
 #: branch row and excluded from the block's own sha256.
@@ -296,6 +312,11 @@ class CarrierHooks:
     lock_versions: Mapping[str, Callable[[], Mapping[str, object]]] | None = None
     current_lock: str | None = None
     roster_pin_paths: tuple[tuple[str, ...], ...] | None = None
+    #: NX programme E1: where and at which node template columns compile --
+    #: ``{"block_path": the key path of the node's ``template_variants`` block,
+    #: "node": the one node the carrier admits, "delivering_arm_id", "twin_arm_id"}``.
+    #: ``None``: no analogue on this carrier, so a template column refuses.
+    template_variant_frame: Mapping[str, object] | None = None
     #: Design section 2d: ``tool_offer_units(delivered text) -> (context
     #: label, units, parsed)`` in the ``delivered_units`` shape -- the units a
     #: model-initiated tool offer (``verify_span(index)``) is indexed over on
@@ -429,10 +450,22 @@ class ColumnDecl:
     to: str
     level: int
     prepared_seed_json: str | None
+    #: NX programme E1: ``"branch"`` (every column written before the
+    #: programme: toggles a Perception component) or ``"template"`` (one arm of
+    #: a node's ``template_variants``). Declared LAST and defaulted, so every
+    #: existing construction composes exactly the column it always did.
+    kind: str = "branch"
+    node: str | None = None
+    template_json: str | None = None
+    template_tokens: int = 0
 
     @property
     def prepared_seed(self) -> dict[str, str] | None:
         return None if self.prepared_seed_json is None else json.loads(self.prepared_seed_json)
+
+    @property
+    def template(self) -> dict[str, str] | None:
+        return None if self.template_json is None else json.loads(self.template_json)
 
 
 @dataclass(frozen=True)
@@ -450,6 +483,23 @@ class ConsumptionModuleBlock:
     lock: str | None = None
     review_loop: str | None = None
     solver_tool_access: str | None = None
+    #: NX programme E1: the template columns' shared frame (canonical JSON), or
+    #: ``None`` when the block declares no template column.
+    template_frame_json: str | None = None
+
+    @property
+    def branch_columns(self) -> tuple[ColumnDecl, ...]:
+        """The Perception-branch columns (every column but the template kind)."""
+
+        return tuple(c for c in self.columns if c.kind != COLUMN_KIND_TEMPLATE)
+
+    @property
+    def template_columns(self) -> tuple[ColumnDecl, ...]:
+        return tuple(c for c in self.columns if c.kind == COLUMN_KIND_TEMPLATE)
+
+    @property
+    def template_frame(self) -> dict[str, object] | None:
+        return None if self.template_frame_json is None else json.loads(self.template_frame_json)
 
     def component(self, component_id: str) -> ComponentDecl | None:
         for decl in self.components:
@@ -533,7 +583,9 @@ def parse_consumption_module_block(
     solver_access = raw.get("solver_tool_access")
     if "solver_tool_access" in raw and (solver_access != "bounded-slot-lookup-v1" or review_loop != "off"):
         raise ConsumptionModuleConfigError("Solver tool access requires the explicit review-off profile")
-    if review_loop == "off" and columns:
+    if review_loop == "off" and any(
+        not (isinstance(c, Mapping) and c.get("kind") == COLUMN_KIND_TEMPLATE) for c in columns
+    ):
         raise ConsumptionModuleConfigError("review-off profile does not support branch columns")
     lock = raw.get("lock")
     if "lock" in raw and (not isinstance(lock, str) or _LOCK_VERSION.fullmatch(lock) is None):
@@ -598,6 +650,12 @@ def parse_consumption_module_block(
             component_id, state, admitted_by, record, _canonical(dict(params)),
         ))
     column_decls = _parse_columns(columns, decls)
+    template_frame_json = _parse_template_frame(
+        raw.get("template_frame"), has_template_columns=any(
+            c.kind == COLUMN_KIND_TEMPLATE for c in column_decls
+        ),
+        has_branch_columns=any(c.kind != COLUMN_KIND_TEMPLATE for c in column_decls),
+    )
     block_json = _canonical(dict(raw))
     identity = dict(raw)
     if "columns" in identity:
@@ -614,7 +672,51 @@ def parse_consumption_module_block(
         lock=lock,
         review_loop=review_loop,
         solver_tool_access=solver_access,
+        template_frame_json=template_frame_json,
     )
+
+
+def _parse_template_frame(
+    raw: object, *, has_template_columns: bool, has_branch_columns: bool,
+) -> str | None:
+    """The template columns' shared frame, fail-closed: present exactly when a
+    template column is, never beside a Perception-branch column (one fan-out
+    mechanism per episode), with exactly the frame's keys. The numbers in it
+    are CHECKED where they are used (``parse_template_variants``' fit refusal),
+    not here."""
+
+    if raw is None:
+        if has_template_columns:
+            raise ConsumptionModuleConfigError(
+                "consumption_module.template_frame is required beside a template column: "
+                "it carries the measured fit estimate and supply bound the arms share"
+            )
+        return None
+    if not has_template_columns:
+        raise ConsumptionModuleConfigError(
+            "consumption_module.template_frame is declared but no template column is"
+        )
+    if has_branch_columns:
+        raise ConsumptionModuleConfigError(
+            "template columns cannot be declared beside Perception-branch columns: one "
+            "fan-out mechanism per episode"
+        )
+    if not isinstance(raw, Mapping) or set(raw) != _TEMPLATE_FRAME_KEYS:
+        raise ConsumptionModuleConfigError(
+            f"consumption_module.template_frame keys must be exactly {sorted(_TEMPLATE_FRAME_KEYS)}"
+        )
+    for key in ("max_supplied_items", "delivering_template_tokens"):
+        if isinstance(raw[key], bool) or not isinstance(raw[key], int) or raw[key] < 1:
+            raise ConsumptionModuleConfigError(
+                f"consumption_module.template_frame.{key} must be a positive integer"
+            )
+    if not isinstance(raw["twin"], bool):
+        raise ConsumptionModuleConfigError("consumption_module.template_frame.twin must be a bool")
+    if not isinstance(raw["fit_estimate"], Mapping):
+        raise ConsumptionModuleConfigError(
+            "consumption_module.template_frame.fit_estimate must be an object"
+        )
+    return _canonical(dict(raw))
 
 
 def _pin(value: object, *, field: str) -> dict[str, str]:
@@ -636,6 +738,9 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
         field = f"consumption_module.columns[{index}]"
         if not isinstance(entry, Mapping):
             raise ConsumptionModuleConfigError(f"{field} must be an object")
+        if entry.get("kind") is not None:
+            out.append(_parse_template_column(entry, field=field))
+            continue
         keys = set(entry)
         if not _COLUMN_REQUIRED <= keys or keys - _COLUMN_REQUIRED - _COLUMN_OPTIONAL:
             raise ConsumptionModuleConfigError(
@@ -670,18 +775,51 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
     ids = [c.column_id for c in out]
     if len(set(ids)) != len(ids):
         raise ConsumptionModuleConfigError("consumption_module.columns ids must be distinct")
-    toggled = [c.toggle for c in out]
+    toggled = [c.toggle for c in out if c.kind != COLUMN_KIND_TEMPLATE]
     for decl in decls:
         if decl.state == STATE_COLUMN and toggled.count(decl.component_id) != 1:
             raise ConsumptionModuleConfigError(
                 f"component {decl.component_id!r} is in 'column' state and must be toggled "
                 "by exactly one column"
             )
-    if len({c.level for c in out}) > 1:
+    if len({c.level for c in out if c.kind != COLUMN_KIND_TEMPLATE}) > 1:
         raise ConsumptionModuleConfigError(
             "consumption_module.columns must share one level (one branch block per flight)"
         )
+    if len({c.node for c in out if c.kind == COLUMN_KIND_TEMPLATE}) > 1:
+        raise ConsumptionModuleConfigError(
+            "consumption_module template columns must all name one node (one "
+            "template_variants block per flight)"
+        )
     return tuple(out)
+
+
+def _parse_template_column(entry: Mapping, *, field: str) -> ColumnDecl:
+    """One ``kind: template`` column, fail-closed: exactly its keys, a hash
+    pinned template, a measured token count. The path/root/digest refusals are
+    ``rails.supply_variants``' own, applied at compile time; the shape is
+    checked here so a malformed column never reaches the compiler."""
+
+    if entry.get("kind") != COLUMN_KIND_TEMPLATE:
+        raise ConsumptionModuleConfigError(
+            f"{field}.kind must be {COLUMN_KIND_TEMPLATE!r} or absent, got {entry.get('kind')!r}"
+        )
+    if set(entry) != _TEMPLATE_COLUMN_KEYS:
+        raise ConsumptionModuleConfigError(
+            f"{field} keys must be exactly {sorted(_TEMPLATE_COLUMN_KEYS)} for a template "
+            f"column, got {sorted(entry)}; a template column overrides the instruction "
+            "template and nothing else"
+        )
+    column_id = _require_text(entry["column_id"], field=f"{field}.column_id")
+    node = _require_text(entry["node"], field=f"{field}.node")
+    pin = _pin(entry["template"], field=f"{field}.template")
+    tokens = entry["template_tokens"]
+    if isinstance(tokens, bool) or not isinstance(tokens, int) or tokens < 1:
+        raise ConsumptionModuleConfigError(f"{field}.template_tokens must be a positive integer")
+    return ColumnDecl(
+        column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_TEMPLATE, node=node,
+        template_json=_canonical(pin), template_tokens=tokens,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -924,7 +1062,7 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         )
     writer = _Writer(layer)
     if block.review_loop == "off":
-        if direct_layer or block.columns or any(d.component_id == RELISTEN for d in block.armed()):
+        if direct_layer or block.branch_columns or any(d.component_id == RELISTEN for d in block.armed()):
             raise ConsumptionModuleConfigError("review-off profile requires a simple native graph")
         opportunity = block.component(KNOWLEDGE_CONSUMPTION_OPPORTUNITY)
         if block.solver_tool_access and (opportunity is None or opportunity.state != STATE_ON
@@ -1102,11 +1240,13 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
             writer.set(("native_episode", "tool_schema_rendering"), "per-role",
                        component_id="review-off-profile", replace_only="tool_schema_rendering" in layer["native_episode"])
         ceiling = sum(layer["native_episode"]["roles"][kind]["max_iterations"] for kind in ("perception", "solver"))
+    if block.template_columns:
+        ceiling += _compile_template_columns(block, hooks, writer, layer)
     level = _compile_perception_branches(block, hooks, writer)
     if level is not None:
         from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
 
-        branch_count = len(block.columns) + 2
+        branch_count = len(block.branch_columns) + 2
         ceiling = perception_branch_ceiling(base_ceiling=ceiling, branch_count=branch_count, level=level)
     solver_material = layer["phase_material"].get("solver")
     contract = solver_material.get("response_format_id") if isinstance(solver_material, Mapping) else None
@@ -1187,7 +1327,7 @@ def _compile_perception_branches(
                 "rides the delivered path only after its column read NOMINATED it and a composed "
                 "read carried it; until then it is a 'column')"
             )
-    if not block.columns:
+    if not block.branch_columns:
         raise ConsumptionModuleConfigError(
             "a delivered-path Perception axis rides the branch block's delivering branch A; "
             "declare at least one column"
@@ -1195,7 +1335,7 @@ def _compile_perception_branches(
     frame = _require_hook(hooks, "perception_branch_frame", armed[0].component_id)
     by_id = {d.component_id: d for d in armed}
     rows = []
-    for column in block.columns:
+    for column in block.branch_columns:
         params = by_id[column.toggle].params
         row = {"branch_id": column.column_id, "max_supplied_items": params["max_supplied_items"]}
         for key in PERCEPTION_AXIS_COMPONENTS[column.toggle]:
@@ -1215,13 +1355,71 @@ def _compile_perception_branches(
         "replicate_of": frame["delivering_branch_id"],
     })
     rows.append(delivering)
-    level = block.columns[0].level
+    level = block.branch_columns[0].level
     branches_block = {
         "branches": rows, "fit_estimate": dict(frame["fit_estimate"]), "level": level,
     }
     writer.set(tuple(frame["block_path"]), branches_block,
                component_id="+".join(d.component_id for d in armed), replace_only=False)
     return level
+
+
+def _compile_template_columns(
+    block: ConsumptionModuleBlock, hooks: CarrierHooks, writer: _Writer, layer: Mapping,
+) -> int:
+    """Compile the template columns into ONE ``template_variants`` block at the
+    carrier's admitted node (NX programme E1): one arm per column in column
+    order, the twin when the frame asks for one, then the delivering arm --
+    which carries no template, so its request is the lock's own. Returns the
+    extra contacts the block adds to the ceiling (K - 1).
+
+    The compiled block is parsed by the rails' own ``parse_template_variants``
+    HERE, so a malformed path, a digest, an outside-the-roots template, a
+    duplicate or a fit overrun is refused at compile time, by that parser's
+    name, before any config is written."""
+
+    from .supply_variants import SupplyVariantError, parse_template_variants  # noqa: PLC0415
+
+    frame = _require_hook(hooks, "template_variant_frame", "template-columns")
+    tf = block.template_frame
+    nodes = {c.node for c in block.template_columns}
+    if nodes != {frame["node"]}:
+        raise ConsumptionModuleConfigError(
+            f"template columns name node(s) {sorted(nodes)}, but profile {hooks.profile!r} "
+            f"admits template variants only at {frame['node']!r}"
+        )
+    rows = [
+        {"arm_id": c.column_id, "instruction_template": c.template,
+         "template_tokens": c.template_tokens}
+        for c in block.template_columns
+    ]
+    if tf["twin"]:
+        if frame.get("twin_arm_id") is None:
+            raise ConsumptionModuleConfigError(
+                f"profile {hooks.profile!r} names no twin arm id for template columns"
+            )
+        rows.append({"arm_id": frame["twin_arm_id"], "replicate_of": frame["delivering_arm_id"]})
+    rows.append({
+        "arm_id": frame["delivering_arm_id"], "deliver": True,
+        "template_tokens": tf["delivering_template_tokens"],
+    })
+    template_block = {
+        "node": frame["node"], "arms": rows,
+        "max_supplied_items": tf["max_supplied_items"],
+        "fit_estimate": dict(tf["fit_estimate"]),
+    }
+    path = tuple(frame["block_path"])
+    role = _node(layer, path[:-1], field="template-columns")
+    material = layer.get("phase_material", {}).get(frame["node"], {})
+    try:
+        parse_template_variants(
+            template_block, role_kind=frame["node"], phase_id=str(role.get("phase_id")),
+            locked_template=material.get("instruction_template"),
+        )
+    except SupplyVariantError as error:
+        raise ConsumptionModuleConfigError(f"template columns are invalid: {error}") from error
+    writer.set(path, template_block, component_id="template-columns", replace_only=False)
+    return len(rows) - 1
 
 
 def delivered_perception_axes(raw_block: object) -> tuple[str, ...]:
@@ -1411,6 +1609,7 @@ def validate_module_header_receipt(receipt: object) -> Mapping[str, object]:
 __all__ = [
     "AGREE_VOTE_SEED",
     "CENTROID_BOUNDARY_KEY",
+    "COLUMN_KIND_TEMPLATE",
     "COMPONENT_CATALOGUE",
     "COMPONENT_STATES",
     "CONSUMPTION_MODULE_CONFIG_KEY",

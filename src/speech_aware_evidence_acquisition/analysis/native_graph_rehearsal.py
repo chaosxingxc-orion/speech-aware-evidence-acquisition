@@ -46,7 +46,13 @@ def rehearsal_profile(values, profile):
     if (config is None or config.review_loop_enabled or config.max_revisions != 0
             or config.role("perception").max_iterations != 1
             or config.role("perception").perception_branches is not None
-            or config.role("solver").samples != 1 or config.role("solver").supply_variants is not None
+            or config.role("solver").samples != 1
+            # NX programme E1: a node-template arm group is a P/S graph with
+            # extra Solver contacts and no extra node, so the review-off
+            # rehearsal admits it; a SUPPLY-kind group (per-arm routers) stays
+            # outside this profile.
+            or (config.role("solver").supply_variants is not None
+                and not config.role("solver").supply_variants.is_template)
             or config.acquisition_enabled or config.refresh_action is not None or config.relisten_json is not None
             or config.role("solver").max_iterations != (2 if config.solver_tool_access else 1)
             or any(r.tool_names for r in config.roles if r.role_kind != "solver")):
