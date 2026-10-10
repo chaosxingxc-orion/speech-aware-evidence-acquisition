@@ -19,7 +19,7 @@
             "kind": "decision",
             "reason": "Decision slurp-ver1b-samples-fold-a-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-ver1b-samples-fold-a-v1/root-admission-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "9f02423b3fc9c2d5f331cbd93a0c3ce39e1092e0f57b45a421be1f02ceabfe32"
           },
           {
             "kind": "preparation",
@@ -31,10 +31,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed TRAIN Fold A speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the TRAIN Fold A agreement table, with zero model, tokenizer, encoder, scorer or server contacts. E16: this cell pins its own. --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "5505a1f2788fcc452cede3e91e5e75b64ba726ecf102a86162d5d516ce027992"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-V1"
     }
