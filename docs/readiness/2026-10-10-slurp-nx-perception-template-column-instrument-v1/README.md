@@ -180,7 +180,7 @@ See the hand-off report for the verbatim output. Summary: the new and the neighb
 `test_perception_branch_level2_render`, `test_consumption_module*`, `test_slurp_nx_solver_column_read`,
 `test_stage3_effect_floor_node_column`, `test_engineering_base_check`) give `400 passed, 1 failed`; the one failure,
 `test_consumption_module_step6.py::test_the_module_cells_are_held_and_fly_in_one_campaign` (cells read `ready`, not
-`held`), fails identically on the unchanged master checkout. Gates: `engineering_base_check.py` PASS,
+`held`), fails identically on the unchanged master checkout. Full `tests/unit`: `4 failed, 24735 passed, 10 skipped, 2 errors`; the same six test ids (`test_consumption_module_step6`, `test_filler_family::test_disjointness_proof_is_complete_and_zero`, `test_natural_source_compatibility::test_actual_reviewed_full_runtime_ast`, `test_nx_r5_cell_registration`, `test_obs_loop_policy`, `test_serving_resource_guard`) fail or error on the unchanged master checkout. Gates: `engineering_base_check.py` PASS,
 `finite_completion_policy_check.py` PASS (576 in-scope plans), `stage3_effect_floor_check.py` PASS (0 blocking),
 `tool_catalog_check.py` PASS, `stage3_algorithm_label_check.py` PASS.
 
