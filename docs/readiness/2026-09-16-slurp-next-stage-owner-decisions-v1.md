@@ -800,3 +800,19 @@ recorded as additional-but-not-convertible).
   with its own A/A (~1-2 days engineering + ~4 GPU-h per column flight). Recommended: A, with the GPU going to the
   TF-RL line (decision 252 mode 2) whose design proposal follows; C stays available if the TF-RL line needs the
   Perception node to emit structured evidence.
+
+## Decisions 254-256 PROPOSED by the coordinator (Fable 5.1), 2026-10-10 -- the TF-RL line (decision 252 mode 2)
+
+Design: `docs/readiness/2026-10-10-slurp-tfrl-sealed-credit-routing-design-v1.md` (sealed-credit routing, SCR: a
+training-free off-policy contextual learner over TYPED, pinned, already-measured actions, learned offline from the
+counterfactual same-flight columns on file (R1 i1/i2, R6-P1, P-SV-1..4, W-SV / W4-SV, ROLL pools) with
+cross-fitting, flown as ONE routed policy arm; exploration through proposer-authored typed arms in NX columns; the
+gate result (+0.75 / +0.98, CI-LB > 0 on two flights) is its first instance).
+- **254** (PROPOSED) Adopt SCR as the TF-RL line; TF-0 (0 GPU) and the E9 policy-arm engineering start now; TF-1
+  (Fold B column, ~3-4 GPU-h) flies only if TF-0's cross-fitted SLU-F1 gain has CI-LB > 0 and a point >= 1.5 pp (or
+  >= 1.0 with CI-LB >= 0.5 and a clean intent guard); then Fold A (TF-2), DEV composed (TF-3), test. Recommended: yes.
+- **255** (PROPOSED) The proposer of new typed arms is the frozen core in its existing text-only seam or a hand author,
+  both labelled, fed aggregate contrast tables only; no external proposer (paid API 0). Recommended: yes.
+- **256** (PROPOSED) = decision 253 option A (close the Perception-entity presence line after one round) so the GPU
+  after the successor-2 test read goes to TF-1 when TF-0 clears its rule; the p1 presence tag and the K6p key stay
+  available to SCR as actions / context features. Recommended: yes.
