@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "10b7dd2427de97462af6ef4bc6ab08923a2781f865d24a0705b8b82b5a1ee551"
+    "sha256": "da4848bf03b4649ae020c546772f7f6b07b60957a7920554d8a95026608e9640"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-10T12:00:00.000000+00:00",
