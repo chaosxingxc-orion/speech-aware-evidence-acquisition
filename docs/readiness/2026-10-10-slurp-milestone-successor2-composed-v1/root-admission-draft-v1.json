@@ -1,10 +1,10 @@
 {
-  "_draft_note": "A DRAFT for root. It authorises nothing while its status is not 'decided' and the allowance it pins is unsigned.",
+  "_draft_note": "A DRAFT for root. It authorises nothing while its status is not 'decided'; the allowance it pins is SIGNED (2026-10-10, decision 251 A).",
   "antecedents": {
     "allowance": {
-      "note": "filled with the SIGNED bytes' sha256 at the re-pin; the committed draft's sha256 at registration was 295a570e184589e65104e0d47f09e9393cf8b525cac7a01a221b9b7f48089e6b",
+      "note": "signed 2026-10-10, owner decision 251 (option A); status authorised; the committed draft's sha256 at registration was 295a570e184589e65104e0d47f09e9393cf8b525cac7a01a221b9b7f48089e6b",
       "path": "docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json",
-      "sha256": null
+      "sha256": "4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d"
     },
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/analysis-recipe-v1.json",
@@ -20,7 +20,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/protocol-registered-v1.json",
-      "sha256": "e40ea7a926d46cb6c51e88aac04806e0f9bc85a673d8ae0c09526869c63adad4"
+      "sha256": "7f39e3921dab1272b98cd3673ea83c01a5de6daf03555c6e6e85c791d8ae6878"
     },
     "r5_registration": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/registered-facts-v1.json",
@@ -32,7 +32,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/registered-facts-v1.json",
-      "sha256": "78c3a2810c0aa4cded31a34710c318b031b813c5d6ca9f0b76d17ed9b26e3d72"
+      "sha256": "63daa53dcd16eda72103b1b3906de88be12cbef148e4589339f965de7e636922"
     },
     "registration_base_commit": "e13e25909a85d892b284c77f9f7b733693264bc8"
   },
@@ -54,6 +54,13 @@
   "claim_boundary": "A milestone development read (owner decisions 28, 151). No test claim, no superiority, generalisation, confirmatory or paper-scale claim. claim: no-harm.",
   "coordinator": null,
   "decision": "Fly SUCCESSOR2-COMPOSED once on SLURP-TEST-SAMPLE-3010-V1; read cross-flight against the sealed successor-1 COMP-1b and PLAN columns, SLU-F1 primary, intent guard, no-harm.",
+  "decision_250_ruling": {
+    "date": "2026-10-10",
+    "decision": 250,
+    "option": "A",
+    "ruling": "The successor-2 test read carries the documented exception to instrument rule 4: design cross-flight-no-replicate, declared DEV flight offset 0.7274 pp SLU-F1 / 0.20 pp intent, no-harm claim, margin 2.5, development evidence under decision 28; no in-chain replicate on the sample.",
+    "source": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 'Decisions 249-252 ruled by the owner, 2026-10-10'"
+  },
   "decision_id": "slurp-milestone-successor2-admission-v1",
   "eligible_run_ids": [
     "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1",
@@ -82,10 +89,10 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "composed": {
-      "composed_config": "75f09d6c87d3f7f8d58495c643656d0b3a61d7668eaa9386e353c9b2f10f70ee",
-      "protocol": "a3b95b60a56505a94a4acb4ee66c10cd360256695250c1cf8ee59e2727260dbf"
+      "composed_config": "c5f507637053f05445f4559fa26e0b56bb91e226ffe093779b20d24413deb999",
+      "protocol": "7f27008c31c086f4a24e423bc9fd2ec5578af9121b2d9046ccdc63b432b8f62f"
     },
-    "note": "the fragment exactly as committed at e13e25909a85d892b284c77f9f7b733693264bc8; repin_cell.py recomputes them at the flip"
+    "note": "the fragment re-pinned to the signed allowance bytes (sign mode, 2026-10-10); repin_cell.py recomputes them at the flip"
   },
   "schema": "saea-campaign-decision-v1",
   "service": {

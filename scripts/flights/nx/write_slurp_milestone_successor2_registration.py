@@ -19,11 +19,12 @@ SEALED successor-1 COMP-1b cell's value; and the composition delta (successor-1 
 the R5 delta on DEV (A2 arm to R5 composed), path for path. ``anything_else`` empty or this script refuses.
 
 Nothing here flies, mints, flips, re-pins or countersigns. The allowance pin of the cell is written as 64 zeros
-(the held form): the owner has not signed, so there are no signed bytes to pin yet. ``repin_cell.py`` fills it.
+(the held form) until the owner signs; ``sign`` (owner decisions 250 A / 251 A, 2026-10-10) then pins the signed bytes.
 
     python -B scripts/flights/nx/write_slurp_milestone_successor2_registration.py derive
     python -B scripts/flights/nx/write_slurp_milestone_successor2_registration.py register \
         --study-commit <sha> --registered-at 2026-10-10T..Z [--append-ledger]
+    python -B scripts/flights/nx/write_slurp_milestone_successor2_registration.py sign
 """
 
 from __future__ import annotations
@@ -510,9 +511,207 @@ def ledger_row(cells: list[str]) -> str:
     return W.ledger_row(cells)
 
 
+# ---- sign: pin the SIGNED allowance bytes (owner decisions 250 A / 251 A, 2026-10-10) ---------------------------------
+SIGNED_AT_NOTE = "signed 2026-10-10, owner decision 251 (option A)"
+DRAFT_BYTES_SHA = "295a570e184589e65104e0d47f09e9393cf8b525cac7a01a221b9b7f48089e6b"
+DECISION_250_RULING = {
+    "decision": 250,
+    "option": "A",
+    "date": "2026-10-10",
+    "ruling": ("The successor-2 test read carries the documented exception to instrument rule 4: design cross-flight-no-replicate, declared DEV "
+               "flight offset 0.7274 pp SLU-F1 / 0.20 pp intent, no-harm claim, margin 2.5, development evidence under decision 28; no in-chain "
+               "replicate on the sample."),
+    "source": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 'Decisions 249-252 ruled by the owner, 2026-10-10'",
+}
+
+
+def _read_text(path: str) -> str:
+    return (REPO_ROOT / path).read_bytes().decode("utf-8")
+
+
+def _write_text(path: str, text: str) -> None:
+    (REPO_ROOT / path).write_bytes(text.encode("utf-8"))
+
+
+def sign() -> int:
+    """Pin the signed allowance bytes into the held cell and propagate every hash that depends on the pin (model-free).
+
+    Reads the committed signed allowance, rewrites the four ``owner_allowance`` pins (fragment, both plan documents, facts), records the
+    decision-250 ruling in the measurement block, updates the prose that said "unsigned", and then propagates the composed config hash,
+    the protocol hash and every package file sha256 to a fixed point. Nothing here flies, mints, flips, re-pins or countersigns.
+    """
+
+    import re
+
+    allowance = load(ALLOWANCE)
+    if allowance.get("status") != "authorised":
+        raise SystemExit("the successor-2 allowance is not authorised; nothing to pin")
+    if allowance["permitted_run_ids"] != [RUN, FIT_RUN] or allowance["read_run_ids"] != [RUN] or allowance["preparation_run_ids"] != [FIT_RUN]:
+        raise SystemExit("the signed allowance does not permit exactly the run and FIT ids")
+    signed = sha_file(ALLOWANCE)
+    fragment = f"configs/experiment/{CELL}.json"
+    plan_paths = [f"{PACKAGE}/generation-plan-registered-v1.json", f"{PACKAGE}/fit-plan-registered-v1.json"]
+    facts_path, protocol_path = f"{PACKAGE}/registered-facts-v1.json", f"{PACKAGE}/protocol-registered-v1.json"
+    readme_path, draft_path = f"{PACKAGE}/README.md", f"{PACKAGE}/root-admission-draft-v1.json"
+    package_files = sorted(str(p.relative_to(REPO_ROOT)).replace(os.sep, "/") for p in (REPO_ROOT / PACKAGE).iterdir() if p.is_file())
+    tracked = [fragment, PREREG, LEDGER, *package_files]
+    latest = {p: sha_file(p) for p in tracked}
+    old_composed = composed_of(CELL)[2]
+    old_cfg = old_composed.config_hash
+    old_proto = protocol_hash(old_cfg, old_composed.values["arm"], old_composed.values["split_identity_hash"])
+    if json.loads(_read_text(fragment))["owner_allowance"] != {"path": ALLOWANCE, "sha256": ZERO}:
+        raise SystemExit("the fragment is not in the held (64-zero) form; already signed?")
+
+    pin_re = re.compile(r'("owner_allowance": \{\s*"path": "' + re.escape(ALLOWANCE) + r'",\s*"sha256": ")' + ZERO + '"')
+    n_pins = 0
+    for path in (fragment, *plan_paths, facts_path):
+        text, n = pin_re.subn(lambda m: m.group(1) + signed + '"', _read_text(path))
+        n_pins += n
+        _write_text(path, text)
+    if n_pins != 4:
+        raise SystemExit(f"expected 4 owner_allowance pins (fragment, two plans, facts), rewrote {n_pins}")
+
+    text = _read_text(fragment)
+    old_reason = ("(1) the owner has not signed the successor-2 allowance DRAFT; this fragment's owner_allowance sha256 is 64 zeros until the "
+                  "coordinator sets the draft's status to authorised, records its sha256 and re-pins;")
+    if old_reason not in text:
+        raise SystemExit("fragment reason text not found")
+    _write_text(fragment, text.replace(
+        old_reason, f"(1) the owner SIGNED the successor-2 allowance ({SIGNED_AT_NOTE}); this fragment's owner_allowance pins the signed bytes, sha256 {signed};"))
+
+    new_composed = composed_of(CELL)[2]
+    new_cfg = new_composed.config_hash
+    new_proto = protocol_hash(new_cfg, new_composed.values["arm"], new_composed.values["split_identity_hash"])
+    if new_composed.values["owner_allowance"] != {"path": ALLOWANCE, "sha256": signed}:
+        raise SystemExit("the composed config does not carry the signed pin")
+
+    def edit_json(path: str, fn) -> None:
+        raw = _read_text(path)
+        doc = json.loads(raw)
+        if json.dumps(doc, indent=2, ensure_ascii=False, sort_keys=True) + "\n" != raw:
+            raise SystemExit(f"{path} does not round-trip through the registration serialiser")
+        fn(doc)
+        _write_text(path, json.dumps(doc, indent=2, ensure_ascii=False, sort_keys=True) + "\n")
+
+    def amend_measurement(block: dict) -> None:
+        block["owner_ruling_decision_250"] = DECISION_250_RULING
+        block["design_statement"] += (
+            " RULED 2026-10-10: owner decision 250 (option A) accepts the documented exception to rule 4 -- design cross-flight-no-replicate, "
+            "declared DEV flight offset 0.7274 pp SLU-F1 / 0.20 pp intent, no-harm claim, margin 2.5, development evidence under decision 28; "
+            "no in-chain replicate on the sample.")
+
+    def facts_fn(doc: dict) -> None:
+        a = doc["allowance"]
+        a["sha256_pinned_in_the_fragment"] = signed
+        a["status_signed"] = "authorised"
+        a["sha256_of_signed_bytes"] = signed
+        a["signed_note"] = (f"{SIGNED_AT_NOTE}; committed at master 951de831b; the fragment, both plan documents and these facts pin these bytes. "
+                            "The cell stays HELD and the ledger rows stay DRAFT until root countersigns.")
+        a["signing"] = (f"SIGNED 2026-10-10 (owner decision 251, option A): status 'authorised', sha256 {signed}; the fragment's owner_allowance pins "
+                        "those bytes (write_slurp_milestone_successor2_registration.py sign); contracts.plan.require_owner_split_allowance accepts "
+                        "exactly the two permitted run ids.")
+        a["decision_250_ruling"] = DECISION_250_RULING
+        amend_measurement(doc["stage3_measurement"][RUN])
+
+    edit_json(facts_path, facts_fn)
+    edit_json(protocol_path, lambda doc: amend_measurement(doc["stage3_measurement"][RUN]))
+
+    measurement = {"stage3_measurement": json.loads(_read_text(facts_path))["stage3_measurement"]}
+    new_block = json.dumps(measurement, indent=2, ensure_ascii=False, sort_keys=True)
+    block_re = re.compile(r"```json\n(\{\n  \"stage3_measurement\".*?\n\})\n```", re.S)
+    for path in (readme_path, PREREG):
+        text = _read_text(path)
+        if len(block_re.findall(text)) != 1:
+            raise SystemExit(f"{path}: expected exactly one stage3_measurement json block")
+        _write_text(path, block_re.sub(lambda m: "```json\n" + new_block + "\n```", text))
+
+    b1_new = (f"OWNER SIGNATURE: RESOLVED. The owner signed the successor-2 allowance on 2026-10-10 (decision 251, option A): status authorised, "
+              f"sha256 {signed}, pinned by this cell's owner_allowance.")
+    b2_new = ("MEASUREMENT RULE: RULED. Owner decision 250 (option A, 2026-10-10) accepts the documented exception to instrument rule 4: design "
+              "cross-flight-no-replicate, declared DEV flight offset 0.7274 pp SLU-F1 / 0.20 pp intent, no-harm claim, margin 2.5, development evidence "
+              "under decision 28; no in-chain replicate on the sample.")
+    signed_para = (
+        f"**Signed 2026-10-10 (decision 251, option A; decisions 249-252 in `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`).** "
+        f"Status `authorised`, the owner's words recorded in the signature block; the committed bytes (master `951de831b`) hash to `{signed}`. "
+        "`write_slurp_milestone_successor2_registration.py sign` pinned the fragment's `owner_allowance`, both plan documents and the facts to that "
+        "sha256 and propagated the hashes that depend on the pin (composed config hash, protocol hash, protocol and plan file sha256s) through the "
+        "package, the preregistration, the root-admission draft and the three DRAFT ledger rows. The cell stays HELD and the rows stay DRAFT: root "
+        "countersigns, mints, flips (`milestone_successor2_flip.sh`) and re-pins the cell's own supply after the running flight. Held form, reproduced "
+        "from `contracts.plan.require_owner_split_allowance`: the plan pins the path and the 64-hex sha256 of the committed bytes and refuses on any "
+        "drift, any status other than `authorised`, any run id outside the permitted list (exactly the two new ids), another carrier, profile or split "
+        "identity. Decision 250 (option A, same day) rules the documented rule-4 exception: `cross-flight-no-replicate`, declared DEV offset 0.7274 pp "
+        "SLU-F1 / 0.20 pp intent, no-harm claim, margin 2.5, no in-chain replicate.")
+    subs = [
+        (r"OWNER SIGNATURE: the successor-2 allowance is an unsigned DRAFT.*?re-pins the fragment\.", b1_new),
+        (r"MEASUREMENT RULE: measurement_design cross-flight-no-replicate is refused outright by instrument rule 4.*?before root countersigns\.", b2_new),
+        (r"allowance DRAFT " + re.escape(ALLOWANCE) + r"; successor-1 package", "signed allowance " + ALLOWANCE + f" (sha256 {signed}); successor-1 package"),
+        (r"\*\*blocked on the owner's signature\*\* of the allowance DRAFT",
+         f"**held** (the allowance was SIGNED 2026-10-10, decision 251 A, sha256 `{signed}`; root countersigns, mints and flips)"),
+        (r"## The allowance DRAFT and how signing works", "## The allowance (signed 2026-10-10) and how it was pinned"),
+        (r"\(schema `saea-owner-split-allowance-v1`, status `draft-awaiting-owner-signature`\)",
+         "(schema `saea-owner-split-allowance-v1`, status `authorised` since 2026-10-10; `draft-awaiting-owner-signature` at registration)"),
+        (r"\*\*Signing = the owner's confirmation in conversation\.\*\*.*?\(commit 074e0cfb3\)\.", signed_para),
+        (r"1\. \*\*Rule 4 \(needs a ruling\)\.\*\*", "1. **Rule 4 (RULED: decision 250, option A, 2026-10-10).**"),
+        (r"which this brief forbids\) before countersigning\.",
+         "which this brief forbids) before countersigning. RULED A by the owner on 2026-10-10 (decision 250): the documented exception stands."),
+        (r"BLOCKED: allowance DRAFT " + re.escape(ALLOWANCE) + r" unsigned \(status draft-awaiting-owner-signature; the fragment pins 64 zeros until the re-pin\); "
+         r"measurement design cross-flight-no-replicate awaits a rule-4 ruling;",
+         f"allowance SIGNED 2026-10-10 (decision 251 A; status authorised; sha256 {signed}; pinned by the fragment); measurement design "
+         "cross-flight-no-replicate carries the documented exception (decision 250 A);"),
+        (r"\(DRAFT; sha256 of the draft bytes at registration ",
+         f"(authorised, {SIGNED_AT_NOTE}; sha256 of the signed bytes {signed}; draft bytes at registration "),
+        (r"a preparation-kind id of the successor-2 allowance DRAFT", "a preparation-kind id of the signed successor-2 allowance"),
+        (r"a READ run id of the successor-2 allowance DRAFT", "a READ run id of the signed successor-2 allowance"),
+        (r"named by the successor-2 allowance DRAFT " + re.escape(ALLOWANCE) + r", unsigned\)", "named by the signed successor-2 allowance " + ALLOWANCE + ")"),
+    ]
+    counts: dict[str, int] = {}
+    for path in (readme_path, PREREG, protocol_path, facts_path, LEDGER):
+        text = _read_text(path)
+        for pattern, replacement in subs:
+            text, n = re.subn(pattern, lambda m, r=replacement: r, text, flags=re.S if pattern.startswith(r"\*\*Signing") else 0)
+            counts[pattern[:48]] = counts.get(pattern[:48], 0) + n
+        _write_text(path, text)
+
+    def draft_fn(doc: dict) -> None:
+        doc["_draft_note"] = ("A DRAFT for root. It authorises nothing while its status is not 'decided'; the allowance it pins is SIGNED "
+                              "(2026-10-10, decision 251 A).")
+        doc["antecedents"]["allowance"] = {
+            "path": ALLOWANCE, "sha256": signed,
+            "note": f"{SIGNED_AT_NOTE}; status authorised; the committed draft's sha256 at registration was {DRAFT_BYTES_SHA}",
+        }
+        doc["registered_hashes"]["note"] = ("the fragment re-pinned to the signed allowance bytes (sign mode, 2026-10-10); "
+                                            "repin_cell.py recomputes them at the flip")
+        doc["decision_250_ruling"] = DECISION_250_RULING
+
+    edit_json(draft_path, draft_fn)
+
+    rename = {old_cfg: new_cfg, old_proto: new_proto}
+    for _ in range(10):
+        for path in tracked:
+            text = _read_text(path)
+            for old, new in rename.items():
+                text = text.replace(old, new)
+            _write_text(path, text)
+        changed = False
+        for path in tracked:
+            now = sha_file(path)
+            if now != latest[path]:
+                rename[latest[path]] = now
+                latest[path] = now
+                changed = True
+        if not changed:
+            break
+    else:
+        raise SystemExit("hash propagation did not converge")
+    print(json.dumps({"signed_allowance_sha256": signed, "old_composed_config_hash": old_cfg, "new_composed_config_hash": new_cfg,
+                      "old_protocol_hash": old_proto, "new_protocol_hash": new_proto, "owner_allowance_pins_rewritten": n_pins,
+                      "prose_replacements": counts, "file_hash_renames": len(rename) - 2}, indent=2, sort_keys=True))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
-    parser.add_argument("mode", choices=("allowance", "derive", "register"))
+    parser.add_argument("mode", choices=("allowance", "derive", "register", "sign"))
     parser.add_argument("--study-commit", default=None)
     parser.add_argument("--registered-at", default=None)
     parser.add_argument("--append-ledger", action="store_true")
@@ -526,6 +725,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.mode == "derive":
         derive()
         return 0
+    if args.mode == "sign":
+        return sign()
     if not args.study_commit or not args.registered_at:
         raise SystemExit("register needs --study-commit and --registered-at")
     return register(args)
