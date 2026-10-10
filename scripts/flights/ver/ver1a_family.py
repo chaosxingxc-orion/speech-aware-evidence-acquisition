@@ -1,13 +1,13 @@
-"""Shared identities of cell VER-1a (the three-sample greedy-first Solver pool on TRAIN Fold B).
+"""Shared identities of cell VER-1a (the five-sample greedy-first Solver pool on TRAIN Fold B).
 
 One module, imported by the derive, writer, mint, dry-run scripts and by the preflight test, so no id is spelled twice. Model-free.
 Read constants as ``vf.NAME``.
 
 WHAT VER-1a IS. Owner decision 257 (2026-10-10): the verification layer of the training-free RL round is built over the Solver's OWN
 sampled answers. VER-1a seals the SAMPLE POOL that layer is selected on: the review-off COMP-1b module graph at lock v2.2 (the R5
-composed arm; the R6-P1 base) on TRAIN Fold B (``SLURP-EVO-FOLD-B-V2``, 1,080 rows) with the Solver visit grouped at ``samples = 3``:
-sample 0 GREEDY (the fragment's own temperature 0, i.e. the answer the lock's single-sample delivery already makes) and samples 1 and 2
-at temperature 0.7 (the ROLL form). Contacts per row: 1 Perception + 3 Solver = 4.
+composed arm; the R6-P1 base) on TRAIN Fold B (``SLURP-EVO-FOLD-B-V2``, 1,080 rows) with the Solver visit grouped at ``samples = 5``:
+sample 0 GREEDY (the fragment's own temperature 0, i.e. the answer the lock's single-sample delivery already makes) and samples 1-4
+at temperature 0.7 (the ROLL form). Contacts per row: 1 Perception + 5 Solver = 6.
 
 It is a POOL cell, like ROLL-2: it claims no benefit. The pool is read OFFLINE together with the existing c3 verdict columns of the NX
 R1 / R6 flights on the same roster; the VER-1 rule is selected there (``measurement_design offline-sealed-pool``).
@@ -15,9 +15,9 @@ R1 / R6 flights on the same roster; the VER-1 rule is selected there (``measurem
 DELIVERY. The loader refuses ``native_episode.deliver_normaliser`` beside a grouped Solver visit (the delivered text is the commit
 policy's aggregate, re-derivable from the recorded samples; normalising on top would make the delivered bytes a function of two rules
 with one in custody), and the module compiler has no ``samples`` knob. So the cell is a hand-written fragment on the registered
-review-off program id ``phase-native-module-v1-c4`` (no ``consumption_module`` block): the in-flight delivered answer is the registered
-plurality-support commit (``saea-commit-plurality-support-v1``) at ``min_support 2`` over the three samples, UNNORMALISED, scored
-unprojected by ``slurp-slu-official-train`` (exactly ROLL-2's precedent). The v4g delivery normaliser, lock v2.2's delivery rule, is
+review-off program id ``phase-native-module-v1-c6`` (no ``consumption_module`` block): the in-flight delivered answer is the registered
+plurality-support commit (``saea-commit-plurality-support-v1``) at ``min_support 3`` over the five samples, UNNORMALISED, scored
+unprojected by ``slurp-slu-official-train`` (exactly ROLL-2's precedent; the ROLL form for five samples carries min_support 3). The v4g delivery normaliser, lock v2.2's delivery rule, is
 applied OFFLINE to each custodied raw sample and to the replayed commit.
 """
 
@@ -37,10 +37,15 @@ SLUG = "ver1a-samples-fold-b"
 ROUND_LABEL = "VER-1a"
 CELL_LABEL = "VER-1a"
 SHORT = "ver1a"
-BRANCH = "sonnet/ver1a-register"
-WORKTREE = "/home/chao/saea-worktrees/sonnet-ver1a"
+BRANCH = "sonnet/ver1a-samples5"
+WORKTREE = "/home/chao/saea-worktrees/sonnet-ver1a5"
 SOURCE_TREE = f"studies/speech-aware-evidence-acquisition, worktree {WORKTREE}, branch {BRANCH}"
-LEDGER_MARK = "## VER-1a: the three-sample greedy-first Solver pool on TRAIN Fold B"
+LEDGER_MARK = "## VER-1a: the five-sample greedy-first Solver pool on TRAIN Fold B"
+#: The heading the section carried at the original three-sample registration (the in-place amendment renames it).
+LEDGER_MARK_THREE_SAMPLE = "## VER-1a: the three-sample greedy-first Solver pool on TRAIN Fold B"
+#: The one-sentence note appended to every amended (countersigned) ledger row; the countersignature text itself stays verbatim.
+AMENDMENT_MARK = ("AMENDED 2026-10-10 to 5 samples before any contact (coordinator ruling after the offline composer read; "
+                  "nothing flown)")
 
 PKG_NAME = f"slurp-{SLUG}-v1"                     # coordination dir, package suffix, decision-id stem
 PACKAGE = f"docs/readiness/{DATE}-{PKG_NAME}"
@@ -53,18 +58,20 @@ CAMPAIGN = f"configs/campaign/slurp-native-stage3-{SLUG}-v1.json"
 
 ROWS = 1080
 SMOKE_ROWS = 4
-SAMPLES = 3
-#: Perception 1 + Solver 1 x samples 3 (rails.native_episode_config: perception + (revisions + 1) x (solver iterations x samples)).
+#: Amended 2026-10-10 from 3 to 5 samples (nothing had flown): the offline composer read (scripts/analysis/slurp_ver1_offline.py) resolves the
+#: support filter's gain over v4g only at n = 5, s = 2, so the pool must carry five samples for s = 2, 3-of-5 and the gate to be read offline.
+SAMPLES = 5
+#: Perception 1 + Solver 1 x samples 5 (rails.native_episode_config: perception + (revisions + 1) x (solver iterations x samples)).
 BASE_CONTACTS = 2
 CEILING = 1 + 1 * SAMPLES
 PROGRAM = f"phase-native-module-v1-c{CEILING}"     # a registered member of MODULE_PROGRAM_FAMILY_IDS (the review-off graph's family)
 FIT_ENDPOINTS_PER_CONTACT = 4                      # max_speech_packets (1) + 3, the gate's endpoints_per_contact
-#: 4,320 contacts at the measured 44 requests per minute on np4 is about 1.6 GPU-h; 1.7 h plans the arm with margin (FIT inclusive).
-PLANNED_GPU_HOURS_ARM, PLANNED_GPU_HOURS_SMOKE = 1.7, 1.0
+#: 6,480 contacts at the measured 44 requests per minute on np4 is about 2.5 GPU-h (FIT inclusive); 2.5 h plans the arm.
+PLANNED_GPU_HOURS_ARM, PLANNED_GPU_HOURS_SMOKE = 2.5, 1.0
 LOCK = "v2.2"                                      # the lock the base was compiled from; its delivery normaliser v4g moves OFFLINE
 
 SOLVER_OVERRIDES = {"temperature": 0.7, "seed_offset": 0, "greedy_first": True}
-SOLVER_COMMIT = {"policy": "saea-commit-plurality-support-v1", "min_support": 2, "similarity_threshold": 0.8}
+SOLVER_COMMIT = {"policy": "saea-commit-plurality-support-v1", "min_support": 3, "similarity_threshold": 0.8}
 DELIVERED_NORMALISER_IN_FLIGHT = None              # refused beside samples >= 2 (native_episode_config); v4g is applied offline
 
 DESIGN_NOTE = "docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md"

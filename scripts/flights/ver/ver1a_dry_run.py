@@ -9,14 +9,14 @@ roster) and therefore is root's to run after the flip; it prints ids, counts and
 
 Three proofs, in the order they can fail:
 
-1. **FORM** -- the composed episode is the registered cell: policy ``phase-native-module-v1-c4`` with ``max_contacts`` 4, the loader's own
-   graph ceiling 4, Solver ``samples`` 3 with ``decoding_overrides`` ``{temperature 0.7, seed_offset 0, greedy_first true}`` and the
-   plurality-support commit at ``min_support 2`` / similarity 0.8, no ``twin``, no ``deliver_normaliser``, review loop off,
+1. **FORM** -- the composed episode is the registered cell: policy ``phase-native-module-v1-c6`` with ``max_contacts`` 6, the loader's own
+   graph ceiling 6, Solver ``samples`` 5 with ``decoding_overrides`` ``{temperature 0.7, seed_offset 0, greedy_first true}`` and the
+   plurality-support commit at ``min_support 3`` / similarity 0.8, no ``twin``, no ``deliver_normaliser``, review loop off,
    ``max_revisions`` 0 and roles perception 1 / solver 1 / reviewer 0 / planner 0.
-2. **IDENTITY** -- the three samples' composed request decoding params, built by the production
+2. **IDENTITY** -- the five samples' composed request decoding params, built by the production
    ``compose_solver_sample_decoding_params`` with the real ``rails.runner._solver_fragment_seed`` of this program, differ in EXACTLY
    ``seed`` and ``temperature``: sample 0 carries the fragment's own temperature (0) and differs from the fragment's block only by the
-   pinned seed, samples 1 and 2 carry 0.7, and the three seeds are distinct and consecutive.
+   pinned seed, samples 1-4 carry 0.7, and the five seeds are distinct and consecutive.
 3. **WALK** -- every one of the four smoke rows walks perception -> solver and delivers, with the Fold B knowledge artifacts resolving
    at the Perception boundary. A refusal raised here is a refusal the flight would raise.
 
@@ -116,8 +116,8 @@ def main(argv=None) -> int:
         "sample0_fields_that_differ_from_the_fragment_block": sample0_vs_base,
     }
     identity_ok = (
-        differ == ["seed", "temperature"] and temperatures == [base.get("temperature"), 0.7, 0.7]
-        and seeds == [fragment_seed, fragment_seed + 1, fragment_seed + 2] and sample0_vs_base == ["seed"]
+        differ == ["seed", "temperature"] and temperatures == [base.get("temperature")] + [0.7] * (vf.SAMPLES - 1)
+        and seeds == [fragment_seed + index for index in range(vf.SAMPLES)] and sample0_vs_base == ["seed"]
     )
     report["identity"]["agrees"] = identity_ok
     if not identity_ok:
@@ -162,8 +162,8 @@ def main(argv=None) -> int:
             "supplied_items_per_node": {node.phase: len(node.supplied_value_ids) for node in result.nodes},
         }
     report["what_the_verdict_is"] = (
-        "ok means: the composed episode IS the registered VER-1a form (proof 1), the three Solver samples are one request drawn three "
-        "times with the greedy first sample and two temperature-0.7 draws (proof 2), and every smoke row walks Perception then Solver and "
+        "ok means: the composed episode IS the registered VER-1a form (proof 1), the five Solver samples are one request drawn five "
+        "times with the greedy first sample and four temperature-0.7 draws (proof 2), and every smoke row walks Perception then Solver and "
         "delivers with the Fold B knowledge artifacts resolving at the Perception boundary (proof 3). The supply counts are INFORMATION."
     )
     print("VER1A-DRYRUN-SUMMARY " + json.dumps({"ok": report["ok"], "form": report["form"]["agrees"],
