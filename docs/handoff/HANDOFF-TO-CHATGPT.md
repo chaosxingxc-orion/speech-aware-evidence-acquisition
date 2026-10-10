@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T19:26:11Z
+Last refreshed: 2026-10-10T21:27:51Z
+
+## VER-1a read: filter + gate +1.29 / +1.43 in-sample, about +1.0 cross-fitted over the lock on Fold B; decision 258 proposed (2026-10-10T21:27:51Z, Fable 5.1 root)
+
+VER-1a sealed 21:16:28Z (6,480 contacts, 109 min; smoke first try; READ row countersigned b4cec7577); offline read `analysis/SAEA-SLURP-VER1-OFFLINE-VER1A-FOLD-B/` (composer 7dfdb4b4d). On the v4g base vs the greedy sample S0 (64.04): filter n=5 s=2 +0.85 [+0.35, +1.36]; gate (c3 verdict x N1 >= 0.2) +0.53 (i1) / +0.82 (i2); combined n=5 s=2 + gate +1.29 [+0.54, +2.05] / +1.43 [+0.69, +2.16] (empty-gold half +1.2..+1.3, non-empty +0.04, 1 intent row); cross-fitted +0.78..+1.10 with n = 3 matching n = 5; oracle ceilings +3.7 (perfect gate on the filtered column) / +8.8 (best of 5). Honest estimate about +1.0 pp over the lock, CI-LB about +0.3, under the 1.5 pp claim bar. Registry: the read and decision 258 (A: Fold A confirmation with the rule fixed at n = 3, s = 2, theta 0.2 -- a 3-sample pool + a c3 column on Fold A, ~3 GPU-h; then the runtime verification component and the DEV composed read; B: stop; C: runtime first). GPU idle since 21:16Z pending the ruling. Earlier today: test-sample successor-2 read (v2.2: SLU +1.67 vs COMP-1b, intent +5.34 vs PLAN; no-harm PASS), R6-P1 NOT NOMINATED, TF-0 routing null, decisions 245-257 ruled.
+
+Superseded stamp: 2026-10-10T19:26:11Z
 
 ## Test-sample successor-2 read: no-harm PASS, SLU-F1 +1.67 vs COMP-1b, intent +5.34 vs PLAN; VER-1a (five samples) in flight (2026-10-10T19:26:11Z, Fable 5.1 root)
 

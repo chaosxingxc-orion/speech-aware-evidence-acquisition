@@ -910,3 +910,34 @@ GPU-h 4.94 -> 3.72. Decision 252 clause 3 table (indicative; sample != full spli
 on the full split): intent 82.36 vs HerMiT 78.33 / SF-ID 72.06 (above both; gold-transcript bound 84.84); SLU-F1 66.65
 vs SF-ID 64.02 / HerMiT 70.84 (4.19 pp under HerMiT; bound 78.19). Nothing here releases a carrier (252 needs all three
 modes); the next test read needs a new allowance once v2.3 exists.
+
+## VER-1a pool read (TRAIN Fold B, offline, 0 GPU) and decision 258 PROPOSED (2026-10-10)
+
+Pool SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1 (sealed 21:16:28Z; 1,080 rows x 5 Solver samples, sample 0 greedy)
+read by `scripts/analysis/slurp_ver1_offline.py` with the R1 i1 / i2 c3 verdict columns on the same rows (output
+`analysis/SAEA-SLURP-VER1-OFFLINE-VER1A-FOLD-B/`, report sha256 3679315c...; READ row countersigned b4cec7577). On the
+lock base (v4g), vs the greedy sample S0 (64.04; the lock columns of R1 i1 / i2 sit at 63.69 / 64.86, inside the
+cross-flight band), whole-utterance bootstrap:
+- filter alone n=5 s=2: +0.85 [+0.35, +1.36] (9 false fills removed, non-empty 2 lost / 5 gained); n=3 s=2: +0.74 [+0.12, +1.36];
+- gate alone (c3 verdict x N1 >= 0.2): i1 +0.53 [-0.05, +1.08], i2 +0.82 [+0.25, +1.39];
+- **filter + gate**: n=5 s=2 + gate(i1) **+1.29 [+0.54, +2.05]**, + gate(i2) **+1.43 [+0.69, +2.16]**; n=3 s=2 + gate +1.12
+  [+0.30, +1.94] / +1.19 [+0.36, +2.01]; intent rows moved 1; the empty-gold half carries +1.2..+1.3 and the
+  non-empty half +0.04 (no loss) -- the two components are largely additive at s = 2;
+- cross-fitted (threshold chosen on one utterance-hash half, scored on the other): n=5 +0.78 [+0.02, +1.56] (i1) /
+  +1.08 [+0.26, +1.90] (i2); n=3 +0.97 [+0.25, +1.70] / +1.10 [+0.33, +1.87] -- the honest VER-1 estimate on Fold B is
+  about +1.0 pp over the lock, CI-LB about +0.3, with n = 3 as good as n = 5 once selection optimism is removed;
+- oracle ceilings: perfect gate on the filtered column +3.7; best of 5 samples +8.8 (selection headroom without a verifier).
+Verdict: the verification layer is a real, replicated-component mechanism (both parts CI-LB > 0 on their own flights and
+additive here) but its measured size (~+1.0 pp over v4g) is under decision 192's 1.5 pp; it is a candidate for a no-harm
++ efficiency-neutral lock component, not for a 1.5 pp claim.
+
+- **258** (PROPOSED) Next step for VER-1: (A) Fold A confirmation with the rule FIXED at n = 3, s = 2, c3 verdict x N1 >=
+  0.2 (the cheapest form that matches n = 5 after cross-fitting; runtime cost 1 Perception + 3 Solver + 1 verdict = 5
+  contacts per row, about the old full graph's 4.05): two cells on TRAIN Fold A, the 3-sample pool (4,320 calls, ~1.5
+  GPU-h) and a c3 template column (E1 form: c3 + twin + lock, 4,320 calls, ~1.5 GPU-h), read offline exactly as Fold B;
+  stable per decision 247 if CI-LB > 0 with the rule fixed -> then the runtime `verification-delivery-v1` component (E10:
+  the verdict contact + the deterministic verifier inside the module) and the DEV composed read (lock v2.3 = v2.2 + VER-1);
+  (B) stop VER-1 at this read (about +1.0 pp is not worth 2.5x the lock's contacts) and keep v2.2; (C) go to the runtime
+  component first and confirm on Fold A with a single delivering cell + in-chain A/A (~1 day engineering, ~2 GPU-h).
+  Recommended: A (the record's only additive, replicated SLU mechanism; the cost stays at the old graph's level and the
+  Fold A read settles stability before any runtime work).
