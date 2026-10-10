@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T00:43:41Z
+Last refreshed: 2026-10-10T02:25:07Z
+
+## Iteration 2 read: NOT NOMINATED, Solver-template line closed; decision-239 offline study on file (2026-10-10T02:25:07Z, Fable 5.1 root)
+
+`docs/results/2026-10-10-slurp-nx-r1-i2-solver-fold-b-column-read.md` (merge b04811e20): official pooled SLU-F1 vs lock (63.43): aa -0.43 [-1.08, +0.19]; i2-c3 +0.74 [-0.43, +1.94] (per-row -2.56; passes the twin bar and the intent guard, fails the lower bound); i2-c4 +0.10; i2-c5 -0.03; the two gated empty decisions lost the effect (i2-c1 -0.88, false fill +1.02; i2-c2 -0.90, false fill +9.95); v4g(X) - X +0.77 .. +1.81 on every candidate. No arm NOMINATED or HARM; the plateau rule closes the Solver-template line, `slurp_native_role_solver_v2.txt` stays the lock. `docs/results/2026-10-10-slurp-nx-r6-upstream-empty-decision-offline.md` (merge 52a6fe8d0, zero contacts): Perception's note carries no entity information today (unresolved_fields / evidence_refs empty on 1,080/1,080 rows); the best upstream signal is the entity-free share of the 20 supplied exemplars (AUC 0.856); the core's own empty verdict (the c3 / i2-c3 arm) gated by that share >= 0.2 reads **+0.75 [+0.27, +1.24] / +0.98 [+0.50, +1.48]** on the v4g base (0 intent rows changed; +1.38 / +1.56 on v3); a deterministic v5 rule fails (best +0.33 on A2, +0.04 on Fold B); a per-intent prior card is worth ~+0.1. Recommendation (decision 245, proposed): R6-A a Perception-side entity-presence / heard-values column (level-2 branch cell, measurement, ~2.0 GPU-h) + R6-B a Fold A two-arm confirmation of the "lock + core verdict + N1 >= 0.2 gate" delivery rule (~1.2 GPU-h); both below the 1.5 pp registration bar, so a waiver of decision 192 for these measurement cells is requested; E1 is being generalised to the Perception node. R5: flip converged at 28d1c6dca; the writers are re-run at the flipped baselines to clear `registered-supply-binding`, then the gate and the chain.
+
+Superseded stamp: 2026-10-10T00:43:41Z
 
 ## Owner rules 238-244; R5 countersigned, minting and flipping (2026-10-10T00:43:41Z, Fable 5.1 root)
 
