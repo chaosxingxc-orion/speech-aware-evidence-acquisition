@@ -1,6 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T03:34:44Z
+Last refreshed: 2026-10-10T05:24:02Z
+
+## Decision 245 ruled: node-local first, then cascade communication templates; R6 redesigned (2026-10-10T05:24:02Z, Fable 5.1 root)
+
+Owner decision 245 (verbatim Chinese and English in the registry, commit 49735e871): optimise each node on its own first, ignoring inter-node connections; then optimise the cascade, whose object is the upstream -> downstream COMMUNICATION TEMPLATE (define the elements most useful to the downstream judgement; the upstream may return several options with confidence for the downstream to choose from, or the downstream re-ranks); acceptance is STABLE and ADDITIONAL information gain. Design of record for R6-R8: `docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md`. Binding fact found while designing: the Perception note contract `slurp-intent-hypotheses-v1` is grammar-enforced on the wire (json_schema; `max_evidence_refs` and `max_unresolved_fields` 0, no extra keys), so within the lock the only free Perception -> Solver channel is the 128-character `distinction` string plus candidate order; a richer channel is a v2 contract = a new Perception base, never an arm. R6-P1 = Perception entity column on TRAIN Fold B (presence tag + up to three heard-mention options in a pinned tag grammar; p1-p3 + twin + lock; ceiling 10; ~4.1 GPU-h), read node-locally (presence AUC / precision / recall, mention containment, intent guards), as information gain (cross-fitted AUC increment over N1 + intent prior, CI-LB > 0), as the deterministic verdict x N1 >= 0.2 gate estimate on the lock Solver column (offline, 0 GPU; the Solver-side analogue measured +0.75 / +0.98 pp on v4g), and as the free locked-consumer cascade read from each arm's own level-2 Solver column. Then R6-A (Fold A confirmation), R7 (Solver chooser / re-ranker template column), R8 (lock v2.3 vs v2.2 on DEV-2000-ADDED). Proposed 246 (fly R6-P1 after the R5 read), 247 (information-gain acceptance rule; decision 192's bar binds R7 / R8), 248 (v2 contract only on trigger). Engineering (model-free, after R5 seals): tag-grammar reader, information-gain option in the R6 offline driver, the nx_r6 family scripts, candidates p1-p3.
+
+R5 status at 2026-10-10T05:24:02Z: arm running since 03:22:06Z (one campaign step, two cells: the module OFF replicate with its review loop on, then the composed arm); GPU 98 %; the Opus monitor reports at the seal. Post-launch repairs on master: 7b635a864 (R5 snapshot carries the replicate's post-flip hashes; step-6 test accepts the flipped module cells); the full unit suite at the merge: 24,742 passed, remaining failures = the known runtime AST pin and a process-guard test that passes alone.
+
+Superseded stamp: 2026-10-10T03:34:44Z
 
 ## R5 composed read in flight; decision-243 cleanup and the Perception template instrument merged (2026-10-10T03:34:44Z, Fable 5.1 root)
 
