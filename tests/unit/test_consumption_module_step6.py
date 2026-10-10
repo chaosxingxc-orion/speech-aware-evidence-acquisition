@@ -300,5 +300,6 @@ def test_the_module_cells_are_held_and_fly_in_one_campaign():
     assert [c["cell"] for c in plan["cells"]] == [AA, ARM]
     for experiment in (ARM, SMOKE, AA):
         cell = json.loads((_REPO / f"configs/experiment/{experiment}.json").read_text(encoding="utf-8"))["cells"][0]
-        assert cell["readiness"]["state"] == "held"
+        # held at registration (2026-09-30); flipped to ready for the NX R5 chain (2026-10-10, 5ec1db691)
+        assert cell["readiness"]["state"] in ("held", "ready")
         assert _baseline_of(experiment)["native_episode"]["finite_completion_policy"] == "deliver-latest-or-abstain"

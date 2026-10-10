@@ -26,7 +26,7 @@
     "replicate": {
       "attempt_id": "attempt-slurp-native-stage3-module-comp1b-aa-dev2000-added-generation-v1",
       "cell": "slurp-native-stage3-module-comp1b-aa-dev2000-added-v1",
-      "composed_config_hash": "4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827",
+      "composed_config_hash": "d01a0fd68e83a491bfed1b2ea23e95ccb3f3ba957d9caf95e0f199dd5e350204",
       "experiment": "slurp-native-stage3-module-comp1b-aa-dev2000-added-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-module-comp1b-aa-dev2000-added-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-FIT-V1",
@@ -37,7 +37,7 @@
         "review_loop": "on"
       },
       "policy": "phase-native-candidates-review-revise-v1",
-      "protocol_hash": "85ead97641fb97a8d1775ce8da5f576fb6f00bf6db00d972297dea40c7bab32a",
+      "protocol_hash": "fb8f7249f5fa95ecaee1fe9233eec163bcf90574933e1e17596b62f99338e54c",
       "rows": 1000,
       "run_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1",
       "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
@@ -306,12 +306,12 @@
           "experiment": "slurp-native-stage3-module-comp1b-aa-dev2000-added-v1",
           "lock": "v2.1",
           "module_block_sha256": "fa265bf4e53b65f171994b5dc8cce4284b12a237eee6c390ab94a8c1be266ee7",
-          "module_composed_hash": "4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827",
+          "module_composed_hash": "d01a0fd68e83a491bfed1b2ea23e95ccb3f3ba957d9caf95e0f199dd5e350204",
           "module_policy_on_a2_roster_differing_paths": [
             "knowledge_stores.intent-boundaries.phase_supply.perception.k",
             "phase_material.reviewer.instruction_template"
           ],
-          "own_composed_hash": "4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827",
+          "own_composed_hash": "d01a0fd68e83a491bfed1b2ea23e95ccb3f3ba957d9caf95e0f199dd5e350204",
           "reviewer_template": {
             "a2": "probes/slurp_native_role_reviewer_v1.txt",
             "module": "probes/slurp_native_role_reviewer_v1_g5_v1.txt"
@@ -329,8 +329,8 @@
       "hashes_equal": true,
       "note": "The replicate is the HELD module OFF-arm cell reused AS REGISTERED: its own package, its own two DRAFT ledger rows (run and FIT), its own receipt coordination/slurp-stage3-module-comp1b-dev2000-added-v1/root-admission-v1.json (eligible run ids already list it). This package re-pins nothing of it; the flip (nx_r5_flip.sh) re-pins it through its own module_comp1bdev_repin_aa.sh exactly as the module flip does. Its stage3_measurement block there names the module arm as its replicate (the pairing of that package); in THIS chain it plays the replicate of the composed arm.",
       "package": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1",
-      "recomposed_composed_config_hash": "4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827",
-      "recomposed_protocol_hash": "85ead97641fb97a8d1775ce8da5f576fb6f00bf6db00d972297dea40c7bab32a",
+      "recomposed_composed_config_hash": "d01a0fd68e83a491bfed1b2ea23e95ccb3f3ba957d9caf95e0f199dd5e350204",
+      "recomposed_protocol_hash": "fb8f7249f5fa95ecaee1fe9233eec163bcf90574933e1e17596b62f99338e54c",
       "registered_budget": {
         "asr_calls": 0,
         "ceilings_are_not_targets": true,
@@ -342,8 +342,8 @@
         "official_complete_scoring_jobs": 1,
         "repeated_speech_audio_seconds_cap": 32819
       },
-      "registered_composed_config_hash": "4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827",
-      "registered_protocol_hash": "85ead97641fb97a8d1775ce8da5f576fb6f00bf6db00d972297dea40c7bab32a"
+      "registered_composed_config_hash": "d01a0fd68e83a491bfed1b2ea23e95ccb3f3ba957d9caf95e0f199dd5e350204",
+      "registered_protocol_hash": "fb8f7249f5fa95ecaee1fe9233eec163bcf90574933e1e17596b62f99338e54c"
     }
   },
   "prohibitions": [
