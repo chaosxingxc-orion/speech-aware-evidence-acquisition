@@ -35,7 +35,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-10-slurp-ver1c-c3-column-fold-a-v1/protocol-registered-v1.json",
-      "sha256": "bc5dee98be53d3c12593d0abf5f21739299b53170e7d7fd341a9bb3053b57502"
+      "sha256": "d022e4556d8dc07c295e0034148a653f4685c41f03aed890847a308dfc9b308c"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-10-slurp-ver1c-c3-column-fold-a-v1/README.md",
@@ -110,8 +110,8 @@
       "protocol": "3109d3a2e62451e5d400f03f1dac48bfc1dba4d953bc69b09fb3f0e99542b9fa"
     },
     "smoke": {
-      "composed_config": "9b19fa8051add4d3d9a0c54367e98c7804b64309afdcb6d2606e3f67f5e57d97",
-      "protocol": "234a13e87d6a08fd8b7455545d08e282b8ad01a02ee458994121c6e8debf9d74"
+      "composed_config": "b254d27058994e5b342f4d1dc9e7c657323048f20a453b090123ae735b5ea3fa",
+      "protocol": "5d6590c42c5c643861cb039cce668578e629c5cbdfb0a13ed3fe96bec7880a13"
     }
   },
   "schema": "saea-campaign-decision-v1",

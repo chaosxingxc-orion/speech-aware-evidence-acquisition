@@ -10,8 +10,8 @@ Registered 2026-10-10 at study commit `76a9bfe3e6e228dd709964923b4f3b48fec3dd1d`
 | design / claim | `same-flight-node-column` / descriptive; the verdict source of the VER-1 rule, `claims_benefit` false, expected effect 0.0 pp |
 | rosters | tuning `SLURP-EVO-FOLD-B-V2`; read `SLURP-EVO-FOLD-A-V2` |
 | runs | `SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1` / `SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-COLUMN-READ-V1`; pool `SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1` |
-| composed config hashes | arm `16f1e682691e3a0b9d0b6276098eaeb01e953f1b7d0e742d3265bbbfbbba1bac`; smoke `9b19fa8051add4d3d9a0c54367e98c7804b64309afdcb6d2606e3f67f5e57d97` |
-| protocol hashes | arm `3109d3a2e62451e5d400f03f1dac48bfc1dba4d953bc69b09fb3f0e99542b9fa`; smoke `234a13e87d6a08fd8b7455545d08e282b8ad01a02ee458994121c6e8debf9d74` |
+| composed config hashes | arm `16f1e682691e3a0b9d0b6276098eaeb01e953f1b7d0e742d3265bbbfbbba1bac`; smoke `b254d27058994e5b342f4d1dc9e7c657323048f20a453b090123ae735b5ea3fa` |
+| protocol hashes | arm `3109d3a2e62451e5d400f03f1dac48bfc1dba4d953bc69b09fb3f0e99542b9fa`; smoke `5d6590c42c5c643861cb039cce668578e629c5cbdfb0a13ed3fe96bec7880a13` |
 | split identity | arm `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`; smoke `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 
 ## Attempt state (no recovery)
