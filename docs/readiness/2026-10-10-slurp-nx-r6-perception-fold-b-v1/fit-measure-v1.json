@@ -1,0 +1,46 @@
+{
+  "arm_prompt_estimates": {
+    "lock": 4323,
+    "p1": 4441,
+    "p2": 4553,
+    "p3": 4595
+  },
+  "contacts": {
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "prompt_limit_tokens": 20990,
+  "schema": "saea-slurp-nx-r6-perception-fit-measure-v1",
+  "source": {
+    "fit_estimate": "configs/baseline/slurp-native-stage3-psv4-fold-b-baseline-v1.json native_episode.roles.perception.branches.fit_estimate",
+    "measured_on": "SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1 Perception contacts (scripts/flights/psv/psv_fit_measure.py)"
+  },
+  "status": "ESTIMATE: template_tokens are word-count estimates, not a tokenizer pass; fit numbers are P-SV-4's measured Perception numbers",
+  "template_frame": {
+    "delivering_template_tokens": 256,
+    "fit_estimate": {
+      "base_prompt_tokens": 2577,
+      "completion_ceiling": 512,
+      "slot_tokens": 24576,
+      "tokens_per_supplied_item": 149
+    },
+    "max_supplied_items": 10,
+    "twin": true
+  },
+  "template_tokens": {
+    "lock": 256,
+    "p1": 374,
+    "p2": 486,
+    "p3": 528
+  },
+  "template_tokens_method": "ceil(2.0 x whitespace-separated words) of the pinned file",
+  "words": {
+    "lock": 128,
+    "p1": 187,
+    "p2": 243,
+    "p3": 264
+  }
+}

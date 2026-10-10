@@ -1,0 +1,326 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+  "budget_arithmetic": {
+    "arm_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 43200,
+      "generation_calls_cap": 10800,
+      "gpu_hours_fit_inclusive": 4.1,
+      "native_task_contract_calls_cap": 10800,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 31548
+    },
+    "note": "review-off graph: perception 1 + solver 1 + 2 (K - 1) = 10 contacts per row (K = 5 arms); generation rows x 10 = 10,800, FIT rows x 10 x 4 = 43,200, speech ceil(audio x 10), planned GPU hours 4.1 (arm; 10,800 contacts at the measured 44 requests per minute on np4) and 1.0 (smoke); native task-contract calls = every contact; run-cumulative",
+    "smoke_family_budget": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 160,
+      "generation_calls_cap": 40,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 40,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 102
+    }
+  },
+  "candidates": {
+    "p1": {
+      "author": "hand (Fable 5.1 from aggregate tables)",
+      "relpath": "configs/probes/nx/perception/r6/r6-p1.txt",
+      "sha256": "8cd1584653e8bd99db709728360e0c359651f90b16974a551e1c3b3bb986f2a8",
+      "tag_set": [
+        "none",
+        "some"
+      ],
+      "template_tokens_ESTIMATE": 374,
+      "words": 187
+    },
+    "p2": {
+      "author": "hand (Fable 5.1 from aggregate tables)",
+      "relpath": "configs/probes/nx/perception/r6/r6-p2.txt",
+      "sha256": "2a27d0d446c6d83103412040d6dd50532acc2e5bbae18245c07362ddf45d0f42",
+      "tag_set": [
+        "none",
+        "some"
+      ],
+      "template_tokens_ESTIMATE": 486,
+      "words": 243
+    },
+    "p3": {
+      "author": "hand (Fable 5.1 from aggregate tables)",
+      "relpath": "configs/probes/nx/perception/r6/r6-p3.txt",
+      "sha256": "12ff7812e11f06bf4368ffd11129fee173c42f53dae268f4ae5ffe3863543a1e",
+      "tag_set": [
+        "none",
+        "some",
+        "unsure"
+      ],
+      "template_tokens_ESTIMATE": 528,
+      "words": 264
+    }
+  },
+  "composed_config_hashes": {
+    "arm": "a4fa7b067f4abebbd18e15880a4917215bf9cdcec7feef6042b0ee4a72031e1a",
+    "smoke": "0dbfa41edeeceb76013242ef351c1ca18e7e8ea905892f62ccb047e0d4479ec7"
+  },
+  "decision_rule": "SAME-FLIGHT PERCEPTION TEMPLATE COLUMN READ (NX programme round R6-P1; owner decisions 245-248; instrument E1/E2 at the Perception node; claim ceiling 'nominated'; a MEASUREMENT cell that claims no benefit). One flight, one Perception visit per row, five arms over the SAME QueryState and evidence: p1 (E= presence tag), p2 (E= tag + up to three M= heard mentions), p3 (E= tag with an unsure hedge + mentions), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last); each non-delivering arm is followed by its own first-visit Solver contact (the LOCKED Solver template) over its own note. THE READS, all from this one flight's sealed columns, model-free (scripts/analysis/nx_r6_read.sh): (1) NODE-LOCAL (reader E2b, scripts/analysis/slurp_nx_perception_column_read.py, tag grammar configs/probes/nx/perception/r6/TAG-GRAMMAR-v1.md, p3 read with --tag-set p3=none,some,unsure): per arm, on the rank-1 candidate and on the list majority, the parse classes (ok / absent / invalid), E=none AUC / precision / recall against empty gold, E=some precision / recall against non-empty gold, the unsure rate by gold class, heard-mention containment (share of gold entities whose normalised surface equals an offered M= surface, per slot type) and option precision; the paired intent guards against lock (gold on list, rank-1 share, candidate count, prompt tokens, note parse status); whole-utterance cluster bootstrap CI95, 10,000 draws, seed 20260915. (2) INFORMATION GAIN and the GATE ESTIMATE per candidate arm (scripts/analysis/slurp_nx_r6_upstream_empty.py --verdict-source perception-arm:<arm> --gain-baseline {n1,n1+prior,n1+prior+lock}): the cross-fitted AUC increment of the rank-1 E=none verdict over the baseline for 'gold empty' with a whole-utterance cluster bootstrap CI95 (2,000 draws, seed 20261010), and the delivered-metric estimate of the c3verdict-style gate (verdict E=none AND N1 >= 0.2, plus the fixed N1 grid) on the lock Solver column of the v4g base (10,000 draws, seed 20260915): pp with CI95, false fills removed, non-empty exact lost, intent rows moved. (3) LOCKED-CONSUMER read: each arm's own level-2 Solver column against lock's (the E2 Solver reader inside the node-local pass, and the official pooled SLU-F1 of each column scored once with slurp-slu-official-train and read paired per row). (4) THE TWIN NULL: aa minus lock on every metric, read first. ACCEPTANCE (design sections 2.2 and 4, decision 247): NODE-LOCAL acceptance of an arm = rank-1 E=none recall >= 0.80 and precision >= 0.75 on empty-gold rows, with a rank-1 tag parse rate (ok) >= 0.90 (below that the arm is reported as a FORM FAILURE, not a verdict), and no intent guard moving by more than the twin's own movement plus 0.65 pp; INFORMATION GAIN = the CI95 lower bound of the cross-fitted AUC increment over {N1, intent prior} above zero (additional) -- stability (the same sign and CI-LB > 0 on TRAIN Fold A with the rule fixed on Fold B) is R6-A's term, not this cell's; the delivered-metric estimate is reported through the measured exchange rates (+0.033 pp per false fill removed, -0.070 pp per non-empty exact row lost), with intent rows moved = 0. NOTHING IS LOCKED HERE: this is a selection read on the selection roster. PLATEAU RULE: two evaluated Perception-entity rounds without an arm clearing node-local acceptance close the node; the next lever is then the v2 note contract (decision 248) or the supply-side presence prior, in that order.",
+  "delivering_template": {
+    "relpath": "configs/probes/slurp_native_role_perception_v3.txt",
+    "sha256": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2",
+    "template_tokens_ESTIMATE": 256
+  },
+  "fit": {
+    "status": "PENDING_CHECK"
+  },
+  "fit_measure": {
+    "relpath": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/fit-measure-v1.json",
+    "sha256": "e48b6a8f0abbdf53be6ab813de6e6805cce0940a5bc1b1727b14833d76f6afa0",
+    "status": "ESTIMATE: template tokens are word-count estimates (TODO: the registered tokenizer pass, see the README)",
+    "summary": {
+      "arm_prompt_estimates": {
+        "lock": 4323,
+        "p1": 4441,
+        "p2": 4553,
+        "p3": 4595
+      },
+      "prompt_limit_tokens": 20990,
+      "template_frame": {
+        "delivering_template_tokens": 256,
+        "fit_estimate": {
+          "base_prompt_tokens": 2577,
+          "completion_ceiling": 512,
+          "slot_tokens": 24576,
+          "tokens_per_supplied_item": 149
+        },
+        "max_supplied_items": 10,
+        "twin": true
+      },
+      "template_tokens": {
+        "lock": 256,
+        "p1": 374,
+        "p2": 486,
+        "p3": 528
+      }
+    }
+  },
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-generation-v1",
+      "audio_seconds": 3154.797375,
+      "baseline_fragment": "slurp-native-stage3-nx-r6-perception-fold-b-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-nx-r6-perception-fold-b-v1",
+      "composed_config_hash": "a4fa7b067f4abebbd18e15880a4917215bf9cdcec7feef6042b0ee4a72031e1a",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 4.1,
+        "planned_model_calls": 10800,
+        "planned_speech_audio_seconds": 31548,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-nx-r6-perception-fold-b-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 43200,
+        "generation_calls_cap": 10800,
+        "gpu_hours_fit_inclusive": 4.1,
+        "native_task_contract_calls_cap": 10800,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 31548
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-fit-v1",
+        "contact_cap": 43200,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "program": "phase-native-module-v1-c10",
+      "protocol_hash": "fe5dff5ee23fd168d5dc7261948ab7cf0d11554aba92b9a917c56b6b72571eff",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-generation-v1",
+      "audio_seconds": 10.181625,
+      "baseline_fragment": "slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-v1",
+      "composed_config_hash": "0dbfa41edeeceb76013242ef351c1ca18e7e8ea905892f62ccb047e0d4479ec7",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 40,
+        "planned_speech_audio_seconds": 102,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 160,
+        "generation_calls_cap": 40,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 40,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 102
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-fit-v1",
+        "contact_cap": 160,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "program": "phase-native-module-v1-c10",
+      "protocol_hash": "dcb376f171c4254addadefa0c4c43c331925a680eb9df897c79368849515f143",
+      "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "owner_decisions": {
+    "139": "no prior: the expectation is declared from measured numbers (the offline R6 note)",
+    "192": "the declared effect is on file BEFORE flight (a measurement cell: claims_benefit false)",
+    "239": "move the empty-entity decision to the PRECEDING node and adjust the knowledge supply if useful",
+    "245": "node-local first, then the cascade; information gain is the object",
+    "246-248": "R6-P1 flies after the R5 read; the information-gain acceptance rule; the v2 note contract only on its trigger",
+    "28/86": "TRAIN numbers are development numbers, never a test claim"
+  },
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact or read (Fold A confirms only a later R6-A column, under its own registration).",
+    "No second factor: one axis (the Perception instruction template), none on aa or lock.",
+    "No tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "No change of the Perception response format or note schema (slurp-intent-hypotheses-v1 stays; a v2 contract is decision 248's conditional engineering).",
+    "No Perception verdict is delivered: the delivering arm is the locked path (invariant I7); the gate estimate is an OFFLINE read, not a wired component.",
+    "No paper-scale profile.",
+    "No flight before root countersigns the DRAFT rows, mints the decision receipt and the cells are flipped.",
+    "No arm column is opened before the READ row is root countersigned.",
+    "No system-level claim: a column effect may only nominate, and this cell claims no benefit."
+  ],
+  "registered_at_utc": "2026-10-10T12:00:00.000000+00:00",
+  "registration_basis": "engineering brief 2026-10-10: register NX round R6-P1 from docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md (sections 2.2, 4, 6) and docs/readiness/2026-10-10-slurp-nx-r6-perception-candidates-v1/README.md. HELD: the owner / root admission is still required; nothing here authorises a flip or a flight.",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four Fold B rows (the committed prefix receipt) prove FORM and nothing else: the phase-native-module-v1-c10 program loads, the five Perception template arms fan out at the one Perception visit, each non-delivering arm takes its own level-2 Solver contact, every arm fits its estimated bound, the arm receipt (saea-perception-branch-arms-v4) and I7v seal, and the episode completes. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1": {
+      "aa_arm_id": "aa",
+      "ceiling": {
+        "pp": 0.75,
+        "roster": "SLURP-EVO-FOLD-B-V2",
+        "rows": 27,
+        "what": "the 27 false fills the N1-gated Solver-side verdict removes on Fold B iteration 1 at 0.033 pp each, less 3 non-empty exact rows at 0.070 pp each (+0.68 predicted, +0.75 measured); range +0.75 .. +0.98 pp"
+      },
+      "claim": "nominated",
+      "claims_benefit": false,
+      "conversion_basis": "Declared expectation +0.75 pp official pooled SLU-F1 (range +0.75 .. +0.98) = the design's gate estimate (docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md section 2.2): the c3verdict rule with the verdict source swapped from the Solver-side aggressive arm to the Perception arm's rank-1 E=none, gated by N1 >= 0.2, on the lock Solver column of the v4g base. It is measured only for the Solver-side verdict (docs/results/2026-10-10-slurp-nx-r6-upstream-empty-decision-offline.md section 4: +0.75 [+0.27, +1.24] on iteration 1 and +0.98 [+0.50, +1.48] on iteration 2, 0 intent rows moved, false fill 91 -> 64 and 93 -> 60, 3 non-empty exact rows lost per flight; recall 0.81-0.83 and precision 0.74-0.76 on empty-gold rows) and is conditional on the Perception verdict matching that quality; if it only mirrors N1 the gain is about +0.13 pp (the deterministic gate alone). Exchange arithmetic on the iteration-1 point: 27 false fills x 0.033 = +0.89 and 3 exact rows x -0.070 = -0.21, +0.68 predicted against +0.75 measured. THIS IS A MEASUREMENT CELL under decisions 245/247: it claims NO benefit (claims_benefit false), because +0.75 sits under both the 1.49 pp same-flight floor and the 1.5 pp registration bar of decision 192; it is judged on its node metric and its information gain, and its delivered-metric effect is estimated offline from its own sealed columns before any cascade cell is registered.",
+      "expected_effect_pp": 0.75,
+      "measurement_design": "same-flight-node-column",
+      "note": "NX round R6-P1 (level: Perception node column, K = 5 Perception template arms, level-2 Solver columns). A MEASUREMENT cell under decisions 245/247 (design docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md section 2.2). Declared expectation +0.75 pp official pooled SLU-F1 (range +0.75 .. +0.98) = the design's gate estimate (docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md section 2.2): the c3verdict rule with the verdict source swapped from the Solver-side aggressive arm to the Perception arm's rank-1 E=none, gated by N1 >= 0.2, on the lock Solver column of the v4g base. It is measured only for the Solver-side verdict (docs/results/2026-10-10-slurp-nx-r6-upstream-empty-decision-offline.md section 4: +0.75 [+0.27, +1.24] on iteration 1 and +0.98 [+0.50, +1.48] on iteration 2, 0 intent rows moved, false fill 91 -> 64 and 93 -> 60, 3 non-empty exact rows lost per flight; recall 0.81-0.83 and precision 0.74-0.76 on empty-gold rows) and is conditional on the Perception verdict matching that quality; if it only mirrors N1 the gain is about +0.13 pp (the deterministic gate alone). Exchange arithmetic on the iteration-1 point: 27 false fills x 0.033 = +0.89 and 3 exact rows x -0.070 = -0.21, +0.68 predicted against +0.75 measured. THIS IS A MEASUREMENT CELL under decisions 245/247: it claims NO benefit (claims_benefit false), because +0.75 sits under both the 1.49 pp same-flight floor and the 1.5 pp registration bar of decision 192; it is judged on its node metric and its information gain, and its delivered-metric effect is estimated offline from its own sealed columns before any cascade cell is registered. Provisional floor SLU 1.49 pp (1.49 x sqrt(1080/1080), borrowed from same-flight-supply-variant per the instrument README until a node-column cell measures its own twin null; the R1 flights have flown but their official-score twin null is a Solver-node null), so expected_effect_pp 0.75 sits at about 0.5 x the floor, knowingly under it: the cell looks for a NODE metric and an information gain, not for a delivered effect. The delivered row is the lock arm: delivered intent and SLU are identical by construction at the request level (invariant I7; reported, never contrasted). Tuning roster TRAIN Fold A; read roster TRAIN Fold B (a selection read). DISCLOSURE: the three Perception templates' mechanism hypotheses and the N1 >= 0.2 gate of the delivered-metric estimate were derived from AGGREGATE tables of docs/results/2026-10-10-slurp-nx-r6-upstream-empty-decision-offline.md, which were computed on TRAIN Fold B (the NX R1 flights' columns), this cell's read roster; no utterance text, gold value or note body was read to author them. Fold B is the selection roster of the design (docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md section 2.3: Fold B selects, Fold A confirms, DEV-2000-ADDED composes), so the read here is a selection read and every number is descriptive until the Fold A confirmation (R6-A) fixes the rule.",
+      "primary_metric": "node-local: rank-1 E=none against empty gold on the arm's sealed Perception notes (AUC, precision, recall; reader E2b), with the cross-fitted AUC increment over {N1, intent prior} (information gain) and the gate estimate of the delivered SLU-F1 (offline, lock Solver column, v4g base); guards: gold-on-list, rank-1 share, candidate count, prompt tokens, note parse status and the level-2 Solver column's official intent paired against lock (rows differing <= 7 = 0.65 pp of 1,080)",
+      "primary_metric_key": "slu",
+      "provisional_floor_pp": {
+        "arithmetic": "SLU 1.49 * sqrt(1080 / 1080) = 1.4900 pp, intent 0.65 * sqrt(1080 / 1080) = 0.6500 pp (guard)",
+        "intent_accuracy": 0.65,
+        "slu_f1": 1.49
+      },
+      "read_bar": "|aa twin offset| + twin CI95 half-width, per metric, measured in this flight",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 1080,
+      "template_variants": {
+        "candidate_arms": 3,
+        "node": "perception",
+        "twin": true
+      },
+      "tuning_roster": "SLURP-EVO-FOLD-A-V2",
+      "variant_cost": {
+        "extra_audio_seconds": 25238.38,
+        "extra_audio_seconds_per_row_mean": 23.3689,
+        "extra_contacts_per_row": 4,
+        "extra_perception_contacts_per_row": 4,
+        "extra_solver_contacts_per_row": 4,
+        "note": "K - 1 = 4 non-delivering arms (three candidates and the twin), each one Perception contact AND one level-2 Solver contact at the one Perception visit; every contact re-sends the row's speech packet, so 8 x the Fold B total 3154.797375 s per flight (review-off base: 2 contacts per row, ceiling 10 = 2 + 2 (K - 1))"
+      }
+    }
+  },
+  "study_commit_at_registration": "fc0c0fc14a3b080e04752618188d798628471a76",
+  "the_cell": {
+    "base": "the COMP-1b composition (agree-vote-seed + centroid-boundary-key) as a consumption-module block on lock v2.2 (v4g at delivery), review loop OFF",
+    "ceiling": 10,
+    "program": "phase-native-module-v1-c10",
+    "template_variants": {
+      "arms": [
+        {
+          "arm_id": "p1",
+          "instruction_template": {
+            "relpath": "configs/probes/nx/perception/r6/r6-p1.txt",
+            "sha256": "8cd1584653e8bd99db709728360e0c359651f90b16974a551e1c3b3bb986f2a8"
+          },
+          "template_tokens": 374
+        },
+        {
+          "arm_id": "p2",
+          "instruction_template": {
+            "relpath": "configs/probes/nx/perception/r6/r6-p2.txt",
+            "sha256": "2a27d0d446c6d83103412040d6dd50532acc2e5bbae18245c07362ddf45d0f42"
+          },
+          "template_tokens": 486
+        },
+        {
+          "arm_id": "p3",
+          "instruction_template": {
+            "relpath": "configs/probes/nx/perception/r6/r6-p3.txt",
+            "sha256": "12ff7812e11f06bf4368ffd11129fee173c42f53dae268f4ae5ffe3863543a1e"
+          },
+          "template_tokens": 528
+        },
+        {
+          "arm_id": "aa",
+          "replicate_of": "lock"
+        },
+        {
+          "arm_id": "lock",
+          "deliver": true,
+          "template_tokens": 256
+        }
+      ],
+      "fit_estimate": {
+        "base_prompt_tokens": 2577,
+        "completion_ceiling": 512,
+        "slot_tokens": 24576,
+        "tokens_per_supplied_item": 149
+      },
+      "max_supplied_items": 10,
+      "node": "perception"
+    }
+  },
+  "tuning_disclosure": "the three Perception templates' mechanism hypotheses and the N1 >= 0.2 gate of the delivered-metric estimate were derived from AGGREGATE tables of docs/results/2026-10-10-slurp-nx-r6-upstream-empty-decision-offline.md, which were computed on TRAIN Fold B (the NX R1 flights' columns), this cell's read roster; no utterance text, gold value or note body was read to author them. Fold B is the selection roster of the design (docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md section 2.3: Fold B selects, Fold A confirms, DEV-2000-ADDED composes), so the read here is a selection read and every number is descriptive until the Fold A confirmation (R6-A) fixes the rule."
+}
