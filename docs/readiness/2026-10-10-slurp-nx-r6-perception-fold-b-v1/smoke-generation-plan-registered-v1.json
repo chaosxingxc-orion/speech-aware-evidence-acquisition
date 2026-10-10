@@ -33,9 +33,11 @@
   "plan_kind": "generation",
   "preparation_base_commit": "fc0c0fc14a3b080e04752618188d798628471a76",
   "prepared_phase_supply": {
-    "note": "the first Fold B first-phase supply at w_agree 1.0 with the centroid key on this roster; the flip mints it under this cell's own run id (item E16); it is expected to equal the NX R1 cells' digest (same knowledge channel)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
-    "sha256": "MINTED_AT_THE_FLIP"
+    "sha256": "2b30aaa064ac5394b78a17d0c808657a69bd927597acb5beb8724e2b0f9e46d5"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the first Fold B first-phase supply at w_agree 1.0 with the centroid key on this roster; the flip mints it under this cell's own run id (item E16); it is expected to equal the NX R1 cells' digest (same knowledge channel)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/protocol-registered-v1.json",
