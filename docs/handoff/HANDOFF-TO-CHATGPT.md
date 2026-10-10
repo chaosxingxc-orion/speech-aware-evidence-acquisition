@@ -1,6 +1,14 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T12:24:38Z
+Last refreshed: 2026-10-10T14:31:33Z
+
+## Test-sample successor-2 in flight (lock v2.2, one attempt); R6-P1 sealed and read in part; scorer fix merged (2026-10-10T14:31:33Z, Fable 5.1 root)
+
+Successor-2 (decisions 241 / 250-A / 251-A, allowance v3 signed): rows countersigned (3e0b77cd6), receipt minted, flipped in two converged loops with the plan-pin refresh (flight commit 25345cdd7; gate PASS, one advisory), launched 2026-10-10T14:27:40Z (task SAEA-Queue-MS2; no smoke; registration-gate-ok and arm-start 14:27:45Z; 3,010 rows, 6,020 planned calls, ~4-5 GPU-h; Opus monitor attached). After the seal: countersign the READ row SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-PAIRED-ANALYSIS-V1 and run `scripts/flights/nx/milestone_successor2_read.sh` (pair mode vs the sealed successor-1 COMP-1b and PLAN columns; post-stratified natural-mixture and equal-stratum; published SOTA level reported beside the repo numbers per decision 252).
+
+R6-P1 sealed 13:37:28Z (1,080 rows, 10,800 contacts, no anomalies; READ row countersigned 0cc96a5cd). Interim read (node-local + information gain + gate estimate; analysis roots SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1/node-local and SAEA-SLURP-NX-R6-PERCEPTION-GAIN-V1): p1 (presence tag) parses 99.8 %, E=none AUC 0.671 [0.642, 0.701], precision 0.57 / recall 0.60 (below the node acceptance 0.75 / 0.80); information gain ADDITIONAL: cross-fit AUC increment +0.0215 [+0.0096, +0.0333] over N1 + intent prior (0.858 -> 0.879; 0.897 -> 0.905 with the lock's own answer); gate estimate (E=none x N1 >= 0.2, v4g base) +0.44 [-0.29, +1.17], best cross-fit rule +0.63 [+0.07, +1.17]; locked-consumer level-2 Solver column: exact-set 55.6 % vs lock 54.0 % (twin 54.7 %), empty-gold false fill 21.9 % vs 25.8 % (-3.8 pp [-7.4, 0.0]); intent guards within the twin. p2 / p3 (heard mentions in the 128-char distinction): form failures (rank-1 parse 13 % / 20 %; 2,136 dropped trailers, 490 mentions after E=none), mention containment 7 % / 12 %, false fill +6.4 / +3.3 pp (harm) -- the channel is binding (decision 248 trigger evidence). The official per-arm column scoring failed on the first run (`stage3_rollout_score.py` perception-branches mode assumed the older `branches` declaration; fixed by `parse_perception_arm_group`, merge 5bc06fa97) and is re-running now; the results note and the verdict (expected NOT NOMINATED: additional but small, delivered <= +0.6 pp, element ceiling +1.1..+1.7) follow, with decision 253 (close the Perception-entity line / one more round / v2 contract) proposed.
+
+Superseded stamp: 2026-10-10T12:24:38Z
 
 ## Owner rulings 249-252: lock v2.2, test read exception A, allowance v3 SIGNED, system-level lock redefined (2026-10-10T12:24:38Z, Fable 5.1 root)
 
