@@ -1,0 +1,50 @@
+{
+  "cell": "slurp-native-stage3-ver1c-c3-column-fold-a-smoke-4-v1",
+  "composed_config_hash": "9b19fa8051add4d3d9a0c54367e98c7804b64309afdcb6d2606e3f67f5e57d97",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-ver1c-c3-column-fold-a-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 64,
+    "planned_speech_audio_seconds": 43,
+    "protocol_hash": "234a13e87d6a08fd8b7455545d08e282b8ad01a02ee458994121c6e8debf9d74",
+    "run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-ver1c-c3-column-fold-a-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 64,
+    "generation_calls_cap": 16,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 16,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 43
+  },
+  "one_factor": "the Solver instruction template (phase_material.solver.instruction_template) of the one non-delivering candidate arm: ONE hash-pinned path (configs/probes/nx/solver/r1/r1-c3.txt, the R1 c3 template) and nothing else (no supply knob, decoding, response format or tool authority); the base, the TRAIN Fold A pins, the review-off program and the module block are the instrument's carrier, shared by every arm",
+  "plan_kind": "fit",
+  "preparation_base_commit": "76a9bfe3e6e228dd709964923b4f3b48fec3dd1d",
+  "prepared_phase_supply": {
+    "note": "the TRAIN Fold A first-phase supply at w_agree 1.0 with the centroid key on this roster; the flip mints it under this cell's own run id (item E16); it is expected to equal the COMP-1b Fold A cells' digest (same knowledge channel)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-10-slurp-ver1c-c3-column-fold-a-v1/protocol-registered-v1.json",
+    "sha256": "bc5dee98be53d3c12593d0abf5f21739299b53170e7d7fd341a9bb3053b57502"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
+  "registered_at_utc": "2026-10-10T21:42:02.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-ver1b, branch sonnet/ver1b-register",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

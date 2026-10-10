@@ -1,0 +1,110 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-ver1c-c3-column-fold-a-generation-v1",
+      "role": "the sealed flight: every arm below is a column of it",
+      "run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1"
+    },
+    "columns": {
+      "aa": {
+        "role": "the in-flight twin: replicate_of lock, the null of every contrast"
+      },
+      "lock": {
+        "relpath": "configs/probes/slurp_native_role_solver_v2.txt",
+        "role": "the delivering arm: LEFT of every contrast (the locked template, untemplated)",
+        "sha256": "18bff5c557cac7ac14be6b08aa0a1a6ad54c1b9820199c3b6749b2271d756fbd"
+      },
+      "r1-c3": {
+        "relpath": "configs/probes/nx/solver/r1/r1-c3.txt",
+        "role": "candidate Solver instruction template (hash-pinned; the R1 c3 bytes)",
+        "sha256": "89b81e97c0c8d5377eff2892fac548ac83fd6a24f61ceb25396a57196bb262dc"
+      }
+    }
+  },
+  "boundary": "A development read on a TRAIN fold (owner decisions 28 and 86); never a test claim; node-local, never a system-level claim. No utterance text, transcript, gold label or model output is printed or persisted.",
+  "decision_rule": "SAME-FLIGHT NODE-TEMPLATE COLUMN READ AS THE VERDICT SOURCE OF THE VER-1 RULE (VER-1c; NX instrument E1/E2; owner decision 257, decision 258 option A proposed 2026-10-10; claim ceiling 'descriptive': the arm is NOT a nomination). One flight, one Solver visit per row of TRAIN Fold A, 3 arms over the SAME QueryState and evidence: r1-c3 (the R1 c3 template, the same hash-pinned bytes the NX R1 iteration-1 cell flew), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last). Each arm's first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train per arm (never sharded; scripts/analysis/stage3_rollout_score.py --mode supply-variants writes the per-arm first-visit outputs and scores the composer reads). READS: (1) THE TWIN NULL first: aa minus lock on every metric, paired per row, whole-utterance cluster bootstrap (10,000 draws, seed 20260915), reported beside the E1 provisional floor (SLU-F1 1.49 pp, intent 0.65 pp at n = 1,080; borrowed until a node-column cell measures its own null). (2) THE c3 COLUMN: r1-c3 minus lock, pooled SLU-F1 and intent, quoted DESCRIPTIVELY with its CI95 (it gates nothing and nominates nothing; a Fold A c3 loss or gain is information about the verdict source, not a result of this cell). (3) THE VERDICT SOURCE: the c3 presence verdict is the flag 'the r1-c3 answer carried no entity after the registered v4g normaliser' (slurp_ver1_offline.verdict_flags); the number of verdict-empty rows and of verdict-empty rows on empty-gold rows is reported beside the TRAIN Fold B figures of the NX R1 flights so that a drift of the verdict between rosters is visible. (4) THE VER-1 RULE FIXED ON SLURP-EVO-FOLD-B-V2 (support filter n = 3, s = 2; c3 verdict x N1 >= 0.2; v4g) is applied offline to the VER-1b sample pool on these rows with scripts/analysis/slurp_ver1_offline.py --verdict-run; the confirmation criterion is the VER-1b READ row's (SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-POOL-READ-V1). NOTHING IS TUNED OR SELECTED HERE. The delivering arm is the lock: the delivered answer is unchanged by construction at the request level (invariant I7).",
+  "fixed_rule_consumer": {
+    "driver": "scripts/analysis/slurp_ver1_offline.py",
+    "flag": "--verdict-run",
+    "n1_signature": "the verdict run's own phases.json (the pre-Solver exemplar entity-free share), as for the R1 iterations",
+    "reads": "runs/SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1/attempt-slurp-native-stage3-ver1c-c3-column-fold-a-generation-v1/supply-variants/arm-<arm>-first-visit-outputs.jsonl and arm-<arm>-slurp-slu-official-train-scores.json for the arms lock, aa, r1-c3",
+    "value": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1:attempt-slurp-native-stage3-ver1c-c3-column-fold-a-generation-v1:r1-c3"
+  },
+  "node_local": {
+    "bootstrap": {
+      "cluster": "whole utterance",
+      "draws": 10000,
+      "seed": 20260915
+    },
+    "diagnostic": {
+      "also": [
+        "raw-vs-normalised flip table per arm"
+      ],
+      "metric": "exact_set",
+      "view": "raw"
+    },
+    "driver": "scripts/analysis/slurp_nx_solver_column_read.py",
+    "output": "analysis/SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-COLUMN-READ-V1/node-local",
+    "primary": "exact_set_normalised",
+    "primary_view": "normalised",
+    "report_schema": "saea-nx-solver-column-read-v2",
+    "role": "diagnostic: localises where an official delta comes from; gates nothing",
+    "secondaries": [
+      "parse_valid",
+      "empty_gold_false_fill",
+      "nonempty_exact"
+    ],
+    "secondaries_view": "normalised"
+  },
+  "official_columns": {
+    "bootstrap": {
+      "cluster_key": "sample_id",
+      "draws": 10000,
+      "seed": 20260915,
+      "unit": "row (paired); the whole-utterance number is the node-local read's own"
+    },
+    "output": "analysis/SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-COLUMN-READ-V1/<pass>",
+    "paired_driver": "scripts/analysis/stage3_paired_read.py (column arms; --cluster-key sample_id)",
+    "passes": {
+      "aa-vs-lock": {
+        "gating": "sets the descriptive bar",
+        "left": "lock",
+        "right": "aa"
+      },
+      "r1-c3-vs-lock": {
+        "gating": false,
+        "left": "lock",
+        "right": "r1-c3"
+      }
+    },
+    "render": "scripts/analysis/stage3_rollout_score.py --mode supply-variants",
+    "scorer": "slurp-slu-official-train",
+    "scoring_jobs": 3
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-COLUMN-READ-V1"
+  },
+  "read_run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-COLUMN-READ-V1",
+  "recipe_id": "slurp-ver1c-c3-column-fold-a-column-analysis-v1",
+  "registered_at_utc": "2026-10-10T21:42:02.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "seed": 20260915
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1",
+    "pool": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1",
+    "pool_read": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-POOL-READ-V1",
+    "read": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-COLUMN-READ-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "0. Refuse unless the READ row SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-COLUMN-READ-V1 is root countersigned.",
+    "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with one complete official TRAIN score and the saea-supply-variant-arms-v4 receipt on every row, verified by the bundle (invariant I7v).",
+    "2. Official: render each arm's first-visit Solver answer through the delivered row's normaliser and projection and score it ONCE with slurp-slu-official-train (3 jobs, never sharded); this writes the supply-variants files the composer reads.",
+    "3. Twin null (aa vs lock) first, then the c3 column vs lock, both DESCRIPTIVE; per-scenario tables.",
+    "4. Node-local (E2 reader schema v2; DIAGNOSTIC, gates nothing).",
+    "5. Hand the column to the VER-1b confirmation read (recipe docs/readiness/2026-10-10-slurp-ver1b-samples-fold-a-v1/analysis-recipe-v1.json, --verdict-run); the verdict-empty row counts are reported beside the TRAIN Fold B figures of the NX R1 flights."
+  ],
+  "title": "Cell VER-1c -- the Fold A Solver instruction-template column read as the VER-1 verdict source: the R1 c3 template and the twin, each against the delivering lock arm"
+}
