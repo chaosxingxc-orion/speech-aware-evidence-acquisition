@@ -8,6 +8,7 @@ the code it proves. Every assertion holds both before and after a chunk's readin
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import random
@@ -23,6 +24,11 @@ from speech_aware_evidence_acquisition.data.splits import prefixed, split_identi
 REPO = Path(__file__).resolve().parents[2]
 FAMILY_ROSTER = "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json"
 PARENT_ROSTER = "docs/receipts/rosters/slurp-evo-fold-b-v2.json"
+KNOWN_OVERLAPS = "docs/receipts/filler-family-known-overlaps-2026-10-10.json"
+KNOWN_OVERLAP_ROSTERS = (
+    "docs/receipts/rosters/slurp-system-text-selection-400-analysis-v1.json",
+    "docs/receipts/rosters/slurp-system-text-update-3-400-analysis-v1.json",
+)
 FOLD_A_ROSTER = "docs/receipts/rosters/slurp-evo-fold-a-v2.json"
 BASE = "slurp-native-stage3-filler-fold-b-base-v1"
 AGREE_ARM = "slurp-native-stage3-agree-w1-fold-a-v1"
@@ -160,6 +166,11 @@ def test_disjointness_proof_is_complete_and_zero() -> None:
     # re-prove against every SLURP receipt that is not the parent itself or one of its superseded draws
     mine = {i["sample_id"] for i in family["items"]}
     superseded = set(proof["superseded_never_contacted_reported_not_refused"])
+    known = _read(KNOWN_OVERLAPS)["known_overlaps"]
+    assert set(known) == set(KNOWN_OVERLAP_ROSTERS), "the known-overlap record names exactly two rosters"
+    for rel, entry in known.items():
+        assert entry["size"] == 400 and entry["shared_sample_ids_with_filler_family"] == 400, rel
+        assert entry["sha256"] == hashlib.sha256((REPO / rel).read_bytes()).hexdigest(), rel
     for folder in ("docs/receipts/rosters", "docs/receipts/probe-samples"):
         for path in sorted((REPO / folder).glob("*.json")):
             rel = f"{folder}/{path.name}"
@@ -167,6 +178,10 @@ def test_disjointness_proof_is_complete_and_zero() -> None:
                 continue
             items = json.loads(path.read_text(encoding="utf-8")).get("items")
             ids = {i.get("sample_id") or i.get("id") for i in items if isinstance(i, dict)} if isinstance(items, list) else set()
+            if rel in known:
+                # Decision 243 (2026-10-10): named KNOWN CUMULATIVE EXPOSURE, asserted exactly, never zero.
+                assert len(mine & ids) == known[rel]["shared_sample_ids_with_filler_family"], rel
+                continue
             assert not (mine & ids), rel
 
 
