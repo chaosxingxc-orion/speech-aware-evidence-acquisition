@@ -19,6 +19,7 @@ Layers, all model-free:
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from collections import defaultdict
 from dataclasses import replace
@@ -257,6 +258,41 @@ def _note_values(note: str) -> tuple[str, ...]:
     return (VALUE_X,) if "alpha" in note else (VALUE_Y,)
 
 
+def _assert_view_binds_its_own_note(context):
+    """The branch artifact the runner hands the binding must satisfy its own binding: run the
+    REAL hypothesis parser over it. The fake notes are not hypothesis documents, so only the
+    source-response SHA-256 refusal is a failure here (it is the first check, before content)."""
+
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        SlurpIntentHypothesisError, parse_slurp_intent_hypothesis_state,
+    )
+
+    artifact = [
+        s for s in context.agent_states if s.state_kind == "phase:perception"
+    ][-1]
+    assert artifact.source_response_sha256 == hashlib.sha256(
+        artifact.content.encode("utf-8")
+    ).hexdigest()
+    try:
+        parse_slurp_intent_hypothesis_state(
+            artifact, expected_sample_id=context.sample_id,
+            legal_intent_ids={"x"}, max_candidates=1,
+        )
+    except SlurpIntentHypothesisError as error:
+        assert "source response SHA-256" not in str(error), error
+
+
+
+def _rebound(state, content):
+    """The defect's history re-read: A's note, bound to its own bytes as A's sealed state is."""
+
+    return replace(
+        state, content=content,
+        source_response_sha256=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+    )
+
+
+
 def _perception_note(context) -> str:
     return [
         state for state in context.agent_states if state.state_kind == "phase:perception"
@@ -325,6 +361,7 @@ def _build(tmp_path, monkeypatch, *, armed=True, resolver="own-note"):
 
     def branch_supply(*, branch_id, phase_id, context):
         assert phase_id == "solver"
+        _assert_view_binds_its_own_note(context)
         note = "alpha-note" if resolver == "a-supply" else _perception_note(context)
         return _phase_supply(
             context, value_ids=_note_values(note), facet_ids=("operation:dim",),
@@ -395,9 +432,27 @@ def _run(harness):
 def test_four_rows_walk_the_production_graph_with_each_arm_rendering_its_own_template_and_note(
     tmp_path, monkeypatch,
 ):
+    from speech_aware_evidence_acquisition.rails import runner as runner_module
+
+    real_view = runner_module.perception_note_view_state
+    view_calls = []
+
+    def recording_view(state, *, note_text):
+        view = real_view(state, note_text=note_text)
+        view_calls.append(view)
+        return view
+
+    monkeypatch.setattr(runner_module, "perception_note_view_state", recording_view)
     group, harness = _build(tmp_path / "armed", monkeypatch)
     summary = _run(harness)
     assert len(summary.results) == ROWS
+    # Both runner sites (settle's supply fan-out and the Solver render view) build the branch
+    # artifact through the one helper (at least two non-A, non-twin branches x two sites x ROWS rows).
+    assert len(view_calls) >= 2 * 2 * ROWS
+    assert all(
+        v.source_response_sha256 == hashlib.sha256(v.content.encode("utf-8")).hexdigest()
+        for v in view_calls
+    )
     by_row = _requests_by_row(harness)
     identical = 0
     for result in summary.results:
@@ -526,7 +581,7 @@ def test_a_template_branch_that_replicates_a_is_refused_at_seal_by_name(tmp_path
 
     def defective_select(*, role, solver_phase_id, states, local_tool_result_ids):
         states = tuple(
-            replace(state, content=state.content.replace("beta-note", "alpha-note").replace(
+            _rebound(state, state.content.replace("beta-note", "alpha-note").replace(
                 "gamma-note", "alpha-note"))
             if state.state_kind == "phase:perception" else state
             for state in states
