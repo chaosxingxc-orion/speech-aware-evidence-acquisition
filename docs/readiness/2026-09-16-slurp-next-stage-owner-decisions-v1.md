@@ -895,3 +895,18 @@ be measured on the same rows, under the 1.5 pp bar unless the combination surpri
 before any contact from 3 to 5 samples per row (ceiling 6, 6,480 calls, ~2.5 GPU-h; plurality commit min_support 3
 in flight; s = 2 / 3 and the gate read offline), so that the resolved form is measured; the rows are amended in
 place with their countersignature kept, and the receipt is re-minted.
+
+## Test-sample successor-2 read (lock v2.2 on the signed sample) recorded, 2026-10-10
+
+`docs/results/2026-10-10-slurp-milestone-successor2-composed-test-sample-read.md` (merge de47b366d). One attempt,
+3,010 recordings / 682 prompts, post-stratified natural mixture (primary): composed v2.2 minus the sealed successor-1
+COMP-1b column SLU-F1 64.98 -> 66.65 = **+1.67 [+0.53, +2.83]** (raw pooled +2.15 [+0.89, +3.45]; span-F1 +3.61),
+intent 82.82 -> 82.36 = -0.47 [-1.04, +0.22]; equal-stratum SLU +0.95 [-0.97, +3.10]. Minus the sealed PLAN column:
+SLU-F1 64.18 -> 66.65 = +2.46 [+0.88, +3.96], intent 77.02 -> 82.36 = **+5.34 [+3.67, +6.97]**. Registered verdict
+NEUTRAL = the no-harm claim HOLDS on both metrics; the SLU-F1 observation is positive with CI excluding 0 but its lower
+bound (0.53) is under the declared cross-flight offset (0.73), so the design does not resolve it as a gain beyond flight
+variation (development evidence, decision 28). Efficiency: 2.00 vs 4.06 contacts per row, prompt tokens -60.5 %, active
+GPU-h 4.94 -> 3.72. Decision 252 clause 3 table (indicative; sample != full split; published rows are trained systems
+on the full split): intent 82.36 vs HerMiT 78.33 / SF-ID 72.06 (above both; gold-transcript bound 84.84); SLU-F1 66.65
+vs SF-ID 64.02 / HerMiT 70.84 (4.19 pp under HerMiT; bound 78.19). Nothing here releases a carrier (252 needs all three
+modes); the next test read needs a new allowance once v2.3 exists.

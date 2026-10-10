@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T16:23:37Z
+Last refreshed: 2026-10-10T19:26:11Z
+
+## Test-sample successor-2 read: no-harm PASS, SLU-F1 +1.67 vs COMP-1b, intent +5.34 vs PLAN; VER-1a (five samples) in flight (2026-10-10T19:26:11Z, Fable 5.1 root)
+
+`docs/results/2026-10-10-slurp-milestone-successor2-composed-test-sample-read.md` (merge de47b366d; READ row countersigned bbb7c549d after the 18:30:05Z seal; one attempt, 6,020 contacts, flight commit 25345cdd7). Post-stratified natural mixture: composed v2.2 vs the sealed COMP-1b: SLU-F1 64.98 -> 66.65 = +1.67 [+0.53, +2.83] (raw pooled +2.15 [+0.89, +3.45]), intent -0.47 [-1.04, +0.22]; equal-stratum SLU +0.95 [-0.97, +3.10]. Vs the sealed PLAN: SLU +2.46 [+0.88, +3.96], intent 77.02 -> 82.36 = +5.34 [+3.67, +6.97]. Registered verdict NEUTRAL (no-harm holds; the SLU lower bound 0.53 sits under the declared 0.73 offset band; development evidence). Efficiency 2.00 vs 4.06 contacts per row. Decision 252 table: intent above the published trained full-test rows (HerMiT 78.33), SLU-F1 66.65 between SF-ID 64.02 and HerMiT 70.84 (indicative). VER-1a (decision 257; the five-sample greedy-first Solver pool of lock v2.2 on Fold B, 6,480 calls, ~2.5 GPU-h; the greedy_first runtime option and the grouped commit on the module graph fly for the first time, smoke first) launched ~19:25Z at flight commit 35ce8b9ad (task SAEA-Queue-VER1A; Opus monitor attached). After the seal: countersign the READ row SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-POOL-READ-V1, run `scripts/analysis/slurp_ver1_offline.py` with the pool run id and `--verdict i1,i2` (support filter s = 2 / 3 x verdict x N1 gate x v4g, cross-fitted), then decide the VER-1 rule and the Fold A confirmation. Registry: the test read recorded under "Test-sample successor-2 read".
+
+Superseded stamp: 2026-10-10T16:23:37Z
 
 ## Decisions 253-257 ruled; VER-1a registered (amending to five samples); the offline composer reads the filter over v4g (2026-10-10T16:23:37Z, Fable 5.1 root)
 
