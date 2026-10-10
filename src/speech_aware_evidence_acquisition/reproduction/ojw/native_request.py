@@ -28,6 +28,9 @@ def _bytes(value: object) -> bytes:
 #: same shape ``rails.native_episode_config.SOLVER_DECODING_OVERRIDE_KEYS``
 #: validates in the composed configuration.
 SOLVER_DECODING_OVERRIDE_KEYS = frozenset({"temperature", "seed_offset"})
+#: Optional key (VER-1a): ``greedy_first`` -- see
+#: ``rails.native_episode_config.SOLVER_DECODING_OVERRIDE_OPTIONAL_KEYS``.
+SOLVER_DECODING_OVERRIDE_OPTIONAL_KEYS = frozenset({"greedy_first"})
 
 
 def compose_solver_sample_decoding_params(
@@ -61,11 +64,17 @@ def compose_solver_sample_decoding_params(
         raise NativeSpeechRequestError("sample_index must be a nonnegative integer")
     if (
         not isinstance(decoding_overrides, Mapping)
-        or set(decoding_overrides) != SOLVER_DECODING_OVERRIDE_KEYS
+        or not SOLVER_DECODING_OVERRIDE_KEYS <= set(decoding_overrides)
+        or not set(decoding_overrides)
+        <= SOLVER_DECODING_OVERRIDE_KEYS | SOLVER_DECODING_OVERRIDE_OPTIONAL_KEYS
     ):
         raise NativeSpeechRequestError(
-            "decoding_overrides must carry exactly temperature and seed_offset"
+            "decoding_overrides must carry exactly temperature and seed_offset "
+            "(and optionally greedy_first)"
         )
+    greedy_first = decoding_overrides.get("greedy_first", False)
+    if "greedy_first" in decoding_overrides and greedy_first is not True:
+        raise NativeSpeechRequestError("decoding_overrides.greedy_first must be true")
     temperature = decoding_overrides["temperature"]
     seed_offset = decoding_overrides["seed_offset"]
     if isinstance(temperature, bool) or not isinstance(temperature, (int, float)):
@@ -75,7 +84,12 @@ def compose_solver_sample_decoding_params(
             "decoding_overrides.seed_offset must be a nonnegative integer"
         )
     composed = dict(base_decoding_params)
-    composed["temperature"] = temperature
+    # VER-1a: under ``greedy_first`` sample 0 keeps the fragment's own greedy
+    # temperature (the base block's literal, 0) and only its pinned seed is
+    # set, so it is request-identical to the single-sample delivery except the
+    # ``seed`` field, which a temperature-0 request does not consume.
+    if not (greedy_first and sample_index == 0):
+        composed["temperature"] = temperature
     composed["seed"] = fragment_seed + seed_offset + sample_index
     return composed
 
