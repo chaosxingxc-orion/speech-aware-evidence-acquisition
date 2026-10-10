@@ -1,0 +1,57 @@
+{
+  "authority": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md (the 0.67 pp offline sealed-pool instrument); owner decision 257 (2026-10-10), decision 258 option A (proposed); the ROLL-2 recipe pattern docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/analysis-recipe-v1.json; the VER-1a recipe docs/readiness/2026-10-10-slurp-ver1a-samples-fold-b-v1/analysis-recipe-v1.json; the stage-3 algorithm label inference-time-verification-v1.",
+  "cell_kind": "POOL -- a sealed three-sample greedy-first Solver pool on TRAIN Fold A. DESCRIPTIVE: no comparator block, no gate, no admission.",
+  "claim_boundary": "DESCRIPTIVE for the pool; a confirmation or non-confirmation of the fixed rule on a development fold. No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim.",
+  "composer_command": "python -B scripts/analysis/slurp_ver1_offline.py --mode read --run-id SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1 --attempt attempt-slurp-native-stage3-ver1b-samples-fold-a-generation-v1 --split train --rows 1080 --n 3 --s 2 --thetas 0.2 --verdict-run SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1:attempt-slurp-native-stage3-ver1c-c3-column-fold-a-generation-v1:r1-c3 --label VER1B-FOLD-A-V1 --sealed-scorer slurp-slu-official-train",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": "CPU scorer jobs over derived copies only",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "decision_rule": "OFFLINE SEALED-POOL CONFIRMATION READ (VER-1b; owner decision 257, decision 258 option A proposed 2026-10-10; claim ceiling 'descriptive' for the pool; the pool cell claims NO benefit). One flight, one Perception visit and one grouped Solver visit per row of TRAIN Fold A: sample 0 greedy, samples 1-2 at temperature 0.7, all over the SAME state and evidence, committed in flight by saea-commit-plurality-support-v1 at min_support 2. THE FIXED RULE (fixed on SLURP-EVO-FOLD-B-V2 by the VER-1a pool read, docs/readiness/2026-10-10-slurp-ver1a-samples-fold-b-v1; NOT re-tuned on this roster): the support filter over the first n = 3 samples at s = 2 (an entity is kept iff supported by >= 2 of the 3 samples; same type, normalised-filler character F1 >= 0.8), the base answer = sample 0 (the greedy sample) with its own labels, the c3 presence verdict (cell VER-1c's r1-c3 column answered no entity after the registered v4g normaliser) gated by the pre-Solver signature N1 >= theta = 0.2, delivered through the lock's v4g normaliser. THE READS, all from sealed bytes, model-free: (1) CUSTODY (row accounting): 1,080 in, 1,080 out; every row's solver_group carries exactly 3 samples in custody (invariant I7g) with temperatures 0, 0.7, 0.7 and the pinned seeds fragment_seed + 0 + index; the replay of the commit reproduces the sealed delivered text on every row; zero tool calls. (2) PER-SAMPLE scores: each custodied raw sample rendered to one outputs COPY (scripts/analysis/stage3_rollout_score.py --stage render, 3 samples auto-detected) and scored ONCE with the registered scorer, both as sealed (unprojected) and through the lock's delivery rule v4g applied OFFLINE (scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g; the in-flight cell delivers the unnormalised commit because the loader refuses a deliver_normaliser beside a grouped visit); sample 0 is read against the VER-1c lock column on the same rows as the byte-identity audit of the greedy first sample (llama.cpp greedy decoding is not bitwise reproducible across batch shapes, so equality is measured, not assumed). (3) THE CONFIRMATION: the fixed rule applied to the sealed pool and the VER-1c c3 column by the offline composer (python -B scripts/analysis/slurp_ver1_offline.py --mode read --run-id SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1 --attempt attempt-slurp-native-stage3-ver1b-samples-fold-a-generation-v1 --split train --rows 1080 --n 3 --s 2 --thetas 0.2 --verdict-run SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1:attempt-slurp-native-stage3-ver1c-c3-column-fold-a-generation-v1:r1-c3 --label VER1B-FOLD-A-V1 --sealed-scorer slurp-slu-official-train); reported with the whole-utterance paired bootstrap CI95 (10,000 draws, seed 20260915) against the lock column of VER-1c (the delivering arm, request-identical to today's delivery), against the pool's own sample 0 and against the sealed delivered commit (re-scored), pooled SLU-F1 and intent, false fills removed, non-empty exact rows lost / gained, per-scenario natural and equal-stratum tables. CRITERION, on file BEFORE the flight (owner decision 258 may only tighten it): the rule is CONFIRMED iff its pooled SLU-F1 delta against the VER-1c lock column is at or above the 0.67 pp offline sealed-pool floor of the instrument note (section 2d) AND its CI95 lower bound is above zero AND the intent moves by no more than the 0.67 pp floor; anything else is reported as NOT CONFIRMED with the numbers, never softened. NOTHING IS TUNED OR SELECTED HERE: n, s and theta are the fixed rule's; the read roster is SLURP-EVO-FOLD-A-V2, the tuning roster SLURP-EVO-FOLD-B-V2; a confirmed rule is admitted, if at all, by the owner under its own registration.",
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flight itself)",
+  "fixed_rule": {
+    "fixed_by": "docs/readiness/2026-10-10-slurp-ver1a-samples-fold-b-v1 (the VER-1a pool read)",
+    "n": 3,
+    "read_roster": "SLURP-EVO-FOLD-A-V2",
+    "s": 2,
+    "statement": "THE FIXED RULE (fixed on SLURP-EVO-FOLD-B-V2 by the VER-1a pool read, docs/readiness/2026-10-10-slurp-ver1a-samples-fold-b-v1; NOT re-tuned on this roster): the support filter over the first n = 3 samples at s = 2 (an entity is kept iff supported by >= 2 of the 3 samples; same type, normalised-filler character F1 >= 0.8), the base answer = sample 0 (the greedy sample) with its own labels, the c3 presence verdict (cell VER-1c's r1-c3 column answered no entity after the registered v4g normaliser) gated by the pre-Solver signature N1 >= theta = 0.2, delivered through the lock's v4g normaliser",
+    "theta": 0.2,
+    "tuning_roster": "SLURP-EVO-FOLD-B-V2"
+  },
+  "measurement_design": "offline-sealed-pool",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-POOL-READ-V1",
+    "note": "ids, indices, scores, flags and hashes only; no utterance text, transcript, gold string or model output is printed or persisted"
+  },
+  "read_run_id": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-POOL-READ-V1",
+  "recipe_id": "slurp-ver1b-samples-fold-a-pool-read-v1",
+  "registered_at_utc": "2026-10-10T21:42:02.000000+00:00",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-A-V2",
+    "rows": 1080,
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+  },
+  "row_accounting_required": "1,080 in, 1,080 out; every row's solver_group carries exactly 3 samples in custody (I7g) with temperatures 0, 0.7, 0.7 and seeds fragment_seed + 0 + index; the commit replay of saea-commit-plurality-support-v1 at min_support 2 / similarity 0.8 reproduces the sealed delivered answer for every row; zero native task-contract tool calls.",
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1",
+    "fit": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-FIT-V1",
+    "read": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-POOL-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-FIT-V1",
+    "verdict_column": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_render": "scripts/analysis/stage3_rollout_score.py --stage render: one outputs COPY per Solver sample index (0..2), each row's solver_group.samples[index].parsed_answer rendered through the canonical analysis path; the sample count is detected from the sealed pool.",
+    "2_score": "scripts/analysis/stage3_rollout_score.py --stage score: each of the 3 copies scored ONCE through the registered scorer (never core.scoring_batch: every copy is a derived read).",
+    "3_v4g": "scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g over each custodied sample and the replayed commit (docs/results/2026-10-09-slurp-postprocessing-v4g-lock-v1.md): lock v2.2's delivery rule applied OFFLINE, because the in-flight cell delivers the unnormalised commit.",
+    "4_pairs": "scripts/analysis/stage3_rollout_score.py --stage pairs: per-row best / worst / delivered; the oracle best-of-3 ceiling stated as an UPPER BOUND, never as a result; sample 0 against the VER-1c lock column on these rows (greedy byte-identity audit).",
+    "5_confirmation": "scripts/analysis/slurp_ver1_offline.py --mode read over the sealed pool with the VER-1c c3 column as the verdict source (--verdict-run SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1:attempt-slurp-native-stage3-ver1c-c3-column-fold-a-generation-v1:r1-c3), n = 3, s = 2, theta 0.2: the fixed rule is applied, not selected; the criterion of the decision rule is evaluated and quoted verbatim."
+  },
+  "what_is_not_here": "No comparator block, no margins block and no gate: VER-1b is a pool. The same-flight and cross-flight floors are CONTEXT, never this cell's bar; the bar is the confirmation criterion of the decision rule."
+}
