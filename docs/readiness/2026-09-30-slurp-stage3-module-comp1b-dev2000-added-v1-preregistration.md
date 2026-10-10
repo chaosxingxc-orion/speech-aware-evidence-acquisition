@@ -13,8 +13,8 @@ decisions 195, 196, 204). Development numbers only (owner decisions 28 and 86); 
 | margins | this roster's own null: h_intent 1.152, h_SLU 1.2525 |
 | smoke | four rows, structural acceptance, never scored |
 | runs | `SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-V1` / `SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-FIT-V1`; `SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1` / `SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-FIT-V1`; `SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-MODULE-COMP1B-DEV2000-ADDED-SMOKE-4-FIT-V1` |
-| composed config hashes | arm `1f1208d9540051d454a427886d914260aaa20474b8d57cfcfe059bf081ff58eb`; A/A `4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827`; smoke `67d8be44ead7d882f4a98da82a200f6cb775c828b500831ba4031c58f6ad3fe4` |
-| protocol hashes | arm `3315dcdfe2dfcd26c08f7f90067f7dcaad3bc6a55a5ee35a8dbbeb0a61c41efc`; A/A `85ead97641fb97a8d1775ce8da5f576fb6f00bf6db00d972297dea40c7bab32a`; smoke `3e7428d84f16f86dd83ec796a7b6fb68d45540f0b0341f5e0957af62d6cc9067` |
+| composed config hashes | arm `1f1208d9540051d454a427886d914260aaa20474b8d57cfcfe059bf081ff58eb`; A/A `d01a0fd68e83a491bfed1b2ea23e95ccb3f3ba957d9caf95e0f199dd5e350204`; smoke `67d8be44ead7d882f4a98da82a200f6cb775c828b500831ba4031c58f6ad3fe4` |
+| protocol hashes | arm `3315dcdfe2dfcd26c08f7f90067f7dcaad3bc6a55a5ee35a8dbbeb0a61c41efc`; A/A `fb8f7249f5fa95ecaee1fe9233eec163bcf90574933e1e17596b62f99338e54c`; smoke `3e7428d84f16f86dd83ec796a7b6fb68d45540f0b0341f5e0957af62d6cc9067` |
 | does it need to fly | This cell does NOT need to fly for the module's end-to-end proof: the byte proof (m6) shows its composed policy blocks equal cell A2's flown arm bytes except the one lock-v2.1 Reviewer pin, and its A/A equals the lock-v2.1 bytes. What a flight would add is (a) the first measured lock-v2.1 A/A on DEV-2000-ADDED and (b) a same-roster re-flight of the admitted COMP-1b bytes under the module on lock v2.1. Whether that is worth about 3.4 GPU-h is the coordinator's decision. |
 
 ## Decision rule (fixed here)

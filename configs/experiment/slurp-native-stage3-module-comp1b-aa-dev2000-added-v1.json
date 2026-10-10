@@ -16,13 +16,20 @@
         "reason": "HELD (migration step 6): this cell is the consumption module's first end-to-end proof -- its policy blocks are the compiler's output and are proven equal to cell A2's flown bytes except the lock-v2.1 Reviewer pin -- and the first lock-v2.1 in-chain A/A. It needs to fly only if the coordinator decides the byte proof is not enough. If it flies: root countersigns the DRAFT rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (scripts/flights/module/module_comp1bdev_flip.sh), which mints this cell's own first-phase supply (item E16). --allow-output-change must never be passed.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-stage3-module-comp1b-dev2000-added-admission-v1",
+            "relpath": "coordination/slurp-stage3-module-comp1b-dev2000-added-v1/root-admission-v1.json",
+            "sha256": "c3e55bb996896f404d18eeeb9a417ca92725de2f40758ffe4c5cb647f9a2dcf0",
+            "reason": "Decision slurp-stage3-module-comp1b-dev2000-added-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the same sealed DEV-2000-ADDED speech-query segment vectors and the same written-key facet vectors the sealed DEV plan arm used, with zero model, tokenizer, encoder, scorer or server contacts. The lock-v2.1 Reviewer pin never touches the first-phase supply, so the output digest is expected to equal the sealed DEV plan arm's d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19 (as cell A2's A/A did); the flip's re-derivation checks this. E16: this cell pins its own. --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "a3762cec67f9636aa9c80f1bba4901bc8dd0632d1dd984d235bdf3c7fd56bc3c"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1"
     }
