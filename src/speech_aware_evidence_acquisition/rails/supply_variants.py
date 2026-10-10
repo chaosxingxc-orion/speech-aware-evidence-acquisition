@@ -103,6 +103,7 @@ from .native_episode_receipt import (
     PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
     parse_perception_branch_note,
     perception_branch_key_source_error,
     perception_branch_note_fields_error,
@@ -215,7 +216,7 @@ SUPPLY_VARIANT_KIND_TEMPLATE = "template"
 #: own ``phase_id`` and are node-agnostic -- widening this tuple is the config
 #: half of admitting the Reviewer or the Planner (the runtime wiring half is
 #: listed in the instrument README).
-TEMPLATE_VARIANT_NODES: tuple[str, ...] = ("solver",)
+TEMPLATE_VARIANT_NODES: tuple[str, ...] = ("solver", "perception")
 
 #: Keys the ``template_variants`` block carries, exactly.
 TEMPLATE_VARIANT_BLOCK_KEYS = frozenset({
@@ -1616,6 +1617,15 @@ class PerceptionBranch:
     # 2026-09-30: the ``key_source`` axis (:class:`PerceptionBranchKeySource`),
     # ``None`` for A, T and every branch that swaps no retrieval-key pin.
     key_source: PerceptionBranchKeySource | None = None
+    # NX programme E1 for the Perception node (2026-10-10): this branch's
+    # INSTRUCTION-TEMPLATE override -- the pinned template its Perception
+    # contact renders in place of the node's locked one -- or ``None`` for A,
+    # T and every branch of the non-template kinds. Written only by
+    # :func:`parse_perception_template_variants`.
+    instruction_template: "SupplyVariantTemplate | None" = None
+    # The measured token count of the template this branch renders; 0 when
+    # the branch is not a template branch. Enters only the fit estimate.
+    template_tokens: int = 0
 
     @property
     def is_twin(self) -> bool:
@@ -1647,6 +1657,10 @@ class PerceptionBranch:
             "key_source": (
                 None if self.key_source is None else self.key_source.as_json()
             ),
+            **(
+                {} if self.instruction_template is None
+                else {"instruction_template": self.instruction_template.as_json()}
+            ),
         }
 
 
@@ -1657,6 +1671,14 @@ class PerceptionBranchGroup:
     branches: tuple[PerceptionBranch, ...]
     fit_estimate: SupplyVariantFitEstimate
     level: int
+
+    @property
+    def is_template(self) -> bool:
+        """True for a group :func:`parse_perception_template_variants` built:
+        every non-A, non-twin branch varies the Perception instruction template
+        and nothing else (the receipt then seals as schema v4)."""
+
+        return any(branch.instruction_template is not None for branch in self.branches)
 
     @property
     def branch_count(self) -> int:
@@ -1726,6 +1748,57 @@ def perception_branch_ceiling(*, base_ceiling: int, branch_count: int, level: in
     if level == PERCEPTION_BRANCH_LEVEL_SOLVER:
         extra *= 2
     return base_ceiling + extra
+
+
+def parse_perception_template_variants(
+    block: object,
+    *,
+    phase_id: str,
+    locked_template: str | None = None,
+) -> PerceptionBranchGroup:
+    """Parse ``roles.perception.template_variants`` into a LEVEL-2
+    Perception branch group whose axis is the instruction template (NX
+    programme E1, Perception node, owner decision 239).
+
+    The block, its refusals and its pins are :func:`parse_template_variants`'
+    own (``role_kind="perception"``): the same ``node``/``arms``/
+    ``max_supplied_items``/``fit_estimate`` shape, 1 to 6 candidate arms, the
+    delivering arm LAST and untemplated (invariant I7), template paths under
+    ``probes/`` hash-pinned, duplicate and locked-template arms refused. The
+    result is the existing Perception branch group at level 2, so each
+    candidate arm is one Perception contact plus its own first-visit Solver
+    contact (contact term ``base + 2 (K - 1)``), the twin is the within-flight
+    A/A, and the receipt, settle logic, bundle invariant and resume are the
+    branch mechanism's own. One addition over the Solver form: the twin
+    ``replicate_of`` the delivering arm is REQUIRED (an A/A read has no null
+    without it).
+    """
+
+    group = parse_template_variants(
+        block, role_kind="perception", phase_id=phase_id,
+        locked_template=locked_template,
+    )
+    twins = [arm for arm in group.arms if arm.replicate_of is not None]
+    if len(twins) != 1:
+        raise PerceptionBranchError(
+            "perception template_variants must declare exactly one twin "
+            "(replicate_of the delivering arm): the within-flight A/A null "
+            f"every node-column read requires; this block declares {len(twins)}"
+        )
+    branches = tuple(
+        PerceptionBranch(
+            branch_id=arm.arm_id, deliver=arm.deliver, knobs=(),
+            max_supplied_items=arm.max_supplied_items,
+            replicate_of=arm.replicate_of,
+            instruction_template=arm.instruction_template,
+            template_tokens=arm.template_tokens,
+        )
+        for arm in group.arms
+    )
+    return PerceptionBranchGroup(
+        branches=branches, fit_estimate=group.fit_estimate,
+        level=PERCEPTION_BRANCH_LEVEL_SOLVER,
+    )
 
 
 def parse_perception_branch_knob(
@@ -2234,8 +2307,13 @@ def perception_branch_record(
     contrast_block_sha256: str | None = None,
     min_candidates_met: bool | None = None,
     candidate_intent_ids_raw_count: int | None = None,
+    template_group: bool = False,
 ) -> dict[str, object]:
     """One branch's receipt row (design section 3, "Receipt").
+
+    ``template_group`` (NX programme E1, Perception node) selects the v4 row
+    shape: the v3 row plus ``instruction_template`` -- ``None`` for A and the
+    twin, the declared ``{relpath, sha256}`` for every other branch.
 
     ``note_parse_status``/``candidate_intent_ids``/
     ``candidate_intent_ids_raw_count`` (schema v2) are exactly what
@@ -2389,6 +2467,16 @@ def perception_branch_record(
     reason = perception_branch_key_source_error(record["key_source"])
     if reason is not None:
         raise PerceptionBranchError(f"perception branch {branch.branch_id!r}: {reason}")
+    if template_group:
+        record["instruction_template"] = (
+            None if branch.instruction_template is None
+            else branch.instruction_template.as_json()
+        )
+    elif branch.instruction_template is not None:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} declares an instruction_template "
+            "but its row is not the template (v4) shape"
+        )
     if has_level2:
         record["solver_contact_id"] = _nonempty_str(
             solver_contact_id,
@@ -2419,7 +2507,10 @@ def perception_branch_receipt(
     """
 
     return {
-        "schema": PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+        "schema": (
+            PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 if group.is_template
+            else PERCEPTION_BRANCH_RECEIPT_SCHEMA
+        ),
         "phase_id": _nonempty_str(
             phase_id, field="perception_branch_receipt.phase_id",
         ),
@@ -2588,12 +2679,16 @@ def replay_perception_branch_block(
         })
         # A v1/v2 row predates the key_source axis, so it swapped no key:
         # ``None`` is its exact v3 value. A v3 row keeps its recorded pins.
-        if schema != PERCEPTION_BRANCH_RECEIPT_SCHEMA:
+        if schema in (PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2):
             new_row["key_source"] = None
         rebuilt.append(new_row)
     result = dict(block)
     # Every block is rebuilt under the CURRENT schema (v3), as v1 -> v2 was before.
-    result["schema"] = PERCEPTION_BRANCH_RECEIPT_SCHEMA
+    # A v4 (template) block stays v4: its rows carry the template axis.
+    result["schema"] = (
+        PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 if schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4
+        else PERCEPTION_BRANCH_RECEIPT_SCHEMA
+    )
     result["branches"] = rebuilt
     branch_ids = [row.get("branch_id") for row in rebuilt]
     twin = next((row.get("branch_id") for row in rebuilt if row.get("replicate_of") is not None), None)
@@ -2634,6 +2729,8 @@ __all__ = [
     "PerceptionBranchReplayContact",
     "parse_perception_branch_knob",
     "parse_perception_branches",
+    "parse_perception_template_variants",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4",
     "perception_branch_ceiling",
     "perception_branch_record",
     "perception_branch_receipt",

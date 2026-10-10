@@ -417,7 +417,15 @@ def _perception_branches_identity(raw_native_episode: object) -> Mapping[str, ob
     if not isinstance(perception, Mapping):
         return {}
     branches = perception.get("branches")
-    return dict(without_branch_seed_receipts(branches)) if isinstance(branches, Mapping) else {}
+    if isinstance(branches, Mapping):
+        return dict(without_branch_seed_receipts(branches))
+    # NX programme E1, Perception node: the declared template block is an
+    # input to the prepared first-phase supply identity too (explicit binding,
+    # beside the composed config hash), under its own key.
+    template_variants = perception.get("template_variants")
+    if isinstance(template_variants, Mapping):
+        return {"template_variants": dict(template_variants)}
+    return {}
 
 
 def _default_token_counter(payload_bytes: bytes) -> int:
@@ -3567,27 +3575,44 @@ class FlightRuntime:
         """
 
         group = None if native_config is None else native_config.supply_variant_group
-        if group is None or not group.is_template:
-            return None
+        node_label = "roles.solver.template_variants"
+        phase = None if native_config is None else native_config.supply_variant_phase_id
+        if group is not None and group.is_template:
+            entries = [(arm.arm_id, arm.instruction_template) for arm in group.arms]
+        else:
+            # NX programme E1, Perception node (2026-10-10): the same builders
+            # for a template group sitting at the Perception node, which the
+            # branch group carries (its branches are the arms).
+            perception_group = (
+                None if native_config is None else native_config.perception_branch_group
+            )
+            if perception_group is None or not perception_group.is_template:
+                return None
+            entries = [
+                (branch.branch_id, branch.instruction_template)
+                for branch in perception_group.branches
+            ]
+            node_label = "roles.perception.template_variants"
+            phase = native_config.perception_branch_phase_id
         import dataclasses  # noqa: PLC0415
+        from types import SimpleNamespace  # noqa: PLC0415
 
         from ...rails.phase_material import render_static_instruction  # noqa: PLC0415
 
         builder = binding.get("material_with_static_text")
         specs = binding.get("phase_specs")
         protected = binding.get("protected_material")
-        phase = native_config.supply_variant_phase_id
         if builder is None or specs is None or protected is None or phase not in specs:
             raise FlightRuntimeError(
-                "roles.solver.template_variants needs the phase-program material "
+                f"{node_label} needs the phase-program material "
                 "builder this flight binds; none was published"
             )
         builders: dict[str, object] = {}
         receipts: dict[str, object] = {}
-        for arm in group.arms:
-            pin = arm.instruction_template
+        for arm_id, pin in entries:
             if pin is None:
                 continue
+            arm = SimpleNamespace(arm_id=arm_id)
             path = self._repo_root / "configs" / pin.relpath
             if not path.is_file():
                 raise FlightRuntimeError(
@@ -7632,7 +7657,10 @@ class FlightRuntime:
             # cell.
             perception_branch_seeds = None
             perception_branch_group = native_config.perception_branch_group
-            if perception_branch_group is not None:
+            # NX programme E1, Perception node: a template group varies the
+            # instruction only, so every branch shares the flight's own supply
+            # and no branch seed (or branch identity receipt) exists.
+            if perception_branch_group is not None and not perception_branch_group.is_template:
                 _branch_facet_seed, branch_value_seed = self._phase_supply_seeds(
                     program, binding, supply_specs, plan,
                 )

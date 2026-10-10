@@ -446,6 +446,7 @@ class PerceptionBranchRoleNode(WorkflowComponent):
         group,
         branch_record: Callable[[int, Mapping[str, Any]], Mapping[str, object]],
         delivery_allowed: Callable[[str, str], bool] = _default_delivery_allowed,
+        query_for_branch: Callable[[int, str], str] | None = None,
     ) -> None:
         super().__init__()
         if not isinstance(inner, NativeRoleNode) or inner.spec.role_kind != "perception":
@@ -456,10 +457,16 @@ class PerceptionBranchRoleNode(WorkflowComponent):
             raise SupplyVariantNodeError("branch_record must be callable")
         if not callable(delivery_allowed):
             raise SupplyVariantNodeError("delivery_allowed must be callable")
+        if query_for_branch is not None and not callable(query_for_branch):
+            raise SupplyVariantNodeError("query_for_branch must be callable")
         self._inner = inner
         self._group = group
         self._branch_record = branch_record
         self._delivery_allowed = delivery_allowed
+        # NX programme E1, Perception node (template branches): the framework
+        # query branch ``i`` is contacted with. None -- every other branch
+        # group -- hands every branch the visit's own query, as before.
+        self._query_for_branch = query_for_branch
 
     @property
     def spec(self) -> NativeRoleNodeSpec:
@@ -473,8 +480,14 @@ class PerceptionBranchRoleNode(WorkflowComponent):
             raise SupplyVariantNodeError("native role query must be non-empty text")
         inner = self._inner
 
-        async def invoke_branch(_branch_index: int) -> dict[str, object]:
-            return await inner.invoke_direct(query)
+        async def invoke_branch(branch_index: int) -> dict[str, object]:
+            branch_query = (
+                query if self._query_for_branch is None
+                else self._query_for_branch(branch_index, query)
+            )
+            if not isinstance(branch_query, str) or not branch_query:
+                raise SupplyVariantNodeError("a branch query must be non-empty text")
+            return await inner.invoke_direct(branch_query)
 
         return await run_perception_branch_arms(
             invoke_branch,

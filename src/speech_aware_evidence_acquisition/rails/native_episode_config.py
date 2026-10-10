@@ -1404,6 +1404,11 @@ def load_native_episode_config(
                     f"roles.{kind}.template_variants cannot combine with "
                     f"roles.{kind}.supply_variants: one fan-out mechanism per node"
                 )
+            if "branches" in row:
+                raise ValueError(
+                    f"roles.{kind}.template_variants cannot combine with "
+                    f"roles.{kind}.branches: one fan-out mechanism per node"
+                )
             solver_fields = solver_fields | {"template_variants"}
         if (
             not isinstance(row, Mapping)
@@ -1580,6 +1585,50 @@ def load_native_episode_config(
     # phase 2, which leaves the ceiling below and every role exactly as they
     # were.
     perception_branch_group = None
+    # NX programme E1, Perception node (2026-10-10, owner decision 239): the
+    # Perception's NODE-TEMPLATE arm group, parsed HERE -- before any contact --
+    # into the SAME level-2 branch group ``roles.perception.branches`` fills
+    # (the two are mutually exclusive), each non-A, non-twin branch varying the
+    # Perception instruction template only. The branch mechanism's contact
+    # mapping, level-2 Solver render, receipt and ceiling term are used as is.
+    if "template_variants" in raw_roles["perception"]:
+        from .supply_variants import SupplyVariantError, parse_perception_template_variants
+
+        perception_phase = raw_roles["perception"]["phase_id"]
+        material = values.get("phase_material")
+        locked_entry = material.get(perception_phase) if isinstance(material, Mapping) else None
+        locked_template = (
+            locked_entry.get("instruction_template")
+            if isinstance(locked_entry, Mapping) else None
+        )
+        if not isinstance(locked_template, str):
+            raise ValueError(
+                "roles.perception.template_variants requires the node's own "
+                f"phase_material[{perception_phase!r}].instruction_template: the "
+                "delivering arm renders it"
+            )
+        try:
+            perception_branch_group = parse_perception_template_variants(
+                raw_roles["perception"]["template_variants"],
+                phase_id=perception_phase, locked_template=locked_template,
+            )
+        except SupplyVariantError as error:
+            raise ValueError(
+                f"roles.perception.template_variants is invalid: {error}"
+            ) from error
+        if supply_variant_group is not None:
+            raise ValueError(
+                "roles.perception.template_variants cannot combine with a Solver "
+                "supply_variants or template_variants group: two fan-out "
+                "mechanisms in one episode make the ceiling's extra-contact term "
+                "ambiguous"
+            )
+        if knowledge_index_armed:
+            raise ValueError(
+                "roles.perception.template_variants cannot combine with "
+                "native_episode.knowledge_index: the index appends to the system "
+                "message every arm shares and has no per-arm custody form"
+            )
     if "branches" in raw_roles["perception"]:
         from .knowledge_stores import declared_alternate_release_relpaths
         from .supply_variants import PerceptionBranchError, parse_perception_branches
