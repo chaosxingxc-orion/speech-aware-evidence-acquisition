@@ -1,6 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T02:25:07Z
+Last refreshed: 2026-10-10T03:34:44Z
+
+## R5 composed read in flight; decision-243 cleanup and the Perception template instrument merged (2026-10-10T03:34:44Z, Fable 5.1 root)
+
+R5 (decision 240) launched 2026-10-10T03:19:56Z through the batch driver (task SAEA-Queue-NXR5, flight commit 9a0a3384b, the commit that carries the corrected replicate countersignature text; gate `receipt-disagrees-with-readiness` had refused the replicate rows while they named the R5 receipt instead of the module package receipt). Smoke SMOKE-4 passed at the first attempt (03:21:56Z); the composed arm (cell `slurp-native-stage3-nx-r5-composed-dev2000-added-v1`, COMP-1b on module lock v2.2 = v2.1 with v4g at delivery, Reviewer loop off, DEV-2000-ADDED 1,000 rows) started 03:22:06Z; step 2 is the module OFF replicate (lock v2.1, package `docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1`). Expected ~3 GPU-h; an Opus read-only monitor is attached. After the seal: countersign both READ rows, read with the R5 recipe (`scripts/flights/nx/nx_r5_read*`, v4g contrast), verdict against the composed bar, then draft the second test-sample allowance (decision 241) if NOMINATED or NEUTRAL.
+
+Merged into master after take-off (no flip loop was running): `fable/decision-243-cleanup` (f3fab93ae: ten ChatGPT-era unflown draft cells retired, Fold B filler-family overlap recorded as known cumulative exposure, 18 tests repaired; note `docs/readiness/2026-10-10-decision-243-cleanup-v1.md`) and `fable/nx-e1-perception` (a87353a2b: the NX template-column instrument at the Perception node -- level-2 branch group, receipt `saea-perception-branch-arms-v4`, node-local reader `scripts/analysis/slurp_nx_perception_column_read.py`; note `docs/readiness/2026-10-10-slurp-nx-perception-template-column-instrument-v1/README.md`). The second merge changes identity-bound runtime files (`core/flight/runtime.py`, `rails/runner.py`, `rails/supply_variants.py`, `rails/consumption_module.py`), so every pinned ready cell re-pins at its next flip; R5 is unaffected (it flies from the flight worktree at 9a0a3384b). New tool on master since the last entry: `scripts/flights/refresh_registered_plan_pins.py --package <dir>` (post-flip plan-pin refresh; the `registered-supply-binding` remedy).
+
+Open for the owner: decision 245 (R6 = Perception-side entity-presence column + Fold A two-arm confirmation of the delivery rule; both are measurement cells below the 1.5 pp bar, waiver of decision 192 requested). Carriers stay HELD (242) until the SLURP system-level lock. The runtime AST pin re-review is still pending a root ruling.
+
+Superseded stamp: 2026-10-10T02:25:07Z
 
 ## Iteration 2 read: NOT NOMINATED, Solver-template line closed; decision-239 offline study on file (2026-10-10T02:25:07Z, Fable 5.1 root)
 
