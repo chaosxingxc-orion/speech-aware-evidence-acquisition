@@ -142,7 +142,7 @@ The first smoke attempt (`attempt-slurp-native-stage3-nx-r6-perception-fold-b-sm
 commit 58c546b54 after 20 model contacts (4 rows x 5 Perception arms; 50.908 speech seconds, read from the attempt record's `actual`) on
 `SlurpIntentHypothesisError: hypothesis content does not match its source response SHA-256` in the first level-2 Solver input. Root cause: the
 level-2 branch view in `rails/runner.py` swapped the Perception state's content for the branch's note without rebinding
-`source_response_sha256`; the fix is the level-2 note source-hash binding fix (`rails/runner.py`; commit named at merge). The smoke is re-flown
+`source_response_sha256`; the fix is the level-2 note source-hash binding fix (`rails/runner.py`; fix commit 45c3b3633 on branch sonnet/level2-note-sha-fix, merged into master as 6030c3149; helper `perception_note_view_state` in rails/runner.py; regression test tests/unit/test_perception_note_view_binding.py). The smoke is re-flown
 whole under `...-smoke-4-generation-rec1-v1` and `...-smoke-4-fit-rec1-v1` (a (run_id, attempt_id) pair is a one-time key); its plan budget is
 run-cumulative, 40 + 20 = 60 calls and ceil(102 + 50.908) = 153 speech seconds; the FIT cap stays 160 (structural); the arm cell, its attempt
 ids, caps and pins are untouched (only the registered plan copies' protocol-document pin moves, because the protocol document now records the
