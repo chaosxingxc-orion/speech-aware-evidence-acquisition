@@ -14,6 +14,7 @@ Solver-phase supply that is a pure function of the Perception note it reads.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from collections import defaultdict
 
@@ -37,6 +38,41 @@ def _note_values(note: str) -> tuple[str, ...]:
     """The fake Solver-phase supply: a pure function of the Perception note."""
 
     return (VALUE_X,) if "alpha" in note else (VALUE_Y,)
+
+
+def _assert_view_binds_its_own_note(context):
+    """The branch artifact the runner hands the binding must satisfy its own binding: run the
+    REAL hypothesis parser over it. The fake notes are not hypothesis documents, so only the
+    source-response SHA-256 refusal is a failure here (it is the first check, before content)."""
+
+    from speech_aware_evidence_acquisition.rails.slurp_intent_hypotheses import (
+        SlurpIntentHypothesisError, parse_slurp_intent_hypothesis_state,
+    )
+
+    artifact = [
+        s for s in context.agent_states if s.state_kind == "phase:perception"
+    ][-1]
+    assert artifact.source_response_sha256 == hashlib.sha256(
+        artifact.content.encode("utf-8")
+    ).hexdigest()
+    try:
+        parse_slurp_intent_hypothesis_state(
+            artifact, expected_sample_id=context.sample_id,
+            legal_intent_ids={"x"}, max_candidates=1,
+        )
+    except SlurpIntentHypothesisError as error:
+        assert "source response SHA-256" not in str(error), error
+
+
+
+def _rebound(state, content):
+    """The defect's history re-read: A's note, bound to its own bytes as A's sealed state is."""
+
+    return replace(
+        state, content=content,
+        source_response_sha256=hashlib.sha256(content.encode("utf-8")).hexdigest(),
+    )
+
 
 
 def _perception_note(context) -> str:
@@ -97,6 +133,7 @@ def _build(tmp_path, monkeypatch, *, branched=True, resolver="own-note"):
 
     def branch_supply(*, branch_id, phase_id, context):
         assert phase_id == "solver"
+        _assert_view_binds_its_own_note(context)
         if resolver == "a-supply":
             # The defect's supply: the delivering note's, whatever the branch's own note says.
             note = "alpha-note"
@@ -222,7 +259,7 @@ def test_a_branch_column_that_replicates_a_is_refused_at_seal_by_name(tmp_path, 
     def defective_select(*, role, solver_phase_id, states, local_tool_result_ids):
         # The defect: the history is read from A's note whatever view was handed in.
         states = tuple(
-            replace(state, content=state.content.replace("beta-note", "alpha-note"))
+            _rebound(state, state.content.replace("beta-note", "alpha-note"))
             if state.state_kind == "phase:perception" else state
             for state in states
         )

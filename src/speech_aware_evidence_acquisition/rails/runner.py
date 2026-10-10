@@ -372,6 +372,26 @@ def _resolve_final_agent_response(
     )
 
 
+def perception_note_view_state(state, *, note_text: str):
+    """LEVEL 2: the render-only view of a sealed Perception state that carries a
+    non-A branch's OWN note.
+
+    A's sealed state binds ``source_response_sha256`` to the sha256 of its own
+    response text (``seal_phase_response_state``), and every consumer that
+    parses the state (``parse_slurp_intent_hypothesis_state``) re-checks
+    ``sha256(content) == source_response_sha256``. A view that swapped only
+    ``content`` therefore no longer satisfied its own binding, so the branch is
+    bound to its own note bytes exactly as A is bound to A's. Every other field
+    (state id, kind, ``source_query_state_sha256``, producer, citations) is
+    unchanged; the view is never registered as custody.
+    """
+
+    return replace(
+        state, content=note_text,
+        source_response_sha256=hashlib.sha256(note_text.encode("utf-8")).hexdigest(),
+    )
+
+
 def _protected_knowledge_material(snapshot: KnowledgeSnapshot) -> tuple[str, ...]:
     """Build the casefolded facet/value payload tuple once per run.
 
@@ -3039,7 +3059,9 @@ async def _invoke_native_role_episode(
                 "Perception state to replace"
             )
         swapped = list(agent_states)
-        swapped[matches[0]] = replace(swapped[matches[0]], content=note_text)
+        swapped[matches[0]] = perception_note_view_state(
+            swapped[matches[0]], note_text=note_text,
+        )
         return tuple(swapped)
 
     def _rendered_candidate_value_ids(messages):
@@ -3401,7 +3423,7 @@ async def _invoke_native_role_episode(
                         f"perception branch {branch.branch_id!r} has no sealed note "
                         "to resolve its Solver-phase supply from"
                     )
-                branch_source = replace(source, content=note_text)
+                branch_source = perception_note_view_state(source, note_text=note_text)
                 branch_staged = replace(
                     staged, agent_states=before.agent_states + (branch_source,),
                 )
