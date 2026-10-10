@@ -16,6 +16,13 @@
         "reason": "Cell NX-R5-COMPOSED registered before contact on 2026-10-09 by script (decision 58) from the HELD module COMP-1b fragments and the module compiler: the COMP-1b composition on lock v2.2 (v4g at delivery) with the Reviewer loop off (programme R5, Stage J; decision 238 PROPOSED). HELD: decision 238 is PROPOSED (not ruled) and the R1 iteration-2 verdict is pending; this cell registers the composition that decision A names. If it flies: root countersigns the DRAFT rows (this package AND the replicate's two rows in the module package), mints both admission receipts and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/nx/nx_r5_flip.sh), which mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-nx-r5-composed-dev2000-added-admission-v1",
+            "relpath": "coordination/slurp-nx-r5-composed-dev2000-added-v1/root-admission-v1.json",
+            "sha256": "3d83d0b8b5bd884cdef6bd3906c4096f913b696a4b8952c6cc9460b052d86c46",
+            "reason": "Decision slurp-nx-r5-composed-dev2000-added-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with: THIS roster's own table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1, built model-free by scripts/build_slurp_intent_exemplar_agreement.py against the sealed DEV-2000-ADDED plan cell with the builder, vote store, vote phase and target store of the Fold A table cell AGREE registered, from the pinned exemplar snapshot, the pinned pool key vectors and this roster's own pinned speech query vectors -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,000 rows, every row 20 votes, 0 self-excluded exemplars (the TRAIN-built pool shares no utterance with the roster), 0 rows with no vote, 59 distinct boundary facets ever voted for. The centroid key file is deliberately NOT a readiness requirement: it is pinned where the loader verifies it (facet_source.sha256) and its receipt in preparation_source_receipts, as cell KPROBE registered it.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1/agreement.jsonl",
@@ -25,10 +32,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed DEV-2000-ADDED speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and this roster's sealed agreement table, with zero model, tokenizer, encoder, scorer or server contacts. The review-off graph, the lock-v2.2 normaliser and the lock-v2.1 Reviewer pin never touch the first-phase supply, so the output digest is expected to equal ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08 (the HELD module cell's); the flip's re-derivation checks this and a different digest means the knowledge channel moved -- stop and report. E16: this cell pins its own. --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "906cd7c4ab2b8f7a6d636f8b0014a8b1a61cf297cbcca25915e5f15a17c9ebd2"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1"
     }

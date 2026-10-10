@@ -23,7 +23,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/protocol-registered-v1.json",
-      "sha256": "5dadb68ef2d5300ebd251620ce03a49ff12945cbb2eea60399837cada6d45918"
+      "sha256": "c75d0cafb8b86192f17de2f8976528326174f753186c9fd1bce03840bf21e581"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/README.md",
@@ -103,8 +103,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "arm": {
-      "composed_config": "1643378d03685ba2589ecb6e8654a95fd1ee0bfe7dcac975f5542297dd06d8af",
-      "protocol": "68b06428642d629ad2f34ba30e9b86087bf39e4fd6f2aa0b6b03848cb63e76c4"
+      "composed_config": "aa359613f3c0fb2be8f4bcef2cf3b2adb3a2ec54eee754830611394401f9c346",
+      "protocol": "5cbdb9f2ce8709943d58eba74fbe78134850db1ef678867f544f77e2c023bd63"
     },
     "note": "the values of the fragments exactly as committed at 4434a89b71cc9ff6de4ac502b8aa6a6d521f5893; repin_cell.py recomputes them at the flip",
     "smoke": {

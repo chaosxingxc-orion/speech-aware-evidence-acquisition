@@ -14,8 +14,8 @@ decision 238 PROPOSED; module step 7). Development numbers only (owner decisions
 | margins | harm margin 2.5 pp; bar 2.5 pp; this roster's own null: h_intent 1.152, h_SLU 1.2525 |
 | smoke | four rows, structural acceptance, never scored |
 | runs | `SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1` / `SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-FIT-V1`; `SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-FIT-V1` |
-| composed config hashes | arm `1643378d03685ba2589ecb6e8654a95fd1ee0bfe7dcac975f5542297dd06d8af`; smoke `9b7d0b4ac4679369e3dbcd07065d44e16675d4e064ed156a278cd7a58bfef2c0`; replicate `4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827` |
-| protocol hashes | arm `68b06428642d629ad2f34ba30e9b86087bf39e4fd6f2aa0b6b03848cb63e76c4`; smoke `d091b56a7f0025ffd24737f3214500e8b7021f14ecc0d347910e0fc0c516ab10`; replicate `85ead97641fb97a8d1775ce8da5f576fb6f00bf6db00d972297dea40c7bab32a` |
+| composed config hashes | arm `aa359613f3c0fb2be8f4bcef2cf3b2adb3a2ec54eee754830611394401f9c346`; smoke `9b7d0b4ac4679369e3dbcd07065d44e16675d4e064ed156a278cd7a58bfef2c0`; replicate `4772f6811c7b71fbc5574bf59d2f5a1f5908b24bf0338aa687120c2517594827` |
+| protocol hashes | arm `5cbdb9f2ce8709943d58eba74fbe78134850db1ef678867f544f77e2c023bd63`; smoke `d091b56a7f0025ffd24737f3214500e8b7021f14ecc0d347910e0fc0c516ab10`; replicate `85ead97641fb97a8d1775ce8da5f576fb6f00bf6db00d972297dea40c7bab32a` |
 | status | HELD. Decision 238 (close Stage S at the Solver node, compose Stage J = R5) is PROPOSED, not ruled, and the R1 iteration-2 verdict (does the Solver template enter the composition?) is pending. This package registers the composition decision A names WITHOUT a new Solver template; if the iteration-2 pick is delivered it is a swap (see the README), not a new cell. |
 
 ## Decision rule (fixed here)

@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "5dadb68ef2d5300ebd251620ce03a49ff12945cbb2eea60399837cada6d45918"
+    "sha256": "c75d0cafb8b86192f17de2f8976528326174f753186c9fd1bce03840bf21e581"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before BOTH the composed arm and the replicate manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",

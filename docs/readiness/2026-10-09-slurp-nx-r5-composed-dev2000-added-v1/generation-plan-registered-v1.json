@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-nx-r5-composed-dev2000-added-v1",
-  "composed_config_hash": "1643378d03685ba2589ecb6e8654a95fd1ee0bfe7dcac975f5542297dd06d8af",
+  "composed_config_hash": "aa359613f3c0fb2be8f4bcef2cf3b2adb3a2ec54eee754830611394401f9c346",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nx-r5-composed-dev2000-added-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.5,
     "planned_model_calls": 2000,
     "planned_speech_audio_seconds": 5968,
-    "protocol_hash": "68b06428642d629ad2f34ba30e9b86087bf39e4fd6f2aa0b6b03848cb63e76c4",
+    "protocol_hash": "5cbdb9f2ce8709943d58eba74fbe78134850db1ef678867f544f77e2c023bd63",
     "run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "5dadb68ef2d5300ebd251620ce03a49ff12945cbb2eea60399837cada6d45918"
+    "sha256": "c75d0cafb8b86192f17de2f8976528326174f753186c9fd1bce03840bf21e581"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1: Read in ONE chain: the replicate then the composed arm (campaign plan configs/campaign/slurp-native-stage3-nx-r5-composed-dev2000-added-v1.json). PRIMARY: official pooled SLU-F1 (slurp-slu-official), paired per utterance cluster (10,000 draws, seed 20260915), composed minus the sealed A2 arm (SAEA-SLURP-STAGE3-COMP1B-DEV2000-ADDED-V1). GUARD: intent (scenario_action exact), same contrast. OFFSET o: replicate minus the sealed A2 in-chain A/A (SAEA-SLURP-STAGE3-COMP1-AA-DEV2000-ADDED-V1), same metrics. THE BAR: 2.5 pp at n = 1,000 (instrument rule 3). NOMINATED iff the CI95 lower bound of (composed minus A2) on SLU-F1 is above |o| (beyond the replicate offset) AND the point estimate is at or above the 2.5 pp bar AND the intent guard shows no HARM; this is NOT expected (declared effect +0.07 pp) and would be a surprise to replicate before any use. NEUTRAL iff the CI95 lower bound of (composed minus A2) on SLU-F1 and on intent is at or above -2.5 pp (the preregistered harm margin) and the read is neither NOMINATED nor HARM: the composition keeps the full-graph accuracy within what a cross-flight read can see at about half the contacts -- still an efficiency result, never reported as a gain. HARM iff the CI95 upper bound of (composed minus A2) on SLU-F1 or on intent is below -|o| (a resolved loss beyond the flight offset, owner decision 25). A read whose lower bound is under -2.5 pp while neither HARM nor NOMINATED is UNRESOLVED (the design cannot rule out a margin loss) and is reported as such, not as NEUTRAL. Reported beside, CONTEXT ONLY and never the bar: composed minus the in-chain replicate (the whole composition against its same-chain base, intent and SLU-F1, with no offset correction needed); composed minus the sealed A2 in-chain A/A; the same contrasts with the v4g normaliser applied offline to the A2 and replicate columns so all columns are compared under v4g (isolating graph and supply from the normaliser); per-scenario tables in natural-mixture and equal-stratum weightings; the cost table. The verdict word is the coordinator's (owner decision 139).",
   "quality_read_gate": "No task-quality read before BOTH the composed arm and the replicate manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",
