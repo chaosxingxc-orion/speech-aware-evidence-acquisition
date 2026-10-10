@@ -1785,10 +1785,54 @@ def score_perception_branch_copies(
     return summary
 
 
+def parse_perception_arm_group(values: Mapping[str, Any], perception: Mapping[str, Any],
+                               stores: Mapping[str, Any]):
+    """The Perception role's level-2 branch group, dispatched on its DECLARATION KIND.
+
+    ``roles.perception.branches`` (parsed by ``parse_perception_branches``) and
+    ``roles.perception.template_variants`` (the NX Perception template column, parsed by
+    ``parse_perception_template_variants`` against the node's own locked ``phase_material``
+    instruction template, exactly as ``rails.native_episode_config`` does) are mutually exclusive.
+    Both yield the same ``PerceptionBranchGroup`` keyed by the declared arm ids, so the render
+    and the receipt validation treat them alike (a template group's receipt is schema v4).
+    """
+
+    from speech_aware_evidence_acquisition.rails.supply_variants import (
+        SupplyVariantError, parse_perception_branches, parse_perception_template_variants,
+    )
+
+    declares_branches = "branches" in perception
+    declares_template = "template_variants" in perception
+    if declares_branches and declares_template:
+        raise Stage3ScoreError(
+            "the Perception role declares both branches and template_variants; "
+            "one fan-out mechanism per node"
+        )
+    try:
+        if declares_template:
+            phase_id = perception.get("phase_id")
+            material = values.get("phase_material")
+            entry = material.get(phase_id) if isinstance(material, Mapping) else None
+            locked = entry.get("instruction_template") if isinstance(entry, Mapping) else None
+            if not isinstance(locked, str):
+                raise Stage3ScoreError(
+                    "perception template_variants needs the node's own phase_material "
+                    "instruction_template"
+                )
+            return parse_perception_template_variants(
+                perception["template_variants"], phase_id=phase_id, locked_template=locked,
+            )
+        return parse_perception_branches(
+            perception.get("branches"), first_phase_id=perception.get("phase_id"),
+            declared_stores=tuple(stores),
+        )
+    except SupplyVariantError as error:
+        raise Stage3ScoreError(f"the declared Perception arm group is invalid: {error}") from error
+
+
 def perception_branch_main(args, repo_root: Path, root: Path, lock) -> int:
     from speech_aware_evidence_acquisition.core.bundle import verify_bundle
     from speech_aware_evidence_acquisition.core.config import compose
-    from speech_aware_evidence_acquisition.rails.supply_variants import parse_perception_branches
 
     if args.stage == "pairs" or args.samples is not None:
         raise Stage3ScoreError(
@@ -1810,10 +1854,7 @@ def perception_branch_main(args, repo_root: Path, root: Path, lock) -> int:
     stores = composed.values.get("knowledge_stores")
     if not isinstance(stores, Mapping):
         raise Stage3ScoreError("composed config lacks declared knowledge stores")
-    group = parse_perception_branches(
-        perception.get("branches"), first_phase_id=perception.get("phase_id"),
-        declared_stores=tuple(stores),
-    )
+    group = parse_perception_arm_group(composed.values, perception, stores)
     # A seal-only / resume completion's kept rows carry their Solver branch contacts in the
     # predecessor trace, re-hashed here exactly as verify_bundle's own I7r binding re-derives it
     # (relisten_main's own pattern, the E4 seal-only read's fix).
