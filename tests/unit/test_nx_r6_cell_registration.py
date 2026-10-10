@@ -496,11 +496,12 @@ def test_the_cell_is_held_and_the_package_is_complete():
         state = cell["readiness"]["state"]
         requirements = cell["readiness"]["requirements"]
         decision = [r for r in requirements if r["kind"] == "decision"]
-        own_supply = [r for r in requirements if r["relpath"].endswith("phase-supply-v1.json")]
+        # the cell's own prepared supply: v1 at the first flip; a later flip at a changed implementation identity mints v2, v3, ...
+        own_supply = [r for r in requirements if re.search(r"/phase-supply-v\d+\.json$", r["relpath"])]
         agreement = [r for r in requirements if r["relpath"].endswith("FOLD-B-V1/agreement.jsonl")]
         assert len(decision) == len(own_supply) == len(agreement) == 1 and len(requirements) == 3
         assert decision[0]["relpath"] == nf.DECISION_RELPATH and decision[0]["expected_decision_id"] == nf.DECISION_ID
-        assert own_supply[0]["relpath"] == f"prepared/{nf.names(kind)['run_id']}/phase-supply-v1.json"   # E16: its own
+        assert own_supply[0]["relpath"].startswith(f"prepared/{nf.names(kind)['run_id']}/phase-supply-v")   # E16: its own
         if _all_draft():
             # held at registration (2026-10-10); flipped to ready for the R6-P1 chain (flight commits 58c546b54, 1f04ce42d)
             assert state in ("held", "ready")
