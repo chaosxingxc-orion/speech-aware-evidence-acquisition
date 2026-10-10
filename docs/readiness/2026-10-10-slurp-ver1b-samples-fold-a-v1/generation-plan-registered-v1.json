@@ -33,9 +33,11 @@
   "plan_kind": "generation",
   "preparation_base_commit": "76a9bfe3e6e228dd709964923b4f3b48fec3dd1d",
   "prepared_phase_supply": {
-    "note": "the TRAIN Fold A first-phase supply at w_agree 1.0 with the centroid key on this roster; the flip mints it under this cell's own run id (item E16); it is expected to equal the COMP-1b Fold A cells' digest (same knowledge channel)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1/phase-supply-v1.json",
-    "sha256": "MINTED_AT_THE_FLIP"
+    "sha256": "3615cd8f382926b20aa72581ef2103bbdb478fbd0978b3905dfd5f7d3ecea8e5"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the TRAIN Fold A first-phase supply at w_agree 1.0 with the centroid key on this roster; the flip mints it under this cell's own run id (item E16); it is expected to equal the COMP-1b Fold A cells' digest (same knowledge channel)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-10-slurp-ver1b-samples-fold-a-v1/protocol-registered-v1.json",
