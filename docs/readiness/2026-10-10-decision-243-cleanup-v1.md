@@ -32,6 +32,15 @@ joint N100 composition is not flown, no new N20/N100 GPU family). The unconsumed
 the simple-consumption N100 family and the K4 observe-boundary b2 rows were left alone: they belong to flown
 or non-blocking cells and are not decision-243 scope.
 
+Tests that used the retired cells as real archetypes (18 cases) were repaired, not loosened. The first full
+suite after the retirement listed 20 failures (19 from the retirement plus the AST residue); campaign loading
+refuses a superseded cell by design, so: `test_architecture_audio_budget.py` reads the registered fragment JSON
+directly for the budget arithmetic (its authoring-prewrite case for `seed-aa` now expects the earlier
+"explicit scientific readiness" refusal, `seed` still expects the audio-budget refusal);
+`test_batch_campaign_inspection.py` builds the member cells in memory with readiness forced to `ready`;
+`test_manual_architecture_identity_map.py` marks its fixture COPY of the three fragments ready. Nothing in the
+real repository was changed for these tests.
+
 ## 2. Fold B filler family: known cumulative exposure
 
 `docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json` (1,080 rows, the whole of TRAIN Fold B,

@@ -113,6 +113,14 @@ def test_real_legacy_and_mapped_root_decision_keep_exact_pair_checks(tmp_path, m
     if not mapped:
         for m in population["architecture"]["members"]:
             stem = "slurp-native-stage3-simple-consumption-" + m["member_id"] + "-n100-v1"
+            # Decision 243 (2026-10-10) retired three of these unflown cells (readiness superseded), which
+            # campaign loading refuses by design; this test proves the pair checks against their registered
+            # bytes, so the fixture's COPY of the fragment is marked ready (the real repository is untouched).
+            fragment = root / "configs/experiment" / (stem + ".json")
+            doc = json.loads(fragment.read_text(encoding="utf-8"))
+            for cell_doc in doc["cells"]:
+                cell_doc["readiness"]["state"] = "ready"
+            fragment.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
             c, = admission.load_campaign_cells(root, stem)
             v = c.document
             config = admission.compose(root, v["model_fragment"], v["dataset_fragment"], v["baseline_fragment"], stem)
