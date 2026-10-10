@@ -948,3 +948,22 @@ read is CONFIRMED iff the pooled official SLU-F1 delta of the rule over the VER-
 greedy sample) has CI95 lower bound > 0 and a point >= 0.67 pp (the offline floor), with intent moved by at most 7 rows
 (decision 247 "stable"); disclosed: the c3 template was authored from Fold A aggregate tables (the rule's thresholds
 were tuned on Fold B, named as the tuning roster).
+
+## Decision 258 ruled A ("继续"); 259 deferred until its proposal; carrier model-free proof on file (2026-10-10)
+
+Owner: 「决策258：A，继续；259 等方案出来再说。」 -- 258 RULED A: the Fold A confirmation flies with the rule fixed
+(VER-1b pool + VER-1c c3 column; rows countersigned d3e29c843, receipts minted, flipped to flight commits 4088bb95c /
+e9629b3d4, gates PASS; VER-1b's first launch at 23:35:50Z was refused by the chain's own one-batch guard because the
+VER-1c flip loop's `core.flight.cli check` was alive -- no contact; relaunched after the flip chain ended). 259 (the
+carrier model-free work items) waits for the coordinator's proposal.
+
+Carrier end-to-end proof without any model contact (`docs/readiness/2026-10-10-carrier-model-free-end-to-end-proof-v1/README.md`,
+merged): Audio2Tool's base runs end to end model-free on its HELD ALL-OFF cells (compose, cli check, 4-row and 400-row
+wire checks with the fake transport, seal + official scorers on a canned reply, FIT arithmetic 1 + 3 x 400, derived-media
+confinement, 66 scorer/adapter tests); Earnings-21 runs to the seal step and stops on ONE harness gap (the wire-check
+seal path does not write the unit-stitch trace record that invariant I7 requires; a driver-side workaround then scores
+all five scorers; also the E21 cells do not list the `wire-check` stage); Earnings-22 has the descriptor, thin adapter,
+module hooks, base and dataset fragments and the delivery normaliser but no registered cell (missing: window inventory
+for the 10 dev calls, experiment / model fragments, ledger row, readiness package, an `e220` byte-proof case, an own null;
+about 1-2 engineering days, of which the feature packets need an encoder pass). Decision 259 will propose exactly these
+model-free items.

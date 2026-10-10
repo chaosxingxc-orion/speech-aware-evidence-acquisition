@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T21:27:51Z
+Last refreshed: 2026-10-10T23:44:49Z
+
+## 258 ruled A: VER-1b / VER-1c Fold A confirmation flying; carrier model-free proof merged (2026-10-10T23:44:49Z, Fable 5.1 root)
+
+VER-1a pool read (Fold B, v4g base): filter + gate +1.29 / +1.43 in-sample, ~+1.0 cross-fitted; decision 258 ruled A. Fold A confirmation cells registered, countersigned (d3e29c843), minted, flipped (VER-1b pool at 4088bb95c; VER-1c c3 column at e9629b3d4; gates PASS; criterion fixed before contact: rule n = 3, s = 2, c3 verdict x N1 >= 0.2 + v4g; CONFIRMED iff SLU-F1 delta over the Fold A lock column has CI-LB > 0 and point >= 0.67 with <= 7 intent rows moved). VER-1b launched after the flip chain ended (its first launch was refused by the chain's one-batch guard while VER-1c's flip ran `core.flight.cli check`; zero contact); VER-1c flies after VER-1b seals; then `scripts/analysis/slurp_ver1_offline.py --mode read --run-id <ver1b pool> ... --n 3 --s 2 --thetas 0.2 --verdict-run <ver1c run>:<attempt>:r1-c3`. Carrier proof (zero contacts; `docs/readiness/2026-10-10-carrier-model-free-end-to-end-proof-v1/README.md`): A2T end-to-end PASS; E21 stops at the wire-check seal (missing unit-stitch trace record; I7) and lacks the wire-check stage on its cells; E22 has no registered cell yet (1-2 days of model-free work listed). Decision 259 (those work items) to be proposed; 242/252 keep the carriers' GPU held.
+
+Superseded stamp: 2026-10-10T21:27:51Z
 
 ## VER-1a read: filter + gate +1.29 / +1.43 in-sample, about +1.0 cross-fitted over the lock on Fold B; decision 258 proposed (2026-10-10T21:27:51Z, Fable 5.1 root)
 
