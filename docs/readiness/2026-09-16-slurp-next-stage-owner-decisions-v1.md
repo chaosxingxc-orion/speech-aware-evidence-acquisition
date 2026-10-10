@@ -723,3 +723,18 @@ them) to flight commit 1f04ce42d; gates PASS. Relaunched 09:13:31Z; smoke rec1 P
 Solver input now renders); the arm started 09:17:32Z (1,080 rows, 10,800 planned calls). Lesson recorded: a view that
 rewrites sealed content must rebind its hash; an unflown "fixed" path needs a walk through the real parsers before a
 cell is registered on it.
+
+## Decisions 251-252 PROPOSED by the coordinator (Fable 5.1), 2026-10-10 (owner briefing of the same day)
+
+- **251** (PROPOSED) Timing of the second test-sample read (allowance v3, decision 241): (A) sign now and fly the
+  HELD successor-2 composed cell (lock v2.2, 3,010 rows, one attempt, ~4.5 GPU-h) in the first GPU gap after R6-P1,
+  so the "large gain over the direct-call baseline" claim of the owner goal gets its test-side evidence for v2.2
+  (expected vs PLAN: intent about +6, SLU about +2; vs COMP-1b: SLU about +1.2, intent about +0.5), accepting that a
+  later v2.3 (R6/R7 locks) will need one more milestone read; (B) hold the test read until v2.3 exists, reading the
+  sample once less. Recommended: A (the sample was designed as a milestone comparison instrument for iteration,
+  decision 141; the GPU is otherwise idle between SLURP rounds; development evidence under decision 28).
+- **252** (PROPOSED) Define the "system-level lock" that decision 242 waits for as: lock v2.2 confirmed on the signed
+  test sample (no-harm on SLU-F1, intent gain retained). On that confirmation the carrier work resumes in GPU gaps in
+  this order: Audio2Tool ALL-OFF A/A (model-free proof already on file; ~4 GPU-h), Earnings-21 ALL-OFF A/A (~4 GPU-h),
+  then the module-ON reads per carrier, so the engineering base is shown to run end-to-end on Audio2Tool / E21 / E22
+  (owner goal, second clause) while the SLURP R6/R7/R8 rounds continue to hold GPU priority. Recommended: yes.
