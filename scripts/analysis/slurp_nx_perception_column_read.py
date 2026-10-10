@@ -20,7 +20,17 @@ each Solver contact rendered over ITS OWN arm's note. This reader scores each ar
       indicators;
 (iii) the LEVEL-2 SOLVER column: each arm's first-visit Solver answer scored by
       ``slurp_nx_solver_column_read`` (the normalised exact-set primary, empty-gold false fill, non-empty
-      exact, paired vs the delivering arm), reusing that reader's functions rather than re-implementing them.
+      exact, paired vs the delivering arm), reusing that reader's functions rather than re-implementing them;
+(iv)  E2b, the DISTINCTION TAG (NX round R6): the ``E=`` presence verdict and up to three ``M=`` heard
+      mentions at the head of every candidate's ``distinction`` string, parsed exactly as
+      ``configs/probes/nx/perception/r6/TAG-GRAMMAR-v1.md`` defines (classes ``ok`` / ``absent`` /
+      ``invalid``; ``unsure`` admitted only where the arm's ``--tag-set`` allows it, default ``none,some``).
+      Per arm, on the rank-1 candidate and on the list majority: parse classes; AUC / precision / recall of
+      ``E=none`` against empty gold; precision / recall of ``E=some`` against non-empty gold; the ``unsure``
+      rate by gold class; heard-mention containment (share of gold entities whose normalised surface equals an
+      offered ``M=`` surface, per slot type) and option precision. The surface normalisation is the registered
+      delivery normaliser's filler normalisation (``rails.slurp_projection_v3.normalize_filler_p2``), reused.
+      The key-path reader of (ii) is untouched.
 
 Statistics. Every difference is a per-row paired difference (arm minus delivering arm), reported with a
 WHOLE-UTTERANCE CLUSTER bootstrap CI95 (``analysis.paired.resampled_statistic``, 10,000 draws, seed
@@ -42,6 +52,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import statistics
 import sys
 from collections import Counter
@@ -84,6 +95,20 @@ PRESENCE_METRICS = (
     ("none_on_nonempty", "nonempty_gold", False),
     ("present_on_nonempty", "nonempty_gold", True),
 )
+
+
+#: E2b (NX round R6): the pinned distinction-tag grammar this reader parses exactly.
+TAG_GRAMMAR_RELPATH = "configs/probes/nx/perception/r6/TAG-GRAMMAR-v1.md"
+TAG_VALUES = ("none", "some", "unsure")
+#: The tag set an arm allows unless ``--tag-set`` widens it (``unsure`` only for a template that asks for it).
+DEFAULT_TAG_SET = ("none", "some")
+TAG_CLASSES = ("ok", "absent", "invalid")
+MAX_MENTIONS, MAX_MENTION_WORDS, MAX_TRAILER_WORDS = 3, 4, 8
+#: Verdict classes of a row on the rank-1 candidate or the list majority.
+TAG_VERDICTS = (*TAG_VALUES, "split", "invalid", "absent")
+_TAG_HEAD = re.compile(r"E=([A-Za-z]+)")
+#: Higher score = more likely "no entity"; the AUC of ``E=none`` against empty gold uses this order.
+_NONE_SCORE = {"some": 0, "unsure": 1, "none": 2}
 
 
 class PerceptionColumnReadError(RuntimeError):
@@ -237,22 +262,341 @@ def note_table(rows: Mapping[str, Mapping], ids: Sequence[str]) -> dict:
     }
 
 
+# ---------------------------------------------------------------------------
+# E2b: the distinction tag (TAG-GRAMMAR-v1.md), pure parts
+
+
+def validate_tag_set(tag_set: Sequence[str]) -> tuple[str, ...]:
+    """The allowed ``E=`` values of one arm. Refuses a value outside the grammar, a duplicate, and a set that
+    drops ``none`` or ``some`` (every template asks for both)."""
+
+    values = tuple(tag_set)
+    if len(set(values)) != len(values) or not set(values) <= set(TAG_VALUES):
+        raise PerceptionColumnReadError(
+            f"a tag set may name only {list(TAG_VALUES)} once each; got {list(values)}"
+        )
+    if not {"none", "some"} <= set(values):
+        raise PerceptionColumnReadError(f"a tag set must admit 'none' and 'some'; got {list(values)}")
+    return tuple(v for v in TAG_VALUES if v in values)
+
+
+def parse_tag_set_args(specs: Sequence[str] | None) -> dict[str, tuple[str, ...]]:
+    """``--tag-set ARM=none,some,unsure`` (repeatable) -> ``{arm: allowed values}``. Refuses a malformed spec and
+    a repeated arm."""
+
+    out: dict[str, tuple[str, ...]] = {}
+    for spec in specs or ():
+        arm, sep, values = spec.partition("=")
+        if not sep or not arm or not values:
+            raise PerceptionColumnReadError(f"--tag-set must read ARM=value[,value...]; got {spec!r}")
+        if arm in out:
+            raise PerceptionColumnReadError(f"--tag-set names arm {arm!r} twice")
+        out[arm] = validate_tag_set(values.split(","))
+    return out
+
+
+def _words_ok(text: str, limit: int) -> bool:
+    """One or more ASCII words joined by single spaces, no ``;``, at most ``limit`` words."""
+
+    if not text or ";" in text or not text.isascii() or not text.isprintable():
+        return False
+    tokens = text.split(" ")
+    return all(tokens) and len(tokens) <= limit
+
+
+def _tag(cls: str, verdict: str | None = None, mentions: Sequence[str] = (), reason: str | None = None) -> dict:
+    return {"cls": cls, "verdict": verdict, "mentions": tuple(mentions), "reason": reason}
+
+
+def parse_distinction_tag(distinction: object, *, tag_set: Sequence[str] = DEFAULT_TAG_SET) -> dict:
+    """One candidate's ``distinction`` against TAG-GRAMMAR-v1.
+
+    ``{"cls": ok | absent | invalid, "verdict": none | some | unsure | None, "mentions": (...), "reason": str | None}``.
+    ``absent``: not a string or no ``E=`` head. ``invalid``: the head is present but the grammar fails -- a value
+    outside ``tag_set``, a malformed head, a separator other than ``"; "``, no trailing words, an ``M=`` part after
+    anything but ``E=some``, more than three mentions, a mention over four words, trailing words over eight. The
+    verdict and the mentions are returned only for ``ok``.
+    """
+
+    allowed = validate_tag_set(tag_set)
+    if not isinstance(distinction, str) or not distinction.startswith("E="):
+        return _tag("absent")
+    parts = distinction.split(";")
+    head = _TAG_HEAD.fullmatch(parts[0])
+    if head is None:
+        return _tag("invalid", reason="head_form")
+    verdict = head.group(1)
+    if verdict not in allowed:
+        return _tag("invalid", reason="head_value")
+    segments = []
+    for part in parts[1:]:
+        if not part.startswith(" "):
+            return _tag("invalid", reason="separator")
+        segments.append(part[1:])
+    if not segments:
+        return _tag("invalid", reason="no_trailer")
+    *middle, trailer = segments
+    if trailer.startswith("M="):
+        return _tag("invalid", reason="no_trailer")
+    mentions = []
+    for segment in middle:
+        if not segment.startswith("M="):
+            return _tag("invalid", reason="middle_not_mention")
+        text = segment[2:]
+        if not _words_ok(text, MAX_MENTION_WORDS):
+            return _tag("invalid", reason="mention_form")
+        mentions.append(text)
+    if mentions and verdict != "some":
+        return _tag("invalid", reason=f"mention_after_{verdict}")
+    if len(mentions) > MAX_MENTIONS:
+        return _tag("invalid", reason="mention_count")
+    if not _words_ok(trailer, MAX_TRAILER_WORDS):
+        return _tag("invalid", reason="trailer_form")
+    return _tag("ok", verdict, mentions)
+
+
+def note_tags(note_text: object, tag_set: Sequence[str] = DEFAULT_TAG_SET) -> list[dict]:
+    """Every candidate's parsed tag, in candidate order, from one note text parsed in memory. ``[]`` for a note
+    that is not a JSON object with a ``candidates`` list. Nothing is kept of the text."""
+
+    if not isinstance(note_text, str):
+        return []
+    try:
+        document = json.loads(note_text)
+    except (ValueError, TypeError):
+        return []
+    candidates = document.get("candidates") if isinstance(document, Mapping) else None
+    if not isinstance(candidates, list):
+        return []
+    return [
+        parse_distinction_tag(row.get("distinction") if isinstance(row, Mapping) else None, tag_set=tag_set)
+        for row in candidates
+    ]
+
+
+def list_majority(parses: Sequence[Mapping]) -> str:
+    """The verdict held by MORE THAN HALF of the ``ok`` candidates; ``split`` when none does; ``invalid`` when no
+    candidate is ``ok`` and one is ``invalid``; ``absent`` otherwise."""
+
+    ok = [p["verdict"] for p in parses if p["cls"] == "ok"]
+    if not ok:
+        return "invalid" if any(p["cls"] == "invalid" for p in parses) else "absent"
+    value, count = Counter(ok).most_common(1)[0]
+    return value if 2 * count > len(ok) else "split"
+
+
+def tag_summary(parses: Sequence[Mapping]) -> dict:
+    """What the loader keeps per note: the candidates' parses, the rank-1 verdict class and the list majority."""
+
+    rank1 = parses[0] if parses else _tag("absent")
+    verdict = rank1["verdict"] if rank1["cls"] == "ok" else rank1["cls"]
+    return {"candidates": [dict(p) for p in parses], "rank1": dict(rank1), "rank1_verdict": verdict,
+            "majority": list_majority(parses)}
+
+
+def _none_auc(verdicts: Mapping[str, str], gold_empty: Mapping[str, bool], ids: Sequence[str],
+              *, seed: int, draws: int) -> dict:
+    """AUC of ``E=none`` (none 2 > unsure 1 > some 0) for empty gold over the rows that carry a verdict, with a
+    whole-utterance cluster bootstrap CI95. Closed-form on the three score levels, so each draw is a bincount."""
+
+    import numpy as np
+
+    carried = [s for s in ids if verdicts[s] in _NONE_SCORE]
+    n_pos = sum(1 for s in carried if gold_empty[s])
+    n_neg = len(carried) - n_pos
+    if n_pos == 0 or n_neg == 0:
+        return {"n": len(carried), "auc": None, "ci95": None}
+    clusters = sorted({SC.utterance_id(s) for s in carried})
+    index = {c: k for k, c in enumerate(clusters)}
+    table = np.zeros((len(clusters), 6), dtype=np.float64)  # cluster x (level x label)
+    for s in carried:
+        table[index[SC.utterance_id(s)], _NONE_SCORE[verdicts[s]] * 2 + int(gold_empty[s])] += 1
+
+    def auc_of(counts):
+        grid = counts.reshape(3, 2)
+        pos, neg = grid[:, 1], grid[:, 0]
+        total_pos, total_neg = pos.sum(), neg.sum()
+        if total_pos == 0 or total_neg == 0:
+            return None
+        score = sum(
+            (1.0 if i > j else 0.5 if i == j else 0.0) * pos[i] * neg[j] for i in range(3) for j in range(3)
+        )
+        return float(score / (total_pos * total_neg))
+
+    point = auc_of(table.sum(axis=0))
+    rng = np.random.default_rng(seed)
+    picks = rng.integers(0, len(clusters), size=(draws, len(clusters)))
+    values = [a for a in (auc_of(np.bincount(row, minlength=len(clusters)) @ table) for row in picks) if a is not None]
+    tail = 100.0 * (1.0 - CI_LEVEL) / 2.0
+    ci = [float(np.percentile(values, tail)), float(np.percentile(values, 100.0 - tail))] if values else None
+    return {"n": len(carried), "auc": point, "ci95": ci}
+
+
+def tag_verdict_table(verdicts: Mapping[str, str], gold_empty: Mapping[str, bool], ids: Sequence[str],
+                      *, seed: int = SEED, draws: int = DRAWS) -> dict:
+    """The presence read of one verdict source (rank-1 or list majority): verdict counts; AUC, precision and
+    recall of ``none`` against empty gold; precision and recall of ``some`` against non-empty gold; the ``unsure``
+    rate by gold class. Recall is given over the rows that carry a verdict (parity with the key-path reader) and over
+    ALL rows of the gold class (a row without a tag is a miss). Counts only."""
+
+    ids = list(ids)
+    counts = Counter(verdicts[s] for s in ids)
+    carried = [s for s in ids if verdicts[s] in TAG_VALUES]
+    empty_all = [s for s in ids if gold_empty[s]]
+    nonempty_all = [s for s in ids if not gold_empty[s]]
+    empty = [s for s in carried if gold_empty[s]]
+    nonempty = [s for s in carried if not gold_empty[s]]
+    none_total = sum(1 for s in carried if verdicts[s] == "none")
+    none_tp = sum(1 for s in empty if verdicts[s] == "none")
+    some_total = sum(1 for s in carried if verdicts[s] == "some")
+    some_tp = sum(1 for s in nonempty if verdicts[s] == "some")
+    return {
+        "verdict_counts": {k: counts.get(k, 0) for k in TAG_VERDICTS},
+        "rows_carrying_a_verdict": len(carried),
+        "none_auc": _none_auc(verdicts, gold_empty, ids, seed=seed, draws=draws),
+        "none_precision": _rate(none_tp, none_total),
+        "none_recall": _rate(none_tp, len(empty)),
+        "none_recall_all_rows": _rate(none_tp, len(empty_all)),
+        "some_precision": _rate(some_tp, some_total),
+        "some_recall": _rate(some_tp, len(nonempty)),
+        "some_recall_all_rows": _rate(some_tp, len(nonempty_all)),
+        "unsure_rate": _rate(sum(1 for s in carried if verdicts[s] == "unsure"), len(carried)),
+        "unsure_by_gold": {
+            "empty_gold": _rate(sum(1 for s in empty if verdicts[s] == "unsure"), len(empty)),
+            "nonempty_gold": _rate(sum(1 for s in nonempty if verdicts[s] == "unsure"), len(nonempty)),
+        },
+    }
+
+
+def tag_parse_table(summaries: Mapping[str, Mapping], ids: Sequence[str]) -> dict:
+    """Parse classes on the rank-1 candidate (rows) and over every candidate, with the invalid reasons."""
+
+    rank1 = Counter(summaries[s]["rank1"]["cls"] for s in ids)
+    every, reasons, candidates = Counter(), Counter(), 0
+    for s in ids:
+        for p in summaries[s]["candidates"]:
+            candidates += 1
+            every[p["cls"]] += 1
+            if p["reason"]:
+                reasons[p["reason"]] += 1
+    return {
+        "rank1": {k: rank1.get(k, 0) for k in TAG_CLASSES},
+        "every_candidate": {"n": candidates, **{k: every.get(k, 0) for k in TAG_CLASSES}},
+        "invalid_reasons": dict(sorted(reasons.items())),
+    }
+
+
+def _normaliser():
+    from speech_aware_evidence_acquisition.rails.slurp_projection_v3 import normalize_filler_p2
+
+    return normalize_filler_p2
+
+
+def mention_table(offered: Mapping[str, Sequence[str]], gold: Mapping[str, Mapping], ids: Sequence[str],
+                  *, ok_rows: Mapping[str, bool]) -> dict:
+    """Heard-mention containment and option precision for one source of offered ``M=`` surfaces.
+
+    Containment: the share of gold entities whose normalised surface equals an offered normalised surface of the
+    same row (per slot type too). Option precision: the share of offered (row-distinct) normalised surfaces that equal
+    a gold entity's normalised surface of the row, with the matched options split by the matched gold slot type (a
+    mention carries no type). The surface normalisation is the registered delivery normaliser's filler normalisation.
+    Counts and slot TYPE names only."""
+
+    norm = _normaliser()
+    gold_n = gold_ok = contained = contained_ok = offered_n = matched = offered_empty = rows_offering = 0
+    by_type: dict[str, list[int]] = {}
+    matched_by_type: Counter = Counter()
+    for sid in ids:
+        entities = gold[sid]["entities"]
+        surfaces = list(dict.fromkeys(norm(m) for m in offered[sid]))
+        offered_set = set(surfaces)
+        gold_type: dict[str, str] = {}
+        for e in entities:
+            gold_type.setdefault(norm(e.filler), e.type)
+        if surfaces:
+            rows_offering += 1
+        for e in entities:
+            hit = norm(e.filler) in offered_set
+            gold_n += 1
+            contained += int(hit)
+            if ok_rows[sid]:
+                gold_ok += 1
+                contained_ok += int(hit)
+            slot = by_type.setdefault(e.type, [0, 0])
+            slot[0] += 1
+            slot[1] += int(hit)
+        for surface in surfaces:
+            offered_n += 1
+            if not entities:
+                offered_empty += 1
+            if surface in gold_type:
+                matched += 1
+                matched_by_type[gold_type[surface]] += 1
+    return {
+        "rows_offering_any": rows_offering,
+        "gold_entities": gold_n, "containment": _rate(contained, gold_n),
+        "gold_entities_on_ok_rows": gold_ok, "containment_on_ok_rows": _rate(contained_ok, gold_ok),
+        "offered_options": offered_n, "option_precision": _rate(matched, offered_n),
+        "offered_options_on_empty_gold_rows": offered_empty,
+        "containment_by_slot_type": {
+            t: {"gold_entities": n, **_rate(c, n)} for t, (n, c) in sorted(by_type.items())
+        },
+        "matched_options_by_slot_type": dict(sorted(matched_by_type.items())),
+    }
+
+
+def distinction_tag_table(summaries: Mapping[str, Mapping], gold: Mapping[str, Mapping], ids: Sequence[str],
+                          tag_set: Sequence[str], *, seed: int = SEED, draws: int = DRAWS) -> dict:
+    """The whole E2b read of one arm."""
+
+    ids = list(ids)
+    gold_empty = {s: not gold[s]["entities"] for s in ids}
+    rank1 = {s: summaries[s]["rank1_verdict"] for s in ids}
+    majority = {s: summaries[s]["majority"] for s in ids}
+    ok1 = {s: summaries[s]["rank1"]["cls"] == "ok" for s in ids}
+    rank1_mentions = {s: summaries[s]["rank1"]["mentions"] if ok1[s] else () for s in ids}
+    union_mentions = {
+        s: tuple(m for p in summaries[s]["candidates"] if p["cls"] == "ok" for m in p["mentions"]) for s in ids
+    }
+    return {
+        "tag_set": list(tag_set),
+        "grammar": TAG_GRAMMAR_RELPATH,
+        "parse": tag_parse_table(summaries, ids),
+        "rank1": tag_verdict_table(rank1, gold_empty, ids, seed=seed, draws=draws),
+        "majority": tag_verdict_table(majority, gold_empty, ids, seed=seed, draws=draws),
+        "mentions": {
+            "rank1": mention_table(rank1_mentions, gold, ids, ok_rows=ok1),
+            "list_union": mention_table(
+                union_mentions, gold, ids,
+                ok_rows={s: any(p["cls"] == "ok" for p in summaries[s]["candidates"]) for s in ids}),
+        },
+    }
+
+
 def read_columns(
     notes: Mapping[str, Mapping[str, Mapping]], solver_texts: Mapping[str, Mapping[str, str]],
     gold: Mapping[str, Mapping], *, arm_ids: Sequence[str], delivering: str, twin: str | None = None,
     normalised_solver_texts: Mapping[str, Mapping[str, str]] | None = None,
+    tag_sets: Mapping[str, Sequence[str]] | None = None,
     seed: int = SEED, draws: int = DRAWS,
 ) -> dict:
     """The whole Perception column read.
 
     ``notes[arm][sample_id]`` is the dict :func:`load_sealed_columns` builds (``status``,
-    ``candidates``, ``verdict``, ``prompt_tokens``, no text); ``solver_texts[arm][sample_id]`` the arm's
-    level-2 first-visit Solver answer; ``gold[sample_id]`` carries ``intent`` and ``entities``.
+    ``candidates``, ``verdict``, ``tag``, ``prompt_tokens``, no text); ``solver_texts[arm][sample_id]`` the arm's
+    level-2 first-visit Solver answer; ``gold[sample_id]`` carries ``intent`` and ``entities``. ``tag_sets[arm]``
+    is the arm's allowed ``E=`` values (default ``none,some``); it is reported with the E2b tables, which are read
+    only for arms whose notes carry a ``tag`` summary.
     """
 
     arm_ids = list(arm_ids)
     if delivering not in arm_ids:
         raise PerceptionColumnReadError("the delivering arm is not among the arms")
+    tag_sets = dict(tag_sets or {})
+    stray = sorted(set(tag_sets) - set(arm_ids))
+    if stray:
+        raise PerceptionColumnReadError(f"a tag set names arm(s) {stray} that the run does not have")
+    tag_sets = {arm: validate_tag_set(tag_sets.get(arm, DEFAULT_TAG_SET)) for arm in arm_ids}
     ids = sorted(notes[delivering])
     for arm in arm_ids:
         if sorted(notes[arm]) != ids or sorted(solver_texts[arm]) != ids:
@@ -297,11 +641,16 @@ def read_columns(
                 {s: float(scored[delivering][s]["list_size"]) for s in ids},
                 ids, seed=seed, draws=draws, binary=False,
             )
+        summaries = {s: notes[arm][s].get("tag") for s in ids}
         arms_out[arm] = {
             "role": ("delivering" if arm == delivering else "twin" if arm == twin else "candidate"),
             "notes": note_table(rows, ids),
             "entity_presence": presence_table(rows, ids),
             "paired_vs_delivering": paired,
+            "distinction_tag": (
+                distinction_tag_table(summaries, gold, ids, tag_sets[arm], seed=seed, draws=draws)
+                if all(v is not None for v in summaries.values()) else None
+            ),
         }
     solver_gold = {sid: {"entities": gold[sid]["entities"]} for sid in ids}
     solver = SC.read_columns(
@@ -315,6 +664,7 @@ def read_columns(
         "bootstrap": {"draws": draws, "seed": seed, "ci_level": CI_LEVEL,
                       "cluster": "whole utterance (first three colon segments of the sample id)"},
         "arm_order": arm_ids, "delivering_arm": delivering, "twin_arm": twin,
+        "tag_sets": {arm: list(values) for arm, values in tag_sets.items()},
         "arms": arms_out,
         "solver_column": {
             "view": "level-2 first-visit Solver answer of each arm over that arm's own note",
@@ -333,17 +683,20 @@ def _sha(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def load_sealed_columns(outputs_rows: Sequence[Mapping], trace_records: Mapping[str, Mapping]) -> dict:
+def load_sealed_columns(outputs_rows: Sequence[Mapping], trace_records: Mapping[str, Mapping],
+                        *, tag_sets: Mapping[str, Sequence[str]] | None = None) -> dict:
     """Every arm's note metrics and level-2 Solver answer for every row of a sealed Perception template
     column. ``outputs_rows`` / ``trace_records`` are a verified bundle's own. Refuses a row whose receipt is
     not the Perception template (v4, level 2) shape, whose arm group differs from the first row's, or whose
-    trace pairs disagree with the sealed contacts' digests."""
+    trace pairs disagree with the sealed contacts' digests. ``tag_sets[arm]`` is the arm's allowed ``E=`` values
+    for the E2b parse (default ``none,some``); a set naming an arm the run does not have is refused."""
 
     from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
         parse_perception_branch_note, validate_perception_branch_receipt,
     )
 
     arm_ids = templates = delivering = twin = None
+    allowed: dict[str, tuple[str, ...]] = {}
     notes: dict[str, dict[str, dict]] = {}
     solver_texts: dict[str, dict[str, str]] = {}
     normaliser_ids: dict[str, str | None] = {}
@@ -369,6 +722,10 @@ def load_sealed_columns(outputs_rows: Sequence[Mapping], trace_records: Mapping[
         row_templates = [item["instruction_template"] for item in branch_rows]
         if arm_ids is None:
             arm_ids, templates, delivering, twin = row_arm_ids, row_templates, row_arm_ids[-1], row_twin
+            stray = sorted(set(tag_sets or {}) - set(arm_ids))
+            if stray:
+                raise PerceptionColumnReadError(f"a tag set names arm(s) {stray} that the run does not have")
+            allowed = {arm: validate_tag_set((tag_sets or {}).get(arm, DEFAULT_TAG_SET)) for arm in arm_ids}
             notes = {arm: {} for arm in arm_ids}
             solver_texts = {arm: {} for arm in arm_ids}
         elif (row_arm_ids, row_templates, row_twin) != (arm_ids, templates, twin):
@@ -417,6 +774,7 @@ def load_sealed_columns(outputs_rows: Sequence[Mapping], trace_records: Mapping[
             notes[arm][sid] = {
                 "status": status, "candidates": tuple(candidates),
                 "verdict": entity_presence_of(text),
+                "tag": tag_summary(note_tags(text, allowed[arm])),
                 "prompt_tokens": tokens if isinstance(tokens, int) and not isinstance(tokens, bool) else None,
             }
             del text
@@ -425,7 +783,7 @@ def load_sealed_columns(outputs_rows: Sequence[Mapping], trace_records: Mapping[
     if arm_ids is None:
         raise PerceptionColumnReadError("no row of the run carries a Perception template receipt")
     return {"arm_ids": arm_ids, "templates": templates, "delivering": delivering, "twin": twin,
-            "notes": notes, "solver_texts": solver_texts, "normaliser_ids": normaliser_ids}
+            "tag_sets": allowed, "notes": notes, "solver_texts": solver_texts, "normaliser_ids": normaliser_ids}
 
 
 # ---------------------------------------------------------------------------
@@ -484,6 +842,48 @@ def render(report: Mapping) -> str:
             f"{_pct(e['none_recall']['rate'])} | {_pct(e['present_precision']['rate'])} | "
             f"{_pct(e['present_recall']['rate'])} | {_pct(e['unsure_rate']['rate'])} |"
         )
+    tagged = [arm for arm in order if arms[arm].get("distinction_tag")]
+    if tagged:
+        lines += ["", "## Distinction tag (E2b): parse classes (rank-1 rows; every candidate)", "",
+                  "| arm | tag set | rank-1 ok / absent / invalid | every candidate ok / absent / invalid | invalid reasons |",
+                  "| --- | --- | --- | --- | --- |"]
+        for arm in tagged:
+            t = arms[arm]["distinction_tag"]
+            r1, ev = t["parse"]["rank1"], t["parse"]["every_candidate"]
+            lines.append(
+                f"| {arm} | {','.join(t['tag_set'])} | {' / '.join(str(r1[k]) for k in TAG_CLASSES)} | "
+                f"{' / '.join(str(ev[k]) for k in TAG_CLASSES)} (of {ev['n']}) | "
+                f"{', '.join(f'{k} {v}' for k, v in t['parse']['invalid_reasons'].items()) or '-'} |"
+            )
+        for source, title in (("rank1", "rank-1 candidate"), ("majority", "list majority")):
+            lines += ["", f"## Distinction tag (E2b): presence verdict on the {title} (%)", "",
+                      "| arm | " + " / ".join(TAG_VERDICTS) + " | none AUC [CI95] | none precision | none recall | "
+                      "some precision | some recall | unsure rate | unsure on empty / non-empty gold |",
+                      "| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |"]
+            for arm in tagged:
+                v = arms[arm]["distinction_tag"][source]
+                auc = v["none_auc"]
+                auc_text = "-" if auc["auc"] is None else (
+                    f"{auc['auc']:.3f} " + ("-" if auc["ci95"] is None else f"[{auc['ci95'][0]:.3f}, {auc['ci95'][1]:.3f}]"))
+                ub = v["unsure_by_gold"]
+                lines.append(
+                    f"| {arm} | {' / '.join(str(v['verdict_counts'][k]) for k in TAG_VERDICTS)} | {auc_text} | "
+                    f"{_pct(v['none_precision']['rate'])} | {_pct(v['none_recall']['rate'])} | "
+                    f"{_pct(v['some_precision']['rate'])} | {_pct(v['some_recall']['rate'])} | "
+                    f"{_pct(v['unsure_rate']['rate'])} | {_pct(ub['empty_gold']['rate'])} / {_pct(ub['nonempty_gold']['rate'])} |"
+                )
+        lines += ["", "## Distinction tag (E2b): heard mentions", "",
+                  "| arm | source | rows offering | gold entities | containment | option precision | offered options | by slot type (containment) |",
+                  "| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |"]
+        for arm in tagged:
+            for source in ("rank1", "list_union"):
+                m = arms[arm]["distinction_tag"]["mentions"][source]
+                by_type = ", ".join(f"{t} {_pct(v['rate'])} ({v['n']})" for t, v in m["containment_by_slot_type"].items())
+                lines.append(
+                    f"| {arm} | {source} | {m['rows_offering_any']} | {m['gold_entities']} | "
+                    f"{_pct(m['containment']['rate'])} | {_pct(m['option_precision']['rate'])} | "
+                    f"{m['offered_options']} | {by_type or '-'} |"
+                )
     solver = report["solver_column"]
     lines += ["", f"## Level-2 Solver column (primary `{solver['primary_metric']}`, normalised view)", "",
               "| arm | role | exact set | empty-gold false fill | non-empty exact |",
@@ -535,13 +935,14 @@ def build(args) -> dict:
         raise PerceptionColumnReadError(f"no sealed attempt directory at {directory}")
     manifest = directory / f"{args.run_id}.run-manifest.json"
     bundle = verify_bundle(manifest)
-    sealed = load_sealed_columns(bundle.outputs_rows, bundle.trace_records)
+    tag_sets = parse_tag_set_args(getattr(args, "tag_set", None))
+    sealed = load_sealed_columns(bundle.outputs_rows, bundle.trace_records, tag_sets=tag_sets)
     gold = load_gold(load_lock(Path(args.lock)), data_root, args.split)
     normalised = SC.normalise_texts(sealed["solver_texts"], sealed["normaliser_ids"])
     report = read_columns(
         sealed["notes"], sealed["solver_texts"], gold, arm_ids=sealed["arm_ids"],
         delivering=sealed["delivering"], twin=sealed["twin"], normalised_solver_texts=normalised,
-        seed=args.seed, draws=args.draws,
+        tag_sets=sealed["tag_sets"], seed=args.seed, draws=args.draws,
     )
     report["inputs"] = {
         "run_id": args.run_id, "attempt_id": args.attempt_id, "split": args.split,
@@ -562,6 +963,9 @@ def main(argv=None) -> int:
     parser.add_argument("--draws", type=int, default=DRAWS)
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument("--out-dir", default=None)
+    parser.add_argument("--tag-set", action="append", default=[], metavar="ARM=VALUES",
+                        help="the E= values an arm's template allows, e.g. p3=none,some,unsure (default none,some "
+                             "for every arm; a value the arm does not allow parses as invalid); repeatable")
     args = parser.parse_args(argv)
     report = build(args)
     out_dir = Path(args.out_dir) if args.out_dir else Path(args.data_root) / "analysis" / READ_ID / args.run_id
