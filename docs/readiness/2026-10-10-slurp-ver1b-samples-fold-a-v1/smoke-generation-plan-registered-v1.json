@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-10-slurp-ver1b-samples-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "f139828e7c153cc2fc094b5e55dcaedb44b2f7d4a5304c085ef860050d73e961"
+    "sha256": "472aa0938e0602a2c9c043a0654af15b0a346f70d76f3ceae2a780bf5cc9575c"
   },
   "purpose": "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-V1: structural form proof only: no score and no read.",
   "registered_at_utc": "2026-10-10T21:42:02.000000+00:00",

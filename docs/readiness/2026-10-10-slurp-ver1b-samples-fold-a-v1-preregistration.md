@@ -12,8 +12,8 @@ Registered 2026-10-10 at study commit `76a9bfe3e6e228dd709964923b4f3b48fec3dd1d`
 | the fixed rule | n = 3, s = 2, theta 0.2; FIXED on `SLURP-EVO-FOLD-B-V2`, confirmed (not re-tuned) on `SLURP-EVO-FOLD-A-V2` |
 | rosters | tuning `SLURP-EVO-FOLD-B-V2`; read `SLURP-EVO-FOLD-A-V2` |
 | runs | `SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1` / `SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-FIT-V1`; `SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-POOL-READ-V1`; verdict column `SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1` |
-| composed config hashes | arm `4efe061896b0ccc30ff85a476a083f6b815c6c0ac0a25e50c56d555abfb06697`; smoke `290ade59bfbe6943e7e23d8077367999debec548badc79608852bbb402536f4b` |
-| protocol hashes | arm `50c6c21e75bc902d2381bc83a9352be8ecc476620fd20284dad3e841da5c6c5b`; smoke `53738967da9570b982bc8bd9189d344842171d60de4b2f85e4794e2ae0cb14d9` |
+| composed config hashes | arm `0f4ab6ba682d0009dac54506355157b121c43471c968ba2e479b1c9ee8d97eb4`; smoke `290ade59bfbe6943e7e23d8077367999debec548badc79608852bbb402536f4b` |
+| protocol hashes | arm `8fe37ef2fb29f3536824308cc5a62d686da5221cbfdf9b5f26c708dcaecda040`; smoke `53738967da9570b982bc8bd9189d344842171d60de4b2f85e4794e2ae0cb14d9` |
 | split identity | arm `61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6`; smoke `4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb` |
 
 ## Attempt state (no recovery)
