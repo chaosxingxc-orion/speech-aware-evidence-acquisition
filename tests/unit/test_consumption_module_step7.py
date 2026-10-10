@@ -78,8 +78,61 @@ def test_the_slurp_default_resolves_per_lock_id():
     assert l22.LOCK_V2_2_COMPONENT_STATES["delivery-normaliser"]["state"] == "on (lock)"
 
 
-def test_current_lock_is_not_moved_by_step_7():
-    assert smh.CURRENT_LOCK == _hooks().current_lock == "v2.1"
+def test_current_lock_is_v2_2_since_decision_249():
+    """Step 7 left CURRENT_LOCK at v2.1; owner decision 249 (2026-10-10) moved it to v2.2."""
+    assert smh.CURRENT_LOCK == _hooks().current_lock == l22.LOCK_V2_2 == "v2.2"
+    # the other carriers still declare no lock versions
+    assert ah.carrier_module_hooks(repo_root=_REPO).current_lock is None
+    assert eh.carrier_module_hooks(repo_root=_REPO).current_lock is None
+
+
+#: Composed config hashes BEFORE decision 249 (master 951de831b) of cells whose baselines name their
+#: lock explicitly (R5 / R6 name v2.2; the module replicate names v2.1). Moving CURRENT_LOCK moves none.
+COMPOSED_HASHES_BEFORE_DECISION_249 = {
+    "slurp-native-stage3-nx-r5-composed-dev2000-added-v1":
+        "aa359613f3c0fb2be8f4bcef2cf3b2adb3a2ec54eee754830611394401f9c346",
+    "slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-v1":
+        "9b7d0b4ac4679369e3dbcd07065d44e16675d4e064ed156a278cd7a58bfef2c0",
+    "slurp-native-stage3-nx-r6-perception-fold-b-v1":
+        "dae31324906bdae2dd076bad0c267e6e079993b556abfe5246354e056ebe8c68",
+    "slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-v1":
+        "7ca216808fd38765f2862bb9fdd583312fc89b10642bbe0fbf3875efdb84d208",
+    "slurp-milestone-successor2-composed-v1":
+        "75f09d6c87d3f7f8d58495c643656d0b3a61d7668eaa9386e353c9b2f10f70ee",
+    "slurp-native-stage3-module-comp1b-aa-dev2000-added-v1":
+        "d01a0fd68e83a491bfed1b2ea23e95ccb3f3ba957d9caf95e0f199dd5e350204",
+}
+
+
+@pytest.mark.parametrize("experiment", sorted(COMPOSED_HASHES_BEFORE_DECISION_249))
+def test_cells_naming_their_lock_compose_identically_after_decision_249(experiment):
+    cell = json.loads((_REPO / "configs" / "experiment" / f"{experiment}.json").read_text(encoding="utf-8"))["cells"][0]
+    composed = compose(_REPO, cell["model_fragment"], cell["dataset_fragment"], cell["baseline_fragment"], experiment)
+    assert composed.config_hash == COMPOSED_HASHES_BEFORE_DECISION_249[experiment]
+
+
+def test_no_committed_consumption_module_block_relies_on_the_current_lock():
+    """Every committed slurp block names its lock explicitly, so the CURRENT lock only governs
+    what new derivations emit and the harness `module` class's OFF arm."""
+    blocks = []
+
+    def walk(node):
+        if isinstance(node, dict):
+            if isinstance(node.get("consumption_module"), dict):
+                blocks.append(node["consumption_module"])
+            for value in node.values():
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+
+    for path in (_REPO / "configs").rglob("*.json"):
+        try:
+            walk(json.loads(path.read_text(encoding="utf-8")))
+        except ValueError:
+            continue
+    slurp = [b for b in blocks if b.get("profile") == "slurp"]
+    assert slurp and all(b.get("lock") in ("v2.1", "v2.2") for b in slurp)
 
 
 def test_lock_v2_2_is_the_v2_1_layer_with_exactly_the_normaliser_leaf_moved():

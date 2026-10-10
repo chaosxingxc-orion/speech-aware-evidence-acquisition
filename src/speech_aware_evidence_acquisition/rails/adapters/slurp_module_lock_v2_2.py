@@ -4,9 +4,10 @@ Records ``docs/results/2026-10-09-slurp-postprocessing-v4g-lock-v1.md`` and
 ``docs/readiness/2026-10-09-slurp-module-step7-v4g-default-v1.md``. v2.2 = the v2.1
 layer with ONE leaf moved, ``native_episode.deliver_normaliser.normaliser``
 ``saea-deliver-normalise-v3`` -> ``saea-deliver-normalise-v4g`` (component
-``delivery-normaliser``, state ``on (lock)``). It is opt-in by name: a block naming no
-``lock``, ``v2.0`` or ``v2.1`` compiles exactly as before, and ``CURRENT_LOCK`` is not
-moved. The normaliser is version ``1`` and loads its pinned TRAIN tables by hash
+``delivery-normaliser``, state ``on (lock)``). A block naming no ``lock``, ``v2.0`` or
+``v2.1`` compiles exactly as before. Since owner decision 249 (2026-10-10) v2.2 is the
+module's ``CURRENT_LOCK`` (the null arm of new cells and the harness ``module`` class's
+OFF arm); it is still selected only by a block's ``lock`` key. The normaliser is version ``1`` and loads its pinned TRAIN tables by hash
 (``rails.delivery_normalisers``).
 """
 

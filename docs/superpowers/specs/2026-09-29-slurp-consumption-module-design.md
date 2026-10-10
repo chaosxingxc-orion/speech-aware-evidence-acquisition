@@ -328,7 +328,9 @@ convergence.
    **Step 6 status (2026-09-30, branch `fable/module6`): DONE, model-free, nothing flown.**
    - *Harness class (ruling R2).* The ninth switch class `module` (`rails/config_tables.py`:
      `MODULE_SWITCH_CLASS`, one key `native_episode.consumption_module`). Its OFF arm is the all-off block
-     naming the carrier's CURRENT lock; `scripts/checks/harness_admission_check.py` rule 8 recomputes the
+     naming the carrier's CURRENT lock (v2.1 at step 6; v2.2 since owner decision 249, 2026-10-10, with a
+     PENDING entry allowed to stay on its registered lock via `switch.lock_superseded_by`);
+     `scripts/checks/harness_admission_check.py` rule 8 recomputes the
      licence (falsifier kind `compiles-to-lock`): it compiles the OFF arm, compares it with the named lock
      version's blocks, requires each named cell to carry those blocks on its own roster, and compiles the ON
      arm. `docs/receipts/harness-admission.json` carries one PENDING `module` entry (OFF = lock v2.1 all-off,

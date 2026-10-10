@@ -3,7 +3,8 @@
 section 4 step 6, coordinator ruling R2).
 
 * The harness ``module`` switch class: ONE key, ``native_episode.consumption_module``,
-  whose OFF arm is the all-off block on the carrier's CURRENT lock (v2.1) and
+  whose OFF arm is the all-off block on the carrier's CURRENT lock (v2.1 here; v2.2 since
+  decision 249, see the superseded-lock case below) and
   compiles byte for byte to it; ``harness_admission_check.py`` recomputes that
   licence rather than believing it.
 * Lock versions: ``lock: v2.1`` is the v2.0 layer with ONE pin moved (the G5
@@ -90,8 +91,9 @@ def _committed_module_entry() -> dict:
 
 def test_the_module_switch_is_one_key_whose_off_arm_compiles_to_the_lock():
     """The receipt entry's proof: ONE key; its OFF arm (the A/A's declared
-    block) is the all-off block on lock v2.1 and compiles to exactly the lock
-    v2.1 blocks; its ON arm (the arm's declared block) moves, against the OFF
+    block) is the all-off block on lock v2.1 (the registered cell's lock, which
+    CURRENT_LOCK v2.2 superseded under decision 249) and compiles to exactly the
+    lock v2.1 blocks; its ON arm (the arm's declared block) moves, against the OFF
     arm, exactly the leaves of the two components it arms."""
 
     assert MODULE_SWITCH_CLASS == "module" and SWITCH_CLASS_NAMES[-1] == MODULE_SWITCH_CLASS
@@ -103,7 +105,7 @@ def test_the_module_switch_is_one_key_whose_off_arm_compiles_to_the_lock():
     off, on = module_block_of(aa), module_block_of(arm)
     assert key == "native_episode.consumption_module"
     assert cm.is_module_off_block(off) and not cm.is_module_off_block(on)
-    assert off["lock"] == on["lock"] == smh.CURRENT_LOCK == "v2.1"
+    assert off["lock"] == on["lock"] == "v2.1" and smh.CURRENT_LOCK == "v2.2"
     hooks = _hooks()
     off_policy = cm.compile_module(off, hooks)
     assert off_policy.values() == json.loads(json.dumps(dict(hooks.lock_versions["v2.1"]())))
@@ -118,6 +120,8 @@ def test_the_module_switch_is_one_key_whose_off_arm_compiles_to_the_lock():
     entry = _committed_module_entry()
     assert entry["switch"]["off"] == off and entry["switch"]["on"] == on
     assert entry["status"] == "PENDING"
+    # Decision 249: the registered entry keeps its cell's lock and names the lock that superseded it.
+    assert entry["switch"]["lock_superseded_by"] == smh.CURRENT_LOCK
 
 
 def test_the_committed_receipt_passes_with_the_module_entry():
@@ -148,12 +152,34 @@ def test_an_off_arm_with_a_component_on_is_refused(tmp_path):
 def test_an_off_arm_on_a_stale_lock_is_refused(tmp_path):
     def mutate(switch):
         switch["off"]["lock"] = "v2.0"
+        switch.pop("lock_superseded_by")
     result = _evaluate_with(tmp_path, mutate)
-    assert "CURRENT lock ('v2.1')" in _failures(result)
+    assert "CURRENT lock ('v2.2')" in _failures(result)
+
+
+def test_a_superseded_lock_needs_a_pending_entry_naming_the_current_lock(tmp_path):
+    """Decision 249: only a PENDING entry may stay on a lock CURRENT_LOCK has moved past, and it must
+    name the CURRENT lock as its successor."""
+    assert "lock_superseded_by" not in _failures(_evaluate_with(tmp_path, lambda s: None))
+
+    def wrong_successor(switch):
+        switch["lock_superseded_by"] = "v2.1"
+    assert "lock_superseded_by is 'v2.1'" in _failures(_evaluate_with(tmp_path, wrong_successor))
+
+    def no_marker(switch):
+        switch.pop("lock_superseded_by")
+    assert "CURRENT lock ('v2.2')" in _failures(_evaluate_with(tmp_path, no_marker))
+
+    receipt = json.loads((_REPO / "docs/receipts/harness-admission.json").read_text(encoding="utf-8"))
+    entry = next(e for e in receipt["entries"] if e["switch"]["table"] == MODULE_SWITCH_CLASS)
+    entry["status"] = "ADMITTED"
+    path = tmp_path / "admitted.json"
+    path.write_text(json.dumps(receipt), encoding="utf-8")
+    assert "only a PENDING entry may stay" in _failures(hac.evaluate(_REPO, path))
 
 
 def test_an_off_arm_without_a_lock_key_is_refused(tmp_path):
-    result = _evaluate_with(tmp_path, lambda s: s["off"].pop("lock"))
+    result = _evaluate_with(tmp_path, lambda s: (s["off"].pop("lock"), s.pop("lock_superseded_by")))
     assert "CURRENT lock" in _failures(result)
 
 

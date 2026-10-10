@@ -110,7 +110,10 @@ checked:
    (``rails.config_tables.resolve_module_switch_key``). Its OFF arm is a
    module block whose every component is ``off`` and which declares no
    column (``rails.consumption_module.is_module_off_block``) and which names
-   its carrier's CURRENT lock version in ``lock``; its ON arm is a block that
+   its carrier's CURRENT lock version in ``lock`` (v2.2 for SLURP since owner
+   decision 249, 2026-10-10; a still-PENDING entry whose cell flew on an older
+   lock may stay on it by naming the CURRENT lock in ``switch.lock_superseded_by``);
+   its ON arm is a block that
    arms at least one component and compiles. The entry owes a
    ``switch.falsifier`` of kind ``"compiles-to-lock"`` naming the lock
    version and one or more registered cells (experiment ids) that carry
@@ -329,7 +332,7 @@ def _check_switch(entry: Mapping[str, Any], repo_root: Path, where: str) -> list
     if table == PHASE_TOOLS_SWITCH_CLASS:
         return _check_phase_tools_switch(switch, repo_root, where)
     if table == MODULE_SWITCH_CLASS:
-        return _check_module_switch(switch, repo_root, where)
+        return _check_module_switch(switch, repo_root, where, status=entry.get("status"))
     if table not in CONFIG_TABLE_NAMES:
         failures.append(
             f"{where}.switch.table is {table!r}; the switch classes are "
@@ -441,7 +444,9 @@ def _check_phase_tools_switch(
     return failures
 
 
-def _check_module_switch(switch: Mapping[str, Any], repo_root: Path, where: str) -> list[str]:
+def _check_module_switch(
+    switch: Mapping[str, Any], repo_root: Path, where: str, status: object = None,
+) -> list[str]:
     """Rule 8: ``native_episode.consumption_module``, whose OFF arm is the
     all-off block on the carrier's CURRENT lock and whose licence -- the OFF
     arm compiles to that lock, and the named cells carry it -- is recomputed
@@ -466,7 +471,17 @@ def _check_module_switch(switch: Mapping[str, Any], repo_root: Path, where: str)
         hooks = cm.resolve_carrier_hooks(off["profile"], repo_root=repo_root)
     except cm.ConsumptionModuleConfigError as error:
         return failures + [f"{where}.switch.off: {error}"]
-    if off.get("lock") is None or off.get("lock") != hooks.current_lock:
+    superseded = switch.get("lock_superseded_by")
+    if superseded is not None and off.get("lock") is not None and off.get("lock") != hooks.current_lock:
+        # Owner decision 249 (2026-10-10): a registered, still-PENDING entry keeps the lock its
+        # cell flew on when CURRENT_LOCK moves, and names the lock that superseded it (which
+        # must be CURRENT now). Any other status must sit on the CURRENT lock.
+        if superseded != hooks.current_lock or status != "PENDING":
+            failures.append(
+                f"{where}.switch.lock_superseded_by is {superseded!r}; it must name the CURRENT lock "
+                f"({hooks.current_lock!r}) and only a PENDING entry may stay on its registered lock"
+            )
+    elif off.get("lock") is None or off.get("lock") != hooks.current_lock:
         failures.append(
             f"{where}.switch.off names lock {off.get('lock')!r}; the OFF arm of a 'module' "
             f"entry names its carrier's CURRENT lock ({hooks.current_lock!r}) -- the null "
