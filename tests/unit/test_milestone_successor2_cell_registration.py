@@ -1,17 +1,23 @@
 """SLURP test-sample SUCCESSOR-2 (the NX R5 composed arm on the signed sample): the HELD registration is what its package says (model-free).
 
-Reads committed fragments, the allowance DRAFT, the package and the ledger tail. Proves: the identities are exactly the registered ones; the
-cell is a final-report plan on the sample's split identity; the allowance pin points at the unsigned DRAFT with the held 64-zero placeholder and
-the gate REFUSES it, while a signed copy of the same bytes is accepted for exactly the two new ids; the policy is the review-off c2 program with
-ceiling 2; the budgets are the ceiling arithmetic; one attempt per id; the cell is held; the sealed successor-1 comparators are named and not
-re-flown; no smoke fragment exists; the measurement block and the three DRAFT ledger rows (the END of the ledger, one contiguous block) agree.
+Reads committed fragments, the SIGNED allowance (owner decision 251 A, 2026-10-10), the package, the go-live wrappers and the ledger tail.
+Proves: the identities are exactly the registered ones; the cell is a final-report plan on the sample's split identity; the allowance pin is the
+signed bytes in every copy (status authorised) and the gate ACCEPTS exactly the two permitted ids and refuses a drifted pin; the policy is the
+review-off c2 program with ceiling 2; the budgets are the ceiling arithmetic; one attempt per id; the cell is still held; the sealed successor-1
+comparators are named and not re-flown; no smoke fragment exists and the launch chain's queue declares no smoke; the decision-250 exception is
+recorded; the measurement block and the three DRAFT ledger rows (the END of the ledger, one contiguous block) agree.
 """
 
 from __future__ import annotations
 
+import ast
 import hashlib
+import importlib
 import json
 import math
+import re
+import shutil
+import sys
 from pathlib import Path
 
 import pytest
@@ -26,6 +32,7 @@ from speech_aware_evidence_acquisition.rails.native_episode_config import load_n
 
 REPO = Path(__file__).resolve().parents[2]
 ZERO = "0" * 64
+SIGNED = "4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d"  # committed bytes at master 951de831b
 CELL = "slurp-milestone-successor2-composed-v1"
 BASELINE = "slurp-milestone-successor2-composed-baseline-v1"
 RUN = "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1"
@@ -110,25 +117,61 @@ def test_the_sample_preparations_are_successor_ones_pins_reused():
 
 
 # ---- the allowance DRAFT and its pin --------------------------------------------------------------------------
-def test_the_cell_pins_the_draft_path_with_the_held_placeholder_and_the_gate_refuses_it():
+def test_the_cell_pins_the_signed_allowance_bytes_and_the_gate_accepts_exactly_the_two_ids():
     document = _experiment()
-    assert document["owner_allowance"] == {"path": ALLOWANCE, "sha256": ZERO}
-    assert _composed().values["owner_allowance"] == {"path": ALLOWANCE, "sha256": ZERO}
-    draft = _load(ALLOWANCE)
-    assert draft["status"] == "draft-awaiting-owner-signature"
-    assert draft["signature"]["signed_by"] is None and draft["signature"]["signed_at"] is None
+    assert document["owner_allowance"] == {"path": ALLOWANCE, "sha256": SIGNED}
+    assert _composed().values["owner_allowance"] == {"path": ALLOWANCE, "sha256": SIGNED}
+    assert _sha(ALLOWANCE) == SIGNED
+    signed = _load(ALLOWANCE)
+    assert signed["status"] == "authorised"
+    assert signed["signature"]["decision"] == 251 and signed["signature"]["form"] == "explicit confirmation in conversation"
+    assert signed["signature"]["signed_by"] and signed["signature"]["signed_at"] == "2026-10-10T12:30:00Z"
+    assert signed["signature"]["owner_words_english"].startswith("Decision 249: agreed; 250: A; 251: A, allowance v3 signed")
     for run_id in (RUN, FIT_RUN):
+        accepted = require_owner_split_allowance(
+            run_id=run_id, execution_profile="bounded-discovery-probe", carrier_lock_key="slurp",
+            split_identity_hash=SPLIT, owner_allowance=document["owner_allowance"], source_root=REPO)
+        assert run_id in accepted["permitted_run_ids"]
         with pytest.raises(ExecutionScopeError, match="hashes to"):
             require_owner_split_allowance(
                 run_id=run_id, execution_profile="bounded-discovery-probe", carrier_lock_key="slurp",
-                split_identity_hash=SPLIT, owner_allowance=document["owner_allowance"])
-        with pytest.raises(ExecutionScopeError, match="status is 'draft-awaiting-owner-signature'"):
+                split_identity_hash=SPLIT, owner_allowance={"path": ALLOWANCE, "sha256": ZERO}, source_root=REPO)
+    for other in (READ_RUN, S1_COMP1B, S1_PLAN, RUN.replace("-V1", "-V2")):
+        with pytest.raises(ExecutionScopeError, match="is not in the owner allowance"):
             require_owner_split_allowance(
-                run_id=run_id, execution_profile="bounded-discovery-probe", carrier_lock_key="slurp",
-                split_identity_hash=SPLIT, owner_allowance={"path": ALLOWANCE, "sha256": _sha(ALLOWANCE)})
+                run_id=other, execution_profile="bounded-discovery-probe", carrier_lock_key="slurp",
+                split_identity_hash=SPLIT, owner_allowance=document["owner_allowance"], source_root=REPO)
+    with pytest.raises(ExecutionScopeError):
+        require_owner_split_allowance(
+            run_id=RUN, execution_profile="paper-scale-confirmatory", carrier_lock_key="slurp",
+            split_identity_hash=SPLIT, owner_allowance=document["owner_allowance"], source_root=REPO)
 
 
-def test_the_draft_permits_exactly_the_two_new_ids_and_supersedes_successor_one_by_scope():
+def test_the_signed_sha_is_pinned_in_every_copy_and_no_zero_pin_remains():
+    facts = _facts()
+    assert facts["allowance"]["sha256_pinned_in_the_fragment"] == SIGNED and facts["allowance"]["sha256_of_signed_bytes"] == SIGNED
+    assert facts["allowance"]["status_signed"] == "authorised"
+    assert facts["cells"]["composed"]["owner_allowance"] == {"path": ALLOWANCE, "sha256": SIGNED}
+    for kind in ("generation", "fit"):
+        assert _load(f"{PACKAGE}/{kind}-plan-registered-v1.json")["execution_plan"]["owner_allowance"] == {"path": ALLOWANCE, "sha256": SIGNED}
+    draft = _load(f"{PACKAGE}/root-admission-draft-v1.json")
+    assert draft["antecedents"]["allowance"]["sha256"] == SIGNED
+    zero_pin = re.compile(r'"owner_allowance": \{\s*"path": "[^"]+",\s*"sha256": "' + ZERO + '"')
+    for relpath in [f"configs/experiment/{CELL}.json", *(str(p.relative_to(REPO)).replace("\\", "/") for p in (REPO / PACKAGE).iterdir() if p.is_file())]:
+        text = (REPO / relpath).read_text(encoding="utf-8")
+        assert not zero_pin.search(text), relpath
+    for relpath in (f"{PACKAGE}/README.md", f"{PACKAGE}-preregistration.md"):
+        text = (REPO / relpath).read_text(encoding="utf-8")
+        assert SIGNED in text and "unsigned DRAFT" not in text, relpath
+    for relpath in (f"{PACKAGE}/protocol-registered-v1.json", f"{PACKAGE}/registered-facts-v1.json"):
+        text = (REPO / relpath).read_text(encoding="utf-8")
+        assert SIGNED in text and "an unsigned DRAFT" not in text, relpath
+    ledger = (REPO / "docs/exposure-ledger.md").read_text(encoding="utf-8")
+    rows = [line for line in ledger.split("\n") if line.startswith("| 2026-") and (f"| {RUN} |" in line or f"| {FIT_RUN} |" in line)]
+    assert len(rows) == 2 and all(SIGNED in row and "allowance SIGNED 2026-10-10" in row and "unsigned" not in row for row in rows)
+
+
+def test_the_signed_allowance_permits_exactly_the_two_new_ids_and_supersedes_successor_one_by_scope():
     draft = _load(ALLOWANCE)
     assert draft["schema"] == "saea-owner-split-allowance-v1" and draft["study"] == "speech-aware-evidence-acquisition"
     assert draft["permitted_run_ids"] == [RUN, FIT_RUN]
@@ -148,7 +191,7 @@ def test_the_draft_permits_exactly_the_two_new_ids_and_supersedes_successor_one_
     assert s1["status"] == "authorised"
 
 
-def test_a_signed_copy_of_the_draft_is_accepted_for_exactly_the_two_ids(tmp_path: Path):
+def test_a_re_signed_copy_is_accepted_for_exactly_the_two_ids(tmp_path: Path):
     draft = _load(ALLOWANCE)
     signed = dict(draft, status="authorised",
                   signature=dict(draft["signature"], signed_by="owner", signed_at="2026-10-10T00:00:00+00:00",
@@ -224,7 +267,7 @@ def test_budgets_are_the_ceiling_arithmetic():
     for kind, calls in (("generation", 6020), ("fit", 24080)):
         doc = _load(f"{PACKAGE}/{kind}-plan-registered-v1.json")
         assert doc["execution_plan"]["planned_model_calls"] == calls
-        assert doc["execution_plan"]["split_role"] == "final-report" and doc["execution_plan"]["owner_allowance"]["sha256"] == ZERO
+        assert doc["execution_plan"]["split_role"] == "final-report" and doc["execution_plan"]["owner_allowance"]["sha256"] == SIGNED
         assert doc["execution_plan"]["split_identity_hash"] == SPLIT
     s1_facts = _load("docs/readiness/2026-10-01-slurp-milestone-successor1-v1/registered-facts-v1.json")
     assert s1_facts["rows"] == ROWS
@@ -321,3 +364,114 @@ def test_three_draft_ledger_rows_sit_in_one_contiguous_block_at_the_end():
     assert rows[0].split(" | ")[9] == "6020" and rows[1].split(" | ")[9] == "24080"
     assert all(len(row.strip("|").split(" | ")) == 15 for row in rows)
     assert (REPO / PACKAGE / "README.md").exists() and (REPO / (PACKAGE + "-preregistration.md")).exists()
+
+
+# ---- the go-live wrappers, the no-smoke chain, the decision-250 exception -----------------------------------------
+NX = REPO / "scripts/flights/nx"
+
+
+def _import_nx(name: str):
+    if str(NX) not in sys.path:
+        sys.path.insert(0, str(NX))
+    return importlib.import_module(name)
+
+
+def _chain_steps() -> list[dict]:
+    text = (NX / "batch_chain_milestone_successor2.sh").read_text(encoding="utf-8")
+    for body in re.findall(r"<<'PY'[^\n]*\n(.*?)\nPY\n", text, flags=re.S):
+        tree = ast.parse(body)
+        for node in tree.body:
+            if isinstance(node, ast.Assign) and any(getattr(target, "id", "") == "steps" for target in node.targets):
+                return ast.literal_eval(node.value)
+    raise AssertionError("the chain writes no queue")
+
+
+def test_the_chain_queue_has_one_step_and_no_smoke_and_the_driver_skips_a_missing_smoke():
+    steps = _chain_steps()
+    assert len(steps) == 1
+    step = steps[0]
+    assert step["kind"] == "cell" and step["experiment"] == CELL and step["cell"] == CELL
+    assert step["smoke_experiment"] is None and step["smoke_cell"] is None
+    assert step["smoke_run_id"] is None and step["smoke_attempt_id"] is None
+    assert step["run_id"] == RUN and step["fit_run_id"] == FIT_RUN and step["gen_attempt_id"] == ATTEMPT
+    assert step["campaign_plan"] == f"configs/campaign/{CELL}.json"
+    assert step["expected_rows"] == ROWS and step["contacts_per_row"] == 2 and step["ceiling_per_row"] == 2 and step["notool"] is True
+    driver = (REPO / "scripts/flights/batch/batch_driver.sh").read_text(encoding="utf-8")
+    assert 'if [ -n "$sexp" ] && [ "$sexp" != "None" ]; then' in driver and "fly_smoke $order" in driver
+    for name in ("batch_chain_milestone_successor2.sh", "milestone_successor2_flip.sh", "milestone_successor2_repin_cell.sh",
+                 "milestone_successor2_mint_receipt.py", "milestone_successor2_preflip_check.py"):
+        source = (NX / name).read_text(encoding="utf-8")
+        assert "smoke-4" not in source and "SMOKE-4" not in source, name
+    chain = (NX / "batch_chain_milestone_successor2.sh").read_text(encoding="utf-8")
+    assert "serving-slurp-native-candidate-five-train-a-np4-v1" in chain and "/home/chao/ms2-flight-commit.txt" in chain
+    assert "ONE attempt, ever; refusing to launch" in chain and "milestone_successor2_preflip_check.py" in chain
+
+
+def test_flip_wrapper_is_loop_form_single_cell_and_refuses_without_the_receipt():
+    flip = (NX / "milestone_successor2_flip.sh").read_text(encoding="utf-8")
+    assert "root-admission-v1.json" in flip and "is not minted" in flip and "exit 6" in flip
+    assert "repin_loop_generic.sh" in flip and "for pass in 1 2 3 4" in flip and 'echo "$CONVERGED" > /home/chao/ms2-flight-commit.txt' in flip
+    assert flip.count("repin_loop_generic.sh") == 1
+    assert "milestone_successor2_preflip_check.py" in flip
+    repin = (NX / "milestone_successor2_repin_cell.sh").read_text(encoding="utf-8")
+    assert f"CELL={CELL}" in repin and "ARM=0" in repin and "unset ALLOW_OUTPUT_CHANGE" in repin
+    assert "DEC_ID=slurp-milestone-successor2-admission-v1" in repin and f"DEC_PATH=coordination/{CELL}/root-admission-v1.json" in repin.replace("$PKG", CELL)
+    assert "allow-output-change" not in flip.replace("--allow-output-change must never be passed", "")
+
+
+def test_mint_wrapper_binds_the_two_eligible_ids_and_the_draft_identity():
+    mint = _import_nx("milestone_successor2_mint_receipt")
+    draft = _load(f"{PACKAGE}/root-admission-draft-v1.json")
+    assert mint.ELIGIBLE == [RUN, FIT_RUN] == draft["eligible_run_ids"]
+    assert mint.DECISION_ID == draft["decision_id"] == "slurp-milestone-successor2-admission-v1"
+    assert mint.DECISION_RELPATH == f"coordination/{CELL}/root-admission-v1.json"
+    assert mint.DRAFT == f"{PACKAGE}/root-admission-draft-v1.json"
+
+
+def test_preflip_gate_is_clean_on_the_held_registration_and_refuses_drift(tmp_path: Path):
+    pf = _import_nx("milestone_successor2_preflip_check")
+    assert pf.refusals(REPO, None) == []
+    work = tmp_path / "repo"
+    for sub in ("configs/experiment", "configs/baseline", "configs/campaign"):
+        (work / sub).mkdir(parents=True)
+    shutil.copy(REPO / f"configs/experiment/{CELL}.json", work / f"configs/experiment/{CELL}.json")
+    shutil.copy(REPO / f"configs/baseline/{BASELINE}.json", work / f"configs/baseline/{BASELINE}.json")
+    shutil.copy(REPO / f"configs/campaign/{CELL}.json", work / f"configs/campaign/{CELL}.json")
+    (work / ALLOWANCE).parent.mkdir(parents=True)
+    shutil.copy(REPO / ALLOWANCE, work / ALLOWANCE)
+    assert pf.refusals(work, None) == []
+    # a smoke fragment for the sample is refused
+    (work / "configs/experiment/slurp-milestone-successor2-composed-smoke-4-v1.json").write_text("{}", encoding="utf-8")
+    assert any(line.startswith("smoke-registered") for line in pf.refusals(work, None))
+    (work / "configs/experiment/slurp-milestone-successor2-composed-smoke-4-v1.json").unlink()
+    # a drifted allowance (bytes or status) is refused
+    allowance = json.loads((work / ALLOWANCE).read_text(encoding="utf-8"))
+    allowance["status"] = "draft-awaiting-owner-signature"
+    (work / ALLOWANCE).write_text(json.dumps(allowance, indent=2) + "\n", encoding="utf-8")
+    found = pf.refusals(work, None)
+    assert any(line.startswith("allowance-pin-mismatch") for line in found) and any(line.startswith("allowance-not-authorised") for line in found)
+    shutil.copy(REPO / ALLOWANCE, work / ALLOWANCE)
+    # ONE attempt, ever: an existing attempt directory is refused
+    data = tmp_path / "data"
+    (data / "attempts" / RUN).mkdir(parents=True)
+    (data / "attempts" / RUN / ATTEMPT).write_text("x", encoding="utf-8")
+    assert any(line.startswith("attempt-exists") for line in pf.refusals(work, data))
+
+
+def test_decision_250_exception_is_recorded_in_every_measurement_copy():
+    for relpath in (f"{PACKAGE}/registered-facts-v1.json", f"{PACKAGE}/protocol-registered-v1.json"):
+        block = _load(relpath)["stage3_measurement"][RUN]
+        assert block["measurement_design"] == "cross-flight-no-replicate"
+        ruling = block["owner_ruling_decision_250"]
+        assert ruling["decision"] == 250 and ruling["option"] == "A" and ruling["date"] == "2026-10-10"
+        assert "cross-flight-no-replicate" in ruling["ruling"] and "0.7274 pp SLU-F1 / 0.20 pp intent" in ruling["ruling"]
+        assert "no in-chain replicate" in ruling["ruling"].lower() and "margin 2.5" in ruling["ruling"]
+        assert block["declared_flight_offset"]["slu_pp"] == 0.7274 and block["declared_flight_offset"]["intent_pp"] == 0.2
+        assert "owner decision 250 (option A)" in block["design_statement"]
+    assert _facts()["allowance"]["decision_250_ruling"]["option"] == "A"
+    assert _load(f"{PACKAGE}/root-admission-draft-v1.json")["decision_250_ruling"]["decision"] == 250
+    for relpath in (f"{PACKAGE}/README.md", f"{PACKAGE}-preregistration.md"):
+        text = (REPO / relpath).read_text(encoding="utf-8")
+        assert "owner_ruling_decision_250" in text and "decision 250" in text.lower(), relpath
+    blockers = _facts()["blockers_before_the_flip"]
+    assert blockers[0].startswith("OWNER SIGNATURE: RESOLVED") and blockers[1].startswith("MEASUREMENT RULE: RULED")
