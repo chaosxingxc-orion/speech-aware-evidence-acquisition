@@ -72,7 +72,7 @@
       "attempt_id": "attempt-slurp-milestone-successor2-composed-generation-v1",
       "baseline_fragment": "slurp-milestone-successor2-composed-baseline-v1",
       "cell": "slurp-milestone-successor2-composed-v1",
-      "composed_config_hash": "c5f507637053f05445f4559fa26e0b56bb91e226ffe093779b20d24413deb999",
+      "composed_config_hash": "2eedc9f63f28910d5a491653af814c5be02dcdda8ad94abe9c80529306c36691",
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "experiment": "slurp-milestone-successor2-composed-v1",
       "fit_attempt_id": "attempt-slurp-milestone-successor2-composed-fit-v1",
@@ -84,7 +84,7 @@
         "sha256": "4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d"
       },
       "policy": "phase-native-module-v1-c2",
-      "protocol_hash": "7f27008c31c086f4a24e423bc9fd2ec5578af9121b2d9046ccdc63b432b8f62f",
+      "protocol_hash": "d201732eeee47ddce650eadaf48794330267b6d233d2ead518c35cb660da1a9c",
       "readiness_state": "held",
       "rows": 3010,
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1",

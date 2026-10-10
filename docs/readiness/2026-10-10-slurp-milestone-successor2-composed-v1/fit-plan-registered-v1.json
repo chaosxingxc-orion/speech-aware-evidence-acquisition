@@ -1,6 +1,6 @@
 {
   "cell": "slurp-milestone-successor2-composed-v1",
-  "composed_config_hash": "c5f507637053f05445f4559fa26e0b56bb91e226ffe093779b20d24413deb999",
+  "composed_config_hash": "2eedc9f63f28910d5a491653af814c5be02dcdda8ad94abe9c80529306c36691",
   "execution_plan": {
     "attempt_id": "attempt-slurp-milestone-successor2-composed-fit-v1",
     "carrier_lock_key": "slurp",
@@ -12,7 +12,7 @@
     "planned_gpu_hours": 4.6,
     "planned_model_calls": 24080,
     "planned_speech_audio_seconds": 16413,
-    "protocol_hash": "7f27008c31c086f4a24e423bc9fd2ec5578af9121b2d9046ccdc63b432b8f62f",
+    "protocol_hash": "d201732eeee47ddce650eadaf48794330267b6d233d2ead518c35cb660da1a9c",
     "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/protocol-registered-v1.json",
-    "sha256": "7f39e3921dab1272b98cd3673ea83c01a5de6daf03555c6e6e85c791d8ae6878"
+    "sha256": "dfa5f8685504f189211491503f82e87b2cdac5eefb101d8b3765809869be0fbc"
   },
   "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-FIT-V1: It measures request envelopes only and reads nothing.",
   "quality_read_gate": "No task-quality read before the manifest is complete and sealed with one successful complete official slurp-slu-official-test score and the READ row is root countersigned.",

@@ -19,8 +19,8 @@ coordinator report to the owner. The sealed successor-1 columns are never re-flo
 | comparators (SEALED, cross-flight) | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1` (primary), `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1` (context) |
 | in-chain replicate | NONE, by design (declared DEV flight offset 0.7274 pp SLU-F1 / 0.2 pp intent) |
 | runs | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-FIT-V1`; READ `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-PAIRED-ANALYSIS-V1` |
-| composed config hash | `c5f507637053f05445f4559fa26e0b56bb91e226ffe093779b20d24413deb999` |
-| protocol hash | `7f27008c31c086f4a24e423bc9fd2ec5578af9121b2d9046ccdc63b432b8f62f` |
+| composed config hash | `2eedc9f63f28910d5a491653af814c5be02dcdda8ad94abe9c80529306c36691` |
+| protocol hash | `d201732eeee47ddce650eadaf48794330267b6d233d2ead518c35cb660da1a9c` |
 | budgets | 6,020 generation calls, 24,080 FIT calls, 16,413 audio seconds, 4.6 GPU h |
 
 ## Decision rule (fixed here)

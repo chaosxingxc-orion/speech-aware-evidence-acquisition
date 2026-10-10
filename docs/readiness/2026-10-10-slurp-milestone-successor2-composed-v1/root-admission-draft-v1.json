@@ -20,7 +20,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/protocol-registered-v1.json",
-      "sha256": "7f39e3921dab1272b98cd3673ea83c01a5de6daf03555c6e6e85c791d8ae6878"
+      "sha256": "dfa5f8685504f189211491503f82e87b2cdac5eefb101d8b3765809869be0fbc"
     },
     "r5_registration": {
       "path": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/registered-facts-v1.json",
@@ -89,8 +89,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "composed": {
-      "composed_config": "c5f507637053f05445f4559fa26e0b56bb91e226ffe093779b20d24413deb999",
-      "protocol": "7f27008c31c086f4a24e423bc9fd2ec5578af9121b2d9046ccdc63b432b8f62f"
+      "composed_config": "2eedc9f63f28910d5a491653af814c5be02dcdda8ad94abe9c80529306c36691",
+      "protocol": "d201732eeee47ddce650eadaf48794330267b6d233d2ead518c35cb660da1a9c"
     },
     "note": "the fragment re-pinned to the signed allowance bytes (sign mode, 2026-10-10); repin_cell.py recomputes them at the flip"
   },

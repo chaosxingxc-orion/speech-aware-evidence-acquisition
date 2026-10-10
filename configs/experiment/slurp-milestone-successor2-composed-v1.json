@@ -16,6 +16,13 @@
         "reason": "Cell SUCCESSOR2-COMPOSED registered before contact on 2026-10-10 by script (decision 58) from the sealed R5 composed cell (read NEUTRAL on DEV-2000-ADDED 2026-10-10) under owner decisions 233 and 241. HELD: (1) the owner SIGNED the successor-2 allowance (signed 2026-10-10, owner decision 251 (option A)); this fragment's owner_allowance pins the signed bytes, sha256 4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d; (2) root countersigns the DRAFT rows and mints the admission receipt; (3) scripts/flights/repin_cell.py --set-ready mints this cell's own supply (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a flip, a mint or a countersignature.",
         "requirements": [
           {
+            "kind": "decision",
+            "expected_decision_id": "slurp-milestone-successor2-admission-v1",
+            "relpath": "coordination/slurp-milestone-successor2-composed-v1/root-admission-v1.json",
+            "sha256": "9b85139300441a2494615deb711ab4ac8732dd94d63ae423e72588f1d463e0a4",
+            "reason": "Decision slurp-milestone-successor2-admission-v1 pinned by scripts/flights/repin_cell.py."
+          },
+          {
             "kind": "preparation",
             "reason": "PINNED: this roster's own exemplar-intent agreement table (SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1), built model-free (zero model, encoder, server, GPU and network contacts) by scripts/build_slurp_intent_exemplar_agreement.py against the MILESTONE-00-PLAN cell, as the DEV-2000-ADDED table was built against the sealed DEV plan cell, and read from its receipt prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/receipt.json (sha256 3e2c9018228a449de7665604b1de25525d2e8ff9d37bf78965051829b4784f21); the derive script verified the sha256 against the file bytes on the data root.",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-TEST-SAMPLE-3010-V1/agreement.jsonl",
@@ -37,10 +44,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, minted model-free under its own run id with core.flight.cli prepare-supply at the flip from the sample's segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and this roster's agreement table (item E16). PENDING until the flip: 64 zeros. The review-off graph and the lock-v2.2 normaliser never touch the first-phase supply, so its selection output is expected to equal successor 1's COMP-1b supply selection output (same vectors, key file and table); the flip's re-derivation checks this and a different digest means the knowledge channel moved -- stop and report. --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "56586c7f958b5d2db13d70d821406a4fa49d0a0a1fb333c3fe7be31543b5a33e"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1"
     }
