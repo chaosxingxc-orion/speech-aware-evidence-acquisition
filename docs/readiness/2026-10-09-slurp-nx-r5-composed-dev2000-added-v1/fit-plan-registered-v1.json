@@ -32,10 +32,12 @@
   "plan_kind": "fit",
   "preparation_base_commit": "4434a89b71cc9ff6de4ac502b8aa6a6d521f5893",
   "prepared_phase_supply": {
-    "expected_output_sha256": "ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08",
-    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); --allow-output-change must never be passed.",
     "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1/phase-supply-v1.json",
-    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    "sha256": "906cd7c4ab2b8f7a6d636f8b0014a8b1a61cf297cbcca25915e5f15a17c9ebd2"
+  },
+  "prepared_phase_supply_annotations": {
+    "expected_output_sha256": "ecca16a276a9a4a35b6b5e0a765d30ab2b3ee893e3bc617c5ae2c3e7c51b7d08",
+    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); --allow-output-change must never be passed."
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/protocol-registered-v1.json",

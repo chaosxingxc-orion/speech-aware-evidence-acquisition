@@ -32,10 +32,12 @@
   "plan_kind": "fit",
   "preparation_base_commit": "aa053a2ea",
   "prepared_phase_supply": {
-    "expected_output_sha256": "d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19",
-    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); --allow-output-change must never be passed.",
     "relpath": "prepared/SAEA-SLURP-STAGE3-MODULE-COMP1B-AA-DEV2000-ADDED-V1/phase-supply-v1.json",
-    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    "sha256": "a3762cec67f9636aa9c80f1bba4901bc8dd0632d1dd984d235bdf3c7fd56bc3c"
+  },
+  "prepared_phase_supply_annotations": {
+    "expected_output_sha256": "d57ee9d6212bd3dc10762f84ec6ff1e8368b0b1a1e80fed9f9fbc81147fc5a19",
+    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); --allow-output-change must never be passed."
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-09-30-slurp-stage3-module-comp1b-dev2000-added-v1/protocol-registered-v1.json",
