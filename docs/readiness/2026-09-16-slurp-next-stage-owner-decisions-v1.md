@@ -579,3 +579,30 @@ R5 (review-off COMP-1b base + v4g [+ the R1 iteration-2 template if NOMINATED an
 DEV-2000-ADDED with an in-chain A/A, then the second test-sample allowance (233); (B) fly S1 as a no-claim
 measurement cell (~2.6 GPU-h, cannot nominate); (C) open a code-level supply mechanism whose on-file ceiling is also
 below the bar. Coordinator recommends A.
+
+## Decisions 238-244 ruled by the owner, 2026-10-10 (English translation of the chat message)
+
+- **238** "Agreed." -- Stage S is closed at the Solver node; Stage J (R5) follows.
+- **239** "You have touched a core and very important point: when a local optimisation is shown to be unattainable, should
+  the task be handed to the SYSTEM, asking other local points to provide more valuable or more easily obtained inputs?
+  Try moving the empty-entity / non-empty-entity part to the PRECEDING node for optimisation and transformation, and
+  even try adjusting the knowledge supply to help us reach a better conclusion." -- Ruling: the Solver template line
+  closes under the plateau rule (lock the v2 template), but the empty-entity decision is NOT closed: it moves
+  upstream -- a Perception-side entity-presence / heard-value evidence and a supply-side per-intent entity prior are
+  the next registered rounds (R6), designed from the sealed R1 columns offline first.
+- **240** "Agreed." -- R5 flies: the module OFF replicate (lock v2.1) + the composed arm (lock v2.2 = v4g at delivery,
+  review-off, COMP-1b components on) on DEV-2000-ADDED, read against the sealed A2 with the replicate offset, bar 2.5
+  pp, no-harm claim at about half the contacts plus the v4g delivered gain; CURRENT_LOCK moves to v2.2 if R5 nominates.
+- **241** "As you suggest." -- the second test-sample allowance (233) is drafted once R5 reads NOMINATED or NEUTRAL;
+  same terms as v2; the composed arm flies once on the signed sample against the sealed PLAN and COMP-1b columns.
+- **242** "If the SLURP prompt-template stage has already yielded what it can, we must move to system-level
+  optimisation, such as knowledge supply; the carriers do not start now -- after the system-level optimisation is
+  locked." -- Ruling: decision 211 stands unchanged; no Earnings-21 / Audio2Tool flight before the SLURP system-level
+  lock; the GPU gap is filled with SLURP work only.
+- **243** "Clean it up." -- the coordinator retires the ChatGPT-era ready-unflown drafts (superseded, evidence kept),
+  records the two 400-row analysis rosters inside the Fold B filler family as known cumulative exposure (proof and
+  test updated), and re-pins the natural-source compatibility record after review.
+- **244** "Let us finish the optimisation first and not retreat now: the knowledge-supply optimisation, the
+  system-level optimisation and the training-free RL algorithm optimisation are still ahead. Believe in yourself!" --
+  Ruling: the SOTA goal is not re-scoped now; the programme continues through R5, the test read, the upstream
+  empty-entity evidence (R6), the supply-side rounds and the training-free RL algorithm work.
