@@ -641,3 +641,18 @@ below the bar. Coordinator recommends A.
   heard-mention options with a two-level confidence) is engineered only on the design's 2d trigger (gain present but
   the 128-character `distinction` channel binding), as a new Perception base with its own A/A, never as an arm.
   Recommended: conditional, as stated.
+
+## Decisions 246-248 ruled by the owner, 2026-10-10
+
+Owner, verbatim: 「决策246：同意；247：同意；248：按你建议。」 ("246: agreed; 247: agreed; 248: as you recommend.")
+
+- **246** RULED: R6-P1 (three Perception candidates p1-p3 + twin + lock, TRAIN Fold B 1,080 rows, ceiling 10, ~4.1
+  GPU-h; node-local measurement with the free locked-consumer cascade read) is registered during the R5 read and flies
+  as the next flight after it. Candidates: `docs/readiness/2026-10-10-slurp-nx-r6-perception-candidates-v1/README.md`.
+- **247** RULED: the information-gain acceptance rule (design section 4: ADDITIONAL = cross-fitted gain over the
+  supply statistics and over the downstream's own verdict with CI-LB > 0; STABLE = same sign and CI-LB > 0 on the
+  confirmation roster with the rule fixed; pp through the measured exchange rates) governs node-local and cascade
+  rounds; decision 192's 1.5 pp registration bar binds the cascade cells that claim a delivered gain (R7 / R8), not the
+  node-local measurement cell.
+- **248** RULED as recommended: the v2 Perception note contract is engineered only on the design's 2d trigger (gain
+  present, the 128-character `distinction` channel binding), as a new Perception base with its own A/A, never as an arm.
