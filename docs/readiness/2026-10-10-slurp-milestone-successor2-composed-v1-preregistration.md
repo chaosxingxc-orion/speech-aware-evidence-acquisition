@@ -19,8 +19,8 @@ coordinator report to the owner. The sealed successor-1 columns are never re-flo
 | comparators (SEALED, cross-flight) | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1` (primary), `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1` (context) |
 | in-chain replicate | NONE, by design (declared DEV flight offset 0.7274 pp SLU-F1 / 0.2 pp intent) |
 | runs | `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1` / `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-FIT-V1`; READ `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-PAIRED-ANALYSIS-V1` |
-| composed config hash | `75f09d6c87d3f7f8d58495c643656d0b3a61d7668eaa9386e353c9b2f10f70ee` |
-| protocol hash | `a3b95b60a56505a94a4acb4ee66c10cd360256695250c1cf8ee59e2727260dbf` |
+| composed config hash | `c5f507637053f05445f4559fa26e0b56bb91e226ffe093779b20d24413deb999` |
+| protocol hash | `7f27008c31c086f4a24e423bc9fd2ec5578af9121b2d9046ccdc63b432b8f62f` |
 | budgets | 6,020 generation calls, 24,080 FIT calls, 16,413 audio seconds, 4.6 GPU h |
 
 ## Decision rule (fixed here)
@@ -45,7 +45,7 @@ Read SUCCESSOR2-COMPOSED against the SEALED successor-1 COMP-1b column (SAEA-SLU
         "slu_pp": 0.7274,
         "source": "analysis/SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-PAIRED-ANALYSIS-V1/v4g-contrast/report.json decision_rule_arithmetic.delivered (offset_abs_slu_pp 0.7274, offset_abs_intent_pp 0.2): replicate minus the sealed A2 in-chain A/A, DEV-2000-ADDED, n 1,000"
       },
-      "design_statement": "CROSS-FLIGHT AGAINST SEALED COLUMNS, NO IN-CHAIN REPLICATE, BY DESIGN: the allowance permits exactly one new generation run id, the sample's successor-1 PLAN and COMP-1b columns are sealed and must not be re-flown, and a second composed flight would consume a second attempt. Instrument rule 4 (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 3) refuses 'a single cross-flight contrast against an older sealed comparator with no in-chain replicate' outright (stage3_effect_floor_check.py would report this declaration as a blocking cross-flight-no-replicate finding; the gate's scope test is the 'stage3' token in the fragment stem or experiment id, which this cell, like successor 1, does not carry, so today the gate does not see the cell and the refusal is NOT mechanically enforced). It is declared in this honest form rather than relabelled; the owner/coordinator must rule on the exception before the flip (README open question 1). The DEV flight offset (0.73 pp SLU / 0.20 intent) is carried as the declared offset.",
+      "design_statement": "CROSS-FLIGHT AGAINST SEALED COLUMNS, NO IN-CHAIN REPLICATE, BY DESIGN: the allowance permits exactly one new generation run id, the sample's successor-1 PLAN and COMP-1b columns are sealed and must not be re-flown, and a second composed flight would consume a second attempt. Instrument rule 4 (docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 3) refuses 'a single cross-flight contrast against an older sealed comparator with no in-chain replicate' outright (stage3_effect_floor_check.py would report this declaration as a blocking cross-flight-no-replicate finding; the gate's scope test is the 'stage3' token in the fragment stem or experiment id, which this cell, like successor 1, does not carry, so today the gate does not see the cell and the refusal is NOT mechanically enforced). It is declared in this honest form rather than relabelled; the owner/coordinator must rule on the exception before the flip (README open question 1). The DEV flight offset (0.73 pp SLU / 0.20 intent) is carried as the declared offset. RULED 2026-10-10: owner decision 250 (option A) accepts the documented exception to rule 4 -- design cross-flight-no-replicate, declared DEV flight offset 0.7274 pp SLU-F1 / 0.20 pp intent, no-harm claim, margin 2.5, development evidence under decision 28; no in-chain replicate on the sample.",
       "expected_effect_basis": {
         "dev_point": {
           "intent_ci95": [
@@ -95,6 +95,13 @@ Read SUCCESSOR2-COMPOSED against the SEALED successor-1 COMP-1b column (SAEA-SLU
         "note": "reused from successor 1 unchanged (no own null exists for the sample; fallback scaled, flagged)",
         "source": "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d, row 'cross-flight A/A, DEV-2000-ADDED' (the B6 pair); scaling: docs/readiness/2026-09-27-slurp-test-sample-design-v1.md section 4"
       },
+      "owner_ruling_decision_250": {
+        "date": "2026-10-10",
+        "decision": 250,
+        "option": "A",
+        "ruling": "The successor-2 test read carries the documented exception to instrument rule 4: design cross-flight-no-replicate, declared DEV flight offset 0.7274 pp SLU-F1 / 0.20 pp intent, no-harm claim, margin 2.5, development evidence under decision 28; no in-chain replicate on the sample.",
+        "source": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 'Decisions 249-252 ruled by the owner, 2026-10-10'"
+      },
       "plan_comparator_attempt_id": "attempt-slurp-milestone-successor1-plan-generation-v1",
       "plan_comparator_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1",
       "primary_metric": "official pooled SLU-F1 (slurp-slu-official-test), composed minus the sealed successor-1 COMP-1b column beyond the declared DEV flight offset; intent accuracy (scenario_action exact) the non-inferiority guard",
@@ -114,8 +121,8 @@ Read SUCCESSOR2-COMPOSED against the SEALED successor-1 COMP-1b column (SAEA-SLU
 
 ## Blockers before the flip
 
-1. OWNER SIGNATURE: the successor-2 allowance is an unsigned DRAFT (status draft-awaiting-owner-signature). Signing is the owner's confirmation in conversation; the coordinator then flips the status, records the sha256 and re-pins the fragment.
-2. MEASUREMENT RULE: measurement_design cross-flight-no-replicate is refused outright by instrument rule 4 (stage3_effect_floor_check.py would block it were the cell in its scope; it is not, by stem naming, so nothing enforces it mechanically); the coordinator/owner must rule on the exception (or register a different design) before root countersigns.
+1. OWNER SIGNATURE: RESOLVED. The owner signed the successor-2 allowance on 2026-10-10 (decision 251, option A): status authorised, sha256 4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d, pinned by this cell's owner_allowance.
+2. MEASUREMENT RULE: RULED. Owner decision 250 (option A, 2026-10-10) accepts the documented exception to instrument rule 4: design cross-flight-no-replicate, declared DEV flight offset 0.7274 pp SLU-F1 / 0.20 pp intent, no-harm claim, margin 2.5, development evidence under decision 28; no in-chain replicate on the sample.
 3. READER: stage3_paired_read.py --package requires arms.in_chain_replicate and checks both arms against the allowance; this design has none, so the registered driver is the pair-mode wrapper scripts/flights/nx/milestone_successor2_read.sh (see README open question 3).
 4. ROOT: countersigns the three DRAFT ledger rows (naming the conversational report of R5's NEUTRAL read to the owner), mints the admission receipt, then repin_cell.py --set-ready mints the cell's own first-phase supply.
 5. SERVING/LAUNCH: standard four-slot decoder-only service, clean frozen code, registered FIT, launch gates (as successor 1).

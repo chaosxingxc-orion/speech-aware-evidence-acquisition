@@ -13,7 +13,7 @@
       "dataset_fragment": "slurp-speech-native-test-sample-3010",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Cell SUCCESSOR2-COMPOSED registered before contact on 2026-10-10 by script (decision 58) from the sealed R5 composed cell (read NEUTRAL on DEV-2000-ADDED 2026-10-10) under owner decisions 233 and 241. HELD: (1) the owner has not signed the successor-2 allowance DRAFT; this fragment's owner_allowance sha256 is 64 zeros until the coordinator sets the draft's status to authorised, records its sha256 and re-pins; (2) root countersigns the DRAFT rows and mints the admission receipt; (3) scripts/flights/repin_cell.py --set-ready mints this cell's own supply (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a flip, a mint or a countersignature.",
+        "reason": "Cell SUCCESSOR2-COMPOSED registered before contact on 2026-10-10 by script (decision 58) from the sealed R5 composed cell (read NEUTRAL on DEV-2000-ADDED 2026-10-10) under owner decisions 233 and 241. HELD: (1) the owner SIGNED the successor-2 allowance (signed 2026-10-10, owner decision 251 (option A)); this fragment's owner_allowance pins the signed bytes, sha256 4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d; (2) root countersigns the DRAFT rows and mints the admission receipt; (3) scripts/flights/repin_cell.py --set-ready mints this cell's own supply (item E16). --allow-output-change must never be passed. Nothing here authorises a flight, a flip, a mint or a countersignature.",
         "requirements": [
           {
             "kind": "preparation",
@@ -75,7 +75,7 @@
   },
   "owner_allowance": {
     "path": "docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json",
-    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    "sha256": "4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d"
   },
   "population": {
     "count": 3010,
