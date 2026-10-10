@@ -1844,7 +1844,9 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
                 and not _supply_pins_agree(document["prepared_phase_supply"], expected)):
             report.findings.append(Finding(
                 "registered-supply-binding",
-                f"{run_id}: {path.name} declares a prepared supply different from its cell baseline",
+                f"{run_id}: {path.name} declares a prepared supply different from its cell baseline "
+                f"(remedy: python scripts/flights/refresh_registered_plan_pins.py --package {READINESS}/{package}, "
+                f"after the flip loop minted the baseline pin)",
                 run_id,
             ))
     if natural or manual_n20:
