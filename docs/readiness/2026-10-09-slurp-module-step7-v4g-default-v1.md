@@ -13,8 +13,16 @@ R5") and the NX programme row R5. Development numbers only (owner decisions 28 a
   `rails/delivery_normalisers.py`). The lock-layer component record is `delivery-normaliser`, state `on (lock)`, record =
   the lock note (`slurp_module_lock_v2_2.LOCK_V2_2_COMPONENT_STATES`).
 - **Opt-in by lock id.** A block naming no `lock`, `v2.0` or `v2.1` compiles to the same bytes as before (v3).
-  `CURRENT_LOCK` stays `v2.1`: moving it would change what `harness_admission_check` requires of every module OFF arm
-  and what `derive_slurp_module_*` scripts emit, and that is a registration decision for the R5 cell, not this step.
+  At step 7, `CURRENT_LOCK` stayed `v2.1`: moving it changes what `harness_admission_check` requires of every module
+  OFF arm and what `derive_slurp_module_*` scripts emit, which is a registration decision, not this step.
+  **Update 2026-10-10 (owner decision 249): `CURRENT_LOCK` is now `v2.2`** (`slurp_module_hooks.CURRENT_LOCK =
+  slurp_module_lock_v2_2.LOCK_V2_2`; R5 read NEUTRAL = an efficiency result with no harm, and the v4g delivered gain is
+  locked). A block's `lock` key still selects the layer; no committed config relies on the default (all 1,070 SLURP
+  `consumption_module` blocks name `v2.1` or `v2.2`), so no registered cell compiles differently. What `CURRENT_LOCK`
+  governs: the OFF arm of the harness `module` class (rule 8), and the lock the `derive_slurp_module_comp1bdev_cells.py`
+  and `derive_slurp_nx_r1_cells.py` writers emit for NEW derivations. The registered PENDING `module` entry in
+  `docs/receipts/harness-admission.json` stays on `v2.1` (its cell flew there) and carries
+  `switch.lock_superseded_by: "v2.2"`; the gate accepts that marker only on a PENDING entry naming the CURRENT lock.
 - **New hook** `CarrierHooks.lock_deliver_normalisers` (`{lock: callable -> normaliser id}`): the compiler checks the
   layer's deliver leaf against the lock's own normaliser (v3 for v2.0/v2.1/no lock; v4g for v2.2), still fail-closed.
   `default_deliver_normaliser()` is unchanged (v3). Other carriers leave the hook `None`.
@@ -42,9 +50,9 @@ R5") and the NX programme row R5. Development numbers only (owner decisions 28 a
 
 1. `consumption_module.lock = "v2.2"` in the block, and its in-chain module-all-off A/A on the same lock (a composed
    read never mixes normalisers: a cell reads against an A/A on its own normaliser).
-2. A decision at R5 registration whether to move `CURRENT_LOCK` to `v2.2` (the harness `module` class OFF arm and
-   `harness_admission_check` require the OFF arm to name the carrier's CURRENT lock); until then an R5 `module`-class
-   entry would be refused by that check.
+2. (Resolved 2026-10-10, decision 249: `CURRENT_LOCK` is `v2.2`.) The harness `module` class OFF arm and
+   `harness_admission_check` require the OFF arm to name the carrier's CURRENT lock, so an R5 `module`-class entry now
+   names `v2.2` and needs a falsifier cell that carries the v2.2 bytes (none is registered today: R5/R6 are review-off).
 3. No `scope-rule` or `solver-citation-contract` component on that block (refused on v2.2; compose them offline as
    columns, or register a composition first).
 4. A baseline fragment whose `native_episode.deliver_normaliser.normaliser` is `saea-deliver-normalise-v4g` (the

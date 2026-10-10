@@ -1445,6 +1445,7 @@
           "note": "The check compiles the OFF arm and requires it to equal lock v2.1's policy blocks, and each named cell to carry exactly those blocks on its own roster: cell G5's arm and smoke flew the lock-v2.1 bytes on TRAIN Fold A (the lock record's own evidence), and the module cell's in-chain A/A carries them on DEV-2000-ADDED."
         },
         "key": "native_episode.consumption_module",
+        "lock_superseded_by": "v2.2",
         "off": {
           "columns": [],
           "components": [

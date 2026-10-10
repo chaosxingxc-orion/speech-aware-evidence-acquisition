@@ -112,9 +112,9 @@ LOCK_BASELINE_FRAGMENT = "slurp-native-default-plan-lock-baseline-v1"
 #: 204, docs/results/2026-09-30-slurp-v2-1-lock-v1.md) = v2.0 with ONE pin moved,
 #: the Reviewer template cell G5 flew. No ``lock`` key = v2.0, as before.
 LOCK_V2_0, LOCK_V2_1 = "v2.0", "v2.1"
-#: The CURRENT lock (decision 204): base and A/A bytes of cells registered
-#: after A2 seals, and the harness ``module`` class's OFF arm.
-CURRENT_LOCK = LOCK_V2_1
+#: The CURRENT lock: v2.1 (decision 204), v2.2 since owner decision 249 (2026-10-10; R5 NEUTRAL = efficiency, no harm;
+#: v4g delivered gain locked; step-7 note); the null arm of new cells and the harness ``module`` class's OFF arm.
+CURRENT_LOCK = lock_v2_2.LOCK_V2_2
 #: ``(relpath under configs/, sha256)``: v2.0 / v2.1 Reviewer templates.
 LOCK_V2_0_REVIEWER_TEMPLATE = (
     "probes/slurp_native_role_reviewer_v1.txt",
