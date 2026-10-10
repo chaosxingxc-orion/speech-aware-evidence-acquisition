@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-09T23:25:17Z
+Last refreshed: 2026-10-10T00:14:46Z
+
+## NX R1 iteration 2 sealed; READ row countersigned; read running (2026-10-10T00:14:46Z, Fable 5.1 root)
+
+`SAEA-SLURP-STAGE3-NX-R1-I2-SOLVER-FOLD-B-V1` sealed FINALIZED at 00:12Z (flight 3910c77c8; 1,080 rows, 8,640 contacts, 0 tool calls, 2 h 18 m, no anomalies, one official score job OK; outputs f2c31ae5..., scores 87884436...); smoke rec-free on the first attempt (the model-free preflight test). READ row countersigned (3438697d6); `nx_r1_read.sh --iteration 2` runs on CPU (node-local v2, official per-arm columns under the official-column nomination rule, offline v4/v4g, the descriptive cross-iteration contrast vs iteration-1 r1-c5). GPU idle; the uptime guard restarts the resident server at its next tick (overdue since 22:59Z). Nothing is queued: R5 is HELD pending decision 238 and this read's verdict.
+
+Superseded stamp: 2026-10-09T23:25:17Z
 
 ## R5 composed-read package on master, HELD (2026-10-09T23:25:17Z, Fable 5.1 root)
 
