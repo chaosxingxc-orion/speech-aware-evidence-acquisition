@@ -679,3 +679,31 @@ owner signs); decision 240's automatic lock move does not fire (it required NOMI
   changes the base of every later NX cell (R6-P1 already derives from the R5 arm's fragment, so it is unaffected).
   Recommended: yes; if the owner prefers to wait for the test-sample read (allowance v3), R6-P1 still flies on the
   v2.2 base as registered.
+
+## R6-P1 launched; allowance v3 draft ready; decision 250 PROPOSED by the coordinator (Fable 5.1), 2026-10-10
+
+- **R6-P1 (decision 246)** registered (`docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/`, merge cc19a597d),
+  four flight rows countersigned (03e326d19), receipt minted, flipped in two converged loops with the plan-pin
+  refresh between them (flight commit 58c546b54; gates PASS, one advisory `tuning-roster-unverified`), launched
+  2026-10-10T08:07:42Z through the batch driver (task SAEA-Queue-NXR6; smoke then the one-cell campaign; 10,800
+  planned calls, ~4.1 GPU-h). Root ruling recorded in the countersignature: the candidates' `template_tokens` are a
+  labelled ESTIMATE (ceil 2.0 x words) that the pre-flight bound clears with margin and the realised fit gate bounds
+  at dispatch.
+- **Allowance v3 (decision 241)** drafted: `docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json`
+  (status draft-awaiting-owner-signature; permits exactly `SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1`
+  and its FIT id; supersedes the successor-1 allowance by scope "new successor run identities only"); the HELD cell
+  `slurp-milestone-successor2-composed-v1` (= the NX R5 composed arm re-targeted to the signed sample; identity map in
+  `docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/successor-identity-map.json`: only roster-bound,
+  role-bound and bookkeeping leaves differ; module lock v2.2, review-off, policy c2, v4g unchanged); 6,020 generation
+  calls, 24,080 FIT, 16,413 audio seconds, ~4.2-4.6 GPU-h; one attempt, no smoke, no recovery, no re-read.
+  Signing = the owner's confirmation in conversation; the coordinator then sets `authorised`, records the sha256 and
+  re-pins the fragment.
+- **250** (PROPOSED) The successor-2 test read has NO in-chain replicate by design (decision 241: the composed arm flies
+  ONCE against the sealed successor-1 PLAN and COMP-1b columns), which instrument rule 4 refuses for a cross-flight
+  design. Options: (A) record a coordinator exception: the design is `cross-flight-no-replicate`, the declared flight
+  offset is the DEV-measured 0.73 pp SLU / 0.20 intent (R5 replicate vs A2 A/A), the cell claims no benefit (no-harm,
+  margin 2.5) and its numbers are milestone evidence under decision 28, so the test sample is not exposed twice for a
+  sampling-floor estimate DEV already supplies; (B) add an in-chain COMP-1b replicate on the sample (+3,010 rows,
+  +4.6 GPU-h, a second test exposure of the same recordings, and a wider allowance). Recommended: A, recorded in the
+  package's measurement block and read qualification; the gate `stage3_effect_floor_check` does not scope this cell
+  (no `stage3` token, as successor 1), so the exception is a documented ruling, not a bypass.

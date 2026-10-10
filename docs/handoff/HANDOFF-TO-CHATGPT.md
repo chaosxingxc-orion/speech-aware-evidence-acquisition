@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T07:06:11Z
+Last refreshed: 2026-10-10T08:10:07Z
+
+## R6-P1 in flight; test-sample successor-2 package HELD with the allowance v3 draft; decision 250 proposed (2026-10-10T08:10:07Z, Fable 5.1 root)
+
+R6-P1 (Perception entity template column, TRAIN Fold B, p1/p2/p3 + twin + lock, ceiling 10, 10,800 planned calls) launched 2026-10-10T08:07:42Z at flight commit 58c546b54 (task SAEA-Queue-NXR6; registration-gate-ok 08:07:48Z; smoke first). Package `docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/`; reader E2b (distinction-tag parser, presence / mention metrics) in `scripts/analysis/slurp_nx_perception_column_read.py`; information-gain + gate estimate in `scripts/analysis/slurp_nx_r6_upstream_empty.py` (`--verdict-source perception-arm:<arm>`, `--gain-baseline`); read wrapper `scripts/analysis/nx_r6_read.sh`. After the seal: countersign the READ row SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1, run the read (node metrics, information gain, gate estimate, locked-consumer level-2 Solver columns), verdict by the design's section 4 rule. The test-sample successor-2 package (`docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/`, cell `slurp-milestone-successor2-composed-v1`, HELD; merge d852655d5) and the allowance v3 DRAFT (`docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json`) wait for the owner's signature and for decision 250 (no in-chain replicate on the sample: exception A recommended). Decision 249 (CURRENT_LOCK v2.1 -> v2.2) is still open. Merges since the last entry: cc19a597d (R6 engineering), d852655d5 (successor-2 package); ledger conflicts resolved by keeping both appended blocks.
+
+Superseded stamp: 2026-10-10T07:06:11Z
 
 ## R5 read: NEUTRAL (efficiency result); decision 249 proposed; allowance v3 and R6-P1 in preparation (2026-10-10T07:06:11Z, Fable 5.1 root)
 
