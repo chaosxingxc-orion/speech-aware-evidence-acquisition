@@ -376,9 +376,10 @@ def test_the_ledger_rows_are_present_unconsumed_and_draft_or_countersigned():
             assert not frc.is_countersigned(row) and row["consumed"].strip().lower() == "no", run_id
         arm_row = next(r for r in rows if r.get("run/experiment id") == vf.ARM["run_id"])
         assert "claims_benefit false" in arm_row["notes"] and "offline-sealed-pool" in arm_row["notes"]
-    # the section is the LAST heading block of the ledger and holds nothing but this cell's five rows
-    section = text[text.index(vf.LEDGER_MARK):]
-    assert "\n## " not in section[5:]
+    # the section is its own heading block (later cells append their own blocks after it) and holds nothing but this cell's five rows
+    start = text.index(vf.LEDGER_MARK)
+    following = text.find("\n## ", start + len(vf.LEDGER_MARK))
+    section = text[start:] if following == -1 else text[start:following]
     assert len(re.findall(r"\| SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B", section)) == 5
 
 
