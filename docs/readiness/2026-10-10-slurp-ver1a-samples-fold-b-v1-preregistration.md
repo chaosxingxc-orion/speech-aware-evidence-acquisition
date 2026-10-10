@@ -11,8 +11,8 @@ Registered 2026-10-10 at study commit `f26ada26a618f1aa91b786639a2c004d7c6aeab9`
 | design / claim | `offline-sealed-pool` / descriptive; a POOL cell, `claims_benefit` false, expected effect 0.0 pp |
 | rosters | tuning `none`; read `SLURP-EVO-FOLD-B-V2` |
 | runs | `SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1` / `SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-POOL-READ-V1` |
-| composed config hashes | arm `268ae8c87801fe07fc1a9dc8302cc0141fee746566e5ca8fc212caaecb01a971`; smoke `7daf268e1266d3fae76bc8a0511188e61c733c85214acd3865a22b924ea05a3c` |
-| protocol hashes | arm `c721ff083105df7bc33a2ff53e55132ed99d4f83f3d7b0340d92f892726f1cdf`; smoke `e9abe2f046e395dfa9f11dc5624921c4ac3f7a8d5e24478e84dff3e3f3114f88` |
+| composed config hashes | arm `268ae8c87801fe07fc1a9dc8302cc0141fee746566e5ca8fc212caaecb01a971`; smoke `29836a17c5aed96aa510c1ba04cd7034eb82873388bc6226d6ca60a4eae5ad3f` |
+| protocol hashes | arm `c721ff083105df7bc33a2ff53e55132ed99d4f83f3d7b0340d92f892726f1cdf`; smoke `795724cafdf34fea0c9193639d6aca4ad88dfb91ea27d83e3eea4421834bfb0a` |
 | split identity | arm `4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a`; smoke `bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32` |
 
 ## Attempt state (no recovery)
