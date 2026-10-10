@@ -2,58 +2,59 @@
   "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
   "accounting": {
     "arm": {
-      "arithmetic": "1,080 x 4 = 4,320; FIT 1,080 x 4 x 4 = 17,280; audio ceil(3154.797375 x 4) = 12,620",
-      "fit_endpoint_calls": 17280,
-      "generation_calls": 4320,
+      "arithmetic": "1,080 x 6 = 6,480; FIT 1,080 x 6 x 4 = 25,920; audio ceil(3154.797375 x 6) = 18,929",
+      "fit_endpoint_calls": 25920,
+      "generation_calls": 6480,
       "roster_audio_seconds": 3154.797375,
       "rows": 1080,
-      "speech_audio_seconds_cap": 12620
+      "speech_audio_seconds_cap": 18929
     },
     "contacts_per_row": {
       "perception": 1,
       "planner": 0,
       "reviewer": 0,
-      "solver": 3,
-      "total": 4
+      "solver": 5,
+      "total": 6
     },
-    "note": "The ceiling is exact and also the expected spend: every row makes one Perception and three Solver contacts (no early exit). The FIT cap is structural and never run-cumulative; the generation budget is run-cumulative across attempts.",
-    "program": "phase-native-module-v1-c4",
+    "note": "The ceiling is exact and also the expected spend: every row makes one Perception and five Solver contacts (no early exit). The FIT cap is structural and never run-cumulative; the generation budget is run-cumulative across attempts.",
+    "program": "phase-native-module-v1-c6",
     "smoke": {
-      "fit_endpoint_calls": 64,
-      "generation_calls": 16,
+      "fit_endpoint_calls": 96,
+      "generation_calls": 24,
       "rows": 4,
-      "speech_audio_seconds_cap": 41
+      "speech_audio_seconds_cap": 62
     }
   },
+  "amendment": "AMENDED 2026-10-10 to 5 samples before any contact (coordinator ruling after the offline composer read; nothing flown): the cell was registered at three Solver samples (program phase-native-module-v1-c4, min_support 2, 4 contacts per row, 4,320 generation calls); the offline composer read (scripts/analysis/slurp_ver1_offline.py, docs/readiness/2026-10-10-slurp-ver1-offline-composer-v1/README.md) resolves the support filter's gain over v4g only at n = 5, s = 2, so the pool carries five samples (sample 0 greedy, samples 1-4 at temperature 0.7, seed offsets 0..4), program phase-native-module-v1-c6, min_support 3, 6 contacts per row; every plan, hash and cap below is the amended one.",
   "budget_arithmetic": {
     "arm_family_budget": {
       "asr_calls": 0,
       "ceilings_are_not_targets": true,
       "encoder_calls": 0,
-      "fit_endpoint_calls_cap": 17280,
-      "generation_calls_cap": 4320,
-      "gpu_hours_fit_inclusive": 1.7,
-      "native_task_contract_calls_cap": 4320,
+      "fit_endpoint_calls_cap": 25920,
+      "generation_calls_cap": 6480,
+      "gpu_hours_fit_inclusive": 2.5,
+      "native_task_contract_calls_cap": 6480,
       "official_complete_scoring_jobs": 1,
-      "repeated_speech_audio_seconds_cap": 12620
+      "repeated_speech_audio_seconds_cap": 18929
     },
     "smoke_family_budget": {
       "asr_calls": 0,
       "ceilings_are_not_targets": true,
       "encoder_calls": 0,
-      "fit_endpoint_calls_cap": 64,
-      "generation_calls_cap": 16,
+      "fit_endpoint_calls_cap": 96,
+      "generation_calls_cap": 24,
       "gpu_hours_fit_inclusive": 1.0,
-      "native_task_contract_calls_cap": 16,
+      "native_task_contract_calls_cap": 24,
       "official_complete_scoring_jobs": 0,
-      "repeated_speech_audio_seconds_cap": 41
+      "repeated_speech_audio_seconds_cap": 62
     }
   },
   "composed_config_hashes": {
-    "arm": "dca4a4d48e525c803eae24306ec9acd95605a9f1a7d47db1728e8210dd39c2bf",
-    "smoke": "7cef5f90ec048a295e3d1fe4d369199e00f7c19e546af87d36b4f3b9ffb310e1"
+    "arm": "268ae8c87801fe07fc1a9dc8302cc0141fee746566e5ca8fc212caaecb01a971",
+    "smoke": "7daf268e1266d3fae76bc8a0511188e61c733c85214acd3865a22b924ea05a3c"
   },
-  "decision_rule": "OFFLINE SEALED-POOL READ (VER-1a; owner decision 257, 2026-10-10; claim ceiling 'descriptive' for the pool, 'nominated' for any rule selected on it; the pool cell claims NO benefit). One flight, one Perception visit and one grouped Solver visit per row of TRAIN Fold B: sample 0 greedy, samples 1 and 2 at temperature 0.7, all over the SAME state and evidence, committed in flight by saea-commit-plurality-support-v1 at min_support 2. THE READS, all from this one flight's sealed bytes, model-free: (1) CUSTODY (row accounting): 1,080 in, 1,080 out; every row's solver_group carries exactly 3 samples in custody (invariant I7g) with temperatures 0, 0.7, 0.7 and the pinned seeds fragment_seed + seed_offset + index; the replay of the commit reproduces the sealed delivered text on every row; zero tool calls. (2) PER-SAMPLE scores: each custodied raw sample rendered to one outputs COPY (scripts/analysis/stage3_rollout_score.py --stage render, three samples auto-detected) and scored ONCE with the registered scorer, both as sealed (unprojected) and through the lock's delivery rule v4g applied OFFLINE (scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g; the in-flight cell delivers the unnormalised commit because the loader refuses a deliver_normaliser beside a grouped visit); sample 0 is read against the NX R1 / R6 lock column on the same rows as the byte-identity audit of the greedy first sample (llama.cpp greedy decoding is not bitwise reproducible across batch shapes, so equality is measured, not assumed). (3) SELECTION AND SUPPORT: the offline aggregation rules (scripts/analysis/slurp_sample_aggregation_offline_read.py: plurality-support commit at min_support 2, greedy-sample-0 default, oracle best-of-3 as an UPPER BOUND) and the candidate-support read (scripts/analysis/slurp_candidate_support_read.py), together with the existing c3 verdict columns of the NX R1 / R6 flights on this roster (grouping: scripts/analysis/group_system_rollouts.py), from which the VER-1 verification rule is SELECTED. Bar: the 0.67 pp offline sealed-pool floor of the instrument note (section 2d). NOTHING IS LOCKED HERE: the pool read selects; a selected rule is flown, if at all, under its own registration (VER-1b) and confirmed on a roster it was not selected on.",
+  "decision_rule": "OFFLINE SEALED-POOL READ (VER-1a; owner decision 257, 2026-10-10; claim ceiling 'descriptive' for the pool, 'nominated' for any rule selected on it; the pool cell claims NO benefit). One flight, one Perception visit and one grouped Solver visit per row of TRAIN Fold B: sample 0 greedy, samples 1-4 at temperature 0.7, all over the SAME state and evidence, committed in flight by saea-commit-plurality-support-v1 at min_support 3. THE READS, all from this one flight's sealed bytes, model-free: (1) CUSTODY (row accounting): 1,080 in, 1,080 out; every row's solver_group carries exactly 5 samples in custody (invariant I7g) with temperatures 0, 0.7, 0.7, 0.7, 0.7 and the pinned seeds fragment_seed + seed_offset + index; the replay of the commit reproduces the sealed delivered text on every row; zero tool calls. (2) PER-SAMPLE scores: each custodied raw sample rendered to one outputs COPY (scripts/analysis/stage3_rollout_score.py --stage render, five samples auto-detected) and scored ONCE with the registered scorer, both as sealed (unprojected) and through the lock's delivery rule v4g applied OFFLINE (scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g; the in-flight cell delivers the unnormalised commit because the loader refuses a deliver_normaliser beside a grouped visit); sample 0 is read against the NX R1 / R6 lock column on the same rows as the byte-identity audit of the greedy first sample (llama.cpp greedy decoding is not bitwise reproducible across batch shapes, so equality is measured, not assumed). (3) SELECTION AND SUPPORT: the offline aggregation rules (scripts/analysis/slurp_sample_aggregation_offline_read.py: plurality-support commit at min_support 2 and 3 (s = 2 and 3-of-5 both read offline), greedy-sample-0 default, oracle best-of-5 as an UPPER BOUND) and the candidate-support read (scripts/analysis/slurp_candidate_support_read.py), together with the existing c3 verdict columns of the NX R1 / R6 flights on this roster (grouping: scripts/analysis/group_system_rollouts.py), from which the VER-1 verification rule is SELECTED. Bar: the 0.67 pp offline sealed-pool floor of the instrument note (section 2d). NOTHING IS LOCKED HERE: the pool read selects; a selected rule is flown, if at all, under its own registration (VER-1b) and confirmed on a roster it was not selected on.",
   "fit": {
     "status": "PENDING_CHECK"
   },
@@ -65,13 +66,13 @@
       "baseline_fragment": "slurp-native-stage3-ver1a-samples-fold-b-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-ver1a-samples-fold-b-v1",
-      "composed_config_hash": "dca4a4d48e525c803eae24306ec9acd95605a9f1a7d47db1728e8210dd39c2bf",
+      "composed_config_hash": "268ae8c87801fe07fc1a9dc8302cc0141fee746566e5ca8fc212caaecb01a971",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
-        "planned_gpu_hours": 1.7,
-        "planned_model_calls": 4320,
-        "planned_speech_audio_seconds": 12620,
+        "planned_gpu_hours": 2.5,
+        "planned_model_calls": 6480,
+        "planned_speech_audio_seconds": 18929,
         "split_role": "discovery"
       },
       "execution_profile": "bounded-discovery-probe",
@@ -80,24 +81,24 @@
         "asr_calls": 0,
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
-        "fit_endpoint_calls_cap": 17280,
-        "generation_calls_cap": 4320,
-        "gpu_hours_fit_inclusive": 1.7,
-        "native_task_contract_calls_cap": 4320,
+        "fit_endpoint_calls_cap": 25920,
+        "generation_calls_cap": 6480,
+        "gpu_hours_fit_inclusive": 2.5,
+        "native_task_contract_calls_cap": 6480,
         "official_complete_scoring_jobs": 1,
-        "repeated_speech_audio_seconds_cap": 12620
+        "repeated_speech_audio_seconds_cap": 18929
       },
       "fit": {
         "attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-fit-v1",
-        "contact_cap": 17280,
+        "contact_cap": 25920,
         "max_speech_packets": 1,
         "run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-FIT-V1"
       },
       "fit_attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
-      "program": "phase-native-module-v1-c4",
-      "protocol_hash": "dd243cb7d514090147d7b554312abb8ac67aded832c1c785c09b3925cf09750f",
+      "program": "phase-native-module-v1-c6",
+      "protocol_hash": "c721ff083105df7bc33a2ff53e55132ed99d4f83f3d7b0340d92f892726f1cdf",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1",
@@ -110,13 +111,13 @@
       "baseline_fragment": "slurp-native-stage3-ver1a-samples-fold-b-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-ver1a-samples-fold-b-smoke-4-v1",
-      "composed_config_hash": "7cef5f90ec048a295e3d1fe4d369199e00f7c19e546af87d36b4f3b9ffb310e1",
+      "composed_config_hash": "7daf268e1266d3fae76bc8a0511188e61c733c85214acd3865a22b924ea05a3c",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
         "planned_gpu_hours": 1.0,
-        "planned_model_calls": 16,
-        "planned_speech_audio_seconds": 41,
+        "planned_model_calls": 24,
+        "planned_speech_audio_seconds": 62,
         "split_role": "discovery"
       },
       "execution_profile": "bounded-discovery-probe",
@@ -125,24 +126,24 @@
         "asr_calls": 0,
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
-        "fit_endpoint_calls_cap": 64,
-        "generation_calls_cap": 16,
+        "fit_endpoint_calls_cap": 96,
+        "generation_calls_cap": 24,
         "gpu_hours_fit_inclusive": 1.0,
-        "native_task_contract_calls_cap": 16,
+        "native_task_contract_calls_cap": 24,
         "official_complete_scoring_jobs": 0,
-        "repeated_speech_audio_seconds_cap": 41
+        "repeated_speech_audio_seconds_cap": 62
       },
       "fit": {
         "attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-smoke-4-fit-v1",
-        "contact_cap": 64,
+        "contact_cap": 96,
         "max_speech_packets": 1,
         "run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-SMOKE-4-FIT-V1"
       },
       "fit_attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-SMOKE-4-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
-      "program": "phase-native-module-v1-c4",
-      "protocol_hash": "d15d22d605416c8ba79c5e9b092ec73313a39fc899b6072d5bb3d3c819186b34",
+      "program": "phase-native-module-v1-c6",
+      "protocol_hash": "e9abe2f046e395dfa9f11dc5624921c4ac3f7a8d5e24478e84dff3e3f3114f88",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-SMOKE-4-V1",
@@ -176,7 +177,7 @@
       "claims_benefit": false,
       "expected_effect_pp": 0.0,
       "measurement_design": "form-proof",
-      "note": "Four Fold B rows (the committed prefix receipt) prove FORM and nothing else: the phase-native-module-v1-c4 program loads, the Solver visit fans out to 3 custodied samples (sample 0 at temperature 0, samples 1-2 at 0.7), the plurality-support commit at min_support 2 seals and replays, every request fits, and the episode completes. Scored by no one, read by no one.",
+      "note": "Four Fold B rows (the committed prefix receipt) prove FORM and nothing else: the phase-native-module-v1-c6 program loads, the Solver visit fans out to 5 custodied samples (sample 0 at temperature 0, samples 1-4 at 0.7), the plurality-support commit at min_support 3 seals and replays, every request fits, and the episode completes. Scored by no one, read by no one.",
       "primary_metric": "none (structural form only)",
       "read_roster": "SLURP-EVO-FOLD-B-V2",
       "rows": 4,
@@ -186,7 +187,7 @@
       "claims_benefit": false,
       "expected_effect_pp": 0.0,
       "measurement_design": "offline-sealed-pool",
-      "note": "VER-1a makes no effectiveness claim of its own: it seals a 1,080-row x 3-sample pool on TRAIN Fold B (sample 0 greedy, samples 1-2 at temperature 0.7) so that the VER-1 verification rule -- scoring and selection over the frozen core's own sampled answers -- can be selected OFFLINE over sealed bytes, together with the existing c3 verdict columns of the NX R1 / R6 flights on the same roster, at the 0.67 pp floor of docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d. Any benefit claim belongs to a later flown cell or to the read over this pool, each of which declares its own block. Owner decisions 139 and 192: the expectation is on file before flight and it is zero because the cell is an asset.",
+      "note": "VER-1a makes no effectiveness claim of its own: it seals a 1,080-row x 5-sample pool on TRAIN Fold B (sample 0 greedy, samples 1-4 at temperature 0.7) so that the VER-1 verification rule -- scoring and selection over the frozen core's own sampled answers -- can be selected OFFLINE over sealed bytes, together with the existing c3 verdict columns of the NX R1 / R6 flights on the same roster, at the 0.67 pp floor of docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md section 2d. Any benefit claim belongs to a later flown cell or to the read over this pool, each of which declares its own block. Owner decisions 139 and 192: the expectation is on file before flight and it is zero because the cell is an asset.",
       "primary_metric": "slu_f1",
       "read_roster": "SLURP-EVO-FOLD-B-V2",
       "rows": 1080,
@@ -196,12 +197,12 @@
   "study_commit_at_registration": "f26ada26a618f1aa91b786639a2c004d7c6aeab9",
   "the_cell": {
     "base": "the NX R5 composed arm / R6-P1 base: COMP-1b components on lock v2.2, review loop OFF, as a hand-written fragment (no consumption_module block)",
-    "ceiling": 4,
+    "ceiling": 6,
     "deliver_normaliser": "none in flight (refused beside samples >= 2); v4g applied offline",
-    "program": "phase-native-module-v1-c4",
+    "program": "phase-native-module-v1-c6",
     "solver": {
       "commit": {
-        "min_support": 2,
+        "min_support": 3,
         "policy": "saea-commit-plurality-support-v1",
         "similarity_threshold": 0.8
       },
@@ -210,7 +211,7 @@
         "seed_offset": 0,
         "temperature": 0.7
       },
-      "samples": 3
+      "samples": 5
     }
   }
 }

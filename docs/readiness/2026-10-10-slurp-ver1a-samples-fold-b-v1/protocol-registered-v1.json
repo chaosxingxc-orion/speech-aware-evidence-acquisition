@@ -1,13 +1,14 @@
 {
+  "amendment": "AMENDED 2026-10-10 to 5 samples before any contact (coordinator ruling after the offline composer read; nothing flown): the cell was registered at three Solver samples (program phase-native-module-v1-c4, min_support 2, 4 contacts per row, 4,320 generation calls); the offline composer read (scripts/analysis/slurp_ver1_offline.py, docs/readiness/2026-10-10-slurp-ver1-offline-composer-v1/README.md) resolves the support filter's gain over v4g only at n = 5, s = 2, so the pool carries five samples (sample 0 greedy, samples 1-4 at temperature 0.7, seed offsets 0..4), program phase-native-module-v1-c6, min_support 3, 6 contacts per row; every plan, hash and cap below is the amended one.",
   "cells": {
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-generation-v1",
       "cell": "slurp-native-stage3-ver1a-samples-fold-b-v1",
-      "composed_config_hash": "dca4a4d48e525c803eae24306ec9acd95605a9f1a7d47db1728e8210dd39c2bf",
+      "composed_config_hash": "268ae8c87801fe07fc1a9dc8302cc0141fee746566e5ca8fc212caaecb01a971",
       "experiment": "slurp-native-stage3-ver1a-samples-fold-b-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-FIT-V1",
-      "protocol_hash": "dd243cb7d514090147d7b554312abb8ac67aded832c1c785c09b3925cf09750f",
+      "protocol_hash": "c721ff083105df7bc33a2ff53e55132ed99d4f83f3d7b0340d92f892726f1cdf",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
@@ -15,20 +16,20 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-ver1a-samples-fold-b-smoke-4-v1",
-      "composed_config_hash": "7cef5f90ec048a295e3d1fe4d369199e00f7c19e546af87d36b4f3b9ffb310e1",
+      "composed_config_hash": "7daf268e1266d3fae76bc8a0511188e61c733c85214acd3865a22b924ea05a3c",
       "experiment": "slurp-native-stage3-ver1a-samples-fold-b-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "d15d22d605416c8ba79c5e9b092ec73313a39fc899b6072d5bb3d3c819186b34",
+      "protocol_hash": "e9abe2f046e395dfa9f11dc5624921c4ac3f7a8d5e24478e84dff3e3f3114f88",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
     }
   },
-  "decision_rule_fixed_here": "OFFLINE SEALED-POOL READ (VER-1a; owner decision 257, 2026-10-10; claim ceiling 'descriptive' for the pool, 'nominated' for any rule selected on it; the pool cell claims NO benefit). One flight, one Perception visit and one grouped Solver visit per row of TRAIN Fold B: sample 0 greedy, samples 1 and 2 at temperature 0.7, all over the SAME state and evidence, committed in flight by saea-commit-plurality-support-v1 at min_support 2. THE READS, all from this one flight's sealed bytes, model-free: (1) CUSTODY (row accounting): 1,080 in, 1,080 out; every row's solver_group carries exactly 3 samples in custody (invariant I7g) with temperatures 0, 0.7, 0.7 and the pinned seeds fragment_seed + seed_offset + index; the replay of the commit reproduces the sealed delivered text on every row; zero tool calls. (2) PER-SAMPLE scores: each custodied raw sample rendered to one outputs COPY (scripts/analysis/stage3_rollout_score.py --stage render, three samples auto-detected) and scored ONCE with the registered scorer, both as sealed (unprojected) and through the lock's delivery rule v4g applied OFFLINE (scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g; the in-flight cell delivers the unnormalised commit because the loader refuses a deliver_normaliser beside a grouped visit); sample 0 is read against the NX R1 / R6 lock column on the same rows as the byte-identity audit of the greedy first sample (llama.cpp greedy decoding is not bitwise reproducible across batch shapes, so equality is measured, not assumed). (3) SELECTION AND SUPPORT: the offline aggregation rules (scripts/analysis/slurp_sample_aggregation_offline_read.py: plurality-support commit at min_support 2, greedy-sample-0 default, oracle best-of-3 as an UPPER BOUND) and the candidate-support read (scripts/analysis/slurp_candidate_support_read.py), together with the existing c3 verdict columns of the NX R1 / R6 flights on this roster (grouping: scripts/analysis/group_system_rollouts.py), from which the VER-1 verification rule is SELECTED. Bar: the 0.67 pp offline sealed-pool floor of the instrument note (section 2d). NOTHING IS LOCKED HERE: the pool read selects; a selected rule is flown, if at all, under its own registration (VER-1b) and confirmed on a roster it was not selected on.",
+  "decision_rule_fixed_here": "OFFLINE SEALED-POOL READ (VER-1a; owner decision 257, 2026-10-10; claim ceiling 'descriptive' for the pool, 'nominated' for any rule selected on it; the pool cell claims NO benefit). One flight, one Perception visit and one grouped Solver visit per row of TRAIN Fold B: sample 0 greedy, samples 1-4 at temperature 0.7, all over the SAME state and evidence, committed in flight by saea-commit-plurality-support-v1 at min_support 3. THE READS, all from this one flight's sealed bytes, model-free: (1) CUSTODY (row accounting): 1,080 in, 1,080 out; every row's solver_group carries exactly 5 samples in custody (invariant I7g) with temperatures 0, 0.7, 0.7, 0.7, 0.7 and the pinned seeds fragment_seed + seed_offset + index; the replay of the commit reproduces the sealed delivered text on every row; zero tool calls. (2) PER-SAMPLE scores: each custodied raw sample rendered to one outputs COPY (scripts/analysis/stage3_rollout_score.py --stage render, five samples auto-detected) and scored ONCE with the registered scorer, both as sealed (unprojected) and through the lock's delivery rule v4g applied OFFLINE (scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g; the in-flight cell delivers the unnormalised commit because the loader refuses a deliver_normaliser beside a grouped visit); sample 0 is read against the NX R1 / R6 lock column on the same rows as the byte-identity audit of the greedy first sample (llama.cpp greedy decoding is not bitwise reproducible across batch shapes, so equality is measured, not assumed). (3) SELECTION AND SUPPORT: the offline aggregation rules (scripts/analysis/slurp_sample_aggregation_offline_read.py: plurality-support commit at min_support 2 and 3 (s = 2 and 3-of-5 both read offline), greedy-sample-0 default, oracle best-of-5 as an UPPER BOUND) and the candidate-support read (scripts/analysis/slurp_candidate_support_read.py), together with the existing c3 verdict columns of the NX R1 / R6 flights on this roster (grouping: scripts/analysis/group_system_rollouts.py), from which the VER-1 verification rule is SELECTED. Bar: the 0.67 pp offline sealed-pool floor of the instrument note (section 2d). NOTHING IS LOCKED HERE: the pool read selects; a selected rule is flown, if at all, under its own registration (VER-1b) and confirmed on a roster it was not selected on.",
   "development_numbers_only": "Every number is a TRAIN Fold B development number (owner decisions 28 and 86), never a test claim.",
   "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
-  "one_factor": "none -- a pool cell: the base is the NX R5 composed arm / R6-P1 base (COMP-1b components, lock v2.2 compiled blocks, review loop off) unchanged, and the single registered departure is the grouped Solver visit (samples 3: sample 0 greedy, samples 1-2 at temperature 0.7, plurality-support commit at min_support 2), which exists to produce the sample pool and not to move a delivered metric",
+  "one_factor": "none -- a pool cell: the base is the NX R5 composed arm / R6-P1 base (COMP-1b components, lock v2.2 compiled blocks, review loop off) unchanged, and the single registered departure is the grouped Solver visit (samples 5: sample 0 greedy, samples 1-4 at temperature 0.7, plurality-support commit at min_support 3), which exists to produce the sample pool and not to move a delivered metric",
   "prohibitions": [
     "No test-split, DEV or Fold A contact or read (the pool is TRAIN Fold B; any Fold A confirmation is a later registration).",
     "No second factor: one departure from the R5 composed arm, the grouped greedy-first Solver visit.",
@@ -44,8 +45,8 @@
   "protocol_id": "slurp-ver1a-samples-fold-b-protocol-v1",
   "registered_at_utc": "2026-10-10T16:00:00.000000+00:00",
   "schema": "saea-registered-protocol-v1",
-  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-ver1a, branch sonnet/ver1a-register",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-ver1a5, branch sonnet/ver1a-samples5",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
   "study_commit_at_registration": "f26ada26a618f1aa91b786639a2c004d7c6aeab9",
-  "the_question": "Can a three-sample pool of the lock v2.2 Solver on TRAIN Fold B -- the greedy single-sample answer plus two temperature-0.7 draws over the same state and evidence -- be sealed with full custody, so that a verification rule (scoring and selection over the core's own sampled answers) can be selected offline together with the existing c3 verdict columns? (Pool cell: no benefit is claimed.)"
+  "the_question": "Can a five-sample pool of the lock v2.2 Solver on TRAIN Fold B -- the greedy single-sample answer plus four temperature-0.7 draws over the same state and evidence -- be sealed with full custody, so that a verification rule (scoring and selection over the core's own sampled answers) can be selected offline together with the existing c3 verdict columns? (Pool cell: no benefit is claimed.)"
 }
