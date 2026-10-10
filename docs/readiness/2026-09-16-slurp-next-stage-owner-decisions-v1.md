@@ -874,3 +874,10 @@ VER-1; 255-257: agreed.")
   cross-fitted, 0.67 pp floor) -> VER-1b Fold A confirmation pool (+ a c3 column there) with the rule FIXED ->
   runtime delivery component `verification-delivery-v1` (support filter over samples + verdict contact) -> DEV
   composed read (lock v2.3 = v2.2 + VER-1) -> test sample.
+
+Decision 257 boundary, confirmed by the owner 2026-10-10 (「好，继续吧」 after the coordinator's clarification): VER-1 is
+a NODE-LOCAL change at the Solver (three decodes, one c3 verdict contact) followed by a DETERMINISTIC verifier
+(support filter x verdict x N1 gate x v4g) and delivery; no model node consumes the samples (the Reviewer loop stays
+removed, decision 232); no template and no inter-node message schema changes (the communication-template line of
+decision 245 stays parked under 253-A / 248 with its trigger); any sample-side confidence tag would be a separate
+VER-2 proposal under the cascade rules of 245, not an afterthought.
