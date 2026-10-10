@@ -15,7 +15,7 @@ text steps are the registered `DELIVERY_NORMALISERS`, never re-implemented).
 | input | source | notes |
 | --- | --- | --- |
 | sample pool | any run whose `<run>.outputs.jsonl` rows carry `solver_group.samples` | generic over `--run-id/--attempt/--split/--rows`; named presets `roll1`, `roll2`, `roll3`; sample 0 may be greedy |
-| verdict column | NX R1 iteration `i1` (`r1-c3`) or `i2` (`r1-i2-c3`) on the same TRAIN Fold B rows | verdict = the arm answered no entity after v4g; lock and A/A (`aa`) columns come with it |
+| verdict column | NX R1 iteration `i1` (`r1-c3`) or `i2` (`r1-i2-c3`) on the same TRAIN Fold B rows (`--verdict`), or ANY sealed same-flight Solver template column on the pool's rows (`--verdict-run RUN_ID:ATTEMPT:ARM[:KEY]`, e.g. the VER-1c Fold A `r1-c3` column) | verdict = the arm answered no entity after v4g; lock and A/A (`aa`) columns come with it; the run needs `supply-variants/arm-{lock,aa,ARM}-first-visit-outputs.jsonl` and the matching `slurp-slu-official-train` scores; N1 comes from that run's `phases.json` (`--signature` names the source, default the first verdict) |
 | pre-Solver signature | N1 = entity-free share of the 20 supplied exemplars, from the verdict run's `phases.json` (`--signature`) | reused from the R6 driver (`row_signals`), median-filled like R6 |
 | normalisers | `saea-deliver-normalise-v3` (pool base), `-v4` (control only), `-v4g` | |
 
@@ -40,6 +40,9 @@ python -B scripts/analysis/slurp_ver1_offline.py --mode read --pool roll2 --n 3,
 # the Fold B pool VER-1a, no code change: by run id (3 samples, sample 0 greedy), both R1 verdict columns
 python -B scripts/analysis/slurp_ver1_offline.py --mode read --run-id <VER-1a RUN> --attempt <ATTEMPT> --split train \
     --rows 1080 --verdict i1,i2 --n 3 --label VER1A-FOLD-B-V1 [--sealed-scorer slurp-slu-official-train]
+# a verdict column other than the R1 iterations (added for the VER-1b Fold A confirmation; `--verdict i1,i2` is unchanged and the two
+# options combine; the key defaults to the arm id, a 4th field overrides it):
+python -B scripts/analysis/slurp_ver1_offline.py --mode read --run-id <VER-1b RUN> --attempt <ATTEMPT> --split train --rows 1080 \n    --n 3 --s 2 --thetas 0.2 --verdict-run <VER-1c RUN>:<ATTEMPT>:r1-c3 --label VER1B-FOLD-A-V1 --sealed-scorer slurp-slu-official-train
 ```
 
 Outputs are write-once under `$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-VER1-OFFLINE-<LABEL>/` (`report.json`, `report.md`);

@@ -1,0 +1,51 @@
+{
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-ver1c-c3-column-fold-a-generation-v1",
+      "cell": "slurp-native-stage3-ver1c-c3-column-fold-a-v1",
+      "composed_config_hash": "16f1e682691e3a0b9d0b6276098eaeb01e953f1b7d0e742d3265bbbfbbba1bac",
+      "experiment": "slurp-native-stage3-ver1c-c3-column-fold-a-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-ver1c-c3-column-fold-a-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-FIT-V1",
+      "protocol_hash": "3109d3a2e62451e5d400f03f1dac48bfc1dba4d953bc69b09fb3f0e99542b9fa",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1",
+      "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-ver1c-c3-column-fold-a-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-ver1c-c3-column-fold-a-smoke-4-v1",
+      "composed_config_hash": "9b19fa8051add4d3d9a0c54367e98c7804b64309afdcb6d2606e3f67f5e57d97",
+      "experiment": "slurp-native-stage3-ver1c-c3-column-fold-a-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-ver1c-c3-column-fold-a-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-SMOKE-4-FIT-V1",
+      "protocol_hash": "234a13e87d6a08fd8b7455545d08e282b8ad01a02ee458994121c6e8debf9d74",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-SMOKE-4-V1",
+      "split_identity_hash": "4e3413fe64a51cea597bbd1de5c1b4bb5ac5194969a8522d7f3173b6c4b969cb"
+    }
+  },
+  "decision_rule_fixed_here": "SAME-FLIGHT NODE-TEMPLATE COLUMN READ AS THE VERDICT SOURCE OF THE VER-1 RULE (VER-1c; NX instrument E1/E2; owner decision 257, decision 258 option A proposed 2026-10-10; claim ceiling 'descriptive': the arm is NOT a nomination). One flight, one Solver visit per row of TRAIN Fold A, 3 arms over the SAME QueryState and evidence: r1-c3 (the R1 c3 template, the same hash-pinned bytes the NX R1 iteration-1 cell flew), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last). Each arm's first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train per arm (never sharded; scripts/analysis/stage3_rollout_score.py --mode supply-variants writes the per-arm first-visit outputs and scores the composer reads). READS: (1) THE TWIN NULL first: aa minus lock on every metric, paired per row, whole-utterance cluster bootstrap (10,000 draws, seed 20260915), reported beside the E1 provisional floor (SLU-F1 1.49 pp, intent 0.65 pp at n = 1,080; borrowed until a node-column cell measures its own null). (2) THE c3 COLUMN: r1-c3 minus lock, pooled SLU-F1 and intent, quoted DESCRIPTIVELY with its CI95 (it gates nothing and nominates nothing; a Fold A c3 loss or gain is information about the verdict source, not a result of this cell). (3) THE VERDICT SOURCE: the c3 presence verdict is the flag 'the r1-c3 answer carried no entity after the registered v4g normaliser' (slurp_ver1_offline.verdict_flags); the number of verdict-empty rows and of verdict-empty rows on empty-gold rows is reported beside the TRAIN Fold B figures of the NX R1 flights so that a drift of the verdict between rosters is visible. (4) THE VER-1 RULE FIXED ON SLURP-EVO-FOLD-B-V2 (support filter n = 3, s = 2; c3 verdict x N1 >= 0.2; v4g) is applied offline to the VER-1b sample pool on these rows with scripts/analysis/slurp_ver1_offline.py --verdict-run; the confirmation criterion is the VER-1b READ row's (SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-POOL-READ-V1). NOTHING IS TUNED OR SELECTED HERE. The delivering arm is the lock: the delivered answer is unchanged by construction at the request level (invariant I7).",
+  "development_numbers_only": "Every number is a TRAIN Fold A development number (owner decisions 28 and 86), never a test claim.",
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "one_factor": "the Solver instruction template (phase_material.solver.instruction_template) of the one non-delivering candidate arm: ONE hash-pinned path (configs/probes/nx/solver/r1/r1-c3.txt, the R1 c3 template) and nothing else (no supply knob, decoding, response format or tool authority); the base, the TRAIN Fold A pins, the review-off program and the module block are the instrument's carrier, shared by every arm",
+  "prohibitions": [
+    "No test-split, DEV or TRAIN Fold B contact or read (the column is TRAIN Fold A; the rule was fixed on TRAIN Fold B).",
+    "No second factor: one axis (the Solver instruction template), none on aa or lock.",
+    "No tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "No second candidate and no re-authored template: the arm is the R1 c3 template, byte for byte.",
+    "No v4 or v4g normaliser wired differently from lock v2.2's module cell (v4g at delivery); no other normaliser variant.",
+    "No benefit claim and no nomination: expected_effect_pp 0.0, claims_benefit false.",
+    "No paper-scale profile.",
+    "No flight before root countersigns the DRAFT rows, mints the decision receipt and the cells are flipped.",
+    "No arm score opened before the READ row is root countersigned.",
+    "No system-level claim."
+  ],
+  "protocol_id": "slurp-ver1c-c3-column-fold-a-protocol-v1",
+  "registered_at_utc": "2026-10-10T21:42:02.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-ver1b, branch sonnet/ver1b-register",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "study_commit_at_registration": "76a9bfe3e6e228dd709964923b4f3b48fec3dd1d",
+  "the_question": "What does the R1 c3 Solver template answer on TRAIN Fold A -- per row, does the Solver carry an entity after v4g? -- so that the c3 presence verdict of the VER-1 rule fixed on TRAIN Fold B can be applied to the VER-1b sample pool on the same rows? (Verdict-source column: nothing is nominated and no benefit is claimed.)"
+}

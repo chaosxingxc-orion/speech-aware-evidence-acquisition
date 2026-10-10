@@ -1,0 +1,111 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/ver/ver1b_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-10-slurp-ver1b-samples-fold-a-v1/analysis-recipe-v1.json",
+      "sha256": "192258f4afa140bcc25ccf5857a89f07efd8d2364b92322841b0f38cd395a46b"
+    },
+    "derive_script": {
+      "path": "scripts/flights/ver/ver1b_derive_cells.py",
+      "sha256": "8e8640f948fe5e699796c8fedd63555f736939c7bdb971ac622e802ef01e61b0"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "3ef36a8663af03accd44948271884d1a80de8340c6eda4961be8541a758da3bc"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-10-10-slurp-ver1b-samples-fold-a-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-10-slurp-ver1b-samples-fold-a-v1/protocol-registered-v1.json",
+      "sha256": "4e2def9c8eba0900eeba24a5ce2f270082b0c46424ff4cf6ae2200ec6327ce1d"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-10-10-slurp-ver1b-samples-fold-a-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-10-slurp-ver1b-samples-fold-a-v1/registered-facts-v1.json",
+      "sha256": "c67fe3f50e6ae4951e1d667f3ec6dc10f3b60b14ebbbe17aac3e81dd3b2c1e10"
+    },
+    "registration_base_commit": "76a9bfe3e6e228dd709964923b4f3b48fec3dd1d"
+  },
+  "authorization_basis": "Owner decisions 257 (2026-10-10), 258 option A (proposed), 139, 192, 28/86; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/results/2026-09-28-slurp-roll-2-fold-a-pool-read.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 17280,
+    "generation_calls_cap": 4320,
+    "gpu_hours_fit_inclusive": 1.7,
+    "native_task_contract_calls_cap": 4320,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 12339,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 64,
+      "generation_calls_cap": 16,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 16,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 43
+    }
+  },
+  "cell_kind": "Stage-3 sealed-sample-pool cell (label inference-time-verification-v1), a POOL (claims_benefit false). One arm on TRAIN Fold A 1,080 with a three-sample greedy-first Solver visit, and a four-row form smoke.",
+  "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a sealed pool on a development fold.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell VER-1b: the R5 composed arm (COMP-1b on lock v2.2, review loop off) on TRAIN Fold A under phase-native-module-v1-c4 with the Solver visit grouped at samples 3 (sample 0 greedy, samples 1-2 at temperature 0.7, plurality commit at min_support 2); seal the pool; apply the rule fixed on TRAIN Fold B offline.",
+  "decision_id": "slurp-ver1b-samples-fold-a-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1",
+    "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-FIT-V1",
+    "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered grouped greedy-first Solver visit and the Fold A re-target",
+    "re-tuning the fixed rule or selecting a rule on this roster",
+    "wiring or flying a verification rule (the application is an offline read)",
+    "opening a sample column before the READ row is countersigned"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_b_contact_authorized": false,
+    "partition": "TRAIN Fold A 1,080, unchanged; the smoke flies its first 4 rows",
+    "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "4efe061896b0ccc30ff85a476a083f6b815c6c0ac0a25e50c56d555abfb06697",
+      "protocol": "50c6c21e75bc902d2381bc83a9352be8ecc476620fd20284dad3e841da5c6c5b"
+    },
+    "smoke": {
+      "composed_config": "9b3451894caf315564d9228f6dea8d237eba8de4adf1bb93e0091d069cab9920",
+      "protocol": "8a0241e5a1aa1b0c3641ef77070e6b3a9a49aeb6ddbccea315beb39e9bdb4671"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

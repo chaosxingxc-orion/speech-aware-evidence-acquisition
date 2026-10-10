@@ -322,3 +322,117 @@ def test_empty_gold_contribution_carries_the_delta_not_a_zero_subset_f1():
     assert split["empty_gold"]["contribution_to_pooled_delta_pp"] > 0
     assert split["non_empty_gold"]["contribution_to_pooled_delta_pp"] == pytest.approx(0.0, abs=1e-9)
     assert split["empty_gold"]["changed_rows"] == 20 and split["non_empty_gold"]["changed_rows"] == 0
+
+
+# ---------------------------------------------------------------------------
+# --verdict-run: a sealed same-flight column other than the NX R1 iterations as a verdict source
+
+
+def test_verdict_run_parses_run_attempt_arm_and_an_optional_key(monkeypatch):
+    monkeypatch.setattr(V, "VERDICT_RUNS", {})
+    key, spec = V.parse_verdict_run("SAEA-RUN-V1:attempt-x-generation-v1:r1-c3", rows=1080)
+    assert key == "r1-c3"                                    # default key = the arm id
+    assert spec == {"run_id": "SAEA-RUN-V1", "attempt": "attempt-x-generation-v1", "scorer": "slurp-slu-official-train",
+                    "split": "train", "rows": 1080, "arms": ("lock", "aa", "r1-c3"), "aggressive": "r1-c3"}
+    key, _ = V.parse_verdict_run("SAEA-RUN-V1:attempt-x-generation-v1:r1-c3:c3foldA", rows=1080)
+    assert key == "c3foldA"
+    for bad in ("only:two", "a:b:c:d:e", "a:b:", "a/b:c:d", "a:..:d", "a:b:lock", "a:b:aa", "SAEA RUN:b:c"):
+        with pytest.raises(V.ComposerError):
+            V.parse_verdict_run(bad, rows=10)
+
+
+def test_verdict_run_keys_never_shadow_the_builtin_iterations_or_each_other(monkeypatch):
+    monkeypatch.setattr(V, "VERDICT_RUNS", {})
+    with pytest.raises(V.ComposerError):
+        V.parse_verdict_run("RUN:ATT:r1-c3:i1", rows=10)      # i1 / i2 stay the NX R1 iterations
+    key, spec = V.parse_verdict_run("RUN:ATT:r1-c3", rows=10)
+    V.VERDICT_RUNS[key] = spec
+    with pytest.raises(V.ComposerError):
+        V.parse_verdict_run("RUN2:ATT2:r1-c3", rows=10)       # the same default key twice needs an explicit 4th field
+    assert V.verdict_run_ids("r1-c3") == ("RUN", "ATT")
+    assert V.verdict_run_ids("i1") == (V.R6.FOLD_B["i1"]["run_id"], V.R6.FOLD_B["i1"]["attempt"])
+    with pytest.raises(V.ComposerError):
+        V.verdict_run_ids("nope")
+
+
+def _fake_pool(ids, arm_has_entity):
+    """A minimal SCR.load_pool result: ten count columns per row, items = columns 6 and 7."""
+    def counts(has_entity):
+        m = np.zeros((len(ids), 10))
+        m[:, 6] = np.asarray(has_entity, dtype=float)
+        return m
+
+    lock = counts([1] * len(ids))
+    arm = counts(arm_has_entity)
+    zeros = np.zeros_like(lock)
+    return {"ids": list(ids), "v3": {"lock": lock, "aa": lock, "r1-c3": arm}, "v3_empty": {"lock": zeros, "aa": zeros, "r1-c3": zeros},
+            "v4g": {"lock": lock, "aa": lock, "r1-c3": arm}, "v4g_empty": {"lock": zeros, "aa": zeros, "r1-c3": zeros},
+            "meta": {"stub": True}}
+
+
+def test_a_verdict_run_loads_through_the_scr_pool_loader_with_its_own_spec(monkeypatch):
+    monkeypatch.setattr(V, "VERDICT_RUNS", {})
+    ids = ["s0", "s1", "s2"]
+    seen = {}
+
+    def fake_load_pool(key, spec, data_root, gold_all, arms):
+        seen.update(key=key, spec=spec, arms=tuple(arms))
+        return _fake_pool(ids, [1, 0, 0])
+
+    monkeypatch.setattr(V.SCR, "load_pool", fake_load_pool)
+    key, spec = V.parse_verdict_run("RUN-C3:ATT-C3:r1-c3", rows=3)
+    V.VERDICT_RUNS[key] = spec
+    source = V.load_verdict_source(Path("/nonexistent"), {}, key, ids)
+    assert seen["spec"] is spec and seen["arms"] == ("lock", "aa", "r1-c3")
+    assert source["arm"] == "r1-c3" and source["run"] == ["RUN-C3", "ATT-C3"]
+    assert source["flags"] == [False, True, True]            # verdict = the arm answered no entity (after v4g)
+    assert set(source["cols"]["v4g"]) == {"lock", "aa"} and set(source["cols"]["v3"]) == {"lock", "aa"}
+    with pytest.raises(V.ComposerError):                       # rows must be the pool's rows
+        V.load_verdict_source(Path("/nonexistent"), {}, key, ["s0", "s1", "other"])
+
+
+def test_the_builtin_iterations_still_resolve_through_their_own_scr_pool(monkeypatch):
+    monkeypatch.setattr(V, "VERDICT_RUNS", {})
+    ids = ["s0", "s1"]
+    seen = {}
+
+    def fake_load_pool(key, spec, data_root, gold_all, arms):
+        seen.update(key=key, spec=spec, arms=tuple(arms))
+        pool = _fake_pool(ids, [0, 1])
+        agg = V.R6.FOLD_B[key]["aggressive"]
+        for table in ("v3", "v3_empty", "v4g", "v4g_empty"):
+            pool[table][agg] = pool[table].pop("r1-c3")
+        return pool
+
+    monkeypatch.setattr(V.SCR, "load_pool", fake_load_pool)
+    for key in ("i1", "i2"):
+        source = V.load_verdict_source(Path("/nonexistent"), {}, key, ids)
+        assert seen["spec"] is V.SCR.POOLS[key] and seen["arms"] == ("lock", "aa", V.R6.FOLD_B[key]["aggressive"])
+        assert source["arm"] == V.R6.FOLD_B[key]["aggressive"] and source["flags"] == [True, False]
+    with pytest.raises(V.ComposerError):
+        V.load_verdict_source(Path("/nonexistent"), {}, "i3", ids)
+
+
+def test_main_threads_verdict_run_beside_the_builtin_verdicts_into_the_read(monkeypatch):
+    import speech_aware_evidence_acquisition.data.lock as lock_module
+
+    monkeypatch.setattr(V, "VERDICT_RUNS", {})
+    monkeypatch.setattr(lock_module, "load_lock", lambda path: object())
+    monkeypatch.setattr(V, "load_sample_pool", lambda root, spec: {"n_samples": 3})
+    monkeypatch.setattr(V, "render", lambda report: "")
+    seen = {}
+
+    def fake_read_pool(args, spec, **kwargs):
+        seen.update(kwargs, spec=spec)
+        return {}
+
+    monkeypatch.setattr(V, "read_pool", fake_read_pool)
+    argv = ["--mode", "read", "--run-id", "POOL", "--attempt", "att", "--split", "train", "--rows", "1080", "--n", "3", "--s", "2",
+            "--thetas", "0.2", "--label", "SYN", "--no-write", "--data-root", "/nonexistent", "--lock", "/nonexistent"]
+    assert V.main(argv + ["--verdict", "i1", "--verdict-run", "RUN-C3:ATT-C3:r1-c3", "--signature", "r1-c3"]) == 0
+    assert seen["verdict_keys"] == ["i1", "r1-c3"] and seen["signature"] == "r1-c3"
+    assert V.VERDICT_RUNS["r1-c3"]["rows"] == 1080 and V.VERDICT_RUNS["r1-c3"]["run_id"] == "RUN-C3"
+    # without the option the behaviour is unchanged: i1,i2 only, nothing registered
+    monkeypatch.setattr(V, "VERDICT_RUNS", {})
+    assert V.main(argv + ["--verdict", "i1,i2"]) == 0
+    assert seen["verdict_keys"] == ["i1", "i2"] and V.VERDICT_RUNS == {}

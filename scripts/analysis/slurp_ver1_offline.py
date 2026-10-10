@@ -40,6 +40,9 @@ output is printed or persisted -- ids are not persisted either; counts, rates, p
     PYTHONDONTWRITEBYTECODE=1 python -B scripts/analysis/slurp_ver1_offline.py --mode read --pool roll2 --label ROLL2-FOLD-A
     PYTHONDONTWRITEBYTECODE=1 python -B scripts/analysis/slurp_ver1_offline.py --mode read --run-id <RUN> --attempt <ATTEMPT> \\
         --split train --rows 1080 --verdict i1,i2 --label VER1A-FOLD-B
+    # a verdict column of another flight (the VER-1c Fold A c3 column), combinable with --verdict:
+    PYTHONDONTWRITEBYTECODE=1 python -B scripts/analysis/slurp_ver1_offline.py --mode read --run-id <POOL RUN> --attempt <ATTEMPT> \\
+        --split train --rows 1080 --n 3 --s 2 --thetas 0.2 --verdict-run <RUN>:<ATTEMPT>:r1-c3 --label VER1B-FOLD-A
 """
 
 from __future__ import annotations
@@ -49,6 +52,7 @@ import hashlib
 import importlib.util
 import json
 import math
+import re
 import sys
 from collections import Counter
 from datetime import datetime, timezone
@@ -610,13 +614,49 @@ def load_gold(lock, data_root: Path, split: str) -> dict:
     return DRV.load_gold(lock, data_root, split)
 
 
+#: Verdict sources registered from the command line (``--verdict-run``): key -> the SCR pool spec plus ``aggressive`` (the verdict arm).
+#: The built-in keys ``i1`` / ``i2`` (NX R1 iterations 1 / 2 on TRAIN Fold B) are never overwritten.
+VERDICT_RUNS: dict = {}
+VERDICT_RUN_TOKEN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+VERDICT_SCORER = "slurp-slu-official-train"
+
+
+def parse_verdict_run(value: str, *, rows: int) -> tuple:
+    """``RUN_ID:ATTEMPT:ARM[:KEY]`` -> ``(key, spec)``: a sealed same-flight node-template column (E1: arms ``lock``, ``aa`` and the
+    verdict ARM under ``runs/<run>/<attempt>/supply-variants/``) as a verdict source, on the pool's ``rows``. The key (default: the arm
+    id) names the source in the rule keys (``+gate[<key>,<theta>]``) and the report."""
+    parts = value.split(":")
+    if len(parts) not in (3, 4) or not all(VERDICT_RUN_TOKEN.match(part) for part in parts):
+        raise ComposerError(f"--verdict-run {value!r}: expected RUN_ID:ATTEMPT:ARM[:KEY], each made of letters, digits, '.', '_' or '-'")
+    run_id, attempt, arm = parts[:3]
+    key = parts[3] if len(parts) == 4 else arm
+    if arm in ("lock", "aa"):
+        raise ComposerError(f"--verdict-run {value!r}: the verdict arm must be a candidate template arm, not {arm!r}")
+    if key in R6.FOLD_B or key in VERDICT_RUNS:
+        raise ComposerError(f"--verdict-run {value!r}: the verdict key {key!r} is already taken; give a distinct 4th field")
+    return key, {"run_id": run_id, "attempt": attempt, "scorer": VERDICT_SCORER, "split": "train", "rows": rows,
+                 "arms": ("lock", "aa", arm), "aggressive": arm}
+
+
+def verdict_run_ids(key: str) -> tuple:
+    """(run id, attempt) of a verdict source: its N1 signature is read from that run's ``phases.json``."""
+    if key in VERDICT_RUNS:
+        return VERDICT_RUNS[key]["run_id"], VERDICT_RUNS[key]["attempt"]
+    if key in R6.FOLD_B:
+        return R6.FOLD_B[key]["run_id"], R6.FOLD_B[key]["attempt"]
+    raise ComposerError(f"verdict source {key!r}: choose one of {sorted(R6.FOLD_B)} or register one with --verdict-run")
+
+
 def load_verdict_source(data_root: Path, gold_all: dict, key: str, ids=None) -> dict:
-    """An NX R1 iteration (``i1`` | ``i2``): the lock and A/A twin columns (sealed v3 and registered v4g, verified against the
-    sealed per-sample fields by the SCR loader) and the c3 verdict flags (the arm answered no entity after v4g)."""
-    if key not in R6.FOLD_B:
-        raise ComposerError(f"verdict source {key!r}: choose one of {sorted(R6.FOLD_B)}")
-    agg = R6.FOLD_B[key]["aggressive"]
-    spec = SCR.POOLS[key]
+    """An NX R1 iteration (``i1`` | ``i2``) or a ``--verdict-run`` column: the lock and A/A twin columns (sealed v3 and registered
+    v4g, verified against the sealed per-sample fields by the SCR loader) and the c3 verdict flags (the arm answered no entity
+    after v4g)."""
+    if key in VERDICT_RUNS:
+        agg, spec = VERDICT_RUNS[key]["aggressive"], VERDICT_RUNS[key]
+    elif key in R6.FOLD_B:
+        agg, spec = R6.FOLD_B[key]["aggressive"], SCR.POOLS[key]
+    else:
+        raise ComposerError(f"verdict source {key!r}: choose one of {sorted(R6.FOLD_B)} or register one with --verdict-run")
     p = SCR.load_pool(key, spec, data_root, gold_all, ("lock", "aa", agg))
     if ids is not None and list(p["ids"]) != list(ids):
         raise ComposerError(f"verdict source {key}: its rows are not the pool's rows")
@@ -707,7 +747,7 @@ def read_pool(args, spec: dict, *, norm_names, ns, ss, forms, thetas, verdict_ke
     if verdicts:
         sig = signature or next(iter(verdicts))
         gold_train = load_gold(lock, data_root, "train")
-        run_id, attempt = (R6.FOLD_B[sig]["run_id"], R6.FOLD_B[sig]["attempt"])
+        run_id, attempt = verdict_run_ids(sig)
         n1, n1_meta = load_n1(data_root, run_id, attempt, gold_train, ids)
         n1_meta["signature_run"] = [run_id, attempt]
     boot = make_boot(ids, gold, cluster)
@@ -958,7 +998,12 @@ def main(argv=None) -> int:
     parser.add_argument("--s", default="2,3", help="comma list of support thresholds")
     parser.add_argument("--thetas", default=",".join(str(t) for t in THETAS))
     parser.add_argument("--verdict", default="", help="comma list of NX R1 iterations as verdict sources: i1,i2")
-    parser.add_argument("--signature", default=None, help="NX R1 iteration whose phases.json carries N1 (default: first verdict)")
+    parser.add_argument("--verdict-run", action="append", default=[], metavar="RUN_ID:ATTEMPT:ARM[:KEY]",
+                        help="a sealed same-flight Solver template column (arms lock, aa and ARM under runs/<RUN_ID>/<ATTEMPT>/"
+                             "supply-variants/) as a verdict source on the pool's rows, e.g. the VER-1c Fold A c3 column; repeatable; "
+                             "combines with --verdict (the built-in i1,i2 keep working)")
+    parser.add_argument("--signature", default=None,
+                        help="verdict source whose run's phases.json carries N1: i1 | i2 | a --verdict-run key (default: first verdict)")
     parser.add_argument("--cluster", default="utterance", choices=("utterance", "row"))
     parser.add_argument("--no-detail", action="store_true")
     parser.add_argument("--no-registered", action="store_true")
@@ -984,8 +1029,13 @@ def main(argv=None) -> int:
         ns = parse_csv(args.n, int) if args.n else [n_samples]
         ss = parse_csv(args.s, int)
         norm_names = [spec["base_norm"], "v4g"] if spec["base_norm"] != "v4g" else ["v4g"]
+        verdict_keys = parse_csv(args.verdict)
+        for value in args.verdict_run:
+            key, run_spec = parse_verdict_run(value, rows=spec["rows"])
+            VERDICT_RUNS[key] = run_spec
+            verdict_keys.append(key)
         report = read_pool(args, spec, norm_names=norm_names, ns=ns, ss=ss, forms=list(FORMS),
-                           thetas=parse_csv(args.thetas, float), verdict_keys=parse_csv(args.verdict),
+                           thetas=parse_csv(args.thetas, float), verdict_keys=verdict_keys,
                            signature=args.signature, cluster=args.cluster, detail=not args.no_detail,
                            registered=not args.no_registered, lock=lock, data_root=data_root,
                            pool_root=Path(args.pool_root) if args.pool_root else None)
