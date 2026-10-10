@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T15:29:40Z
+Last refreshed: 2026-10-10T16:23:37Z
+
+## Decisions 253-257 ruled; VER-1a registered (amending to five samples); the offline composer reads the filter over v4g (2026-10-10T16:23:37Z, Fable 5.1 root)
+
+Owner: 253 A (Perception-entity line closed), 254 amended (SCR closed at TF-0's ceiling; VER-1 replaces it), 255 local proposers, 256 = 253 A, 257 VER-1 approved and the inference-time-verification family with TRAIN-learned thresholds accepted as decision 252's training-free system-level learning; boundary confirmed: node-local at the Solver, deterministic verifier, no template / message-schema change (registry aafbdb17b, 2b2088fcf). VER-1a = the sample pool of the lock v2.2 Solver on TRAIN Fold B (greedy sample 0 via the new `decoding_overrides.greedy_first`, the rest at 0.7; plurality-support commit in flight; v4g offline), registered HELD and merged (77a7553b5; package `docs/readiness/2026-10-10-slurp-ver1a-samples-fold-b-v1/`, family `scripts/flights/ver/ver1a_*`), four rows countersigned (cdb9d5f5d), receipt minted. The offline composer `scripts/analysis/slurp_ver1_offline.py` (7dfdb4b4d) reproduced every control and read the support filter OVER v4g on the existing pools: resolved only at n = 5, s = 2 (ROLL-2 Fold A +1.03 [+0.47, +1.70]; ROLL-3 DEV +0.76 [+0.08, +1.45]); n = 3 unresolved; the gain is empty-gold false-fill suppression, the same mass the verdict x N1 gate acts on, so the VER-1 delivered estimate over v4g is about +1.0 pp pending the on-row combination. VER-1a is therefore being amended to 5 samples (ceiling 6, 6,480 calls, ~2.5 GPU-h; rows amended in place, receipt re-minted) before any contact; it flips and flies after the successor-2 test read (test flight at ~2,830 / 6,020 requests at 16:17Z, ETA ~18:50Z).
+
+Superseded stamp: 2026-10-10T15:29:40Z
 
 ## TF-0 routing read: no transferable gain; VER-1 verification layer proposed (decision 257) (2026-10-10T15:29:40Z, Fable 5.1 root)
 
