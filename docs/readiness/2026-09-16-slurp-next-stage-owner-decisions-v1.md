@@ -941,3 +941,10 @@ additive here) but its measured size (~+1.0 pp over v4g) is under decision 192's
   component first and confirm on Fold A with a single delivering cell + in-chain A/A (~1 day engineering, ~2 GPU-h).
   Recommended: A (the record's only additive, replicated SLU mechanism; the cost stays at the old graph's level and the
   Fold A read settles stability before any runtime work).
+
+Decision 258 option A, confirmation criterion fixed BEFORE any Fold A contact (coordinator, 2026-10-10; VER-1b / VER-1c
+registered HELD, merge cd9e48431): with the rule fixed at n = 3, s = 2, c3 verdict x N1 >= 0.2 (plus v4g), the Fold A
+read is CONFIRMED iff the pooled official SLU-F1 delta of the rule over the VER-1c lock column (and over the pool's own
+greedy sample) has CI95 lower bound > 0 and a point >= 0.67 pp (the offline floor), with intent moved by at most 7 rows
+(decision 247 "stable"); disclosed: the c3 template was authored from Fold A aggregate tables (the rule's thresholds
+were tuned on Fold B, named as the tuning roster).

@@ -109,7 +109,10 @@ def test_the_fragment_is_the_r5_composed_arm_plus_exactly_the_registered_diff():
                    "native_episode.consumption_module", "native_contact_fit", "prepared_phase_supply", "what_this_is")
         assert moved and all(any(k == p or k.startswith(p + ".") for p in allowed) for k in moved), moved
         assert document["policy"] == vf.PROGRAM and "consumption_module" not in document["native_episode"]
-        assert "deliver_normaliser" not in document["native_episode"] and "prepared_phase_supply" not in document
+        # the flip mints the cell's own prepared_phase_supply (ready cells carry it); held cells carry none
+        assert "deliver_normaliser" not in document["native_episode"]
+        if document["cells"][0]["readiness"]["state"] == "held" if "cells" in document else False:
+            assert "prepared_phase_supply" not in document
         assert document["native_episode"]["roles"]["solver"]["samples"] == vf.SAMPLES
         assert document["native_episode"]["roles"]["solver"]["decoding_overrides"] == vf.SOLVER_OVERRIDES
         assert document["native_episode"]["roles"]["solver"]["commit"] == vf.SOLVER_COMMIT
