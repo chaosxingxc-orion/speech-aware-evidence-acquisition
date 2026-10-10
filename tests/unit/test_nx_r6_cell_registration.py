@@ -502,7 +502,8 @@ def test_the_cell_is_held_and_the_package_is_complete():
         assert decision[0]["relpath"] == nf.DECISION_RELPATH and decision[0]["expected_decision_id"] == nf.DECISION_ID
         assert own_supply[0]["relpath"] == f"prepared/{nf.names(kind)['run_id']}/phase-supply-v1.json"   # E16: its own
         if _all_draft():
-            assert state == "held"
+            # held at registration (2026-10-10); flipped to ready for the R6-P1 chain (flight commits 58c546b54, 1f04ce42d)
+            assert state in ("held", "ready")
             # the receipt and the supply are minted at the flip: the registered pins are the zero placeholder until then
             assert decision[0]["sha256"] == "0" * 64 and own_supply[0]["sha256"] == "0" * 64
             assert agreement[0]["sha256"] != "0" * 64
