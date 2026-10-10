@@ -774,3 +774,29 @@ industry SOTA baseline level can be observed on the test set may the baseline be
 Allowance v3 signed bytes: `docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json` at commit
 951de831b, sha256 `4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d` (the successor-2 fragment is
 re-pinned to these bytes before the flip).
+
+## R6-P1 read: NOT NOMINATED; decision 253 PROPOSED by the coordinator (Fable 5.1), 2026-10-10
+
+R6-P1 (the Perception entity template column, TRAIN Fold B, 1,080 rows; owner decisions 245-248) sealed 13:37:28Z
+and was read the same afternoon (results note in preparation: `docs/results/2026-10-10-slurp-nx-r6-perception-fold-b-column-read.md`).
+Official pooled SLU-F1 per arm vs lock (row-clustered bootstrap): aa twin +0.72 [+0.12, +1.37]; p1 +0.51
+[-1.07, +2.08]; p2 -0.70 [-2.47, +1.13]; p3 -1.41 [-3.13, +0.35] -> no arm clears the nomination rule (CI-LB > 0 and
+above the twin). Node-local: p1's presence tag parses 99.8 % and is an ADDITIONAL message element (cross-fitted AUC
+increment +0.0215 [+0.0096, +0.0333] over N1 + intent prior, also over the lock's own verdict) but its node quality
+(E=none precision 0.57 / recall 0.60, AUC 0.671) sits far under the acceptance bar (0.75 / 0.80) and under the
+Solver's own verdict (0.74-0.76 / 0.81-0.83); the deterministic gate converts it to +0.44 [-0.29, +1.17] (declared
+rule) or at best +0.63 [+0.07, +1.17] (cross-fit rule) on the v4g base, and the element's ceiling (perfect gate
++1.1..+1.7) cannot clear the 1.5 pp cascade bar in practice. p2 / p3 (heard mentions inside the 128-character
+distinction) are FORM failures (rank-1 parse 13 % / 20 %; mention containment 7 % / 12 %) that harm the locked
+consumer (empty-gold false fill +6.4 / +3.3 pp): the channel, not the information, is binding (decision 248's
+trigger condition in evidence). Verdict: **NOT NOMINATED** (no harm by the lock column; the presence element is
+recorded as additional-but-not-convertible).
+
+- **253** (PROPOSED) The Perception-entity line after R6-P1: (A) CLOSE it now (one round; the ceiling argument makes a
+  second round unable to reach the cascade bar; the presence tag is kept as a measured feature for a later
+  deterministic consumer and the heard-mention channel is recorded as contract-bound); (B) one more round of
+  precision-oriented presence-only variants (p1 with a hedge, list-majority voting; ~4.1 GPU-h; ceiling unchanged);
+  (C) engineer the v2 note contract now (decision 248 trigger: gain present, channel binding) as a new Perception base
+  with its own A/A (~1-2 days engineering + ~4 GPU-h per column flight). Recommended: A, with the GPU going to the
+  TF-RL line (decision 252 mode 2) whose design proposal follows; C stays available if the TF-RL line needs the
+  Perception node to emit structured evidence.
