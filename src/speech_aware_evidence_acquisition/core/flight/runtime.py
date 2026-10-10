@@ -3576,9 +3576,9 @@ class FlightRuntime:
 
         group = None if native_config is None else native_config.supply_variant_group
         node_label = "roles.solver.template_variants"
-        phase = None if native_config is None else native_config.supply_variant_phase_id
         if group is not None and group.is_template:
             entries = [(arm.arm_id, arm.instruction_template) for arm in group.arms]
+            phase = native_config.supply_variant_phase_id
         else:
             # NX programme E1, Perception node (2026-10-10): the same builders
             # for a template group sitting at the Perception node, which the

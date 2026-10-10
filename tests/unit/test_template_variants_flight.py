@@ -122,7 +122,9 @@ def test_an_empty_template_is_refused_by_the_renderer(tmp_path):
 
 def test_a_config_without_a_template_group_binds_nothing(tmp_path):
     fake_self, _config, binding, _ = _setup(tmp_path)
-    assert _call(fake_self, SimpleNamespace(supply_variant_group=None), binding) is None
+    assert _call(
+        fake_self, SimpleNamespace(supply_variant_group=None, perception_branch_group=None), binding,
+    ) is None
     assert _call(fake_self, None, binding) is None
     assert fake_self._phase_material_receipt is None
 
