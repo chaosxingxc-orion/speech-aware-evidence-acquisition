@@ -20,7 +20,7 @@
   },
   "closure_status": "SLURP-TEST-CLOSURE-10068-V1 (split identity 377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b) receives NO allowance receipt now and stays pending-owner until the Stage-3 closure read (decision 151). It is named here only as the partition sibling whose committed item list proves this roster's exemption from the parent/sibling intersection; nothing in this file may be read as authorising a contact with it.",
   "date": "2026-10-10",
-  "dated_owner_decision": "Owner decision 241, 2026-10-10 UTC (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, row 241; the second test-sample allowance was agreed in principle as decision 233). The owner's words, in English: \"As you suggest.\" Recorded ruling, quoted from row 241: \"the second test-sample allowance (233) is drafted once R5 reads NOMINATED or NEUTRAL; same terms as v2; the composed arm flies once on the signed sample against the sealed PLAN and COMP-1b columns.\" THIS FILE IS THE DRAFT: the owner has not signed it, and nothing here authorises a contact until the owner's confirmation in conversation is recorded in the signature block and the status is set to authorised.",
+  "dated_owner_decision": "Owner decision 241, 2026-10-10 UTC (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, row 241; the second test-sample allowance was agreed in principle as decision 233). The owner's words, in English: \"As you suggest.\" Recorded ruling, quoted from row 241: \"the second test-sample allowance (233) is drafted once R5 reads NOMINATED or NEUTRAL; same terms as v2; the composed arm flies once on the signed sample against the sealed PLAN and COMP-1b columns.\" SIGNED 2026-10-10 by the owner's confirmation in conversation (decision 251 option A: sign now and fly the HELD successor-2 composed cell in the first GPU gap after R6-P1; decision 250 option A: the read has no in-chain replicate, the declared flight offset is the DEV-measured 0.73 pp SLU / 0.20 intent; decision 249: CURRENT_LOCK moves to v2.2). The owner's words, verbatim in Chinese: \"决策249：同意；250：A；251：A，许可v3签字；252：我认为这里面分为两个模式，系统优于单次模型调用证明工程基座可行，同时training free RL证明通过系统级强化学习后能够看到明确的收益，并且优化和改进这个training free RL算法在多模态知识构建和消费上的使用方式，同时在测试集上能够观测到对比业内SOTA的基线水平才可以锁定基线。\" -- English translation by the coordinator: \"Decision 249: agreed; 250: A; 251: A, allowance v3 signed; 252: I think this splits into two modes: the system beating a single model call proves the engineering base is viable, and training-free RL proves that clear gains appear after system-level reinforcement learning, with the use of that training-free RL algorithm in multimodal knowledge construction and consumption optimised and improved; and only when a comparison against the industry SOTA baseline level can be observed on the test set may the baseline be locked.\"",
   "derived_from": {
     "partition_proof_receipt": {
       "arithmetic": {
@@ -66,7 +66,7 @@
   "first_contact_gate": {
     "basis": "R5 read NEUTRAL on DEV-2000-ADDED 2026-10-10: efficiency result, no harm, intent gain replicated a third time",
     "r5_read": "Owner decision 240 flew R5 (the composed arm, COMP-1b on lock v2.2 with v4g, review-off) on DEV-2000-ADDED. Composed minus the sealed A2 arm: official SLU-F1 +1.24 pp CI95 [-0.29, +2.80], intent +0.50 pp CI95 [-0.51, +1.52]; flight offset 0.73 pp SLU / 0.20 intent; verdict NEUTRAL (an efficiency result at about half the contacts; no benefit is claimed).",
-    "status": "to be reported by the coordinator to the owner in conversation before the owner signs; the report is named (date, arm) in the root countersignature of the first consumed exposure row"
+    "status": "reported: the coordinator reported the R5 read (NEUTRAL, 2026-10-10, docs/results/2026-10-10-slurp-nx-r5-composed-dev2000-added-read.md) to the owner in conversation before this signature; the report is named (date, arm) in the root countersignature of the first consumed exposure row"
   },
   "milestone_rule": "This allowance authorizes only the fresh NX R5 composed arm, flown ONCE on the unchanged 3010-row sample and read cross-flight against the SEALED successor-1 PLAN and COMP-1b columns. Keep original scientific settings and registered thresholds. Never use milestone outcomes for tuning. One complete official score for the sealed arm; read only after the arm finalizes with one score. No reseal, retry or rescore of the new arm, and no re-flight, rescore or re-read of the sealed successor-1 columns.",
   "not_authorized": [
@@ -109,12 +109,19 @@
   },
   "schema": "saea-owner-split-allowance-v1",
   "signature": {
-    "coordinator": null,
-    "decision": 241,
+    "coordinator": "Claude Fable 5.1 (root coordinator), recording the owner's conversational confirmation",
+    "decision": 251,
+    "decisions_in_the_same_message": [
+      249,
+      250,
+      251,
+      252
+    ],
     "form": "explicit confirmation in conversation",
-    "owner_words_english": null,
-    "signed_at": null,
-    "signed_by": null
+    "owner_words_chinese": "决策249：同意；250：A；251：A，许可v3签字；252：我认为这里面分为两个模式，系统优于单次模型调用证明工程基座可行，同时training free RL证明通过系统级强化学习后能够看到明确的收益，并且优化和改进这个training free RL算法在多模态知识构建和消费上的使用方式，同时在测试集上能够观测到对比业内SOTA的基线水平才可以锁定基线。",
+    "owner_words_english": "Decision 249: agreed; 250: A; 251: A, allowance v3 signed; 252: I think this splits into two modes: the system beating a single model call proves the engineering base is viable, and training-free RL proves that clear gains appear after system-level reinforcement learning, with the use of that training-free RL algorithm in multimodal knowledge construction and consumption optimised and improved; and only when a comparison against the industry SOTA baseline level can be observed on the test set may the baseline be locked.",
+    "signed_at": "2026-10-10T12:30:00Z",
+    "signed_by": "owner (conversational confirmation; identity as in the superseded allowances)"
   },
   "split": {
     "audio_seconds_total": 8206.436875,
@@ -137,12 +144,13 @@
     "split_name": "TEST-SAMPLE",
     "utterances": 682
   },
-  "status": "draft-awaiting-owner-signature",
+  "status": "authorised",
   "study": "speech-aware-evidence-acquisition",
   "supersedes": {
     "path": "docs/receipts/owner/2026-10-01-slurp-test-sample-successor1-allowance-v1.json",
     "scope": "New successor run identities only; old bytes and their historical permissions are preserved, not reactivated.",
     "sha256": "9073ac919264a28a81c9d87a0d7e142d2a911cda2df8c07f57a67c745a3fb1c7"
   },
-  "venue": "The sample's milestone reads run in THIS study repository, not in a papers/<slug> carrier, for the reason the owner's decisions give in substance: decision 141 permits the test sample as a development-side COMPARISON instrument for milestone checks during Stage-3 iteration, and decision 151 signs it now so that a dev-admitted composed arm can be checked without waiting for a paper repository; a milestone read is not the final read, makes no publication-grade claim, and its numbers are development evidence under owner decision 28 (dev numbers are not test claims) exactly as every DEV roster read is. The final read stays on the CLOSURE roster, whose venue is still the open question of decision 108 (protocol section 6; Remedy A, promotion to an admitted papers/<slug> repository, remains the recommendation) and which this receipt does not decide. Stated plainly: the owner did not dictate a venue sentence in so many words; this paragraph is the coordinator's statement of the reason the two decisions carry, written so that check 9 of contracts.plan.require_owner_split_allowance has a reason to read rather than a blank."
+  "venue": "The sample's milestone reads run in THIS study repository, not in a papers/<slug> carrier, for the reason the owner's decisions give in substance: decision 141 permits the test sample as a development-side COMPARISON instrument for milestone checks during Stage-3 iteration, and decision 151 signs it now so that a dev-admitted composed arm can be checked without waiting for a paper repository; a milestone read is not the final read, makes no publication-grade claim, and its numbers are development evidence under owner decision 28 (dev numbers are not test claims) exactly as every DEV roster read is. The final read stays on the CLOSURE roster, whose venue is still the open question of decision 108 (protocol section 6; Remedy A, promotion to an admitted papers/<slug> repository, remains the recommendation) and which this receipt does not decide. Stated plainly: the owner did not dictate a venue sentence in so many words; this paragraph is the coordinator's statement of the reason the two decisions carry, written so that check 9 of contracts.plan.require_owner_split_allowance has a reason to read rather than a blank.",
+  "status_meaning": "AUTHORISED for the SAMPLE roster only, on the owner's explicit confirmation in conversation of 2026-10-10 (decision 251 option A). contracts.plan.require_owner_split_allowance accepts a 'final-report' ExecutionPlan against this file when the plan pins these exact bytes, carries execution_profile 'bounded-discovery-probe', declares carrier 'slurp' and split identity 0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9, and names one of the permitted_run_ids. Authorisation is not a contact: every contact still needs its pre-registered exposure row, its root countersignature, its decision receipt and the one-attempt terms (no smoke, no recovery, no re-read, no selection)."
 }

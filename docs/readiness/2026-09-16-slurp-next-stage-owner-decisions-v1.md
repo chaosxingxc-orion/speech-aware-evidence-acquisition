@@ -738,3 +738,35 @@ cell is registered on it.
   this order: Audio2Tool ALL-OFF A/A (model-free proof already on file; ~4 GPU-h), Earnings-21 ALL-OFF A/A (~4 GPU-h),
   then the module-ON reads per carrier, so the engineering base is shown to run end-to-end on Audio2Tool / E21 / E22
   (owner goal, second clause) while the SLURP R6/R7/R8 rounds continue to hold GPU priority. Recommended: yes.
+
+## Decisions 249-252 ruled by the owner, 2026-10-10 (verbatim Chinese, English translation, consequences)
+
+Owner: 「决策249：同意；250：A；251：A，许可v3签字；252：我认为这里面分为两个模式，系统优于单次模型调用证明工程基座可行，同时
+training free RL证明通过系统级强化学习后能够看到明确的收益，并且优化和改进这个training free RL算法在多模态知识构建和消费上的
+使用方式，同时在测试集上能够观测到对比业内SOTA的基线水平才可以锁定基线。」
+
+English: "Decision 249: agreed; 250: A; 251: A, allowance v3 signed; 252: I think this splits into two modes: the
+system beating a single model call proves the engineering base is viable, and training-free RL proves that clear
+gains appear after system-level reinforcement learning, with the use of that training-free RL algorithm in
+multimodal knowledge construction and consumption optimised and improved; and only when a comparison against the
+industry SOTA baseline level can be observed on the test set may the baseline be locked."
+
+- **249** RULED: `CURRENT_LOCK` of the consumption module moves from v2.1 to v2.2 (`rails/adapters/slurp_module_hooks.py`;
+  identity-bound change, so pinned ready cells re-pin at their next flip; R6-P1 flies from its flight worktree,
+  unaffected).
+- **250** RULED A: the successor-2 test read carries the documented exception (design `cross-flight-no-replicate`,
+  declared DEV offset 0.73 pp SLU / 0.20 intent, no-harm claim, margin 2.5, development evidence under decision 28);
+  no in-chain replicate on the sample.
+- **251** RULED A and the allowance v3 SIGNED by this confirmation:
+  `docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json` status `authorised`, the owner's words
+  recorded verbatim in its signature block; the signing commit records its sha256; the successor-2 fragment is re-pinned
+  to those bytes; the HELD cell flies once in the first GPU gap after R6-P1 (countersign rows, mint, flip, gate, chain).
+- **252** RULED, replacing the coordinator's proposal: the "system-level lock" that releases the carriers (decision 242)
+  is NOT v2.2's test confirmation alone. It has two modes that must both hold, plus a test observation: (1) the system
+  beats a single model call (the engineering base is viable); (2) training-free RL shows clear gains from system-level
+  reinforcement learning, and the TF-RL algorithm's use in multimodal knowledge construction and consumption has been
+  optimised and improved; and (3) the comparison against the industry SOTA baseline level is observed on the test set.
+  Consequences: the carriers stay held under 242 until the lock so defined; the programme adds an explicit TF-RL line
+  after the R6/R7 communication-template rounds (design to be proposed: the learning algorithm over node templates and
+  knowledge supply with aggregate rewards, local proposer, paid API 0), and every milestone read reports the published
+  SOTA level beside the repo numbers (study CLAUDE.md "gates relative to the published ceiling").
