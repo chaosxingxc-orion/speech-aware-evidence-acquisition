@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T15:12:59Z
+Last refreshed: 2026-10-10T15:29:40Z
+
+## TF-0 routing read: no transferable gain; VER-1 verification layer proposed (decision 257) (2026-10-10T15:29:40Z, Fable 5.1 root)
+
+TF-0 (`scripts/analysis/slurp_scr_offline_learner.py`, merge 46496fc52; `analysis/SAEA-SLURP-SCR-TF0-V1/`, pinned table `prepared/SAEA-SLURP-SCR-ROUTING-TABLE-V1/`, zero contacts): a cross-fitted per-row routing policy over the 19 sealed counterfactual Solver columns on Fold B (R1 i1/i2 arms, R6-P1 level-2 answers, the empty action) from the pre-Solver signature. Routed vs lock +0.42 [-0.35, +1.20] (501 rows routed), vs twin -0.11; leave-one-flight-out -0.05 / +0.10; the oracle (+11.36) is decoding-noise inflated (lock-vs-twin noise alone +1.28). The decision-254 rule is not met: the SCR line is closed over the current action pool. Record now consistent: ~25 learned-policy cells (text deltas, GEPA, system text, K16/K4 templates, routing) are within noise; the only CI-LB > 0 mechanisms at n >= 1,000 are statistics-learned rules (v4g) and verification/selection over EXTRA core samples (support filter +1.40 offline / +0.84 at 2-of-3; the c3 verdict gate +0.75 / +0.98). Proposed 257: VER-1 on lock v2.2 = 3 Solver samples + support filter 2-of-3 + verdict x N1 >= 0.2 gate at delivery (5 contacts/row; review-off freed 2), predicted +1.5..+2.3 if additive, same-flight column on Fold B (~6 GPU-h) -> Fold A -> DEV (lock v2.3) -> test; the coordinator asks the owner whether this inference-time-verification family with TRAIN-learned thresholds counts as decision 252's training-free system-level learning. Test-sample successor-2: 1,454 / 6,020 requests at 15:28Z (~21/min), ETA ~19:05Z.
+
+Superseded stamp: 2026-10-10T15:12:59Z
 
 ## R6-P1 read: NOT NOMINATED; decisions 253-256 proposed; the TF-RL line (sealed-credit routing) designed; TF-0 in build (2026-10-10T15:12:59Z, Fable 5.1 root)
 
