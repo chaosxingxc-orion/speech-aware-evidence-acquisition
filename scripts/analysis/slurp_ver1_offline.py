@@ -40,6 +40,9 @@ output is printed or persisted -- ids are not persisted either; counts, rates, p
     PYTHONDONTWRITEBYTECODE=1 python -B scripts/analysis/slurp_ver1_offline.py --mode read --pool roll2 --label ROLL2-FOLD-A
     PYTHONDONTWRITEBYTECODE=1 python -B scripts/analysis/slurp_ver1_offline.py --mode read --run-id <RUN> --attempt <ATTEMPT> \\
         --split train --rows 1080 --verdict i1,i2 --label VER1A-FOLD-B
+    # a verdict column of another flight (the VER-1c Fold A c3 column), combinable with --verdict:
+    PYTHONDONTWRITEBYTECODE=1 python -B scripts/analysis/slurp_ver1_offline.py --mode read --run-id <POOL RUN> --attempt <ATTEMPT> \\
+        --split train --rows 1080 --n 3 --s 2 --thetas 0.2 --verdict-run <RUN>:<ATTEMPT>:r1-c3 --label VER1B-FOLD-A
 """
 
 from __future__ import annotations
