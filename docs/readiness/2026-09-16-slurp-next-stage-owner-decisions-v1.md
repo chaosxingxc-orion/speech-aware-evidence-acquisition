@@ -852,3 +852,25 @@ per row) without loss; those freed contacts can buy verification instead of the 
   (registered in `core.base.STAGE3_ALGORITHMS`) with its thresholds (s, N1 cut) learned from TRAIN statistics; the
   coordinator asks the owner to confirm that this counts as the training-free system-level learning the lock
   requires, since reinforcement-style policy learning over text has now failed on every form tried.
+
+## Decisions 253-257 ruled by the owner, 2026-10-10
+
+Owner, verbatim: 「决策253：A；254：按你建议改为VER-1；255-257：同意。」 ("253: A; 254: as you recommend, replaced by
+VER-1; 255-257: agreed.")
+
+- **253** RULED A: the Perception-entity presence line is CLOSED after one round; the p1 presence tag and the K6p key
+  remain available as features / actions; the heard-mention channel is recorded as contract-bound (v2 contract only
+  on a future trigger).
+- **254** RULED as amended: the sealed-credit routing line is closed at its measured ceiling (TF-0: +0.42 [-0.35,
+  +1.20], transfer 0); VER-1 takes its place as the TF-RL line's next round.
+- **255** RULED: proposers are local only (the frozen core's text-only seam or a hand author, labelled); paid API 0.
+- **256** RULED: = 253 A.
+- **257** RULED: VER-1 (the verification layer on lock v2.2: Solver samples + support filter + the c3 presence verdict
+  x N1 gate at delivery) is the next GPU round after the successor-2 test read; the owner accepts the
+  inference-time-verification family with TRAIN-learned thresholds as the training-free system-level learning of
+  decision 252 mode 2. Execution plan (coordinator): VER-1a = a 3-sample ROLL-form pool of the lock v2.2 Solver on
+  TRAIN Fold B (greedy first sample = today's delivery; ~4,320 contacts, ~1.3-2 GPU-h), read OFFLINE together with
+  the existing R1 i1/i2 c3 verdict columns on the same rows (support filter s in {2, 3} x verdict x N1 gate x v4g,
+  cross-fitted, 0.67 pp floor) -> VER-1b Fold A confirmation pool (+ a c3 column there) with the rule FIXED ->
+  runtime delivery component `verification-delivery-v1` (support filter over samples + verdict contact) -> DEV
+  composed read (lock v2.3 = v2.2 + VER-1) -> test sample.
