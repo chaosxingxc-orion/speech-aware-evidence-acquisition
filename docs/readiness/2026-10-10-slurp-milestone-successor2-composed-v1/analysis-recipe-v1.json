@@ -1,0 +1,69 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-milestone-successor2-composed-generation-v1",
+      "fit_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-FIT-V1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "comparator": {
+      "attempt_id": "attempt-slurp-milestone-successor1-comp1b-generation-v1",
+      "role": "the SEALED successor-1 COMP-1b column: the cross-flight primary comparator the registered claim is read against (sealed 2026-10-01; never re-flown)",
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1"
+    },
+    "plan_comparator": {
+      "attempt_id": "attempt-slurp-milestone-successor1-plan-generation-v1",
+      "role": "the SEALED successor-1 PLAN column (the direct-call-era locked plan); context",
+      "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-PLAN-V1"
+    }
+  },
+  "boundary": "A milestone read on the signed test sample. No utterance text, transcript, gold label string or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "declared_flight_offset": {
+    "intent_pp": 0.2,
+    "slu_pp": 0.7274,
+    "source": "analysis/SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-PAIRED-ANALYSIS-V1/v4g-contrast/report.json decision_rule_arithmetic.delivered (offset_abs_slu_pp 0.7274, offset_abs_intent_pp 0.2): replicate minus the sealed A2 in-chain A/A, DEV-2000-ADDED, n 1,000"
+  },
+  "no_in_chain_replicate": "By design: one new generation run id only. The DEV flight offset is declared, not measured (declared_flight_offset).",
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-PAIRED-ANALYSIS-V1"
+  },
+  "read_driver": {
+    "command": "bash scripts/flights/nx/milestone_successor2_read.sh",
+    "passes": [
+      "vs-comparator (composed minus the sealed successor-1 COMP-1b column; cross-flight; THE REGISTERED CLAIM, read beyond the declared offset)",
+      "vs-plan (composed minus the sealed successor-1 PLAN column; cross-flight; context)"
+    ],
+    "refusal": "the driver refuses before any score is opened unless this READ row is root countersigned and all three sealed run manifests exist",
+    "scorer": "slurp-slu-official-test",
+    "strata_source": "scorer: post-stratification by gold intent INSIDE the official-scoring step (--strata-source scorer), aggregates only; see registered-facts-v1.json post_stratification_read"
+  },
+  "read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-PAIRED-ANALYSIS-V1",
+  "recipe_id": "slurp-milestone-successor2-composed-paired-analysis-v1",
+  "registered_at_utc": "2026-10-10T12:00:00Z",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "metrics": [
+      "scenario_action_exact",
+      "slu_f1_f1"
+    ],
+    "seed": 20260915,
+    "unit": "prompt cluster (paired)"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "1. Refuse unless the composed manifest is COMPLETE at 3,010 rows with this registration's composed config hash (as re-pinned at the flip), sealed, with one successful complete official slurp-slu-official-test score, the two sealed successor-1 manifests are present, and the READ row is root countersigned.",
+    "2. THE DELIVERY CHECK (gold-free): the composed cell's flown first-phase boundary selections equal its own prepared supply. A mismatch is an engineering defect, is reported, and consumes the milestone (no re-fly).",
+    "3. THE STRUCTURAL CHECK (gold-free): exactly 2 contacts per row (perception, solver), no Reviewer or Planner row, every row delivered through saea-deliver-normalise-v4g.",
+    "4. Primary: official pooled SLU-F1 post-stratified, composed minus the sealed COMP-1b column, paired per recording, prompt-clustered, 10,000 draws, seed 20260915. Guard: intent accuracy. Equal-stratum beside it. Apply the protocol's rule against the declared offset 0.7274 / 0.2 and the harm margin 2.5.",
+    "5. Context: composed minus the sealed PLAN column; per-intent and per-scenario tables in both weightings; recording-channel split; entity TP/FP/FN with the zero-gold-row emission count; the cost table.",
+    "6. Write the read under its own id; every number is a MILESTONE development number (owner decisions 28 and 151), never a test claim."
+  ],
+  "title": "Test-sample SUCCESSOR2-COMPOSED -- the NX R5 composed arm against the sealed successor-1 COMP-1b and PLAN columns on SLURP-TEST-SAMPLE-3010-V1",
+  "weightings": {
+    "equal_stratum": "1/58 over the intents present in the sample (reported beside the primary weighting)",
+    "natural_mixture": "POST-STRATIFIED (PRIMARY weighting): per-intent values weighted by the full-test per-intent shares in population-counts-v1.json (roster receipt docs/receipts/rosters/slurp-test-sample-3010-v1.json); the raw roster mean is NOT the natural-mixture number",
+    "post_stratification": "58 strata carried of 59 counted; computed and bootstrapped inside the scorer process exactly as in successor 1 (registered-facts-v1.json post_stratification_read); aggregates only"
+  }
+}
