@@ -11,7 +11,7 @@
     },
     "derive_script": {
       "path": "scripts/flights/nx/derive_slurp_nx_r6_cells.py",
-      "sha256": "d6820cc20de8abc42895cc77919e3e8020d51c167be4222d51994692f9c583a4"
+      "sha256": "8cc48aa575a269f43d2292cb180a20fffe71cbfd97ff68023521762719481218"
     },
     "design_note": {
       "path": "docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md",
@@ -27,7 +27,7 @@
     },
     "owner_decisions": {
       "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
-      "sha256": "570ff539b30c2e13813de024fc21b5ebba45fb71027d3e153fed22d6e3f847cf"
+      "sha256": "9c64b0f6f90d9da856e1dc9957195d622559b6d8071989d9c885c736387777fe"
     },
     "preregistration": {
       "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1-preregistration.md",
@@ -39,7 +39,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "1cea6e45852f7d54ddc3a901dd58a946812ce84af141546a1d7018c4d56542b5"
+      "sha256": "454b64c70543f5abdebc08bc02b8a5519b6748c9a39d94cadd32ea9aeaf72828"
     },
     "readiness_readme": {
       "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/README.md",
@@ -47,7 +47,7 @@
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/registered-facts-v1.json",
-      "sha256": "ebc578444cd5ec1214e31cafd2b9f77eef8b89f6e4ed272a675478a097467d9f"
+      "sha256": "a104d5a9c86382bcfb2f94678b9d256fbf20bcda6303bc1be6363a55fb02af83"
     },
     "registration_base_commit": "fc0c0fc14a3b080e04752618188d798628471a76",
     "tag_grammar": {
@@ -73,11 +73,11 @@
       "ceilings_are_not_targets": true,
       "encoder_calls": 0,
       "fit_endpoint_calls_cap": 160,
-      "generation_calls_cap": 40,
+      "generation_calls_cap": 60,
       "gpu_hours_fit_inclusive": 1.0,
-      "native_task_contract_calls_cap": 40,
+      "native_task_contract_calls_cap": 60,
       "official_complete_scoring_jobs": 0,
-      "repeated_speech_audio_seconds_cap": 102
+      "repeated_speech_audio_seconds_cap": 153
     }
   },
   "cell_kind": "Stage-3 same-flight NODE-TEMPLATE column cell at the PERCEPTION node (NX instrument E1, level-2 Solver columns, label none), claim ceiling 'nominated', a MEASUREMENT cell (claims_benefit false). One arm on TRAIN Fold B 1,080 with five Perception template arms (three candidates, aa twin, lock delivering), and a four-row form smoke.",
@@ -117,8 +117,8 @@
       "protocol": "894b63c4f10cf66814f978498cef7ef0422fc84307e09e6893f202430bbac870"
     },
     "smoke": {
-      "composed_config": "d5ba50fea7920efb6606de6f1a7778a2bca1ec13d4c872bef51d3d16cda12f78",
-      "protocol": "07470e7a31f08290a9d9e9f99f5d3a1017ecc83f6c280ced8c0fbfb940d5e8fc"
+      "composed_config": "9968e134d4f0076ee351ccb99f384437337e438e5053f94ad7b5403c08e990d7",
+      "protocol": "01d08d267d37891671988b29da221713d694f5395e2480f433c958210213ebe7"
     }
   },
   "schema": "saea-campaign-decision-v1",

@@ -65,7 +65,9 @@ def _all_draft() -> bool:
 
     rows = {r.get("run/experiment id"): r for r in _ledger_rows()}
     ids = [nf.ARM["run_id"], nf.ARM["fit_run_id"], nf.SMOKE["run_id"], nf.SMOKE["fit_run_id"]]
-    return all("DRAFT" in rows[i].get("notes", "") for i in ids)
+    # the DRAFT marker of an unsigned row is "REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending)"; a countersigned row
+    # still says "root countersigns the five DRAFT rows" in its READINESS HELD sentence, so a bare "DRAFT" test is not enough
+    return all("(DRAFT, root countersignature pending)" in rows[i].get("notes", "") for i in ids)
 
 
 # --- identity ------------------------------------------------------------------------------------------------------------
@@ -81,7 +83,9 @@ def test_family_identities_are_frozen():
     assert nf.SMOKE["run_id"] == nf.ARM["run_id"].replace("-V1", "-SMOKE-4-V1")
     assert nf.SMOKE["fit_run_id"] == nf.ARM["run_id"].replace("-V1", "-SMOKE-4-FIT-V1")
     assert nf.SMOKE["experiment"] == nf.ARM["experiment"].replace("-v1", "-smoke-4-v1")
-    assert nf.SMOKE["attempt_id"].endswith("-smoke-4-generation-v1") and nf.SMOKE["fit_attempt_id"].endswith("-smoke-4-fit-v1")
+    # the smoke is the single recovery re-registration (rec1); the arm keeps its first-attempt ids
+    assert nf.SMOKE["attempt_id"].endswith("-smoke-4-generation-rec1-v1") and nf.SMOKE["fit_attempt_id"].endswith("-smoke-4-fit-rec1-v1")
+    assert nf.ARM["fit_attempt_id"] == "attempt-slurp-native-stage3-nx-r6-perception-fold-b-fit-v1"
     assert nf.ARM_ORDER == ("p1", "p2", "p3", "aa", "lock") and nf.ARM_ORDER[-2:] == (nf.TWIN, nf.DELIVERING)
     assert nf.CEILING == 10 == nf.BASE_CONTACTS + 2 * (len(nf.ARM_ORDER) - 1) and nf.PROGRAM == "phase-native-module-v1-c10"
     assert nf.PACKAGE == "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1"
@@ -204,16 +208,22 @@ def test_budgets_are_the_ceiling_arithmetic_and_the_fit_estimate_holds():
     for document, kind, rows in ((arm, "arm", 1080), (smoke, "smoke", 4)):
         fam = document["family_budget"]
         audio = sum(float(i["audio_seconds"]) for i in _roster(kind)["items"])
-        assert fam["generation_calls_cap"] == rows * nf.CEILING == document["execution_plan"]["planned_model_calls"]
-        assert fam["native_task_contract_calls_cap"] == rows * nf.CEILING
-        assert fam["fit_endpoint_calls_cap"] == nf.fit_contact_cap(rows) == rows * nf.CEILING * 4   # structural
-        assert fam["repeated_speech_audio_seconds_cap"] == math.ceil(audio * nf.CEILING - 1e-9)
+        # The adapter enforces the plan run-cumulatively across the attempts of a run id: the smoke (rec1) carries the original plan
+        # plus the failed attempt's realised spend; the arm is a first attempt.
+        spent_calls, spent_audio, _ = _recovery_spend(kind)
+        assert fam["generation_calls_cap"] == rows * nf.CEILING + spent_calls == document["execution_plan"]["planned_model_calls"]
+        assert fam["native_task_contract_calls_cap"] == rows * nf.CEILING + spent_calls
+        assert fam["fit_endpoint_calls_cap"] == nf.fit_contact_cap(rows) == rows * nf.CEILING * 4   # structural, never run-cumulative
+        assert fam["repeated_speech_audio_seconds_cap"] == math.ceil(math.ceil(audio * nf.CEILING - 1e-9) + spent_audio - 1e-9)
         assert document["execution_plan"]["planned_speech_audio_seconds"] == fam["repeated_speech_audio_seconds_cap"]
         assert document["cells"][0]["readiness"]["state"] in ("held", "ready")
         assert document["execution_plan"]["execution_profile"] == "bounded-discovery-probe"
         assert document["execution_plan"]["split_role"] == "discovery"
     assert (arm["execution_plan"]["planned_model_calls"], arm["family_budget"]["fit_endpoint_calls_cap"]) == (10800, 43200)
-    assert (smoke["execution_plan"]["planned_model_calls"], smoke["family_budget"]["fit_endpoint_calls_cap"]) == (40, 160)
+    # smoke after the rec1 recovery: 40 + 20 spent = 60 calls, ceil(102 + 50.908) = 153 speech seconds, FIT cap still the structural 160
+    assert (smoke["execution_plan"]["planned_model_calls"], smoke["family_budget"]["fit_endpoint_calls_cap"]) == (60, 160)
+    assert smoke["execution_plan"]["planned_speech_audio_seconds"] == 153
+    assert (arm["execution_plan"]["planned_speech_audio_seconds"], arm["family_budget"]["generation_calls_cap"]) == (31548, 10800)
     assert arm["family_budget"]["gpu_hours_fit_inclusive"] == arm["execution_plan"]["planned_gpu_hours"] == 4.1
     assert smoke["family_budget"]["gpu_hours_fit_inclusive"] == 1.0
     estimates = nf.arm_prompt_estimates()
@@ -285,6 +295,15 @@ def test_the_effect_floor_gate_accepts_the_declaration():
 # --- pre-contact preflight -----------------------------------------------------------------------------------------------
 
 
+def _recovery_spend(kind: str) -> tuple:
+    """(contacts, speech seconds, predecessor attempt ids) already spent by earlier attempts of this kind's run id."""
+
+    if kind != "smoke" or not nf.SMOKE_RECOVERY:
+        return 0, 0.0, set()
+    ids = {p["attempt_id"] for p in nf.SMOKE_RECOVERY["predecessors"]}
+    return nf.SMOKE_PREDECESSOR_CONTACTS_SPENT, nf.SMOKE_PREDECESSOR_SPEECH_SECONDS_SPENT, ids
+
+
 def test_pre_contact_preflight_fit_gate_and_native_config():
     from speech_aware_evidence_acquisition.core.flight.runtime import arm_uses_speech_feature_packets
     from speech_aware_evidence_acquisition.core.preparation_fit import validate_native_contact_fit_config
@@ -323,9 +342,12 @@ def test_pre_contact_preflight_plans_budgets_and_ledger_rows():
         audio = sum(float(i["audio_seconds"]) for i in roster["items"])
         worst_calls = rows * max_contacts
         worst_audio = math.ceil(audio * max_contacts - 1e-9)
+        spent_calls, spent_audio, _ = _recovery_spend(kind)
         declared = _experiment(kind)["execution_plan"]
-        # first attempt: nothing spent; the run-cumulative adapter budget covers this attempt's worst case exactly
-        assert declared["planned_model_calls"] >= worst_calls and declared["planned_speech_audio_seconds"] >= worst_audio
+        # the run-cumulative adapter budget covers what earlier attempts of the run id spent PLUS this attempt's worst case
+        assert declared["planned_model_calls"] >= spent_calls + worst_calls, kind
+        assert declared["planned_speech_audio_seconds"] >= spent_audio + worst_audio, kind
+        worst_audio = math.ceil(worst_audio + spent_audio - 1e-9)
         for plan_kind in ("generation", "fit"):
             registered = _load(f"{nf.PACKAGE}/{names['prefix']}{plan_kind}-plan-registered-v1.json")["execution_plan"]
             plan = ExecutionPlan(**{k: v for k, v in registered.items() if k in allowed}).validate(source_root=REPO)
@@ -364,10 +386,54 @@ def test_pre_contact_preflight_identities_agree_and_are_fresh():
         fam = experiment["family_budget"]
         assert fam["fit_endpoint_calls_cap"] == fit_block["contact_cap"] == fit["planned_model_calls"]
         assert fam["generation_calls_cap"] == gen["planned_model_calls"]
-    # a first attempt: no recovery anywhere
+    # one-time key: a recovery attempt id is never any recorded predecessor's (generation or FIT)
+    _, _, predecessors = _recovery_spend("smoke")
+    assert nf.SMOKE["attempt_id"] not in predecessors
+    assert nf.SMOKE["fit_attempt_id"] not in {p.replace("-generation-", "-fit-") for p in predecessors}
+    # the recovery is recorded on the smoke only: the protocol, the smoke generation plan; the arm's plan carries none
     protocol = _load(f"{nf.PACKAGE}/protocol-registered-v1.json")
-    assert "recovery" not in protocol
-    assert "recovery" not in _load(f"{nf.PACKAGE}/smoke-generation-plan-registered-v1.json")["execution_plan"]
+    assert protocol["recovery"] == {"smoke": nf.SMOKE_RECOVERY}
+    assert _load(f"{nf.PACKAGE}/smoke-generation-plan-registered-v1.json")["execution_plan"]["recovery"] == nf.SMOKE_RECOVERY
+    assert "recovery" not in _load(f"{nf.PACKAGE}/generation-plan-registered-v1.json")["execution_plan"]
+
+
+def test_smoke_recovery_rec1_is_run_cumulative_fit_structural_and_leaves_the_arm_untouched():
+    """The cell's single recovery re-registration: spend read from the failed attempt, cumulative arithmetic, structural FIT cap."""
+
+    rec = nf.SMOKE_RECOVERY
+    assert rec["recovery_index"] == 1 and nf.SMOKE_REC == "-rec1"
+    assert rec["predecessor_attempt_id"] == "attempt-slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-generation-v1"
+    assert rec["predecessor_fit_attempt_id"] == "attempt-slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-fit-v1"
+    assert [p["attempt_id"] for p in rec["predecessors"]] == [rec["predecessor_attempt_id"]]
+    # the failed attempt's realised spend (its attempt record: actual calls 20, audio_seconds 50.908125): 4 rows x 5 Perception arms
+    assert nf.SMOKE_PREDECESSOR_CONTACTS_SPENT == 20 == nf.SMOKE_ROWS * len(nf.ARM_ORDER)
+    assert nf.SMOKE_PREDECESSOR_SPEECH_SECONDS_SPENT == pytest.approx(50.908, abs=1e-9)
+    assert rec["fit_cap_rule"].endswith("rows x max_contacts x (max_speech_packets + 3).")
+    assert "second failure closes the cell" in rec["rule"] and "source-hash binding fix" in rec["reason"]
+    smoke_audio = sum(float(i["audio_seconds"]) for i in _roster("smoke")["items"])
+    original_calls, original_audio = nf.SMOKE_ROWS * nf.CEILING, math.ceil(smoke_audio * nf.CEILING - 1e-9)
+    assert (original_calls, original_audio) == (40, 102)      # the failed attempt's own plan (its attempt record's reservation)
+    # the recovery plan = the original plan + the failed attempt's realised spend; audio rounded up
+    assert nf.smoke_cumulative_budget(original_calls, original_audio) == (60, 153)
+    experiment = _experiment("smoke")
+    assert (experiment["execution_plan"]["planned_model_calls"], experiment["execution_plan"]["planned_speech_audio_seconds"]) == (60, 153)
+    assert experiment["execution_plan"]["planned_gpu_hours"] == 1.0
+    # the FIT cap is structural and NOT scaled by the recovery: rows x max_contacts x (max_speech_packets + 3)
+    baseline = _baseline("smoke")
+    assert baseline["native_contact_fit"]["contact_cap"] == nf.fit_contact_cap(nf.SMOKE_ROWS) == 4 * 10 * 4 == 160
+    assert experiment["family_budget"]["fit_endpoint_calls_cap"] == 160
+    assert baseline["native_contact_fit"]["attempt_id"] == nf.SMOKE["fit_attempt_id"]
+    assert experiment["cells"][0]["attempt_id"] == nf.SMOKE["attempt_id"]
+    # the arm is untouched: first-attempt ids, first-attempt budget, no recovery suffix anywhere
+    arm_experiment, arm_baseline = _experiment("arm"), _baseline("arm")
+    assert arm_experiment["cells"][0]["attempt_id"] == "attempt-slurp-native-stage3-nx-r6-perception-fold-b-generation-v1"
+    assert arm_baseline["native_contact_fit"]["attempt_id"] == "attempt-slurp-native-stage3-nx-r6-perception-fold-b-fit-v1"
+    assert "rec" not in nf.ARM["attempt_id"].split("generation")[1] and "rec" not in nf.ARM["fit_attempt_id"].split("fit")[1]
+    assert arm_experiment["execution_plan"]["planned_model_calls"] == 10800 == arm_experiment["family_budget"]["generation_calls_cap"]
+    assert arm_baseline["native_contact_fit"]["contact_cap"] == 43200 == arm_experiment["family_budget"]["fit_endpoint_calls_cap"]
+    assert "-rec1" not in json.dumps(arm_experiment) and "-rec1" not in json.dumps(arm_baseline)
+    # the smoke's failure policy records that the single recovery is used
+    assert "single root-diagnosed recovery re-registration" in experiment["failure_policy"]
 
 
 def test_registered_plans_pin_the_hashes_the_fragments_compose_to():
@@ -399,9 +465,10 @@ def test_chain_flip_repin_mint_and_read_scripts_agree_with_the_family():
     for text in (chain, flip, repin):
         assert f"SLUG={nf.SLUG}" in text and f"SHORT={nf.SHORT}" in text
         assert "\r" not in text
-    assert '"smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation-v1"' in chain
+    assert f"SMOKE_REC={nf.SMOKE_REC}" in chain and 'rec = os.environ["NX_SMOKE_REC"]' in chain
+    assert '"smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation{rec}-v1"' in chain
     assert '"gen_attempt_id": f"attempt-slurp-native-stage3-{slug}-generation-v1"' in chain
-    assert nf.SMOKE["attempt_id"] == f"attempt-slurp-native-stage3-{nf.SLUG}-smoke-4-generation-v1"
+    assert nf.SMOKE["attempt_id"] == f"attempt-slurp-native-stage3-{nf.SLUG}-smoke-4-generation{nf.SMOKE_REC}-v1"
     assert nf.ARM["attempt_id"] == f"attempt-slurp-native-stage3-{nf.SLUG}-generation-v1"
     assert '"expected_rows": 1080, "contacts_per_row": 10, "ceiling_per_row": 10, "notool": True' in chain
     assert '"owner": f"root-slurp-native-stage3-{slug}-v1"' in chain
@@ -487,6 +554,25 @@ def test_the_ledger_rows_are_present_unconsumed_and_draft_or_countersigned():
             assert not frc.is_countersigned(row) and row["consumed"].strip().lower() == "no", run_id
         arm_row = next(r for r in rows if r.get("run/experiment id") == nf.ARM["run_id"])
         assert "ESTIMATE" in arm_row["notes"] and "claims_benefit false" in arm_row["notes"]
+    # the smoke recovery (rec1): the two smoke rows were AMENDED in place (the originals stay; the amendment names the failed attempt
+    # and the rec1 ids); the arm rows carry no recovery text and keep their first-attempt ids.
+    by_id = {r.get("run/experiment id"): r for r in rows}
+    for run_id, fit in ((nf.SMOKE["run_id"], False), (nf.SMOKE["fit_run_id"], True)):
+        row = by_id[run_id]
+        notes = row["notes"]
+        attempt = nf.SMOKE["fit_attempt_id"] if fit else nf.SMOKE["attempt_id"]
+        predecessor = nf.SMOKE_RECOVERY["predecessor_fit_attempt_id" if fit else "predecessor_attempt_id"]
+        assert notes.count("RECOVERY RE-REGISTRATION") == 1 and f"attempt {attempt}. Protocol hash" in notes
+        assert predecessor in notes
+        if not fit:
+            assert "20 contacts / 50.908 speech-seconds" in notes
+        assert nf.SMOKE["attempt_id"] in notes and nf.SMOKE["fit_attempt_id"] in notes
+        assert "40 + 20 = 60 calls" in notes and "ceil(102 + 50.908) = 153" in notes and "160 = 4 rows x 10 contacts x 4 endpoints" in notes
+        assert int(row["calls"]) == (160 if fit else 60) and int(row["speech audio seconds"]) == 153
+        assert row["consumed"].strip().lower() == "no"
+    for run_id in (nf.ARM["run_id"], nf.ARM["fit_run_id"]):
+        assert "RECOVERY RE-REGISTRATION" not in by_id[run_id]["notes"], run_id
+    assert f"attempt {nf.ARM['attempt_id']}. Protocol hash" in by_id[nf.ARM["run_id"]]["notes"]
     # the section holds nothing but this cell's five rows
     section = text[text.index(nf.LEDGER_MARK):]
     section = section[: section.find("\n## ", 5)] if "\n## " in section[5:] else section

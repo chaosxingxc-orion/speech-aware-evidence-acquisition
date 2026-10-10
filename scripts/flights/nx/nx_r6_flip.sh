@@ -10,6 +10,9 @@
 #      concurrent merge (a flip loop commits a half-resolved merge); the R5 flight has SEALED (one experiment in flight).
 # After the flip, refresh the registered plan pins (the writer copies the minted supply pin into the plans) and flip again.
 # --allow-output-change must never be passed.
+# SMOKE RECOVERY (rec1, 2026-10-10; nx_r6_family.SMOKE_RECOVERY): the smoke fragments were re-derived HELD under the rec1 attempt ids
+# and the run-cumulative budget (the arm fragments are untouched and stay ready); this loop flips the smoke again and re-converges
+# the arm's pins and the ledger hashes (the decision receipt is already minted: the run ids did not change, so it is not re-minted).
 #   bash scripts/flights/nx/nx_r6_flip.sh
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data

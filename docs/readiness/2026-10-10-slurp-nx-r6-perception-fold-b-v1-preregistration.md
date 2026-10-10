@@ -12,13 +12,15 @@ Registered 2026-10-10 at study commit `fc0c0fc14a3b080e04752618188d798628471a76`
 | expected effect | 0.75 pp (the design's gate estimate, range 0.75 .. 0.98), `claims_benefit` false; provisional floor SLU 1.49 pp |
 | rosters | tuning `SLURP-EVO-FOLD-A-V2`; read `SLURP-EVO-FOLD-B-V2` (selection read; see the disclosure) |
 | runs | `SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1` / `SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-FIT-V1`; `SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-V1` / `SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-FIT-V1`; read `SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1` |
-| composed config hashes | arm `dae31324906bdae2dd076bad0c267e6e079993b556abfe5246354e056ebe8c68`; smoke `d5ba50fea7920efb6606de6f1a7778a2bca1ec13d4c872bef51d3d16cda12f78` |
-| protocol hashes | arm `894b63c4f10cf66814f978498cef7ef0422fc84307e09e6893f202430bbac870`; smoke `07470e7a31f08290a9d9e9f99f5d3a1017ecc83f6c280ced8c0fbfb940d5e8fc` |
+| composed config hashes | arm `dae31324906bdae2dd076bad0c267e6e079993b556abfe5246354e056ebe8c68`; smoke `9968e134d4f0076ee351ccb99f384437337e438e5053f94ad7b5403c08e990d7` |
+| protocol hashes | arm `894b63c4f10cf66814f978498cef7ef0422fc84307e09e6893f202430bbac870`; smoke `01d08d267d37891671988b29da221713d694f5395e2480f433c958210213ebe7` |
 | split identity | arm `4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a`; smoke `bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32` |
 
-## Attempt state (no recovery)
+## Smoke recovery (the cell's single recovery re-registration)
 
-The smoke and the arm are FIRST attempts of their run ids. Budgets are single-attempt: smoke 40 model calls, FIT endpoint cap 160 (structural: 4 rows x 10 contacts x 4 endpoints); arm 10,800 model calls, FIT cap 43,200. A recovery re-registration, if one is ever needed, must re-derive the run-cumulative generation budget (earlier attempts' spend plus the new attempt's worst case) and keep the FIT cap structural. At most one recovery re-registration per cell.
+The predecessor attempt made its 20 Perception contacts (4 rows x 5 arms) and stopped when the first level-2 Solver input was built: the level-2 branch view in rails/runner.py replaced the Perception state's content with the branch's note without rebinding source_response_sha256, so SlurpIntentHypothesisError ('hypothesis content does not match its source response SHA-256') fired. Root cause fixed by the level-2 note source-hash binding fix (rails/runner.py; commit named at merge). The smoke is re-flown whole under the rec1 attempt ids; the arm is untouched.
+
+RECOVERY 2026-10-10 (the cell's single one; coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py), so the rec1 plan carries the original plan plus the failed attempt's realised spend: planned_model_calls 40 + 20 = 60 and planned_speech_audio_seconds ceil(102 + 50.908) = 153 (gpu hours unchanged, 1.0). The FIT cap is structural and unchanged: rows x max_contacts x (max_speech_packets + 3) = 4 x 10 x 4 = 160; the FIT attempt id also takes the rec1 suffix because a (run_id, attempt_id) pair is a one-time key and the failed FIT attempt was opened. The Perception arm, its attempt ids, its caps and its template pins are untouched. The smoke plans therefore carry run-cumulative budgets of 60 model calls / 153 speech-seconds (the failed attempt spent 20 / 50.908; the rec1 attempt is budgeted 40 / 102); the FIT endpoint cap is structural, not run-cumulative (160 = 4 rows x 10 contacts x 4 endpoints). The arm's budgets and attempt ids are unchanged: arm 10,800 model calls, FIT cap 43,200. At most one recovery re-registration per cell: a second failure closes the cell.
 
 ## Decision rule (fixed here)
 

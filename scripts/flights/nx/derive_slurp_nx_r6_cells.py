@@ -219,13 +219,18 @@ def roster_audio(kind: str) -> float:
 def budgets(kind: str) -> tuple[dict, dict]:
     rows = nf.SMOKE_ROWS if kind == "smoke" else nf.ROWS
     cap_audio = math.ceil(roster_audio(kind) * nf.CEILING - 1e-9)
+    calls = rows * nf.CEILING
+    if kind == "smoke":
+        # The adapter's budget is run-cumulative across the attempts of a run id: the smoke recovery (SMOKE_RECOVERY) carries the
+        # original plan plus the failed attempt's realised spend. The FIT cap below is structural and is NEVER scaled.
+        calls, cap_audio = nf.smoke_cumulative_budget(calls, cap_audio)
     gpu = nf.PLANNED_GPU_HOURS_SMOKE if kind == "smoke" else nf.PLANNED_GPU_HOURS_ARM
     fam = {
         "asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0,
         "fit_endpoint_calls_cap": nf.fit_contact_cap(rows),
-        "generation_calls_cap": rows * nf.CEILING,
+        "generation_calls_cap": calls,
         "gpu_hours_fit_inclusive": gpu,
-        "native_task_contract_calls_cap": rows * nf.CEILING,
+        "native_task_contract_calls_cap": calls,
         "official_complete_scoring_jobs": 0 if kind == "smoke" else 1,
         "repeated_speech_audio_seconds_cap": cap_audio,
     }
@@ -260,6 +265,7 @@ def derive_experiment(kind: str) -> str:
     cell = document["cells"][0]
     if cell["cell_id"] != names["experiment"] or cell["run_id"] != names["run_id"]:
         raise SystemExit(f"id rewrite produced {cell['cell_id']!r} / {cell['run_id']!r}")
+    cell["attempt_id"] = names["attempt_id"]      # the smoke's rec1 attempt id (SMOKE_RECOVERY); the arm's is unchanged
     cell["allowed_execution_stages"] = ["check", "prepare-supply", "worker"] + (["campaign"] if kind == "arm" else [])
     agreement = next(r for r in cell["readiness"]["requirements"] if r["relpath"].endswith("FOLD-B-V1/agreement.jsonl"))
     supply = {
@@ -301,7 +307,9 @@ def derive_experiment(kind: str) -> str:
         document["failure_policy"] = (
             "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed "
             "smoke stops cell " + nf.CELL_LABEL + " and the arm does not open. The resume-recovery clause of owner decision 22 "
-            "applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all."
+            "applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all. This smoke has "
+            "used the cell's single root-diagnosed recovery re-registration (rec1, 2026-10-10; the level-2 note source-hash binding "
+            "fix): a second failure closes the cell and the fix is proven on a four-row dry run."
         )
     else:
         document["purpose"] = (
@@ -329,16 +337,25 @@ def derive_experiment(kind: str) -> str:
 
 
 def main(argv=None) -> int:
+    # ``--kinds smoke`` re-derives ONLY the smoke fragments: after the arm was flipped (readiness pins, minted supply) its fragments
+    # are the flipped bytes and must not be regenerated; the smoke recovery (SMOKE_RECOVERY, rec1) leaves the arm untouched.
+    kinds = ("arm", "smoke")
+    args = list(sys.argv[1:] if argv is None else argv)
+    if args:
+        if len(args) != 2 or args[0] != "--kinds" or args[1] not in ("arm", "smoke", "arm,smoke", "smoke,arm"):
+            raise SystemExit("usage: derive_slurp_nx_r6_cells.py [--kinds smoke|arm|arm,smoke]")
+        kinds = tuple(k for k in ("arm", "smoke") if k in args[1].split(","))
     comp1b_exp = json.loads(rd(f"configs/experiment/{nf.COMP1B_EXPERIMENT}.json"))
     comp1b = json.loads(rd(f"configs/baseline/{comp1b_exp['cells'][0]['baseline_fragment']}.json"))
     written = []
-    for kind in ("arm", "smoke"):
+    for kind in kinds:
         written.append(derive_baseline(kind, comp1b))
         written.append(derive_experiment(kind))
-    arm = nf.names("arm")
-    plan = {"cells": [{"cell": arm["experiment"], "experiment": arm["experiment"]}], "schema": "saea-campaign-plan-v1"}
-    wr(nf.CAMPAIGN, json.dumps(plan, indent=2) + "\n")
-    written.append(nf.CAMPAIGN)
+    if "arm" in kinds:
+        arm = nf.names("arm")
+        plan = {"cells": [{"cell": arm["experiment"], "experiment": arm["experiment"]}], "schema": "saea-campaign-plan-v1"}
+        wr(nf.CAMPAIGN, json.dumps(plan, indent=2) + "\n")
+        written.append(nf.CAMPAIGN)
     print(json.dumps({"written": written, "program": nf.PROGRAM, "ceiling": nf.CEILING}, indent=2))
     return 0
 

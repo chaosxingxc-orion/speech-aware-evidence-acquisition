@@ -13,6 +13,7 @@ SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
 SLUG=nx-r6-perception-fold-b
+SMOKE_REC=-rec1   # the smoke's single recovery attempt suffix (nx_r6_family.SMOKE_REC); the arm keeps its first-attempt ids
 SHORT=nxr6
 LOG=/home/chao/batch-chain-$SHORT.out
 COMMIT=$(cat /home/chao/$SHORT-flight-commit.txt) || exit 1
@@ -23,11 +24,12 @@ cd $MAIN || exit 1
 git -C "$REPO" checkout -q --detach "$COMMIT" || { echo "checkout failed" >> $LOG; exit 2; }
 echo "$COMMIT" > /home/chao/batch-flight-commit.txt
 for f in /home/chao/batch-status.jsonl /home/chao/batch-done /home/chao/batch-STOP; do [ -e "$f" ] && mv "$f" "$f.$(date -u +%Y%m%dT%H%M%SZ).bak"; done
-NX_SLUG=$SLUG NX_SHORT=$SHORT /home/chao/.venvs/speechrl/bin/python - <<'PY'
+NX_SLUG=$SLUG NX_SMOKE_REC=$SMOKE_REC NX_SHORT=$SHORT /home/chao/.venvs/speechrl/bin/python - <<'PY'
 import json
 import os
 
 slug = os.environ["NX_SLUG"]
+rec = os.environ["NX_SMOKE_REC"]
 short = os.environ["NX_SHORT"]
 upper = slug.upper()
 steps = [{
@@ -41,7 +43,7 @@ steps = [{
     "fit_run_id": f"SAEA-SLURP-STAGE3-{upper}-FIT-V1",
     "gen_attempt_id": f"attempt-slurp-native-stage3-{slug}-generation-v1",
     "smoke_run_id": f"SAEA-SLURP-STAGE3-{upper}-SMOKE-4-V1",
-    "smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation-v1",
+    "smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation{rec}-v1",
     "expected_rows": 1080, "contacts_per_row": 10, "ceiling_per_row": 10, "notool": True,
     "owner": f"root-slurp-native-stage3-{slug}-v1",
 }]
