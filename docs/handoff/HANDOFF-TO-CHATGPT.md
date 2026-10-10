@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T00:14:46Z
+Last refreshed: 2026-10-10T00:43:41Z
+
+## Owner rules 238-244; R5 countersigned, minting and flipping (2026-10-10T00:43:41Z, Fable 5.1 root)
+
+Rulings (registry section "Decisions 238-244"): 238 Stage S closed at the Solver; 239 the empty-entity decision moves UPSTREAM -- Perception-side entity-presence / heard-value evidence and a supply-side per-intent entity prior are the next rounds (R6), designed offline first from the sealed R1 columns, the Solver template line itself closes under the plateau rule; 240 R5 flies (composed arm on lock v2.2 + the module OFF replicate, DEV-2000-ADDED, vs the sealed A2, bar 2.5 pp, no-harm claim); 241 the second test-sample allowance is drafted once R5 reads NOMINATED or NEUTRAL; 242 carriers wait for the SLURP system-level lock (211 unchanged); 243 the coordinator cleans the ChatGPT-era residue (ready-unflown drafts -> superseded, the two 400-row analysis rosters inside the Fold B filler family recorded as known exposure, the natural-source compatibility record re-pinned); 244 the SOTA goal is not re-scoped -- supply-side, system-level and training-free-RL algorithm optimisation continue. R5 flight rows (and the module package's replicate rows) countersigned (190ba719e); receipts minting, flip loop, gate and chain follow. Iteration-2 node-local (normalised): i2-c3 exact-set +4.91 [+3.15, +6.76] with false fill -18.11 and non-empty exact -2.62 (the same trade-off as c3); both gated variants (i2-c1 -0.65, i2-c2 -3.06) lost the effect; i2-c4 +0.93, i2-c5 +1.20; official columns pending.
+
+Superseded stamp: 2026-10-10T00:14:46Z
 
 ## NX R1 iteration 2 sealed; READ row countersigned; read running (2026-10-10T00:14:46Z, Fable 5.1 root)
 
