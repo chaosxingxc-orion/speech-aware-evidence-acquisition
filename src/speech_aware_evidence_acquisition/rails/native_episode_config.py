@@ -19,6 +19,12 @@ SOLVER_SLOT_TOOL = "saea-tool-knowledge-target-lookup-v1"
 
 #: Keys a Solver ``decoding_overrides`` block must carry, exactly.
 SOLVER_DECODING_OVERRIDE_KEYS = frozenset({"temperature", "seed_offset"})
+#: Optional keys a Solver ``decoding_overrides`` block may add (VER-1a, 2026-10-10).
+#: ``greedy_first`` (the literal ``true``): sample 0 of the grouped visit keeps
+#: the fragment's own greedy decoding (temperature 0) and samples 1.. take the
+#: registered temperature. Absent -- every config written before VER-1a -- every
+#: sample takes the registered temperature, byte for byte as before.
+SOLVER_DECODING_OVERRIDE_OPTIONAL_KEYS = frozenset({"greedy_first"})
 #: Keys a Solver ``commit`` block must carry, exactly.
 SOLVER_COMMIT_KEYS = frozenset({"policy", "min_support", "similarity_threshold"})
 
@@ -349,12 +355,22 @@ class NativeEpisodeRole:
             return
         if (
             not isinstance(self.decoding_overrides, Mapping)
-            or set(self.decoding_overrides) != SOLVER_DECODING_OVERRIDE_KEYS
+            or not SOLVER_DECODING_OVERRIDE_KEYS <= set(self.decoding_overrides)
+            or not set(self.decoding_overrides)
+            <= SOLVER_DECODING_OVERRIDE_KEYS | SOLVER_DECODING_OVERRIDE_OPTIONAL_KEYS
         ):
             raise ValueError(
                 "samples >= 2 requires decoding_overrides with exactly "
-                "temperature and seed_offset"
+                "temperature and seed_offset (and optionally greedy_first)"
             )
+        if "greedy_first" in self.decoding_overrides:
+            if self.decoding_overrides["greedy_first"] is not True:
+                raise ValueError("decoding_overrides.greedy_first, when given, must be true")
+            if self.twin is not None:
+                raise ValueError(
+                    "decoding_overrides.greedy_first cannot combine with a greedy-repeat "
+                    "twin: the twin is already greedy on every sample"
+                )
         temperature = self.decoding_overrides["temperature"]
         is_greedy_repeat_twin = self.twin == "greedy-repeat"
         if (

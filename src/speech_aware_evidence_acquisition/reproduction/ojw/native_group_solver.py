@@ -148,10 +148,13 @@ async def run_grouped_solver_samples(
         raise GroupedSolverError("fragment_seed must be an integer")
     if (
         not isinstance(decoding_overrides, Mapping)
-        or set(decoding_overrides) != {"temperature", "seed_offset"}
+        or not {"temperature", "seed_offset"} <= set(decoding_overrides)
+        or not set(decoding_overrides) <= {"temperature", "seed_offset", "greedy_first"}
+        or ("greedy_first" in decoding_overrides and decoding_overrides["greedy_first"] is not True)
     ):
         raise GroupedSolverError(
-            "decoding_overrides must carry exactly temperature and seed_offset"
+            "decoding_overrides must carry exactly temperature and seed_offset "
+            "(and optionally greedy_first: true)"
         )
     if not isinstance(commit, Mapping) or set(commit) != {
         "policy", "min_support", "similarity_threshold",
@@ -172,6 +175,7 @@ async def run_grouped_solver_samples(
     votes: list[SolverSampleVote] = []
     seed_offset = decoding_overrides["seed_offset"]
     temperature = decoding_overrides["temperature"]
+    greedy_first = decoding_overrides.get("greedy_first", False) is True
 
     for sample_index in range(samples):
         result = await invoke_sample(sample_index)
@@ -210,7 +214,9 @@ async def run_grouped_solver_samples(
         sample_records.append({
             "sample_index": sample_index,
             "seed": fragment_seed + seed_offset + sample_index,
-            "temperature": temperature,
+            # VER-1a: the greedy first sample is custodied at the fragment's own
+            # temperature 0 (``compose_solver_sample_decoding_params``).
+            "temperature": 0 if (greedy_first and sample_index == 0) else temperature,
             "parse_status": "ok" if parsed is not None else "malformed",
             "parsed_answer": (
                 None
