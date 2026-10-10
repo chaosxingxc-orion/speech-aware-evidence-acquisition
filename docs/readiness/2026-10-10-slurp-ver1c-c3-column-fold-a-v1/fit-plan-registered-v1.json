@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-ver1c-c3-column-fold-a-v1",
-  "composed_config_hash": "16f1e682691e3a0b9d0b6276098eaeb01e953f1b7d0e742d3265bbbfbbba1bac",
+  "composed_config_hash": "6d527c13980250b3f5eb0b972407eb809770c77944dbcbc8e5bb40c421aef0dc",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-ver1c-c3-column-fold-a-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.8,
     "planned_model_calls": 17280,
     "planned_speech_audio_seconds": 12339,
-    "protocol_hash": "3109d3a2e62451e5d400f03f1dac48bfc1dba4d953bc69b09fb3f0e99542b9fa",
+    "protocol_hash": "40dddf78050b968dbbbee124f555c579f620bcd1b416eb8c4dac8db9211dff41",
     "run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-10-slurp-ver1c-c3-column-fold-a-v1/protocol-registered-v1.json",
-    "sha256": "d022e4556d8dc07c295e0034148a653f4685c41f03aed890847a308dfc9b308c"
+    "sha256": "95a32d113e097f993d187c2fb11c58ca9b03840c9230b0466a4e6b6f5ab834f7"
   },
   "purpose": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-10T21:42:02.000000+00:00",

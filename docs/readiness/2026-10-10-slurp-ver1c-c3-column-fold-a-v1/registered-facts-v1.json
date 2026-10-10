@@ -59,7 +59,7 @@
     }
   },
   "composed_config_hashes": {
-    "arm": "16f1e682691e3a0b9d0b6276098eaeb01e953f1b7d0e742d3265bbbfbbba1bac",
+    "arm": "6d527c13980250b3f5eb0b972407eb809770c77944dbcbc8e5bb40c421aef0dc",
     "smoke": "b254d27058994e5b342f4d1dc9e7c657323048f20a453b090123ae735b5ea3fa"
   },
   "decision_rule": "SAME-FLIGHT NODE-TEMPLATE COLUMN READ AS THE VERDICT SOURCE OF THE VER-1 RULE (VER-1c; NX instrument E1/E2; owner decision 257, decision 258 option A proposed 2026-10-10; claim ceiling 'descriptive': the arm is NOT a nomination). One flight, one Solver visit per row of TRAIN Fold A, 3 arms over the SAME QueryState and evidence: r1-c3 (the R1 c3 template, the same hash-pinned bytes the NX R1 iteration-1 cell flew), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last). Each arm's first-visit Solver answer is rendered through the delivered row's normaliser and projection and scored ONCE with slurp-slu-official-train per arm (never sharded; scripts/analysis/stage3_rollout_score.py --mode supply-variants writes the per-arm first-visit outputs and scores the composer reads). READS: (1) THE TWIN NULL first: aa minus lock on every metric, paired per row, whole-utterance cluster bootstrap (10,000 draws, seed 20260915), reported beside the E1 provisional floor (SLU-F1 1.49 pp, intent 0.65 pp at n = 1,080; borrowed until a node-column cell measures its own null). (2) THE c3 COLUMN: r1-c3 minus lock, pooled SLU-F1 and intent, quoted DESCRIPTIVELY with its CI95 (it gates nothing and nominates nothing; a Fold A c3 loss or gain is information about the verdict source, not a result of this cell). (3) THE VERDICT SOURCE: the c3 presence verdict is the flag 'the r1-c3 answer carried no entity after the registered v4g normaliser' (slurp_ver1_offline.verdict_flags); the number of verdict-empty rows and of verdict-empty rows on empty-gold rows is reported beside the TRAIN Fold B figures of the NX R1 flights so that a drift of the verdict between rosters is visible. (4) THE VER-1 RULE FIXED ON SLURP-EVO-FOLD-B-V2 (support filter n = 3, s = 2; c3 verdict x N1 >= 0.2; v4g) is applied offline to the VER-1b sample pool on these rows with scripts/analysis/slurp_ver1_offline.py --verdict-run; the confirmation criterion is the VER-1b READ row's (SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-POOL-READ-V1). NOTHING IS TUNED OR SELECTED HERE. The delivering arm is the lock: the delivered answer is unchanged by construction at the request level (invariant I7).",
@@ -124,7 +124,7 @@
       "baseline_fragment": "slurp-native-stage3-ver1c-c3-column-fold-a-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-ver1c-c3-column-fold-a-v1",
-      "composed_config_hash": "16f1e682691e3a0b9d0b6276098eaeb01e953f1b7d0e742d3265bbbfbbba1bac",
+      "composed_config_hash": "6d527c13980250b3f5eb0b972407eb809770c77944dbcbc8e5bb40c421aef0dc",
       "dataset_fragment": "slurp-speech-native-evo-fold-a-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -156,7 +156,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "program": "phase-native-module-v1-c4",
-      "protocol_hash": "3109d3a2e62451e5d400f03f1dac48bfc1dba4d953bc69b09fb3f0e99542b9fa",
+      "protocol_hash": "40dddf78050b968dbbbee124f555c579f620bcd1b416eb8c4dac8db9211dff41",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-a-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1",
