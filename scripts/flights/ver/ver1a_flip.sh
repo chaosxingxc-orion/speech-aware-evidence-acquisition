@@ -6,7 +6,7 @@
 #   1. countersigning the four DRAFT flight rows (arm, arm FIT, smoke, smoke FIT); the READ row
 #      SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-POOL-READ-V1 stays a draft until the seal;
 #   2. minting coordination/slurp-ver1a-samples-fold-b-v1/root-admission-v1.json with scripts/flights/ver/ver1a_mint_receipt.py;
-#   3. the VER-1a engineering branch (sonnet/ver1a-register) is on master and the cell passes core.flight.cli check there; no
+#   3. the VER-1a engineering branches (sonnet/ver1a-register, sonnet/ver1a-samples5) is on master and the cell passes core.flight.cli check there; no
 #      concurrent merge (a flip loop commits a half-resolved merge); no other experiment is in flight (one experiment in flight).
 # After the flip, refresh the registered plan pins (scripts/flights/refresh_registered_plan_pins.py copies the minted supply pin into the
 # plans) and flip again. --allow-output-change must never be passed.
@@ -25,7 +25,7 @@ if [ ! -f "$DATA/coordination/slurp-$SLUG-v1/root-admission-v1.json" ]; then
 fi
 for KIND in smoke arm; do
   printf '%s\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n' \
-    "research: flip $LABEL ($KIND) to ready (owner decision 257: the three-sample greedy-first Solver pool on TRAIN Fold B, a pool cell, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-$SLUG-admission-v1)" \
+    "research: flip $LABEL ($KIND) to ready (owner decision 257: the five-sample greedy-first Solver pool on TRAIN Fold B, a pool cell, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-$SLUG-admission-v1)" \
     > "/home/chao/$SHORT-$KIND-commit.txt"
 done
 CONVERGED=""

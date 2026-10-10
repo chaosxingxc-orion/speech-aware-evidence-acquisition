@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mint the root-admission decision receipt of cell VER-1a (the three-sample greedy-first Solver pool on TRAIN Fold B) on the data root
+"""Mint the root-admission decision receipt of cell VER-1a (the five-sample greedy-first Solver pool on TRAIN Fold B) on the data root
 from the package's draft.
 
 Root's act, never an agent's. Copies ``docs/readiness/2026-10-10-slurp-ver1a-samples-fold-b-v1/root-admission-draft-v1.json`` to

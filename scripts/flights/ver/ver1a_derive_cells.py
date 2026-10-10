@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Derive cell VER-1a (the three-sample greedy-first Solver pool on TRAIN Fold B) and its four-row smoke.
+"""Derive cell VER-1a (the five-sample greedy-first Solver pool on TRAIN Fold B) and its four-row smoke.
 
 WHAT THE CELL IS. The review-off COMP-1b module graph exactly as the NX R5 composed arm and the R6-P1 base (lock ``v2.2``,
 ``agree-vote-seed`` + ``centroid-boundary-key`` ON, Reviewer loop OFF, no tool schema on any role) on TRAIN Fold B, with ONE change at
-the Solver node: the visit is grouped at ``samples = 3`` -- sample 0 greedy (``decoding_overrides.greedy_first``), samples 1 and 2 at
-temperature 0.7 -- committed by the registered plurality-support policy at ``min_support 2``. See ``ver1a_family.py`` for why the
+the Solver node: the visit is grouped at ``samples = 5`` -- sample 0 greedy (``decoding_overrides.greedy_first``), samples 1-4 at
+temperature 0.7 -- committed by the registered plurality-support policy at ``min_support 3``. See ``ver1a_family.py`` for why the
 delivered text is the unnormalised commit and v4g is applied offline.
 
 HOW IT IS DERIVED (nothing hand-edited). The committed R6-P1 baseline is the parent (its Fold B pins, speech-query pins, centroid facet
 pin and preparation receipts are the P-SV-4 / COMP-1b ones). Its ``consumption_module`` block minus the Perception template columns is
 compiled by ``rails.consumption_module.compile_module`` into the R5 composed arm's policy blocks (program ``phase-native-module-v1-c2``,
 ceiling 2); those blocks replace the parent's, and then exactly four things change, each asserted below: the policy id (the registered
-review-off family member for ceiling 4), the removal of the module declaration (the compiler has no ``samples`` knob and the loader
+review-off family member for ceiling 6), the removal of the module declaration (the compiler has no ``samples`` knob and the loader
 verifies a declared block against its own compilation), the removal of ``deliver_normaliser`` (refused beside a grouped Solver visit),
 and the Solver role's ``samples`` / ``decoding_overrides`` / ``commit``. The cell's own FIT ids, the removal of the parent's minted
 ``prepared_phase_supply`` (E16: the flip mints this cell's own) and the label text complete the diff; every other leaf is asserted equal
@@ -150,9 +150,9 @@ WHAT_THIS_IS = (
     "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1) as a consumption-module block on lock v2.2, Reviewer loop OFF (Perception then Solver; "
     "no Reviewer or Planner visit; no tool schema on any role) -- on TRAIN Fold B 1,080. THE ONE CHANGE: the Solver visit is grouped at "
     f"samples = {vf.SAMPLES}: sample 0 GREEDY (decoding_overrides.greedy_first: the fragment's own temperature 0, the answer the lock's "
-    "single-sample delivery makes) and samples 1 and 2 at temperature 0.7 (seeds fragment_seed + seed_offset + index), all three over the "
-    "SAME state and evidence, committed by saea-commit-plurality-support-v1 at min_support 2 (intent: plurality, ties to the lowest sample "
-    "index, i.e. the greedy sample; entities: same-type clusters kept at support >= 2). The delivered text is the unnormalised commit (the "
+    "single-sample delivery makes) and samples 1-4 at temperature 0.7 (seeds fragment_seed + seed_offset + index), all five over the "
+    "SAME state and evidence, committed by saea-commit-plurality-support-v1 at min_support 3 (intent: plurality, ties to the lowest sample "
+    "index, i.e. the greedy sample; entities: same-type clusters kept at support >= 3). The delivered text is the unnormalised commit (the "
     "loader refuses deliver_normaliser beside a grouped visit; ROLL-2's precedent); v4g, lock v2.2's delivery rule, is applied OFFLINE to "
     f"every custodied raw sample and to the replayed commit. The program is {vf.PROGRAM} (ceiling {vf.CEILING} = 1 + 1 x {vf.SAMPLES}), a "
     "registered member of the review-off module program family; the fragment declares no consumption_module block because the module "
@@ -213,7 +213,7 @@ def derive_experiment(kind: str) -> str:
                 f"The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) with the Solver visit "
                 f"grouped at samples {vf.SAMPLES} under program {vf.PROGRAM}: rails.native_episode_config ceiling = perception 1 + "
                 f"(max_revisions 0 + 1) x (solver 1 x samples {vf.SAMPLES}) = {vf.CEILING} contacts per row, so {rows:,} x {vf.CEILING} = "
-                f"{rows * vf.CEILING:,} is the exact program maximum and the expected spend (one Perception and three Solver contacts per "
+                f"{rows * vf.CEILING:,} is the exact program maximum and the expected spend (one Perception and five Solver contacts per "
                 "row; no early exit). The budget is RUN-CUMULATIVE across every attempt of this run id."
             ),
             "target": rows * vf.CEILING,
@@ -244,8 +244,8 @@ def derive_experiment(kind: str) -> str:
         "reason": (
             f"{'Four-row form smoke of cell' if kind == 'smoke' else 'Cell'} {vf.CELL_LABEL} registered before contact on {vf.DATE} by "
             f"script (decision 58) from the committed R6-P1 Fold B fragments and the module compiler: the R5 composed arm (COMP-1b on "
-            f"lock v2.2, Reviewer loop off) with the Solver visit grouped at samples {vf.SAMPLES} (sample 0 greedy, samples 1-2 at "
-            "temperature 0.7; owner decision 257)." + HELD
+            f"lock v2.2, Reviewer loop off) with the Solver visit grouped at samples {vf.SAMPLES} (sample 0 greedy, samples 1-4 at "
+            "temperature 0.7; owner decision 257; five samples per the coordinator ruling after the offline composer read)." + HELD
         ),
         "requirements": [decision, agreement, supply],
         "state": "held",
@@ -253,8 +253,8 @@ def derive_experiment(kind: str) -> str:
     if kind == "smoke":
         document["purpose"] = (
             f"Four-row structural form smoke of {vf.CELL_LABEL}: that {vf.PROGRAM} (ceiling {vf.CEILING}) loads, that the Solver visit "
-            f"fans out to {vf.SAMPLES} custodied samples with sample 0 at the fragment's temperature 0 and samples 1-2 at 0.7 with the "
-            "pinned seeds, that the plurality-support commit at min_support 2 seals and its replay holds, that every request fits, and "
+            f"fans out to {vf.SAMPLES} custodied samples with sample 0 at the fragment's temperature 0 and samples 1-4 at 0.7 with the "
+            "pinned seeds, that the plurality-support commit at min_support 3 seals and its replay holds, that every request fits, and "
             "that the episode completes. Scored by no one and read by no one: four rows are never evidence of benefit or harm."
         )
         document["failure_policy"] = (
@@ -265,11 +265,11 @@ def derive_experiment(kind: str) -> str:
     else:
         document["purpose"] = (
             f"{vf.CELL_LABEL} on TRAIN Fold B 1,080 (owner decision 257: the verification layer of the training-free RL round): seal a "
-            "three-sample pool of the lock v2.2 Solver whose sample 0 is the greedy single-sample answer and whose samples 1-2 are "
+            "five-sample pool of the lock v2.2 Solver whose sample 0 is the greedy single-sample answer and whose samples 1-4 are "
             "temperature-0.7 draws over the SAME state and evidence, so that VER-1 verification rules (scoring of the sampled answers, "
             "selection among them) can be computed OFFLINE over sealed bytes, together with the existing c3 verdict columns of the NX R1 "
             "and R6 flights on this roster, at the 0.67 pp floor of the offline sealed-pool instrument. The cell is a POOL cell: it "
-            "claims no benefit and its in-flight delivered text is the unnormalised plurality commit at min_support 2; the VER-1 rule is "
+            "claims no benefit and its in-flight delivered text is the unnormalised plurality commit at min_support 3; the VER-1 rule is "
             "selected in the READ row's offline read and flown, if nominated, under its own registration. Development numbers only "
             "(owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry."
         )

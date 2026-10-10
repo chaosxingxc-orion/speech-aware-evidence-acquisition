@@ -13,7 +13,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Cell VER-1a registered before contact on 2026-10-10 by script (decision 58) from the committed R6-P1 Fold B fragments and the module compiler: the R5 composed arm (COMP-1b on lock v2.2, Reviewer loop off) with the Solver visit grouped at samples 3 (sample 0 greedy, samples 1-2 at temperature 0.7; owner decision 257). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/ver/ver1a_mint_receipt.py) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/ver/ver1a_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 with the centroid key is the NX R1 / R6 cells' own, so the output digest is expected to equal theirs and a different digest means the knowledge channel moved -- stop and report); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "reason": "Cell VER-1a registered before contact on 2026-10-10 by script (decision 58) from the committed R6-P1 Fold B fragments and the module compiler: the R5 composed arm (COMP-1b on lock v2.2, Reviewer loop off) with the Solver visit grouped at samples 5 (sample 0 greedy, samples 1-4 at temperature 0.7; owner decision 257; five samples per the coordinator ruling after the offline composer read). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/ver/ver1a_mint_receipt.py) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/ver/ver1a_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 with the centroid key is the NX R1 / R6 cells' own, so the output digest is expected to equal theirs and a different digest means the knowledge channel moved -- stop and report); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
             "expected_decision_id": "slurp-ver1a-samples-fold-b-admission-v1",
@@ -43,9 +43,9 @@
   "date": "2026-10-10",
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 1.7,
-    "planned_model_calls": 4320,
-    "planned_speech_audio_seconds": 12620,
+    "planned_gpu_hours": 2.5,
+    "planned_model_calls": 6480,
+    "planned_speech_audio_seconds": 18929,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
@@ -55,18 +55,18 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "fit_endpoint_calls_cap": 17280,
-    "generation_calls_cap": 4320,
-    "gpu_hours_fit_inclusive": 1.7,
-    "native_task_contract_calls_cap": 4320,
+    "fit_endpoint_calls_cap": 25920,
+    "generation_calls_cap": 6480,
+    "gpu_hours_fit_inclusive": 2.5,
+    "native_task_contract_calls_cap": 6480,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 12620
+    "repeated_speech_audio_seconds_cap": 18929
   },
   "fragment_kind": "saea-slurp-native-stage3-ver1a-samples-fold-b-v1",
   "generation_budget": {
-    "cap": 4320,
-    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) with the Solver visit grouped at samples 3 under program phase-native-module-v1-c4: rails.native_episode_config ceiling = perception 1 + (max_revisions 0 + 1) x (solver 1 x samples 3) = 4 contacts per row, so 1,080 x 4 = 4,320 is the exact program maximum and the expected spend (one Perception and three Solver contacts per row; no early exit). The budget is RUN-CUMULATIVE across every attempt of this run id.",
-    "target": 4320
+    "cap": 6480,
+    "definition": "The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) with the Solver visit grouped at samples 5 under program phase-native-module-v1-c6: rails.native_episode_config ceiling = perception 1 + (max_revisions 0 + 1) x (solver 1 x samples 5) = 6 contacts per row, so 1,080 x 6 = 6,480 is the exact program maximum and the expected spend (one Perception and five Solver contacts per row; no early exit). The budget is RUN-CUMULATIVE across every attempt of this run id.",
+    "target": 6480
   },
   "population": {
     "count": 1080,
@@ -1163,7 +1163,7 @@
     }
   ],
   "preserve_wire_responses": true,
-  "purpose": "VER-1a on TRAIN Fold B 1,080 (owner decision 257: the verification layer of the training-free RL round): seal a three-sample pool of the lock v2.2 Solver whose sample 0 is the greedy single-sample answer and whose samples 1-2 are temperature-0.7 draws over the SAME state and evidence, so that VER-1 verification rules (scoring of the sampled answers, selection among them) can be computed OFFLINE over sealed bytes, together with the existing c3 verdict columns of the NX R1 and R6 flights on this roster, at the 0.67 pp floor of the offline sealed-pool instrument. The cell is a POOL cell: it claims no benefit and its in-flight delivered text is the unnormalised plurality commit at min_support 2; the VER-1 rule is selected in the READ row's offline read and flown, if nominated, under its own registration. Development numbers only (owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "purpose": "VER-1a on TRAIN Fold B 1,080 (owner decision 257: the verification layer of the training-free RL round): seal a five-sample pool of the lock v2.2 Solver whose sample 0 is the greedy single-sample answer and whose samples 1-4 are temperature-0.7 draws over the SAME state and evidence, so that VER-1 verification rules (scoring of the sampled answers, selection among them) can be computed OFFLINE over sealed bytes, together with the existing c3 verdict columns of the NX R1 and R6 flights on this roster, at the 0.67 pp floor of the offline sealed-pool instrument. The cell is a POOL cell: it claims no benefit and its in-flight delivered text is the unnormalised plurality commit at min_support 3; the VER-1 rule is selected in the READ row's offline read and flown, if nominated, under its own registration. Development numbers only (owner decisions 28 and 86); never a test claim. Nothing here authorises a flight, a readiness flip or an admission entry.",
   "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "split_id": "SLURP-EVO-FOLD-B-V2",
   "stage3_algorithm": {

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Decisions 77 / 187: fly cell VER-1a on the SLURP np4 geometry (slurp-np4, session serving-slurp-native-candidate-five-train-a-np4-v1)
 # through the batch driver. ONE step: the four-row form smoke first (driver-enforced), then the one-cell campaign plan. A pool cell: no
-# comparator and no A/A cell. ceiling_per_row 4 = Perception 1 + grouped Solver 3 on the review-off graph (program
-# phase-native-module-v1-c4); contacts_per_row 4 is exact (no Reviewer or Planner visit, no early exit).
+# comparator and no A/A cell. ceiling_per_row 6 = Perception 1 + grouped Solver 5 on the review-off graph (program
+# phase-native-module-v1-c6); contacts_per_row 6 is exact (no Reviewer or Planner visit, no early exit).
 # Preconditions: the cell flipped in one converged loop (scripts/flights/ver/ver1a_flip.sh wrote /home/chao/ver1a-flight-commit.txt),
 # the resident session is the np4 one above, no other batch is running (one experiment in flight), and root has launched it. The
 # driver's registration gate (scripts/checks/flight_registration_check.py) refuses a step whose rows are not countersigned or whose
@@ -43,7 +43,7 @@ steps = [{
     "gen_attempt_id": f"attempt-slurp-native-stage3-{slug}-generation-v1",
     "smoke_run_id": f"SAEA-SLURP-STAGE3-{upper}-SMOKE-4-V1",
     "smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation{rec}-v1",
-    "expected_rows": 1080, "contacts_per_row": 4, "ceiling_per_row": 4, "notool": True,
+    "expected_rows": 1080, "contacts_per_row": 6, "ceiling_per_row": 6, "notool": True,
     "owner": f"root-slurp-native-stage3-{slug}-v1",
 }]
 json.dump(steps, open("/home/chao/batch-queue.json", "w"), indent=1)

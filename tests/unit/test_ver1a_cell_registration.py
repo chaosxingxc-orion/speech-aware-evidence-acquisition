@@ -2,9 +2,9 @@
 
 Reads the committed fragments and package files only (no data root, no model, no server). Proves: the fragment is the R5 composed arm
 (the parent's module block minus the Perception template columns, compiled) plus EXACTLY the registered diff (policy id, module
-declaration dropped, v4g deliver_normaliser dropped, Solver samples 3 / greedy_first / plurality-support commit at min_support 2); the
-program is the registered review-off family member ``phase-native-module-v1-c4`` and the loader's graph ceiling is 4; the plan budgets
-are the contact arithmetic (1,080 x 4 = 4,320), the FIT cap is structural (rows x ceiling x 4); the identities (run, attempt, chain, flip,
+declaration dropped, v4g deliver_normaliser dropped, Solver samples 5 / greedy_first / plurality-support commit at min_support 3); the
+program is the registered review-off family member ``phase-native-module-v1-c6`` and the loader's graph ceiling is 6; the plan budgets
+are the contact arithmetic (1,080 x 6 = 6,480), the FIT cap is structural (rows x ceiling x 4); the identities (run, attempt, chain, flip,
 repin, ledger) agree; the stage3_measurement block is an offline sealed pool with no benefit claim; the stage-3 label resolves; the
 finite-completion and ReAct-exhaustion policies are declared; and the cell is HELD with DRAFT ledger rows.
 """
@@ -83,7 +83,8 @@ def test_family_identities_are_frozen():
     assert vf.ARM["attempt_id"] == "attempt-slurp-native-stage3-ver1a-samples-fold-b-generation-v1"
     assert vf.SMOKE["attempt_id"] == "attempt-slurp-native-stage3-ver1a-samples-fold-b-smoke-4-generation-v1"
     assert vf.PACKAGE == "docs/readiness/2026-10-10-slurp-ver1a-samples-fold-b-v1"
-    assert vf.CEILING == 4 == 1 + vf.SAMPLES and vf.PROGRAM == "phase-native-module-v1-c4"
+    assert vf.SAMPLES == 5 and vf.CEILING == 6 == 1 + vf.SAMPLES and vf.PROGRAM == "phase-native-module-v1-c6"
+    assert vf.SOLVER_COMMIT["min_support"] == 3 and vf.SOLVER_OVERRIDES == {"temperature": 0.7, "seed_offset": 0, "greedy_first": True}
     assert vf.PROGRAM in MODULE_PROGRAM_FAMILY_IDS            # registered already: no new program id
     assert (vf.TUNING_ROSTER, vf.READ_ROSTER) == ("none", "SLURP-EVO-FOLD-B-V2")
 
@@ -119,15 +120,15 @@ def test_the_fragment_is_the_r5_composed_arm_plus_exactly_the_registered_diff():
         assert "FOLD-B" in text and "DEV2000" not in text and "FOLD-A" not in text.replace("FOLD-A-V2", "")
 
 
-def test_the_loader_resolves_the_cell_to_a_ceiling_four_greedy_first_grouped_review_off_graph():
+def test_the_loader_resolves_the_cell_to_a_ceiling_six_greedy_first_grouped_review_off_graph():
     for kind in ("arm", "smoke"):
         document = _baseline(kind)
         program = default_phase_program(document["policy"])
         parsed = load_native_episode_config(dict(document, carrier_lock_key=document.get("carrier_lock_key", "slurp")), program)
-        assert program.max_contacts == parsed.max_contacts == vf.CEILING == 4
+        assert program.max_contacts == parsed.max_contacts == vf.CEILING == 6
         assert not parsed.review_loop_enabled and parsed.max_revisions == 0
         solver = next(r for r in parsed.roles if r.role_kind == "solver")
-        assert (solver.samples, solver.twin) == (3, None)
+        assert (solver.samples, solver.twin) == (5, None)
         assert dict(solver.decoding_overrides) == {"temperature": 0.7, "seed_offset": 0, "greedy_first": True}
         assert dict(solver.commit) == vf.SOLVER_COMMIT
         assert {r.role_kind: r.max_iterations for r in parsed.roles} == {"perception": 1, "solver": 1, "reviewer": 0, "planner": 0}
@@ -168,10 +169,10 @@ def test_budgets_are_the_contact_arithmetic_and_the_fit_cap_is_structural():
         assert document["execution_plan"]["execution_profile"] == "bounded-discovery-probe"
         assert document["execution_plan"]["split_role"] == "discovery"
         assert document["cells"][0]["readiness"]["state"] in ("held", "ready")
-    assert (arm["execution_plan"]["planned_model_calls"], arm["family_budget"]["fit_endpoint_calls_cap"]) == (4320, 17280)
-    assert (smoke["execution_plan"]["planned_model_calls"], smoke["family_budget"]["fit_endpoint_calls_cap"]) == (16, 64)
-    assert arm["family_budget"]["gpu_hours_fit_inclusive"] == arm["execution_plan"]["planned_gpu_hours"] == 1.7
-    assert arm["generation_budget"]["cap"] == 4320
+    assert (arm["execution_plan"]["planned_model_calls"], arm["family_budget"]["fit_endpoint_calls_cap"]) == (6480, 25920)
+    assert (smoke["execution_plan"]["planned_model_calls"], smoke["family_budget"]["fit_endpoint_calls_cap"]) == (24, 96)
+    assert arm["family_budget"]["gpu_hours_fit_inclusive"] == arm["execution_plan"]["planned_gpu_hours"] == 2.5
+    assert arm["generation_budget"]["cap"] == 6480
 
 
 def test_registered_measurement_block_is_an_offline_sealed_pool_with_no_benefit_claim():
@@ -182,11 +183,12 @@ def test_registered_measurement_block_is_an_offline_sealed_pool_with_no_benefit_
     assert (block["tuning_roster"], block["read_roster"], block["rows"]) == (vf.TUNING_ROSTER, vf.READ_ROSTER, 1080)
     smoke = facts["stage3_measurement"][vf.SMOKE["run_id"]]
     assert smoke["measurement_design"] == "form-proof" and smoke["claims_benefit"] is False
-    assert facts["accounting"]["contacts_per_row"] == {"perception": 1, "solver": 3, "reviewer": 0, "planner": 0, "total": 4}
+    assert facts["accounting"]["contacts_per_row"] == {"perception": 1, "solver": 5, "reviewer": 0, "planner": 0, "total": 6}
     recipe = _load(f"{vf.PACKAGE}/analysis-recipe-v1.json")
     assert recipe["read_run_id"] == vf.READ_RUN_ID and recipe["recipe_id"] == vf.RECIPE_ID
     assert recipe["run_ids"]["arm"] == vf.ARM["run_id"] and recipe["measurement_design"] == "offline-sealed-pool"
-    assert "min_support 2" in recipe["row_accounting_required"] and "temperatures 0, 0.7, 0.7" in recipe["row_accounting_required"]
+    assert "min_support 3" in recipe["row_accounting_required"] and "temperatures 0, 0.7, 0.7, 0.7, 0.7" in recipe["row_accounting_required"]
+    assert "exactly 5 samples" in recipe["row_accounting_required"] and "seeds fragment_seed + 0 + index" in recipe["row_accounting_required"]
     assert vf.V4G_LOCK_RECORD in recipe["stages"]["3_v4g"]
 
 
@@ -306,7 +308,7 @@ def test_chain_flip_repin_mint_and_dry_run_scripts_agree_with_the_family():
     for text in (chain, flip, repin):
         assert f"SLUG={vf.SLUG}" in text and f"SHORT={vf.SHORT}" in text
         assert "\r" not in text
-    assert '"expected_rows": 1080, "contacts_per_row": 4, "ceiling_per_row": 4, "notool": True' in chain
+    assert '"expected_rows": 1080, "contacts_per_row": 6, "ceiling_per_row": 6, "notool": True' in chain
     assert '"gen_attempt_id": f"attempt-slurp-native-stage3-{slug}-generation-v1"' in chain
     assert '"smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation{rec}-v1"' in chain
     assert "SMOKE_REC=       #" in chain          # no recovery: the smoke is a first attempt
@@ -349,7 +351,7 @@ def test_the_cell_is_held_and_the_package_is_complete():
     assert draft["status"] == "DRAFT-NOT-MINTED" and draft["decision_id"] == vf.DECISION_ID
     assert draft["eligible_run_ids"] == [vf.ARM["run_id"], vf.ARM["fit_run_id"], vf.SMOKE["run_id"], vf.SMOKE["fit_run_id"]]
     assert draft["population"]["test_contact_authorized"] is False and draft["population"]["fold_a_contact_authorized"] is False
-    assert draft["budget"]["paid_api_calls"] == 0 and draft["budget"]["generation_calls_cap"] == 4320
+    assert draft["budget"]["paid_api_calls"] == 0 and draft["budget"]["generation_calls_cap"] == 6480
     assert draft["recorded_at_utc"] is None
 
 
@@ -378,3 +380,30 @@ def test_the_ledger_rows_are_present_unconsumed_and_draft_or_countersigned():
     section = text[text.index(vf.LEDGER_MARK):]
     assert "\n## " not in section[5:]
     assert len(re.findall(r"\| SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B", section)) == 5
+
+
+def test_the_amended_ledger_rows_keep_the_countersignature_and_carry_the_five_sample_arithmetic():
+    """The 3 -> 5 sample amendment (before any contact) edits the four countersigned flight rows IN PLACE: the countersignature text is
+    verbatim, the amendment sentence is appended, and the calls / audio / gpu columns are the five-sample contact arithmetic."""
+
+    import flight_registration_check as frc
+
+    rows = {r.get("run/experiment id"): r for r in _ledger_rows()}
+    expected = {
+        vf.ARM["run_id"]: (6480, vf.audio_cap("arm"), 2.5), vf.ARM["fit_run_id"]: (25920, vf.audio_cap("arm"), 2.5),
+        vf.SMOKE["run_id"]: (24, vf.audio_cap("smoke"), 1.0), vf.SMOKE["fit_run_id"]: (96, vf.audio_cap("smoke"), 1.0),
+    }
+    for run_id, (calls, audio, gpu) in expected.items():
+        row = rows[run_id]
+        assert (int(row["calls"]), int(row["speech audio seconds"]), float(row["gpu hours"])) == (calls, audio, gpu), run_id
+        assert row["notes"].startswith("REGISTERED BEFORE CONTACT (root countersigned 2026-10-10T16:30:00Z "), run_id
+        assert frc.is_countersigned(row) and row["consumed"].strip().lower() == "no", run_id
+        assert vf.AMENDMENT_MARK in row["notes"] and row["notes"].count(vf.AMENDMENT_MARK) == 1, run_id
+        assert run_id in (vf.SMOKE["run_id"], vf.SMOKE["fit_run_id"]) or "five-sample" in row["scope"], run_id
+        assert "min_support 3" in row["model/tool"] and "samples 5" in row["model/tool"], run_id
+        assert "the 3-sample ROLL-form pool" in row["notes"]          # the countersignature text is verbatim
+    plan = _load(f"{vf.PACKAGE}/generation-plan-registered-v1.json")["execution_plan"]
+    assert plan["planned_model_calls"] == 6480
+    assert vf.AMENDMENT_MARK in _load(f"{vf.PACKAGE}/protocol-registered-v1.json")["amendment"]
+    read = rows[vf.READ_RUN_ID]
+    assert "(0..4)" in read["scope"] and "best-of-5" in read["scope"] and vf.AMENDMENT_MARK in read["notes"]

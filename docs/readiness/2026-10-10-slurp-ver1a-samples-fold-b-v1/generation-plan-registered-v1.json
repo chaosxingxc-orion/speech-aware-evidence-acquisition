@@ -1,14 +1,14 @@
 {
   "cell": "slurp-native-stage3-ver1a-samples-fold-b-v1",
-  "composed_config_hash": "dca4a4d48e525c803eae24306ec9acd95605a9f1a7d47db1728e8210dd39c2bf",
+  "composed_config_hash": "268ae8c87801fe07fc1a9dc8302cc0141fee746566e5ca8fc212caaecb01a971",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-ver1a-samples-fold-b-generation-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 1.7,
-    "planned_model_calls": 4320,
-    "planned_speech_audio_seconds": 12620,
-    "protocol_hash": "dd243cb7d514090147d7b554312abb8ac67aded832c1c785c09b3925cf09750f",
+    "planned_gpu_hours": 2.5,
+    "planned_model_calls": 6480,
+    "planned_speech_audio_seconds": 18929,
+    "protocol_hash": "c721ff083105df7bc33a2ff53e55132ed99d4f83f3d7b0340d92f892726f1cdf",
     "run_id": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -22,14 +22,14 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "fit_endpoint_calls_cap": 17280,
-    "generation_calls_cap": 4320,
-    "gpu_hours_fit_inclusive": 1.7,
-    "native_task_contract_calls_cap": 4320,
+    "fit_endpoint_calls_cap": 25920,
+    "generation_calls_cap": 6480,
+    "gpu_hours_fit_inclusive": 2.5,
+    "native_task_contract_calls_cap": 6480,
     "official_complete_scoring_jobs": 1,
-    "repeated_speech_audio_seconds_cap": 12620
+    "repeated_speech_audio_seconds_cap": 18929
   },
-  "one_factor": "none -- a pool cell: the base is the NX R5 composed arm / R6-P1 base (COMP-1b components, lock v2.2 compiled blocks, review loop off) unchanged, and the single registered departure is the grouped Solver visit (samples 3: sample 0 greedy, samples 1-2 at temperature 0.7, plurality-support commit at min_support 2), which exists to produce the sample pool and not to move a delivered metric",
+  "one_factor": "none -- a pool cell: the base is the NX R5 composed arm / R6-P1 base (COMP-1b components, lock v2.2 compiled blocks, review loop off) unchanged, and the single registered departure is the grouped Solver visit (samples 5: sample 0 greedy, samples 1-4 at temperature 0.7, plurality-support commit at min_support 3), which exists to produce the sample pool and not to move a delivered metric",
   "plan_kind": "generation",
   "preparation_base_commit": "f26ada26a618f1aa91b786639a2c004d7c6aeab9",
   "prepared_phase_supply": {
@@ -39,13 +39,13 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-10-slurp-ver1a-samples-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "563787b8144cd2c142410e71828c6a443b8c83010e8971cfe9821049365d299d"
+    "sha256": "b33983035f98a9c3595f8442b5f7d85c3ca4c17a865d286ece9de3145f4068f6"
   },
-  "purpose": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1: OFFLINE SEALED-POOL READ (VER-1a; owner decision 257, 2026-10-10; claim ceiling 'descriptive' for the pool, 'nominated' for any rule selected on it; the pool cell claims NO benefit). One flight, one Perception visit and one grouped Solver visit per row of TRAIN Fold B: sample 0 greedy, samples 1 and 2 at temperature 0.7, all over the SAME state and evidence, committed in flight by saea-commit-plurality-support-v1 at min_support 2. THE READS, all from this one flight's sealed bytes, model-free: (1) CUSTODY (row accounting): 1,080 in, 1,080 out; every row's solver_group carries exactly 3 samples in custody (invariant I7g) with temperatures 0, 0.7, 0.7 and the pinned seeds fragment_seed + seed_offset + index; the replay of the commit reproduces the sealed delivered text on every row; zero tool calls. (2) PER-SAMPLE scores: each custodied raw sample rendered to one outputs COPY (scripts/analysis/stage3_rollout_score.py --stage render, three samples auto-detected) and scored ONCE with the registered scorer, both as sealed (unprojected) and through the lock's delivery rule v4g applied OFFLINE (scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g; the in-flight cell delivers the unnormalised commit because the loader refuses a deliver_normaliser beside a grouped visit); sample 0 is read against the NX R1 / R6 lock column on the same rows as the byte-identity audit of the greedy first sample (llama.cpp greedy decoding is not bitwise reproducible across batch shapes, so equality is measured, not assumed). (3) SELECTION AND SUPPORT: the offline aggregation rules (scripts/analysis/slurp_sample_aggregation_offline_read.py: plurality-support commit at min_support 2, greedy-sample-0 default, oracle best-of-3 as an UPPER BOUND) and the candidate-support read (scripts/analysis/slurp_candidate_support_read.py), together with the existing c3 verdict columns of the NX R1 / R6 flights on this roster (grouping: scripts/analysis/group_system_rollouts.py), from which the VER-1 verification rule is SELECTED. Bar: the 0.67 pp offline sealed-pool floor of the instrument note (section 2d). NOTHING IS LOCKED HERE: the pool read selects; a selected rule is flown, if at all, under its own registration (VER-1b) and confirmed on a roster it was not selected on.",
+  "purpose": "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1: OFFLINE SEALED-POOL READ (VER-1a; owner decision 257, 2026-10-10; claim ceiling 'descriptive' for the pool, 'nominated' for any rule selected on it; the pool cell claims NO benefit). One flight, one Perception visit and one grouped Solver visit per row of TRAIN Fold B: sample 0 greedy, samples 1-4 at temperature 0.7, all over the SAME state and evidence, committed in flight by saea-commit-plurality-support-v1 at min_support 3. THE READS, all from this one flight's sealed bytes, model-free: (1) CUSTODY (row accounting): 1,080 in, 1,080 out; every row's solver_group carries exactly 5 samples in custody (invariant I7g) with temperatures 0, 0.7, 0.7, 0.7, 0.7 and the pinned seeds fragment_seed + seed_offset + index; the replay of the commit reproduces the sealed delivered text on every row; zero tool calls. (2) PER-SAMPLE scores: each custodied raw sample rendered to one outputs COPY (scripts/analysis/stage3_rollout_score.py --stage render, five samples auto-detected) and scored ONCE with the registered scorer, both as sealed (unprojected) and through the lock's delivery rule v4g applied OFFLINE (scripts/analysis/slurp_nx_postproc_v4_apply.py --apply v4g; the in-flight cell delivers the unnormalised commit because the loader refuses a deliver_normaliser beside a grouped visit); sample 0 is read against the NX R1 / R6 lock column on the same rows as the byte-identity audit of the greedy first sample (llama.cpp greedy decoding is not bitwise reproducible across batch shapes, so equality is measured, not assumed). (3) SELECTION AND SUPPORT: the offline aggregation rules (scripts/analysis/slurp_sample_aggregation_offline_read.py: plurality-support commit at min_support 2 and 3 (s = 2 and 3-of-5 both read offline), greedy-sample-0 default, oracle best-of-5 as an UPPER BOUND) and the candidate-support read (scripts/analysis/slurp_candidate_support_read.py), together with the existing c3 verdict columns of the NX R1 / R6 flights on this roster (grouping: scripts/analysis/group_system_rollouts.py), from which the VER-1 verification rule is SELECTED. Bar: the 0.67 pp offline sealed-pool floor of the instrument note (section 2d). NOTHING IS LOCKED HERE: the pool read selects; a selected rule is flown, if at all, under its own registration (VER-1b) and confirmed on a roster it was not selected on.",
   "quality_read_gate": "No sample column is opened before the complete sealed manifest, the ordered outputs and the phase summary of the flight exist AND the READ row SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-POOL-READ-V1 is root countersigned.",
   "registered_at_utc": "2026-10-10T16:00:00.000000+00:00",
   "schema": "saea-registered-generation-plan-v1",
-  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-ver1a, branch sonnet/ver1a-register",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-ver1a5, branch sonnet/ver1a-samples5",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
   "unused_budget_is_not_attempt_authority": true
 }

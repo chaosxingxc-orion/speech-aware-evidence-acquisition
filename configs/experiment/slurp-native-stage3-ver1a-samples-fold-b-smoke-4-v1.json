@@ -12,7 +12,7 @@
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Four-row form smoke of cell VER-1a registered before contact on 2026-10-10 by script (decision 58) from the committed R6-P1 Fold B fragments and the module compiler: the R5 composed arm (COMP-1b on lock v2.2, Reviewer loop off) with the Solver visit grouped at samples 3 (sample 0 greedy, samples 1-2 at temperature 0.7; owner decision 257). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/ver/ver1a_mint_receipt.py) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/ver/ver1a_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 with the centroid key is the NX R1 / R6 cells' own, so the output digest is expected to equal theirs and a different digest means the knowledge channel moved -- stop and report); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "reason": "Four-row form smoke of cell VER-1a registered before contact on 2026-10-10 by script (decision 58) from the committed R6-P1 Fold B fragments and the module compiler: the R5 composed arm (COMP-1b on lock v2.2, Reviewer loop off) with the Solver visit grouped at samples 5 (sample 0 greedy, samples 1-4 at temperature 0.7; owner decision 257; five samples per the coordinator ruling after the offline composer read). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/ver/ver1a_mint_receipt.py) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/ver/ver1a_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 with the centroid key is the NX R1 / R6 cells' own, so the output digest is expected to equal theirs and a different digest means the knowledge channel moved -- stop and report); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
           {
             "expected_decision_id": "slurp-ver1a-samples-fold-b-admission-v1",
@@ -43,8 +43,8 @@
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
     "planned_gpu_hours": 1.0,
-    "planned_model_calls": 16,
-    "planned_speech_audio_seconds": 41,
+    "planned_model_calls": 24,
+    "planned_speech_audio_seconds": 62,
     "split_role": "discovery"
   },
   "execution_profile": "bounded-discovery-probe",
@@ -54,12 +54,12 @@
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
-    "fit_endpoint_calls_cap": 64,
-    "generation_calls_cap": 16,
+    "fit_endpoint_calls_cap": 96,
+    "generation_calls_cap": 24,
     "gpu_hours_fit_inclusive": 1.0,
-    "native_task_contract_calls_cap": 16,
+    "native_task_contract_calls_cap": 24,
     "official_complete_scoring_jobs": 0,
-    "repeated_speech_audio_seconds_cap": 41
+    "repeated_speech_audio_seconds_cap": 62
   },
   "fragment_kind": "saea-slurp-native-stage3-ver1a-samples-fold-b-smoke-4-v1",
   "population": {
@@ -81,7 +81,7 @@
     }
   ],
   "preserve_wire_responses": true,
-  "purpose": "Four-row structural form smoke of VER-1a: that phase-native-module-v1-c4 (ceiling 4) loads, that the Solver visit fans out to 3 custodied samples with sample 0 at the fragment's temperature 0 and samples 1-2 at 0.7 with the pinned seeds, that the plurality-support commit at min_support 2 seals and its replay holds, that every request fits, and that the episode completes. Scored by no one and read by no one: four rows are never evidence of benefit or harm.",
+  "purpose": "Four-row structural form smoke of VER-1a: that phase-native-module-v1-c6 (ceiling 6) loads, that the Solver visit fans out to 5 custodied samples with sample 0 at the fragment's temperature 0 and samples 1-4 at 0.7 with the pinned seeds, that the plurality-support commit at min_support 3 seals and its replay holds, that every request fits, and that the episode completes. Scored by no one and read by no one: four rows are never evidence of benefit or harm.",
   "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
   "split_id": "SLURP-EVO-FOLD-B-V2",
   "stage3_algorithm": {
