@@ -1651,13 +1651,20 @@ def validate_supply_variant_receipt(
 PERCEPTION_BRANCH_RECEIPT_SCHEMA = "saea-perception-branch-arms-v3"
 PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2 = "saea-perception-branch-arms-v2"
 PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1 = "saea-perception-branch-arms-v1"
+#: v4 (2026-10-10, NX programme E1 for the Perception node): v3 plus
+#: ``instruction_template`` on every branch row -- ``None`` for A and the twin,
+#: the declared ``{relpath, sha256}`` for a template branch, whose ONLY axis it
+#: is. Sealed by a ``roles.perception.template_variants`` group; v1-v3 verify
+#: unchanged under their own rules.
+PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 = "saea-perception-branch-arms-v4"
 PERCEPTION_BRANCH_RECEIPT_SCHEMAS = (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
-    PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
 )
 #: The schemas whose rows carry the v2 note-parse fields (v2 and every later one).
 PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS = (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2, PERCEPTION_BRANCH_RECEIPT_SCHEMA,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
 )
 #: The three retrieval-key pins a ``key_source`` branch may swap (v3).
 PERCEPTION_BRANCH_KEY_SOURCE_FIELDS = ("facet_source", "query_source", "agreement_source")
@@ -1853,6 +1860,8 @@ _PERCEPTION_BRANCH_LEVEL2_FIELDS = _PERCEPTION_BRANCH_RECORD_FIELDS | {
 _PERCEPTION_BRANCH_V2_EXTRA_FIELDS = frozenset({"candidate_intent_ids_raw_count"})
 #: Schema v3 adds exactly one more field per branch row (the key-source axis).
 _PERCEPTION_BRANCH_V3_EXTRA_FIELDS = frozenset({"key_source"})
+#: Schema v4 adds exactly one more field per branch row (the template axis).
+_PERCEPTION_BRANCH_V4_EXTRA_FIELDS = frozenset({"instruction_template"})
 _PERCEPTION_BRANCH_LEVELS = (1, 2)
 _PERCEPTION_BRANCH_VISITS = "first"
 
@@ -1933,7 +1942,8 @@ def validate_perception_branch_receipt(
     if schema not in PERCEPTION_BRANCH_RECEIPT_SCHEMAS:
         _raise(error_type, "perception branch receipt has an unregistered schema")
     is_v2 = schema in PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS
-    is_v3 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA
+    is_v4 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4
+    is_v3 = schema in (PERCEPTION_BRANCH_RECEIPT_SCHEMA, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4)
     if perception_branches["phase_id"] != phase_id:
         _raise(error_type, "perception branch receipt names another phase")
     if perception_branches["level"] != level:
@@ -1970,6 +1980,8 @@ def validate_perception_branch_receipt(
         expected_fields = expected_fields | _PERCEPTION_BRANCH_V2_EXTRA_FIELDS
     if is_v3:
         expected_fields = expected_fields | _PERCEPTION_BRANCH_V3_EXTRA_FIELDS
+    if is_v4:
+        expected_fields = expected_fields | _PERCEPTION_BRANCH_V4_EXTRA_FIELDS
     contact_ids: list[str] = []
     delivering_ids: tuple[str, ...] | None = None
     delivering_request_sha256: str | None = None
@@ -2108,12 +2120,30 @@ def validate_perception_branch_receipt(
         key_source_reason = perception_branch_key_source_error(key_source)
         if key_source_reason is not None:
             _raise(error_type, key_source_reason)
+        instruction_template = row.get("instruction_template") if is_v4 else None
+        if instruction_template is not None and (
+            not isinstance(instruction_template, Mapping)
+            or set(instruction_template) != {"relpath", "sha256"}
+            or not isinstance(instruction_template["relpath"], str)
+            or not instruction_template["relpath"]
+            or not isinstance(instruction_template["sha256"], str)
+            or len(instruction_template["sha256"]) != 64
+            or any(
+                character not in "0123456789abcdef"
+                for character in instruction_template["sha256"]
+            )
+        ):
+            _raise(
+                error_type,
+                "perception branch instruction_template must be None or exactly "
+                "{relpath, sha256} with a lowercase 64-hex sha256",
+            )
         if deliver or is_twin:
             if (
                 paths or release_swap is not None or presentation_id is not None
                 or min_candidates is not None or presentation_skip_reason is not None
                 or contrast_block_sha256 is not None or min_candidates_met is not None
-                or key_source is not None
+                or key_source is not None or instruction_template is not None
             ):
                 _raise(
                     error_type,
@@ -2123,10 +2153,21 @@ def validate_perception_branch_receipt(
         elif not (
             paths or release_swap is not None or presentation_id is not None
             or min_candidates is not None or key_source is not None
+            or instruction_template is not None
         ):
             _raise(
                 error_type,
                 "a B perception branch must declare exactly one axis category",
+            )
+        elif is_v4 and (
+            instruction_template is None
+            or paths or release_swap is not None or presentation_id is not None
+            or min_candidates is not None or key_source is not None
+        ):
+            _raise(
+                error_type,
+                "a v4 (template) perception branch declares its instruction_template "
+                "as its only axis",
             )
         ids = _sequence(
             row["supplied_value_ids"], "perception branch supplied_value_ids", error_type=error_type,
@@ -2229,6 +2270,7 @@ __all__ = [
     "validate_supply_variant_receipt",
     "SUPPLY_VARIANT_RECEIPT_SCHEMA_V4",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMAS",

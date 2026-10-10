@@ -170,11 +170,9 @@ PERCEPTION_BRANCH_FRAME: Mapping[str, object] = {
     },
 }
 
-#: Where template columns compile (NX E1): the Solver's block, the delivering arm ``lock``, the twin ``aa``.
-TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {
-    "block_path": ("native_episode", "roles", "solver", "template_variants"),
-    "node": "solver", "delivering_arm_id": "lock", "twin_arm_id": "aa",
-}
+#: Where template columns compile (NX E1): the Solver's and the Perception's (level-2) block; arm ``lock`` delivers, ``aa`` is the twin.
+TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {"block_path": ("native_episode", "roles", "solver", "template_variants"), "node": "solver", "delivering_arm_id": "lock", "twin_arm_id": "aa"}
+PERCEPTION_TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {**TEMPLATE_VARIANT_FRAME, "node": "perception", "block_path": ("native_episode", "roles", "perception", "template_variants")}
 
 #: Ruling R3: ``{component id: admitting record}`` of the Perception
 #: components admitted to the delivered path. EMPTY: no column read has
@@ -257,4 +255,5 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         current_lock=CURRENT_LOCK,
         roster_pin_paths=ROSTER_PIN_PATHS,
         template_variant_frame=TEMPLATE_VARIANT_FRAME,
+        perception_template_variant_frame=PERCEPTION_TEMPLATE_VARIANT_FRAME,
     )

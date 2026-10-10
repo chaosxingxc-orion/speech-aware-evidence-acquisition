@@ -2434,6 +2434,14 @@ async def _invoke_native_role_episode(
     # the composed requests byte-identical.
     perception_branch_group = config.perception_branch_group
     perception_branch_phase_id = config.perception_branch_phase_id
+    # NX programme E1, Perception node (2026-10-10): True when the Perception
+    # branch group is the NODE-TEMPLATE kind -- every branch renders the
+    # delivering branch's own evidence and differs only in its pinned Perception
+    # instruction template. False (everything keyed on it unreachable) for every
+    # config written before the programme.
+    perception_template_mode = bool(
+        perception_branch_group is not None and perception_branch_group.is_template
+    )
     # LEVEL 2 (merge set C item 1): the Solver's own phase id, resolved once,
     # so the Solver-fan-out messages/settle/contact-context seams below can
     # tell "this is the Solver's own phase" from "this is Perception's own
@@ -2862,7 +2870,11 @@ async def _invoke_native_role_episode(
         branch_index = perception_branch_group.branch_ids.index(branch_id)
         extra_item = None
         presentation_skip_reason = None
-        if branch.deliver or branch.is_twin:
+        if branch.deliver or branch.is_twin or branch.instruction_template is not None:
+            # NX programme E1, Perception node: a template branch varies the
+            # instruction (set by the caller before the contact plan is minted)
+            # and nothing else, so it renders the SAME evidence blocks over the
+            # SAME QueryState as A: no seed, no presentation, no contract item.
             # AT-P1 / AT-P2: A is the cell's own request, override-free; the
             # twin (replicate_of A) resolves exactly A's ids and takes the
             # SAME base_messages(ctx) A does -- byte-identical wire payload,
@@ -3676,7 +3688,7 @@ async def _invoke_native_role_episode(
         }
         return material.instruction
 
-    def template_arm_instruction(arm_id, visit):
+    def template_arm_instruction(arm_id, visit, phase_id=None):
         """NX programme E1: ONE template arm's complete instruction text.
 
         The arm's material is built by the flight-owned per-arm builder
@@ -3701,7 +3713,7 @@ async def _invoke_native_role_episode(
                 f"template-variant arm {arm_id!r} has no flight-owned material builder"
             )
         arm_ctx, sealed = visit["material_inputs"]
-        arm_material = builder(supply_variant_phase_id, arm_ctx, sealed)
+        arm_material = builder(phase_id or supply_variant_phase_id, arm_ctx, sealed)
         if not isinstance(arm_material, PhaseMaterial):
             raise RailsRunnerError("template-variant arm material must be PhaseMaterial")
         arm_material.validate()
@@ -3726,6 +3738,20 @@ async def _invoke_native_role_episode(
         if arm.instruction_template is None:
             return default_query
         return template_arm_instruction(arm.arm_id, visits[supply_variant_phase_id])
+
+    def perception_template_query(branch_index, default_query):
+        """NX programme E1, Perception node: the query the node hands the
+        framework for branch ``branch_index`` -- the branch's own instruction
+        for a template branch, the visit's own query for the delivering branch
+        and the twin (which render the locked template)."""
+
+        branch = perception_branch_group.branch_at(branch_index)
+        if branch.instruction_template is None:
+            return default_query
+        return template_arm_instruction(
+            branch.branch_id, visits[perception_branch_phase_id],
+            phase_id=perception_branch_phase_id,
+        )
 
     def speech_binding(request):
         from .native_episode_config import select_native_role_history
@@ -3763,6 +3789,22 @@ async def _invoke_native_role_episode(
             if template_arm.instruction_template is not None:
                 contact_instruction = contact_query = template_arm_instruction(
                     template_arm.arm_id, visit,
+                )
+        if (
+            perception_template_mode
+            and request.context.perception_branch_id is not None
+            and request.role_id == perception_branch_phase_id
+        ):
+            # NX programme E1, Perception node: the template branch's contact
+            # instruction and original query are its own template's; A and the
+            # twin keep the visit's, byte for byte.
+            template_branch = perception_branch_group.branch(
+                request.context.perception_branch_id
+            )
+            if template_branch.instruction_template is not None:
+                contact_instruction = contact_query = template_arm_instruction(
+                    template_branch.branch_id, visit,
+                    phase_id=perception_branch_phase_id,
                 )
         plan = AgentContactPlan(
             contact_id=request.context.agent_contact_id,
@@ -4312,6 +4354,7 @@ async def _invoke_native_role_episode(
             presentation_skip_reason=pending_row.get("presentation_skip_reason"),
             contrast_block_sha256=pending_row.get("contrast_block_sha256"),
             min_candidates_met=min_candidates_met,
+            template_group=perception_template_mode,
         )
 
     def read_perception_branch_solver_record(branch_index, result):
@@ -4863,6 +4906,10 @@ async def _invoke_native_role_episode(
     declared_template_arms = {
         arm.arm_id for arm in (supply_variant_group.arms if template_variant_mode else ())
         if arm.instruction_template is not None
+    } | {
+        branch.branch_id
+        for branch in (perception_branch_group.branches if perception_template_mode else ())
+        if branch.instruction_template is not None
     }
     if set(binding.template_variant_materials or {}) != declared_template_arms:
         raise RailsRunnerError(
@@ -5419,6 +5466,11 @@ async def _invoke_native_role_episode(
                     inner=solver_node, group=role.perception_branches,
                     branch_record=read_perception_branch_record,
                     delivery_allowed=role_delivery_allowed,
+                    # NX programme E1, Perception node: a template branch's
+                    # framework query is its own instruction.
+                    query_for_branch=(
+                        perception_template_query if perception_template_mode else None
+                    ),
                 )
             else:
                 nodes[role.role_kind] = solver_node
@@ -6199,8 +6251,20 @@ async def _invoke_native_role_episode(
                         candidate_supply_value_ids=(
                             solver_row["candidate_supply_value_ids"]
                         ),
+                        template_group=perception_template_mode,
                     ))
                 branches_block["branches"] = sealed_branches
+                if perception_template_mode and [
+                    row.get("instruction_template") for row in sealed_branches
+                ] != [
+                    None if branch.instruction_template is None
+                    else branch.instruction_template.as_json()
+                    for branch in perception_branch_group.branches
+                ]:
+                    raise RailsRunnerError(
+                        "the sealed Perception template receipt names templates other "
+                        "than the ones roles.perception.template_variants declared"
+                    )
             compact_receipt["perception_branches"] = branches_block
         elif (
             isinstance(receipt.get("latest_perception"), Mapping)

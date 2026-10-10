@@ -41,7 +41,7 @@ DECLARED effect, before the GPU hours are spent rather than after.
   inside one flight (``rails.supply_variants.parse_template_variants``,
   docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-
   design.md). A cell of this design must carry a ``template_variants`` summary
-  beside ``measurement_design`` -- ``{"node": "solver", "candidate_arms": 1..6,
+  beside ``measurement_design`` -- ``{"node": "solver"|"perception", "candidate_arms": 1..6,
   "twin": true|false}`` -- which this gate checks for shape only (the arm group
   itself is parsed, and refused by name, by the rails at config load). Its floor
   is the same-flight CONTRAST floor, borrowed from ``same-flight-supply-variant``
@@ -770,7 +770,7 @@ _ADMISSIONS: frozenset[str] = frozenset({"benefit", "no-harm"})
 #: compares) and the candidate-arm bound (mirrors ``MAX_TEMPLATE_CANDIDATE_ARMS``). This gate
 #: reads no package source, so it restates them.
 NODE_COLUMN_DESIGN = "same-flight-node-column"
-TEMPLATE_VARIANT_NODES: tuple[str, ...] = ("solver",)
+TEMPLATE_VARIANT_NODES: tuple[str, ...] = ("solver", "perception")
 MIN_TEMPLATE_CANDIDATE_ARMS, MAX_TEMPLATE_CANDIDATE_ARMS = 1, 6
 
 #: Owner decision 190 (2026-09-29): the closed set ``primary_metric_key`` may name. ``intent``

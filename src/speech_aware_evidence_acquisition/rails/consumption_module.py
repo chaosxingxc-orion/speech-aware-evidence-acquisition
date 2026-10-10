@@ -98,6 +98,7 @@ _PROFILE = re.compile(r"^[a-z][a-z0-9]*$")
 #: The node-action receipts a header receipt may point at (design 2.5).
 NODE_RECEIPT_SCHEMAS = frozenset({
     "saea-perception-branch-arms-v1",
+    "saea-perception-branch-arms-v4",
     "saea-supply-variant-arms-v3",
     "saea-supply-variant-arms-v4",
     "saea-solver-citations-v1",
@@ -324,6 +325,12 @@ class CarrierHooks:
     #: "node": the one node the carrier admits, "delivering_arm_id", "twin_arm_id"}``.
     #: ``None``: no analogue on this carrier, so a template column refuses.
     template_variant_frame: Mapping[str, object] | None = None
+    #: NX programme E1, Perception node (2026-10-10): the same frame for template
+    #: columns that name the Perception node -- ``{"block_path": the key path of
+    #: the Perception role's ``template_variants`` block, "node": "perception",
+    #: "delivering_arm_id", "twin_arm_id"}``. ``None``: no analogue on this
+    #: carrier, so a Perception template column refuses. Declared LAST.
+    perception_template_variant_frame: Mapping[str, object] | None = None
     #: Design section 2d: ``tool_offer_units(delivered text) -> (context
     #: label, units, parsed)`` in the ``delivered_units`` shape -- the units a
     #: model-initiated tool offer (``verify_span(index)``) is indexed over on
@@ -1398,11 +1405,20 @@ def _compile_template_columns(
     duplicate or a fit overrun is refused at compile time, by that parser's
     name, before any config is written."""
 
-    from .supply_variants import SupplyVariantError, parse_template_variants  # noqa: PLC0415
+    from .supply_variants import (  # noqa: PLC0415
+        SupplyVariantError, parse_perception_template_variants, parse_template_variants,
+    )
 
-    frame = _require_hook(hooks, "template_variant_frame", "template-columns")
     tf = block.template_frame
     nodes = {c.node for c in block.template_columns}
+    # NX programme E1, Perception node: columns naming the Perception node
+    # compile through the carrier's Perception frame into a level-2 branch group.
+    at_perception = nodes == {"perception"}
+    frame = _require_hook(
+        hooks,
+        "perception_template_variant_frame" if at_perception else "template_variant_frame",
+        "template-columns",
+    )
     if nodes != {frame["node"]}:
         raise ConsumptionModuleConfigError(
             f"template columns name node(s) {sorted(nodes)}, but profile {hooks.profile!r} "
@@ -1432,14 +1448,23 @@ def _compile_template_columns(
     role = _node(layer, path[:-1], field="template-columns")
     material = layer.get("phase_material", {}).get(frame["node"], {})
     try:
-        parse_template_variants(
-            template_block, role_kind=frame["node"], phase_id=str(role.get("phase_id")),
-            locked_template=material.get("instruction_template"),
-        )
+        if at_perception:
+            parse_perception_template_variants(
+                template_block, phase_id=str(role.get("phase_id")),
+                locked_template=material.get("instruction_template"),
+            )
+        else:
+            parse_template_variants(
+                template_block, role_kind=frame["node"], phase_id=str(role.get("phase_id")),
+                locked_template=material.get("instruction_template"),
+            )
     except SupplyVariantError as error:
         raise ConsumptionModuleConfigError(f"template columns are invalid: {error}") from error
     writer.set(path, template_block, component_id="template-columns", replace_only=False)
-    return len(rows) - 1
+    # A Solver block adds one extra Solver contact per non-delivering arm; a
+    # Perception (level-2) block adds one extra Perception contact AND one extra
+    # Solver contact per non-delivering arm.
+    return (len(rows) - 1) * (2 if at_perception else 1)
 
 
 def delivered_perception_axes(raw_block: object) -> tuple[str, ...]:

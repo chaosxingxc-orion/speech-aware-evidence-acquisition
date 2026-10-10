@@ -45,7 +45,11 @@ def rehearsal_profile(values, profile):
     config = load_native_episode_config(values, default_phase_program(values["policy"]))
     if (config is None or config.review_loop_enabled or config.max_revisions != 0
             or config.role("perception").max_iterations != 1
-            or config.role("perception").perception_branches is not None
+            # NX programme E1, Perception node: a TEMPLATE branch group is the
+            # same P/S graph with extra Perception and Solver contacts; any
+            # other branch group (per-branch seeds and routers) stays outside.
+            or (config.role("perception").perception_branches is not None
+                and not config.role("perception").perception_branches.is_template)
             or config.role("solver").samples != 1
             # NX programme E1: a node-template arm group is a P/S graph with
             # extra Solver contacts and no extra node, so the review-off

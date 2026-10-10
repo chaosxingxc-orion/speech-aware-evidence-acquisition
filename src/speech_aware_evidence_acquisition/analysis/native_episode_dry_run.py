@@ -629,6 +629,27 @@ def dry_run_native_episode(
         else None
     )
     template_materials = binding.get("template_variant_materials") or {}
+    # NX programme E1, Perception node: the template arms may sit at the
+    # Perception visit instead (the branch group's branches are the arms). The
+    # walk covers each arm's Perception instruction; the level-2 Solver columns
+    # are a runner statement proven by the live proofs, not a dry-run one.
+    template_entries = None
+    template_phase = None
+    if template_group is not None:
+        template_entries = [
+            (arm.arm_id, arm.deliver, arm.max_supplied_items, arm.instruction_template)
+            for arm in template_group.arms
+        ]
+        template_phase = supply_variant_phase
+    else:
+        perception_group = binding["episode"].perception_branch_group
+        if perception_group is not None and perception_group.is_template:
+            template_entries = [
+                (branch.branch_id, branch.deliver, branch.max_supplied_items,
+                 branch.instruction_template)
+                for branch in perception_group.branches
+            ]
+            template_phase = binding["episode"].perception_branch_phase_id
     # Cell RANKVIS (owner decision 171): honour native_episode.
     # knowledge_value_rendering exactly as rails.runner.
     # _invoke_native_role_episode does -- the stores whose newly supplied
@@ -740,7 +761,7 @@ def dry_run_native_episode(
             raise NativeEpisodeDryRunError("phase material must be a PhaseMaterial")
         material.validate()
         template_arms: tuple = ()
-        if template_group is not None and phase == supply_variant_phase:
+        if template_entries is not None and phase == template_phase:
             # NX programme E1: the template arms of THIS visit, walked at the
             # node. Every arm supplies the row's own accumulated evidence (the
             # supply is unvaried); the delivering arm and the twin render the
@@ -749,28 +770,29 @@ def dry_run_native_episode(
             # predecessor binding, fill and response format.
             sealed_arg = {sample.sample_id: states[-1]} if states else {}
             walked_template = []
-            for arm_index, arm in enumerate(template_group.arms):
-                if arm.instruction_template is not None:
-                    arm_material = template_materials[arm.arm_id](
+            for arm_index, (arm_id, arm_deliver, arm_max_items, arm_pin) in enumerate(
+                template_entries
+            ):
+                if arm_pin is not None:
+                    arm_material = template_materials[arm_id](
                         phase, context, sealed_arg,
                     )
                     arm_material.validate()
                     if arm_material.response_format != material.response_format:
                         raise NativeEpisodeDryRunError(
-                            f"template arm {arm.arm_id!r} changed the node's response "
+                            f"template arm {arm_id!r} changed the node's response "
                             "format; an arm overrides the instruction template only"
                         )
                     instruction = arm_material.instruction
                 else:
                     instruction = material.instruction
                 walked_template.append(DryRunArm(
-                    arm_id=arm.arm_id, arm_index=arm_index, deliver=arm.deliver,
+                    arm_id=arm_id, arm_index=arm_index, deliver=arm_deliver,
                     resolved_knobs=(),
                     supplied_value_ids=tuple(query_state.retrieved_value_ids),
-                    max_supplied_items=arm.max_supplied_items,
+                    max_supplied_items=arm_max_items,
                     instruction_template=(
-                        None if arm.instruction_template is None
-                        else arm.instruction_template.as_json()
+                        None if arm_pin is None else arm_pin.as_json()
                     ),
                     instruction_sha256=_sha256(instruction),
                     instruction_chars=len(instruction),

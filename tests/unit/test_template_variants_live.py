@@ -132,7 +132,7 @@ def test_template_and_supply_variants_cannot_share_a_node():
         load_native_episode_config(v, _program(5))
 
 
-@pytest.mark.parametrize("role", ["perception", "reviewer", "planner"])
+@pytest.mark.parametrize("role", ["reviewer", "planner"])
 def test_a_variant_declared_on_another_node_is_refused_by_name(role):
     v = _values()
     block = v["native_episode"]["roles"]["solver"].pop("template_variants")
