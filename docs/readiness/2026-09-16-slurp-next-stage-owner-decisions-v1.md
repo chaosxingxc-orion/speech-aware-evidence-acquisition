@@ -606,3 +606,38 @@ below the bar. Coordinator recommends A.
   system-level optimisation and the training-free RL algorithm optimisation are still ahead. Believe in yourself!" --
   Ruling: the SOTA goal is not re-scoped now; the programme continues through R5, the test read, the upstream
   empty-entity evidence (R6), the supply-side rounds and the training-free RL algorithm work.
+
+## Decision 245 ruled by the owner, 2026-10-10; decisions 246-248 PROPOSED by the coordinator (Fable 5.1)
+
+- **245** (proposed 2026-10-10 in the coordinator's briefing: R6 = (A) a Perception-side entity-presence / heard-value
+  column as a level-2 measurement cell and (B) a Fold A two-arm confirmation of the "lock + core empty verdict + N1 >=
+  0.2 gate" delivery rule, both below the 1.5 pp bar, with a waiver of decision 192 requested). Owner, verbatim:
+  「决策245：可以先各自优化后，再级联优化，各自优化过程中，不需要考虑彼此之间的连接关系。在级联优化过程中，前置节点要考虑如何
+  传递更有效的信息给到后置节点，这里面更重要的是优化通信模板，明确好对后续判定最有效的要素长什么样，同时可以返回多选项连同执行
+  度让后续节点去选择，或者后续节点把这个任务当做是一个重排序任务。你注意，这里面最重要的是提供稳定且额外的信息增益！」
+  English: "Optimise each node on its own first, then optimise the cascade. In the node-local phase, ignore the
+  connections between nodes. In the cascade phase, the upstream node must work out how to pass more effective
+  information to the downstream node; what matters most is optimising the COMMUNICATION TEMPLATE: define what the
+  elements most useful to the downstream judgement look like. The upstream may also return several options together
+  with their confidence for the downstream to choose from, or the downstream treats the task as a RE-RANKING task.
+  Note: the most important thing is to provide STABLE and ADDITIONAL information gain." -- Ruling as recorded: R6 is
+  re-designed as a two-phase programme, `docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md`:
+  phase 1 node-local (R6-P1, the Perception entity column on TRAIN Fold B, interfaces frozen, judged on node metrics and
+  information gain), phase 2 cascade (the Perception -> Solver message: deterministic gate consumer at delivery from the
+  same sealed columns, the locked Solver as consumer, then the Solver as chooser / re-ranker in R7, a v2 note contract
+  only on trigger), confirmation on Fold A, composition on DEV-2000-ADDED (R8). The acceptance rule is the owner's:
+  information gain that is ADDITIONAL (cross-fitted gain over the supply statistics and over the downstream's own
+  verdict, CI-LB > 0) and STABLE (same sign and CI-LB > 0 on the confirmation roster with the rule fixed). The
+  coordinator's reading of the decision-192 bar under this ruling: it binds the cascade cells that claim a delivered
+  gain (R7 / R8); the node-local measurement cell is judged on its node metric and information gain, with its
+  delivered-metric estimate produced offline before any cascade cell is registered.
+- **246** (PROPOSED) Register and fly R6-P1 as designed (three Perception candidates p1-p3 + twin + lock, TRAIN Fold B
+  1,080 rows, ceiling 10 contacts per row, ~4.1 GPU-h; node-local measurement with the free locked-consumer cascade
+  read) as the next flight after the R5 read. Recommended: yes.
+- **247** (PROPOSED) Adopt section 4 of the design (information gain: additional and stable, pp stated through the
+  measured exchange rates) as the acceptance rule of node-local and cascade rounds; decision 192's 1.5 pp registration
+  bar binds the cascade cells (R7 / R8), not the node-local measurement cell. Recommended: yes.
+- **248** (PROPOSED) The v2 Perception note contract (`slurp-intent-hypotheses-v2`: explicit presence verdict and
+  heard-mention options with a two-level confidence) is engineered only on the design's 2d trigger (gain present but
+  the 128-character `distinction` channel binding), as a new Perception base with its own A/A, never as an arm.
+  Recommended: conditional, as stated.
