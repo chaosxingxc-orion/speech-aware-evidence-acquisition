@@ -1,0 +1,174 @@
+{
+  "acceptance": {
+    "delivered_estimate": {
+      "bootstrap": {
+        "draws": 10000,
+        "seed": 20260915,
+        "unit": "whole utterance"
+      },
+      "exchange_rates_pp_per_row": {
+        "false_fill_removed": 0.033,
+        "nonempty_exact_lost": -0.07
+      },
+      "intent_rows_moved_must_be": 0,
+      "rule": "empty the lock Solver row where the rank-1 verdict is E=none AND N1 >= 0.2 (and the fixed N1 grid), v4g base"
+    },
+    "information_gain": {
+      "baselines": [
+        "n1",
+        "n1+prior",
+        "n1+prior+lock"
+      ],
+      "bootstrap": {
+        "draws": 2000,
+        "seed": 20261010,
+        "unit": "whole utterance"
+      },
+      "rule": "CI95 lower bound of the cross-fitted AUC increment of the rank-1 verdict over the baseline for 'gold empty' > 0",
+      "stability": "the same sign and CI-LB > 0 on TRAIN Fold A with the rule fixed on Fold B: R6-A's term, not this cell's"
+    },
+    "node_local": {
+      "form_failure": "an arm whose rank-1 tag parse rate (ok) is below parse_rate_min is a FORM FAILURE, not a verdict",
+      "intent_guard": "a guard moving by more than the twin's own movement plus 0.65 pp fails the arm",
+      "none_precision_min": 0.75,
+      "none_recall_min": 0.8,
+      "parse_rate_min": 0.9,
+      "verdict": "rank-1 candidate E=none against empty gold (reader E2b)"
+    },
+    "plateau": "two evaluated Perception-entity rounds without an arm clearing node-local acceptance close the node"
+  },
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-generation-v1",
+      "role": "the sealed flight: every arm below is a column of it",
+      "run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1"
+    },
+    "columns": {
+      "aa": {
+        "role": "the in-flight twin: replicate_of lock, the null of every contrast"
+      },
+      "lock": {
+        "relpath": "configs/probes/slurp_native_role_perception_v3.txt",
+        "role": "the delivering arm: LEFT of every contrast (the locked template, untemplated)",
+        "sha256": "767497809ccad58589f4f2537ffb29c3bb15120b4828dfa5edcb87abe63ac8a2"
+      },
+      "p1": {
+        "relpath": "configs/probes/nx/perception/r6/r6-p1.txt",
+        "role": "candidate Perception instruction template (hash-pinned)",
+        "sha256": "8cd1584653e8bd99db709728360e0c359651f90b16974a551e1c3b3bb986f2a8"
+      },
+      "p2": {
+        "relpath": "configs/probes/nx/perception/r6/r6-p2.txt",
+        "role": "candidate Perception instruction template (hash-pinned)",
+        "sha256": "2a27d0d446c6d83103412040d6dd50532acc2e5bbae18245c07362ddf45d0f42"
+      },
+      "p3": {
+        "relpath": "configs/probes/nx/perception/r6/r6-p3.txt",
+        "role": "candidate Perception instruction template (hash-pinned)",
+        "sha256": "12ff7812e11f06bf4368ffd11129fee173c42f53dae268f4ae5ffe3863543a1e"
+      }
+    }
+  },
+  "boundary": "A development read on a TRAIN fold (owner decisions 28 and 86); node-local, never a system-level claim. No utterance text, transcript, gold value, note body, mention text or model output is printed or persisted.",
+  "decision_rule": "SAME-FLIGHT PERCEPTION TEMPLATE COLUMN READ (NX programme round R6-P1; owner decisions 245-248; instrument E1/E2 at the Perception node; claim ceiling 'nominated'; a MEASUREMENT cell that claims no benefit). One flight, one Perception visit per row, five arms over the SAME QueryState and evidence: p1 (E= presence tag), p2 (E= tag + up to three M= heard mentions), p3 (E= tag with an unsure hedge + mentions), aa (the twin, replicate_of lock) and lock (the locked template, delivering, last); each non-delivering arm is followed by its own first-visit Solver contact (the LOCKED Solver template) over its own note. THE READS, all from this one flight's sealed columns, model-free (scripts/analysis/nx_r6_read.sh): (1) NODE-LOCAL (reader E2b, scripts/analysis/slurp_nx_perception_column_read.py, tag grammar configs/probes/nx/perception/r6/TAG-GRAMMAR-v1.md, p3 read with --tag-set p3=none,some,unsure): per arm, on the rank-1 candidate and on the list majority, the parse classes (ok / absent / invalid), E=none AUC / precision / recall against empty gold, E=some precision / recall against non-empty gold, the unsure rate by gold class, heard-mention containment (share of gold entities whose normalised surface equals an offered M= surface, per slot type) and option precision; the paired intent guards against lock (gold on list, rank-1 share, candidate count, prompt tokens, note parse status); whole-utterance cluster bootstrap CI95, 10,000 draws, seed 20260915. (2) INFORMATION GAIN and the GATE ESTIMATE per candidate arm (scripts/analysis/slurp_nx_r6_upstream_empty.py --verdict-source perception-arm:<arm> --gain-baseline {n1,n1+prior,n1+prior+lock}): the cross-fitted AUC increment of the rank-1 E=none verdict over the baseline for 'gold empty' with a whole-utterance cluster bootstrap CI95 (2,000 draws, seed 20261010), and the delivered-metric estimate of the c3verdict-style gate (verdict E=none AND N1 >= 0.2, plus the fixed N1 grid) on the lock Solver column of the v4g base (10,000 draws, seed 20260915): pp with CI95, false fills removed, non-empty exact lost, intent rows moved. (3) LOCKED-CONSUMER read: each arm's own level-2 Solver column against lock's (the E2 Solver reader inside the node-local pass, and the official pooled SLU-F1 of each column scored once with slurp-slu-official-train and read paired per row). (4) THE TWIN NULL: aa minus lock on every metric, read first. ACCEPTANCE (design sections 2.2 and 4, decision 247): NODE-LOCAL acceptance of an arm = rank-1 E=none recall >= 0.80 and precision >= 0.75 on empty-gold rows, with a rank-1 tag parse rate (ok) >= 0.90 (below that the arm is reported as a FORM FAILURE, not a verdict), and no intent guard moving by more than the twin's own movement plus 0.65 pp; INFORMATION GAIN = the CI95 lower bound of the cross-fitted AUC increment over {N1, intent prior} above zero (additional) -- stability (the same sign and CI-LB > 0 on TRAIN Fold A with the rule fixed on Fold B) is R6-A's term, not this cell's; the delivered-metric estimate is reported through the measured exchange rates (+0.033 pp per false fill removed, -0.070 pp per non-empty exact row lost), with intent rows moved = 0. NOTHING IS LOCKED HERE: this is a selection read on the selection roster. PLATEAU RULE: two evaluated Perception-entity rounds without an arm clearing node-local acceptance close the node; the next lever is then the v2 note contract (decision 248) or the supply-side presence prior, in that order.",
+  "information_gain": {
+    "baselines": [
+      "n1",
+      "n1+prior",
+      "n1+prior+lock"
+    ],
+    "driver": "scripts/analysis/slurp_nx_r6_upstream_empty.py",
+    "output": "analysis/SAEA-SLURP-NX-R6-PERCEPTION-GAIN-V1/<arm>/<baseline>",
+    "verdict_source": "perception-arm:<arm>"
+  },
+  "node_local": {
+    "bootstrap": {
+      "cluster": "whole utterance",
+      "draws": 10000,
+      "seed": 20260915
+    },
+    "driver": "scripts/analysis/slurp_nx_perception_column_read.py",
+    "output": "analysis/SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1/node-local",
+    "report_schema": "saea-nx-perception-column-read-v1",
+    "tag_grammar": {
+      "relpath": "configs/probes/nx/perception/r6/TAG-GRAMMAR-v1.md",
+      "sha256": "9c0a2e171fac06edebd37cfbc1d38490d932493601a7ce4ec770203b3dec4295"
+    }
+  },
+  "official_columns": {
+    "bootstrap": {
+      "cluster_key": "sample_id",
+      "draws": 10000,
+      "seed": 20260915,
+      "unit": "row (paired); the whole-utterance numbers are the node-local and information-gain reads' own"
+    },
+    "output": "analysis/SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1/<pass>",
+    "paired_driver": "scripts/analysis/stage3_paired_read.py (column arms; --cluster-key sample_id)",
+    "passes": {
+      "aa-vs-lock": {
+        "gating": "sets the bar",
+        "left": "lock",
+        "right": "aa"
+      },
+      "p1-vs-lock": {
+        "gating": false,
+        "left": "lock",
+        "right": "p1"
+      },
+      "p2-vs-lock": {
+        "gating": false,
+        "left": "lock",
+        "right": "p2"
+      },
+      "p3-vs-lock": {
+        "gating": false,
+        "left": "lock",
+        "right": "p3"
+      }
+    },
+    "render": "scripts/analysis/stage3_rollout_score.py --mode perception-branches",
+    "scorer": "slurp-slu-official-train",
+    "scoring_jobs": 5,
+    "status": "UNEXERCISED on a v4 Perception template run (instrument README section 7 item 7); the read driver runs it last and it never gates the node-local acceptance"
+  },
+  "output": {
+    "analysis_root": "analysis/SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1"
+  },
+  "read_driver": "scripts/analysis/nx_r6_read.sh",
+  "read_run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1",
+  "recipe_id": "slurp-nx-r6-perception-fold-b-column-analysis-v1",
+  "registered_at_utc": "2026-10-10T12:00:00.000000+00:00",
+  "resampling": {
+    "bootstrap_draws": 10000,
+    "seed": 20260915
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1",
+    "read": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1"
+  },
+  "schema": "saea-slurp-paired-analysis-recipe-v1",
+  "steps": [
+    "0. Refuse unless the READ row SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-COLUMN-READ-V1 is root countersigned.",
+    "1. Refuse unless the flight carries a COMPLETE sealed 1,080-row manifest with the saea-perception-branch-arms-v4 receipt on every row, verified by the bundle (invariant I7v).",
+    "2. Node-local (E2b): per arm the tag parse classes, the rank-1 and list-majority presence verdict metrics, the heard-mention containment and option precision, the paired intent guards against lock and the level-2 Solver column's exact-set read (tag sets: p3 admits unsure).",
+    "3. Information gain and the gate estimate per candidate arm and per baseline (n1, n1+prior, n1+prior+lock), 0 GPU.",
+    "4. Twin null (aa vs lock) first, then each candidate vs lock under the acceptance block; per-scenario tables from the official columns when they exist.",
+    "5. Official: render each arm's level-2 first-visit Solver answer through the delivered row's normaliser and projection and score it ONCE with slurp-slu-official-train (five jobs, never sharded)."
+  ],
+  "tag_sets": {
+    "p1": [
+      "none",
+      "some"
+    ],
+    "p2": [
+      "none",
+      "some"
+    ],
+    "p3": [
+      "none",
+      "some",
+      "unsure"
+    ]
+  },
+  "title": "Cell NX-R6-PERCEPTION -- the same-flight Perception instruction-template column read: three candidates and the twin, each against the delivering lock arm"
+}

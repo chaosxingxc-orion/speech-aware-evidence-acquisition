@@ -1,0 +1,133 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/nx/nx_r6_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/analysis-recipe-v1.json",
+      "sha256": "c36bfe6132887c8e32e7508af5e7b130c5b4d8303d337494a68e170f8a3b5caa"
+    },
+    "candidates_readme": {
+      "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-candidates-v1/README.md",
+      "sha256": "03574db7b42b286d0b4721d6ac9133fd39254c0c70350a4c7e3533720acf1ed2"
+    },
+    "derive_script": {
+      "path": "scripts/flights/nx/derive_slurp_nx_r6_cells.py",
+      "sha256": "d6820cc20de8abc42895cc77919e3e8020d51c167be4222d51994692f9c583a4"
+    },
+    "design_note": {
+      "path": "docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md",
+      "sha256": "8d30e09570500bf144d43e254fff812dd80d9d81f53f704a93b906c24b8147bd"
+    },
+    "instrument_readme": {
+      "path": "docs/readiness/2026-10-10-slurp-nx-perception-template-column-instrument-v1/README.md",
+      "sha256": "4d24d214c79adb2d9265f85c40be621db92ffd5dac5ed09f3437d09b2c26a2f0"
+    },
+    "offline_note": {
+      "path": "docs/results/2026-10-10-slurp-nx-r6-upstream-empty-decision-offline.md",
+      "sha256": "cb45b6f44bd3656f957b6713f9ced42f974f3586ebb3d580d9a325f305dc10b1"
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": "570ff539b30c2e13813de024fc21b5ebba45fb71027d3e153fed22d6e3f847cf"
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1-preregistration.md",
+      "sha256": null
+    },
+    "programme": {
+      "path": "docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md",
+      "sha256": "ece3e9b93f60fa03b9453d577984cbc3891f1be512ac389d4e6859fb8cadfdf0"
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/protocol-registered-v1.json",
+      "sha256": "10b7dd2427de97462af6ef4bc6ab08923a2781f865d24a0705b8b82b5a1ee551"
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/registered-facts-v1.json",
+      "sha256": "ebc578444cd5ec1214e31cafd2b9f77eef8b89f6e4ed272a675478a097467d9f"
+    },
+    "registration_base_commit": "fc0c0fc14a3b080e04752618188d798628471a76",
+    "tag_grammar": {
+      "path": "configs/probes/nx/perception/r6/TAG-GRAMMAR-v1.md",
+      "sha256": "9c0a2e171fac06edebd37cfbc1d38490d932493601a7ce4ec770203b3dec4295"
+    }
+  },
+  "authorization_basis": "Owner decisions 245-248 (2026-10-10), 239, 139, 192, 28/86; the node-template instrument (docs/superpowers/specs/2026-10-09-slurp-nx-node-template-variant-instrument-design.md) and its Perception form (docs/readiness/2026-10-10-slurp-nx-perception-template-column-instrument-v1/README.md); docs/readiness/2026-10-10-slurp-nx-r6-node-local-then-cascade-design-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 43200,
+    "generation_calls_cap": 10800,
+    "gpu_hours_fit_inclusive": 4.1,
+    "native_task_contract_calls_cap": 10800,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 31548,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 160,
+      "generation_calls_cap": 40,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 40,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 102
+    }
+  },
+  "cell_kind": "Stage-3 same-flight NODE-TEMPLATE column cell at the PERCEPTION node (NX instrument E1, level-2 Solver columns, label none), claim ceiling 'nominated', a MEASUREMENT cell (claims_benefit false). One arm on TRAIN Fold B 1,080 with five Perception template arms (three candidates, aa twin, lock delivering), and a four-row form smoke.",
+  "claim_boundary": "No system-level, superiority, generalisation, component-causal, held-out, confirmatory or paper-scale claim; a node column read on a development fold whose ceiling is 'nominated'.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly cell NX-R6-PERCEPTION: the COMP-1b module composition on lock v2.2 with the Reviewer loop off on TRAIN Fold B under phase-native-module-v1-c10 with a Perception template column; read p1, p2, p3 and aa against lock in the same flight; judge the node metric and the information gain at the twin bar.",
+  "decision_id": "slurp-nx-r6-perception-fold-b-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1",
+    "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-FIT-V1",
+    "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the resident np4 session by anyone but the coordinator",
+    "any ASR, transcript, encoder or paid-API contact",
+    "re-flying or re-scoring any sealed cell",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered module block, Fold B re-target and template column",
+    "delivering a Perception verdict (the gate estimate is an offline read)",
+    "opening an arm column before the READ row is countersigned"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_a_contact_authorized": false,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "arm": {
+      "composed_config": "a4fa7b067f4abebbd18e15880a4917215bf9cdcec7feef6042b0ee4a72031e1a",
+      "protocol": "fe5dff5ee23fd168d5dc7261948ab7cf0d11554aba92b9a917c56b6b72571eff"
+    },
+    "smoke": {
+      "composed_config": "0dbfa41edeeceb76013242ef351c1ca18e7e8ea905892f62ccb047e0d4479ec7",
+      "protocol": "dcb376f171c4254addadefa0c4c43c331925a680eb9df897c79368849515f143"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

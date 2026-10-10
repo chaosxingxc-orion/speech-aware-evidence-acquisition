@@ -1,0 +1,92 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "prepare-supply",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-baseline-v1",
+      "cell_id": "slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Four-row form smoke of cell NX-R6-PERCEPTION registered before contact on 2026-10-10 by script (decision 58) from the P-SV-4 Fold B fragments and the module compiler: the COMP-1b composition on lock v2.2 with the Reviewer loop off and a Perception template column of three candidates, an in-chain twin and the locked delivering arm (programme round R6-P1; owner decisions 245-248). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/nx/nx_r6_mint_receipt.py) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/nx/nx_r6_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16; the first Fold B supply at w_agree 1.0 with the centroid key is the R1 cells' own, so the output digest is expected to equal the R1 cells' and a different digest means the knowledge channel moved -- stop and report); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-nx-r6-perception-fold-b-admission-v1",
+            "kind": "decision",
+            "reason": "Decision slurp-nx-r6-perception-fold-b-admission-v1 pinned by scripts/flights/repin_cell.py.",
+            "relpath": "coordination/slurp-nx-r6-perception-fold-b-v1/root-admission-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The Fold B exemplar-intent AGREEMENT table this cell's boundary channel ranks with (w_agree 1.0), built model-free by scripts/build_slurp_intent_exemplar_agreement.py (DEV parameters, the DEV/Fold A builder) from the committed FILLER BASE cell's pins -- zero model, server, encoder, embedder, scorer, network and GPU contacts. Measured: 1,080 rows, every row 20 votes, 0 self-excluded exemplars, 0 rows without a vote, 60 facets reachable; bytes identical to the filler table (docs/readiness/2026-09-28-slurp-fold-b-phase2-inputs-v1/README.md; ledger row SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1).",
+            "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1/agreement.jsonl",
+            "sha256": "06990a86d20469c668ac4231990b49e5926d4771c9af8fbb13ae634b3ec21911"
+          },
+          {
+            "kind": "preparation",
+            "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed TRAIN Fold B speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the Fold B agreement table, with zero model, tokenizer, encoder, scorer or server contacts. E16: this cell pins its own. --allow-output-change must never be passed.",
+            "relpath": "prepared/SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-V1"
+    }
+  ],
+  "date": "2026-10-10",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 40,
+    "planned_speech_audio_seconds": 102,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops cell NX-R6-PERCEPTION and the arm does not open. The resume-recovery clause of owner decision 22 applies to the arm, not to a four-row form smoke, which is re-flown whole if it is re-flown at all.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 160,
+    "generation_calls_cap": 40,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 40,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 102
+  },
+  "fragment_kind": "saea-slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-v1",
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+    "decision_population": "TRAIN Fold B, the phase-2 READ roster (coordinator ruling O2; owner decision 186: rollout-exposed only, and no branch value of this cell is built from Fold B rollouts): 4 rows of docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json (SLURP-STAGE3-FILLER-FOLD-B-C01-SMOKE-4-V1), the first four Fold B rows the filler family froze as a prefix receipt; structural form proof only, no score and no read.",
+    "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+    "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "ids": [
+        "slurp:train:000010:audio-1502199193",
+        "slurp:train:000029:audio-1488538279",
+        "slurp:train:000092:audio-1488560082",
+        "slurp:train:000097:audio-1498564512"
+      ]
+    }
+  ],
+  "preserve_wire_responses": true,
+  "purpose": "Four-row structural form smoke of NX round R6-P1: that the declared consumption_module block loads and verifies against the fragment's policy blocks, that phase-native-module-v1-c10 (ceiling 10) is the bound, that the five Perception template arms fan out at the one Perception visit with the delivering lock arm last and each non-delivering arm takes its own level-2 Solver contact, that every arm fits its estimated bound, that the arm receipt (saea-perception-branch-arms-v4) seals and invariant I7v holds, and that the episode completes. Scored by no one and read by no one: four rows are never evidence of benefit or harm.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-B-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is a same-flight node-template column of the NX instrument (E1, Perception node) -- three hand-written candidate Perception instruction templates and an in-flight twin read as columns against the delivering locked-template arm -- with no rollout pool, no per-sample credit, no update operator and no evolving store. The two composed COMP-1b actions and the v4g delivery normaliser are the base, already admitted by the A2 read and the v4g lock, and are not exercised as learning operators here.",
+    "operators_used": []
+  }
+}
