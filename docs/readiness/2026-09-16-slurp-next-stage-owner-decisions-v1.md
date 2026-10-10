@@ -967,3 +967,24 @@ module hooks, base and dataset fragments and the delivery normaliser but no regi
 for the 10 dev calls, experiment / model fragments, ledger row, readiness package, an `e220` byte-proof case, an own null;
 about 1-2 engineering days, of which the feature packets need an encoder pass). Decision 259 will propose exactly these
 model-free items.
+
+## Decision 259 PROPOSED by the coordinator (Fable 5.1), 2026-10-10: carrier model-free readiness work (no GPU, carriers stay held)
+
+Purpose: the owner goal's second clause ("the engineering base runs completely on Audio2Tool, E21, E22") can be
+made provable WITHOUT a carrier flight, inside decisions 242 / 252; the proof on file
+(`docs/readiness/2026-10-10-carrier-model-free-end-to-end-proof-v1/README.md`) names exactly what is missing.
+- **259** (PROPOSED) Authorise, as model-free engineering in GPU gaps (Sonnet in worktrees, Fable reviews), in this
+  order: (1) **E21 seal path**: make `FlightRuntime._wire_check_seal_and_score` write the unit-stitch trace record that
+  the real `seal()` writes (invariant I7), with a unit test reproducing the failing shape, then add the `wire-check`
+  stage to the E21 ALL-OFF cells through a successor registration (registered bytes are never edited in place), then
+  run the full 1,593-unit model-free seal-and-score once (about half a day; the runtime edit is identity-bound, so
+  pinned ready cells re-pin at their next flip); (2) **E22 registration**: build the window inventory for the 10 dev
+  calls (CPU, about 450 windows), write the E22 experiment / baseline / dataset / model fragments (`asr-wer-whisper`
+  only, np4 max1024 geometry copied from E21), add `--carrier e22` to the module registration script and an `e220` case
+  to `module_equivalence_proof.py`, generate the HELD ALL-OFF cells, package, ledger rows, scripts and tests, and run
+  the same model-free proof steps on them (1-2 days; the window FEATURE PACKETS need an encoder pass = a tool-class
+  contact, which is NOT part of 259 and would be registered separately); (3) **A2T hardening**: add the A2T dataset
+  fragment to the derived-media confinement check's list, and a standing paper-column regression fixture that
+  re-scores the sealed direct bundle with `a2t-toolcall-official` (hours). Nothing in 259 contacts a model or flies;
+  the carriers' GPU stays held until the lock of decision 252. Recommended: yes, scheduled behind the SLURP VER-1
+  rounds so they never block a SLURP flip or flight.
