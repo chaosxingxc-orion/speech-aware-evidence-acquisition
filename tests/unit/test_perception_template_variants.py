@@ -563,3 +563,139 @@ def test_builders_must_match_the_declared_template_branches(tmp_path, monkeypatc
             harness.run(snapshot=_intent_snapshot())
     finally:
         harness.close()
+
+
+# ---------------------------------------------------------------------------
+# 4. The dry-run walk and the review-off rehearsal profile
+# ---------------------------------------------------------------------------
+
+
+def test_the_dry_run_walks_every_perception_template_arm_model_free(tmp_path):
+    import hashlib
+
+    from speech_aware_evidence_acquisition.analysis.native_episode_dry_run import (
+        dry_run_native_episode,
+    )
+    from speech_aware_evidence_acquisition.rails.controllers import PhaseProgram, PhaseSpec
+    from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
+
+    from test_rails_frozen_core_client import _World, _plan
+    from test_rails_runner import _FakeAdapter, _knowledge_snapshot
+
+    group = _group()
+    world = _World(tmp_path)
+    world.samples = world.samples[:1]
+    sample = world.samples[0]
+    program = PhaseProgram(
+        program_id="dry-run-perception-template-proof-v1",
+        phases=tuple(
+            PhaseSpec(
+                name=phase, purpose="answer" if phase == "solver" else phase,
+                knowledge="supplied", response_format_id=None, barrier=False,
+            )
+            for phase in harness_module.PHASES
+        ),
+        max_contacts=8, stop_rule="native-role-episode",
+    ).validate()
+    episode = _perception_live_config(group=group, max_contacts=8)
+
+    def material_for_phase(phase, context, prior):
+        return PhaseMaterial(
+            instruction=f"dry-run instruction for {phase}", response_format=None,
+            contact_id=f"dry-run:{phase}", purpose="answer" if phase == "solver" else phase,
+        ).validate()
+
+    def arm_builder(arm_id):
+        def build(phase, context, prior):
+            return PhaseMaterial(
+                instruction=f"dry-run instruction for {phase}\n{TEXT[arm_id]}",
+                response_format=None, contact_id=f"dry-run:{phase}:{arm_id}", purpose=phase,
+            ).validate()
+        return build
+
+    phase_binding = {
+        "material_for_phase": material_for_phase, "supply_for_phase": None,
+        "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": {sample.sample_id: {
+            "packet_id": sample.audio_ref.path, "sha256": sample.audio_ref.sha256,
+        }},
+        "query_source": "speech_audio", "supply_specs": {},
+    }
+    runtime = SimpleNamespace(
+        _composed=SimpleNamespace(values={}), _plan=_plan(), _samples=tuple(world.samples),
+        _adapter=_FakeAdapter(samples=tuple(world.samples)),
+        _phase_supply_seeds=lambda *args, **kwargs: ({}, {}),
+        _dry_run_binding={
+            "policy": program.program_id, "program": program, "episode": episode,
+            "phase_binding": phase_binding, "store_ids": (),
+            "supply_variant_for_phase": None,
+            "template_variant_materials": {
+                branch.branch_id: arm_builder(branch.branch_id)
+                for branch in group.branches if branch.instruction_template is not None
+            },
+        },
+    )
+    document = dry_run_native_episode(
+        runtime, answers={"perception": "perception draft", "solver": "solver draft"},
+        node_order=("perception", "solver"),
+    ).as_json()
+    perception = next(n for n in document["nodes"] if n["phase"] == "perception")
+    arms = {a["arm_id"]: a for a in perception["supply_variant_arms"]}
+    assert list(arms) == ["p1", "p2", "aa", "lock"]
+    locked = hashlib.sha256(b"dry-run instruction for perception").hexdigest()
+    assert arms["lock"]["instruction_sha256"] == arms["aa"]["instruction_sha256"] == locked
+    assert arms["p1"]["instruction_template"]["sha256"] == SHA["a"]
+    assert len({a["instruction_sha256"] for a in arms.values()}) == 3
+    solver = next(n for n in document["nodes"] if n["phase"] == "solver")
+    assert solver["supply_variant_arms"] == []
+
+
+def test_the_review_off_rehearsal_profile_admits_a_perception_template_group():
+    from speech_aware_evidence_acquisition.analysis import native_graph_rehearsal as graph
+
+    v = _values()
+    v["policy"] = "phase-native-module-v1-c8"
+    v["native_graph_capacity_profile"] = "review-off-v1"
+    parsed = graph.rehearsal_profile(v, "review-off-v1")
+    assert parsed.max_contacts == 8 and parsed.perception_branch_group.is_template
+
+
+def test_a_v4_block_replays_as_v4_for_seal_only_resume():
+    import hashlib
+
+    from speech_aware_evidence_acquisition.rails.supply_variants import (
+        PerceptionBranchReplayContact,
+        perception_branch_receipt,
+        perception_branch_record,
+        replay_perception_branch_block,
+    )
+
+    group = _group()
+    records, contacts = [], {}
+    for index, branch in enumerate(group.branches):
+        text = f"note-{branch.branch_id}" if index < 2 else "note-lock"
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        request = f"{index + 1:x}" * 64
+        solver_request = f"{index + 5:x}" * 64
+        contacts[f"c{index}"] = PerceptionBranchReplayContact(
+            request_sha256=request, response_text_sha256=digest, text=text,
+        )
+        contacts[f"s{index}"] = PerceptionBranchReplayContact(
+            request_sha256=solver_request, response_text_sha256=digest, text="answer",
+        )
+        records.append(perception_branch_record(
+            branch=branch, branch_index=index, contact_id=f"c{index}",
+            request_sha256=request, response_text_sha256=digest, note_sha256=digest,
+            note_parse_status="malformed", candidate_intent_ids=(), supplied_value_ids=(),
+            solver_contact_id=f"s{index}", solver_request_sha256=solver_request,
+            solver_response_text_sha256=digest, candidate_supply_value_ids=(),
+            template_group=True,
+        ))
+    block = perception_branch_receipt(group=group, phase_id="perception", records=records)
+    assert block["schema"] == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4
+    replayed = replay_perception_branch_block(block, contacts=contacts)
+    assert replayed["schema"] == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4
+    assert [r["instruction_template"] for r in replayed["branches"]] == [
+        {"relpath": "probes/nx/p1.txt", "sha256": SHA["a"]},
+        {"relpath": "probes/nx/p2.txt", "sha256": SHA["b"]}, None, None,
+    ]
