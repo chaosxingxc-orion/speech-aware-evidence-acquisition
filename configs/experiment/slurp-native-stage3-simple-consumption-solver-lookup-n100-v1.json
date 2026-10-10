@@ -14,7 +14,7 @@
       "dataset_fragment": "slurp-speech-native-simple-consumption-n100-v1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "readiness": {
-        "reason": "Root227 admits the exact frozen-policy fixed-roster comparison after fresh full-family capacity and historical natural structural qualification; final frozen and live gates remain required.",
+        "reason": "Root227 admits the exact frozen-policy fixed-roster comparison after fresh full-family capacity and historical natural structural qualification; final frozen and live gates remain required. Superseded 2026-10-10 by owner decision 243 (Clean it up; docs/readiness/2026-10-10-decision-243-cleanup-v1.md): this ChatGPT-era simple-consumption N100 cell never flew and made zero model contacts (no runs/ or attempts/ record on the data root; only a model-free prepared phase-supply artifact exists), its registration carries an open defect (N20 prepared implementation source differs), and the owner line it belonged to is closed by owner decisions 230 and 234 (2026-10-09; no new N20/N100 GPU family).",
         "requirements": [
           {
             "kind": "preparation",
@@ -30,7 +30,7 @@
             "sha256": "094f46c5ee08215b9763d08753914ca6b80b4ebcac919e5ed45384328f6888ae"
           }
         ],
-        "state": "ready"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-SIMPLE-CONSUMPTION-SOLVER-LOOKUP-N100-V1",
       "system_text_policy_binding": {
