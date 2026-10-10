@@ -1982,3 +1982,39 @@ Run SAEA-SLURP-STAGE3-PSV4-FOLD-B-V1 / attempt-slurp-native-stage3-psv4-fold-b-g
 ## 2026-10-10: NX R1 iteration 2 Solver template column (TRAIN Fold B) - NOT NOMINATED (every arm; none HARM; Solver-template line CLOSED by the plateau rule; DESCRIPTIVE, zero contacts for the read) (Claude Opus 5.5)
 
 Run SAEA-SLURP-STAGE3-NX-R1-I2-SOLVER-FOLD-B-V1 / attempt-slurp-native-stage3-nx-r1-i2-solver-fold-b-generation-v1 (COMPLETED, scored once; 1,080 rows, 8,640 contacts, 25,238.379 speech-audio seconds, 2.085 GPU-h monitored, generation wall 7,674 s; flight commit 3910c77c8, clean tree; run manifest 06b0cb68..., outputs f2c31ae5..., scores 87884436...). Registered read SAEA-SLURP-STAGE3-NX-R1-I2-SOLVER-FOLD-B-COLUMN-READ-V1 (recipe slurp-nx-r1-i2-solver-fold-b-column-analysis-v1 2bb0d7d6...; node-local v2 tables ce347890...; seven official column scorings, score-summary 2ae8cd4e...). The rule decides on the official column: pooled SLU-F1 delta vs lock CI-LB > 0, AND above the aa delta, AND intent rows differing <= 7; HARM iff UB < 0. Official pooled SLU-F1 delta vs lock: aa twin -0.43 [-1.08, +0.19]; r1-i2-c1 (gated after extraction) -0.88 [-2.04, +0.28] (intent 8 rows); r1-i2-c2 (soft empty sentence) -0.90 [-2.07, +0.27] (intent 8; node false fill +9.95 [+6.37, +13.78]); **r1-i2-c3 (c3 + conventions, declared +1.54 carrier) +0.74 [-0.43, +1.94]**, per-row -2.56 [-3.48, -1.70], intent 7, node normalised exact-set +4.91 [+3.15, +6.76] with false fill -18.11 and non-empty exact -2.62; r1-i2-c4 +0.10 [-0.97, +1.19]; r1-i2-c5 (ablation) -0.03 [-0.97, +0.93]. Every arm is NOT NOMINATED (no CI-LB > 0) and none is HARM. Both in-template empty gates failed: c1 erased the empty effect and c2 reversed it. The conventions did not recover c3's MISSING loss (-12 -> -18 non-empty rows, `date` first). Offline v4g(X) - X is +0.77 to +1.81 with CI-LB > 0 on all five candidates. On the v4g base, i2-c3 vs lock is +0.08 at the point. The apply read did not re-apply this run's lock / aa; their v4g levels 64.86 / 64.41 come from the decision-239 study. The cross-iteration step 2b left empty pass directories (non-gating); a point level arithmetic gives a lock - lock flight offset of +1.30 pp. **Plateau rule: the Solver-template line is CLOSED after its second and last round; `configs/probes/slurp_native_role_solver_v2.txt` (18bff5c5...) stays the Solver lock.** Per owner decision 239, the empty-entity decision moves upstream to R6: a Perception presence verdict consumed at delivery, gated by the supply's entity-free share N1 >= 0.2. The offline study reads +0.75 / +0.98 pp on v4g with 0 intent rows; a deterministic v5 fails. Development numbers (decisions 28 and 86). [Tables, gate diagnosis, v4 / v4g, cross-iteration, lessons, reproduce](2026-10-10-slurp-nx-r1-i2-solver-fold-b-column-read.md).
+
+## 2026-10-10: NX R6 design read (owner decision 239), where the empty-entity decision should live upstream of the Solver: offline, zero contacts (DESCRIPTIVE read) (Claude Opus 5.5)
+
+Read SAEA-SLURP-NX-R6-UPSTREAM-EMPTY-OFFLINE-V1 (recipe slurp-nx-r6-upstream-empty-offline-v1; driver `scripts/analysis/slurp_nx_r6_upstream_empty.py` a76de68c...; outputs report.json 6445b95a..., tables.md 285ce54a..., content hashes without `generated_at`). Inputs: the sealed NX R1 Solver template columns on TRAIN Fold B (iteration 1 `r1-c3`, iteration 2 `r1-i2-c3`, the delivering `lock`, the twin `aa`; 1,080 rows, 392 empty-gold), each reproduced in-process to the sealed official per-sample fields on 1,080 / 1,080 rows; v4g applied through the registered normaliser (v4g(lock) 63.6854 reproduces the registered value); phases and Perception trace records for the signals; the v4g TRAIN entity-rate table (pool disjoint from Folds A and B) and the cells' exemplar pool annotations; the COMP-1b A2 and Fold A delivered columns for the deterministic v5 grid. Zero model, server, tokenizer, encoder, embedder, scorer-subprocess, network and GPU contacts; gold only through the governed TRAIN and devel loaders.
+
+**Separability (AUC for "gold empty").**
+- Best single pre-Solver signal: the supply's entity-free exemplar share N1, 0.856 [0.832, 0.877].
+- TRAIN intent priors: 0.73-0.75. Audio duration: 0.67.
+- Perception note: no entity information at all. `unresolved_fields` and `evidence_refs` are empty on 1,080 / 1,080 rows; the other note counts score 0.45-0.54.
+- Combinations: all pre-Solver signals, cross-fitted, 0.86; with the lock item count, 0.89.
+
+**Counterfactuals (official pooled SLU-F1, pp vs lock on the same base).**
+- Deterministic emptying when a signal fires: at most +0.13 / +0.11 on the v4g base; cross-fit +0.13 / -0.04.
+- The aggressive arm used only as a presence verdict, gated by N1 >= 0.2:
+  - **+0.75 [+0.27, +1.24] (i1) and +0.98 [+0.50, +1.48] (i2) on the v4g base**, and +1.38 / +1.56 on v3;
+  - intent rows changed 0; false fill 91 -> 64 and 93 -> 60; 3 non-empty exact rows lost per flight.
+- The same verdict ungated: +0.06 / +0.45 (v4g).
+- Best swept point on the v4g base: +0.85 / +1.16, cross-fit +0.85 / +1.16. No operating point clears +1.5 pp on the v4g base.
+- Exchange-rate check: 27 emptied false fills x 0.033 - 3 x 0.070 = +0.68, against +0.75 measured.
+
+**Lost rows.**
+- The aggressive arm lost 22 / 23 non-empty rows that lock had exact: 17 / 14 emptied entirely.
+- They are single-entity date / time / food / media values on intents with a TRAIN entity rate of about 0.8, with 14-20 entity-bearing exemplars in supply. Perception had the gold intent at rank 1 on 18 / 21 of them.
+- The N1 gate leaves 17 / 22 and 18 / 23 of them untouched.
+
+**Deterministic v5 (v4g + empty when the signal fires).** Selected on A2 (N1 >= 0.6): A2 +0.33 [+0.11, +0.63], Fold A +0.16 [-0.18, +0.48], Fold B +0.04 [-0.23, +0.29]. No grid rule clears 0.67 pp on any pool; rate rules beyond `ee-wilson` are harmful (Fold A -0.27 to -1.89).
+
+**Recommendation for the coordinator.**
+- **Fly R6 (A) first.** Perception note gains an explicit entity-presence verdict, consumed deterministically at delivery and gated by the supply's N1 share.
+  - Predicted +0.75..+0.98 on v4g, at the measured Solver-side verdict conversion (recall 0.81-0.83, precision 0.74-0.76; Perception's own verdict quality unmeasured).
+  - Cost: a level-2 Perception-branch cell, about 6 contacts per row, about 2.0 GPU-h; or about 1.2 GPU-h once E1 covers the Perception node.
+  - A Fold A two-arm Solver column (lock + `r1-i2-c3` as the verdict arm + twin, about 1.2 GPU-h) confirms the consumption rule on a fresh roster before or beside it.
+- **R6 (B), the per-intent prior card, is predicted at about +0.1.** The prior is already visible in the annotated exemplars; the N1 release gives +0.13 at M1; the soft sentence `i2-c2` gave false fill +9.95. The supply statistic belongs in R6 as the gate.
+- Neither variant is predicted to reach the 1.5 pp bar alone on the v4g base.
+
+DESCRIPTIVE; TRAIN and DEV development numbers (decisions 28 and 86); thresholds explored on the scoring roster, cross-fit beside. Note: docs/results/2026-10-10-slurp-nx-r6-upstream-empty-decision-offline.md.
