@@ -28,7 +28,7 @@
       },
       "population_cohort": "remaining-b2",
       "readiness": {
-        "reason": "Model-free prepared successor; DRAFT exposure rows block dispatch pending root admission and structural proof.",
+        "reason": "Model-free prepared successor; DRAFT exposure rows block dispatch pending root admission and structural proof. Superseded 2026-10-10 by owner decision 243 (Clean it up; docs/readiness/2026-10-10-decision-243-cleanup-v1.md): this ChatGPT-era k4 recovery1 remaining-b2 cell never flew and made zero model contacts (no runs/ or attempts/ record on the data root; only a model-free prepared phase-supply artifact exists), its DRAFT exposure rows were never countersigned and no decision receipt was minted, and the owner line it belonged to is closed by owner decisions 230 and 234 (2026-10-09).",
         "requirements": [
           {
             "kind": "preparation",
@@ -37,7 +37,7 @@
             "reason": "Model-free first-phase supply prepared by core.flight.repin on the launch commit; zero model, tokenizer or encoder contact."
           }
         ],
-        "state": "ready"
+        "state": "superseded"
       },
       "run_id": "SAEA-SLURP-CONTEXT-TEMPLATE-K4-RECOVERY1-N20-REMAINING-B2-BRANCH-16-V1",
       "system_text_policy_binding": {

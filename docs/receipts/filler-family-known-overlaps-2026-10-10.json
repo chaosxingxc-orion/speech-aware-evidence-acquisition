@@ -1,0 +1,59 @@
+{
+  "authority": "owner decision 243 (2026-10-10): record the overlap as KNOWN CUMULATIVE EXPOSURE, not independence",
+  "claims_still_asserted_by_the_test": "zero overlap with every other roster and probe sample, with every governed devel/test id, and with every receipt in the embedded proof",
+  "created_by": {
+    "commit": "84c22d759",
+    "date": "2026-10-02",
+    "readiness": "docs/readiness/2026-10-02-system-text-analysis-roster-joins-v1.md",
+    "summary": "ChatGPT-era commit binding the registered system-text-search analysis rosters (owner214 TRAIN optimization cohort; protocol-control-v3 under owner217); a metadata projection of already-frozen selection lists, no new contact"
+  },
+  "date": "2026-10-10",
+  "family_roster": {
+    "note": "unchanged; its embedded disjointness_proof (hash-pinned, dated before the overlap was created) still reads zero and is not rewritten",
+    "relpath": "docs/receipts/rosters/slurp-stage3-filler-fold-b-v1.json",
+    "sha256": "ddbdf5f499b406965ee47688b1fa3e50b67b0aeba9e39eac1c74ed4517b15e15",
+    "size": 1080
+  },
+  "filler_rows_outside_both_rosters": 280,
+  "known_overlaps": {
+    "docs/receipts/rosters/slurp-system-text-selection-400-analysis-v1.json": {
+      "cohort": "TRAIN Fold B positions 401-800",
+      "protocol": {
+        "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v3-owner217.json",
+        "sha256": "af67e4574a0125d45abf71425dc35e34813719de3c04c6ac3cb3b8089b905201"
+      },
+      "roster_id": "SLURP-SYSTEM-TEXT-SELECTION-400-V1",
+      "selection_receipt": "docs/receipts/rosters/slurp-system-text-selection-400-v1.json",
+      "selection_receipt_sha256": "687c17ab0bbcd1dfd8e493e1d0562bb2c5e0d66cee94dc9c10e3abe56f80e041",
+      "sha256": "bd0a62f9163b07e898983382b8802f3ce6d4bf367ce5b133746feba90bcfcf44",
+      "shared_sample_ids_with_filler_family": 400,
+      "shared_utterances_with_filler_family": 400,
+      "size": 400,
+      "stage": "Selection"
+    },
+    "docs/receipts/rosters/slurp-system-text-update-3-400-analysis-v1.json": {
+      "cohort": "TRAIN Fold B positions 1-400",
+      "protocol": {
+        "relpath": "docs/readiness/2026-10-01-slurp-system-text-search-v1/protocol-control-v3-owner217.json",
+        "sha256": "af67e4574a0125d45abf71425dc35e34813719de3c04c6ac3cb3b8089b905201"
+      },
+      "roster_id": "SLURP-SYSTEM-TEXT-UPDATE-3-400-V1",
+      "selection_receipt": "docs/receipts/rosters/slurp-system-text-update-3-400-v1.json",
+      "selection_receipt_sha256": "71a98d59b80c7e88ca3495a0bd6898fe143c319e3e2c5696bb1ec83e34e496d4",
+      "sha256": "8a42e217a550618e97110a33457dfad38900193c912628670ef9cfd714f27631",
+      "shared_sample_ids_with_filler_family": 400,
+      "shared_utterances_with_filler_family": 400,
+      "size": 400,
+      "stage": "Update3"
+    }
+  },
+  "meaning": [
+    "Fold B filler-family rows in these two rosters carry registered system-text-search exposure (selection and update-3 feedback within the owner214 sequence).",
+    "The filler family is therefore NOT independent of the system-text search; the zero in its embedded disjointness_proof holds for every receipt registered when it was drawn and for every other roster today.",
+    "NX reads on Fold B are development numbers already by decision 28; this record adds a named exposure source, not a new restriction.",
+    "No roster, config or hash-pinned byte was altered."
+  ],
+  "mutual_overlap_between_the_two_rosters": 0,
+  "schema": "saea-filler-family-known-overlaps-v1",
+  "union_in_filler_family": 800
+}

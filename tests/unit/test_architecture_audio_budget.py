@@ -12,7 +12,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def configured(label="seed", count=100):
     stem=f"slurp-native-stage3-simple-consumption-{label}-n{count}-"+("v2" if count==20 else "v1")
-    cell,=load_campaign_cells(ROOT,stem); c=cell.document
+    # Read the registered fragment directly: decision 243 (2026-10-10) retired the unflown review-off,
+    # solver-lookup and seed-aa N100 cells (readiness superseded), which campaign loading refuses by design;
+    # the budget arithmetic below is proven against their unchanged registered bytes.
+    import json
+    c=json.loads((ROOT/"configs/experiment"/f"{stem}.json").read_text(encoding="utf-8"))["cells"][0]
     return deepcopy(compose(ROOT,c["model_fragment"],c["dataset_fragment"],c["baseline_fragment"],stem).values)
 
 @pytest.mark.parametrize("label,contacts,minimum", [("seed",13,3820),("seed-aa",13,3820),("review-off",2,588),("solver-lookup",3,882)])
@@ -100,13 +104,16 @@ def test_actual_preflight_refuses_before_plan_gate_or_attempt(tmp_path,monkeypat
 
 @pytest.mark.parametrize("label",["seed","seed-aa"])
 def test_actual_author_member_prewrite_refuses_old_audio(tmp_path,label):
+    # seed is still a ready cell, so the authoring prewrite refuses on the audio budget; seed-aa was retired by
+    # decision 243 (2026-10-10, readiness superseded) and is refused even earlier, at campaign loading.
+    expected = "cumulative speech-audio" if label == "seed" else "explicit scientific readiness"
     import importlib.util,json
     path=ROOT/"scripts/analysis/author_manual_architecture_package.py"
     spec=importlib.util.spec_from_file_location("audio_author",path);author=importlib.util.module_from_spec(spec);spec.loader.exec_module(author)
     descriptor=json.loads((ROOT/"docs/readiness/2026-10-07-slurp-simple-consumption-n100-preparation-v1/capacity-prepared-members-v1.json").read_bytes())
     receipt=next(row["preparation_receipts"]["generation"] for row in descriptor["members"] if row["label"]==label)
     stage={"control_members":[label],"candidate_members":[]}
-    with pytest.raises(ValueError,match="cumulative speech-audio"):
+    with pytest.raises(ValueError,match=expected):
         author._member_inputs({"preparation_receipts":{label:receipt}},stage,ROOT)
     assert not list(tmp_path.iterdir())
 

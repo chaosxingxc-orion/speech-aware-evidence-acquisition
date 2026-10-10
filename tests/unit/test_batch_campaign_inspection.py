@@ -23,8 +23,18 @@ def test_campaign_inspects_every_configured_member(tmp_path,monkeypatch,capsys,f
     from speech_aware_evidence_acquisition.core.flight.campaign import load_campaign_cells
     root = Path(__file__).resolve().parents[2]
     labels = ("seed", "seed-aa", "review-off", "solver-lookup")
+    from speech_aware_evidence_acquisition.core.flight.campaign import CampaignCell
+
+    def member_cell(stem):
+        # Decision 243 (2026-10-10) retired three of these unflown cells (readiness superseded), which
+        # campaign loading refuses by design; the inspector fan-out is proven against their registered
+        # bytes, so the in-memory cell is marked ready here and nothing on disk changes.
+        raw = json.loads((root / "configs/experiment" / (stem + ".json")).read_text(encoding="utf-8"))["cells"][0]
+        raw["readiness"]["state"] = "ready"
+        return CampaignCell.from_document(raw)
+
     selected = tuple(("slurp-native-stage3-simple-consumption-" + label + "-n100-v1",
-                      load_campaign_cells(root, "slurp-native-stage3-simple-consumption-" + label + "-n100-v1")[0])
+                      member_cell("slurp-native-stage3-simple-consumption-" + label + "-n100-v1"))
                      for label in labels)
     monkeypatch.setattr(cli,"load_campaign_plan",lambda repo,path:selected)
     original_compose = config.compose
