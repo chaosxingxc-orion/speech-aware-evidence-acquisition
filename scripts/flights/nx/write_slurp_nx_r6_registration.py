@@ -12,7 +12,12 @@ Writes under ``docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/``: ``
 and the five DRAFT ledger rows (arm, arm FIT, smoke, smoke FIT, READ). The package README is hand-written.
 
     python -B scripts/flights/nx/write_slurp_nx_r6_registration.py --study-commit <sha> \\
-        --registered-at 2026-10-10T12:00:00.000000+00:00 [--no-ledger]
+        --registered-at 2026-10-10T12:00:00.000000+00:00 [--no-ledger | --amend-smoke-ledger]
+
+SMOKE RECOVERY (rec1, 2026-10-10; ``nf.SMOKE_RECOVERY``): the smoke plans, the protocol document and the preregistration carry the
+recovery, the smoke plans the run-cumulative budget and the rec1 attempt ids; ``--amend-smoke-ledger`` amends the two smoke ledger rows
+in place (calls, audio, plan SHA / attempt / hashes, recovery text) and leaves every other row, including the countersigned arm rows,
+byte for byte. Use it (never the full-section rewrite) once the cell's rows are countersigned.
 
 When the cell baseline already carries the minted ``prepared_phase_supply`` pin (after the flip), the registered plans copy it
 verbatim (``flight_registration_check`` "registered-supply-binding"); before the flip the plans carry the MINTED_AT_THE_FLIP marker.
@@ -24,7 +29,9 @@ import argparse
 import hashlib
 import io
 import json
+import math
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -261,7 +268,10 @@ def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> d
         # After the flip the cell baseline carries the minted pin; the registered plan must declare EXACTLY that
         # (scripts/checks/flight_registration_check.py "registered-supply-binding"): copy it verbatim.
         pinned = minted_supply(i["experiment"], i["cell"])
+        annotations = None
         if pinned is not None:
+            # the placeholder's note moves to the sibling key, exactly as scripts/flights/refresh_registered_plan_pins.py does
+            annotations = {"note": supply["note"]}
             supply = pinned
         base = {
             "cell": i["cell"], "composed_config_hash": i["composed_config_hash"],
@@ -272,10 +282,13 @@ def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> d
             "registered_at_utc": at, "source_tree": nf.SOURCE_TREE,
             "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
             "unused_budget_is_not_attempt_authority": True,
+            **({"prepared_phase_supply_annotations": annotations} if annotations else {}),
         }
         gen_plan = dict(i["execution_plan"], attempt_id=i["attempt_id"], carrier_lock_key=i["carrier_lock_key"],
                         protocol_hash=i["protocol_hash"], run_id=i["run_id"], schema="saea-execution-plan-v1",
                         split_identity_hash=i["split_identity_hash"], study="speech-aware-evidence-acquisition")
+        if kind == "smoke" and nf.SMOKE_RECOVERY:
+            gen_plan["recovery"] = nf.SMOKE_RECOVERY
         fit_plan = dict(gen_plan, attempt_id=i["fit_attempt_id"], run_id=i["fit_run_id"],
                         planned_model_calls=i["family_budget"]["fit_endpoint_calls_cap"])
         route_gen = (
@@ -301,6 +314,31 @@ def plan_docs(ids: dict, commit: str, at: str, protocol_sha: str, pkg: str) -> d
     return docs
 
 
+def smoke_section(ids: dict) -> str:
+    """The preregistration's attempt-state section: the smoke recovery (rec1) or, absent one, the first-attempt statement."""
+
+    if nf.SMOKE_RECOVERY:
+        original_audio = math.ceil(ids["smoke"]["audio_seconds"] * nf.CEILING - 1e-9)
+        calls, audio = nf.smoke_cumulative_budget(nf.SMOKE_ROWS * nf.CEILING, original_audio)
+        return (
+            f"## Smoke recovery (the cell's single recovery re-registration)\n\n{nf.SMOKE_RECOVERY['reason']}\n\n"
+            f"{nf.SMOKE_RECOVERY['amendment']} The smoke plans therefore carry run-cumulative budgets of {calls} model calls / {audio} "
+            f"speech-seconds (the failed attempt spent {nf.SMOKE_PREDECESSOR_CONTACTS_SPENT} / "
+            f"{nf.SMOKE_PREDECESSOR_SPEECH_SECONDS_SPENT:g}; the rec1 attempt is budgeted {nf.SMOKE_ROWS * nf.CEILING} / {original_audio}); the FIT "
+            f"endpoint cap is structural, not run-cumulative ({nf.fit_contact_cap(nf.SMOKE_ROWS)} = {nf.SMOKE_ROWS} rows x {nf.CEILING} "
+            "contacts x 4 endpoints). The arm's budgets and attempt ids are unchanged: "
+            f"arm {nf.ROWS * nf.CEILING:,} model calls, FIT cap {nf.fit_contact_cap(nf.ROWS):,}. At most one recovery re-registration per "
+            "cell: a second failure closes the cell.\n\n"
+        )
+    return (
+        "## Attempt state (no recovery)\n\nThe smoke and the arm are FIRST attempts of their run ids. Budgets are single-attempt: smoke "
+        f"{nf.SMOKE_ROWS * nf.CEILING} model calls, FIT endpoint cap {nf.fit_contact_cap(nf.SMOKE_ROWS)} (structural: 4 rows x {nf.CEILING} contacts x 4 "
+        f"endpoints); arm {nf.ROWS * nf.CEILING:,} model calls, FIT cap {nf.fit_contact_cap(nf.ROWS):,}. A recovery re-registration, if one is ever needed, "
+        "must re-derive the run-cumulative generation budget (earlier attempts' spend plus the new attempt's worst case) and keep the FIT "
+        "cap structural. At most one recovery re-registration per cell.\n\n"
+    )
+
+
 def write_package(ids: dict, commit: str, at: str) -> dict:
     pkg = nf.PACKAGE
     pins = nf.candidate_pins()
@@ -316,6 +354,7 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
                            "failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative "
                            "across attempts."),
         "one_factor": ONE_FACTOR, "prohibitions": PROHIBITIONS,
+        **({"recovery": {"smoke": nf.SMOKE_RECOVERY}} if nf.SMOKE_RECOVERY else {}),
         "protocol_id": f"slurp-{nf.SLUG}-protocol-v1", "registered_at_utc": at,
         "schema": "saea-registered-protocol-v1",
         "source_tree": nf.SOURCE_TREE,
@@ -536,11 +575,7 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
         f"| composed config hashes | arm `{arm['composed_config_hash']}`; smoke `{smoke['composed_config_hash']}` |\n"
         f"| protocol hashes | arm `{arm['protocol_hash']}`; smoke `{smoke['protocol_hash']}` |\n"
         f"| split identity | arm `{arm['split_identity_hash']}`; smoke `{smoke['split_identity_hash']}` |\n\n"
-        "## Attempt state (no recovery)\n\nThe smoke and the arm are FIRST attempts of their run ids. Budgets are single-attempt: smoke "
-        f"{nf.SMOKE_ROWS * nf.CEILING} model calls, FIT endpoint cap {nf.fit_contact_cap(nf.SMOKE_ROWS)} (structural: 4 rows x {nf.CEILING} contacts x 4 "
-        f"endpoints); arm {nf.ROWS * nf.CEILING:,} model calls, FIT cap {nf.fit_contact_cap(nf.ROWS):,}. A recovery re-registration, if one is ever needed, "
-        "must re-derive the run-cumulative generation budget (earlier attempts' spend plus the new attempt's worst case) and keep the FIT "
-        "cap structural. At most one recovery re-registration per cell.\n\n"
+        + smoke_section(ids) +
         f"## Decision rule (fixed here)\n\n{DECISION_RULE}\n\n## Tuning disclosure\n\n{nf.TUNING_DISCLOSURE}\n\n"
         "## The measurement declaration\n\n```json\n"
         + json.dumps({"stage3_measurement": blocks}, indent=2, ensure_ascii=False, sort_keys=True)
@@ -548,6 +583,70 @@ def write_package(ids: dict, commit: str, at: str) -> dict:
     )
     shas["__prereg__"] = wr(nf.PREREG, prereg)
     return {"shas": shas, "blocks": blocks, "protocol_sha": protocol_sha}
+
+
+RECOVERY_MARK = " RECOVERY RE-REGISTRATION (root-diagnosed, the cell's single one, "
+
+
+def recovery_ledger_text(ids: dict, fit: bool) -> str:
+    """The recovery wording appended to a smoke row's notes (the R1 wording: the original row stays, the text names the failed
+    attempt and the rec1 ids)."""
+
+    smoke, rec = ids["smoke"], nf.SMOKE_RECOVERY
+    original_audio = math.ceil(smoke["audio_seconds"] * nf.CEILING - 1e-9)
+    calls, audio = nf.smoke_cumulative_budget(nf.SMOKE_ROWS * nf.CEILING, original_audio)
+    what = "FIT attempt" if fit else "attempt"
+    predecessor = rec["predecessor_fit_attempt_id"] if fit else rec["predecessor_attempt_id"]
+    state = ("OPENED; request envelopes only, no model contact; preserved" if fit else
+             f"OPENED, {nf.SMOKE_PREDECESSOR_CONTACTS_SPENT} contacts / {nf.SMOKE_PREDECESSOR_SPEECH_SECONDS_SPENT:g} speech-seconds spent "
+             "(4 rows x 5 Perception arms), stopped 2026-10-10T08:11:08Z at flight commit 58c546b54 on SlurpIntentHypothesisError "
+             "('hypothesis content does not match its source response SHA-256') in the first level-2 Solver input; the failed attempt is "
+             "preserved unread")
+    return (
+        RECOVERY_MARK.lstrip(" ") + "2026-10-10): " + f"{what} {predecessor} {state}. Root cause: the level-2 branch view in "
+        "rails/runner.py swapped the Perception state's content for the branch's note without rebinding source_response_sha256; fixed by "
+        "the level-2 note source-hash binding fix (rails/runner.py; commit named at merge). The smoke is re-flown whole under the rec1 "
+        f"attempt ids (generation {smoke['attempt_id']}; FIT {smoke['fit_attempt_id']}), a (run_id, attempt_id) pair being a one-time key; "
+        f"the plan budget is run-cumulative across the attempts of the run id: the original plan plus the failed attempt's realised "
+        f"spend, {nf.SMOKE_ROWS * nf.CEILING} + {nf.SMOKE_PREDECESSOR_CONTACTS_SPENT} = {calls} calls and ceil({original_audio} + "
+        f"{nf.SMOKE_PREDECESSOR_SPEECH_SECONDS_SPENT:g}) = {audio} speech-seconds; the FIT cap stays structural "
+        f"({nf.fit_contact_cap(nf.SMOKE_ROWS)} = {nf.SMOKE_ROWS} rows x {nf.CEILING} contacts x 4 endpoints, not scaled); the arm is "
+        "untouched. A second failure closes the cell."
+    )
+
+
+def amend_smoke_ledger_rows(ids: dict, shas: dict) -> list[str]:
+    """Amend the two smoke rows IN PLACE (the R1 way): the original rows and their countersignature text stay; the calls and audio
+    columns, the plan SHA256 / attempt / protocol hash / composed config of the notes move to the rec1 registration and the
+    recovery text is appended. Idempotent. Returns the amended run ids."""
+
+    smoke = ids["smoke"]
+    lines = rd(LEDGER).split("\n")
+    amended = []
+    for fit in (False, True):
+        run_id = smoke["fit_run_id"] if fit else smoke["run_id"]
+        hits = [k for k, line in enumerate(lines) if line.startswith("| ") and f" | {run_id} | " in line]
+        if len(hits) != 1:
+            raise SystemExit(f"ledger: {len(hits)} rows for {run_id}, expected exactly one")
+        cells = lines[hits[0]][2:-2].split(" | ")
+        if len(cells) != 15:
+            raise SystemExit(f"ledger: row {run_id} has {len(cells)} cells, expected 15")
+        plan_name = f"smoke-{'fit' if fit else 'generation'}-plan-registered-v1.json"
+        calls = smoke["family_budget"]["fit_endpoint_calls_cap" if fit else "generation_calls_cap"]
+        cells[9], cells[10] = str(calls), str(smoke["family_budget"]["repeated_speech_audio_seconds_cap"])
+        notes = cells[14].split(RECOVERY_MARK)[0].rstrip()
+        pattern = (r"Plan SHA256 [0-9a-f]{64}; attempt [\w-]+\. Protocol hash [0-9a-f]{64}; composed config [0-9a-f]{64};")
+        if len(re.findall(pattern, notes)) != 1:
+            raise SystemExit(f"ledger: row {run_id} notes carry no unique plan/attempt/hash stanza to amend")
+        attempt = smoke["fit_attempt_id"] if fit else smoke["attempt_id"]
+        stanza = (f"Plan SHA256 {shas[plan_name]}; attempt {attempt}. Protocol hash {smoke['protocol_hash']}; "
+                  f"composed config {smoke['composed_config_hash']};")
+        notes = re.sub(pattern, lambda _m: stanza, notes)
+        cells[14] = notes + " " + recovery_ledger_text(ids, fit)
+        lines[hits[0]] = "| " + " | ".join(cells) + " |"
+        amended.append(run_id)
+    io.open(REPO_ROOT / LEDGER, "w", encoding="utf-8", newline="").write("\n".join(lines))
+    return amended
 
 
 def ledger_rows(ids: dict, commit: str, at: str, shas: dict) -> str:
@@ -596,6 +695,8 @@ def ledger_rows(ids: dict, commit: str, at: str, shas: dict) -> str:
         notes = (note_common.replace("Measurement declaration: same-flight-node-column",
                                      "Measurement declaration: " + ("same-flight-node-column" if kind == "arm" else "form-proof"))
                  + f" Plan SHA256 {plan_sha}; attempt {attempt}. Protocol hash {i['protocol_hash']}; composed config {i['composed_config_hash']}; expected session {nf.SESSION} (attach only).")
+        if kind == "smoke" and nf.SMOKE_RECOVERY:
+            notes += " " + recovery_ledger_text(ids, fit)
         return row(at, i["fit_run_id"] if fit else i["run_id"], i["execution_profile"], what, scope,
                    f"slurp TRAIN Fold B {i['rows']}", i["split_identity_hash"], "no", calls,
                    i["family_budget"]["repeated_speech_audio_seconds_cap"], i["family_budget"]["gpu_hours_fit_inclusive"], plan, notes)
@@ -652,12 +753,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--study-commit", required=True)
     parser.add_argument("--registered-at", required=True)
     parser.add_argument("--no-ledger", action="store_true")
+    parser.add_argument("--amend-smoke-ledger", action="store_true",
+                        help="amend ONLY the two smoke ledger rows in place (the smoke recovery, rec1); the countersigned rows of "
+                             "the arm and the READ row stay as they are. Implies --no-ledger for the section rewrite.")
     args = parser.parse_args(argv)
     ids = identities()
     result = write_package(ids, args.study_commit, args.registered_at)
-    if not args.no_ledger:
+    amended: list[str] = []
+    if args.amend_smoke_ledger:
+        if not nf.SMOKE_RECOVERY:
+            raise SystemExit("--amend-smoke-ledger needs nf.SMOKE_RECOVERY")
+        amended = amend_smoke_ledger_rows(ids, result["shas"])
+    elif not args.no_ledger:
         write_ledger(ledger_rows(ids, args.study_commit, args.registered_at, result["shas"]))
-    print(json.dumps({"package": nf.PACKAGE, "files": sorted(result["shas"]),
+    print(json.dumps({"package": nf.PACKAGE, "files": sorted(result["shas"]), "amended_ledger_rows": amended,
                       "composed": {k: v["composed_config_hash"] for k, v in ids.items()},
                       "protocol": {k: v["protocol_hash"] for k, v in ids.items()}}, indent=2))
     return 0

@@ -6,7 +6,10 @@ Root's act, never an agent's. Copies ``docs/readiness/2026-10-10-slurp-nx-r6-per
 ``$SPEECHRL_DATA_DIR/coordination/slurp-nx-r6-perception-fold-b-v1/root-admission-v1.json``, sets ``status`` to ``decided`` and
 ``recorded_at_utc`` to now, re-hashes every antecedent ``{"path": ..., "sha256": ...}`` that names a repository file, and
 refuses to overwrite an existing receipt. The FOUR ``eligible_run_ids`` (arm, smoke and their FIT identities) and the budget
-caps are the draft's and are not edited here. No A/A cell: the twin arm flies inside every row.
+caps are the draft's and are not edited here. No A/A cell: the twin arm flies inside every row. The smoke recovery (rec1,
+2026-10-10, ``nx_r6_family.SMOKE_RECOVERY``) changes attempt ids and the smoke's run-cumulative budget, never the run ids; a receipt
+already minted from the earlier draft is not overwritten (this tool refuses) and keeps the first-attempt smoke caps; the regenerated
+draft carries the run-cumulative recovery budget for the record, and root decides whether the minted receipt needs an annotation.
 
     python scripts/flights/nx/nx_r6_mint_receipt.py [--coordinator "Fable5.1"] [--dry]
 """

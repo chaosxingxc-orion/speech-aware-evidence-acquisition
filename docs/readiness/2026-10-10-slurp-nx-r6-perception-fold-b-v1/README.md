@@ -86,8 +86,9 @@ locked here; two evaluated Perception-entity rounds without an acceptance close 
 
 Plan budget (the harness FIT rule `planned_model_calls >= rows x ceiling`, run-cumulative): arm **10,800** generation contacts (1,080 x 10),
 **43,200** FIT endpoints (rows x ceiling x 4, structural, never run-cumulative), **31,548** speech seconds (`ceil(3,154.797 x 10)`), **4.1** planned
-GPU hours (the ceiling, not a target: 10,800 contacts at the measured 44 requests per minute on np4); smoke 40 / 160 / 102 / 1.0 (first attempts, no
-recovery). The realised fit of every arm request is measured again at dispatch by `native_contact_fit`; the level-2 Solver contacts are bounded by
+GPU hours (the ceiling, not a target: 10,800 contacts at the measured 44 requests per minute on np4); smoke 40 / 160 / 102 / 1.0 as a first attempt
+and, after the smoke recovery below, **60 / 160 / 153 / 1.0** (run-cumulative: the original plan plus the failed attempt's realised 20 contacts /
+50.908 speech seconds; the FIT cap is structural and unchanged). The realised fit of every arm request is measured again at dispatch by `native_contact_fit`; the level-2 Solver contacts are bounded by
 the realised gate, not the estimate.
 
 ### Template tokens: ESTIMATE
@@ -134,6 +135,19 @@ the gate estimate on the lock Solver column of the v4g base. (3) The official co
 4. **Template tokens** are an estimate (section 4).
 5. **Re-pin.** The instrument merge changed hashed sources; every pinned cell needs the loop-form pass, including this one, after the merge point.
 6. The dry run (`scripts/flights/nx/nx_r6_dry_run.py`) needs the data root and is root's to run after the flip.
+
+## 6b. Smoke recovery (rec1, 2026-10-10; the cell's single recovery re-registration)
+
+The first smoke attempt (`attempt-slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-generation-v1`) stopped 2026-10-10T08:11:08Z at flight
+commit 58c546b54 after 20 model contacts (4 rows x 5 Perception arms; 50.908 speech seconds, read from the attempt record's `actual`) on
+`SlurpIntentHypothesisError: hypothesis content does not match its source response SHA-256` in the first level-2 Solver input. Root cause: the
+level-2 branch view in `rails/runner.py` swapped the Perception state's content for the branch's note without rebinding
+`source_response_sha256`; the fix is the level-2 note source-hash binding fix (`rails/runner.py`; commit named at merge). The smoke is re-flown
+whole under `...-smoke-4-generation-rec1-v1` and `...-smoke-4-fit-rec1-v1` (a (run_id, attempt_id) pair is a one-time key); its plan budget is
+run-cumulative, 40 + 20 = 60 calls and ceil(102 + 50.908) = 153 speech seconds; the FIT cap stays 160 (structural); the arm cell, its attempt
+ids, caps and pins are untouched (only the registered plan copies' protocol-document pin moves, because the protocol document now records the
+recovery). The recovery record lives in `nx_r6_family.SMOKE_RECOVERY`, the protocol document and the smoke generation plan; the two smoke ledger
+rows were amended in place (R1 precedent). A second failure closes the cell; the fix is then proven on a four-row dry run.
 
 ## 7. What the coordinator does next (nothing was done here)
 
