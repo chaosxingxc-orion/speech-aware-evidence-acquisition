@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-v1",
-  "composed_config_hash": "1a12df2462ec91e70282ef04bbbc4385c3c8ce25f2a8418848bc80c143757cc8",
+  "composed_config_hash": "9b7d0b4ac4679369e3dbcd07065d44e16675d4e064ed156a278cd7a58bfef2c0",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 8,
     "planned_speech_audio_seconds": 17,
-    "protocol_hash": "a6ad7589ce1691de61092c7ff578d5c693dbccd4e294e2eeaf3983554c3a589d",
+    "protocol_hash": "d091b56a7f0025ffd24737f3214500e8b7021f14ecc0d347910e0fc0c516ab10",
     "run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-09-slurp-nx-r5-composed-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "cb4236f60f7dc841fb4c68a3241258d445966eea80c97c4fff68375240e3f73f"
+    "sha256": "5dadb68ef2d5300ebd251620ce03a49ff12945cbb2eea60399837cada6d45918"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1: Structural form proof only: no score and no read.",
   "quality_read_gate": "No task-quality read before BOTH the composed arm and the replicate manifests are complete and sealed with one successful complete official slurp-slu-official score each, and the READ row is root countersigned.",

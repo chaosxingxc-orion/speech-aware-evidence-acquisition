@@ -125,7 +125,7 @@
       "attempt_id": "attempt-slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-generation-v1",
       "baseline_fragment": "slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-baseline-v1",
       "cell": "slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-v1",
-      "composed_config_hash": "1a12df2462ec91e70282ef04bbbc4385c3c8ce25f2a8418848bc80c143757cc8",
+      "composed_config_hash": "9b7d0b4ac4679369e3dbcd07065d44e16675d4e064ed156a278cd7a58bfef2c0",
       "dataset_fragment": "slurp-speech-native-dev2000-added",
       "deliver_normaliser": "saea-deliver-normalise-v4g",
       "experiment": "slurp-native-stage3-nx-r5-composed-dev2000-added-smoke-4-v1",
@@ -143,7 +143,7 @@
         "review_loop": "off"
       },
       "policy": "phase-native-module-v1-c2",
-      "protocol_hash": "a6ad7589ce1691de61092c7ff578d5c693dbccd4e294e2eeaf3983554c3a589d",
+      "protocol_hash": "d091b56a7f0025ffd24737f3214500e8b7021f14ecc0d347910e0fc0c516ab10",
       "readiness_state": "held",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-SMOKE-4-V1",
