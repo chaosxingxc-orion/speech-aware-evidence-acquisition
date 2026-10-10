@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T05:34:34Z
+Last refreshed: 2026-10-10T07:06:11Z
+
+## R5 read: NEUTRAL (efficiency result); decision 249 proposed; allowance v3 and R6-P1 in preparation (2026-10-10T07:06:11Z, Fable 5.1 root)
+
+`docs/results/2026-10-10-slurp-nx-r5-composed-dev2000-added-read.md` (merge 233a64809; read id SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-PAIRED-ANALYSIS-V1, READ row countersigned e13e25909 after both seals at 06:37:48Z, flight commit 9a0a3384b). Delivered official pooled SLU-F1 on DEV-2000-ADDED (1,000 rows): A2 A/A 65.40, A2 arm 65.93, in-chain replicate (module OFF, lock v2.1) 66.13, composed (lock v2.2) 67.18. Claim contrast A2 arm -> composed: SLU +1.24 [-0.29, +2.80], intent +0.50 [-0.51, +1.52]; offset 0.73 / 0.20; same chain replicate -> composed intent +4.90 [+2.93, +6.86] (third replication of the COMP-1b intent gain), SLU +1.05 [-0.77, +2.86]; under one normaliser v4g(A2 arm) 66.91 -> composed +0.27 [-1.17, +1.72], so the SLU gain over A2 is v4g's delivered gain (+0.98 [+0.25, +1.71] offline). Efficiency: 2.00 vs 4.05 contacts per row, -0.32 GPU-h per 1,000 rows, -104 completion tokens per row. Verdict NEUTRAL under the registered rule (not NOMINATED: SLU lower bound under the offset and point under the 2.5 bar; not HARM). Equal-stratum weighting is weaker on the claim contrast (SLU -0.73 delivered, -0.96 under v4g; 4-9-row strata weigh as the 221-row one). Owner decisions: 241 fires (second test-sample allowance drafted: HELD package `docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/` + draft `docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json`, in preparation); 249 PROPOSED (CURRENT_LOCK v2.1 -> v2.2 on the efficiency / no-harm ground). R6-P1 engineering (decision 246) is being built in a worktree; it registers, flips and flies next. GPU idle since 06:38Z; serving resident.
+
+Superseded stamp: 2026-10-10T05:34:34Z
 
 ## Decisions 246-248 ruled; R6-P1 is the next flight after the R5 read (2026-10-10T05:34:34Z, Fable 5.1 root)
 

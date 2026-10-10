@@ -656,3 +656,26 @@ Owner, verbatim: 「决策246：同意；247：同意；248：按你建议。」
   node-local measurement cell.
 - **248** RULED as recommended: the v2 Perception note contract is engineered only on the design's 2d trigger (gain
   present, the 128-character `distinction` channel binding), as a new Perception base with its own A/A, never as an arm.
+
+## R5 read recorded; decision 249 PROPOSED by the coordinator (Fable 5.1), 2026-10-10
+
+R5 (decision 240) sealed 2026-10-10T06:37:48Z and read the same morning
+(`docs/results/2026-10-10-slurp-nx-r5-composed-dev2000-added-read.md`, merge 233a64809). Verdict under the registered
+rule: **NEUTRAL (efficiency result).** Composed (lock v2.2: review-off + COMP-1b components + v4g at delivery) minus
+the sealed A2 arm on DEV-2000-ADDED: SLU-F1 +1.24 [-0.29, +2.80], intent +0.50 [-0.51, +1.52]; flight offset
+(replicate minus A2 A/A) 0.73 / 0.20; same-chain intent +4.90 [+2.93, +6.86] (the COMP-1b intent gain's third
+replication); under one normaliser the review-off change is +0.27 [-1.17, +1.72], so the delivered SLU gain over A2 is
+the v4g delivery gain (+0.98 [+0.25, +1.71] offline). Levels 65.40 / 65.93 / 66.13 / **67.18**. Contacts 2.00 vs 4.05
+per row, -0.32 GPU-h per 1,000 rows. No gain is claimed; the registered no-harm claim holds within resolution.
+Consequences: decision 241 fires (the second test-sample allowance is drafted: package
+`docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/` and the draft
+`docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json`, both in preparation, HELD until the
+owner signs); decision 240's automatic lock move does not fire (it required NOMINATED).
+
+- **249** (PROPOSED) Move `CURRENT_LOCK` of the consumption module from v2.1 to v2.2 (= v2.1 with
+  `saea-deliver-normalise-v4g` at delivery, review-off graph) on the efficiency and no-harm ground: no resolved loss on
+  SLU-F1 or intent against the full graph at about half the contacts, plus the separately locked v4g delivered gain
+  (Fold B +1.55 [+0.81, +2.33]; A2 column +0.98 [+0.25, +1.71]); the intent gain replicated a third time. The lock move
+  changes the base of every later NX cell (R6-P1 already derives from the R5 arm's fragment, so it is unaffected).
+  Recommended: yes; if the owner prefers to wait for the test-sample read (allowance v3), R6-P1 still flies on the
+  v2.2 base as registered.
