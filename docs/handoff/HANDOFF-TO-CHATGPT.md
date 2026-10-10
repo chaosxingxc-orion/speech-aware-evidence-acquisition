@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T05:24:02Z
+Last refreshed: 2026-10-10T05:34:34Z
+
+## Decisions 246-248 ruled; R6-P1 is the next flight after the R5 read (2026-10-10T05:34:34Z, Fable 5.1 root)
+
+Owner (registry b1b8a6787): 246 agreed (R6-P1: Perception entity column, p1 presence tag / p2 + heard mentions / p3 + hedge, twin, lock; TRAIN Fold B; ceiling 10; ~4.1 GPU-h; registered during the R5 read, flies after it); 247 agreed (information-gain acceptance rule of the R6 design, section 4; decision 192's 1.5 pp bar binds R7 / R8); 248 as recommended (v2 note contract only on the 2d trigger, as a new base). Candidates and the pinned tag grammar are on master (dc311c8a7, `configs/probes/nx/perception/r6/`, README `docs/readiness/2026-10-10-slurp-nx-r6-perception-candidates-v1/README.md`). Model-free engineering starts when R5 seals (no code agents on the tree during a campaign): tag-grammar reader in `scripts/analysis/slurp_nx_perception_column_read.py`, `--verdict-source perception-arm:<arm>` and the information-gain term in `scripts/analysis/slurp_nx_r6_upstream_empty.py`, the `scripts/flights/nx/nx_r6_*` family, the registration package with its preflight test. R5 at 2026-10-10T05:34:34Z: still in the campaign's first cell (the module OFF replicate, review loop on), ~25 requests per minute, GPU 98 %.
+
+Superseded stamp: 2026-10-10T05:24:02Z
 
 ## Decision 245 ruled: node-local first, then cascade communication templates; R6 redesigned (2026-10-10T05:24:02Z, Fable 5.1 root)
 
