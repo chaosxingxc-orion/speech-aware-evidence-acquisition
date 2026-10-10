@@ -881,3 +881,17 @@ a NODE-LOCAL change at the Solver (three decodes, one c3 verdict contact) follow
 removed, decision 232); no template and no inter-node message schema changes (the communication-template line of
 decision 245 stays parked under 253-A / 248 with its trigger); any sample-side confidence tag would be a separate
 VER-2 proposal under the cascade rules of 245, not an afterthought.
+
+## VER-1 offline composer read (0 GPU) and the VER-1a amendment to five samples (coordinator, 2026-10-10)
+
+`scripts/analysis/slurp_ver1_offline.py` (merge 7dfdb4b4d; controls reproduced: ROLL-1 s=3 +1.40 [+0.55, +2.29],
+ROLL-3 2-of-3 over v4 +0.84 [+0.19, +1.49], R1 i1/i2 gate +0.7455 / +0.9831). On the existing 5-sample pools, the
+support filter OVER v4g (sample-0 entities kept iff supported by >= s samples; labels unchanged): ROLL-2 Fold A n=5 s=2
++1.03 [+0.47, +1.70], n=3 s=2 +0.91 [-0.07, +2.03]; ROLL-3 DEV n=5 s=2 +0.76 [+0.08, +1.45], n=3 s=2 +0.18 [-0.71,
++1.06]; s=3 at n=3 harms on DEV (-1.62). The gain is false-fill suppression on empty-gold rows (Fold A n=3: empty-gold
++1.74, non-empty -0.90), i.e. the SAME mass the verdict x N1 gate acts on, so filter + gate are not expected to be
+additive; the VER-1 delivered estimate over v4g is therefore about +1.0 pp (n=5, s=2) with the gate's contribution to
+be measured on the same rows, under the 1.5 pp bar unless the combination surprises. Consequence: VER-1a is AMENDED
+before any contact from 3 to 5 samples per row (ceiling 6, 6,480 calls, ~2.5 GPU-h; plurality commit min_support 3
+in flight; s = 2 / 3 and the gate read offline), so that the resolved form is measured; the rows are amended in
+place with their countersignature kept, and the receipt is re-minted.
