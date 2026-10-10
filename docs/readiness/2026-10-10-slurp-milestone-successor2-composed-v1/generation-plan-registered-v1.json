@@ -1,0 +1,54 @@
+{
+  "cell": "slurp-milestone-successor2-composed-v1",
+  "composed_config_hash": "75f09d6c87d3f7f8d58495c643656d0b3a61d7668eaa9386e353c9b2f10f70ee",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-milestone-successor2-composed-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "owner_allowance": {
+      "path": "docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "planned_gpu_hours": 4.6,
+    "planned_model_calls": 6020,
+    "planned_speech_audio_seconds": 16413,
+    "protocol_hash": "a3b95b60a56505a94a4acb4ee66c10cd360256695250c1cf8ee59e2727260dbf",
+    "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
+    "split_role": "final-report",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-milestone-successor2-composed-v1.json (one cell), one official slurp-slu-official-test score at finalize. No smoke step.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-milestone-successor2-composed-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 24080,
+    "generation_calls_cap": 6020,
+    "gpu_hours_fit_inclusive": 4.6,
+    "native_task_contract_calls_cap": 6020,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 16413
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "e13e25909a85d892b284c77f9f7b733693264bc8",
+  "prepared_phase_supply": {
+    "note": "THIS CELL'S OWN artifact, minted model-free under its own run id at the flip (item E16); 64 zeros until then; --allow-output-change must never be passed.",
+    "relpath": "prepared/SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1/phase-supply-v1.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-10-slurp-milestone-successor2-composed-v1/protocol-registered-v1.json",
+    "sha256": "e40ea7a926d46cb6c51e88aac04806e0f9bc85a673d8ae0c09526869c63adad4"
+  },
+  "purpose": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1: Read SUCCESSOR2-COMPOSED against the SEALED successor-1 COMP-1b column (SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR1-COMP1B-V1) on the same 3,010 rows, CROSS-FLIGHT (the columns flew 2026-10-01; nothing is re-flown; there is no in-chain replicate on the sample by design). PRIMARY: official pooled SLU-F1 (slurp-slu-official-test), post-stratified natural mixture (equal-stratum beside it), paired per recording with a prompt-clustered bootstrap, 10,000 draws, seed 20260915. GUARD: intent accuracy (scenario_action exact), same contrast. DECLARED FLIGHT OFFSET o (borrowed from the DEV R5 read, not measured on the sample): |o| = 0.7274 pp SLU-F1 / 0.2 pp intent. HARM MARGIN 2.5 pp (not tighter than the cross-flight sampling floor). NEUTRAL iff the CI95 lower bound of (composed minus COMP-1b) on SLU-F1 and on intent is at or above -2.5 pp and the read is not HARM: an EFFICIENCY RESULT -- the composition keeps COMP-1b's accuracy within what a cross-flight read can see at about half the contacts; never reported as a gain. HARM iff the CI95 upper bound of (composed minus COMP-1b) on SLU-F1 or on intent is below -|o| (a resolved loss beyond the declared offset, owner decision 25). UNRESOLVED iff the lower bound is under -2.5 pp while neither HARM nor NEUTRAL. NOMINATED is NOT a registered outcome of this cell (claims_benefit false): a point above the bar would be REPORTED, never claimed, and would need its own replicated read. Reported beside, CONTEXT ONLY: composed minus the sealed successor-1 PLAN column (intent and SLU-F1; expectation in the facts), per-intent and per-scenario tables in the post-stratified natural-mixture and equal-stratum weightings (58 intents), the recording-channel split, entity TP/FP/FN, and the cost table (contacts and tokens per row against COMP-1b's 12,214 contacts). The verdict word is the coordinator's (owner decision 139). A milestone development read (owner decisions 28, 151), never a test claim.",
+  "quality_read_gate": "No task-quality read before the manifest is complete and sealed with one successful complete official slurp-slu-official-test score and the READ row is root countersigned.",
+  "registered_at_utc": "2026-10-10T12:00:00Z",
+  "schema": "saea-registered-generation-plan-v1",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-testsample-s2, branch sonnet/testsample-successor2",
+  "status": "REGISTERED_BEFORE_CONTACT_HELD_BLOCKED_ON_OWNER_SIGNATURE",
+  "unused_budget_is_not_attempt_authority": true
+}
