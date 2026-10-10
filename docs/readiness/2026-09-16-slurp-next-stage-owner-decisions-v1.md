@@ -707,3 +707,19 @@ owner signs); decision 240's automatic lock move does not fire (it required NOMI
   +4.6 GPU-h, a second test exposure of the same recordings, and a wider allowance). Recommended: A, recorded in the
   package's measurement block and read qualification; the gate `stage3_effect_floor_check` does not scope this cell
   (no `stage3` token, as successor 1), so the exception is a documented ruling, not a bypass.
+
+## R6-P1 smoke stop, harness fix, one recovery, relaunch (coordinator record, 2026-10-10)
+
+The first R6-P1 smoke stopped at 08:11:08Z (20 contacts: 4 rows x 5 Perception arms; the first level-2 Solver input
+refused with `hypothesis content does not match its source response SHA-256`). Root cause: the 2026-10-09 level-2
+render fix (never flown before) swapped the sealed Perception state's content for the branch's own note without
+rebinding `source_response_sha256`; the knowledge provider's candidate-state parse enforces that binding. Fix:
+`perception_note_view_state` helper used at both runner sites (45c3b3633, merged 6030c3149; regression test
+`tests/unit/test_perception_note_view_binding.py`, the 4-row walk's fake supply binding now runs the real parser).
+Recovery under the standing one-recovery rule: smoke re-flown whole under `...-smoke-4-generation-rec1-v1` with the
+run-cumulative budget 40 + 20 = 60 calls / 153 speech seconds, FIT cap 160 unchanged, arm untouched (merge 906f2a936);
+`rails/runner.py` is identity-bound, so both cells re-flipped (two converged loops with the plan-pin refresh between
+them) to flight commit 1f04ce42d; gates PASS. Relaunched 09:13:31Z; smoke rec1 PASSED 09:17:22Z (the previously failing
+Solver input now renders); the arm started 09:17:32Z (1,080 rows, 10,800 planned calls). Lesson recorded: a view that
+rewrites sealed content must rebind its hash; an unflown "fixed" path needs a walk through the real parsers before a
+cell is registered on it.

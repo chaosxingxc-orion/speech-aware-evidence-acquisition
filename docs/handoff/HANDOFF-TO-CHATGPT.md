@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T08:10:07Z
+Last refreshed: 2026-10-10T09:19:36Z
+
+## R6-P1: smoke stop 08:11Z, level-2 note binding fixed, recovery smoke passed, arm in flight at 1f04ce42d (2026-10-10T09:19:36Z, Fable 5.1 root)
+
+Stop: the first smoke refused at the first level-2 Solver input (`hypothesis content does not match its source response SHA-256`, 20 contacts spent). Cause: the 2026-10-09 level-2 render fix had never flown; its view replaced the Perception state's content with the branch note but kept A's `source_response_sha256`. Fix 45c3b3633 (merge 6030c3149): one helper `perception_note_view_state` in `rails/runner.py` rebinds content and hash at both sites; regression test `tests/unit/test_perception_note_view_binding.py`; the 4-row walk's fake supply binding now runs the real hypothesis parser (7/36 tests fail without the fix). Recovery (one per flight): smoke rec1 attempt with the run-cumulative budget 60 calls / 153 s, FIT cap 160 unchanged, arm untouched (merge 906f2a936; package README section 6b). Re-flipped at the fixed commit (runner.py is identity-bound): flight commit 1f04ce42d, gates PASS. Relaunch 09:13:31Z (task SAEA-Queue-NXR6); smoke rec1 PASS 09:17:22Z; arm started 09:17:32Z (log /home/chao/batch-campaign-1-nxr6-20261010T091732Z.log), ~4-5 GPU-h; Opus monitor attached. Decisions 249 and 250 still open with the owner.
+
+Superseded stamp: 2026-10-10T08:10:07Z
 
 ## R6-P1 in flight; test-sample successor-2 package HELD with the allowance v3 draft; decision 250 proposed (2026-10-10T08:10:07Z, Fable 5.1 root)
 
