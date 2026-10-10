@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-nx-r6-perception-fold-b-v1",
-  "composed_config_hash": "a4fa7b067f4abebbd18e15880a4917215bf9cdcec7feef6042b0ee4a72031e1a",
+  "composed_config_hash": "dae31324906bdae2dd076bad0c267e6e079993b556abfe5246354e056ebe8c68",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-nx-r6-perception-fold-b-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 4.1,
     "planned_model_calls": 43200,
     "planned_speech_audio_seconds": 31548,
-    "protocol_hash": "fe5dff5ee23fd168d5dc7261948ab7cf0d11554aba92b9a917c56b6b72571eff",
+    "protocol_hash": "894b63c4f10cf66814f978498cef7ef0422fc84307e09e6893f202430bbac870",
     "run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-10-slurp-nx-r6-perception-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "da4848bf03b4649ae020c546772f7f6b07b60957a7920554d8a95026608e9640"
+    "sha256": "1cea6e45852f7d54ddc3a901dd58a946812ce84af141546a1d7018c4d56542b5"
   },
   "purpose": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-10T12:00:00.000000+00:00",
