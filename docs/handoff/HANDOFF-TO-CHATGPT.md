@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T14:31:33Z
+Last refreshed: 2026-10-10T15:12:59Z
+
+## R6-P1 read: NOT NOMINATED; decisions 253-256 proposed; the TF-RL line (sealed-credit routing) designed; TF-0 in build (2026-10-10T15:12:59Z, Fable 5.1 root)
+
+`docs/results/2026-10-10-slurp-nx-r6-perception-fold-b-column-read.md` (merged). Official pooled SLU-F1 vs lock (64.34): aa +0.72 [+0.12, +1.37] (first Fold B template-column twin with CI excluding 0; goes into the measured twin null), p1 +0.51 [-1.07, +2.08], p2 -0.70 [-2.47, +1.13], p3 -1.41 [-3.13, +0.35]; every candidate fails the official intent guard (61 / 67 / 65 rows vs the twin's 3, limit 7). p1's presence tag parses 99.8 % and is additional by the AUC-increment clause (+0.0215 [+0.0096, +0.0333] over N1 + prior; +0.0076 [+0.0011, +0.0143] over N1 + prior + the lock's answer) but not by the delivered clause (declared gate +0.44 [-0.29, +1.17]; conditioned on the lock +0.28 [-0.34, +0.89]); node quality 0.57 / 0.60 under the 0.75 / 0.80 bar. p2 / p3 are form failures of the mention channel (rank-1 parse 13 % / 20 %; false fill +6.38 [+1.79, +10.71] / +3.32). Verdict NOT NOMINATED. Registry: 253 (close the line: A / one more presence round: B / v2 contract now: C; A recommended), 254-256 (adopt the sealed-credit routing TF-RL line, `docs/readiness/2026-10-10-slurp-tfrl-sealed-credit-routing-design-v1.md`: off-policy routing over typed pinned actions learned offline from the counterfactual same-flight columns with cross-fitting, flown as one policy arm; TF-0 at 0 GPU first with a hard rule before TF-1; local proposer only; = 253 A). TF-0 learner (`scripts/analysis/slurp_scr_offline_learner.py`) is being built in a worktree with a first real offline read over the Fold B pools. Test-sample successor-2 in flight since 14:27:45Z (~21 requests/min; ETA ~19:30Z).
+
+Superseded stamp: 2026-10-10T14:31:33Z
 
 ## Test-sample successor-2 in flight (lock v2.2, one attempt); R6-P1 sealed and read in part; scorer fix merged (2026-10-10T14:31:33Z, Fable 5.1 root)
 

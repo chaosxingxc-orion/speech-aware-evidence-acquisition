@@ -778,14 +778,14 @@ re-pinned to these bytes before the flip).
 ## R6-P1 read: NOT NOMINATED; decision 253 PROPOSED by the coordinator (Fable 5.1), 2026-10-10
 
 R6-P1 (the Perception entity template column, TRAIN Fold B, 1,080 rows; owner decisions 245-248) sealed 13:37:28Z
-and was read the same afternoon (results note in preparation: `docs/results/2026-10-10-slurp-nx-r6-perception-fold-b-column-read.md`).
+and was read the same afternoon (results note `docs/results/2026-10-10-slurp-nx-r6-perception-fold-b-column-read.md`, merged; the official intent guard also fails for every candidate: 61 / 67 / 65 intent rows differ from lock against the twin's 3 and the limit of 7).
 Official pooled SLU-F1 per arm vs lock (row-clustered bootstrap): aa twin +0.72 [+0.12, +1.37]; p1 +0.51
 [-1.07, +2.08]; p2 -0.70 [-2.47, +1.13]; p3 -1.41 [-3.13, +0.35] -> no arm clears the nomination rule (CI-LB > 0 and
 above the twin). Node-local: p1's presence tag parses 99.8 % and is an ADDITIONAL message element (cross-fitted AUC
 increment +0.0215 [+0.0096, +0.0333] over N1 + intent prior, also over the lock's own verdict) but its node quality
 (E=none precision 0.57 / recall 0.60, AUC 0.671) sits far under the acceptance bar (0.75 / 0.80) and under the
 Solver's own verdict (0.74-0.76 / 0.81-0.83); the deterministic gate converts it to +0.44 [-0.29, +1.17] (declared
-rule) or at best +0.63 [+0.07, +1.17] (cross-fit rule) on the v4g base, and the element's ceiling (perfect gate
+rule) or at best +0.63 [+0.07, +1.17] (cross-fit rule over N1; +0.48 [-0.09, +1.05] over N1 + prior; +0.28 [-0.34, +0.89] conditioned on the lock's own answer, so the second clause of the design's ADDITIONAL definition is not met) on the v4g base, and the element's ceiling (perfect gate
 +1.1..+1.7) cannot clear the 1.5 pp cascade bar in practice. p2 / p3 (heard mentions inside the 128-character
 distinction) are FORM failures (rank-1 parse 13 % / 20 %; mention containment 7 % / 12 %) that harm the locked
 consumer (empty-gold false fill +6.4 / +3.3 pp): the channel, not the information, is binding (decision 248's
