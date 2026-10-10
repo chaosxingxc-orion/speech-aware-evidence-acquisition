@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T09:19:36Z
+Last refreshed: 2026-10-10T12:24:38Z
+
+## Owner rulings 249-252: lock v2.2, test read exception A, allowance v3 SIGNED, system-level lock redefined (2026-10-10T12:24:38Z, Fable 5.1 root)
+
+Registry 951de831b (verbatim Chinese + English). 249: CURRENT_LOCK v2.1 -> v2.2 (being implemented in `rails/adapters/slurp_module_hooks.py`; identity-bound). 250 A: the successor-2 test read flies without an in-chain replicate, declared DEV offset 0.73 pp SLU / 0.20 intent, no-harm claim. 251 A: allowance v3 signed (status `authorised`, owner words verbatim in the signature block; sha256 4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d); the HELD cell `slurp-milestone-successor2-composed-v1` is being re-pinned to the signed bytes and given mint / flip / chain / dry-run wrappers (no smoke on the sample); it flies once in the first GPU gap after R6-P1 (~4.5 GPU-h). 252 (owner's own definition, replacing the proposal): the system-level lock that releases the carriers needs (1) system > single model call (base viable), (2) training-free RL showing clear system-level gains with the TF-RL algorithm's use in multimodal knowledge construction and consumption improved, and (3) the comparison against the published SOTA baseline observed on the test set; carriers stay held under 242 until then; a TF-RL design proposal follows the R6/R7 rounds. R6-P1 arm in flight since 09:17:32Z (~44 requests/min; ETA ~13:25Z).
+
+Superseded stamp: 2026-10-10T09:19:36Z
 
 ## R6-P1: smoke stop 08:11Z, level-2 note binding fixed, recovery smoke passed, arm in flight at 1f04ce42d (2026-10-10T09:19:36Z, Fable 5.1 root)
 

@@ -770,3 +770,7 @@ industry SOTA baseline level can be observed on the test set may the baseline be
   after the R6/R7 communication-template rounds (design to be proposed: the learning algorithm over node templates and
   knowledge supply with aggregate rewards, local proposer, paid API 0), and every milestone read reports the published
   SOTA level beside the repo numbers (study CLAUDE.md "gates relative to the published ceiling").
+
+Allowance v3 signed bytes: `docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json` at commit
+951de831b, sha256 `4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d` (the successor-2 fragment is
+re-pinned to these bytes before the flip).
