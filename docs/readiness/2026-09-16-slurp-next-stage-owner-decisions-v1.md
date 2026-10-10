@@ -816,3 +816,39 @@ gate result (+0.75 / +0.98, CI-LB > 0 on two flights) is its first instance).
 - **256** (PROPOSED) = decision 253 option A (close the Perception-entity presence line after one round) so the GPU
   after the successor-2 test read goes to TF-1 when TF-0 clears its rule; the p1 presence tag and the K6p key stay
   available to SCR as actions / context features. Recommended: yes.
+
+## TF-0 (sealed-credit routing, offline) read: the rule of decision 254 is NOT met; decision 257 PROPOSED (2026-10-10)
+
+TF-0 (`scripts/analysis/slurp_scr_offline_learner.py`, merge 46496fc52; outputs `analysis/SAEA-SLURP-SCR-TF0-V1/`,
+pinned table `prepared/SAEA-SLURP-SCR-ROUTING-TABLE-V1/`; zero contacts) learned a per-row routing policy over the
+19 sealed counterfactual Solver columns on TRAIN Fold B (R1 i1 and i2 arms, R6-P1 level-2 answers, the post-Solver
+empty action) from the pre-Solver signature with utterance-hash cross-fitting. The machinery reproduces the R6 gate
+(+0.7455 / +0.9831, false fills 91 -> 64 / 93 -> 60). Headline (default action set {lock, r1-c3, r1-i2-c3, r1-c5,
+r1-i2-c4, empty}): routed vs lock **+0.42 [-0.35, +1.20]** (501 rows routed), vs the twin -0.11 [-1.15, +0.92];
+leave-one-flight-out i1 -> i2 -0.05 [-0.83, +0.72], i2 -> i1 +0.10 [-0.75, +0.93]; the per-row oracle +11.36 is
+inflated by decoding noise (best-of-lock-or-twin on noise alone +1.28 [+0.78, +1.83]). The decision-254 rule (CI-LB > 0
+and point >= 1.5, or >= 1.0 with CI-LB >= 0.5) is not met: routing among the EXISTING arms transfers no gain across
+flights. Verdict: the SCR line over the current action pool is closed at its measured ceiling; it re-opens only if a
+new action with real context heterogeneity enters the pool.
+
+The record now reads consistently: every learned POLICY over text or over existing arms (about 25 cells since
+2026-09-23, now including routing) is within noise; the only mechanisms with CI-LB > 0 on n >= 1,000 are statistics-
+learned deterministic rules (v4g +1.55 / +0.98) and deterministic VERIFICATION / SELECTION over extra core samples
+(ROLL support filter +1.40 [+0.55, +2.29] offline, ROLL-3 2-of-3 +0.84 [+0.19, +1.49] at +2 Solver calls per row; the
+c3 verdict gate +0.75 / +0.98 at +1 Solver call per row). The review-off lock v2.2 halved the contacts (2.0 vs 4.05
+per row) without loss; those freed contacts can buy verification instead of the Reviewer loop that never repaired.
+
+- **257** (PROPOSED) VER-1, the verification layer on lock v2.2: per row, the Solver is sampled 3 times (the ROLL
+  form; the first sample greedy = today's delivery) plus the c3 presence-verdict call; delivery = v4g over the
+  support-filtered entity set (2-of-3) with the verdict x N1 >= 0.2 gate; contacts per row 2 -> 5 (still at or under
+  the full graph's 4.05 + G5 Reviewer cost in wall time, since the samples share the prefix cache). Registered as a
+  same-flight column on TRAIN Fold B (arms: VER-1 non-delivering, twin, lock delivering; the extra samples are the
+  arm's own contacts), predicted +1.5..+2.3 pp SLU-F1 at measured conversions (support filter +0.84 at 2-of-3 and the
+  gate +0.75 / +0.98, assumed additive -- the overlap on empty-gold rows is the risk and is what the read measures),
+  intent unchanged (the gate moves 0 intent rows; the filter keeps the greedy sample's intent). Fold A confirms, DEV
+  composes (lock v2.3 = v2.2 + VER-1), then the test sample. Cost ~6 GPU-h Fold B, ~2 Fold A, ~4 DEV. Recommended:
+  yes, as the next GPU round after the successor-2 read; it is the only path on file whose components each already
+  clear CI-LB > 0 at n >= 1,000. Under decision 252 mode 2 this is the `inference-time-verification-v1` family
+  (registered in `core.base.STAGE3_ALGORITHMS`) with its thresholds (s, N1 cut) learned from TRAIN statistics; the
+  coordinator asks the owner to confirm that this counts as the training-free system-level learning the lock
+  requires, since reinforcement-style policy learning over text has now failed on every form tried.
