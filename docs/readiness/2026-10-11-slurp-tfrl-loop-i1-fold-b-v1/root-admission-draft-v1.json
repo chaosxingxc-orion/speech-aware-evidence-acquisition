@@ -11,11 +11,11 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "608443f3690fa9afff8c57c324a73e87eea7ee1efc8f7f53da27f245cea695cf"
+      "sha256": "1239e8432d95e15ffd980ce086165dc5f5334d1df7e7153e98b5f0b7ec2c7b15"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/registered-facts-v1.json",
-      "sha256": "1d3c59bc9ad6ec3832565e4707fe160eee9d5de048edc9a6101b4634253652f3"
+      "sha256": "0c2291f5707c05b9f8507289ad7e6dad272ba8920ed0cd98f6cc7665a6a5dfb8"
     },
     "registration_base_commit": "0000000000000000000000000000000000000000"
   },

@@ -1643,3 +1643,15 @@ efficiency problem: find the root cause of the bottleneck and fix it.")
   pass on the same geometry for a reason not yet isolated; the GPU estimate (0.3-1.0 s per row, 5-18 min) is a bound guarded by
   the rate gate, not a measurement. The GPU packets row is countersigned; the window runs after the column seals (the card holds
   one core), followed by the pin step, re-pin, countersign of the eight 266-E flight rows, mint, flip and the 266-E chain.
+
+### Column smoke STOP (13:22Z): ACE snapshot pin was the file hash, not the content hash; package re-derived (coordinator, 2026-10-11)
+
+- The four-row smoke of the Fold B column refused at preflight: `supply action 'ace' is invalid: knowledge store ace-playbook snapshot
+  SHA-256 mismatch`. Cause (coordinator error): the `--ace-release-pins` file carried the snapshot FILE sha256 (e1584617...), while the
+  runtime checks the snapshot's content hash (`snapshot_sha256` c91ca2dd..., the value the preparer's `completion.json` records). The
+  smoke attempt opened with 0 calls and 0 audio seconds (one-time key spent); under the one-recovery rule the smoke re-flies whole
+  under `...-rec1-v1` attempt ids (the arm is untouched; nx_r6_family `SMOKE_RECOVERY` is the pattern), which the tfrl family does not
+  yet support (in build).
+- Pins corrected from the preparer's completion entries; `open --stage cell` re-run (receipt superseded; blockers none; loader ok); the
+  package and both baselines re-derived with the correct alternates (they return to the pre-flip state and are re-flipped at the
+  rec1 registration).
