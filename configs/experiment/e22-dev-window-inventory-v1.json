@@ -6,7 +6,7 @@
     "execution_profile": "bounded-discovery-probe",
     "split_role": "discovery",
     "planned_model_calls": 500,
-    "planned_gpu_hours": 0.0,
+    "planned_gpu_hours": 0.1,
     "planned_speech_audio_seconds": 41000
   },
   "obs_buffer_seconds": 90,
