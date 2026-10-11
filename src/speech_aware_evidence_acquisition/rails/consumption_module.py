@@ -86,7 +86,7 @@ COMPONENT_STATES: tuple[str, ...] = (STATE_ON, STATE_OFF, STATE_SHADOW, STATE_CO
 
 _BLOCK_REQUIRED = frozenset({"module_id", "profile", "components"})
 _BLOCK_OPTIONAL = frozenset({
-    "columns", "lock", "review_loop", "solver_tool_access", "template_frame", "supply_frame",
+    "columns", "lock", "review_loop", "solver_tool_access", "template_frame", "supply_frame", "construction_roster",
 })
 #: A lock-version name a block may declare (migration step 6, owner decision
 #: 204): ``v<major>.<minor>``, resolved through the carrier's ``lock_versions``.
@@ -270,6 +270,23 @@ _CATALOGUE = {spec.component_id: spec for spec in COMPONENT_CATALOGUE}
 
 
 @dataclass(frozen=True)
+class ConstructionHooks:
+    """A carrier's CONSTRUCTION VARIANTS of its lock (2026-10-12): the lock layer re-pinned for a construction roster whose rows lie
+    inside the lock's own knowledge sources, so the runner's BUILD/USE guard would refuse them.
+
+    * ``variants`` -- ``{variant name: layer -> layer}``: the lock layer a block naming ``construction_roster: <name>`` compiles
+      onto (a pure function of the layer; it refuses a layer it cannot re-pin).
+    * ``check_cell`` -- ``(variant name or None, composed config values) -> None``: the loader's cell check, fail-closed. With a
+      name it refuses a cell that is not the variant's roster; with ``None`` (a block that names no variant) it refuses a cell
+      whose roster lies inside the lock's own knowledge sources, with the message the runner guard would give.
+
+    A variant exists only so a material-source column can flow without self-leakage; it never delivers a benefit claim."""
+
+    variants: Mapping[str, Callable[[Mapping[str, object]], Mapping[str, object]]]
+    check_cell: Callable[[str | None, Mapping[str, object]], None]
+
+
+@dataclass(frozen=True)
 class CarrierHooks:
     """What the module may know about one carrier. Every member defaults to
     ``None``: "this component has no analogue on this carrier", and the
@@ -368,6 +385,9 @@ class CarrierHooks:
     #: catalogue, so the parse refuses its id); it names what a later
     #: registration would compile.
     carrier_components: Mapping[str, Mapping[str, object]] | None = None
+    #: The carrier's construction variants of its lock (:class:`ConstructionHooks`). ``None``: no variant on this carrier, so a
+    #: block naming ``construction_roster`` refuses. Declared LAST.
+    construction: "ConstructionHooks | None" = None
 
 
 @dataclass(frozen=True)
@@ -532,6 +552,8 @@ class ConsumptionModuleBlock:
     template_frame_json: str | None = None
     #: E-S1: the supply columns' shared frame (canonical JSON), or ``None``.
     supply_frame_json: str | None = None
+    #: The construction variant of the lock the block composes onto (``ConstructionHooks.variants``), or ``None``.
+    construction_roster: str | None = None
 
     @property
     def branch_columns(self) -> tuple[ColumnDecl, ...]:
@@ -654,6 +676,11 @@ def parse_consumption_module_block(
         raise ConsumptionModuleConfigError(
             f"consumption_module.lock must match {_LOCK_VERSION.pattern}, got {lock!r}"
         )
+    construction_roster = raw.get("construction_roster")
+    if "construction_roster" in raw and (not isinstance(construction_roster, str) or _PROFILE.fullmatch(construction_roster) is None):
+        raise ConsumptionModuleConfigError(
+            f"consumption_module.construction_roster must match {_PROFILE.pattern}, got {construction_roster!r}"
+        )
     components = raw["components"]
     if not isinstance(components, list):
         raise ConsumptionModuleConfigError("consumption_module.components must be a list")
@@ -742,6 +769,7 @@ def parse_consumption_module_block(
         solver_tool_access=solver_access,
         template_frame_json=template_frame_json,
         supply_frame_json=supply_frame_json,
+        construction_roster=construction_roster,
     )
 
 
@@ -1264,6 +1292,13 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
                 f"known: {sorted(versions)}"
             )
         lock_layer = versions[block.lock]()
+    if block.construction_roster is not None:
+        construction = hooks.construction
+        if construction is None or block.construction_roster not in construction.variants:
+            raise ConsumptionModuleConfigError(
+                f"construction_roster {block.construction_roster!r} is not a construction variant of profile {hooks.profile!r}"
+            )
+        lock_layer = construction.variants[block.construction_roster](lock_layer)
     if not isinstance(lock_layer, Mapping) or set(lock_layer) not in (
         set(POLICY_OWNED_KEYS), set(DIRECT_LAYER_KEYS),
     ):
@@ -1875,9 +1910,10 @@ def verify_declared_module(
     block's canonical text."""
 
     parsed = parse_consumption_module_block(raw_block, repo_root=repo_root)
-    composed = compile_module(
-        parsed, resolve_carrier_hooks(parsed.profile, repo_root=repo_root), repo_root=repo_root,
-    )
+    hooks = resolve_carrier_hooks(parsed.profile, repo_root=repo_root)
+    composed = compile_module(parsed, hooks, repo_root=repo_root)
+    if hooks.construction is not None:
+        hooks.construction.check_cell(parsed.construction_roster, values)
     declared = policy_owned_values(values)
     diff = differing_paths(composed.values_on_roster_of(values), declared)
     if diff:
@@ -1979,6 +2015,7 @@ __all__ = [
     "CONSUMPTION_MODULE_RECEIPT_SCHEMA",
     "CONSUMPTION_MODULE_VERSION",
     "CarrierHooks",
+    "ConstructionHooks",
     "ColumnDecl",
     "ComponentDecl",
     "ComposedPolicy",
