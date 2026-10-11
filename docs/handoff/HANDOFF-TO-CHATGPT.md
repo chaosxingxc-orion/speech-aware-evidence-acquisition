@@ -1,6 +1,22 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T18:49:39Z
+Last refreshed: 2026-10-11T20:07:42Z
+
+## 266-E Instruct segment FLYING at flight commit 77b2283e9 (Instruct arm then request-identical replicate on the resident Instruct session; task SAEA-Queue-DirectFB-Instruct, 20:04Z); iteration-1 note and driver fixes merged (2026-10-11T20:07:42Z, Fable 5.1 root)
+
+Flip chain converged at 77b2283e9 (four cells, `flight_registration_check` PASS x4, 20:03Z). The Instruct segment flies first because it
+needs no serving swap (owner 2026-10-11: model rotation follows experiment needs); the Thinking arc (swap to the ext4 Thinking copy,
+four-row decode-cost smoke, sign-off marker, Thinking arm, swap back) follows as its own task once the Instruct pair seals. Watchdog
+hold stays in place. Merged on master: the iteration-1 column results note (`docs/results/2026-10-11-slurp-tfrl-loop-i1-fold-b-column-read.md`,
+67f23371a) and the loop-driver fixes (762a77151: playbook keyed by content with a write-once archive correction record for the ACE i1
+state, every offline candidate recorded, the `fx-oclock` i1 candidate read offline and refused at 0.00 pp / 0 rows edited, the
+`typed_arm_empty_by_measurement` receipt flag, GPU hours derived from the measured 2.075 s per contact from iteration 2). Registry
+section "Iteration-1 results note merged; three registry corrections" fixes the "vs twin" label (ACE minus twin is +1.36 [+0.12,
++2.58]; -0.49 was the twin minus the lock), the proposer contact counts (3 and 18, not the 9 / 54 ceilings) and records the 2.49
+GPU-active hours against 1.5 planned. Next: `tfrl_loop_driver.py repair --iter 1` on the data root, then `open --iter 2 --stage
+propose` (model-free) while the Instruct pair flies; the proposer cells flip only after the driver exits.
+
+Superseded stamp: 2026-10-11T18:49:39Z
 
 ## Loop iteration 1 CLOSED (ACE refused: SLU +0.87 [-0.40, +2.10] vs lock, intent 0.00; typed arm empty; parent = lock); 266-E flip running (2026-10-11T18:49:39Z, Fable 5.1 root)
 

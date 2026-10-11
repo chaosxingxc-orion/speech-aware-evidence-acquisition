@@ -1697,3 +1697,27 @@ not clear the instrument on this task in one iteration; the loop continues to it
 column, ACE counters from this column's credit).
 - 266-E next (GPU idle): countersign the eight flight rows (package `countersign-row-texts-v1.json`), mint, flip (loop form), pins,
   flip, gates, chain with the Thinking swap (ext4 copy in place).
+
+### Iteration-1 results note merged; three registry corrections (coordinator, 2026-10-11)
+
+`docs/results/2026-10-11-slurp-tfrl-loop-i1-fold-b-column-read.md` (Opus, branch `opus/tfrl-i1-results-note`, 63ab68bc5) is the
+read of record for the loop iteration-1 Fold B column. Corrections to the entries above, verified against the sealed bytes:
+
+1. The "vs twin SLU pp" value -0.49 [-1.12, +0.12] in the "Loop iteration 1 CLOSED" table is the TWIN's contrast against the lock
+   (aa minus lock), not ACE against the twin. ACE minus twin is **+1.36 [+0.12, +2.58]** SLU (span-F1 +1.67 [+0.22, +3.09]; intent
+   +0.09 [-0.56, +0.83]). Clause c (beats twin, point vs point) was computed correctly; only the label was wrong. The lock-vs-twin
+   gap of -0.49 is the same-flight A/A offset of this column and sits inside the 1.49 floor.
+2. "typed proposer 9 calls / ACE reflector 54 calls" (12:02Z entry) were the registered CEILINGS (3 per carrier); the sealed
+   manifests and the ledger rows record **3** typed-proposer contacts and **18** reflector contacts, no retries.
+3. The column used **2.49 GPU-active hours** (wall 2.73 h; 74.5 % mean utilisation, 26.4 contacts per minute) against
+   `planned_gpu_hours` 1.5 (spec estimate 1.1). Calls and audio sat exactly at plan (4,320 / 4,320; 12,619 / 12,620 s), so this
+   is not a breach of the run-cumulative rule; from iteration 2 the column plan derives its GPU hours from the measured rate
+   (about 0.58 GPU-h per contact per 1,000 rows, 1.3 margin).
+
+Two defects the note found in the loop driver are being fixed model-free before `open --iter 2` (worktree `sonnet-driver-fix2`,
+branch `sonnet/tfrl-driver-playbook-fix`): (i) the archived ACE i1 state binds the stale 0-item playbook file (`playbook/
+playbook-i1.json`, written by the superseded first open-cell run) instead of the flown 27-item release playbook; iteration 2 would
+have curated from 0 items; the archive gets a write-once correction record rather than an in-place edit; (ii) the typed arm's single
+offline candidate (deliver rule `fx-oclock` on alarm `time`, target SPURIOUS) was skipped silently because the family is not in the
+fitter; the close step must record every candidate (refused `offline-family-unsupported` or read), and the i1 candidate is read
+offline on the sealed lock column.
