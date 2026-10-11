@@ -11011,14 +11011,20 @@ class FlightRuntime:
             "execution_unit_delivery": row,
         } for row in stitched]
 
-    def _trace_execution_unit_deliveries(self, client: object, rows) -> None:
-        """Record derived stitching without another metered model request."""
+    def _trace_execution_unit_deliveries(
+        self, client: object, rows, *, run_id: str | None = None,
+    ) -> None:
+        """Record derived stitching without another metered model request.
+
+        ``run_id`` names the run whose trace sink ``client`` owns; the real
+        seal uses the bound plan's, a wire check passes its scratch plan's
+        (``self._plan`` is not bound there)."""
         derived = [row for row in rows if "execution_unit_delivery" in row]
         if not derived:
             return
         from ..tracing import TraceBuffer
 
-        buffer = TraceBuffer(self._plan.run_id)
+        buffer = TraceBuffer(run_id if run_id is not None else self._plan.run_id)
         for row in derived:
             delivery = row["execution_unit_delivery"]
             base = row["request_id"]
@@ -11043,6 +11049,20 @@ class FlightRuntime:
                 "use_execution_unit_sources": delivery["sources"],
             })
         client.flush_trace_buffer(buffer)
+
+    def _emit_seal_time_traces(
+        self, client: object, canonical_rows, *, run_id: str | None = None,
+    ) -> None:
+        """Every trace record the sealed outputs rows require beyond the live
+        contacts, emitted BEFORE the client's trace is closed.
+
+        ``seal()`` and the wire check's seal-and-score both call this single
+        helper so the two cannot drift: ``core.bundle.verify_bundle`` (I7)
+        demands a trace record for every outputs ``request_id``, and a
+        stitched execution-unit row exists only at seal time. A wire check
+        that skipped this step was blind to that requirement and refused to
+        seal any execution-unit (E21 window) cell."""
+        self._trace_execution_unit_deliveries(client, canonical_rows, run_id=run_id)
 
     def _canonical_output_rows(
         self, client: object, *, output_rows=None, timings=None, phase_summaries=None,
@@ -12221,7 +12241,7 @@ class FlightRuntime:
         canonical_rows, predecessor_block, seal_only_phase_results = (
             self._merged_canonical_rows()
         )
-        self._trace_execution_unit_deliveries(self._client, canonical_rows)
+        self._emit_seal_time_traces(self._client, canonical_rows)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
                 handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
@@ -13373,6 +13393,14 @@ class FlightRuntime:
         if self._live_speech_provider is not None:
             self._live_speech_provider.close()
             self._live_speech_provider = None
+        # The sealed rows are derived (and their seal-time traces emitted)
+        # BEFORE the client closes its trace, exactly as seal() orders them.
+        wire_canonical_rows = None
+        if seal_and_score:
+            wire_canonical_rows = self._canonical_output_rows(client)
+            self._emit_seal_time_traces(
+                client, wire_canonical_rows, run_id=plan.run_id
+            )
         close_receipt = client.close()
         seal_and_score_result: Mapping[str, object] = {
             "status": "SKIPPED",
@@ -13384,6 +13412,7 @@ class FlightRuntime:
                 run_dir=run_dir,
                 close_receipt=close_receipt,
                 max_workers=max_workers,
+                canonical_rows=wire_canonical_rows,
             )
         aborted = self._abort_attempt(
             self._data_root,
@@ -13578,6 +13607,7 @@ class FlightRuntime:
         run_dir: Path,
         close_receipt: Mapping[str, object],
         max_workers: int,
+        canonical_rows=None,
     ) -> Mapping[str, object]:
         """Seal a wire-check bundle from the fake responses and run the
         registered scorers over it, so the manifest/verify/score links are
@@ -13587,7 +13617,11 @@ class FlightRuntime:
         that carries the fix under test."""
 
         outputs_path = run_dir / f"{plan.run_id}.outputs.jsonl"
-        canonical_rows = self._canonical_output_rows(self._client)
+        if canonical_rows is None:
+            # Direct callers (no trace emission before close): derive the rows
+            # here; execution-unit stitching is then NOT traced, so use
+            # wire_check(), which emits the seal-time traces first.
+            canonical_rows = self._canonical_output_rows(self._client)
         with outputs_path.open("w", encoding="utf-8") as handle:
             for row in canonical_rows:
                 handle.write(
