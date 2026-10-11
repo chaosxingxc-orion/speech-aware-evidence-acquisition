@@ -19,7 +19,7 @@
             "kind": "decision",
             "reason": "Decision slurp-tfrl-proposers-i2-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-tfrl-proposers-i2-v1/root-admission-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "408a2f1f2c88fcf2f09e8ed58801e5eb7b547434422cb8576822375fed437ee7"
           },
           {
             "kind": "preparation",
@@ -34,7 +34,7 @@
             "sha256": "c3ce437fc58197378e5f3a03272b16ed274aa6e010bc6be62e22600fcb7eb4e6"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1"
     }

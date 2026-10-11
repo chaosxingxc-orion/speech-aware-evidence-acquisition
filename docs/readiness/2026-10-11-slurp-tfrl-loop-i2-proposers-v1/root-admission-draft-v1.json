@@ -7,7 +7,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-proposers-v1/protocol-registered-v1.json",
-      "sha256": "f17565b8d794493a03af51c4c12897dc145c0b243cbc134a2e8dce08d12191d2"
+      "sha256": "397accf0e0079c38471027851024ba2993792a8f7f34a91785059aa908312dc5"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-proposers-v1/registered-facts-v1.json",

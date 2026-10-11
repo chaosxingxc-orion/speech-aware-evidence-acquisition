@@ -15,11 +15,11 @@
     "typed": {
       "attempt_id": "attempt-slurp-native-stage3-tfrl-proposer-i2-generation-v1",
       "cell": "slurp-native-stage3-tfrl-proposer-i2-v1",
-      "composed_config_hash": "7173692fae70e0125c703c74b37743a125a601af65921f9c7c033aba4c5052e7",
+      "composed_config_hash": "b17165f99d2f664f58b21639d26ddec3f446ff0880c2ff2332d3820b8f5105d8",
       "experiment": "slurp-native-stage3-tfrl-proposer-i2-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-proposer-i2-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-FIT-V1",
-      "protocol_hash": "94e2f3a1512fc719fe8f834b264bae34fcbd3518c9fbe1e1b15a05da0fef768a",
+      "protocol_hash": "cbafa474d55f9ea6eeb5b1e5c492c6ff8e73bfc9ce664d25895e54b0fa32bf99",
       "rows": 3,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1",
       "split_identity_hash": "68872b274fb00033d90f187a37945626881288104285bd5ab7def2e4d22a4213"

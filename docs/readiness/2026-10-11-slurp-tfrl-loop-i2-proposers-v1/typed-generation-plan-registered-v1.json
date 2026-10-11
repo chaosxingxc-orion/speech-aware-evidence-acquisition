@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-tfrl-proposer-i2-v1",
-  "composed_config_hash": "7173692fae70e0125c703c74b37743a125a601af65921f9c7c033aba4c5052e7",
+  "composed_config_hash": "b17165f99d2f664f58b21639d26ddec3f446ff0880c2ff2332d3820b8f5105d8",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-tfrl-proposer-i2-generation-v1",
     "carrier_lock_key": "slurp",
@@ -9,7 +9,7 @@
     "planned_model_calls": 9,
     "planned_speech_audio_seconds": 41,
     "planned_speech_audio_seconds_note": "text-only contacts under the D2 freeze: realised speech seconds read 0 <= the declared ceiling",
-    "protocol_hash": "94e2f3a1512fc719fe8f834b264bae34fcbd3518c9fbe1e1b15a05da0fef768a",
+    "protocol_hash": "cbafa474d55f9ea6eeb5b1e5c492c6ff8e73bfc9ce664d25895e54b0fa32bf99",
     "run_id": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "68872b274fb00033d90f187a37945626881288104285bd5ab7def2e4d22a4213",
@@ -38,7 +38,7 @@
   "preparation_base_commit": "0000000000000000000000000000000000000000",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-proposers-v1/protocol-registered-v1.json",
-    "sha256": "f17565b8d794493a03af51c4c12897dc145c0b243cbc134a2e8dce08d12191d2"
+    "sha256": "397accf0e0079c38471027851024ba2993792a8f7f34a91785059aa908312dc5"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1: text-only typed proposer contacts (form proof).",
   "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",

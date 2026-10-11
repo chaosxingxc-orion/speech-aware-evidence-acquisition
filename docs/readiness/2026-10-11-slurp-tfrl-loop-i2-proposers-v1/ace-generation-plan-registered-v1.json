@@ -38,7 +38,7 @@
   "preparation_base_commit": "0000000000000000000000000000000000000000",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-proposers-v1/protocol-registered-v1.json",
-    "sha256": "f17565b8d794493a03af51c4c12897dc145c0b243cbc134a2e8dce08d12191d2"
+    "sha256": "397accf0e0079c38471027851024ba2993792a8f7f34a91785059aa908312dc5"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I2-V1: text-only ACE reflector contacts (form proof).",
   "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
