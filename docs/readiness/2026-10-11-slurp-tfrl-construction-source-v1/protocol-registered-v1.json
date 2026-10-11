@@ -19,11 +19,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-v1",
-      "composed_config_hash": "ee720858c3fdfbb21414d3a4d4e55968957e94ff82a88b171ee277b59d534b9d",
+      "composed_config_hash": "8f8867a8752842f50491d1fef58035fd30c48007c22cb3026675a85f3ad9a211",
       "experiment": "slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-FIT-V1",
-      "protocol_hash": "74613c8a72d9db3025c10c3c6cd2d70e0aa98ef46cb9126eed1895417de2b3bc",
+      "protocol_hash": "36d8d5a302b1e5fd1a83ca42fa920d5f8e141b9f607d49b2d16ac6a59c850797",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-V1",
       "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"

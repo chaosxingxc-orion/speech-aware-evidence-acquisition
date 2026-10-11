@@ -19,7 +19,7 @@
             "kind": "decision",
             "reason": "Decision slurp-tfrl-construction-lock-r01c-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-tfrl-construction-lock-r01c-v1/root-admission-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "cbfc7ef72672bc49eaa02180e0c2e64853ce4e4f1e605bdced9e1fe85be66242"
           },
           {
             "kind": "preparation",
@@ -31,10 +31,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed R01C speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the R01C agreement table (item E16). --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "62309bd0354cd02d171b530b4a6823a598e1e386e0efb2a59be73565c39e0015"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-V1"
     }

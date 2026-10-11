@@ -11,7 +11,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/protocol-registered-v1.json",
-      "sha256": "8e8228ef2fe8528829d259004c5efcb72d4a853958b9e56694b7434de898bf3b"
+      "sha256": "03d519f4590da1dc2a9240f3c635e37ba1613b1edf70e99a5e714c8df43d1d27"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/registered-facts-v1.json",
