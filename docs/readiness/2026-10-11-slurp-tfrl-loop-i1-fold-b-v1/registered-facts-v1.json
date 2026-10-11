@@ -14,7 +14,7 @@
   "blockers": [],
   "composed_config_hashes": {
     "arm": "cdc70bd63b06ee19c622aef581cce5f99769270bcf2db4d1f4cfeaa36875b70a",
-    "smoke": "9a586366df91967ee8e17ad9c3a4e0eaa0a25cf1ff835a0a15e5cd60c93925f8"
+    "smoke": "499facdca5ec7ee2a2cff7cc13b901776e1e8c52ed04b55147a3a449370b3384"
   },
   "fit": {
     "frame": {
@@ -76,7 +76,7 @@
       "baseline_fragment": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
-      "composed_config_hash": "9a586366df91967ee8e17ad9c3a4e0eaa0a25cf1ff835a0a15e5cd60c93925f8",
+      "composed_config_hash": "499facdca5ec7ee2a2cff7cc13b901776e1e8c52ed04b55147a3a449370b3384",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -108,7 +108,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "program": "phase-native-module-v1-c4",
-      "protocol_hash": "d59d1e296d5c01748f4fe3821fa5aaa5c5b033967f586d520b04ecd4c47c3686",
+      "protocol_hash": "3f97062cfa035504cd52644d79b47db6939da6348ec725e3a141d1f5621e5cd9",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1",

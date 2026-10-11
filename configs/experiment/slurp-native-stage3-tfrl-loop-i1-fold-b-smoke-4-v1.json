@@ -19,7 +19,7 @@
             "kind": "decision",
             "reason": "Decision slurp-tfrl-loop-i1-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-tfrl-loop-i1-v1/root-admission-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "f230a8698cc7b622ef239654f1253f70ea257fab980ee239074767cb34746cdd"
           },
           {
             "kind": "preparation",
@@ -31,10 +31,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed TRAIN Fold B speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the Fold B agreement table (item E16). --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "ec533f5d339e9448a5cfa962bddae23d140c408e157dfb20d6e7dda684cd2dc2"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1"
     }
