@@ -2749,7 +2749,9 @@ async def _invoke_native_role_episode(
             except SupplyVariantError as error:
                 raise RailsRunnerError(str(error)) from error
             snapshot_override = None
-            if arm.release_swap is not None:
+            if arm.all_release_swaps:
+                # Loop item E-T6 (2026-10-11): an arm that swaps several stores
+                # renders from ONE composite snapshot built over all of them.
                 # Coordinator amendment, 2026-09-28 (the release-swap arm
                 # route): this arm renders from its OWN alternate composite
                 # snapshot -- the one the flight built over the base's
@@ -2787,6 +2789,7 @@ async def _invoke_native_role_episode(
             record = supply_variant_arm_record(
                 arm=arm, arm_index=arm_index, contact_id=plan.contact_id,
                 supplied_value_ids=supplied,
+                release_swaps_group=supply_variant_group.uses_release_swaps,
             )
         except SupplyVariantError as error:
             raise RailsRunnerError(str(error)) from error
