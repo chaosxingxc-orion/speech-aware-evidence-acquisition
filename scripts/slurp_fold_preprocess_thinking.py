@@ -56,6 +56,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import math
 import re
 import socket
 import sys
@@ -112,6 +113,9 @@ EXECUTION_PROFILE = "bounded-discovery-probe"
 ROW_CALLS = fam.ROWS
 ROW_SPEECH_SECONDS = 3155
 SMOKE_SPEECH_SECONDS = 10
+#: The row's registered gpu-hours cell. The frozen-core gate compares the plan's gpu hours with the row's, so the ledger check must too
+#: (first real run, 2026-10-11 10:41Z: the row said 0.0 and the plan claimed 1.0; the gate refused after --check-ledger had passed).
+ROW_GPU_HOURS = 1.0
 DRAFT_TOKEN = re.compile(r"\bdraft\b", re.IGNORECASE)
 COUNTERSIGNED_TOKEN = re.compile(r"root countersigned", re.IGNORECASE)
 
@@ -226,8 +230,16 @@ def verify_pins(
 # --------------------------------------------------------------------------------------------------------- ledger
 
 
-def ledger_state(ledger_path: Path, *, split_identity_hash: str) -> dict[str, object]:
-    """Presence and countersignature of the packets exposure row, and every disagreement with the registration."""
+def ledger_state(
+    ledger_path: Path, *, split_identity_hash: str, expected_calls: int = ROW_CALLS, expected_seconds: int = ROW_SPEECH_SECONDS,
+    expected_gpu_hours: float = ROW_GPU_HOURS,
+) -> dict[str, object]:
+    """Presence and countersignature of the packets exposure row, and every disagreement with the registration.
+
+    The numbers compared are the gate's own: calls, speech audio seconds AND gpu hours (a plan claiming more gpu hours than the row
+    pre-registers is refused by the gate, so this check must refuse it first). The expected calls and seconds are the fold's total plus
+    whatever a failed attempt already spent (see ``expected_row_totals``).
+    """
 
     rows = _parse_ledger_tables(Path(ledger_path).read_text(encoding="utf-8"))
     matched = [row for row in rows if row.get("run/experiment id") == RUN_ID]
@@ -242,11 +254,12 @@ def ledger_state(ledger_path: Path, *, split_identity_hash: str) -> dict[str, ob
     if row.get("split role") != "discovery" or row.get("split identity hash") != split_identity_hash:
         problems.append("split role / identity differ from Fold B's")
     try:
-        numbers = (int(row["calls"]), int(row["speech audio seconds"]))
+        numbers = (int(row["calls"]), int(row["speech audio seconds"]), float(row["gpu hours"]))
     except (KeyError, ValueError):
         numbers = None
-    if numbers != (ROW_CALLS, ROW_SPEECH_SECONDS):
-        problems.append("budgets %r, registered %r" % (numbers, (ROW_CALLS, ROW_SPEECH_SECONDS)))
+    if numbers != (expected_calls, expected_seconds, float(expected_gpu_hours)):
+        problems.append("budgets (calls, speech audio seconds, gpu hours) %r, registered %r" % (
+            numbers, (expected_calls, expected_seconds, float(expected_gpu_hours))))
     if str(row.get("consumed", "")).strip().lower() != "no":
         problems.append("row is consumed; a sealed preparation is never re-run")
     text = " ".join(str(value) for value in row.values())
@@ -254,6 +267,99 @@ def ledger_state(ledger_path: Path, *, split_identity_hash: str) -> dict[str, ob
     state["draft"] = draft
     state["countersigned"] = (not draft) and bool(COUNTERSIGNED_TOKEN.search(text)) and not problems
     return state
+
+
+# ------------------------------------------------------------------------------------------------------- attempts
+
+
+class AttemptContext(NamedTuple):
+    """What earlier attempts of this run id already spent. Plan budgets are run-cumulative, so a successor declares prior plus its own."""
+
+    prior_calls: int
+    prior_audio_seconds: float
+    wasted_calls: int
+    wasted_audio_seconds: float
+    failed: tuple[str, ...]
+
+
+def attempt_history(data_root: Path, run_id: str = RUN_ID) -> tuple[list[dict[str, object]], list[str]]:
+    """Attempt records of the run id, and run directories that have no attempt record (read-only).
+
+    An attempt is COMPLETED only if its run directory holds the encoder receipt this driver writes last; an attempt record with
+    contacts counted and no encoder receipt is a FAILED attempt whose spend is real and whose features may be lost.
+    """
+
+    attempts_dir, runs_dir = Path(data_root) / "attempts" / run_id, Path(data_root) / "runs" / run_id
+    history: list[dict[str, object]] = []
+    seen: set[str] = set()
+    if attempts_dir.is_dir():
+        for path in sorted(attempts_dir.glob("*.json")):
+            document = json.loads(path.read_text(encoding="utf-8"))
+            attempt_id = str(document["attempt_id"])
+            seen.add(attempt_id)
+            actual = document.get("actual") or {}
+            history.append({
+                "attempt_id": attempt_id, "state": document.get("state"), "calls": int(actual.get("calls", 0)),
+                "audio_seconds": float(actual.get("audio_seconds", 0.0)),
+                "completed": (runs_dir / attempt_id / ENCODER_RECEIPT_NAME).is_file()})
+    orphans = sorted(entry.name for entry in runs_dir.iterdir() if entry.is_dir() and entry.name not in seen) if runs_dir.is_dir() else []
+    return history, orphans
+
+
+def resolve_attempt_context(
+    history: Sequence[Mapping[str, object]], orphans: Sequence[str], *, attempt_id: str, recovery_of: str | None,
+) -> AttemptContext:
+    """Refuse every ambiguous start; never silently reuse an attempt id or an unexplained spend.
+
+    - a run directory without an attempt record, or an attempt id already used: refused;
+    - an earlier attempt that spent contacts and has no encoder receipt (a FAILED start): the next start must name it with
+      ``--recovery-of`` AND use a new attempt id; it is the flight's one recovery re-registration, and a second failed attempt stops the flight.
+    """
+
+    if orphans:
+        raise SystemExit("REFUSED: run directories without an attempt record under %s: %s; the state is ambiguous, inspect them first" % (
+            RUN_ID, ", ".join(orphans)))
+    used = {str(entry["attempt_id"]): entry for entry in history}
+    if attempt_id in used:
+        entry = used[attempt_id]
+        raise SystemExit("REFUSED: attempt id %s is already used (state %s, %d calls counted, encoder receipt %s); use a NEW --attempt-id "
+                         "(the plan budget is run-cumulative; a reused id would hide that spend)" % (
+                             attempt_id, entry["state"], entry["calls"], "present" if entry["completed"] else "ABSENT"))
+    failed = [entry for entry in history if not entry["completed"]]
+    named = sorted(token for token in (recovery_of or "").split(",") if token)
+    if len(failed) > 1:
+        raise SystemExit("REFUSED: %d failed attempts (%s) without an encoder receipt; the single recovery re-registration is spent, "
+                         "stop and re-register" % (len(failed), ", ".join(str(e["attempt_id"]) for e in failed)))
+    if failed and named != [str(failed[0]["attempt_id"])]:
+        entry = failed[0]
+        raise SystemExit("REFUSED: attempt %s (state %s) counted %d calls / %.4f speech seconds and wrote NO encoder receipt: a failed start whose "
+                         "spend is real and whose features may be lost. This start is ambiguous; name it with --recovery-of %s and a NEW "
+                         "--attempt-id (the one recovery re-registration), after the ledger row carries the extra spend" % (
+                             entry["attempt_id"], entry["state"], entry["calls"], entry["audio_seconds"], entry["attempt_id"]))
+    if not failed and named:
+        raise SystemExit("REFUSED: --recovery-of names %s but no failed attempt exists under %s" % (", ".join(named), RUN_ID))
+    return summarize_history(history)
+
+
+def summarize_history(history: Sequence[Mapping[str, object]]) -> AttemptContext:
+    failed = [entry for entry in history if not entry["completed"]]
+    return AttemptContext(
+        prior_calls=sum(int(e["calls"]) for e in history), prior_audio_seconds=sum(float(e["audio_seconds"]) for e in history),
+        wasted_calls=sum(int(e["calls"]) for e in failed), wasted_audio_seconds=sum(float(e["audio_seconds"]) for e in failed),
+        failed=tuple(str(e["attempt_id"]) for e in failed))
+
+
+def expected_row_totals(values: Mapping[str, object], context: AttemptContext) -> tuple[int, int]:
+    """The ledger row's calls and speech seconds: the fold's own total plus the spend of a failed attempt (its features were lost)."""
+
+    fold_audio = sum(float(item["audio_seconds"]) for item in values["items"])  # type: ignore[union-attr]
+    return ROW_CALLS + context.wasted_calls, math.ceil(round(fold_audio + context.wasted_audio_seconds, 6))
+
+
+def plan_totals(context: AttemptContext, cold_rows: int, cold_audio_seconds: float) -> tuple[int, int]:
+    """Cumulative calls and speech seconds this attempt declares: all prior spend plus its own worst case."""
+
+    return context.prior_calls + cold_rows, math.ceil(round(context.prior_audio_seconds + cold_audio_seconds, 6))
 
 
 # ---------------------------------------------------------------------------------------------------------- roots
@@ -298,9 +404,11 @@ def legacy_cache_findings(legacy_cache: Path, root: Path, roster_items: Sequence
 def build_plan(
     *, roster: ThinkingRoster, values: Mapping[str, object], composed_hash: str, items: Sequence[Mapping[str, object]],
     pins: Mapping[str, object], runtime_receipt: Mapping[str, object], ledger: Mapping[str, object], workers: int,
-    promote_workers: int, attempt_id: str, slots: int, problems: Sequence[str],
+    promote_workers: int, attempt_id: str, slots: int, problems: Sequence[str], context: AttemptContext,
 ) -> dict[str, object]:
     audio_seconds = sum(float(item["audio_seconds"]) for item in items)
+    ceiling_calls, ceiling_seconds = plan_totals(context, len(items), audio_seconds)
+    row_calls, row_seconds = expected_row_totals(values, context)
     return {
         "schema": PLAN_SCHEMA,
         "mode": "dry-run",
@@ -311,9 +419,12 @@ def build_plan(
         "first_row": str(items[0]["sample_id"]),
         "last_row": str(items[-1]["sample_id"]),
         "audio_seconds": round(audio_seconds, 6),
-        "declared_plan": {"calls": roster.plan_calls, "speech_audio_seconds": roster.plan_speech_seconds,
-                          "gpu_hours": roster.plan_gpu_hours, "basis": "run-cumulative across the smoke and the Fold B attempt"},
-        "row_total": {"calls": ROW_CALLS, "speech_audio_seconds": ROW_SPEECH_SECONDS},
+        "declared_plan": {"calls_ceiling": ceiling_calls, "speech_audio_seconds_ceiling": ceiling_seconds,
+                          "gpu_hours": roster.plan_gpu_hours,
+                          "basis": "run-cumulative: prior spend of every earlier attempt plus this roster's rows (a warm row is not contacted)"},
+        "row_total": {"calls": row_calls, "speech_audio_seconds": row_seconds, "gpu_hours": ROW_GPU_HOURS},
+        "attempts": {"prior_calls": context.prior_calls, "prior_audio_seconds": round(context.prior_audio_seconds, 6),
+                     "failed_attempts": list(context.failed), "recovery_of": list(context.failed)},
         "promotes": roster.promote,
         "roots": {"packet_root": str(PACKET_ROOT), "legacy_cache_dir": str(LEGACY_CACHE),
                   "promotion_receipt": str(PROMOTION_RECEIPT) if roster.promote else None},
@@ -341,26 +452,30 @@ def _prepare(args, roster: ThinkingRoster, *, repo: Path, lock_path: Path | None
     check_config_identity(values, repo)
     lock = lock_path or evo.umbrella_lock_path()
     pins, runtime_receipt = verify_pins(repo=repo, lock_path=lock)
-    ledger = ledger_state(ledger_path or (repo / LEDGER_RELPATH), split_identity_hash=str(values["split_identity_hash"]))
     items = select_items(values, roster, smoke_ids(repo))
     slots = evo._server_slots(values, SIDECAR_FRAGMENT)
     evo._assert_worker_fit(args.workers, slots, roster.key, SIDECAR_FRAGMENT)
     attempt_id = args.attempt_id or roster.default_attempt_id
+    history, orphans = attempt_history(evo.data_root())
+    context = resolve_attempt_context(history, orphans, attempt_id=attempt_id, recovery_of=getattr(args, "recovery_of", None))
+    calls, seconds = expected_row_totals(values, context)
+    ledger = ledger_state(ledger_path or (repo / LEDGER_RELPATH), split_identity_hash=str(values["split_identity_hash"]),
+                          expected_calls=calls, expected_seconds=seconds)
     problems = root_problems(
         roster, packet_root=PACKET_ROOT, legacy_cache=LEGACY_CACHE, promotion_receipt=PROMOTION_RECEIPT,
         allow_populated_root=bool(getattr(args, "promote_only", False)))
-    return composed, values, pins, runtime_receipt, ledger, items, slots, attempt_id, problems
+    return composed, values, pins, runtime_receipt, ledger, items, slots, attempt_id, problems, context
 
 
 def dry_run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: Path | None = None) -> int:
     roster = ROSTERS[args.roster]
-    composed, values, pins, runtime_receipt, ledger, items, slots, attempt_id, problems = _prepare(
+    composed, values, pins, runtime_receipt, ledger, items, slots, attempt_id, problems, context = _prepare(
         args, roster, repo=repo, lock_path=lock_path, ledger_path=ledger_path)
     problems = [*problems, *ledger["problems"]]  # type: ignore[misc]
     plan = build_plan(
         roster=roster, values=values, composed_hash=composed.config_hash, items=items, pins=pins, runtime_receipt=runtime_receipt,
         ledger=ledger, workers=args.workers, promote_workers=args.promote_workers, attempt_id=attempt_id, slots=slots,
-        problems=problems)
+        problems=problems, context=context)
     evo._emit(args, plan)
     if problems:
         log("DRY-RUN REFUSES: %s" % "; ".join(problems))
@@ -377,7 +492,7 @@ def encoder_receipt_document(
     mmproj: Mapping[str, object], values: Mapping[str, object], config_hash: str, rows: int, audio_seconds: float,
     contacts: int, skipped_warm: int, encode_workers: int, promote_workers: int | None, encode_seconds: float,
     session: Mapping[str, object], files: Sequence[Mapping[str, object]], promotion_receipt: Path | None,
-    promotion_receipt_sha256: str | None, mode: str,
+    promotion_receipt_sha256: str | None, mode: str, context: AttemptContext | None = None,
 ) -> dict[str, object]:
     llama = dict(runtime_receipt["llama_cpp"])  # type: ignore[arg-type]
     return {
@@ -388,6 +503,8 @@ def encoder_receipt_document(
         "attempt_id": attempt_id,
         "roster": roster.key,
         "mode": mode,
+        "recovery_of": list(context.failed) if context is not None else [],
+        "prior_calls": context.prior_calls if context is not None else 0,
         "llama_cpp": {"build_commit": llama["build_commit"], "binary_sha256": llama.get("binary_sha256"),
                       "reported_build": llama.get("reported_build")},
         "runtime_receipt": "docs/" + RUNTIME_RECEIPT_RELPATH,
@@ -460,7 +577,7 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
         raise SystemExit("--promote-only is meaningless for %s: it promotes nothing" % roster.key)
     if promote_only and args.attempt_id is None:
         raise SystemExit("--promote-only requires an explicit --attempt-id (a NEW attempt)")
-    composed, values, pins, runtime_receipt, ledger, items, slots, attempt_id, problems = _prepare(
+    composed, values, pins, runtime_receipt, ledger, items, slots, attempt_id, problems, context = _prepare(
         args, roster, repo=repo, lock_path=lock_path, ledger_path=ledger_path)
     problems = [*problems, *ledger["problems"]]  # type: ignore[misc]
     if not ledger["countersigned"] and not ledger["problems"]:
@@ -505,8 +622,9 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
                 raise SystemExit("something already listens on the sidecar port %d" % evo.SIDECAR_PORT)
         except OSError:
             pass
-        calls = args.plan_calls if args.plan_calls is not None else roster.plan_calls
-        speech = args.plan_speech_seconds if args.plan_speech_seconds is not None else roster.plan_speech_seconds
+        cold_calls, cold_speech = plan_totals(context, len(cold), sum(float(s.audio_seconds) for s in cold))
+        calls = args.plan_calls if args.plan_calls is not None else cold_calls
+        speech = args.plan_speech_seconds if args.plan_speech_seconds is not None else cold_speech
         plan = evo.ExecutionPlan(
             run_id=RUN_ID, execution_profile=str(values["execution_profile"]), carrier_lock_key=evo.SLURP_LOCK_KEY,
             split_role="discovery", split_identity_hash=str(values["split_identity_hash"]), planned_model_calls=calls,
@@ -514,6 +632,11 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
             attempt_id=attempt_id, owner_allowance=values.get("owner_allowance")).validate(source_root=repo)
         log("frozen-core gate PASS (lock %s)" % gate.assert_model_touch_allowed(plan)[:12])
         run_dir.mkdir(parents=True, exist_ok=False)
+        # The patched llama.cpp server writes legacy feature-cache entries only into a directory that already exists. Nothing else
+        # creates the Thinking cache (first real run, 2026-10-11 10:52Z: four contacts counted, nothing cached). Create it empty here,
+        # before the first contact, together with the packet root's parent; the packet root itself is created by the promotion.
+        LEGACY_CACHE.mkdir(parents=True, exist_ok=True)
+        PACKET_ROOT.parent.mkdir(parents=True, exist_ok=True)
         log("spawning the CPU-only Thinking sidecar on %d at -np %d" % (evo.SIDECAR_PORT, slots))
         session = evo.start_session(
             runtime_root=evo.RUNTIME_ROOT, data_root=root, runtime_receipt=runtime_receipt, host="127.0.0.1",
@@ -522,6 +645,7 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
             receipt_path=run_dir / "session-preprocess.receipt.json",
             server_log_path=run_dir / "session-preprocess.server.log", role="preprocess", ready_timeout_seconds=1800.0)
         log("sidecar up: pid=%s port=%s" % (session.pid, session.port))
+        started = time.time()          # encode timing excludes the gate's full GGUF hash and the model load
         try:
             transport = evo.TRANSPORTS.resolve(str(values["transport"]))(
                 values, root, session=session, runtime_receipt=runtime_receipt, runtime_root=evo.RUNTIME_ROOT)
@@ -562,6 +686,15 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
         run_dir.mkdir(parents=True, exist_ok=False)
     encode_seconds = time.time() - started
 
+    if not promote_only:
+        warm_after, _ = legacy_cache_findings(LEGACY_CACHE, root, items)
+        missing = [sample.sample_id for sample in samples if sample.sample_id not in warm_after]
+        if missing:
+            raise SystemExit(
+                "the sidecar answered %d contacts but the legacy cache %s holds no entry for %d of %d rows (e.g. %s): the contacts are "
+                "counted and the features are lost; this attempt is FAILED (no encoder receipt is written) and the next start is the "
+                "recovery re-registration" % (contacts, LEGACY_CACHE, len(missing), len(samples), missing[0]))
+
     if not roster.promote:
         files = legacy_file_entries(samples, root, LEGACY_CACHE)
         document = encoder_receipt_document(
@@ -569,7 +702,7 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
             config_hash=composed.config_hash, rows=len(samples), audio_seconds=audio_seconds, contacts=contacts,
             skipped_warm=len(samples) - len(cold), encode_workers=args.workers, promote_workers=None,
             encode_seconds=encode_seconds, session=session_json, files=files, promotion_receipt=None,
-            promotion_receipt_sha256=None, mode="encode-only")
+            promotion_receipt_sha256=None, mode="encode-only", context=context)
         write_create_only(run_dir / ENCODER_RECEIPT_NAME, document)
         evo._emit(args, document)
         log("SMOKE PASS: %d contacts, %.2f rows per minute, no packet written" % (contacts, 60.0 * contacts / max(encode_seconds, 1e-9)))
@@ -594,7 +727,7 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
         config_hash=composed.config_hash, rows=len(samples), audio_seconds=audio_seconds, contacts=contacts,
         skipped_warm=len(samples) - len(cold), encode_workers=args.workers, promote_workers=args.promote_workers,
         encode_seconds=encode_seconds, session=session_json, files=packet_file_entries(packets),
-        promotion_receipt=PROMOTION_RECEIPT, promotion_receipt_sha256=promotion_sha256, mode=mode)
+        promotion_receipt=PROMOTION_RECEIPT, promotion_receipt_sha256=promotion_sha256, mode=mode, context=context)
     write_create_only(run_dir / ENCODER_RECEIPT_NAME, document)
     evo._emit(args, document)
     log("FOLD-B PASS: %d packets promoted; next: python -B scripts/slurp_fold_preprocess_thinking.py --pin-receipt" % len(packets))
@@ -666,7 +799,14 @@ def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, recei
 
 def check_ledger(args, *, repo: Path = REPO, ledger_path: Path | None = None) -> int:
     _, values = compose_values(repo)
-    state = ledger_state(ledger_path or (repo / LEDGER_RELPATH), split_identity_hash=str(values["split_identity_hash"]))
+    history, orphans = attempt_history(evo.data_root())
+    if orphans:
+        raise SystemExit("REFUSED: run directories without an attempt record: %s" % ", ".join(orphans))
+    context = summarize_history(history)
+    calls, seconds = expected_row_totals(values, context)
+    state = ledger_state(ledger_path or (repo / LEDGER_RELPATH), split_identity_hash=str(values["split_identity_hash"]),
+                         expected_calls=calls, expected_seconds=seconds)
+    state["expected"] = {"calls": calls, "speech_audio_seconds": seconds, "gpu_hours": ROW_GPU_HOURS, "failed_attempts": list(context.failed)}
     print(json.dumps(state, indent=2, sort_keys=True))
     return 0 if state["countersigned"] else 4
 
@@ -681,6 +821,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--promote-workers", type=int, default=8)
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--attempt-id", default=None)
+    parser.add_argument("--recovery-of", default=None,
+                        help="the failed attempt id (no encoder receipt, spend counted) this start recovers; required, with a NEW "
+                             "--attempt-id, whenever such an attempt exists; refused when none does")
     parser.add_argument("--plan-calls", type=int, default=None, help="cumulative call ceiling this attempt declares")
     parser.add_argument("--plan-speech-seconds", type=int, default=None, help="cumulative speech-second ceiling this attempt declares")
     parser.add_argument("--write", action="store_true", help="with --pin-receipt: write the two baselines (default prints only)")
