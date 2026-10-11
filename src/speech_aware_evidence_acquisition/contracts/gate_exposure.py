@@ -52,6 +52,12 @@ ROSTER_RECEIPTS_RELDIR = "docs/receipts/rosters"
 ROSTER_RECEIPT_SCHEMA = "saea-roster-receipt-v1"
 CONSTRUCTION_ROSTER_ROLE = "construction"
 
+#: Non-roster companion files that live beside the roster receipts because a
+#: roster receipt pins them by path and sha256 (so they cannot move). Only these
+#: exact schemas are skipped by the construction-role scan; any other
+#: non-roster schema still fails closed.
+ROSTER_COMPANION_SCHEMAS = frozenset({"saea-a2t-paired-roster-comparator-rows-v1"})
+
 #: The ``derived_from`` keys under which a partitioned ``final-report`` roster
 #: receipt declares its parent and its sibling(s) (owner decision 147;
 #: ``scripts/build_slurp_test_sample_roster.py`` writes both). The gate reads
@@ -155,6 +161,8 @@ class _ExposureAndCarrierMixin:
                 raise GateClosed(f"roster receipt unreadable ({path}): {error}") from error
             if not isinstance(document, Mapping):
                 raise GateClosed(f"roster receipt {path} must be a JSON object")
+            if document.get("schema") in ROSTER_COMPANION_SCHEMAS:
+                continue
             if document.get("schema") != ROSTER_RECEIPT_SCHEMA:
                 raise GateClosed(
                     f"roster receipt {path} schema {document.get('schema')!r} is not "
