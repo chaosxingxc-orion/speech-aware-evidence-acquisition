@@ -1655,3 +1655,17 @@ efficiency problem: find the root cause of the bottleneck and fix it.")
 - Pins corrected from the preparer's completion entries; `open --stage cell` re-run (receipt superseded; blockers none; loader ok); the
   package and both baselines re-derived with the correct alternates (they return to the pre-flip state and are re-flipped at the
   rec1 registration).
+
+### GPU packet window: encode PASSED, Thinking session start failed on the missing ext4 copy; i1 smoke recovery registered (coordinator, 2026-10-11 13:55Z)
+
+- GPU window 13:31-13:48Z (task SAEA-Packets-THINK-GPU): Instruct stopped 13:32:10Z; smoke 4 rows 0.688 s per row (incl. warm-up),
+  rate gate projected 741 s < 3,000 s; Fold B 1,076 rows in 164.5 s = **0.155 s per row (386 rows per minute; the CPU pass was 16-19
+  s per row)**; 1,080 packets promoted (receipt ef409ef4...). The window then failed at `serving_swap.sh think-np4 --start-only`
+  (exit 13): the serving runtime resolves the Thinking GGUF under `/home/chao/models/qwen3-omni-30b-a3b-thinking-gguf-q4km/` (the ext4
+  working-copy convention of the Instruct core) and only the E-drive archive existed; Instruct restored 13:48:03Z. Fix: the ext4
+  working copy is being made (20.8 GB, sha-verified against the lock); no config change. Pin step done (3a5c8ef25); GPU packets row
+  closed (1,080 contacts, 3,164.74 s). 266-E's re-pin / countersign / mint / flip / chain run after the i1 column (one core per card).
+- i1 smoke recovery merged (02dc21855: tfrl `SMOKE_RECOVERIES`, rec1 attempt ids for the smoke's generation and FIT, cumulative budget
+  16 / 64 calls with 0 spent, root cause in the plans, queue + flip use rec1, `PLAN_REC` in the generic re-pin loop); the two
+  first-attempt smoke rows are folded into the countersigned rec1 rows (one row per run id for the gate); the minted column receipt
+  stands (run ids unchanged). Next: column flip (loop form) -> pins -> flip -> gates -> queue.

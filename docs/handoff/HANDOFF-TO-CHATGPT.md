@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T13:23:22Z
+Last refreshed: 2026-10-11T13:50:59Z
+
+## GPU packets DONE (Fold B 0.155 s/row, 1,080 packets promoted; Thinking session start failed on the missing ext4 copy, Instruct restored); i1 smoke recovery registered (rec1) (2026-10-11T13:50:59Z, Fable 5.1 root)
+
+Column smoke STOP 13:22Z = coordinator pin error (snapshot file hash vs content hash); package re-derived (785b2fb9d); smoke recovery merged (02dc21855) with rec1 ids, rows folded and countersigned; next: column flip -> pins -> flip -> gates -> queue (~1.5 GPU-h). GPU packets: pin step committed (3a5c8ef25), row closed; ext4 working copy of the Thinking GGUF in progress; 266-E re-pin/sign/mint/flip/chain after the column. Uptime guard HALTed on the STOP; re-arm after the next chain start. No owner decision open.
+
+Superseded stamp: 2026-10-11T13:23:22Z
 
 ## Fold B column FLYING (flight commit 6cbd9c707, task SAEA-Queue-TFRLi1Col, 13:21Z); GPU packet pass merged and its row countersigned (2026-10-11T13:23:22Z, Fable 5.1 root)
 
