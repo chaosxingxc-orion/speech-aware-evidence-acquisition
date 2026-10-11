@@ -988,3 +988,34 @@ made provable WITHOUT a carrier flight, inside decisions 242 / 252; the proof on
   re-scores the sealed direct bundle with `a2t-toolcall-official` (hours). Nothing in 259 contacts a model or flies;
   the carriers' GPU stays held until the lock of decision 252. Recommended: yes, scheduled behind the SLURP VER-1
   rounds so they never block a SLURP flip or flight.
+
+## VER-1 Fold A confirmation read: NOT CONFIRMED; decision 260 PROPOSED (2026-10-11)
+
+Fold A cells sealed: VER-1b pool (SAEA-SLURP-STAGE3-VER1B-SAMPLES-FOLD-A-V1, 4,320 contacts, driver-done 01:30:10Z) and
+VER-1c c3 column (SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A-V1, 4,320 contacts, driver-done 03:15:10Z); READ rows
+countersigned (30077de25, b2077f951); official per-arm columns rendered; composer read
+`analysis/SAEA-SLURP-VER1-OFFLINE-VER1B-FOLD-A-V1/` (report sha256 8f1d4777...). On the v4g base, Fold A, with the rule
+FIXED on Fold B (n = 3, s = 2, c3 verdict x N1 >= 0.2): vs the pool's greedy sample S0 (66.41) the filter alone +0.58
+[-0.25, +1.40], the gate alone +0.49 [-0.05, +1.02], **filter + gate +0.56 [-0.40, +1.51]**; vs the VER-1c lock column
++1.12 [-0.31, +2.56], vs its twin +0.87 [-0.48, +2.21]; strata: empty-gold +1.37 [+0.93, +1.85], non-empty **-0.87
+[-1.72, -0.06]** (on Fold A the rule costs non-empty rows: 18 lost / 5 gained); 1 intent row moved; cross-fit picked
+"no gate" on one half. The pre-fixed criterion (CI-LB > 0 over the Fold A lock column and point >= 0.67) is NOT met:
+**NOT CONFIRMED** (decision 247 "stable" fails; the Fold B in-sample +1.29 / +1.43 shrank to +0.56, in line with the
+cross-fitted ~+1.0 minus the flight band). Oracle ceilings on Fold A: perfect gate +3.98, best of 3 samples +5.34.
+What remains true across both folds: the 5-sample support filter at s = 2 over v4g has CI-LB > 0 on every 5-sample pool
+read (VER-1a Fold B +0.85 [+0.35, +1.36]; ROLL-2 Fold A pool +1.03 [+0.47, +1.70]; ROLL-3 DEV +0.76 [+0.08, +1.45]),
+about +0.8..+1.0 pp at 6 contacts per row; the 3-sample form and the c3 gate do not replicate on Fold A.
+
+- **260** (PROPOSED) VER-1 disposition: (A) CLOSE VER-1 as a lock candidate (recorded: the verification family's stable
+  gain is +0.5..+1.0 pp over v4g, under the 0.67 / 1.5 floors for a lock, at 2.5-3x the lock's Solver contacts; the
+  records, pools and composer stay for later reuse), keep lock v2.2, and return the GPU to the next line once the owner
+  rules on 259 and the direction below; (B) one more confirmation flight: a 5-sample pool on Fold A on lock v2.2
+  (6,480 calls, ~2.5 GPU-h) to test filter-only n = 5 s = 2 (the only form with CI-LB > 0 on both existing 5-sample
+  pools), accepting that even a confirmed +0.9 pp stays under the lock floor and triples the Solver cost. Recommended: A.
+  Direction note for the owner: with VER-1 closed, every measured mechanism family on SLURP SLU-F1 (templates, supply,
+  routing, selection / verification, post-processing) has now been read at n >= 1,000; the composed gains on the test
+  sample are intent +5.34 vs PLAN (locked) and SLU-F1 +1.67 vs COMP-1b / +2.46 vs PLAN (v4g + review-off), SLU-F1 66.65
+  against the published HerMiT 70.84. No measured mechanism closes the remaining 4 pp; the headroom tables point to
+  entity CONTENT (consumption ~210 items, hearing ~106 items on Fold A), which needs either a stronger core or a new
+  evidence source, not another selection rule. The coordinator will put the options for that choice to the owner as a
+  separate briefing.

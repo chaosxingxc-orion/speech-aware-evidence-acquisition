@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-10T23:44:49Z
+Last refreshed: 2026-10-11T03:29:48Z
+
+## VER-1 Fold A: NOT CONFIRMED (+0.56 [-0.40, +1.51] vs S0 under the fixed rule; non-empty rows -0.87); decision 260 proposed (2026-10-11T03:29:48Z, Fable 5.1 root)
+
+VER-1b (3-sample pool, Fold A, 4,320 contacts, sealed 01:30:10Z) and VER-1c (c3 column, Fold A, 4,320 contacts, sealed 03:15:10Z) read offline (`analysis/SAEA-SLURP-VER1-OFFLINE-VER1B-FOLD-A-V1/`): with the rule fixed on Fold B (n = 3, s = 2, c3 verdict x N1 >= 0.2, v4g), filter + gate vs the greedy sample +0.56 [-0.40, +1.51], vs the VER-1c lock column +1.12 [-0.31, +2.56]; empty-gold +1.37, non-empty -0.87 [-1.72, -0.06]; the pre-fixed criterion (CI-LB > 0, point >= 0.67) fails -> NOT CONFIRMED (247 stability). Stable across pools: only the 5-sample filter at s = 2 (CI-LB > 0 on VER-1a Fold B +0.85, ROLL-2 Fold A +1.03, ROLL-3 DEV +0.76), ~+0.8..+1.0 pp at 6 contacts per row. Decision 260 proposed (A close VER-1 as a lock candidate, keep v2.2; B a 5-sample Fold A pool ~2.5 GPU-h for filter-only n5 s2). Serving: the uptime guard had HALTed on the 10-10 08:14Z STOP; re-armed 03:16Z but deferred twice on the coordinator's own check processes (its sidecar detector matches the literal server command line); it restarts the 27-hour session on its next clean loop; no flight is queued. Decisions open: 259 (carrier model-free work), 260.
+
+Superseded stamp: 2026-10-10T23:44:49Z
 
 ## 258 ruled A: VER-1b / VER-1c Fold A confirmation flying; carrier model-free proof merged (2026-10-10T23:44:49Z, Fable 5.1 root)
 
