@@ -89,6 +89,9 @@ build commit plus per-file GGUF SHA-256. Record every model or tool contact in
   `native_episode.react_exhaustion_policy` as `"continue-without-answer"` (item E22, the
   ReAct-exhaustion disposition, not the Earnings-22 carrier; the B8b-anchor arm lost 2,016
   contacts to the same default).
+- Exposure-ledger closure gate (2026-10-11): `ledger_consumed_check.py` fails when a flight sealed on disk still has
+  its ledger row at `consumed = no`; close rows with `scripts/flights/batch/ledger_mark_consumed.py --apply`
+  (data-root mode is the gate; the results-notes fallback used when the data root is absent is advisory).
 - Stage-3 measurement gates (2026-09-26): `stage3_effect_floor_check.py` refuses a cell whose
   declared `stage3_measurement` block is missing, whose design is a cross-flight contrast without an
   in-chain A/A replicate, or whose expected effect sits under the measured floor of its design

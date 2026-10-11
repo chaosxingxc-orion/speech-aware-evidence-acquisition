@@ -107,11 +107,17 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps(data, indent=2, sort_keys=True))
         return 0 if data["passed"] else 1
+    # The results-notes fallback (data root absent, e.g. a Windows run) only knows that a note MENTIONS the run id near
+    # "sealed" / "Verdict:"; it cannot see the manifest, so its findings are advisory. The data-root mode is the gate.
+    severity = "FAIL" if data["mode"] == "data-root" else "ADVISORY"
     for finding in data["findings"]:
-        print(f"ledger consumed check: FAIL: {finding['date']} {finding['run_id']} is sealed ({finding['basis']}) but consumed = no")
+        print(f"ledger consumed check: {severity}: {finding['date']} {finding['run_id']} is sealed ({finding['basis']}) but consumed = no")
     if data["findings"]:
-        print(f"ledger consumed check: FAIL ({len(data['findings'])} row(s); repair with ledger_mark_consumed.py --apply)")
-        return 1
+        print(
+            f"ledger consumed check: {severity} ({len(data['findings'])} row(s) in {data['mode']} mode; "
+            "repair with ledger_mark_consumed.py --apply, or re-run with the data root present)"
+        )
+        return 1 if severity == "FAIL" else 0
     print(
         f"ledger consumed check: PASS ({data['open_rows']} open row(s) since {data['since']} checked "
         f"against {data['mode']}, 0 sealed)"
