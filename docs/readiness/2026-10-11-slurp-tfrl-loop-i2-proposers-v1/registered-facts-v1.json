@@ -7,7 +7,7 @@
       "baseline_fragment": "slurp-native-stage3-tfrl-ace-reflector-i2-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-tfrl-ace-reflector-i2-v1",
-      "composed_config_hash": "47b28ecfe8945754c0698f6bac8b238e30ab968574e75d79beebc8e230b32d4f",
+      "composed_config_hash": "d3ee9d3cb8c30ddaa77b16a6630fd28599be6dcd4a59894a26137a7f0ff7ba92",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -35,7 +35,7 @@
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I2-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "program": "phase-tfrl-ace-reflector-v1",
-      "protocol_hash": "ec3b2b1cfdbad01112200177d6fa615580c6613e832563581f6923211686e4c3",
+      "protocol_hash": "2a091d4edf7d7f3b47de18d6e57b663410b85f006025ac8112cb42b87d16498f",
       "roster_receipt": null,
       "rows": 18,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I2-V1",
