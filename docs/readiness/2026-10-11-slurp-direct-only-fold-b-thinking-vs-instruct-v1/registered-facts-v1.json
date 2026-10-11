@@ -151,7 +151,7 @@
       "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1",
       "baseline_fragment": "slurp-direct-only-fold-b-thinking-smoke-4-baseline-v1",
       "cell": "slurp-direct-only-fold-b-thinking-smoke-4-v1",
-      "composed_config_hash": "669453c509da06ac3783a9b86b724127a8eba04641b585396852174a74c0c84d",
+      "composed_config_hash": "8447a449cbb8801f452895ad694aa280e4a01e01954e918bc469521c3be23d4c",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "declares_prepared_phase_supply": false,
       "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-v1",
@@ -159,7 +159,7 @@
       "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
       "policy": "phase-direct-only-v1",
-      "protocol_hash": "043b2190799f41958c049bc500259a212c54e3135585a64beafe07354a45ebec",
+      "protocol_hash": "197154e19469de28e5bf53967354c0096cc3da962ea7ffeaa3ca8859d17c58b2",
       "role": "four-row Thinking decode-cost smoke",
       "rows": 4,
       "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
@@ -246,7 +246,7 @@
     "roster_id": "SLURP-EVO-FOLD-B-V2",
     "smoke_receipt": {
       "ids_are_first_four_of_arm_roster": true,
-      "relpath": "docs/receipts/rosters/slurp-direct-fold-b-thinking-smoke-4-v1.json",
+      "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/smoke-roster-receipt-v1.json",
       "sha256": "856933c205082b16070dbfab84c077b93f43b43641319460004ce9dbd40a1c9e"
     },
     "smoke_split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe",
@@ -345,6 +345,6 @@
       "tuning_roster": "none"
     }
   },
-  "study_commit_at_registration": "918d13ad42e0728b0e5b6d20a2c6898f33a4bacc",
+  "study_commit_at_registration": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "what_this_cell_is": "The bare-core read of owner decision 266-E: the sealed direct-only form on TRAIN Fold B, Instruct (twice) and Thinking, to test whether core capability is the binding constraint. A capability measurement: it claims no benefit and admits nothing."
 }

@@ -34,10 +34,10 @@
   "max_speech_packets": 1,
   "one_factor": "The core (model weights, its own speech-packet root, the completion cap 2048 and --reasoning-format deepseek). The request form, the direct-only program, the closed-list task instruction, the roster and its order are the same.",
   "plan_kind": "fit",
-  "preparation_base_commit": "918d13ad42e0728b0e5b6d20a2c6898f33a4bacc",
+  "preparation_base_commit": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
-    "sha256": "2bf7f8ec3d37bbfee2e10e351f95a12bf7514186c0c60fc2f3ce28b4f5382a33"
+    "sha256": "0d4199858d5bc899cbd2cb4bf18e30fc7b1952e028eb0033c0053adcc2ec8f27"
   },
   "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1: the live phase-fit spend identity of SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1.",
   "registered_at_utc": "2026-10-11T18:00:00.000000+00:00",

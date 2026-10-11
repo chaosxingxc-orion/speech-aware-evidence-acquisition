@@ -461,7 +461,8 @@ hash is absent or differs from the lock.
 ## Prerequisites still open
 
 1. **Thinking speech packets (P0).** Prepare the Thinking packet root over TRAIN Fold B (CPU sidecar, `{pins_mod.PREPROCESS_FRAGMENT}`) and pin its promotion receipt
-   in the two Thinking baselines (zero sentinel today). `scripts/slurp_evo_fold_preprocess.py` is wired to the Instruct runtime receipt and root and needs a Thinking
+   in the two Thinking baselines (zero sentinel today); the receipt's `feature_root` must equal the fragment's `speech_feature_root` (the runtime refuses a
+   disagreement) and cover all 1,080 Fold B rows (the smoke's four are among them). `scripts/slurp_evo_fold_preprocess.py` is wired to the Instruct runtime receipt and root and needs a Thinking
    variant; ledger row `{fam.PACKETS_ROW_ID}` is a DRAFT placeholder for it.
 2. **Task registration.** `SAEA-Serving-THINK` / `SAEA-Monitor-THINK` are registered by the first `serving_swap.sh think-np4` through `saea_task.ps1`.
 3. **Countersignatures and the receipt.** `countersign-row-texts-v1.json`; then `scripts/flights/direct/direct_fb_mint_receipt.py`, then `direct_fb_flip.sh`.

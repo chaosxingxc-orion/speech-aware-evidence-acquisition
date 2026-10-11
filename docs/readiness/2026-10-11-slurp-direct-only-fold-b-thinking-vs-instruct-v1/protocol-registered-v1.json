@@ -43,7 +43,7 @@
       "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1",
       "baseline_fragment": "slurp-direct-only-fold-b-thinking-smoke-4-baseline-v1",
       "cell": "slurp-direct-only-fold-b-thinking-smoke-4-v1",
-      "composed_config_hash": "669453c509da06ac3783a9b86b724127a8eba04641b585396852174a74c0c84d",
+      "composed_config_hash": "8447a449cbb8801f452895ad694aa280e4a01e01954e918bc469521c3be23d4c",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "declares_prepared_phase_supply": false,
       "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-v1",
@@ -51,7 +51,7 @@
       "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
       "policy": "phase-direct-only-v1",
-      "protocol_hash": "043b2190799f41958c049bc500259a212c54e3135585a64beafe07354a45ebec",
+      "protocol_hash": "197154e19469de28e5bf53967354c0096cc3da962ea7ffeaa3ca8859d17c58b2",
       "role": "four-row Thinking decode-cost smoke",
       "rows": 4,
       "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
@@ -178,6 +178,6 @@
   },
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-266e, branch sonnet/266e-thinking-bare-read",
   "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
-  "study_commit_at_registration": "918d13ad42e0728b0e5b6d20a2c6898f33a4bacc",
+  "study_commit_at_registration": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "the_question": "With the system held out entirely, does the Thinking core move the official SLU-F1 on TRAIN Fold B by more than the cross-flight bar (about 2.5 pp) over the Instruct core, read against a same-chain Instruct replicate? (owner decision 266-E)"
 }

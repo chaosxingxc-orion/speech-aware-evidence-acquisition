@@ -59,7 +59,7 @@ UNPINNED_SHA = "0" * 64                              # sentinel: the Thinking pa
 
 ROSTER = {
     "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
-    "smoke": "docs/receipts/rosters/slurp-direct-fold-b-thinking-smoke-4-v1.json",
+    "smoke": f"{PACKAGE}/smoke-roster-receipt-v1.json",       # inside the package: a prefix of the parent roster, not a new draw
 }
 SMOKE_ROSTER_ID = "SLURP-DIRECT-FOLD-B-THINKING-SMOKE-4-V1"
 TUNING_ROSTER, READ_ROSTER = "none", "SLURP-EVO-FOLD-B-V2"

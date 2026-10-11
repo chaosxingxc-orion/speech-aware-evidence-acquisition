@@ -69,8 +69,8 @@
   "population": {
     "count": 4,
     "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
-    "decision_population": "TRAIN Fold B (SLURP-DIRECT-FOLD-B-THINKING-SMOKE-4-V1): 4 rows of docs/receipts/rosters/slurp-direct-fold-b-thinking-smoke-4-v1.json, the first four rows in roster order; structural decode-cost proof only, no score and no read.",
-    "roster_receipt": "docs/receipts/rosters/slurp-direct-fold-b-thinking-smoke-4-v1.json",
+    "decision_population": "TRAIN Fold B (SLURP-DIRECT-FOLD-B-THINKING-SMOKE-4-V1): 4 rows of docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/smoke-roster-receipt-v1.json, the first four rows in roster order; structural decode-cost proof only, no score and no read.",
+    "roster_receipt": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/smoke-roster-receipt-v1.json",
     "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe"
   },
   "populations": [

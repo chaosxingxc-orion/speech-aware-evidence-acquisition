@@ -1,6 +1,6 @@
 {
   "cell": "slurp-direct-only-fold-b-thinking-smoke-4-v1",
-  "composed_config_hash": "669453c509da06ac3783a9b86b724127a8eba04641b585396852174a74c0c84d",
+  "composed_config_hash": "8447a449cbb8801f452895ad694aa280e4a01e01954e918bc469521c3be23d4c",
   "execution_plan": {
     "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 4,
     "planned_speech_audio_seconds": 10,
-    "protocol_hash": "043b2190799f41958c049bc500259a212c54e3135585a64beafe07354a45ebec",
+    "protocol_hash": "197154e19469de28e5bf53967354c0096cc3da962ea7ffeaa3ca8859d17c58b2",
     "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe",
@@ -31,10 +31,10 @@
   },
   "one_factor": "The core (model weights, its own speech-packet root, the completion cap 2048 and --reasoning-format deepseek). The request form, the direct-only program, the closed-list task instruction, the roster and its order are the same.",
   "plan_kind": "generation",
-  "preparation_base_commit": "918d13ad42e0728b0e5b6d20a2c6898f33a4bacc",
+  "preparation_base_commit": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
-    "sha256": "2bf7f8ec3d37bbfee2e10e351f95a12bf7514186c0c60fc2f3ce28b4f5382a33"
+    "sha256": "0d4199858d5bc899cbd2cb4bf18e30fc7b1952e028eb0033c0053adcc2ec8f27"
   },
   "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1: the four-row Thinking decode-cost smoke of the 266-E bare-core read.",
   "quality_read_gate": "None: a smoke is inspected for structure and decode cost and never read for a number.",

@@ -1,6 +1,6 @@
 # Preregistration -- cell 266-E: the bare-core read on TRAIN Fold B, Thinking versus Instruct
 
-Registered 2026-10-11 before any contact, at study commit `918d13ad42e0728b0e5b6d20a2c6898f33a4bacc`. Owner decision 266-E. Package `docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/`.
+Registered 2026-10-11 before any contact, at study commit `a057eea1d9479a8220dfe9b44d817faa1ec2a7a8`. Owner decision 266-E. Package `docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/`.
 
 ## 1. Question and design
 

@@ -1,6 +1,6 @@
 # Cell 266-E: the bare-core read on TRAIN Fold B, Thinking versus Instruct
 
-Registered before contact 2026-10-11 at study commit `918d13ad42e0728b0e5b6d20a2c6898f33a4bacc`; all four cells are **held**. Nothing here authorises a
+Registered before contact 2026-10-11 at study commit `a057eea1d9479a8220dfe9b44d817faa1ec2a7a8`; all four cells are **held**. Nothing here authorises a
 flight, a flip, a serving swap or an admission entry.
 
 **The question (owner decision 266-E).** The 265 coverage pre-read left the supply side of SLURP SLU at its plateau; the remaining mass is values TRAIN
@@ -13,7 +13,7 @@ the Instruct core and on the Thinking core. The Thinking model is admitted ONLY 
 
 | cell | run id | attempt | fit run id (contact cap) | rows | composed config | protocol |
 | --- | --- | --- | --- | ---: | --- | --- |
-| four-row Thinking decode-cost smoke | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1` | `attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1` | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1` (13) | 4 | `669453c509da06ac3783a9b86b724127a8eba04641b585396852174a74c0c84d` | `043b2190799f41958c049bc500259a212c54e3135585a64beafe07354a45ebec` |
+| four-row Thinking decode-cost smoke | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1` | `attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1` | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1` (13) | 4 | `8447a449cbb8801f452895ad694aa280e4a01e01954e918bc469521c3be23d4c` | `197154e19469de28e5bf53967354c0096cc3da962ea7ffeaa3ca8859d17c58b2` |
 | Thinking arm | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1` | `attempt-slurp-direct-only-fold-b-thinking-generation-v1` | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1` (3241) | 1080 | `ec7e8a224b3e5047b540fa5724e6c669b0fc1368176b27785a218183c2c22838` | `38e3c3e08f36f49a9b6d4da09ca0e2992909c0a3f7d4ea039ad7e686b6905545` |
 | Instruct arm | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1` | `attempt-slurp-direct-only-fold-b-instruct-generation-v1` | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1` (3241) | 1080 | `e0b5ca15eac7e8d28c6ea138297c6d5a247c9a9983f4609e80edd0b1a44678b4` | `29181d729d63139e56423295427f18d7b7ce23451d874cc1ac6e05f811d5248d` |
 | Instruct in-chain replicate | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1` | `attempt-slurp-direct-only-fold-b-instruct-replicate-generation-v1` | `SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1` (3241) | 1080 | `1cc456aab4d0a7659d00c0b4859866b9b3126e3ed002fcdd28dd930109db5fc9` | `96ee26f07726feac2a43158b01849be6e39c0c37dc5846d8bb41551bac1efefe` |
@@ -52,7 +52,8 @@ hash is absent or differs from the lock.
 ## Prerequisites still open
 
 1. **Thinking speech packets (P0).** Prepare the Thinking packet root over TRAIN Fold B (CPU sidecar, `q4km-thinking-preprocess-featcache-cpu-sidecar-np4-v1`) and pin its promotion receipt
-   in the two Thinking baselines (zero sentinel today). `scripts/slurp_evo_fold_preprocess.py` is wired to the Instruct runtime receipt and root and needs a Thinking
+   in the two Thinking baselines (zero sentinel today); the receipt's `feature_root` must equal the fragment's `speech_feature_root` (the runtime refuses a
+   disagreement) and cover all 1,080 Fold B rows (the smoke's four are among them). `scripts/slurp_evo_fold_preprocess.py` is wired to the Instruct runtime receipt and root and needs a Thinking
    variant; ledger row `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1` is a DRAFT placeholder for it.
 2. **Task registration.** `SAEA-Serving-THINK` / `SAEA-Monitor-THINK` are registered by the first `serving_swap.sh think-np4` through `saea_task.ps1`.
 3. **Countersignatures and the receipt.** `countersign-row-texts-v1.json`; then `scripts/flights/direct/direct_fb_mint_receipt.py`, then `direct_fb_flip.sh`.
