@@ -1678,3 +1678,22 @@ efficiency problem: find the root cause of the bottleneck and fix it.")
   266-E smoke + arm -> swap back for the Instruct arm + replicate and the iteration-2 text contacts.
 - Column flip (rec1 smoke + arm) converged at **flight commit 2b6416686** (two loops, pins refreshed at 879a7038b; both launch
   gates PASS 15:15Z); task SAEA-Queue-TFRLi1Col started 15:36:03Z; the uptime guard re-armed after the STOP archive.
+
+### Loop iteration 1 CLOSED: ACE column refused, typed arm empty; lock stays the parent (coordinator, 2026-10-11 18:40Z)
+
+Column `SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1` sealed 18:33Z at flight commit 2b6416686 (1,080 TRAIN Fold B rows, 4,320 contacts,
+12,619 speech seconds, inspection PASS, 15:40-18:33Z). Read by `tfrl_loop_driver.py close --iter 1` under the pinned protocol:
+
+| arm | official SLU-F1 | intent | vs lock SLU pp [CI95] | vs twin SLU pp | intent pp [CI95] |
+| --- | ---: | ---: | --- | --- | --- |
+| ace (27-item i1 playbook as a Solver supply) | 64.87 | 82.31 | **+0.87 [-0.40, +2.10]** | -0.49 [-1.12, +0.12] | 0.00 [-0.74, +0.74] |
+
+Clauses: a (CI-LB > 0) FAIL; b (point >= 1.49) FAIL; c (beats twin) PASS; d vacuous; e (intent lo >= -0.65, point >= 0) FAIL by
+width (lo -0.74). **ACE i1 refused**; state e7b4fa57... archived. Composition of the ACE delta: false fill -4.34 pp on the 392
+empty-gold rows, non-empty exact +0.58 pp on 688 rows; per-scenario SLU deltas spread from -2.45 (news) to +4.38 (recommendation)
+with no stratum resolved. The typed arm was empty by measurement (the single deliver-rule candidate is read offline). Curve: level 0
+at iteration 1; parent for iteration 2 = s0-lock-v2.2. Ledger entry (262 clause c): a prose-item update form at equal budget does
+not clear the instrument on this task in one iteration; the loop continues to iteration 2 (propose from the same construction
+column, ACE counters from this column's credit).
+- 266-E next (GPU idle): countersign the eight flight rows (package `countersign-row-texts-v1.json`), mint, flip (loop form), pins,
+  flip, gates, chain with the Thinking swap (ext4 copy in place).
