@@ -1,0 +1,350 @@
+{
+  "_note": "Every model-free measured fact this registration rests on, and the CANONICAL stage3_measurement mapping (run id -> block, four cells, one package) that scripts/checks/stage3_effect_floor_check.py resolves.",
+  "authority_relpaths": [
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md",
+    "configs/baseline/slurp-direct-max512-train-fold-a-v1.json"
+  ],
+  "budget_arithmetic": {
+    "instruct": {
+      "derivation": [
+        "generation_calls_cap = 1080 rows x 1 contact (phase-direct-only-v1: one phase, max_contacts 1) = 1080, the exact maximum and the expectation at once",
+        "fit_endpoint_calls_cap = 1 + (2 + 1) x 1080 = 3241 (core.preparation_fit.complete_phase_endpoint_count with one phase and one media packet per row)",
+        "repeated_speech_audio_seconds_cap = ceil(3154.797375 roster seconds x 1 contact) = 3155",
+        "gpu_hours_fit_inclusive = 0.5, a ceiling and never a target (Instruct direct realised 140 contacts per minute, 0.087 GPU-h per 1,000 rows; the Thinking ceiling is the all-cap-hit worst case)",
+        "native_task_contract_calls_cap = 0: the direct-only program grants no tool authority",
+        "official_complete_scoring_jobs = 1"
+      ],
+      "expected_contacts": 1080,
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 3241,
+        "generation_calls_cap": 1080,
+        "gpu_hours_fit_inclusive": 0.5,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 3155
+      },
+      "run_cumulative": "every cap binds across ALL attempts of this run id"
+    },
+    "replicate": {
+      "derivation": [
+        "generation_calls_cap = 1080 rows x 1 contact (phase-direct-only-v1: one phase, max_contacts 1) = 1080, the exact maximum and the expectation at once",
+        "fit_endpoint_calls_cap = 1 + (2 + 1) x 1080 = 3241 (core.preparation_fit.complete_phase_endpoint_count with one phase and one media packet per row)",
+        "repeated_speech_audio_seconds_cap = ceil(3154.797375 roster seconds x 1 contact) = 3155",
+        "gpu_hours_fit_inclusive = 0.5, a ceiling and never a target (Instruct direct realised 140 contacts per minute, 0.087 GPU-h per 1,000 rows; the Thinking ceiling is the all-cap-hit worst case)",
+        "native_task_contract_calls_cap = 0: the direct-only program grants no tool authority",
+        "official_complete_scoring_jobs = 1"
+      ],
+      "expected_contacts": 1080,
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 3241,
+        "generation_calls_cap": 1080,
+        "gpu_hours_fit_inclusive": 0.5,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 3155
+      },
+      "run_cumulative": "every cap binds across ALL attempts of this run id"
+    },
+    "smoke": {
+      "derivation": [
+        "generation_calls_cap = 4 rows x 1 contact (phase-direct-only-v1: one phase, max_contacts 1) = 4, the exact maximum and the expectation at once",
+        "fit_endpoint_calls_cap = 1 + (2 + 1) x 4 = 13 (core.preparation_fit.complete_phase_endpoint_count with one phase and one media packet per row)",
+        "repeated_speech_audio_seconds_cap = ceil(9.939500 roster seconds x 1 contact) = 10",
+        "gpu_hours_fit_inclusive = 0.5, a ceiling and never a target (Instruct direct realised 140 contacts per minute, 0.087 GPU-h per 1,000 rows; the Thinking ceiling is the all-cap-hit worst case)",
+        "native_task_contract_calls_cap = 0: the direct-only program grants no tool authority",
+        "official_complete_scoring_jobs = 0"
+      ],
+      "expected_contacts": 4,
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 13,
+        "generation_calls_cap": 4,
+        "gpu_hours_fit_inclusive": 0.5,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 10
+      },
+      "run_cumulative": "every cap binds across ALL attempts of this run id"
+    },
+    "thinking": {
+      "derivation": [
+        "generation_calls_cap = 1080 rows x 1 contact (phase-direct-only-v1: one phase, max_contacts 1) = 1080, the exact maximum and the expectation at once",
+        "fit_endpoint_calls_cap = 1 + (2 + 1) x 1080 = 3241 (core.preparation_fit.complete_phase_endpoint_count with one phase and one media packet per row)",
+        "repeated_speech_audio_seconds_cap = ceil(3154.797375 roster seconds x 1 contact) = 3155",
+        "gpu_hours_fit_inclusive = 3.0, a ceiling and never a target (Instruct direct realised 140 contacts per minute, 0.087 GPU-h per 1,000 rows; the Thinking ceiling is the all-cap-hit worst case)",
+        "native_task_contract_calls_cap = 0: the direct-only program grants no tool authority",
+        "official_complete_scoring_jobs = 1"
+      ],
+      "expected_contacts": 1080,
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 3241,
+        "generation_calls_cap": 1080,
+        "gpu_hours_fit_inclusive": 3.0,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 3155
+      },
+      "run_cumulative": "every cap binds across ALL attempts of this run id"
+    }
+  },
+  "findings": {
+    "chain_order": "Chain order. The brief's order smoke -> sign-off -> Instruct arm -> replicate -> Thinking arm would swap the serving geometry three times (Instruct resident now: swap to Thinking for the smoke, back to Instruct, to Thinking again, and back to restore). The registered order is smoke -> sign-off -> Thinking arm (Thinking session), then ONE swap back to the Instruct session (which is also the required restore) and the Instruct arm -> Instruct replicate: two swaps total. The Instruct segment has no dependency on the Thinking one, so the coordinator may fly it first on the resident session before the swap if GPU idle time during the sign-off is the concern; batch_chain_direct_fb.sh takes the segment as an argument (smoke | thinking | instruct), checks the resident session by id and refuses on a mismatch. All segments fly from ONE flight commit.",
+    "completion_cap": "Completion cap 2048 tokens. Slot budget: -c 98304 / -np 4 = 24,576 tokens per slot. The direct-only prompt is about 2,300 tokens per row (the sealed Instruct direct form measured 2,262 to 2,280 prompt tokens per contact; 3,733 on the A2T registry). 2,300 + 2,048 = 4,348 tokens, 17.7 percent of a slot, so the cap is bound by decode cost, not by the slot; a cap of 8,192 would still use only 42.7 percent. 2048 is proposed because a SLURP answer is a short structured object, so a thinking trace that needs more than 2,048 tokens is itself the signal the read must see (a truncated answer is an abstention, counted in the cap-hit table), and because the smoke measures the real distribution before the arm is queued. The coordinator may amend the cap at the decode-cost sign-off (one re-registration changes the fragment hash and re-pins the cells); the GPU-hour ceiling of 3.0 is the 1,080-contact worst case at ~250 aggregate tokens per second.",
+    "mmproj_encoder_tensors_differ": "The audio-encoder tensors of the two mmproj files differ: 748 of 860 tensors are not byte-identical (name-for-name comparison of the GGUF tensor tables of mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf and mmproj-Qwen3-Omni-30B-A3B-Thinking-bf16.gguf; the 112 identical tensors are the non-audio ones). The Instruct speech-feature packets (/home/chao/feat-cache/slurp-q4km-packets-04ccc72a) are decoder-ready projector outputs of the Instruct encoder and are therefore NOT valid input for the Thinking decoder. The Thinking core needs its OWN packet root (/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6) prepared by an encoder pass over TRAIN Fold B (registered, held: ledger row SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1, fragment q4km-thinking-preprocess-featcache-cpu-sidecar-np4-v1); the Thinking baselines pin its future promotion receipt with a zero sentinel the flip refuses.",
+    "reasoning_format": "Reasoning stays out of the delivered content by the server flag --reasoning-format deepseek (registered explicitly in the serving fragment's server_args). Evidence from the pinned featcache build 04ccc72a2 (read-only grep): tools/server/README.md line 220 documents the option (none leaves thoughts in message.content; deepseek puts thoughts in message.reasoning_content; deepseek-legacy keeps <think> in content AND fills reasoning_content); common/arg.cpp line 3130 defines it; common/common.h line 622 makes COMMON_REASONING_FORMAT_DEEPSEEK the build's own default; common/chat.cpp line 828 maps it. The transport (core/model/transport.py) reads ONLY choices[0].message.content (and tool_calls); it never reads reasoning_content. The cells set preserve_wire_responses false, so no raw wire bytes (which would carry reasoning_content) are persisted. Client-side guard: the fragment declares reasoning_content_guard refuse-think-marker-in-content, and the transport raises FrozenCoreError when a delivered content string carries <think>, </think>, <thinking> or </thinking> (case-insensitive), BEFORE anything is returned or persisted; the flight stops (a leak means the option is not effective). The reader counts leak markers in the sealed delivered text (count only) as a second check.",
+    "sealed_instruct_fold_b_column": "No sealed Instruct direct-only Fold B column exists. The sealed direct-only (phase-direct-only-v1, slurp-direct-max512) columns are SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-V1 (Fold A), -DEV1000-V1 and -DEV2000-ADDED-V1 (devel rosters). Fold B carries only the older EVO-S1 confirmation flight of the 'fixed' closed-list arm (SAEA-SLURP-EVO-S1-FOLD-B-V2), a different form on a different code path, which is not a same-harness comparator. The Instruct arm and its replicate therefore fly in this chain: the comparison must be same-chain."
+  },
+  "finite_completion_and_react_exhaustion": "Not applicable by construction: the direct-only program carries no native_episode block, so neither finite_completion_policy nor react_exhaustion_policy exists to declare (finite_completion_policy_check.py scopes native cells only). A completion that reaches the cap yields a truncated or empty delivered content: a row-level outcome counted in the cap-hit and parse-failure tables, never a flight abort.",
+  "identity": {
+    "instruct": {
+      "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-generation-v1",
+      "baseline_fragment": "slurp-direct-only-fold-b-instruct-baseline-v1",
+      "cell": "slurp-direct-only-fold-b-instruct-v1",
+      "composed_config_hash": "e0b5ca15eac7e8d28c6ea138297c6d5a247c9a9983f4609e80edd0b1a44678b4",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "declares_prepared_phase_supply": false,
+      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-instruct-fit-v1",
+      "fit_contact_cap": 3241,
+      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "29181d729d63139e56423295427f18d7b7ce23451d874cc1ac6e05f811d5248d",
+      "role": "Instruct arm",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1",
+      "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "replicate": {
+      "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-replicate-generation-v1",
+      "baseline_fragment": "slurp-direct-only-fold-b-instruct-replicate-baseline-v1",
+      "cell": "slurp-direct-only-fold-b-instruct-replicate-v1",
+      "composed_config_hash": "1cc456aab4d0a7659d00c0b4859866b9b3126e3ed002fcdd28dd930109db5fc9",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "declares_prepared_phase_supply": false,
+      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-instruct-replicate-fit-v1",
+      "fit_contact_cap": 3241,
+      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "96ee26f07726feac2a43158b01849be6e39c0c37dc5846d8bb41551bac1efefe",
+      "role": "Instruct in-chain replicate",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1",
+      "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-direct-only-fold-b-thinking-smoke-4-baseline-v1",
+      "cell": "slurp-direct-only-fold-b-thinking-smoke-4-v1",
+      "composed_config_hash": "669453c509da06ac3783a9b86b724127a8eba04641b585396852174a74c0c84d",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "declares_prepared_phase_supply": false,
+      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-v1",
+      "fit_contact_cap": 13,
+      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "043b2190799f41958c049bc500259a212c54e3135585a64beafe07354a45ebec",
+      "role": "four-row Thinking decode-cost smoke",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
+      "service_session": "serving-slurp-thinking-direct-fold-b-np4-v1",
+      "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe"
+    },
+    "thinking": {
+      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-generation-v1",
+      "baseline_fragment": "slurp-direct-only-fold-b-thinking-baseline-v1",
+      "cell": "slurp-direct-only-fold-b-thinking-v1",
+      "composed_config_hash": "ec7e8a224b3e5047b540fa5724e6c669b0fc1368176b27785a218183c2c22838",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "declares_prepared_phase_supply": false,
+      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-v1",
+      "fit_contact_cap": 3241,
+      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "38e3c3e08f36f49a9b6d4da09ca0e2992909c0a3f7d4ea039ad7e686b6905545",
+      "role": "Thinking arm",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1",
+      "service_session": "serving-slurp-thinking-direct-fold-b-np4-v1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    }
+  },
+  "pins": {
+    "note": "per-file hashes live in the umbrella lock entry and in the runtime receipts; they are not copied into prose",
+    "preprocess_fragment": "q4km-thinking-preprocess-featcache-cpu-sidecar-np4-v1",
+    "preprocess_runtime_receipt": "docs/receipts/runtime-q4km-thinking-preprocess.json",
+    "serving_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+    "serving_runtime_receipt": "docs/receipts/runtime-q4km-thinking-mmproj-free.json",
+    "state": "VERIFIED against the umbrella lock entry (local hash receipts == lock revision text, sizes equal)",
+    "thinking_gguf_lock_key": "qwen3-omni-30b-a3b-thinking-gguf-q4km"
+  },
+  "prohibitions": [
+    "No system-level, superiority, generalisation or admission claim from this read, ever; the Thinking model is admitted ONLY for this read, not as the serving core of any system cell.",
+    "No reasoning text delivered, persisted (beyond hashes) or scored; preserve_wire_responses stays false on every arm.",
+    "No Thinking arm before the four-row smoke has sealed and the coordinator's decode-cost sign-off marker exists.",
+    "No flight on the wrong session: the Thinking cells attach only to serving-slurp-thinking-direct-fold-b-np4-v1, the Instruct cells only to serving-slurp-native-candidate-five-train-a-np4-v1; the chain never spawns or stops a session.",
+    "No test-split contact, no confirmatory split, no paper-scale profile; no carrier outside SLURP (the carriers stay held, decision 242).",
+    "No flight before root countersigns the DRAFT rows, mints the decision receipt and the cells are flipped at one commit; --allow-output-change is never passed.",
+    "No number from the smoke is a task measurement."
+  ],
+  "read_rule": {
+    "bar_pp": 2.5,
+    "estimand": "d = SLU-F1(Thinking) - mean(SLU-F1(Instruct), SLU-F1(Instruct replicate)), pooled micro over the resampled utterance clusters; twin offset o = SLU-F1(replicate) - SLU-F1(Instruct)",
+    "interval": {
+      "draws": 10000,
+      "kind": "utterance-cluster bootstrap",
+      "level": "CI95",
+      "seed": 20261011
+    },
+    "kind": "PREREGISTERED; verdict words RESOLVED-ABOVE-BAR / NOT RESOLVED / HARM; development numbers only",
+    "primary_metric": "official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, with intent accuracy (scenario_action) beside it",
+    "tables": [
+      "paired per-row official SLU-F1 and intent (scenario_action), Thinking vs the mean of the two Instruct passes, with saves/harms/ties",
+      "the twin offset (replicate minus Instruct) with CI95",
+      "per-scenario table (18 scenarios): n, SLU-F1 and intent for the three arms and the delta, natural-mixture and equal-scenario weightings",
+      "Thinking answer-length table (completion tokens p10/p50/p90/p99/max, cap-hit count at the cap) and parse-failure table (empty delivered content, no JSON object)",
+      "reasoning-leak guard count over the sealed delivered text of all three arms (count only; must be 0)",
+      "cost: contacts per minute, seconds per contact p50/p99, GPU hours per 1,000 rows, per arm"
+    ],
+    "verdicts": {
+      "HARM": "d <= -2.5 pp AND the CI95 upper bound of d < -|o|",
+      "NOT RESOLVED": "every other outcome (including a Thinking arm whose cap-hit or parse-failure rate is the explanation: reported in the tables, never adjusted away)",
+      "RESOLVED-ABOVE-BAR": "d >= 2.5 pp AND the CI95 lower bound of d > |o| (the delta exceeds the measured same-core offset) AND the reasoning-leak count is 0"
+    },
+    "what_it_never_is": "a system-level claim, an admission, a superiority or generalisation claim, a test claim, or the serving core of any system cell"
+  },
+  "registered_at_utc": "2026-10-11T18:00:00.000000+00:00",
+  "request_identity_proof_before_contact": {
+    "instruct_vs_replicate_differing_composed_keys_outside_prose": [],
+    "none_of_them_enters_a_request": true
+  },
+  "roster": {
+    "audio_seconds_total": 3154.797375,
+    "count": 1080,
+    "exposure_row": "SAEA-SN-MF-SLURP-DIRECT-FOLD-B-SMOKE-4-ROSTER-V1",
+    "receipt": {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+    },
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "smoke_receipt": {
+      "ids_are_first_four_of_arm_roster": true,
+      "relpath": "docs/receipts/rosters/slurp-direct-fold-b-thinking-smoke-4-v1.json",
+      "sha256": "856933c205082b16070dbfab84c077b93f43b43641319460004ce9dbd40a1c9e"
+    },
+    "smoke_split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "serving": {
+    "instruct_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "release_restore_checklist": [
+      "0. Preconditions: the four cells are flipped at one flight commit (scripts/flights/direct/direct_fb_flip.sh); the Thinking packet root is prepared and its promotion receipt pinned (the flip refuses while the zero sentinel remains); the decision receipt is minted; no generation flight, lease or driver is alive and no CPU sidecar runs (one experiment in flight).",
+      "1. Tell the uptime guard: create /home/chao/saea-queue/watchdog.hold (the idle watchdog then exits at step 3 of every tick and cannot swap the geometry back, force an uptime restart, or launch another chain while the Thinking session is resident or the sign-off is pending). Confirm with scripts/flights/batch/idle_watchdog.sh --dry-run that it logs the hold. Do not edit ready_chains.json; leave the hold in place until step 9.",
+      "2. Dry run: bash scripts/flights/batch/serving_swap.sh think-np4 --dry-run (prints every precondition verdict; starts, stops and registers nothing).",
+      "3. Release Instruct and start Thinking: bash scripts/flights/batch/serving_swap.sh think-np4. The tool stops serving-slurp-native-candidate-five-train-a-np4-v1 cleanly and its tasks (SAEA-Serving, SAEA-Monitor), verifies port 8080 free, starts the Windows task SAEA-Serving-THINK (scripts/flights/direct/serving_task_entry_think.sh) and SAEA-Monitor-THINK 20 s later, then the strict readiness wait; on any failure it tears the Thinking session down and restores Instruct. The two task names are new: the first run registers them through saea_task.ps1 -Start with the entry script.",
+      "4. Smoke: bash scripts/flights/direct/batch_chain_direct_fb.sh smoke (flies the four-row smoke through the batch driver on the Thinking session; the driver's structural inspector runs). Then python -B scripts/analysis/slurp_direct_fold_b_core_read.py --stage smoke prints tokens per answer p50/p99, seconds per contact and the 1,080-row GPU-hour projection.",
+      "5. Sign-off: when the decode cost is acceptable, create the marker /home/chao/direct-fb-decode-signoff.marker (a one-line file naming the approved completion cap). The thinking segment refuses to start without it. If the cost is not acceptable, close the line (restore, step 8) or amend the cap by one re-registration.",
+      "6. Thinking arm: bash scripts/flights/direct/batch_chain_direct_fb.sh thinking.",
+      "7. Release Thinking and restore Instruct: bash scripts/flights/batch/serving_swap.sh slurp-np4 (the restore; the Instruct task entry is the existing serving_task_entry.sh), then bash scripts/flights/direct/batch_chain_direct_fb.sh instruct (the Instruct arm, then its replicate).",
+      "8. If the Thinking line closes before the arm: bash scripts/flights/batch/serving_swap.sh slurp-np4 alone restores the resident geometry; the Instruct segment may still be flown (it is a useful Fold B direct-only column on its own).",
+      "9. After the Instruct session reports ready (SLURP SESSION READY from serving_wait_ready.sh slurp-np4) remove /home/chao/saea-queue/watchdog.hold; the watchdog resumes from the committed ready_chains.json. Stop SAEA-Serving-THINK and SAEA-Monitor-THINK (serving_swap does this on the stop) and leave them unregistered or disabled; remove the decode sign-off marker.",
+      "10. Read: bash scripts/flights/direct/direct_fb_read.sh (countersign the READ row first)."
+    ],
+    "swap_target": "think-np4",
+    "thinking_packet_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6",
+    "thinking_server_args": [
+      "-c",
+      "98304",
+      "-np",
+      "4",
+      "-b",
+      "2048",
+      "-ub",
+      "512",
+      "-fa",
+      "on",
+      "-ngl",
+      "999",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--cache-prompt",
+      "--cache-ram",
+      "0",
+      "--no-cache-idle-slots",
+      "--slot-prompt-similarity",
+      "0",
+      "--reasoning-format",
+      "deepseek"
+    ],
+    "thinking_session": "serving-slurp-thinking-direct-fold-b-np4-v1"
+  },
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-266e, branch sonnet/266e-thinking-bare-read",
+  "stage3_measurement": {
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The Instruct arm and its request-identical replicate measure the same-core offset the Thinking delta is read against; expected_effect_pp is 0.0 because a request-identical pair is registered to look for no effect and claims_benefit is false because the read is a capability measurement, not an admission.",
+      "primary_metric": "official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, with intent accuracy (scenario_action) beside it",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "replicate_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1",
+      "rows": 1080,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The Instruct arm and its request-identical replicate measure the same-core offset the Thinking delta is read against; expected_effect_pp is 0.0 because a request-identical pair is registered to look for no effect and claims_benefit is false because the read is a capability measurement, not an admission.",
+      "primary_metric": "official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, with intent accuracy (scenario_action) beside it",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "replicate_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1",
+      "rows": 1080,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "The four-row smoke seals and reports decode cost (tokens per answer, seconds per contact, GPU-hour projection) before the Thinking arm is queued; under instrument rule 5 four rows are a form proof by size and claim nothing.",
+      "primary_metric": "none: a four-row decode-cost smoke reads no metric",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 2.5,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "Core capability, not a system claim: expected effect = the cross-flight bar (about 2.5 pp SLU-F1 at n = 1,080), the smallest delta the cross-session design can resolve; the Thinking core is read against the mean of the two request-identical Instruct passes of the same chain and is resolved only above that bar (owner decision 266-E: a stronger core is expected to show more than that or the line closes).",
+      "primary_metric": "official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, with intent accuracy (scenario_action) beside it",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "replicate_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1",
+      "rows": 1080,
+      "tuning_roster": "none"
+    }
+  },
+  "study_commit_at_registration": "918d13ad42e0728b0e5b6d20a2c6898f33a4bacc",
+  "what_this_cell_is": "The bare-core read of owner decision 266-E: the sealed direct-only form on TRAIN Fold B, Instruct (twice) and Thinking, to test whether core capability is the binding constraint. A capability measurement: it claims no benefit and admits nothing."
+}

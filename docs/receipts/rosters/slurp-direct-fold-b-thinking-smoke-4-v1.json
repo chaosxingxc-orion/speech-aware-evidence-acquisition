@@ -1,0 +1,74 @@
+{
+  "audio_seconds_total": 9.9395,
+  "authority": "owner decision 266-E (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md): the four-row decode-cost smoke of the bare-core read.",
+  "carrier_lock_key": "slurp",
+  "distinct_utterances": 4,
+  "draw_method": "No draw: a prefix of the parent roster.",
+  "generator": "scripts/flights/direct/direct_fb_derive_cells.py",
+  "headset_recordings": 0,
+  "items": [
+    {
+      "audio_seconds": 3.17,
+      "headset": false,
+      "id": "slurp:train:000006:audio-1488559711",
+      "key": "slurp:slurp:train:000006:audio-1488559711",
+      "sample_id": "slurp:train:000006:audio-1488559711",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:000006"
+    },
+    {
+      "audio_seconds": 1.79175,
+      "headset": false,
+      "id": "slurp:train:000010:audio-1502199193",
+      "key": "slurp:slurp:train:000010:audio-1502199193",
+      "sample_id": "slurp:train:000010:audio-1502199193",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000010"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:000025:audio-1490262826",
+      "key": "slurp:slurp:train:000025:audio-1490262826",
+      "sample_id": "slurp:train:000025:audio-1490262826",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000025"
+    },
+    {
+      "audio_seconds": 2.93,
+      "headset": false,
+      "id": "slurp:train:000029:audio-1488538279",
+      "key": "slurp:slurp:train:000029:audio-1488538279",
+      "sample_id": "slurp:train:000029:audio-1488538279",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:000029"
+    }
+  ],
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent": {
+    "count": 1080,
+    "file_sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8",
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "per_stratum": {
+    "audio": 1,
+    "iot": 3
+  },
+  "roster_id": "SLURP-DIRECT-FOLD-B-THINKING-SMOKE-4-V1",
+  "roster_role": "construction",
+  "roster_role_note": "construction: TRAIN Fold B rows; the smoke is a structural decode-cost proof, never scored and never read for quality.",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20260906,
+  "selection_rule": "The FIRST 4 items of SLURP-EVO-FOLD-B-V2 in the parent's order.",
+  "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe",
+  "split_role": "discovery",
+  "strata_counts": {
+    "audio": 1,
+    "iot": 3
+  }
+}

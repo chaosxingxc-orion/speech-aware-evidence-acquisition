@@ -1,0 +1,49 @@
+{
+  "attached_generation_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1",
+  "cell": "slurp-direct-only-fold-b-instruct-replicate-v1",
+  "composed_config_hash": "1cc456aab4d0a7659d00c0b4859866b9b3126e3ed002fcdd28dd930109db5fc9",
+  "contact_cap": 3241,
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-replicate-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 3241,
+    "planned_speech_audio_seconds": 3155,
+    "protocol_hash": "96ee26f07726feac2a43158b01849be6e39c0c37dc5846d8bb41551bac1efefe",
+    "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared live phase-fit path (core.preparation_fit.build_live_phase_fit_gate) under this cell's own live_phase_fit identity; it tokenizes request envelopes and produces no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-direct-only-fold-b-instruct-replicate-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 3241,
+    "generation_calls_cap": 1080,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 3155
+  },
+  "max_speech_packets": 1,
+  "one_factor": "The core (model weights, its own speech-packet root, the completion cap 2048 and --reasoning-format deepseek). The request form, the direct-only program, the closed-list task instruction, the roster and its order are the same.",
+  "plan_kind": "fit",
+  "preparation_base_commit": "918d13ad42e0728b0e5b6d20a2c6898f33a4bacc",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
+    "sha256": "2bf7f8ec3d37bbfee2e10e351f95a12bf7514186c0c60fc2f3ce28b4f5382a33"
+  },
+  "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1: the live phase-fit spend identity of SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1.",
+  "registered_at_utc": "2026-10-11T18:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "scoring": "No fit score.",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-266e, branch sonnet/266e-thinking-bare-read",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
