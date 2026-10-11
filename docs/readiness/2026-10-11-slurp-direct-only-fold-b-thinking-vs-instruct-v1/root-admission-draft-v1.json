@@ -115,8 +115,8 @@
   "recovery_note": "The predecessor attempt aborted before any model contact: \"RailsRunnerError: AgentLoop query samples overlap the TRAIN knowledge source roster\" (raised by the runner's roster guard, rails/runner.py). The guard compares the query roster with the pinned knowledge snapshot's source roster even when the program supplies no evidence. The Instruct arm is re-flown whole under the rec1 ids; the replicate, the Thinking arm and the smoke are untouched (their attempts never opened) and only take the knowledge pin.",
   "registered_hashes": {
     "instruct": {
-      "composed_config": "4c0feb1fea6aec978115454e4e7442dfe333a9d5d88a9718c72225d5d9c262c1",
-      "protocol": "3c8bad05c1b59b5a11b390cb9fb609369daf4ba2cabab4273a741f6870179246"
+      "composed_config": "4ede3a96f1b83d8960e72085984f71d1fb204af2984012af7342e42f659ad849",
+      "protocol": "28b031f7b033f5586ff12a1d7a9d04a39216098d33f0fe548f0ba3cf7c05ed61"
     },
     "replicate": {
       "composed_config": "4b6b8c85d43f1271ee5441f42f3b78b77c64197761de367ccee1af49b053282b",
