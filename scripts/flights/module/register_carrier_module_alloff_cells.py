@@ -135,11 +135,11 @@ Both cells pin them; `FlightRuntime` verifies the pins down to slice bytes (4 an
 execution-unit roster (verified), then refuse at `core.driver.run.load_window_packet_binding`: the Earnings-22 window feature
 packets (`analysis/SAEA-E22-DEV-WINDOW-GPU-ENCODING-V1/window-feature-packets.json`, and the four-row twin) do not exist.
 Producing them is an encoder forward pass (root lease, GPU, registration, owner authorization); both baselines carry an
-all-zero PENDING sha256 for that pin, so the composed hashes change when the real pin lands. Behind that step sits a base gap
-found by reading the runtime and demonstrated at unit level: `FlightRuntime._load_knowledge_snapshot` refuses every phase-program
-baseline that declares no `knowledge_snapshot_relpath` / `knowledge_stores`, even a direct-only one that exposes nothing.
-These cells declare none (Earnings-22 has no governed knowledge); the options are a neutral inert snapshot asset (new data
-asset) or a shared-runtime change making the snapshot optional when no phase carries knowledge. Neither is made here.
+all-zero PENDING sha256 for that pin, so the composed hashes change when the real pin lands. Behind that step the runtime requires a validated non-empty knowledge snapshot for every phase-program contact, and
+Earnings-22 has no governed knowledge, so both baselines pin an INERT placeholder snapshot (one facet, one value, bound to no
+dataset sample; `scripts/build_e22_inert_knowledge_snapshot.py`, asset `knowledge/e22/inert/all-off-placeholder-v1/snapshot.json`
+under the data root, sha256 `19c61475ef1d6a641cd5ec182479285b6bb6af2928cc17115bb01b3ef8633a31`), the same way the Earnings-21 and Audio2Tool cells pin theirs. The direct
+phase declares `knowledge: "none"`, so the placeholder is bound invisibly and supplies nothing.
 
 **Shared-code change this registration needed.** The four-row smoke is a one-call subset of the dev split, which the
 Earnings runtime adapter admitted only for Earnings-21 discovery. Commit `8383e68f1` takes the parent split and carrier
@@ -285,6 +285,10 @@ DATA_ROOT = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring
 #: SHA-256 can never match a real file, so a runtime that reaches it refuses at "file missing" -- the first
 #: contact-requiring step -- and the package carries the placeholder as a named pending pin.
 PENDING_SHA256 = "0" * 64
+#: The inert one-facet placeholder snapshot (scripts/build_e22_inert_knowledge_snapshot.py): the runner needs a non-empty
+#: snapshot for every phase-program contact and Earnings-22 has no governed knowledge.
+INERT_SNAPSHOT_RELPATH = "knowledge/e22/inert/all-off-placeholder-v1/snapshot.json"
+INERT_SNAPSHOT_SHA256 = "19c61475ef1d6a641cd5ec182479285b6bb6af2928cc17115bb01b3ef8633a31"
 
 
 def e22_receipt(spec: dict) -> dict:
@@ -334,6 +338,7 @@ def derive_e22(spec: dict, ids: dict, block: dict, measurement: dict, package: s
             "phase_material": base["phase_material"], "policy": base["policy"],
             "prepared_execution_units": pins[key]["units"],
             "prepared_window_feature_packets": {"path": pins[key]["packets"], "sha256": PENDING_SHA256},
+            "knowledge_snapshot_relpath": INERT_SNAPSHOT_RELPATH, "knowledge_snapshot_sha256": INERT_SNAPSHOT_SHA256,
             "prompt_fit_multiple": e21_direct["prompt_fit_multiple"], "scorers": ["asr-wer-whisper"],
             "serving_slot_tokens": e21_direct["serving_slot_tokens"], "serving_slots": e21_direct["serving_slots"],
             "speech_feature_key_representation_id": "saea-e22-native-window-v1:current-window",
@@ -533,7 +538,7 @@ def main(argv: list[str] | None = None) -> int:
             "prepared_window_feature_packets": ("all-zero sha256 placeholder in both baseline fragments: the Earnings-22 dev window feature "
                                                 "packets do not exist; they need an encoder pass (root lease, GPU, registration, owner authorization). "
                                                 "Producing them changes both composed config hashes, so root re-runs this script (or the repin tool) afterwards."),
-            "knowledge_snapshot": "none declared; see the package README for what the shared runtime does with a phase program that declares none",
+            "knowledge_snapshot": "inert placeholder snapshot (one facet, one value, bound to no sample) pinned in both baselines; bound invisibly by the knowledge-none direct phase",
             "serving_session": f"{spec['session']} is a NEW session name: its feature root differs from the resident E21 session, so no resident session serves it",
         }
     facts_sha = wjson(f"{package}/registered-facts-v1.json", facts)

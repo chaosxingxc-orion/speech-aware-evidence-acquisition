@@ -44,11 +44,11 @@ Both cells pin them; `FlightRuntime` verifies the pins down to slice bytes (4 an
 execution-unit roster (verified), then refuse at `core.driver.run.load_window_packet_binding`: the Earnings-22 window feature
 packets (`analysis/SAEA-E22-DEV-WINDOW-GPU-ENCODING-V1/window-feature-packets.json`, and the four-row twin) do not exist.
 Producing them is an encoder forward pass (root lease, GPU, registration, owner authorization); both baselines carry an
-all-zero PENDING sha256 for that pin, so the composed hashes change when the real pin lands. Behind that step sits a base gap
-found by reading the runtime and demonstrated at unit level: `FlightRuntime._load_knowledge_snapshot` refuses every phase-program
-baseline that declares no `knowledge_snapshot_relpath` / `knowledge_stores`, even a direct-only one that exposes nothing.
-These cells declare none (Earnings-22 has no governed knowledge); the options are a neutral inert snapshot asset (new data
-asset) or a shared-runtime change making the snapshot optional when no phase carries knowledge. Neither is made here.
+all-zero PENDING sha256 for that pin, so the composed hashes change when the real pin lands. Behind that step the runtime requires a validated non-empty knowledge snapshot for every phase-program contact, and
+Earnings-22 has no governed knowledge, so both baselines pin an INERT placeholder snapshot (one facet, one value, bound to no
+dataset sample; `scripts/build_e22_inert_knowledge_snapshot.py`, asset `knowledge/e22/inert/all-off-placeholder-v1/snapshot.json`
+under the data root, sha256 `19c61475ef1d6a641cd5ec182479285b6bb6af2928cc17115bb01b3ef8633a31`), the same way the Earnings-21 and Audio2Tool cells pin theirs. The direct
+phase declares `knowledge: "none"`, so the placeholder is bound invisibly and supplies nothing.
 
 **Shared-code change this registration needed.** The four-row smoke is a one-call subset of the dev split, which the
 Earnings runtime adapter admitted only for Earnings-21 discovery. Commit `8383e68f1` takes the parent split and carrier

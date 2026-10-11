@@ -229,7 +229,7 @@
   "not_registered": "No component-on cell for this carrier (decision 187 keeps the GPU on SLURP; a component turns on per carrier only through its own read, design 2b.3 item 4).",
   "own_null": "Earnings-22 has NO measured own null on this form (no cell has ever flown on the native-window dev form); the module null is unmeasured until an in-chain A/A of this arm seals (design 2b.3). The all-off arm is therefore a form proof only, and no benefit may be claimed on this carrier until that A/A exists.",
   "pending_pins": {
-    "knowledge_snapshot": "none declared; see the package README for what the shared runtime does with a phase program that declares none",
+    "knowledge_snapshot": "inert placeholder snapshot (one facet, one value, bound to no sample) pinned in both baselines; bound invisibly by the knowledge-none direct phase",
     "prepared_window_feature_packets": "all-zero sha256 placeholder in both baseline fragments: the Earnings-22 dev window feature packets do not exist; they need an encoder pass (root lease, GPU, registration, owner authorization). Producing them changes both composed config hashes, so root re-runs this script (or the repin tool) afterwards.",
     "serving_session": "serving-e22-native-window-flightruntime-np4-max1024-v1 is a NEW session name: its feature root differs from the resident E21 session, so no resident session serves it"
   },

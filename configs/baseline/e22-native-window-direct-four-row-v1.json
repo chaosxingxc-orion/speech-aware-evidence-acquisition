@@ -2,6 +2,8 @@
   "arm": "speech-feature-query",
   "evidence_mismatch": false,
   "evidence_source": "none",
+  "knowledge_snapshot_relpath": "knowledge/e22/inert/all-off-placeholder-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "19c61475ef1d6a641cd5ec182479285b6bb6af2928cc17115bb01b3ef8633a31",
   "ojw_workflow_timeout_seconds": 21600,
   "phase_material": {
     "direct": {
