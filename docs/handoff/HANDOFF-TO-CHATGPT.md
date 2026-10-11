@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T04:35:31Z
+Last refreshed: 2026-10-11T04:51:23Z
+
+## Owner's three dimensions + knowledge-side TF-RL recorded; 263 amended to the RSI/SkillOpt-form typed loop; 264 (proposer model) and 265 (knowledge augmentation first) proposed; E22 knowledge-snapshot gap closed (2026-10-11T04:51:23Z, Fable 5.1 root)
+
+Registry section "Owner directions 2026-10-11 (three dimensions ...)": roles table (observe / analyse / propose / iterate: scripts own every judgement, a model only proposes inside the typed operator schema); objective-is-a-script invariant (applies to the ACE comparator's counters too); RSI mapping (DGM archive + parent sampling, SkillOpt bounded edit budget / rejected-edit buffer / strict held-out gate / target-matched optimiser recovers 56-74 %, RRSI regularisers) with our deviations (typed state, noise-floored gate, no code or prompt edits); knowledge-side analysis (absent 2/2,705; E4 class 40 items 2.33 pp oracle; gold rank median 13 on intent-wrong rows; 45.7 % conversion; about 1.1 pp alone -> iteration-1 composition). Decisions: 263 v2 (RSI-form typed loop + ACE column), 264 proposer model (A: core text seam first, Thinking GGUF as CPU-side ablation after hash pin + memory GO), 265 iteration-1 = credit-driven selective knowledge augmentation from TRAIN minus the evaluation fold, 0-GPU coverage read first. Merged `sonnet/e22-knowledge-snapshot` (cb6305825): inert hash-pinned placeholder snapshot pinned by both E22 baselines (package re-pin pending; wire check now stops only at the window feature packets). Spec agent drafting `docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md` on branch opus/263-spec. GPU idle; Thinking GGUF download finishing (18.56 GB on disk, control file present). Open owner decisions: 262, 263 v2, 264, 265.
+
+Superseded stamp: 2026-10-11T04:35:31Z
 
 ## Lineage analysis answers the owner's algorithm question; decision 263 proposed; E21 seal path and E22 HELD registration merged (2026-10-11T04:35:31Z, Fable 5.1 root)
 

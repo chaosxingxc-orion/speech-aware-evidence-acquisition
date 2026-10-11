@@ -1187,3 +1187,105 @@ Answer: `docs/readiness/2026-10-11-slurp-tfrl-lineage-and-algorithm-baseline-ana
   -5.13 [-9.49, -1.04] at n = 100); a tool schema shown to a non-calling Solver breaks 10-13 % of answers. A design
   must be model-initiated at one node, words only, deterministic verifier, inside the slot budget, with a decision
   oracle first. The design is deferred behind decision 263 because 263-C would close it and 263-A/B set the GPU order.
+
+## Owner directions 2026-10-11 (three dimensions + knowledge-side TF-RL); decision 263 AMENDED to v2, decisions 264-265 PROPOSED (coordinator)
+
+Owner, verbatim (message 1): 「这里面你要分成三个维度去看：第一个维度是，training free RL里面，我们的学习要素是什么，谁负责观测，谁负责
+分析和整合，谁负责反思和进一步迭代和优化，比如说模版生成是否还要使用omni模型去生成，是否需要用本地的其他文本能力增强的模型？第二个
+维度是，GRPO这种优化方向和指标，更多的是通过脚本的客观评分去指导优化，而不是通过模型去优化；第三个维度是，你可以参考下skillopt等类
+RSI的优化方案，我们现在面向系统级优化更多的适合RSI的技术方案，当然核心还是要按照training free RL来承载和优化！」
+
+English: "Look at this along three dimensions. First: in training-free RL, what are our learning elements; who observes,
+who analyses and integrates, who reflects and iterates / optimises further; for example, should template generation still
+use the Omni model, or do we need another local model with stronger text ability? Second: GRPO's optimisation direction
+and metric are guided by objective script scoring, not by a model's judgement. Third: look at SkillOpt and similar
+RSI-class schemes; for system-level optimisation an RSI-style technical scheme fits us better, while the core is still
+carried and optimised as training-free RL."
+
+Owner, verbatim (message 2): 「同步你还要思考下，从知识构建和消费的维度，我们是否有一些training free RL的方式，比如说基于评价指标和
+bad cases，基于训练集选择性的扩充和添加一些知识等」
+
+English: "In parallel, also think about whether, along the knowledge construction and consumption dimension, we have
+training-free RL methods, for example selectively expanding and adding knowledge from the training set based on the
+evaluation metric and the bad cases."
+
+### Dimension 1 -- learning elements and roles
+
+| role | owner of the role | this study today | source |
+| --- | --- | --- | --- |
+| learning elements (what is learned) | typed, hash-pinned system artefacts: exemplar index and its per-scenario weights, slot store and cards, retrieval keys and vote, supply budget per scenario, delivery-rule table, scope routing | B1, B4b, COMP-1b, v4g, review-off are entries of exactly this kind | 262 ledger |
+| OBSERVE | deterministic: sealed per-row trajectories + the official scorer + process-metric readers | `core.scoring_batch`, `stage3_rollout_score.py`, the NX column readers | instrument 2026-09-26 |
+| ANALYSE and INTEGRATE | deterministic: typed failure-class tables (class x slot type x scenario x value-in-supply), exchange rates, per-stratum deltas, the bad-case bank | `slurp_nx_exchange_rates`, `slurp_slu_consumption_headroom.py`, bad-case bank 2026-09-24 | R0.2 / C3 protocol |
+| REFLECT and PROPOSE | a model, confined to the typed operator schema (JSON on the wire, grammar-constrained), fed tables only | today a person (coordinator) chooses from the tables; decision 255 allows the frozen core's text seam or a hand author | 255 |
+| ITERATE | deterministic driver + the instrument (select on Fold B with a twin and the 1.49 floor; confirm on Fold A; DEV; test) | the countersign / mint / flip / batch-driver sequence | 190, 192, 231, 247 |
+
+The proposer-model question. SkillOpt's ablation (arXiv 2605.23904, Table 5) is the relevant evidence: a target-matched
+optimiser recovers 56-74 % of a frontier optimiser's gain, so the loop adds value even with the same model, and a stronger
+optimiser is worth having. Local options on this rig (paid API 0): (i) the frozen Omni core's text-only seam on the resident
+server (0 extra memory; decision 255 today); (ii) the Qwen3-Omni-30B-A3B-Thinking Q4_K_M GGUF now downloading (umbrella lock
+key `qwen3-omni-30b-a3b-thinking-gguf-q4km`, 18.6 GB) run on CPU between flights (24 cores, WSL 44 GB with about 41 GB
+available beside the resident server; the 2026-09-07 host-memory kill hazard means a second mmapped GGUF needs an owner GO
+and a memory check), or swapped onto the GPU inside the 12-h serving restart window; (iii) a separate local text-only model
+on CPU. Boundary: the proposer runs OFFLINE between flights, never in the answer path, so it is not a "second answering LLM";
+it must be logged like any tool contact (exposure-ledger row, model file hash, prompt hash, tables hash, output hash), and
+its output is a typed candidate, never a node prompt (decision 245).
+
+### Dimension 2 -- the objective is a script
+
+Adopted as a hard invariant of the design: every credit, selection and acceptance figure comes from the official scorer and
+deterministic readers; the model proposes, never judges. This is what GRPO does (a scripted reward) and what SkillOpt does
+(benchmark-native hard scores, no LLM judge). It applies to the ACE comparator too: ACE's curator may merge items, but its
+helpful / harmful counters are computed from per-row official credit over the sealed column and its playbook state is
+accepted by the same instrument, so the comparison isolates the update FORM (prose items vs typed artefacts), not the judge.
+
+### Dimension 3 -- RSI shape, training-free RL carrier
+
+What the RSI line adds beyond the TF-RL branch, and what we take:
+
+| work | mechanism | taken into the design as |
+| --- | --- | --- |
+| Darwin Goedel Machine (2505.22954) | archive of agent versions; parent sampled from the archive; every change empirically validated on a benchmark; open-ended | an ARCHIVE of system states (artefact-hash set + measured credit vector); parent = best by CI-LB with a diversity rule; refused candidates stay as siblings and negative evidence |
+| SkillOpt (2605.23904) | frozen target + separate optimiser model + held-out validator; bounded edit budget per step (textual learning rate, 4 -> 2); rejected-edit buffer fed back; epoch-wise slow / meta update never shipped; strict held-out acceptance, ties rejected; benchmark-native scoring | at most L typed operator applications per iteration (2 then 1); the refused-candidate buffer rendered to the proposer as tables; a proposer-side meta summary never entering any node prompt; our gate = SkillOpt's gate PLUS a noise model (same-flight twin, 1.49 floor, Fold A transfer) |
+| RRSI (2609.24972) | regularisers against benchmark overfitting, drift and collapse in harness self-improvement | cross-fitting of any TRAIN-fitted threshold, per-stratum tables on every read, fresh-roster confirmation, one component per candidate |
+| Hypothesis-driven skill optimisation (2606.22330); skill-overfitting work (2607.26643) | diagnose failure causes before proposing; constrain exploration to keep baseline competence | candidates are written from failure-class tables (C3 protocol); the intent guard and no-loss SLU guard on every arm |
+
+What we deliberately do not take: editing arbitrary harness code or node prompts (SkillOpt edits a prose skill; DGM edits
+code). The operator set stays closed and typed (245), because prose supply pays a per-row form cost here (D2) and code
+self-modification is outside the thesis object (a control plane around a frozen core, not a self-rewriting agent).
+
+### Knowledge construction / consumption as the first operator class (owner message 2)
+
+Yes: credit-driven selective knowledge augmentation from TRAIN is the construction class of the loop and the class where
+every stable SLU gain of this study came from. The record bounds where it can still act (Fold A, AGREE / COMP-1b arms):
+
+| gap kind | measured size | what augmentation can do | precedent |
+| --- | --- | --- | --- |
+| knowledge ABSENT from the store | 2 items in 2,705 rows; store holds all 60 intents and 54 of 55 slot types | nothing: existence is not the gap | coverage note 2026-09-26 |
+| present in TRAIN's value lists, NOT supplied (E4 class) | 40 items, oracle 2.33 pp | supply the value list / cards for the failing slot types and scenarios (selective, by credit table) | B4b slot store, K8 card selection |
+| gold exemplar exists, not retrieved at k = 20 | gold intent's median rank 13 / 10 / 14 on intent-wrong rows vs 1 on correct rows; widening k refuted | re-weight or expand the exemplar pool per failing scenario x intent stratum (hard-example mining INTO the index from TRAIN minus the evaluation fold) | B1 exemplars, COMP-1b agreement vote (the vote already converts 45.7 % of newly delivered gold entries, CONV probe) |
+| in the supply, NOT used (E1 class and 107 of 229) | 91 + 107 items, oracle 5-9 pp | not a construction gap; consumption; the Solver contract is locked (245) and template columns read null | R1 / R6 column reads |
+| not in supply AND not in the transcript | 35 of the 70 S2a.1 items | out of reach of any knowledge operator (hearing) | S2a.1 |
+| spurious entities on empty-gold rows | about 40 % of rows have empty gold; false fill is the largest single loss | NEGATIVE knowledge: per-scenario anti-pattern guards learned from TRAIN statistics (RIZZ anti-patterns; v4g's rate guard is one) | v4g |
+
+Expected value at measured conversions: about 18 of the 40 E4-class items at 45 % conversion x 0.062 pp = about 1.1 pp SLU,
+plus the intent side of a per-stratum exemplar re-weighting (unmeasured; the P-SV-1/2 contrast-pair exemplars LOWERED
+Perception recall, so the operator must be read as a column, not assumed). Alone this sits under the 1.5 pp floor; as the
+loop's first two typed operators (value-list supply for the failing types; per-stratum exemplar re-weighting) it is the
+natural iteration-1 candidate, read first OFFLINE for retrieval coverage (0 GPU: does the augmented index deliver the gold
+entry on more Fold B bad cases?) and then as one same-flight column. Fold hygiene: augment only from TRAIN rows outside the
+evaluation fold; confirm on Fold A; compose on DEV.
+
+- **263 AMENDED (v2, PROPOSED)**: the autonomous loop takes the RSI / SkillOpt shape above -- an archive of typed system
+  states, a bounded typed-operator proposer fed tables only, scripted objective and the noise-floored instrument as the
+  only judge, a refused-candidate buffer, three iterations on Fold B, Fold A confirmation, DEV composed read -- with the
+  ACE prose-item form as the in-flight comparator at equal budget. Options A / B / C unchanged.
+- **264 (PROPOSED)** Proposer model: A = the frozen core's text seam for iteration 1 (0 extra memory), with the Thinking
+  GGUF as a CPU-side proposer ablation once its hash is pinned and the host-memory check passes (owner GO for the memory
+  envelope); B = Thinking GGUF from the start; C = the core's text seam only. Recommended: A.
+- **265 (PROPOSED)** Iteration-1 operator class = credit-driven selective knowledge augmentation (value-list supply for
+  failing slot types + per-stratum exemplar re-weighting, both from TRAIN minus the evaluation fold), with a 0-GPU
+  retrieval-coverage read before the column. Recommended: yes.
+- E22 base gap closed model-free (branch `sonnet/e22-knowledge-snapshot`, 1f27b1914): an inert, hash-pinned placeholder
+  knowledge snapshot for E22 (the runtime refuses empty snapshots; E21 and A2T all-off cells pin real snapshots bound
+  invisibly by `knowledge: "none"`); both E22 baselines now pin it, so the package needs the standard re-pin; the wire check
+  still stops at the missing window feature packets (encoder pass, GPU held).
