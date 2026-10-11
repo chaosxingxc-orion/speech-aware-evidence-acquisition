@@ -1054,3 +1054,12 @@ State of the record (all n >= 1,000, TRAIN folds / DEV / the signed test sample)
   evaluated in parallel on a separate serving geometry when the GPU is free.
   Recommended: A measured first (one bare-core read decides whether the core is the ceiling), with C's model-free parts
   (259) running in the gaps; B only if A shows the core is not the limit.
+
+Coordinator note, 2026-10-11 ~03:55Z: with the GPU idle and decisions 260 / 261 pending, the model-free items of the
+259 proposal are being EXECUTED as engineering-base repairs under the owner's standing instruction of 2026-10-09
+("systematically repair and clean the engineering base"): (1) the E21 wire-check seal path (a harness defect against
+invariant I7) + the `wire-check` stage by successor registration + the full model-free seal-and-score; (3) the A2T
+confinement-list and paper-column regression hardening; and (2) the E22 ALL-OFF registration prepared HELD (window
+inventory on CPU, fragments, `--carrier e22`, `e220` byte proof, package, DRAFT rows) -- no model contact, no flight,
+nothing countersigned; all of it reversible, and the owner's ruling on 259 decides whether the E22 cells stay
+registered. Carriers' GPU remains held (242 / 252).
