@@ -155,6 +155,62 @@ def names(iteration: int, kind: str) -> dict:
     raise ValueError(f"unknown kind {kind!r}")
 
 
+# ---- the construction-source column (coordinator resolution of 2026-10-11 to decision 263-A) -------------------------------------
+#: The proposer's tables and the ACE reflector's material come from ONE lock column flown on the CONSTRUCTION roster R01C (TRAIN rows
+#: outside Fold A and Fold B), never from Fold B: Fold B is the held-out selection split, Fold A confirms. The column is flown once and
+#: re-flown only if the lock changes; its counters-free tables serve iterations 1-3 alike. Package
+#: ``docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/``.
+CONST_SLUG = "tfrl-construction-lock-r01c"
+CONST_PACKAGE_NAME = "slurp-tfrl-construction-source-v1"
+CONST_PACKAGE_DIR = f"docs/readiness/{DATE}-{CONST_PACKAGE_NAME}"
+CONST_PREREG_RELPATH = f"{CONST_PACKAGE_DIR}-preregistration.md"
+CONST_ROWS = 625
+CONST_DATASET = "slurp-speech-native-stage3-construction-r01c"
+CONST_SPLIT_ID = "STAGE3-CONSTRUCTION-R01C"
+CONST_ROSTER_ID = "SLURP-STAGE3-CONSTRUCTION-R01C"
+CONST_ROSTER = {
+    "arm": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "smoke": "docs/receipts/rosters/slurp-stage3-roll-aa-r01c-smoke-4-v1.json",
+}
+#: The column flies the plain lock (no columns, no supply arms): Perception 1 + Solver 1 = 2 contacts per row. It composes on v2.2, whose
+#: requests are byte-identical to v2.3's (proof P-ACE-0): the v2.3 ``ace-playbook`` store's source ids lie INSIDE R01C, so a cell flying
+#: R01C rows cannot declare it (rails/runner.py refuses a query sample inside the composite knowledge source roster).
+CONST_LOCK = PARENT_LOCK
+CONST_CONTACTS = 2
+CONST_PROGRAM = "phase-native-module-v1-c2"
+CONST_SCORER = SCORER
+#: Measured throughput of the review-off composed arm at 2.00 contacts per row: 1.38 GPU-h per 1,000 rows
+#: (docs/results/2026-10-10-slurp-nx-r5-composed-dev2000-added-read.md, efficiency table); 625 rows -> 0.86 GPU-h before FIT.
+CONST_MEASURED_GPU_H_PER_1000_ROWS = 1.38
+CONST_PLANNED_GPU_HOURS_ARM, CONST_PLANNED_GPU_HOURS_SMOKE = 1.0, 1.0
+CONST_RUN_ID = f"SAEA-SLURP-STAGE3-{CONST_SLUG.upper()}-V1"
+CONST_ATTEMPT_ID = f"attempt-slurp-native-stage3-{CONST_SLUG}-generation-v1"
+
+
+def const_names(kind: str) -> dict:
+    """Identities of the construction-source cell. ``kind``: ``arm`` | ``smoke``."""
+
+    if kind not in ("arm", "smoke"):
+        raise ValueError("kind must be 'arm' or 'smoke'")
+    smoke = kind == "smoke"
+    lo, up = ("-smoke-4" if smoke else ""), ("-SMOKE-4" if smoke else "")
+    slug = CONST_SLUG
+    return {
+        "experiment": f"slurp-native-stage3-{slug}{lo}-v1",
+        "baseline": f"slurp-native-stage3-{slug}{lo}-baseline-v1",
+        "run_id": f"SAEA-SLURP-STAGE3-{slug.upper()}{up}-V1",
+        "fit_run_id": f"SAEA-SLURP-STAGE3-{slug.upper()}{up}-FIT-V1",
+        "attempt_id": f"attempt-slurp-native-stage3-{slug}{lo}-generation-v1",
+        "fit_attempt_id": f"attempt-slurp-native-stage3-{slug}{lo}-fit-v1",
+        "prefix": "smoke-" if smoke else "",
+        "campaign": f"configs/campaign/slurp-native-stage3-{slug}-v1.json",
+        "read_run_id": f"SAEA-SLURP-STAGE3-{slug.upper()}-COLUMN-READ-V1",
+        "recipe_id": f"slurp-{slug}-column-analysis-v1",
+        "decision_id": f"slurp-{slug}-admission-v1",
+        "decision_path": f"coordination/slurp-{slug}-v1/root-admission-v1.json",
+    }
+
+
 def fit_contact_cap(rows: int, contacts: int) -> int:
     """The FIT contact_cap the gate demands: rows x max_contacts x endpoints per contact (never run-cumulative)."""
 
