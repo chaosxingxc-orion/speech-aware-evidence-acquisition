@@ -64,7 +64,8 @@ PROHIBITIONS = [
 def package_names(iteration: int) -> dict:
     stem = f"{tf.DATE}-slurp-tfrl-loop-i{iteration}"
     return {"column": f"docs/readiness/{stem}-fold-b-v1", "proposers": f"docs/readiness/{stem}-proposers-v1",
-            "prereg": f"docs/readiness/{stem}-fold-b-v1-preregistration.md"}
+            "prereg": f"docs/readiness/{stem}-fold-b-v1-preregistration.md",
+            "prereg_proposers": f"docs/readiness/{stem}-proposers-v1-preregistration.md"}
 
 
 def wr(root: Path, path: str, text: str) -> str:
@@ -105,7 +106,8 @@ def identities(root: Path, iteration: int, kinds: tuple[str, ...]) -> dict:
     return out
 
 
-def measurement_blocks(ids: Mapping[str, Mapping], iteration: int, predicted_effect_pp: float, arms: list[str]) -> dict:
+def measurement_blocks(ids: Mapping[str, Mapping], iteration: int, predicted_effect_pp: float, arms: list[str],
+                       mean_row_audio_seconds: float) -> dict:
     """The canonical ``stage3_measurement`` blocks keyed by run id (same-flight supply-variant design, design section 6)."""
 
     arm, smoke = ids["arm"], ids["smoke"]
@@ -123,7 +125,8 @@ def measurement_blocks(ids: Mapping[str, Mapping], iteration: int, predicted_eff
             "rows": tf.ROWS,
             "tuning_roster": tf.TUNING_ROSTER,
             "read_roster": tf.READ_ROSTER,
-            "variant_cost": {"extra_contacts_per_row": len(arms) - 1, "extra_audio_seconds": None},
+            "variant_cost": {"extra_contacts_per_row": len(arms) - 1,
+                             "extra_audio_seconds": round((len(arms) - 1) * mean_row_audio_seconds, 6)},
             "note": (f"Loop iteration {iteration}: arms {', '.join(arms)} over the delivering lock arm, paired per row inside one flight, "
                      "preregistered selection rule in " + tf.PROTOCOL_RELPATH + ". The expected effect is the typed arm's predicted "
                      "effect when one flies (at least 1.5 pp, decision 192) and is 0.0 with claims_benefit false when the typed arm is "
@@ -168,14 +171,15 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
         gen = dict(i["execution_plan"], attempt_id=i["attempt_id"], carrier_lock_key=i["carrier_lock_key"],
                    protocol_hash=i["protocol_hash"], run_id=i["run_id"], schema="saea-execution-plan-v1",
                    split_identity_hash=i["split_identity_hash"], study="speech-aware-evidence-acquisition")
-        fit = dict(gen, attempt_id=i["fit_attempt_id"], run_id=i["fit_run_id"], planned_model_calls=i["family_budget"]["fit_endpoint_calls_cap"])
         docs[f"{prefix}generation-plan-registered-v1.json"] = {
             **base, "execution_plan": gen, "execution_route": route[kind], "plan_kind": "generation", "purpose": purpose[kind],
             "schema": "saea-registered-generation-plan-v1"}
-        docs[f"{prefix}fit-plan-registered-v1.json"] = {
-            **base, "execution_plan": fit, "plan_kind": "fit", "schema": "saea-registered-fit-plan-v1",
-            "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
-            "purpose": f"{i['fit_run_id']}: request envelopes only; reads nothing."}
+        if kind in ("arm", "smoke"):
+            fit = dict(gen, attempt_id=i["fit_attempt_id"], run_id=i["fit_run_id"], planned_model_calls=i["family_budget"]["fit_endpoint_calls_cap"])
+            docs[f"{prefix}fit-plan-registered-v1.json"] = {
+                **base, "execution_plan": fit, "plan_kind": "fit", "schema": "saea-registered-fit-plan-v1",
+                "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
+                "purpose": f"{i['fit_run_id']}: request envelopes only; reads nothing."}
     return docs
 
 
@@ -187,7 +191,8 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
     arms = list(dv.iteration_arms(spec, iteration))
     arm, smoke = ids["arm"], ids["smoke"]
     names = tf.names(iteration, "arm")
-    blocks = measurement_blocks(ids, iteration, predicted_effect_pp, arms)
+    mean_audio = dv.roster_audio("arm", root) / tf.ROWS
+    blocks = measurement_blocks(ids, iteration, predicted_effect_pp, arms, mean_audio)
     blockers = []
     if not loader.get("ok", False):
         blockers.append({"id": "ace-playbook-store-not-in-lock-layer", "detail": loader.get("refusal"),
@@ -324,6 +329,27 @@ def proposers_package(root: Path, iteration: int, commit: str, at: str) -> dict:
     shas["README.md"] = wr(root, f"{pkg}/README.md", (
         f"# Loop iteration {iteration}: typed proposer and ACE reflector cells (DRAFT / HELD)\n\nStatus: DRAFT / HELD. No ledger row, "
         "no countersignature, no flip. Text-only contacts (construction-proposer-text), form proof, claims_benefit false.\n"))
+    draft = {
+        "_draft_note": "A DRAFT for the coordinator to mint with scripts/flights/tfrl/tfrl_mint_receipt.py --kind proposers. Authorises nothing "
+                       "while its status is not 'decided'.",
+        "antecedents": {"protocol": {"path": f"{pkg}/protocol-registered-v1.json", "sha256": protocol_sha},
+                        "registered_facts": {"path": f"{pkg}/registered-facts-v1.json", "sha256": shas["registered-facts-v1.json"]},
+                        "registration_base_commit": commit},
+        "authorization_basis": f"Owner decisions 263-A / 264-A / 265 (2026-10-11); {DESIGN} section 3.",
+        "budget": {k: ids[k]["family_budget"] for k in kinds}, "paid_api_calls": 0,
+        "claim_boundary": "Text-only proposal contacts; no benefit claim.",
+        "decision": f"Fly the loop iteration {iteration} typed proposer and ACE reflector cells (text-only).",
+        "decision_id": f"slurp-tfrl-proposers-i{iteration}-admission-v1",
+        "eligible_run_ids": [ids["typed"]["run_id"], ids["ace"]["run_id"]],
+        "not_authorized": ["any audio part", "any best-of-N or re-sampling beyond the registered retries", "--allow-output-change"],
+        "owner": "root", "recorded_at_utc": None, "schema": "saea-campaign-decision-v1",
+        "service": {"expected_session_id": tf.SESSION, "no_child_start_stop": True}, "status": "DRAFT-NOT-MINTED",
+    }
+    shas["root-admission-draft-v1.json"] = wjson(root, f"{pkg}/root-admission-draft-v1.json", draft)
+    prereg = (f"# Loop iteration {iteration} (proposer and reflector cells): preregistration (DRAFT / HELD)\n\nRegistered {at[:10]} at study "
+              f"commit `{commit}` by script. Text-only form proof.\n\n## The measurement declaration\n\n```json\n"
+              + json.dumps({"stage3_measurement": blocks}, indent=2, ensure_ascii=False, sort_keys=True) + "\n```\n")
+    shas["__prereg__"] = wr(root, pkgs["prereg_proposers"], prereg)
     return {"ids": ids, "shas": shas, "blocks": blocks, "package": pkg}
 
 
@@ -357,9 +383,6 @@ def draft_text_only_rows(root: Path, iteration: int, ids: Mapping[str, Mapping],
             archive_sha256=art.get("archive_sha256", "pending"), geometry=tf.SESSION, kind=kind)
         row["scope"] = "DRAFT -- " + row["scope"]
         lines.append(tp.ledger_markdown_row(row))
-        fit = dict(row, **{"run/experiment id": i["fit_run_id"], "calls": str(i["family_budget"]["fit_endpoint_calls_cap"]),
-                           "scope": row["scope"] + " FIT spend identity, request envelopes only, no generation."})
-        lines.append(tp.ledger_markdown_row(fit))
     return "\n".join(lines) + "\n"
 
 
@@ -381,6 +404,18 @@ def draft_column_rows(ids: Mapping[str, Mapping], commit: str, at: str, arms: li
                      str(i["family_budget"]["repeated_speech_audio_seconds_cap"]), str(i["family_budget"]["gpu_hours_fit_inclusive"]),
                      inherited, plan, f"DRAFT at study commit {commit}; plan SHA256 {shas.get(Path(plan).name, 'pending')}; nothing authorised."]
             lines.append("| " + " | ".join(c.replace("|", "/") for c in cells) + " |")
+    arm = ids["arm"]
+    read_id = tf.names(int(arm["experiment"].split("-i")[1].split("-")[0]), "arm")["read_run_id"]
+    read = [at[:10], read_id, "model-free-check",
+            (f"The offline read of the loop iteration column: score the supply columns once each, node-local and paired reads, the "
+             f"preregistered selection rule, by the recipe {pkg}/analysis-recipe-v1.json. Zero model, server, encoder, embedder, tokenizer "
+             "and GPU contacts."),
+            "no model or tool contact; read of sealed bytes and CPU official scorings over derived copies",
+            f"slurp TRAIN Fold B {arm['rows']}, the sealed iteration flight (after the seal)", "discovery", arm["split_identity_hash"], "no",
+            "0", "0", "0", inherited, f"{pkg}/analysis-recipe-v1.json",
+            f"DRAFT. REGISTERED WITH THE FLIGHT (root countersignature pending; countersigned after the seal and before any column is opened) "
+            f"{at[:10]} at study commit {commit}. Its ceiling is a nomination; it admits nothing."]
+    lines.append("| " + " | ".join(c.replace("|", "/") for c in read) + " |")
     return "\n".join(lines) + "\n"
 
 

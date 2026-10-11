@@ -44,7 +44,7 @@ def make_overlay(dest: Path, repo_root: Path, *, copy_ledger: bool = True) -> Pa
             (dest / name).symlink_to(repo_root / name, target_is_directory=True)
     for top, writable in REAL_DIRS.items():
         (dest / top).mkdir(exist_ok=True)
-        _link_children(repo_root / top, dest / top, writable | {"receipts"} if top == "docs" else writable)
+        _link_children(repo_root / top, dest / top, writable | {"receipts", "exposure-ledger.md"} if top == "docs" else writable)
         for sub in writable:
             _seed_dir(repo_root / top / sub, dest / top / sub)
     receipts = dest / "docs" / "receipts"

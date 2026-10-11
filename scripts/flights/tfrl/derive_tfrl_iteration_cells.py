@@ -553,6 +553,7 @@ def derive_text_only(iteration: int, kind: str, pins: Mapping[str, Any], *, repo
     exp_raw = rd("configs/experiment/slurp-native-stage3-gepa-r01-v1.json", repo_root)
     exp = json.loads(exp_raw)
     cell = exp["cells"][0]
+    exp["cells"] = [cell]            # the GEPA parent carries a separate FIT cell; the text-only cells declare no FIT identity
     cell.update(cell_id=names["experiment"], run_id=names["run_id"], attempt_id=names["attempt_id"],
                 baseline_fragment=names["baseline"], dataset_fragment="slurp-speech-native-evo-fold-b-1080")
     exp.update(experiment_id=names["run_id"], fragment_kind=f"saea-{names['experiment']}", date=tf.DATE)
@@ -570,7 +571,7 @@ def derive_text_only(iteration: int, kind: str, pins: Mapping[str, Any], *, repo
                              "planned_model_calls": planned, "planned_speech_audio_seconds": max(audio, 1), "split_role": "discovery",
                              "planned_speech_audio_seconds_note": "text-only contacts under the D2 freeze: realised speech seconds read 0 <= the declared ceiling"}
     exp["family_budget"] = {"asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0,
-                            "fit_endpoint_calls_cap": contacts * (1 + tf.RETRIES) * 3, "generation_calls_cap": planned,
+                            "fit_endpoint_calls_cap": 0, "generation_calls_cap": planned,
                             "gpu_hours_fit_inclusive": tf.PLANNED_GPU_HOURS_TEXT_ONLY, "native_task_contract_calls_cap": 0,
                             "official_complete_scoring_jobs": 0, "repeated_speech_audio_seconds_cap": max(audio, 1)}
     exp["generation_budget"] = {"cap": planned, "target": planned,
@@ -582,9 +583,9 @@ def derive_text_only(iteration: int, kind: str, pins: Mapping[str, Any], *, repo
     exp["failure_policy"] = ("Stop on the first failure and preserve every contact; the registered retries are the only re-asks. "
                              "No re-sampling and no best-of-N over proposals.")
     exp["split_id_note"] = "The runtime split id equals the dataset fragment split_name; the population is the explicit populations block."
-    decision_id = f"slurp-tfrl-{'proposer' if kind == 'typed' else 'ace-reflector'}-i{iteration}-admission-v1"
+    decision_id = f"slurp-tfrl-proposers-i{iteration}-admission-v1"
     requirements = [{"kind": "decision", "expected_decision_id": decision_id,
-                     "relpath": f"coordination/slurp-tfrl-{'proposer' if kind == 'typed' else 'ace-reflector'}-i{iteration}-v1/root-admission-v1.json",
+                     "relpath": f"coordination/slurp-tfrl-proposers-i{iteration}-v1/root-admission-v1.json",
                      "sha256": ZERO, "reason": f"Decision {decision_id} pinned by scripts/flights/repin_cell.py."}]
     for label in ("tables", "context") if kind == "typed" else ("playbook",):
         requirements.append({"kind": "preparation", "reason": f"The pinned {label} artefact the contact renders (data-root relative).",
