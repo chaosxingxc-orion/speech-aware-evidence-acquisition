@@ -82,7 +82,14 @@ NONE_ALGORITHM_ID = "none"
 
 LABEL_KEY = "stage3_algorithm"
 _REQUIRED_LABEL_KEYS = frozenset({"id", "note"})
-_KNOWN_LABEL_KEYS = frozenset({"id", "operators_used", "note"})
+_KNOWN_LABEL_KEYS = frozenset({"id", "operators_used", "note", "columns"})
+
+#: Optional per-column map ``{arm_id: algorithm_id}`` (E-T5, decision 263-A).
+#: A cell that flies several columns of different algorithms in one fragment
+#: (lock / twin / parent / typed / ACE) labels each column here; the top-level
+#: ``id`` stays the cell's own algorithm. Every value must resolve in
+#: ``STAGE3_ALGORITHMS``.
+COLUMNS_KEY = "columns"
 
 
 class Stage3AlgorithmError(CoreError):
@@ -289,7 +296,11 @@ ACE_GROW_REFINE_V1 = _register(
         id="ace-grow-refine-v1",
         family="ace",
         display_name="ACE (agentic context engineering: generator / reflector / curator)",
-        citation="see design spec section 6",
+        citation=(
+            "arXiv:2510.04618 (Agentic Context Engineering: generator / reflector / "
+            "curator over an evolving playbook); instantiation: docs/superpowers/specs/"
+            "2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md section 4"
+        ),
         operators=("update", "selection", "context_application"),
         status="planned",
         what_it_changes=(
@@ -504,7 +515,48 @@ def validate_stage3_algorithm_label(
             f"{cell}: {LABEL_KEY}.operators_used is empty; a cell labelled "
             f"{record.id!r} states which of that algorithm's operators it exercises"
         )
+    if COLUMNS_KEY in label:
+        validate_stage3_algorithm_columns(label[COLUMNS_KEY], cell=cell)
     return record, used
+
+
+def validate_stage3_algorithm_columns(
+    columns: object, *, cell: str = "<cell>"
+) -> dict[str, Stage3Algorithm]:
+    """Validate a label's per-column map ``{arm_id: algorithm_id}``.
+
+    Returns ``{arm_id: record}``. Raises :class:`Stage3AlgorithmError` naming
+    ``cell`` when the map is not a non-empty object, an arm id is not a
+    non-empty string, or an algorithm id does not resolve in the registry.
+    """
+
+    if not isinstance(columns, Mapping) or not columns:
+        raise Stage3AlgorithmError(
+            f"{cell}: {LABEL_KEY}.{COLUMNS_KEY} must be a non-empty object "
+            "{arm_id: algorithm_id}"
+        )
+    resolved: dict[str, Stage3Algorithm] = {}
+    for arm_id, algorithm_id in columns.items():
+        if not isinstance(arm_id, str) or not arm_id.strip():
+            raise Stage3AlgorithmError(
+                f"{cell}: {LABEL_KEY}.{COLUMNS_KEY} keys must be non-empty arm ids, "
+                f"got {arm_id!r}"
+            )
+        try:
+            resolved[arm_id] = resolve_stage3_algorithm(algorithm_id)
+        except Stage3AlgorithmError as error:
+            raise Stage3AlgorithmError(
+                f"{cell}: {LABEL_KEY}.{COLUMNS_KEY}[{arm_id!r}]: {error}"
+            ) from None
+    return resolved
+
+
+def columns_of(label: object) -> dict[str, str]:
+    """The label's ``{arm_id: algorithm_id}`` map, or ``{}``; no validation."""
+
+    if isinstance(label, Mapping) and isinstance(label.get(COLUMNS_KEY), Mapping):
+        return {str(arm): str(algo) for arm, algo in label[COLUMNS_KEY].items()}
+    return {}
 
 
 def label_of(document: Mapping[str, object]) -> object | None:

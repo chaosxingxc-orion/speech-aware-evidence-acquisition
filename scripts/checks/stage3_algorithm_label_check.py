@@ -301,6 +301,7 @@ def evaluate(repo_root: Path) -> dict[str, Any]:
                 "in_scope_because": why,
                 "algorithm_id": record.id,
                 "operators_used": list(used),
+                **({"columns": registry.columns_of(label)} if registry.columns_of(label) else {}),
                 "source": "hash-pinned-metadata-correction" if correction else "fragment",
                 "reason": "Pinned historical catalogue correction; no runtime admission." if correction else None,
                 **({"metadata_correction": correction} if correction else {}),
