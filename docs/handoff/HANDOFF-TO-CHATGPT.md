@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T12:19:20Z
+Last refreshed: 2026-10-11T13:23:22Z
+
+## Fold B column FLYING (flight commit 6cbd9c707, task SAEA-Queue-TFRLi1Col, 13:21Z); GPU packet pass merged and its row countersigned (2026-10-11T13:23:22Z, Fable 5.1 root)
+
+i1 column: lock / aa / ace (27-item ACE i1 playbook), typed arm empty by measurement, 1,080 rows x 4 contacts, ~1.5 GPU-h ceiling. After the seal: `close --iter 1 --execute` (selection a-e, archive, curve, ACE counters) -> results note -> iteration 2 propose. GPU packets (ed3280f97): swap-window chain with a rate gate; the Instruct packet pass was CPU too (correction), so the GPU rate is unmeasured until the 4-row smoke; window runs after the column seals -> pin -> re-pin -> sign 8 rows -> mint -> flip -> 266-E chain. No owner decision open.
+
+Superseded stamp: 2026-10-11T12:19:20Z
 
 ## ACE reflector i1 FLYING alone (flight commit 58ebe92ea, task SAEA-Queue-TFRLi1Ace, 12:17Z); text-only inspector merged; typed run inspected PASS (2026-10-11T12:19:20Z, Fable 5.1 root)
 

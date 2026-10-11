@@ -1625,3 +1625,21 @@ efficiency problem: find the root cause of the bottleneck and fix it.")
   request; cost 5.95 s under the 18 s ceiling).
 - Reflector-only flip converged at 58ebe92ea (gate PASS); chain task SAEA-Queue-TFRLi1Ace started 12:17:38Z (54 calls); the
   driver archived `batch-STOP` at start; the uptime guard (HALTed 12:04Z on the STOP) re-armed.
+
+### Fold B column FLYING; GPU packet pass merged (coordinator, 2026-10-11 13:21Z)
+
+- Owner: 「继续，收敛后排队 Fold B 列」. Column flip converged (smoke 4150b157f, arm 88ccd0b7c, siblings, pins refreshed, second loop)
+  at **flight commit 6cbd9c707**, both launch gates PASS 13:20:55Z; chain task SAEA-Queue-TFRLi1Col started 13:21:21Z (four-row
+  smoke, then 1,080 Fold B rows x 4 contacts: lock delivering, aa twin, ace column at the prepared i1 release; typed arm empty by
+  measurement; ceiling 1.5 GPU-h).
+- GPU packet pass merged (ed3280f97): fragment `q4km-thinking-feature-preprocess-gpu-np1-v1` (`-c 16384 -np 1 -ngl 999 -fa on`,
+  mmproj on the GPU), driver `--geometry gpu` (refuses while any serving session is resident), swap-window chain
+  `direct_fb_packets_gpu.sh` (watchdog hold -> `serving_swap.sh --stop-only` -> smoke -> rate gate: projected Fold B > 3,000 s
+  restores Instruct and exits 23 -> Fold B -> `think-np4 --start-only`; failure restores Instruct), new run id
+  `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1` (1,084 calls / 3,165 s / 1.0 GPU-h), the 266-E package regenerated on the
+  GPU roots; the CPU chain refuses unless `--allow-cpu`. **Correction to the morning's analysis:** the Instruct Fold B packet pass
+  (`SAEA-SLURP-EVO-FOLD-PACKETS-V2`, 1,080 rows in 2,038 s) was ALSO a CPU sidecar pass; its "2.0 GPU-h" was the registered
+  ceiling. The record holds no GPU encoder rate for SLURP, and the Thinking CPU pass was about 9x slower than the Instruct CPU
+  pass on the same geometry for a reason not yet isolated; the GPU estimate (0.3-1.0 s per row, 5-18 min) is a bound guarded by
+  the rate gate, not a measurement. The GPU packets row is countersigned; the window runs after the column seals (the card holds
+  one core), followed by the pin step, re-pin, countersign of the eight 266-E flight rows, mint, flip and the 266-E chain.
