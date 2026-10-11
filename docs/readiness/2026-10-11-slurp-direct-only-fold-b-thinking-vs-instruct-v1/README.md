@@ -49,12 +49,63 @@ hash is absent or differs from the lock.
 9. After the Instruct session reports ready (SLURP SESSION READY from serving_wait_ready.sh slurp-np4) remove /home/chao/saea-queue/watchdog.hold; the watchdog resumes from the committed ready_chains.json. Stop SAEA-Serving-THINK and SAEA-Monitor-THINK (serving_swap does this on the stop) and leave them unregistered or disabled; remove the decode sign-off marker.
 10. Read: bash scripts/flights/direct/direct_fb_read.sh (countersign the READ row first).
 
+## Thinking speech packets: command sequence, runtime and re-pin (the coordinator's; nothing here executes it)
+
+Driver `scripts/slurp_fold_preprocess_thinking.py` (a sibling of `scripts/slurp_evo_fold_preprocess.py`, which is not modified: it loads that driver and reuses its
+helpers, so the packet format, the promotion receipt shape and the roster logic are the Instruct ones) and chain `scripts/flights/direct/direct_fb_packets.sh`.
+Two attempts of ONE run id (`SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1`, plan budget run-cumulative, row total 1,080 calls / 3,155 speech seconds):
+`thinking-smoke-4` (the first four Fold B rows, encoded into the legacy cache only: no packet, no promotion receipt, packet root stays empty) and `thinking-fold-b`
+(the 1,076 cold rows encoded, the smoke's four warm rows are not contacted again, then all 1,080 promoted into the empty root and the promotion receipt written).
+
+Command sequence:
+
+1. Countersign the exposure row `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1` (root's act): replace its whole notes cell with the text in
+   "Countersign text" below. The chain refuses a row that still says DRAFT, lacks the words "root countersigned", is consumed, or whose numbers or split identity differ.
+2. `bash scripts/flights/direct/direct_fb_packets.sh --check` -- every guard and both driver dry-runs, no side effects. Guards: clean tree; no generation flight, lease,
+   batch driver or `flight.lock`; no other CPU sidecar; a GPU session resident and running with no serving swap pending (decision 162); the Thinking GPU session NOT resident;
+   host-available memory at least 26 GB (`PACKETS_START_FLOOR_GB`; the Thinking decoder plus mmproj load on the CPU) and 5 GB free disk; ledger row countersigned; the
+   dry-run of each roster (pins equal the umbrella lock and the committed runtime receipt, roots empty, worker fit, smoke rows are the Fold B prefix).
+3. `bash scripts/flights/direct/direct_fb_packets.sh --task` (starts the Windows task `SAEA-Packets-THINK`, which survives the session) or `--run [--stage smoke|fold-b|all]`
+   in a foreground shell. Smoke first (4 rows), then the guards again, then Fold B; a watchdog stops the driver below 6 GB available; the chain ends by waiting until no CPU
+   sidecar remains, so the following serving swap finds the host clear. Do not start a swap, a flight or another sidecar while it runs.
+4. Read: the driver reports under `$SPEECHRL_DATA_DIR/prepared/slurp-direct-fb-thinking-packets-v1/encoder-report-<roster>.json`, the encoder receipts under
+   `$SPEECHRL_DATA_DIR/runs/SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1/attempt-packets-thinking-{smoke-4,fold-b}-v1/encoder-receipt.json` (llama.cpp build commit, decoder and
+   mmproj sha256, runtime receipt sha256, split identity, per-file sha256 -- packet and chunk feature hashes for Fold B, legacy cache file hashes for the smoke -- worker
+   counts, timings) and the promotion receipt `/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6/EVO-FOLD-B-V2-promotion.json`. After a failed Fold B attempt whose cache
+   is fully warm, `python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-fold-b --promote-only --attempt-id <new id>` promotes with zero contacts; any other
+   failure is the flight's one recovery re-registration, not a retry.
+5. `python -B scripts/slurp_fold_preprocess_thinking.py --pin-receipt` -- model-free: validates the promotion receipt with the runtime's own loader, checks that it covers exactly
+   the 1,080 Fold B rows under the committed Thinking runtime receipt and the lock-verified decoder and mmproj, re-verifies every packet on disk, and PRINTS the two baseline
+   substitutions. Add `--write` to substitute the receipt's sha256 for the zero sentinel in the two Thinking baselines (it refuses to overwrite a different real pin). Do not
+   re-run `direct_fb_derive_cells.py` afterwards: it would write the sentinel back.
+6. Close the packets ledger row by hand (`consumed = yes`, measured contacts and seconds at the front of the notes); `ledger_mark_consumed.py` has no evidence rule for a packets row.
+7. Commit the two baselines, then the usual order: countersign the eight flight rows, `direct_fb_mint_receipt.py`, `direct_fb_flip.sh` (refuses while a zero sentinel remains), then
+   `refresh_registered_plan_pins.py` and flip again if it says so. Never `--allow-output-change`.
+
+Expected runtime (from the Instruct record of the same roster, `docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/fold-packets/preprocess-fold-b.json`:
+1,080 contacts in 2,037.8 s at 4 workers on the `-np 4` sidecar = 0.53 rows per second, 31.8 rows per minute; promotion 10.7 s at 8 workers). The Thinking sidecar is the same
+geometry and the same audio-tower compute, so Fold B should take about 34 minutes for the 1,076 cold rows (+ about 11 s promotion), the smoke a few seconds of encoding, plus
+two Thinking model loads (about 20.8 GB read onto the CPU each time; the second load may hit the page cache; the sidecar ready timeout is 1,800 s). Plan 45 to 60 minutes of wall
+clock; the Thinking load time itself is not measured yet and the smoke measures it.
+
+Countersign text for the packets row (replaces the whole notes cell; keep the words "root countersigned", and no draft marker):
+`REGISTERED BEFORE CONTACT (root countersigned <UTC timestamp> by root flight operations on the coordinator's brief: owner decision 266-E of 2026-10-11; label-free Thinking speech-packet preparation over TRAIN Fold B on the CPU sidecar q4km-thinking-preprocess-featcache-cpu-sidecar-np4-v1 through scripts/slurp_fold_preprocess_thinking.py via scripts/flights/direct/direct_fb_packets.sh; the 4-row encode-only smoke and the Fold B pass share this row's 1,080 calls and 3,155 speech seconds; prior exposure inherited in full)`
+
+Which registered files change hash:
+
+- By the pin step itself, exactly two: `configs/baseline/slurp-direct-only-fold-b-thinking-baseline-v1.json` and `configs/baseline/slurp-direct-only-fold-b-thinking-smoke-4-baseline-v1.json`
+  (one field each, `speech_packet_promotion_receipt_sha256`).
+- By the flip's re-pin (`scripts/flights/repin_cell.py` through `direct_fb_flip.sh`, expected, to be confirmed from its diff): the composed config hash and protocol hash of the
+  two Thinking cells (smoke and Thinking arm) change, so the registered files that carry them are re-pinned: `smoke-` and `thinking-` generation and fit plans, `protocol-registered-v1.json`,
+  `registered-facts-v1.json`, `root-admission-draft-v1.json`, this README's cell table, and the ledger rows of the four Thinking-side flight rows. Every one of the eight plans pins the sha256
+  of `protocol-registered-v1.json`, so all eight plan files re-pin once that file changes. The Instruct arm and replicate baselines, composed configs and protocol hashes do not change.
+- The smoke roster receipt `smoke-roster-receipt-v1.json` does NOT change: it holds roster ids, audio seconds and a parent pin, no packet or baseline field. Its sha256 is pinned by the plans, the
+  facts file and the ledger, so a change there would break those pins; none is expected or needed.
+- The packet root, the legacy cache and the encoder receipts live outside Git. The Instruct driver `scripts/slurp_evo_fold_preprocess.py` and the Instruct packet root do not change.
+
 ## Prerequisites still open
 
-1. **Thinking speech packets (P0).** Prepare the Thinking packet root over TRAIN Fold B (CPU sidecar, `q4km-thinking-preprocess-featcache-cpu-sidecar-np4-v1`) and pin its promotion receipt
-   in the two Thinking baselines (zero sentinel today); the receipt's `feature_root` must equal the fragment's `speech_feature_root` (the runtime refuses a
-   disagreement) and cover all 1,080 Fold B rows (the smoke's four are among them). `scripts/slurp_evo_fold_preprocess.py` is wired to the Instruct runtime receipt and root and needs a Thinking
-   variant; ledger row `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1` is a DRAFT placeholder for it.
+1. **Thinking speech packets (P0).** Prepare the Thinking packet root over TRAIN Fold B and pin its promotion receipt in the two Thinking baselines (zero sentinel today); the receipt's `feature_root` must equal the fragment's `speech_feature_root` (the runtime refuses a disagreement) and cover all 1,080 Fold B rows (the smoke's four are among them). The driver variant exists (`scripts/slurp_fold_preprocess_thinking.py`) and the chain `scripts/flights/direct/direct_fb_packets.sh` runs it; ledger row `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1` is still a DRAFT that needs its root countersignature and owner authorisation. See the section above.
 2. **Task registration.** `SAEA-Serving-THINK` / `SAEA-Monitor-THINK` are registered by the first `serving_swap.sh think-np4` through `saea_task.ps1`.
 3. **Countersignatures and the receipt.** `countersign-row-texts-v1.json`; then `scripts/flights/direct/direct_fb_mint_receipt.py`, then `direct_fb_flip.sh`.
 

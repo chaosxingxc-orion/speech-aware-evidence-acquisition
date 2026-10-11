@@ -1,0 +1,10 @@
+{
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1",
+  "feature_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6",
+  "fold": "SLURP-EVO-FOLD-B-V2",
+  "legacy_cache_dir": "/home/chao/feat-cache/slurp-thinking-q4km",
+  "preregistration": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1-preregistration.md",
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6/EVO-FOLD-B-V2-promotion.json",
+  "purpose": "Exposure row SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1 (owner decision 266-E, package docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1): materialize the Thinking-core speech-feature packets for SLURP-EVO-FOLD-B-V2 (1,080 rows, 3,154.797375 s). The Instruct packets are not valid for the Thinking decoder (748 of 860 mmproj tensors differ), so the Thinking core needs its own packet root. Label-free, exactly as SAEA-SLURP-EVO-FOLD-PACKETS-V2 for the Instruct core: the CPU-only sidecar (-ngl 0 --no-mmproj-offload, the Thinking decoder AND its own bf16 mmproj, runtime-q4km-thinking-preprocess.json) is driven with one contact per row at max_tokens 1 under a fixed minimal instruction; the legacy feature-cache key is the FNV-1a hash of the media bytes ALONE, so the prompt cannot affect the cached features and no response is read semantically. No gold, sentence, transcript, scenario, action, intent, entity or score is opened. The sidecar serves on 8081 and the GPU inference port is not touched. Roster key thinking-smoke-4 encodes the first four rows into the legacy cache only (no promotion) as the sidecar smoke; roster key thinking-fold-b encodes the remaining cold rows and promotes all 1,080 into the empty Thinking packet root after a verified normal sidecar stop."
+}
