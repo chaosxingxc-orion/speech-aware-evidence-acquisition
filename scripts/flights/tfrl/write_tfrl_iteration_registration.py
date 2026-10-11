@@ -203,10 +203,13 @@ def recovery_section(iteration: int, smoke: Mapping) -> str:
 
 
 def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, protocol_sha: str, pkg: str, route: Mapping[str, str],
-              purpose: Mapping[str, str], iteration: int = 1) -> dict:
+              purpose: Mapping[str, str], iteration: int | None = None) -> dict:
+    """Registered plan documents. ``iteration`` selects the loop iteration whose smoke recovery applies; ``None`` (the construction-source
+    package, which shares this builder) means no recovery and the historical plan file names."""
+
     docs = {}
     for kind, i in ids.items():
-        recovered = kind == "smoke" and tf.smoke_recovery(iteration) is not None
+        recovered = iteration is not None and kind == "smoke" and tf.smoke_recovery(iteration) is not None
         supply = {"relpath": f"prepared/{i['run_id']}/phase-supply-v1.json", "sha256": "MINTED_AT_THE_FLIP",
                   "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"}
         base = {"cell": i["cell"], "composed_config_hash": i["composed_config_hash"], "expected_session_id": tf.SESSION,

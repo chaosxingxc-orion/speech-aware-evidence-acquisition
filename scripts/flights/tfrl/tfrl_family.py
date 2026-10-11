@@ -193,11 +193,12 @@ def smoke_cumulative_budget(iteration: int, original_calls: int, original_audio:
     return original_calls + calls, math.ceil(original_audio + audio - 1e-9)
 
 
-def plan_file_name(iteration: int, kind: str, plan_kind: str) -> str:
-    """Package file name of a registered plan. The recovered smoke's plans carry the ``-rec1`` marker; every other plan is unchanged."""
+def plan_file_name(iteration: int | None, kind: str, plan_kind: str) -> str:
+    """Package file name of a registered plan. The recovered smoke's plans carry the ``-rec1`` marker; every other plan is unchanged
+    (``iteration=None``: a package that is not a loop iteration, e.g. the construction source, has no recovery)."""
 
     prefix = "smoke-" if kind == "smoke" else (f"{kind}-" if kind in ("typed", "ace") else "")
-    rec = smoke_rec_suffix(iteration) if kind == "smoke" else ""
+    rec = smoke_rec_suffix(iteration) if (kind == "smoke" and iteration is not None) else ""
     return f"{prefix}{plan_kind}-plan-registered{rec}-v1.json"
 
 
