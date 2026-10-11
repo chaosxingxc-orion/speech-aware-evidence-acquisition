@@ -31,7 +31,11 @@ DECISION_RELPATH = f"coordination/{PKG_NAME}/root-admission-v1.json"
 READ_RUN_ID = "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-VS-INSTRUCT-READ-V1"
 RECIPE_ID = f"slurp-{SLUG}-read-v1"
 SERVING_ROW_ID = "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SERVING-V1"
-PACKETS_ROW_ID = "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1"
+#: The LIVE packets exposure row: the GPU encoder pass (2026-10-11 re-registration; the CPU sidecar pass was too slow and was stopped).
+PACKETS_ROW_ID = "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1"
+#: SUPERSEDED, kept in the record: the CPU sidecar run id (stopped by the owner after 50 of 1,076 Fold B rows; its recovery was spent).
+CPU_PACKETS_ROW_ID = "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1"
+GPU_PACKETS_LEDGER_MARK = "## Cell 266-E packets re-registration: the Thinking speech packets on the GPU"
 LEDGER_MARK = "## Cell 266-E: the bare-core read on TRAIN Fold B, Thinking versus Instruct"
 
 ROWS = 1080
@@ -53,8 +57,12 @@ INSTRUCT_MODEL = "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx
 THINK_MODEL = "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1"
 PARENT_BASELINE = "slurp-direct-max512-train-fold-a-v1"            # the sealed Fold A direct form, re-pointed at Fold B
 PARENT_EXPERIMENT = "slurp-native-stage3-ver1a-samples-fold-b-v1"   # a committed Fold B experiment: roster, populations, skeleton
-THINK_PACKET_ROOT = "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6"
+#: The LIVE Thinking packet root: encoder OUTPUT made by the GPU encoder. CPU- and GPU-made encoder outputs are not bit-identical, so the
+#: GPU pass has its OWN root and never mixes with the 50 rows the CPU pass left in the superseded root below.
+THINK_PACKET_ROOT = "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6"
 THINK_PROMOTION_RECEIPT = f"{THINK_PACKET_ROOT}/EVO-FOLD-B-V2-promotion.json"
+CPU_THINK_PACKET_ROOT = "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6"     # SUPERSEDED (CPU pass, stopped after 50 rows)
+CPU_THINK_PROMOTION_RECEIPT = f"{CPU_THINK_PACKET_ROOT}/EVO-FOLD-B-V2-promotion.json"
 UNPINNED_SHA = "0" * 64                              # sentinel: the Thinking packets are not prepared yet; the flip refuses it
 
 ROSTER = {

@@ -121,12 +121,12 @@
       "protocol": "96ee26f07726feac2a43158b01849be6e39c0c37dc5846d8bb41551bac1efefe"
     },
     "smoke": {
-      "composed_config": "8447a449cbb8801f452895ad694aa280e4a01e01954e918bc469521c3be23d4c",
-      "protocol": "197154e19469de28e5bf53967354c0096cc3da962ea7ffeaa3ca8859d17c58b2"
+      "composed_config": "324d6a87929718ad0f42aad72c448b83615369c43452509b3ce1302dbdfbec39",
+      "protocol": "61c9261f690a3d0c06a9f37554114a1ef534e38841d82622b14e05abeb9b81fa"
     },
     "thinking": {
-      "composed_config": "ec7e8a224b3e5047b540fa5724e6c669b0fc1368176b27785a218183c2c22838",
-      "protocol": "38e3c3e08f36f49a9b6d4da09ca0e2992909c0a3f7d4ea039ad7e686b6905545"
+      "composed_config": "71f6484d07a56cc41bd7e0f95f27761a7e64fce990bd0fe340481ce14c41fb3e",
+      "protocol": "52ade061858f356f7231516101e2a6e196b57d9fa95d7f75a2fa41c49b96b61e"
     }
   },
   "schema": "saea-campaign-decision-v1",

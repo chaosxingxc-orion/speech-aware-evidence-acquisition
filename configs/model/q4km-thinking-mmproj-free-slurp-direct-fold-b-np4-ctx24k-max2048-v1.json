@@ -19,9 +19,9 @@
   },
   "prompt_order": "speech-query-prefix-v2",
   "profile_slot_count": 4,
-  "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6",
+  "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
   "server_env": {
-    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6",
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
     "LLAMA_SPEECH_DECODER_SHA256": "afdaeff6f23c740429aadb3fa180f9d53b78278fe0d331b594b0b71bd9bf4835"
   },
   "reasoning_content_guard": "refuse-think-marker-in-content",

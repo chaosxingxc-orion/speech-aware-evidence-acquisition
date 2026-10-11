@@ -1,5 +1,8 @@
 """The Thinking-core Fold B speech-packet preparation (owner decision 266-E): model-free tests.
 
+The live geometry is the GPU encoder pass (run id ...-PACKETS-GPU-V1, re-registration of 2026-10-11); the CPU sidecar geometry (run id
+...-PACKETS-V1, stopped after 50 rows) is superseded and exercised only for the record behind ``--allow-cpu``.
+
 Covers the dry-run plan, the pin and root refusals, the exposure-row countersignature gate, the receipt schemas, the proof that the Instruct
 driver is untouched, the end-to-end ENCODE and PROMOTE flow against a fake sidecar (smoke without promotion, Fold B with it, then the pin
 step), the promotion receipt shape against the Instruct one, and the chain wrapper's guards against a stubbed host. No server, GPU, encoder,
@@ -28,6 +31,8 @@ SCRIPT = REPO / "scripts" / "slurp_fold_preprocess_thinking.py"
 INSTRUCT_SCRIPT = REPO / "scripts" / "slurp_evo_fold_preprocess.py"
 WRAPPER = REPO / "scripts" / "flights" / "direct" / "direct_fb_packets.sh"
 ENTRY = REPO / "scripts" / "flights" / "direct" / "direct_fb_packets_task_entry.sh"
+GPU_CHAIN = REPO / "scripts" / "flights" / "direct" / "direct_fb_packets_gpu.sh"
+GPU_ENTRY = REPO / "scripts" / "flights" / "direct" / "direct_fb_packets_gpu_task_entry.sh"
 
 _SRC = str(REPO / "src")
 _existing = os.environ.get("PYTHONPATH", "")
@@ -41,6 +46,8 @@ module = importlib.util.module_from_spec(_SPEC)
 sys.modules[_SPEC.name] = module
 _SPEC.loader.exec_module(module)
 evo, fam, pins_mod = module.evo, module.fam, module.pins_mod
+REAL_GPU_STATE = module.gpu_state
+FREE_GPU_STATE = {"resident_sessions": [], "serving_port_listening": False, "gpu_memory_used_mib": 512, "gpu_free": True, "findings": []}
 
 from speech_aware_evidence_acquisition.core.model.speech_features import (  # noqa: E402
     load_speech_packet_promotion_receipt,
@@ -76,7 +83,7 @@ def _local_receipts(tmp: Path, monkeypatch, *, main_sha: str = MAIN_SHA) -> None
     monkeypatch.setattr(pins_mod, "LOCAL_MMPROJ_RECEIPT", tmp / "mmproj.sha256")
 
 
-def _ledger(tmp: Path, *, notes: str, consumed: str = "no", calls: str = "1080", seconds: str = "3155", split: str = SPLIT,
+def _ledger(tmp: Path, *, notes: str, consumed: str = "no", calls: str = "1084", seconds: str = "3165", split: str = SPLIT,
             profile: str = "bounded-discovery-probe", row_id: str | None = None, gpu: str = "1.0") -> Path:
     cells = ["2026-10-11T18:00:00+00:00", row_id or module.RUN_ID, profile, "scope", "model", "slurp TRAIN Fold B 1,080", "discovery", split,
              consumed, calls, seconds, gpu, "inherited", "artifact", notes]
@@ -87,17 +94,20 @@ def _ledger(tmp: Path, *, notes: str, consumed: str = "no", calls: str = "1080",
 
 @pytest.fixture(autouse=True)
 def _isolated_data_root(tmp_path, monkeypatch):
-    """No test reads the host's real attempt store (it holds the failed first smoke attempt); World overrides this with its own root."""
+    """No test reads the host's real attempt store or the host's serving/GPU state; World overrides the root with its own."""
 
     monkeypatch.setattr(evo, "data_root", lambda: tmp_path / "isolated-data")
+    monkeypatch.setattr(module, "gpu_state", lambda data_root: dict(FREE_GPU_STATE))
+    yield
+    module.apply_geometry("gpu")          # a test that switched the geometry must not leak it
 
 
 # ------------------------------------------------------------------------------------------------ the real registration
 
 
 def _args(**overrides):
-    base = dict(roster="thinking-fold-b", workers=4, promote_workers=8, attempt_id=None, plan_calls=None, plan_speech_seconds=None,
-                output=None, promote_only=False, write=False, recovery_of=None)
+    base = dict(roster="thinking-fold-b", workers=None, promote_workers=8, attempt_id=None, plan_calls=None, plan_speech_seconds=None,
+                output=None, promote_only=False, write=False, recovery_of=None, max_fold_seconds=3000.0)
     base.update(overrides)
     return types.SimpleNamespace(**base)
 
@@ -105,12 +115,14 @@ def _args(**overrides):
 def test_the_registered_composition_is_the_thinking_one_and_never_the_instruct_roots():
     composed, values = module.compose_values()
     module.check_config_identity(values)
-    assert values["feature_root"] == "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6"
+    assert values["feature_root"] == "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6"
+    assert values["legacy_cache_dir"] == "/home/chao/feat-cache/slurp-thinking-gpu-q4km"
+    assert values["runtime_receipt"] == "receipts/runtime-q4km-thinking-preprocess-gpu.json" and values["server_args"][:4] == ["-c", "16384", "-np", "1"]
     assert values["feature_root"] != str(evo.DEFAULT_FEATURE_ROOT) and values["legacy_cache_dir"] != str(evo.DEFAULT_LEGACY_CACHE_DIR)
     assert values["model_lock_key"] == pins_mod.LOCK_KEY and values["experiment_id"] == fam.PACKETS_ROW_ID
     assert values["execution_profile"] == "bounded-discovery-probe" and values["split_role"] == "discovery"
     assert values["promotion_receipt"] == fam.THINK_PROMOTION_RECEIPT == f"{values['feature_root']}/EVO-FOLD-B-V2-promotion.json"
-    assert evo._server_slots(values, module.SIDECAR_FRAGMENT) == 4 and composed.config_hash
+    assert evo._server_slots(values, module.SIDECAR_FRAGMENT) == 1 and composed.config_hash
 
 
 def test_the_smoke_is_the_registered_prefix_of_the_fold_b_view():
@@ -134,11 +146,12 @@ def test_dry_run_prints_the_plan_without_any_encoder_call_or_media_read(roster, 
     plan = json.loads(out.read_text(encoding="utf-8"))
     assert rc == 0 and plan["schema"] == module.PLAN_SCHEMA and plan["rows"] == rows
     assert plan["encoder_calls"] == 0 and plan["contacts"] == 0 and plan["refusals"] == []
-    assert plan["roots"]["packet_root"].endswith("slurp-q4km-packets-thinking-afdaeff6")
+    assert plan["roots"]["packet_root"].endswith("slurp-q4km-packets-thinking-gpu-afdaeff6")
+    assert plan["device"] == "gpu" and plan["geometry"] == "gpu" and plan["sidecar"]["encode_workers"] == 1
     assert plan["promotes"] is (roster == "thinking-fold-b") and (plan["roots"]["promotion_receipt"] is not None) is plan["promotes"]
     assert plan["pins"]["decoder"]["sha256"] == MAIN_SHA and plan["pins"]["mmproj"]["sha256"] == MMPROJ_SHA
-    assert plan["pins"]["llama_cpp_build_commit"] and plan["sidecar"]["slots"] == 4 and plan["sidecar"]["port"] == 8081
-    assert plan["row_total"] == {"calls": 1080, "speech_audio_seconds": 3155, "gpu_hours": 1.0}
+    assert plan["pins"]["llama_cpp_build_commit"] and plan["sidecar"]["slots"] == 1 and plan["sidecar"]["port"] == 8081
+    assert plan["row_total"] == {"calls": 1084, "speech_audio_seconds": 3165, "gpu_hours": 1.0}
     assert plan["declared_plan"]["calls_ceiling"] == rows and plan["declared_plan"]["gpu_hours"] == 1.0
     assert plan["ledger"]["present"] is True and plan["ledger"]["problems"] == []               # the registered row matches the numbers, gpu hours included
 
@@ -156,7 +169,7 @@ def test_the_dry_run_refuses_a_populated_packet_root(tmp_path, monkeypatch):
 
 def test_the_dry_run_refuses_a_workers_count_above_the_sidecars_slots(tmp_path, monkeypatch):
     _local_receipts(tmp_path, monkeypatch)
-    with pytest.raises(SystemExit, match="exceeds the 4 slots"):
+    with pytest.raises(SystemExit, match="exceeds the 1 slots"):
         module.dry_run(_args(workers=8), lock_path=_fake_lock(tmp_path), ledger_path=REPO / "docs" / "exposure-ledger.md")
 
 
@@ -383,7 +396,7 @@ class World:
 
         def start_session(**kwargs):
             world.sessions.append(kwargs)
-            world.open_attempt(kwargs["session_id"].split(module.RUN_ID + "-", 1)[1].removesuffix("-cpu-sidecar"))
+            world.open_attempt(kwargs["session_id"].split(module.RUN_ID + "-", 1)[1].removesuffix("-gpu-encoder").removesuffix("-cpu-sidecar"))
             return types.SimpleNamespace(pid=4242, port=8081, session_id=kwargs["session_id"],
                                          as_json=lambda: {"session_id": kwargs["session_id"], "pid": 4242})
 
@@ -466,7 +479,7 @@ def test_the_smoke_encodes_into_the_legacy_cache_only_and_promotes_nothing(world
     assert all(len(c["file_sha256"]) == 64 for f in report["files"] for c in f["chunks"])
     assert len(world.sessions) == 1 and world.sessions[0]["extra_env"] == world.values["server_env"]
     assert world.sessions[0]["port"] == 8081 and world.sessions[0]["role"] == "preprocess"
-    assert world.encoder_receipt("attempt-packets-thinking-smoke-4-v1")["roster"] == "thinking-smoke-4"
+    assert world.encoder_receipt("attempt-packets-thinking-gpu-smoke-4-v1")["roster"] == "thinking-smoke-4"
 
 
 def test_the_fold_b_pass_skips_warm_rows_promotes_all_rows_and_writes_both_receipts(world):
@@ -633,7 +646,7 @@ def test_the_promotion_receipt_is_built_by_the_instruct_drivers_own_builder():
 
 def test_the_encoder_receipt_carries_the_registered_identity_fields(world):
     world.run("thinking-fold-b")
-    receipt = world.encoder_receipt("attempt-packets-thinking-fold-b-v1")
+    receipt = world.encoder_receipt("attempt-packets-thinking-gpu-fold-b-v1")
     for key in ("schema", "llama_cpp", "decoder_gguf_sha256", "mmproj_sha256", "runtime_receipt_sha256", "split_identity_hash", "files",
                 "encode_workers", "promote_workers", "promotion_receipt_sha256", "model_lock_key", "dataset_runtime_view_sha256"):
         assert key in receipt, key
@@ -653,7 +666,7 @@ def test_the_wrapper_and_entry_parse_and_name_the_collision_guards():
         assert needle in text, needle
     assert text.index("run_attempt thinking-smoke-4") < text.index("run_attempt thinking-fold-b")        # smoke rows first
     assert "serving_swap.sh" not in text.replace("serving swap", "").split("set -u")[1]                    # it never starts a swap
-    assert "direct_fb_packets.sh\" --run --stage all" in ENTRY.read_text(encoding="utf-8")
+    assert "direct_fb_packets.sh\" --allow-cpu --run --stage all" in ENTRY.read_text(encoding="utf-8")
 
 
 class Host:
@@ -696,7 +709,8 @@ class Host:
         return env
 
     def run(self, *args: str, **extra: str) -> subprocess.CompletedProcess:
-        return subprocess.run(["bash", str(WRAPPER), *args], capture_output=True, text=True, env=self.env(**extra), timeout=60)
+        flags = [] if extra.pop("NO_ALLOW_CPU", None) else ["--allow-cpu"]
+        return subprocess.run(["bash", str(WRAPPER), *flags, *args], capture_output=True, text=True, env=self.env(**extra), timeout=60)
 
     def attempts(self) -> list[str]:
         """The rosters the driver was asked to --run, in order."""
@@ -790,8 +804,8 @@ def test_the_package_readme_carries_the_runbook_the_writer_would_regenerate():
     runbook = next(ast.literal_eval(node.value) for node in tree.body
                    if isinstance(node, ast.Assign) and any(getattr(t, "id", "") == "PACKETS_RUNBOOK" for t in node.targets))
     assert runbook in readme
-    for needle in ("direct_fb_packets.sh --check", "--pin-receipt", "Which registered files change hash", "smoke-roster-receipt-v1.json",
-                   "Countersign text", "Expected runtime", "31.8 rows per minute"):
+    for needle in ("direct_fb_packets_gpu.sh --check", "--pin-receipt", "Which registered files change hash", "smoke-roster-receipt-v1.json",
+                   "Countersign text", "Expected runtime", "NO GPU record"):
         assert needle in runbook, needle
 
 
@@ -819,9 +833,9 @@ def test_answered_contacts_that_cached_nothing_fail_the_attempt_instead_of_crash
     world.drop_features = True
     with pytest.raises(SystemExit, match="holds no entry for 2 of 2 rows"):
         world.run("thinking-smoke-4")
-    record = json.loads(world._record_path("attempt-packets-thinking-smoke-4-v1").read_text(encoding="utf-8"))
+    record = json.loads(world._record_path("attempt-packets-thinking-gpu-smoke-4-v1").read_text(encoding="utf-8"))
     assert record["actual"]["calls"] == 2 and record["state"] == "OPENED"                   # the contacts ARE counted
-    assert not (world.data / "runs" / module.RUN_ID / "attempt-packets-thinking-smoke-4-v1" / module.ENCODER_RECEIPT_NAME).exists()
+    assert not (world.data / "runs" / module.RUN_ID / "attempt-packets-thinking-gpu-smoke-4-v1" / module.ENCODER_RECEIPT_NAME).exists()
 
 
 def _fail_the_first_smoke(world):
@@ -853,27 +867,27 @@ def test_the_labelled_recovery_declares_the_cumulative_spend_and_a_row_that_carr
     original = _ledger(world.tmp, notes=SIGNED_NOTES)
     with pytest.raises(SystemExit, match="budgets"):
         module.run(_args(roster="thinking-smoke-4", workers=2, promote_workers=2, attempt_id="attempt-packets-thinking-smoke-4-v2",
-                         recovery_of="attempt-packets-thinking-smoke-4-v1"), lock_path=world.lock, ledger_path=original)
+                         recovery_of="attempt-packets-thinking-gpu-smoke-4-v1"), lock_path=world.lock, ledger_path=original)
     rc, report = world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v2",
-                           recovery_of="attempt-packets-thinking-smoke-4-v1")
-    assert rc == 0 and report["recovery_of"] == ["attempt-packets-thinking-smoke-4-v1"] and report["prior_calls"] == 2
+                           recovery_of="attempt-packets-thinking-gpu-smoke-4-v1")
+    assert rc == 0 and report["recovery_of"] == ["attempt-packets-thinking-gpu-smoke-4-v1"] and report["prior_calls"] == 2
     assert world.plans[-1]["planned_model_calls"] == 2 + 2                                    # failed 2 + this attempt's 2
     rc, report = world.run("thinking-fold-b", attempt_id="attempt-packets-thinking-fold-b-v2",
-                           recovery_of="attempt-packets-thinking-smoke-4-v1")
+                           recovery_of="attempt-packets-thinking-gpu-smoke-4-v1")
     assert rc == 0 and report["contacts"] == 4 and report["skipped_warm_rows"] == 2           # the redone smoke rows are not contacted again
     assert world.plans[-1]["planned_model_calls"] == 2 + 2 + 4
 
 
 def test_a_second_failure_stops_the_flight_and_a_recovery_flag_without_a_failure_is_refused(world):
     with pytest.raises(SystemExit, match="no failed attempt exists"):
-        world.run("thinking-smoke-4", recovery_of="attempt-packets-thinking-smoke-4-v1")
+        world.run("thinking-smoke-4", recovery_of="attempt-packets-thinking-gpu-smoke-4-v1")
     _fail_the_first_smoke(world)
     world.drop_features = True
     with pytest.raises(SystemExit, match="holds no entry"):
-        world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v2", recovery_of="attempt-packets-thinking-smoke-4-v1")
+        world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v2", recovery_of="attempt-packets-thinking-gpu-smoke-4-v1")
     world.drop_features = False
     with pytest.raises(SystemExit, match="single recovery re-registration is spent"):
-        world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v3", recovery_of="attempt-packets-thinking-smoke-4-v1")
+        world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v3", recovery_of="attempt-packets-thinking-gpu-smoke-4-v1")
 
 
 def test_a_run_directory_without_an_attempt_record_is_ambiguous(world):
@@ -888,7 +902,7 @@ def test_check_ledger_expects_the_failed_attempts_spend_in_the_row(world, capsys
     stale = _ledger(world.tmp, notes=SIGNED_NOTES)
     assert module.check_ledger(_args(), ledger_path=stale) == 4
     state = json.loads(capsys.readouterr().out)
-    assert state["expected"]["calls"] == 1080 + 2 and state["expected"]["failed_attempts"] == ["attempt-packets-thinking-smoke-4-v1"]
+    assert state["expected"]["calls"] == 1084 + 2 and state["expected"]["failed_attempts"] == ["attempt-packets-thinking-gpu-smoke-4-v1"]
     assert module.check_ledger(_args(), ledger_path=world.sync_ledger()) == 0
     capsys.readouterr()
     assert module.check_ledger(_args(), ledger_path=world.sync_ledger(gpu="0.0")) == 4

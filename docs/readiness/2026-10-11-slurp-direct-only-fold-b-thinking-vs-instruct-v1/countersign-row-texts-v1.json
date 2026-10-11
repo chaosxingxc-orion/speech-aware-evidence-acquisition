@@ -15,11 +15,11 @@
   "rows_that_stay_draft": [
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-VS-INSTRUCT-READ-V1",
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SERVING-V1",
-    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1"
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1"
   ],
   "schema": "saea-countersign-row-texts-v1",
   "separate_authorisations": {
-    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1": "its own root lease, owner authorisation and driver variant",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1": "its own root lease, owner authorisation and driver variant",
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SERVING-V1": "countersign when the swap is scheduled (the first Thinking weight load)"
   }
 }
