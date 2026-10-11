@@ -1,0 +1,42 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8080",
+  "timeout_seconds": 420.0,
+  "runtime_receipt": "receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+  "server_args": [
+    "-c",
+    "8192",
+    "-np",
+    "1",
+    "-ngl",
+    "999",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "-b",
+    "512",
+    "-ub",
+    "128"
+  ],
+  "serving_geometry": {
+    "slots": 1,
+    "slot_tokens": 8192,
+    "max_tokens": 1
+  },
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1
+  },
+  "prompt_order": "evidence-first-system-v3",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/e22-cddb000c-dev-gpu-v1",
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  },
+  "preparation_basis": "HELD, DRAFT (2026-10-11). Preprocess-role geometry of the Earnings-22 dev (10 call) exact-window roster, a copy of the Earnings-21 preprocess fragment (same cddb000c encoder identity, receipt and one-token preparation form) with the Earnings-22 feature-cache root. The model-free window inventory reads only this fragment runtime receipt to bind the encoder identity (file hashes, no process start). Any encoder forward pass over these windows needs its own root lease, registration and owner authorization; none is given by this fragment."
+}
