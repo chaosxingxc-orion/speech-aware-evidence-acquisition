@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T08:21:37Z
+Last refreshed: 2026-10-11T08:26:01Z
+
+## 266-E package merged HELD (Thinking needs its own speech packets); 671 ledger rows closed + new closure gate (2026-10-11T08:26:01Z, Fable 5.1 root)
+
+Master 062cbe39b. 266-E: four HELD direct-only Fold B cells (Thinking smoke/arm, Instruct arm/replicate), cap 2048, reasoning-format deepseek + transport think-marker guard, serving swap `think-np4` with watchdog hold, chain smoke -> sign-off -> Thinking -> swap back -> Instruct -> replicate; the Instruct packets are invalid for the Thinking mmproj (748/860 tensors differ) so a Thinking packet encoder pass (CPU sidecar, registered contact) precedes the smoke; driver variant in build. Ledger: 671 rows (2026-09-27..10-10) closed to consumed=yes with SEALED dispositions; `ledger_consumed_check.py` is a listed gate (data-root mode). In build: lock construction variant + ACE score fix; Thinking packet driver. GPU idle; no owner decision open.
+
+Superseded stamp: 2026-10-11T08:21:37Z
 
 ## Construction-source column registered HELD; lock construction-variant (minus-r01 pool) and ACE prior_score fix in build (2026-10-11T08:21:37Z, Fable 5.1 root)
 

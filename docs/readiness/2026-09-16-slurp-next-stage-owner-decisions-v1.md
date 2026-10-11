@@ -1479,3 +1479,24 @@ mint -> flip -> plan pins -> flip -> gates -> queue (GPU resumes).
   construction column; the column stays on v2.2 (P-ACE-0: byte-identical requests) unless the variant can re-home the anchor.
   Defect: `playbook_release_rows` writes `prior_score` outside [0, 1], so every non-empty ACE release would be refused;
   fix = rank-preserving rescale (in build, same branch).
+
+### 266-E package merged HELD; ledger closure restored; Thinking packets are the next step (coordinator, 2026-10-11)
+
+- **266-E registered** (92a0c9dd4; `docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/`): four HELD cells
+  (Thinking smoke-4, Thinking arm, Instruct arm, Instruct in-chain replicate; `phase-direct-only-v1`, TRAIN Fold B, cap 2048
+  completion tokens = 17.7 % of a 24,576-token slot beside a ~2.3k prompt; `--reasoning-format deepseek` explicit; an opt-in
+  transport guard refuses any delivered content carrying a think marker; wire responses never preserved), twelve DRAFT rows,
+  preregistered verdict words RESOLVED-ABOVE-BAR / NOT RESOLVED / HARM, a serving swap path `serving_swap.sh think-np4`
+  with the watchdog hold as the guard notice, chain order smoke -> decode-cost sign-off marker -> Thinking arm -> swap back ->
+  Instruct arm -> replicate (two swaps instead of four). No sealed Instruct direct-only Fold B column existed, so (a)+(b)
+  fly in-chain. Finding that changes the plan: the Instruct speech packets are NOT valid for the Thinking core (748 of 860
+  mmproj tensors differ), so the Thinking arm needs its own packet root prepared by an encoder pass over Fold B (CPU
+  sidecar; a registered contact with its own DRAFT row); the driver variant is in build; the Thinking baselines pin the
+  promotion receipt at a zero sha until then and the flip refuses them.
+- **Ledger closure restored** (e33cafc95): 671 rows of flights sealed 2026-09-27 .. 2026-10-10 closed to `consumed = yes`
+  with SEALED dispositions from the manifests (`scripts/flights/batch/ledger_mark_consumed.py`); the lapse began on
+  2026-09-27 when the CELL-1-only closer stopped covering new families. New gate `scripts/checks/ledger_consumed_check.py`
+  (data-root mode is the gate; the results-notes fallback is advisory; listed in both client guides, 062cbe39b). Rows left
+  at `no` are unflown, held, unsealed or decision-243 retirements.
+- Open engineering before the first GPU contact: the lock construction variant (minus-r01 pool + agreement table) and the ACE
+  score-range fix; the Thinking packet-preparation driver. Then: flight commit, re-pin, countersign, mint, flip, gates, queue.
