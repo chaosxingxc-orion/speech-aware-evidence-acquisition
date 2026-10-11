@@ -780,3 +780,64 @@ def test_release_rows_carry_a_rank_ordered_prior_score_inside_the_unit_interval(
     assert len(scores) == 18 and scores[0] == 1.0 and scores[-1] == 1 / 18
     assert all(0.0 < s <= 1.0 for s in scores) and scores == sorted(scores, reverse=True) and len(set(scores)) == 18
     assert [row["content"] for row in rows][0].endswith("Advice number 0.")
+
+
+# ---------------------------------------------------------------------------
+# item ids inside a rendered prompt (loop iteration 2 render failure)
+# ---------------------------------------------------------------------------
+
+
+def test_request_renders_an_item_id_whose_hex_holds_a_six_digit_run(tmp_path) -> None:
+    item = _item("Prefer the closed intent list.")
+    item["item_id"] = "ace:i1:727456a71a6d"  # 6-digit run, bounded by ':' and a hex letter
+    mpath = _write_json(tmp_path / "m.json", _material())
+    ppath = tmp_path / "p.json"
+    ace.write_playbook(ppath, _playbook(item))
+    request = ace.render_reflector_request(mpath, ppath, 100)
+    assert item["item_id"] in request["messages"][0]["content"]
+
+
+@pytest.mark.parametrize(
+    "leak",
+    [
+        "tier3_multi_intent:000412",
+        "slurp:train:000930:audio-1497264490-headset",
+        "slurp:devel:001234",
+        "a bare run 123456 here",
+        "ace:i1:727456a71a6d123456",  # digits beyond the 12-hex handle are not masked
+        "x123456 ace:i1:ab12",  # malformed handle is not masked
+    ],
+)
+def test_prompt_detector_still_refuses_every_real_identifier_form(leak) -> None:
+    assert ace._prompt_carries_sample_identifier(f"item ace:i1:727456a71a6d says {leak}")
+
+
+def test_prompt_detector_masks_only_well_formed_item_ids() -> None:
+    assert not ace._prompt_carries_sample_identifier("ace:i1:727456a71a6d and ace:i12:892982dbf632")
+    assert not ace._prompt_carries_sample_identifier("intent alarm_set slot time 2 rows 14")
+
+
+def test_i1_reflector_prompts_reproduce_from_pinned_inputs() -> None:
+    """The fix touches only the check; the flown i1 prompts must be byte-identical."""
+
+    import os
+
+    root = os.environ.get("SPEECHRL_DATA_DIR")
+    cfg = REPO_ROOT / "configs/baseline/slurp-native-stage3-tfrl-ace-reflector-i1-baseline-v1.json"
+    if not root or not cfg.is_file():
+        pytest.skip("data root or i1 config absent")
+    block = json.loads(cfg.read_text(encoding="utf-8"))["tfrl_ace_reflector"]
+    playbook = Path(root) / block["playbook"]["relpath"]
+    if not playbook.is_file():
+        pytest.skip("i1 playbook absent")
+    rows = []
+    for carrier in block["carriers"]:
+        material = Path(root) / carrier["material"]["relpath"]
+        if not material.is_file():
+            pytest.skip("i1 material absent")
+        request = ace.render_reflector_request(material, playbook, block["token_cap"])
+        rows.append((carrier["scenario"], request["prompt_sha256"], request["request_sha256"]))
+    assert len(rows) == 18
+    assert hashlib.sha256(json.dumps(rows).encode()).hexdigest() == (
+        "6b6a5d76d2d2b05ca8f38d40d4b44daa36efd892b9c53786ae6636e6dfc37d67"
+    )
