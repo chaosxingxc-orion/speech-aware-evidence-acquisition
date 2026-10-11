@@ -1289,3 +1289,29 @@ evaluation fold; confirm on Fold A; compose on DEV.
   knowledge snapshot for E22 (the runtime refuses empty snapshots; E21 and A2T all-off cells pin real snapshots bound
   invisibly by `knowledge: "none"`); both E22 baselines now pin it, so the package needs the standard re-pin; the wire check
   still stops at the missing window feature packets (encoder pass, GPU held).
+
+### 263 v2 engineering design on file (coordinator, 2026-10-11)
+
+`docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md` (merged af1c055cc; model-free;
+registers nothing). It fixes: five roles with one code owner each; invariant I-OBJ (the objective is a script, applied to the
+ACE counters); the archive and deterministic parent choice (best CI-LB minus a child-count penalty, class masking after two
+refused children); edit budget 2 then 1; the candidate schema `saea-tfrl-typed-candidate-v1` with no free-text field and no
+self-declared effect (the validator computes the predicted effect from offline re-retrieval and the exchange rates);
+iteration 1 = slot-card + exemplar-stratum composite with a 0-GPU coverage pre-read that must reach +1.5 pp predicted; from
+iteration 2 each Fold B cell carries five Solver arms (lock, twin, accumulated parent, typed child, ACE; 6 contacts per row)
+so the cumulative state is re-measured every round without a cross-flight bar; the same proposer model (the core's text
+seam) for both arms so the comparison measures the update form; the thinking GGUF deferred to an ablation. Build before the
+first flight: the review-off module's refusal of supply columns (`rails/consumption_module.py`), the node-local reader for
+supply columns, a multi-store release swap, the proposer and ACE modules, the tables script, the archive, a per-column
+algorithm label; the proposer resolver touches `runtime.py`, so all merges land before one flight commit and one re-pin.
+
+Three points the spec needs ruled inside 263-A:
+- **263-Q1 selection rule.** The spec reads "CI95-LB over 1.49 pp" as: CI95 lower bound > 0 AND point >= 1.49 AND above the
+  twin, plus the intent guard (the literal reading, lower bound itself above 1.49, needs about a 3 pp effect at n = 1,080).
+  Coordinator: confirm the spec's reading; it is the decision-190 form.
+- **263-Q2 ACE column status.** It puts free text into the Solver prompt, so under decision 245 it must be a non-delivering
+  comparator that can never be locked. Coordinator: yes.
+- **263-R1 stall risk.** The Stage-S supply design predicted at most +0.20 pp for any single supply arm; a typed class may
+  have no candidate over the 1.5 pp predicted bar in some iteration. Spec default: keep the bar, allow two proposer retries,
+  fly lock / twin / parent / ACE anyway and read delivery candidates offline; owner option: fly the top valid candidate as
+  a `claims_benefit: false` measurement, never acceptable as a gain.

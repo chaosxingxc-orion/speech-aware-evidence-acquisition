@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T04:51:23Z
+Last refreshed: 2026-10-11T05:00:02Z
+
+## 263 v2 design spec merged (af1c055cc); three sub-questions 263-Q1/Q2/R1 added for the owner (2026-10-11T05:00:02Z, Fable 5.1 root)
+
+`docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md`: five roles, I-OBJ script objective, archive + deterministic parent choice, edit budget 2 then 1, candidate schema with no free text, iteration 1 = slot-card + exemplar-stratum composite behind a 0-GPU coverage pre-read, five-arm Fold B cells from iteration 2 (6 contacts/row), same proposer model for both arms, build list before the first flight (supply columns under the review-off module, supply-column reader, multi-store swap, proposer/ACE modules, tables, archive, label; runtime.py touched -> one flight commit, one re-pin). Owner to rule inside 263-A: Q1 selection-rule reading (LB > 0 and point >= 1.49 and above twin), Q2 ACE column non-lockable comparator, R1 stall default. Nothing registered; GPU idle. Open: 262, 263 v2 (+Q1/Q2/R1), 264, 265.
+
+Superseded stamp: 2026-10-11T04:51:23Z
 
 ## Owner's three dimensions + knowledge-side TF-RL recorded; 263 amended to the RSI/SkillOpt-form typed loop; 264 (proposer model) and 265 (knowledge augmentation first) proposed; E22 knowledge-snapshot gap closed (2026-10-11T04:51:23Z, Fable 5.1 root)
 
