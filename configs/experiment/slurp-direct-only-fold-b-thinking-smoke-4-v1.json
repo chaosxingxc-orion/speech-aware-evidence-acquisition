@@ -1,0 +1,96 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker"
+      ],
+      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-direct-only-fold-b-thinking-smoke-4-baseline-v1",
+      "cell_id": "slurp-direct-only-fold-b-thinking-smoke-4-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+      "readiness": {
+        "reason": "Cell 266-E four-row Thinking decode-cost smoke registered before contact on 2026-10-11 by script (decision 58) from the sealed Fold A direct baseline and the committed Fold B experiment skeleton (owner decision 266-E). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/direct/direct_fb_mint_receipt.py), swaps the serving geometry (scripts/flights/batch/serving_swap.sh think-np4, checklist in the package README) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/direct/direct_fb_flip.sh). The program declares no supplied first phase (item E38), so the re-pin creates no prepared artifact; --allow-output-change must never be passed. The Thinking cells additionally need the Thinking speech-packet root prepared and its promotion receipt pinned (the baseline carries a zero sentinel the flip refuses). Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-direct-only-fold-b-thinking-vs-instruct-admission-v1",
+            "kind": "decision",
+            "reason": "Decision slurp-direct-only-fold-b-thinking-vs-instruct-admission-v1 pinned by scripts/flights/repin_cell.py.",
+            "relpath": "coordination/slurp-direct-only-fold-b-thinking-vs-instruct-v1/root-admission-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1"
+    }
+  ],
+  "core_read_design": {
+    "arms": {
+      "instruct": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1",
+      "replicate": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1",
+      "smoke": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
+      "thinking": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1"
+    },
+    "chain": "smoke -> coordinator decode-cost sign-off -> Thinking arm (Thinking session) -> serving restore -> Instruct arm -> Instruct replicate (Instruct session)",
+    "reading": "paired per row on the official SLU-F1; the Thinking delta is read against the mean of the two Instruct passes at the cross-flight bar",
+    "stage3_measurement_discipline": "docs/superpowers/specs/2026-09-21-slurp-stage3-training-free-rl-design.md",
+    "this_cell": "four-row Thinking decode-cost smoke"
+  },
+  "date": "2026-10-11",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 4,
+    "planned_speech_audio_seconds": 10,
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops the cell and the Thinking arm does not open. A smoke is re-flown whole at most once under one root-diagnosed recovery re-registration.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 13,
+    "generation_calls_cap": 4,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 10
+  },
+  "fragment_kind": "saea-slurp-direct-only-fold-b-thinking-vs-instruct-v1",
+  "generation_budget": {
+    "cap": 4,
+    "definition": "The direct-only phase program (configs/policy/phase-direct-only-v1.json: one phase, max_contacts 1, always-run-full-program) makes exactly ONE contact per row, so 4 x 1 = 4 is the program's exact maximum and its expectation at once. The live phase fit makes 1 + (2 + 1) x 4 = 13 tokenizer endpoint calls under its own run id SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1. The GPU-hour ceiling is a BOUND, never a target. Budgets are run-cumulative across every attempt of a run id.",
+    "target": 4
+  },
+  "population": {
+    "count": 4,
+    "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+    "decision_population": "TRAIN Fold B (SLURP-DIRECT-FOLD-B-THINKING-SMOKE-4-V1): 4 rows of docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/smoke-roster-receipt-v1.json, the first four rows in roster order; structural decode-cost proof only, no score and no read.",
+    "roster_receipt": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/smoke-roster-receipt-v1.json",
+    "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "ids": [
+        "slurp:train:000006:audio-1488559711",
+        "slurp:train:000010:audio-1502199193",
+        "slurp:train:000025:audio-1490262826",
+        "slurp:train:000029:audio-1488538279"
+      ]
+    }
+  ],
+  "preserve_wire_responses": false,
+  "purpose": "Four-row decode-cost smoke of the Thinking arm of the 266-E read on the Thinking core (its own session serving-slurp-thinking-direct-fold-b-np4-v1, completion cap 2048, --reasoning-format deepseek): that the request form, the Thinking packet plane, the reasoning-format option, the live phase fit and the seal work, and what a Thinking answer costs (completion tokens per answer p50/p99, seconds per contact, the GPU-hour projection for 1,080 rows). Scored by no one and read by no one: four rows are never evidence.",
+  "service_session": "serving-slurp-thinking-direct-fold-b-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-B-V2",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "The 266-E read carries NO training-free RL operator and says so explicitly: it is a bare-core capability read -- the sealed direct-only form on two cores -- with no rollout, no per-sample scoring, no credit assignment, no update operator, no evolving store and no mechanism.",
+    "operators_used": []
+  }
+}

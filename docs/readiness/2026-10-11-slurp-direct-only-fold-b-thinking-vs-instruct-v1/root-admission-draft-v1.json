@@ -1,0 +1,141 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/direct/direct_fb_mint_receipt.py (status decided, recorded_at_utc stamped, antecedents re-hashed, never overwrites). It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/analysis-recipe-v1.json",
+      "sha256": null
+    },
+    "derive_script": {
+      "path": "scripts/flights/direct/direct_fb_derive_cells.py",
+      "sha256": null
+    },
+    "owner_decisions": {
+      "path": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+      "sha256": null
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
+      "sha256": null
+    },
+    "readiness_readme": {
+      "path": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/README.md",
+      "sha256": null
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/registered-facts-v1.json",
+      "sha256": null
+    }
+  },
+  "authorization_basis": "Owner decision 266-E (2026-10-11), 261, 242, 28/86; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "instruct": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 3241,
+      "generation_calls_cap": 1080,
+      "gpu_hours_fit_inclusive": 0.5,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 3155
+    },
+    "replicate": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 3241,
+      "generation_calls_cap": 1080,
+      "gpu_hours_fit_inclusive": 0.5,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 3155
+    },
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 13,
+      "generation_calls_cap": 4,
+      "gpu_hours_fit_inclusive": 0.5,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 10
+    },
+    "thinking": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 3241,
+      "generation_calls_cap": 1080,
+      "gpu_hours_fit_inclusive": 3.0,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 3155
+    }
+  },
+  "cell_kind": "Stage-3 bare-core capability read: direct-only, TRAIN Fold B, Instruct arm + in-chain replicate + Thinking arm, and a four-row Thinking decode-cost smoke (claims_benefit false).",
+  "claim_boundary": "No system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim; a development-fold capability read.",
+  "coordinator": "Fable5.1",
+  "decision": "Fly the 266-E bare-core read: the sealed direct-only form on TRAIN Fold B on the Instruct core (twice, same chain) and on the Thinking core, after a four-row Thinking decode-cost smoke and the coordinator's sign-off.",
+  "decision_id": "slurp-direct-only-fold-b-thinking-vs-instruct-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1"
+  ],
+  "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration per run id; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the serving geometry by anyone but the coordinator",
+    "any ASR, transcript or paid-API contact",
+    "the Thinking packet-preparation encoder pass (its own row, lease and owner authorisation)",
+    "persisting reasoning text or raw wire responses",
+    "--allow-output-change on the re-pin tool",
+    "using the Thinking model as the serving core of any system cell"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_a_contact_authorized": false,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "registered_hashes": {
+    "instruct": {
+      "composed_config": "e0b5ca15eac7e8d28c6ea138297c6d5a247c9a9983f4609e80edd0b1a44678b4",
+      "protocol": "29181d729d63139e56423295427f18d7b7ce23451d874cc1ac6e05f811d5248d"
+    },
+    "replicate": {
+      "composed_config": "1cc456aab4d0a7659d00c0b4859866b9b3126e3ed002fcdd28dd930109db5fc9",
+      "protocol": "96ee26f07726feac2a43158b01849be6e39c0c37dc5846d8bb41551bac1efefe"
+    },
+    "smoke": {
+      "composed_config": "8447a449cbb8801f452895ad694aa280e4a01e01954e918bc469521c3be23d4c",
+      "protocol": "197154e19469de28e5bf53967354c0096cc3da962ea7ffeaa3ca8859d17c58b2"
+    },
+    "thinking": {
+      "composed_config": "ec7e8a224b3e5047b540fa5724e6c669b0fc1368176b27785a218183c2c22838",
+      "protocol": "38e3c3e08f36f49a9b6d4da09ca0e2992909c0a3f7d4ea039ad7e686b6905545"
+    }
+  },
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "instruct_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "no_child_start_stop": true,
+    "slot_tokens": 24576,
+    "slots": 4,
+    "thinking_session": "serving-slurp-thinking-direct-fold-b-np4-v1"
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

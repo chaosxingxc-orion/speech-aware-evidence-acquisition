@@ -15,7 +15,7 @@ session restart wiped it mid-campaign; from now on they live here and every sche
 | `batch_driver_task.sh`, `batch_chain_*.sh` | scheduled-task entry points: pin the batch flight worktree at a flight commit, write the queue, run the driver |
 | `serving_task_entry*.sh`, `serving_monitor_start*.sh`, `serving_switch_to_e21.sh`, `e21_wait_ready.sh` | the resident serving sessions per geometry (SLURP np4; E21 cddb000c np4 max1024) and their monitors |
 | `serving_switch_to_slurp.sh`, `slurp_wait_ready.sh` | the reverse geometry switch after the E35 seal (stop the E21 session, then the SLURP tasks restart from Windows) and its readiness wait |
-| `serving_swap.sh <slurp-np4\|a2t-np3\|e21-np4\|det-np1> [--dry-run] [--restart]` | THE geometry swap (owner decision 163): swap lock + pending marker, precise generation-flight check, resident session mapped onto the geometry table, host-memory pre-check BEFORE the stop (`serving_session.sh host-memory`, guard 12.0 GB + 0.5 GB margin), clean stop + port 8080 verified free, the Windows tasks stopped/started through `saea_task.ps1 -Start` over WSL interop, the monitor 20 s later, the strict wait, restore of the previous geometry on any failure after the stop, one final JSON summary line (also appended to `/home/chao/serving-swap.jsonl`). `--restart` (owner decision 182, added for the idle watchdog) turns the "already resident" fast path into a real stop+start of the same geometry instead of a readiness-only no-op. Exit 0 swapped/no-op, 7 flight, 8 host memory, 9 swap lock, 10 resident state, 11 stop failed, 12 restored, 13 unrestored |
+| `serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1|think-np4>\|a2t-np3\|e21-np4\|det-np1> [--dry-run] [--restart]` | THE geometry swap (owner decision 163): swap lock + pending marker, precise generation-flight check, resident session mapped onto the geometry table, host-memory pre-check BEFORE the stop (`serving_session.sh host-memory`, guard 12.0 GB + 0.5 GB margin), clean stop + port 8080 verified free, the Windows tasks stopped/started through `saea_task.ps1 -Start` over WSL interop, the monitor 20 s later, the strict wait, restore of the previous geometry on any failure after the stop, one final JSON summary line (also appended to `/home/chao/serving-swap.jsonl`). `--restart` (owner decision 182, added for the idle watchdog) turns the "already resident" fast path into a real stop+start of the same geometry instead of a readiness-only no-op. Exit 0 swapped/no-op, 7 flight, 8 host memory, 9 swap lock, 10 resident state, 11 stop failed, 12 restored, 13 unrestored |
 | `serving_wait_ready.sh <target> [--since EPOCH]` + `serving_ready_probe.py` | the strict readiness wait: fresh `session.json` of this start, no stop record, `/health` ok, `/props` slot geometry equal to the fragment, a fresh monitor sample; exit 0 only when READY (2 timeout, 3 stopped early, 4 wrong geometry). `slurp_wait_ready.sh`, `a2t_wait_ready.sh`, `e21_wait_ready.sh` are thin callers |
 | `serving_lib.sh` | the geometry table (session id, fragment, task names, entry scripts, log globs per target) and the shared predicates: precise generation-flight detection (`core.flight.cli campaign\|worker`, `batch_driver.sh`, `lease_cli`, `flight.lock` -- never a model-free `prepare-supply`/`check`), CPU sidecars, the swap pending marker, and the decision-162 sidecar admission used by `prep_generic_task_entry.sh` and `prep_test_sample.sh` (refuse a CPU sidecar unless a GPU session is resident and running and no swap is pending) |
 | `queue_lib.sh` | the unattended-queue pattern as functions (`ql_init`, `ql_commit`, `ql_wait_driver_start`, `ql_wait_terminal`, `ql_halt_on_stop`, `ql_swap`, `ql_chain`, `ql_wait_sidecars_gone`, `ql_seg_line`); every function returns the real exit status -- see the ten-line example in its header. The OWNED filler hold (after the 2026-09-30 hold race): `ql_hold_take <owner> [<predecessor>]`, `ql_hold_release <owner>`, `ql_hold_owner` -- only the owner removes a hold, a successor takes it over from its named predecessor, and `ql_seg_line` matches a log line's message start, never a phrase quoted in a preamble |
@@ -137,7 +137,7 @@ A committed, ordered JSON object the coordinator edits by hand:
     {
       "name": "rankvis",
       "carrier": "slurp",
-      "geometry": "slurp-np4",
+      "geometry": "slurp-np4|a2t-np3|e21-np4|det-np1|think-np4>",
       "chain_script": "scripts/flights/rankvis/batch_chain_rankvis.sh",
       "flight_commit_file": "/home/chao/rankvis-flight-commit.txt",
       "hold_file": null,
@@ -161,7 +161,7 @@ A committed, ordered JSON object the coordinator edits by hand:
   equals the file's content AND `/home/chao/batch-done` is non-empty; a chain script archives both
   with a UTC timestamp suffix before it starts a new run -- see `batch_chain_roll3.sh` -- so a live,
   unarchived `batch-done` always names the commit that produced it).
-- `geometry` is one of `slurp-np4` / `e21-np4` / `a2t-np3` (the `serving_swap.sh` targets this study
+- `geometry` is one of `slurp-np4|a2t-np3|e21-np4|det-np1|think-np4>` / `e21-np4` / `a2t-np3` (the `serving_swap.sh` targets this study
   currently flies; `det-np1` is not used by any ready-chain entry).
 - `hold_file` is optional (`null` or omitted means no hold gates the entry).
 - `ext4_copy_target` is optional: when set, the watchdog copies `chain_script` there before launching
@@ -173,7 +173,7 @@ A committed, ordered JSON object the coordinator edits by hand:
   this file is not the only way to see why an entry is inert.
 
 Shipped order (owner decisions 181-188): `rankvis -> wsv1 -> w4sv -> filler`, all `carrier: "slurp"`.
-`e41-sub10` (the Earnings E41 sub10 re-read, `carrier: "earnings"`, `geometry: "e21-np4"`) is kept in
+`e41-sub10` (the Earnings E41 sub10 re-read, `carrier: "earnings"`, `geometry: "slurp-np4|a2t-np3|e21-np4|det-np1|think-np4>"`) is kept in
 the list, `"enabled": false`, annotated with the 2026-09-28 SLURP-only ruling (row 187); its flipped
 cell stays ready at commit `bf6db903` for the owner to re-enable later by flipping `enabled` back to
 `true` (`allowed_carriers` would then also need to include `"earnings"`). `wsv1` and `w4sv` (card

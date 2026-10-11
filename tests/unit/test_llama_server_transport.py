@@ -3967,3 +3967,34 @@ def test_prepared_text_actual_body_has_zero_media_and_registered_live_fit_cost(t
     transport(canonical_bytes(payload))
     assert captured[0]["messages"] == next(body["messages"] for _, path, body in calls
                                           if path == "/apply-template")
+
+
+def _content_post(content):
+    return lambda _url, _body: json.dumps(
+        {"choices": [{"message": {"content": content, "reasoning_content": "private thoughts"}, "finish_reason": "stop"}],
+         "usage": {"prompt_tokens": 1, "completion_tokens": 2}}
+    ).encode()
+
+
+def test_reasoning_content_guard_passes_clean_content_and_never_reads_reasoning_content(tmp_path):
+    """Owner decision 266-E: with the guard armed, content that carries no reasoning marker is delivered unchanged and the
+    ``reasoning_content`` field of the wire message is never read into the envelope."""
+
+    transport = _transport(_base_url(), tmp_path, post=_content_post("final answer"), reasoning_content_guard="refuse-think-marker-in-content")
+    envelope = json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))
+    assert envelope["text"] == "final answer"
+    assert "private thoughts" not in json.dumps(envelope)
+
+
+@pytest.mark.parametrize("content", ["<think>x</think>answer", "answer</think>", "A <THINK> b", "<thinking>x"])
+def test_reasoning_content_guard_refuses_a_think_marker_in_content(tmp_path, content):
+    transport = _transport(_base_url(), tmp_path, post=_content_post(content), reasoning_content_guard="refuse-think-marker-in-content")
+    with pytest.raises(FrozenCoreError, match="reasoning marker"):
+        transport(json.dumps(_boundary_payload(tmp_path)).encode())
+
+
+def test_reasoning_content_guard_is_off_by_default_and_refuses_an_unknown_value(tmp_path):
+    transport = _transport(_base_url(), tmp_path, post=_content_post("<think>kept</think>"))
+    assert json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))["text"] == "<think>kept</think>"
+    with pytest.raises(SessionError, match="reasoning_content_guard"):
+        _transport(_base_url(), tmp_path, post=_content_post("x"), reasoning_content_guard="anything-else")
