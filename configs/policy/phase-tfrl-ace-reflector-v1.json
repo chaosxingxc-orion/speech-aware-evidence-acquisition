@@ -1,0 +1,15 @@
+{
+  "max_contacts": 1,
+  "phases": [
+    {
+      "barrier": false,
+      "knowledge": "none",
+      "name": "reflect",
+      "purpose": "ace-reflector-delta-proposal",
+      "response_format_id": "saea-ace-delta-items-v1"
+    }
+  ],
+  "program_id": "phase-tfrl-ace-reflector-v1",
+  "schema": "saea-phase-program-v1",
+  "stop_rule": "always-run-full-program"
+}

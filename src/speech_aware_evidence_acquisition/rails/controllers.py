@@ -1659,6 +1659,15 @@ _PROGRAM_CONFIG_FILENAMES: Mapping[str, str] = {
     # per-row bound is 2 rather than a bound with no slack at all. It is a
     # BOUND, never a target, and the cell's expected spend is 1.0 per row.
     "phase-slurp-verify-select-v1": "phase-slurp-verify-select-v1.json",
+    # Decision 263-A (2026-10-11), E-T1: the typed proposer and the ACE
+    # reflector. Each is ONE text-only phase and ONE contact on a
+    # construction carrier row, the same one-phase shape the GEPA program
+    # has; each differs in exactly its response format (a program and its
+    # fragment must agree on a phase output contract). They are the ids
+    # ``core.flight.runtime._default_construction_material`` dispatches the
+    # two materials on (``rails.tfrl_typed_proposer``).
+    "phase-tfrl-typed-proposer-v1": "phase-tfrl-typed-proposer-v1.json",
+    "phase-tfrl-ace-reflector-v1": "phase-tfrl-ace-reflector-v1.json",
     "phase-training-feedback-proposal-v1": "phase-training-feedback-proposal-v1.json",
     "phase-intent-hypotheses-only-v1": "phase-intent-hypotheses-only-v1.json",
     "phase-direct-then-slots-v1": "phase-direct-then-slots-v1.json",
@@ -2110,6 +2119,16 @@ def register_phase_programs_v1() -> None:
             "phase-stage3-gepa-v1",
             default_controller_factory(default_phase_program("phase-stage3-gepa-v1")),
         )
+    if "phase-tfrl-typed-proposer-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-tfrl-typed-proposer-v1",
+            default_controller_factory(default_phase_program("phase-tfrl-typed-proposer-v1")),
+        )
+    if "phase-tfrl-ace-reflector-v1" not in registered:
+        AGENT_CONTROLLERS.register(
+            "phase-tfrl-ace-reflector-v1",
+            default_controller_factory(default_phase_program("phase-tfrl-ace-reflector-v1")),
+        )
     if "phase-slurp-verify-select-v1" not in registered:
         AGENT_CONTROLLERS.register(
             "phase-slurp-verify-select-v1",
@@ -2530,6 +2549,25 @@ def register_response_formats_v1() -> None:
         RESPONSE_FORMATS.register(
             "stage3-gepa-proposal-v1",
             stage3_gepa_response_format_v1,
+        )
+    # Decision 263-A (2026-10-11), E-T1: the typed proposer's closed
+    # candidate schema (no free-text field, no effect field; parser and
+    # validator of record are ``rails.tfrl_typed_proposer``) and the ACE
+    # reflector's delta-items schema (owned by ``rails.tfrl_ace_material``).
+    # Registering the ids changes no phase; the two policy fragments bind them.
+    if "saea-tfrl-typed-candidate-v1" not in registered:
+        from .tfrl_typed_proposer import typed_candidate_response_format
+
+        RESPONSE_FORMATS.register(
+            "saea-tfrl-typed-candidate-v1",
+            typed_candidate_response_format,
+        )
+    if "saea-ace-delta-items-v1" not in registered:
+        from .tfrl_typed_proposer import ace_delta_items_response_format
+
+        RESPONSE_FORMATS.register(
+            "saea-ace-delta-items-v1",
+            ace_delta_items_response_format,
         )
     # Stage-3 F11, cell VERIFY-1 (2026-09-25): the SELECTION contact's
     # structured-output contract -- exactly two fields, the 1-based position of

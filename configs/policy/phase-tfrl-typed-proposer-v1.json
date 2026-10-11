@@ -1,0 +1,15 @@
+{
+  "max_contacts": 1,
+  "phases": [
+    {
+      "barrier": false,
+      "knowledge": "none",
+      "name": "propose",
+      "purpose": "typed-candidate-proposal",
+      "response_format_id": "saea-tfrl-typed-candidate-v1"
+    }
+  ],
+  "program_id": "phase-tfrl-typed-proposer-v1",
+  "schema": "saea-phase-program-v1",
+  "stop_rule": "always-run-full-program"
+}
