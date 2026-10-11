@@ -7,7 +7,7 @@
     "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 3.0,
+    "planned_gpu_hours": 4.5,
     "planned_model_calls": 3241,
     "planned_speech_audio_seconds": 3155,
     "protocol_hash": "bcb2b8321653ff0b93e45d3266d66b5bf40735cd68f431624fcd67ed293d8c00",
@@ -18,7 +18,7 @@
     "study": "speech-aware-evidence-acquisition"
   },
   "execution_route": "The shared live phase-fit path (core.preparation_fit.build_live_phase_fit_gate) under this cell's own live_phase_fit identity; it tokenizes request envelopes and produces no generation.",
-  "expected_session_id": "serving-slurp-thinking-direct-fold-b-np4-v1",
+  "expected_session_id": "serving-slurp-thinking-direct-fold-b-np4-max8192-v1",
   "experiment": "slurp-direct-only-fold-b-thinking-v1",
   "family_budget": {
     "asr_calls": 0,
@@ -26,18 +26,18 @@
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 3241,
     "generation_calls_cap": 1080,
-    "gpu_hours_fit_inclusive": 3.0,
+    "gpu_hours_fit_inclusive": 4.5,
     "native_task_contract_calls_cap": 0,
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_cap": 3155
   },
   "max_speech_packets": 1,
-  "one_factor": "The core (model weights, its own speech-packet root, the completion cap 2048 and --reasoning-format deepseek). The request form, the direct-only program, the closed-list task instruction, the roster and its order are the same.",
+  "one_factor": "The core (model weights, its own speech-packet root, the completion cap 8192 and --reasoning-format deepseek). The request form, the direct-only program, the closed-list task instruction, the roster and its order are the same.",
   "plan_kind": "fit",
   "preparation_base_commit": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
-    "sha256": "af85bac3486ad5156925068acfe44d7e87b50a30a390f957db2cad1470c01c1b"
+    "sha256": "250dac423b8241310c62a304a0146baf87c6c7c4d20481894f9dd2b08aade2a9"
   },
   "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1: the live phase-fit spend identity of SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1.",
   "registered_at_utc": "2026-10-11T18:00:00.000000+00:00",

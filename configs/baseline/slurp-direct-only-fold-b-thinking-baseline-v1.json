@@ -32,6 +32,6 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Cell 266-E Thinking arm: the Thinking arm of the bare-core read (owner decision 266-E): the SAME direct-only form on the Thinking core (its own session, its own speech-packet root, completion cap 2048, --reasoning-format deepseek so reasoning never enters message.content), TRAIN Fold B 1,080. The delivered answer is the content channel only; reasoning text is never delivered, never persisted beyond hashes and never scored.",
+  "what_this_is": "Cell 266-E Thinking arm: the Thinking arm of the bare-core read (owner decision 266-E): the SAME direct-only form on the Thinking core (its own session, its own speech-packet root, completion cap 8192, --reasoning-format deepseek so reasoning never enters message.content), TRAIN Fold B 1,080. The delivered answer is the content channel only; reasoning text is never delivered, never persisted beyond hashes and never scored.",
   "whole_roster_wave_barrier": true
 }

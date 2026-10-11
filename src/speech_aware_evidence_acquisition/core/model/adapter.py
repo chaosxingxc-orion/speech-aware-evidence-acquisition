@@ -418,6 +418,7 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             # normalized MODEL_RESPONSE payload.
             logprobs = parsed.get("logprobs")  # type: ignore[union-attr]
             tool_calls = parsed.get("tool_calls")  # type: ignore[union-attr]
+            forwarded_finish_reason = parsed.get("finish_reason")  # type: ignore[union-attr]
         except (KeyError, TypeError, ValueError, UnicodeError) as error:
             if wire_provenance is not None:
                 self._sink.emit(
@@ -491,17 +492,17 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             self._latency_total += latency
             self._prompt_tokens += usage.get("prompt_tokens", 0)
             self._completion_tokens += usage.get("completion_tokens", 0)
-        self._sink.emit(
-            "COST",
-            f"{request_id}/cost",
-            {
-                "calls": 1,
-                "audio_seconds": float(audio_seconds),
-                "latency_seconds": latency,
-                "prompt_tokens": usage.get("prompt_tokens", 0),
-                "completion_tokens": usage.get("completion_tokens", 0),
-            },
-        )
+        cost_payload: dict[str, object] = {
+            "calls": 1,
+            "audio_seconds": float(audio_seconds),
+            "latency_seconds": latency,
+            "prompt_tokens": usage.get("prompt_tokens", 0),
+            "completion_tokens": usage.get("completion_tokens", 0),
+        }
+        if isinstance(forwarded_finish_reason, str):
+            # Present only when the transport forwarded it (the opt-in reasoning guard): no other COST record gains a key.
+            cost_payload["finish_reason"] = forwarded_finish_reason
+        self._sink.emit("COST", f"{request_id}/cost", cost_payload)
         return CoreResponse(
             text=text,
             usage=usage,

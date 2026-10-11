@@ -3998,3 +3998,30 @@ def test_reasoning_content_guard_is_off_by_default_and_refuses_an_unknown_value(
     assert json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))["text"] == "<think>kept</think>"
     with pytest.raises(SessionError, match="reasoning_content_guard"):
         _transport(_base_url(), tmp_path, post=_content_post("x"), reasoning_content_guard="anything-else")
+
+
+def _length_post():
+    """An empty-content wire message that spent its whole budget on reasoning (the 2026-10-11 smoke row)."""
+
+    return lambda _url, _body: json.dumps(
+        {"choices": [{"message": {"content": "", "reasoning_content": "private thoughts"}, "finish_reason": "length"}],
+         "usage": {"prompt_tokens": 2285, "completion_tokens": 2048}}
+    ).encode()
+
+
+def test_reasoning_guard_forwards_the_finish_reason_so_an_empty_cap_hit_can_be_receipted(tmp_path):
+    """Owner decision 266-E cap amendment: empty content at the cap is delivered, not refused, and carries the server finish reason."""
+
+    transport = _transport(_base_url(), tmp_path, post=_length_post(), reasoning_content_guard="refuse-think-marker-in-content")
+    envelope = json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))
+    assert envelope["text"] == "" and envelope["finish_reason"] == "length"
+    assert envelope["usage"]["completion_tokens"] == 2048
+    assert "private thoughts" not in json.dumps(envelope)
+
+
+def test_unguarded_transport_envelope_has_no_finish_reason_key(tmp_path):
+    """I7: every non-reasoning fragment (the Instruct core among them) keeps the historical envelope bytes."""
+
+    transport = _transport(_base_url(), tmp_path, post=_length_post())
+    envelope = json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))
+    assert set(envelope) == {"text", "usage"}

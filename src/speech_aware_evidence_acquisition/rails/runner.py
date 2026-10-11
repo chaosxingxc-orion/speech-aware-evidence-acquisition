@@ -330,8 +330,13 @@ def _resolve_final_agent_response(
     final_response_contact_id: str | None,
     *,
     allow_empty: bool = False,
+    empty_receipted: Callable[[str], bool] | None = None,
 ) -> str:
-    """Keep final-answer authority inside an actual frozen-core response."""
+    """Keep final-answer authority inside an actual frozen-core response.
+
+    ``empty_receipted`` names the contacts whose empty completion carries a ``saea-empty-completion-v1`` receipt: an empty final response
+    is legal only for those (owner decision 199), never for an unreceipted one.
+    """
 
     if isinstance(contact, AgentContactPlan):
         if not isinstance(response, str):
@@ -342,7 +347,9 @@ def _resolve_final_agent_response(
             raise RailsRunnerError(
                 "final_response_contact_id must select the stopped contact"
             )
-        if not response and not allow_empty:
+        if not response and not allow_empty and not (
+            empty_receipted is not None and empty_receipted(contact.contact_id)
+        ):
             raise RailsRunnerError("stop must select a non-empty model response")
         return response
     if isinstance(contact, AgentContactBatch):
@@ -359,7 +366,9 @@ def _resolve_final_agent_response(
             )
         for plan, response_text in zip(contact.contacts, response, strict=True):
             if plan.contact_id == final_response_contact_id:
-                if not response_text and not allow_empty:
+                if not response_text and not allow_empty and not (
+                    empty_receipted is not None and empty_receipted(plan.contact_id)
+                ):
                     raise RailsRunnerError(
                         "stop must select a non-empty model response"
                     )
@@ -1797,6 +1806,63 @@ def _validate_new_agent_states(
 
 
 
+#: Owner decision 266-E / 199: the receipt a non-native contact leaves when the frozen core delivered NO content (a thinking core that spends
+#: its whole completion budget on reasoning leaves ``message.content`` empty). The row delivers the empty answer bytes -- an abstention the
+#: scorer counts as a miss -- instead of aborting the flight. Added beside the existing records; no record of a non-empty completion moves.
+EMPTY_COMPLETION_SCHEMA = "saea-empty-completion-v1"
+
+
+def _emit_empty_completion_receipt(trace_buffer: TraceBuffer, arguments: Mapping[str, object]) -> None:
+    """Receipt one empty non-native completion: ``cap_hit``, ``completion_tokens`` and ``finish_reason`` (Thinking transports forward it).
+
+    ``cap_hit`` is true when the completion spent its whole budget: the wire ``finish_reason`` is ``length``, or the recorded
+    ``completion_tokens`` reach the contact's ``max_tokens`` (the live cap rule ``core.delivery.terminal_response_saturated``).
+    """
+
+    from ..core.delivery import terminal_response_saturated
+
+    cost_record_id, cost = None, {}
+    for channel, record_id, payload in trace_buffer.iter_records():
+        if channel == "COST" and record_id.endswith("/cost"):
+            cost_record_id, cost = record_id, payload
+    decoding = arguments.get("decoding_params")
+    max_tokens = decoding.get("max_tokens") if isinstance(decoding, Mapping) else None
+    completion_tokens = cost.get("completion_tokens")
+    finish_reason = cost.get("finish_reason") if isinstance(cost.get("finish_reason"), str) else None
+    by_tokens = terminal_response_saturated({"completion_tokens": completion_tokens}, max_tokens)
+    contact_id = arguments.get("agent_contact_id")
+    trace_buffer.emit(
+        "TOOL", f"{contact_id}/empty-completion",
+        {
+            "schema": EMPTY_COMPLETION_SCHEMA,
+            "agent_contact_id": contact_id,
+            "request_id": None if cost_record_id is None else cost_record_id[: -len("/cost")],
+            "response_text_sha256": hashlib.sha256(b"").hexdigest(),
+            "disposition": "empty-delivery-abstention",
+            "cap_hit": bool(by_tokens or finish_reason == "length"),
+            "cap_hit_basis": "finish-reason-length" if finish_reason == "length" else (
+                "completion-tokens-reach-max-tokens" if by_tokens else "not-at-cap"),
+            "completion_tokens": completion_tokens if isinstance(completion_tokens, int) else None,
+            "max_tokens": max_tokens if isinstance(max_tokens, int) and not isinstance(max_tokens, bool) else None,
+            "finish_reason": finish_reason,
+        },
+    )
+
+
+def _empty_completion_receipted(buffers: Sequence[TraceBuffer]) -> Callable[[str], bool]:
+    """A lookup: does one of ``buffers`` hold the empty-completion receipt of this contact?"""
+
+    def lookup(contact_id: str) -> bool:
+        for buffer in buffers:
+            for channel, record_id, payload in buffer.iter_records():
+                if (channel == "TOOL" and record_id == f"{contact_id}/empty-completion"
+                        and isinstance(payload, Mapping) and payload.get("schema") == EMPTY_COMPLETION_SCHEMA):
+                    return True
+        return False
+
+    return lookup
+
+
 def _complete_agent_request(
     *, core_client: CoreClient, messages, arguments, trace_buffer: TraceBuffer,
     prepared_request: PreparedCoreRequest | None = None,
@@ -1822,6 +1888,8 @@ def _complete_agent_request(
     if not native:
         if not isinstance(result, str):
             raise RailsRunnerError("frozen core response must be a string")
+        if result == "":
+            _emit_empty_completion_receipt(trace_buffer, arguments)
         return result, None
     if not isinstance(result, CoreCompletion):
         raise RailsRunnerError("native contact requires source-bound CoreCompletion")
@@ -2016,6 +2084,7 @@ def _run_agent_trajectory(
                 response_text,
                 advance.final_response_contact_id,
                 allow_empty=prepared.execution_unit_id is not None,
+                empty_receipted=_empty_completion_receipted((trace_buffer,)),
             )
             return _AgentRuntimeOutcome(
                 prepared=prepared,
@@ -7086,6 +7155,7 @@ def _run_agent_openjiuwen(
                 controller_response,
                 advance.final_response_contact_id,
                 allow_empty=state.prepared.execution_unit_id is not None,
+                empty_receipted=_empty_completion_receipted(tuple(state.trace_buffers.values())),
             )
             state.final_outcome = _AgentRuntimeOutcome(
                 prepared=state.prepared,

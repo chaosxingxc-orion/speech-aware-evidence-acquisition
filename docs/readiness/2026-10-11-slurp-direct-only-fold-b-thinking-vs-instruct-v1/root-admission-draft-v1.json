@@ -59,11 +59,11 @@
       "ceilings_are_not_targets": true,
       "encoder_calls": 0,
       "fit_endpoint_calls_cap": 13,
-      "generation_calls_cap": 4,
+      "generation_calls_cap": 8,
       "gpu_hours_fit_inclusive": 0.5,
       "native_task_contract_calls_cap": 0,
       "official_complete_scoring_jobs": 0,
-      "repeated_speech_audio_seconds_cap": 10
+      "repeated_speech_audio_seconds_cap": 20
     },
     "thinking": {
       "asr_calls": 0,
@@ -71,7 +71,7 @@
       "encoder_calls": 0,
       "fit_endpoint_calls_cap": 3241,
       "generation_calls_cap": 1080,
-      "gpu_hours_fit_inclusive": 3.0,
+      "gpu_hours_fit_inclusive": 4.5,
       "native_task_contract_calls_cap": 0,
       "official_complete_scoring_jobs": 1,
       "repeated_speech_audio_seconds_cap": 3155
@@ -91,6 +91,7 @@
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1",
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1",
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-REC1-V1",
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1"
   ],
   "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration per run id; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
@@ -112,7 +113,7 @@
     "test_contact_authorized": false
   },
   "recorded_at_utc": null,
-  "recovery_note": "The predecessor attempt aborted before any model contact: \"RailsRunnerError: AgentLoop query samples overlap the TRAIN knowledge source roster\" (raised by the runner's roster guard, rails/runner.py). The guard compares the query roster with the pinned knowledge snapshot's source roster even when the program supplies no evidence. The Instruct arm is re-flown whole under the rec1 ids; the replicate, the Thinking arm and the smoke are untouched (their attempts never opened) and only take the knowledge pin.",
+  "recovery_note": "[four-row Thinking decode-cost smoke] The predecessor attempt made its four contacts on the Thinking session (completion cap 2,048): completions of 363, 921 and 977 tokens delivered 99, 111 and 60 characters of content, and ONE contact spent all 2,048 completion tokens (prompt 2,285) and delivered content of length 0, because the whole budget went to reasoning, which the server routes to message.reasoning_content and the transport never reads. That empty content raised in the OpenJiuwen wave (ExecutionError 100054, component aggregate_agent_wave: AgentStateArtifact.content must be a non-empty string), the smoke step exited 1, the driver wrote its STOP and the Thinking arm never opened. Measured decode speed: 37 tokens per second per slot (58 with one slot busy); prompt evaluation 0.9 to 1.7 ms per token. The smoke is re-flown whole under the rec1 ids with the completion cap amended to 8,192; the Thinking arm's attempt never opened and keeps its ids; the Instruct cells are untouched. [Instruct arm] The predecessor attempt aborted before any model contact: \"RailsRunnerError: AgentLoop query samples overlap the TRAIN knowledge source roster\" (raised by the runner's roster guard, rails/runner.py). The guard compares the query roster with the pinned knowledge snapshot's source roster even when the program supplies no evidence. The Instruct arm is re-flown whole under the rec1 ids; the replicate, the Thinking arm and the smoke are untouched (their attempts never opened) and only take the knowledge pin.",
   "registered_hashes": {
     "instruct": {
       "composed_config": "4ede3a96f1b83d8960e72085984f71d1fb204af2984012af7342e42f659ad849",
@@ -137,10 +138,12 @@
     "no_child_start_stop": true,
     "slot_tokens": 24576,
     "slots": 4,
-    "thinking_session": "serving-slurp-thinking-direct-fold-b-np4-v1"
+    "thinking_session": "serving-slurp-thinking-direct-fold-b-np4-max8192-v1"
   },
   "status": "DRAFT-NOT-MINTED",
   "superseded_attempt_ids": [
+    "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1",
+    "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-v1",
     "attempt-slurp-direct-only-fold-b-instruct-generation-v1",
     "attempt-slurp-direct-only-fold-b-instruct-fit-v1"
   ]

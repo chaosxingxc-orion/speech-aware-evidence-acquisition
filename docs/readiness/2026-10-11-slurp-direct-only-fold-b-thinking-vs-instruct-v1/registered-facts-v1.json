@@ -55,24 +55,24 @@
     },
     "smoke": {
       "derivation": [
-        "generation_calls_cap = 4 rows x 1 contact (phase-direct-only-v1: one phase, max_contacts 1) = 4, the exact maximum and the expectation at once",
+        "generation_calls_cap = 4 rows x 1 contact (phase-direct-only-v1: one phase, max_contacts 1) = 8, the exact maximum and the expectation at once",
         "fit_endpoint_calls_cap = 1 + (2 + 1) x 4 = 13 (core.preparation_fit.complete_phase_endpoint_count with one phase and one media packet per row)",
-        "repeated_speech_audio_seconds_cap = ceil(9.939500 roster seconds x 1 contact) = 10",
+        "repeated_speech_audio_seconds_cap = ceil(9.939500 roster seconds x 1 contact) = 20",
         "gpu_hours_fit_inclusive = 0.5, a ceiling and never a target (Instruct direct realised 140 contacts per minute, 0.087 GPU-h per 1,000 rows; the Thinking ceiling is the all-cap-hit worst case)",
         "native_task_contract_calls_cap = 0: the direct-only program grants no tool authority",
         "official_complete_scoring_jobs = 0"
       ],
-      "expected_contacts": 4,
+      "expected_contacts": 8,
       "family_budget": {
         "asr_calls": 0,
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 13,
-        "generation_calls_cap": 4,
+        "generation_calls_cap": 8,
         "gpu_hours_fit_inclusive": 0.5,
         "native_task_contract_calls_cap": 0,
         "official_complete_scoring_jobs": 0,
-        "repeated_speech_audio_seconds_cap": 10
+        "repeated_speech_audio_seconds_cap": 20
       },
       "run_cumulative": "every cap binds across ALL attempts of this run id"
     },
@@ -81,7 +81,7 @@
         "generation_calls_cap = 1080 rows x 1 contact (phase-direct-only-v1: one phase, max_contacts 1) = 1080, the exact maximum and the expectation at once",
         "fit_endpoint_calls_cap = 1 + (2 + 1) x 1080 = 3241 (core.preparation_fit.complete_phase_endpoint_count with one phase and one media packet per row)",
         "repeated_speech_audio_seconds_cap = ceil(3154.797375 roster seconds x 1 contact) = 3155",
-        "gpu_hours_fit_inclusive = 3.0, a ceiling and never a target (Instruct direct realised 140 contacts per minute, 0.087 GPU-h per 1,000 rows; the Thinking ceiling is the all-cap-hit worst case)",
+        "gpu_hours_fit_inclusive = 4.5, a ceiling and never a target (Instruct direct realised 140 contacts per minute, 0.087 GPU-h per 1,000 rows; the Thinking ceiling is the all-cap-hit worst case)",
         "native_task_contract_calls_cap = 0: the direct-only program grants no tool authority",
         "official_complete_scoring_jobs = 1"
       ],
@@ -92,7 +92,7 @@
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 3241,
         "generation_calls_cap": 1080,
-        "gpu_hours_fit_inclusive": 3.0,
+        "gpu_hours_fit_inclusive": 4.5,
         "native_task_contract_calls_cap": 0,
         "official_complete_scoring_jobs": 1,
         "repeated_speech_audio_seconds_cap": 3155
@@ -102,7 +102,7 @@
   },
   "findings": {
     "chain_order": "Chain order. The brief's order smoke -> sign-off -> Instruct arm -> replicate -> Thinking arm would swap the serving geometry three times (Instruct resident now: swap to Thinking for the smoke, back to Instruct, to Thinking again, and back to restore). The registered order is smoke -> sign-off -> Thinking arm (Thinking session), then ONE swap back to the Instruct session (which is also the required restore) and the Instruct arm -> Instruct replicate: two swaps total. The Instruct segment has no dependency on the Thinking one, so the coordinator may fly it first on the resident session before the swap if GPU idle time during the sign-off is the concern; batch_chain_direct_fb.sh takes the segment as an argument (smoke | thinking | instruct), checks the resident session by id and refuses on a mismatch. All segments fly from ONE flight commit.",
-    "completion_cap": "Completion cap 2048 tokens. Slot budget: -c 98304 / -np 4 = 24,576 tokens per slot. The direct-only prompt is about 2,300 tokens per row (the sealed Instruct direct form measured 2,262 to 2,280 prompt tokens per contact; 3,733 on the A2T registry). 2,300 + 2,048 = 4,348 tokens, 17.7 percent of a slot, so the cap is bound by decode cost, not by the slot; a cap of 8,192 would still use only 42.7 percent. 2048 is proposed because a SLURP answer is a short structured object, so a thinking trace that needs more than 2,048 tokens is itself the signal the read must see (a truncated answer is an abstention, counted in the cap-hit table), and because the smoke measures the real distribution before the arm is queued. The coordinator may amend the cap at the decode-cost sign-off (one re-registration changes the fragment hash and re-pins the cells); the GPU-hour ceiling of 3.0 is the 1,080-contact worst case at ~250 aggregate tokens per second.",
+    "completion_cap": "Completion cap 8192 tokens (amended from 2048 at the decode-cost sign-off of 2026-10-11, the one re-registration this finding pre-authorised). Slot budget: -c 98304 / -np 4 = 24,576 tokens per slot. The direct-only prompt is about 2,300 tokens per row (the sealed Instruct direct form measured 2,262 to 2,280 prompt tokens per contact; 3,733 on the A2T registry). 2,300 + 8,192 = 10,492 tokens, 42.7 percent of a slot, so the cap is still bound by decode cost, not by the slot. The first cap, 2048, was proposed because a SLURP answer is a short structured object, so a thinking trace that needs more than 2,048 tokens is itself the signal the read must see (a truncated answer is an abstention, counted in the cap-hit table). The four-row decode-cost smoke then measured the real distribution (run SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1, attempt attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1, 2026-10-11T21:49Z, 4 calls, 9.9395 speech-seconds): completions of 363, 921 and 977 tokens delivered 99, 111 and 60 characters of content, and ONE of the four contacts spent all 2,048 completion tokens (prompt 2,285) and delivered content of length 0 (the whole budget went to reasoning, which the server routes to message.reasoning_content and the transport never reads), so 1 of 4 rows hit the cap; decode speed was 37 tokens per second per slot (58 with one slot busy) and prompt evaluation 0.9 to 1.7 ms per token. That empty content crashed the OpenJiuwen wave (the sealed state refused an empty string). The harness now seals an empty final content of a direct-only contact as the explicit empty marker and leaves a saea-empty-completion-v1 receipt (cap_hit, completion_tokens, finish_reason), so a cap hit is a row-level outcome counted in the cap-hit table, never a flight abort. A cap that truncates a quarter of the rows would make the read a read of the cap, so it is raised to 8192 for the smoke (re-flown whole under rec1) and the Thinking arm. The Thinking arm's GPU-hour ceiling moves 3.0 -> 4.5: a bound, never a target; at the smoke's mean of 1,077 completion tokens per contact and 4 slots x 37 tokens per second the 1,080-row arm is about 2.2 GPU-h, and 4.5 GPU-h admits a mean of about 2,200 tokens per contact (the all-cap-hit worst case, about 16.6 GPU-h, is not what the ceiling covers). The cap lives in the model fragment's decoding_params and the flight attaches to a resident session by fragment name and sha256, so the fragment (q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1) and the serving session (serving-slurp-thinking-direct-fold-b-np4-max8192-v1) both carry the new cap; the flown q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1 and serving-slurp-thinking-direct-fold-b-np4-v1 stay on disk as the record of the first smoke attempt.",
     "mmproj_encoder_tensors_differ": "The audio-encoder tensors of the two mmproj files differ: 748 of 860 tensors are not byte-identical (name-for-name comparison of the GGUF tensor tables of mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf and mmproj-Qwen3-Omni-30B-A3B-Thinking-bf16.gguf; the 112 identical tensors are the non-audio ones). The Instruct speech-feature packets (/home/chao/feat-cache/slurp-q4km-packets-04ccc72a) are decoder-ready projector outputs of the Instruct encoder and are therefore NOT valid input for the Thinking decoder. The Thinking core needs its OWN packet root (/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6) prepared by a GPU encoder pass over TRAIN Fold B inside a serving-swap window (registered, held: ledger row SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1, fragment q4km-thinking-feature-preprocess-gpu-np1-v1; it supersedes the CPU sidecar run SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1, stopped after 50 rows at 16-19 s per row); the Thinking baselines pin its future promotion receipt with a zero sentinel the flip refuses.",
     "reasoning_format": "Reasoning stays out of the delivered content by the server flag --reasoning-format deepseek (registered explicitly in the serving fragment's server_args). Evidence from the pinned featcache build 04ccc72a2 (read-only grep): tools/server/README.md line 220 documents the option (none leaves thoughts in message.content; deepseek puts thoughts in message.reasoning_content; deepseek-legacy keeps <think> in content AND fills reasoning_content); common/arg.cpp line 3130 defines it; common/common.h line 622 makes COMMON_REASONING_FORMAT_DEEPSEEK the build's own default; common/chat.cpp line 828 maps it. The transport (core/model/transport.py) reads ONLY choices[0].message.content (and tool_calls); it never reads reasoning_content. The cells set preserve_wire_responses false, so no raw wire bytes (which would carry reasoning_content) are persisted. Client-side guard: the fragment declares reasoning_content_guard refuse-think-marker-in-content, and the transport raises FrozenCoreError when a delivered content string carries <think>, </think>, <thinking> or </thinking> (case-insensitive), BEFORE anything is returned or persisted; the flight stops (a leak means the option is not effective). The reader counts leak markers in the sealed delivered text (count only) as a second check.",
     "sealed_instruct_fold_b_column": "No sealed Instruct direct-only Fold B column exists. The sealed direct-only (phase-direct-only-v1, slurp-direct-max512) columns are SAEA-SLURP-DIRECT-MAX512-TRAIN-FOLD-A-V1 (Fold A), -DEV1000-V1 and -DEV2000-ADDED-V1 (devel rosters). Fold B carries only the older EVO-S1 confirmation flight of the 'fixed' closed-list arm (SAEA-SLURP-EVO-S1-FOLD-B-V2), a different form on a different code path, which is not a same-harness comparator. The Instruct arm and its replicate therefore fly in this chain: the comparison must be same-chain."
@@ -148,22 +148,22 @@
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
     },
     "smoke": {
-      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1",
+      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-rec1-v1",
       "baseline_fragment": "slurp-direct-only-fold-b-thinking-smoke-4-baseline-v1",
       "cell": "slurp-direct-only-fold-b-thinking-smoke-4-v1",
       "composed_config_hash": "456466eaa56d62d7f36889c8c1efdae692222067ca862e3e0804cf0231a181cc",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "declares_prepared_phase_supply": false,
-      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-v1",
+      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-rec1-v1",
       "fit_contact_cap": 13,
-      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1",
-      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-REC1-V1",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1",
       "policy": "phase-direct-only-v1",
       "protocol_hash": "dbe794d0161bdd0477a3f482306d232a001637656ecf717c3bb39b63b7dd5adc",
       "role": "four-row Thinking decode-cost smoke",
       "rows": 4,
       "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
-      "service_session": "serving-slurp-thinking-direct-fold-b-np4-v1",
+      "service_session": "serving-slurp-thinking-direct-fold-b-np4-max8192-v1",
       "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe"
     },
     "thinking": {
@@ -176,13 +176,13 @@
       "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-v1",
       "fit_contact_cap": 3241,
       "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1",
-      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1",
       "policy": "phase-direct-only-v1",
       "protocol_hash": "bcb2b8321653ff0b93e45d3266d66b5bf40735cd68f431624fcd67ed293d8c00",
       "role": "Thinking arm",
       "rows": 1080,
       "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1",
-      "service_session": "serving-slurp-thinking-direct-fold-b-np4-v1",
+      "service_session": "serving-slurp-thinking-direct-fold-b-np4-max8192-v1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
     }
   },
@@ -198,7 +198,7 @@
     "preprocess_fragment_cpu_superseded": "q4km-thinking-preprocess-featcache-cpu-sidecar-np4-v1",
     "preprocess_runtime_receipt": "docs/receipts/runtime-q4km-thinking-preprocess-gpu.json",
     "preprocess_runtime_receipt_cpu_superseded": "docs/receipts/runtime-q4km-thinking-preprocess.json",
-    "serving_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+    "serving_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1",
     "serving_runtime_receipt": "docs/receipts/runtime-q4km-thinking-mmproj-free.json",
     "state": "VERIFIED against the umbrella lock entry (local hash receipts == lock revision text, sizes equal)",
     "thinking_gguf_lock_key": "qwen3-omni-30b-a3b-thinking-gguf-q4km",
@@ -208,7 +208,7 @@
     "No system-level, superiority, generalisation or admission claim from this read, ever; the Thinking model is admitted ONLY for this read, not as the serving core of any system cell.",
     "No reasoning text delivered, persisted (beyond hashes) or scored; preserve_wire_responses stays false on every arm.",
     "No Thinking arm before the four-row smoke has sealed and the coordinator's decode-cost sign-off marker exists.",
-    "No flight on the wrong session: the Thinking cells attach only to serving-slurp-thinking-direct-fold-b-np4-v1, the Instruct cells only to serving-slurp-native-candidate-five-train-a-np4-v1; the chain never spawns or stops a session.",
+    "No flight on the wrong session: the Thinking cells attach only to serving-slurp-thinking-direct-fold-b-np4-max8192-v1, the Instruct cells only to serving-slurp-native-candidate-five-train-a-np4-v1; the chain never spawns or stops a session.",
     "No test-split contact, no confirmatory split, no paper-scale profile; no carrier outside SLURP (the carriers stay held, decision 242).",
     "No flight before root countersigns the DRAFT rows, mints the decision receipt and the cells are flipped at one commit; --allow-output-change is never passed.",
     "No number from the smoke is a task measurement."
@@ -271,6 +271,7 @@
       "2. Dry run: bash scripts/flights/batch/serving_swap.sh think-np4 --dry-run (prints every precondition verdict; starts, stops and registers nothing).",
       "3. Release Instruct and start Thinking: bash scripts/flights/batch/serving_swap.sh think-np4. The tool stops serving-slurp-native-candidate-five-train-a-np4-v1 cleanly and its tasks (SAEA-Serving, SAEA-Monitor), verifies port 8080 free, starts the Windows task SAEA-Serving-THINK (scripts/flights/direct/serving_task_entry_think.sh) and SAEA-Monitor-THINK 20 s later, then the strict readiness wait; on any failure it tears the Thinking session down and restores Instruct. The two task names are new: the first run registers them through saea_task.ps1 -Start with the entry script.",
       "4. Smoke: bash scripts/flights/direct/batch_chain_direct_fb.sh smoke (flies the four-row smoke through the batch driver on the Thinking session; the driver's structural inspector runs). Then python -B scripts/analysis/slurp_direct_fold_b_core_read.py --stage smoke prints tokens per answer p50/p99, seconds per contact and the 1,080-row GPU-hour projection.",
+      "3b. Cap-amendment variant (2026-10-11, the Thinking session recorded resident is the SUPERSEDED max2048 one): serving_swap.sh refuses a resident session that is not in its geometry table, so first run bash scripts/flights/direct/serving_stop_think_superseded.sh --dry-run and then without --dry-run (a clean stop of serving-slurp-thinking-direct-fold-b-np4-v1, its wrapper, port 8080 free, then SAEA-Serving-THINK and SAEA-Monitor-THINK stopped; it starts nothing), then bash scripts/flights/batch/serving_swap.sh think-np4 --start-only (the card is empty) to start serving-slurp-thinking-direct-fold-b-np4-max8192-v1.",
       "5. Sign-off: when the decode cost is acceptable, create the marker /home/chao/direct-fb-decode-signoff.marker (a one-line file naming the approved completion cap). The thinking segment refuses to start without it. If the cost is not acceptable, close the line (restore, step 8) or amend the cap by one re-registration.",
       "6. Thinking arm: bash scripts/flights/direct/batch_chain_direct_fb.sh thinking.",
       "7. Release Thinking and restore Instruct: bash scripts/flights/batch/serving_swap.sh slurp-np4 (the restore; the Instruct task entry is the existing serving_task_entry.sh), then bash scripts/flights/direct/batch_chain_direct_fb.sh instruct (the Instruct arm, then its replicate).",
@@ -278,6 +279,8 @@
       "9. After the Instruct session reports ready (SLURP SESSION READY from serving_wait_ready.sh slurp-np4) remove /home/chao/saea-queue/watchdog.hold; the watchdog resumes from the committed ready_chains.json. Stop SAEA-Serving-THINK and SAEA-Monitor-THINK (serving_swap does this on the stop) and leave them unregistered or disabled; remove the decode sign-off marker.",
       "10. Read: bash scripts/flights/direct/direct_fb_read.sh (countersign the READ row first)."
     ],
+    "superseded_thinking_serving_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+    "superseded_thinking_session": "serving-slurp-thinking-direct-fold-b-np4-v1",
     "swap_target": "think-np4",
     "thinking_packet_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
     "thinking_server_args": [
@@ -306,7 +309,8 @@
       "--reasoning-format",
       "deepseek"
     ],
-    "thinking_session": "serving-slurp-thinking-direct-fold-b-np4-v1"
+    "thinking_serving_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1",
+    "thinking_session": "serving-slurp-thinking-direct-fold-b-np4-max8192-v1"
   },
   "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-266e, branch sonnet/266e-thinking-bare-read",
   "stage3_measurement": {

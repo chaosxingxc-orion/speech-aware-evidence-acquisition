@@ -72,8 +72,8 @@ saea_geometry() {
       G_TASK_LOG_GLOB='serving-task-det-*.log';       G_SERVER_LOG_GLOB='serving-slurp-det-np1-*.log' ;;
     think-np4)
       G_LABEL=THINK
-      G_SID=serving-slurp-thinking-direct-fold-b-np4-v1
-      G_FRAGMENT=q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1
+      G_SID=serving-slurp-thinking-direct-fold-b-np4-max8192-v1
+      G_FRAGMENT=q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1
       G_SERVING_TASK=SAEA-Serving-THINK; G_MONITOR_TASK=SAEA-Monitor-THINK
       G_SERVING_ENTRY=scripts/flights/direct/serving_task_entry_think.sh
       G_MONITOR_ENTRY=scripts/flights/direct/serving_monitor_start_think.sh

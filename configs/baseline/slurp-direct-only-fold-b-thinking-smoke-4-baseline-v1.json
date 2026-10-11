@@ -5,9 +5,9 @@
   "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
   "knowledge_snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
   "live_phase_fit": {
-    "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-v1",
+    "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-rec1-v1",
     "contact_cap": 13,
-    "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1"
+    "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-REC1-V1"
   },
   "live_phase_fit_audio_seconds_cap": 10,
   "phase_material": {
@@ -32,6 +32,6 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Cell 266-E four-row Thinking decode-cost smoke: the four-row decode-cost smoke of the Thinking arm of the bare-core read (owner decision 266-E): the same fragment content as the Thinking arm on the first four Fold B rows. It seals and reports tokens per answer, seconds per contact and the GPU-hour projection for 1,080 rows BEFORE the arm is queued. No score, no read.",
+  "what_this_is": "Cell 266-E four-row Thinking decode-cost smoke: the four-row decode-cost smoke of the Thinking arm of the bare-core read (owner decision 266-E): the same fragment content as the Thinking arm on the first four Fold B rows. It seals and reports tokens per answer, seconds per contact and the GPU-hour projection for 1,080 rows BEFORE the arm is queued. No score, no read. Recovery rec1 (2026-10-11): two defects: the 2,048-token completion cap is below the Thinking trace on at least 1 of 4 rows (that row delivered empty content), and the harness raised on an empty final content of a direct-only contact instead of receipting it (owner decision 199: empty is legal); corrected by the 8,192-token cap and by the saea-empty-completion-v1 receipt (cap_hit, completion_tokens, finish_reason).",
   "whole_roster_wave_barrier": true
 }
