@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T06:32:28Z
+Last refreshed: 2026-10-11T06:38:00Z
+
+## 262 ruled agreed (owner, 2026-10-11): paper core = sealed-credit policy search over typed components + the stable-gain and negative-result ledger; Thinking GGUF pinned (2026-10-11T06:38:00Z, Fable 5.1 root)
+
+262 agreed: claim (a) the algorithm with its instrument, (b) the ledger B1 / B4b / COMP-1b / v4g / review-off, (c) the negative results (free-text learners, output re-selection, supply plateau), (d) 263 v2 / 266-A/E add entries, (e) carriers run the same loop when released. Umbrella lock: Thinking GGUF COMPLETE (23264ea; main afdaeff6..., mmproj 57b7240f..., both verified vs HF LFS). In build: E-T6, the loop driver + protocol, the 266-E direct-only Fold B package (Instruct + replicate + Thinking, smoke first). GPU idle. No owner decision open.
+
+Superseded stamp: 2026-10-11T06:32:28Z
 
 ## 266 ruled A + E (owner, 2026-10-11): iteration-1 stall default (lock / twin / ACE i1) and a bare-core Thinking vs Instruct read on Fold B (2026-10-11T06:32:28Z, Fable 5.1 root)
 

@@ -1420,3 +1420,19 @@ Owner, verbatim: 「决策266：A + E」 ("266: A + E.")
   line closes; (v) exposure rows for every contact; split role discovery (TRAIN Fold B).
 - Order: 266-A first (its cells exist once the loop driver lands), 266-E after the mmproj hash is pinned; both SLURP only;
   the carriers stay held (242).
+
+## Decision 262 ruled by the owner, 2026-10-11: agreed
+
+Owner, verbatim: 「决策262：同意」 ("262: agreed.")
+
+- **262 RULED**: the paper's core claim is the training-free algorithm named and frozen as "sealed-credit policy search
+  over typed system components" (rollout -> per-row typed official credit -> candidate from aggregate tables -> offline or
+  same-flight selection against a twin under the measurement instrument -> fresh-roster confirmation), with the instrument
+  as part of the method; (b) the stable-gain ledger (B1, B4b, COMP-1b, v4g, review-off; each with its selection read and
+  its confirmation read) as the evidence; (c) the negative result (free-text updates and output re-selection do not
+  transfer under the same instrument; the supply side of SLURP SLU is at its plateau at lock v2.2, pre-read 2026-10-11)
+  reported with the same rigour; (d) the remaining SLURP rounds add entries of that type (263 v2 / 266-A: the autonomous
+  typed loop with the ACE comparator; 266-E: the core-capability read); (e) the carriers run the SAME loop (ALL-OFF A/A ->
+  one credit-selected construction update -> confirmation) once the owner releases their GPU under 242 / 252.
+- Consequence for the record: results notes from today on carry a "ledger entry" line stating which clause (b), (c) or
+  (d) they feed; the lineage analysis of 2026-10-11 supplies the related-work frame (TF-GRPO, ACE, SkillOpt, DGM, RRSI).
