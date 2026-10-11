@@ -363,6 +363,22 @@ def _speech_history_texts(history: object) -> list[str]:
     return rendered
 
 
+REASONING_CONTENT_GUARD_THINK_MARKER = "refuse-think-marker-in-content"
+_REASONING_MARKERS = ("<think>", "</think>", "<thinking>", "</thinking>")
+
+
+def reasoning_marker_in_content(text: object) -> str | None:
+    """The first reasoning marker found in a delivered content string, else None (decision 266-E guard)."""
+
+    if not isinstance(text, str):
+        return None
+    lowered = text.lower()
+    for marker in _REASONING_MARKERS:
+        if marker in lowered:
+            return marker
+    return None
+
+
 def _exceed_context_message(status: int, detail: str) -> str | None:
     """The server's own message when a 400 is the context-size refusal.
 
@@ -516,6 +532,7 @@ class LlamaServerTransport:
         native_evidence_projection: str | None = None,
         native_evidence_projection_context: object | None = None,
         native_role_query_placement: str | None = None,
+        reasoning_content_guard: str | None = None,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -556,6 +573,12 @@ class LlamaServerTransport:
             if prompt_order not in _SPEECH_FEATURE_PROMPT_ORDERS | {_RAW_NATIVE_PROMPT_ORDER}:
                 raise SessionError("native_role_query_placement requires a native prompt_order")
         self._native_role_query_placement = native_role_query_placement
+        # Owner decision 266-E: an opt-in fail-closed guard for a reasoning (thinking) model. The delivered content channel
+        # must never carry reasoning text; the server flag --reasoning-format deepseek routes thoughts to
+        # message.reasoning_content, which this transport never reads. Absent for every other fragment (no behaviour change).
+        if reasoning_content_guard is not None and reasoning_content_guard != REASONING_CONTENT_GUARD_THINK_MARKER:
+            raise SessionError(f"reasoning_content_guard must be {REASONING_CONTENT_GUARD_THINK_MARKER} or absent")
+        self._reasoning_content_guard = reasoning_content_guard
         if native_evidence_projection is not None:
             if not isinstance(native_evidence_projection, str):
                 raise SessionError(
@@ -1436,6 +1459,7 @@ class LlamaServerTransport:
             response_tool_calls = (
                 message.get("tool_calls") if isinstance(message, Mapping) else None
             )
+            leak: str | None = None
             tool_call_argument_parse_errors: list[int] = []
             if isinstance(response_tool_calls, list) and response_tool_calls:
                 # Canonicalize into the SAME `[{"name": ..., "arguments":
@@ -1470,6 +1494,7 @@ class LlamaServerTransport:
                 text = json.dumps(canonical_calls)
             else:
                 text = message["content"]
+            leak = reasoning_marker_in_content(text) if getattr(self, "_reasoning_content_guard", None) else None
             # 2026-08-08: newer llama-server usage blocks carry nested
             # OpenAI-style `*_tokens_details` objects — a valid schema
             # extension, dropped here. Anything else keeps the original
@@ -1496,6 +1521,11 @@ class LlamaServerTransport:
             raise FrozenCoreError(
                 f"transport returned a malformed response: {error}"
             ) from error
+        if leak:
+            # Fail closed BEFORE anything is returned or persisted: reasoning text is never delivered (decision 266-E).
+            raise FrozenCoreError(
+                f"delivered content carries a reasoning marker ({leak}); refusing the response (reasoning_content_guard)"
+            )
         envelope: dict[str, object] = {"text": text, "usage": usage}
         if self._preserve_wire_responses:
             # Keep the server bytes exactly as received. The adapter validates
@@ -1617,6 +1647,7 @@ def _llama_server_factory(
         ),
         native_evidence_projection_context=projection_context,
         native_role_query_placement=values.get("native_role_query_placement"),
+        reasoning_content_guard=values.get("reasoning_content_guard"),
     )
 
 

@@ -29,7 +29,7 @@ SAEA_SERVING_PORT=8080
 SAEA_SWAP_LOCK=${SAEA_SWAP_LOCK:-$SAEA_RUNTIME_ROOT/serving-swap.lock}
 SAEA_SWAP_PENDING=${SAEA_SWAP_PENDING:-$SAEA_RUNTIME_ROOT/serving-swap.pending}
 SAEA_TASK_PS1_WIN=${SAEA_TASK_PS1_WIN:-'D:\chao_workspace\exploring-l4-intelligence\studies\speech-aware-evidence-acquisition\scripts\flights\batch\saea_task.ps1'}
-SAEA_TARGETS="slurp-np4 a2t-np3 e21-np4 det-np1"
+SAEA_TARGETS="slurp-np4 a2t-np3 e21-np4 det-np1 think-np4"
 # The prospective owner floor is 4 GiB; preserve any explicit higher registered minimum.
 SAEA_MIN_HOST_FREE_GB=${SAEA_MIN_HOST_FREE_GB:-4.0}
 
@@ -70,6 +70,14 @@ saea_geometry() {
       G_SERVING_ENTRY=scripts/flights/det/serving_task_entry_det.sh
       G_MONITOR_ENTRY=scripts/flights/det/serving_monitor_start_det.sh
       G_TASK_LOG_GLOB='serving-task-det-*.log';       G_SERVER_LOG_GLOB='serving-slurp-det-np1-*.log' ;;
+    think-np4)
+      G_LABEL=THINK
+      G_SID=serving-slurp-thinking-direct-fold-b-np4-v1
+      G_FRAGMENT=q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1
+      G_SERVING_TASK=SAEA-Serving-THINK; G_MONITOR_TASK=SAEA-Monitor-THINK
+      G_SERVING_ENTRY=scripts/flights/direct/serving_task_entry_think.sh
+      G_MONITOR_ENTRY=scripts/flights/direct/serving_monitor_start_think.sh
+      G_TASK_LOG_GLOB='serving-task-think-*.log';     G_SERVER_LOG_GLOB='serving-slurp-think-np4-*.log' ;;
     *) return 1 ;;
   esac
   G_SESSION_DIR=$SAEA_DATA/serving/$G_SID

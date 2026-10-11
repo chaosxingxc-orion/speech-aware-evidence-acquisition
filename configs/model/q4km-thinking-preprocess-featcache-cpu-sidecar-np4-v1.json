@@ -1,0 +1,34 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-thinking-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8081",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q4km-thinking-preprocess.json",
+  "server_args": [
+    "-c",
+    "16384",
+    "-np",
+    "4",
+    "-b",
+    "512",
+    "-ub",
+    "128",
+    "-fa",
+    "on",
+    "-ngl",
+    "0",
+    "--no-mmproj-offload"
+  ],
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1,
+    "id_slot": "per-sample"
+  },
+  "prompt_order": "evidence-first-system-v2",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-thinking-q4km"
+  },
+  "variant_basis": "IDENTICAL to configs/model/q4km-preprocess-featcache-cpu-sidecar.json (the CPU-only packet-preparation sidecar of the SLURP folds) except the model (the Thinking decoder AND its own bf16 mmproj, pinned by docs/receipts/runtime-q4km-thinking-preprocess.json) and the legacy feature-cache directory. HELD: the packet-preparation driver scripts/slurp_evo_fold_preprocess.py is wired to the Instruct runtime receipt and packet root, so an encoder pass over TRAIN Fold B with this fragment needs its own driver variant, root lease, registration and owner authorisation; none is given here."
+}
