@@ -97,8 +97,12 @@ COMPOSED_HASHES_BEFORE_DECISION_249 = {
         "dae31324906bdae2dd076bad0c267e6e079993b556abfe5246354e056ebe8c68",
     "slurp-native-stage3-nx-r6-perception-fold-b-smoke-4-v1":
         "7ca216808fd38765f2862bb9fdd583312fc89b10642bbe0fbf3875efdb84d208",
+    # Re-recorded 2026-10-11: this held cell was registered with the pre-249 hash 75f09d6c..., then two
+    # registration steps AFTER decision 249 legitimately changed its composed bytes -- 91b872938 pinned the
+    # SIGNED successor-2 allowance (decision 250/251, hash c5f50763...) and 26545f617 flipped the cell to
+    # ready, pinning prepared_phase_supply in its baseline fragment (hash below). Neither touches CURRENT_LOCK.
     "slurp-milestone-successor2-composed-v1":
-        "75f09d6c87d3f7f8d58495c643656d0b3a61d7668eaa9386e353c9b2f10f70ee",
+        "2eedc9f63f28910d5a491653af814c5be02dcdda8ad94abe9c80529306c36691",
     "slurp-native-stage3-module-comp1b-aa-dev2000-added-v1":
         "d01a0fd68e83a491bfed1b2ea23e95ccb3f3ba957d9caf95e0f199dd5e350204",
 }

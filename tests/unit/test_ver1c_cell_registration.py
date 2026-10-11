@@ -423,6 +423,10 @@ def test_the_ledger_rows_are_present_unconsumed_and_draft_or_countersigned():
     following = text.find("\n## ", start + len(cf.LEDGER_MARK))
     section = text[start:] if following == -1 else text[start:following]
     assert len(re.findall(r"\| SAEA-SLURP-STAGE3-VER1C-C3-COLUMN-FOLD-A", section)) == 5
-    # the two new heading blocks are the last two sections of the ledger, in this order, and do not interleave
+    # the two heading blocks are adjacent sections of the ledger, in this order, and do not interleave. They
+    # were the last two sections when written; later sections (e.g. the earnings22 all-off block, 291100d56,
+    # 2026-10-11) are appended after them, so adjacency, not "last two", is the invariant.
     headings = [m.group(0) for m in re.finditer(r"^## .*$", text, flags=re.M)]
-    assert headings[-2].startswith(vf.LEDGER_MARK) and headings[-1].startswith(cf.LEDGER_MARK)
+    vf_at = next(i for i, h in enumerate(headings) if h.startswith(vf.LEDGER_MARK))
+    cf_at = next(i for i, h in enumerate(headings) if h.startswith(cf.LEDGER_MARK))
+    assert cf_at == vf_at + 1
