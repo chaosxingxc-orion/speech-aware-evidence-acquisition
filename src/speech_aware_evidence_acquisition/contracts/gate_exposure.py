@@ -161,13 +161,16 @@ class _ExposureAndCarrierMixin:
                 raise GateClosed(f"roster receipt unreadable ({path}): {error}") from error
             if not isinstance(document, Mapping):
                 raise GateClosed(f"roster receipt {path} must be a JSON object")
-            if document.get("schema") in ROSTER_COMPANION_SCHEMAS:
+            schema = document.get("schema")
+            if not isinstance(schema, str) or not schema:
+                raise GateClosed(f"roster receipt {path} declares no schema; fail-closed")
+            if schema != ROSTER_RECEIPT_SCHEMA:
+                # The rosters directory also holds declared non-roster receipts (comparator-row
+                # companions, runtime-subset receipts, ...). A file that DECLARES another schema is
+                # not a construction roster and is skipped; only a schema-less or unreadable file
+                # refuses the touch (2026-10-11: the first typed-loop flip was blocked by two such
+                # companions although every real roster was intact).
                 continue
-            if document.get("schema") != ROSTER_RECEIPT_SCHEMA:
-                raise GateClosed(
-                    f"roster receipt {path} schema {document.get('schema')!r} is not "
-                    f"{ROSTER_RECEIPT_SCHEMA!r}"
-                )
             if document.get("carrier_lock_key") != carrier_lock_key:
                 continue
             if document.get("roster_role") != CONSTRUCTION_ROSTER_ROLE:

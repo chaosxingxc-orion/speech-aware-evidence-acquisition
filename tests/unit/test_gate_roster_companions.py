@@ -56,7 +56,13 @@ def test_declared_companion_is_skipped_and_the_roster_is_found(tmp_path):
     assert list(_scan(tmp_path)) == [digest]
 
 
-def test_an_undeclared_non_roster_schema_still_fails_closed(tmp_path):
+def test_a_declared_non_roster_schema_is_skipped_but_a_schemaless_file_fails_closed(tmp_path):
+    digest, roster = _roster()
+    _write(tmp_path, "r.json", roster)
     _write(tmp_path, "x.json", {"schema": "something-else-v1"})
-    with pytest.raises(GateClosed, match="is not"):
+    _write(tmp_path, "subset.json", {"schema": "saea-runtime-subset-receipt-v1"})
+    hashes = _scan(tmp_path)
+    assert set(hashes) == {digest}
+    _write(tmp_path, "noschema.json", {"items": []})
+    with pytest.raises(GateClosed, match="declares no schema"):
         _scan(tmp_path)
