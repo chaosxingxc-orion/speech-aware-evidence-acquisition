@@ -256,4 +256,5 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         roster_pin_paths=ROSTER_PIN_PATHS,
         template_variant_frame=TEMPLATE_VARIANT_FRAME,
         perception_template_variant_frame=PERCEPTION_TEMPLATE_VARIANT_FRAME,
+        supply_variant_frame={**TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "solver", "supply_variants")},  # E-S1
     )
