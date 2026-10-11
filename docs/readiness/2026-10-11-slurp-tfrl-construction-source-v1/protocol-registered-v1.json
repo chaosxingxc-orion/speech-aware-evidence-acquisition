@@ -7,11 +7,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-generation-v1",
       "cell": "slurp-native-stage3-tfrl-construction-lock-r01c-v1",
-      "composed_config_hash": "af82d47f817567dd19687bee6f81251d3be9e03c8537f9778da0e5d73d6a26e0",
+      "composed_config_hash": "a4b3b153ed37d09de29b632c0cd7226d76334b4ebbcafdff48105767d82845ad",
       "experiment": "slurp-native-stage3-tfrl-construction-lock-r01c-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-FIT-V1",
-      "protocol_hash": "63ef31406679e4ec13d860cabb43a0ede46b70d38a6f166d351c04fdddd1c91c",
+      "protocol_hash": "3c5b85269f43eea521ca7867dbc8bd2b4b1872ff47acf25c346bc73c07f9b2cc",
       "rows": 625,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1",
       "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"

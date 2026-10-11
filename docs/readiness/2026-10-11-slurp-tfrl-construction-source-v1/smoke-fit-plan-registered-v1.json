@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/protocol-registered-v1.json",
-    "sha256": "03d519f4590da1dc2a9240f3c635e37ba1613b1edf70e99a5e714c8df43d1d27"
+    "sha256": "d048145daeb75a4c0423754a4a7aed0b65c2d9064315a2f1fe4b5b920122bc8b"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-11T12:00:00.000000+00:00",
