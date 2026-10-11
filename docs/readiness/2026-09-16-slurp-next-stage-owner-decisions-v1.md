@@ -1315,3 +1315,31 @@ Three points the spec needs ruled inside 263-A:
   have no candidate over the 1.5 pp predicted bar in some iteration. Spec default: keep the bar, allow two proposer retries,
   fly lock / twin / parent / ACE anyway and read delivery candidates offline; owner option: fly the top valid candidate as
   a `claims_benefit: false` measurement, never acceptable as a gain.
+
+## Decisions 263-265 ruled by the owner, 2026-10-11
+
+Owner, verbatim: 「决策263：A；264：A；265：同意」 ("263: A; 264: A; 265: agreed.")
+
+- **263 RULED A** (v2 form): the autonomous typed loop in the RSI / SkillOpt shape with the ACE comparator column at equal
+  budget, per the merged spec `docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md`.
+  The three points the registry listed "to rule inside 263-A" were not addressed separately; the coordinator applies the
+  recommended readings and records them as part of 263-A, open to owner override: **Q1** selection = CI95 lower bound > 0
+  AND point >= 1.49 pp AND above the twin, with the 0.65 intent guard (the decision-190 form); **Q2** the ACE column is a
+  non-delivering comparator exempt from decision 245 for measurement only and can never be locked; **R1** a class with
+  nothing over the 1.5 pp predicted bar flies no typed candidate that round (lock / twin / parent / ACE still fly; delivery
+  candidates read offline); R4 (DEV admission path for a nominated typed state) stays open until a state is nominated.
+- **264 RULED A**: proposer = the frozen core's text-only seam for iteration 1 (decision 255 covers the typed proposer and
+  the ACE reflector alike); the Thinking GGUF becomes a CPU-side proposer ablation only after its hash is pinned in the
+  umbrella lock and a host-memory check passes with an owner GO for the memory envelope.
+- **265 RULED agreed**: iteration-1 operator class = credit-driven selective knowledge augmentation from TRAIN outside the
+  evaluation folds (value-list / card supply for failing slot types + per-stratum exemplar re-weighting, anti-pattern guards
+  offline), gated by the 0-GPU coverage pre-read (must reach +1.5 pp predicted before the column is packaged).
+- 262 (paper core claim and ledger) remains unruled; the loop's curve and the ACE comparison are what it would cite.
+
+**Execution started (model-free, build plan steps 2-6 of the spec):** E-S1 / E-S2 (supply columns under the review-off
+module + readers) and the 265 coverage pre-read were already in flight; now added in parallel worktrees: E-T1 proposer seam
+(`rails/tfrl_typed_proposer.py`, candidate schema `saea-tfrl-typed-candidate-v1`, validator, runtime resolver dispatch for
+both program ids), E-T2 ACE material + deterministic curator + `ace-playbook` releases, E-T3 contrast tables + cross-fitted
+delivery threshold fitter, E-T4 archive / meta / parent choice, E-T5 column algorithm labels. Merge order: E-S1 -> E-T1 ->
+E-T2 -> E-T3/E-T4/E-T5 -> driver; one flight commit, one re-pin. GPU stays idle until the pre-read clears and the
+iteration-1 proposer cell is countersigned.

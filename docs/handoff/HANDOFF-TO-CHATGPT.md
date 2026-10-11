@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T05:00:02Z
+Last refreshed: 2026-10-11T05:35:56Z
+
+## 263 A / 264 A / 265 agreed (owner, 2026-10-11): the autonomous typed loop is in build (2026-10-11T05:35:56Z, Fable 5.1 root)
+
+Rulings recorded in the registry with the coordinator's readings of Q1 (LB > 0, point >= 1.49, above twin, intent guard), Q2 (ACE column non-lockable comparator) and R1 (no typed candidate flies under the bar). Proposer = the core's text seam (264 A); Thinking GGUF only as a later CPU-side ablation after hash pin + memory GO. Iteration 1 = knowledge augmentation (265) behind the 0-GPU coverage pre-read. Model-free build in parallel worktrees: E-S1/E-S2 (sonnet/supply-columns-review-off), coverage pre-read (opus/265-coverage-preread), E-T1 proposer seam, E-T2 ACE material + curator, E-T3 tables + threshold fitter, E-T4 archive, E-T5 labels; then the `scripts/flights/tfrl/` driver, one flight commit, one re-pin. GPU idle; serving resident; no flight queued. Open: 262.
+
+Superseded stamp: 2026-10-11T05:00:02Z
 
 ## 263 v2 design spec merged (af1c055cc); three sub-questions 263-Q1/Q2/R1 added for the owner (2026-10-11T05:00:02Z, Fable 5.1 root)
 
