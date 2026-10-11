@@ -61,7 +61,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "7f5c5063226ae079e927d3be19cea1336e279a3d68b4a4047acc01186fced3cc"
+    "sha256": "7e458206c8ac5e74f9a4bd8a560f26e5f8932123e0bf68e65720bb7edf09787d"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1: structural form proof only: no score and no read.",
   "recovery_budget": {

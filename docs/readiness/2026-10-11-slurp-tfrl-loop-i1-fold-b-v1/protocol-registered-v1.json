@@ -9,11 +9,11 @@
     "arm": {
       "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-generation-v1",
       "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-v1",
-      "composed_config_hash": "a404d4d68d3152fb85ce8cfc5f281667b9b1b593eb7f4944ff66f6dae471b6e1",
+      "composed_config_hash": "58904bf2d05eaf6525002903460388084766d2a7c9a757a583dedab2599a7513",
       "experiment": "slurp-native-stage3-tfrl-loop-i1-fold-b-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-FIT-V1",
-      "protocol_hash": "a4bc79d1a7db5de56b20ac70df53b11a26a572a1e1366e43498a456f4e90d234",
+      "protocol_hash": "8460a68564a4fc3ae04c812945bf2941526350618e3c6891a77fabe308853606",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
