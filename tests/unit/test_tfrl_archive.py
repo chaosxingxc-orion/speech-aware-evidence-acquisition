@@ -302,3 +302,78 @@ def test_meta_summary_forbidden_keys_and_shipping_refusal():
     with pytest.raises(ms.MetaSummaryError):
         ms.assert_shippable(doc)
     ms.assert_shippable({"table": [1, 2]})
+
+
+# ---- corrections and unmeasured refusals (2026-10-11) -------------------------------------------
+
+
+def _ace_state(tag, parent=None, iteration=1):
+    return ar.build_state(artefact_hashes={"playbook_release": H(tag)}, parent_id=parent, iteration=iteration,
+                          operator_class="playbook", candidate_id=f"ace-i{iteration}", verdict="refused", arm="ace",
+                          credit=credit(), run_id="run", attempt=1)
+
+
+def _correction(state_id, wrong, right):
+    return {"schema": ar.CORRECTION_SCHEMA, "state_id": state_id, "artefact": "playbook_release", "slug": "playbook-hash",
+            "wrong": wrong, "right": right, "cause": "stale-playbook-file-written-by-superseded-open-cell-run",
+            "derives_from": {"receipt": "docs/x/open-cell-receipt.json", "field": "ace.playbook_content_hash",
+                             "receipt_sha256": H("receipt")}}
+
+
+def test_a_correction_is_applied_by_the_readers_and_the_state_file_is_never_edited(tmp_path):
+    archive = ar.Archive(tmp_path / "archive")
+    s = _ace_state("wrong")
+    archive.put(s)
+    path = tmp_path / "archive" / f"state-{s['state_id']}.json"
+    raw = path.read_bytes()
+    record_path = archive.put_correction(_correction(s["state_id"], H("wrong"), H("right")))
+    assert record_path.parent.name == "corrections" and path.read_bytes() == raw
+    for view in (archive.get(s["state_id"]), archive.states()[0]):
+        assert view["state_id"] == s["state_id"] and view["artefact_hashes"] == {"playbook_release": H("right")}
+        assert view["corrections"] == [{"artefact": "playbook_release", "wrong": H("wrong"), "right": H("right"), "slug": "playbook-hash"}]
+    # a child archived under the uncorrected id still finds its parent
+    child = _ace_state("child", parent=s["state_id"], iteration=2)
+    archive.put(child)
+    assert [x["iteration"] for x in archive.states()] == [1, 2]
+    with pytest.raises(ar.ArchiveError, match="write-once"):
+        archive.put_correction(_correction(s["state_id"], H("wrong"), H("right")))
+
+
+def test_a_correction_must_name_the_wrong_value_and_carry_identifiers_only(tmp_path):
+    archive = ar.Archive(tmp_path / "archive")
+    s = _ace_state("wrong")
+    archive.put(s)
+    with pytest.raises(ar.ArchiveError, match="does not record the wrong"):
+        archive.put_correction(_correction(s["state_id"], H("other"), H("right")))
+    bad = _correction(s["state_id"], H("wrong"), H("right"))
+    bad["cause"] = "free text with spaces"
+    with pytest.raises(ar.ArchiveError, match="free-text"):
+        ar.validate_correction(bad)
+    same = _correction(s["state_id"], H("wrong"), H("wrong"))
+    with pytest.raises(ar.ArchiveError, match="must change"):
+        ar.validate_correction(same)
+    extra = _correction(s["state_id"], H("wrong"), H("right"))
+    extra["note"] = "x"
+    with pytest.raises(ar.ArchiveError):
+        ar.validate_correction(extra)
+
+
+def test_an_unmeasured_refusal_has_no_credit_and_is_not_a_flown_child():
+    r = root()
+    refused = ar.build_state(artefact_hashes={"delivery_rule_table": H("rule")}, parent_id=r["state_id"], iteration=1,
+                             operator_class="delivery", candidate_id="cand-rule", verdict="refused", arm="typed",
+                             refusal_code="offline-family-unsupported")
+    assert refused["credit"] is None and refused["read"] is None and refused["refusal_code"] == "offline-family-unsupported"
+    with pytest.raises(ar.ArchiveError):
+        ar.build_state(artefact_hashes={"delivery_rule_table": H("r2")}, parent_id=r["state_id"], iteration=1, operator_class="delivery",
+                       candidate_id="c", verdict="accepted", arm="typed", refusal_code="offline-family-unsupported")
+    with pytest.raises(ar.ArchiveError):
+        ar.build_state(artefact_hashes={"delivery_rule_table": H("r3")}, parent_id=r["state_id"], iteration=1, operator_class="delivery",
+                       candidate_id="c", verdict="refused", arm="typed", refusal_code="made-up")
+    states = [r, refused, refused | {"state_id": H("second"), "candidate_id": "cand-rule-2"}]
+    chosen = pc.choose_parent(states)
+    assert chosen["ranking"][0]["n_children"] == 0 and chosen["masked_classes"] == []      # two unmeasured refusals mask nothing
+    curve = sel.curve(states, "typed")
+    assert curve[0]["marked"] == "unflown" and curve[0]["flown_children"] == []
+    meta = ms.build_meta_summary(states, "typed")
+    assert meta["rows"][0]["n_refused"] == 2 and meta["rows"][0]["mean_measured_slu_pp"] is None
