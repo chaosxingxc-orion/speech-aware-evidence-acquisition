@@ -9,8 +9,9 @@ written) and shown, in the manner of ``test_supply_column_cell_checks.py``, to:
 * clear the finite-completion, effect-floor (same-flight supply variant), harness-admission (typed columns) and flight-registration
   gates up to the refusals an unsigned, unminted, unready cell owes;
 * resolve its ``stage3_algorithm`` label (two algorithms in one fragment);
-* name, rather than hide, the one interface gap: lock v2.2 declares no ``ace-playbook`` store, so the loader's
-  ``verify_declared_module`` refuses an ace column until the lock layer does (the cell loads when it does).
+* compose on lock v2.3 (v2.2 plus the empty ``ace-playbook-i0`` declaration, decisions 263 A / 266-A), so the loader's
+  ``verify_declared_module`` accepts the ace column under the REAL carrier hooks, with no wrapper; only the ace release pins of
+  the iteration (zeros until it is prepared) remain a named blocker.
 
 No contact, no ledger row in the real ledger, no flip. Synthetic and aggregate only.
 """
@@ -47,7 +48,8 @@ from test_stage3_effect_floor_check import _declaration, _kinds as floor_kinds  
 from speech_aware_evidence_acquisition.core import roster as roster_module  # noqa: E402
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
 from speech_aware_evidence_acquisition.core.stage3_algorithms import validate_stage3_algorithm_label  # noqa: E402
-from speech_aware_evidence_acquisition.rails import consumption_module as cm  # noqa: E402
+from speech_aware_evidence_acquisition.rails import consumption_module as cm
+from speech_aware_evidence_acquisition.rails.adapters import slurp_module_lock_v2_3 as lock_v2_3  # noqa: E402
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program  # noqa: E402
 from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config  # noqa: E402
 
@@ -182,23 +184,24 @@ def test_the_stage3_label_gate_accepts_the_derived_fragment(derived):
 
 
 # ---------------------------------------------------------------------------------------------------------------------------
-# the one named interface gap, and the cell loading once the lock layer declares the store
+# the cell loads under the REAL hooks (lock v2.3), and only the ace release pins of the iteration are pending
 # ---------------------------------------------------------------------------------------------------------------------------
 
 
-def test_the_loader_refuses_the_ace_column_until_the_lock_layer_declares_the_store(derived, monkeypatch):
+def test_the_loader_accepts_the_derived_cell_under_the_real_hooks_and_only_the_release_pins_are_pending(derived):
     document = baseline(derived.root)
     block = document["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY]
-    report = derived.result["loader_verification"]
-    assert report["ok"] is False and "ace-playbook" in report["refusal"] and "lock layer does not declare" in report["refusal"]
-    assert {b["id"] for b in derived.result["column"]["blockers"]} >= {"ace-playbook-store-not-in-lock-layer", "ace-release-pins-pending"}
-    # with the store declared by the lock layer (the hooks wrapper), the SAME cell verifies and loads
-    hooks = dv.hooks_with_ace_store({"iteration": 1})
-    monkeypatch.setattr(cm, "resolve_carrier_hooks", lambda profile, repo_root=None: hooks)
-    cm.verify_declared_module(block, document, repo_root=derived.root)
+    assert block["lock"] == tf.LOCK == "v2.3" and tf.PARENT_LOCK == "v2.2"
+    assert not hasattr(dv, "hooks_with_ace_store")                   # the wrapper workaround is gone
+    assert derived.result["loader_verification"] == {"ok": True, "refusal": None}
+    assert {b["id"] for b in derived.result["column"]["blockers"]} == {"ace-release-pins-pending"}
+    cm.verify_declared_module(block, document, repo_root=derived.root)      # the real hooks resolve the profile
     parsed = load_native_episode_config(dict(document, carrier_lock_key="slurp"), default_phase_program(document["policy"]))
     group = parsed.supply_variant_group
     assert group.arm_ids == ("ace", "aa", "lock") and group.arm_visits == "first" and parsed.max_contacts == 4
+    # the primary ace-playbook store is the lock's own declaration of the empty release i0
+    assert document["knowledge_stores"][tf.ACE_STORE_ID]["release"] == lock_v2_3.ACE_I0_RELEASE
+    assert document["knowledge_stores"][tf.ACE_STORE_ID]["snapshot"] == lock_v2_3.ACE_I0_SNAPSHOT
 
 
 # ---------------------------------------------------------------------------------------------------------------------------
@@ -297,7 +300,7 @@ def test_harness_admission_compiles_typed_supply_columns_and_names_the_ace_store
     switch["on"] = on
     failures = harness_t.hac._check_module_switch(switch, REPO, "entry", entry.get("status"))
     assert not [f for f in failures if "does not compile" in f], failures
-    # the ace column (a release swap of a store the lock layer does not declare) is named, not hidden
+    # the ace column on the entry's OLD lock (v2.1 declares no ace-playbook store) does not compile: named, not hidden
     on = copy.deepcopy(on)
     on["columns"].append({"column_id": "ace", "kind": "supply", "node": "solver", "max_supplied_items": tf.COLUMN_MAX_SUPPLIED_ITEMS,
                           "release_swap": {"store_id": tf.ACE_STORE_ID, "release": "knowledge/slurp/semantic/ace-playbook-i1/release.json"}})

@@ -1,0 +1,51 @@
+{
+  "cache": "cold",
+  "completion": {
+    "relpath": "knowledge/slurp/semantic/ace-playbook-i0/completion.json",
+    "sha256": "1bd1e628995bb719280bfcfcc3ca2082eb3219cc671ec6d70e0b9016d382edff"
+  },
+  "contacts": {
+    "model": 0,
+    "scorer": 0,
+    "tool": 0
+  },
+  "decision": "263 A / 266-A",
+  "empty": true,
+  "iteration": 0,
+  "playbook_content_hash": "53268ec05f4efa67033cccc15005696fda57cf76516870a811b73f0a28592095",
+  "registration": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-v1/ace-playbook-i0-release-registration.json",
+    "sha256": "341a229eff789d66dfa077736983178575727ab38c158e3199001f40e933c65e"
+  },
+  "release": {
+    "relpath": "knowledge/slurp/semantic/ace-playbook-i0/release.json",
+    "sha256": "4013e503c35fbd44a6e40b0f05488ef2c2c124e0367665701c778728c1fd596d"
+  },
+  "schema": "saea-ace-playbook-i0-release-receipt-v1",
+  "snapshot": {
+    "relpath": "knowledge/slurp/semantic/ace-playbook-i0/snapshot.json",
+    "sha256": "3c9f36f9a3cea26d1c6b5e52c720022ba4f96ccf20c043023737202c8a12b1e2"
+  },
+  "source_split_identity_hash": "7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7",
+  "staging": {
+    "authored": {
+      "relpath": "prepared/SAEA-SLURP-ACE-PLAYBOOK-I0/authored-ace-playbook-i0.json",
+      "sha256": "65ca62c017617cf8c2e7bc19e3e967013056f7d1e1b46b24c4eb54f45874600a"
+    },
+    "empty": true,
+    "playbook": {
+      "content_hash": "53268ec05f4efa67033cccc15005696fda57cf76516870a811b73f0a28592095",
+      "relpath": "prepared/SAEA-SLURP-ACE-PLAYBOOK-I0/playbook-i0.json",
+      "sha256": "9ba0d1b368cffb6bc826b0ba5162b6578fbe0cdc47a1f70c82194bff57df0d74"
+    },
+    "row_count": 1,
+    "source": {
+      "relpath": "prepared/SAEA-SLURP-ACE-PLAYBOOK-I0/source-ace-playbook-i0.json",
+      "sha256": "04e39c7faa376182c7e2b6b35f2ac54fa9e33c3b9ef226a1f297b6b4c4ab84fb"
+    },
+    "wrap_receipt": {
+      "relpath": "prepared/SAEA-SLURP-ACE-PLAYBOOK-I0/source-ace-playbook-i0-wrap-receipt.json",
+      "sha256": "a20dd374a3d830ac8e528168db7d179e63429a0a4622b476acb8027520b97d0c"
+    }
+  }
+}

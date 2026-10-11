@@ -380,9 +380,9 @@ def test_open_cell_with_an_empty_typed_arm_is_legal_and_curates_the_playbook(wor
     assert len(playbook["items"]) == 18
     # no model-written item text reaches a receipt or the repository tree
     assert "epsilon" not in json.dumps(receipt)
-    # the loader's verdict on the ace column is the named interface gap, not an unexplained failure
-    assert "ace-playbook" in json.dumps(receipt["loader_verification"])
-    assert {b["id"] for b in receipt["blockers"]} >= {"ace-playbook-store-not-in-lock-layer"}
+    # the loader accepts the ace column under the real hooks (lock v2.3); only the release pins of the iteration are pending
+    assert receipt["loader_verification"] == {"ok": True, "refusal": None}
+    assert {b["id"] for b in receipt["blockers"]} == {"ace-release-pins-pending"}
     # no typed child in the archive
     assert [s for s in world.archive().states() if s["arm"] == "typed" and s["iteration"] > 0] == []
 

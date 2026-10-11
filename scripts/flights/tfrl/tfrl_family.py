@@ -83,7 +83,10 @@ TUNING_ROSTER, READ_ROSTER = "none", "SLURP-EVO-FOLD-B-V2"
 PARENT_SLUG = "nx-r6-perception-fold-b"          # the committed R6-P1 Fold B cell the Fold B pins are inherited from
 SESSION = "serving-slurp-native-candidate-five-train-a-np4-v1"
 SCORER = "slurp-slu-official-train"
-LOCK = "v2.2"
+#: The lock the iteration cells compose on: v2.3 = v2.2 + the ace-playbook store declared at the empty release i0 (decisions 263 A / 266-A;
+#: P-ACE-0: byte-identical requests). PARENT_LOCK is the lock the committed R6-P1 parent block names and the typed root state hashes.
+LOCK = "v2.3"
+PARENT_LOCK = "v2.2"
 
 # ---- the supply frame every column set shares (measured; re-measure at the FIT step) -------------------------------------------
 #: R1 Solver fit measure (docs/readiness/2026-10-09-slurp-nx-r1-solver-fold-b-v1/fit-measure-v1.json): the delivering arm's
