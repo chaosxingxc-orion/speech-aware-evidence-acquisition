@@ -21,11 +21,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-rec1-v1",
       "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
-      "composed_config_hash": "1888092e75002c8d3a03e0b51522a9ee7db7730dbaaf6a8efe8e2da89e6e4da0",
+      "composed_config_hash": "61c20dc0f4dde2dd1508e3172247fc1f2629f21fa4a93a56bdecdb0ce258b176",
       "experiment": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-rec1-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "542387244d615c52cb84135cbfce78b45debf2066f0ab88c05f8903091baeba7",
+      "protocol_hash": "bdc1bf705d6578a32efdc676809c3adb7bcb7ab5254e7ac308e6da137ef78a00",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"

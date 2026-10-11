@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "3d46e9ebac3db75af0212ee19139f1b75dd8fc2d9656fffd851a2b395719cd64"
+    "sha256": "7f5c5063226ae079e927d3be19cea1336e279a3d68b4a4047acc01186fced3cc"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1: Loop iteration 1 Fold B supply column under the preregistered selection rule.",
   "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",

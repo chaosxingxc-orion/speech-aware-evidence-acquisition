@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
-  "composed_config_hash": "1888092e75002c8d3a03e0b51522a9ee7db7730dbaaf6a8efe8e2da89e6e4da0",
+  "composed_config_hash": "61c20dc0f4dde2dd1508e3172247fc1f2629f21fa4a93a56bdecdb0ce258b176",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-rec1-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 64,
     "planned_speech_audio_seconds": 41,
-    "protocol_hash": "542387244d615c52cb84135cbfce78b45debf2066f0ab88c05f8903091baeba7",
+    "protocol_hash": "bdc1bf705d6578a32efdc676809c3adb7bcb7ab5254e7ac308e6da137ef78a00",
     "recovery": {
       "amendment": "RECOVERY 2026-10-11 (the cell's single one; coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (0 calls, 0 speech-seconds): the cumulative budget equals the original plan. The FIT cap is structural and unchanged (rows x max_contacts x endpoints per contact). The FIT attempt id also takes the rec1 suffix because the smoke is re-flown whole and a (run_id, attempt_id) pair is a one-time key.",
       "fit_cap_rule": "The FIT cap is structural: rows x max_contacts x endpoints per contact.",
@@ -61,7 +61,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "3d46e9ebac3db75af0212ee19139f1b75dd8fc2d9656fffd851a2b395719cd64"
+    "sha256": "7f5c5063226ae079e927d3be19cea1336e279a3d68b4a4047acc01186fced3cc"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
