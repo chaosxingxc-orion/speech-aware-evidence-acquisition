@@ -1527,6 +1527,11 @@ class LlamaServerTransport:
                 f"delivered content carries a reasoning marker ({leak}); refusing the response (reasoning_content_guard)"
             )
         envelope: dict[str, object] = {"text": text, "usage": usage}
+        if getattr(self, "_reasoning_content_guard", None):
+            # Owner decision 266-E (cap amendment): a reasoning core can spend its whole completion budget on reasoning and leave
+            # ``content`` empty. The server's finish reason is forwarded ONLY under the opt-in reasoning guard, so an empty delivery can
+            # be receipted as a cap hit (``rails.runner.EMPTY_COMPLETION_SCHEMA``); every other transport envelope is byte-identical.
+            envelope["finish_reason"] = choice.get("finish_reason") if isinstance(choice, Mapping) else None
         if self._preserve_wire_responses:
             # Keep the server bytes exactly as received. The adapter validates
             # the envelope and emits these fields on a separate trace channel;

@@ -941,6 +941,20 @@ class EvidenceAgentController:
                 # Record absence as state metadata while retaining empty answer
                 # bytes and their raw source hash for terminal delivery.
                 state_content = '{"schema":"saea-empty-phase-response-v1","response_text":""}'
+        if (
+            state_content == "" and response_text == ""
+            and not self._native_mode and index + 1 >= len(self._program.phases)
+        ):
+            # Owner decision 199 (empty is legal) at the direct-only boundary: a
+            # final non-native phase whose frozen core delivered no content (a
+            # thinking core that spent its whole completion budget on reasoning
+            # leaves ``message.content`` empty) seals the same explicit empty
+            # marker the execution-unit branch above uses, and the row delivers
+            # the empty answer bytes. The runner receipts the contact first
+            # (``saea-empty-completion-v1``); this branch only keeps the seal
+            # from raising. Added for a response that previously raised, so no
+            # flown cell's bytes move.
+            state_content = '{"schema":"saea-empty-phase-response-v1","response_text":""}'
         artifact = seal_phase_response_state(
             phase_name=phase.name,
             sample_id=context.sample_id,
