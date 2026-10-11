@@ -11,11 +11,11 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "1239e8432d95e15ffd980ce086165dc5f5334d1df7e7153e98b5f0b7ec2c7b15"
+      "sha256": "3d46e9ebac3db75af0212ee19139f1b75dd8fc2d9656fffd851a2b395719cd64"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/registered-facts-v1.json",
-      "sha256": "0c2291f5707c05b9f8507289ad7e6dad272ba8920ed0cd98f6cc7665a6a5dfb8"
+      "sha256": "86ed260da45287312d3000215863588e76f2f78b85c2aed47ddb4d5f84f12e96"
     },
     "registration_base_commit": "0000000000000000000000000000000000000000"
   },
@@ -47,6 +47,12 @@
   "claim_boundary": "No system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
   "decision": "Fly the loop iteration 1 Fold B supply column (ace, aa, lock).",
   "decision_id": "slurp-tfrl-loop-i1-admission-v1",
+  "eligible_attempt_ids": [
+    "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-generation-v1",
+    "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-fit-v1",
+    "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-rec1-v1",
+    "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-rec1-v1"
+  ],
   "eligible_run_ids": [
     "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1",
     "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-FIT-V1",
@@ -70,11 +76,16 @@
     "test_contact_authorized": false
   },
   "recorded_at_utc": null,
+  "recovery_note": "The predecessor attempt was refused at preflight, before any model contact: \"supply action 'ace' is invalid: knowledge store ace-playbook snapshot SHA-256 mismatch\". Root cause: the ACE snapshot pin was the file hash; corrected to the preparer's content hash (the re-derived column package, master commit 785b2fb9d). The smoke is re-flown whole under the rec1 attempt ids; the arm cell is untouched (its attempt never opened).",
   "schema": "saea-campaign-decision-v1",
   "service": {
     "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
     "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
     "no_child_start_stop": true
   },
-  "status": "DRAFT-NOT-MINTED"
+  "status": "DRAFT-NOT-MINTED",
+  "superseded_attempt_ids": [
+    "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+    "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1"
+  ]
 }

@@ -165,11 +165,51 @@ def text_only_blocks(ids: Mapping[str, Mapping]) -> dict:
     return out
 
 
+def recovery_budget(iteration: int, i: Mapping) -> dict:
+    """The recovered smoke's run-cumulative budget statement: the original plan, the failed attempts' recorded spend, their sum."""
+
+    spent_calls, spent_audio = tf.smoke_predecessor_spend(iteration)
+    cumulative_calls = int(i["execution_plan"]["planned_model_calls"])
+    cumulative_audio = int(i["execution_plan"]["planned_speech_audio_seconds"])
+    original_calls, original_audio = cumulative_calls - spent_calls, cumulative_audio - int(spent_audio + 0.999999999)
+    return {
+        "original_plan": {"planned_model_calls": original_calls, "planned_speech_audio_seconds": original_audio},
+        "failed_attempt_spend": {"model_calls": spent_calls, "speech_audio_seconds": spent_audio,
+                                 "attempt_ids": [p["attempt_id"] for p in tf.smoke_recovery(iteration)["predecessors"]]},
+        "cumulative_plan": {"planned_model_calls": cumulative_calls, "planned_speech_audio_seconds": cumulative_audio},
+        "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled.",
+    }
+
+
+def recovery_section(iteration: int, smoke: Mapping) -> str:
+    """The smoke-recovery (rec1) text of the README and the preregistration: failed attempt, root cause, rec1 ids, cumulative budget."""
+
+    rec = tf.smoke_recovery(iteration)
+    budget = recovery_budget(iteration, smoke)
+    return (
+        "\n## Smoke recovery (the cell's single recovery re-registration, rec1)\n\n"
+        f"{rec['reason']}\n\n{rec['amendment']}\n\n"
+        f"- Failed attempt: `{rec['predecessor_attempt_id']}` ({rec['predecessor_state']})\n"
+        f"- Root cause: {rec['root_cause']}.\n"
+        f"- Re-flown whole under generation attempt `{smoke['attempt_id']}` and FIT attempt `{smoke['fit_attempt_id']}`; the arm cell is "
+        "untouched (its attempt never opened); the run ids and the minted decision receipt are unchanged.\n"
+        f"- Run-cumulative plan budget: {budget['original_plan']['planned_model_calls']} + "
+        f"{budget['failed_attempt_spend']['model_calls']} = {budget['cumulative_plan']['planned_model_calls']} calls; "
+        f"{budget['original_plan']['planned_speech_audio_seconds']} + {budget['failed_attempt_spend']['speech_audio_seconds']:g} = "
+        f"{budget['cumulative_plan']['planned_speech_audio_seconds']} speech-seconds; the FIT cap stays structural.\n"
+        f"- Plans: `{tf.plan_file_name(iteration, 'smoke', 'generation')}`, `{tf.plan_file_name(iteration, 'smoke', 'fit')}` (the first-attempt "
+        "smoke plan files are superseded and removed from the package; the git history keeps them).\n"
+        f"- {rec['rule']}\n")
+
+
 def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, protocol_sha: str, pkg: str, route: Mapping[str, str],
-              purpose: Mapping[str, str]) -> dict:
+              purpose: Mapping[str, str], iteration: int | None = None) -> dict:
+    """Registered plan documents. ``iteration`` selects the loop iteration whose smoke recovery applies; ``None`` (the construction-source
+    package, which shares this builder) means no recovery and the historical plan file names."""
+
     docs = {}
     for kind, i in ids.items():
-        prefix = "smoke-" if kind == "smoke" else (f"{kind}-" if kind in ("typed", "ace") else "")
+        recovered = iteration is not None and kind == "smoke" and tf.smoke_recovery(iteration) is not None
         supply = {"relpath": f"prepared/{i['run_id']}/phase-supply-v1.json", "sha256": "MINTED_AT_THE_FLIP",
                   "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"}
         base = {"cell": i["cell"], "composed_config_hash": i["composed_config_hash"], "expected_session_id": tf.SESSION,
@@ -182,12 +222,17 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
         gen = dict(i["execution_plan"], attempt_id=i["attempt_id"], carrier_lock_key=i["carrier_lock_key"],
                    protocol_hash=i["protocol_hash"], run_id=i["run_id"], schema="saea-execution-plan-v1",
                    split_identity_hash=i["split_identity_hash"], study="speech-aware-evidence-acquisition")
-        docs[f"{prefix}generation-plan-registered-v1.json"] = {
-            **base, "execution_plan": gen, "execution_route": route[kind], "plan_kind": "generation", "purpose": purpose[kind],
+        extra = {}
+        if recovered:
+            # the smoke's single recovery (rec1): the plan carries the original plan plus the failed attempt's recorded spend (nx_r6 pattern)
+            gen["recovery"] = tf.smoke_recovery(iteration)
+            extra = {"recovery_budget": recovery_budget(iteration, i)}
+        docs[tf.plan_file_name(iteration, kind, "generation")] = {
+            **base, **extra, "execution_plan": gen, "execution_route": route[kind], "plan_kind": "generation", "purpose": purpose[kind],
             "schema": "saea-registered-generation-plan-v1"}
         if kind in ("arm", "smoke"):
             fit = dict(gen, attempt_id=i["fit_attempt_id"], run_id=i["fit_run_id"], planned_model_calls=i["family_budget"]["fit_endpoint_calls_cap"])
-            docs[f"{prefix}fit-plan-registered-v1.json"] = {
+            docs[tf.plan_file_name(iteration, kind, "fit")] = {
                 **base, "execution_plan": fit, "plan_kind": "fit", "schema": "saea-registered-fit-plan-v1",
                 "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
                 "purpose": f"{i['fit_run_id']}: request envelopes only; reads nothing."}
@@ -226,6 +271,9 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
         "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration; run-cumulative budgets.",
         "blockers": blockers,
     }
+    recovery = tf.smoke_recovery(iteration)
+    if recovery:
+        protocol["recovery"] = {"smoke": recovery}
     protocol_sha = wjson(root, f"{pkg}/protocol-registered-v1.json", protocol)
     route = {
         "arm": (f"Shared core.flight.cli campaign over {names['campaign']} (this arm alone; the in-flight twin aa is the null) through "
@@ -233,7 +281,9 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
         "smoke": "Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored."}
     purpose = {"arm": f"{arm['run_id']}: Loop iteration {iteration} Fold B supply column under the preregistered selection rule.",
                "smoke": f"{smoke['run_id']}: structural form proof only: no score and no read."}
-    plans = plan_docs(root, ids, commit, at, protocol_sha, pkg, route, purpose)
+    plans = plan_docs(root, ids, commit, at, protocol_sha, pkg, route, purpose, iteration)
+    for stale in tf.superseded_plan_file_names(iteration):      # the failed first-attempt smoke plans are superseded by the rec1 plans
+        (Path(root) / pkg / stale).unlink(missing_ok=True)
     shas = {name: wjson(root, f"{pkg}/{name}", doc) for name, doc in plans.items()}
     shas["protocol-registered-v1.json"] = protocol_sha
     recipe = {
@@ -270,6 +320,9 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
         "registration_basis": f"{DESIGN}; owner decision 263-A. DRAFT: nothing here authorises a flip or a flight.",
         "rows": tf.ROWS, "schema": "saea-registered-facts-v1", "stage3_measurement": blocks, "study_commit_at_registration": commit,
         "blockers": blockers, "status": "DRAFT-HELD",
+        **({"recovery": {"smoke": recovery,
+                         "smoke_plans": [tf.plan_file_name(iteration, "smoke", "generation"), tf.plan_file_name(iteration, "smoke", "fit")],
+                         "smoke_budget": recovery_budget(iteration, smoke)}} if recovery else {}),
     }
     shas["registered-facts-v1.json"] = wjson(root, f"{pkg}/registered-facts-v1.json", facts)
     draft = {
@@ -286,6 +339,9 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
         "decision": f"Fly the loop iteration {iteration} Fold B supply column ({', '.join(arms)}).",
         "decision_id": f"slurp-tfrl-loop-i{iteration}-admission-v1",
         "eligible_run_ids": [arm["run_id"], arm["fit_run_id"], smoke["run_id"], smoke["fit_run_id"]],
+        "eligible_attempt_ids": [arm["attempt_id"], arm["fit_attempt_id"], smoke["attempt_id"], smoke["fit_attempt_id"]],
+        **({"superseded_attempt_ids": [recovery["predecessor_attempt_id"], recovery["predecessor_fit_attempt_id"]],
+            "recovery_note": recovery["reason"]} if recovery else {}),
         "not_authorized": ["any flight before the cells are flipped and the receipt is minted", "touching the resident session",
                            "any ASR, transcript, encoder or paid-API contact", "--allow-output-change on the re-pin tool",
                            "any change beyond the registered arms", "substituting a candidate by hand"],
@@ -301,13 +357,15 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
               "Status: DRAFT / HELD. No exposure-ledger row, no countersignature, no flip. Generated by "
               "`scripts/flights/tfrl/write_tfrl_iteration_registration.py` from the derived fragments.\n\n"
               f"Arms: {', '.join(arms)} (program `{arm['program']}`). Loop protocol: `{tf.PROTOCOL_RELPATH}`.\n\n"
-              + ("## Blockers\n\n" + "\n".join(f"- `{b['id']}`: {b['detail']}" for b in blockers) + "\n" if blockers else ""))
+              + ("## Blockers\n\n" + "\n".join(f"- `{b['id']}`: {b['detail']}" for b in blockers) + "\n" if blockers else "")
+              + (recovery_section(iteration, smoke) if recovery else ""))
     shas["README.md"] = wr(root, f"{pkg}/README.md", readme)
     prereg = (f"# Loop iteration {iteration} (supply column): preregistration (DRAFT / HELD)\n\n"
               f"Registered {at[:10]} at study commit `{commit}` by script. Development numbers only.\n\n"
               f"Runs: `{arm['run_id']}` / `{arm['fit_run_id']}`; `{smoke['run_id']}` / `{smoke['fit_run_id']}`; read `{names['read_run_id']}`.\n\n"
               "## The measurement declaration\n\n```json\n"
-              + json.dumps({"stage3_measurement": blocks}, indent=2, ensure_ascii=False, sort_keys=True) + "\n```\n")
+              + json.dumps({"stage3_measurement": blocks}, indent=2, ensure_ascii=False, sort_keys=True) + "\n```\n"
+              + (recovery_section(iteration, smoke) if recovery else ""))
     shas["__prereg__"] = wr(root, pkgs["prereg"], prereg)
     return {"ids": ids, "shas": shas, "blocks": blocks, "arms": arms, "blockers": blockers, "package": pkg}
 
@@ -358,7 +416,7 @@ def proposers_package(root: Path, iteration: int, commit: str, at: str) -> dict:
     protocol_sha = wjson(root, f"{pkg}/protocol-registered-v1.json", protocol)
     route = {k: "Shared core.flight.cli worker/campaign on this cell alone through the batch driver (text-only, no audio part)." for k in kinds}
     purpose = {k: f"{ids[k]['run_id']}: text-only {'typed proposer' if k == 'typed' else 'ACE reflector'} contacts (form proof)." for k in kinds}
-    plans = plan_docs(root, ids, commit, at, protocol_sha, pkg, route, purpose)
+    plans = plan_docs(root, ids, commit, at, protocol_sha, pkg, route, purpose, iteration)
     shas = {name: wjson(root, f"{pkg}/{name}", doc) for name, doc in plans.items()}
     shas["protocol-registered-v1.json"] = protocol_sha
     facts = {"_note": "DRAFT facts for the two text-only cells.", "identity": ids, "registered_at_utc": at,
@@ -465,26 +523,80 @@ def draft_read_row(iteration: int, ids: Mapping[str, Mapping], at: str, pkg: str
     }
 
 
-def draft_column_rows(ids: Mapping[str, Mapping], commit: str, at: str, arms: list[str], pkg: str, shas: Mapping[str, str]) -> str:
-    cols = ["date", "run/experiment id", "execution profile", "scope", "model/tool", "speech carrier + split", "split role",
-            "split identity hash", "consumed", "calls", "speech audio seconds", "gpu hours", "inherited exposure", "artifacts", "notes"]
+LEDGER_COLUMNS = ["date", "run/experiment id", "execution profile", "scope", "model/tool", "speech carrier + split", "split role",
+                  "split identity hash", "consumed", "calls", "speech audio seconds", "gpu hours", "inherited exposure", "artifacts", "notes"]
+LEDGER_INHERITED = "TRAIN Fold B discovery rows already exposed by prior SLURP cells; this cell opens no split. Prior exposure is inherited in full."
+
+
+def iteration_of(ids: Mapping[str, Mapping]) -> int:
+    return int(ids["arm"]["experiment"].split("-i")[1].split("-")[0])
+
+
+def recovery_ledger_text(iteration: int, ids: Mapping[str, Mapping], fit: bool) -> str:
+    """The recovery wording of a recovered smoke's row notes: the failed attempt, its cause, the rec1 ids, the cumulative budget."""
+
+    rec, smoke = tf.smoke_recovery(iteration), ids["smoke"]
+    budget = recovery_budget(iteration, smoke)
+    what = "FIT attempt" if fit else "attempt"
+    predecessor = rec["predecessor_fit_attempt_id"] if fit else rec["predecessor_attempt_id"]
+    state = ("never opened; request envelopes only, no model contact" if fit else
+             f"OPENED, {budget['failed_attempt_spend']['model_calls']} contacts / {budget['failed_attempt_spend']['speech_audio_seconds']:g} "
+             "speech-seconds spent, refused at preflight 2026-10-11T13:22Z at flight commit 6cbd9c707 on \"supply action 'ace' is invalid: "
+             "knowledge store ace-playbook snapshot SHA-256 mismatch\"; the failed attempt is preserved unread")
+    return (
+        "RECOVERY RE-REGISTRATION (root-diagnosed, the cell's single one, 2026-10-11): this row SUPERSEDES the first-attempt row of the same "
+        f"run id (a run id carries exactly one ledger row at launch; the coordinator folds the earlier row into this one when countersigning). "
+        f"{what} {predecessor} {state}. Root cause: {rec['root_cause']}. The smoke is re-flown whole under the rec1 attempt ids "
+        f"(generation {smoke['attempt_id']}; FIT {smoke['fit_attempt_id']}), a (run_id, attempt_id) pair being a one-time key; the plan budget "
+        f"is run-cumulative across the attempts of the run id: the original plan plus the failed attempt's recorded spend, "
+        f"{budget['original_plan']['planned_model_calls']} + {budget['failed_attempt_spend']['model_calls']} = "
+        f"{budget['cumulative_plan']['planned_model_calls']} calls and {budget['original_plan']['planned_speech_audio_seconds']} + "
+        f"{budget['failed_attempt_spend']['speech_audio_seconds']:g} = {budget['cumulative_plan']['planned_speech_audio_seconds']} "
+        f"speech-seconds; the FIT cap stays structural ({smoke['family_budget']['fit_endpoint_calls_cap']}, not scaled); the arm is untouched. "
+        "A second failure closes the cell.")
+
+
+def column_row_cells(iteration: int, ids: Mapping[str, Mapping], kind: str, fit: bool, commit: str, at: str, arms: list[str], pkg: str,
+                     shas: Mapping[str, str]) -> list[str]:
     scope = (f"DRAFT -- REGISTERED. Frozen core, np4 session; the review-off COMP-1b module graph at lock v2.3 (v2.2 plus the empty ace-playbook-i0 declaration) with the Solver supply "
              f"arms {', '.join(arms)} (program {ids['arm']['program']}); no tool authority on any role")
-    inherited = "TRAIN Fold B discovery rows already exposed by prior SLURP cells; this cell opens no split. Prior exposure is inherited in full."
+    i = ids[kind]
+    recovered = kind == "smoke" and tf.smoke_recovery(iteration) is not None
+    plan = f"{pkg}/{tf.plan_file_name(iteration, kind, 'fit' if fit else 'generation')}"
+    calls = i["family_budget"]["fit_endpoint_calls_cap" if fit else "generation_calls_cap"]
+    notes = f"DRAFT at study commit {commit}; Plan SHA256 {shas.get(Path(plan).name, 'pending')}; nothing authorised."
+    if recovered:
+        notes += " " + recovery_ledger_text(iteration, ids, fit)
+    return [at[:10], i["fit_run_id"] if fit else i["run_id"], i["execution_profile"],
+            scope + (" -- FIT spend identity" if fit else "") + (" -- SMOKE RECOVERY rec1" if recovered else ""),
+            "frozen core (attach only)", f"slurp TRAIN Fold B {i['rows']}", "discovery", i["split_identity_hash"], "no", str(calls),
+            str(i["family_budget"]["repeated_speech_audio_seconds_cap"]), str(i["family_budget"]["gpu_hours_fit_inclusive"]),
+            LEDGER_INHERITED, plan, notes]
+
+
+def table_row(cells: list[str]) -> str:
+    return "| " + " | ".join(c.replace("|", "/") for c in cells) + " |"
+
+
+def recovery_ledger_rows(ids: Mapping[str, Mapping], commit: str, at: str, arms: list[str], pkg: str, shas: Mapping[str, str]) -> str:
+    """ONLY the recovered smoke's two DRAFT rows (generation, FIT), as continuing rows for the existing column block of the ledger."""
+
+    iteration = iteration_of(ids)
+    if not tf.smoke_recovery(iteration):
+        raise SystemExit(f"iteration {iteration} has no smoke recovery")
+    return "\n".join(table_row(column_row_cells(iteration, ids, "smoke", fit, commit, at, arms, pkg, shas)) for fit in (False, True)) + "\n"
+
+
+def draft_column_rows(ids: Mapping[str, Mapping], commit: str, at: str, arms: list[str], pkg: str, shas: Mapping[str, str]) -> str:
+    cols, inherited = LEDGER_COLUMNS, LEDGER_INHERITED
+    iteration = iteration_of(ids)
     lines = [f"## Loop iteration column cell (DRAFT, coordinator countersignature pending) -- {pkg}", "",
              "| " + " | ".join(cols) + " |", "| " + " | ".join("---" for _ in cols) + " |"]
     for kind in ("arm", "smoke"):
-        i = ids[kind]
         for fit in (False, True):
-            plan = f"{pkg}/{'smoke-' if kind == 'smoke' else ''}{'fit' if fit else 'generation'}-plan-registered-v1.json"
-            calls = i["family_budget"]["fit_endpoint_calls_cap" if fit else "generation_calls_cap"]
-            cells = [at[:10], i["fit_run_id"] if fit else i["run_id"], i["execution_profile"], scope + (" -- FIT spend identity" if fit else ""),
-                     "frozen core (attach only)", f"slurp TRAIN Fold B {i['rows']}", "discovery", i["split_identity_hash"], "no", str(calls),
-                     str(i["family_budget"]["repeated_speech_audio_seconds_cap"]), str(i["family_budget"]["gpu_hours_fit_inclusive"]),
-                     inherited, plan, f"DRAFT at study commit {commit}; Plan SHA256 {shas.get(Path(plan).name, 'pending')}; nothing authorised."]
-            lines.append("| " + " | ".join(c.replace("|", "/") for c in cells) + " |")
+            lines.append(table_row(column_row_cells(iteration, ids, kind, fit, commit, at, arms, pkg, shas)))
     arm = ids["arm"]
-    read_id = tf.names(int(arm["experiment"].split("-i")[1].split("-")[0]), "arm")["read_run_id"]
+    read_id = tf.names(iteration, "arm")["read_run_id"]
     read = [at[:10], read_id, "model-free-check",
             (f"The offline read of the loop iteration column: score the supply columns once each, node-local and paired reads, the "
              f"preregistered selection rule, by the recipe {pkg}/analysis-recipe-v1.json. Zero model, server, encoder, embedder, tokenizer "
@@ -502,8 +614,25 @@ def default_spec(iteration: int) -> dict:
     return {"typed": None, "parent": None, "ace": {"iteration": iteration}}
 
 
+def append_recovery_rows(root: Path, pkg: str, rows_text: str, marker: str) -> bool:
+    """Insert the recovery rows right after the package's last ledger row (continuing the existing column table); idempotent on ``marker``
+    (the rec1 attempt id, which only the recovery rows carry). Returns whether the ledger changed."""
+
+    path = Path(root) / LEDGER
+    text = io.open(path, encoding="utf-8", newline="").read()
+    if marker in text:
+        return False
+    lines = text.split("\n")
+    hits = [k for k, line in enumerate(lines) if line.startswith("| ") and f"{pkg}/" in line]
+    if not hits:
+        raise SystemExit(f"ledger: no row of {pkg} to append the recovery rows beside")
+    lines[hits[-1] + 1:hits[-1] + 1] = rows_text.rstrip("\n").split("\n")
+    io.open(path, "w", encoding="utf-8", newline="").write("\n".join(lines))
+    return True
+
+
 def write_iteration(root: Path, iteration: int, spec: Mapping[str, Any], commit: str, at: str, *, predicted_effect_pp: float = 0.0,
-                    with_proposers: bool = True, append_ledger: bool = False,
+                    with_proposers: bool = True, append_ledger: bool = False, append_recovery_ledger: bool = False,
                     pins: Mapping[str, Mapping[str, Any]] | None = None) -> dict:
     """Derive (into ``root``) and register an iteration's cells. ``pins``: ``{"typed": {...}, "ace": {...}}`` for the text-only cells."""
 
@@ -531,6 +660,10 @@ def write_iteration(root: Path, iteration: int, spec: Mapping[str, Any], commit:
         current = ledger.read_text(encoding="utf-8")
         ledger.write_text(current.rstrip("\n") + "\n\n" + ledger_text, encoding="utf-8", newline="\n")
         result["ledger_appended"] = True
+    if append_recovery_ledger:
+        ids = column["ids"]
+        rows_text = recovery_ledger_rows(ids, commit, at, column["arms"], column["package"], column["shas"])
+        result["recovery_ledger_appended"] = append_recovery_rows(root, column["package"], rows_text, ids["smoke"]["attempt_id"])
     result["loader_verification"] = loader
     return result
 
@@ -544,10 +677,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--predicted-effect-pp", type=float, default=0.0)
     parser.add_argument("--root", default=str(REPO_ROOT), help="repository (or overlay) root to read and write")
     parser.add_argument("--append-ledger", action="store_true", help="coordinator's act: append the DRAFT rows to docs/exposure-ledger.md")
+    parser.add_argument("--append-recovery-ledger", action="store_true",
+                        help="coordinator's act: insert ONLY the recovered smoke's two DRAFT rows (rec1) beside the package's existing ledger rows "
+                             "(idempotent; the countersigned rows are not edited)")
     args = parser.parse_args(argv)
     spec = json.loads(Path(args.spec).read_text(encoding="utf-8")) if args.spec else default_spec(args.iteration)
     result = write_iteration(Path(args.root), args.iteration, spec, args.study_commit, args.registered_at,
-                             predicted_effect_pp=args.predicted_effect_pp, with_proposers=False, append_ledger=args.append_ledger)
+                             predicted_effect_pp=args.predicted_effect_pp, with_proposers=False, append_ledger=args.append_ledger,
+                             append_recovery_ledger=args.append_recovery_ledger)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 

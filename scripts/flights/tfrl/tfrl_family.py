@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -124,6 +125,91 @@ def n_ace_carriers() -> int:
     return len(SCENARIOS)
 
 
+# ---- the smoke's single recovery (rec1), per iteration --------------------------------------------------------------------------
+#: A (run_id, attempt_id) pair is a one-time key (``runtime.preflight`` refuses reuse), so a smoke that stopped at an OPENED attempt is
+#: re-flown WHOLE under the ``-rec1`` attempt ids (generation AND FIT) with a recovery plan that carries the original plan plus the failed
+#: attempt's realised spend (the adapter budget is run-cumulative across the attempts of a run id). The same mechanism as
+#: ``scripts/flights/nx/nx_r6_family.SMOKE_RECOVERY`` (R6-P1, 2026-10-10); at most ONE recovery per cell, and the arm never has one here.
+#: Keyed by iteration; every identity, plan, ledger row and queue step reads this table, so no id is spelled twice.
+SMOKE_REC = "-rec1"
+_I1_SMOKE = "tfrl-loop-i1-fold-b-smoke-4"
+SMOKE_RECOVERIES: dict[int, dict] = {
+    1: {
+        "recovery_index": 1,
+        "predecessor_attempt_id": f"attempt-slurp-native-stage3-{_I1_SMOKE}-generation-v1",
+        "predecessor_fit_attempt_id": f"attempt-slurp-native-stage3-{_I1_SMOKE}-fit-v1",
+        "predecessor_state": (
+            "OPENED with 0 calls and 0 audio seconds (reserved 16 calls / 41 speech-seconds); refused at preflight 2026-10-11T13:22Z at "
+            "flight commit 6cbd9c707 before any model contact; preserved unread under the data root. The FIT attempt was never opened."
+        ),
+        "predecessors": [
+            {"attempt_id": f"attempt-slurp-native-stage3-{_I1_SMOKE}-generation-v1",
+             "state": "OPENED, refused at preflight before any contact", "contacts_spent": 0, "speech_seconds_spent": 0.0},
+        ],
+        "reason": (
+            "The predecessor attempt was refused at preflight, before any model contact: \"supply action 'ace' is invalid: knowledge store "
+            "ace-playbook snapshot SHA-256 mismatch\". Root cause: the ACE snapshot pin was the file hash; corrected to the preparer's "
+            "content hash (the re-derived column package, master commit 785b2fb9d). The smoke is re-flown whole under the rec1 attempt ids; "
+            "the arm cell is untouched (its attempt never opened)."
+        ),
+        "root_cause": "ACE snapshot pin was the file hash; corrected to the preparer's content hash",
+        "amendment": (
+            "RECOVERY 2026-10-11 (the cell's single one; coordinator brief, Fable 5.1). The generation budget is run-cumulative across the "
+            "attempts of the run id (core/model/adapter.py), so the rec1 plan carries the original plan plus the failed attempt's recorded "
+            "spend (0 calls, 0 speech-seconds): the cumulative budget equals the original plan. The FIT cap is structural and unchanged "
+            "(rows x max_contacts x endpoints per contact). The FIT attempt id also takes the rec1 suffix because the smoke is re-flown "
+            "whole and a (run_id, attempt_id) pair is a one-time key."
+        ),
+        "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
+        "fit_cap_rule": "The FIT cap is structural: rows x max_contacts x endpoints per contact.",
+    },
+}
+
+
+def smoke_recovery(iteration: int) -> dict | None:
+    """The iteration's smoke recovery record, or ``None`` when its smoke is on its first attempt."""
+
+    return SMOKE_RECOVERIES.get(iteration)
+
+
+def smoke_rec_suffix(iteration: int) -> str:
+    return SMOKE_REC if iteration in SMOKE_RECOVERIES else ""
+
+
+def smoke_predecessor_spend(iteration: int) -> tuple[int, float]:
+    """(model calls, speech seconds) the failed smoke attempts of the iteration spent, as recorded."""
+
+    rec = smoke_recovery(iteration)
+    if not rec:
+        return 0, 0.0
+    return (sum(int(p["contacts_spent"]) for p in rec["predecessors"]),
+            sum(float(p.get("speech_seconds_spent", 0.0)) for p in rec["predecessors"]))
+
+
+def smoke_cumulative_budget(iteration: int, original_calls: int, original_audio: int) -> tuple[int, int]:
+    """The run-cumulative smoke plan budget: the original plan plus the failed attempts' realised spend (audio rounded up)."""
+
+    calls, audio = smoke_predecessor_spend(iteration)
+    return original_calls + calls, math.ceil(original_audio + audio - 1e-9)
+
+
+def plan_file_name(iteration: int | None, kind: str, plan_kind: str) -> str:
+    """Package file name of a registered plan. The recovered smoke's plans carry the ``-rec1`` marker; every other plan is unchanged
+    (``iteration=None``: a package that is not a loop iteration, e.g. the construction source, has no recovery)."""
+
+    prefix = "smoke-" if kind == "smoke" else (f"{kind}-" if kind in ("typed", "ace") else "")
+    rec = smoke_rec_suffix(iteration) if (kind == "smoke" and iteration is not None) else ""
+    return f"{prefix}{plan_kind}-plan-registered{rec}-v1.json"
+
+
+def superseded_plan_file_names(iteration: int) -> list[str]:
+    """First-attempt smoke plan names a recovery supersedes (removed from the package; the failed attempt stays on the data root)."""
+
+    if not smoke_recovery(iteration):
+        return []
+    return [f"smoke-{k}-plan-registered-v1.json" for k in ("generation", "fit")]
+
+
 def names(iteration: int, kind: str) -> dict:
     """Identities of one iteration's cell. ``kind``: ``arm`` | ``smoke`` | ``typed`` | ``ace``."""
 
@@ -133,13 +219,14 @@ def names(iteration: int, kind: str) -> dict:
         smoke = kind == "smoke"
         slug = f"tfrl-loop-i{iteration}-fold-b"
         lo, up = ("-smoke-4" if smoke else ""), ("-SMOKE-4" if smoke else "")
+        rec = smoke_rec_suffix(iteration) if smoke else ""        # the smoke's single recovery (SMOKE_RECOVERIES); the arm has none
         return {
             "experiment": f"slurp-native-stage3-{slug}{lo}-v1",
             "baseline": f"slurp-native-stage3-{slug}{lo}-baseline-v1",
             "run_id": f"SAEA-SLURP-STAGE3-{slug.upper()}{up}-V1",
             "fit_run_id": f"SAEA-SLURP-STAGE3-{slug.upper()}{up}-FIT-V1",
-            "attempt_id": f"attempt-slurp-native-stage3-{slug}{lo}-generation-v1",
-            "fit_attempt_id": f"attempt-slurp-native-stage3-{slug}{lo}-fit-v1",
+            "attempt_id": f"attempt-slurp-native-stage3-{slug}{lo}-generation{rec}-v1",
+            "fit_attempt_id": f"attempt-slurp-native-stage3-{slug}{lo}-fit{rec}-v1",
             "prefix": "smoke-" if smoke else "",
             "campaign": f"configs/campaign/slurp-native-stage3-{slug}-v1.json",
             "read_run_id": f"SAEA-SLURP-STAGE3-{slug.upper()}-COLUMN-READ-V1",

@@ -248,6 +248,10 @@ def budgets(iteration: int, kind: str, contacts: int, repo_root: Path = REPO_ROO
     rows = tf.SMOKE_ROWS if kind == "smoke" else tf.ROWS
     calls = rows * contacts
     audio = audio_cap(kind, contacts, repo_root)
+    if kind == "smoke":
+        # The adapter's budget is RUN-CUMULATIVE across the attempts of a run id: a recovered smoke (tf.SMOKE_RECOVERIES) carries the original
+        # plan plus the failed attempts' realised spend. The FIT cap below is structural and is NEVER scaled.
+        calls, audio = tf.smoke_cumulative_budget(iteration, calls, audio)
     gpu = tf.PLANNED_GPU_HOURS_SMOKE if kind == "smoke" else tf.PLANNED_GPU_HOURS_ARM
     fam = {"asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0,
            "fit_endpoint_calls_cap": tf.fit_contact_cap(rows, contacts), "generation_calls_cap": calls,
@@ -331,6 +335,11 @@ def derive_iteration_experiment(iteration: int, kind: str, spec: Mapping[str, An
             "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops "
             "the iteration. The smoke is re-flown whole if it is re-flown at all, under at most one root-diagnosed recovery "
             "re-registration; a second failure closes the cell and the fix is proven on a four-row dry run.")
+        recovery = tf.smoke_recovery(iteration)
+        if recovery:
+            document["failure_policy"] += (
+                f" This smoke has used the cell's single root-diagnosed recovery re-registration (rec{recovery['recovery_index']}, "
+                f"{recovery['root_cause']}): a second failure closes the cell and the fix is proven on a four-row dry run.")
     else:
         document["purpose"] = (
             f"Loop iteration {iteration} on TRAIN Fold B 1,080 (owner decision 263-A, preregistered selection rule in "

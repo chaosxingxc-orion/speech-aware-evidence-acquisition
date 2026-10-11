@@ -1,5 +1,6 @@
 #!/bin/bash
 # Usage: repin_loop_generic.sh <repin-script> <readiness-dir> <cell> <plan-prefix: smoke-generation|generation> <commit-msg-file>
+# Optional env PLAN_REC (e.g. -rec1): the plan file is <plan-prefix>-plan-registered<PLAN_REC>-v1.json (a recovered smoke's plan name).
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 PY=/home/chao/.venvs/speechrl/bin/python
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
@@ -14,11 +15,12 @@ for pass in 1 2 3 4 5; do
   ERR=$(ls -t /home/chao/*-repin-*.err 2>/dev/null | head -1)
   if grep -q "neither its freshly composed config_hash" "$ERR"; then
     $PY - "$RD" "$PLAN" "$CELL" "$ERR" <<'PY'
-import io, json, re, sys, glob
+import io, json, os, re, sys, glob
 rd, plan, cell, errf = sys.argv[1:5]
+rec = os.environ.get("PLAN_REC", "")   # optional recovery marker of the plan file name, e.g. -rec1 (smoke-generation-plan-registered-rec1-v1.json)
 err = io.open(errf, encoding="utf-8").read()
 m = re.search(r"config_hash \(([0-9a-f]{64})\) nor protocol_hash \(([0-9a-f]{64})\)", err); new_c, new_p = m.group(1), m.group(2)
-reg = json.load(io.open(f"{rd}/{plan}-plan-registered-v1.json", encoding="utf-8"))
+reg = json.load(io.open(f"{rd}/{plan}-plan-registered{rec}-v1.json", encoding="utf-8"))
 assert reg["cell"] == cell, (reg["cell"], cell)
 old_c = reg["composed_config_hash"]; old_p = reg["execution_plan"]["protocol_hash"]
 files = sorted(glob.glob(f"{rd}/*")) + [f"{rd}-preregistration.md"]; total = 0

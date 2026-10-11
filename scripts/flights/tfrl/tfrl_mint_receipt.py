@@ -8,6 +8,10 @@ eligible run ids and the budget caps are the draft's and are not edited here.
 
     python scripts/flights/tfrl/tfrl_mint_receipt.py --iteration 1 --kind column [--coordinator "Fable5.1"] [--dry]
 
+SMOKE RECOVERY (rec1, ``tfrl_family.SMOKE_RECOVERIES``): a recovery changes attempt ids and the smoke's run-cumulative budget, never the run ids, so a
+receipt already minted from the earlier draft is neither overwritten (this tool refuses) nor re-minted; the regenerated draft lists the
+``eligible_attempt_ids`` (rec1) and the ``superseded_attempt_ids`` for the record, and eligibility is keyed by run id.
+
 ``--kind construction`` mints ``slurp-tfrl-construction-lock-r01c-admission-v1`` for the construction-source lock column and its smoke (the
 typed loop's proposer / reflector material source on R01C; ``--iteration`` is ignored). ``--kind column`` mints ``slurp-tfrl-loop-i<t>-admission-v1`` for the column cell and its smoke; ``--kind proposers`` mints
 ``slurp-tfrl-proposers-i<t>-admission-v1`` for the text-only typed proposer and ACE reflector cells (two eligible run ids, no FIT identity: text-only).

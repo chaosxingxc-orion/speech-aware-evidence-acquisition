@@ -14,7 +14,7 @@
   "blockers": [],
   "composed_config_hashes": {
     "arm": "a404d4d68d3152fb85ce8cfc5f281667b9b1b593eb7f4944ff66f6dae471b6e1",
-    "smoke": "89eb7037af7ba62542a0b3d51894b26137310a1ba6ba4c5234f49b3067f7aafb"
+    "smoke": "1888092e75002c8d3a03e0b51522a9ee7db7730dbaaf6a8efe8e2da89e6e4da0"
   },
   "fit": {
     "frame": {
@@ -72,11 +72,11 @@
     },
     "smoke": {
       "arm": "speech-feature-query-native-tools",
-      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-rec1-v1",
       "baseline_fragment": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
-      "composed_config_hash": "89eb7037af7ba62542a0b3d51894b26137310a1ba6ba4c5234f49b3067f7aafb",
+      "composed_config_hash": "1888092e75002c8d3a03e0b51522a9ee7db7730dbaaf6a8efe8e2da89e6e4da0",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -99,16 +99,16 @@
         "repeated_speech_audio_seconds_cap": 41
       },
       "fit": {
-        "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1",
+        "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-rec1-v1",
         "contact_cap": 64,
         "max_speech_packets": 1,
         "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1"
       },
-      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-rec1-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "program": "phase-native-module-v1-c4",
-      "protocol_hash": "026e704c07d5e82dbd0fa1aea23d2664c180415b7dd6329d6153a38416defff4",
+      "protocol_hash": "542387244d615c52cb84135cbfce78b45debf2066f0ab88c05f8903091baeba7",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1",
@@ -124,6 +124,49 @@
     "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt and the cells are flipped.",
     "No paper-scale profile. No system-level claim."
   ],
+  "recovery": {
+    "smoke": {
+      "amendment": "RECOVERY 2026-10-11 (the cell's single one; coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (0 calls, 0 speech-seconds): the cumulative budget equals the original plan. The FIT cap is structural and unchanged (rows x max_contacts x endpoints per contact). The FIT attempt id also takes the rec1 suffix because the smoke is re-flown whole and a (run_id, attempt_id) pair is a one-time key.",
+      "fit_cap_rule": "The FIT cap is structural: rows x max_contacts x endpoints per contact.",
+      "predecessor_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+      "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1",
+      "predecessor_state": "OPENED with 0 calls and 0 audio seconds (reserved 16 calls / 41 speech-seconds); refused at preflight 2026-10-11T13:22Z at flight commit 6cbd9c707 before any model contact; preserved unread under the data root. The FIT attempt was never opened.",
+      "predecessors": [
+        {
+          "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+          "contacts_spent": 0,
+          "speech_seconds_spent": 0.0,
+          "state": "OPENED, refused at preflight before any contact"
+        }
+      ],
+      "reason": "The predecessor attempt was refused at preflight, before any model contact: \"supply action 'ace' is invalid: knowledge store ace-playbook snapshot SHA-256 mismatch\". Root cause: the ACE snapshot pin was the file hash; corrected to the preparer's content hash (the re-derived column package, master commit 785b2fb9d). The smoke is re-flown whole under the rec1 attempt ids; the arm cell is untouched (its attempt never opened).",
+      "recovery_index": 1,
+      "root_cause": "ACE snapshot pin was the file hash; corrected to the preparer's content hash",
+      "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
+    },
+    "smoke_budget": {
+      "cumulative_plan": {
+        "planned_model_calls": 16,
+        "planned_speech_audio_seconds": 41
+      },
+      "failed_attempt_spend": {
+        "attempt_ids": [
+          "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1"
+        ],
+        "model_calls": 0,
+        "speech_audio_seconds": 0.0
+      },
+      "original_plan": {
+        "planned_model_calls": 16,
+        "planned_speech_audio_seconds": 41
+      },
+      "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
+    },
+    "smoke_plans": [
+      "smoke-generation-plan-registered-rec1-v1.json",
+      "smoke-fit-plan-registered-rec1-v1.json"
+    ]
+  },
   "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
   "registration_basis": "docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md; owner decision 263-A. DRAFT: nothing here authorises a flip or a flight.",
   "rows": 1080,
