@@ -6,7 +6,7 @@
         "prepare-supply",
         "worker"
       ],
-      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-rec1-v1",
       "baseline_fragment": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-baseline-v1",
       "cell_id": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
@@ -49,7 +49,7 @@
   },
   "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1",
-  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops the iteration. The smoke is re-flown whole if it is re-flown at all, under at most one root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run.",
+  "failure_policy": "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops the iteration. The smoke is re-flown whole if it is re-flown at all, under at most one root-diagnosed recovery re-registration; a second failure closes the cell and the fix is proven on a four-row dry run. This smoke has used the cell's single root-diagnosed recovery re-registration (rec1, ACE snapshot pin was the file hash; corrected to the preparer's content hash): a second failure closes the cell and the fix is proven on a four-row dry run.",
   "family_budget": {
     "asr_calls": 0,
     "ceilings_are_not_targets": true,

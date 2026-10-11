@@ -796,3 +796,15 @@ def test_the_gate_on_a_fresh_overlay_with_only_the_rec1_rows_owes_the_unsigned_r
     kinds = {f["kind"] for c in result["cells"] for f in c["findings"]}
     assert kinds <= {"not-ready", "row-not-countersigned", "receipt-missing", "registered-supply-binding"}, kinds
     assert "duplicate-row" not in kinds and "missing-row" not in kinds
+
+
+def test_the_close_step_reads_only_the_arm_flight_so_a_rec1_smoke_cannot_confuse_it():
+    """``close --iter t`` scores the ARM run's sealed attempt; it never opens the smoke run, so a smoke that flew under rec1 attempt ids is
+    invisible to it. ``open --stage cell`` only re-runs the writer, which is reproducible byte for byte (see the idempotence test above)."""
+
+    import re
+
+    source = (TFRL / "tfrl_loop_driver.py").read_text(encoding="utf-8")
+    assert not re.search(r"names\([^)]*['\"]smoke['\"]", source) and "smoke-4" not in source and "smoke_attempt" not in source
+    assert 'names = tf.names(t, "arm")' in source and 'run, attempt = names["run_id"], names["attempt_id"]' in source
+    assert tf.names(1, "arm")["attempt_id"] == "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-generation-v1"

@@ -164,7 +164,7 @@
     }
   },
   "native_contact_fit": {
-    "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1",
+    "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-rec1-v1",
     "contact_cap": 64,
     "max_speech_packets": 1,
     "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1"

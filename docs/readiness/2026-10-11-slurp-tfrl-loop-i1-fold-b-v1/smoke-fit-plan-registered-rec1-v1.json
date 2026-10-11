@@ -1,0 +1,71 @@
+{
+  "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
+  "composed_config_hash": "1888092e75002c8d3a03e0b51522a9ee7db7730dbaaf6a8efe8e2da89e6e4da0",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-rec1-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 64,
+    "planned_speech_audio_seconds": 41,
+    "protocol_hash": "542387244d615c52cb84135cbfce78b45debf2066f0ab88c05f8903091baeba7",
+    "recovery": {
+      "amendment": "RECOVERY 2026-10-11 (the cell's single one; coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (0 calls, 0 speech-seconds): the cumulative budget equals the original plan. The FIT cap is structural and unchanged (rows x max_contacts x endpoints per contact). The FIT attempt id also takes the rec1 suffix because the smoke is re-flown whole and a (run_id, attempt_id) pair is a one-time key.",
+      "fit_cap_rule": "The FIT cap is structural: rows x max_contacts x endpoints per contact.",
+      "predecessor_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+      "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1",
+      "predecessor_state": "OPENED with 0 calls and 0 audio seconds (reserved 16 calls / 41 speech-seconds); refused at preflight 2026-10-11T13:22Z at flight commit 6cbd9c707 before any model contact; preserved unread under the data root. The FIT attempt was never opened.",
+      "predecessors": [
+        {
+          "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+          "contacts_spent": 0,
+          "speech_seconds_spent": 0.0,
+          "state": "OPENED, refused at preflight before any contact"
+        }
+      ],
+      "reason": "The predecessor attempt was refused at preflight, before any model contact: \"supply action 'ace' is invalid: knowledge store ace-playbook snapshot SHA-256 mismatch\". Root cause: the ACE snapshot pin was the file hash; corrected to the preparer's content hash (the re-derived column package, master commit 785b2fb9d). The smoke is re-flown whole under the rec1 attempt ids; the arm cell is untouched (its attempt never opened).",
+      "recovery_index": 1,
+      "root_cause": "ACE snapshot pin was the file hash; corrected to the preparer's content hash",
+      "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
+    },
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 64,
+    "generation_calls_cap": 16,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 16,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 41
+  },
+  "loop_protocol": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json",
+    "status": "DRAFT-HELD"
+  },
+  "plan_kind": "fit",
+  "preparation_base_commit": "0000000000000000000000000000000000000000",
+  "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "3d46e9ebac3db75af0212ee19139f1b75dd8fc2d9656fffd851a2b395719cd64"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
+  "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
