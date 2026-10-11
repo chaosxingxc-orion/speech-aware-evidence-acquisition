@@ -6,6 +6,14 @@
 #   serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1|think-np4> [--dry-run] [--restart] [--min-host-free-gb 4.0]
 #                   [--margin-gb 0.5] [--wait-timeout 600] [--monitor-delay 20] [--no-restore]
 #                   [--gap-hook <script>]
+#   serving_swap.sh --stop-only [--dry-run]            stop the resident session and leave the card EMPTY (no target)
+#   serving_swap.sh <target> --start-only [--dry-run]  start <target> only when NOTHING else is resident (a different
+#                                                      resident geometry refuses with exit 10; the target already resident
+#                                                      is the usual readiness-checked no-op)
+#   The pair brackets a GPU window in which the card must hold no server (the Thinking packet encoder pass of the 266-E
+#   read: scripts/flights/direct/direct_fb_packets_gpu.sh). --stop-only needs no target, skips the host-memory and target
+#   precondition steps (nothing starts), and exits 0 "stopped" (or "no-op" when nothing was resident). It never restores:
+#   the caller owns the restore (a full `serving_swap.sh <previous>` or `--start-only`).
 #
 # In order:
 #   1. one swap at a time (flock on $SAEA_SWAP_LOCK) and the pending marker $SAEA_SWAP_PENDING, which refuses every
@@ -57,6 +65,8 @@ WAIT=600
 MONITOR_DELAY=20
 RESTORE=1
 GAP_HOOK=
+STOP_ONLY=0
+START_ONLY=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run) DRY=1 ;;
@@ -67,13 +77,23 @@ while [ $# -gt 0 ]; do
     --monitor-delay) MONITOR_DELAY=${2:-}; shift ;;
     --no-restore) RESTORE=0 ;;
     --gap-hook) GAP_HOOK=${2:-}; shift ;;
-    -h|--help) sed -n '2,45p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --stop-only) STOP_ONLY=1 ;;
+    --start-only) START_ONLY=1 ;;
+    -h|--help) sed -n '2,55p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     -*) echo "serving_swap: unknown option $1"; exit 64 ;;
     *) [ -z "$TARGET" ] || { echo "serving_swap: one target only"; exit 64; }; TARGET=$1 ;;
   esac
   shift
 done
-saea_geometry "$TARGET" || { echo "usage: serving_swap.sh <$(echo $SAEA_TARGETS | tr ' ' '|')> [--dry-run] [options]; see --help"; exit 64; }
+if [ "$STOP_ONLY" = 1 ]; then
+  [ "$START_ONLY" = 0 ] || { echo "serving_swap: --stop-only and --start-only are exclusive"; exit 64; }
+  [ -z "$TARGET" ] || { echo "serving_swap: --stop-only takes no target (it stops whatever is resident)"; exit 64; }
+  [ "$RESTART" = 0 ] && [ -z "$GAP_HOOK" ] || { echo "serving_swap: --stop-only takes neither --restart nor --gap-hook"; exit 64; }
+  TARGET=none; G_SID=none; G_FRAGMENT=none; G_SERVING_TASK=; G_MONITOR_TASK=; G_SERVING_ENTRY=; G_MONITOR_ENTRY=
+else
+  saea_geometry "$TARGET" || { echo "usage: serving_swap.sh <$(echo $SAEA_TARGETS | tr ' ' '|')> [--dry-run] [options] | --stop-only; see --help"; exit 64; }
+  [ "$START_ONLY" = 0 ] || [ "$RESTART" = 0 ] || { echo "serving_swap: --start-only and --restart are exclusive"; exit 64; }
+fi
 if [ -n "$GAP_HOOK" ]; then
   [ "$RESTART" = 1 ] || { echo "serving_swap: --gap-hook needs --restart"; exit 64; }
   [ -f "$GAP_HOOK" ] || { echo "serving_swap: --gap-hook script not found: $GAP_HOOK"; exit 64; }
@@ -148,8 +168,12 @@ else
 fi
 
 MISSING=
-for f in "$G_SERVING_ENTRY" "$G_MONITOR_ENTRY"; do [ -f "$SAEA_MAIN/$f" ] || MISSING="$MISSING $SAEA_MAIN/$f"; done
-if [ -n "$MISSING" ]; then record target-entries missing "$MISSING"; refuse 10; else record target-entries present "$G_SERVING_TASK=$G_SERVING_ENTRY $G_MONITOR_TASK=$G_MONITOR_ENTRY"; fi
+if [ "$STOP_ONLY" = 0 ]; then
+  for f in "$G_SERVING_ENTRY" "$G_MONITOR_ENTRY"; do [ -f "$SAEA_MAIN/$f" ] || MISSING="$MISSING $SAEA_MAIN/$f"; done
+  if [ -n "$MISSING" ]; then record target-entries missing "$MISSING"; refuse 10; else record target-entries present "$G_SERVING_TASK=$G_SERVING_ENTRY $G_MONITOR_TASK=$G_MONITOR_ENTRY"; fi
+else
+  record target-entries not-needed "--stop-only starts nothing"
+fi
 
 RES=$(bash "$SS" resident 2>&1)
 RES_RC=$?
@@ -175,7 +199,16 @@ FROM=$CUR
 SIDECARS=$(saea_cpu_sidecars)
 record cpu-sidecars "$([ -n "$SIDECARS" ] && echo present || echo none)" "$SIDECARS"
 
-if [ "$CUR" = "$TARGET" ] && [ "$RESTART" != 1 ]; then
+if [ "$START_ONLY" = 1 ] && [ "$CUR" != none ] && [ "$CUR" != unknown ] && [ "$CUR" != "$TARGET" ]; then
+  record start-only refused "--start-only needs an empty card but $CUR is resident; use a full swap or --stop-only first"
+  refuse 10
+fi
+if [ "$STOP_ONLY" = 1 ] && [ "$CUR" = none ] && [ "$REFUSE" = 0 ]; then
+  record plan no-op "--stop-only: nothing is resident, the card is already empty"
+  finish "$([ "$DRY" = 1 ] && echo dry-run || echo no-op)" "$REFUSE"
+fi
+
+if [ "$CUR" = "$TARGET" ] && [ "$RESTART" != 1 ] && [ "$STOP_ONLY" = 0 ]; then
   # Nothing is stopped or started, so no precondition can make the no-op unsafe: only the read-only readiness
   # check runs (a queue may ask for the geometry it already has while another flight holds the card).
   record plan no-op "$TARGET is already the resident geometry; readiness check only"
@@ -190,13 +223,20 @@ if [ "$CUR" = "$TARGET" ] && [ "$RESTART" = 1 ]; then
   record plan restart "--restart requested while $TARGET is already resident: falling through to a normal stop+start of the same geometry instead of the no-op path"
 fi
 
+if [ "$STOP_ONLY" = 1 ]; then
+  HM=; HM_RC=0
+  record host-memory not-needed "--stop-only starts nothing"
+else
 HM=$(bash "$SS" host-memory --min-host-free-gb "$MIN" --margin-gb "$MARGIN" 2>&1)
 HM_RC=$?
+fi
 HOST_FREE=$(printf '%s' "$HM" | python3 -c 'import json,sys; v=json.load(sys.stdin).get("host_free_gb"); print("null" if v is None else round(v, 2))' 2>/dev/null || echo null)
 [ -n "$HOST_FREE" ] || HOST_FREE=null
 case $HM_RC in
   0)
-    if [ "$HOST_FREE" = null ]; then
+    if [ "$STOP_ONLY" = 1 ]; then
+      :
+    elif [ "$HOST_FREE" = null ]; then
       record host-memory unavailable "no Windows reading; start's guard fails open, so the swap does too"
     else
       record host-memory admits "host free ${HOST_FREE} GB >= guard $MIN + margin $MARGIN GB (read with the current geometry still resident)"
@@ -207,17 +247,25 @@ case $HM_RC in
   *) record host-memory guard-unreadable "serving_session.sh host-memory exit $HM_RC: $HM"; refuse 8 ;;
 esac
 
-for name in $( [ "$CUR" != none ] && [ "$CUR" != unknown ] && { saea_geometry "$CUR"; echo "$G_SERVING_TASK $G_MONITOR_TASK"; } ) \
-            $(saea_geometry "$TARGET"; echo "$G_SERVING_TASK $G_MONITOR_TASK"); do
+if [ "$STOP_ONLY" = 1 ]; then
+  STATUS_NAMES=$( [ "$CUR" != unknown ] && { saea_geometry "$CUR"; echo "$G_SERVING_TASK $G_MONITOR_TASK"; } )
+else
+  STATUS_NAMES="$( [ "$CUR" != none ] && [ "$CUR" != unknown ] && { saea_geometry "$CUR"; echo "$G_SERVING_TASK $G_MONITOR_TASK"; } ) $(saea_geometry "$TARGET"; echo "$G_SERVING_TASK $G_MONITOR_TASK")"
+fi
+for name in $STATUS_NAMES; do
   task -Status "$name" >/dev/null 2>&1
   record task-status "$name" "$TASK_OUT"
 done
-saea_geometry "$TARGET"
+[ "$STOP_ONLY" = 1 ] || saea_geometry "$TARGET"
 
 PLAN="stop session $CUR (serving_session.sh stop, leftover wrapper killed, port $SAEA_SERVING_PORT verified free), stop its tasks"
 [ "$CUR" = none ] && PLAN="nothing resident to stop"
-PLAN="$PLAN; start $G_SERVING_TASK ($SAEA_MAIN/$G_SERVING_ENTRY), ${MONITOR_DELAY}s later $G_MONITOR_TASK ($SAEA_MAIN/$G_MONITOR_ENTRY); serving_wait_ready.sh $TARGET --since <start> --timeout $WAIT"
-if [ "$RESTORE" = 1 ] && [ "$CUR" != none ]; then PLAN="$PLAN; on failure restore $CUR the same way"; else PLAN="$PLAN; no restore"; fi
+if [ "$STOP_ONLY" = 1 ]; then
+  PLAN="$PLAN; start NOTHING (--stop-only: the card stays empty for the caller; no restore)"
+else
+  PLAN="$PLAN; start $G_SERVING_TASK ($SAEA_MAIN/$G_SERVING_ENTRY), ${MONITOR_DELAY}s later $G_MONITOR_TASK ($SAEA_MAIN/$G_MONITOR_ENTRY); serving_wait_ready.sh $TARGET --since <start> --timeout $WAIT"
+  if [ "$RESTORE" = 1 ] && [ "$CUR" != none ]; then PLAN="$PLAN; on failure restore $CUR the same way"; else PLAN="$PLAN; no restore"; fi
+fi
 record plan "$([ "$REFUSE" = 0 ] && echo go || echo refused)" "$PLAN"
 
 [ "$REFUSE" != 0 ] && finish refused "$REFUSE"
@@ -289,6 +337,10 @@ if [ "$CUR" != none ]; then
   if ! stop_geometry "$CUR"; then
     finish failed-stop 11
   fi
+fi
+if [ "$STOP_ONLY" = 1 ]; then
+  record stop-only stopped "the card is empty; $CUR was stopped and nothing was started (the caller restores)"
+  finish stopped 0
 fi
 if [ -n "$GAP_HOOK" ]; then   # step 5b: the restart gap; the hook's status is recorded, never fatal to the start
   record gap-hook start "$GAP_HOOK (port $SAEA_SERVING_PORT free, swap lock and pending marker held)"
