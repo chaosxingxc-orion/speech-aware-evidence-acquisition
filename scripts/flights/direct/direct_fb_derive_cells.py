@@ -289,12 +289,10 @@ def derive_experiment(key: str, parent_arm: dict, parent_smoke: dict) -> str:
         )
     rec = fam.recovery(key)
     if rec:
-        document["failure_policy"] += (
-            f" This cell has used its single root-diagnosed recovery re-registration (rec{rec['recovery_index']}, {rec['root_cause']}): "
-            "a second failure closes the cell and the fix is proven on a four-row dry run.")
+        # prose only (generation_budget is outside the request-identity proof); failure_policy stays byte-equal across the Instruct pair
         document["generation_budget"]["definition"] += (
-            f" Recovery rec1: the failed predecessor attempt {rec['predecessor_attempt_id']} spent {fam.predecessor_spend(key)[0]} contacts, so the "
-            "run-cumulative budget equals the original plan.")
+            f" Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt {rec['predecessor_attempt_id']} spent "
+            f"{fam.predecessor_spend(key)[0]} contacts, so the run-cumulative budget equals the original plan.")
     document.pop("analysis_binding", None)
     wr(out, dump_like(rd(f"configs/experiment/{fam.PARENT_EXPERIMENT}.json"), document))
     return out

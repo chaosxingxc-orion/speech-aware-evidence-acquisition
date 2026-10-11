@@ -161,6 +161,100 @@ def compose_cell(key: str) -> dict:
 
 
 
+def recovery_budget(key: str, caps: dict) -> dict:
+    """A recovered cell's run-cumulative budget statement: the original plan, the failed attempts' recorded spend, their sum."""
+
+    spent_calls, spent_audio = fam.predecessor_spend(key)
+    cumulative_calls, cumulative_audio = int(caps["generation_calls_cap"]), int(caps["repeated_speech_audio_seconds_cap"])
+    return {
+        "original_plan": {"planned_model_calls": cumulative_calls - spent_calls,
+                          "planned_speech_audio_seconds": cumulative_audio - int(spent_audio + 0.999999999)},
+        "failed_attempt_spend": {"model_calls": spent_calls, "speech_audio_seconds": spent_audio,
+                                 "attempt_ids": [p["attempt_id"] for p in fam.recovery(key)["predecessors"]]},
+        "cumulative_plan": {"planned_model_calls": cumulative_calls, "planned_speech_audio_seconds": cumulative_audio},
+        "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled.",
+    }
+
+
+def recovery_section(key: str, spec: dict, caps: dict) -> str:
+    """The rec1 text of the README and the preregistration: failed attempt, root cause, fix, rec1 ids, cumulative budget, untouched cells."""
+
+    rec, budget = fam.recovery(key), recovery_budget(key, caps)
+    untouched = ", ".join(f"`{fam.CELLS[k]['cell']}`" for k in fam.ALL_KEYS if k != key)
+    return (
+        f"\n## Recovery rec1: the {spec['role']} (the cell's single recovery re-registration)\n\n"
+        f"{rec['reason']}\n\n{rec['amendment']}\n\n"
+        f"- Failed attempt: `{rec['predecessor_attempt_id']}` ({rec['predecessor_state']})\n"
+        f"- Root cause: {rec['root_cause']}.\n"
+        f"- Fix: every 266-E baseline fragment now pins the fold-excluded knowledge view `{fam.KNOWLEDGE_SNAPSHOT_RELPATH}` "
+        f"(sha256 `{fam.KNOWLEDGE_SNAPSHOT_SHA256}`); the single source is `scripts/flights/direct/direct_fb_family.py` and "
+        "`direct_fb_derive_cells.py` writes it. The direct-only program supplies no evidence, so the pin changes no request; it only has to pass the runner's roster guard.\n"
+        f"- Re-flown whole under generation attempt `{spec['attempt']}` and FIT run `{spec['fit_run']}` / attempt `{spec['fit_attempt']}`; "
+        f"the generation run id `{spec['run']}` and the minted decision receipt are unchanged.\n"
+        f"- Run-cumulative plan budget: {budget['original_plan']['planned_model_calls']} + {budget['failed_attempt_spend']['model_calls']} = "
+        f"{budget['cumulative_plan']['planned_model_calls']} calls; {budget['original_plan']['planned_speech_audio_seconds']} + "
+        f"{budget['failed_attempt_spend']['speech_audio_seconds']:g} = {budget['cumulative_plan']['planned_speech_audio_seconds']} "
+        "speech-seconds; the FIT cap stays structural.\n"
+        f"- Plans: `{fam.plan_file_name(key, 'generation')}`, `{fam.plan_file_name(key, 'fit')}` (the first-attempt plan files are superseded and removed "
+        "from the package; the git history keeps them, and the failed attempt stays on the data root).\n"
+        f"- Unchanged cells (their attempts never opened; they take only the knowledge pin): {untouched}.\n"
+        f"- {rec['rule']}\n")
+
+
+LEDGER_COLUMN_NAMES = ["date", "run/experiment id", "execution profile", "scope", "model/tool", "speech carrier + split", "split role",
+                       "split identity hash", "consumed", "calls", "speech audio seconds", "gpu hours", "inherited exposure", "artifacts", "notes"]
+RECOVERY_LEDGER_MARK = "## Cell 266-E recovery rec1: the Instruct arm re-registration"
+
+
+def ledger_row(registered_at, run_id, profile, scope, model_tool, carrier, split_hash, calls, audio, gpu, artifact, notes, consumed="no") -> str:
+    line = " | ".join(["", registered_at, run_id, profile, scope, model_tool, carrier, "discovery", split_hash, consumed, str(calls), str(audio), str(gpu),
+                        INHERITED, artifact, notes, ""]).strip()
+    if line.count("\n") or line.count("|") != 16:
+        raise SystemExit(f"a ledger row is malformed ({line.count('|')} pipes)")
+    return line
+
+
+def recovery_ledger_block(key: str, entry: dict, registered_at: str, base_commit: str, worktree: str, branch: str, plan_shas: dict) -> str:
+    """The two DRAFT rows of a recovered cell (generation, FIT) as one new ledger block; the first-attempt rows stay exactly as they are."""
+
+    spec, caps, rec = entry["spec"], entry["caps"], fam.recovery(key)
+    budget = recovery_budget(key, caps)
+    inst_tool = (f"Frozen Q4_K_M decoder-only build 04ccc72a, c98304 np4 x 24,576 max512 ({fam.INSTRUCT_MODEL}); promoted EVO-FOLDS-V2 speech packets; "
+                 "direct-only phase program; no tool authority")
+    common = (f"RECOVERY RE-REGISTRATION (root-diagnosed, the cell's single one, {rec['recovered_at']}): this row SUPERSEDES the first-attempt row of the same run id "
+              "(the coordinator folds the earlier row into this one when countersigning). ")
+    gen_notes = (
+        f"REGISTERED (DRAFT, root countersignature pending) {registered_at[:10]} at base commit {base_commit} by the 266-E knowledge-pin recovery agent "
+        f"(worktree {worktree}, branch {branch}); owner decision 266-E. {common}Attempt {rec['predecessor_attempt_id']} {rec['predecessor_state']} "
+        f"Root cause: {rec['root_cause']}. The cell is re-flown whole under generation attempt {spec['attempt']}, a (run_id, attempt_id) pair being a one-time key; "
+        f"the plan budget is run-cumulative across the attempts of the run id: the original plan plus the failed attempt's recorded spend, "
+        f"{budget['original_plan']['planned_model_calls']} + {budget['failed_attempt_spend']['model_calls']} = {budget['cumulative_plan']['planned_model_calls']} calls and "
+        f"{budget['original_plan']['planned_speech_audio_seconds']} + {budget['failed_attempt_spend']['speech_audio_seconds']:g} = "
+        f"{budget['cumulative_plan']['planned_speech_audio_seconds']} speech-seconds. Composed config {entry['config_hash']}, protocol {entry['protocol_hash']} "
+        f"(the re-pin tool rewrites both at the flip). A second failure closes the cell. "
+        f"HELD: this registration performs no contact and authorises none.")
+    fit_notes = (
+        f"REGISTERED (DRAFT, root countersignature pending) {registered_at[:10]} at base commit {base_commit} by the 266-E knowledge-pin recovery agent "
+        f"(worktree {worktree}, branch {branch}); owner decision 266-E. {common}The FIT row of {spec['run']} under the rec1 identities: FIT run {spec['fit_run']}, "
+        f"FIT attempt {spec['fit_attempt']} (supersedes FIT run {rec['predecessor_fit_run_id']} / attempt {rec['predecessor_fit_attempt_id']}, never opened). "
+        f"Root cause: {rec['root_cause']}. The FIT cap stays structural ({caps['fit_endpoint_calls_cap']}, not scaled); speech seconds and GPU hours are the "
+        "generation row's ceilings, shared and not additive. HELD: this registration performs no contact and authorises none.")
+    gen = ledger_row(registered_at, spec["run"], "bounded-discovery-probe",
+                     f"Cell 266-E {spec['role']} -- RECOVERY rec1: the sealed direct-only form on TRAIN Fold B on the {spec['core']} core, re-flown whole under the fold-excluded knowledge pin; a capability read, no mechanism, no claim.",
+                     inst_tool, "slurp TRAIN Fold B 1,080", entry["split"], caps["generation_calls_cap"], caps["repeated_speech_audio_seconds_cap"],
+                     caps["gpu_hours_fit_inclusive"], fam.package_file(fam.plan_file_name(key, "generation")), gen_notes)
+    fit = ledger_row(registered_at, spec["fit_run"], "bounded-discovery-probe",
+                     f"Cell 266-E {spec['role']} -- RECOVERY rec1 live phase-fit spend identity, request envelopes only, no generation.",
+                     inst_tool, "slurp TRAIN Fold B 1,080", entry["split"], caps["fit_endpoint_calls_cap"], caps["repeated_speech_audio_seconds_cap"],
+                     caps["gpu_hours_fit_inclusive"], fam.package_file(fam.plan_file_name(key, "fit")), fit_notes)
+    header = (f"\n{RECOVERY_LEDGER_MARK} (DRAFT, root countersignature pending)\n\n"
+              f"Two unconsumed rows -- the recovered generation row and its rec1 live-phase-fit identity -- for the single recovery re-registration of the {spec['role']} of "
+              f"owner decision 266-E. Package {fam.PACKAGE}. Neither row is countersigned and neither authorises a contact; the first-attempt rows above are unchanged.\n\n"
+              "| " + " | ".join(LEDGER_COLUMN_NAMES) + " |\n"
+              "| " + " | ".join("---" for _ in LEDGER_COLUMN_NAMES) + " |\n")
+    return header + gen + "\n" + fit + "\n"
+
+
 PACKETS_RUNBOOK = '## Thinking speech packets: GPU window, command sequence, runtime and re-pin (the coordinator\'s; nothing here executes it)\n\n**Re-registration of 2026-10-11 (supersedes the CPU sidecar pass).** The first packet pass ran the Thinking encoder on a CPU sidecar (`q4km-thinking-preprocess-featcache-cpu-sidecar-np4-v1`, `-np 4 -ngl 0 --no-mmproj-offload`) at 16 to 19 s per row (4-row smoke 76.6 s; 50 of 1,076 Fold B rows in 799 s, about 4.7 h for Fold B). The owner ruled that rate unacceptable and the pass was STOPPED at 11:50Z after 50 rows (run id `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1`, attempt `attempt-packets-thinking-fold-b-v1`; the flight\'s one recovery re-registration was already spent on the smoke). It stays in the record as SUPERSEDED: its fragment, run id, roots (`/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6`, `/home/chao/feat-cache/slurp-thinking-q4km`) and its chain (`direct_fb_packets.sh`, which now refuses without `--allow-cpu`) are unchanged. Root cause of the rate: every fast preprocess in this repository runs the encoder on the GPU (`q4km-e21-feature-preprocess-gpu-cddb000c-np1`: `-c 8192 -np 1 -ngl 999 -fa on -ctk q8_0 -ctv q8_0 -b 512 -ub 128`); the Thinking fragment had copied the CPU sidecar geometry instead. CPU- and GPU-made encoder outputs are not bit-identical, so the GPU pass has its OWN packet root and legacy cache and never mixes with the 50 CPU-made rows.\n\nDriver `scripts/slurp_fold_preprocess_thinking.py --geometry gpu` (the default; a sibling of `scripts/slurp_evo_fold_preprocess.py`, which is not modified: it loads that driver and reuses its\nhelpers, so the packet format, the promotion receipt shape and the roster logic are the Instruct ones) and chain `scripts/flights/direct/direct_fb_packets_gpu.sh`.\nTwo attempts of ONE run id (`SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1`, plan budget run-cumulative, row total 1,084 calls / 3,165 speech seconds = the 1,080-row total plus the 4-row smoke attempt):\n`thinking-smoke-4` (attempt `attempt-packets-thinking-gpu-smoke-4-v1`: the first four Fold B rows, encoded into the GPU legacy cache only: no packet, no promotion receipt, packet root stays empty; the proof of the fixed form) and `thinking-fold-b` (attempt `attempt-packets-thinking-gpu-fold-b-v1`: the 1,076 cold rows encoded, the smoke\'s four warm rows are not contacted again, then all 1,080 promoted into the empty root and the promotion receipt written). The GPU server is `q4km-thinking-feature-preprocess-gpu-np1-v1` (`-c 16384 -np 1 -ngl 999 -fa on -ctk q8_0 -ctv q8_0 -b 512 -ub 128`, `GGML_CUDA_DISABLE_GRAPHS=1`, decoder AND bf16 mmproj on the GPU) under `docs/receipts/runtime-q4km-thinking-preprocess-gpu.json` (the same pinned featcache build and Thinking GGUF pins as the CPU receipt; its llama-server binary hash was re-read on the host and equals the receipt). One worker: the server batches at its own `-np 1`.\n\nThe 24 GB card holds ONE core. The resident Instruct serving session (about 22.9 GB) must be stopped for the GPU encoder, and the Thinking serving session (`think-np4`) starts afterwards so the flight can follow. The chain owns that window end to end (`serving_swap.sh --stop-only`, the smoke, a rate gate, Fold B, `serving_swap.sh think-np4 --start-only`; on ANY failure `serving_swap.sh slurp-np4 --start-only` restores the Instruct geometry and the exit code names the failed step; exit 25 means the restore itself failed and the card may be empty). The driver refuses to start while any serving session is recorded resident, anything listens on port 8080 or GPU memory is in use.\n\nCommand sequence:\n\n1. Countersign the exposure row `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1` (root\'s act; it is in the block "Cell 266-E packets re-registration" at the end of `docs/exposure-ledger.md`): replace its whole notes cell with the text in\n   "Countersign text" below. The chain refuses a row that still says DRAFT, lacks the words "root countersigned", is consumed, or whose numbers or split identity differ.\n2. `bash scripts/flights/direct/direct_fb_packets_gpu.sh --check` -- every guard, both driver dry-runs and `serving_swap.sh --stop-only --dry-run`, no side effects. Guards: clean tree; no generation flight, lease,\n   batch driver or `flight.lock`; no other llama-server and no packet driver; host-available memory at least 8 GB (`PACKETS_START_FLOOR_GB`) and 5 GB free disk; ledger row countersigned; the\n   dry-run of each roster (pins equal the umbrella lock and the committed runtime receipt, roots empty, smoke rows are the Fold B prefix; the dry-run reports the serving state as information and never refuses over the resident Instruct session); the Thinking serving entries exist.\n3. `bash scripts/flights/direct/direct_fb_packets_gpu.sh --task` (starts the Windows task `SAEA-Packets-THINK-GPU`, which survives the session) or `--run [--stage all|smoke|fold-b]`\n   in a foreground shell. The window: hold the idle watchdog (`/home/chao/saea-queue/watchdog.hold`, created if absent; it STAYS in place after a successful window and is removed only after the Instruct restore, README serving checklist step 9),\n   stop Instruct, smoke (4 rows), the rate gate (`--smoke-rate`: the projected Fold B encode must stay within `--max-fold-seconds`, default 3,000 s, else the window restores Instruct with exit 23), Fold B (encode, then promote), start Thinking and wait for strict readiness.\n   `--stage smoke` is a short window that ends on the Instruct geometry; `--stage fold-b` is the second window after it. Do not start a swap, a flight or another sidecar while it runs; use a recovery file `/home/chao/direct-fb-packets-gpu.recovery` (NOT the CPU run\'s `direct-fb-packets.recovery`).\n4. Read: the window summary with every event timestamp at `$SPEECHRL_DATA_DIR/prepared/slurp-direct-fb-thinking-packets-gpu-v1/window-summary.json` (also `window-events.tsv`, `swap-summaries.jsonl`, `encoder-report-<roster>.json`), the encoder receipts under\n   `$SPEECHRL_DATA_DIR/runs/SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1/attempt-packets-thinking-gpu-{smoke-4,fold-b}-v1/encoder-receipt.json` (device `gpu`, seconds per row, server arguments, llama.cpp build commit, decoder and\n   mmproj sha256, runtime receipt sha256, split identity, per-file sha256 -- packet and chunk feature hashes for Fold B, legacy cache file hashes for the smoke -- worker\n   counts, timings) and the promotion receipt `/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/EVO-FOLD-B-V2-promotion.json`. After a failed Fold B attempt whose cache\n   is fully warm, `python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-fold-b --promote-only --attempt-id <new id>` promotes with zero contacts (model-free, no GPU needed); any other\n   failure is the flight\'s one recovery re-registration, not a retry.\n5. `python -B scripts/slurp_fold_preprocess_thinking.py --pin-receipt` -- model-free: validates the promotion receipt with the runtime\'s own loader, checks that it covers exactly\n   the 1,080 Fold B rows under the committed Thinking GPU runtime receipt and the lock-verified decoder and mmproj, re-verifies every packet on disk, and PRINTS the two baseline\n   substitutions. Add `--write` to substitute the receipt\'s sha256 for the zero sentinel in the two Thinking baselines (it refuses to overwrite a different real pin). Do not\n   re-run `direct_fb_derive_cells.py` afterwards: it would write the sentinel back.\n6. Close the packets ledger row by hand (`consumed = yes`, measured contacts and seconds at the front of the notes); `ledger_mark_consumed.py` has no evidence rule for a packets row.\n7. Commit the two baselines, then the usual order: countersign the eight flight rows, `direct_fb_mint_receipt.py`, `direct_fb_flip.sh` (refuses while a zero sentinel remains), then\n   `refresh_registered_plan_pins.py` and flip again if it says so. Never `--allow-output-change`. The window leaves the Thinking session resident, so serving checklist step 3 is then a readiness-checked no-op.\n\nExpected runtime. There is NO GPU record for a SLURP Fold preprocess in this repository: the Instruct Fold B record (`docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/fold-packets/preprocess-fold-b.json`:\n1,080 contacts in 2,037.8 s at 4 workers = 0.53 rows per second) was itself a CPU sidecar pass (`-ngl 0`, the row\'s "2.0 gpu hours" is only the registered ceiling), and the Thinking CPU pass was about nine times slower than that for the same\ngeometry (cause not isolated). The GPU estimate is therefore a bound, not a measurement: per row the audio tower on the GPU plus a one-token decode of a short prompt is expected at 0.3 to 1.0 s at one worker, i.e. 5 to 18 minutes for the 1,076 cold rows (planning value 0.5 s per row, about 9 minutes),\npromotion about 11 s at 8 workers. Window total: Instruct stop about 1 minute, two Thinking GPU loads (smoke and Fold B; each includes the frozen-core GGUF hash and the model load, 1 to 3 minutes, the second likely page-cached), the encode above, the Thinking serving start and strict readiness wait 2 to 4 minutes: about 15 to 20 minutes typical, 30 minutes worst case, 0.25 to 0.5 GPU-h\n(registered ceiling 1.0). The 4-row smoke measures the real rate before Fold B is committed to; the rate gate stops the window if the projection exceeds 3,000 s.\n\nCountersign text for the packets row (replaces the whole notes cell; keep the words "root countersigned", and no draft marker):\n`REGISTERED BEFORE CONTACT (root countersigned <UTC timestamp> by root flight operations on the coordinator\'s brief: owner decision 266-E of 2026-10-11 and the owner ruling of 2026-10-11 that the CPU encode rate is unacceptable; label-free Thinking speech-packet preparation over TRAIN Fold B on the GPU encoder q4km-thinking-feature-preprocess-gpu-np1-v1 through scripts/slurp_fold_preprocess_thinking.py --geometry gpu via scripts/flights/direct/direct_fb_packets_gpu.sh inside a serving-swap window; the 4-row smoke attempt and the Fold B attempt share this row\'s 1,084 calls and 3,165 speech seconds; supersedes SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1, which was stopped after 50 rows; prior exposure inherited in full)`\n\nWhich registered files change hash:\n\n- By the pin step itself, exactly two: `configs/baseline/slurp-direct-only-fold-b-thinking-baseline-v1.json` and `configs/baseline/slurp-direct-only-fold-b-thinking-smoke-4-baseline-v1.json`\n  (one field each, `speech_packet_promotion_receipt_sha256`).\n- By THIS re-registration (already regenerated and committed with it by `direct_fb_write_registration.py`): the Thinking serving fragment and the two Thinking baselines name the GPU packet root, so the composed config hash and protocol hash of the\n  two Thinking cells (smoke and Thinking arm) changed once, and with them `protocol-registered-v1.json`, `registered-facts-v1.json`, `root-admission-draft-v1.json`, this README\'s cell table and all eight plan files (every plan pins the sha256 of `protocol-registered-v1.json`). The ledger rows of the eight flight cells still carry the plans\' earlier hashes in their draft text: the countersign step replaces that text and the re-pin below rewrites it.\n- By the flip\'s re-pin (`scripts/flights/repin_cell.py` through `direct_fb_flip.sh`, expected, to be confirmed from its diff): the pin step\'s sentinel substitution changes the baselines, so the composed config hash and protocol hash of the\n  two Thinking cells change again, and the registered files that carry them are re-pinned: `smoke-` and `thinking-` generation and fit plans, `protocol-registered-v1.json`,\n  `registered-facts-v1.json`, `root-admission-draft-v1.json`, this README\'s cell table, and the ledger rows of the four Thinking-side flight rows. Every one of the eight plans pins the sha256\n  of `protocol-registered-v1.json`, so all eight plan files re-pin once that file changes. The Instruct arm and replicate baselines, composed configs and protocol hashes do not change.\n- The smoke roster receipt `smoke-roster-receipt-v1.json` does NOT change: it holds roster ids, audio seconds and a parent pin, no packet or baseline field. Its sha256 is pinned by the plans, the\n  facts file and the ledger, so a change there would break those pins; none is expected or needed.\n- The packet root, the legacy cache and the encoder receipts live outside Git. The Instruct driver `scripts/slurp_evo_fold_preprocess.py` and the Instruct packet root do not change.\n\n'
 
 def main(argv: list[str] | None = None) -> int:
@@ -170,15 +264,38 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--branch", default="sonnet/266e-thinking-bare-read")
     parser.add_argument("--worktree", default="/home/chao/saea-worktrees/sonnet-266e")
     parser.add_argument("--append-ledger", action="store_true")
+    parser.add_argument("--append-recovery-ledger", action="store_true",
+                        help="append ONLY the recovered cell's two DRAFT rows (rec1) as a new ledger block; idempotent on the rec1 attempt id")
+    parser.add_argument("--recovery-registered-at", default=None,
+                        help="UTC timestamp of the recovery re-registration (default: now); recorded in the recovery plan and ledger rows")
+    parser.add_argument("--recovery-base-commit", default=None, help="the commit the recovery was registered on top of (default: --study-commit)")
+    parser.add_argument("--recovery-branch", default="sonnet/direct-fb-knowledge-pin-rec1")
+    parser.add_argument("--registered-hashes-ref", default=None,
+                        help="git revision whose root-admission-draft-v1.json carries the REGISTERED (pre-change) composed-config and protocol hashes: they are "
+                             "written into every registered document instead of the freshly composed ones, so the flip's re-pin (repin_cell.py, which rewrites "
+                             "the plans' hashes to the fresh ones across the package AND the ledger rows that quote them) converges. Without it the fresh hashes are written.")
+    parser.add_argument("--recovery-worktree", default="/home/chao/saea-worktrees/sonnet-dfb-kbfix")
     args = parser.parse_args(argv)
 
     cells = {key: compose_cell(key) for key in fam.ALL_KEYS}
+    from datetime import datetime, timezone  # noqa: PLC0415
+    import subprocess  # noqa: PLC0415
+
+    if args.registered_hashes_ref:
+        shown = subprocess.run(["git", "-C", str(REPO_ROOT), "show", f"{args.registered_hashes_ref}:{fam.package_file('root-admission-draft-v1.json')}"],
+                               capture_output=True, text=True)
+        if shown.returncode != 0:
+            raise SystemExit(f"cannot read the registered hashes at {args.registered_hashes_ref}: {shown.stderr.strip()}")
+        registered = json.loads(shown.stdout)["registered_hashes"]
+        for key in fam.ALL_KEYS:
+            cells[key]["config_hash"], cells[key]["protocol_hash"] = registered[key]["composed_config"], registered[key]["protocol"]
+
+    recovery_at = args.recovery_registered_at or datetime.now(timezone.utc).isoformat()
+    recovery_base = args.recovery_base_commit or args.study_commit
     pkg, pkg_name = fam.PACKAGE, fam.PKG_NAME
     run_ids = {key: cells[key]["spec"]["run"] for key in fam.ALL_KEYS}
     fit_ids = {key: cells[key]["spec"]["fit_run"] for key in fam.ALL_KEYS}
-    eligible = []
-    for key in fam.ALL_KEYS:
-        eligible += [run_ids[key], fit_ids[key]]
+    eligible = fam.eligible_run_ids()
     source_tree = f"studies/speech-aware-evidence-acquisition, worktree {args.worktree}, branch {args.branch}"
     arm_roster, smoke_roster = fam.roster_doc("arm"), fam.roster_doc("smoke")
 
@@ -283,6 +400,8 @@ def main(argv: list[str] | None = None) -> int:
         "serving": {"instruct_session": fam.INSTRUCT_SESSION, "thinking_session": fam.THINK_SESSION, "swap_target": "think-np4", "release_restore_checklist": CHECKLIST,
                     "thinking_packet_root": fam.THINK_PACKET_ROOT, "thinking_server_args": json.loads(rd(f"configs/model/{fam.THINK_MODEL}.json"))["server_args"]},
         "identity": {key: identity(cells[key]) for key in fam.ALL_KEYS},
+        "knowledge_snapshot": {"relpath": fam.KNOWLEDGE_SNAPSHOT_RELPATH, "sha256": fam.KNOWLEDGE_SNAPSHOT_SHA256,
+                               "note": "fold-excluded view (37,407 source rows; 0 Fold A and 0 Fold B ids); pinned by every 266-E baseline fragment"},
         "request_identity_proof_before_contact": {"instruct_vs_replicate_differing_composed_keys_outside_prose": differing, "none_of_them_enters_a_request": True},
         "budget_arithmetic": {key: arithmetic(cells[key]) for key in fam.ALL_KEYS},
         "read_rule": read_rule,
@@ -311,6 +430,9 @@ def main(argv: list[str] | None = None) -> int:
         "failure_policy": cells["thinking"]["document"]["failure_policy"],
         "development_numbers_only": "Every number is a discovery-roster development number (owner decisions 28 and 86) and never a test claim.",
         "prohibitions": facts["prohibitions"],
+        **({"recovery": {key: {**fam.recovery(key), "registered_at_utc": recovery_at, "base_commit": recovery_base,
+                              "knowledge_snapshot": {"relpath": fam.KNOWLEDGE_SNAPSHOT_RELPATH, "sha256": fam.KNOWLEDGE_SNAPSHOT_SHA256}}
+                         for key in fam.ALL_KEYS if fam.recovery(key)}} if any(fam.recovery(k) for k in fam.ALL_KEYS) else {}),
         "authority": f"{DECISIONS} owner decision 266 (A + E, 2026-10-11) and decisions 261, 242, 28, 86; {INSTRUMENT} rules 3 and 6 and section 2d",
     }
     protocol_sha = wjson(fam.package_file("protocol-registered-v1.json"), protocol)
@@ -333,6 +455,11 @@ def main(argv: list[str] | None = None) -> int:
             "protocol_document": {"relpath": fam.package_file("protocol-registered-v1.json"), "sha256": protocol_sha},
             "registered_at_utc": args.registered_at, "source_tree": source_tree,
             "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP", "unused_budget_is_not_attempt_authority": True}
+        if fam.recovery(entry["key"]):
+            document["recovery"] = {**fam.recovery(entry["key"]), "registered_at_utc": recovery_at, "base_commit": recovery_base,
+                                    "knowledge_snapshot": {"relpath": fam.KNOWLEDGE_SNAPSHOT_RELPATH, "sha256": fam.KNOWLEDGE_SNAPSHOT_SHA256}}
+            if generation:
+                document["recovery_budget"] = recovery_budget(entry["key"], caps)
         if generation:
             smoke = entry["key"] == "smoke"
             document["execution_route"] = (
@@ -352,8 +479,12 @@ def main(argv: list[str] | None = None) -> int:
 
     plan_shas = {}
     for key in fam.ALL_KEYS:
-        plan_shas[f"{key}-generation"] = wjson(fam.package_file(f"{key}-generation-plan-registered-v1.json"), plan_document(cells[key], "generation"))
-        plan_shas[f"{key}-fit"] = wjson(fam.package_file(f"{key}-fit-plan-registered-v1.json"), plan_document(cells[key], "fit"))
+        plan_shas[f"{key}-generation"] = wjson(fam.package_file(fam.plan_file_name(key, "generation")), plan_document(cells[key], "generation"))
+        plan_shas[f"{key}-fit"] = wjson(fam.package_file(fam.plan_file_name(key, "fit")), plan_document(cells[key], "fit"))
+        for stale in fam.superseded_plan_file_names(key):          # the failed first-attempt plans are superseded by the rec1 plans
+            stale_path = REPO_ROOT / fam.package_file(stale)
+            if stale_path.is_file():
+                stale_path.unlink()
 
     recipe = {
         "schema": "saea-slurp-core-read-analysis-recipe-v1", "recipe_id": fam.RECIPE_ID,
@@ -392,7 +523,11 @@ def main(argv: list[str] | None = None) -> int:
         "claim_boundary": "No system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim; a development-fold capability read.",
         "coordinator": "Fable5.1",
         "decision": "Fly the 266-E bare-core read: the sealed direct-only form on TRAIN Fold B on the Instruct core (twice, same chain) and on the Thinking core, after a four-row Thinking decode-cost smoke and the coordinator's sign-off.",
-        "decision_id": fam.DECISION_ID, "eligible_run_ids": eligible,
+        "decision_id": fam.DECISION_ID, "eligible_run_ids": fam.eligible_run_ids(),
+        **({"superseded_attempt_ids": [a for k in fam.ALL_KEYS if fam.recovery(k)
+                                       for a in (fam.recovery(k)["predecessor_attempt_id"], fam.recovery(k)["predecessor_fit_attempt_id"])],
+            "recovery_note": " ".join(fam.recovery(k)["reason"] for k in fam.ALL_KEYS if fam.recovery(k))}
+           if any(fam.recovery(k) for k in fam.ALL_KEYS) else {}),
         "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration per run id; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
         "not_authorized": ["any flight before the cells are flipped and the receipt is minted", "touching the serving geometry by anyone but the coordinator", "any ASR, transcript or paid-API contact",
                            "the Thinking packet-preparation encoder pass (its own row, lease and owner authorisation)", "persisting reasoning text or raw wire responses", "--allow-output-change on the re-pin tool",
@@ -407,6 +542,14 @@ def main(argv: list[str] | None = None) -> int:
     draft_sha = wjson(fam.package_file("root-admission-draft-v1.json"), draft)
 
     def countersign_text(label: str, run_id: str) -> str:
+        recovered = next((k for k in fam.ALL_KEYS if fam.recovery(k) and run_id in (cells[k]["spec"]["run"], cells[k]["spec"]["fit_run"])), None)
+        if recovered:
+            rec, spec = fam.recovery(recovered), cells[recovered]["spec"]
+            return ("REGISTERED BEFORE CONTACT (root countersigned <UTC timestamp> by root flight operations on the coordinator's brief: owner decision 266-E of 2026-10-11 "
+                    f"(bare-core read on TRAIN Fold B, Thinking versus Instruct); RECOVERY rec1 of the {spec['role']}, the cell's single root-diagnosed recovery re-registration: "
+                    f"{label}; the predecessor attempt {rec['predecessor_attempt_id']} {rec['predecessor_state']} Root cause: {rec['root_cause']}. Re-flown whole under "
+                    f"generation attempt {spec['attempt']} and FIT run {spec['fit_run']} / attempt {spec['fit_attempt']}; the plan budget is run-cumulative "
+                    f"(original plan + 0 spent); the decision receipt {fam.DECISION_RELPATH} is unchanged (it already lists the generation run id); the READ row stays a draft until the seal)")
         return ("REGISTERED BEFORE CONTACT (root countersigned <UTC timestamp> by root flight operations on the coordinator's brief: owner decision 266-E of 2026-10-11 "
                 f"(bare-core read on TRAIN Fold B, Thinking versus Instruct); {label}; the decision receipt {fam.DECISION_RELPATH} is minted by "
                 "scripts/flights/direct/direct_fb_mint_receipt.py after this countersignature; the READ row stays a draft until the seal)")
@@ -480,7 +623,8 @@ hash is absent or differs from the lock.
 | `root-admission-draft-v1.json` | the draft decision receipt (eight eligible run ids) |
 | `countersign-row-texts-v1.json` | the row texts root writes when countersigning |
 """
-    readme_sha = wr(fam.package_file("README.md"), readme)
+    recovery_md = "".join(recovery_section(k, cells[k]["spec"], cells[k]["caps"]) for k in fam.ALL_KEYS if fam.recovery(k))
+    readme_sha = wr(fam.package_file("README.md"), readme + recovery_md)
 
     prereg = f"""# Preregistration -- cell 266-E: the bare-core read on TRAIN Fold B, Thinking versus Instruct
 
@@ -535,7 +679,7 @@ smoke has sealed and `{fam.SIGNOFF_MARKER}` exists. At most one root-diagnosed r
 No system-level, superiority, generalisation, component-causal, admission, held-out, confirmatory or paper-scale claim. The Thinking model is admitted for
 this read only. Nothing here authorises a flight, a readiness flip or a serving swap.
 """
-    prereg_sha = wr(fam.PREREG, prereg)
+    prereg_sha = wr(fam.PREREG, prereg + recovery_md)
 
     # ---- ledger block -----------------------------------------------------
     ledger_state = "not appended"
@@ -595,6 +739,17 @@ this read only. Nothing here authorises a flight, a readiness flip or a serving 
             suffix = "" if text.endswith("\n") else "\n"
             wr(LEDGER, text + suffix + header + "\n".join(rows) + "\n")
             ledger_state = f"appended {len(rows)} rows"
+
+    if args.append_recovery_ledger:
+        recovered_keys = [k for k in fam.ALL_KEYS if fam.recovery(k)]
+        text = rd(LEDGER)
+        marker = cells[recovered_keys[0]]["spec"]["attempt"]
+        if marker in text:
+            ledger_state += "; recovery rows already present"
+        else:
+            blocks = "".join(recovery_ledger_block(k, cells[k], recovery_at, recovery_base, args.recovery_worktree, args.recovery_branch, plan_shas) for k in recovered_keys)
+            wr(LEDGER, text + ("" if text.endswith("\n") else "\n") + blocks)
+            ledger_state += f"; appended {2 * len(recovered_keys)} recovery rows"
 
     print(json.dumps({"package": pkg, "ledger": ledger_state, "pin_state": pin_state, "written": {
         "README.md": readme_sha, "analysis-recipe-v1.json": recipe_sha, "protocol-registered-v1.json": protocol_sha, "registered-facts-v1.json": facts_sha,
