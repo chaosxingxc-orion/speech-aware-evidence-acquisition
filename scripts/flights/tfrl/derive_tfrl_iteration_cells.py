@@ -540,8 +540,8 @@ def derive_text_only(iteration: int, kind: str, pins: Mapping[str, Any], *, repo
                                 "definition": (f"{contacts} carriers x (1 + {tf.RETRIES} registered retries) = {planned} calls, "
                                                "RUN-CUMULATIVE across every attempt of this run id; one phase, max_contacts 1.")}
     exp["stage3_algorithm"] = text_only_label(kind)
-    exp["purpose"] = (f"{what} Text-only form: no benefit is claimed (fewer than 200 rows). Aggregates of TRAIN Fold B credit; no per-row "
-                      "gold, no utterance text, no output text.")
+    exp["purpose"] = (f"{what} Text-only form: no benefit is claimed (fewer than 200 rows). Aggregates of the sealed construction-source lock column "
+                      "(R01C, TRAIN rows outside both folds) credit; no per-row gold, no utterance text, no output text.")
     exp["failure_policy"] = ("Stop on the first failure and preserve every contact; the registered retries are the only re-asks. "
                              "No re-sampling and no best-of-N over proposals.")
     exp["split_id_note"] = "The runtime split id equals the dataset fragment split_name; the population is the explicit populations block."

@@ -29,10 +29,20 @@ def _link_children(src: Path, dst: Path, skip: set[str]) -> None:
 
 
 def _seed_dir(src: Path, dst: Path) -> None:
+    """Seed ``dst`` from ``src``. Entries the loop writes (any name containing ``tfrl``) are COPIED, never linked: a write through a
+    symlink would overwrite the real repository file (the live iteration packages exist, so a test run would clobber them)."""
+
     dst.mkdir(parents=True, exist_ok=True)
     for child in sorted(src.iterdir()):
         target = dst / child.name
-        if not target.exists() and not target.is_symlink():
+        if target.exists() or target.is_symlink():
+            continue
+        if "tfrl" in child.name:
+            if child.is_dir():
+                shutil.copytree(child, target, symlinks=False)
+            else:
+                shutil.copyfile(child, target)
+        else:
             target.symlink_to(child, target_is_directory=child.is_dir())
 
 

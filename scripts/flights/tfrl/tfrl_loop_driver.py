@@ -315,10 +315,10 @@ def open_propose(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
 
             dv.derive_text_only(t, kind, pins[kind], repo_root=ctx.repo_root)
         proposers = reg.proposers_package(ctx.repo_root, t, commit, at)
-        artefacts = {"typed": {"tables_sha256": proposer_tables["tables_sha256"], "archive_sha256": archive_sha,
-                               "prompt_sha256": "pending"}, "ace": {"tables_sha256": credit_receipt_sha, "archive_sha256": archive_sha,
-                                                                    "prompt_sha256": "pending"}}
-        rows = reg.draft_text_only_rows(ctx.repo_root, t, proposers["ids"], proposers["shas"], at, artefacts)
+        # prompt_sha256 is omitted: the writer resolves it from configs/probes/tfrl/{typed-proposer,ace-reflector}-v1.txt
+        artefacts = {"typed": {"tables_sha256": proposer_tables["tables_sha256"], "archive_sha256": archive_sha},
+                     "ace": {"tables_sha256": credit_receipt_sha, "archive_sha256": archive_sha}}
+        rows = reg.draft_text_only_rows(ctx.repo_root, t, proposers["ids"], proposers["shas"], at, artefacts, commit)
         reg.wr(ctx.repo_root, f"{proposers['package']}/draft-ledger-rows.md", rows)
         registered = {"status": "DRAFT-HELD", "package": proposers["package"], "cells": {k: v["cell"] for k, v in proposers["ids"].items()}}
     payload = {

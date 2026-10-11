@@ -61,6 +61,17 @@ PROHIBITIONS = [
 ]
 
 
+#: The instruction templates whose bytes the text-only rows pin (resolved at write time, never "pending").
+PROMPT_RELPATHS = {"typed": "configs/probes/tfrl/typed-proposer-v1.txt", "ace": "configs/probes/tfrl/ace-reflector-v1.txt"}
+NOT_BOUND = "not bound by this writer call (see the cell pins in its experiment fragment)"
+
+
+def proposers_read_run_id(iteration: int) -> str:
+    """The model-free validation / archive step of the proposer cells (the driver's ``open --stage cell``) is the proposers' READ."""
+
+    return f"SAEA-SLURP-STAGE3-TFRL-PROPOSERS-I{iteration}-READ-V1"
+
+
 def package_names(iteration: int) -> dict:
     stem = f"{tf.DATE}-slurp-tfrl-loop-i{iteration}"
     return {"column": f"docs/readiness/{stem}-fold-b-v1", "proposers": f"docs/readiness/{stem}-proposers-v1",
@@ -301,6 +312,35 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
     return {"ids": ids, "shas": shas, "blocks": blocks, "arms": arms, "blockers": blockers, "package": pkg}
 
 
+def proposers_recipe(iteration: int, ids: Mapping[str, Mapping], at: str) -> dict:
+    """The proposers package analysis recipe (the offline validation / archive step is the READ)."""
+
+    read_id = proposers_read_run_id(iteration)
+    return {
+        "authority": f"{DESIGN} sections 3 and 7; {tf.PROTOCOL_RELPATH}; {INSTRUMENT_NOTE}",
+        "cell_kind": "TEXT-ONLY PROPOSER / REFLECTOR -- form proof; the offline step validates and archives the sealed proposals",
+        "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+        "contacts": {"asr": 0, "encoder": 0, "model": 0, "scorer": 0, "server": 0, "tokenizer": 0},
+        "execution_profile": "model-free-check (the offline step); bounded-discovery-probe (the two text-only flights)",
+        "measurement_design": "form-proof",
+        "read_run_id": read_id,
+        "recipe_id": f"slurp-tfrl-proposers-i{iteration}-validation-analysis-v1",
+        "registered_at_utc": at,
+        "run_ids": {"typed": ids["typed"]["run_id"], "typed_fit": ids["typed"]["fit_run_id"], "ace": ids["ace"]["run_id"],
+                    "ace_fit": ids["ace"]["fit_run_id"], "read": read_id},
+        "schema": "saea-stage3-rollout-analysis-recipe-v1",
+        "stages": {
+            "1_validate_and_curate": (f"python -B scripts/flights/tfrl/tfrl_loop_driver.py --execute open --iter {iteration} --stage cell "
+                                      "(validates the sealed typed candidates through speech_aware_evidence_acquisition.rails.tfrl_typed_proposer "
+                                      "and curates the ACE deltas through speech_aware_evidence_acquisition.rails.tfrl_ace_material; "
+                                      "reads only sealed receipts, no row gold and no utterance text)"),
+            "2_archive": ("the same step writes the candidate states through speech_aware_evidence_acquisition.analysis.sealed_credit.archive "
+                          "(write-once receipts under the loop package); no score is computed and nothing is selected here"),
+        },
+        "what_is_not_here": "No score, no paired read, no margins block and no admission: the column cells and the loop's close step read effects.",
+    }
+
+
 def proposers_package(root: Path, iteration: int, commit: str, at: str) -> dict:
     pkgs = package_names(iteration)
     pkg = pkgs["proposers"]
@@ -328,10 +368,13 @@ def proposers_package(root: Path, iteration: int, commit: str, at: str) -> dict:
     shas["README.md"] = wr(root, f"{pkg}/README.md", (
         f"# Loop iteration {iteration}: typed proposer and ACE reflector cells (DRAFT / HELD)\n\nStatus: DRAFT / HELD. No ledger row, "
         "no countersignature, no flip. Text-only contacts (construction-proposer-text), form proof, claims_benefit false.\n"))
+    recipe = proposers_recipe(iteration, ids, at)
+    shas["analysis-recipe-v1.json"] = wjson(root, f"{pkg}/analysis-recipe-v1.json", recipe)
     draft = {
         "_draft_note": "A DRAFT for the coordinator to mint with scripts/flights/tfrl/tfrl_mint_receipt.py --kind proposers. Authorises nothing "
                        "while its status is not 'decided'.",
-        "antecedents": {"protocol": {"path": f"{pkg}/protocol-registered-v1.json", "sha256": protocol_sha},
+        "antecedents": {"analysis_recipe": {"path": f"{pkg}/analysis-recipe-v1.json", "sha256": shas["analysis-recipe-v1.json"]},
+                        "protocol": {"path": f"{pkg}/protocol-registered-v1.json", "sha256": protocol_sha},
                         "registered_facts": {"path": f"{pkg}/registered-facts-v1.json", "sha256": shas["registered-facts-v1.json"]},
                         "registration_base_commit": commit},
         "authorization_basis": f"Owner decisions 263-A / 264-A / 265 (2026-10-11); {DESIGN} section 3.",
@@ -366,23 +409,60 @@ def runtime_identity(root: Path, model_fragment: str) -> dict:
 
 
 def draft_text_only_rows(root: Path, iteration: int, ids: Mapping[str, Mapping], shas: Mapping[str, str], at: str,
-                         artefacts: Mapping[str, Mapping[str, str]] | None = None) -> str:
+                         artefacts: Mapping[str, Mapping[str, str]] | None = None, commit: str | None = None) -> str:
+    """DRAFT rows of the two text-only cells plus their offline READ row.
+
+    The ``artifacts`` cell of a generation row is the REGISTERED PLAN PATH (the flip tool and the exposure gate resolve it as a repository
+    path). The prompt / tables / archive / output pins live in the notes beside ``Plan SHA256``; the prompt hash is read from the
+    instruction template at write time.
+    """
+
     from speech_aware_evidence_acquisition.rails import tfrl_typed_proposer as tp  # noqa: PLC0415
 
     artefacts = artefacts or {}
+    pkg = package_names(iteration)["proposers"]
     lines = [f"## Loop iteration {iteration}: typed proposer and ACE reflector cells (DRAFT, coordinator countersignature pending)", "",
              "| " + " | ".join(tp.LEDGER_COLUMNS) + " |", "| " + " | ".join("---" for _ in tp.LEDGER_COLUMNS) + " |"]
     for kind, i in ids.items():
         rt = runtime_identity(root, i["model_fragment"])
         art = artefacts.get(kind, {})
+        prompt = art.get("prompt_sha256")
+        if not prompt or prompt == "pending":
+            prompt = sha_file(root, PROMPT_RELPATHS[kind])
+        tables = art.get("tables_sha256") or NOT_BOUND
+        archive = art.get("archive_sha256") or NOT_BOUND
         row = tp.draft_exposure_row(
             date=at[:10], run_id=i["run_id"], carrier_roster_id=Path(str(i["experiment"])).stem, split_identity_hash=i["split_identity_hash"],
             carriers=i["rows"], model_files_sha256=rt["files"], llama_cpp_build_commit=rt["build"],
-            prompt_sha256=art.get("prompt_sha256", "pending"), tables_sha256=art.get("tables_sha256", "pending"),
-            archive_sha256=art.get("archive_sha256", "pending"), geometry=tf.SESSION, kind=kind)
+            prompt_sha256=prompt, tables_sha256=tables, archive_sha256=archive, geometry=tf.SESSION, kind=kind)
+        plan = f"{pkg}/{kind}-generation-plan-registered-v1.json"
         row["scope"] = "DRAFT -- " + row["scope"]
+        row["artifacts"] = plan
+        row["notes"] = (row["notes"] + f" Artefact pins: prompt sha256 {prompt} ({PROMPT_RELPATHS[kind]}); tables sha256 {tables}; "
+                        f"archive sha256 {archive}; output sha256 recorded at the seal. DRAFT at study commit {commit or 'unrecorded'}; "
+                        f"Plan SHA256 {shas.get(Path(plan).name, '0' * 64)}; nothing authorised.")
         lines.append(tp.ledger_markdown_row(row))
+    lines.append(tp.ledger_markdown_row(draft_read_row(iteration, ids, at, pkg, commit)))
     return "\n".join(lines) + "\n"
+
+
+def draft_read_row(iteration: int, ids: Mapping[str, Mapping], at: str, pkg: str, commit: str | None) -> dict:
+    """The proposers' offline READ row (zero contacts), named by ``analysis-recipe-v1.json``."""
+
+    typed = ids["typed"]
+    return {
+        "date": at[:10], "run/experiment id": proposers_read_run_id(iteration), "execution profile": "model-free-check",
+        "scope": (f"DRAFT -- The offline validation / archive step of the loop iteration {iteration} proposer and reflector cells "
+                  f"(tfrl_loop_driver.py --execute open --iter {iteration} --stage cell) by the recipe {pkg}/analysis-recipe-v1.json. "
+                  "Zero model, server, encoder, embedder, tokenizer and GPU contacts."),
+        "model/tool": "no model or tool contact; read of sealed bytes and CPU validation",
+        "speech carrier + split": "slurp TRAIN construction, the sealed proposer and reflector cells (after the seal)",
+        "split role": "discovery", "split identity hash": typed["split_identity_hash"], "consumed": "no", "calls": "0",
+        "speech audio seconds": "0", "gpu hours": "0", "inherited exposure": "All prior SLURP exposure carried forward unchanged.",
+        "artifacts": f"{pkg}/analysis-recipe-v1.json",
+        "notes": (f"DRAFT. REGISTERED WITH THE FLIGHT (root countersignature pending; countersigned after the seal and before any proposal "
+                  f"is read) {at[:10]} at study commit {commit or 'unrecorded'}. Claims no benefit."),
+    }
 
 
 def draft_column_rows(ids: Mapping[str, Mapping], commit: str, at: str, arms: list[str], pkg: str, shas: Mapping[str, str]) -> str:
@@ -401,7 +481,7 @@ def draft_column_rows(ids: Mapping[str, Mapping], commit: str, at: str, arms: li
             cells = [at[:10], i["fit_run_id"] if fit else i["run_id"], i["execution_profile"], scope + (" -- FIT spend identity" if fit else ""),
                      "frozen core (attach only)", f"slurp TRAIN Fold B {i['rows']}", "discovery", i["split_identity_hash"], "no", str(calls),
                      str(i["family_budget"]["repeated_speech_audio_seconds_cap"]), str(i["family_budget"]["gpu_hours_fit_inclusive"]),
-                     inherited, plan, f"DRAFT at study commit {commit}; plan SHA256 {shas.get(Path(plan).name, 'pending')}; nothing authorised."]
+                     inherited, plan, f"DRAFT at study commit {commit}; Plan SHA256 {shas.get(Path(plan).name, 'pending')}; nothing authorised."]
             lines.append("| " + " | ".join(c.replace("|", "/") for c in cells) + " |")
     arm = ids["arm"]
     read_id = tf.names(int(arm["experiment"].split("-i")[1].split("-")[0]), "arm")["read_run_id"]
@@ -441,7 +521,8 @@ def write_iteration(root: Path, iteration: int, spec: Mapping[str, Any], commit:
             if kind in pins:
                 dv.derive_text_only(iteration, kind, pins[kind], repo_root=root)
         proposers = proposers_package(root, iteration, commit, at)
-        rows = draft_text_only_rows(root, iteration, proposers["ids"], proposers["shas"], at)
+        artefacts = {k: {"tables_sha256": (pins[k].get("tables") or {}).get("sha256", "")} for k in ("typed", "ace") if k in pins}
+        rows = draft_text_only_rows(root, iteration, proposers["ids"], proposers["shas"], at, artefacts, commit)
         proposers["shas"]["draft-ledger-rows.md"] = wr(root, f"{proposers['package']}/draft-ledger-rows.md", rows)
         result["proposers"] = {"package": proposers["package"], "shas": proposers["shas"]}
         ledger_text += "\n" + rows
