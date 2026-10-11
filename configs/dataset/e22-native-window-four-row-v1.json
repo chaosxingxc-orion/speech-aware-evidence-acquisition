@@ -1,0 +1,11 @@
+{
+  "carrier_lock_key": "earnings22-original",
+  "dataset_note": "The key name e21_runtime_subset is the shared Earnings runtime adapter's own (one subset form for both Earnings carriers). One already-dev call (4453225, the first dev call in inventory order; docs/receipts/probe-samples/e22-native-window-four-row-v1.json), re-bound to the native-window execution-unit mechanism: its first four windows of the shared Earnings-22 dev window inventory, contiguous from w0001. No new sample authority: it names no id the dev split does not already contain.",
+  "e21_runtime_subset": {
+    "parent_split": "dev",
+    "receipt_split_name": "e22-native-window-four-row-v1",
+    "subset_role": "construction"
+  },
+  "split_id": "e22-native-window-four-row-v1",
+  "split_name": "e22-native-window-four-row-v1"
+}

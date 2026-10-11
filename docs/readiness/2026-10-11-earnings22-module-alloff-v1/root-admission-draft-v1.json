@@ -1,0 +1,65 @@
+{
+  "_draft_note": "A DRAFT for root to mint on the data root with scripts/flights/module/module_alloff_mint_receipt.py --carrier e22; it authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/analysis-recipe-v1.json",
+      "sha256": "a6dbb2c823a158c2f03ace9853f9471e944c2742cf4e93b2e2f3f24cf09a5634"
+    },
+    "design": {
+      "path": "docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md",
+      "sha256": null
+    },
+    "preregistration": {
+      "path": "docs/readiness/2026-10-11-earnings22-module-alloff-v1-preregistration.md",
+      "sha256": null
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/protocol-registered-v1.json",
+      "sha256": "9eb1e96f86bc93b21efea1a3ebd6c727ddfc26c08f92d2f67bea4a0c7c2293d8"
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/registered-facts-v1.json",
+      "sha256": "fa1d58921cba2635a0c4f21675d3811442b91f085f3d33334fc9e2c3a0e8cf9d"
+    },
+    "registration_base_commit": "13a0b367c"
+  },
+  "authorization_basis": "Owner decision 196 and direction 205; decision 187 (the GPU stays on SLURP until the owner reopens this carrier).",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 0,
+    "generation_calls_cap": 451,
+    "gpu_hours_fit_inclusive": 1.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 40056,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 0,
+      "generation_calls_cap": 4,
+      "gpu_hours_fit_inclusive": 0.3,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 360
+    }
+  },
+  "cell_kind": "Consumption-module all-off arm (carrier admission gate) on earnings22: the direct baseline as a module block; a form proof.",
+  "claim_boundary": "No benefit, superiority, generalisation or component claim; claims_benefit false.",
+  "decision": "Fly only after the owner reopens this carrier (decision 187) and the coordinator decides the byte proof is not enough.",
+  "decision_id": "earnings22-native-stage3-module-alloff-v1-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+    "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1"
+  ],
+  "not_authorized": [
+    "any flight before decision 187 is lifted for this carrier, the receipt is minted and the cells are flipped",
+    "any component-on cell on this carrier",
+    "any ASR, transcript, encoder or paid-API contact"
+  ],
+  "status": "draft"
+}

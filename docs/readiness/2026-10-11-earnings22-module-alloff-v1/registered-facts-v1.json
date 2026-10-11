@@ -1,0 +1,263 @@
+{
+  "_note": "Every model-free fact this registration rests on, and the CANONICAL stage3_measurement mapping (run id -> block) scripts/checks/stage3_effect_floor_check.py resolves; this copy has precedence over the preregistration's fence.",
+  "authority_relpaths": [
+    "docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md",
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md",
+    "docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+    "configs/baseline/e22-native-window-direct-base-v1.json",
+    "src/speech_aware_evidence_acquisition/rails/adapters/earnings22_module_hooks.py"
+  ],
+  "carrier_hooks": {
+    "carrier_components": {},
+    "members": {
+      "carrier_components": "implemented",
+      "current_lock": "None",
+      "decision_candidates": "None",
+      "decision_supply_path": "None",
+      "default_deliver_normaliser": "implemented",
+      "deliver_stages": "None",
+      "delivered_path_admissions": "None",
+      "delivered_units": "implemented",
+      "flown_branch_programs": "None",
+      "flown_programs": "implemented",
+      "lock_deliver_normalisers": "None",
+      "lock_layer": "implemented",
+      "lock_versions": "None",
+      "max_decision_candidates": "None",
+      "perception_branch_frame": "None",
+      "perception_template_variant_frame": "None",
+      "profile": "implemented",
+      "roster_pin_paths": "implemented",
+      "template_variant_frame": "None",
+      "tool_offer_units": "implemented"
+    },
+    "profile": "earnings22"
+  },
+  "cells": {
+    "arm": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-earnings22-native-stage3-module-alloff-v1-generation-v1",
+      "baseline_fragment": "e22-native-window-direct-dev10-v1",
+      "cell": "earnings22-native-stage3-module-alloff-v1",
+      "composed_config_hash": "f35237082d1ace6fa1055538b754ac67b565948fc0dedc5a99e1faeacb89e884",
+      "dataset_fragment": "earnings22-native-window-dev10-v1",
+      "experiment": "earnings22-native-stage3-module-alloff-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 0,
+        "generation_calls_cap": 451,
+        "gpu_hours_fit_inclusive": 1.5,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 40056
+      },
+      "fit_attempt_id": null,
+      "fit_run_id": null,
+      "model_fragment": "q4km-e22-native-window-packets-cddb000c-np4-max1024-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "f9ef7b1f65d81f39aa354d879827079914a7019391623dffb887db99bd3d50ab",
+      "rows": 451,
+      "run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "scorers": [
+        "asr-wer-whisper"
+      ],
+      "split_identity_hash": "89b178d6b1ef46d9ca820ae54349e3d2099c60cde6d6b753ef9f66137c310028"
+    },
+    "smoke": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-earnings22-native-stage3-module-alloff-smoke-4-v1-generation-v1",
+      "baseline_fragment": "e22-native-window-direct-four-row-v1",
+      "cell": "earnings22-native-stage3-module-alloff-smoke-4-v1",
+      "composed_config_hash": "de7de1129462265e381fbbf89c171a4f3934ddb2ef7be56041ffa43ce7722785",
+      "dataset_fragment": "e22-native-window-four-row-v1",
+      "experiment": "earnings22-native-stage3-module-alloff-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 0,
+        "generation_calls_cap": 4,
+        "gpu_hours_fit_inclusive": 0.3,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 360
+      },
+      "fit_attempt_id": null,
+      "fit_run_id": null,
+      "model_fragment": "q4km-e22-native-window-packets-cddb000c-np4-max1024-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "793aac153cb788b3343dccdc901a6f0d87f1bbbb1a8637e325b777f0c0d330d9",
+      "rows": 4,
+      "run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+      "scorers": [
+        "asr-wer-whisper"
+      ],
+      "split_identity_hash": "597da35b75906520faf58246f2e01ff08a8883cd99492936a8e815a5c19528de"
+    }
+  },
+  "consumption_module_block": {
+    "columns": [],
+    "components": [
+      {
+        "component_id": "node-context-presentation",
+        "state": "off"
+      },
+      {
+        "component_id": "knowledge-consumption-opportunity",
+        "state": "off"
+      },
+      {
+        "component_id": "construction-store-binding",
+        "state": "off"
+      },
+      {
+        "component_id": "agree-vote-seed",
+        "state": "off"
+      },
+      {
+        "component_id": "centroid-boundary-key",
+        "state": "off"
+      },
+      {
+        "component_id": "solver-citation-contract",
+        "state": "off"
+      },
+      {
+        "component_id": "reviewer-g5-repair",
+        "state": "off"
+      },
+      {
+        "component_id": "relisten",
+        "state": "off"
+      },
+      {
+        "component_id": "top2-contrast",
+        "state": "off"
+      },
+      {
+        "component_id": "forced-candidate-list",
+        "state": "off"
+      },
+      {
+        "component_id": "key-source:k6p",
+        "state": "off"
+      },
+      {
+        "component_id": "scope-rule",
+        "state": "off"
+      },
+      {
+        "component_id": "e3-progressive-slots",
+        "state": "off"
+      },
+      {
+        "component_id": "supply-abstain",
+        "state": "off"
+      }
+    ],
+    "module_id": "saea-evidence-consumption-module-v1",
+    "profile": "earnings22"
+  },
+  "module_byte_proof": {
+    "command": "python -B scripts/analysis/module_equivalence_proof.py --at e220",
+    "ok": true,
+    "results": [
+      {
+        "differing_policy_paths": [],
+        "fragment": "e22-native-window-direct-base-v1",
+        "module_block_sha256": "45e1f299a7eb5e54a43b24cf7dfc465377c3a096b2a0100ce22cc5f5f81838b9",
+        "ok": true,
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "target": "direct-layer"
+      },
+      {
+        "baseline_object_identical": true,
+        "canonical_alloff_policy_differences": [],
+        "cell": "arm",
+        "composed_config_diff_vs_parent": {
+          "anything_else": [],
+          "bookkeeping": [],
+          "experiment_fragment": [],
+          "policy": []
+        },
+        "composed_identical": true,
+        "declared_is_the_all_off_block": true,
+        "differing_policy_paths": [],
+        "direct_parent": "e22-native-window-direct-base-v1",
+        "experiment": "earnings22-native-stage3-module-alloff-v1",
+        "lock": null,
+        "module_composed_hash": "f35237082d1ace6fa1055538b754ac67b565948fc0dedc5a99e1faeacb89e884",
+        "off_arm": true,
+        "ok": true,
+        "omitted_components_default_off": [],
+        "own_composed_hash": "f35237082d1ace6fa1055538b754ac67b565948fc0dedc5a99e1faeacb89e884",
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "rev": "working-tree"
+      },
+      {
+        "baseline_object_identical": true,
+        "canonical_alloff_policy_differences": [],
+        "cell": "smoke",
+        "composed_config_diff_vs_parent": {
+          "anything_else": [],
+          "bookkeeping": [],
+          "experiment_fragment": [],
+          "policy": []
+        },
+        "composed_identical": true,
+        "declared_is_the_all_off_block": true,
+        "differing_policy_paths": [],
+        "direct_parent": "e22-native-window-direct-base-v1",
+        "experiment": "earnings22-native-stage3-module-alloff-smoke-4-v1",
+        "lock": null,
+        "module_composed_hash": "de7de1129462265e381fbbf89c171a4f3934ddb2ef7be56041ffa43ce7722785",
+        "off_arm": true,
+        "ok": true,
+        "omitted_components_default_off": [],
+        "own_composed_hash": "de7de1129462265e381fbbf89c171a4f3934ddb2ef7be56041ffa43ce7722785",
+        "program_ceiling": 1,
+        "program_id": "phase-direct-only-v1",
+        "rev": "working-tree"
+      }
+    ]
+  },
+  "no_lock": "Earnings-22 has no locked system and no direct parent cell: the shared direct layer e22-native-window-direct-base-v1 (the phase-direct-only-v1 program and its one phase_material.direct entry, the generic transcription instruction bytes shared with E21) is the whole comparator, so the module's all-off arm is that base fragment plus the E21-shaped native-window geometry and pins on the Earnings-22 dev split. No knowledge supply, no ConEC layer, no entity scorer, no analytical tool.",
+  "not_registered": "No component-on cell for this carrier (decision 187 keeps the GPU on SLURP; a component turns on per carrier only through its own read, design 2b.3 item 4).",
+  "own_null": "Earnings-22 has NO measured own null on this form (no cell has ever flown on the native-window dev form); the module null is unmeasured until an in-chain A/A of this arm seals (design 2b.3). The all-off arm is therefore a form proof only, and no benefit may be claimed on this carrier until that A/A exists.",
+  "pending_pins": {
+    "knowledge_snapshot": "none declared; see the package README for what the shared runtime does with a phase program that declares none",
+    "prepared_window_feature_packets": "all-zero sha256 placeholder in both baseline fragments: the Earnings-22 dev window feature packets do not exist; they need an encoder pass (root lease, GPU, registration, owner authorization). Producing them changes both composed config hashes, so root re-runs this script (or the repin tool) afterwards.",
+    "serving_session": "serving-e22-native-window-flightruntime-np4-max1024-v1 is a NEW session name: its feature root differs from the resident E21 session, so no resident session serves it"
+  },
+  "read_run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-FORM-READ-V1",
+  "stage3_measurement": {
+    "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Form proof of the consumption module's carrier admission gate (design 2b.3): the all-off arm is the carrier's direct baseline bytes; nothing is expected to move and no benefit is claimed.",
+      "primary_metric": "asr-wer-whisper only (corpus-level Whisper English-normalizer WER, the paper-facing metric; no ConEC, entity or numeric layer exists for Earnings-22). Scorer variant: the PLAIN window-form scorer, NOT the ESB short-form tail-2 s variant of docs/readiness/2026-09-05-scoring-alignment-conclusions.md (15.937 sealed vs 9.2377 under the 2.0 s digital-silence tail, deviation D-TS2-3): this cell appends no tail silence, reads whole 90 s windows of whole dev calls rather than ESB test utterances, and so none of 15.937 / 9.2377 / 9.79 / 12.3 is a comparator and no alignment band is claimed",
+      "read_roster": "Earnings-22 whole dev split, 10 calls / 451 native windows (split identity 89b178d6...)",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Form proof of the consumption module's carrier admission gate (design 2b.3): the all-off arm is the carrier's direct baseline bytes; nothing is expected to move and no benefit is claimed.",
+      "primary_metric": "asr-wer-whisper only (corpus-level Whisper English-normalizer WER, the paper-facing metric; no ConEC, entity or numeric layer exists for Earnings-22). Scorer variant: the PLAIN window-form scorer, NOT the ESB short-form tail-2 s variant of docs/readiness/2026-09-05-scoring-alignment-conclusions.md (15.937 sealed vs 9.2377 under the 2.0 s digital-silence tail, deviation D-TS2-3): this cell appends no tail silence, reads whole 90 s windows of whole dev calls rather than ESB test utterances, and so none of 15.937 / 9.2377 / 9.79 / 12.3 is a comparator and no alignment band is claimed",
+      "read_roster": "Earnings-22 whole dev split, 10 calls / 451 native windows (split identity 89b178d6...)",
+      "rows": 451,
+      "tuning_roster": "none"
+    }
+  },
+  "window_inventory_receipt": {
+    "path": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/window-inventory-receipt-v1.json",
+    "sha256": "7c2c9e6884f4b5bdb81e1fbaaae873d865b2221264dcc4cf89d08e0d956810ff"
+  }
+}

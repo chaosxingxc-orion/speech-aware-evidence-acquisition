@@ -1,0 +1,82 @@
+{
+  "_note": "Counts, hashes and ids only. No transcript, reference, text or model output was read or is recorded. Written 2026-10-11 by the model-free engineering registration of the HELD Earnings-22 consumption-module all-off arm.",
+  "carrier": "earnings22-original",
+  "contact_class": "model-free",
+  "contacts": {
+    "encoder_forward_pass": 0,
+    "gpu_hours": 0.0,
+    "model": 0,
+    "network": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "e21_precedent": {
+    "calls": 44,
+    "mean_window_seconds": 88.7,
+    "run_id": "SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+    "windows": 1593
+  },
+  "executed": {
+    "experiment_fragment": "configs/experiment/e22-dev-window-inventory-v1.json",
+    "fragment_commit": "c9fc337ac (planned_gpu_hours 0.1; the run executed on the working tree holding exactly these bytes, one edit ahead of its commit)",
+    "output_write_once": true,
+    "plan_label_nit": "the inventory fragment's execution_plan.split_role is 'discovery' (copied from the E21 inventory fragment); the data role of the split is dev. The label has no effect on the artifact bytes; the all-off cells declare split_role 'dev'.",
+    "source_decoder_warning": "one libmpg123 layer3 part2_3_length warning on stderr (a source MP3 frame), preserved as in the E21 precedent",
+    "tool": "python -B -m speech_aware_evidence_acquisition.core.flight.cli prepare-window-inventory --experiment e22-dev-window-inventory-v1 --cell e22-dev-window-inventory --workers 16",
+    "wall_seconds": 80.6,
+    "workers": 16
+  },
+  "four_row": {
+    "batch": "SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1",
+    "built_by": "scripts/build_e21_native_window_unit_subset.py --batch-name SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1 --sample-id 4453225 --per-call-limit 4 (metadata re-partition; no audio read)",
+    "file_sha256": "4dc552e6f2708bb1c9349cb228a0459889bef4b240dcf862eaf589dac7e85849",
+    "output_sha256": "241e63fdbcf225bed4b4154709872293128adfb7cfcc63b03738e3f0ce48dd89",
+    "receipt": "docs/receipts/probe-samples/e22-native-window-four-row-v1.json",
+    "registry_run_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+    "relpath": "analysis/SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json",
+    "sample_id": "4453225",
+    "split_identity_hash": "4bc8d4ccfaa341b5cab0473dac2e1c7e33297f7e11bd54ed4e2e9046763b95f3",
+    "unit_count": 4,
+    "window_audio_seconds_decoded": 360.0
+  },
+  "inventory": {
+    "batch": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+    "calls": 10,
+    "declared_parent_seconds_adapter": 40054.0,
+    "encoder_identity": {
+      "build_commit": "cddb000cb45ab44d33c84483cf5e5962cbbaa5bf",
+      "decoder_gguf_sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+      "mmproj_sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883",
+      "runtime_receipt_sha256": "d8c703fae0fe0b4e5e7ab9890553c5dfc6f8f33ffe744e9e7faf140630f22218"
+    },
+    "file_sha256": "d3484ced01d264aec98d97b2fcfc24452d493b3c4fdd8c7e31ddccc7700b07e8",
+    "kind": "exact-window-feature-inventory-v1",
+    "output_sha256": "d251a89e6c02439fad549a1de01956ec37ee8632bb980719c81b0f84cce80bab",
+    "relpath": "analysis/SAEA-E22-DEV-WINDOW-INVENTORY-V1/window-inventory.json",
+    "request_count": 451,
+    "run_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+    "slices_root": "derived/obs-slices/SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+    "state": "inputs-verified-features-not-materialized",
+    "unique_audio_count": 451,
+    "window_audio_seconds_decoded": 40055.889875,
+    "window_pcm16_bytes_total": 1281808320,
+    "window_sources_sha256": "d163db9643febb89bbdda34bf475c7be28776e12a0adbf36d8c81f74ab0602fe",
+    "windows_per_call": {
+      "4453225": 48,
+      "4469088": 52,
+      "4470684": 53,
+      "4474506": 45,
+      "4479944": 44,
+      "4481952": 42,
+      "4482383": 39,
+      "4482613": 45,
+      "4483937": 41,
+      "4485192": 42
+    }
+  },
+  "protocol": "fixed 90-second windows over each whole call; no VAD trim, overlap, rolling tail or added tail silence (obs_boundary_mode fixed, obs_buffer_seconds 90, obs_batch_slices 2); the same shared FlightRuntime.prepare_window_inventory path, preprocess baseline and cutter as SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1",
+  "schema": "saea-e22-window-inventory-receipt-v1",
+  "split": "dev",
+  "split_identity_hash": "89b178d6b1ef46d9ca820ae54349e3d2099c60cde6d6b753ef9f66137c310028"
+}

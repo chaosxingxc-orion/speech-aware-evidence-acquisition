@@ -37,7 +37,7 @@ def test_the_adapter_is_a_thin_derivation_of_the_e21_runtime_adapter():
     assert e22.Earnings22RuntimeAdapter.DEFAULT_SPLIT == "dev"
     own = {name for name in vars(e22.Earnings22RuntimeAdapter)
            if not name.startswith("__") and name != "_abc_impl"}
-    assert own == {"CARRIER_LOCK_KEY", "DEFAULT_SPLIT", "_refuse_subset_if_unsupported"}
+    assert own == {"CARRIER_LOCK_KEY", "DEFAULT_SPLIT"}
 
 
 def test_the_adapter_loads_the_e22_dev_split_with_the_e21_rules(synthetic_world, repair_repo):
@@ -61,8 +61,49 @@ def test_the_adapter_refuses_the_other_carrier_and_any_subset(synthetic_world, r
     with pytest.raises(CoreError, match="E22 runtime adapter requires earnings22-original"):
         e22.build_runtime_adapter(values, lock, synthetic_world.data_root, repo, dataset_fragment="e22")
     values = _values(repo, digest, split="e22-synthetic-construction")
-    with pytest.raises(CoreError, match="only its whole dev split"):
+    with pytest.raises(CoreError, match="requires e21_runtime_subset metadata"):
         e22.build_runtime_adapter(values, lock, synthetic_world.data_root, repo, dataset_fragment="e22")
+
+
+def _subset_values(repo, digest, *, sample_id, parent="dev", role="dev", carrier="earnings22-original", stored_hash=None):
+    from speech_aware_evidence_acquisition.reproduction.sampling import split_identity_hash
+
+    name = "e22-synthetic-construction"
+    values = _values(repo, digest, split=name)
+    (repo / "configs/dataset/e22.json").write_text(json.dumps({
+        "carrier_lock_key": "earnings22-original", "split_name": name,
+        "e21_runtime_subset": {"receipt_split_name": name, "parent_split": parent, "subset_role": "construction"},
+    }))
+    key = f"{carrier}:{sample_id}"
+    receipt = repo / f"docs/receipts/probe-samples/{name}.json"
+    receipt.parent.mkdir(parents=True, exist_ok=True)
+    receipt.write_text(json.dumps({
+        "carrier": carrier, "split_role": role, "items": [{"id": sample_id, "key": key}],
+        "split_identity_hash": stored_hash or split_identity_hash([key]),
+    }))
+    return values
+
+
+def test_the_adapter_loads_a_verified_dev_subset_and_refuses_a_foreign_one(synthetic_world, repair_repo):
+    lock, repo, digest = repair_repo
+    whole = e22.build_runtime_adapter(
+        _values(repo, digest), lock, synthetic_world.data_root, repo, dataset_fragment="e22")
+    first = whole.load_split("dev")[0].sample_id
+    values = _subset_values(repo, digest, sample_id=first)
+    adapter = e22.build_runtime_adapter(values, lock, synthetic_world.data_root, repo, dataset_fragment="e22")
+    assert tuple(s.sample_id for s in adapter.load_split(values["split_name"])) == (first,)
+    with pytest.raises(CoreError, match="must derive from frozen dev"):
+        e22.build_runtime_adapter(_subset_values(repo, digest, sample_id=first, parent="discovery"),
+                                  lock, synthetic_world.data_root, repo, dataset_fragment="e22")
+    with pytest.raises(CoreError, match="with dev role"):
+        e22.build_runtime_adapter(_subset_values(repo, digest, sample_id=first, role="discovery"),
+                                  lock, synthetic_world.data_root, repo, dataset_fragment="e22")
+    with pytest.raises(CoreError, match="outside frozen dev"):
+        e22.build_runtime_adapter(_subset_values(repo, digest, sample_id="9999999"),
+                                  lock, synthetic_world.data_root, repo, dataset_fragment="e22")
+    with pytest.raises(CoreError, match="receipt refused"):
+        e22.build_runtime_adapter(_subset_values(repo, digest, sample_id=first, stored_hash="0" * 64),
+                                  lock, synthetic_world.data_root, repo, dataset_fragment="e22")
 
 
 def test_registration_is_idempotent_and_never_replaces_an_owner(monkeypatch):

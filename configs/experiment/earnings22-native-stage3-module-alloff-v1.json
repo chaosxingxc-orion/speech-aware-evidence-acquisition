@@ -1,0 +1,143 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-earnings22-native-stage3-module-alloff-v1-generation-v1",
+      "baseline_fragment": "e22-native-window-direct-dev10-v1",
+      "cell_id": "earnings22-native-stage3-module-alloff-v1",
+      "dataset_fragment": "earnings22-native-window-dev10-v1",
+      "model_fragment": "q4km-e22-native-window-packets-cddb000c-np4-max1024-v1",
+      "readiness": {
+        "reason": "Consumption-module all-off arm on earnings22 (owner decision 196, direction 205; design 2b.3 carrier admission gate), registered before contact on 2026-10-11 by scripts/flights/module/register_carrier_module_alloff_cells.py. HELD: decision 187 keeps the GPU on SLURP until the SLURP lock; nothing flies before the owner reopens this carrier and root mints coordination/earnings22-native-stage3-module-alloff-v1/root-admission-v1.json. The flip is scripts/flights/module/module_alloff_e220_flip.sh. The program declares no supplied first phase, so the re-pin creates no prepared artifact; --allow-output-change is never passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [],
+        "state": "held"
+      },
+      "run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1"
+    }
+  ],
+  "consumption_module_declaration": {
+    "block": {
+      "columns": [],
+      "components": [
+        {
+          "component_id": "node-context-presentation",
+          "state": "off"
+        },
+        {
+          "component_id": "knowledge-consumption-opportunity",
+          "state": "off"
+        },
+        {
+          "component_id": "construction-store-binding",
+          "state": "off"
+        },
+        {
+          "component_id": "agree-vote-seed",
+          "state": "off"
+        },
+        {
+          "component_id": "centroid-boundary-key",
+          "state": "off"
+        },
+        {
+          "component_id": "solver-citation-contract",
+          "state": "off"
+        },
+        {
+          "component_id": "reviewer-g5-repair",
+          "state": "off"
+        },
+        {
+          "component_id": "relisten",
+          "state": "off"
+        },
+        {
+          "component_id": "top2-contrast",
+          "state": "off"
+        },
+        {
+          "component_id": "forced-candidate-list",
+          "state": "off"
+        },
+        {
+          "component_id": "key-source:k6p",
+          "state": "off"
+        },
+        {
+          "component_id": "scope-rule",
+          "state": "off"
+        },
+        {
+          "component_id": "e3-progressive-slots",
+          "state": "off"
+        },
+        {
+          "component_id": "supply-abstain",
+          "state": "off"
+        }
+      ],
+      "module_id": "saea-evidence-consumption-module-v1",
+      "profile": "earnings22"
+    },
+    "compiles_to": "the earnings22 direct layer = configs/baseline/e22-native-window-direct-base-v1.json policy blocks",
+    "proof": "python -B scripts/analysis/module_equivalence_proof.py --at e220",
+    "why_not_native_episode": "A direct program carries no native_episode block (the native-episode loader refuses one on any program that is not the native-role episode), so the declaration lives here and is proven by the byte proof rather than verified by the loader."
+  },
+  "date": "2026-10-11",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.5,
+    "planned_model_calls": 451,
+    "planned_speech_audio_seconds": 40056,
+    "split_role": "dev"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, prompt, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id); a second failure closes the cell and the fix is proven on a four-row dry run. A partial manifest is never scored and never read.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 0,
+    "generation_calls_cap": 451,
+    "gpu_hours_fit_inclusive": 1.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 40056
+  },
+  "fragment_kind": "saea-earnings22-native-stage3-module-alloff-v1",
+  "generation_budget": {
+    "cap": 451,
+    "ceilings_are_not_targets": true,
+    "definition": "The direct-only phase program makes exactly one contact per native window: 451 windows x 1. No fit identity (the direct baseline declares none, as the flown E35 direct arms). Ceilings, not targets; run-cumulative across attempts.",
+    "target": 451
+  },
+  "population": {
+    "carrier": "earnings22-original",
+    "count": 10,
+    "dataset_fragment": "earnings22-native-window-dev10-v1",
+    "execution_units": 451,
+    "historically_exposed": true,
+    "split_identity_hash": "89b178d6b1ef46d9ca820ae54349e3d2099c60cde6d6b753ef9f66137c310028"
+  },
+  "purpose": "the evidence-consumption module's ALL-OFF arm on earnings22: every component off, which compiles to the carrier's DIRECT layer. Earnings-22 has no locked system and no direct parent cell: the shared direct layer e22-native-window-direct-base-v1 (the phase-direct-only-v1 program and its one phase_material.direct entry, the generic transcription instruction bytes shared with E21) is the whole comparator, so the module's all-off arm is that base fragment plus the E21-shaped native-window geometry and pins on the Earnings-22 dev split. No knowledge supply, no ConEC layer, no entity scorer, no analytical tool. It is the carrier admission gate of design section 2b.3: the module-bare arm on the carrier's own roster before any component is turned on there. Own null: Earnings-22 has NO measured own null on this form (no cell has ever flown on the native-window dev form); the module null is unmeasured until an in-chain A/A of this arm seals (design 2b.3). The all-off arm is therefore a form proof only, and no benefit may be claimed on this carrier until that A/A exists. A FORM proof: it claims no benefit, admits nothing and compares no mechanism; no component-on cell exists for this carrier. Development numbers only (owner decisions 28 and 86).",
+  "stage3_algorithm": {
+    "id": "none",
+    "note": "This cell carries NO training-free RL operator and says so explicitly: it is the evidence-consumption module with every component off on a carrier with no locked system -- the carrier's direct baseline expressed as a module block, the carrier admission gate of the consumption-module design (section 2b.3). No rollout, no per-sample scoring, no credit assignment, no update operator, no evolving store and no mechanism.",
+    "operators_used": []
+  },
+  "stage3_measurement": {
+    "claims_benefit": false,
+    "expected_effect_pp": 0.0,
+    "measurement_design": "form-proof",
+    "note": "Form proof of the consumption module's carrier admission gate (design 2b.3): the all-off arm is the carrier's direct baseline bytes; nothing is expected to move and no benefit is claimed.",
+    "primary_metric": "asr-wer-whisper only (corpus-level Whisper English-normalizer WER, the paper-facing metric; no ConEC, entity or numeric layer exists for Earnings-22). Scorer variant: the PLAIN window-form scorer, NOT the ESB short-form tail-2 s variant of docs/readiness/2026-09-05-scoring-alignment-conclusions.md (15.937 sealed vs 9.2377 under the 2.0 s digital-silence tail, deviation D-TS2-3): this cell appends no tail silence, reads whole 90 s windows of whole dev calls rather than ESB test utterances, and so none of 15.937 / 9.2377 / 9.79 / 12.3 is a comparator and no alignment band is claimed",
+    "read_roster": "Earnings-22 whole dev split, 10 calls / 451 native windows (split identity 89b178d6...)",
+    "rows": 451,
+    "tuning_roster": "none"
+  }
+}

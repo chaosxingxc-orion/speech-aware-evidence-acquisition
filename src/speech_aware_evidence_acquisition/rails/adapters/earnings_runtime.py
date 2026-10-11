@@ -79,25 +79,28 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
                 raise CoreError("E21 runtime subset metadata has an unknown or missing key")
             if subset.get("receipt_split_name") != self._split_id:
                 raise CoreError("E21 runtime subset receipt name differs from split_name")
-            if subset.get("parent_split") != "discovery":
-                raise CoreError("E21 runtime subset must derive from frozen discovery")
+            # The parent is the carrier's whole split (``DEFAULT_SPLIT``): discovery for
+            # Earnings-21 (every message below is unchanged there), dev for Earnings-22.
+            parent_name = self.DEFAULT_SPLIT
+            if subset.get("parent_split") != parent_name:
+                raise CoreError(f"E21 runtime subset must derive from frozen {parent_name}")
             if subset.get("subset_role") != "construction":
                 raise CoreError("E21 runtime subset role must be construction")
             try:
                 verified = load_verified_split(Path(repo_root), self._split_id, lock, root)
-                parent = load_verified_split(Path(repo_root), "discovery", lock, root)
+                parent = load_verified_split(Path(repo_root), parent_name, lock, root)
             except SplitReceiptError as error:
                 raise CoreError(f"E21 runtime subset receipt refused: {error}") from error
             if (
-                verified.carrier_lock_key != "earnings21-original"
-                or verified.split_role != "discovery"
+                verified.carrier_lock_key != carrier
+                or verified.split_role != parent_name
             ):
                 raise CoreError(
-                    "E21 runtime subset must be earnings21-original with discovery role"
+                    f"E21 runtime subset must be {carrier} with {parent_name} role"
                 )
             if not set(verified.prefixed_ids) <= set(parent.prefixed_ids):
                 raise CoreError(
-                    "E21 runtime subset contains an id outside frozen discovery"
+                    f"E21 runtime subset contains an id outside frozen {parent_name}"
                 )
             self._verified_subset = verified
         _validate_execution_route(values)
@@ -134,12 +137,14 @@ class Earnings21RuntimeAdapter(Earnings21Adapter):
             raise CoreError("E21 runtime split differs from its dataset fragment")
         if self._verified_subset is None:
             return super().load_split(self.DEFAULT_SPLIT)
-        full = super().load_split("discovery")
+        full = super().load_split(self.DEFAULT_SPLIT)
         selected = tuple(
             sample for sample in full if sample.sample_id in set(self._verified_subset.ids)
         )
         if {sample.sample_id for sample in selected} != set(self._verified_subset.ids):
-            raise CoreError("E21 runtime subset ids are absent from loaded discovery samples")
+            raise CoreError(
+                f"E21 runtime subset ids are absent from loaded {self.DEFAULT_SPLIT} samples"
+            )
         return selected
 
     def _label(self):

@@ -1,0 +1,36 @@
+{
+  "experiment_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+  "date": "2026-10-11",
+  "purpose": "Prepare the exact Earnings-22 dev (10 whole calls) fixed 90-second window roster once through the shared cutter, model-free and CPU-only, by the same shared FlightRuntime.prepare_window_inventory path and with the same protocol the Earnings-21 discovery inventory (SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1) used. It is the execution-unit pin of the HELD Earnings-22 consumption-module all-off cell. No draft text, reference or transcript is read; no encoder, tokenizer, model or scorer is contacted.",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "split_role": "discovery",
+    "planned_model_calls": 500,
+    "planned_gpu_hours": 0.1,
+    "planned_speech_audio_seconds": 41000
+  },
+  "obs_buffer_seconds": 90,
+  "obs_min_advance_seconds": 20,
+  "obs_max_advance_seconds": 85,
+  "obs_batch_slices": 2,
+  "obs_slice_tail_silence_seconds": 0.0,
+  "budget_basis": "Inventory is model-free and spends zero contacts; the planned figures are ceilings on the later window roster (about 450 windows, 40,054 s), not model-contact authority. Validate the actual window count and source bytes before any separate packet registration.",
+  "cells": [
+    {
+      "cell_id": "e22-dev-window-inventory",
+      "run_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+      "attempt_id": "attempt-20261011-e22-dev-window-inventory-v1",
+      "model_fragment": "q4km-e22-feature-preprocess-gpu-cddb000c-np1",
+      "dataset_fragment": "earnings22-dev-subset10",
+      "baseline_fragment": "window-feature-preprocess-ojw",
+      "allowed_execution_stages": [
+        "prepare-window-inventory"
+      ],
+      "readiness": {
+        "state": "ready",
+        "requirements": []
+      }
+    }
+  ],
+  "split_id": "dev"
+}

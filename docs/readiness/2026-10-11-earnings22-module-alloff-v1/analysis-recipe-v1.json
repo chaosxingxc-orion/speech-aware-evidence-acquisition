@@ -1,0 +1,22 @@
+{
+  "arms": {
+    "arm": {
+      "attempt_id": "attempt-earnings22-native-stage3-module-alloff-v1-generation-v1",
+      "outputs_sha256": "PENDING_SEAL",
+      "run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "run_manifest_sha256": "PENDING_SEAL",
+      "scores_sha256": "PENDING_SEAL"
+    },
+    "direct_parent": {
+      "experiment": "e22-native-window-direct-base-v1",
+      "role": "the direct cell (or, for a carrier with no direct cell, the shared direct base fragment) whose bytes the all-off arm carries; context only"
+    }
+  },
+  "boundary": "Development numbers only (owner decisions 28 and 86). No utterance text, transcript, gold label or model output is printed or persisted: ids, counts, rates and hashes only.",
+  "design": "DESCRIPTIVE form read: request identity against the direct parent's registered bytes, row completeness, the official scorer(s) reported beside, contacts per minute; no verdict, no benefit, no admission.",
+  "own_null": "Earnings-22 has NO measured own null on this form (no cell has ever flown on the native-window dev form); the module null is unmeasured until an in-chain A/A of this arm seals (design 2b.3). The all-off arm is therefore a form proof only, and no benefit may be claimed on this carrier until that A/A exists.",
+  "read_run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-FORM-READ-V1",
+  "recipe_id": "earnings22-native-stage3-module-alloff-v1-form-read-v1",
+  "schema": "saea-analysis-recipe-v1",
+  "scorers": "asr-wer-whisper only (corpus-level Whisper English-normalizer WER, the paper-facing metric; no ConEC, entity or numeric layer exists for Earnings-22). Scorer variant: the PLAIN window-form scorer, NOT the ESB short-form tail-2 s variant of docs/readiness/2026-09-05-scoring-alignment-conclusions.md (15.937 sealed vs 9.2377 under the 2.0 s digital-silence tail, deviation D-TS2-3): this cell appends no tail silence, reads whole 90 s windows of whole dev calls rather than ESB test utterances, and so none of 15.937 / 9.2377 / 9.79 / 12.3 is a comparator and no alignment band is claimed"
+}

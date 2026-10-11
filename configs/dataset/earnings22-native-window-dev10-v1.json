@@ -1,0 +1,6 @@
+{
+  "carrier_lock_key": "earnings22-original",
+  "dataset_note": "The whole Earnings-22 dev split (the 10 calls of earnings22-dev-subset10) with an explicit shared phase-runtime split ID. Both direct and any later agent arm use this identical dataset declaration. No names supplement exists or is needed: Earnings-22 has no ConEC layer.",
+  "split_id": "dev",
+  "split_name": "dev"
+}

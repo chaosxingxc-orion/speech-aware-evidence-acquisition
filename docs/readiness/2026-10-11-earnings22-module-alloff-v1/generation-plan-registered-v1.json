@@ -1,0 +1,44 @@
+{
+  "cell": "earnings22-native-stage3-module-alloff-v1",
+  "composed_config_hash": "f35237082d1ace6fa1055538b754ac67b565948fc0dedc5a99e1faeacb89e884",
+  "execution_plan": {
+    "attempt_id": "attempt-earnings22-native-stage3-module-alloff-v1-generation-v1",
+    "carrier_lock_key": "earnings22-original",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.5,
+    "planned_model_calls": 451,
+    "planned_speech_audio_seconds": 40056,
+    "protocol_hash": "f9ef7b1f65d81f39aa354d879827079914a7019391623dffb887db99bd3d50ab",
+    "run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "89b178d6b1ef46d9ca820ae54349e3d2099c60cde6d6b753ef9f66137c310028",
+    "split_role": "dev",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "expected_session_id": "serving-e22-native-window-flightruntime-np4-max1024-v1",
+  "experiment": "earnings22-native-stage3-module-alloff-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 0,
+    "generation_calls_cap": 451,
+    "gpu_hours_fit_inclusive": 1.5,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 40056
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "13a0b367c",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/protocol-registered-v1.json",
+    "sha256": "9eb1e96f86bc93b21efea1a3ebd6c727ddfc26c08f92d2f67bea4a0c7c2293d8"
+  },
+  "purpose": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1: the consumption module's all-off arm on earnings22 (arm); a form proof, no benefit claimed.",
+  "registered_at_utc": "2026-10-11T00:30:00Z",
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "One complete official score after a successful seal; no partial score.",
+  "source_tree": "studies/speech-aware-evidence-acquisition, worktree /home/chao/saea-worktrees/sonnet-e22, branch sonnet/e22-register",
+  "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

@@ -1,0 +1,43 @@
+{
+  "base_url": "http://127.0.0.1:8080",
+  "decoding_params": {
+    "id_slot": "per-sample",
+    "max_tokens": 1024,
+    "seed": 20260915,
+    "temperature": 0
+  },
+  "feature_encoder_runtime_receipt": "receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
+  "model_lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "preparation_basis": "HELD, DRAFT (2026-10-11). The Earnings-22 np4 max1024 native-window serving geometry: a copy of q4km-e21-native-window-packets-cddb000c-np4-max1024-v1 (four slots of 24576, total 98304; decoder-only; no projector) with the Earnings-22 feature-packet root. The packets under that root do NOT exist yet: they need an encoder pass (lease and GPU) that this registration neither performs nor authorizes. Exact request fit and owner GPU resume remain required.",
+  "preserve_wire_responses": true,
+  "prompt_order": "speech-query-prefix-v2",
+  "runtime_receipt": "receipts/runtime-q4km-e21-feature-inference-cddb000c-v2.json",
+  "server_args": [
+    "-c",
+    "98304",
+    "-np",
+    "4",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "server_env": {
+    "GGML_CUDA_DISABLE_GRAPHS": "1",
+    "LLAMA_SPEECH_DECODER_SHA256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d",
+    "LLAMA_SPEECH_FEATURE_ROOT": "/home/chao/feat-packets/e22-cddb000c-dev-gpu-v1"
+  },
+  "serving_geometry": {
+    "max_tokens": 1024,
+    "slot_tokens": 24576,
+    "slots": 4
+  },
+  "speech_feature_root": "/home/chao/feat-packets/e22-cddb000c-dev-gpu-v1",
+  "timeout_seconds": 420.0,
+  "transport": "llama-server"
+}
