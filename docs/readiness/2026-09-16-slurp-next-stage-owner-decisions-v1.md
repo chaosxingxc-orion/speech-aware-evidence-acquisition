@@ -1019,3 +1019,38 @@ about +0.8..+1.0 pp at 6 contacts per row; the 3-sample form and the c3 gate do 
   entity CONTENT (consumption ~210 items, hearing ~106 items on Fold A), which needs either a stronger core or a new
   evidence source, not another selection rule. The coordinator will put the options for that choice to the owner as a
   separate briefing.
+
+## Direction briefing after VER-1: where the remaining SLURP SLU-F1 headroom is, and decision 261 PROPOSED (2026-10-11)
+
+State of the record (all n >= 1,000, TRAIN folds / DEV / the signed test sample):
+- Locked and replicated: intent +5.34..+5.80 over PLAN on the test sample (COMP-1b components); SLU-F1 +1.67 over COMP-1b
+  / +2.46 over PLAN on the test sample (v4g at delivery + review-off at half the contacts); test-sample levels 82.36 / 66.65.
+- Read and closed at n >= 1,000 without a lockable SLU gain: Solver templates (R1 i1 / i2), Perception templates and
+  keys (P-SV-1..4, R6-P1), supply variants (W-SV, W4-SV, Stage S), learned policies (CELL-1/2/3, GEPA, system text,
+  K16 / K4, SCR routing), selection / verification (ROLL commit line, VERIFY-1, VER-1: +0.5..+1.0 stable at 2.5-3x the
+  Solver contacts), deterministic rules beyond v4g (v5 grid, scope rule +0.49, presence gate).
+- Where the misses are (Fold A, COMP-1b base, `docs/results/2026-10-09-slurp-nx-exchange-rates-offline.md`,
+  `docs/results/2026-09-29-slurp-slu-consumption-headroom-offline.md`): 407 gold-side errors on delivered rows, of which
+  about 210 are consumption-type (the value was in the Perception note or the supply and the Solver did not deliver it)
+  and 106 hearing-type (the value was never heard: Whisper-large-v3 as a tool contained only 75 % of gold spans, E5
+  closed); SPURIOUS 253 at delivery (179 not in the note). The remaining 4.2 pp to the published HerMiT SLU-F1 (70.84,
+  full test, trained) is entity CONTENT. No selection rule over the current core's own outputs converts it (oracle
+  "best of 5 samples" +8.8 exists, but every verifier tried extracts <= 1 pp of it).
+- **261** (PROPOSED) the owner chooses the next line, in the coordinator's order of expected value:
+  (A) **Stronger local core at the same boundary** -- re-open the core-selection question (owner 2026-09-06 memory:
+  "pick the strongest local speech-multimodal core"): a larger / less quantised Qwen3-Omni build (e.g. Q6_K or Q8_0 of
+  the same 30B-A3B if VRAM allows at np2, or the Thinking variant) or another open omni core that fits 32 GB, measured
+  FIRST as a bare-core vs PLAN read on DEV-2000-ADDED (two flights, ~3 GPU-h) before any system work; the whole base is
+  core-agnostic by construction (API boundary, descriptors, scorers), so this reuses everything; cost = model download
+  + one new serving geometry + re-pins; risk = throughput (a Q8 30B at np4 may halve the request rate).
+  (B) **A second hearing pass as a measured tool** -- not Whisper (75 % containment, closed) but the core itself in a
+  hearing-only role over the entity-bearing span candidates (the "relisten" family read SHADOW HARM in E4; a NEW form
+  would need a different contract: the Solver asks for one span per candidate slot type and the hearing pass returns the
+  spoken words only, model-initiated per decision 206); 0 engineering reuse of E4 is possible; expected value unknown,
+  ceiling bounded by the 106 hearing-type misses (~5 pp oracle).
+  (C) **Accept the level and consolidate** -- freeze lock v2.2 as the SLURP system result, run the carriers' model-free
+  readiness (259) and then the carriers' ALL-OFF A/A flights under a revised 252, and start the Stage-2B paper-candidate
+  qualification (replicated intent lock, v4g, efficiency result, the test-sample evidence) while a stronger core is
+  evaluated in parallel on a separate serving geometry when the GPU is free.
+  Recommended: A measured first (one bare-core read decides whether the core is the ceiling), with C's model-free parts
+  (259) running in the gaps; B only if A shows the core is not the limit.
