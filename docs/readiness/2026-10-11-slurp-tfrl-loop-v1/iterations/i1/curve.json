@@ -1,0 +1,83 @@
+{
+  "ace": [
+    {
+      "flown_children": [
+        {
+          "delta_vs_lock": {
+            "hi": 2.0978389683319034,
+            "lo": -0.3991914977289983,
+            "point": 0.865772656692454
+          },
+          "operator_class": "playbook",
+          "state_id": "e7b4fa572497c5c0dfecf6a5578a252c54e6307eb845f074f7551bf499c90464",
+          "verdict": "refused"
+        }
+      ],
+      "iteration": 1,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "refused",
+      "state_id": null
+    },
+    {
+      "flown_children": [],
+      "iteration": 2,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "unflown",
+      "state_id": null
+    },
+    {
+      "flown_children": [],
+      "iteration": 3,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "unflown",
+      "state_id": null
+    }
+  ],
+  "typed": [
+    {
+      "flown_children": [],
+      "iteration": 1,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "unflown",
+      "state_id": null
+    },
+    {
+      "flown_children": [],
+      "iteration": 2,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "unflown",
+      "state_id": null
+    },
+    {
+      "flown_children": [],
+      "iteration": 3,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "unflown",
+      "state_id": null
+    }
+  ]
+}

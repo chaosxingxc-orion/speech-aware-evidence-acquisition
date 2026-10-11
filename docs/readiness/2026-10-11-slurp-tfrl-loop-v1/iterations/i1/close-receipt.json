@@ -1,0 +1,147 @@
+{
+  "ace_credit": "not-built",
+  "arms": [
+    "ace",
+    "aa",
+    "lock"
+  ],
+  "column": {
+    "attempt": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-generation-v1",
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1"
+  },
+  "credit_gaps": [
+    "per-scenario deltas parsed leniently from per-scenario-tables.json",
+    "false-fill / non-empty exact from the node-local report when present"
+  ],
+  "curve": {
+    "ace": [
+      {
+        "iteration": 1,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 2,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "unflown"
+      },
+      {
+        "iteration": 3,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "unflown"
+      }
+    ],
+    "typed": [
+      {
+        "iteration": 1,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "unflown"
+      },
+      {
+        "iteration": 2,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "unflown"
+      },
+      {
+        "iteration": 3,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "unflown"
+      }
+    ]
+  },
+  "inputs": {
+    "column": [
+      "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1",
+      "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-generation-v1"
+    ],
+    "iteration": 1,
+    "open_cell": "c8c9c22ef95849a12da6b97318c09eedb666b59a2abd9bca262cc3ea9a305f50",
+    "row_scores": null,
+    "summary": "3ae227c6d1d86124f82579bf870748e9c71e5c23f970994db761616db54c5615"
+  },
+  "inputs_sha256": "97a32a978f4daa2147cb8f2491f92f159cd4e94271239f3b5e870a4e51bcb89c",
+  "iteration": 1,
+  "loop_complete": false,
+  "next_iteration": 2,
+  "parent_for_next": "s0-lock-v2.2",
+  "rules": {
+    "ci_lb_min_pp": 0.0,
+    "intent_guard_pp": 0.65,
+    "intent_point_floor_pp": 0.0,
+    "require_beat_twin": true,
+    "slu_floor_pp": 1.49
+  },
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "status": "done",
+  "step": "close",
+  "typed_arm_was_empty": true,
+  "verdicts": {
+    "ace": {
+      "accepted": false,
+      "clause_d": "vacuous (no previous-ACE-state column in this flight)",
+      "clauses": {
+        "a_ci_lb": {
+          "op": ">",
+          "pass": false,
+          "threshold": 0.0,
+          "value": -0.3991914977289983
+        },
+        "b_point_floor": {
+          "op": ">=",
+          "pass": false,
+          "threshold": 1.49,
+          "value": 0.865772656692454
+        },
+        "c_beats_twin": {
+          "op": ">",
+          "pass": true,
+          "threshold": -0.49104774949810803,
+          "value": 0.865772656692454
+        },
+        "e_intent_guard": {
+          "op": "lo>=lo_min and point>=point_min",
+          "pass": false,
+          "threshold": {
+            "lo_min": -0.65,
+            "point_min": 0.0
+          },
+          "value": {
+            "lo": -0.7407407407407408,
+            "point": 0.0
+          }
+        }
+      },
+      "failed": [
+        "a_ci_lb",
+        "b_point_floor",
+        "e_intent_guard"
+      ],
+      "state_id": "e7b4fa572497c5c0dfecf6a5578a252c54e6307eb845f074f7551bf499c90464",
+      "status": "refused"
+    }
+  }
+}
