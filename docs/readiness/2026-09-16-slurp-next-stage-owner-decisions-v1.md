@@ -1746,3 +1746,21 @@ precedent; the superseded FIT row `...-INSTRUCT-FIT-V1` stays); the eight-id dec
 `root-admission-v1.superseded-20261011T203519Z.json` and a nine-id receipt minted (sha 23cc42f8...; the protocol's recovery rule
 names a new FIT run id, so the receipt had to grow). Next: flip loop (all four cells: every baseline changed), pins, flip, gates, the
 Thinking session loaded during the flip, then think-all first and the Instruct pair after the swap back.
+
+### 266-E Thinking decode-cost smoke: 1 of 4 rows hit the 2,048 cap and the harness cannot carry an empty answer; cap amended to 8,192, smoke rec1 (coordinator, 2026-10-11)
+
+Flip chain converged at c9edf3244 (four gates PASS, 21:48Z); the Thinking session was loaded during the flip (20:41Z) and the
+think-all segment started 21:49Z. The four-row smoke made its 4 contacts (9.94 speech-seconds): completions 363 / 921 / 977 tokens
+with 60-111 characters of delivered content, and ONE row that spent all 2,048 completion tokens thinking and delivered EMPTY content
+(prompt 2,285 tokens). Decode 37 tokens per second per slot (58 when alone), prompt eval 0.9-1.7 ms per token. The empty answer
+crashed the wave (`aggregate_agent_wave`: `AgentStateArtifact.content must be a non-empty string`), so the smoke step exited 1 and
+the driver wrote STOP; the Thinking arm never opened. Reading: this is the signal the smoke was registered to measure. Two defects:
+(1) the cap: at 2,048 about a quarter of rows would abstain by truncation (one of four here; the arm would need the cap-hit table
+the README anticipated); (2) the harness: an empty `content` at `finish_reason = length` must become the receipted abstention of
+decision 199 (`config_tables` already names "core ended before authoritative delivery"), never a wave exception. Decision under
+the README's pre-authorisation ("the coordinator may amend the cap at the decode-cost sign-off; one re-registration"): completion
+cap 8,192 (2,300 + 8,192 = 42.7 % of the 24,576-token slot), GPU ceiling of the Thinking arm 3.0 -> 4.5 h (1,080 rows at a
+measured 150 aggregate tokens per second with a long tail), the smoke re-flown under its single rec1 recovery (run-cumulative
+budget 4 + 4 calls), the arm's attempt untouched; the harness fix lands model-free with a unit test on an empty-content length
+response. GPU meanwhile: the Instruct pair (ready at c9edf3244) flies on the Instruct session (swap back 21:5xZ) so the card is not
+idle during the repair; the Thinking arc resumes after the Instruct pair seals (one more swap).
