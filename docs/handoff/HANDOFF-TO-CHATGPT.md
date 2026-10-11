@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T10:58:58Z
+Last refreshed: 2026-10-11T11:15:53Z
+
+## Proposers blocked by a gate defect (non-roster companion file in docs/receipts/rosters); Thinking packet recovery pass running (2026-10-11T11:15:53Z, Fable 5.1 root)
+
+Second proposers flip: typed cell check refused by `_construction_roster_identity_hashes` on `a2t-paired-400-v1.comparator-rows.json` (schema not a roster; from merge 899a17c48); fix in build, then re-flip, gates, queue. Packet pass: driver fix merged (d8822f64f), row ceilings 1084 / 3165, recovery attempt `...-smoke-4-rec1-v1` + Fold B started 11:14Z (~45-60 min; no flight may start while it runs). GPU idle; no owner decision open.
+
+Superseded stamp: 2026-10-11T10:58:58Z
 
 ## i1 proposers registered and signed; first real flip and first real packet pass each exposed one writer defect; fixes in build (2026-10-11T10:58:58Z, Fable 5.1 root)
 

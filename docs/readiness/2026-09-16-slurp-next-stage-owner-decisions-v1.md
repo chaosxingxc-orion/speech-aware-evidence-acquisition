@@ -1560,3 +1560,17 @@ rows, 5,453.7 speech-audio seconds, smoke 4 rows rc 0, driver rc 0, 09:32-10:36Z
   contact: `legacy feature-cache directory is unavailable: /home/chao/feat-cache/slurp-thinking-q4km` (the driver never creates
   the Thinking legacy cache). Fix in build (`sonnet/266e-thinking-packets-fix`): create the cache roots at run time, compare
   GPU hours in `--check-ledger`, and state how the next start is labelled given the failed attempt record.
+
+### Second flip of the proposers; packet recovery pass started (coordinator, 2026-10-11)
+
+- Registration fix merged (535ae32f2: artifacts cell = plan path, prompt sha resolved, `analysis-recipe-v1.json`, READ row
+  registered and countersigned 7adbb5215). Second flip: the typed cell's `core.flight.cli check` now fails in the exposure
+  gate: `_construction_roster_identity_hashes` scans `docs/receipts/rosters/*.json` and refuses the non-roster companion
+  `a2t-paired-400-v1.comparator-rows.json` (schema `saea-a2t-paired-roster-comparator-rows-v1`, added by the A2T seal-path
+  merge 899a17c48). Any plan with visible construction targets is blocked until the companion is moved or allowlisted; fix in
+  build (`sonnet/gate-roster-schema-fix`). The reflector cell waits on the same flip.
+- Thinking packet pass: the failed smoke attempt had encoded 4 rows (9.94 s) with nothing cached; driver fix merged
+  (d8822f64f: creates the Thinking legacy cache and packet-root parent, `--check-ledger` compares GPU hours, attempt
+  labelling enforced); ledger row raised to 1,084 calls / 3,165 s (47d0a5158); recovery labels written
+  (`/home/chao/direct-fb-packets.recovery`: smoke `attempt-packets-thinking-smoke-4-rec1-v1` recovering
+  `attempt-packets-thinking-smoke-4-v1`, then `attempt-packets-thinking-fold-b-v1`); check PASS 11:13Z; task started.
