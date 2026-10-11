@@ -1,6 +1,6 @@
 {
   "cell": "slurp-direct-only-fold-b-thinking-v1",
-  "composed_config_hash": "f2ced01d44f12f49c86bf50e6964a9fb68ed0412fefa407fae83a407e0393eb3",
+  "composed_config_hash": "a5fcf5ff6c8022d13afb98794f8078edc021208f665123abba4184c6b4c18019",
   "execution_plan": {
     "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 3.0,
     "planned_model_calls": 1080,
     "planned_speech_audio_seconds": 3155,
-    "protocol_hash": "f27f8369549f7c9e84a932a86e0fb8acfedb6408996d75ced7338019559a9709",
+    "protocol_hash": "f113285191609abf16b70cb904a78ed1c4a89f769db226e7a2c4e8859a2f00d2",
     "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -34,7 +34,7 @@
   "preparation_base_commit": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
-    "sha256": "b42730729c4cdaaf9f90bb64b04efbb1cf2caf90597186ab78a9f4d787c0d269"
+    "sha256": "ff4b7e91afa17b04aeb9fc41744326c4d22ce0db0b4b306278dc64a77fcab3f7"
   },
   "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1: the Thinking arm of the 266-E bare-core read.",
   "quality_read_gate": "No read before ALL THREE arms' complete sealed manifests, exact ordered outputs and single complete official scores exist and every attempt is FINALIZED at the same flight commit. A partial manifest is never scored and never read.",
