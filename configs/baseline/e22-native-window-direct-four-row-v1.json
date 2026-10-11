@@ -1,0 +1,37 @@
+{
+  "arm": "speech-feature-query",
+  "evidence_mismatch": false,
+  "evidence_source": "none",
+  "ojw_workflow_timeout_seconds": 21600,
+  "phase_material": {
+    "direct": {
+      "instruction_fill": null,
+      "instruction_template": "probes/e21_native_window_direct_v1.txt",
+      "predecessor_binding": "none"
+    }
+  },
+  "policy": "phase-direct-only-v1",
+  "prepared_execution_units": {
+    "batch": "SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1",
+    "registry_run_id": "SAEA-E22-DEV-WINDOW-INVENTORY-V1",
+    "relpath": "analysis/SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1/window-inventory.json",
+    "sha256": "4dc552e6f2708bb1c9349cb228a0459889bef4b240dcf862eaf589dac7e85849",
+    "split_identity_hash": "597da35b75906520faf58246f2e01ff08a8883cd99492936a8e815a5c19528de",
+    "unit_count": 4
+  },
+  "prepared_window_feature_packets": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1/window-feature-packets.json",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "prompt_fit_multiple": 1.3333333333333333,
+  "scorers": [
+    "asr-wer-whisper"
+  ],
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "speech_feature_key_representation_id": "saea-e22-native-window-v1:current-window",
+  "speech_feature_matcher_policy_id": "saea-e22-native-window-v1",
+  "task_contract_source": "active-instruction",
+  "task_instruction": "Transcribe the speech verbatim exactly as spoken. Preserve spoken names, numbers and repetitions. Do not add explanations, speaker labels, timestamps or words unsupported by the audio. Output only the transcript text.",
+  "what_this_is": "HELD pure frozen-core comparator of the Earnings-22 consumption-module all-off arm on the four-row form smoke (the first four windows of call 4453225), through the same source-unit, shared controller / OpenJiuwen, delivery and scoring path the Earnings-21 native-window direct cells use. One direct contact per 90 s window; no facets, values, supply route, knowledge supply or tool. SCORER VARIANT (declared): asr-wer-whisper only -- corpus-level WER under the Whisper English normalizer, the paper-facing metric -- on the PLAIN window form. It is NOT the ESB short-form tail-2 s variant (docs/readiness/2026-09-05-scoring-alignment-conclusions.md: 15.937 NOT ALIGNED sealed vs 9.2377 ALIGNED with 2.0 s of digital silence appended, deviation D-TS2-3): this cell appends no silence, its population is whole dev calls in 90 s windows rather than ESB test utterances, and so neither number, nor the published 9.79 / 12.3, is a comparator; D-TS2-3 does not apply and no alignment band is claimed. The prepared_window_feature_packets sha256 is an all-zero PENDING pin: the Earnings-22 dev packets need an encoder pass (lease, GPU) that this registration neither performs nor authorizes."
+}

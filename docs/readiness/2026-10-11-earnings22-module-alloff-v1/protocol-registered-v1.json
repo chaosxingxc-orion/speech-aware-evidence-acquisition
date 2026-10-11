@@ -1,0 +1,136 @@
+{
+  "authority": "docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md sections 2b and 3.2; docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md rows 187, 196; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md rule 5 (a form proof claims no benefit)",
+  "cells": {
+    "arm": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-earnings22-native-stage3-module-alloff-v1-generation-v1",
+      "baseline_fragment": "e22-native-window-direct-dev10-v1",
+      "cell": "earnings22-native-stage3-module-alloff-v1",
+      "composed_config_hash": "f35237082d1ace6fa1055538b754ac67b565948fc0dedc5a99e1faeacb89e884",
+      "dataset_fragment": "earnings22-native-window-dev10-v1",
+      "experiment": "earnings22-native-stage3-module-alloff-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 0,
+        "generation_calls_cap": 451,
+        "gpu_hours_fit_inclusive": 1.5,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 40056
+      },
+      "fit_attempt_id": null,
+      "fit_run_id": null,
+      "model_fragment": "q4km-e22-native-window-packets-cddb000c-np4-max1024-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "f9ef7b1f65d81f39aa354d879827079914a7019391623dffb887db99bd3d50ab",
+      "rows": 451,
+      "run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-V1",
+      "scorers": [
+        "asr-wer-whisper"
+      ],
+      "split_identity_hash": "89b178d6b1ef46d9ca820ae54349e3d2099c60cde6d6b753ef9f66137c310028"
+    },
+    "smoke": {
+      "arm": "speech-feature-query",
+      "attempt_id": "attempt-earnings22-native-stage3-module-alloff-smoke-4-v1-generation-v1",
+      "baseline_fragment": "e22-native-window-direct-four-row-v1",
+      "cell": "earnings22-native-stage3-module-alloff-smoke-4-v1",
+      "composed_config_hash": "de7de1129462265e381fbbf89c171a4f3934ddb2ef7be56041ffa43ce7722785",
+      "dataset_fragment": "e22-native-window-four-row-v1",
+      "experiment": "earnings22-native-stage3-module-alloff-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 0,
+        "generation_calls_cap": 4,
+        "gpu_hours_fit_inclusive": 0.3,
+        "native_task_contract_calls_cap": 0,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 360
+      },
+      "fit_attempt_id": null,
+      "fit_run_id": null,
+      "model_fragment": "q4km-e22-native-window-packets-cddb000c-np4-max1024-v1",
+      "policy": "phase-direct-only-v1",
+      "protocol_hash": "793aac153cb788b3343dccdc901a6f0d87f1bbbb1a8637e325b777f0c0d330d9",
+      "rows": 4,
+      "run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-SMOKE-4-V1",
+      "scorers": [
+        "asr-wer-whisper"
+      ],
+      "split_identity_hash": "597da35b75906520faf58246f2e01ff08a8883cd99492936a8e815a5c19528de"
+    }
+  },
+  "consumption_module_block": {
+    "columns": [],
+    "components": [
+      {
+        "component_id": "node-context-presentation",
+        "state": "off"
+      },
+      {
+        "component_id": "knowledge-consumption-opportunity",
+        "state": "off"
+      },
+      {
+        "component_id": "construction-store-binding",
+        "state": "off"
+      },
+      {
+        "component_id": "agree-vote-seed",
+        "state": "off"
+      },
+      {
+        "component_id": "centroid-boundary-key",
+        "state": "off"
+      },
+      {
+        "component_id": "solver-citation-contract",
+        "state": "off"
+      },
+      {
+        "component_id": "reviewer-g5-repair",
+        "state": "off"
+      },
+      {
+        "component_id": "relisten",
+        "state": "off"
+      },
+      {
+        "component_id": "top2-contrast",
+        "state": "off"
+      },
+      {
+        "component_id": "forced-candidate-list",
+        "state": "off"
+      },
+      {
+        "component_id": "key-source:k6p",
+        "state": "off"
+      },
+      {
+        "component_id": "scope-rule",
+        "state": "off"
+      },
+      {
+        "component_id": "e3-progressive-slots",
+        "state": "off"
+      },
+      {
+        "component_id": "supply-abstain",
+        "state": "off"
+      }
+    ],
+    "module_id": "saea-evidence-consumption-module-v1",
+    "profile": "earnings22"
+  },
+  "decision_id": "earnings22-native-stage3-module-alloff-v1-admission-v1",
+  "decision_relpath": "coordination/earnings22-native-stage3-module-alloff-v1/root-admission-v1.json",
+  "one_factor": "None: the all-off arm is the carrier's direct baseline bytes; between it and its direct parent cell only fit identity, prose and the experiment fragment's own block differ, none of which enters a request (the byte proof).",
+  "read_run_id": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF-FORM-READ-V1",
+  "schema": "saea-registered-protocol-v1",
+  "service_session": "serving-e22-native-window-flightruntime-np4-max1024-v1"
+}
