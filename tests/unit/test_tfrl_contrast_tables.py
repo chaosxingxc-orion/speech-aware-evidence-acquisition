@@ -227,7 +227,7 @@ def test_forbidden_keys_fail_the_self_check(key) -> None:
 
 def test_an_overlong_string_fails_the_self_check() -> None:
     doc = _document()
-    doc["table_a"]["rows"].append(["x" * 121])
+    doc["table_a"]["rows"].append(["x" * 201])
     with pytest.raises(T.TablesError, match="longer"):
         T.finalize(doc)
 

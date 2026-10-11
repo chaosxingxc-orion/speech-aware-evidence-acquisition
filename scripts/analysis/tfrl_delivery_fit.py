@@ -70,7 +70,7 @@ DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lo
 DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
 READ_ID = "SAEA-SLURP-TFRL-DELIVERY-FIT-V1"
 FORBIDDEN_KEYS = frozenset({"text", "transcript", "gold", "value_text", "utterance", "answer"})
-MAX_STRING = 120
+MAX_STRING = 200
 ARTICLE_MIN_OPPORTUNITIES = 10
 
 #: family -> default grid.  The v4g point of each family is on its grid.

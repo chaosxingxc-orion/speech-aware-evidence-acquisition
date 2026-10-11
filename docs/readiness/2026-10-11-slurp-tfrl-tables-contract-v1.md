@@ -20,7 +20,7 @@ roster size. Gold is used offline on TRAIN / DEV rows only; the test split is re
 
 - Counts, rates, ids, slot-type names, scenario names and token counts only.
 - The self-check fails the script if any key equals `text`, `transcript`, `gold`, `value_text`, `utterance` or
-  `answer` (case-insensitive) or any string value exceeds 120 characters.
+  `answer` (case-insensitive) or any string value exceeds 200 characters.
 - Every count of 1 or 2 is the string `"<3"`; 0 and counts of 3 or more are integers. A rate is `null` when its
   denominator is below 3.
 

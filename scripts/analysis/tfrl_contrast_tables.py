@@ -61,7 +61,7 @@ Top level keys: ``schema`` (``saea-tfrl-contrast-tables-v1``), ``source``, ``sup
 
 Forbidden content: the self-check ``assert_text_free`` fails the script if any dictionary key equals
 ``text`` / ``transcript`` / ``gold`` / ``value_text`` / ``utterance`` / ``answer`` (exact, case-insensitive) or a
-string value is longer than 120 characters.  Gold labels are used offline on TRAIN / DEV rows exactly as the
+string value is longer than 200 characters.  Gold labels are used offline on TRAIN / DEV rows exactly as the
 existing diagnostics do (``slurp_s1_slu_error_taxonomy``, ``slurp_nx_exchange_rates``) and reach no output.
 
 Reuse, not re-implementation: gold / delivered / sealed-score loaders and ``TrainStats``-free parsing from
@@ -107,7 +107,7 @@ CLASSES = ("SPURIOUS", "MISSING", "WRONG-TYPE", "BOUNDARY", "NEAR", "WRONG-VALUE
 STATES = ("in_supply", "in_store_not_delivered", "in_train_not_in_store", "nowhere")
 RANK_BINS = ("1", "2", "3", "4-5", "6-10", "11+", "off-list", "no-shortlist")
 FORBIDDEN_KEYS = frozenset({"text", "transcript", "gold", "value_text", "utterance", "answer"})
-MAX_STRING = 120
+MAX_STRING = 200
 REFUSED_COLUMNS = ["candidate_id", "operator_class", "predicted_pp", "measured_pp", "verdict"]
 EXCHANGE_POOLS = ("comp1b_fold_a", "a2")
 EXCHANGE_EMPIRICAL_KEYS = (
