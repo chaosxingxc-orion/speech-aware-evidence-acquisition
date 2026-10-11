@@ -1084,3 +1084,52 @@ has it provided? The core of our paper is still whether this training-free RL sc
   per decision 206) is designed and registered as the next SLURP line.
 - The owner's question is answered in the coordinator's briefing of the same day and recorded as decision 262's
   proposal (below).
+
+## Where training-free RL acts in this study, what it has gained, and decision 262 PROPOSED (coordinator, 2026-10-11)
+
+Answer to the owner's question, from the record only.
+
+**The loop that exists.** Every round of this study since 2026-09-22 has run the same training-free loop, registered as
+`sealed-credit-system-policy-v1`: (1) ROLLOUT -- a registered flight produces sealed per-row trajectories of the whole
+system (Perception -> Solver -> delivery) on a TRAIN fold or DEV; (2) CREDIT -- the official scorer assigns per-row,
+per-node reward (official SLU-F1 / intent contributions, typed failure classes, exchange rates), never a scalar per
+trajectory; (3) UPDATE -- a candidate change to a TYPED system component (what knowledge is constructed, which key /
+vote retrieves it, how much is supplied, which contract the Solver follows, which deterministic rule delivers) is
+proposed from aggregate credit tables; (4) SELECTION -- the candidate is read offline over sealed pools (0.67 pp floor)
+or as a same-flight column (n >= 1,080) and selected only if its CI95 lower bound clears the floor against a twin;
+(5) CONFIRMATION -- the selected change is re-measured on a fresh roster (Fold A, then DEV, then the signed test sample)
+before it is locked. No parameter of the frozen core changes; the "policy" is the system around the core.
+
+**Where it produced STABLE gains (replicated on fresh rosters, CI-LB > 0):**
+| component (the UPDATE that was selected) | loop evidence | stable gain | where it acts |
+| --- | --- | --- | --- |
+| COMP-1b intent composition (agreement vote over the exemplar neighbours + centroid boundary keys, k60 pool) | nominated by sealed-credit inner-loop run 2 as the ONLY candidate over its floor (+4.26 [+2.41, +6.11] intent, `docs/results/2026-09-29-slurp-sealed-credit-inner-loop-run-2.md`), confirmed Fold A +3.80, DEV +4.60 [+2.58, +6.73], test sample +5.80 [+4.04, +7.42], R5 same-chain +4.90 | **intent +4.6..+5.8 pp** | knowledge CONSTRUCTION (keys, vote) feeding the Perception node |
+| v4g delivery normaliser (rules learned from TRAIN statistics: article / o'clock / scope / type-inventory / empty-entity rate guards) | 431 rule combinations + 10 single rules searched by official credit on the A2 pool, selected (+0.98 [+0.21, +1.74]), confirmed Fold A +1.67, Fold B +1.55 [+0.81, +2.33]; the composed v2.2 then read SLU +1.67 [+0.53, +2.83] over COMP-1b on the test sample | **SLU-F1 +1.0..+1.7 pp** | DELIVERY (consumption side) |
+| review-off graph (the Reviewer loop removed after its credit read 0/100 repairs) | N100 read, R5 composed read NEUTRAL at 2.0 vs 4.05 contacts per row, test sample no-harm | **cost -50 % at equal accuracy** | graph structure |
+| Stage-2 knowledge supply (B1 exemplars k20, B4b slot store v2) -- the same loop before it was named | B1 +12.61 [+10.54, +14.60] Fold A, replicate +13.70; B4b +2.55 [+1.13, +3.98], replicate +1.54 | **SLU-F1 +14 pp over the bare core** (now inside PLAN) | knowledge CONSTRUCTION + SUPPLY at the Solver |
+Bare core -> PLAN on DEV: intent 61.7 -> 76.6, SLU-F1 38.1 -> 65.4 (`docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md`); PLAN -> v2.2 on the test sample: intent 77.0 -> 82.4, SLU-F1 64.2 -> 66.7.
+
+**Where it produced NOTHING stable (all read at n >= 1,000 or offline at 0.67 pp):** every UPDATE whose content was
+FREE TEXT written by a model or a learner from reward -- TF-GRPO semantic deltas (CELL-1/2/3), GEPA reflective prose,
+the joint system-text search (L/B), the K16 / K4 template populations, the hand-written template columns (R1 i1 / i2,
+R6-P1) -- and every UPDATE that re-chose among the core's own outputs (sample medoids, routing over arms, the c3 gate
+beyond ~+0.5, VER-1 on Fold A). The four failure modes are named in
+`docs/results/2026-09-26-slurp-stage3-locked-tfrl-academic-baseline-v1.md` (unmeasurable gradient, prose-as-policy,
+credit from decoding noise, no verifier in the loop).
+
+**So, plainly:** the training-free RL of this study acts BETWEEN flights, on the knowledge-construction, retrieval,
+supply and delivery components of the system, with per-row official credit as the reward and fresh-roster confirmation
+as the acceptance test; it has given a replicated intent gain of about +5 pp and an SLU-F1 gain of about +1.7 pp on top
+of a +14 pp knowledge-supply gain, at half the contacts. What it has NOT given is a learner that writes its own policy
+text: those updates never cleared noise. That negative result is as replicated as the positive one.
+
+- **262** (PROPOSED) Make this the paper's core claim and shape the remaining rounds to it: (a) the algorithm named and
+  frozen as "sealed-credit policy search over typed system components" (rollout -> per-row typed credit -> candidate
+  from aggregate tables -> offline / same-flight selection with a twin -> fresh-roster confirmation), with its
+  measurement instrument as part of the method; (b) the evidence ledger above (B1, B4b, COMP-1b, v4g, review-off) as
+  the stable-gain record, each entry with its selection read and its confirmation read; (c) the negative result (free-
+  text updates and output re-selection do not transfer under the same instrument) reported with the same rigour;
+  (d) the next rounds chosen to ADD entries of type (a): construction-side updates selected by credit -- the
+  hearing-pass evidence tool (261-B) if it clears, the thinking-mode core only if it fits the card and the slot; and
+  (e) the carriers run the SAME loop (ALL-OFF A/A -> one credit-selected construction update -> confirmation) once the
+  owner releases their GPU, which is what turns "one task" into "several tasks" for the goal. Recommended: yes.
