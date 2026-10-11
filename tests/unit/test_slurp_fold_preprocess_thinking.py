@@ -731,3 +731,19 @@ def test_a_failed_attempt_stops_the_chain_with_its_own_code(host):
 def test_a_sidecar_that_does_not_go_away_is_reported(host):
     result = host.run("--run", STUB_SIDECAR_AFTER="1")
     assert result.returncode == 22 and "still up" in result.stdout
+
+
+# ------------------------------------------------------------------------------------------------------------ the README
+
+
+def test_the_package_readme_carries_the_runbook_the_writer_would_regenerate():
+    import ast
+
+    readme = (REPO / "docs" / "readiness" / "2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1" / "README.md").read_text(encoding="utf-8")
+    tree = ast.parse((REPO / "scripts" / "flights" / "direct" / "direct_fb_write_registration.py").read_text(encoding="utf-8"))
+    runbook = next(ast.literal_eval(node.value) for node in tree.body
+                   if isinstance(node, ast.Assign) and any(getattr(t, "id", "") == "PACKETS_RUNBOOK" for t in node.targets))
+    assert runbook in readme
+    for needle in ("direct_fb_packets.sh --check", "--pin-receipt", "Which registered files change hash", "smoke-roster-receipt-v1.json",
+                   "Countersign text", "Expected runtime", "31.8 rows per minute"):
+        assert needle in runbook, needle
