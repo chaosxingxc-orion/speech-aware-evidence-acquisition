@@ -9,6 +9,7 @@
 # After the flip, refresh the registered plan pins (scripts/flights/refresh_registered_plan_pins.py --package <dir> copies the minted supply
 # pin into the plans) and flip again. --allow-output-change must never be passed.
 #   TFRL_ITER=1 bash scripts/flights/tfrl/tfrl_i1_flip.sh [column|proposers]
+#   TFRL_ONLY=ace TFRL_ITER=1 bash scripts/flights/tfrl/tfrl_i1_flip.sh proposers   # flip ONLY the reflector (typed is flown and sealed; its re-pin would be refused); typed|ace, default both
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
@@ -28,12 +29,15 @@ case "$WHICH" in
     LABEL="loop iteration $ITER proposer and reflector" ;;
   *) echo "usage: TFRL_ITER=n tfrl_i1_flip.sh [column|proposers]" >&2; exit 2 ;;
 esac
+ONLY=${TFRL_ONLY:-}
+case "$ONLY" in ""|typed|ace) ;; *) echo "TFRL_ONLY must be typed or ace" >&2; exit 2 ;; esac
+if [ -n "$ONLY" ] && [ "$WHICH" != proposers ]; then echo "TFRL_ONLY applies to the proposers mode only" >&2; exit 2; fi
 cd "$MAIN" || exit 1
 if [ ! -f "$DATA/coordination/$DECDIR/root-admission-v1.json" ]; then
   echo "refusing: the $LABEL decision receipt is not minted (scripts/flights/tfrl/tfrl_mint_receipt.py)"; exit 6
 fi
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh' | grep -v pgrep)" ]; then echo "a batch is running; abort"; exit 7; fi
-if [ "$WHICH" = column ]; then KINDS="smoke arm"; else KINDS="typed ace"; fi
+if [ "$WHICH" = column ]; then KINDS="smoke arm"; else KINDS="${ONLY:-typed ace}"; fi
 for KIND in $KINDS; do
   printf '%s\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n' \
     "research: flip $LABEL ($KIND) to ready (owner decision 263-A: the autonomous typed loop with the ACE comparator; re-pinned by scripts/flights/repin_cell.py, decision receipt $DECDIR)" \
@@ -46,8 +50,12 @@ for pass in 1 2 3 4; do
     bash "$SP/repin_loop_generic.sh" "$TF/tfrl_i1_repin_smoke.sh" "$RD" slurp-native-stage3-tfrl-loop-i$ITER-fold-b-smoke-4-v1 smoke-generation "/home/chao/$SHORT-smoke-commit.txt" || exit $?
     bash "$SP/repin_loop_generic.sh" "$TF/tfrl_i1_repin_arm.sh" "$RD" slurp-native-stage3-tfrl-loop-i$ITER-fold-b-v1 generation "/home/chao/$SHORT-arm-commit.txt" || exit $?
   else
-    bash "$SP/repin_loop_generic.sh" "$TF/tfrl_i1_repin_typed.sh" "$RD" slurp-native-stage3-tfrl-proposer-i$ITER-v1 typed-generation "/home/chao/$SHORT-typed-commit.txt" || exit $?
-    bash "$SP/repin_loop_generic.sh" "$TF/tfrl_i1_repin_ace.sh" "$RD" slurp-native-stage3-tfrl-ace-reflector-i$ITER-v1 ace-generation "/home/chao/$SHORT-ace-commit.txt" || exit $?
+    case " $KINDS " in *" typed "*)
+      bash "$SP/repin_loop_generic.sh" "$TF/tfrl_i1_repin_typed.sh" "$RD" slurp-native-stage3-tfrl-proposer-i$ITER-v1 typed-generation "/home/chao/$SHORT-typed-commit.txt" || exit $? ;;
+    esac
+    case " $KINDS " in *" ace "*)
+      bash "$SP/repin_loop_generic.sh" "$TF/tfrl_i1_repin_ace.sh" "$RD" slurp-native-stage3-tfrl-ace-reflector-i$ITER-v1 ace-generation "/home/chao/$SHORT-ace-commit.txt" || exit $? ;;
+    esac
   fi
   AFTER=$(git rev-parse HEAD)
   echo "######## convergence pass $pass: HEAD ${BEFORE:0:8} -> ${AFTER:0:8}"
