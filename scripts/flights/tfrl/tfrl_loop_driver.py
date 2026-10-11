@@ -1,0 +1,797 @@
+#!/usr/bin/env python3
+"""The autonomous typed-loop driver (decision 263-A, design section 7): ``open --iter t`` / ``close --iter t`` / ``status``.
+
+MODEL-FREE and 0 GPU. Every step is idempotent (a re-run with the same inputs is a no-op; a changed input is refused), writes a
+receipt JSON under ``<package>/iterations/i<t>/``, refuses to run while a batch driver, a flight or a flip loop runs, and refuses to
+run when the loop protocol's sha256 differs from the one pinned at the first ``open``. Nothing is written under the data root except
+analysis outputs under ``analysis/SAEA-SLURP-TFRL-LOOP-V1/`` (the tables, the proposer artefacts, the playbook, the credit files).
+
+THE FLOW (a GPU step sits between ``open --stage propose`` and ``open --stage cell``):
+
+    open  --iter t --stage propose   tables from the previous sealed column (VER-1a lock column for t = 1), the proposer / reflector
+                                     artefacts, the two text-only cells (HELD, DRAFT ledger rows)         -> countersign checklist
+    [coordinator: countersign, mint, flip, queue; GPU flies the proposer + reflector cells]
+    open  --iter t --stage cell      validate the sealed candidates, curate the ACE playbook i(t), derive the column cell and its
+                                     smoke (HELD, DRAFT rows), print the gates                              -> countersign checklist
+    [coordinator: countersign, mint, flip, queue; GPU flies the column]
+    close --iter t                   score the columns, node-local and paired reads, credit vectors, the preregistered selection rule,
+                                     archive (accepted / refused / unflown), curve, meta summary, parent choice, ACE credit file
+                                                                                                           -> next-iteration checklist
+
+External analysis scripts (tables, rollout score, node-local reader, paired read, delivery fit) run only with ``--execute``;
+without it the driver prints the command it would run and stops before any archive write ("planned").
+
+Interface adaptations written in ``tfrl_loop_lib.py`` and reported: E-T3 tables -> E-T1 artefact and E-T2 material; E-T4 archive ->
+E-T1 context; paired-read bytes -> credit vectors; the ACE counters' credit file is written at ``close`` and consumed by the next
+``open --stage cell`` (where the reflector's deltas are first available), not at ``close``.
+"""
+
+from __future__ import annotations
+
+import argparse
+import importlib
+import json
+import os
+import sys
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Callable, Mapping
+
+HERE = Path(__file__).resolve().parent
+if str(HERE) not in sys.path:
+    sys.path.insert(0, str(HERE))
+
+import tfrl_family as tf  # noqa: E402
+import tfrl_loop_lib as lib  # noqa: E402
+
+REPO_ROOT = tf.REPO_ROOT
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
+
+DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
+DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+VER1A_RUN_ID = "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1"
+VER1A_ATTEMPT = "attempt-slurp-native-stage3-ver1a-samples-fold-b-generation-v1"
+TABLES_SCRIPT = "scripts/analysis/tfrl_contrast_tables.py"
+DELIVERY_FIT_SCRIPT = "scripts/analysis/tfrl_delivery_fit.py"
+ROLLOUT_SCORE_SCRIPT = "scripts/analysis/stage3_rollout_score.py"
+NODE_LOCAL_SCRIPT = "scripts/analysis/slurp_nx_solver_column_read.py"
+PAIRED_READ_SCRIPT = "scripts/analysis/stage3_paired_read.py"
+#: operator -> the archive artefact it edits (design 2 table); the digest is provisional until the E-T6 release builders land.
+ARTEFACT_OF = {"exemplar-selection": "exemplar_index_release", "slot-card-subset": "slot_store_release", "knob-set": "supply_fragment",
+               "deliver-rule": "delivery_rule_table", "scope-restrict": "scope_routing"}
+FIT_FAMILY = {"ee5": "ee", "ee10": "ee", "ti0": "ti", "ti1": "ti", "fx-article": "article"}
+ROOT_DISPLAY = "s0-lock-v2.2"
+
+
+@dataclass
+class Ctx:
+    repo_root: Path
+    package_dir: Path
+    data_root: Path
+    lock_path: Path
+    runner: lib.Runner
+    lister: Callable[[], "list[str] | None"] | None = None
+    skip_guard: bool = False
+    out: Callable[[str], None] = print
+
+    def receipts(self, t: int) -> Path:
+        return self.package_dir / "iterations" / f"i{t}"
+
+    def analysis(self, t: int) -> Path:
+        return self.data_root / tf.ANALYSIS_ROOT / f"i{t}"
+
+    def archive(self):
+        from speech_aware_evidence_acquisition.analysis.sealed_credit.archive import Archive  # noqa: PLC0415
+
+        return Archive(self.package_dir / "archive")
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# helpers
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def _load_json(path: Path) -> Any:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
+def display_id(state: Mapping[str, Any]) -> str:
+    return ROOT_DISPLAY if (state["iteration"] == 0 and state["arm"] == "typed") else state["state_id"][:48]
+
+
+def resolve_display(states: list[Mapping[str, Any]], shown: str) -> Mapping[str, Any]:
+    for s in states:
+        if display_id(s) == shown or s["state_id"] == shown:
+            return s
+    raise lib.LoopError(f"no archived state is shown as {shown!r}")
+
+
+def sha_file(path: Path) -> str:
+    return tf.sha256_file(path)
+
+
+def pin_of(ctx: Ctx, path: Path) -> dict:
+    """A ``{relpath, sha256}`` pin of an analysis artefact, data-root relative."""
+
+    return {"relpath": path.relative_to(ctx.data_root).as_posix(), "sha256": sha_file(path)}
+
+
+def read_or_none(path: Path) -> Any:
+    return _load_json(path) if Path(path).is_file() else None
+
+
+def need_receipt(ctx: Ctx, t: int, step: str) -> dict:
+    receipt = lib.read_receipt(ctx.receipts(t), step)
+    if receipt is None:
+        raise lib.MissingInput(f"iteration {t}: no {step} receipt (run the earlier step first)")
+    return receipt
+
+
+def start(ctx: Ctx, t: int, *, pin: bool) -> dict:
+    if t not in tf.ITERATIONS:
+        raise lib.LoopError(f"iteration must be one of {tf.ITERATIONS}")
+    lib.refuse_if_busy(ctx.lister, skip=ctx.skip_guard)
+    protocol = lib.check_protocol(ctx.package_dir, pin=pin)
+    ctx.receipts(t).mkdir(parents=True, exist_ok=True)
+    return protocol
+
+
+def ensure_roots(ctx: Ctx) -> dict[str, str]:
+    from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+
+    return lib.ensure_root_states(ctx.archive(), lock_hash=lib.lock_root_hash(ctx.repo_root),
+                                  empty_playbook_content_hash=ace.empty_playbook()["content_hash"])
+
+
+def operators_by_candidate(ctx: Ctx) -> dict[str, str]:
+    """``{candidate_id: operator}`` from every iteration's candidate record (the archive stores the class only)."""
+
+    out: dict[str, str] = {}
+    for t in tf.ITERATIONS:
+        record = read_or_none(ctx.receipts(t) / "candidates.json")
+        for entry in (record or {}).get("candidates", []):
+            out[entry["candidate_id"]] = entry["operator"]
+    return out
+
+
+def refused_buffer(ctx: Ctx, before_iteration: int) -> list[dict]:
+    """E-T1's rejected-edit buffer: validator refusals of every earlier iteration plus the instrument-refused flown children."""
+
+    rows: list[dict] = []
+    for t in range(1, before_iteration):
+        record = read_or_none(ctx.receipts(t) / "candidates.json") or {}
+        for entry in record.get("refused", []):
+            rows.append({"candidate_id": entry["candidate_id"][:16], "operator_class": entry["operator_class"],
+                         "operator": entry["operator"], "refusal_code": entry["refusal_code"],
+                         **({"predicted_slu_pp": entry["predicted_slu_pp"]} if entry.get("predicted_slu_pp") is not None else {}),
+                         "iteration": t})
+    ops = operators_by_candidate(ctx)
+    for s in ctx.archive().states():
+        if s["arm"] == "typed" and s["verdict"] == "refused" and s["iteration"] < before_iteration:
+            block = s["credit"].get("vs_parent") or s["credit"]["vs_lock"]
+            rows.append({"candidate_id": (s["candidate_id"] or "")[:16], "operator_class": s["operator_class"],
+                         "operator": ops.get(s["candidate_id"] or "", "unknown"), "refusal_code": "refused-by-instrument",
+                         **({"predicted_slu_pp": s["predicted_slu_pp"]} if s.get("predicted_slu_pp") is not None else {}),
+                         "realised_d_slu_pp": block["slu"]["point"], "iteration": s["iteration"]})
+    return rows
+
+
+def source_column(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
+    """The sealed, officially scored column the tables of iteration t are read from."""
+
+    if t == 1:
+        return {"run_id": a.source_run_id or VER1A_RUN_ID, "attempt": a.source_attempt or VER1A_ATTEMPT,
+                "scorer": a.source_scorer or tf.SCORER, "arm": "lock", "rows": tf.ROWS, "split": "train",
+                "note": "the sealed VER-1a sample pool, sample 0 greedy = lock v2.2's own delivery"}
+    close = need_receipt(ctx, t - 1, "close")
+    return {"run_id": close["column"]["run_id"], "attempt": close["column"]["attempt"], "scorer": tf.SCORER, "arm": "lock",
+            "rows": tf.ROWS, "split": "train",
+            "note": ("the delivered (lock) column of iteration %d; E-T3 reads delivered columns only, so a non-delivering parent's "
+                     "own column is not tabulated (reported interface gap)" % (t - 1))}
+
+
+def load_enums(ctx: Ctx, a: argparse.Namespace, tables: Mapping[str, Any]) -> dict:
+    from speech_aware_evidence_acquisition.rails import tfrl_typed_proposer as tp  # noqa: PLC0415
+
+    if a.enums_file:
+        doc = _load_json(Path(a.enums_file))
+        return {"slot_types": list(doc["slot_types"]), "intents": list(doc["intents"]),
+                "scenarios": list(doc.get("scenarios") or tp.SCENARIOS)}
+    if getattr(a, "enums_from_gold", False):
+        import importlib.util  # noqa: PLC0415
+
+        spec = importlib.util.spec_from_file_location("v4s", ctx.repo_root / "scripts/analysis/slurp_nx_postproc_v4_search.py")
+        module = importlib.util.module_from_spec(spec)       # type: ignore[arg-type]
+        sys.modules[spec.name] = module                      # type: ignore[union-attr]
+        spec.loader.exec_module(module)                      # type: ignore[union-attr]
+        from speech_aware_evidence_acquisition.data.lock import load_lock  # noqa: PLC0415
+
+        gold = module.load_gold(load_lock(ctx.lock_path), ctx.data_root, "train")
+        types = sorted({e.type for g in gold.values() for e in g["entities"]})
+        intents = sorted({f"{g['scenario']}_{g['action']}" for g in gold.values()})
+        return {"slot_types": types, "intents": intents, "scenarios": list(tp.SCENARIOS)}
+    raise lib.MissingInput("pass --enums-file {slot_types, intents[, scenarios]} or --enums-from-gold (TRAIN gold, offline)")
+
+
+def checklist(ctx: Ctx, title: str, items: list[str]) -> list[str]:
+    lines = [f"== {title} =="] + [f"  [{k + 1}] {text}" for k, text in enumerate(items)]
+    for line in lines:
+        ctx.out(line)
+    return lines
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# open: propose stage
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def open_propose(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
+    from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+    from speech_aware_evidence_acquisition.rails import tfrl_typed_proposer as tp  # noqa: PLC0415
+
+    start(ctx, t, pin=True)
+    if t > 1:
+        need_receipt(ctx, t - 1, "close")
+    if lib.read_receipt(ctx.receipts(t), "open-cell"):
+        raise lib.LoopError(f"iteration {t} is already past its propose stage")
+    roots = ensure_roots(ctx)
+    src = source_column(ctx, t, a)
+    A = ctx.analysis(t)
+    tables_path = A / "tables" / "tables-v1.json"
+    argv = [TABLES_SCRIPT, "--run-id", src["run_id"], "--attempt", src["attempt"], "--arm", src["arm"], "--scorer", src["scorer"],
+            "--split", src["split"], "--rows", src["rows"], "--data-root", ctx.data_root, "--lock", ctx.lock_path,
+            "--out-dir", A / "tables"]
+    ctx.runner.run("tables", argv, produces=[tables_path])
+    if ctx.runner.planned:
+        return {"status": "planned", "commands": [r.argv for r in ctx.runner.planned]}
+    tables = _load_json(tables_path)
+    enums = load_enums(ctx, a, tables)
+    states = ctx.archive().states()
+    typed_states = [s for s in states if s["arm"] == "typed"]
+    parent_record = read_or_none(ctx.receipts(t - 1) / "parent.json") if t > 1 else None
+    parent_state = (resolve_display(states, parent_record["parent_display_id"]) if parent_record
+                    else next(s for s in typed_states if s["iteration"] == 0))
+    ops = operators_by_candidate(ctx)
+    proposer_tables = lib.adapt_tables_for_proposer(tables, iteration=t, enums=enums, states=typed_states, operators=ops)
+    tables_pin_path = A / "proposer-tables.json"
+    lib.write_json_new(tables_pin_path, proposer_tables)
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import meta_summary  # noqa: PLC0415
+
+    meta_summary.build_meta_summary(states, "typed")          # asserts the never-shipped document is clean
+    archive_sha = lib.archive_sha256(ctx.package_dir / "archive")
+    context = lib.build_proposer_context(iteration=t, parent_state_id=display_id(parent_state), archive_sha256=archive_sha,
+                                         refused_buffer=refused_buffer(ctx, t), states=states)
+    context_path = A / "proposer-context.json"
+    lib.write_json_new(context_path, context)
+    # the ACE playbook in force and its reflector materials (one per scenario)
+    if t == 1:
+        playbook = ace.empty_playbook()
+        playbook_path = A / "playbook" / "playbook-i0.json"
+        if not playbook_path.exists():
+            ace.write_playbook(playbook_path, playbook)
+    else:
+        playbook_path = ctx.analysis(t - 1) / "playbook" / f"playbook-i{t - 1}.json"
+        playbook = dict(ace.load_playbook(playbook_path))
+    credit_receipt_sha = sha_file(tables_path)
+    materials: dict[str, dict] = {}
+    for scenario in tp.SCENARIOS:
+        material = lib.build_reflector_material(
+            tables, scenario=scenario, iteration=t - 1 if t > 1 else 0, column_arm="lock", run_id=src["run_id"],
+            credit_receipt_sha256=credit_receipt_sha, playbook=playbook)
+        path = A / "ace-material" / f"material-{scenario}.json"
+        lib.write_json_new(path, material)
+        materials[scenario] = pin_of(ctx, path)
+    p99 = a.lock_p99_supplied_tokens
+    if p99 is None:
+        p99 = (((tables.get("table_d") or {}).get("overall") or {}).get("supplied_tokens") or {}).get("p99")
+    if p99 is None:
+        raise lib.MissingInput("T_cap needs the MEASURED lock p99 of supplied tokens: pass --lock-p99-supplied-tokens (the tables ran "
+                               "with the trace pass skipped, or the p99 cell is suppressed)")
+    constants = ace.with_measured_lock_p99(int(round(float(p99))))
+    t_cap = ace.resolve_t_cap(constants)
+    pins = {
+        "typed": {"tables": pin_of(ctx, tables_pin_path), "context": pin_of(ctx, context_path)},
+        "ace": {"playbook": pin_of(ctx, playbook_path), "token_cap": t_cap, "materials": materials},
+    }
+    registered: dict[str, Any] = {"status": "not-registered"}
+    if not a.no_register:
+        import write_tfrl_iteration_registration as reg  # noqa: PLC0415
+
+        commit = a.study_commit or "0" * 40
+        at = a.registered_at or "%sT00:00:00.000000+00:00" % tf.DATE
+        for kind in ("typed", "ace"):
+            import derive_tfrl_iteration_cells as dv  # noqa: PLC0415
+
+            dv.derive_text_only(t, kind, pins[kind], repo_root=ctx.repo_root)
+        proposers = reg.proposers_package(ctx.repo_root, t, commit, at)
+        artefacts = {"typed": {"tables_sha256": proposer_tables["tables_sha256"], "archive_sha256": archive_sha,
+                               "prompt_sha256": "pending"}, "ace": {"tables_sha256": credit_receipt_sha, "archive_sha256": archive_sha,
+                                                                    "prompt_sha256": "pending"}}
+        rows = reg.draft_text_only_rows(ctx.repo_root, t, proposers["ids"], proposers["shas"], at, artefacts)
+        reg.wr(ctx.repo_root, f"{proposers['package']}/draft-ledger-rows.md", rows)
+        registered = {"status": "DRAFT-HELD", "package": proposers["package"], "cells": {k: v["cell"] for k, v in proposers["ids"].items()}}
+    payload = {
+        "status": "done", "iteration": t, "stage": "propose", "source_column": src, "roots": roots,
+        "parent_display_id": display_id(parent_state), "tables_sha256": tables["tables_sha256"],
+        "proposer_tables_sha256": proposer_tables["tables_sha256"], "proposer_context_file_sha256": sha_file(context_path),
+        "archive_sha256": archive_sha, "ace": {"playbook_iteration": playbook["iteration"], "t_cap": t_cap,
+                                              "lock_p99_supplied_tokens": constants["lock_p99_supplied_tokens"],
+                                              "constants_sha256": ace.constants_hash(ace.ACE_CONSTANTS), "materials": len(materials)},
+        "pins": pins, "registration": registered, "protocol_sha256": json.loads(
+            (ctx.package_dir / lib.STATE_FILE).read_text(encoding="utf-8"))["protocol_sha256"],
+        "edit_budget_L_t": tp.edit_budget(t),
+    }
+    inputs = {"iteration": t, "stage": "propose", "tables_file_sha256": sha_file(tables_path), "enums": enums,
+              "p99": constants["lock_p99_supplied_tokens"], "archive_sha256": archive_sha, "register": not a.no_register}
+    lib.write_receipt(ctx.receipts(t), "open-propose", payload, inputs=inputs)
+    if lib.read_receipt(ctx.receipts(t), "open-propose")["inputs_sha256"] != tf.canonical_sha256(inputs):
+        raise lib.ReceiptConflict("open-propose receipt differs")
+    checklist(ctx, f"countersign checklist, iteration {t} proposer + reflector cells (HELD)", [
+        f"countersign the DRAFT rows in {registered.get('package', '<proposers package>')}/draft-ledger-rows.md (coordinator)",
+        "mint the decision receipts for the two text-only cells (scripts/flights/tfrl/tfrl_mint_receipt.py --kind proposers)",
+        "run the loop-form flip (scripts/flights/tfrl/tfrl_i1_flip.sh proposers), refresh the plan pins, flip again, run the gates",
+        "queue the cells through scripts/flights/tfrl/batch_chain_tfrl_i1.sh proposers; start SAEA-Batch-Driver from PowerShell (human)",
+        "after the seal: python -B scripts/flights/tfrl/tfrl_loop_driver.py open --iter %d --stage cell --typed-receipts F "
+        "--reflector-answers F ..." % t,
+    ])
+    return payload
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# open: cell stage
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def _artefact_hashes(parent_hashes: Mapping[str, str], operator: str, applications: Any, override: Mapping[str, str] | None) -> dict:
+    name = ARTEFACT_OF[operator]
+    digest = (override or {}).get(name) or tf.canonical_sha256({"operator": operator, "applications": applications})
+    return {**parent_hashes, name: digest}
+
+
+def knob_spec(candidate: Mapping[str, Any]) -> dict:
+    """A ``knob-set`` candidate as a supply-column spec: the tail becomes the ``knowledge_stores.<tail>`` override path."""
+
+    overrides = {f"knowledge_stores.{app['tail']}": int(app["value"]) for app in candidate["applications"]}
+    return {"overrides": overrides}
+
+
+def load_builder(spec: str | None) -> Callable[[Mapping[str, Any], Mapping[str, Any]], Mapping[str, Any]] | None:
+    if not spec:
+        return None
+    module_name, _, func = spec.partition(":")
+    return getattr(importlib.import_module(module_name), func)
+
+
+def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import parent_choice  # noqa: PLC0415
+    from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+    from speech_aware_evidence_acquisition.rails import tfrl_typed_proposer as tp  # noqa: PLC0415
+
+    start(ctx, t, pin=False)
+    propose = need_receipt(ctx, t, "open-propose")
+    A = ctx.analysis(t)
+    archive = ctx.archive()
+    states = archive.states()
+    parent_state = resolve_display(states, propose["parent_display_id"])
+    tables_doc = tp.parse_tables(_load_json(A / "proposer-tables.json"))
+    typed_states = [s for s in states if s["arm"] == "typed"]
+    view = tp.ArchiveView(
+        iteration=t, parent_state_id=display_id(parent_state),
+        known_state_ids=frozenset(display_id(s) for s in typed_states),
+        archived_candidate_ids=frozenset(s["candidate_id"] for s in typed_states if s.get("candidate_id")),
+        masked_classes=frozenset(parent_choice.masked_classes(states, parent_state["state_id"])),
+        entry_ids={"deliver-rule": frozenset(), "slot-card": frozenset()},
+    )
+    predictor = tp.FilePredictor(Path(a.predictions)) if a.predictions else None
+    entries = _load_json(Path(a.typed_receipts)) if a.typed_receipts else []
+    if not entries and not a.typed_arm_empty:
+        raise lib.MissingInput("pass --typed-receipts F (sealed candidate receipts) or --typed-arm-empty (a legal state: the typed arm "
+                               "is empty when no candidate cleared the bar)")
+    valid, refused = [], []
+    seen: set[str] = set()
+    for entry in entries:
+        receipt = entry["receipt"]
+        if not receipt.get("legal"):
+            refused.append({"candidate_id": receipt.get("response_sha256", "unparsed")[:16], "operator_class": "unknown",
+                            "operator": "unknown", "refusal_code": (receipt.get("refusal_codes") or ["schema"])[0]})
+            continue
+        candidate = receipt["candidate"]
+        result = tp.validate_candidate(candidate, enums=tables_doc.enums, archive=view, predictor=predictor,
+                                       allowed_classes=entry.get("allowed_classes"), pool_sizes=tables_doc.pool_sizes())
+        cid = result.candidate_id
+        if cid in seen:
+            continue
+        seen.add(cid)
+        if result.accepted:
+            valid.append({"candidate_id": cid, "operator_class": candidate["operator_class"], "operator": candidate["operator"],
+                          "read": result.read, "predicted_slu_pp": result.prediction.slu_pp if result.prediction else None,
+                          "candidate": candidate})
+        else:
+            refused.append({"candidate_id": cid, "operator_class": candidate["operator_class"], "operator": candidate["operator"],
+                            "refusal_code": result.codes[0],
+                            **({"predicted_slu_pp": result.prediction.slu_pp} if result.prediction else {})})
+    sf = sorted((v for v in valid if v["read"] == "sf"), key=lambda v: (-(v["predicted_slu_pp"] or 0.0), v["candidate_id"]))
+    builder = load_builder(a.artefact_builder)
+    typed_spec, chosen, not_flown = None, None, []
+    for candidate in sf:
+        if chosen is not None:
+            not_flown.append({**candidate, "reason": "lower-predicted-than-the-flown-candidate"})
+            continue
+        if candidate["operator"] == "knob-set":
+            spec, hashes = knob_spec(candidate["candidate"]), None
+        elif builder is not None:
+            built = builder(candidate["candidate"], {"parent": parent_state["artefact_hashes"]})
+            spec, hashes = {k: built[k] for k in ("overrides", "release_swap", "alternates") if built.get(k)}, built.get("artefact_hashes")
+        else:
+            not_flown.append({**candidate, "reason": "artefact-builder-missing"})
+            continue
+        chosen, typed_spec = {**candidate, "artefact_override": hashes}, spec
+    offline = [v for v in valid if v["read"] == "offline"]
+    # the accumulated typed parent is the previous accepted state's column spec
+    parent_spec = None
+    if parent_state["iteration"] > 0:
+        parent_spec = read_or_none(ctx.package_dir / "archive-specs" / f"{parent_state['state_id']}.json")
+        if parent_spec is None:
+            raise lib.MissingInput("the accepted parent has no recorded column spec")
+    # unflown / proposed-not-flown archive states
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import archive as ar  # noqa: PLC0415
+
+    for entry in not_flown:
+        state = ar.build_state(
+            artefact_hashes=_artefact_hashes(parent_state["artefact_hashes"], entry["operator"], entry["candidate"]["applications"], None),
+            parent_id=parent_state["state_id"], iteration=t, operator_class=entry["operator_class"], candidate_id=entry["candidate_id"],
+            verdict="unflown", arm="typed", predicted_slu_pp=entry["predicted_slu_pp"])
+        lib.put_state_idempotent(archive, state)
+    # ACE: deltas from the reflector's sealed answers, curated into playbook i(t)
+    ace_state = ace_section(ctx, t, a, A, propose)
+    spec = {"typed": typed_spec, "parent": parent_spec, "ace": ace_state["ace_pins"]}
+    if chosen is not None:
+        state_hashes = _artefact_hashes(parent_state["artefact_hashes"], chosen["operator"], chosen["candidate"]["applications"],
+                                        chosen["artefact_override"])
+        (ctx.package_dir / "archive-specs").mkdir(parents=True, exist_ok=True)
+        lib.write_json_new(ctx.package_dir / "archive-specs" / f"pending-i{t}.json", {"spec": typed_spec, "artefact_hashes": state_hashes})
+    import write_tfrl_iteration_registration as reg  # noqa: PLC0415
+
+    predicted = chosen["predicted_slu_pp"] if chosen else 0.0
+    commit = a.study_commit or "0" * 40
+    at = a.registered_at or "%sT00:00:00.000000+00:00" % tf.DATE
+    written = reg.write_iteration(ctx.repo_root, t, spec, commit, at, predicted_effect_pp=predicted or 0.0, with_proposers=False)
+    arms = written["column"]["arms"]
+    record = {"iteration": t, "parent_display_id": display_id(parent_state), "parent_state_id": parent_state["state_id"],
+              "edit_budget_L_t": parent_choice.edit_budget(t),
+              "candidates": [{"candidate_id": v["candidate_id"], "operator_class": v["operator_class"], "operator": v["operator"],
+                              "read": v["read"], "predicted_slu_pp": v["predicted_slu_pp"]} for v in valid],
+              "refused": refused, "flown": chosen["candidate_id"] if chosen else None,
+              "offline": [v["candidate_id"] for v in offline], "not_flown": [{"candidate_id": n["candidate_id"], "reason": n["reason"]} for n in not_flown]}
+    lib.write_json_new(ctx.receipts(t) / "candidates.json", record)
+    # offline candidates keep their candidate documents for the close step (family + guard)
+    lib.write_json_new(ctx.receipts(t) / "offline-candidates.json",
+                       {"candidates": [{"candidate_id": v["candidate_id"], "operator_class": v["operator_class"],
+                                        "operator": v["operator"], "candidate": v["candidate"]} for v in offline]})
+    payload = {
+        "status": "done", "iteration": t, "stage": "cell", "arms": arms, "program": written["column"]["package"] and
+        f"phase-native-module-v1-c{tf.ceiling(t, typed_present=bool(typed_spec), parent_present=bool(parent_spec))}",
+        "typed_arm": "empty (legal)" if chosen is None else {"candidate_id": chosen["candidate_id"], "predicted_slu_pp": chosen["predicted_slu_pp"]},
+        "parent_display_id": display_id(parent_state), "ace": ace_state["receipt"], "column_package": written["column"]["package"],
+        "blockers": written["column"]["blockers"], "loader_verification": written["loader_verification"],
+        "valid": len(valid), "refused": len(refused), "offline": len(offline), "not_flown": len(not_flown),
+    }
+    inputs = {"iteration": t, "stage": "cell", "typed_receipts": tf.canonical_sha256(entries), "typed_arm_empty": bool(a.typed_arm_empty),
+              "reflector_answers": sha_file(Path(a.reflector_answers)) if a.reflector_answers else None,
+              "predictions": sha_file(Path(a.predictions)) if a.predictions else None, "propose": propose["inputs_sha256"]}
+    lib.write_receipt(ctx.receipts(t), "open-cell", payload, inputs=inputs)
+    checklist(ctx, f"countersign checklist, iteration {t} column cell (HELD)", [
+        f"read {written['column']['package']}/README.md for the blockers: {[b['id'] for b in written['column']['blockers']] or 'none'}",
+        "prepare the ace-playbook release (prepare_semantic_knowledge_store over the registration printed in the receipt); put its pins in "
+        "--ace-release-pins and re-run open --stage cell",
+        "FIT measure the arms (tokenizer /tokenize, zero generation) and compare to T_cap; run the 4-row dry run (P-ACE-0, I7, I7v)",
+        "run the gates: engineering_base, harness_admission, finite_completion_policy, stage3_algorithm_label, stage3_effect_floor, "
+        "tool_catalog, flight_registration_check --cell %s" % tf.names(t, "arm")["experiment"],
+        f"countersign the DRAFT rows in {written['column']['package']}/draft-ledger-rows.md; mint, flip (loop form), refresh the plan "
+        "pins, flip again, queue; start SAEA-Batch-Driver from PowerShell (human)",
+        "after the seal: python -B scripts/flights/tfrl/tfrl_loop_driver.py close --iter %d --execute" % t,
+    ])
+    return payload
+
+
+def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mapping[str, Any]) -> dict:
+    """Curate playbook i(t) from the reflector's answers and the previous iteration's credit; stage its release inputs."""
+
+    from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+
+    prev_path = (ctx.analysis(t - 1) / "playbook" / f"playbook-i{t - 1}.json") if t > 1 else (A / "playbook" / "playbook-i0.json")
+    previous = dict(ace.load_playbook(prev_path))
+    answers = (_load_json(Path(a.reflector_answers)) if a.reflector_answers else {}).get("answers", {})
+    deltas: list[dict] = []
+    illegal = 0
+    for scenario in sorted(answers):
+        try:
+            payload = json.loads(answers[scenario])
+            deltas.extend(ace.parse_reflector_response(dict(payload)))
+        except (ValueError, ace.AceMaterialError):
+            illegal += 1
+    credit = read_or_none(ctx.analysis(t - 1) / "ace-credit.json") if t > 1 else None
+    constants = ace.with_measured_lock_p99(int(propose["ace"]["lock_p99_supplied_tokens"]))
+    playbook = ace.curate(previous, deltas, credit or {}, constants)
+    playbook_path = A / "playbook" / f"playbook-i{t}.json"
+    if not playbook_path.exists():
+        ace.write_playbook(playbook_path, playbook)
+    legal_intents = _load_json(Path(a.enums_file))["intents"] if a.enums_file else []
+    release = None
+    if legal_intents:
+        roster = _load_json(ctx.repo_root / tf.ROSTER["arm"])
+        release = ace.build_playbook_release(
+            playbook, data_root=A, carrier_sample_ids=[i["sample_id"] for i in roster["items"]][:50], legal_intent_ids=legal_intents,
+            source_split_identity_hash=roster["split_identity_hash"], release_dir="ace-release-staging")
+    pins_file = read_or_none(Path(a.ace_release_pins)) if a.ace_release_pins else None
+    ace_pins = {"iteration": t}
+    if pins_file:
+        ace_pins.update(pins_file)
+    receipt = {"playbook_iteration": playbook["iteration"], "playbook_content_hash": playbook["content_hash"], "items": len(playbook["items"]),
+               "deltas_in": len(deltas), "illegal_answers": illegal, "curation": playbook.get("curation") and {
+                   k: v for k, v in playbook["curation"].items() if k in ("deltas_in", "counter_updates", "constants_sha256", "token_counter_id")},
+               "release_staging": None if release is None else {k: release[k] for k in ("row_count", "empty")},
+               "release_pins": "supplied" if pins_file else "pending (zeros until the release is prepared)",
+               "credit_used": credit is not None}
+    return {"ace_pins": ace_pins, "receipt": receipt, "playbook": playbook}
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# close
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def _own(summary: Mapping[str, Any], arm: str) -> tuple[float, float]:
+    official = summary["arms"][arm]["official"]
+    return 100.0 * float(official["slu_f1"]), 100.0 * float(official["intent_accuracy"])
+
+
+def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import archive as ar  # noqa: PLC0415
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import meta_summary, parent_choice, selection  # noqa: PLC0415
+
+    start(ctx, t, pin=False)
+    opened = need_receipt(ctx, t, "open-cell")
+    names = tf.names(t, "arm")
+    run, attempt = names["run_id"], names["attempt_id"]
+    arms = list(opened["arms"])
+    rundir = ctx.data_root / "runs" / run / attempt
+    A = ctx.analysis(t)
+    roster_rel = tf.ROSTER["arm"]
+    sv = rundir / "supply-variants"
+    ctx.runner.run("score-columns", [ROLLOUT_SCORE_SCRIPT, "--mode", "supply-variants", "--run", run, "--attempt", attempt, "--roster",
+                                     roster_rel, "--analysis-root", sv, "--scorer-id", tf.SCORER, "--stage", "all", "--repo-root",
+                                     ctx.repo_root, "--data-root", ctx.data_root], produces=[sv / "score-summary.json"])
+    ctx.runner.run("node-local", [NODE_LOCAL_SCRIPT, "--data-root", ctx.data_root, "--lock", ctx.lock_path, "--run-id", run,
+                                  "--attempt-id", attempt, "--split", "train", "--out-dir", A / "node-local"],
+                   produces=[A / "node-local" / "report.json"])
+    roster_doc = _load_json(ctx.repo_root / roster_rel)
+    pairs = [(arm, tf.DELIVERING) for arm in arms if arm != tf.DELIVERING]
+    if tf.ARM_TYPED in arms and tf.ARM_PARENT in arms:
+        pairs.append((tf.ARM_TYPED, tf.ARM_PARENT))
+    for right, left in pairs:
+        out = A / "pairs" / f"{right}-vs-{left}"
+        ctx.runner.run(f"paired-{right}-vs-{left}", [
+            PAIRED_READ_SCRIPT, "--per-scenario", "--stage", "all", "--left-run", run, "--left-attempt", attempt, "--left-column", left,
+            "--left-label", left, "--right-run", run, "--right-attempt", attempt, "--right-column", right, "--right-label", right,
+            "--scorer-id", tf.SCORER, "--expected-split-role", "discovery", "--roster", roster_rel, "--cluster-key", "sample_id",
+            "--split-identity-hash", roster_doc["split_identity_hash"], "--repo-root", ctx.repo_root, "--data-root", ctx.data_root,
+            "--seed", 20260915, "--draws", 10000, "--recipe-id", names["recipe_id"], "--title", f"loop i{t} {right} vs {left}",
+            "--analysis-root", out], produces=[out / "score-contrasts.json"])
+    offline = (read_or_none(ctx.receipts(t) / "offline-candidates.json") or {}).get("candidates", [])
+    fit_jobs = []
+    for entry in offline:
+        app = entry["candidate"]["applications"][0]
+        family = FIT_FAMILY.get(app.get("family", ""))
+        if family is None:
+            continue
+        out = A / "offline" / entry["candidate_id"][:16]
+        ctx.runner.run(f"delivery-fit-{entry['candidate_id'][:8]}", [
+            DELIVERY_FIT_SCRIPT, "--family", family, "--run-id", run, "--attempt", attempt, "--scorer", "slurp-slu-official-train",
+            "--split", "train", "--rows", tf.ROWS, "--data-root", ctx.data_root, "--lock", ctx.lock_path, "--out-dir", out],
+            produces=[out / "fit-report-v1.json"])
+        fit_jobs.append((entry, out / "fit-report-v1.json"))
+    if ctx.runner.planned:
+        return {"status": "planned", "commands": [r.argv for r in ctx.runner.planned]}
+    summary = _load_json(sv / "score-summary.json")
+    node_local = _load_json(A / "node-local" / "report.json")
+    contacts = float(len(arms) + 1)
+
+    def contrasts(right: str, left: str) -> dict:
+        return _load_json(A / "pairs" / f"{right}-vs-{left}" / "score-contrasts.json")
+
+    def per_scen(right: str, left: str) -> Any:
+        return read_or_none(A / "pairs" / f"{right}-vs-{left}" / "per-scenario-tables.json")
+
+    credits: dict[str, dict] = {}
+    twin = contrasts(tf.TWIN, tf.DELIVERING)
+    for arm in arms:
+        if arm == tf.DELIVERING:
+            continue
+        own_slu, own_intent = _own(summary, arm)
+        vs_parent = contrasts(tf.ARM_TYPED, tf.ARM_PARENT) if (arm == tf.ARM_TYPED and tf.ARM_PARENT in arms) else None
+        credits[arm] = lib.credit_from_contrasts(
+            contrasts(arm, tf.DELIVERING), own_slu_f1=own_slu, own_intent=own_intent, contacts_per_row=contacts,
+            per_scenario_tables=per_scen(arm, tf.DELIVERING), node_local=node_local, arm=arm,
+            versus_twin=None if arm == tf.TWIN else twin, versus_parent=vs_parent)
+    rules = selection.rules_from_floor_table(tf.ROWS, ctx.repo_root)
+    lock_id = {"role": "lock", "n_rows": tf.ROWS}
+    archive = ctx.archive()
+    states = archive.states()
+    parent_state = resolve_display(states, opened["parent_display_id"])
+    verdicts: dict[str, Any] = {}
+    # ---- the typed child (a flown SF candidate)
+    candidates = _load_json(ctx.receipts(t) / "candidates.json")
+    if tf.ARM_TYPED in credits and candidates["flown"]:
+        child = credits[tf.ARM_TYPED]
+        parent_credit = credits.get(tf.ARM_PARENT)
+        verdict = selection.select(child, lock_id, credits[tf.TWIN], parent_credit, rules)
+        pending = _load_json(ctx.package_dir / "archive-specs" / f"pending-i{t}.json")
+        entry = next(c for c in candidates["candidates"] if c["candidate_id"] == candidates["flown"])
+        state = ar.build_state(artefact_hashes=pending["artefact_hashes"], parent_id=parent_state["state_id"], iteration=t,
+                               operator_class=entry["operator_class"], candidate_id=entry["candidate_id"],
+                               verdict=verdict.status, arm="typed", credit=child, predicted_slu_pp=entry["predicted_slu_pp"],
+                               run_id=run, attempt=1)
+        lib.put_state_idempotent(archive, state)
+        if verdict.accepted:
+            lib.write_json_new(ctx.package_dir / "archive-specs" / f"{state['state_id']}.json", pending["spec"])
+        verdicts["typed"] = {"state_id": state["state_id"], **verdict.to_dict()}
+    # ---- the offline (delivery / scope) candidates
+    for entry, report_path in fit_jobs:
+        report = _load_json(report_path)
+        status, clauses = lib.offline_verdict(report)
+        record = next(c for c in candidates["candidates"] if c["candidate_id"] == entry["candidate_id"])
+        state = ar.build_state(
+            artefact_hashes=_artefact_hashes(parent_state["artefact_hashes"], entry["operator"], entry["candidate"]["applications"],
+                                             {"delivery_rule_table": (report.get("rule_table") and tf.canonical_sha256(report["rule_table"])) or None}
+                                             if entry["operator"] == "deliver-rule" else None),
+            parent_id=parent_state["state_id"], iteration=t, operator_class=entry["operator_class"], candidate_id=entry["candidate_id"],
+            verdict=status, arm="typed", credit=lib.offline_credit_from_fit_report(report), predicted_slu_pp=record["predicted_slu_pp"],
+            run_id=run, attempt=1)
+        lib.put_state_idempotent(archive, state)
+        verdicts.setdefault("offline", []).append({"state_id": state["state_id"], "status": status, "clauses": clauses})
+    # ---- the ACE state: always the child of the previous ACE state (a refused state still generates the next reflection)
+    ace_states = [s for s in states if s["arm"] == "ace" and s["iteration"] < t]
+    previous_ace = sorted(ace_states, key=lambda s: (s["iteration"], s["state_id"]))[-1]
+    if tf.ARM_ACE in credits:
+        verdict = selection.select(credits[tf.ARM_ACE], lock_id, credits[tf.TWIN], None, rules)
+        playbook = _load_json(A / "playbook" / f"playbook-i{t}.json")
+        state = ar.build_state(artefact_hashes={"playbook_release": playbook["content_hash"]}, parent_id=previous_ace["state_id"],
+                               iteration=t, operator_class="playbook", candidate_id=f"ace-i{t}", verdict=verdict.status, arm="ace",
+                               credit=credits[tf.ARM_ACE], run_id=run, attempt=1)
+        lib.put_state_idempotent(archive, state)
+        verdicts["ace"] = {"state_id": state["state_id"], "clause_d": "vacuous (no previous-ACE-state column in this flight)",
+                           **verdict.to_dict()}
+    # ---- curve, meta summary, parent choice
+    states = archive.states()
+    curves = {arm: selection.curve(states, arm) for arm in ("typed", "ace")}
+    meta = meta_summary.build_meta_summary(states, "typed")
+    chosen = parent_choice.choose_parent(states, "typed")
+    parent_shown = display_id(next(s for s in states if s["state_id"] == chosen["parent_id"]))
+    cdir = ctx.receipts(t)
+    lib.write_json_new(cdir / "curve.json", curves)
+    lib.write_json_new(cdir / "proposer-meta.json", meta)
+    lib.write_json_new(cdir / "parent.json", {"parent_state_id": chosen["parent_id"], "parent_display_id": parent_shown,
+                                              "masked_classes": chosen["masked_classes"], "ranking": chosen["ranking"]})
+    # ---- the ACE credit file for the next curation (per-row official scores, by script)
+    ace_credit_path = A / "ace-credit.json"
+    ace_credit_status = "not-built"
+    row_scores_path = Path(a.row_scores) if a.row_scores else None
+    if row_scores_path and row_scores_path.is_file():
+        credit_doc = lib.ace_credit_from_row_scores(_load_json(row_scores_path), playbook_iteration=t)
+        lib.write_json_new(ace_credit_path, credit_doc)
+        ace_credit_status = "written"
+    done = selection.loop_complete(t)
+    payload = {
+        "status": "done", "iteration": t, "column": {"run_id": run, "attempt": attempt}, "arms": arms, "rules": rules,
+        "verdicts": verdicts, "credit_gaps": ["per-scenario deltas parsed leniently from per-scenario-tables.json",
+                                              "false-fill / non-empty exact from the node-local report when present"],
+        "curve": {arm: [{"iteration": p["iteration"], "level": p["level"], "marked": p["marked"]} for p in pts] for arm, pts in curves.items()},
+        "parent_for_next": parent_shown, "ace_credit": ace_credit_status, "loop_complete": done,
+        "next_iteration": selection.next_iteration(t), "typed_arm_was_empty": not candidates["flown"],
+    }
+    inputs = {"iteration": t, "column": [run, attempt], "summary": sha_file(sv / "score-summary.json"),
+              "row_scores": sha_file(row_scores_path) if row_scores_path and row_scores_path.is_file() else None, "open_cell": opened["inputs_sha256"]}
+    lib.write_receipt(ctx.receipts(t), "close", payload, inputs=inputs)
+    if done:
+        checklist(ctx, "loop complete (three iterations); next steps are human", [
+            "Fold A confirmation: lock, aa, the typed final state, the ACE final state (one attempt, thresholds fitted on Fold B)",
+            "DEV-2000-ADDED composed read of the same four arms", "results note: the curve, the ACE comparison, per-stratum tables",
+            "owner rules the lock-admission path (design R4)"])
+    else:
+        checklist(ctx, f"next iteration {t + 1}", [
+            f"python -B scripts/flights/tfrl/tfrl_row_scores.py --run-id {run} --attempt {attempt} --out <F>; then close --iter {t} --row-scores <F>"
+            if ace_credit_status != "written" else "the ACE credit file is written",
+            f"open --iter {t + 1} --stage propose (tables from the delivered column of iteration {t}; parent {parent_shown})",
+            "countersign, mint, flip and queue (humans), as in iteration %d" % t])
+    return payload
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# status
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def status(ctx: Ctx) -> dict:
+    protocol = lib.check_protocol(ctx.package_dir, pin=False) if (ctx.package_dir / "tfrl-loop-protocol-v1.json").is_file() else None
+    archive = ctx.archive()
+    states = archive.states()
+    out: dict[str, Any] = {"protocol_sha256": protocol and protocol["protocol_sha256"], "archive_sha256": lib.archive_sha256(ctx.package_dir / "archive"),
+                           "states": [{"state_id": s["state_id"][:12], "arm": s["arm"], "iteration": s["iteration"], "verdict": s["verdict"]}
+                                      for s in states], "iterations": {}}
+    next_action = "open --iter 1 --stage propose"
+    for t in tf.ITERATIONS:
+        steps = [name for name in ("open-propose", "open-cell", "close") if lib.read_receipt(ctx.receipts(t), name)]
+        out["iterations"][str(t)] = steps
+        if "close" in steps:
+            next_action = f"open --iter {t + 1} --stage propose" if t < tf.STOP_AFTER_ITERATIONS else "loop complete: Fold A confirmation (human)"
+        elif "open-cell" in steps:
+            next_action = f"(humans: countersign, flip, queue, fly) then close --iter {t}"
+        elif "open-propose" in steps:
+            next_action = f"(humans: countersign, flip, queue, fly the proposer + reflector cells) then open --iter {t} --stage cell"
+            break
+    out["next_action"] = next_action
+    return out
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
+    parser.add_argument("--repo-root", type=Path, default=REPO_ROOT)
+    parser.add_argument("--package-dir", type=Path, default=None, help="default: <repo-root>/" + tf.PACKAGE_DIR)
+    parser.add_argument("--data-root", type=Path, default=Path(os.environ.get("SPEECHRL_DATA_DIR", DEFAULT_DATA_ROOT)))
+    parser.add_argument("--lock", type=Path, default=Path(DEFAULT_LOCK))
+    parser.add_argument("--execute", action="store_true", help="run the external model-free analysis scripts (default: plan only)")
+    parser.add_argument("--skip-process-guard", action="store_true", help="tests only")
+    sub = parser.add_subparsers(dest="command", required=True)
+    o = sub.add_parser("open")
+    o.add_argument("--iter", type=int, required=True, dest="iteration")
+    o.add_argument("--stage", choices=("auto", "propose", "cell"), default="auto")
+    o.add_argument("--source-run-id"), o.add_argument("--source-attempt"), o.add_argument("--source-scorer")
+    o.add_argument("--enums-file"), o.add_argument("--enums-from-gold", action="store_true")
+    o.add_argument("--lock-p99-supplied-tokens", type=float, default=None)
+    o.add_argument("--no-register", action="store_true"), o.add_argument("--study-commit"), o.add_argument("--registered-at")
+    o.add_argument("--typed-receipts"), o.add_argument("--typed-arm-empty", action="store_true")
+    o.add_argument("--reflector-answers"), o.add_argument("--predictions"), o.add_argument("--artefact-builder")
+    o.add_argument("--ace-release-pins")
+    c = sub.add_parser("close")
+    c.add_argument("--iter", type=int, required=True, dest="iteration")
+    c.add_argument("--row-scores", default=None)
+    sub.add_parser("status")
+    return parser
+
+
+def make_ctx(args: argparse.Namespace, *, runner: lib.Runner | None = None, lister=None, out=print) -> Ctx:
+    package_dir = args.package_dir or (args.repo_root / tf.PACKAGE_DIR)
+    return Ctx(repo_root=args.repo_root, package_dir=package_dir, data_root=args.data_root, lock_path=args.lock,
+               runner=runner or lib.Runner(execute=args.execute, cwd=args.repo_root), lister=lister,
+               skip_guard=args.skip_process_guard, out=out)
+
+
+def main(argv: list[str] | None = None, *, runner: lib.Runner | None = None, lister=None, out=print) -> int:
+    args = build_parser().parse_args(argv)
+    ctx = make_ctx(args, runner=runner, lister=lister, out=out)
+    try:
+        if args.command == "status":
+            result = status(ctx)
+        elif args.command == "open":
+            stage = args.stage
+            if stage == "auto":
+                stage = "cell" if lib.read_receipt(ctx.receipts(args.iteration), "open-propose") else "propose"
+            result = (open_propose if stage == "propose" else open_cell)(ctx, args.iteration, args)
+        else:
+            result = close_iteration(ctx, args.iteration, args)
+    except lib.LoopError as error:
+        out(f"REFUSED: {error}")
+        return 3
+    out(json.dumps({k: v for k, v in result.items() if k not in ("pins",)}, indent=2, sort_keys=True, default=str))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
