@@ -27,7 +27,7 @@
   "serving_slots": 4,
   "speech_feature_key_representation_id": "saea-slurp-task-agent-v1:query-speech",
   "speech_feature_matcher_policy_id": "saea-slurp-task-agent-v1",
-  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-afdaeff6/EVO-FOLD-B-V2-promotion.json",
+  "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/EVO-FOLD-B-V2-promotion.json",
   "speech_packet_promotion_receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",

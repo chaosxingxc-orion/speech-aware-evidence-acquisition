@@ -256,9 +256,9 @@ def test_the_ledger_block_has_twelve_unconsumed_rows_and_the_recipe_read_row_exi
     rows = _ledger_rows()
     assert len(rows) == 12 and all(r.count("|") == 16 for r in rows)
     ids = {r.split("|")[2].strip() for r in rows}
-    # The packets row is countersigned; every other row is still a draft.
+    # The CPU packets row (SUPERSEDED, stopped after 50 rows) is countersigned; every other row is still a draft.
     for r in rows:
-        if r.split("|")[2].strip() == fam.PACKETS_ROW_ID:
+        if r.split("|")[2].strip() == fam.CPU_PACKETS_ROW_ID:
             assert "root countersigned" in r.lower()
         else:
             assert "DRAFT, root countersignature pending" in r and "root countersigned" not in r.lower()
@@ -267,9 +267,75 @@ def test_the_ledger_block_has_twelve_unconsumed_rows_and_the_recipe_read_row_exi
         assert fam.CELLS[key]["run"] in ids and fam.CELLS[key]["fit_run"] in ids
     recipe = _json(f"{fam.PACKAGE}/analysis-recipe-v1.json")
     assert recipe["run_ids"]["read"] == fam.READ_RUN_ID in ids
-    assert {fam.SERVING_ROW_ID, fam.PACKETS_ROW_ID} <= ids
+    assert {fam.SERVING_ROW_ID, fam.CPU_PACKETS_ROW_ID} <= ids and fam.PACKETS_ROW_ID not in ids       # the GPU row has its own block
     for r in rows:
         assert r.split("|")[9].strip() == "no"
+
+
+def _gpu_block_rows() -> list[str]:
+    text = LEDGER.read_text(encoding="utf-8")
+    start = text.index(fam.GPU_PACKETS_LEDGER_MARK)
+    end = text.find("\n## ", start + 1)
+    block = text[start:] if end == -1 else text[start:end]
+    return [line for line in block.splitlines() if line.startswith("| 2026-10-11")]
+
+
+def test_the_gpu_packets_row_is_one_unconsumed_draft_with_the_registered_ceilings_in_its_own_block():
+    (row,) = _gpu_block_rows()
+    cells = [c.strip() for c in row.split("|")[1:-1]]
+    assert len(cells) == 15 and cells[1] == fam.PACKETS_ROW_ID == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1"
+    assert cells[2] == "bounded-discovery-probe" and cells[6] == "discovery" and cells[8] == "no"
+    assert cells[7] == fam.roster_doc("arm")["split_identity_hash"]
+    assert (cells[9], cells[10], cells[11]) == ("1084", "3165", "1.0")               # 4-row smoke + the 1,080 total; 3,154.797375 + 9.94 s; 1 gpu-h cap
+    notes = cells[14]
+    assert "DRAFT, root countersignature pending" in notes and "root countersigned" not in notes.lower()
+    assert fam.CPU_PACKETS_ROW_ID in row and fam.THINK_PACKET_ROOT in notes and pins_mod.THINKING_LEGACY_CACHE in notes
+    assert "q4km-thinking-feature-preprocess-gpu-np1-v1" in cells[4] and "direct_fb_packets_gpu.sh" in notes
+    # the superseded CPU row is left exactly where it was, in the 266-E block, and is not renamed
+    assert any(r.split("|")[2].strip() == fam.CPU_PACKETS_ROW_ID for r in _ledger_rows())
+
+
+def test_the_gpu_ids_roots_and_fragments_are_separate_from_the_superseded_cpu_ones():
+    assert fam.PACKETS_ROW_ID != fam.CPU_PACKETS_ROW_ID and fam.PACKETS_ROW_ID.endswith("-GPU-V1")
+    assert fam.THINK_PACKET_ROOT != fam.CPU_THINK_PACKET_ROOT and not fam.THINK_PACKET_ROOT.startswith(fam.CPU_THINK_PACKET_ROOT)
+    assert pins_mod.THINKING_LEGACY_CACHE != pins_mod.CPU_THINKING_LEGACY_CACHE
+    assert pins_mod.PREPROCESS_FRAGMENT != pins_mod.PREPROCESS_FRAGMENT_CPU and pins_mod.PREPROCESS_RECEIPT != pins_mod.PREPROCESS_RECEIPT_CPU
+    assert fam.THINK_PROMOTION_RECEIPT.startswith(fam.THINK_PACKET_ROOT) and fam.CPU_THINK_PROMOTION_RECEIPT.startswith(fam.CPU_THINK_PACKET_ROOT)
+    assert (REPO / f"configs/model/{pins_mod.PREPROCESS_FRAGMENT_CPU}.json").is_file()                     # the old fragment stays in the record
+    for relpath in ("configs/baseline/slurp-direct-only-fold-b-thinking-baseline-v1.json",
+                    "configs/baseline/slurp-direct-only-fold-b-thinking-smoke-4-baseline-v1.json"):
+        text = (REPO / relpath).read_text(encoding="utf-8")
+        assert fam.THINK_PROMOTION_RECEIPT in text and fam.CPU_THINK_PACKET_ROOT not in text
+        assert f'"speech_packet_promotion_receipt_sha256": "{fam.UNPINNED_SHA}"' in text            # left as the zero sentinel for the pin step
+
+
+def test_the_gpu_fragment_mirrors_the_e21_gpu_geometry_with_the_instruct_fold_b_context():
+    gpu = _json(f"configs/model/{pins_mod.PREPROCESS_FRAGMENT}.json")
+    e21 = _json(f"configs/model/{pins_mod.E21_GPU_PREPROCESS_FRAGMENT}.json")
+    strip = lambda args: [a for i, a in enumerate(args) if not (a == "-c" or (i and args[i - 1] == "-c"))]    # noqa: E731
+    assert strip(gpu["server_args"]) == strip(e21["server_args"]) == ["-np", "1", "-ngl", "999", "-fa", "on", "-ctk", "q8_0", "-ctv", "q8_0", "-b", "512", "-ub", "128"]
+    assert gpu["server_args"][:2] == ["-c", "16384"] and "--no-mmproj-offload" not in gpu["server_args"]       # the Instruct Fold B pass used -c 16384
+    assert gpu["model_lock_key"] == pins_mod.LOCK_KEY and gpu["runtime_receipt"] == pins_mod.PREPROCESS_RECEIPT.removeprefix("docs/")
+    assert gpu["server_env"] == {"LLAMA_MTMD_FEAT_CACHE_DIR": pins_mod.THINKING_LEGACY_CACHE, "GGML_CUDA_DISABLE_GRAPHS": "1"}
+    assert gpu["decoding_params"]["max_tokens"] == 1 and gpu["serving_geometry"]["slots"] == 1
+    receipt, cpu_receipt = _json(pins_mod.PREPROCESS_RECEIPT), _json(pins_mod.PREPROCESS_RECEIPT_CPU)
+    assert receipt == cpu_receipt                                                                            # the same pinned build and GGUF pins
+    assert receipt["gguf_files"][0]["sha256"] == MAIN_SHA and receipt["gguf_files"][1]["sha256"] == MMPROJ_SHA
+    experiment = _json("configs/experiment/slurp-direct-fold-b-thinking-preprocess-gpu-v1.json")
+    assert experiment["experiment_id"] == fam.PACKETS_ROW_ID and experiment["feature_root"] == fam.THINK_PACKET_ROOT
+    assert experiment["promotion_receipt"] == fam.THINK_PROMOTION_RECEIPT and experiment["legacy_cache_dir"] == pins_mod.THINKING_LEGACY_CACHE
+
+
+def test_the_package_documents_point_at_the_gpu_pass():
+    facts = _json(f"{fam.PACKAGE}/registered-facts-v1.json")
+    assert facts["pins"]["preprocess_fragment"] == pins_mod.PREPROCESS_FRAGMENT
+    assert facts["pins"]["preprocess_fragment_cpu_superseded"] == pins_mod.PREPROCESS_FRAGMENT_CPU
+    assert facts["serving"]["thinking_packet_root"] == fam.THINK_PACKET_ROOT
+    readme = (REPO / fam.PACKAGE / "README.md").read_text(encoding="utf-8")
+    assert fam.PACKETS_ROW_ID in readme and "direct_fb_packets_gpu.sh --check" in readme and fam.THINK_PACKET_ROOT in readme
+    assert "SUPERSEDED" in readme and "--stop-only" in readme and "NO GPU record" in readme
+    texts = _json(f"{fam.PACKAGE}/countersign-row-texts-v1.json")
+    assert fam.PACKETS_ROW_ID in texts["rows_that_stay_draft"]
 
 
 def test_the_countersign_texts_name_the_packages_own_receipt():

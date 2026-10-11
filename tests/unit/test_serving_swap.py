@@ -631,3 +631,70 @@ def test_the_queue_library_halts_when_the_flight_processes_vanish(host):
     host.procs(WORKTREE_PREPARE)  # a model-free worktree run is not the chain
     result = host.run(["bash", "-c", f'source "{BATCH}/queue_lib.sh"\nQL_LOG=/dev/null\nql_wait_terminal; echo "rc=$?"'])
     assert result.stdout.strip().endswith("rc=5")
+
+
+# ---------------------------------------------------------------------------- the stop-only / start-only window (266-E GPU packets)
+
+
+def test_stop_only_stops_the_resident_session_starts_nothing_and_never_restores(host):
+    host.up("slurp-np4")
+    host.procs(PORT_SERVER, SIDECAR)
+    result, summary = host.swap("--stop-only")
+    assert result.returncode == 0, result.stdout
+    assert summary["result"] == "stopped" and summary["target"] == "none" and summary["from"] == "slurp-np4"
+    verdicts = {s["step"]: s["verdict"] for s in summary["steps"]}
+    assert verdicts["host-memory"] == "not-needed" and verdicts["target-entries"] == "not-needed" and verdicts["stop-only"] == "stopped"
+    actions = [line.split()[:2] for line in host.log("ps.log") if not line.startswith("-Status")]
+    assert actions == [["-Stop", "SAEA-Serving"], ["-Stop", "SAEA-Monitor"]]       # no -Start of any kind
+    assert "host-memory " not in host.log("ss.log")                                   # nothing starts, so no host-memory reading
+    assert not (host.state / "resident").exists()                                     # the card is empty
+    assert (host.session_dir("slurp-np4") / "session-stop.json").exists()
+    assert not (host.home / "serving-swap.pending").exists()
+
+
+def test_stop_only_dry_run_acts_on_nothing_and_an_empty_card_is_a_no_op(host):
+    host.up("think-np4")
+    result, summary = host.swap("--stop-only", "--dry-run")
+    assert result.returncode == 0 and summary["result"] == "dry-run" and summary["from"] == "think-np4", result.stdout
+    assert {line.split()[0] for line in host.log("ps.log")} == {"-Status"}
+    assert not any(line.startswith("stop") for line in host.log("ss.log"))
+    (host.state / "resident").unlink()
+    host.procs()
+    result, summary = host.swap("--stop-only")
+    assert result.returncode == 0 and summary["result"] == "no-op", result.stdout
+    assert not any(line.startswith(("-Stop", "-Start")) for line in host.log("ps.log"))
+
+
+def test_stop_only_refuses_a_flight_a_target_and_the_other_mode(host):
+    host.up("slurp-np4")
+    host.procs(PORT_SERVER, CAMPAIGN)
+    result, summary = host.swap("--stop-only")
+    assert result.returncode == 7 and summary["result"] == "refused"
+    assert not any(line.startswith("stop") for line in host.log("ss.log"))
+    assert host.run(["bash", str(BATCH / "serving_swap.sh"), "--stop-only", "think-np4"]).returncode == 64
+    assert host.run(["bash", str(BATCH / "serving_swap.sh"), "think-np4", "--stop-only", "--start-only"]).returncode == 64
+    assert host.run(["bash", str(BATCH / "serving_swap.sh"), "--stop-only", "--restart"]).returncode == 64
+
+
+def test_start_only_starts_the_target_on_an_empty_card_and_refuses_a_different_resident_geometry(host):
+    host.host_free(20.0)
+    result, summary = host.swap("think-np4", "--start-only")
+    assert result.returncode == 0 and summary["result"] == "swapped" and summary["from"] == "none", result.stdout
+    starts = [line.split()[1] for line in host.log("ps.log") if line.startswith("-Start")]
+    assert starts == ["SAEA-Serving-THINK", "SAEA-Monitor-THINK"]
+    assert (host.state / "resident").read_text() == GEOMETRY["think-np4"][0]
+    # the target already resident is the readiness-checked no-op; a different resident geometry is refused untouched
+    result, summary = host.swap("think-np4", "--start-only")
+    assert result.returncode == 0 and summary["result"] == "no-op"
+    result, summary = host.swap("slurp-np4", "--start-only")
+    assert result.returncode == 10 and summary["result"] == "refused", result.stdout
+    assert {s["step"]: s["verdict"] for s in summary["steps"]}["start-only"] == "refused"
+    assert (host.state / "resident").read_text() == GEOMETRY["think-np4"][0]
+
+
+def test_start_only_failure_tears_the_target_down_and_leaves_the_restore_to_the_caller(host):
+    host.host_free(20.0)
+    host.on_start("SAEA-Serving-THINK", "refuse", "think-np4")
+    result, summary = host.swap("think-np4", "--start-only", "--wait-timeout", "1")
+    assert result.returncode == 13 and summary["result"] == "failed-unrestored", result.stdout
+    assert not (host.state / "resident").exists()

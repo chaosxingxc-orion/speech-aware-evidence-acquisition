@@ -1,0 +1,42 @@
+{
+  "model_lock_key": "qwen3-omni-30b-a3b-thinking-gguf-q4km",
+  "model_materialization_root": "/home/chao",
+  "transport": "llama-server",
+  "base_url": "http://127.0.0.1:8081",
+  "timeout_seconds": 900.0,
+  "runtime_receipt": "receipts/runtime-q4km-thinking-preprocess-gpu.json",
+  "server_args": [
+    "-c",
+    "16384",
+    "-np",
+    "1",
+    "-ngl",
+    "999",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "-b",
+    "512",
+    "-ub",
+    "128"
+  ],
+  "serving_geometry": {
+    "slots": 1,
+    "slot_tokens": 16384,
+    "max_tokens": 1
+  },
+  "decoding_params": {
+    "temperature": 0,
+    "seed": 20260803,
+    "max_tokens": 1
+  },
+  "prompt_order": "evidence-first-system-v2",
+  "server_env": {
+    "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/slurp-thinking-gpu-q4km",
+    "GGML_CUDA_DISABLE_GRAPHS": "1"
+  },
+  "preparation_basis": "GPU encoder pass for the Thinking speech packets of the 266-E read (re-registration of 2026-10-11; owner ruling: the CPU sidecar at 16-19 s per row is unacceptable). Geometry mirrors configs/model/q4km-e21-feature-preprocess-gpu-cddb000c-np1.json (-np 1 -ngl 999 -fa on -ctk q8_0 -ctv q8_0 -b 512 -ub 128, GGML_CUDA_DISABLE_GRAPHS=1) with the context the Instruct Fold B pass used (-c 16384); the Thinking decoder AND its own bf16 mmproj are both offloaded (no --no-mmproj-offload). The card holds one core: every serving session must be stopped before this server starts and the Thinking serving session starts after it; the chain is scripts/flights/direct/direct_fb_packets_gpu.sh inside a serving-swap window. Own packet root and legacy cache: GPU- and CPU-made encoder outputs are not bit-identical. Offline packet preparation only: one-token responses are discarded unread, no answer is scored."
+}

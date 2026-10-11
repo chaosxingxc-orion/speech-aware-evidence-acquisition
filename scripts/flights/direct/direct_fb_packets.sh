@@ -1,4 +1,9 @@
 #!/bin/bash
+# SUPERSEDED (2026-10-11): the CPU sidecar encodes at 16-19 s per row (about 4.7 h for Fold B) and the owner ruled that rate unacceptable;
+# the pass was stopped after 50 rows. The live chain is scripts/flights/direct/direct_fb_packets_gpu.sh (GPU encoder inside a serving-swap
+# window, exposure row SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1). This script is kept for the record and REFUSES (exit 13) unless
+# --allow-cpu is given; with it, every driver call runs `--geometry cpu --allow-cpu` against the CPU run id and the CPU roots.
+#
 # The Thinking-core speech-packet preparation chain of the 266-E read (owner decision 266-E, 2026-10-11): a CPU-only llama-server
 # sidecar (-ngl 0 --no-mmproj-offload, the Thinking decoder AND its own bf16 mmproj) on port 8081, BESIDE the resident GPU session, in
 # two attempts of ONE run id (the plan budget is run-cumulative):
@@ -23,18 +28,20 @@
 #
 # It authorises nothing: the row's countersignature is the authorisation, and the run makes exactly the contacts that row declares.
 #
-#   bash scripts/flights/direct/direct_fb_packets.sh --check                 # every guard + both dry-runs; no side effects
+#   bash scripts/flights/direct/direct_fb_packets.sh --allow-cpu --check     # every guard + both dry-runs; no side effects
 #   bash scripts/flights/direct/direct_fb_packets.sh --run [--stage all|smoke|fold-b]   # foreground (a WSL shell; dies with it)
 #   bash scripts/flights/direct/direct_fb_packets.sh --task                  # start the Windows task SAEA-Packets-THINK (survives
 #                                                                            # the session) running direct_fb_packets_task_entry.sh
 # Exit codes: 0 ok; 2 dirty tree; 3 a dry-run refused; 4 another CPU sidecar; 6 Thinking GPU session resident; 7 a flight is alive;
 # 8 host memory or disk short; 10 sidecar admission refused; 11 the exposure row is not countersigned; 12 task start failed;
-# 20 smoke failed; 21 Fold B failed; 22 a sidecar did not go away; 64 usage.
+# 13 the CPU chain is superseded and --allow-cpu was not given; 20 smoke failed; 21 Fold B failed; 22 a sidecar did not go away; 64 usage.
 set -u
 MODE=
 STAGE=all
+ALLOW_CPU=0
 while [ $# -gt 0 ]; do
   case "$1" in
+    --allow-cpu) ALLOW_CPU=1 ;;
     --check) MODE=check ;;
     --run) MODE=run ;;
     --task) MODE=task ;;
@@ -45,8 +52,12 @@ while [ $# -gt 0 ]; do
 done
 case "$MODE:$STAGE" in
   check:all|run:all|run:smoke|run:fold-b|task:all) ;;
-  *) echo "usage: direct_fb_packets.sh --check | --run [--stage all|smoke|fold-b] | --task"; exit 64 ;;
+  *) echo "usage: direct_fb_packets.sh --allow-cpu --check | --run [--stage all|smoke|fold-b] | --task   (SUPERSEDED: use direct_fb_packets_gpu.sh)"; exit 64 ;;
 esac
+if [ "$ALLOW_CPU" != 1 ]; then
+  echo "REFUSED (13): the CPU sidecar chain is SUPERSEDED (16-19 s per row; the owner stopped it after 50 rows). The live chain is bash scripts/flights/direct/direct_fb_packets_gpu.sh. Pass --allow-cpu to run this one for the record."
+  exit 13
+fi
 
 REPO=${PACKETS_REPO:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=${SAEA_DATA:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
@@ -95,7 +106,7 @@ free_disk_gb() {
   df -BG --output=avail "$DATA_DISK" | tail -1 | tr -dc '0-9'
 }
 
-driver() { "$PY" -B "$DRIVER" "$@"; }
+driver() { "$PY" -B "$DRIVER" "$@" --geometry cpu --allow-cpu; }
 
 # The process-level and host guards: cheap, repeated between the two attempts.
 runtime_guards() {
@@ -125,7 +136,7 @@ registry_guards() {
   git -C "$REPO" rev-parse HEAD > /dev/null 2>&1 || { fail 2 "$REPO is not a git checkout"; return 0; }
   dirt=$(git -C "$REPO" status --short | grep -vc '^??')
   [ "$dirt" = "0" ] || fail 2 "dirty tree ($dirt tracked changes); the launch binds a clean, countersigned HEAD"
-  driver --check-ledger > /dev/null || fail 11 "the exposure row SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1 is absent, inconsistent or not root-countersigned (driver --check-ledger)"
+  driver --check-ledger > /dev/null || fail 11 "the exposure row SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-V1 (CPU, superseded) is absent, inconsistent or not root-countersigned (driver --check-ledger)"
 }
 
 dry_runs() {
