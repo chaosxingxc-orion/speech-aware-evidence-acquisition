@@ -1669,3 +1669,12 @@ efficiency problem: find the root cause of the bottleneck and fix it.")
   16 / 64 calls with 0 spent, root cause in the plans, queue + flip use rec1, `PLAN_REC` in the generic re-pin loop); the two
   first-attempt smoke rows are folded into the countersigned rec1 rows (one row per run id for the gate); the minted column receipt
   stands (run ids unchanged). Next: column flip (loop form) -> pins -> flip -> gates -> queue.
+
+### Fold B column re-launched under the rec1 smoke (coordinator, 2026-10-11 15:36Z)
+
+- Owner: 「继续，收敛后排队 Fold B 列」 and the monitoring cadence moved to 30-minute windows; the owner also asked whether GPU work could
+  start and ruled that model rotation follows the experiments, not only the 12-h threshold -- answered: the guard is already
+  idle-only and HALTed; the Instruct restore at 13:48Z reset its clock; rotation plan = column (Instruct) -> swap to Thinking for
+  266-E smoke + arm -> swap back for the Instruct arm + replicate and the iteration-2 text contacts.
+- Column flip (rec1 smoke + arm) converged at **flight commit 2b6416686** (two loops, pins refreshed at 879a7038b; both launch
+  gates PASS 15:15Z); task SAEA-Queue-TFRLi1Col started 15:36:03Z; the uptime guard re-armed after the STOP archive.

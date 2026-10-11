@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T13:50:59Z
+Last refreshed: 2026-10-11T15:37:07Z
+
+## Fold B column FLYING again at flight commit 2b6416686 (rec1 smoke, then 1,080 rows; task SAEA-Queue-TFRLi1Col, 15:36Z) (2026-10-11T15:37:07Z, Fable 5.1 root)
+
+Flip converged 15:15Z, gates PASS. At the seal: close rows -> `tfrl_loop_driver.py --execute close --iter 1` -> results note -> swap to Thinking (ext4 copy verified) -> 266-E re-pin/sign/mint/flip/chain. Uptime guard re-armed (idle-only). Monitoring now in 30-min windows. No owner decision open.
+
+Superseded stamp: 2026-10-11T13:50:59Z
 
 ## GPU packets DONE (Fold B 0.155 s/row, 1,080 packets promoted; Thinking session start failed on the missing ext4 copy, Instruct restored); i1 smoke recovery registered (rec1) (2026-10-11T13:50:59Z, Fable 5.1 root)
 
