@@ -113,8 +113,8 @@
   "recorded_at_utc": null,
   "registered_hashes": {
     "instruct": {
-      "composed_config": "e0b5ca15eac7e8d28c6ea138297c6d5a247c9a9983f4609e80edd0b1a44678b4",
-      "protocol": "29181d729d63139e56423295427f18d7b7ce23451d874cc1ac6e05f811d5248d"
+      "composed_config": "369776f8830d6c6d72bd91303b8301545c7e1ea445c16866ecd4365d25f1bc86",
+      "protocol": "3d5aeb32e04e6d44dae26bc30391289005264528931b6a74332e8a4edae32dd6"
     },
     "replicate": {
       "composed_config": "1cc456aab4d0a7659d00c0b4859866b9b3126e3ed002fcdd28dd930109db5fc9",

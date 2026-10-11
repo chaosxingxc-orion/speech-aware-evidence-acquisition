@@ -19,10 +19,10 @@
             "kind": "decision",
             "reason": "Decision slurp-direct-only-fold-b-thinking-vs-instruct-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-direct-only-fold-b-thinking-vs-instruct-v1/root-admission-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "3586116f6f4bb363350cfcdbd85e0a0608a4c3eafee5d05137c1196ffb35d83e"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1"
     }
