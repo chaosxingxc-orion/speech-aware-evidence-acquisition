@@ -140,7 +140,7 @@ def test_parser_accepts_a_legal_payload_and_normalises() -> None:
         (lambda p: p["deltas"][0].update(section="advice"), "section must be one of"),
         (lambda p: p["deltas"][0].update(target_id="ace:i1:" + "a" * 12), "carries no target_id"),
         (lambda p: p["deltas"][0].update(text=""), "needs text"),
-        (lambda p: p["deltas"][0].update(text="caf00e9"), "printable ASCII"),
+        (lambda p: p["deltas"][0].update(text="caf\u00e9"), "printable ASCII"),
         (lambda p: p["deltas"][0].update(text="x" * 401), "exceeds 400"),
         (lambda p: p["deltas"][0].update(rationale="y" * 201), "exceeds 200"),
         (lambda p: p["deltas"][0]["scope"].update(scenarios=["all", "iot"]), "stand alone"),
@@ -290,7 +290,7 @@ def test_material_refuses_free_text_cells_identifiers_and_a_bad_hash() -> None:
     with pytest.raises(AceMaterialError, match="material_sha256 differs"):
         ace.validate_material(tampered)
     nonascii = _material(credit_tables=[{
-        "table_id": "t", "title": "caf00e9", "columns": ["a"], "rows": [],
+        "table_id": "t", "title": "caf\u00e9", "columns": ["a"], "rows": [],
     }])
     with pytest.raises(AceMaterialError, match="title is malformed"):
         ace.validate_material(nonascii)
