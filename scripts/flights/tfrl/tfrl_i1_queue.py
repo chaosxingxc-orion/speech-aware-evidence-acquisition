@@ -9,6 +9,10 @@ import json
 import os
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import tfrl_family as tf  # noqa: E402
+
 ROOT = "docs/readiness/2026-10-11-slurp-tfrl-loop-i%d-%s-v1"
 
 
@@ -31,7 +35,8 @@ def build_steps(t, which, short, facts_loader, only=""):
             "run_id": f"SAEA-SLURP-STAGE3-{upper}-V1", "fit_run_id": f"SAEA-SLURP-STAGE3-{upper}-FIT-V1",
             "gen_attempt_id": f"attempt-slurp-native-stage3-{slug}-generation-v1",
             "smoke_run_id": f"SAEA-SLURP-STAGE3-{upper}-SMOKE-4-V1",
-            "smoke_attempt_id": f"attempt-slurp-native-stage3-{slug}-smoke-4-generation-v1",
+            # the smoke's attempt id comes from the family (the rec1 id after its single recovery); the arm keeps its first-attempt id
+            "smoke_attempt_id": tf.names(t, "smoke")["attempt_id"],
             "expected_rows": 1080, "contacts_per_row": contacts, "ceiling_per_row": contacts, "notool": True,
             "owner": f"root-slurp-native-stage3-{slug}-v1",
         })
