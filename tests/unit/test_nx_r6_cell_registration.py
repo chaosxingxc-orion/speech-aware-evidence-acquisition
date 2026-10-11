@@ -361,7 +361,7 @@ def test_pre_contact_preflight_plans_budgets_and_ledger_rows():
             matched = [r for r in ledger if r.get("run/experiment id") == plan.run_id]
             assert len(matched) == 1, (plan.run_id, len(matched))
             row = matched[0]
-            assert row["consumed"].strip().lower() == "no"
+            assert row["consumed"].strip().lower() == "yes" and "CONSUMED (" in row["notes"]  # flown and sealed; closed by scripts/flights/batch/ledger_mark_consumed.py (SEALED prefix)
             assert row["execution profile"] == plan.execution_profile and row["split role"] == plan.split_role
             assert row["split identity hash"] == plan.split_identity_hash == roster["split_identity_hash"]
             assert int(row["calls"]) == plan.planned_model_calls
@@ -571,7 +571,7 @@ def test_the_ledger_rows_are_present_unconsumed_and_draft_or_countersigned():
         assert nf.SMOKE["attempt_id"] in notes and nf.SMOKE["fit_attempt_id"] in notes
         assert "40 + 20 = 60 calls" in notes and "ceil(102 + 50.908) = 153" in notes and "160 = 4 rows x 10 contacts x 4 endpoints" in notes
         assert int(row["calls"]) == (160 if fit else 60) and int(row["speech audio seconds"]) == 153
-        assert row["consumed"].strip().lower() == "no"
+        assert row["consumed"].strip().lower() == "yes" and "CONSUMED (" in row["notes"]  # flown and sealed; closed by scripts/flights/batch/ledger_mark_consumed.py (SEALED prefix)
     for run_id in (nf.ARM["run_id"], nf.ARM["fit_run_id"]):
         assert "RECOVERY RE-REGISTRATION" not in by_id[run_id]["notes"], run_id
     assert f"attempt {nf.ARM['attempt_id']}. Protocol hash" in by_id[nf.ARM["run_id"]]["notes"]

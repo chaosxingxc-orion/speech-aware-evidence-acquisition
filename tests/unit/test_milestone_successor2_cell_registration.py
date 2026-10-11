@@ -369,7 +369,7 @@ def test_three_countersigned_ledger_rows_sit_in_one_contiguous_block_of_their_ow
         # Registered as DRAFT rows; root countersigned them 2026-10-10 (12:55Z run/FIT rows, 18:40Z analysis row)
         # before the flight. The countersigned wording replaced the draft wording in the same row text.
         assert "REGISTERED BEFORE CONTACT (root countersigned 2026-10-10T" in row and "DRAFT, root countersignature pending" not in row
-        assert row.split(" | ")[8] == "no"  # consumed
+        assert row.split(" | ")[8] == "yes"  # consumed: flown and sealed; closed by scripts/flights/batch/ledger_mark_consumed.py
     assert rows[0].split(" | ")[2] == "bounded-discovery-probe" and rows[2].split(" | ")[2] == "model-free-check"
     assert rows[0].split(" | ")[9] == "6020" and rows[1].split(" | ")[9] == "24080"
     assert all(len(row.strip("|").split(" | ")) == 15 for row in rows)

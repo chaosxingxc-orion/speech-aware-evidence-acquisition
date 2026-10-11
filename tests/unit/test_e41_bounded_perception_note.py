@@ -280,11 +280,18 @@ def test_the_finite_completion_gate_passes_and_sees_both_held_cells():
     data = gate.evaluate(REPO)
     assert data["passed"], data["violations"]
     in_scope = {row["run_id"]: row for row in data["in_scope_plan_cells"]}
-    for run_id in (DRY[2], SUB10[2]):
-        # held as registered; the dry run is ready since its flip (55bcc54d)
-        assert in_scope[run_id]["readiness_state"] in ("held", "ready")
     scopes = {row["run_id"]: row for row in data["scope_report"]}
     for run_id in (DRY[2], SUB10[2]):
+        if run_id not in in_scope:
+            # the dry run flew and sealed (attempt-e21-native-window-system-four-row-e41-v1, 2026-09-28): historical, reported only
+            assert run_id == DRY[2], run_id
+            continue
+        # held as registered; the dry run was ready after its flip (55bcc54d)
+        assert in_scope[run_id]["readiness_state"] in ("held", "ready")
+    for run_id in (DRY[2], SUB10[2]):
+        if run_id not in scopes:
+            assert run_id == DRY[2], run_id
+            continue
         assert scopes[run_id][gate.SCOPE_KEY] == "answering-node"
         assert scopes[run_id]["role_completion_caps"] == {"perception": 640, "reviewer": 640}
 
