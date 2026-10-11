@@ -13,10 +13,14 @@ loader. Scoring reuses Earnings-21's registered ``asr-wer-whisper`` (the carrier
 ``TaskLayout.official_scorer_id``); Earnings-22 has no ``wer_tags`` entity layer and
 no ConEC context layer, so the entity scorers and ConEC supply do not apply.
 
-No construction subsets (Earnings-21's ``e21_runtime_subset`` form) are admitted
-here: a non-``dev`` split is refused. Earnings-22 has NO measured own null: no cell
-on it may claim a benefit until an in-chain A/A has sealed (design 2b.3). No flight
-is registered by this file; it only lets the shared factory resolve the carrier.
+Construction subsets of the dev split use Earnings-21's ``e21_runtime_subset`` form
+unchanged (the shared base now takes its parent split from ``DEFAULT_SPLIT``): the
+dataset fragment names a committed probe-sample receipt whose ids must lie inside the
+frozen dev split (2026-10-11, the HELD four-row form smoke of the all-off cell; the
+only registered subset is ``e22-native-window-four-row-v1``). Earnings-22 has NO
+measured own null: no cell on it may claim a benefit until an in-chain A/A has sealed
+(design 2b.3). No flight is registered by this file; it only lets the shared factory
+resolve the carrier.
 """
 
 from __future__ import annotations
@@ -32,9 +36,6 @@ class Earnings22RuntimeAdapter(Earnings21RuntimeAdapter):
 
     CARRIER_LOCK_KEY = CARRIER_LOCK_KEY
     DEFAULT_SPLIT = "dev"
-
-    def _refuse_subset_if_unsupported(self):
-        raise CoreError("E22 runtime admits only its whole dev split (no construction subsets)")
 
 
 def build_runtime_adapter(values, lock, data_root, repo_root, *, dataset_fragment):
