@@ -1,0 +1,67 @@
+{
+  "arms": [
+    "lock"
+  ],
+  "blockers": [
+    {
+      "detail": "rails/runner.py (run_speech_native_agent_loop) refuses a query sample inside the composite knowledge source roster. The lock's train-exemplars pool release (size-pool-annotated-exemplars, 37,407 source ids) contains ALL 625 R01C rows, so this cell is refused before it dispatches one row. The committed VAR-2 R01C cell avoided this by pinning the size-pool-annotated-exemplars-minus-r01 pool (34,474 source ids, 0 shared with R01C); the module compiler takes the pool release from the lock layer only and has no roster pin for it. Measured: {\"cell_conflict_rows\": 625, \"measured\": true, \"roster_rows\": 625, \"stores\": {\"ace-playbook\": {\"declared_by_this_cell\": false, \"shared_with_roster\": 50, \"snapshot\": \"knowledge/slurp/semantic/ace-playbook-i0/snapshot.json\", \"snapshot_sha256\": \"3c9f36f9a3cea26d1c6b5e52c720022ba4f96ccf20c043023737202c8a12b1e2\", \"source_ids\": 50}, \"intent-boundaries\": {\"declared_by_this_cell\": true, \"shared_with_roster\": 0, \"snapshot\": \"knowledge/slurp/semantic/intent-boundaries-v1/snapshot.json\", \"snapshot_sha256\": \"5520b8449b627530227563d1f8db71f8a391f20f7d0ff7d7bd439e28ec6e48fe\", \"source_ids\": 2037}, \"slot-contracts\": {\"declared_by_this_cell\": true, \"shared_with_roster\": 0, \"snapshot\": \"knowledge/slurp/semantic/slot-contracts-v2/snapshot.json\", \"snapshot_sha256\": \"d5992bd12687cbd0204c14fc4e29f987697b8751321d524d7707229032f5bdec\", \"source_ids\": 3162}, \"train-exemplars\": {\"declared_by_this_cell\": true, \"shared_with_roster\": 625, \"snapshot\": \"knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json\", \"snapshot_sha256\": \"4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9\", \"source_ids\": 37407}}}",
+      "id": "knowledge-source-guard",
+      "pool_remedy": {
+        "release": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+        "release_sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0",
+        "shared_with_r01c": 0,
+        "snapshot": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+        "snapshot_sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63",
+        "source_ids": 34474
+      },
+      "remedy": "a lock layer (or a roster-pin path in the carrier hooks, rails/adapters/slurp_module_*.py) that pins the minus-r01 pool release and snapshot for cells flying R01C rows, plus an agreement table built against THAT pool; both are outside this package's authority"
+    },
+    {
+      "detail": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1/agreement.jsonl is a model-free preparation not yet built; the agree-vote-seed pin is zero until it is",
+      "id": "agreement-table-owed",
+      "remedy": "countersign the DRAFT preparation row, run scripts/build_slurp_intent_exemplar_agreement.py for R01C against the pool the guard blocker settles on, then re-register with the table's hash"
+    }
+  ],
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-generation-v1",
+      "cell": "slurp-native-stage3-tfrl-construction-lock-r01c-v1",
+      "composed_config_hash": "95bbfd8c22f80c44ce6d6cb9065574802d259f41bfa13bc77fe04e5e8107e8a0",
+      "experiment": "slurp-native-stage3-tfrl-construction-lock-r01c-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-FIT-V1",
+      "protocol_hash": "5700e872da617e1838c05cc32dfc4021ff6ba9e810c67d816decf26e0733a2da",
+      "rows": 625,
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1",
+      "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-v1",
+      "composed_config_hash": "bbd195db6f58088153ca9ed3f1755eed5280606b12587f38420a354c55e2393a",
+      "experiment": "slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-FIT-V1",
+      "protocol_hash": "fcfc17557c2bd60f137cdf9025cde232f95f47e2f18ee8471bb2d29046daa220",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-V1",
+      "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5"
+    }
+  },
+  "decision_rule_fixed_here": "None: the column makes no decision. It is the material source of the typed loop; the selection rule, parent choice, edit budget and stop rule are fixed in docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json.",
+  "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration; run-cumulative budgets.",
+  "one_factor": "none (the plain lock v2.2, review-off, on the construction roster R01C)",
+  "prohibitions": [
+    "No Fold B, Fold A, DEV or test contact: the column flies the construction roster R01C only.",
+    "No supply arm, no template column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "No benefit claim and no admission: the column is the loop's material source (measurement design material-source).",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the cells are flipped and the knowledge-source-guard blocker is resolved.",
+    "No paper-scale profile. No system-level claim."
+  ],
+  "protocol_id": "slurp-tfrl-construction-source-protocol-v1",
+  "registered_at_utc": "2026-10-11T12:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "study_commit_at_registration": "f0edc8a720a6ec7d0a2a4d1885f74d18e4d9b408",
+  "the_question": "None: this column estimates nothing. Its official per-row scores are the sealed material the contrast tables are read from (failure cube by slot type and scenario, empty-gold false fill, intent rank, supply structure)."
+}

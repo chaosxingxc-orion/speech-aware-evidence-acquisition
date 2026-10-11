@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-tfrl-construction-lock-r01c-v1",
+  "composed_config_hash": "95bbfd8c22f80c44ce6d6cb9065574802d259f41bfa13bc77fe04e5e8107e8a0",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 5000,
+    "planned_speech_audio_seconds": 5454,
+    "protocol_hash": "5700e872da617e1838c05cc32dfc4021ff6ba9e810c67d816decf26e0733a2da",
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-tfrl-construction-lock-r01c-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 5000,
+    "generation_calls_cap": 1250,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 1250,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 5454
+  },
+  "loop_protocol": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json",
+    "status": "DRAFT-HELD"
+  },
+  "plan_kind": "fit",
+  "preparation_base_commit": "f0edc8a720a6ec7d0a2a4d1885f74d18e4d9b408",
+  "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/protocol-registered-v1.json",
+    "sha256": "c21d7c34bb1465c2c0be4f36015df4c7f1fe7b9f996fc280fb06635046272bc1"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-FIT-V1: request envelopes only; reads nothing.",
+  "registered_at_utc": "2026-10-11T12:00:00.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

@@ -465,6 +465,17 @@ FLOOR_TABLE: dict[str, Floor] = {
         source=f"{INSTRUMENT_NOTE} section 3 rule 5 and section 2d row 6",
         forbids_benefit=True,
     ),
+    # 2026-10-11 (coordinator resolution to owner decision 263-A): a column flown to be READ OFFLINE as the proposer / reflector MATERIAL
+    # SOURCE of the typed loop (docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/). It is a measurement-free rollout on the
+    # construction roster: it carries no contrast, no twin and no numeric floor, and like ``form-proof`` it may not claim a benefit -- but
+    # it is not a four-row structural proof, so it keeps its own name and is legal at any row count.
+    "material-source": Floor(
+        source=(
+            f"{INSTRUMENT_NOTE} section 3 rule 5 by analogy (no benefit claim, no numeric floor), applied to a collection column "
+            "read as proposer material; docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/README.md"
+        ),
+        forbids_benefit=True,
+    ),
 }
 
 DESIGNS = tuple(FLOOR_TABLE)
