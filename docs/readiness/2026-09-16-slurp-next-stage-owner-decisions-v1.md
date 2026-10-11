@@ -1515,3 +1515,22 @@ mint -> flip -> plan pins -> flip -> gates -> queue (GPU resumes).
   package (tfrl construction + smoke, tfrl i1 proposers and column, 266-E four cells); countersign the construction rows;
   mint; loop-form flip; plan pins; flip; gates; queue `batch_chain_tfrl_const.sh` (about 0.9 GPU-h). Then the i1
   proposer/reflector cell on its sealed tables, then the Fold B column (lock / aa / ace). 266-E runs after the packet pass.
+
+### Construction-source column launched; Thinking packet driver merged (coordinator, 2026-10-11)
+
+Owner, verbatim: 「继续，代理回报后合并并起飞 i1」 ("Continue; after the agents report, merge and take off i1.")
+
+- Construction column: rows countersigned 08:57Z (1f9070d97), receipt minted, flip chain as task SAEA-Flip-TFRLConst (smoke
+  87cb5e960, arm 2b8670a52, pins refreshed, re-converged), **flight commit 70eabd973**, both launch gates PASS, chain task
+  SAEA-Queue-TFRLConst started 09:31:58Z (`/home/chao/saea-queue/chain_tfrlconst.sh` -> `batch_chain_tfrl_const.sh`:
+  four-row smoke, then the 625-row plain-lock column on R01C under the construction variant; about 0.9 GPU-h).
+- Merged after the flip loop ended: `sonnet/266e-thinking-packets` (dbb79e937): `scripts/slurp_fold_preprocess_thinking.py`
+  (dry-run / run / promote / pin-receipt; refuses pin mismatch, non-empty root, missing or unsigned ledger row), the
+  sidecar chain `scripts/flights/direct/direct_fb_packets.sh` (refuses while a flight is alive or a sidecar is up; host
+  memory floor 26 GB), 52 tests; expected 45-60 min wall for the Fold B encoder pass (31.8 rows/min at 4 workers on the
+  Instruct record plus two model loads).
+- i1 sequence after the construction seal: countersign its READ row -> `tfrl_const_read.sh` -> `tfrl_loop_driver.py open
+  --iter 1 --stage propose` -> countersign the proposer / reflector rows -> mint `--kind proposers` -> flip -> queue (about
+  0.1 GPU-h) -> `open --iter 1 --stage cell` -> countersign the column rows -> mint `--kind column` -> flip -> queue the Fold B
+  column (lock / aa / ace, about 1.1 GPU-h). The Thinking packet pass (CPU sidecar) runs in a GPU gap after the i1 proposers
+  are queued or after the column, whichever gap comes first; 266-E flies after it.

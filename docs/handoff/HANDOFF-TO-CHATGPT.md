@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T08:55:06Z
+Last refreshed: 2026-10-11T09:34:24Z
+
+## Construction-source column FLYING (flight commit 70eabd973, task SAEA-Queue-TFRLConst, 09:32Z); Thinking packet driver merged (2026-10-11T09:34:24Z, Fable 5.1 root)
+
+Owner: continue, merge and take off i1. Construction column: countersigned, minted, flipped (smoke 87cb5e960, arm 2b8670a52, pins, re-converged), gates PASS, chain started (smoke then 625 rows, ~0.9 GPU-h). Merged dbb79e937: Thinking packet driver + sidecar chain + pin step (52 tests). Next: READ row -> const read -> `open --iter 1 --stage propose` -> proposers cell (sign, mint, flip, queue ~0.1 GPU-h) -> `open --stage cell` -> Fold B column lock/aa/ace (~1.1 GPU-h); Thinking packet pass in a GPU gap; then 266-E. No owner decision open.
+
+Superseded stamp: 2026-10-11T08:55:06Z
 
 ## Construction variant (minus-r01 pool + agreement table) and ACE score fix merged; launch sequence queued behind the Thinking packet driver (2026-10-11T08:55:06Z, Fable 5.1 root)
 
