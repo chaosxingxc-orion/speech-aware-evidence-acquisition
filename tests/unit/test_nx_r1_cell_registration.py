@@ -287,7 +287,7 @@ def test_pre_contact_preflight_plans_budgets_and_ledger_rows():
             matched = [r for r in ledger if r.get("run/experiment id") == plan.run_id]
             assert len(matched) == 1, (plan.run_id, len(matched))
             row = matched[0]
-            assert row["consumed"].strip().lower() == "no"
+            assert row["consumed"].strip().lower() == "yes" and "CONSUMED (" in row["notes"]  # flown and sealed; closed by scripts/flights/batch/ledger_mark_consumed.py (SEALED prefix)
             assert row["execution profile"] == plan.execution_profile
             assert row["split role"] == plan.split_role
             assert row["split identity hash"] == plan.split_identity_hash == roster["split_identity_hash"]
@@ -430,4 +430,4 @@ def test_iteration_ledger_rows_are_present_unconsumed_and_draft_or_countersigned
         # Registered before contact: every flight row is an unconsumed DRAFT.
         for run_id in ids[:4]:
             row = next(r for r in rows if r.get("run/experiment id") == run_id)
-            assert row["consumed"].strip().lower() == "no" and "DRAFT" in row["notes"]
+            assert row["consumed"].strip().lower() == "yes" and "CONSUMED (" in row["notes"] and "DRAFT" in row["notes"]  # flown and sealed; closed by scripts/flights/batch/ledger_mark_consumed.py (SEALED prefix)
