@@ -28,7 +28,7 @@
     "constants_note": "constants_sha256 is content_hash(ACE_CONSTANTS) WITHOUT lock_p99_supplied_tokens; the measured p99 joins at the FIT step (with_measured_lock_p99) and is recorded in every open receipt",
     "constants_sha256": "bb46d3203d5825fe0fd9b4cba1609d881fdf1f00c4d1aec56ab4bb61faa54e12",
     "counters": "by script (I-OBJ): helpful / harmful / scoped_rows from per-row official SLU-F1 of the ace column vs the lock column of the SAME iteration; cumulative across iterations",
-    "playbook_flow": "playbook i0 is empty; the reflector of iteration t reads the previous sealed column (the lock VER-1a column for t = 1; the ace column of t - 1 afterwards); curate() grows i(t-1) into i(t) with the counters of iteration t - 1; the ace arm of iteration t flies i(t)"
+    "playbook_flow": "playbook i0 is empty; the reflector of iteration t reads the construction-source lock column (the same column for t = 1, 2 and 3) and the current playbook items; curate() grows i(t-1) into i(t) with the counters of iteration t - 1 (script-computed credit over the Fold B ace column versus lock); the ace arm of iteration t flies i(t) on Fold B"
   },
   "algorithm_labels": {
     "ace_reflector_cell": {
@@ -97,7 +97,8 @@
   },
   "authority": [
     "docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md sections 5, 6, 7, 8, 9",
-    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md: Decisions 263-265 ruled; 265 coverage pre-read, decision 266 PROPOSED"
+    "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md: Decisions 263-265 ruled; 265 coverage pre-read, decision 266 PROPOSED",
+    "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/README.md: the construction-source lock column (coordinator resolution of 2026-10-11 to decision 263-A)"
   ],
   "claim_rule": "Decision 263: the typed loop's cumulative state vs lock has CI-LB > 0 on Fold A (one attempt, rules fixed, thresholds fitted on Fold B, not re-fitted). ACE is reported either way. Development numbers only.",
   "curve": {
@@ -129,9 +130,16 @@
       "rows": 1080,
       "split_identity_hash_prefix": "61b0f062"
     },
+    "material": {
+      "role": "proposer-table and ACE-reflector material source for iterations 1-3: ONE lock column flown on the construction roster (TRAIN rows outside Fold A and Fold B); never a selection or confirmation split; re-flown only if the lock changes",
+      "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "roster_relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+      "rows": 625,
+      "split_identity_hash_prefix": "f56bc386"
+    },
     "select": {
       "fold": "SLURP-EVO-FOLD-B-V2",
-      "role": "selection (instrument); read three times, so the winner's curse applies (design R6)",
+      "role": "HELD-OUT selection (instrument); never a table, material or knowledge source (it contributes only ACE counters and the refused-candidate buffer); read three times, so the winner's curse applies (design R6)",
       "rows": 1080
     }
   },
@@ -148,6 +156,11 @@
     "the loop-form flip runs, then the plan-pin refresh, then the flip again",
     "the coordinator or owner starts SAEA-Batch-Driver from PowerShell (decision 77); the session never launches a flight"
   ],
+  "lock": {
+    "lock": "v2.3",
+    "note": "The iteration cells compose on lock v2.3 (v2.2 plus the empty ace-playbook-i0 declaration; requests byte-identical to v2.2's, proof P-ACE-0). The construction-source column composes on v2.2: the v2.3 ace-playbook store's source ids lie inside the construction roster R01C and the runner refuses a query sample inside the composite knowledge source roster.",
+    "parent_lock": "v2.2"
+  },
   "loop": {
     "loop_id": "SAEA-SLURP-TFRL-LOOP-V1",
     "one_experiment_in_flight": true,
@@ -158,6 +171,35 @@
       "text": "Exactly three iterations, whatever happens. No early stop and no extension."
     },
     "typed_arm_may_be_empty": "LEGAL. When no valid candidate clears the predicted bar the iteration still flies lock / aa / (par) / ace, the typed point repeats on the curve, delivery candidates are still read offline at 0 GPU (design R1)."
+  },
+  "material_source": {
+    "ace_release_staging": {
+      "carriers": "the first 50 sorted ids of the permitted roster (a subset of R01C), as the i0 release",
+      "construction_scope": "SLURP-STAGE3-CONSTRUCTION-R01C",
+      "forbidden_rosters": [
+        "SLURP-EVO-FOLD-A-V2",
+        "SLURP-EVO-FOLD-B-V2",
+        "DEV-1000"
+      ],
+      "permitted_roster": "SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1",
+      "registration": "the committed i0 registration's roster pins (stage3-deltas-v1r)"
+    },
+    "arm": "lock",
+    "attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-generation-v1",
+    "cell": "slurp-native-stage3-tfrl-construction-lock-r01c-v1",
+    "claims_benefit": false,
+    "contacts_per_row": 2,
+    "fold_b_role": "HELD-OUT selection only. Iterations 2-3 read the previous iteration's Fold B read ONLY for the refused-candidate buffer and the ACE counters (credit of the Fold B ace column versus lock): counters are numbers, not knowledge.",
+    "measurement_design": "material-source",
+    "package": "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1",
+    "program": "phase-native-module-v1-c2",
+    "roster": "SLURP-STAGE3-CONSTRUCTION-R01C",
+    "roster_relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "rows": 625,
+    "rule": "Every iteration's contrast tables, proposer context tables and ACE reflector materials are read from THIS column (the lock does not change between iterations). It is flown once and re-flown only if the lock changes. Reason: the semantic-knowledge preparer forbids Fold B rows as carrier ids of a delta-store registration (the construction-roster vs knowledge guard of 2026-09-23), so material staged from a Fold B column cannot be released.",
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1",
+    "scorer": "slurp-slu-official-train",
+    "smoke_cell": "slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-v1"
   },
   "measurement_block": {
     "claim_ceiling": "nominated",
@@ -209,7 +251,7 @@
     "typed_program": "phase-tfrl-typed-proposer-v1",
     "typed_response_format": "saea-tfrl-typed-candidate-v1"
   },
-  "protocol_sha256": "666763df9617b10f30445789f901496505d6e09a0126984b686b04b3032b6111",
+  "protocol_sha256": "3ba5e4ee441a9a292f316f0f804a0f53b6a618e43995d7b94803df825232dcb7",
   "schema": "saea-tfrl-loop-protocol-v1",
   "selection": {
     "accepted_iff": "all clauses present hold; the verdict names every failed clause",
@@ -255,7 +297,7 @@
     "allowance_tokens": 1880,
     "enforcement": "column max_supplied_items 63 = 55 + 8 and fit_estimate in the supply frame; the curator truncates by token count at T_cap; the 4-row dry run refuses an arm over T_cap",
     "formula": "lock_p99_supplied_tokens + allowance_tokens",
-    "lock_p99_supplied_tokens": "MEASURED on the lock column of TRAIN Fold B (table_d overall supplied_tokens p99 of the lock tables, or the FIT-step tokenizer measurement); never a placeholder",
+    "lock_p99_supplied_tokens": "MEASURED on the construction-source lock column (table_d overall supplied_tokens p99 of the lock tables, or the FIT-step tokenizer measurement); never a placeholder",
     "tokens_per_supplied_item": 235
   }
 }

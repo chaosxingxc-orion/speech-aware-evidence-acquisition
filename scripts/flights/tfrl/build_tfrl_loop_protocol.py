@@ -56,6 +56,7 @@ def build() -> dict:
             "docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md sections 5, 6, 7, 8, 9",
             "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md: Decisions 263-265 ruled; 265 coverage pre-read, "
             "decision 266 PROPOSED",
+            tf.CONST_PACKAGE_DIR + "/README.md: the construction-source lock column (coordinator resolution of 2026-10-11 to decision 263-A)",
         ],
         "loop": {
             "loop_id": tf.LOOP_ID,
@@ -68,6 +69,30 @@ def build() -> dict:
                                        "(par) / ace, the typed point repeats on the curve, delivery candidates are still read offline "
                                        "at 0 GPU (design R1)."),
             "proposer_never_judges": "The model proposes; deterministic validation and the script objective decide (invariant I-OBJ).",
+        },
+        "lock": {
+            "lock": tf.LOCK, "parent_lock": tf.PARENT_LOCK,
+            "note": ("The iteration cells compose on lock v2.3 (v2.2 plus the empty ace-playbook-i0 declaration; requests byte-identical to v2.2's, "
+                     "proof P-ACE-0). The construction-source column composes on " + tf.CONST_LOCK + ": the v2.3 ace-playbook store's source ids lie "
+                     "inside the construction roster R01C and the runner refuses a query sample inside the composite knowledge source roster."),
+        },
+        "material_source": {
+            "cell": tf.const_names("arm")["experiment"], "smoke_cell": tf.const_names("smoke")["experiment"],
+            "run_id": tf.CONST_RUN_ID, "attempt_id": tf.CONST_ATTEMPT_ID, "arm": tf.CONST_ARM, "scorer": tf.CONST_SCORER,
+            "roster": tf.CONST_ROSTER_ID, "roster_relpath": tf.CONST_ROSTER["arm"], "rows": tf.CONST_ROWS, "program": tf.CONST_PROGRAM,
+            "contacts_per_row": tf.CONST_CONTACTS, "package": tf.CONST_PACKAGE_DIR, "measurement_design": "material-source",
+            "claims_benefit": False,
+            "rule": ("Every iteration's contrast tables, proposer context tables and ACE reflector materials are read from THIS column (the lock "
+                     "does not change between iterations). It is flown once and re-flown only if the lock changes. Reason: the semantic-knowledge "
+                     "preparer forbids Fold B rows as carrier ids of a delta-store registration (the construction-roster vs knowledge guard of "
+                     "2026-09-23), so material staged from a Fold B column cannot be released."),
+            "fold_b_role": ("HELD-OUT selection only. Iterations 2-3 read the previous iteration's Fold B read ONLY for the refused-candidate "
+                            "buffer and the ACE counters (credit of the Fold B ace column versus lock): counters are numbers, not knowledge."),
+            "ace_release_staging": {
+                "construction_scope": "SLURP-STAGE3-CONSTRUCTION-R01C", "permitted_roster": "SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1",
+                "forbidden_rosters": ["SLURP-EVO-FOLD-A-V2", "SLURP-EVO-FOLD-B-V2", "DEV-1000"],
+                "carriers": f"the first {tf.ACE_CARRIERS} sorted ids of the permitted roster (a subset of R01C), as the i0 release",
+                "registration": "the committed i0 registration's roster pins (stage3-deltas-v1r)"},
         },
         "fold_roles": tf.FOLD_ROLES,
         "selection": {
@@ -129,16 +154,17 @@ def build() -> dict:
                                "joins at the FIT step (with_measured_lock_p99) and is recorded in every open receipt"),
             "counters": "by script (I-OBJ): helpful / harmful / scoped_rows from per-row official SLU-F1 of the ace column vs the lock "
                         "column of the SAME iteration; cumulative across iterations",
-            "playbook_flow": ("playbook i0 is empty; the reflector of iteration t reads the previous sealed column (the lock VER-1a "
-                              "column for t = 1; the ace column of t - 1 afterwards); curate() grows i(t-1) into i(t) with the "
-                              "counters of iteration t - 1; the ace arm of iteration t flies i(t)"),
+            "playbook_flow": ("playbook i0 is empty; the reflector of iteration t reads the construction-source lock column (the same "
+                              "column for t = 1, 2 and 3) and the current playbook items; curate() grows i(t-1) into i(t) with the "
+                              "counters of iteration t - 1 (script-computed credit over the Fold B ace column versus lock); the ace arm of "
+                              "iteration t flies i(t) on Fold B"),
         },
         "t_cap": {
             "formula": ace.ACE_CONSTANTS["t_cap_formula"],
             "allowance_items": ace.ACE_CONSTANTS["allowance_items"],
             "tokens_per_supplied_item": ace.ACE_CONSTANTS["tokens_per_supplied_item"],
             "allowance_tokens": ace.ACE_CONSTANTS["allowance_tokens"],
-            "lock_p99_supplied_tokens": ("MEASURED on the lock column of TRAIN Fold B (table_d overall supplied_tokens p99 of the "
+            "lock_p99_supplied_tokens": ("MEASURED on the construction-source lock column (table_d overall supplied_tokens p99 of the "
                                          "lock tables, or the FIT-step tokenizer measurement); never a placeholder"),
             "enforcement": "column max_supplied_items 63 = 55 + 8 and fit_estimate in the supply frame; the curator truncates by token "
                            "count at T_cap; the 4-row dry run refuses an arm over T_cap",

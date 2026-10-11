@@ -29,7 +29,8 @@ DECLARED effect, before the GPU hours are spent rather than after.
 * ``measurement_design`` -- one of :data:`DESIGNS`: ``offline-sealed-pool``,
   ``same-flight-paired``, ``same-flight-supply-variant``,
   ``cross-flight-with-in-chain-replicate``, ``cross-flight-no-replicate``,
-  ``form-proof``. ``same-flight-supply-variant`` is the supply-variant column
+  ``form-proof``, ``material-source`` (a collection column read offline as material: no floor, no benefit claim, any n; 2026-10-11).
+  ``same-flight-supply-variant`` is the supply-variant column
   read (owner decision 172, docs/superpowers/specs/2026-09-27-same-flight-
   supply-variant-instrument-design.md): a Solver-local effect from
   ``supply_variants`` arms read against their in-flight twin; it may claim

@@ -73,7 +73,13 @@ ROSTER = {
     "smoke": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
 }
 FOLD_ROLES = {
-    "select": {"fold": "SLURP-EVO-FOLD-B-V2", "rows": 1080, "role": "selection (instrument); read three times, so the winner's curse applies (design R6)"},
+    "material": {"roster": "SLURP-STAGE3-CONSTRUCTION-R01C", "rows": 625, "roster_relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+                 "split_identity_hash_prefix": "f56bc386",
+                 "role": ("proposer-table and ACE-reflector material source for iterations 1-3: ONE lock column flown on the construction roster "
+                          "(TRAIN rows outside Fold A and Fold B); never a selection or confirmation split; re-flown only if the lock changes")},
+    "select": {"fold": "SLURP-EVO-FOLD-B-V2", "rows": 1080,
+               "role": ("HELD-OUT selection (instrument); never a table, material or knowledge source (it contributes only ACE counters and the "
+                        "refused-candidate buffer); read three times, so the winner's curse applies (design R6)")},
     "confirm": {"fold": "SLURP-EVO-FOLD-A-V2", "split_identity_hash_prefix": "61b0f062", "rows": 1080,
                 "role": "confirmation, ONE attempt, every rule fixed; prior exposure disclosed"},
     "compose": {"fold": "DEV-2000-ADDED", "roster": "docs/receipts/rosters/slurp-dev-2000-added-v1.json", "rows": 1000,
@@ -179,6 +185,10 @@ CONST_LOCK = PARENT_LOCK
 CONST_CONTACTS = 2
 CONST_PROGRAM = "phase-native-module-v1-c2"
 CONST_SCORER = SCORER
+CONST_ARM = DELIVERING
+#: The ace-playbook release staging: the carrier rows of every release are the first ``ACE_CARRIERS`` sorted ids of the permitted roster of the
+#: committed ``stage3-deltas-v1r`` registration (the i0 builder's own rule), never a Fold B row.
+ACE_CARRIERS = 50
 #: Measured throughput of the review-off composed arm at 2.00 contacts per row: 1.38 GPU-h per 1,000 rows
 #: (docs/results/2026-10-10-slurp-nx-r5-composed-dev2000-added-read.md, efficiency table); 625 rows -> 0.86 GPU-h before FIT.
 CONST_MEASURED_GPU_H_PER_1000_ROWS = 1.38

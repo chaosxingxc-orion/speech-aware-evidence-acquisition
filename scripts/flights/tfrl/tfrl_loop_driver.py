@@ -8,8 +8,8 @@ analysis outputs under ``analysis/SAEA-SLURP-TFRL-LOOP-V1/`` (the tables, the pr
 
 THE FLOW (a GPU step sits between ``open --stage propose`` and ``open --stage cell``):
 
-    open  --iter t --stage propose   tables from the previous sealed column (the R6-P1 delivering lock column for t = 1), the proposer / reflector
-                                     artefacts, the two text-only cells (HELD, DRAFT ledger rows)         -> countersign checklist
+    open  --iter t --stage propose   tables from the sealed CONSTRUCTION-SOURCE lock column (R01C, every iteration: the lock does not change),
+                                     the proposer / reflector artefacts, the two text-only cells (HELD, DRAFT ledger rows)  -> countersign checklist
     [coordinator: countersign, mint, flip, queue; GPU flies the proposer + reflector cells]
     open  --iter t --stage cell      validate the sealed candidates, curate the ACE playbook i(t), derive the column cell and its
                                      smoke (HELD, DRAFT rows), print the gates                              -> countersign checklist
@@ -20,6 +20,13 @@ THE FLOW (a GPU step sits between ``open --stage propose`` and ``open --stage ce
 
 External analysis scripts (tables, rollout score, node-local reader, paired read, delivery fit) run only with ``--execute``;
 without it the driver prints the command it would run and stops before any archive write ("planned").
+
+MATERIAL SOURCE (coordinator resolution of 2026-10-11 to decision 263-A). The proposer's tables and the ACE reflector's material come from ONE
+column flown on the construction roster R01C (``tf.CONST_*``), never from Fold B: the semantic-knowledge preparer forbids Fold B rows as carrier
+ids of a delta-store registration (the construction-roster vs knowledge guard), Fold B is the held-out selection split and Fold A confirms.
+Iterations 2-3 read the previous iteration's FOLD B read only for the refused-candidate buffer and the ACE counters (credit over the Fold B
+``ace`` column versus ``lock``): counters are numbers, not knowledge. ACE release staging uses the committed ``stage3-deltas-v1r`` rosters
+(construction scope R01C, permitted roster = a subset of R01C, forbidden Fold A / Fold B / DEV-1000) so the preparer accepts releases i1+.
 
 Interface adaptations written in ``tfrl_loop_lib.py`` and reported: E-T3 tables -> E-T1 artefact and E-T2 material; E-T4 archive ->
 E-T1 context; paired-read bytes -> credit vectors; the ACE counters' credit file is written at ``close`` and consumed by the next
@@ -50,10 +57,10 @@ if str(REPO_ROOT / "src") not in sys.path:
 
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
 DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-#: The iteration-1 tables source: the sealed NX R6-P1 Fold B flight, delivering arm ``lock`` -- it has per-row official scores on disk
-#: (the VER-1a S0 sample pool, ``SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1``, does not). ``--source-run-id`` / ``--source-attempt`` override.
-R6P1_RUN_ID = "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1"
-R6P1_ATTEMPT = "attempt-slurp-native-stage3-nx-r6-perception-fold-b-generation-v1"
+#: The tables source of EVERY iteration: the sealed construction-source lock column (``tf.CONST_RUN_ID`` / ``tf.CONST_ATTEMPT_ID``, delivering arm
+#: ``lock``, TRAIN roster R01C, 625 rows), which has per-row official scores on disk. ``--source-run-id`` / ``--source-attempt`` override (tests,
+#: recovery) and are recorded in the receipt. The ACE release's carrier rosters are the ``stage3-deltas-v1r`` ones (ace-playbook i0 registration).
+ACE_I0_REGISTRATION = f"{tf.PACKAGE_DIR}/ace-playbook-i0-release-registration.json"
 TABLES_SCRIPT = "scripts/analysis/tfrl_contrast_tables.py"
 DELIVERY_FIT_SCRIPT = "scripts/analysis/tfrl_delivery_fit.py"
 ROLLOUT_SCORE_SCRIPT = "scripts/analysis/stage3_rollout_score.py"
@@ -180,17 +187,18 @@ def refused_buffer(ctx: Ctx, before_iteration: int) -> list[dict]:
 
 
 def source_column(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
-    """The sealed, officially scored column the tables of iteration t are read from."""
+    """The sealed, officially scored column the tables of iteration t are read from: the CONSTRUCTION-SOURCE lock column, for every t.
 
-    if t == 1:
-        return {"run_id": a.source_run_id or R6P1_RUN_ID, "attempt": a.source_attempt or R6P1_ATTEMPT,
-                "scorer": a.source_scorer or tf.SCORER, "arm": "lock", "rows": tf.ROWS, "split": "train",
-                "note": "the sealed NX R6-P1 Fold B flight, delivering arm lock (lock v2.2's delivery; per-row official scores on disk)"}
-    close = need_receipt(ctx, t - 1, "close")
-    return {"run_id": close["column"]["run_id"], "attempt": close["column"]["attempt"], "scorer": tf.SCORER, "arm": "lock",
-            "rows": tf.ROWS, "split": "train",
-            "note": ("the delivered (lock) column of iteration %d; E-T3 reads delivered columns only, so a non-delivering parent's "
-                     "own column is not tabulated (reported interface gap)" % (t - 1))}
+    The lock does not change between iterations, so one column on the construction roster R01C serves iterations 1-3; no Fold B row is a
+    material source (the delta-store preparer forbids Fold B carriers). The previous iteration's Fold B read enters only through the
+    refused-candidate buffer and the ACE counters (numbers, not knowledge)."""
+
+    override = bool(a.source_run_id or a.source_attempt or a.source_scorer)
+    return {"run_id": a.source_run_id or tf.CONST_RUN_ID, "attempt": a.source_attempt or tf.CONST_ATTEMPT_ID,
+            "scorer": a.source_scorer or tf.CONST_SCORER, "arm": tf.CONST_ARM, "rows": tf.CONST_ROWS, "split": "train",
+            "roster": tf.CONST_ROSTER["arm"], "roster_id": tf.CONST_ROSTER_ID, "override": override,
+            "note": ("the sealed construction-source lock column (plain lock, roster R01C); the same column serves every iteration. "
+                     "Fold B is the held-out selection split and contributes only counters and the refused-candidate buffer.")}
 
 
 def load_enums(ctx: Ctx, a: argparse.Namespace, tables: Mapping[str, Any]) -> dict:
@@ -522,10 +530,13 @@ def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mappi
     legal_intents = _load_json(Path(a.enums_file))["intents"] if a.enums_file else []
     release = None
     if legal_intents:
-        roster = _load_json(ctx.repo_root / tf.ROSTER["arm"])
+        binding = lib.ace_release_binding(ctx.repo_root)
         release = ace.build_playbook_release(
-            playbook, data_root=A, carrier_sample_ids=[i["sample_id"] for i in roster["items"]][:50], legal_intent_ids=legal_intents,
-            source_split_identity_hash=roster["split_identity_hash"], release_dir="ace-release-staging")
+            playbook, data_root=ctx.data_root, carrier_sample_ids=binding["carrier_sample_ids"], legal_intent_ids=legal_intents,
+            source_split_identity_hash=binding["source_split_identity_hash"],
+            release_dir=f"{tf.ANALYSIS_ROOT}/i{t}/ace-release-staging", registration_binding=binding["registration_binding"],
+            registration_path=ctx.package_dir / f"ace-playbook-i{t}-release-registration.json",
+            registration_id=f"SAEA-SLURP-ACE-PLAYBOOK-PREPARATION-I{t}", output_namespace=f"knowledge/slurp/semantic/ace-playbook-i{t}")
     pins_file = read_or_none(Path(a.ace_release_pins)) if a.ace_release_pins else None
     ace_pins = {"iteration": t}
     if pins_file:
@@ -533,7 +544,10 @@ def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mappi
     receipt = {"playbook_iteration": playbook["iteration"], "playbook_content_hash": playbook["content_hash"], "items": len(playbook["items"]),
                "deltas_in": len(deltas), "illegal_answers": illegal, "curation": playbook.get("curation") and {
                    k: v for k, v in playbook["curation"].items() if k in ("deltas_in", "counter_updates", "constants_sha256", "token_counter_id")},
-               "release_staging": None if release is None else {k: release[k] for k in ("row_count", "empty")},
+               "release_staging": None if release is None else {
+                   **{k: release[k] for k in ("row_count", "empty")}, "registration": release["registration"],
+                   "carrier_roster": lib.ACE_CARRIER_ROSTER_RELPATH, "carriers": tf.ACE_CARRIERS,
+                   "source_split_identity_hash": lib.ace_release_binding(ctx.repo_root)["source_split_identity_hash"]},
                "release_pins": "supplied" if pins_file else "pending (zeros until the release is prepared)",
                "credit_used": credit is not None}
     return {"ace_pins": ace_pins, "receipt": receipt, "playbook": playbook}

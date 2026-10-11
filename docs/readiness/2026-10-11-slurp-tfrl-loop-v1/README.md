@@ -48,11 +48,30 @@ scripts only with `--execute` (otherwise it prints the commands and stops before
   (proof P-ACE-0, `tests/unit/test_lock_v2_3_ace_store.py`). The iteration cells compose on `lock: v2.3` (`tf.LOCK`; `tf.PARENT_LOCK` is
   the committed R6-P1 parent's v2.2 and the typed root state's hash). The hooks wrapper the first driver version used is gone: the
   compile and the loader's `verify_declared_module` both run under the real carrier hooks.
-* Iteration 1 tables source: `open --iter 1` reads the R6-P1 delivering lock column (run `SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1`,
-  attempt `attempt-slurp-native-stage3-nx-r6-perception-fold-b-generation-v1`, arm `lock`), which has per-row official scores on disk; the
-  VER-1a S0 pool does not. `--source-run-id` / `--source-attempt` still override. The pinned protocol's `playbook_flow` sentence still
-  names the VER-1a column for t = 1; the protocol bytes are hash-pinned and are not rewritten here.
+
+## Material source: the construction-source lock column (coordinator resolution of 2026-10-11)
+
+* The proposer's tables and the ACE reflector's material come from ONE lock column flown on the CONSTRUCTION roster R01C (625 TRAIN rows outside
+  Fold A and Fold B): cell `slurp-native-stage3-tfrl-construction-lock-r01c-v1`, package
+  `docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/`. `open --iter t` reads it for t = 1, 2 and 3 (the lock does not change), never a Fold B
+  column. Reason: the semantic-knowledge preparer forbids Fold B rows as carrier ids of a delta-store registration (the construction-roster vs
+  knowledge guard of 2026-09-23), so playbook releases i1+ staged from a Fold B column are refused. Fold B is the HELD-OUT selection split; Fold A confirms.
+* Iterations 2-3 read the previous iteration's Fold B read ONLY for the refused-candidate buffer and the ACE counters (credit of the Fold B `ace`
+  column versus `lock`, by script). Counters are numbers, not knowledge, so they may flow from the evaluation fold.
+* Releases i1+ are staged with the committed `stage3-deltas-v1r` rosters: construction scope R01C, permitted roster SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1
+  (a subset of R01C), forbidden Fold A / Fold B / DEV-1000; the carriers are the first 50 sorted ids of the permitted roster
+  (`tfrl_loop_lib.ace_release_binding`, which also refuses a carrier outside R01C or inside a forbidden roster). The driver writes the registration beside
+  the protocol as `ace-playbook-i<t>-release-registration.json`; `prepare_semantic_knowledge_store` compiles it unchanged.
+* `tfrl-loop-protocol-v1.json` names lock v2.3 for the iteration cells, the construction column as `material_source` and Fold B as held-out selection.
+  `--source-run-id` / `--source-attempt` still override the source (tests, recovery) and are recorded in the receipt.
 
 ## Known blockers recorded in every iteration package
 
 * The ace release and snapshot pins of the iteration (`i1` and later) are zeros until those releases are prepared.
+* The construction-source column must be flown (and its two named blockers resolved: the lock's exemplar pool contains every R01C row, and the R01C
+  agreement table is owed) before `open --iter 1 --execute` can read its tables; see the construction-source package README.
+* OPEN DEFECT, outside this change: `rails/tfrl_ace_material.playbook_release_rows` writes `prior_score = float(total - rank)` (18.0, 17.0, ...), but
+  `KnowledgeSnapshot.frozen_json` requires a probability in [0, 1], so every NON-EMPTY playbook release (i1 and later) is refused by the preparer
+  whatever the rosters (the empty release i0 passes only because its anchor row carries 0.0). The fix is to divide by `total`; the module is owned by the
+  E-T2 change. `tests/unit/test_tfrl_loop_driver.py` stages the roster-guard proofs with an order-preserving rescale and records the defect in a strict
+  xfail test, which fails (unexpected pass) the day the module is fixed, so the mark is removed then.
