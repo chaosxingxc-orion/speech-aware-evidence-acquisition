@@ -103,6 +103,11 @@ FRAGMENTS: tuple[tuple[str, str], ...] = (
     # The comparator: a carrier-rooted fragment that declares no derived root
     # and must therefore behave exactly as it always did.
     ("slurp-speech-native-dev1000", "slurp"),
+    # The Audio2Tool paired-400 roster (A2T-PAIRED-400-V1) every HELD A2T cell and
+    # the module ALL-OFF arm run on: carrier-rooted like the SLURP comparator
+    # (declares no derived root), so the row must bind from the carrier root
+    # and the decoy must still be refused.
+    ("audio2tool-paired-400", "a2t"),
 )
 
 
