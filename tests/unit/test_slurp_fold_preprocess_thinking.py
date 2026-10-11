@@ -928,3 +928,392 @@ def test_the_wrapper_forwards_the_recovery_labels_to_every_driver_call(host):
     host.log.unlink()
     host.run("--check", PACKETS_RECOVERY_FILE=str(host.tmp / "absent"))
     assert not any("--recovery-of" in c or "--attempt-id" in c for c in host.driver_calls())
+
+
+# ============================================================================================================
+# The GPU geometry (re-registration of 2026-10-11): geometry switch, serving/GPU state refusals, receipt device, rate gate
+# ============================================================================================================
+
+
+def test_the_gpu_geometry_is_the_default_and_the_cpu_geometry_needs_allow_cpu():
+    assert module.GEOMETRY.key == "gpu" and module.RUN_ID == fam.PACKETS_ROW_ID and module.SIDECAR_FRAGMENT == pins_mod.PREPROCESS_FRAGMENT
+    with pytest.raises(SystemExit, match="SUPERSEDED"):
+        module.apply_geometry("cpu")
+    assert module.GEOMETRY.key == "gpu"                                                    # a refused switch changes nothing
+    with pytest.raises(SystemExit, match="SUPERSEDED"):
+        module.main(["--roster", "thinking-smoke-4", "--dry-run", "--geometry", "cpu"])
+    cpu = module.apply_geometry("cpu", allow_cpu=True)
+    assert cpu.device == "cpu" and module.RUN_ID == fam.CPU_PACKETS_ROW_ID and module.SIDECAR_FRAGMENT == pins_mod.PREPROCESS_FRAGMENT_CPU
+    assert module.PACKET_ROOT == Path(fam.CPU_THINK_PACKET_ROOT) and module.LEGACY_CACHE == Path(pins_mod.CPU_THINKING_LEGACY_CACHE)
+    assert module.ROSTERS["thinking-smoke-4"].default_attempt_id == "attempt-packets-thinking-smoke-4-v1"       # the record's own attempt ids
+    assert module.RUNTIME_RECEIPT_RELPATH == pins_mod.PREPROCESS_RECEIPT_CPU.removeprefix("docs/")
+    module.apply_geometry("gpu")
+    assert module.RUN_ID == fam.PACKETS_ROW_ID and module.ROSTERS["thinking-smoke-4"].default_attempt_id == "attempt-packets-thinking-gpu-smoke-4-v1"
+
+
+def test_the_two_geometries_never_share_a_root_a_run_id_a_fragment_or_an_attempt_id():
+    gpu, cpu = module.GEOMETRIES["gpu"], module.GEOMETRIES["cpu"]
+    for field in ("run_id", "sidecar_fragment", "experiment_fragment", "runtime_receipt_relpath", "packet_root", "legacy_cache", "promotion_receipt",
+                  "smoke_attempt", "fold_attempt"):
+        assert getattr(gpu, field) != getattr(cpu, field), field
+    assert not str(gpu.packet_root).startswith(str(cpu.packet_root)) and not str(cpu.packet_root).startswith(str(gpu.packet_root))
+    for geometry in (gpu, cpu):
+        assert geometry.packet_root != evo.DEFAULT_FEATURE_ROOT and geometry.legacy_cache != evo.DEFAULT_LEGACY_CACHE_DIR
+        assert str(geometry.promotion_receipt).startswith(str(geometry.packet_root))
+    assert (gpu.device, gpu.default_workers, gpu.smoke_in_row, gpu.row_calls) == ("gpu", 1, True, 1084)
+    assert (cpu.device, cpu.default_workers, cpu.smoke_in_row, cpu.row_calls) == ("cpu", 4, False, 1080)
+
+
+def test_the_gpu_dry_run_plan_is_a_gpu_encoder_server_at_one_worker_with_the_e21_flags(tmp_path, monkeypatch):
+    _local_receipts(tmp_path, monkeypatch)
+    monkeypatch.setattr(module, "root_problems", lambda *a, **k: [])
+    out = tmp_path / "plan.json"
+    assert module.dry_run(_args(roster="thinking-smoke-4", output=out), lock_path=_fake_lock(tmp_path), ledger_path=REPO / "docs" / "exposure-ledger.md") == 0
+    plan = json.loads(out.read_text(encoding="utf-8"))
+    args = plan["sidecar"]["server_args"]
+    assert plan["device"] == "gpu" and plan["sidecar"]["encode_workers"] == 1 and plan["run_id"] == fam.PACKETS_ROW_ID
+    assert args[args.index("-ngl") + 1] == "999" and "--no-mmproj-offload" not in args and args[args.index("-np") + 1] == "1"
+    assert plan["attempt_id"] == "attempt-packets-thinking-gpu-smoke-4-v1" and plan["pins"]["runtime_receipt"].endswith("runtime-q4km-thinking-preprocess-gpu.json")
+    assert plan["serving_state"]["gpu_free"] is True
+
+
+def _stage_session(data: Path, name: str, *, pid: int | None, stopped: bool = False) -> None:
+    folder = data / "serving" / name
+    folder.mkdir(parents=True, exist_ok=True)
+    record = {"identity": {"port": 8080}}
+    if pid is not None:
+        record["process"] = {"pid": pid}                                       # the pid sits one level down in some records
+    (folder / "session.json").write_text(json.dumps(record), encoding="utf-8")
+    if stopped:
+        (folder / "session-stop.json").write_text("{}", encoding="utf-8")
+
+
+def test_gpu_state_names_every_reason_the_card_is_not_free(tmp_path, monkeypatch):
+    data = tmp_path / "data"
+    _stage_session(data, "serving-live", pid=4242)
+    _stage_session(data, "serving-stopped", pid=4243, stopped=True)
+    _stage_session(data, "serving-dead", pid=4244)
+    monkeypatch.setattr(module, "pid_alive", lambda pid: pid == 4242)
+    monkeypatch.setattr(module, "port_listening", lambda port: port == 8080)
+    monkeypatch.setattr(module, "gpu_memory_used_mib", lambda: 22976)
+    state = REAL_GPU_STATE(data)
+    assert state["gpu_free"] is False and state["resident_sessions"] == ["serving-live"]                 # a stop record or a dead pid is not resident
+    assert state["serving_port_listening"] is True and state["gpu_memory_used_mib"] == 22976
+    assert len(state["findings"]) == 3 and "serving-live" in state["findings"][0] and "8080" in state["findings"][1] and "22976" in state["findings"][2]
+    monkeypatch.setattr(module, "pid_alive", lambda pid: False)
+    monkeypatch.setattr(module, "port_listening", lambda port: False)
+    monkeypatch.setattr(module, "gpu_memory_used_mib", lambda: 300)
+    free = REAL_GPU_STATE(data)
+    assert free["gpu_free"] is True and free["findings"] == [] and free["resident_sessions"] == []
+    monkeypatch.setattr(module, "gpu_memory_used_mib", lambda: None)                                    # nvidia-smi unreadable: unknown, not a refusal
+    assert REAL_GPU_STATE(data)["gpu_free"] is True
+    _stage_session(data, "serving-no-pid", pid=None)                                                      # no pid recorded: treated as resident
+    assert REAL_GPU_STATE(data)["resident_sessions"] == ["serving-no-pid"]
+
+
+def test_a_gpu_run_refuses_while_any_serving_session_is_resident_before_any_process_starts(world, monkeypatch):
+    sid = "serving-slurp-native-candidate-five-train-a-np4-v1"
+    busy = {"resident_sessions": [sid], "serving_port_listening": True, "gpu_memory_used_mib": 22976, "gpu_free": False,
+            "findings": ["serving session(s) recorded resident: %s (stop them first; the card holds one core)" % sid,
+                         "something listens on the serving port 8080", "GPU memory in use is 22976 MiB (> 3072 MiB): the card is not free"]}
+    monkeypatch.setattr(module, "gpu_state", lambda root: dict(busy))
+    with pytest.raises(SystemExit, match="REFUSED.*recorded resident.*8080.*22976"):
+        world.run("thinking-smoke-4")
+    assert world.sessions == [] and world.contacts == [] and not world.cache.exists()
+    # the dry-run reports the same state as information and does NOT refuse over it (the pre-window --check runs while Instruct is resident)
+    out = world.tmp / "dry.json"
+    assert module.dry_run(_args(roster="thinking-smoke-4", output=out), lock_path=world.lock, ledger_path=world.sync_ledger()) == 0
+    assert json.loads(out.read_text(encoding="utf-8"))["serving_state"]["gpu_free"] is False
+
+
+def test_the_cpu_geometry_does_not_consult_the_gpu_state(world, monkeypatch):
+    monkeypatch.setattr(module, "gpu_state", lambda root: pytest.fail("the CPU sidecar runs beside a resident GPU session"))
+    module.apply_geometry("cpu", allow_cpu=True)
+    monkeypatch.setattr(module, "PACKET_ROOT", world.packet_root)
+    monkeypatch.setattr(module, "LEGACY_CACHE", world.cache)
+    monkeypatch.setattr(module, "PROMOTION_RECEIPT", world.receipt)
+    rc, report = world.run("thinking-smoke-4")
+    assert rc == 0 and report["device"] == "cpu" and report["geometry"] == "cpu"
+
+
+def test_the_encoder_receipt_records_the_device_the_server_flags_and_the_measured_rate(world):
+    world.run("thinking-smoke-4")
+    world.run("thinking-fold-b")
+    for attempt, roster in (("attempt-packets-thinking-gpu-smoke-4-v1", "thinking-smoke-4"), ("attempt-packets-thinking-gpu-fold-b-v1", "thinking-fold-b")):
+        receipt = world.encoder_receipt(attempt)
+        assert receipt["schema"] == "saea-thinking-packet-encoder-receipt-v2" and receipt["roster"] == roster
+        assert receipt["device"] == "gpu" and receipt["geometry"] == "gpu" and receipt["sidecar_fragment"] == pins_mod.PREPROCESS_FRAGMENT
+        assert receipt["server_args"] == world.values["server_args"] and receipt["server_env_keys"] == ["LLAMA_MTMD_FEAT_CACHE_DIR"]
+        assert receipt["gpu_memory_before_mib"] == 512 and receipt["seconds_per_row"] is not None and receipt["seconds_per_row"] > 0
+        assert receipt["run_id"] == fam.PACKETS_ROW_ID
+    assert world.sessions[0]["session_id"].endswith("-gpu-encoder") and world.sessions[1]["session_id"].endswith("-gpu-encoder")
+
+
+def test_smoke_rate_reads_the_smoke_receipt_and_gates_the_fold_b_projection(tmp_path, capsys):
+    root = tmp_path / "d"
+    folder = root / "runs" / module.RUN_ID / module.ROSTERS["thinking-smoke-4"].default_attempt_id
+    folder.mkdir(parents=True)
+    path = folder / module.ENCODER_RECEIPT_NAME
+    args = _args(roster=None, max_fold_seconds=3000.0)
+    assert module.smoke_rate(args, data_root=root) == 6 and json.loads(capsys.readouterr().out)["usable"] is False        # no receipt yet
+    path.write_text(json.dumps({"seconds_per_row": 0.5, "device": "gpu"}), encoding="utf-8")
+    assert module.smoke_rate(args, data_root=root) == 0
+    verdict = json.loads(capsys.readouterr().out)
+    assert verdict["projected_fold_b_encode_seconds"] == round(0.5 * (fam.ROWS - fam.SMOKE_ROWS), 1) and verdict["within_cap"] is True
+    path.write_text(json.dumps({"seconds_per_row": 3.0, "device": "gpu"}), encoding="utf-8")                                 # 3.0 x 1,076 = 3,228 s > 3,000 s
+    assert module.smoke_rate(args, data_root=root) == 5
+    path.write_text(json.dumps({"seconds_per_row": 0.2, "device": "cpu"}), encoding="utf-8")                                 # a CPU receipt never passes the GPU gate
+    assert module.smoke_rate(args, data_root=root) == 5
+    path.write_text(json.dumps({"device": "gpu"}), encoding="utf-8")
+    assert module.smoke_rate(args, data_root=root) == 6
+
+
+def test_the_gpu_row_total_carries_the_smoke_attempt_and_the_cpu_row_total_does_not(world):
+    context = module.AttemptContext(0, 0.0, 0, 0.0, ())
+    calls, seconds = module.expected_row_totals(world.values, context)
+    smoke_audio = sum(float(i["audio_seconds"]) for i in world.items[:4])
+    total = sum(float(i["audio_seconds"]) for i in world.items)
+    assert calls == 1084 and seconds == int(-(-(total + smoke_audio) // 1))
+    module.apply_geometry("cpu", allow_cpu=True)
+    assert module.expected_row_totals(world.values, context) == (1080, int(-(-total // 1)))
+    wasted = module.AttemptContext(4, 9.94, 4, 9.94, ("attempt-x",))
+    assert module.expected_row_totals(world.values, wasted)[0] == 1084
+
+
+# ------------------------------------------------------------------------------------------------ the GPU window chain
+
+
+class GpuHost:
+    """A stubbed host for direct_fb_packets_gpu.sh: a git checkout with serving_lib.sh, a fake swap tool, a fake driver, a fake pgrep."""
+
+    SWAP = (
+        '#!/bin/bash\n'
+        'echo "$*" >> "$STUB_SWAP_LOG"\n'
+        'case "$*" in\n'
+        '  "--stop-only --dry-run") rc=${STUB_SWAP_DRY_RC:-0} ;;\n'
+        '  "--stop-only") rc=${STUB_SWAP_STOP_RC:-0} ;;\n'
+        '  "think-np4 --start-only") rc=${STUB_SWAP_THINK_RC:-0} ;;\n'
+        '  "slurp-np4 --start-only") rc=${STUB_SWAP_INSTRUCT_RC:-0} ;;\n'
+        '  *) rc=64 ;;\n'
+        'esac\n'
+        'echo "{\\"schema\\": \\"saea-serving-swap-summary-v1\\", \\"exit\\": $rc}"\n'
+        'exit $rc\n')
+    DRIVER = (
+        '#!/bin/bash\n'
+        'echo "$@" >> "$STUB_LOG"\n'
+        'case "$*" in\n'
+        '  *--check-ledger*) exit "${STUB_LEDGER_RC:-0}" ;;\n'
+        '  *--dry-run*) exit "${STUB_DRY_RC:-0}" ;;\n'
+        '  *--smoke-rate*) echo \'{"seconds_per_row": 0.5}\'; exit "${STUB_RATE_RC:-0}" ;;\n'
+        '  *"thinking-smoke-4 --run"*) exit "${STUB_SMOKE_RC:-0}" ;;\n'
+        '  *"thinking-fold-b --run"*) exit "${STUB_FOLD_RC:-0}" ;;\n'
+        'esac\n')
+    PGREP = (
+        '#!/bin/bash\n'
+        'case "$*" in\n'
+        '  *"--port 8081"*) [ -f "$STUB_ENCODER_PGREP" ] && cat "$STUB_ENCODER_PGREP" ;;\n'
+        '  *lama-server*) [ -f "$STUB_PGREP" ] && cat "$STUB_PGREP" ;;\n'
+        'esac\n'
+        'exit 0\n')
+
+    def __init__(self, tmp: Path):
+        self.tmp = tmp
+        self.repo = tmp / "repo"
+        self.data = tmp / "data"
+        self.bin = tmp / "bin"
+        self.log, self.swap_log = tmp / "driver.log", tmp / "swap.log"
+        self.hold = tmp / "queue" / "watchdog.hold"
+        self.out = tmp / "out"
+        for directory in (self.repo / "scripts" / "flights" / "batch", self.repo / "scripts" / "flights" / "direct", self.data, self.bin):
+            directory.mkdir(parents=True)
+        shutil.copy(REPO / "scripts" / "flights" / "batch" / "serving_lib.sh", self.repo / "scripts" / "flights" / "batch" / "serving_lib.sh")
+        for entry in ("serving_task_entry_think.sh", "serving_monitor_start_think.sh"):
+            (self.repo / "scripts" / "flights" / "direct" / entry).write_text("#!/bin/bash\n", encoding="utf-8")
+        for command in (["init", "-q"], ["add", "-A"], ["-c", "user.email=a@b", "-c", "user.name=t", "commit", "-q", "-m", "x"]):
+            subprocess.run(["git", "-C", str(self.repo), *command], check=True, capture_output=True)
+        for name, body in (("swap", self.SWAP), ("driver", self.DRIVER), ("pgrep", self.PGREP)):
+            (self.bin / name).write_text(body, encoding="utf-8", newline="\n")
+            (self.bin / name).chmod(0o755)
+
+    def env(self, **extra: str) -> dict[str, str]:
+        env = dict(os.environ)
+        env.update(PATH=f"{self.bin}:{os.environ['PATH']}", PACKETS_REPO=str(self.repo), SAEA_DATA=str(self.data), PACKETS_PY=str(self.bin / "driver"),
+                   PACKETS_SWAP=str(self.bin / "swap"), PACKETS_OUT=str(self.out), PACKETS_WATCHDOG_HOLD=str(self.hold),
+                   PACKETS_AVAILABLE_GB="64", PACKETS_FREE_DISK_GB="100", PACKETS_GONE_WAIT_SECONDS="1",
+                   PACKETS_RECOVERY_FILE=str(self.tmp / "absent.recovery"), STUB_LOG=str(self.log), STUB_SWAP_LOG=str(self.swap_log),
+                   STUB_PGREP=str(self.tmp / "pgrep.txt"), STUB_ENCODER_PGREP=str(self.tmp / "encoder-pgrep.txt"))
+        env.update(extra)
+        return env
+
+    def run(self, *args: str, **extra: str) -> subprocess.CompletedProcess:
+        return subprocess.run(["bash", str(GPU_CHAIN), *args], capture_output=True, text=True, env=self.env(**extra), timeout=120)
+
+    def swaps(self) -> list[str]:
+        return self.swap_log.read_text(encoding="utf-8").splitlines() if self.swap_log.exists() else []
+
+    def driver_calls(self) -> list[str]:
+        return self.log.read_text(encoding="utf-8").splitlines() if self.log.exists() else []
+
+    def attempts(self) -> list[str]:
+        order = []
+        for call in self.driver_calls():
+            tokens = call.split()
+            if "--run" in tokens and "--roster" in tokens:
+                order.append(tokens[tokens.index("--roster") + 1])
+        return order
+
+    def events(self) -> list[str]:
+        return [line.split("\t")[1] for line in (self.out / "window-events.tsv").read_text(encoding="utf-8").splitlines()]
+
+    def summary(self) -> dict:
+        return json.loads((self.out / "window-summary.json").read_text(encoding="utf-8"))
+
+
+@pytest.fixture()
+def gpu_host(tmp_path):
+    return GpuHost(tmp_path)
+
+
+def _drop_committed(host: "GpuHost", name: str) -> None:
+    """Remove a tracked file AND commit the removal, so the tree stays clean and only the missing entry is the finding."""
+
+    (host.repo / "scripts" / "flights" / "direct" / name).unlink()
+    for command in (["add", "-A"], ["-c", "user.email=a@b", "-c", "user.name=t", "commit", "-q", "-m", "drop " + name]):
+        subprocess.run(["git", "-C", str(host.repo), *command], check=True, capture_output=True)
+
+
+def test_the_gpu_chain_and_entry_parse_and_never_name_the_cpu_recovery_file():
+    for script in (GPU_CHAIN, GPU_ENTRY):
+        assert subprocess.run(["bash", "-n", str(script)], capture_output=True).returncode == 0
+    text = GPU_CHAIN.read_text(encoding="utf-8")
+    code = "\n".join(line for line in text.splitlines() if not line.lstrip().startswith("#"))          # the comment names the CPU file to forbid it
+    assert "/home/chao/direct-fb-packets-gpu.recovery" in code and "/home/chao/direct-fb-packets.recovery" not in code
+    assert "--geometry gpu" in text and "direct_fb_packets_gpu.sh\" --run --stage all" in GPU_ENTRY.read_text(encoding="utf-8")
+    body = text[text.index("run)\n    registry_guards"):]
+    assert body.index("swap --stop-only") < body.index("run_attempt thinking-smoke-4 20") < body.index("rate_gate") \
+        < body.index("run_attempt thinking-fold-b 21") < body.index("swap \"$THINK_TARGET\" --start-only")
+    assert "finish_failed()" in text and "swap \"$INSTRUCT_TARGET\" --start-only" in text
+
+
+def test_the_gpu_chain_check_runs_every_guard_and_only_the_stop_dry_run(gpu_host):
+    result = gpu_host.run("--check")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "CHECK PASS" in result.stdout and gpu_host.attempts() == [] and gpu_host.swaps() == ["--stop-only --dry-run"]
+    assert not gpu_host.hold.exists() and not gpu_host.out.exists()
+    assert all("--geometry gpu" in call for call in gpu_host.driver_calls())
+
+
+def test_the_gpu_window_runs_stop_smoke_rate_foldb_then_the_thinking_start_in_order(gpu_host):
+    result = gpu_host.run("--run")
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert gpu_host.swaps() == ["--stop-only --dry-run", "--stop-only", "think-np4 --start-only"]
+    runs = [c for c in gpu_host.driver_calls() if "--run" in c.split() or "--smoke-rate" in c.split()]
+    assert [("smoke-rate" if "--smoke-rate" in c else c.split()[c.split().index("--roster") + 1]) for c in runs] == ["thinking-smoke-4", "smoke-rate", "thinking-fold-b"]
+    assert all("--geometry gpu" in c and "--workers" not in c for c in runs)                       # one worker is the geometry's default
+    events = gpu_host.events()
+    assert events == ["window-start", "watchdog-hold", "instruct-stop-start", "instruct-stopped", "attempt-thinking-smoke-4-start", "attempt-thinking-smoke-4-end",
+                      "smoke-rate", "attempt-thinking-fold-b-start", "attempt-thinking-fold-b-end", "think-start", "think-ready", "window-end"]
+    summary = gpu_host.summary()
+    assert summary["schema"] == "saea-packets-gpu-window-summary-v1" and summary["result"] == "ok" and summary["exit"] == 0 and summary["stage"] == "all"
+    assert all(re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ", e["at"]) for e in summary["events"])
+    assert gpu_host.hold.exists() and "WINDOW OK" in result.stdout and "--pin-receipt" in result.stdout             # the hold STAYS for the flight
+    assert (gpu_host.out / "swap-summaries.jsonl").read_text(encoding="utf-8").count("saea-serving-swap-summary-v1") == 2
+
+
+@pytest.mark.parametrize("env,code,failed_event", [
+    ({"STUB_SWAP_STOP_RC": "11"}, 14, "--stop-only"),
+    ({"STUB_SMOKE_RC": "1"}, 20, "thinking-smoke-4"),
+    ({"STUB_RATE_RC": "5"}, 23, "projects Fold B"),
+    ({"STUB_FOLD_RC": "1"}, 21, "thinking-fold-b"),
+    ({"STUB_SWAP_THINK_RC": "13"}, 24, "think-np4"),
+])
+def test_any_failure_after_the_stop_restores_the_instruct_geometry_and_names_the_failed_step(gpu_host, env, code, failed_event):
+    result = gpu_host.run("--run", **env)
+    assert result.returncode == code, result.stdout + result.stderr
+    assert gpu_host.swaps()[-1] == "slurp-np4 --start-only" and gpu_host.swaps()[:2] == ["--stop-only --dry-run", "--stop-only"]
+    summary = gpu_host.summary()
+    assert summary["result"] == "failed-restored" and summary["exit"] == code
+    names = [e["event"] for e in summary["events"]]
+    assert names[-3:] == ["restore-start", "restore-done", "watchdog-hold-released"] and "failed" in names
+    assert failed_event in next(e["detail"] for e in summary["events"] if e["event"] == "failed")
+    assert not gpu_host.hold.exists()                                                                         # created by this window, so removed on a restored failure
+    if code in (20, 23):
+        assert gpu_host.attempts() == ["thinking-smoke-4"]                                                    # Fold B never started after a failed smoke or a rate refusal
+
+
+def test_a_preexisting_watchdog_hold_survives_a_failed_window(gpu_host):
+    gpu_host.hold.parent.mkdir(parents=True)
+    gpu_host.hold.write_text("coordinator's own hold", encoding="utf-8")
+    result = gpu_host.run("--run", STUB_SMOKE_RC="1")
+    assert result.returncode == 20 and gpu_host.hold.read_text(encoding="utf-8") == "coordinator's own hold"
+
+
+def test_a_failed_restore_is_exit_25_and_leaves_the_hold_in_place(gpu_host):
+    result = gpu_host.run("--run", STUB_FOLD_RC="1", STUB_SWAP_INSTRUCT_RC="13")
+    assert result.returncode == 25 and "RESTORE FAILED" in result.stdout
+    summary = gpu_host.summary()
+    assert summary["result"] == "failed-unrestored" and summary["events"][-1]["event"] == "restore-failed"
+    assert gpu_host.hold.exists()                                                                               # the coordinator must act with the watchdog held
+
+
+def test_an_encoder_server_that_does_not_go_away_fails_the_window_and_restores_instruct(gpu_host):
+    (gpu_host.tmp / "encoder-pgrep.txt").write_text("9000111\n", encoding="utf-8")
+    result = gpu_host.run("--run")
+    assert result.returncode == 22, result.stdout + result.stderr
+    assert gpu_host.swaps()[-1] == "slurp-np4 --start-only" and gpu_host.attempts() == ["thinking-smoke-4"]
+
+
+def test_stage_smoke_ends_on_the_instruct_geometry_and_stage_fold_b_ends_on_thinking(gpu_host):
+    smoke = gpu_host.run("--run", "--stage", "smoke")
+    assert smoke.returncode == 0 and "SMOKE DONE" in smoke.stdout
+    assert gpu_host.swaps() == ["--stop-only --dry-run", "--stop-only", "slurp-np4 --start-only"] and gpu_host.attempts() == ["thinking-smoke-4"]
+    assert gpu_host.summary()["result"] == "smoke-done" and not gpu_host.hold.exists()
+    gpu_host.log.unlink()
+    gpu_host.swap_log.unlink()
+    fold = gpu_host.run("--run", "--stage", "fold-b")
+    assert fold.returncode == 0 and gpu_host.attempts() == ["thinking-fold-b"] and gpu_host.swaps()[-1] == "think-np4 --start-only"
+    assert not any("--smoke-rate" in c for c in gpu_host.driver_calls())
+
+
+@pytest.mark.parametrize("setup,code", [
+    (lambda h: (h.data / "locks").mkdir() or (h.data / "locks" / "flight.lock").write_text("x"), 7),
+    (lambda h: (h.tmp / "pgrep.txt").write_text("123 llama-server --host 127.0.0.1 --port 8082 -ngl 0\n"), 4),
+    (lambda h: _drop_committed(h, "serving_task_entry_think.sh"), 9),
+])
+def test_the_gpu_chain_refuses_each_collision_before_it_touches_the_card(gpu_host, setup, code):
+    setup(gpu_host)
+    for mode in ("--check", "--run"):
+        result = gpu_host.run(mode)
+        assert result.returncode == code and "REFUSED" in result.stdout, result.stdout + result.stderr
+    assert gpu_host.attempts() == [] and "--stop-only" not in gpu_host.swaps() and not gpu_host.hold.exists()
+
+
+def test_the_gpu_chain_refuses_low_memory_a_short_disk_an_uncountersigned_row_a_refused_dry_run_a_refused_swap_dry_run_and_a_dirty_tree(gpu_host):
+    assert gpu_host.run("--run", PACKETS_AVAILABLE_GB="2").returncode == 8
+    assert gpu_host.run("--run", PACKETS_FREE_DISK_GB="1").returncode == 8
+    assert gpu_host.run("--run", STUB_LEDGER_RC="4").returncode == 11
+    assert gpu_host.run("--run", STUB_DRY_RC="3").returncode == 3
+    assert gpu_host.run("--run", STUB_SWAP_DRY_RC="7").returncode == 8
+    (gpu_host.repo / "dirt.txt").write_text("x")
+    subprocess.run(["git", "-C", str(gpu_host.repo), "add", "dirt.txt"], check=True, capture_output=True)
+    assert gpu_host.run("--run").returncode == 2
+    assert "--stop-only" not in gpu_host.swaps() and gpu_host.attempts() == []
+
+
+def test_the_gpu_chain_forwards_the_gpu_recovery_labels_and_only_those(gpu_host):
+    recovery = gpu_host.tmp / "gpu.recovery"
+    recovery.write_text("SMOKE_ATTEMPT=gpu-smoke-v2\nFOLD_ATTEMPT=gpu-fold-v2\nRECOVERY_OF=gpu-smoke-v1\n", encoding="utf-8")
+    result = gpu_host.run("--run", PACKETS_RECOVERY_FILE=str(recovery))
+    assert result.returncode == 0, result.stdout + result.stderr
+    smoke = [c for c in gpu_host.driver_calls() if "thinking-smoke-4" in c and "--run" in c.split()]
+    fold = [c for c in gpu_host.driver_calls() if "thinking-fold-b" in c and "--run" in c.split()]
+    assert all("--attempt-id gpu-smoke-v2" in c and "--recovery-of gpu-smoke-v1" in c for c in smoke)
+    assert all("--attempt-id gpu-fold-v2" in c and "--recovery-of gpu-smoke-v1" in c for c in fold)
+
+
+def test_the_cpu_chain_is_superseded_and_refuses_without_allow_cpu(host):
+    result = host.run("--check", NO_ALLOW_CPU="1")
+    assert result.returncode == 13 and "SUPERSEDED" in result.stdout and host.attempts() == [] and host.driver_calls() == []
+    ok = host.run("--run")
+    assert ok.returncode == 0 and host.attempts() == ["thinking-smoke-4", "thinking-fold-b"]
+    assert all("--geometry cpu --allow-cpu" in call for call in host.driver_calls())

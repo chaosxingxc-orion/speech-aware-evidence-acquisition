@@ -492,7 +492,7 @@ def legacy_cache_findings(legacy_cache: Path, root: Path, roster_items: Sequence
 
 # ------------------------------------------------------------------------------------------- serving and GPU state
 
-GPU_FREE_MAX_MIB = 1024
+GPU_FREE_MAX_MIB = 3072     # a desktop session may hold a GB or two; a resident core holds about 22 GB
 SERVING_PORT = evo.INFERENCE_PORT
 
 
