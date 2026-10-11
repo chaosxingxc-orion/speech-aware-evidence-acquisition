@@ -1534,3 +1534,11 @@ Owner, verbatim: 「继续，代理回报后合并并起飞 i1」 ("Continue; af
   0.1 GPU-h) -> `open --iter 1 --stage cell` -> countersign the column rows -> mint `--kind column` -> flip -> queue the Fold B
   column (lock / aa / ace, about 1.1 GPU-h). The Thinking packet pass (CPU sidecar) runs in a GPU gap after the i1 proposers
   are queued or after the column, whichever gap comes first; 266-E flies after it.
+
+### Construction-source column SEALED (coordinator, 2026-10-11)
+
+`SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1` sealed 2026-10-11T10:35Z at flight commit 70eabd973: 1,250 contacts on 625 R01C
+rows, 5,453.7 speech-audio seconds, smoke 4 rows rc 0, driver rc 0, 09:32-10:36Z wall. The four flight rows are closed
+(`consumed = yes`, SEALED dispositions) and the READ row is countersigned; next: `tfrl_const_read.sh` (contrast tables, 0 GPU)
+-> `tfrl_loop_driver.py open --iter 1 --stage propose --execute` -> the i1 proposer / reflector cell. The Thinking packet pass
+(266-E, CPU sidecar) runs in this GPU gap: its precondition check passed at 10:36Z with no flight alive.

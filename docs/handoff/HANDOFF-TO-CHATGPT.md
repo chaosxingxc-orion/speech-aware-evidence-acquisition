@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T09:34:24Z
+Last refreshed: 2026-10-11T10:40:23Z
+
+## Construction-source column SEALED 10:35Z (1,250 contacts, 625 R01C rows, flight commit 70eabd973); i1 propose stage next; Thinking packet pass in the gap (2026-10-11T10:40:23Z, Fable 5.1 root)
+
+Rows closed and the READ row countersigned. Next: `tfrl_const_read.sh` -> `open --iter 1 --stage propose --execute` -> proposer/reflector cell (sign, mint, flip, queue). The 266-E Thinking packet sidecar pass starts now (check PASS at 10:36Z; ~45-60 min); no flight may start while it runs. No owner decision open.
+
+Superseded stamp: 2026-10-11T09:34:24Z
 
 ## Construction-source column FLYING (flight commit 70eabd973, task SAEA-Queue-TFRLConst, 09:32Z); Thinking packet driver merged (2026-10-11T09:34:24Z, Fable 5.1 root)
 
