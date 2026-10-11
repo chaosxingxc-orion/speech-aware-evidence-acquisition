@@ -923,7 +923,8 @@ def render_supply_variant_first_visit(
     Revision visits are counted separately and never enter these copies.
     """
     from speech_aware_evidence_acquisition.rails.native_episode_receipt import (
-        SUPPLY_VARIANT_RECEIPT_SCHEMA_V4, validate_native_episode_delivery_receipt,
+        SUPPLY_VARIANT_RECEIPT_SCHEMA_V4, supply_variant_arm_release_swaps,
+        validate_native_episode_delivery_receipt,
         validate_supply_variant_receipt,
     )
     from speech_aware_evidence_acquisition.reproduction.slurp_scoring import parse_slu_response
@@ -1017,10 +1018,14 @@ def render_supply_variant_first_visit(
                 raise Stage3ScoreError(f"{sid}: arm resolved knobs differ from declaration")
             if sealed["max_supplied_items"] != arm.max_supplied_items:
                 raise Stage3ScoreError(f"{sid}: arm supplied-item bound differs from declaration")
-            declared_swap = getattr(arm, "release_swap", None)
-            if not is_template and sealed.get("release_swap") != (
-                None if declared_swap is None else declared_swap.as_json()
-            ):
+            # Loop item E-T6: every swapped store is verified on its own against
+            # the declaration (v3 seals at most one swap; v5 seals the list).
+            arm_swaps = getattr(arm, "all_release_swaps", None)
+            if arm_swaps is None:  # an arm object that predates the multi-store accessor
+                single = getattr(arm, "release_swap", None)
+                arm_swaps = () if single is None else (single,)
+            declared_swaps = [swap.as_json() for swap in arm_swaps]
+            if not is_template and supply_variant_arm_release_swaps(sealed) != declared_swaps:
                 raise Stage3ScoreError(f"{sid}: arm release swap differs from declaration")
         first = solver[0].get("execution_receipt")
         contacts = first.get("contacts") if isinstance(first, Mapping) else None
