@@ -1301,7 +1301,7 @@ def playbook_release_rows(
     ``content`` the item line, ``associated_facet_ids`` per
     :func:`_facets_for_scope`, ``node_target`` ``solver``, ``task_target``
     ``solver:ace-playbook:<section>``, ``prior_score`` strictly decreasing in
-    rank (so the route's ``prior_score`` ordering reproduces the playbook's
+    rank and inside (0, 1] as ``(total - rank) / total`` (the snapshot requires a probability; so the route's ``prior_score`` ordering reproduces the playbook's
     rank order), ``source_sample_ids`` the carrier rows, ``provenance_refs``
     the item's provenance events. An EMPTY playbook yields ONE inert anchor row
     addressed to :data:`ANCHOR_NODE_TARGET`, which the Solver route never
@@ -1345,7 +1345,7 @@ def playbook_release_rows(
             "source_sample_ids": carriers,
             "provenance_refs": sorted(set(refs)),
             "task_target": f"{ACE_NODE_TARGET}:ace-playbook:{item['section']}",
-            "prior_score": float(total - rank),
+            "prior_score": (total - rank) / total,
             "node_target": ACE_NODE_TARGET,
         })
     return rows
