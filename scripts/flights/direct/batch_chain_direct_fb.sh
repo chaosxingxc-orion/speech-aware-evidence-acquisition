@@ -28,7 +28,7 @@ DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SHORT=direct-fb
 LOG=/home/chao/batch-chain-$SHORT.out
 SIGNOFF_MARKER=/home/chao/direct-fb-decode-signoff.marker
-THINK_SESSION=serving-slurp-thinking-direct-fold-b-np4-v1
+THINK_SESSION=serving-slurp-thinking-direct-fold-b-np4-max8192-v1
 INSTRUCT_SESSION=serving-slurp-native-candidate-five-train-a-np4-v1
 COMMIT=$(cat /home/chao/$SHORT-flight-commit.txt) || exit 1
 case "$SEGMENT" in

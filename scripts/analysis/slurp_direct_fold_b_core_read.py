@@ -49,7 +49,9 @@ SCORER = "slurp-slu-official-train"
 DEFAULT_SEED = 20261011
 DEFAULT_DRAWS = 10_000
 BAR_PP = 2.5
-THINKING_CAP = 2048
+#: The Thinking completion cap of the amended geometry (direct_fb_family.THINK_MAX_TOKENS; 2048 before the 2026-10-11 decode-cost sign-off).
+THINKING_CAP = 8192
+EMPTY_COMPLETION_SCHEMA = "saea-empty-completion-v1"
 SLOTS = 4
 CONTACTS_ZERO = {"model": 0, "tokenizer": 0, "encoder": 0, "scorer": 0, "server": 0}
 VERDICT_WORDS = ("RESOLVED-ABOVE-BAR", "NOT RESOLVED", "HARM")
@@ -122,6 +124,29 @@ def load_trace_costs(path: Path) -> list[dict]:
     return costs
 
 
+def load_trace_empty_receipts(path: Path) -> list[dict]:
+    """The empty-completion receipts of a trace (rails.runner.EMPTY_COMPLETION_SCHEMA): flags, token counts and the finish reason only."""
+
+    receipts: list[dict] = []
+    with Path(path).open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if EMPTY_COMPLETION_SCHEMA not in line:
+                continue
+            payload = (json.loads(line).get("payload") or {})
+            if payload.get("schema") != EMPTY_COMPLETION_SCHEMA:
+                continue
+            receipts.append({"cap_hit": bool(payload.get("cap_hit")), "completion_tokens": payload.get("completion_tokens"),
+                             "finish_reason": payload.get("finish_reason")})
+    return receipts
+
+
+def receipt_table(receipts: Sequence[Mapping]) -> dict:
+    """Counts only: how many contacts delivered empty content, how many of those spent their whole budget, and the finish reasons."""
+
+    return {"n": len(receipts), "cap_hit": sum(1 for r in receipts if r["cap_hit"]),
+            "finish_reasons": dict(sorted(Counter(str(r["finish_reason"]) for r in receipts).items()))}
+
+
 def rows_table(scores: Mapping, scorer_id: str) -> dict[str, dict[str, float]]:
     """{sample_id: numeric fields} of a scorer's per-sample rows; refuses a text field (the shape a stray answer would take)."""
 
@@ -175,9 +200,10 @@ def flag_counts(flags: Mapping[str, Mapping]) -> dict:
             "reasoning_leak": sum(1 for f in flags.values() if f["leak"])}
 
 
-def smoke_stage(costs: Sequence[Mapping], flags: Mapping[str, Mapping], cap: int = THINKING_CAP, rows: int = 1080) -> dict:
+def smoke_stage(costs: Sequence[Mapping], flags: Mapping[str, Mapping], cap: int = THINKING_CAP, rows: int = 1080,
+                receipts: Sequence[Mapping] = ()) -> dict:
     return {"schema": SCHEMA_SMOKE, "status": "DECODE-COST (no score, no read)", "answer_length": answer_length_table(costs, cap), "cost": cost_table(costs, rows),
-            "delivered_content": flag_counts(flags), "contacts": CONTACTS_ZERO}
+            "delivered_content": flag_counts(flags), "empty_completion_receipts": receipt_table(receipts), "contacts": CONTACTS_ZERO}
 
 
 def _pooled(rows: Mapping[str, Mapping[str, float]], ids: Sequence[str]) -> float:
@@ -259,7 +285,7 @@ def verdict(delta_pp: float, ci_lo_pp: float, ci_hi_pp: float, offset_pp: float,
 
 def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Sequence[str], cluster_of: Callable[[str], str], scenario_of: Callable[[str], str],
                flags: Mapping[str, Mapping[str, Mapping]], thinking_costs: Sequence[Mapping], costs_by_arm: Mapping[str, Sequence[Mapping]], *,
-               seed: int = DEFAULT_SEED, draws: int = DEFAULT_DRAWS, cap: int = THINKING_CAP) -> dict:
+               seed: int = DEFAULT_SEED, draws: int = DEFAULT_DRAWS, cap: int = THINKING_CAP, thinking_receipts: Sequence[Mapping] = ()) -> dict:
     contrast = paired_contrasts(arms, ids, cluster_of, seed=seed, draws=draws)
     leaks = sum(flag_counts(flags[key])["reasoning_leak"] for key in flags)
     slu = contrast["slu_f1"]
@@ -270,6 +296,7 @@ def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Seque
         "bar_pp": BAR_PP, "interval": {"kind": "utterance-cluster bootstrap", "draws": draws, "seed": seed, "level": "CI95"},
         "contrast": contrast, "per_scenario": per_scenario_table(arms, ids, scenario_of),
         "thinking_answer_length": answer_length_table(thinking_costs, cap),
+        "thinking_empty_completion_receipts": receipt_table(thinking_receipts),
         "delivered_content": {key: flag_counts(flags[key]) for key in sorted(flags)},
         "reasoning_leak_total": leaks,
         "scorer_parse_failures": {key: sum(1 for row in arms[key].values() if row.get("parsed", 1.0) == 0.0) for key in sorted(arms)},
@@ -321,7 +348,7 @@ def load_arm(data_root: Path, run_id: str, attempt_id: str, *, scored: bool = Tr
     for name in needed:
         if not paths[name].exists():
             raise ReadError(f"{run_id}: missing sealed file {paths[name]}")
-    arm = {"flags": load_output_flags(paths["outputs"]), "costs": load_trace_costs(paths["trace"]), "hashes": {n: sha256_file(paths[n]) for n in needed}}
+    arm = {"flags": load_output_flags(paths["outputs"]), "costs": load_trace_costs(paths["trace"]), "receipts": load_trace_empty_receipts(paths["trace"]), "hashes": {n: sha256_file(paths[n]) for n in needed}}
     if scored:
         manifest = json.loads(paths["manifest"].read_text(encoding="utf-8"))
         if str(manifest.get("status", "")).upper() != "COMPLETED":
@@ -355,7 +382,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         if args.stage == "smoke":
             arm = load_arm(args.data_root, cells["smoke"]["run"], cells["smoke"]["attempt"], scored=False)
-            result = smoke_stage(arm["costs"], arm["flags"])
+            result = smoke_stage(arm["costs"], arm["flags"], receipts=arm["receipts"])
             result["sealed_hashes"] = arm["hashes"]
             out = root / "smoke-decode-cost.json"
         else:
@@ -365,7 +392,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 if set(arm["rows"]) != set(ids):
                     raise ReadError(f"{key}: the per-sample id set is not the frozen Fold B roster's")
             result = read_stage({k: loaded[k]["rows"] for k in fam.ARM_KEYS}, ids, cluster_of, scenario_of, {k: loaded[k]["flags"] for k in fam.ARM_KEYS},
-                                loaded["thinking"]["costs"], {k: loaded[k]["costs"] for k in fam.ARM_KEYS}, seed=args.seed, draws=args.draws)
+                                loaded["thinking"]["costs"], {k: loaded[k]["costs"] for k in fam.ARM_KEYS}, seed=args.seed, draws=args.draws,
+                                thinking_receipts=loaded["thinking"]["receipts"])
             result["sealed_hashes"] = {k: loaded[k]["hashes"] for k in fam.ARM_KEYS}
             out = root / "read.json"
     except ReadError as error:

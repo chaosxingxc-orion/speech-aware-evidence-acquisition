@@ -52,9 +52,19 @@ BOOTSTRAP_DRAWS = 10000
 CROSS_FLIGHT_BAR_PP = 2.5
 
 INSTRUCT_SESSION = "serving-slurp-native-candidate-five-train-a-np4-v1"
-THINK_SESSION = "serving-slurp-thinking-direct-fold-b-np4-v1"
 INSTRUCT_MODEL = "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"
-THINK_MODEL = "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1"
+#: The Thinking completion cap, amended 2,048 -> 8,192 at the decode-cost sign-off (the one re-registration the package README Finding 3
+#: pre-authorised): the four-row smoke spent a whole 2,048-token budget on reasoning on one row and delivered empty content. The cap lives in
+#: the model fragment's ``decoding_params.max_tokens`` and the flight attaches to a resident session by fragment name AND sha256, so the
+#: fragment and the session id both carry the cap. The flown max2048 fragment and its session id stay on disk, unedited, as the record.
+THINK_MAX_TOKENS = 8192
+THINK_SESSION = "serving-slurp-thinking-direct-fold-b-np4-max8192-v1"
+THINK_MODEL = "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1"
+SUPERSEDED_THINK_MAX_TOKENS = 2048
+SUPERSEDED_THINK_SESSION = "serving-slurp-thinking-direct-fold-b-np4-v1"
+SUPERSEDED_THINK_MODEL = "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1"
+#: The Thinking arm's GPU-hour ceiling, amended 3.0 -> 4.5 with the cap (the all-cap-hit worst case at the measured 37 tokens per second per slot).
+THINK_ARM_GPU_HOURS = 4.5
 PARENT_BASELINE = "slurp-direct-max512-train-fold-a-v1"            # the sealed Fold A direct form, re-pointed at Fold B
 PARENT_EXPERIMENT = "slurp-native-stage3-ver1a-samples-fold-b-v1"   # a committed Fold B experiment: roster, populations, skeleton
 #: The LIVE Thinking packet root: encoder OUTPUT made by the GPU encoder. CPU- and GPU-made encoder outputs are not bit-identical, so the
@@ -94,13 +104,25 @@ FULL_TRAIN_KNOWLEDGE_SNAPSHOT_SHA256 = "609854e4211891614b621e6431ccf23706c2aa3a
 #: and attempt id; a second failure closes the cell. Keyed by cell key; every identity, plan, ledger row and queue step reads this table.
 REC = "-rec1"
 _INSTRUCT_ATTEMPT = "attempt-slurp-direct-only-fold-b-instruct-generation-v1"
+_SMOKE_ATTEMPT = "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1"
+#: Each record carries the texts the writer prints (README section, preregistration section, ledger block, countersign text) so no recovery's
+#: wording is hard-coded in the writer: ``ledger_title`` (block heading), ``agent`` (the registering agent), ``fit_predecessor_phrase`` (what
+#: became of the superseded FIT attempt), ``fix`` (the repair) and ``unchanged`` (the cells the recovery leaves alone).
 RECOVERIES: dict[str, dict] = {
     "instruct": {
         "recovery_index": 1,
         "recovered_at": "2026-10-11",
+        "ledger_title": "the Instruct arm re-registration",
+        "agent": "the 266-E knowledge-pin recovery agent",
+        "registered_at_utc": "2026-10-11T20:28:46.000000+00:00",
+        "base_commit": "c29e20548",
+        "worktree": "/home/chao/saea-worktrees/sonnet-dfb-kbfix",
+        "branch": "sonnet/direct-fb-knowledge-pin-rec1",
+        "knowledge_pin": True,
         "predecessor_attempt_id": _INSTRUCT_ATTEMPT,
         "predecessor_fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1",
         "predecessor_fit_attempt_id": "attempt-slurp-direct-only-fold-b-instruct-fit-v1",
+        "fit_predecessor_phrase": "never opened",
         "predecessor_state": (
             "ABORTED at 20:07:46Z at flight commit 77b2283e9 before any model contact, 0 calls / 0.0 speech-seconds; preserved unread "
             "(reserved 1080 calls / 3155 speech-seconds). The FIT attempt was never opened."
@@ -124,6 +146,93 @@ RECOVERIES: dict[str, dict] = {
             "(0 calls, 0 speech-seconds): the cumulative budget equals the original plan (1080 calls, 3155 speech-seconds). The FIT cap is "
             "structural and unchanged (1 + 3 x rows). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is "
             "re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged."
+        ),
+        "fix": (
+            f"every 266-E baseline fragment now pins the fold-excluded knowledge view `{KNOWLEDGE_SNAPSHOT_RELPATH}` "
+            f"(sha256 `{KNOWLEDGE_SNAPSHOT_SHA256}`); the single source is `scripts/flights/direct/direct_fb_family.py` and "
+            "`direct_fb_derive_cells.py` writes it. The direct-only program supplies no evidence, so the pin changes no request; it only has to pass the runner's roster guard."
+        ),
+        "unchanged": (
+            "Unchanged cells (their attempts never opened; they take only the knowledge pin): `slurp-direct-only-fold-b-thinking-smoke-4-v1`, "
+            "`slurp-direct-only-fold-b-thinking-v1`, `slurp-direct-only-fold-b-instruct-replicate-v1`."
+        ),
+        "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
+        "fit_cap_rule": "The FIT cap is structural: 1 + (2 + 1) x rows.",
+    },
+    "smoke": {
+        "recovery_index": 1,
+        "recovered_at": "2026-10-11",
+        "ledger_title": "the Thinking smoke re-registration (completion cap 2,048 to 8,192)",
+        "agent": "the 266-E Thinking cap-amendment agent",
+        "registered_at_utc": "2026-10-11T22:30:00.000000+00:00",
+        "base_commit": "a59b148b9",
+        "worktree": "/home/chao/saea-worktrees/sonnet-dfb-think-cap",
+        "branch": "sonnet/direct-fb-thinking-cap-8192",
+        "ledger_scope_tail": f"re-flown whole under the amended completion cap {THINK_MAX_TOKENS:,}",
+        "receipt_clause": (
+            "the generation run id `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1` is unchanged; the decision receipt lists the new FIT run id "
+            "`SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-REC1-V1` in `eligible_run_ids` and is re-minted by the coordinator "
+            "(`direct_fb_mint_receipt.py`)"
+        ),
+        "countersign_receipt_clause": (
+            f"the decision receipt {DECISION_RELPATH} is re-minted by the coordinator so that its eligible_run_ids list the new FIT run id "
+            "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-REC1-V1 (the generation run id is unchanged)"
+        ),
+        "swap_note": (
+            f"the Thinking session recorded resident is the SUPERSEDED `{SUPERSEDED_THINK_SESSION}` (completion cap {SUPERSEDED_THINK_MAX_TOKENS:,}); "
+            "`serving_swap.sh` refuses a resident session outside its geometry table, so stop it with "
+            "`scripts/flights/direct/serving_stop_think_superseded.sh` (dry run first), then `serving_swap.sh think-np4 --start-only` starts "
+            f"`{THINK_SESSION}` (checklist step 3b)."
+        ),
+        "predecessor_attempt_id": _SMOKE_ATTEMPT,
+        "predecessor_fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1",
+        "predecessor_fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-v1",
+        "fit_predecessor_phrase": "its 13 tokenizer endpoint calls completed, request-fit output preserved unread on the data root",
+        "predecessor_state": (
+            "OPENED at flight commit c9edf3244 on 2026-10-11T21:49Z, 4 calls / 9.9395 speech-seconds spent, the wave raised on the cap-hit row's "
+            "empty content; preserved unread."
+        ),
+        "predecessors": [
+            {"attempt_id": _SMOKE_ATTEMPT, "state": "OPENED, 4 calls spent, the wave raised on the cap-hit row's empty content",
+             "contacts_spent": 4, "speech_seconds_spent": 9.9395},
+        ],
+        "reason": (
+            "The predecessor attempt made its four contacts on the Thinking session (completion cap 2,048): completions of 363, 921 and 977 tokens "
+            "delivered 99, 111 and 60 characters of content, and ONE contact spent all 2,048 completion tokens (prompt 2,285) and delivered content of "
+            "length 0, because the whole budget went to reasoning, which the server routes to message.reasoning_content and the transport never reads. "
+            "That empty content raised in the OpenJiuwen wave (ExecutionError 100054, component aggregate_agent_wave: AgentStateArtifact.content must "
+            "be a non-empty string), the smoke step exited 1, the driver wrote its STOP and the Thinking arm never opened. Measured decode speed: 37 tokens "
+            "per second per slot (58 with one slot busy); prompt evaluation 0.9 to 1.7 ms per token. The smoke is re-flown whole under the rec1 ids with the "
+            "completion cap amended to 8,192; the Thinking arm's attempt never opened and keeps its ids; the Instruct cells are untouched."
+        ),
+        "root_cause": (
+            "two defects: the 2,048-token completion cap is below the Thinking trace on at least 1 of 4 rows (that row delivered empty content), "
+            "and the harness raised on an empty final content of a direct-only contact instead of receipting it (owner decision 199: empty is legal); "
+            "corrected by the 8,192-token cap and by the saea-empty-completion-v1 receipt (cap_hit, completion_tokens, finish_reason)"
+        ),
+        "amendment": (
+            "RECOVERY 2026-10-11 (the cell's single one; coordinator brief, Fable 5.1; the cap amendment is the one re-registration the package README "
+            "Finding 3 pre-authorised for the decode-cost sign-off). The generation budget is run-cumulative across the attempts of the run id "
+            "(core/model/adapter.py), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (4 calls, 9.9395 speech-seconds): "
+            "the cumulative budget is 8 calls and 20 speech-seconds. The FIT cap is structural and unchanged (1 + 3 x 4 = 13). The FIT run id and the FIT "
+            "attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id "
+            f"is unchanged. The model fragment moves to {THINK_MODEL} and the serving session to {THINK_SESSION} "
+            "(the flight attaches to a resident session by fragment name and sha256, and the cap lives in the fragment's decoding_params). The Thinking "
+            f"arm takes the same fragment and session and its GPU-hour ceiling moves 3.0 -> {THINK_ARM_GPU_HOURS}."
+        ),
+        "fix": (
+            f"completion cap {SUPERSEDED_THINK_MAX_TOKENS:,} -> {THINK_MAX_TOKENS:,} (new model fragment `{THINK_MODEL}`, new serving session "
+            f"`{THINK_SESSION}`; the flown `{SUPERSEDED_THINK_MODEL}` and its session id stay on disk unedited); an empty final content of a "
+            "non-native direct-only contact is sealed as the explicit empty marker and receipted (`saea-empty-completion-v1`: cap_hit, completion_tokens, "
+            "finish_reason) instead of raising (`rails/controllers.py`, `rails/runner.py`); the server finish reason is forwarded only under the reasoning "
+            "guard, so no other transport envelope moves."
+        ),
+        "unchanged": (
+            "Unchanged: the Instruct arm and its replicate (flying; no baseline, experiment, plan or request byte of theirs moves). One forced consequence: the "
+            "shared `protocol-registered-v1.json` carries every cell's identity, so its sha256 changed with this recovery and the four Instruct plan files "
+            "still pin the PREVIOUS document's sha256; they were deliberately not rewritten while the pair flies, and the coordinator re-pins them after the "
+            "Instruct pair seals. The Thinking arm's attempt never opened and keeps its ids; its plans change only through the cap (model fragment, session "
+            "id, composed hashes) and the GPU-hour ceiling."
         ),
         "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
         "fit_cap_rule": "The FIT cap is structural: 1 + (2 + 1) x rows.",
@@ -191,7 +300,7 @@ def _spec(key, stem, role, core, rows, gpu, scoring, roster):
 #: Ordered by the registered chain: the smoke first, then the Thinking arm, then the Instruct arm and its replicate.
 CELLS = {
     "smoke": _spec("smoke", "thinking-smoke-4", "four-row Thinking decode-cost smoke", "thinking", SMOKE_ROWS, 0.5, 0, "smoke"),
-    "thinking": _spec("thinking", "thinking", "Thinking arm", "thinking", ROWS, 3.0, 1, "arm"),
+    "thinking": _spec("thinking", "thinking", "Thinking arm", "thinking", ROWS, THINK_ARM_GPU_HOURS, 1, "arm"),
     "instruct": _spec("instruct", "instruct", "Instruct arm", "instruct", ROWS, 0.5, 1, "arm"),
     "replicate": _spec("replicate", "instruct-replicate", "Instruct in-chain replicate", "instruct", ROWS, 0.5, 1, "arm"),
 }

@@ -10,7 +10,7 @@
       "baseline_fragment": "slurp-direct-only-fold-b-thinking-baseline-v1",
       "cell_id": "slurp-direct-only-fold-b-thinking-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
-      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1",
       "readiness": {
         "reason": "Cell 266-E Thinking arm registered before contact on 2026-10-11 by script (decision 58) from the sealed Fold A direct baseline and the committed Fold B experiment skeleton (owner decision 266-E). HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/direct/direct_fb_mint_receipt.py), swaps the serving geometry (scripts/flights/batch/serving_swap.sh think-np4, checklist in the package README) and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/direct/direct_fb_flip.sh). The program declares no supplied first phase (item E38), so the re-pin creates no prepared artifact; --allow-output-change must never be passed. The Thinking cells additionally need the Thinking speech-packet root prepared and its promotion receipt pinned (the baseline carries a zero sentinel the flip refuses). Nothing here authorises a flight, a readiness flip or an admission entry.",
         "requirements": [
@@ -42,7 +42,7 @@
   "date": "2026-10-11",
   "execution_plan": {
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 3.0,
+    "planned_gpu_hours": 4.5,
     "planned_model_calls": 1080,
     "planned_speech_audio_seconds": 3155,
     "split_role": "discovery"
@@ -56,7 +56,7 @@
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 3241,
     "generation_calls_cap": 1080,
-    "gpu_hours_fit_inclusive": 3.0,
+    "gpu_hours_fit_inclusive": 4.5,
     "native_task_contract_calls_cap": 0,
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_cap": 3155
@@ -1162,8 +1162,8 @@
     }
   ],
   "preserve_wire_responses": false,
-  "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1: the Thinking arm of the 266-E bare-core read on TRAIN Fold B 1,080 on the Thinking core (its own session serving-slurp-thinking-direct-fold-b-np4-v1, completion cap 2048, --reasoning-format deepseek) (owner decision 266-E): does a stronger core, with the system held out entirely, move the official SLU-F1 by more than the cross-flight bar (about 2.5 pp) over the Instruct core? Development numbers only (owner decisions 28 and 86); never a test claim. The read is cross-session by necessity, so the Instruct arm flies twice in the same chain and the Thinking delta is judged against the mean of the two. Nothing here authorises a flight, a readiness flip or an admission entry.",
-  "service_session": "serving-slurp-thinking-direct-fold-b-np4-v1",
+  "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1: the Thinking arm of the 266-E bare-core read on TRAIN Fold B 1,080 on the Thinking core (its own session serving-slurp-thinking-direct-fold-b-np4-max8192-v1, completion cap 8192, --reasoning-format deepseek) (owner decision 266-E): does a stronger core, with the system held out entirely, move the official SLU-F1 by more than the cross-flight bar (about 2.5 pp) over the Instruct core? Development numbers only (owner decisions 28 and 86); never a test claim. The read is cross-session by necessity, so the Instruct arm flies twice in the same chain and the Thinking delta is judged against the mean of the two. Nothing here authorises a flight, a readiness flip or an admission entry.",
+  "service_session": "serving-slurp-thinking-direct-fold-b-np4-max8192-v1",
   "split_id": "SLURP-EVO-FOLD-B-V2",
   "stage3_algorithm": {
     "id": "none",

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Entry point for the THINK serving session (owner decision 266-E): the np4 / c98304 / q8_0-KV geometry of the resident SLURP
-# session, with the Thinking GGUF, its OWN speech-packet root, a 2048-token completion cap and --reasoning-format deepseek
-# (model fragment q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1). A parameterised sibling of
+# session, with the Thinking GGUF, its OWN speech-packet root, an 8192-token completion cap (amended from 2048 at the decode-cost sign-off) and --reasoning-format deepseek
+# (model fragment q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1). A parameterised sibling of
 # scripts/flights/det/serving_task_entry_det.sh, run by the Windows Scheduled Task SAEA-Serving-THINK that
 # scripts/flights/batch/serving_swap.sh starts (geometry target think-np4). Owns the wrapper independently of any Claude Code
 # process or interactive wsl.exe session; reaps orphans scoped to port 8080, records a stale stop if needed, starts the wrapper,
@@ -15,8 +15,8 @@
 # the identity fields session.json records (model fragment and its sha256, server_argv flag by flag, env).
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
-FRAGMENT=q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1
-SESSION=serving-slurp-thinking-direct-fold-b-np4-v1
+FRAGMENT=q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1
+SESSION=serving-slurp-thinking-direct-fold-b-np4-max8192-v1
 S=$DATA/serving/$SESSION
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 source /home/chao/.venvs/speechrl/bin/activate

@@ -110,6 +110,29 @@ def test_answer_length_cap_hits_and_cost_projection():
     assert cost["seconds_per_contact"]["mean"] == 4.0 and cost["projection_gpu_hours"] == pytest.approx(1080 * 4.0 / 4 / 3600)
 
 
+def test_the_reader_cap_is_the_amended_family_cap():
+    """The cap-hit table counts completion tokens against the amended 8,192 cap (2,048 before the 2026-10-11 decode-cost sign-off)."""
+
+    assert reader.THINKING_CAP == fam.THINK_MAX_TOKENS == 8192
+
+
+def test_empty_completion_receipts_are_counted_from_the_trace_without_text(tmp_path):
+    lines = [
+        {"channel": "TOOL", "record_id": "c-direct-a/empty-completion", "payload": {
+            "schema": "saea-empty-completion-v1", "cap_hit": True, "completion_tokens": 8192, "finish_reason": "length", "max_tokens": 8192}},
+        {"channel": "TOOL", "record_id": "c-direct-b/empty-completion", "payload": {
+            "schema": "saea-empty-completion-v1", "cap_hit": False, "completion_tokens": 40, "finish_reason": "stop", "max_tokens": 8192}},
+        {"channel": "TOOL", "record_id": "x/native-completion", "payload": {"schema": "saea-native-completion-v1"}},
+        {"channel": "COST", "record_id": "r/cost", "payload": {"completion_tokens": 8192}},
+    ]
+    path = tmp_path / "trace.jsonl"
+    path.write_text("\n".join(json.dumps(r) for r in lines) + "\n", encoding="utf-8")
+    receipts = reader.load_trace_empty_receipts(path)
+    assert reader.receipt_table(receipts) == {"n": 2, "cap_hit": 1, "finish_reasons": {"length": 1, "stop": 1}}
+    smoke = reader.smoke_stage([{"completion_tokens": 8192, "prompt_tokens": 2300, "latency_seconds": 5.0}], {}, receipts=receipts)
+    assert smoke["empty_completion_receipts"]["cap_hit"] == 1 and smoke["answer_length"]["cap_hits"] == 1
+
+
 def test_text_flags_count_empty_no_object_and_reasoning_leaks_without_keeping_text():
     assert reader.text_flags("") == {"empty": True, "no_object": True, "leak": False}
     assert reader.text_flags('{"a": 1}') == {"empty": False, "no_object": False, "leak": False}
@@ -133,7 +156,7 @@ def _write_run(root: Path, key: str, *, outputs: list[dict], costs: list[dict], 
 
 
 def test_smoke_stage_end_to_end_on_a_synthetic_run_never_persists_text(tmp_path):
-    costs = [{"completion_tokens": t, "prompt_tokens": 2300, "latency_seconds": 5.0} for t in (300, 500, 700, 2048)]
+    costs = [{"completion_tokens": t, "prompt_tokens": 2300, "latency_seconds": 5.0} for t in (300, 500, 700, reader.THINKING_CAP)]
     smoke_ids = [i["sample_id"] for i in fam.roster_doc("smoke")["items"]]
     outputs = [{"sample_id": sid, "text": f'{{"x": "{SECRET}"}}', "request_sha256": "a"} for sid in smoke_ids[:3]] + [{"sample_id": smoke_ids[3], "text": f"<think>{SECRET}</think>"}]
     _write_run(tmp_path, "smoke", outputs=outputs, costs=costs, per_sample=None)

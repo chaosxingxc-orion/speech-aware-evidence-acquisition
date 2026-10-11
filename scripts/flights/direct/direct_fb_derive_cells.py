@@ -6,8 +6,9 @@ controller, the closed-list task instruction, the full legal ontology) re-pointe
 
 * ``instruct`` / ``replicate`` -- the resident Instruct session (fragment ``q4km-mmproj-free-slurp-native-bounded-perception-proof-
   np4-ctx24k-max512-v1``), twice, request-identical, in one chain;
-* ``thinking`` / ``smoke`` -- the Thinking session (fragment ``q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1``),
-  the 1,080-row arm and a four-row decode-cost smoke on the first four Fold B rows.
+* ``thinking`` / ``smoke`` -- the Thinking session (fragment ``q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1``, the
+  completion cap amended 2,048 -> 8,192 at the decode-cost sign-off; ``direct_fb_family.THINK_MODEL``), the 1,080-row arm and a four-row
+  decode-cost smoke on the first four Fold B rows.
 
 HOW IT IS DERIVED (nothing hand-edited). Every baseline is the parent's bytes except the ``live_phase_fit`` identity and contact cap, the
 audio-seconds cap, the prose, and (Thinking only) the packet promotion receipt, which names the Thinking core's OWN packet root because
@@ -113,7 +114,7 @@ WHAT_THIS_IS = {
     ),
     "thinking": (
         "the Thinking arm of the bare-core read (owner decision 266-E): the SAME direct-only form on the Thinking core (its own session, its own "
-        "speech-packet root, completion cap 2048, --reasoning-format deepseek so reasoning never enters message.content), TRAIN Fold B 1,080. "
+        f"speech-packet root, completion cap {fam.THINK_MAX_TOKENS}, --reasoning-format deepseek so reasoning never enters message.content), TRAIN Fold B 1,080. "
         "The delivered answer is the content channel only; reasoning text is never delivered, never persisted beyond hashes and never scored."
     ),
     "smoke": (
@@ -254,7 +255,7 @@ def derive_experiment(key: str, parent_arm: dict, parent_smoke: dict) -> str:
     ids = [item["sample_id"] for item in roster["items"]]
     document["populations"] = [{"dataset_fragment": fam.DATASET, "ids": ids}]
     document["split_id"] = "SLURP-EVO-FOLD-B-V2"
-    core_text = ("the Thinking core (its own session " + fam.THINK_SESSION + ", completion cap 2048, --reasoning-format deepseek)"
+    core_text = ("the Thinking core (its own session " + fam.THINK_SESSION + f", completion cap {fam.THINK_MAX_TOKENS}, --reasoning-format deepseek)"
                  if spec["core"] == "thinking" else "the resident Instruct core (max512)")
     document["core_read_design"] = {
         "arms": {k: fam.CELLS[k]["run"] for k in fam.ALL_KEYS},
@@ -290,9 +291,13 @@ def derive_experiment(key: str, parent_arm: dict, parent_smoke: dict) -> str:
     rec = fam.recovery(key)
     if rec:
         # prose only (generation_budget is outside the request-identity proof); failure_policy stays byte-equal across the Instruct pair
+        spent_calls, spent_audio = fam.predecessor_spend(key)
+        budget_text = ("the run-cumulative budget equals the original plan." if spent_calls == 0 else
+                       f"the run-cumulative budget is the original plan plus that spend ({spent_calls} contacts, {spent_audio:g} speech-seconds): "
+                       f"{plan['planned_model_calls']} calls, {plan['planned_speech_audio_seconds']} speech-seconds.")
         document["generation_budget"]["definition"] += (
             f" Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt {rec['predecessor_attempt_id']} spent "
-            f"{fam.predecessor_spend(key)[0]} contacts, so the run-cumulative budget equals the original plan.")
+            f"{spent_calls} contacts, so {budget_text}")
     document.pop("analysis_binding", None)
     wr(out, dump_like(rd(f"configs/experiment/{fam.PARENT_EXPERIMENT}.json"), document))
     return out

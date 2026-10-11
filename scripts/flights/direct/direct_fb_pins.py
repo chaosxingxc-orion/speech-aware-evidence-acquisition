@@ -36,7 +36,10 @@ MODEL_SUBDIR = "models/qwen3-omni-30b-a3b-thinking-gguf-q4km"
 MAIN_BYTES = 18557053248
 MMPROJ_BYTES = 2207465664
 
-SERVING_FRAGMENT = "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1"
+#: LIVE serving fragment: completion cap 8,192 (amended from 2,048 at the decode-cost sign-off, 2026-10-11). The flown max2048 fragment is a
+#: frozen record (the four-row smoke attempt ran on it): this module never rewrites it.
+SERVING_FRAGMENT = "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1"
+SUPERSEDED_SERVING_FRAGMENT = "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max2048-v1"
 #: LIVE packet-preparation fragment: the GPU encoder pass (2026-10-11 re-registration). The geometry mirrors the E21 GPU feature-preprocess
 #: fragment (-np 1 -ngl 999 -fa on -ctk q8_0 -ctv q8_0 -b 512 -ub 128) with the context the Instruct Fold B pass used (-c 16384).
 PREPROCESS_FRAGMENT = "q4km-thinking-feature-preprocess-gpu-np1-v1"
@@ -59,8 +62,10 @@ CPU_THINKING_PACKET_ROOT = "/home/chao/feat-cache/slurp-q4km-packets-thinking-af
 CPU_THINKING_LEGACY_CACHE = "/home/chao/feat-cache/slurp-thinking-q4km"                        # SUPERSEDED
 #: The GPU encoder context: the one the Instruct Fold B pass used (-c 16384), single slot.
 GPU_PREPROCESS_CONTEXT = 16384
-#: The completion cap of the Thinking geometry (justified in the package README: 24,576-token slots, direct-only prompt about 2.3k).
-THINKING_MAX_TOKENS = 2048
+#: The completion cap of the Thinking geometry (justified in the package README: 24,576-token slots, direct-only prompt about 2.3k;
+#: 2.3k + 8,192 is 43 percent of a slot). Amended from 2,048: the smoke row that spent its whole 2,048 budget on reasoning delivered empty content.
+THINKING_MAX_TOKENS = 8192
+SUPERSEDED_THINKING_MAX_TOKENS = 2048
 #: The server flags that keep reasoning out of ``message.content`` on the pinned featcache build (tools/server/README.md).
 REASONING_ARGS = ["--reasoning-format", "deepseek"]
 
@@ -140,8 +145,8 @@ GEOMETRY_BASIS = (
     "Same geometry family as the resident Instruct session: four decoder-only 24576-token slots under c98304 np4, q8_0 KV, "
     "mmproj-free decode over pre-materialised speech packets. ONLY the model (the Thinking GGUF), its own packet root (the "
     "audio-encoder tensors of the two mmproj files differ, so the Instruct packets are not valid input), the completion cap "
-    "(2048 tokens: a thinking completion is long, the direct-only prompt is about 2.3k tokens, so 2.3k + 2048 is 18 percent of "
-    "a 24576-token slot) and the reasoning flag (--reasoning-format deepseek: thoughts go to message.reasoning_content, which "
+    "(8192 tokens, amended from 2048 at the decode-cost sign-off: a thinking completion is long and one smoke row spent its whole 2048 "
+    "budget on reasoning; the direct-only prompt is about 2.3k tokens, so 2.3k + 8192 is 43 percent of a 24576-token slot) and the reasoning flag (--reasoning-format deepseek: thoughts go to message.reasoning_content, which "
     "the transport never reads, and never into message.content) differ. Owner decision 266-E admits this model for one "
     "bare-core read and nothing else."
 )
