@@ -2,6 +2,9 @@
 
 Usage: python batch_inspect.py <data-root> <run_id> <attempt_id> <mode> <expected_rows> <ceiling_per_row> <notool 0|1> <flight_commit> [--result-kind task-answer|artifact]
   mode = smoke | arm | worker (complete generation, no official scoring)
+  --text-only (arm mode, set by campaign inspection for a cell with no native episode config): the per-row native receipts do not
+  exist, so the contact ceiling is checked on the sealed trace (MODEL_REQUEST count) and the cost block (calls_used) against
+  expected_rows x ceiling_per_row; zero tool calls and zero tool schemas are required.
 Exit 0 = PASS, 2 = FAIL (reasons printed), 3 = files missing. Never prints utterance text or gold.
 """
 
@@ -28,6 +31,7 @@ parser.add_argument(
 )
 parser.add_argument("--repo-root", type=Path)
 parser.add_argument("--campaign-plan", type=Path)
+parser.add_argument("--text-only", action="store_true")
 args = parser.parse_args()
 if args.campaign_plan is not None:
     if args.mode != "arm" or args.repo_root is None:
@@ -49,13 +53,27 @@ if args.campaign_plan is not None:
                          c["baseline_fragment"], experiment).values
         native = load_native_episode_config(values, default_phase_program(values["policy"]))
         rows = values["population"]["count"]
-        if type(rows) is not int or rows < 1 or native is None:
+        text_only_args = []
+        if type(rows) is int and rows >= 1 and native is None:
+            # Text-only cell (no native episode, no audio, no tools). The authoritative ceiling is the run-cumulative call cap
+            # execution_plan.planned_model_calls (= generation_budget.cap = family_budget.generation_calls_cap), which the
+            # registration defines as rows x (1 + registered retries); the per-row ceiling is that cap divided by the rows.
+            cap = (values.get("execution_plan") or {}).get("planned_model_calls")
+            if (type(cap) is not int or cap < rows or cap % rows
+                    or (values.get("generation_budget") or {}).get("cap") != cap
+                    or (values.get("family_budget") or {}).get("generation_calls_cap") != cap
+                    or default_phase_program(values["policy"]).max_contacts != 1):
+                parser.error("text-only campaign inspection requires a consistent registered call cap and a one-contact program")
+            ceiling, member_notool, text_only_args = cap // rows, "1", ["--text-only"]
+        elif type(rows) is not int or rows < 1 or native is None:
             parser.error("campaign inspection requires registered positive rows and native contact ceiling")
-        member_notool = "1" if args.notool == "1" or not any(
-            role.tool_names for role in native.roles if role.max_iterations > 0) else "0"
+        else:
+            ceiling = native.max_contacts
+            member_notool = "1" if args.notool == "1" or not any(
+                role.tool_names for role in native.roles if role.max_iterations > 0) else "0"
         child = subprocess.run([sys.executable, "-B", str(Path(__file__).resolve()), args.data_root,
-            cell.run_id, cell.attempt_id, "arm", str(rows), str(native.max_contacts), member_notool,
-            args.flight_commit, "--result-kind", args.result_kind], capture_output=True, text=True)
+            cell.run_id, cell.attempt_id, "arm", str(rows), str(ceiling), member_notool,
+            args.flight_commit, "--result-kind", args.result_kind, *text_only_args], capture_output=True, text=True)
         try:
             report = json.loads(child.stdout)
         except (json.JSONDecodeError, TypeError):
@@ -224,6 +242,8 @@ info["dispositions"] = disp
 info["contacts_per_row_hist"] = dict(sorted(contacts_hist.items()))
 if over:
     fails.append(f"{over} rows above the contact ceiling {CEIL}")
+if args.text_only and rows and any(r.get("native_episode_receipt") for r in rows):
+    fails.append("text-only cell carries native episode receipts")
 
 # cost and score job
 gens = glob.glob(f"{D}/*.generation-manifest.json")
@@ -277,6 +297,15 @@ if traces:
             if ts:
                 tools_present += 1
 info["requests"] = req_n
+if args.text_only:
+    info["text_only"] = True
+    if req_n > EXP_ROWS * CEIL:
+        fails.append(f"text-only trace holds {req_n} model requests above rows x ceiling {EXP_ROWS * CEIL}")
+    used = (info.get("cost") or {}).get("calls_used")
+    if type(used) is not int or used > EXP_ROWS * CEIL:
+        fails.append(f"text-only calls_used {used} not within rows x ceiling {EXP_ROWS * CEIL}")
+    elif used != req_n:
+        fails.append(f"text-only calls_used {used} differs from trace model requests {req_n}")
 info["requests_with_tool_schemas"] = tools_present
 if NOTOOL and tools_present:
     fails.append(f"notool form: {tools_present} requests carry tool_schemas")
