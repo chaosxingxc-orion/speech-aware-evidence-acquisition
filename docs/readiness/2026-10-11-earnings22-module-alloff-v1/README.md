@@ -1,6 +1,6 @@
 # Consumption-module all-off arm on earnings22 (carrier admission gate, HELD)
 
-Registered before contact 2026-10-11 at study commit `01e6aa750` (branch `sonnet/e22-register`) by
+Registered before contact 2026-10-11 at study commit `13a0b367c` (branch `sonnet/e22-register`) by
 `scripts/flights/module/register_carrier_module_alloff_cells.py --carrier e22`; owner decision 196, direction
 205; design `docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md` sections 2b.3 and 3.2. **HELD**: decision 187 keeps the GPU on SLURP until the SLURP lock. Nothing
 here authorises a flight, a flip or an admission entry.
@@ -31,3 +31,38 @@ re-pins the smoke and the arm. (3) `scripts/flights/module/batch_chain_module_al
 `serving-e22-native-window-flightruntime-np4-max1024-v1`. (4) `scripts/flights/module/module_alloff_e220_read.sh` names the read.
 
 **Not authorised.** No flight, no component-on cell on this carrier, no re-flight of any sealed cell, no test-split contact.
+
+## Earnings-22 specifics (read before reopening this carrier)
+
+**Model-free work done.** The 10-call dev window inventory (451 fixed 90-second windows, 40,055.9 decoded seconds) and
+the four-row subset batch (call 4453225, windows w0001-w0004) were built CPU-only on 2026-10-11 through the shared
+`prepare-window-inventory` path, with the Earnings-21 protocol, into the data root (write-once). Counts, hashes and the
+exact command are in `window-inventory-receipt-v1.json` (this directory); nothing else about the audio is recorded.
+Both cells pin them; `FlightRuntime` verifies the pins down to slice bytes (4 and 451 execution units load).
+
+**Where the first contact-requiring step sits.** `core.flight.cli check` and a Python-API wire check reach the
+execution-unit roster (verified), then refuse at `core.driver.run.load_window_packet_binding`: the Earnings-22 window feature
+packets (`analysis/SAEA-E22-DEV-WINDOW-GPU-ENCODING-V1/window-feature-packets.json`, and the four-row twin) do not exist.
+Producing them is an encoder forward pass (root lease, GPU, registration, owner authorization); both baselines carry an
+all-zero PENDING sha256 for that pin, so the composed hashes change when the real pin lands. Behind that step sits a base gap
+found by reading the runtime and demonstrated at unit level: `FlightRuntime._load_knowledge_snapshot` refuses every phase-program
+baseline that declares no `knowledge_snapshot_relpath` / `knowledge_stores`, even a direct-only one that exposes nothing.
+These cells declare none (Earnings-22 has no governed knowledge); the options are a neutral inert snapshot asset (new data
+asset) or a shared-runtime change making the snapshot optional when no phase carries knowledge. Neither is made here.
+
+**Shared-code change this registration needed.** The four-row smoke is a one-call subset of the dev split, which the
+Earnings runtime adapter admitted only for Earnings-21 discovery. Commit `8383e68f1` takes the parent split and carrier
+from `DEFAULT_SPLIT` / `CARRIER_LOCK_KEY` (Earnings-21 messages and behaviour byte-identical) and drops the Earnings-22
+refusal; the smoke dataset fragment therefore carries the adapter's own `e21_runtime_subset` key. Drop that commit and
+the smoke cell becomes unrunnable (the arm is unaffected).
+
+**Scorer variant (declared in each baseline's `what_this_is`).** `asr-wer-whisper` only, corpus-level WER under the Whisper
+English normalizer, on the PLAIN window form. It is NOT the ESB short-form tail-2 s variant (15.937 sealed, NOT ALIGNED, vs
+9.2377 ALIGNED with 2.0 s of digital silence appended, deviation D-TS2-3): this cell appends no silence and reads whole dev
+calls in 90 s windows, not ESB test utterances, so none of 15.937 / 9.2377 / 9.79 / 12.3 is a comparator and no alignment band
+is claimed. An ESB-comparable Earnings-22 number needs the existing short-form tail-2 s dataset fragments, a different form.
+
+**Other facts.** `earnings22-dev-subset10` has no `split_id`, which the flight runtime requires, so the arm uses the new
+`earnings22-native-window-dev10-v1`. The serving session name is NEW (its feature root differs from the resident E21
+session); its launch entry is a root item. The inventory plan label `split_role: discovery` (copied from the E21 inventory
+fragment) is a label only; the cells declare `dev`. No in-chain A/A exists, so no benefit may be claimed on this carrier.

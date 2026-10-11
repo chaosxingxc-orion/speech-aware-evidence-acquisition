@@ -21,7 +21,7 @@
       "path": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/registered-facts-v1.json",
       "sha256": "fa1d58921cba2635a0c4f21675d3811442b91f085f3d33334fc9e2c3a0e8cf9d"
     },
-    "registration_base_commit": "01e6aa750"
+    "registration_base_commit": "13a0b367c"
   },
   "authorization_basis": "Owner decision 196 and direction 205; decision 187 (the GPU stays on SLURP until the owner reopens this carrier).",
   "budget": {

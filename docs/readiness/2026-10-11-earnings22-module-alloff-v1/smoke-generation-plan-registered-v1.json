@@ -29,7 +29,7 @@
     "repeated_speech_audio_seconds_cap": 360
   },
   "plan_kind": "generation",
-  "preparation_base_commit": "01e6aa750",
+  "preparation_base_commit": "13a0b367c",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/protocol-registered-v1.json",
     "sha256": "9eb1e96f86bc93b21efea1a3ebd6c727ddfc26c08f92d2f67bea4a0c7c2293d8"
