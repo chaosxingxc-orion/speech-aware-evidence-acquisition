@@ -1,6 +1,6 @@
 {
   "cell": "slurp-direct-only-fold-b-instruct-v1",
-  "composed_config_hash": "369776f8830d6c6d72bd91303b8301545c7e1ea445c16866ecd4365d25f1bc86",
+  "composed_config_hash": "4c0feb1fea6aec978115454e4e7442dfe333a9d5d88a9718c72225d5d9c262c1",
   "execution_plan": {
     "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 1080,
     "planned_speech_audio_seconds": 3155,
-    "protocol_hash": "3d5aeb32e04e6d44dae26bc30391289005264528931b6a74332e8a4edae32dd6",
+    "protocol_hash": "3c8bad05c1b59b5a11b390cb9fb609369daf4ba2cabab4273a741f6870179246",
     "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
