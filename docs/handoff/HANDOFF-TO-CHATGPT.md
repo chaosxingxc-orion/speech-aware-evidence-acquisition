@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T10:40:23Z
+Last refreshed: 2026-10-11T10:58:58Z
+
+## i1 proposers registered and signed; first real flip and first real packet pass each exposed one writer defect; fixes in build (2026-10-11T10:58:58Z, Fable 5.1 root)
+
+Propose stage done on the sealed construction column (package 2026-10-11-slurp-tfrl-loop-i1-proposers-v1; 9 + 54 text-only calls). Flip: typed cell ready (20bd46fdb); reflector re-pin refused because the rows' artifacts cell held a placeholder string, and the gate wants an analysis recipe -> writer fix + row patch in build, then re-flip, gates, queue (after the packet pass). Packet pass: gate cap fixed (row 1.0 GPU-h), then the smoke attempt failed at the missing Thinking legacy cache dir before any encoder contact -> driver fix in build. GPU idle; serving resident (12-h restart due 15:33Z). No owner decision open.
+
+Superseded stamp: 2026-10-11T10:40:23Z
 
 ## Construction-source column SEALED 10:35Z (1,250 contacts, 625 R01C rows, flight commit 70eabd973); i1 propose stage next; Thinking packet pass in the gap (2026-10-11T10:40:23Z, Fable 5.1 root)
 

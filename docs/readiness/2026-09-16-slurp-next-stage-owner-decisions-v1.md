@@ -1542,3 +1542,21 @@ rows, 5,453.7 speech-audio seconds, smoke 4 rows rc 0, driver rc 0, 09:32-10:36Z
 (`consumed = yes`, SEALED dispositions) and the READ row is countersigned; next: `tfrl_const_read.sh` (contrast tables, 0 GPU)
 -> `tfrl_loop_driver.py open --iter 1 --stage propose --execute` -> the i1 proposer / reflector cell. The Thinking packet pass
 (266-E, CPU sidecar) runs in this GPU gap: its precondition check passed at 10:36Z with no flight alive.
+
+### i1 propose stage done; two first-real-run defects (coordinator, 2026-10-11)
+
+- `open --iter 1 --stage propose --execute --enums-from-gold` ran at 10:52Z on the sealed construction column: tables
+  (sha 6c925de6...), proposer context, per-scenario ACE material, package `docs/readiness/2026-10-11-slurp-tfrl-loop-i1-proposers-v1/`
+  (typed proposer 3 carriers x 3 = 9 calls; ACE reflector 18 carriers x 3 = 54 calls; text-only, 0 audio); rows registered and
+  countersigned (baf5b9b9d; scope text corrected from "TRAIN Fold B credit" to the construction column); receipt minted.
+- First real flip (task SAEA-Flip-TFRLi1Prop): the typed cell flipped (20bd46fdb) but the reflector's re-pin was refused
+  (`exposure ledger artifact ... not found: prompt sha256 pending; ...` -- the writer put a descriptive string with a placeholder
+  into the rows' artifacts cell instead of the registered plan path) and the launch gate reports `[no-analysis-recipe]` (the
+  package lacks `analysis-recipe-v1.json`) plus `[receipt-hash-mismatch]` on the unflipped reflector. Fix in build
+  (`sonnet/tfrl-i1-registration-fix`): writer emits the plan path, the resolved prompt sha and the recipe; the two live rows
+  patched; then the flip loop re-runs.
+- Thinking packet pass (266-E): start 1 refused by the frozen-core gate (row GPU cap 0.0 vs plan 1.0; row corrected to 1.0,
+  43f0a439e); start 2 passed the gate, the CPU sidecar came up (10:52:04Z) and the smoke attempt failed before any encoder
+  contact: `legacy feature-cache directory is unavailable: /home/chao/feat-cache/slurp-thinking-q4km` (the driver never creates
+  the Thinking legacy cache). Fix in build (`sonnet/266e-thinking-packets-fix`): create the cache roots at run time, compare
+  GPU hours in `--check-ledger`, and state how the next start is labelled given the failed attempt record.
