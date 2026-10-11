@@ -1574,3 +1574,31 @@ rows, 5,453.7 speech-audio seconds, smoke 4 rows rc 0, driver rc 0, 09:32-10:36Z
   labelling enforced); ledger row raised to 1,084 calls / 3,165 s (47d0a5158); recovery labels written
   (`/home/chao/direct-fb-packets.recovery`: smoke `attempt-packets-thinking-smoke-4-rec1-v1` recovering
   `attempt-packets-thinking-smoke-4-v1`, then `attempt-packets-thinking-fold-b-v1`); check PASS 11:13Z; task started.
+
+### Owner directive on the Thinking packets (2026-10-11): reuse analysis, root cause of the encoder rate, CPU pass stopped; i1 proposers launched
+
+Owner, verbatim: 「这个特征处理的速度我们无法接受，你分析两个事情：第一个是特征是否可以重用？也就是比对下thinking和nothinking两个模型的
+mmproj权重，如果是一致的话，就不需要再重新制作了。第二个是假设要重新制作，那你就需要去解决效率问题，当前这个效率我们无法接受，分析下
+瓶颈的根因，并解决它！」 ("This feature-processing rate is unacceptable. Analyse two things: (1) can the features be reused, i.e. compare
+the Thinking and non-thinking mmproj weights; if identical, no re-encoding is needed; (2) if they must be rebuilt, solve the
+efficiency problem: find the root cause of the bottleneck and fix it.")
+
+- **Reuse: no.** Per-tensor data-hash comparison of the two mmproj GGUF files (860 tensors each, identical shapes and dtypes):
+  audio encoder `a.` 475 of 522 tensors differ (the 47 equal ones are LayerNorm weights), projector `mm.` 8 of 8 differ, vision
+  `v.` 265 of 330 differ. Packets are encoder OUTPUT features (`core/model/speech_features.py`, `n_tokens x n_embd x 4` bytes per
+  chunk), so they depend on the mmproj; the E40 sharing rule (identical chunk hashes under another encoder receipt) cannot apply.
+- **Root cause of the rate.** The Thinking preprocess fragment `q4km-thinking-preprocess-featcache-cpu-sidecar-np4-v1` copied the
+  CPU sidecar geometry (`-np 4 -ngl 0 --no-mmproj-offload`), so the ~0.6B-parameter audio encoder ran on the CPU at 16-19 s per
+  row (smoke 4 rows 76.6 s; Fold B 50 / 1,076 rows in 799 s, about 4.7 h projected). Every fast preprocess in the record runs the
+  encoder on the GPU (`q4km-e21-feature-preprocess-gpu-cddb000c-np1`: `-np 1 -ngl 999 -fa on -b 512 -ub 128`; the Instruct SLURP
+  Fold B pass registered 2.0 GPU-h and encoded 1,080 rows in 2,038 s). The agent's "same geometry" assumption was wrong.
+- **Action.** The CPU pass was stopped at 11:50Z (task SAEA-Packets-THINK; attempt `attempt-packets-thinking-fold-b-v1` after 50
+  rows; the flight's one recovery was already spent on the smoke, so the packets contact is re-registered under
+  `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1` with a 4-row proof of the GPU form). In build
+  (`sonnet/266e-gpu-packets`): a GPU preprocess fragment for the Thinking encoder, a driver GPU mode with its own packet root and
+  cache (CPU- and GPU-made encoder outputs are not bit-identical; the 50 CPU rows are not mixed in), and a chain that runs the pass
+  inside the serving-swap window (stop Instruct -> GPU encode smoke + Fold B, about 8-20 min -> start the Thinking session for the
+  266-E flight -> swap back; failure restores Instruct).
+- **i1 proposers launched.** Fourth flip converged (both cells ready; flight commit bd43ded89; both launch gates PASS at 12:01Z);
+  task SAEA-Queue-TFRLi1Prop started 12:02Z (typed proposer 9 calls, ACE reflector 54 calls, text-only; about 0.1 GPU-h) on the
+  resident Instruct session with no sidecar running.

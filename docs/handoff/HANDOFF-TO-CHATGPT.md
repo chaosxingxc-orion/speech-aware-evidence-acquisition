@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T11:15:53Z
+Last refreshed: 2026-10-11T12:02:12Z
+
+## i1 proposers FLYING (flight commit bd43ded89, task SAEA-Queue-TFRLi1Prop, 12:02Z); Thinking packets: no reuse (mmproj audio tower differs), CPU pass stopped, GPU pass in build (2026-10-11T12:02:12Z, Fable 5.1 root)
+
+Owner directive: the CPU encoder rate (16-19 s/row) is unacceptable. mmproj comparison: a. 475/522 tensors differ, mm. 8/8 -> packets (encoder outputs) cannot be reused. Root cause: the Thinking preprocess fragment used the CPU sidecar geometry; the record's fast passes run the encoder on the GPU (E21 gpu fragment; Instruct Fold B 2.0 GPU-h, 2,038 s). CPU pass stopped at 50 rows (recovery spent) -> re-registered as `...-THINKING-PACKETS-GPU-V1` with a GPU fragment + swap-window chain (stop Instruct -> encode -> start Thinking -> flight -> swap back), in build. i1: fourth flip converged, gates PASS, proposers chain started on the resident session. Next: seal -> close rows -> `open --iter 1 --stage cell` -> column cell (lock / aa / ace) sign, mint, flip, queue. No owner decision open.
+
+Superseded stamp: 2026-10-11T11:15:53Z
 
 ## Proposers blocked by a gate defect (non-roster companion file in docs/receipts/rosters); Thinking packet recovery pass running (2026-10-11T11:15:53Z, Fable 5.1 root)
 
