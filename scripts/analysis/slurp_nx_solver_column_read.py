@@ -103,8 +103,9 @@ VIEW_PRIMARY_METRIC = "exact_set"
 SECONDARIES = ("parse_valid", "empty_gold_false_fill", "nonempty_exact")
 V4_SCHEMA = "saea-supply-variant-arms-v4"
 V3_SCHEMA = "saea-supply-variant-arms-v3"
+V5_SCHEMA = "saea-supply-variant-arms-v5"  # loop item E-T6: multi-store release_swaps
 #: receipt schema -> the arm group kind it seals.
-KIND_BY_SCHEMA = {V4_SCHEMA: "template", V3_SCHEMA: "supply"}
+KIND_BY_SCHEMA = {V4_SCHEMA: "template", V3_SCHEMA: "supply", V5_SCHEMA: "supply"}
 
 
 class ColumnReadError(RuntimeError):
@@ -475,11 +476,18 @@ def load_sealed_arm_texts(outputs_rows: Sequence[Mapping], trace_records: Mappin
         if row_kind == "template":
             row_templates = [arm["instruction_template"] for arm in receipt["arms"]]
         else:  # a supply column: the declared supply of each arm (knobs, release swap, bound)
-            row_templates = [
-                {"resolved_knobs": arm.get("resolved_knobs"), "release_swap": arm.get("release_swap"),
-                 "max_supplied_items": arm.get("max_supplied_items")}
-                for arm in receipt["arms"]
-            ]
+            if receipt["schema"] == V5_SCHEMA:  # every swapped store, in store order
+                row_templates = [
+                    {"resolved_knobs": arm.get("resolved_knobs"), "release_swaps": arm.get("release_swaps"),
+                     "max_supplied_items": arm.get("max_supplied_items")}
+                    for arm in receipt["arms"]
+                ]
+            else:
+                row_templates = [
+                    {"resolved_knobs": arm.get("resolved_knobs"), "release_swap": arm.get("release_swap"),
+                     "max_supplied_items": arm.get("max_supplied_items")}
+                    for arm in receipt["arms"]
+                ]
         row_twin = next((a["arm_id"] for a in receipt["arms"] if a.get("replicate_of")), None)
         if arm_ids is None:
             arm_ids, templates, delivering, twin = row_arm_ids, row_templates, row_arm_ids[-1], row_twin

@@ -1251,6 +1251,17 @@ _SUPPLY_VARIANT_ARM_FIELDS_V3 = _SUPPLY_VARIANT_ARM_FIELDS_V2 | {"release_swap"}
 #: ``instruction_template`` on every arm row.
 SUPPLY_VARIANT_RECEIPT_SCHEMA_V4 = "saea-supply-variant-arms-v4"
 _SUPPLY_VARIANT_ARM_FIELDS_V4 = _SUPPLY_VARIANT_ARM_FIELDS_V3 | {"instruction_template"}
+#: Loop engineering item E-T6 (2026-10-11, owner decision 263-A / 265): the
+#: multi-store supply kind. v5 = v3 with ``release_swap`` REPLACED by
+#: ``release_swaps`` -- an ordered (by ``store_id``) list of the declared
+#: ``{store_id, release}`` of every store the arm repoints, one entry per
+#: DISTINCT store, ``[]`` for the delivering arm, the twin and a knob-only arm.
+#: A group seals v5 only when some arm swaps two or more stores; every group
+#: with at most one swap per arm still seals v3, byte for byte as before.
+SUPPLY_VARIANT_RECEIPT_SCHEMA_V5 = "saea-supply-variant-arms-v5"
+_SUPPLY_VARIANT_ARM_FIELDS_V5 = (
+    _SUPPLY_VARIANT_ARM_FIELDS_V2 | {"release_swaps"}
+)
 _SUPPLY_VARIANT_FIT_FIELDS = frozenset(
     {
         "slot_tokens", "completion_ceiling", "base_prompt_tokens",
@@ -1259,6 +1270,27 @@ _SUPPLY_VARIANT_FIT_FIELDS = frozenset(
 )
 _SUPPLY_VARIANT_ARM_VISITS_VALUES = ("every", "first")
 _SUPPLY_VARIANT_ARM_VISITS_DEFAULT = "every"
+
+
+def supply_variant_arm_release_swaps(
+    row: Mapping[str, object],
+) -> list[dict[str, str]]:
+    """The declared ``[{store_id, release}, ...]`` of one sealed arm row,
+    ordered by ``store_id``, whatever the receipt's schema.
+
+    A v5 row carries ``release_swaps`` (a list); a v3 row carries the single
+    ``release_swap`` (``None`` or one object), read here as a list of at most
+    one; a v1, v2 or v4 row carries neither and reads as ``[]``. This is the
+    ONE normalisation a reader compares against a declaration, so a one-store
+    swap sealed under v3 and the same swap spelled as a one-element
+    ``release_swaps`` agree.
+    """
+
+    plural = row.get("release_swaps")
+    if plural is not None:
+        return sorted((dict(entry) for entry in plural), key=lambda e: e["store_id"])
+    single = row.get("release_swap")
+    return [] if single is None else [dict(single)]
 
 
 def validate_supply_variant_receipt(
@@ -1338,6 +1370,7 @@ def validate_supply_variant_receipt(
         _raise(error_type, "supply variant receipt has an invalid shape")
     schema = supply_variants.get("schema")
     is_v4 = False
+    is_v5 = False
     if schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V1:
         is_v2_or_later = False
         is_v3 = False
@@ -1359,6 +1392,12 @@ def validate_supply_variant_receipt(
         is_v4 = True
         expected_fields = _SUPPLY_VARIANT_FIELDS_V2
         arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V4
+    elif schema == SUPPLY_VARIANT_RECEIPT_SCHEMA_V5:
+        is_v2_or_later = True
+        is_v3 = False
+        is_v5 = True
+        expected_fields = _SUPPLY_VARIANT_FIELDS_V2
+        arm_fields = _SUPPLY_VARIANT_ARM_FIELDS_V5
     else:
         _raise(error_type, "supply variant receipt has an unregistered schema")
     if set(supply_variants) != expected_fields:
@@ -1484,7 +1523,54 @@ def validate_supply_variant_receipt(
                 "knobs: it resolves exactly the delivering arm's ids",
             )
         release_swap = row.get("release_swap") if is_v3 else None
-        if release_swap is not None:
+        if is_v5:
+            # E-T6: every swapped store is checked on its own -- one entry per
+            # DISTINCT store, ordered by store_id (I7v, per store).
+            swaps = _sequence(
+                row["release_swaps"], "supply variant arm release_swaps",
+                error_type=error_type,
+            )
+            if any(
+                not isinstance(entry, Mapping)
+                or set(entry) != {"store_id", "release"}
+                or not isinstance(entry["store_id"], str)
+                or not entry["store_id"]
+                or not isinstance(entry["release"], str)
+                or not entry["release"]
+                for entry in swaps
+            ):
+                _raise(
+                    error_type,
+                    "supply variant arm release_swaps has an invalid shape",
+                )
+            swap_stores = [entry["store_id"] for entry in swaps]
+            if len(set(swap_stores)) != len(swap_stores):
+                _raise(
+                    error_type,
+                    "supply variant arm release_swaps names a store twice: one "
+                    "swap per distinct store",
+                )
+            if swap_stores != sorted(swap_stores):
+                _raise(
+                    error_type,
+                    "supply variant arm release_swaps must be ordered by store_id",
+                )
+            if swaps and deliver:
+                _raise(
+                    error_type,
+                    "the delivering supply variant arm must declare no "
+                    "release_swaps: it is the unvaried construction over the "
+                    "base's own released stores",
+                )
+            if swaps and replicate_of is not None:
+                _raise(
+                    error_type,
+                    "a supply variant twin arm (replicate_of) must declare no "
+                    "release_swaps: it resolves exactly the delivering arm's "
+                    "ids",
+                )
+            release_swap = swaps[0] if swaps else None
+        if release_swap is not None and not is_v5:
             if (
                 not isinstance(release_swap, Mapping)
                 or set(release_swap) != {"store_id", "release"}
@@ -2269,6 +2355,8 @@ __all__ = [
     "validate_native_episode_finite_path", "validate_solver_group_receipt",
     "validate_supply_variant_receipt",
     "SUPPLY_VARIANT_RECEIPT_SCHEMA_V4",
+    "SUPPLY_VARIANT_RECEIPT_SCHEMA_V5",
+    "supply_variant_arm_release_swaps",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",

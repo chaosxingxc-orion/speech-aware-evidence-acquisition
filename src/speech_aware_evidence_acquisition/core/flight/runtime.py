@@ -3219,28 +3219,43 @@ class FlightRuntime:
                     f"supply action {action_id!r} overrides undeclared path {knob.path!r}"
                 )
             holder[segments[-1]] = knob.value
-        if release_swap is not None:
+        # Loop item E-T6 (2026-10-11, owner decision 263-A / 265):
+        # ``release_swap`` is ONE swap (every caller before E-T6), a tuple of
+        # swaps over DISTINCT stores (a multi-store arm), or ``None``. Each swap
+        # is applied to its own store spec exactly as the single swap always
+        # was; a repeated store is refused before any binding reloads.
+        if release_swap is None:
+            swaps = ()
+        elif isinstance(release_swap, (tuple, list)):
+            swaps = tuple(release_swap)
+        else:
+            swaps = (release_swap,)
+        if len({swap.store_id for swap in swaps}) != len(swaps):
+            raise FlightRuntimeError(
+                f"supply action {action_id!r} release_swap names a store twice"
+            )
+        for swap in swaps:
             stores = values.get("knowledge_stores")
-            store_spec = stores.get(release_swap.store_id) if isinstance(stores, Mapping) else None
+            store_spec = stores.get(swap.store_id) if isinstance(stores, Mapping) else None
             if not isinstance(store_spec, dict):
                 raise FlightRuntimeError(
                     f"supply action {action_id!r} release_swap names undeclared "
-                    f"store {release_swap.store_id!r}"
+                    f"store {swap.store_id!r}"
                 )
             matched = None
             for alternate in store_spec.get("alternates") or ():
                 if (
                     isinstance(alternate, Mapping)
                     and isinstance(alternate.get("release"), Mapping)
-                    and alternate["release"].get("relpath") == release_swap.release_relpath
+                    and alternate["release"].get("relpath") == swap.release_relpath
                 ):
                     matched = alternate
                     break
             if matched is None:
                 raise FlightRuntimeError(
                     f"supply action {action_id!r} release_swap names release "
-                    f"{release_swap.release_relpath!r}, which store "
-                    f"{release_swap.store_id!r} does not declare as an alternate"
+                    f"{swap.release_relpath!r}, which store "
+                    f"{swap.store_id!r} does not declare as an alternate"
                 )
             store_spec["release"] = matched["release"]
             store_spec["snapshot"] = matched["snapshot"]
@@ -3257,7 +3272,7 @@ class FlightRuntime:
             binding = load_knowledge_store_binding(values, data_root=self._data_root)
             if binding is None:
                 raise KnowledgeStoreError("supply action produced no knowledge-store binding")
-            if release_swap is None:
+            if not swaps:
                 if (
                     binding.composite_snapshot.content_hash()
                     != store_binding.composite_snapshot.content_hash()
@@ -3270,9 +3285,10 @@ class FlightRuntime:
                     raise KnowledgeStoreError(
                         "supply action release_swap changed the declared store set"
                     )
+                swapped = {swap.store_id: swap for swap in swaps}
                 for store_id, store in binding.stores.items():
-                    if store_id == release_swap.store_id:
-                        if store.release_pin["relpath"] != release_swap.release_relpath:
+                    if store_id in swapped:
+                        if store.release_pin["relpath"] != swapped[store_id].release_relpath:
                             raise KnowledgeStoreError(
                                 "supply action release_swap resolved the wrong release"
                             )
@@ -3303,7 +3319,7 @@ class FlightRuntime:
             try:
                 router.knowledge_store_binding = binding
             except (AttributeError, TypeError):
-                if release_swap is not None:
+                if swaps:
                     raise
             return router
         except (KnowledgeStoreError, ValueError) as error:
@@ -3501,16 +3517,26 @@ class FlightRuntime:
         release_swap_snapshots: dict[str, object] = {}
         release_swap_receipts: dict[str, object] = {}
         for arm in group.arms:
+            arm_swaps = arm.all_release_swaps
             action_router = self._supply_action_router(
-                program, arm.arm_id, arm.knobs, release_swap=arm.release_swap,
+                program, arm.arm_id, arm.knobs,
+                release_swap=(arm_swaps[0] if len(arm_swaps) == 1 else arm_swaps or None),
             )
             routers[arm.arm_id] = action_router.automatic_for_phase
-            if arm.release_swap is not None:
+            if arm_swaps:
                 swap_binding = action_router.knowledge_store_binding
                 release_swap_snapshots[arm.arm_id] = swap_binding.composite_snapshot
-                release_swap_receipts[arm.arm_id] = swap_binding.store_receipt(
-                    arm.release_swap.store_id
-                )
+                if group.uses_release_swaps:
+                    # Loop item E-T6: the v5 sealed record is one store receipt
+                    # PER swapped store, keyed by store id (I7v per store).
+                    release_swap_receipts[arm.arm_id] = {
+                        swap.store_id: swap_binding.store_receipt(swap.store_id)
+                        for swap in arm_swaps
+                    }
+                else:
+                    release_swap_receipts[arm.arm_id] = swap_binding.store_receipt(
+                        arm_swaps[0].store_id
+                    )
 
         def resolve(*, arm_id, phase_id, context):
             """One arm's own supply decision for one visit of one row."""

@@ -851,3 +851,38 @@ def test_the_exposure_row_carries_the_registered_fields_and_parses_as_a_ledger_r
     assert "slurp" in parsed[0]["speech carrier + split"].split()
     with pytest.raises(tp.TfrlProposerError):
         _row(kind="other")
+
+
+# ---------------------------------------------------------------------------
+# E-T6: multi-store release_swaps lands; the archive view contract flips the flag
+# ---------------------------------------------------------------------------
+
+
+def _view_mapping(**extra) -> dict:
+    document = {
+        "iteration": 1, "parent_state_id": "s0-lock-v2.2",
+        "known_state_ids": ["s0-lock-v2.2"],
+        "entry_ids": {"deliver-rule": ["rule-1"], "slot-card": ["card-1"]},
+        "parent_stores": ["train-exemplars"],
+    }
+    document.update(extra)
+    return document
+
+
+def test_a_two_store_candidate_is_accepted_when_the_archive_view_says_swaps_are_supported():
+    from speech_aware_evidence_acquisition.rails.supply_variants import (
+        MULTI_STORE_RELEASE_SWAPS_SUPPORTED,
+    )
+
+    card = candidate("construction", "slot-card-subset", [CARD])  # touches slot-contracts
+    supported = tp.ArchiveView.from_mapping(
+        _view_mapping(release_swaps_supported=MULTI_STORE_RELEASE_SWAPS_SUPPORTED))
+    assert supported.release_swaps_supported is True
+    assert run(card, archive=supported).accepted
+    # a view that does not carry the key (or carries false) still refuses it
+    for document in (_view_mapping(), _view_mapping(release_swaps_supported=False)):
+        refused = run(card, archive=tp.ArchiveView.from_mapping(document))
+        assert not refused.accepted and "second-store-swap" in refused.codes
+    # a one-store candidate never needed the flag
+    same = tp.ArchiveView.from_mapping(_view_mapping(parent_stores=["slot-contracts"]))
+    assert run(card, archive=same).accepted

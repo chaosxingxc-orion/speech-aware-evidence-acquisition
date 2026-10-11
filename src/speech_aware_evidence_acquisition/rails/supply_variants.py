@@ -122,6 +122,19 @@ from .native_episode_receipt import (
 #: rewritten.
 SUPPLY_VARIANT_RECEIPT_SCHEMA = "saea-supply-variant-arms-v3"
 
+#: The multi-store supply receipt (loop engineering item E-T6, 2026-10-11,
+#: owner decision 263-A / 265): v3's arm rows with ``release_swap`` replaced by
+#: ``release_swaps`` -- the ordered list of every ``{store_id, release}`` the
+#: arm repoints (``[]`` when none). A group seals under v5 ONLY when some arm
+#: swaps two or more stores (:attr:`SupplyVariantGroup.uses_release_swaps`);
+#: every group with at most one swap per arm keeps sealing v3, byte for byte.
+SUPPLY_VARIANT_RECEIPT_SCHEMA_V5 = "saea-supply-variant-arms-v5"
+
+#: What the tfrl archive view writer sets as ``release_swaps_supported`` (E-T6 landed:
+#: an arm may repoint several stores). ``rails.tfrl_typed_proposer.ArchiveView.
+#: from_mapping`` reads the key; it defaults to False, so the writer must pass this.
+MULTI_STORE_RELEASE_SWAPS_SUPPORTED = True
+
 #: The two values ``supply_variants.arm_visits`` may declare. The PARSER
 #: default is ``"every"`` -- every fragment written before this key existed
 #: carries none at all and composes byte-identically to before -- but an
@@ -182,7 +195,7 @@ SUPPLY_VARIANT_ARM_REQUIRED_KEYS = frozenset({"arm_id", "max_supplied_items"})
 #: the arm's release-swap selection, disjoint from ``overrides`` -- see
 #: :class:`SupplyVariantReleaseSwap` and :func:`parse_supply_variant_release_swap`.
 SUPPLY_VARIANT_ARM_OPTIONAL_KEYS = frozenset(
-    {"deliver", "overrides", "replicate_of", "release_swap"}
+    {"deliver", "overrides", "replicate_of", "release_swap", "release_swaps"}
 )
 
 #: Keys the ``fit_estimate`` block carries, exactly. Every one is a MEASURED,
@@ -357,6 +370,43 @@ class SupplyVariantArm:
     # arm's own, or the delivering arm's locked template); 0 on the SUPPLY
     # kind. Enters only the fit estimate.
     template_tokens: int = 0
+    # Loop engineering item E-T6 (2026-10-11): the arm's swaps when it
+    # repoints TWO OR MORE stores, ordered by ``store_id``, one per distinct
+    # store. Canonical form (enforced in ``__post_init__``): ``release_swap``
+    # carries the swap of a one-store arm exactly as before, ``release_swaps``
+    # is non-empty only from two stores up, and the two are never both set --
+    # so a one-store swap spelled either way is the same arm. Declared LAST,
+    # so every arm parsed before this field existed composes byte-identically.
+    release_swaps: tuple[SupplyVariantReleaseSwap, ...] = ()
+
+    def __post_init__(self) -> None:
+        swaps = tuple(self.release_swaps)
+        if swaps and self.release_swap is not None:
+            raise SupplyVariantError(
+                f"supply-variant arm {self.arm_id!r} declares both release_swap "
+                "and release_swaps; declare one"
+            )
+        if len({swap.store_id for swap in swaps}) != len(swaps):
+            raise SupplyVariantError(
+                f"supply-variant arm {self.arm_id!r} release_swaps names a store "
+                "twice; one swap per distinct store"
+            )
+        if len(swaps) == 1:
+            object.__setattr__(self, "release_swap", swaps[0])
+            swaps = ()
+        object.__setattr__(
+            self, "release_swaps",
+            tuple(sorted(swaps, key=lambda swap: swap.store_id)),
+        )
+
+    @property
+    def all_release_swaps(self) -> tuple[SupplyVariantReleaseSwap, ...]:
+        """Every swap this arm declares, ordered by ``store_id`` (empty when
+        none): the one accessor a consumer of the multi-store route reads."""
+
+        if self.release_swap is not None:
+            return (self.release_swap,)
+        return self.release_swaps
 
     def as_json(self) -> dict[str, object]:
         row = {
@@ -368,6 +418,8 @@ class SupplyVariantArm:
             "replicate_of": self.replicate_of,
             "release_swap": None if self.release_swap is None else self.release_swap.as_json(),
         }
+        if self.release_swaps:
+            row["release_swaps"] = [swap.as_json() for swap in self.release_swaps]
         if self.instruction_template is not None:
             row["instruction_template"] = self.instruction_template.as_json()
         return row
@@ -445,6 +497,21 @@ class SupplyVariantGroup:
     @property
     def is_template(self) -> bool:
         return self.kind == SUPPLY_VARIANT_KIND_TEMPLATE
+
+    @property
+    def uses_release_swaps(self) -> bool:
+        """True when some arm repoints two or more stores (E-T6): the group
+        then seals the v5 receipt. False for every group written before."""
+
+        return not self.is_template and any(arm.release_swaps for arm in self.arms)
+
+    @property
+    def receipt_schema(self) -> str:
+        if self.is_template:
+            return SUPPLY_VARIANT_RECEIPT_SCHEMA_V4
+        if self.uses_release_swaps:
+            return SUPPLY_VARIANT_RECEIPT_SCHEMA_V5
+        return SUPPLY_VARIANT_RECEIPT_SCHEMA
 
     @property
     def arm_count(self) -> int:
@@ -601,6 +668,46 @@ def parse_supply_variant_release_swap(
                 f"alternates {sorted(admitted)}"
             )
     return SupplyVariantReleaseSwap(store_id=store_id, release_relpath=release_relpath)
+
+
+def parse_supply_variant_release_swaps(
+    block: object,
+    *,
+    declared_stores: Sequence[str] | None = None,
+    declared_alternate_relpaths: Mapping[str, Sequence[str]] | None = None,
+) -> tuple[SupplyVariantReleaseSwap, ...]:
+    """Parse ONE ``arms[i].release_swaps`` list (loop item E-T6), fail-closed.
+
+    A non-empty ordered list of ``{store_id, release}`` objects, each parsed by
+    :func:`parse_supply_variant_release_swap` (so an undeclared store or a
+    release absent from that store's declared alternates is refused by name),
+    and no store named twice. Returned ordered by ``store_id``.
+    """
+
+    if (
+        not isinstance(block, Sequence)
+        or isinstance(block, (str, bytes))
+        or not block
+    ):
+        raise SupplyVariantError(
+            "supply_variants arm release_swaps must be a non-empty list of "
+            "{store_id, release} objects"
+        )
+    swaps = tuple(
+        parse_supply_variant_release_swap(
+            entry, declared_stores=declared_stores,
+            declared_alternate_relpaths=declared_alternate_relpaths,
+        )
+        for entry in block
+    )
+    stores = [swap.store_id for swap in swaps]
+    repeated = sorted({store for store in stores if stores.count(store) > 1})
+    if repeated:
+        raise SupplyVariantError(
+            f"supply-variant release_swaps names store(s) {repeated} more than "
+            "once; one swap per distinct store"
+        )
+    return tuple(sorted(swaps, key=lambda swap: swap.store_id))
 
 
 def parse_supply_variant_fit_estimate(block: object) -> SupplyVariantFitEstimate:
@@ -764,7 +871,20 @@ def parse_supply_variants(
             )
         else:
             release_swap = None
-        if replicate_of is not None and release_swap is not None:
+        raw_release_swaps = row.get("release_swaps")
+        if raw_release_swaps is not None:
+            if release_swap is not None:
+                raise SupplyVariantError(
+                    f"supply_variants.arms[{position}] declares both release_swap "
+                    "and release_swaps; declare one"
+                )
+            release_swaps = parse_supply_variant_release_swaps(
+                raw_release_swaps, declared_stores=declared_stores,
+                declared_alternate_relpaths=declared_alternate_relpaths,
+            )
+        else:
+            release_swaps = ()
+        if replicate_of is not None and (release_swap is not None or release_swaps):
             raise SupplyVariantError(
                 f"supply_variants.arms[{position}] names replicate_of and must "
                 "declare no release_swap: it resolves exactly the delivering "
@@ -780,6 +900,7 @@ def parse_supply_variants(
             ),
             replicate_of=replicate_of,
             release_swap=release_swap,
+            release_swaps=release_swaps,
         ))
     ids = [arm.arm_id for arm in arms]
     if len(set(ids)) != len(ids):
@@ -803,7 +924,7 @@ def parse_supply_variants(
             "is what makes its request bytes the locked plan's by construction "
             "rather than by claim"
         )
-    if arms[-1].release_swap is not None:
+    if arms[-1].all_release_swaps:
         raise SupplyVariantError(
             f"supply_variants delivering arm {arms[-1].arm_id!r} must declare no "
             "release_swap: it is rendered from the episode's own QueryState "
@@ -820,8 +941,9 @@ def parse_supply_variants(
     signatures = [
         (
             tuple((knob.path, knob.value) for knob in arm.knobs),
-            None if arm.release_swap is None else (
-                arm.release_swap.store_id, arm.release_swap.release_relpath,
+            None if not arm.all_release_swaps else tuple(
+                (swap.store_id, swap.release_relpath)
+                for swap in arm.all_release_swaps
             ),
         )
         for arm in arms
@@ -1170,12 +1292,17 @@ def supply_variant_arm_record(
     supplied_value_ids: Sequence[str],
     resolved_knobs: Mapping[str, int] | None = None,
     template_group: bool = False,
+    release_swaps_group: bool = False,
 ) -> dict[str, object]:
     """One arm's receipt row: labels, ids and counts, never supplied text.
 
     ``template_group`` (NX programme E1) selects the v4 row shape: the same
     row plus ``instruction_template`` -- ``None`` for the delivering arm and
     the twin, the declared ``{relpath, sha256}`` for every other arm.
+
+    ``release_swaps_group`` (loop item E-T6) selects the v5 row shape: the v3
+    row with ``release_swap`` replaced by ``release_swaps`` -- every declared
+    ``{store_id, release}`` of the arm, ordered by store (``[]`` when none).
     """
 
     ids = tuple(supplied_value_ids)
@@ -1231,6 +1358,9 @@ def supply_variant_arm_record(
             None if arm.instruction_template is None
             else arm.instruction_template.as_json()
         )
+    if release_swaps_group:
+        del row["release_swap"]
+        row["release_swaps"] = [swap.as_json() for swap in arm.all_release_swaps]
     return row
 
 
@@ -1254,10 +1384,7 @@ def supply_variant_receipt(
     """
 
     return {
-        "schema": (
-            SUPPLY_VARIANT_RECEIPT_SCHEMA_V4 if group.is_template
-            else SUPPLY_VARIANT_RECEIPT_SCHEMA
-        ),
+        "schema": group.receipt_schema,
         "phase_id": _nonempty_str(
             phase_id, field="supply_variant_receipt.phase_id"
         ),
@@ -2768,6 +2895,9 @@ __all__ = [
     "parse_supply_variant_fit_estimate",
     "parse_supply_variant_knob",
     "parse_supply_variant_release_swap",
+    "parse_supply_variant_release_swaps",
+    "SUPPLY_VARIANT_RECEIPT_SCHEMA_V5",
+    "MULTI_STORE_RELEASE_SWAPS_SUPPORTED",
     "parse_supply_variants",
     "supply_variant_arm_record",
     "supply_variant_receipt",
