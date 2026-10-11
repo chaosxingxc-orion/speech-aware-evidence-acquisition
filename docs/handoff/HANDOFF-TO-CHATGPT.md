@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T07:48:03Z
+Last refreshed: 2026-10-11T08:21:37Z
+
+## Construction-source column registered HELD; lock construction-variant (minus-r01 pool) and ACE prior_score fix in build (2026-10-11T08:21:37Z, Fable 5.1 root)
+
+Master c34c8f1ef: construction column on R01C (625 rows disjoint from both folds; ~0.86 GPU-h) + smoke, DRAFT rows, driver reads its tables from it, ACE releases staged on v1r rosters (preparer accepts R01C carriers, refuses Fold B), protocol rebuilt. Blockers: the lock's exemplar pool contains R01C (guard refuses) -> construction variant pinning the minus-r01 pool + agreement table; ace i0 anchor inside R01C -> column on v2.2 (byte-identical); `prior_score` out of [0,1] in ACE releases -> rescale. 266-E package and the ledger consumed-flag restoration still in build. GPU idle; no owner decision open.
+
+Superseded stamp: 2026-10-11T07:48:03Z
 
 ## Lock v2.3 merged (ace-playbook store at i0, P-ACE-0 proven, CURRENT_LOCK v2.3); loop material source = construction roster R01C (2026-10-11T07:48:03Z, Fable 5.1 root)
 

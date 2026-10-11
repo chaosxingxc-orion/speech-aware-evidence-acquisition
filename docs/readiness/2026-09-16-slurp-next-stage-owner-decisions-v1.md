@@ -1465,3 +1465,17 @@ mint -> flip -> plan pins -> flip -> gates -> queue (GPU resumes).
 - Also merged: the flown-cell registration-test fixes (c47bcfde0; stale expectations from registration-time commits, not
   runtime drift). The E22 hash tests stay red until the packet-gated re-pin. In build: 266-E package; ledger consumed-flag
   restoration for every flight sealed since 2026-10-09 plus a standing check; the construction-source cell + driver switch.
+
+### Construction-source column registered HELD (c34c8f1ef); two guard blockers and one defect found (coordinator, 2026-10-11)
+
+- Cell `slurp-native-stage3-tfrl-construction-lock-r01c-v1` (+ smoke) on R01C (625 rows; split identity f56bc386...; 0 ids
+  shared with Fold A / Fold B / DEV rosters), 1,250 contacts, about 0.86 GPU-h; package
+  `docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/`; the protocol rebuilt (3ba5e4ee...) naming lock v2.3, the
+  material-source column and Fold B as held-out selection; the effect-floor gate learned the `material-source` design.
+- Blocker 1: the lock's `train-exemplars` pool (37,407 ids) contains every R01C row, so the knowledge-source guard refuses
+  R01C queries; the VAR-2 R01C cell used `size-pool-annotated-exemplars-minus-r01` (34,474 ids, disjoint). Fix in build: a
+  construction VARIANT of the lock (pool + agreement table pinned to the minus-r01 twins, nothing else) accepted only on
+  R01C. Blocker 2: the ace-playbook i0 anchor row's source ids lie inside R01C, so v2.3 would trip the same guard on the
+  construction column; the column stays on v2.2 (P-ACE-0: byte-identical requests) unless the variant can re-home the anchor.
+  Defect: `playbook_release_rows` writes `prior_score` outside [0, 1], so every non-empty ACE release would be refused;
+  fix = rank-preserving rescale (in build, same branch).
