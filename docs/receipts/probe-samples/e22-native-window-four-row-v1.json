@@ -1,0 +1,17 @@
+{
+  "carrier": "earnings22-original",
+  "design": "One Earnings-22 dev call for the HELD native-window four-row form smoke of the consumption-module all-off arm. Identity only: the first call of the frozen Earnings-22 dev split in its own inventory order (4453225); no sampling, no seed, no scientific population and no n=4 effectiveness claim. The four request rows are the first four windows of that call in the shared Earnings-22 dev window inventory (SAEA-E22-DEV-WINDOW-INVENTORY-V1), derived model-free by scripts/build_e21_native_window_unit_subset.py.",
+  "items": [
+    {
+      "id": "4453225",
+      "key": "earnings22-original:4453225"
+    }
+  ],
+  "pool_size": 10,
+  "probe": "engineering-connectivity",
+  "split_identity_hash": "4bc8d4ccfaa341b5cab0473dac2e1c7e33297f7e11bd54ed4e2e9046763b95f3",
+  "split_role": "dev",
+  "strata_counts": {
+    "construction": 1
+  }
+}

@@ -58,6 +58,9 @@ Cases:
   the recall k (A2's A/A flew k 60 at w_agree 0, a proven supply no-op). The
   full composed-config diff against the A2 cell is listed and classified
   (policy / the module block itself / bookkeeping / experiment fragment).
+* ``e220`` -- the same transfer on Earnings-22 (2026-10-11), whose direct layer is the shared base fragment
+  ``e22-native-window-direct-base-v1`` alone: with no direct parent cell, each all-off cell's composed policy-owned
+  blocks are compared with that base fragment's instead of a parent cell's.
 * ``a2t0`` / ``e210`` -- the carrier transfer (direction 205, design 2b.3):
   the all-off block of the ``audio2tool`` / ``earnings`` profile compiles to
   that carrier's DIRECT layer (neither carrier has a locked system), whose
@@ -485,6 +488,13 @@ ALLOFF_CASES = {
                   "smoke": ("earnings21-native-stage3-module-alloff-smoke-4-v1",
                             "e21-native-window-four-row-direct-vs-system-v1")},
     },
+    # Earnings-22 has no direct parent CELL: the direct layer is the shared base fragment alone, so the parent slot is
+    # ``None`` and the cell's composed policy blocks are compared with the base fragment's instead.
+    "e220": {
+        "profile": "earnings22", "lock_fragment": "e22-native-window-direct-base-v1",
+        "cells": {"arm": ("earnings22-native-stage3-module-alloff-v1", None),
+                  "smoke": ("earnings22-native-stage3-module-alloff-smoke-4-v1", None)},
+    },
 }
 #: The experiment-fragment key a direct all-off cell declares its block under.
 DECLARATION_KEY = "consumption_module_declaration"
@@ -541,13 +551,19 @@ def run_alloff(at: str, repo_root: Path = REPO_ROOT) -> dict:
         declared = (document.get(DECLARATION_KEY) or {}).get("block")
         declared_policy = cm.compile_module(declared, hooks, repo_root=repo_root)
         row = rebuild_and_compose(declared_policy, experiment, repo_root=repo_root)
-        parent_document = json.loads(_fragment_text("experiment", parent, None, repo_root))
-        diff = _classify_alloff(
-            cm.differing_paths(_composed_values(experiment, repo_root), _composed_values(parent, repo_root)),
-            set(document) | set(parent_document),
-        )
+        if parent is None:
+            # No parent cell: the cell's composed policy-owned blocks must equal the shared base fragment's.
+            diff = {"policy": cm.differing_paths(cm.policy_owned_values(_composed_values(experiment, repo_root)),
+                                                 cm.policy_owned_values(lock)),
+                    "bookkeeping": [], "experiment_fragment": [], "anything_else": []}
+        else:
+            parent_document = json.loads(_fragment_text("experiment", parent, None, repo_root))
+            diff = _classify_alloff(
+                cm.differing_paths(_composed_values(experiment, repo_root), _composed_values(parent, repo_root)),
+                set(document) | set(parent_document),
+            )
         row.update({
-            "cell": key, "direct_parent": parent, "declared_is_the_all_off_block": declared == block,
+            "cell": key, "direct_parent": parent or spec["lock_fragment"], "declared_is_the_all_off_block": declared == block,
             "off_arm": cm.is_module_off_block(declared, repo_root=repo_root),
               # The catalogue can grow after an immutable OFF cell is registered.
               # Compare compiled policy, retaining declaration inequality as evidence.

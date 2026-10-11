@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Derive and register the per-carrier ALL-OFF arm of the evidence-consumption module -- the carrier admission gate of
-design section 2b.3 -- for Audio2Tool (``--carrier a2t``) or Earnings-21 (``--carrier e21``). HELD, model-free.
+design section 2b.3 -- for Audio2Tool (``--carrier a2t``), Earnings-21 (``--carrier e21``) or Earnings-22
+(``--carrier e22``, 2026-10-11). HELD, model-free.
 
 Owner decision 196, direction 205; design ``docs/superpowers/specs/2026-09-29-slurp-consumption-module-design.md``
 sections 2b and 3.2 ("bare": every component off compiles to the carrier's direct baseline through the same harness).
@@ -13,7 +14,13 @@ Neither carrier has a locked system, so the module's all-off block compiles to t
 * ``e21``: ``earnings21-native-stage3-module-alloff-v1`` (+ ``-smoke-4-v1``) on the full 44-call discovery roster (the
   four-row form smoke on the E35 four windows), pointing at the EXISTING direct baselines
   ``e21-native-window-direct-full44-v1`` / ``e21-native-window-direct-four-row-v1`` byte for byte (they carry no fit
-  identity).
+  identity);
+* ``e22``: ``earnings22-native-stage3-module-alloff-v1`` (+ ``-smoke-4-v1``) on the whole 10-call Earnings-22 dev split
+  (451 native windows; the four-row form smoke on the first four windows of call 4453225). Earnings-22 has no direct
+  parent cell, so this derivation WRITES the two baseline fragments (the shared ``e22-native-window-direct-base-v1``
+  policy layer plus the E21-shaped geometry and pins), the smoke dataset fragment and the two experiment fragments from
+  the model-free window-inventory receipt (``window-inventory-receipt-v1.json`` in the package); the byte proof compares
+  against the base fragment instead of a parent cell.
 
 A direct program carries no ``native_episode``, so each cell declares its block in the experiment fragment
 (``consumption_module_declaration``); ``scripts/analysis/module_equivalence_proof.py --at a2t0 | e210`` proves the
@@ -91,6 +98,27 @@ CARRIERS = {
         "carrier_line": "earnings21-original discovery {rows}",
         "chain": {"rows": 44, "cpr": 37, "ceil": 400, "smoke_rows": 1},
         "inherited": "Every window already exposed by the E21 full-window encoding pass and the sealed E21 direct / system cells (E35 sub10 and four-row, E39, E41) on the same discovery calls; no new speech identity and no new split. Prior exposure is inherited in full.",
+    },
+    "e22": {
+        "at": "e220", "profile": "earnings22", "carrier_lock_key": "earnings22-original", "stem": "earnings22-native-stage3-module-alloff-v1",
+        "package_stem": "earnings22-module-alloff-v1", "date": "2026-10-11", "split_role": "dev",
+        "run_stem": "SAEA-EARNINGS22-NATIVE-STAGE3-MODULE-ALLOFF", "roster": "Earnings-22 whole dev split, 10 calls / 451 native windows (split identity 89b178d6...)",
+        "session": "serving-e22-native-window-flightruntime-np4-max1024-v1", "live_fit": False,
+        "parents": {"arm": None, "smoke": None},
+        "cells": {"arm": "earnings22-native-stage3-module-alloff-v1", "smoke": "earnings22-native-stage3-module-alloff-smoke-4-v1"},
+        "budget": {"arm": {"calls": 451, "audio": 40056, "gpu": 1.5, "scoring": 1}, "smoke": {"calls": 4, "audio": 360, "gpu": 0.3, "scoring": 0}},
+        "lock_fragment": "e22-native-window-direct-base-v1",
+        "baselines": {"arm": "e22-native-window-direct-dev10-v1", "smoke": "e22-native-window-direct-four-row-v1"},
+        "datasets": {"arm": "earnings22-dev-subset10", "smoke": "e22-native-window-four-row-v1"},
+        "model_fragment": "q4km-e22-native-window-packets-cddb000c-np4-max1024-v1",
+        "inventory_receipt": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/window-inventory-receipt-v1.json",
+        "no_lock": "Earnings-22 has no locked system and no direct parent cell: the shared direct layer e22-native-window-direct-base-v1 (the phase-direct-only-v1 program and its one phase_material.direct entry, the generic transcription instruction bytes shared with E21) is the whole comparator, so the module's all-off arm is that base fragment plus the E21-shaped native-window geometry and pins on the Earnings-22 dev split. No knowledge supply, no ConEC layer, no entity scorer, no analytical tool.",
+        "own_null": "Earnings-22 has NO measured own null on this form (no cell has ever flown on the native-window dev form); the module null is unmeasured until an in-chain A/A of this arm seals (design 2b.3). The all-off arm is therefore a form proof only, and no benefit may be claimed on this carrier until that A/A exists.",
+        "scorers": "asr-wer-whisper only (corpus-level Whisper English-normalizer WER, the paper-facing metric; no ConEC, entity or numeric layer exists for Earnings-22). Scorer variant: the PLAIN window-form scorer, NOT the ESB short-form tail-2 s variant of docs/readiness/2026-09-05-scoring-alignment-conclusions.md (15.937 sealed vs 9.2377 under the 2.0 s digital-silence tail, deviation D-TS2-3): this cell appends no tail silence, reads whole 90 s windows of whole dev calls rather than ESB test utterances, and so none of 15.937 / 9.2377 / 9.79 / 12.3 is a comparator and no alignment band is claimed",
+        "model_tool": "Frozen Q4_K_M decoder-only (q4km-e22-native-window-packets-cddb000c-np4-max1024-v1): c98304 np4 max1024, no mmproj; Earnings-22 dev speech-feature packets NOT YET PRODUCED (they need an encoder pass); NO native tool authority; the direct-only program (one contact per window) compiled by the consumption module from its all-off block (profile earnings22)",
+        "carrier_line": "earnings22-original dev {rows}",
+        "chain": {"rows": 10, "cpr": 45, "ceil": 400, "smoke_rows": 1},
+        "inherited": "Every call already exposed to the Qwen3-Omni core in earlier Earnings-22 dev work (R0 smoke, the BENCH e22cold / e22-b90 subset10 runs and the ESB dev prompt A/B and shape-C cells on the same ten calls); the 451 windows themselves were cut model-free on 2026-10-11 and have never met an encoder or the core. No new speech identity and no new split. Prior exposure is inherited in full.",
     },
 }
 
@@ -196,11 +224,129 @@ def derive_e21(spec: dict, ids: dict, block: dict, measurement: dict, package: s
             }],
             "execution_plan": {"execution_profile": "bounded-discovery-probe", "planned_gpu_hours": spec["budget"][key]["gpu"],
                                "planned_model_calls": spec["budget"][key]["calls"],
-                               "planned_speech_audio_seconds": spec["budget"][key]["audio"], "split_role": "discovery"},
+                               "planned_speech_audio_seconds": spec["budget"][key]["audio"], "split_role": spec.get("split_role", "discovery")},
             "execution_profile": "bounded-discovery-probe",
             "population": population,
         }
         document["family_budget"] = family_budget(spec, key, int(population.get("execution_units", 0)), spec["budget"][key]["audio"])
+        document["generation_budget"] = {
+            "cap": spec["budget"][key]["calls"], "target": spec["budget"][key]["calls"], "ceilings_are_not_targets": True,
+            "definition": f"The direct-only phase program makes exactly one contact per native window: {spec['budget'][key]['calls']} windows x 1. No fit identity (the direct baseline declares none, as the flown E35 direct arms). Ceilings, not targets; run-cumulative across attempts.",
+        }
+        document["failure_policy"] = (
+            "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, prompt, "
+            "geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation "
+            "attempt id); a second failure closes the cell and the fix is proven on a four-row dry run. A partial "
+            "manifest is never scored and never read.")
+        written.update(_finish_experiment(spec, key, ids, document, block, measurement, package))
+    return written
+
+
+DATA_ROOT = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+#: A pin whose artifact does not exist yet (the Earnings-22 window feature packets need an encoder pass): an all-zero
+#: SHA-256 can never match a real file, so a runtime that reaches it refuses at "file missing" -- the first
+#: contact-requiring step -- and the package carries the placeholder as a named pending pin.
+PENDING_SHA256 = "0" * 64
+
+
+def e22_receipt(spec: dict) -> dict:
+    return json.loads(rd(spec["inventory_receipt"]))
+
+
+def e22_rows(spec: dict) -> dict:
+    receipt = e22_receipt(spec)
+    return {"arm": int(receipt["inventory"]["request_count"]), "smoke": int(receipt["four_row"]["unit_count"])}
+
+
+def derive_e22(spec: dict, ids: dict, block: dict, measurement: dict, package: str) -> dict:
+    """Write the two baseline fragments, the smoke dataset fragment, the two experiment fragments and the campaign plans
+    of the Earnings-22 all-off cells from the model-free window-inventory receipt (no parent cell exists to copy)."""
+
+    from speech_aware_evidence_acquisition.reproduction.probe_split import load_verified_probe_split  # noqa: PLC0415
+
+    receipt = e22_receipt(spec)
+    base = json.loads(rd(f"configs/baseline/{spec['lock_fragment']}.json"))
+    e21_direct = json.loads(rd("configs/baseline/e21-native-window-direct-full44-v1.json"))
+    inventory, four = receipt["inventory"], receipt["four_row"]
+    smoke_split = load_verified_probe_split(REPO_ROOT, "e22-native-window-four-row-v1")
+    probe = json.loads(rd("docs/receipts/probe-samples/e22-native-window-four-row-v1.json"))
+    if probe["split_identity_hash"] != four["split_identity_hash"]:
+        raise SystemExit("the four-row receipt split hash differs from the probe-sample receipt")
+    written: dict = {}
+    pins = {
+        "arm": {
+            "units": {"batch": inventory["batch"], "registry_run_id": inventory["run_id"], "relpath": inventory["relpath"],
+                      "sha256": inventory["file_sha256"], "split_identity_hash": receipt["split_identity_hash"],
+                      "unit_count": inventory["request_count"]},
+            "packets": f"{DATA_ROOT}/analysis/SAEA-E22-DEV-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+        },
+        "smoke": {
+            "units": {"batch": four["batch"], "registry_run_id": four["registry_run_id"], "relpath": four["relpath"],
+                      "sha256": four["file_sha256"], "split_identity_hash": smoke_split.identity_hash,
+                      "unit_count": four["unit_count"]},
+            "packets": f"{DATA_ROOT}/analysis/SAEA-E22-NATIVE-WINDOW-FOUR-ROW-V1/window-feature-packets.json",
+        },
+    }
+    for key in ("arm", "smoke"):
+        form = ("the four-row form smoke (the first four windows of call 4453225)" if key == "smoke"
+                else "the whole 10-call dev split (451 windows)")
+        baseline = {
+            "arm": "speech-feature-query", "evidence_mismatch": False, "evidence_source": "none",
+            "ojw_workflow_timeout_seconds": e21_direct["ojw_workflow_timeout_seconds"],
+            "phase_material": base["phase_material"], "policy": base["policy"],
+            "prepared_execution_units": pins[key]["units"],
+            "prepared_window_feature_packets": {"path": pins[key]["packets"], "sha256": PENDING_SHA256},
+            "prompt_fit_multiple": e21_direct["prompt_fit_multiple"], "scorers": ["asr-wer-whisper"],
+            "serving_slot_tokens": e21_direct["serving_slot_tokens"], "serving_slots": e21_direct["serving_slots"],
+            "speech_feature_key_representation_id": "saea-e22-native-window-v1:current-window",
+            "speech_feature_matcher_policy_id": "saea-e22-native-window-v1",
+            "task_contract_source": e21_direct["task_contract_source"], "task_instruction": e21_direct["task_instruction"],
+            "what_this_is": (
+                "HELD pure frozen-core comparator of the Earnings-22 consumption-module all-off arm on " + form + ", through the "
+                "same source-unit, shared controller / OpenJiuwen, delivery and scoring path the Earnings-21 native-window direct "
+                "cells use. One direct contact per 90 s window; no facets, values, supply route, knowledge supply or tool. "
+                "SCORER VARIANT (declared): asr-wer-whisper only -- corpus-level WER under the Whisper English normalizer, the "
+                "paper-facing metric -- on the PLAIN window form. It is NOT the ESB short-form tail-2 s variant "
+                "(docs/readiness/2026-09-05-scoring-alignment-conclusions.md: 15.937 NOT ALIGNED sealed vs 9.2377 ALIGNED with "
+                "2.0 s of digital silence appended, deviation D-TS2-3): this cell appends no silence, its population is whole "
+                "dev calls in 90 s windows rather than ESB test utterances, and so neither number, nor the published 9.79 / 12.3, "
+                "is a comparator; D-TS2-3 does not apply and no alignment band is claimed. The prepared_window_feature_packets "
+                "sha256 is an all-zero PENDING pin: the Earnings-22 dev packets need an encoder pass (lease, GPU) that this "
+                "registration neither performs nor authorizes."),
+        }
+        name = spec["baselines"][key]
+        written[f"configs/baseline/{name}.json"] = wjson(f"configs/baseline/{name}.json", baseline)
+    smoke_dataset = {
+        "carrier_lock_key": spec["carrier_lock_key"], "split_id": "e22-native-window-four-row-v1",
+        "split_name": "e22-native-window-four-row-v1",
+        "e21_runtime_subset": {"receipt_split_name": "e22-native-window-four-row-v1", "parent_split": "dev", "subset_role": "construction"},
+        "dataset_note": ("The key name e21_runtime_subset is the shared Earnings runtime adapter's own (one subset form for both Earnings carriers). "
+                         "One already-dev call (4453225, the first dev call in inventory order; docs/receipts/probe-samples/e22-native-window-four-row-v1.json), "
+                         "re-bound to the native-window execution-unit mechanism: its first four windows of the shared Earnings-22 dev window inventory, "
+                         "contiguous from w0001. No new sample authority: it names no id the dev split does not already contain."),
+    }
+    written["configs/dataset/e22-native-window-four-row-v1.json"] = wjson("configs/dataset/e22-native-window-four-row-v1.json", smoke_dataset)
+    for key in ("arm", "smoke"):
+        units = pins[key]["units"]["unit_count"]
+        document = {
+            "cells": [{
+                "allowed_execution_stages": ["check", "worker", "campaign"],
+                "attempt_id": ids[key]["attempt_id"], "baseline_fragment": spec["baselines"][key],
+                "cell_id": ids[key]["cell"], "dataset_fragment": spec["datasets"][key],
+                "model_fragment": spec["model_fragment"], "run_id": ids[key]["run_id"],
+            }],
+            "execution_plan": {"execution_profile": "bounded-discovery-probe", "planned_gpu_hours": spec["budget"][key]["gpu"],
+                               "planned_model_calls": spec["budget"][key]["calls"],
+                               "planned_speech_audio_seconds": spec["budget"][key]["audio"], "split_role": spec["split_role"]},
+            "execution_profile": "bounded-discovery-probe",
+            "population": {
+                "carrier": spec["carrier_lock_key"], "count": 10 if key == "arm" else 1, "dataset_fragment": spec["datasets"][key],
+                "execution_units": units, "historically_exposed": True,
+                "split_identity_hash": pins[key]["units"]["split_identity_hash"],
+                **({"roster_receipt": "docs/receipts/probe-samples/e22-native-window-four-row-v1.json"} if key == "smoke" else {}),
+            },
+        }
+        document["family_budget"] = family_budget(spec, key, units, spec["budget"][key]["audio"])
         document["generation_budget"] = {
             "cap": spec["budget"][key]["calls"], "target": spec["budget"][key]["calls"], "ceilings_are_not_targets": True,
             "definition": f"The direct-only phase program makes exactly one contact per native window: {spec['budget'][key]['calls']} windows x 1. No fit identity (the direct baseline declares none, as the flown E35 direct arms). Ceilings, not targets; run-cumulative across attempts.",
@@ -219,7 +365,7 @@ def _finish_experiment(spec, key, ids, document, block, measurement, package) ->
     cell["readiness"] = {
         "reason": (
             f"Consumption-module all-off arm on {spec['profile']} (owner decision 196, direction 205; design 2b.3 carrier "
-            f"admission gate), registered before contact on {DATE} by scripts/flights/module/"
+            f"admission gate), registered before contact on {spec.get('date', DATE)} by scripts/flights/module/"
             "register_carrier_module_alloff_cells.py. HELD: decision 187 keeps the GPU on SLURP until the SLURP lock; "
             f"nothing flies before the owner reopens this carrier and root mints coordination/{spec['stem']}/"
             "root-admission-v1.json. The flip is scripts/flights/module/module_alloff_" + spec["at"] + "_flip.sh. "
@@ -227,7 +373,7 @@ def _finish_experiment(spec, key, ids, document, block, measurement, package) ->
             "--allow-output-change is never passed. Nothing here authorises a flight, a readiness flip or an admission entry."),
         "requirements": [], "state": "held",
     }
-    document["date"] = DATE
+    document["date"] = spec.get("date", DATE)
     document["experiment_id"] = ids[key]["run_id"]
     document["fragment_kind"] = f"saea-{spec['stem']}"
     document["purpose"] = (
@@ -281,18 +427,21 @@ def main(argv: list[str] | None = None) -> int:
     spec = CARRIERS[args.carrier]
     ids = identities(spec)
     block = proof.alloff_block(spec["profile"])
-    package = f"docs/readiness/{DATE}-{spec['stem']}"
+    package = f"docs/readiness/{spec.get('date', DATE)}-{spec.get('package_stem', spec['stem'])}"
     prereg = package + "-preregistration.md"
     read_run = f"{spec['run_stem']}-FORM-READ-V1"
     decision_id = f"{spec['stem']}-admission-v1"
     decision_relpath = f"coordination/{spec['stem']}/root-admission-v1.json"
 
     rows = {}
-    for key in ("arm", "smoke"):
-        parent_doc = json.loads(rd(f"configs/experiment/{spec['parents'][key]}.json"))
-        rows[key] = int(parent_doc["population"].get("execution_units") or parent_doc["population"]["count"])
+    if args.carrier == "e22":
+        rows = e22_rows(spec)
+    else:
+        for key in ("arm", "smoke"):
+            parent_doc = json.loads(rd(f"configs/experiment/{spec['parents'][key]}.json"))
+            rows[key] = int(parent_doc["population"].get("execution_units") or parent_doc["population"]["count"])
     measurement = measurement_blocks(spec, ids, rows)
-    derive = derive_a2t if args.carrier == "a2t" else derive_e21
+    derive = {"a2t": derive_a2t, "e21": derive_e21, "e22": derive_e22}[args.carrier]
     written = derive(spec, ids, block, measurement, package)
 
     byte_proof = proof.run_case(spec["at"], REPO_ROOT)
@@ -331,6 +480,15 @@ def main(argv: list[str] | None = None) -> int:
         "stage3_measurement": measurement,
         "not_registered": "No component-on cell for this carrier (decision 187 keeps the GPU on SLURP; a component turns on per carrier only through its own read, design 2b.3 item 4).",
     }
+    if spec.get("inventory_receipt"):
+        facts["window_inventory_receipt"] = {"path": spec["inventory_receipt"], "sha256": hashlib.sha256(rd(spec["inventory_receipt"]).encode("utf-8")).hexdigest()}
+        facts["pending_pins"] = {
+            "prepared_window_feature_packets": ("all-zero sha256 placeholder in both baseline fragments: the Earnings-22 dev window feature "
+                                                "packets do not exist; they need an encoder pass (root lease, GPU, registration, owner authorization). "
+                                                "Producing them changes both composed config hashes, so root re-runs this script (or the repin tool) afterwards."),
+            "knowledge_snapshot": "none declared; see the package README for what the shared runtime does with a phase program that declares none",
+            "serving_session": f"{spec['session']} is a NEW session name: its feature root differs from the resident E21 session, so no resident session serves it",
+        }
     facts_sha = wjson(f"{package}/registered-facts-v1.json", facts)
     protocol = {
         "authority": f"{DESIGN} sections 2b and 3.2; {OWNER_DECISIONS} rows 187, 196; {INSTRUMENT} rule 5 (a form proof claims no benefit)",
@@ -360,7 +518,7 @@ def main(argv: list[str] | None = None) -> int:
                                          "planned_model_calls": c["family_budget"]["generation_calls_cap"],
                                          "planned_speech_audio_seconds": c["family_budget"]["repeated_speech_audio_seconds_cap"],
                                          "protocol_hash": c["protocol_hash"], "run_id": c["run_id"], "schema": "saea-execution-plan-v1",
-                                         "split_identity_hash": c["split_identity_hash"], "split_role": "discovery",
+                                         "split_identity_hash": c["split_identity_hash"], "split_role": spec.get("split_role", "discovery"),
                                          "study": "speech-aware-evidence-acquisition"},
                       "purpose": f"{c['run_id']}: the consumption module's all-off arm on {spec['profile']} ({key}); a form proof, no benefit claimed.",
                       "scoring": "One complete official score after a successful seal; no partial score." if key == "arm" else "No score (form smoke)."}
@@ -377,7 +535,7 @@ def main(argv: list[str] | None = None) -> int:
         "recipe_id": f"{spec['stem']}-form-read-v1", "read_run_id": read_run, "schema": "saea-analysis-recipe-v1",
         "arms": {"arm": {"run_id": cells["arm"]["run_id"], "attempt_id": cells["arm"]["attempt_id"],
                          "outputs_sha256": "PENDING_SEAL", "run_manifest_sha256": "PENDING_SEAL", "scores_sha256": "PENDING_SEAL"},
-                 "direct_parent": {"experiment": spec["parents"]["arm"], "role": "the direct cell whose bytes the all-off arm carries; context only"}},
+                 "direct_parent": {"experiment": spec["parents"]["arm"] or spec["lock_fragment"], "role": "the direct cell (or, for a carrier with no direct cell, the shared direct base fragment) whose bytes the all-off arm carries; context only"}},
         "design": "DESCRIPTIVE form read: request identity against the direct parent's registered bytes, row completeness, the official scorer(s) reported beside, contacts per minute; no verdict, no benefit, no admission.",
         "scorers": spec["scorers"], "own_null": spec["own_null"],
         "boundary": "Development numbers only (owner decisions 28 and 86). No utterance text, transcript, gold label or model output is printed or persisted: ids, counts, rates and hashes only.",
@@ -412,7 +570,7 @@ def main(argv: list[str] | None = None) -> int:
     none_members = ", ".join(sorted(n for n, v in hook_table.items() if v == "None"))
     readme = f"""# Consumption-module all-off arm on {spec['profile']} (carrier admission gate, HELD)
 
-Registered before contact {DATE} at study commit `{args.study_commit[:9]}` (branch `{args.branch}`) by
+Registered before contact {spec.get("date", DATE)} at study commit `{args.study_commit[:9]}` (branch `{args.branch}`) by
 `scripts/flights/module/register_carrier_module_alloff_cells.py --carrier {args.carrier}`; owner decision 196, direction
 205; design `{DESIGN}` sections 2b.3 and 3.2. **HELD**: decision 187 keeps the GPU on SLURP until the SLURP lock. Nothing
 here authorises a flight, a flip or an admission entry.
@@ -443,7 +601,7 @@ re-pins the smoke and the arm. (3) `scripts/flights/module/batch_chain_module_al
 **Not authorised.** No flight, no component-on cell on this carrier, no re-flight of any sealed cell, no test-split contact.
 """
     readme_sha = wr(f"{package}/README.md", readme)
-    prereg_text = f"""# Preregistration: consumption-module all-off arm on {spec['profile']} ({DATE}, HELD)
+    prereg_text = f"""# Preregistration: consumption-module all-off arm on {spec['profile']} ({spec.get('date', DATE)}, HELD)
 
 Package `{package}/`. The all-off block of profile `{spec['profile']}` compiles to the carrier's direct layer; the cell is
 a FORM proof of the carrier admission gate (design 2b.3). No benefit is claimed and no number from it admits anything.
@@ -478,19 +636,36 @@ a FORM proof of the carrier admission gate (design 2b.3). No benefit is claimed 
                          f"--allow-output-change must never be passed. Byte proof: module_equivalence_proof.py --at {spec['at']} ok. Measurement: form-proof, "
                          f"claims_benefit false. Read: {read_run}. Stop and preserve on the first failure; AT MOST ONE recovery re-registration.")
                 out.append(ledger_row([args.registered_at, run, "bounded-discovery-probe", what, spec["model_tool"],
-                                       spec["carrier_line"].format(rows=c["rows"]), "discovery", c["split_identity_hash"], "no", str(calls),
+                                       spec["carrier_line"].format(rows=c["rows"]), spec.get("split_role", "discovery"), c["split_identity_hash"], "no", str(calls),
                                        str(c["family_budget"]["repeated_speech_audio_seconds_cap"]), str(c["family_budget"]["gpu_hours_fit_inclusive"]),
                                        spec["inherited"], f"{package}/{plan}", notes]))
         out.append(ledger_row([args.registered_at, read_run, "model-free-check",
                                f"The {spec['profile']} all-off arm's descriptive form read: request identity against the direct parent, completeness, official scorer(s) beside; no verdict.",
                                "No model, tokenizer, encoder or server contact: sealed manifests, per-sample official scores and receipts only.",
-                               spec["carrier_line"].format(rows=cells["arm"]["rows"]), "discovery", cells["arm"]["split_identity_hash"], "no", "0", "0", "0.0",
+                               spec["carrier_line"].format(rows=cells["arm"]["rows"]), spec.get("split_role", "discovery"), cells["arm"]["split_identity_hash"], "no", "0", "0", "0.0",
                                "Reads only sealed manifests of this package; no new audio, gold or reference exposure.", f"{package}/analysis-recipe-v1.json",
                                f"REGISTERED BEFORE CONTACT (DRAFT, root countersignature pending) {args.registered_at[:10]} with the package so scripts/checks/flight_registration_check.py finds it; recipe {package}/analysis-recipe-v1.json. No utterance text, gold, transcript or model output is printed or persisted."]))
+        if spec.get("inventory_receipt"):
+            rec = e22_receipt(spec)
+            inv = rec["inventory"]
+            out.append(ledger_row([
+                args.registered_at, inv["run_id"], "model-free-check",
+                "Prepare the Earnings-22 dev (10 whole calls) fixed 90-second window roster once through the shared exact cutter: the execution-unit inventory the HELD Earnings-22 all-off cells pin, with the first-four-window subset batch " + rec["four_row"]["batch"],
+                "Shared exact cutter and source inventory (FlightRuntime.prepare_window_inventory); 16 CPU workers; deterministic roster order; no encoder forward pass",
+                spec["carrier_line"].format(rows=inv["request_count"]) + " windows", "dev (plan label discovery, as the E21 inventory fragment)",
+                rec["split_identity_hash"], "yes", "0", "0", "0.0",
+                "Source dev audio only; no model service, encoder, tokenizer, scorer, reference or transcript read; calls already exposed in earlier Earnings-22 dev work.",
+                "configs/experiment/e22-dev-window-inventory-v1.json; " + rec["inventory"]["relpath"],
+                f"EXECUTED MODEL-FREE (agent run, root countersignature pending) {args.registered_at[:10]} at study commit {args.study_commit[:9]} (worktree {args.worktree}, branch {args.branch}). "
+                f"Completed {inv['request_count']} unique windows from {inv['calls']} calls; decoded window audio {inv['window_audio_seconds_decoded']} seconds; inventory file SHA256 {inv['file_sha256']} (output_sha256 {inv['output_sha256']}); "
+                f"four-row batch {rec['four_row']['batch']} file SHA256 {rec['four_row']['file_sha256']} (4 windows of call {rec['four_row']['sample_id']}, metadata re-partition, no audio read). "
+                f"Receipt {package}/window-inventory-receipt-v1.json. Preserve the one source MP3 decoder warning; no neural or scorer contact."]))
         header = (f"\n## The consumption module's all-off arm on {spec['profile']} (carrier admission gate, design 2b.3; owner decision 196, direction 205) "
-                  f"-- the arm, the four-row smoke{', their FIT identities' if spec['live_fit'] else ''} and the READ row (DRAFT, root countersignature pending; HELD under decision 187)\n\n"
-                  "Unconsumed rows registered with the package. None is countersigned and none authorises a contact.\n\n"
-                  "| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |\n"
+                  f"-- the arm, the four-row smoke{', their FIT identities' if spec['live_fit'] else ''}{', the model-free window-inventory row' if spec.get('inventory_receipt') else ''} and the READ row (DRAFT, root countersignature pending; HELD under decision 187)\n\n"
+                  + ("Unconsumed rows registered with the package, except the model-free window-inventory row, which was executed (zero contacts). None is countersigned and none authorises a contact.\n\n"
+                     if spec.get("inventory_receipt") else
+                     "Unconsumed rows registered with the package. None is countersigned and none authorises a contact.\n\n")
+                  + "| date | run/experiment id | execution profile | scope | model/tool | speech carrier + split | split role | split identity hash | consumed | calls | speech audio seconds | gpu hours | inherited exposure | artifacts | notes |\n"
                   "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n")
         io.open(REPO_ROOT / LEDGER, "w", encoding="utf-8", newline="").write(ledger.rstrip("\n") + "\n" + header + "\n".join(out) + "\n")
         appended = len(out)
