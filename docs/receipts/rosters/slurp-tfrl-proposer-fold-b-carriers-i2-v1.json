@@ -1,0 +1,91 @@
+{
+  "authority": "Decision 263-A (design docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md 3.1): the TFRL proposer / reflector contact is text-only and carried by ONE carrier row per contact; the flown population is this construction-role selection of Fold B.",
+  "carrier_lock_key": "slurp",
+  "disjointness_proof": {
+    "max_recordings_per_utterance_exemplars": 1,
+    "max_recordings_per_utterance_fold_a": 1,
+    "max_recordings_per_utterance_fold_b": 1,
+    "non_train_ids_exemplars": 0,
+    "non_train_ids_fold_a": 0,
+    "non_train_ids_fold_b": 0,
+    "shared_recordings_fold_a_exemplars": 0,
+    "shared_recordings_fold_a_fold_b": 0,
+    "shared_recordings_fold_b_exemplars": 0,
+    "shared_utterances_fold_a_exemplars": 0,
+    "shared_utterances_fold_a_fold_b": 0,
+    "shared_utterances_fold_b_exemplars": 0,
+    "shared_with_contacted_train_exemplars": 0,
+    "shared_with_contacted_train_fold_a": 0,
+    "shared_with_contacted_train_fold_b": 0,
+    "shared_with_devel_exemplars": 0,
+    "shared_with_devel_fold_a": 0,
+    "shared_with_devel_fold_b": 0,
+    "shared_with_test_exemplars": 0,
+    "shared_with_test_fold_a": 0,
+    "shared_with_test_fold_b": 0
+  },
+  "draw_method": "No draw: a seeded sha256 ranking of the parent's sample ids; every selected item is the parent's item verbatim.",
+  "excluded_count": 1077,
+  "generator": "scripts/flights/tfrl/derive_tfrl_iteration_cells.py",
+  "items": [
+    {
+      "audio_seconds": 3.692,
+      "headset": false,
+      "id": "slurp:train:001345:audio-1501697696",
+      "key": "slurp:slurp:train:001345:audio-1501697696",
+      "sample_id": "slurp:train:001345:audio-1501697696",
+      "stratum": "datetime",
+      "utterance_id": "slurp:train:001345"
+    },
+    {
+      "audio_seconds": 1.536,
+      "headset": true,
+      "id": "slurp:train:005850:audio-1501689699-headset",
+      "key": "slurp:slurp:train:005850:audio-1501689699-headset",
+      "sample_id": "slurp:train:005850:audio-1501689699-headset",
+      "stratum": "iot",
+      "utterance_id": "slurp:train:005850"
+    },
+    {
+      "audio_seconds": 8.256,
+      "headset": true,
+      "id": "slurp:train:015681:audio-1497558406-headset",
+      "key": "slurp:slurp:train:015681:audio-1497558406-headset",
+      "sample_id": "slurp:train:015681:audio-1497558406-headset",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015681"
+    }
+  ],
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent": {
+    "count": 1080,
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "per_stratum": {
+    "datetime": 1,
+    "iot": 1,
+    "social": 1
+  },
+  "roster_id": "SLURP-TFRL-PROPOSER-FOLD-B-CARRIERS-I2-V1",
+  "roster_role": "construction",
+  "roster_role_note": "construction: the contact reads aggregate tables only (no per-row gold, no utterance text); the CARRIER row is the flight's row identity, the material it carries is the iteration's tables.",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20261011,
+  "selection_rule": "the first 3 Fold B ids by sha256(seed|tag|sample_id); order ascending sample_id",
+  "selection_source": {
+    "rule": "seeded-sha256-rank",
+    "seed": 20261011
+  },
+  "split_identity_hash": "68872b274fb00033d90f187a37945626881288104285bd5ab7def2e4d22a4213",
+  "split_role": "discovery",
+  "strata_counts": {
+    "datetime": 1,
+    "iot": 1,
+    "social": 1
+  }
+}

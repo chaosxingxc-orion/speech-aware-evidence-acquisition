@@ -1,0 +1,31 @@
+{
+  "authority": "docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md sections 3 and 7; docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "cell_kind": "TEXT-ONLY PROPOSER / REFLECTOR -- form proof; the offline step validates and archives the sealed proposals",
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": 0,
+    "server": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check (the offline step); bounded-discovery-probe (the two text-only flights)",
+  "measurement_design": "form-proof",
+  "read_run_id": "SAEA-SLURP-STAGE3-TFRL-PROPOSERS-I2-READ-V1",
+  "recipe_id": "slurp-tfrl-proposers-i2-validation-analysis-v1",
+  "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
+  "run_ids": {
+    "ace": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I2-V1",
+    "ace_fit": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I2-FIT-V1",
+    "read": "SAEA-SLURP-STAGE3-TFRL-PROPOSERS-I2-READ-V1",
+    "typed": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1",
+    "typed_fit": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_validate_and_curate": "python -B scripts/flights/tfrl/tfrl_loop_driver.py --execute open --iter 2 --stage cell (validates the sealed typed candidates through speech_aware_evidence_acquisition.rails.tfrl_typed_proposer and curates the ACE deltas through speech_aware_evidence_acquisition.rails.tfrl_ace_material; reads only sealed receipts, no row gold and no utterance text)",
+    "2_archive": "the same step writes the candidate states through speech_aware_evidence_acquisition.analysis.sealed_credit.archive (write-once receipts under the loop package); no score is computed and nothing is selected here"
+  },
+  "what_is_not_here": "No score, no paired read, no margins block and no admission: the column cells and the loop's close step read effects."
+}

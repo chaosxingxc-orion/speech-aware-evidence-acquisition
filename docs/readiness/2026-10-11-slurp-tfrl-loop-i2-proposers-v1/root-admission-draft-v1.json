@@ -1,0 +1,64 @@
+{
+  "_draft_note": "A DRAFT for the coordinator to mint with scripts/flights/tfrl/tfrl_mint_receipt.py --kind proposers. Authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-proposers-v1/analysis-recipe-v1.json",
+      "sha256": "83c30de30d0acef40148de62d4653953c5f2690369e794ce91c2f04c7d5d136e"
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-proposers-v1/protocol-registered-v1.json",
+      "sha256": "f17565b8d794493a03af51c4c12897dc145c0b243cbc134a2e8dce08d12191d2"
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-proposers-v1/registered-facts-v1.json",
+      "sha256": "f203f94d5492e093ea56f5e3bc8ddc8fa7e9d7c2549ff2dc85363ec6f802563f"
+    },
+    "registration_base_commit": "0000000000000000000000000000000000000000"
+  },
+  "authorization_basis": "Owner decisions 263-A / 264-A / 265 (2026-10-11); docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md section 3.",
+  "budget": {
+    "ace": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 0,
+      "generation_calls_cap": 54,
+      "gpu_hours_fit_inclusive": 0.1,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 142
+    },
+    "typed": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 0,
+      "generation_calls_cap": 9,
+      "gpu_hours_fit_inclusive": 0.1,
+      "native_task_contract_calls_cap": 0,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 41
+    }
+  },
+  "claim_boundary": "Text-only proposal contacts; no benefit claim.",
+  "decision": "Fly the loop iteration 2 typed proposer and ACE reflector cells (text-only).",
+  "decision_id": "slurp-tfrl-proposers-i2-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1",
+    "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I2-V1"
+  ],
+  "not_authorized": [
+    "any audio part",
+    "any best-of-N or re-sampling beyond the registered retries",
+    "--allow-output-change"
+  ],
+  "owner": "root",
+  "paid_api_calls": 0,
+  "recorded_at_utc": null,
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "no_child_start_stop": true
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

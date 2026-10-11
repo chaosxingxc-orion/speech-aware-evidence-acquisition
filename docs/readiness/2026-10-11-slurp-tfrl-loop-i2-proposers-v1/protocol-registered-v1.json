@@ -1,0 +1,44 @@
+{
+  "cells": {
+    "ace": {
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-ace-reflector-i2-generation-v1",
+      "cell": "slurp-native-stage3-tfrl-ace-reflector-i2-v1",
+      "composed_config_hash": "47b28ecfe8945754c0698f6bac8b238e30ab968574e75d79beebc8e230b32d4f",
+      "experiment": "slurp-native-stage3-tfrl-ace-reflector-i2-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-ace-reflector-i2-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I2-FIT-V1",
+      "protocol_hash": "ec3b2b1cfdbad01112200177d6fa615580c6613e832563581f6923211686e4c3",
+      "rows": 18,
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I2-V1",
+      "split_identity_hash": "c1d372b3fe8317c8163af2c01e3254ff4e4197bb2d5693235b17087de5320e54"
+    },
+    "typed": {
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-proposer-i2-generation-v1",
+      "cell": "slurp-native-stage3-tfrl-proposer-i2-v1",
+      "composed_config_hash": "7173692fae70e0125c703c74b37743a125a601af65921f9c7c033aba4c5052e7",
+      "experiment": "slurp-native-stage3-tfrl-proposer-i2-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-proposer-i2-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-FIT-V1",
+      "protocol_hash": "94e2f3a1512fc719fe8f834b264bae34fcbd3518c9fbe1e1b15a05da0fef768a",
+      "rows": 3,
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1",
+      "split_identity_hash": "68872b274fb00033d90f187a37945626881288104285bd5ab7def2e4d22a4213"
+    }
+  },
+  "failure_policy": "Stop and preserve on the first failure; the registered retries are the only re-asks; no best-of-N.",
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (Fold B only; Fold A confirmation and the DEV composed read are later registrations).",
+    "No candidate substitution by hand; only the labelled hand-author fallback, which needs an owner order.",
+    "No tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "No change of the delivering arm: lock carries no override and no release swap (invariants I7, I7v).",
+    "The ACE column is a non-delivering comparator and can never be locked (decision 245).",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt and the cells are flipped.",
+    "No paper-scale profile. No system-level claim."
+  ],
+  "protocol_id": "slurp-tfrl-loop-i2-proposers-protocol-v1",
+  "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "study_commit_at_registration": "0000000000000000000000000000000000000000",
+  "the_question": "Text-only proposer / reflector contacts: aggregate tables in, closed-schema proposals out; validated offline."
+}

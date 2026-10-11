@@ -1,0 +1,242 @@
+{
+  "authority": "Decision 263-A (design docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md 3.1): the TFRL proposer / reflector contact is text-only and carried by ONE carrier row per contact; the flown population is this construction-role selection of Fold B.",
+  "carrier_lock_key": "slurp",
+  "disjointness_proof": {
+    "max_recordings_per_utterance_exemplars": 1,
+    "max_recordings_per_utterance_fold_a": 1,
+    "max_recordings_per_utterance_fold_b": 1,
+    "non_train_ids_exemplars": 0,
+    "non_train_ids_fold_a": 0,
+    "non_train_ids_fold_b": 0,
+    "shared_recordings_fold_a_exemplars": 0,
+    "shared_recordings_fold_a_fold_b": 0,
+    "shared_recordings_fold_b_exemplars": 0,
+    "shared_utterances_fold_a_exemplars": 0,
+    "shared_utterances_fold_a_fold_b": 0,
+    "shared_utterances_fold_b_exemplars": 0,
+    "shared_with_contacted_train_exemplars": 0,
+    "shared_with_contacted_train_fold_a": 0,
+    "shared_with_contacted_train_fold_b": 0,
+    "shared_with_devel_exemplars": 0,
+    "shared_with_devel_fold_a": 0,
+    "shared_with_devel_fold_b": 0,
+    "shared_with_test_exemplars": 0,
+    "shared_with_test_fold_a": 0,
+    "shared_with_test_fold_b": 0
+  },
+  "draw_method": "No draw: a seeded sha256 ranking of the parent's sample ids; every selected item is the parent's item verbatim.",
+  "excluded_count": 1062,
+  "generator": "scripts/flights/tfrl/derive_tfrl_iteration_cells.py",
+  "items": [
+    {
+      "audio_seconds": 3.97,
+      "headset": false,
+      "id": "slurp:train:000070:audio-1488622295",
+      "key": "slurp:slurp:train:000070:audio-1488622295",
+      "sample_id": "slurp:train:000070:audio-1488622295",
+      "stratum": "music",
+      "utterance_id": "slurp:train:000070"
+    },
+    {
+      "audio_seconds": 1.536,
+      "headset": true,
+      "id": "slurp:train:000409:audio-1494606778-headset",
+      "key": "slurp:slurp:train:000409:audio-1494606778-headset",
+      "sample_id": "slurp:train:000409:audio-1494606778-headset",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:000409"
+    },
+    {
+      "audio_seconds": 2.752,
+      "headset": true,
+      "id": "slurp:train:000789:audio-1489499335-headset",
+      "key": "slurp:slurp:train:000789:audio-1489499335-headset",
+      "sample_id": "slurp:train:000789:audio-1489499335-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:000789"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:001064:audio--1505405558",
+      "key": "slurp:slurp:train:001064:audio--1505405558",
+      "sample_id": "slurp:train:001064:audio--1505405558",
+      "stratum": "audio",
+      "utterance_id": "slurp:train:001064"
+    },
+    {
+      "audio_seconds": 2.04775,
+      "headset": false,
+      "id": "slurp:train:002778:audio-1502462016",
+      "key": "slurp:slurp:train:002778:audio-1502462016",
+      "sample_id": "slurp:train:002778:audio-1502462016",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:002778"
+    },
+    {
+      "audio_seconds": 2.88,
+      "headset": true,
+      "id": "slurp:train:003153:audio-1498568043-headset",
+      "key": "slurp:slurp:train:003153:audio-1498568043-headset",
+      "sample_id": "slurp:train:003153:audio-1498568043-headset",
+      "stratum": "alarm",
+      "utterance_id": "slurp:train:003153"
+    },
+    {
+      "audio_seconds": 1.152,
+      "headset": true,
+      "id": "slurp:train:003353:audio-1434541258-headset",
+      "key": "slurp:slurp:train:003353:audio-1434541258-headset",
+      "sample_id": "slurp:train:003353:audio-1434541258-headset",
+      "stratum": "news",
+      "utterance_id": "slurp:train:003353"
+    },
+    {
+      "audio_seconds": 2.752,
+      "headset": true,
+      "id": "slurp:train:005167:audio-1501767910-headset",
+      "key": "slurp:slurp:train:005167:audio-1501767910-headset",
+      "sample_id": "slurp:train:005167:audio-1501767910-headset",
+      "stratum": "weather",
+      "utterance_id": "slurp:train:005167"
+    },
+    {
+      "audio_seconds": 3.83,
+      "headset": false,
+      "id": "slurp:train:006721:audio-1488560134",
+      "key": "slurp:slurp:train:006721:audio-1488560134",
+      "sample_id": "slurp:train:006721:audio-1488560134",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:006721"
+    },
+    {
+      "audio_seconds": 1.792,
+      "headset": true,
+      "id": "slurp:train:006917:audio-1495733823-headset",
+      "key": "slurp:slurp:train:006917:audio-1495733823-headset",
+      "sample_id": "slurp:train:006917:audio-1495733823-headset",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:006917"
+    },
+    {
+      "audio_seconds": 2.879625,
+      "headset": false,
+      "id": "slurp:train:007391:audio-1434543470",
+      "key": "slurp:slurp:train:007391:audio-1434543470",
+      "sample_id": "slurp:train:007391:audio-1434543470",
+      "stratum": "calendar",
+      "utterance_id": "slurp:train:007391"
+    },
+    {
+      "audio_seconds": 1.984,
+      "headset": true,
+      "id": "slurp:train:009749:audio--1504191578-headset",
+      "key": "slurp:slurp:train:009749:audio--1504191578-headset",
+      "sample_id": "slurp:train:009749:audio--1504191578-headset",
+      "stratum": "play",
+      "utterance_id": "slurp:train:009749"
+    },
+    {
+      "audio_seconds": 2.3676875,
+      "headset": false,
+      "id": "slurp:train:009848:audio--1504194889",
+      "key": "slurp:slurp:train:009848:audio--1504194889",
+      "sample_id": "slurp:train:009848:audio--1504194889",
+      "stratum": "play",
+      "utterance_id": "slurp:train:009848"
+    },
+    {
+      "audio_seconds": 2.3036875,
+      "headset": false,
+      "id": "slurp:train:012393:audio-1498576864",
+      "key": "slurp:slurp:train:012393:audio-1498576864",
+      "sample_id": "slurp:train:012393:audio-1498576864",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012393"
+    },
+    {
+      "audio_seconds": 3.007625,
+      "headset": false,
+      "id": "slurp:train:012769:audio-1498567363",
+      "key": "slurp:slurp:train:012769:audio-1498567363",
+      "sample_id": "slurp:train:012769:audio-1498567363",
+      "stratum": "transport",
+      "utterance_id": "slurp:train:012769"
+    },
+    {
+      "audio_seconds": 5.888,
+      "headset": true,
+      "id": "slurp:train:013428:audio-1490020278-headset",
+      "key": "slurp:slurp:train:013428:audio-1490020278-headset",
+      "sample_id": "slurp:train:013428:audio-1490020278-headset",
+      "stratum": "general",
+      "utterance_id": "slurp:train:013428"
+    },
+    {
+      "audio_seconds": 1.79175,
+      "headset": false,
+      "id": "slurp:train:014639:audio-1501687401",
+      "key": "slurp:slurp:train:014639:audio-1501687401",
+      "sample_id": "slurp:train:014639:audio-1501687401",
+      "stratum": "qa",
+      "utterance_id": "slurp:train:014639"
+    },
+    {
+      "audio_seconds": 2.176,
+      "headset": true,
+      "id": "slurp:train:015192:audio-1502199203-headset",
+      "key": "slurp:slurp:train:015192:audio-1502199203-headset",
+      "sample_id": "slurp:train:015192:audio-1502199203-headset",
+      "stratum": "social",
+      "utterance_id": "slurp:train:015192"
+    }
+  ],
+  "offline_guard": {
+    "attempted_targets": [],
+    "outbound_connection_attempts": 0
+  },
+  "parent": {
+    "count": 1080,
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "per_stratum": {
+    "alarm": 2,
+    "audio": 1,
+    "calendar": 3,
+    "general": 1,
+    "music": 1,
+    "news": 1,
+    "play": 2,
+    "qa": 1,
+    "social": 1,
+    "transport": 2,
+    "weather": 3
+  },
+  "roster_id": "SLURP-TFRL-ACE-REFLECTOR-FOLD-B-CARRIERS-I2-V1",
+  "roster_role": "construction",
+  "roster_role_note": "construction: the contact reads aggregate tables only (no per-row gold, no utterance text); the CARRIER row is the flight's row identity, the material it carries is the iteration's tables.",
+  "schema": "saea-roster-receipt-v1",
+  "seed": 20261011,
+  "selection_rule": "the first 18 Fold B ids by sha256(seed|tag|sample_id); order ascending sample_id",
+  "selection_source": {
+    "rule": "seeded-sha256-rank",
+    "seed": 20261011
+  },
+  "split_identity_hash": "c1d372b3fe8317c8163af2c01e3254ff4e4197bb2d5693235b17087de5320e54",
+  "split_role": "discovery",
+  "strata_counts": {
+    "alarm": 2,
+    "audio": 1,
+    "calendar": 3,
+    "general": 1,
+    "music": 1,
+    "news": 1,
+    "play": 2,
+    "qa": 1,
+    "social": 1,
+    "transport": 2,
+    "weather": 3
+  }
+}

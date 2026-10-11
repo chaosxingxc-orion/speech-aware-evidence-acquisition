@@ -1,0 +1,48 @@
+{
+  "cell": "slurp-native-stage3-tfrl-proposer-i2-v1",
+  "composed_config_hash": "7173692fae70e0125c703c74b37743a125a601af65921f9c7c033aba4c5052e7",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-tfrl-proposer-i2-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.1,
+    "planned_model_calls": 9,
+    "planned_speech_audio_seconds": 41,
+    "planned_speech_audio_seconds_note": "text-only contacts under the D2 freeze: realised speech seconds read 0 <= the declared ceiling",
+    "protocol_hash": "94e2f3a1512fc719fe8f834b264bae34fcbd3518c9fbe1e1b15a05da0fef768a",
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "68872b274fb00033d90f187a37945626881288104285bd5ab7def2e4d22a4213",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli worker/campaign on this cell alone through the batch driver (text-only, no audio part).",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-tfrl-proposer-i2-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 0,
+    "generation_calls_cap": 9,
+    "gpu_hours_fit_inclusive": 0.1,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 41
+  },
+  "loop_protocol": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json",
+    "status": "DRAFT-HELD"
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "0000000000000000000000000000000000000000",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-proposers-v1/protocol-registered-v1.json",
+    "sha256": "f17565b8d794493a03af51c4c12897dc145c0b243cbc134a2e8dce08d12191d2"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-TFRL-PROPOSER-I2-V1: text-only typed proposer contacts (form proof).",
+  "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

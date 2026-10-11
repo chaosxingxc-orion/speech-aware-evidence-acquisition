@@ -1,0 +1,68 @@
+{
+  "arm": "construction-proposer-text",
+  "evidence_source": "none",
+  "instruction_note": "The contact's instruction is rendered at flight time from the pinned aggregate artefacts and is never written to a receipt.",
+  "modality_note": "TEXT ONLY: the construction-proposer-text arm is bound by the D2 freeze to its text fields; no audio part and no speech-feature packet is ever opened. The carrier row's audio seconds are declared as a positive ceiling because the execution contract requires a positive declaration; realised speech seconds read 0.",
+  "phase_material": {
+    "propose": {
+      "instruction_fill": null,
+      "instruction_template": "probes/tfrl/typed-proposer-v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "saea-tfrl-typed-candidate-v1"
+    }
+  },
+  "policy": "phase-tfrl-typed-proposer-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/rosters/slurp-tfrl-proposer-fold-b-carriers-i2-v1.json",
+      "root": "repository",
+      "sha256": "39b084c09ef1f0ecf71f1c7c6f41b17f006cf3ee6b41b3b17dc6929054cd4327"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "root": "repository",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+    }
+  ],
+  "roster_note": "The flown population is the 3 CARRIER rows of docs/receipts/rosters/slurp-tfrl-proposer-fold-b-carriers-i2-v1.json (split identity 68872b274fb00033d90f187a37945626881288104285bd5ab7def2e4d22a4213), a seeded selection of TRAIN Fold B; a carrier is an identity anchor only.",
+  "scorers": [
+    "cost"
+  ],
+  "scoring_note": "Only the 'cost' scorer: a proposal is an ARTIFACT validated or curated offline, never an answer to a scored row.",
+  "serving_geometry_note": "The resident SLURP session geometry (np4 x 24,576 = -c 98304) of the model fragment q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1, declared so rails.adapters.slurp_runtime.configured_geometry binds the real server args instead of its (8, 8192) defaults (the ADV-1 precedent).",
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "task_instruction": "You are one contact of an automated optimisation loop for a spoken-language-understanding system. Answer exactly once, in the closed format the instruction names.",
+  "tfrl_proposer": {
+    "carriers": [
+      {
+        "allowed_classes": [
+          "construction"
+        ],
+        "sample_id": "slurp:train:001345:audio-1501697696"
+      },
+      {
+        "allowed_classes": [
+          "supply"
+        ],
+        "sample_id": "slurp:train:005850:audio-1501689699-headset"
+      },
+      {
+        "allowed_classes": [
+          "delivery",
+          "scope"
+        ],
+        "sample_id": "slurp:train:015681:audio-1497558406-headset"
+      }
+    ],
+    "context": {
+      "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i2/proposer-context.json",
+      "sha256": "c3ce437fc58197378e5f3a03272b16ed274aa6e010bc6be62e22600fcb7eb4e6"
+    },
+    "tables": {
+      "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i2/proposer-tables.json",
+      "sha256": "f4ba611eba7db878de7f7a3baa92b9b13f4b9da5ccd331e9e2ff7bd484d6b1d2"
+    }
+  },
+  "what_this_is": "Decision 263-A typed proposer contact: one text-only contact per carrier (construction, supply, delivery+scope) reading the iteration's aggregate tables and context and answering under the closed saea-tfrl-typed-candidate-v1 schema. Readiness HELD: this registration authorises no flight, no readiness flip and no admission entry."
+}
