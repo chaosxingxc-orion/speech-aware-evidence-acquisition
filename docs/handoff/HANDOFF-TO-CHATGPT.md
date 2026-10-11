@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T08:26:01Z
+Last refreshed: 2026-10-11T08:55:06Z
+
+## Construction variant (minus-r01 pool + agreement table) and ACE score fix merged; launch sequence queued behind the Thinking packet driver (2026-10-11T08:55:06Z, Fable 5.1 root)
+
+Master b52ad92ba. `construction_roster: r01c` moves only the exemplar-pool pins; guard proof 0/625 rows overlap under the variant; agreement table built CPU-only (625 x 20 votes); ACE prior_score rescaled, i1 release passes the preparer; construction DRAFT rows carry the re-derived plan hashes. Next: flight commit -> one re-pin (construction, tfrl i1, 266-E) -> countersign construction rows -> mint -> flip -> pins -> flip -> gates -> queue (~0.9 GPU-h) -> i1 proposer/reflector -> Fold B column. In build: Thinking packet driver (266-E). GPU idle; no owner decision open.
+
+Superseded stamp: 2026-10-11T08:26:01Z
 
 ## 266-E package merged HELD (Thinking needs its own speech packets); 671 ledger rows closed + new closure gate (2026-10-11T08:26:01Z, Fable 5.1 root)
 

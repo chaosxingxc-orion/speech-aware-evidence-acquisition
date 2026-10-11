@@ -1500,3 +1500,18 @@ mint -> flip -> plan pins -> flip -> gates -> queue (GPU resumes).
   at `no` are unflown, held, unsealed or decision-243 retirements.
 - Open engineering before the first GPU contact: the lock construction variant (minus-r01 pool + agreement table) and the ACE
   score-range fix; the Thinking packet-preparation driver. Then: flight commit, re-pin, countersign, mint, flip, gates, queue.
+
+### Construction variant + ACE score fix merged (4bdb54649, b52ad92ba); launch sequence next (coordinator, 2026-10-11)
+
+- `construction_roster: "r01c"` on a module block compiles onto the lock with exactly four leaves moved (the `train-exemplars`
+  release and snapshot pins -> the minus-r01 twins, 34,474 ids, 0 shared with R01C); the loader refuses the variant off
+  R01C, a stale agreement pin, or lock v2.3 (the i0 anchor names 50 R01C ids); the plain lock on R01C is refused with the
+  guard's message; a data-root test runs the runner's roster intersection: 0 of 625 rows under the variant, 625 under the
+  plain lock. Agreement table for the minus-r01 pool built CPU-only (`prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1/`,
+  625 rows x 20 votes, 400 rows byte-identical to the older R01C table); its ledger row updated in place, still DRAFT. The
+  construction cells stay on v2.2 + variant (P-ACE-0 makes v2.2 and v2.3 requests byte-identical). ACE `prior_score` is now
+  `(total - rank) / total`; an i1 release with R01C carriers passes the real preparer.
+- Launch sequence (after the Thinking packet driver merges): freeze the flight commit; one re-pin of every live HELD
+  package (tfrl construction + smoke, tfrl i1 proposers and column, 266-E four cells); countersign the construction rows;
+  mint; loop-form flip; plan pins; flip; gates; queue `batch_chain_tfrl_const.sh` (about 0.9 GPU-h). Then the i1
+  proposer/reflector cell on its sealed tables, then the Fold B column (lock / aa / ace). 266-E runs after the packet pass.
