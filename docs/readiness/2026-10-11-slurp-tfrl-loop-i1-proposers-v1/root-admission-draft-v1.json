@@ -3,7 +3,7 @@
   "antecedents": {
     "protocol": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-proposers-v1/protocol-registered-v1.json",
-      "sha256": "f62f44adc08f4da0830045acf3bb8d38b00f5a07814f190863b4fa244273a79d"
+      "sha256": "d9957b62a0025bbd206874ac39319c84adaf4f8d0fe3453e222f5a2f7c69b526"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-proposers-v1/registered-facts-v1.json",

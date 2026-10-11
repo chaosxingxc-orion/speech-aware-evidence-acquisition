@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-tfrl-ace-reflector-i1-v1",
-  "composed_config_hash": "130ac82d0f9b4a084b8c3d742f552eb34a7c7efea621a3d2a0458963bdc21e31",
+  "composed_config_hash": "1853584315114dedcec1a0e0ccc8d5f8e127632497daa2658cdeff8442bc747f",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-tfrl-ace-reflector-i1-generation-v1",
     "carrier_lock_key": "slurp",
@@ -9,7 +9,7 @@
     "planned_model_calls": 54,
     "planned_speech_audio_seconds": 165,
     "planned_speech_audio_seconds_note": "text-only contacts under the D2 freeze: realised speech seconds read 0 <= the declared ceiling",
-    "protocol_hash": "5fb59426475a42afa05c43378afb63ac4d8c22dd1c2ae6a55c59d2f3eaf6a01e",
+    "protocol_hash": "952251e2eb64cfa99506297fa23dd3507cc34b9e9922419cea6a72f3669724e3",
     "run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I1-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "b59c73f3b4014dcb77eb9f5f3a4a471027aff9f2cdf9b0d6218983f1c4830ab0",
@@ -38,7 +38,7 @@
   "preparation_base_commit": "0000000000000000000000000000000000000000",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-proposers-v1/protocol-registered-v1.json",
-    "sha256": "f62f44adc08f4da0830045acf3bb8d38b00f5a07814f190863b4fa244273a79d"
+    "sha256": "d9957b62a0025bbd206874ac39319c84adaf4f8d0fe3453e222f5a2f7c69b526"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I1-V1: text-only ACE reflector contacts (form proof).",
   "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",

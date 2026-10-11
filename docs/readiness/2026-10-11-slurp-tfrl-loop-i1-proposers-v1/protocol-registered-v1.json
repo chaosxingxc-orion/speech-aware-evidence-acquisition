@@ -3,11 +3,11 @@
     "ace": {
       "attempt_id": "attempt-slurp-native-stage3-tfrl-ace-reflector-i1-generation-v1",
       "cell": "slurp-native-stage3-tfrl-ace-reflector-i1-v1",
-      "composed_config_hash": "130ac82d0f9b4a084b8c3d742f552eb34a7c7efea621a3d2a0458963bdc21e31",
+      "composed_config_hash": "1853584315114dedcec1a0e0ccc8d5f8e127632497daa2658cdeff8442bc747f",
       "experiment": "slurp-native-stage3-tfrl-ace-reflector-i1-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-ace-reflector-i1-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I1-FIT-V1",
-      "protocol_hash": "5fb59426475a42afa05c43378afb63ac4d8c22dd1c2ae6a55c59d2f3eaf6a01e",
+      "protocol_hash": "952251e2eb64cfa99506297fa23dd3507cc34b9e9922419cea6a72f3669724e3",
       "rows": 18,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I1-V1",
       "split_identity_hash": "b59c73f3b4014dcb77eb9f5f3a4a471027aff9f2cdf9b0d6218983f1c4830ab0"
