@@ -70,13 +70,25 @@ REASONING_FINDING = (
     "(count only) as a second check."
 )
 CAP_FINDING = (
-    "Completion cap 2048 tokens. Slot budget: -c 98304 / -np 4 = 24,576 tokens per slot. The direct-only prompt is about 2,300 tokens per row (the "
-    "sealed Instruct direct form measured 2,262 to 2,280 prompt tokens per contact; 3,733 on the A2T registry). 2,300 + 2,048 = 4,348 tokens, 17.7 percent "
-    "of a slot, so the cap is bound by decode cost, not by the slot; a cap of 8,192 would still use only 42.7 percent. 2048 is proposed because a SLURP "
-    "answer is a short structured object, so a thinking trace that needs more than 2,048 tokens is itself the signal the read must see (a truncated "
-    "answer is an abstention, counted in the cap-hit table), and because the smoke measures the real distribution before the arm is queued. The "
-    "coordinator may amend the cap at the decode-cost sign-off (one re-registration changes the fragment hash and re-pins the cells); the GPU-hour "
-    "ceiling of 3.0 is the 1,080-contact worst case at ~250 aggregate tokens per second."
+    f"Completion cap {fam.THINK_MAX_TOKENS} tokens (amended from {fam.SUPERSEDED_THINK_MAX_TOKENS} at the decode-cost sign-off of 2026-10-11, the one re-registration this finding "
+    "pre-authorised). Slot budget: -c 98304 / -np 4 = 24,576 tokens per slot. The direct-only prompt is about 2,300 tokens per row (the sealed Instruct "
+    "direct form measured 2,262 to 2,280 prompt tokens per contact; 3,733 on the A2T registry). 2,300 + 8,192 = 10,492 tokens, 42.7 percent of a slot, so "
+    "the cap is still bound by decode cost, not by the slot. The first cap, 2048, was proposed because a SLURP answer is a short structured object, so a "
+    "thinking trace that needs more than 2,048 tokens is itself the signal the read must see (a truncated answer is an abstention, counted in the cap-hit "
+    "table). The four-row decode-cost smoke then measured the real distribution (run SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1, attempt "
+    "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1, 2026-10-11T21:49Z, 4 calls, 9.9395 speech-seconds): completions of 363, 921 and 977 "
+    "tokens delivered 99, 111 and 60 characters of content, and ONE of the four contacts spent all 2,048 completion tokens (prompt 2,285) and delivered "
+    "content of length 0 (the whole budget went to reasoning, which the server routes to message.reasoning_content and the transport never reads), so 1 of 4 "
+    "rows hit the cap; decode speed was 37 tokens per second per slot (58 with one slot busy) and prompt evaluation 0.9 to 1.7 ms per token. That empty "
+    "content crashed the OpenJiuwen wave (the sealed state refused an empty string). The harness now seals an empty final content of a direct-only contact "
+    "as the explicit empty marker and leaves a saea-empty-completion-v1 receipt (cap_hit, completion_tokens, finish_reason), so a cap hit is a row-level "
+    "outcome counted in the cap-hit table, never a flight abort. A cap that truncates a quarter of the rows would make the read a read of the cap, so it is "
+    f"raised to {fam.THINK_MAX_TOKENS} for the smoke (re-flown whole under rec1) and the Thinking arm. The Thinking arm's GPU-hour ceiling moves 3.0 -> "
+    f"{fam.THINK_ARM_GPU_HOURS}: a bound, never a target; at the smoke's mean of 1,077 completion tokens per contact and 4 slots x 37 tokens per second "
+    "the 1,080-row arm is about 2.2 GPU-h, and 4.5 GPU-h admits a mean of about 2,200 tokens per contact (the all-cap-hit worst case, about 16.6 GPU-h, is "
+    "not what the ceiling covers). The cap lives in the model fragment's decoding_params and the flight attaches to a resident session by fragment name and "
+    f"sha256, so the fragment ({fam.THINK_MODEL}) and the serving session ({fam.THINK_SESSION}) both carry the new cap; the flown "
+    f"{fam.SUPERSEDED_THINK_MODEL} and {fam.SUPERSEDED_THINK_SESSION} stay on disk as the record of the first smoke attempt."
 )
 SEALED_COLUMN_FINDING = (
     "No sealed Instruct direct-only Fold B column exists. The sealed direct-only (phase-direct-only-v1, slurp-direct-max512) columns are "
@@ -109,6 +121,10 @@ CHECKLIST = [
     "4. Smoke: bash scripts/flights/direct/batch_chain_direct_fb.sh smoke (flies the four-row smoke through the batch driver on the Thinking session; "
     "the driver's structural inspector runs). Then python -B scripts/analysis/slurp_direct_fold_b_core_read.py --stage smoke prints tokens per answer "
     "p50/p99, seconds per contact and the 1,080-row GPU-hour projection.",
+    "3b. Cap-amendment variant (2026-10-11, the Thinking session recorded resident is the SUPERSEDED max2048 one): serving_swap.sh refuses a resident session "
+    "that is not in its geometry table, so first run bash scripts/flights/direct/serving_stop_think_superseded.sh --dry-run and then without --dry-run (a clean "
+    f"stop of {fam.SUPERSEDED_THINK_SESSION}, its wrapper, port 8080 free, then SAEA-Serving-THINK and SAEA-Monitor-THINK stopped; it starts nothing), then "
+    f"bash scripts/flights/batch/serving_swap.sh think-np4 --start-only (the card is empty) to start {fam.THINK_SESSION}.",
     f"5. Sign-off: when the decode cost is acceptable, create the marker {fam.SIGNOFF_MARKER} (a one-line file naming the approved completion cap). "
     "The thinking segment refuses to start without it. If the cost is not acceptable, close the line (restore, step 8) or amend the cap by one re-registration.",
     "6. Thinking arm: bash scripts/flights/direct/batch_chain_direct_fb.sh thinking.",
@@ -161,6 +177,27 @@ def compose_cell(key: str) -> dict:
 
 
 
+#: The recovery keys persisted into plan and protocol documents. Text fields that only the writer prints (ledger title, agent, fix, unchanged,
+#: swap note ...) are NOT persisted, so adding a recovery never moves the bytes of another cell's registered plan.
+PERSISTED_RECOVERY_KEYS = (
+    "amendment", "fit_cap_rule", "predecessor_attempt_id", "predecessor_fit_attempt_id", "predecessor_fit_run_id", "predecessor_state",
+    "predecessors", "reason", "recovered_at", "recovery_index", "root_cause", "rule",
+)
+
+
+def persisted_recovery(key: str, recovery_at: str, recovery_base: str) -> dict:
+    """The recovery block of a plan or protocol document: the persisted subset, its own registration stamp and base commit, the knowledge pin
+    when the recovery is the one that moved it."""
+
+    rec = fam.recovery(key)
+    out = {name: rec[name] for name in PERSISTED_RECOVERY_KEYS}
+    out["registered_at_utc"] = rec.get("registered_at_utc") or recovery_at
+    out["base_commit"] = rec.get("base_commit") or recovery_base
+    if rec.get("knowledge_pin"):
+        out["knowledge_snapshot"] = {"relpath": fam.KNOWLEDGE_SNAPSHOT_RELPATH, "sha256": fam.KNOWLEDGE_SNAPSHOT_SHA256}
+    return dict(sorted(out.items()))
+
+
 def recovery_budget(key: str, caps: dict) -> dict:
     """A recovered cell's run-cumulative budget statement: the original plan, the failed attempts' recorded spend, their sum."""
 
@@ -180,30 +217,30 @@ def recovery_section(key: str, spec: dict, caps: dict) -> str:
     """The rec1 text of the README and the preregistration: failed attempt, root cause, fix, rec1 ids, cumulative budget, untouched cells."""
 
     rec, budget = fam.recovery(key), recovery_budget(key, caps)
-    untouched = ", ".join(f"`{fam.CELLS[k]['cell']}`" for k in fam.ALL_KEYS if k != key)
+    receipt = rec.get("receipt_clause") or f"the generation run id `{spec['run']}` and the minted decision receipt are unchanged"
+    swap = f"- Serving: {rec['swap_note']}\n" if rec.get("swap_note") else ""
     return (
         f"\n## Recovery rec1: the {spec['role']} (the cell's single recovery re-registration)\n\n"
         f"{rec['reason']}\n\n{rec['amendment']}\n\n"
         f"- Failed attempt: `{rec['predecessor_attempt_id']}` ({rec['predecessor_state']})\n"
         f"- Root cause: {rec['root_cause']}.\n"
-        f"- Fix: every 266-E baseline fragment now pins the fold-excluded knowledge view `{fam.KNOWLEDGE_SNAPSHOT_RELPATH}` "
-        f"(sha256 `{fam.KNOWLEDGE_SNAPSHOT_SHA256}`); the single source is `scripts/flights/direct/direct_fb_family.py` and "
-        "`direct_fb_derive_cells.py` writes it. The direct-only program supplies no evidence, so the pin changes no request; it only has to pass the runner's roster guard.\n"
+        f"- Fix: {rec['fix']}\n"
         f"- Re-flown whole under generation attempt `{spec['attempt']}` and FIT run `{spec['fit_run']}` / attempt `{spec['fit_attempt']}`; "
-        f"the generation run id `{spec['run']}` and the minted decision receipt are unchanged.\n"
+        f"{receipt}.\n"
         f"- Run-cumulative plan budget: {budget['original_plan']['planned_model_calls']} + {budget['failed_attempt_spend']['model_calls']} = "
         f"{budget['cumulative_plan']['planned_model_calls']} calls; {budget['original_plan']['planned_speech_audio_seconds']} + "
         f"{budget['failed_attempt_spend']['speech_audio_seconds']:g} = {budget['cumulative_plan']['planned_speech_audio_seconds']} "
         "speech-seconds; the FIT cap stays structural.\n"
         f"- Plans: `{fam.plan_file_name(key, 'generation')}`, `{fam.plan_file_name(key, 'fit')}` (the first-attempt plan files are superseded and removed "
         "from the package; the git history keeps them, and the failed attempt stays on the data root).\n"
-        f"- Unchanged cells (their attempts never opened; they take only the knowledge pin): {untouched}.\n"
+        f"- {rec['unchanged']}\n"
+        f"{swap}"
         f"- {rec['rule']}\n")
 
 
 LEDGER_COLUMN_NAMES = ["date", "run/experiment id", "execution profile", "scope", "model/tool", "speech carrier + split", "split role",
                        "split identity hash", "consumed", "calls", "speech audio seconds", "gpu hours", "inherited exposure", "artifacts", "notes"]
-RECOVERY_LEDGER_MARK = "## Cell 266-E recovery rec1: the Instruct arm re-registration"
+RECOVERY_LEDGER_MARK = "## Cell 266-E recovery rec1: "
 
 
 def ledger_row(registered_at, run_id, profile, scope, model_tool, carrier, split_hash, calls, audio, gpu, artifact, notes, consumed="no") -> str:
@@ -219,35 +256,44 @@ def recovery_ledger_block(key: str, entry: dict, registered_at: str, base_commit
 
     spec, caps, rec = entry["spec"], entry["caps"], fam.recovery(key)
     budget = recovery_budget(key, caps)
-    inst_tool = (f"Frozen Q4_K_M decoder-only build 04ccc72a, c98304 np4 x 24,576 max512 ({fam.INSTRUCT_MODEL}); promoted EVO-FOLDS-V2 speech packets; "
-                 "direct-only phase program; no tool authority")
+    registered_at = rec.get("registered_at_utc") or registered_at
+    base_commit = rec.get("base_commit") or base_commit
+    worktree, branch = rec.get("worktree") or worktree, rec.get("branch") or branch
+    rows_text = f"{entry['rows']:,}"
+    if spec["core"] == "thinking":
+        tool = (f"Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M ({pins_mod.LOCK_KEY}), decoder-only build 04ccc72a, c98304 np4 x 24,576 max{fam.THINK_MAX_TOKENS}, "
+                f"q8_0 KV, --reasoning-format deepseek ({fam.THINK_MODEL}); its own promoted speech packets; direct-only phase program; no tool authority")
+    else:
+        tool = (f"Frozen Q4_K_M decoder-only build 04ccc72a, c98304 np4 x 24,576 max512 ({fam.INSTRUCT_MODEL}); promoted EVO-FOLDS-V2 speech packets; "
+                "direct-only phase program; no tool authority")
     common = (f"RECOVERY RE-REGISTRATION (root-diagnosed, the cell's single one, {rec['recovered_at']}): this row SUPERSEDES the first-attempt row of the same run id "
               "(the coordinator folds the earlier row into this one when countersigning). ")
+    tail = rec.get("ledger_scope_tail") or "re-flown whole under the fold-excluded knowledge pin"
     gen_notes = (
-        f"REGISTERED (DRAFT, root countersignature pending) {registered_at[:10]} at base commit {base_commit} by the 266-E knowledge-pin recovery agent "
+        f"REGISTERED (DRAFT, root countersignature pending) {registered_at[:10]} at base commit {base_commit} by {rec['agent']} "
         f"(worktree {worktree}, branch {branch}); owner decision 266-E. {common}Attempt {rec['predecessor_attempt_id']} {rec['predecessor_state']} "
         f"Root cause: {rec['root_cause']}. The cell is re-flown whole under generation attempt {spec['attempt']}, a (run_id, attempt_id) pair being a one-time key; "
         f"the plan budget is run-cumulative across the attempts of the run id: the original plan plus the failed attempt's recorded spend, "
         f"{budget['original_plan']['planned_model_calls']} + {budget['failed_attempt_spend']['model_calls']} = {budget['cumulative_plan']['planned_model_calls']} calls and "
         f"{budget['original_plan']['planned_speech_audio_seconds']} + {budget['failed_attempt_spend']['speech_audio_seconds']:g} = "
         f"{budget['cumulative_plan']['planned_speech_audio_seconds']} speech-seconds. Composed config {entry['config_hash']}, protocol {entry['protocol_hash']} "
-        f"(the re-pin tool rewrites both at the flip). A second failure closes the cell. "
+        f"(the re-pin tool rewrites both at the flip). Expected session {spec['session']}. A second failure closes the cell. "
         f"HELD: this registration performs no contact and authorises none.")
     fit_notes = (
-        f"REGISTERED (DRAFT, root countersignature pending) {registered_at[:10]} at base commit {base_commit} by the 266-E knowledge-pin recovery agent "
+        f"REGISTERED (DRAFT, root countersignature pending) {registered_at[:10]} at base commit {base_commit} by {rec['agent']} "
         f"(worktree {worktree}, branch {branch}); owner decision 266-E. {common}The FIT row of {spec['run']} under the rec1 identities: FIT run {spec['fit_run']}, "
-        f"FIT attempt {spec['fit_attempt']} (supersedes FIT run {rec['predecessor_fit_run_id']} / attempt {rec['predecessor_fit_attempt_id']}, never opened). "
+        f"FIT attempt {spec['fit_attempt']} (supersedes FIT run {rec['predecessor_fit_run_id']} / attempt {rec['predecessor_fit_attempt_id']}, {rec['fit_predecessor_phrase']}). "
         f"Root cause: {rec['root_cause']}. The FIT cap stays structural ({caps['fit_endpoint_calls_cap']}, not scaled); speech seconds and GPU hours are the "
         "generation row's ceilings, shared and not additive. HELD: this registration performs no contact and authorises none.")
     gen = ledger_row(registered_at, spec["run"], "bounded-discovery-probe",
-                     f"Cell 266-E {spec['role']} -- RECOVERY rec1: the sealed direct-only form on TRAIN Fold B on the {spec['core']} core, re-flown whole under the fold-excluded knowledge pin; a capability read, no mechanism, no claim.",
-                     inst_tool, "slurp TRAIN Fold B 1,080", entry["split"], caps["generation_calls_cap"], caps["repeated_speech_audio_seconds_cap"],
+                     f"Cell 266-E {spec['role']} -- RECOVERY rec1: the sealed direct-only form on TRAIN Fold B on the {spec['core']} core, {tail}; a capability read, no mechanism, no claim.",
+                     tool, f"slurp TRAIN Fold B {rows_text}", entry["split"], caps["generation_calls_cap"], caps["repeated_speech_audio_seconds_cap"],
                      caps["gpu_hours_fit_inclusive"], fam.package_file(fam.plan_file_name(key, "generation")), gen_notes)
     fit = ledger_row(registered_at, spec["fit_run"], "bounded-discovery-probe",
                      f"Cell 266-E {spec['role']} -- RECOVERY rec1 live phase-fit spend identity, request envelopes only, no generation.",
-                     inst_tool, "slurp TRAIN Fold B 1,080", entry["split"], caps["fit_endpoint_calls_cap"], caps["repeated_speech_audio_seconds_cap"],
+                     tool, f"slurp TRAIN Fold B {rows_text}", entry["split"], caps["fit_endpoint_calls_cap"], caps["repeated_speech_audio_seconds_cap"],
                      caps["gpu_hours_fit_inclusive"], fam.package_file(fam.plan_file_name(key, "fit")), fit_notes)
-    header = (f"\n{RECOVERY_LEDGER_MARK} (DRAFT, root countersignature pending)\n\n"
+    header = (f"\n{RECOVERY_LEDGER_MARK}{rec['ledger_title']} (DRAFT, root countersignature pending)\n\n"
               f"Two unconsumed rows -- the recovered generation row and its rec1 live-phase-fit identity -- for the single recovery re-registration of the {spec['role']} of "
               f"owner decision 266-E. Package {fam.PACKAGE}. Neither row is countersigned and neither authorises a contact; the first-attempt rows above are unchanged.\n\n"
               "| " + " | ".join(LEDGER_COLUMN_NAMES) + " |\n"
@@ -397,7 +443,9 @@ def main(argv: list[str] | None = None) -> int:
                  "note": "per-file hashes live in the umbrella lock entry and in the runtime receipts; they are not copied into prose"},
         "findings": {"mmproj_encoder_tensors_differ": MMPROJ_FINDING, "reasoning_format": REASONING_FINDING, "completion_cap": CAP_FINDING,
                      "sealed_instruct_fold_b_column": SEALED_COLUMN_FINDING, "chain_order": CHAIN_FINDING},
-        "serving": {"instruct_session": fam.INSTRUCT_SESSION, "thinking_session": fam.THINK_SESSION, "swap_target": "think-np4", "release_restore_checklist": CHECKLIST,
+        "serving": {"instruct_session": fam.INSTRUCT_SESSION, "thinking_session": fam.THINK_SESSION, "thinking_serving_fragment": fam.THINK_MODEL,
+                    "superseded_thinking_session": fam.SUPERSEDED_THINK_SESSION, "superseded_thinking_serving_fragment": fam.SUPERSEDED_THINK_MODEL,
+                    "swap_target": "think-np4", "release_restore_checklist": CHECKLIST,
                     "thinking_packet_root": fam.THINK_PACKET_ROOT, "thinking_server_args": json.loads(rd(f"configs/model/{fam.THINK_MODEL}.json"))["server_args"]},
         "identity": {key: identity(cells[key]) for key in fam.ALL_KEYS},
         "knowledge_snapshot": {"relpath": fam.KNOWLEDGE_SNAPSHOT_RELPATH, "sha256": fam.KNOWLEDGE_SNAPSHOT_SHA256,
@@ -423,15 +471,14 @@ def main(argv: list[str] | None = None) -> int:
         "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP",
         "the_question": ("With the system held out entirely, does the Thinking core move the official SLU-F1 on TRAIN Fold B by more than the cross-flight bar "
                          "(about 2.5 pp) over the Instruct core, read against a same-chain Instruct replicate? (owner decision 266-E)"),
-        "one_factor": "The core (model weights, its own speech-packet root, the completion cap 2048 and --reasoning-format deepseek). The request form, the direct-only program, the closed-list task instruction, the roster and its order are the same.",
+        "one_factor": f"The core (model weights, its own speech-packet root, the completion cap {fam.THINK_MAX_TOKENS} and --reasoning-format deepseek). The request form, the direct-only program, the closed-list task instruction, the roster and its order are the same.",
         "cells": {key: identity(cells[key]) for key in fam.ALL_KEYS},
         "decision_rule_fixed_here": read_rule["verdicts"], "read_rule": read_rule,
         "findings": facts["findings"], "serving": facts["serving"],
         "failure_policy": cells["thinking"]["document"]["failure_policy"],
         "development_numbers_only": "Every number is a discovery-roster development number (owner decisions 28 and 86) and never a test claim.",
         "prohibitions": facts["prohibitions"],
-        **({"recovery": {key: {**fam.recovery(key), "registered_at_utc": recovery_at, "base_commit": recovery_base,
-                              "knowledge_snapshot": {"relpath": fam.KNOWLEDGE_SNAPSHOT_RELPATH, "sha256": fam.KNOWLEDGE_SNAPSHOT_SHA256}}
+        **({"recovery": {key: persisted_recovery(key, recovery_at, recovery_base)
                          for key in fam.ALL_KEYS if fam.recovery(key)}} if any(fam.recovery(k) for k in fam.ALL_KEYS) else {}),
         "authority": f"{DECISIONS} owner decision 266 (A + E, 2026-10-11) and decisions 261, 242, 28, 86; {INSTRUMENT} rules 3 and 6 and section 2d",
     }
@@ -456,8 +503,7 @@ def main(argv: list[str] | None = None) -> int:
             "registered_at_utc": args.registered_at, "source_tree": source_tree,
             "status": "REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_READINESS_FLIP", "unused_budget_is_not_attempt_authority": True}
         if fam.recovery(entry["key"]):
-            document["recovery"] = {**fam.recovery(entry["key"]), "registered_at_utc": recovery_at, "base_commit": recovery_base,
-                                    "knowledge_snapshot": {"relpath": fam.KNOWLEDGE_SNAPSHOT_RELPATH, "sha256": fam.KNOWLEDGE_SNAPSHOT_SHA256}}
+            document["recovery"] = persisted_recovery(entry["key"], recovery_at, recovery_base)
             if generation:
                 document["recovery_budget"] = recovery_budget(entry["key"], caps)
         if generation:
@@ -526,7 +572,7 @@ def main(argv: list[str] | None = None) -> int:
         "decision_id": fam.DECISION_ID, "eligible_run_ids": fam.eligible_run_ids(),
         **({"superseded_attempt_ids": [a for k in fam.ALL_KEYS if fam.recovery(k)
                                        for a in (fam.recovery(k)["predecessor_attempt_id"], fam.recovery(k)["predecessor_fit_attempt_id"])],
-            "recovery_note": " ".join(fam.recovery(k)["reason"] for k in fam.ALL_KEYS if fam.recovery(k))}
+            "recovery_note": " ".join(f"[{fam.CELLS[k]['role']}] {fam.recovery(k)['reason']}" for k in fam.ALL_KEYS if fam.recovery(k))}
            if any(fam.recovery(k) for k in fam.ALL_KEYS) else {}),
         "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration per run id; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
         "not_authorized": ["any flight before the cells are flipped and the receipt is minted", "touching the serving geometry by anyone but the coordinator", "any ASR, transcript or paid-API contact",
@@ -541,6 +587,10 @@ def main(argv: list[str] | None = None) -> int:
         "status": "DRAFT-NOT-MINTED"}
     draft_sha = wjson(fam.package_file("root-admission-draft-v1.json"), draft)
 
+    def spend_clause(recovered_key: str) -> str:
+        calls, audio = fam.predecessor_spend(recovered_key)
+        return "0 spent" if calls == 0 else f"{calls} calls and {audio:g} speech-seconds spent"
+
     def countersign_text(label: str, run_id: str) -> str:
         recovered = next((k for k in fam.ALL_KEYS if fam.recovery(k) and run_id in (cells[k]["spec"]["run"], cells[k]["spec"]["fit_run"])), None)
         if recovered:
@@ -549,7 +599,8 @@ def main(argv: list[str] | None = None) -> int:
                     f"(bare-core read on TRAIN Fold B, Thinking versus Instruct); RECOVERY rec1 of the {spec['role']}, the cell's single root-diagnosed recovery re-registration: "
                     f"{label}; the predecessor attempt {rec['predecessor_attempt_id']} {rec['predecessor_state']} Root cause: {rec['root_cause']}. Re-flown whole under "
                     f"generation attempt {spec['attempt']} and FIT run {spec['fit_run']} / attempt {spec['fit_attempt']}; the plan budget is run-cumulative "
-                    f"(original plan + 0 spent); the decision receipt {fam.DECISION_RELPATH} is unchanged (it already lists the generation run id); the READ row stays a draft until the seal)")
+                    f"(original plan + {spend_clause(recovered)}); {rec.get('countersign_receipt_clause') or 'the decision receipt ' + fam.DECISION_RELPATH + ' is unchanged (it already lists the generation run id)'}; "
+                    "the READ row stays a draft until the seal)")
         return ("REGISTERED BEFORE CONTACT (root countersigned <UTC timestamp> by root flight operations on the coordinator's brief: owner decision 266-E of 2026-10-11 "
                 f"(bare-core read on TRAIN Fold B, Thinking versus Instruct); {label}; the decision receipt {fam.DECISION_RELPATH} is minted by "
                 "scripts/flights/direct/direct_fb_mint_receipt.py after this countersignature; the READ row stays a draft until the seal)")
@@ -634,7 +685,7 @@ Registered {args.registered_at[:10]} before any contact, at study commit `{args.
 
 Does the Thinking core move the official SLU-F1 on TRAIN Fold B (1,080 rows, discovery role) by more than the cross-flight bar (about 2.5 pp) over the
 Instruct core, with the system held out entirely? Same form on both cores (direct-only program, closed-list instruction, same roster and order); the only
-differences are the core, its own packet root, the completion cap 2048 and `--reasoning-format deepseek`. Cross-session by necessity, so the Instruct arm
+differences are the core, its own packet root, the completion cap {fam.THINK_MAX_TOKENS} and `--reasoning-format deepseek`. Cross-session by necessity, so the Instruct arm
 flies twice in the chain and the Thinking delta is read against the mean of the two. All numbers are development numbers (owner decisions 28 and 86).
 
 ## 2. Measurement declaration
@@ -696,7 +747,7 @@ this read only. Nothing here authorises a flight, a readiness flip or a serving 
                 return " | ".join(["", args.registered_at, run_id, profile, scope, model_tool, carrier, "discovery", split_hash, consumed, str(calls), str(audio), str(gpu),
                                    INHERITED, artifact, notes, ""]).strip()
 
-            think_tool = (f"Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M ({pins_mod.LOCK_KEY}), decoder-only build 04ccc72a, c98304 np4 x 24,576 max2048, q8_0 KV, "
+            think_tool = (f"Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M ({pins_mod.LOCK_KEY}), decoder-only build 04ccc72a, c98304 np4 x 24,576 max{fam.THINK_MAX_TOKENS}, q8_0 KV, "
                           f"--reasoning-format deepseek ({fam.THINK_MODEL}); its own promoted speech packets; direct-only phase program; no tool authority")
             inst_tool = (f"Frozen Q4_K_M decoder-only build 04ccc72a, c98304 np4 x 24,576 max512 ({fam.INSTRUCT_MODEL}); promoted EVO-FOLDS-V2 speech packets; "
                          "direct-only phase program; no tool authority")
@@ -741,15 +792,15 @@ this read only. Nothing here authorises a flight, a readiness flip or a serving 
             ledger_state = f"appended {len(rows)} rows"
 
     if args.append_recovery_ledger:
-        recovered_keys = [k for k in fam.ALL_KEYS if fam.recovery(k)]
         text = rd(LEDGER)
-        marker = cells[recovered_keys[0]]["spec"]["attempt"]
-        if marker in text:
+        # idempotent PER recovered cell: a cell whose rec1 generation attempt id already appears in the ledger is skipped
+        missing = [k for k in fam.ALL_KEYS if fam.recovery(k) and cells[k]["spec"]["attempt"] not in text]
+        if not missing:
             ledger_state += "; recovery rows already present"
         else:
-            blocks = "".join(recovery_ledger_block(k, cells[k], recovery_at, recovery_base, args.recovery_worktree, args.recovery_branch, plan_shas) for k in recovered_keys)
+            blocks = "".join(recovery_ledger_block(k, cells[k], recovery_at, recovery_base, args.recovery_worktree, args.recovery_branch, plan_shas) for k in missing)
             wr(LEDGER, text + ("" if text.endswith("\n") else "\n") + blocks)
-            ledger_state += f"; appended {2 * len(recovered_keys)} recovery rows"
+            ledger_state += f"; appended {2 * len(missing)} recovery rows ({', '.join(missing)})"
 
     print(json.dumps({"package": pkg, "ledger": ledger_state, "pin_state": pin_state, "written": {
         "README.md": readme_sha, "analysis-recipe-v1.json": recipe_sha, "protocol-registered-v1.json": protocol_sha, "registered-facts-v1.json": facts_sha,

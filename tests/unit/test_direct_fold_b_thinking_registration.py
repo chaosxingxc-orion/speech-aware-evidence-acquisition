@@ -121,7 +121,7 @@ def test_the_thinking_fragment_differs_from_the_instruct_one_only_in_the_registe
     assert b["server_args"][: len(a["server_args"])] == a["server_args"]                       # same geometry family flag for flag
     assert b["server_args"][len(a["server_args"]):] == ["--reasoning-format", "deepseek"]
     assert {"-c": "98304", "-np": "4", "-ctk": "q8_0", "-ctv": "q8_0"}.items() <= {k: b["server_args"][b["server_args"].index(k) + 1] for k in ("-c", "-np", "-ctk", "-ctv")}.items()
-    assert b["decoding_params"]["max_tokens"] == 2048 and a["decoding_params"]["max_tokens"] == 512
+    assert b["decoding_params"]["max_tokens"] == fam.THINK_MAX_TOKENS == 8192 and a["decoding_params"]["max_tokens"] == 512
     assert {k: v for k, v in b["decoding_params"].items() if k != "max_tokens"} == {k: v for k, v in a["decoding_params"].items() if k != "max_tokens"}
     assert b["reasoning_content_guard"] == "refuse-think-marker-in-content"
     assert b["server_env"]["LLAMA_SPEECH_FEATURE_ROOT"] == b["speech_feature_root"] == fam.THINK_PACKET_ROOT != a["speech_feature_root"]
@@ -223,7 +223,7 @@ def test_the_instruct_arm_resolves_to_the_rec1_identities_and_the_other_cells_ke
     assert spec["attempt"] == "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1"
     assert spec["fit_run"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1"
     assert spec["fit_attempt"] == "attempt-slurp-direct-only-fold-b-instruct-fit-rec1-v1"
-    for key in ("smoke", "thinking", "replicate"):                                      # their attempts never opened
+    for key in ("thinking", "replicate"):                                               # their attempts never opened
         assert fam.recovery(key) is None and fam.rec_suffix(key) == ""
         assert "rec1" not in json.dumps(fam.CELLS[key]) and fam.plan_file_name(key, "generation") == f"{key}-generation-plan-registered-v1.json"
     rec = fam.recovery("instruct")
@@ -237,9 +237,9 @@ def test_the_instruct_arm_resolves_to_the_rec1_identities_and_the_other_cells_ke
     assert fam.plan_file_name("instruct", "fit") == "instruct-fit-plan-registered-rec1-v1.json"
     assert fam.superseded_plan_file_names("instruct") == ["instruct-generation-plan-registered-v1.json", "instruct-fit-plan-registered-v1.json"]
     assert fam.superseded_plan_file_names("replicate") == []
-    # eight first-registration ids (what the minted receipt lists) plus the rec1 FIT run id
+    # eight first-registration ids (what the minted receipt lists) plus the rec1 FIT run id of each recovered cell (smoke first, then the Instruct arm)
     eligible = fam.eligible_run_ids()
-    assert len(eligible) == 9 == len(set(eligible)) and eligible[-1] == spec["fit_run"]
+    assert len(eligible) == 10 == len(set(eligible)) and eligible[-1] == spec["fit_run"] and eligible[-2] == fam.CELLS["smoke"]["fit_run"]
     assert fam.CELLS["instruct"]["run"] in eligible and rec["predecessor_fit_run_id"] in eligible
 
 
@@ -257,7 +257,7 @@ def test_the_rec1_plans_are_in_the_package_and_the_first_attempt_instruct_plans_
     budget = generation["recovery_budget"]
     assert budget["original_plan"] == budget["cumulative_plan"] == {"planned_model_calls": 1080, "planned_speech_audio_seconds": 3155}
     assert generation["execution_plan"]["planned_model_calls"] == 1080 and fit["execution_plan"]["planned_model_calls"] == 3241
-    for key in ("smoke", "thinking", "replicate"):
+    for key in ("thinking", "replicate"):
         for kind in ("generation", "fit"):
             assert "recovery" not in _json(f"{fam.PACKAGE}/{fam.plan_file_name(key, kind)}")
     protocol = _json(f"{fam.PACKAGE}/protocol-registered-v1.json")
@@ -290,7 +290,7 @@ def test_the_rec1_ledger_block_has_two_draft_rows_and_the_first_attempt_rows_are
 def test_the_flip_script_passes_the_rec1_plan_marker_for_the_recovered_cell_only():
     text = (DIRECT / "direct_fb_flip.sh").read_text(encoding="utf-8")
     assert 'PLAN_REC="${PLAN_REC_OF[$KIND]}"' in text and "fam.rec_suffix" in text
-    assert fam.rec_suffix("instruct") == "-rec1" and fam.rec_suffix("replicate") == "" and fam.rec_suffix("smoke") == "" and fam.rec_suffix("thinking") == ""
+    assert fam.rec_suffix("instruct") == "-rec1" and fam.rec_suffix("smoke") == "-rec1" and fam.rec_suffix("replicate") == "" and fam.rec_suffix("thinking") == ""
 
 
 # ----------------------------------------------------------------------------------------------- serving and chain
@@ -324,7 +324,7 @@ def test_the_smoke_precedes_the_arm_in_the_chain_and_the_arm_waits_for_the_signo
     assert thinking_line.index("wait_signoff") < thinking_line.index("run_driver thinking")
     assert fam.SIGNOFF_MARKER in text and 'SEGMENT=${1:-think-all}' in text
     assert fam.ALL_KEYS.index("smoke") < fam.ALL_KEYS.index("thinking")
-    assert text.index("serving-slurp-thinking-direct-fold-b-np4-v1") < text.index("INSTRUCT_SESSION=")
+    assert text.index(fam.THINK_SESSION) < text.index("INSTRUCT_SESSION=")
 
 
 @pytest.mark.parametrize("segment,expected", [("smoke", ["smoke"]), ("thinking", ["thinking"]), ("instruct", ["instruct", "replicate"])])
@@ -462,11 +462,15 @@ def test_the_countersign_texts_name_the_packages_own_receipt():
     assert set(texts["rows"]) == {fam.CELLS[k][f] for k in fam.ALL_KEYS for f in ("run", "fit_run")}
 
 
-def test_the_draft_receipt_lists_the_eight_run_ids_plus_the_rec1_fit_run_and_mints_once(tmp_path):
+def test_the_draft_receipt_lists_the_eight_run_ids_plus_the_rec1_fit_runs_and_mints_once(tmp_path):
     draft = _json(f"{fam.PACKAGE}/root-admission-draft-v1.json")
-    assert draft["eligible_run_ids"] == mint_mod.expected_eligible() and len(draft["eligible_run_ids"]) == 9
-    assert fam.CELLS["instruct"]["fit_run"] in draft["eligible_run_ids"]
-    assert draft["superseded_attempt_ids"] == [fam.recovery("instruct")["predecessor_attempt_id"], fam.recovery("instruct")["predecessor_fit_attempt_id"]]
+    assert draft["eligible_run_ids"] == mint_mod.expected_eligible() and len(draft["eligible_run_ids"]) == 10
+    assert fam.CELLS["instruct"]["fit_run"] in draft["eligible_run_ids"] and fam.CELLS["smoke"]["fit_run"] in draft["eligible_run_ids"]
+    assert draft["superseded_attempt_ids"] == [
+        fam.recovery("smoke")["predecessor_attempt_id"], fam.recovery("smoke")["predecessor_fit_attempt_id"],
+        fam.recovery("instruct")["predecessor_attempt_id"], fam.recovery("instruct")["predecessor_fit_attempt_id"]]
+    assert draft["service"]["thinking_session"] == fam.THINK_SESSION
+    assert draft["budget"]["thinking"]["gpu_hours_fit_inclusive"] == 4.5 and draft["budget"]["smoke"]["generation_calls_cap"] == 8
     assert draft["status"] == "DRAFT-NOT-MINTED"
     summary = mint_mod.mint(str(REPO), str(tmp_path))
     receipt = json.loads((tmp_path / fam.DECISION_RELPATH).read_text(encoding="utf-8"))
@@ -513,3 +517,188 @@ def test_the_reasoning_guard_refuses_a_think_marker_and_is_wired_through_the_fac
     source = inspect.getsource(transport_mod._llama_server_factory)
     assert 'values.get("reasoning_content_guard")' in source
     assert transport_mod.REASONING_CONTENT_GUARD_THINK_MARKER == _json(f"configs/model/{fam.THINK_MODEL}.json")["reasoning_content_guard"]
+
+
+# ----------------------------------------------------------------------------------------------- cap amendment 2,048 -> 8,192 and the smoke rec1
+
+
+def test_the_completion_cap_is_8192_in_both_thinking_baselines_and_the_flown_fragment_is_kept():
+    """Owner decision 266-E, decode-cost sign-off: the smoke row that spent its whole 2,048 budget on reasoning delivered empty content."""
+
+    assert fam.THINK_MAX_TOKENS == 8192 and fam.SUPERSEDED_THINK_MAX_TOKENS == 2048 and pins_mod.THINKING_MAX_TOKENS == 8192
+    assert fam.THINK_MODEL.endswith("max8192-v1") and fam.SUPERSEDED_THINK_MODEL.endswith("max2048-v1") and fam.THINK_MODEL != fam.SUPERSEDED_THINK_MODEL
+    assert fam.THINK_SESSION.endswith("max8192-v1") and fam.THINK_SESSION != fam.SUPERSEDED_THINK_SESSION
+    for key in ("smoke", "thinking"):
+        cell = _experiment(key)["cells"][0]
+        assert cell["model_fragment"] == fam.THINK_MODEL == pins_mod.SERVING_FRAGMENT
+        assert _compose(key).values["decoding_params"]["max_tokens"] == 8192
+        assert _experiment(key)["service_session"] == fam.THINK_SESSION
+    # the slot still holds the prompt and the completion: 2.3k + 8,192 is 42.7 percent of a 24,576-token slot
+    assert (2300 + fam.THINK_MAX_TOKENS) / 24576 < 0.43
+    # the flown max2048 fragment is a frozen record, never rewritten in place
+    flown = _json(f"configs/model/{fam.SUPERSEDED_THINK_MODEL}.json")
+    assert flown["decoding_params"]["max_tokens"] == 2048 and flown["reasoning_content_guard"] == "refuse-think-marker-in-content"
+    assert f"configs/model/{fam.SUPERSEDED_THINK_MODEL}.json" not in pins_mod.build_fragments({"main": {"sha256": MAIN_SHA}}, REPO)
+
+
+def test_the_instruct_cells_are_untouched_by_the_cap_amendment():
+    """I7: the Instruct pair is flying; its model fragment, cap and request-relevant composed keys do not move."""
+
+    for key in ("instruct", "replicate"):
+        values = _compose(key).values
+        assert values["decoding_params"]["max_tokens"] == 512
+        assert _experiment(key)["cells"][0]["model_fragment"] == fam.INSTRUCT_MODEL
+        assert _experiment(key)["service_session"] == fam.INSTRUCT_SESSION
+        assert "reasoning_content_guard" not in values
+    assert "rec1" in fam.CELLS["instruct"]["attempt"]                                   # the Instruct arm keeps its own rec1 identities
+
+
+def test_the_thinking_arm_keeps_its_ids_and_takes_the_amended_gpu_hour_ceiling():
+    thinking = fam.CELLS["thinking"]
+    assert fam.recovery("thinking") is None and "rec1" not in json.dumps(thinking)
+    assert thinking["gpu_hours"] == fam.THINK_ARM_GPU_HOURS == 4.5
+    assert _experiment("thinking")["execution_plan"]["planned_gpu_hours"] == 4.5
+    assert _experiment("thinking")["family_budget"]["gpu_hours_fit_inclusive"] == 4.5
+    for kind in ("generation", "fit"):
+        plan = _json(f"{fam.PACKAGE}/{fam.plan_file_name('thinking', kind)}")
+        assert plan["execution_plan"]["planned_gpu_hours"] == 4.5 and plan["expected_session_id"] == fam.THINK_SESSION
+    assert fam.CELLS["smoke"]["gpu_hours"] == 0.5 and fam.CELLS["instruct"]["gpu_hours"] == 0.5
+
+
+def test_the_smoke_resolves_to_the_rec1_identities_and_the_run_cumulative_budget():
+    spec, rec = fam.CELLS["smoke"], fam.recovery("smoke")
+    assert spec["run"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1"            # the generation run id stays: the budget is run-cumulative
+    assert spec["attempt"] == "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-rec1-v1"
+    assert spec["fit_run"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-REC1-V1"
+    assert spec["fit_attempt"] == "attempt-slurp-direct-only-fold-b-thinking-smoke-4-fit-rec1-v1"
+    assert rec["predecessor_attempt_id"] == "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1" != spec["attempt"]
+    assert rec["predecessor_fit_run_id"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1" != spec["fit_run"]
+    assert rec["predecessors"] == [{"attempt_id": rec["predecessor_attempt_id"], "state": rec["predecessors"][0]["state"],
+                                    "contacts_spent": 4, "speech_seconds_spent": 9.9395}]
+    assert fam.predecessor_spend("smoke") == (4, 9.9395)
+    assert fam.cumulative_budget("smoke", 4, 10) == (8, 20)                             # original plan + the failed attempt's recorded spend
+    assert fam.plan_file_name("smoke", "generation") == "smoke-generation-plan-registered-rec1-v1.json"
+    assert fam.superseded_plan_file_names("smoke") == ["smoke-generation-plan-registered-v1.json", "smoke-fit-plan-registered-v1.json"]
+    baseline = _json(f"configs/baseline/{spec['baseline']}.json")
+    assert baseline["live_phase_fit"] == {"attempt_id": spec["fit_attempt"], "contact_cap": 13, "run_id": spec["fit_run"]}
+    package = REPO / fam.PACKAGE
+    for kind in ("generation", "fit"):
+        assert (package / fam.plan_file_name("smoke", kind)).is_file()
+        assert not (package / f"smoke-{kind}-plan-registered-v1.json").exists()
+    generation = _json(f"{fam.PACKAGE}/{fam.plan_file_name('smoke', 'generation')}")
+    fit = _json(f"{fam.PACKAGE}/{fam.plan_file_name('smoke', 'fit')}")
+    assert (generation["execution_plan"]["run_id"], generation["execution_plan"]["attempt_id"]) == (spec["run"], spec["attempt"])
+    assert (fit["execution_plan"]["run_id"], fit["execution_plan"]["attempt_id"]) == (spec["fit_run"], spec["fit_attempt"])
+    assert generation["execution_plan"]["planned_model_calls"] == 8 and generation["execution_plan"]["planned_speech_audio_seconds"] == 20
+    assert fit["execution_plan"]["planned_model_calls"] == 13
+    assert generation["recovery_budget"]["original_plan"] == {"planned_model_calls": 4, "planned_speech_audio_seconds": 10}
+    assert generation["recovery_budget"]["failed_attempt_spend"]["model_calls"] == 4
+    assert generation["recovery_budget"]["cumulative_plan"] == {"planned_model_calls": 8, "planned_speech_audio_seconds": 20}
+    assert generation["expected_session_id"] == fam.THINK_SESSION == fit["expected_session_id"]
+    # only the persisted recovery keys reach a plan; the Instruct recovery keeps its knowledge pin, the smoke's does not carry one
+    assert "knowledge_snapshot" not in generation["recovery"] and "fix" not in generation["recovery"]
+    assert "knowledge_snapshot" in _json(f"{fam.PACKAGE}/{fam.plan_file_name('instruct', 'generation')}")["recovery"]
+
+
+def test_the_smoke_rec1_ledger_block_has_two_draft_rows_and_the_first_attempt_rows_stay():
+    text = LEDGER.read_text(encoding="utf-8")
+    start = text.index("## Cell 266-E recovery rec1: the Thinking smoke re-registration")
+    end = text.find("\n## ", start + 1)
+    block = text[start:] if end == -1 else text[start:end]
+    rows = [line for line in block.splitlines() if line.startswith("| 2026-")]
+    spec = fam.CELLS["smoke"]
+    assert len(rows) == 2 and all(r.count("|") == 16 for r in rows)
+    assert [r.split("|")[2].strip() for r in rows] == [spec["run"], spec["fit_run"]]
+    for r in rows:
+        assert "countersignature pending" in r and "root countersigned" not in r.lower() and r.split("|")[9].strip() == "no"
+        assert "max8192" in r and "max2048" not in r and fam.THINK_MODEL in r
+        assert spec["attempt"] in r or spec["fit_attempt"] in r
+    assert [r.split("|")[10].strip() for r in rows] == ["8", "13"]                      # run-cumulative 4 + 4; the structural FIT cap
+    assert [r.split("|")[11].strip() for r in rows] == ["20", "20"]
+    assert [r.split("|")[12].strip() for r in rows] == ["0.5", "0.5"]
+    assert "9.9395" in rows[0] and "4 + 4 = 8 calls" in rows[0]
+    original = [r for r in _ledger_rows() if r.split("|")[2].strip() in ("SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1", "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1")]
+    assert len(original) == 2 and all("root countersigned" in r.lower() for r in original)   # append-only: the flown first rows are untouched
+
+
+def test_the_serving_draft_row_names_the_amended_fragment_and_session_and_stays_a_draft():
+    (row,) = [r for r in _ledger_rows() if r.split("|")[2].strip() == fam.SERVING_ROW_ID]
+    assert "max8192" in row and "max2048" not in row and fam.THINK_MODEL in row and fam.THINK_SESSION in row
+    assert fam.SUPERSEDED_THINK_SESSION + " " not in row and "DRAFT, root countersignature pending" in row and "root countersigned" not in row.lower()
+
+
+def test_the_countersign_texts_carry_the_smoke_rec1_wording():
+    texts = _json(f"{fam.PACKAGE}/countersign-row-texts-v1.json")["rows"]
+    spec = fam.CELLS["smoke"]
+    assert "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-FIT-V1" not in texts and spec["fit_run"] in texts and spec["run"] in texts
+    for run_id in (spec["run"], spec["fit_run"]):
+        text = texts[run_id]
+        assert "RECOVERY rec1" in text and "root countersigned" in text and "countersignature pending" not in text
+        assert spec["attempt"] in text and spec["fit_run"] in text and "4 calls and 9.9395 speech-seconds spent" in text
+        assert "eligible_run_ids" in text and "8,192" in text
+
+
+def test_the_readme_finding_three_carries_the_measured_smoke_numbers_and_the_amended_cap():
+    readme = (REPO / fam.PACKAGE / "README.md").read_text(encoding="utf-8")
+    finding = readme[readme.index("**Finding 3"):readme.index("**Chain.**")]
+    for needle in ("8192 tokens", "amended from 2048", "363, 921 and 977", "99, 111 and 60", "length 0", "37 tokens per second per slot", "58 with one slot busy",
+                   "0.9 to 1.7 ms per token", "9.9395", "1 of 4", "saea-empty-completion-v1", "3.0 -> 4.5", "42.7 percent"):
+        assert needle in finding, needle
+    assert "## Recovery rec1: the four-row Thinking decode-cost smoke" in readme and "serving_stop_think_superseded.sh" in readme
+
+
+def test_the_serving_entry_scripts_name_the_amended_fragment_and_session():
+    entry = (DIRECT / "serving_task_entry_think.sh").read_text(encoding="utf-8")
+    assert f"FRAGMENT={fam.THINK_MODEL}" in entry and f"SESSION={fam.THINK_SESSION}" in entry and fam.SUPERSEDED_THINK_MODEL not in entry
+    assert fam.THINK_SESSION in (DIRECT / "serving_monitor_start_think.sh").read_text(encoding="utf-8")
+    assert f"THINK_SESSION={fam.THINK_SESSION}" in _chain_text()
+    assert fam.SUPERSEDED_THINK_SESSION + "\n" not in _chain_text()
+
+
+def test_the_flip_can_be_narrowed_to_the_smoke_and_the_thinking_arm_and_passes_the_rec1_marker_for_the_smoke():
+    text = (DIRECT / "direct_fb_flip.sh").read_text(encoding="utf-8")
+    assert 'KINDS=${DIRECT_FB_KINDS:-"smoke thinking instruct replicate"}' in text
+    assert "for KIND in $KINDS; do" in text                                              # every re-pin pass iterates ONLY the narrowed kinds
+    assert 'case " $KINDS " in *" thinking "*|*" smoke "*) ;; *) break ;; esac' in text   # the sentinel check applies to the Thinking cells only
+    code = ("import sys; sys.path.insert(0, %r); import direct_fb_family as fam; "
+            "print(' '.join(f'{k}={fam.rec_suffix(k)}' for k in ('smoke', 'thinking')))" % str(DIRECT))
+    out = subprocess.run([sys.executable, "-B", "-c", code], capture_output=True, text=True)
+    assert out.stdout.split() == ["smoke=-rec1", "thinking="], out.stderr
+    # a narrowed pass never names an Instruct cell: the cell table is a lookup, not a loop
+    assert "declare -A CELL=" in text and "for KIND in smoke thinking instruct replicate; do\n  PLAN_REC_OF" in text
+
+
+def test_the_superseded_session_stop_helper_refuses_unsafe_states_and_stops_only_the_retired_session(tmp_path):
+    from test_serving_swap import Host  # noqa: PLC0415
+
+    host = Host(tmp_path)
+    script = str(DIRECT / "serving_stop_think_superseded.sh")
+    retired = fam.SUPERSEDED_THINK_SESSION
+    sdir = host.data / "serving" / retired
+    sdir.mkdir(parents=True, exist_ok=True)
+
+    def run(*args):
+        return host.run(["bash", script, *args])
+
+    assert run("--dry-run").returncode == 0 and "no session is recorded resident" in run().stdout          # nothing resident: a no-op
+    # a generation flight alive refuses (7)
+    host.procs("9000401 python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /r")
+    assert run().returncode == 7
+    host.procs()
+    # a DIFFERENT session recorded resident is never touched (10)
+    (host.state / "resident").write_text("serving-slurp-native-candidate-five-train-a-np4-v1", encoding="utf-8")
+    refused = run()
+    assert refused.returncode == 10 and "not the retired Thinking session" in refused.stdout
+    assert not any(line.startswith("stop ") for line in host.log("ss.log"))
+    # the retired session resident: the dry run stops nothing; the real run stops exactly it and the two THINK tasks, and starts nothing
+    (host.state / "resident").write_text(retired, encoding="utf-8")
+    (sdir / "session.json").write_text("{}", encoding="utf-8")
+    dry = run("--dry-run")
+    assert dry.returncode == 0 and "DRY RUN" in dry.stdout and not any(line.startswith("stop ") for line in host.log("ss.log"))
+    real = run()
+    assert real.returncode == 0, real.stdout + real.stderr
+    assert f"stop {retired}" in host.log("ss.log")
+    ps = host.log("ps.log")
+    assert any(line.startswith("-Stop SAEA-Serving-THINK") for line in ps) and any(line.startswith("-Stop SAEA-Monitor-THINK") for line in ps)
+    assert not any(line.startswith("-Start") for line in ps)
+    assert (sdir / "session-stop.json").is_file()
