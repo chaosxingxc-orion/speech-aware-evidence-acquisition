@@ -18,6 +18,7 @@ utterance text, transcript, gold label or model output is ever persisted here).
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import math
@@ -26,6 +27,9 @@ from pathlib import Path
 from typing import Any, Mapping
 
 SCHEMA = "saea-tfrl-archive-state-v1"
+CORRECTION_SCHEMA = "saea-tfrl-archive-correction-v1"
+#: A refused state that carries no measurement (the instrument could not read the candidate) names why.
+UNMEASURED_REFUSAL_CODES = ("offline-family-unsupported",)
 ARTEFACT_NAMES = (
     "exemplar_index_release", "slot_store_release", "key_view", "supply_fragment",
     "delivery_rule_table", "scope_routing", "playbook_release",
@@ -153,7 +157,7 @@ def build_state(
     *, artefact_hashes: Mapping[str, str], parent_id: str | None, iteration: int,
     operator_class: str | None, candidate_id: str | None, verdict: str, arm: str = "typed",
     credit: Mapping[str, Any] | None = None, predicted_slu_pp: float | None = None,
-    run_id: str | None = None, attempt: int | None = None,
+    run_id: str | None = None, attempt: int | None = None, refusal_code: str | None = None,
 ) -> dict[str, Any]:
     if verdict not in VERDICTS:
         _fail(f"verdict must be one of {VERDICTS}")
@@ -163,9 +167,16 @@ def build_state(
         _fail("iteration must be a non-negative integer (0 = the lock root)")
     if iteration > 0 and (operator_class is None or candidate_id is None):
         _fail("a non-root state records the operator class and candidate id that produced it")
+    if refusal_code is not None:
+        if verdict != "refused" or refusal_code not in UNMEASURED_REFUSAL_CODES:
+            _fail(f"refusal_code is only for a refused, unmeasured state; known codes {UNMEASURED_REFUSAL_CODES}")
+        if credit is not None:
+            _fail("an unmeasured refusal carries no credit vector")
     if verdict == "unflown":
         if credit is not None or run_id is not None:
             _fail("an unflown state carries no credit vector and no read")
+    elif refusal_code is not None:
+        pass        # refused without a measurement: the refusal code stands for the read
     else:
         if credit is None:
             _fail(f"a {verdict} state needs its measured credit vector")
@@ -186,14 +197,39 @@ def build_state(
         "credit": dict(credit) if credit is not None else None,
         "read": {"run_id": run_id, "attempt": attempt} if run_id is not None else None,
     }
+    if refusal_code is not None:
+        state["refusal_code"] = refusal_code
     if state["state_id"] == parent_id:
         _fail("a state cannot be its own parent")
     assert_no_text_fields(state)
     return state
 
 
+def validate_correction(record: Any) -> None:
+    """A correction record is identifiers and hashes only: the state, the artefact slot, the wrong and the right value, the
+    cause code and the receipt the right value derives from."""
+
+    keys = {"schema", "state_id", "artefact", "slug", "wrong", "right", "cause", "derives_from"}
+    if not isinstance(record, Mapping) or set(record) != keys or record["schema"] != CORRECTION_SCHEMA:
+        _fail(f"a correction record carries exactly {sorted(keys)} and schema {CORRECTION_SCHEMA}")
+    if record["artefact"] not in ARTEFACT_NAMES:
+        _fail(f"correction artefact must be one of {ARTEFACT_NAMES}")
+    for key in ("state_id", "wrong", "right"):
+        if not isinstance(record[key], str) or not _HEX64.match(record[key]):
+            _fail(f"correction.{key}: must be 64 lowercase hex characters")
+    if record["wrong"] == record["right"]:
+        _fail("a correction must change the value")
+    if not isinstance(record["slug"], str) or not re.match(r"^[a-z0-9-]{1,60}$", record["slug"]):
+        _fail("correction.slug: lowercase letters, digits and dashes only")
+    derives = record["derives_from"]
+    if (not isinstance(derives, Mapping) or set(derives) != {"receipt", "field", "receipt_sha256"}
+            or not isinstance(derives["receipt_sha256"], str) or not _HEX64.match(derives["receipt_sha256"])):
+        _fail("correction.derives_from must carry receipt, field and receipt_sha256")
+    assert_no_text_fields(record)
+
+
 class Archive:
-    """Write-once directory of state files."""
+    """Write-once directory of state files (plus write-once correction records under ``corrections/``)."""
 
     def __init__(self, directory: Path | str):
         self.directory = Path(directory)
@@ -225,17 +261,79 @@ class Archive:
             )
         return path
 
-    def get(self, state_id: str) -> dict[str, Any]:
+    # ---- corrections: a state file is write-once, so a wrong recorded value is superseded by a correction RECORD
+    # (``<archive_dir>/corrections/state-<state_id>-<slug>.json``) that the readers apply. The state keeps its
+    # ``state_id`` (its identity in the lineage); only the named artefact hash changes in the read view, and the view
+    # carries ``corrections`` naming what was applied.
+
+    def _correction_dir(self) -> Path:
+        return self.directory / "corrections"
+
+    def correction_paths(self) -> list[Path]:
+        directory = self._correction_dir()
+        return sorted(directory.glob("state-*.json")) if directory.is_dir() else []
+
+    def put_correction(self, correction: Mapping[str, Any]) -> Path:
+        """Write one correction record (write-once, exclusive open); the target state must exist and hold the wrong value."""
+
+        validate_correction(correction)
+        state = self._read_raw(correction["state_id"])
+        name = correction["artefact"]
+        if state["artefact_hashes"].get(name) != correction["wrong"]:
+            _fail(f"state {correction['state_id'][:12]} does not record the wrong {name} the correction names")
+        directory = self._correction_dir()
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / f"state-{correction['state_id']}-{correction['slug']}.json"
+        data = json.dumps(dict(correction), indent=2, sort_keys=True) + "\n"
+        try:
+            with open(path, "x", encoding="utf-8", newline="\n") as handle:
+                handle.write(data)
+        except FileExistsError:
+            _fail(f"correction {path.name} is already recorded (write-once)")
+        return path
+
+    def corrections(self) -> list[dict[str, Any]]:
+        out = []
+        for path in self.correction_paths():
+            record = json.loads(path.read_text(encoding="utf-8"))
+            validate_correction(record)
+            out.append(record)
+        return out
+
+    def _read_raw(self, state_id: str) -> dict[str, Any]:
         path = self._path(state_id)
         try:
             return json.loads(path.read_text(encoding="utf-8"))
         except OSError as error:
             raise ArchiveError(f"cannot read state {state_id}: {error}") from error
 
+    @staticmethod
+    def _apply_corrections(state: dict[str, Any], records: list[Mapping[str, Any]]) -> dict[str, Any]:
+        mine = [r for r in records if r["state_id"] == state["state_id"]]
+        if not mine:
+            return state
+        view = copy.deepcopy(state)
+        applied = []
+        for record in sorted(mine, key=lambda r: r["slug"]):
+            name = record["artefact"]
+            if view["artefact_hashes"].get(name) != record["wrong"]:
+                _fail(f"correction {record['slug']} of state {state['state_id'][:12]}: "
+                      f"the recorded {name} is not the wrong value it names")
+            view["artefact_hashes"][name] = record["right"]
+            applied.append({"artefact": name, "wrong": record["wrong"], "right": record["right"], "slug": record["slug"]})
+        view["artefact_hashes"] = dict(sorted(view["artefact_hashes"].items()))
+        view["corrections"] = applied
+        return view
+
+    def get(self, state_id: str) -> dict[str, Any]:
+        return self._apply_corrections(self._read_raw(state_id), self.corrections())
+
     def states(self) -> list[dict[str, Any]]:
         if not self.directory.is_dir():
             return []
-        out = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(self.directory.glob("state-*.json"))]
+        records = self.corrections()
+        out = [self._apply_corrections(json.loads(p.read_text(encoding="utf-8")), records)
+               for p in sorted(self.directory.glob("state-*.json"))]
         out.sort(key=lambda s: (s["iteration"], s["state_id"]))
         return out
 
@@ -246,4 +344,5 @@ class Archive:
 __all__ = [
     "ArchiveError", "Archive", "build_state", "compute_state_id", "validate_credit",
     "assert_no_text_fields", "forbidden_key", "SCHEMA", "ARTEFACT_NAMES", "VERDICTS", "ARMS",
+    "CORRECTION_SCHEMA", "UNMEASURED_REFUSAL_CODES", "validate_correction",
 ]

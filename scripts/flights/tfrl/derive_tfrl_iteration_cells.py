@@ -252,7 +252,7 @@ def budgets(iteration: int, kind: str, contacts: int, repo_root: Path = REPO_ROO
         # The adapter's budget is RUN-CUMULATIVE across the attempts of a run id: a recovered smoke (tf.SMOKE_RECOVERIES) carries the original
         # plan plus the failed attempts' realised spend. The FIT cap below is structural and is NEVER scaled.
         calls, audio = tf.smoke_cumulative_budget(iteration, calls, audio)
-    gpu = tf.PLANNED_GPU_HOURS_SMOKE if kind == "smoke" else tf.PLANNED_GPU_HOURS_ARM
+    gpu = tf.PLANNED_GPU_HOURS_SMOKE if kind == "smoke" else tf.planned_gpu_hours_arm(iteration, rows, contacts)
     fam = {"asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0,
            "fit_endpoint_calls_cap": tf.fit_contact_cap(rows, contacts), "generation_calls_cap": calls,
            "gpu_hours_fit_inclusive": gpu, "native_task_contract_calls_cap": calls,

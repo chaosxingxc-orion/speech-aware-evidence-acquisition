@@ -36,6 +36,7 @@ E-T1 context; paired-read bytes -> credit vectors; the ACE counters' credit file
 from __future__ import annotations
 
 import argparse
+import datetime
 import importlib
 import json
 import os
@@ -69,7 +70,9 @@ PAIRED_READ_SCRIPT = "scripts/analysis/stage3_paired_read.py"
 #: operator -> the archive artefact it edits (design 2 table); the digest is provisional until the E-T6 release builders land.
 ARTEFACT_OF = {"exemplar-selection": "exemplar_index_release", "slot-card-subset": "slot_store_release", "knob-set": "supply_fragment",
                "deliver-rule": "delivery_rule_table", "scope-restrict": "scope_routing"}
-FIT_FAMILY = {"ee5": "ee", "ee10": "ee", "ti0": "ti", "ti1": "ti", "fx-article": "article"}
+FIT_FAMILY = {"ee5": "ee", "ee10": "ee", "ti0": "ti", "ti1": "ti", "fx-article": "article", "fx-oclock": "oclock"}
+#: The refusal code of an offline candidate whose family the fitter cannot read: the candidate is archived as REFUSED (unmeasured), never skipped.
+OFFLINE_UNSUPPORTED = "offline-family-unsupported"
 ROOT_DISPLAY = "s0-lock-v2.2"
 
 
@@ -178,6 +181,12 @@ def refused_buffer(ctx: Ctx, before_iteration: int) -> list[dict]:
     ops = operators_by_candidate(ctx)
     for s in ctx.archive().states():
         if s["arm"] == "typed" and s["verdict"] == "refused" and s["iteration"] < before_iteration:
+            if s.get("credit") is None:         # an unmeasured refusal: the code is the whole record
+                rows.append({"candidate_id": (s["candidate_id"] or "")[:16], "operator_class": s["operator_class"],
+                             "operator": ops.get(s["candidate_id"] or "", "unknown"), "refusal_code": s.get("refusal_code", "unmeasured"),
+                             **({"predicted_slu_pp": s["predicted_slu_pp"]} if s.get("predicted_slu_pp") is not None else {}),
+                             "iteration": s["iteration"]})
+                continue
             block = s["credit"].get("vs_parent") or s["credit"]["vs_lock"]
             rows.append({"candidate_id": (s["candidate_id"] or "")[:16], "operator_class": s["operator_class"],
                          "operator": ops.get(s["candidate_id"] or "", "unknown"), "refusal_code": "refused-by-instrument",
@@ -222,6 +231,81 @@ def load_enums(ctx: Ctx, a: argparse.Namespace, tables: Mapping[str, Any]) -> di
         intents = sorted({f"{g['scenario']}_{g['action']}" for g in gold.values()})
         return {"slot_types": types, "intents": intents, "scenarios": list(tp.SCENARIOS)}
     raise lib.MissingInput("pass --enums-file {slot_types, intents[, scenarios]} or --enums-from-gold (TRAIN gold, offline)")
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# the playbook of an iteration: keyed by CONTENT, bound to the release that flew
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def playbook_file(ctx: Ctx, t: int) -> Path:
+    return ctx.analysis(t) / "playbook" / f"playbook-i{t}.json"
+
+
+def staging_playbook_file(ctx: Ctx, t: int) -> Path:
+    return ctx.analysis(t) / "ace-release-staging" / f"playbook-i{t}.json"
+
+
+def write_playbook_keyed(path: Path, playbook: Mapping[str, Any]) -> str:
+    """Write ``playbook`` at ``path`` keyed by content: a file that already holds the same content hash is left alone; a file that holds a
+    DIFFERENT one is kept as ``<stem>.superseded-<mtime>.json`` and replaced. Returns ``written`` / ``unchanged`` / ``rewritten``."""
+
+    from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+
+    path = Path(path)
+    if not path.exists():
+        ace.write_playbook(path, playbook)
+        return "written"
+    if json.loads(path.read_text(encoding="utf-8")).get("content_hash") == playbook["content_hash"]:
+        return "unchanged"
+    stamp = datetime.datetime.fromtimestamp(path.stat().st_mtime, tz=datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    target = path.with_name(f"{path.stem}.superseded-{stamp}.json")
+    n = 1
+    while target.exists():
+        n += 1
+        target = path.with_name(f"{path.stem}.superseded-{stamp}-{n}.json")
+    path.rename(target)
+    ace.write_playbook(path, playbook)
+    return "rewritten"
+
+
+def resolve_playbook(ctx: Ctx, t: int) -> tuple[Path, Mapping[str, Any]]:
+    """The playbook iteration ``t`` flew: the file whose content hash equals the one its open-cell receipt records. The staging playbook the
+    release was built from is tried first, then ``playbook/playbook-i<t>.json``; no file with that hash is an error (never a silent
+    fallback to a stale file)."""
+
+    from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+
+    receipt = lib.read_receipt(ctx.receipts(t), "open-cell") or {}
+    want = (receipt.get("ace") or {}).get("playbook_content_hash")
+    order = [staging_playbook_file(ctx, t), playbook_file(ctx, t)] if (receipt.get("ace") or {}).get("release_staging") \
+        else [playbook_file(ctx, t), staging_playbook_file(ctx, t)]
+    for path in order:
+        if path.is_file():
+            playbook = ace.load_playbook(path)
+            if want is None or playbook["content_hash"] == want:
+                return path, playbook
+    raise lib.LoopError(f"iteration {t}: no playbook file carries the content hash its open-cell receipt records ({str(want)[:12]}); "
+                        f"run `repair --iter {t}`")
+
+
+def assert_playbook_binding(ctx: Ctx, t: int, opened: Mapping[str, Any], playbook: Mapping[str, Any]) -> str:
+    """The state's ``playbook_release`` hash must equal the hash of the playbook behind the pinned release: the open-cell receipt's hash and,
+    when the release was staged, the staging playbook's. Returns that hash."""
+
+    from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+
+    behind = opened["ace"]["playbook_content_hash"]
+    staged = staging_playbook_file(ctx, t)
+    if staged.is_file():
+        staged_hash = ace.load_playbook(staged)["content_hash"]
+        if staged_hash != behind:
+            raise lib.LoopError(f"iteration {t}: the staged release playbook ({staged_hash[:12]}) is not the one the open-cell receipt "
+                                f"records ({behind[:12]})")
+    if playbook["content_hash"] != behind:
+        raise lib.LoopError(f"iteration {t}: the playbook to archive ({playbook['content_hash'][:12]}) is not the one behind the pinned "
+                            f"release ({behind[:12]})")
+    return behind
 
 
 def checklist(ctx: Ctx, title: str, items: list[str]) -> list[str]:
@@ -281,8 +365,8 @@ def open_propose(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
         if not playbook_path.exists():
             ace.write_playbook(playbook_path, playbook)
     else:
-        playbook_path = ctx.analysis(t - 1) / "playbook" / f"playbook-i{t - 1}.json"
-        playbook = dict(ace.load_playbook(playbook_path))
+        playbook_path, loaded = resolve_playbook(ctx, t - 1)
+        playbook = dict(loaded)
     credit_receipt_sha = sha_file(tables_path)
     materials: dict[str, dict] = {}
     for scenario in tp.SCENARIOS:
@@ -483,6 +567,9 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
         "status": "done", "iteration": t, "stage": "cell", "arms": arms, "program": written["column"]["package"] and
         f"phase-native-module-v1-c{tf.ceiling(t, typed_present=bool(typed_spec), parent_present=bool(parent_spec))}",
         "typed_arm": "empty (legal)" if chosen is None else {"candidate_id": chosen["candidate_id"], "predicted_slu_pp": chosen["predicted_slu_pp"]},
+        # EMPTY BY MEASUREMENT: candidates were read and none cleared the bar. Distinct from ``inputs.typed_arm_empty`` (the --typed-arm-empty flag,
+        # which only declares that no candidate receipts were passed).
+        "typed_arm_empty_by_measurement": bool(chosen is None and entries),
         "parent_display_id": display_id(parent_state), "ace": ace_state["receipt"], "column_package": written["column"]["package"],
         "blockers": written["column"]["blockers"], "loader_verification": written["loader_verification"],
         "valid": len(valid), "refused": len(refused), "offline": len(offline), "not_flown": len(not_flown),
@@ -510,8 +597,7 @@ def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mappi
 
     from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
 
-    prev_path = (ctx.analysis(t - 1) / "playbook" / f"playbook-i{t - 1}.json") if t > 1 else (A / "playbook" / "playbook-i0.json")
-    previous = dict(ace.load_playbook(prev_path))
+    previous = dict(resolve_playbook(ctx, t - 1)[1]) if t > 1 else dict(ace.load_playbook(A / "playbook" / "playbook-i0.json"))
     answers = (_load_json(Path(a.reflector_answers)) if a.reflector_answers else {}).get("answers", {})
     deltas: list[dict] = []
     illegal = 0
@@ -525,8 +611,7 @@ def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mappi
     constants = ace.with_measured_lock_p99(int(propose["ace"]["lock_p99_supplied_tokens"]))
     playbook = ace.curate(previous, deltas, credit or {}, constants)
     playbook_path = A / "playbook" / f"playbook-i{t}.json"
-    if not playbook_path.exists():
-        ace.write_playbook(playbook_path, playbook)
+    playbook_file_status = write_playbook_keyed(playbook_path, playbook)         # keyed by content; a stale file is kept as superseded
     legal_intents = _load_json(Path(a.enums_file))["intents"] if a.enums_file else []
     release = None
     if legal_intents:
@@ -542,6 +627,7 @@ def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mappi
     if pins_file:
         ace_pins.update(pins_file)
     receipt = {"playbook_iteration": playbook["iteration"], "playbook_content_hash": playbook["content_hash"], "items": len(playbook["items"]),
+               "playbook_file": playbook_file_status,
                "deltas_in": len(deltas), "illegal_answers": illegal, "curation": playbook.get("curation") and {
                    k: v for k, v in playbook["curation"].items() if k in ("deltas_in", "counter_updates", "constants_sha256", "token_counter_id")},
                "release_staging": None if release is None else {
@@ -561,6 +647,70 @@ def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mappi
 def _own(summary: Mapping[str, Any], arm: str) -> tuple[float, float]:
     official = summary["arms"][arm]["official"]
     return 100.0 * float(official["slu_f1"]), 100.0 * float(official["intent_accuracy"])
+
+
+def plan_offline_fits(ctx: Ctx, t: int, run: str, attempt: str) -> tuple[list, list]:
+    """Queue one fit per offline candidate whose family the fitter reads; the rest are returned as ``unsupported`` (never dropped)."""
+
+    A = ctx.analysis(t)
+    offline = (read_or_none(ctx.receipts(t) / "offline-candidates.json") or {}).get("candidates", [])
+    fit_jobs, unsupported = [], []
+    for entry in offline:
+        app = entry["candidate"]["applications"][0]
+        family = FIT_FAMILY.get(app.get("family", ""))
+        if family is None:
+            unsupported.append(entry)
+            continue
+        out = A / "offline" / entry["candidate_id"][:16]
+        argv = [DELIVERY_FIT_SCRIPT, "--family", family, "--run-id", run, "--attempt", attempt, "--scorer", "slurp-slu-official-train",
+                "--split", "train", "--rows", tf.ROWS, "--data-root", ctx.data_root, "--lock", ctx.lock_path, "--out-dir", out]
+        if family == "oclock":          # the candidate's own scope restricts the paired apply-versus-not read
+            if app.get("types"):
+                argv += ["--types", ",".join(app["types"])]
+            if app.get("intents"):
+                argv += ["--intents", ",".join(app["intents"])]
+        report = out / f"fit-report-{family}-v1.json"
+        ctx.runner.run(f"delivery-fit-{entry['candidate_id'][:8]}", argv, produces=[report], ok_codes=(0, 3))   # exit 3 = refused, report written
+        fit_jobs.append((entry, report))
+    return fit_jobs, unsupported
+
+
+def archive_offline(ctx: Ctx, t: int, parent_state: Mapping[str, Any], run: str, candidates: Mapping[str, Any],
+                    fit_jobs: list, unsupported: list) -> list[dict]:
+    """Archive every offline candidate: a fitted one with its cross-fitted credit, an unsupported one as REFUSED (unmeasured) with the
+    code ``offline-family-unsupported``. Idempotent."""
+
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import archive as ar  # noqa: PLC0415
+
+    archive = ctx.archive()
+    out: list[dict] = []
+    for entry, report_path in fit_jobs:
+        report = _load_json(report_path)
+        status, clauses = lib.offline_verdict(report)
+        record = next(c for c in candidates["candidates"] if c["candidate_id"] == entry["candidate_id"])
+        state = ar.build_state(
+            artefact_hashes=_artefact_hashes(parent_state["artefact_hashes"], entry["operator"], entry["candidate"]["applications"],
+                                             {"delivery_rule_table": (report.get("rule_table") and tf.canonical_sha256(report["rule_table"])) or None}
+                                             if entry["operator"] == "deliver-rule" else None),
+            parent_id=parent_state["state_id"], iteration=t, operator_class=entry["operator_class"], candidate_id=entry["candidate_id"],
+            verdict=status, arm="typed", credit=lib.offline_credit_from_fit_report(report), predicted_slu_pp=record["predicted_slu_pp"],
+            run_id=run, attempt=1)
+        lib.put_state_idempotent(archive, state)
+        cross = report["cross_fitted"]
+        out.append({"state_id": state["state_id"], "status": status, "clauses": clauses,
+                    "family": entry["candidate"]["applications"][0].get("family"),
+                    "cross_fitted": {"delta_slu_pp": cross["delta_slu_pp"], "ci95_slu_pp": cross["ci95_slu_pp"],
+                                     "rows_edited": cross.get("rows_edited")}})
+    for entry in unsupported:
+        record = next(c for c in candidates["candidates"] if c["candidate_id"] == entry["candidate_id"])
+        state = ar.build_state(
+            artefact_hashes=_artefact_hashes(parent_state["artefact_hashes"], entry["operator"], entry["candidate"]["applications"], None),
+            parent_id=parent_state["state_id"], iteration=t, operator_class=entry["operator_class"], candidate_id=entry["candidate_id"],
+            verdict="refused", arm="typed", predicted_slu_pp=record["predicted_slu_pp"], refusal_code=OFFLINE_UNSUPPORTED)
+        lib.put_state_idempotent(archive, state)
+        out.append({"state_id": state["state_id"], "status": "refused", "refusal_code": OFFLINE_UNSUPPORTED,
+                    "family": entry["candidate"]["applications"][0].get("family")})
+    return out
 
 
 def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
@@ -595,19 +745,7 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
             "--split-identity-hash", roster_doc["split_identity_hash"], "--repo-root", ctx.repo_root, "--data-root", ctx.data_root,
             "--seed", 20260915, "--draws", 10000, "--recipe-id", names["recipe_id"], "--title", f"loop i{t} {right} vs {left}",
             "--analysis-root", out], produces=[out / "score-contrasts.json"])
-    offline = (read_or_none(ctx.receipts(t) / "offline-candidates.json") or {}).get("candidates", [])
-    fit_jobs = []
-    for entry in offline:
-        app = entry["candidate"]["applications"][0]
-        family = FIT_FAMILY.get(app.get("family", ""))
-        if family is None:
-            continue
-        out = A / "offline" / entry["candidate_id"][:16]
-        ctx.runner.run(f"delivery-fit-{entry['candidate_id'][:8]}", [
-            DELIVERY_FIT_SCRIPT, "--family", family, "--run-id", run, "--attempt", attempt, "--scorer", "slurp-slu-official-train",
-            "--split", "train", "--rows", tf.ROWS, "--data-root", ctx.data_root, "--lock", ctx.lock_path, "--out-dir", out],
-            produces=[out / "fit-report-v1.json"])
-        fit_jobs.append((entry, out / "fit-report-v1.json"))
+    fit_jobs, unsupported = plan_offline_fits(ctx, t, run, attempt)
     if ctx.runner.planned:
         return {"status": "planned", "commands": [r.argv for r in ctx.runner.planned]}
     summary = _load_json(sv / "score-summary.json")
@@ -653,31 +791,24 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
         if verdict.accepted:
             lib.write_json_new(ctx.package_dir / "archive-specs" / f"{state['state_id']}.json", pending["spec"])
         verdicts["typed"] = {"state_id": state["state_id"], **verdict.to_dict()}
-    # ---- the offline (delivery / scope) candidates
-    for entry, report_path in fit_jobs:
-        report = _load_json(report_path)
-        status, clauses = lib.offline_verdict(report)
-        record = next(c for c in candidates["candidates"] if c["candidate_id"] == entry["candidate_id"])
-        state = ar.build_state(
-            artefact_hashes=_artefact_hashes(parent_state["artefact_hashes"], entry["operator"], entry["candidate"]["applications"],
-                                             {"delivery_rule_table": (report.get("rule_table") and tf.canonical_sha256(report["rule_table"])) or None}
-                                             if entry["operator"] == "deliver-rule" else None),
-            parent_id=parent_state["state_id"], iteration=t, operator_class=entry["operator_class"], candidate_id=entry["candidate_id"],
-            verdict=status, arm="typed", credit=lib.offline_credit_from_fit_report(report), predicted_slu_pp=record["predicted_slu_pp"],
-            run_id=run, attempt=1)
-        lib.put_state_idempotent(archive, state)
-        verdicts.setdefault("offline", []).append({"state_id": state["state_id"], "status": status, "clauses": clauses})
+    # ---- the offline (delivery / scope) candidates: read by the fitter, or recorded as refused-unmeasured; never skipped
+    offline_verdicts = archive_offline(ctx, t, parent_state, run, candidates, fit_jobs, unsupported)
+    if offline_verdicts:
+        verdicts["offline"] = offline_verdicts
     # ---- the ACE state: always the child of the previous ACE state (a refused state still generates the next reflection)
     ace_states = [s for s in states if s["arm"] == "ace" and s["iteration"] < t]
     previous_ace = sorted(ace_states, key=lambda s: (s["iteration"], s["state_id"]))[-1]
     if tf.ARM_ACE in credits:
         verdict = selection.select(credits[tf.ARM_ACE], lock_id, credits[tf.TWIN], None, rules)
-        playbook = _load_json(A / "playbook" / f"playbook-i{t}.json")
+        _playbook_path, playbook = resolve_playbook(ctx, t)             # the playbook the flown release was built from
+        behind = assert_playbook_binding(ctx, t, opened, playbook)
         state = ar.build_state(artefact_hashes={"playbook_release": playbook["content_hash"]}, parent_id=previous_ace["state_id"],
                                iteration=t, operator_class="playbook", candidate_id=f"ace-i{t}", verdict=verdict.status, arm="ace",
                                credit=credits[tf.ARM_ACE], run_id=run, attempt=1)
+        if state["artefact_hashes"]["playbook_release"] != behind:      # the consistency assert: state hash == hash behind the release
+            raise lib.LoopError(f"iteration {t}: the ACE state's playbook_release is not the hash behind the pinned release")
         lib.put_state_idempotent(archive, state)
-        verdicts["ace"] = {"state_id": state["state_id"], "clause_d": "vacuous (no previous-ACE-state column in this flight)",
+        verdicts["ace"] = {"state_id": lib.stored_state_id(archive, state), "clause_d": "vacuous (no previous-ACE-state column in this flight)",
                            **verdict.to_dict()}
     # ---- curve, meta summary, parent choice
     states = archive.states()
@@ -721,6 +852,82 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
             if ace_credit_status != "written" else "the ACE credit file is written",
             f"open --iter {t + 1} --stage propose (tables from the delivered column of iteration {t}; parent {parent_shown})",
             "countersign, mint, flip and queue (humans), as in iteration %d" % t])
+    return payload
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# repair: a one-off, idempotent reconciliation of a closed iteration (stale playbook file, wrong archived hash, unread offline candidates)
+# ---------------------------------------------------------------------------------------------------------------------------
+
+CORRECTION_SLUG = "playbook-hash"
+CORRECTION_CAUSE = "stale-playbook-file-written-by-superseded-open-cell-run"
+
+
+def repair_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
+    """Reconcile closed iteration ``t``:
+
+    1. ``playbook/playbook-i<t>.json`` is made the playbook behind the pinned release (the stale file is kept as ``.superseded-<ts>.json``);
+    2. an archived ACE state whose ``playbook_release`` is not that playbook's hash gets a CORRECTION RECORD (``archive/corrections/``;
+       the state file itself is never edited);
+    3. every offline candidate with no archive state is read (or archived as refused-unmeasured) exactly as ``close`` does.
+    """
+
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import archive as ar  # noqa: PLC0415
+
+    start(ctx, t, pin=False)
+    opened = need_receipt(ctx, t, "open-cell")
+    steps: dict[str, Any] = {}
+    # 1. the playbook file
+    behind = opened["ace"]["playbook_content_hash"]
+    staged = staging_playbook_file(ctx, t)
+    if a.skip_playbook_file:
+        steps["playbook_file"] = "skipped"
+    elif staged.is_file():
+        from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+
+        staged_playbook = ace.load_playbook(staged)
+        if staged_playbook["content_hash"] != behind:
+            raise lib.LoopError(f"iteration {t}: the staged release playbook is not the one the open-cell receipt records")
+        steps["playbook_file"] = write_playbook_keyed(playbook_file(ctx, t), staged_playbook)
+    else:
+        steps["playbook_file"] = "no-staged-release"
+    # 2. the correction record
+    archive = ctx.archive()
+    receipt_path = ctx.receipts(t) / "open-cell-receipt.json"
+    try:
+        receipt_rel = receipt_path.relative_to(ctx.repo_root).as_posix()
+    except ValueError:
+        receipt_rel = receipt_path.as_posix()
+    corrections = []
+    for state in archive.states():
+        if state["arm"] != "ace" or state["iteration"] != t or state["artefact_hashes"].get("playbook_release") == behind:
+            continue
+        record = {"schema": ar.CORRECTION_SCHEMA, "state_id": state["state_id"], "artefact": "playbook_release", "slug": CORRECTION_SLUG,
+                  "wrong": state["artefact_hashes"]["playbook_release"], "right": behind, "cause": CORRECTION_CAUSE,
+                  "derives_from": {"receipt": receipt_rel, "field": "ace.playbook_content_hash", "receipt_sha256": sha_file(receipt_path)}}
+        path = archive.put_correction(record)
+        corrections.append({"state_id": state["state_id"], "wrong": record["wrong"], "right": behind, "path": path.name})
+    steps["corrections_written"] = corrections
+    steps["playbook_binding"] = [{"state_id": s["state_id"], "ok": s["artefact_hashes"].get("playbook_release") == behind,
+                                  "corrected": bool(s.get("corrections"))}
+                                 for s in ctx.archive().states() if s["arm"] == "ace" and s["iteration"] == t]
+    # 3. the offline candidates without a state
+    candidates = read_or_none(ctx.receipts(t) / "candidates.json")
+    names = tf.names(t, "arm")
+    fit_jobs, unsupported = plan_offline_fits(ctx, t, names["run_id"], names["attempt_id"])
+    if ctx.runner.planned:
+        steps["planned"] = [r.argv for r in ctx.runner.planned]
+        return {"status": "planned", "iteration": t, "steps": steps, "commands": steps["planned"]}
+    archived_ids = {s["candidate_id"] for s in ctx.archive().states()}
+    fit_jobs = [(e, r) for e, r in fit_jobs if e["candidate_id"] not in archived_ids]
+    unsupported = [e for e in unsupported if e["candidate_id"] not in archived_ids]
+    states = ctx.archive().states()
+    parent_state = resolve_display(states, opened["parent_display_id"])
+    steps["offline"] = archive_offline(ctx, t, parent_state, names["run_id"], candidates or {"candidates": []}, fit_jobs, unsupported) \
+        if candidates else []
+    payload = {"status": "done", "iteration": t, "steps": steps}
+    lib.write_receipt(ctx.receipts(t), "repair", payload, inputs={"iteration": t, "open_cell": opened["inputs_sha256"],
+                                                                  "skip_playbook_file": bool(a.skip_playbook_file)})
     return payload
 
 
@@ -778,6 +985,9 @@ def build_parser() -> argparse.ArgumentParser:
     c = sub.add_parser("close")
     c.add_argument("--iter", type=int, required=True, dest="iteration")
     c.add_argument("--row-scores", default=None)
+    r = sub.add_parser("repair", help="one-off, idempotent reconciliation of a closed iteration (see repair_iteration)")
+    r.add_argument("--iter", type=int, required=True, dest="iteration")
+    r.add_argument("--skip-playbook-file", action="store_true", help="do not touch the data-root playbook file")
     sub.add_parser("status")
     return parser
 
@@ -800,6 +1010,8 @@ def main(argv: list[str] | None = None, *, runner: lib.Runner | None = None, lis
             if stage == "auto":
                 stage = "cell" if lib.read_receipt(ctx.receipts(args.iteration), "open-propose") else "propose"
             result = (open_propose if stage == "propose" else open_cell)(ctx, args.iteration, args)
+        elif args.command == "repair":
+            result = repair_iteration(ctx, args.iteration, args)
         else:
             result = close_iteration(ctx, args.iteration, args)
     except lib.LoopError as error:

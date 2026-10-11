@@ -106,6 +106,23 @@ COLUMN_MAX_SUPPLIED_ITEMS = DELIVERING_MAX_SUPPLIED_ITEMS + ALLOWANCE_ITEMS
 FIT_ENDPOINTS_PER_CONTACT = 4
 PLANNED_GPU_HOURS_ARM, PLANNED_GPU_HOURS_SMOKE = 1.5, 1.0
 PLANNED_GPU_HOURS_TEXT_ONLY = 0.1
+#: Iteration 1 flew 4,320 contacts in 2.49 GPU-active hours (monitored; wall 2.73 h) against the planned 1.5, with calls and audio exactly at plan
+#: (results note 2026-10-11, section 7b): 2.49 * 3600 / 4320 = 2.075 s per contact on the resident geometry. From iteration 2 the arm's planned
+#: GPU hours are DERIVED from that measured rate, never hand-set.
+MEASURED_GPU_S_PER_CONTACT_I1 = 2.075
+GPU_PLAN_MARGIN = 1.3
+GPU_PLAN_ROUND_H = 0.1
+
+
+def planned_gpu_hours_arm(iteration: int, rows: int, contacts: int) -> float:
+    """Planned GPU hours of an iteration's column: the fixed iteration-1 plan, then ``ceil(rows * contacts * measured s/contact * 1.3 / 3600)``
+    rounded UP to 0.1 h (iterations 2 and 3 fly five contacts per row once the typed parent column joins)."""
+
+    if iteration <= 1:
+        return PLANNED_GPU_HOURS_ARM
+    hours = rows * contacts * MEASURED_GPU_S_PER_CONTACT_I1 * GPU_PLAN_MARGIN / 3600.0
+    return round(math.ceil(round(hours / GPU_PLAN_ROUND_H, 9)) * GPU_PLAN_ROUND_H, 1)
+
 FLOOR_SLU_PP, FLOOR_INTENT_PP = 1.49, 0.65         # decision 190 at n = 1,080 (same-flight-supply-variant)
 OFFLINE_FLOOR_PP = 0.67                              # an offline delivery / scope candidate (design 5.3)
 PREDICTED_BAR_PP = 1.5                               # decision 192 (rails.tfrl_typed_proposer.PREDICTED_SLU_FLOOR_PP)

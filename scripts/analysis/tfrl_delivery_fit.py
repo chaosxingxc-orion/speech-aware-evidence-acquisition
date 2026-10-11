@@ -20,6 +20,13 @@ cross-fitted column buy over the sealed column, with what CI?  Families (each ha
 * ``article`` -- strip a leading determiner of a filler of slot type ``x`` when ``x`` includes it in a
                  TRAIN-pool share below ``t`` over >= 10 opportunities (v4 fx-article is ``t = 0.10``).
 
+* ``oclock``  -- strip a trailing ``o'clock`` / ``oclock`` token from a ``time`` filler of more than one token
+                 (v4g stage ``fx-oclock``).  The rule has NO threshold: the grid is the single nominal point
+                 ``t = 1.0`` and the fit is a plain paired read of apply-versus-not on the sealed column (applied
+                 unconditionally, whatever the pool statistic decided for the lock; the report records that
+                 decision).  ``--types`` / ``--intents`` restrict it to the candidate's slot types / delivered
+                 intents (empty = unrestricted).
+
 Statistics come from ONE pinned pool (the R5 pool, ``slurp_nx_postproc_v4_search.STATS_POOL``) whose
 disjointness from Fold A and R01C is re-proved at run time.  Labels never change; only entities do.
 
@@ -72,12 +79,14 @@ READ_ID = "SAEA-SLURP-TFRL-DELIVERY-FIT-V1"
 FORBIDDEN_KEYS = frozenset({"text", "transcript", "gold", "value_text", "utterance", "answer"})
 MAX_STRING = 200
 ARTICLE_MIN_OPPORTUNITIES = 10
+OCLOCK_TOKENS = ("o'clock", "oclock")
 
 #: family -> default grid.  The v4g point of each family is on its grid.
 GRIDS: dict[str, tuple[float, ...]] = {
     "ee": (0.02, 0.05, 0.10, 0.15, 0.20, 0.30),
     "ti": (0.005, 0.01, 0.02, 0.05, 0.10),
     "article": (0.05, 0.10, 0.20, 0.30, 0.50),
+    "oclock": (1.0,),          # no threshold: one nominal point, a paired apply-vs-not read
 }
 FAMILIES = tuple(GRIDS)
 
@@ -176,6 +185,18 @@ def apply_family(family: str, t: float, pairs: list, intent: str | None, stats, 
                 e = env["SlotEntity"](type=e.type, filler=" ".join(tokens[1:]))
             out.append((i, e))
         return out
+    if family == "oclock":
+        intents, types = env.get("intents") or (), env.get("types") or ()
+        if intents and intent not in intents:
+            return pairs
+        out = []
+        for i, e in pairs:
+            tokens = e.filler.split()
+            if (e.type == "time" and (not types or e.type in types) and len(tokens) > 1
+                    and tokens[-1].lower() in OCLOCK_TOKENS):
+                e = env["SlotEntity"](type=e.type, filler=" ".join(tokens[:-1]))
+            out.append((i, e))
+        return out
     raise FitError(f"unknown family {family!r}; known: {list(FAMILIES)}")
 
 
@@ -245,7 +266,8 @@ def fit(args) -> dict:
     ids = P["ids"]
     grid = tuple(sorted(args.grid)) if args.grid else GRIDS[args.family]
     env = {"SlotEntity": SlotEntity, "fold": fold, "wilson_upper_bound": DN.wilson_upper_bound,
-           "z": DN.V4G_WILSON_Z, "strip_cache": {}}
+           "z": DN.V4G_WILSON_Z, "strip_cache": {},
+           "intents": tuple(sorted(getattr(args, "intents", None) or ())), "types": tuple(sorted(getattr(args, "types", None) or ()))}
 
     columns, edited, diags = {}, {}, {}
     for t in grid:
@@ -306,6 +328,7 @@ def fit(args) -> dict:
             "per_scenario": scen,
         },
         "full_threshold_edits": diags[t_full],
+        "scope": {"types": list(env["types"]), "intents": list(env["intents"])},
         "refused": refused,
         "refusal_reason": ("cross-fitted CI95 lower bound is not above 0" if refused else None),
         "rule_table": None if refused else {
@@ -317,7 +340,10 @@ def fit(args) -> dict:
                            **({"min_pool_exemplars": math.ceil(1.0 / t_full)} if args.family == "ti" else {}),
                            **({"min_opportunities": ARTICLE_MIN_OPPORTUNITIES,
                                "strip_pairs": len(article_strip_set(P["stats"].article_table, t_full))}
-                              if args.family == "article" else {})},
+                              if args.family == "article" else {}),
+                           **({"tokens": list(OCLOCK_TOKENS), "types": list(env["types"]), "intents": list(env["intents"]),
+                               "pool_decision_strip": bool(getattr(P["stats"], "oclock", {}).get("strip"))}
+                              if args.family == "oclock" else {})},
             "fitted_on": {"run_id": args.run_id, "rows": len(ids), "split": args.split},
             "per_half_thresholds": {"half_a": t_a, "half_b": t_b},
             "predicted_slu_pp": contrast["delta_slu_pp"],
@@ -337,6 +363,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--rows", type=int, required=True)
     parser.add_argument("--grid", type=lambda v: [float(x) for x in v.split(",")], default=None,
                         help="comma-separated thresholds (default: the family grid)")
+    parser.add_argument("--types", type=lambda v: [x for x in v.split(",") if x], default=None,
+                        help="comma-separated slot types the oclock family is restricted to (default: unrestricted)")
+    parser.add_argument("--intents", type=lambda v: [x for x in v.split(",") if x], default=None,
+                        help="comma-separated delivered intents the oclock family is restricted to (default: unrestricted)")
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument("--data-root", default=os.environ.get("SPEECHRL_DATA_DIR", DEFAULT_DATA_ROOT))
     parser.add_argument("--lock", default=DEFAULT_LOCK)

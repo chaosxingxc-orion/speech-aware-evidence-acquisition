@@ -34,13 +34,16 @@ def _lower_bound(state: Mapping[str, Any]) -> float:
 
 
 def _flown_children(states: Iterable[Mapping[str, Any]], state_id: str) -> list[Mapping[str, Any]]:
-    return [s for s in states if s["parent_id"] == state_id and s["verdict"] in ("accepted", "refused")]
+    # an unmeasured refusal (no credit vector) is not a flown child
+    return [s for s in states if s["parent_id"] == state_id and s["verdict"] in ("accepted", "refused")
+            and s.get("credit") is not None]
 
 
 def masked_classes(states: Iterable[Mapping[str, Any]], parent_id: str) -> list[str]:
     counts: dict[str, int] = {}
     for s in states:
-        if s["parent_id"] == parent_id and s["verdict"] == "refused" and s.get("operator_class"):
+        if (s["parent_id"] == parent_id and s["verdict"] == "refused" and s.get("operator_class")
+                and s.get("credit") is not None):
             counts[s["operator_class"]] = counts.get(s["operator_class"], 0) + 1
     return sorted(c for c, n in counts.items() if n >= MASK_AFTER_REFUSED)
 
