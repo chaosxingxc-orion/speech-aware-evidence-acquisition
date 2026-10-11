@@ -1436,3 +1436,15 @@ Owner, verbatim: 「决策262：同意」 ("262: agreed.")
   one credit-selected construction update -> confirmation) once the owner releases their GPU under 242 / 252.
 - Consequence for the record: results notes from today on carry a "ledger entry" line stating which clause (b), (c) or
   (d) they feed; the lineage analysis of 2026-10-11 supplies the related-work frame (TF-GRPO, ACE, SkillOpt, DGM, RRSI).
+
+### Build wave status (coordinator, 2026-10-11, after decisions 262-266)
+
+Merged to master: E-T6 multi-store `release_swaps` (1a6cff191; receipt v5, `runtime.py` router changed: identity-bound), the
+loop driver + DRAFT protocol (efedd1163: `scripts/flights/tfrl/`, `docs/readiness/2026-10-11-slurp-tfrl-loop-v1/`,
+protocol_sha256 666763df...; selection clauses a-e as implemented; iteration 1 arm set `ace, aa, lock`; 53 tests), the
+stale-test fixes (58768c220). Blocker found by the driver: lock v2.2 declares no `ace-playbook` store, so the ACE column is
+refused by `verify_declared_module`; fix in build = lock successor v2.3 (= v2.2 + `ace-playbook` at the empty i0 release,
+declaration-only, P-ACE-0 byte proof). Also in build: the 266-E direct-only Fold B package; root cause of the flown-cell
+registration tests (successor-2, VER-1b) that recompose on the live tree after identity-bound changes. Order after these
+land: freeze one flight commit -> one re-pin of every live HELD package -> countersign the i1 proposer/reflector rows ->
+mint -> flip -> plan pins -> flip -> gates -> queue (GPU resumes).

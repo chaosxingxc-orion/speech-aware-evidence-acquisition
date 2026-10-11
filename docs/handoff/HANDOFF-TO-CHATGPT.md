@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T06:38:00Z
+Last refreshed: 2026-10-11T07:14:51Z
+
+## E-T6 and the loop driver merged; lock v2.3 (ace-playbook store, P-ACE-0) in build; 266-E package in build (2026-10-11T07:14:51Z, Fable 5.1 root)
+
+Master efedd1163: E-T6 multi-store swaps (receipt v5; runtime.py router), loop driver + DRAFT protocol (`scripts/flights/tfrl/`, `docs/readiness/2026-10-11-slurp-tfrl-loop-v1/`; iteration 1 = ace / aa / lock; selection a-e pinned; 53 tests), stale-test fixes. Blocker: lock v2.2 declares no `ace-playbook` store -> lock v2.3 successor with the empty i0 release and the P-ACE-0 byte proof is being built; the driver's iteration-1 tables source moves to the R6-P1 lock column. In build: 266-E direct-only Fold B package (Instruct + replicate + Thinking, smoke first); flown-cell registration-test root cause. Then: one flight commit, one re-pin, countersign i1 rows, mint, flip, pins, flip, gates, queue. GPU idle; no owner decision open.
+
+Superseded stamp: 2026-10-11T06:38:00Z
 
 ## 262 ruled agreed (owner, 2026-10-11): paper core = sealed-credit policy search over typed components + the stable-gain and negative-result ledger; Thinking GGUF pinned (2026-10-11T06:38:00Z, Fable 5.1 root)
 
