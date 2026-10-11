@@ -119,7 +119,9 @@ def test_the_baseline_is_the_shared_base_plus_the_window_pins(key):
     assert cm.differing_paths(cm.policy_owned_values(own), cm.policy_owned_values(base)) == []
     assert own["scorers"] == ["asr-wer-whisper"]
     assert own["arm"] == "speech-feature-query" and own["evidence_source"] == "none" and own["evidence_mismatch"] is False
-    for forbidden in ("knowledge_snapshot_relpath", "knowledge_snapshot_sha256", "knowledge_stores", "native_episode",
+    assert own["knowledge_snapshot_relpath"] == "knowledge/e22/inert/all-off-placeholder-v1/snapshot.json"
+    assert len(own["knowledge_snapshot_sha256"]) == 64
+    for forbidden in ("knowledge_stores", "native_episode",
                       "live_phase_fit", "d1_evidence_supplement", "agent_tools", "tools"):
         assert forbidden not in own, forbidden
     e21 = _json("configs/baseline/e21-native-window-direct-full44-v1.json")
@@ -311,3 +313,60 @@ def test_the_derived_fragments_are_canonical_json():
     for rel in committed:
         text = (_REPO / rel).read_text(encoding="utf-8")
         assert text == json.dumps(json.loads(text), indent=2, ensure_ascii=False, sort_keys=True) + "\n", rel
+
+
+# ---------------------------------------------------------------------------
+# The inert knowledge snapshot: the runner needs a validated non-empty snapshot; Earnings-22 has no governed knowledge.
+# ---------------------------------------------------------------------------
+
+
+def _inert_builder():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("build_e22_inert_knowledge_snapshot", _REPO / "scripts/build_e22_inert_knowledge_snapshot.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+@pytest.mark.parametrize("key", ["arm", "smoke"])
+def test_both_baselines_pin_the_deterministic_inert_snapshot(key):
+    builder = _inert_builder()
+    snapshot = builder.build_snapshot()
+    own = _baseline(key)
+    assert own["knowledge_snapshot_relpath"] == builder.RELPATH
+    assert own["knowledge_snapshot_sha256"] == snapshot.content_hash()
+    assert (len(snapshot.facets), len(snapshot.values)) == (1, 1)
+    assert snapshot.source_partition_role == "external-governed"
+
+
+def test_the_inert_snapshot_round_trips_through_the_frozen_loader_and_is_deterministic():
+    import json
+    from speech_aware_evidence_acquisition.rails.knowledge import KnowledgeSnapshot
+    builder = _inert_builder()
+    payload = builder.frozen_bytes()
+    assert payload == builder.frozen_bytes()
+    loaded = KnowledgeSnapshot.from_frozen_json(json.loads(payload.decode("utf-8")))
+    assert loaded.content_hash() == builder.build_snapshot().content_hash()
+    assert loaded.historical_prior_score_range_violations == ()
+
+
+def test_the_runtime_loader_accepts_the_inert_pin_and_still_refuses_an_undeclared_one(tmp_path):
+    from speech_aware_evidence_acquisition.core.flight.runtime import FlightRuntime, FlightRuntimeError
+    builder = _inert_builder()
+    target = tmp_path / builder.RELPATH
+    target.parent.mkdir(parents=True)
+    target.write_bytes(builder.frozen_bytes())
+
+    def stub(values):
+        runtime = FlightRuntime.__new__(FlightRuntime)
+        runtime._composed = type("C", (), {"values": values})()
+        runtime._data_root = tmp_path
+        return runtime
+
+    snapshot = stub({"knowledge_snapshot_relpath": builder.RELPATH,
+                     "knowledge_snapshot_sha256": builder.build_snapshot().content_hash()})._load_knowledge_snapshot()
+    assert snapshot.content_hash() == builder.build_snapshot().content_hash()
+    with pytest.raises(FlightRuntimeError, match="must declare 'knowledge_snapshot_relpath'"):
+        stub({})._load_knowledge_snapshot()
+    with pytest.raises(FlightRuntimeError, match="hashes to"):
+        stub({"knowledge_snapshot_relpath": builder.RELPATH, "knowledge_snapshot_sha256": "0" * 64})._load_knowledge_snapshot()
