@@ -375,7 +375,7 @@ def test_all_seven_exposure_rows_exist_and_no_cell_contains_a_pipe() -> None:
         parts = found[0].split("|")
         assert len(parts) == 17, (run, parts[:3])
         cells = [part.strip() for part in parts[1:-1]]
-        assert cells[6] == "discovery" and cells[8] == "no"
+        assert cells[6] == "discovery" and cells[8] in ("no", "yes")  # flown and sealed; closed by scripts/flights/batch/ledger_mark_consumed.py
         assert cells[2] == ("model-free-check" if run == MEASUREMENT_ROW else "bounded-discovery-probe")
     arm_row = next(line for line in lines if ("| " + ARM_RUN + " |") in line)
     assert "admission no-harm" in arm_row and "NEVER reported as a gain" in arm_row

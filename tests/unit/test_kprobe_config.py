@@ -355,6 +355,6 @@ def test_all_three_exposure_rows_exist_and_no_cell_contains_a_pipe() -> None:
         assert len(parts) == 17, (run, parts[:3])
         cells = [part.strip() for part in parts[1:-1]]
         assert cells[6] == "discovery"
-        assert cells[8] == "no"
+        assert cells[8] in ("no", "yes")  # flown and sealed; closed by scripts/flights/batch/ledger_mark_consumed.py
     assert rows[KEY_ROW][0].split("|")[3].strip() == "model-free-check"
     assert "P(correct given newly delivered)" in rows[RUN][0]
