@@ -1063,3 +1063,24 @@ confinement-list and paper-column regression hardening; and (2) the E22 ALL-OFF 
 inventory on CPU, fragments, `--carrier e22`, `e220` byte proof, package, DRAFT rows) -- no model contact, no flight,
 nothing countersigned; all of it reversible, and the owner's ruling on 259 decides whether the E22 cells stay
 registered. Carriers' GPU remains held (242 / 252).
+
+## Decisions 259-261 ruled by the owner, 2026-10-11; the owner's question on where training-free RL acts
+
+Owner, verbatim: 「决策259：同意；260：A；261：我们本地的GPU的型号只是一个显存只有24GB的便携，在这个基础上，我倾向于认为最多去
+找一下llama.cpp社区是否存在thinging模式的模型，可以提前下载。同步你按照B去处理。我现在疑惑的是，training free RL发生在什么环节，
+提供了怎样的有益增益？我们论文的核心还是去看training free RL这套方案是否有稳定的增益的！」
+
+English: "259: agreed; 260: A; 261: our local GPU is a portable card with only 24 GB of VRAM; on that basis I lean to
+at most checking whether the llama.cpp community has a thinking-mode model, which can be downloaded in advance; in
+parallel proceed with B. What puzzles me now is: at which step does training-free RL act, and what beneficial gain
+has it provided? The core of our paper is still whether this training-free RL scheme has a STABLE gain!"
+
+- **259** RULED: the carrier model-free work proceeds (already in execution: E21 seal path + wire-check stage + full
+  model-free seal-and-score; E22 HELD registration; A2T hardening).
+- **260** RULED A: VER-1 is CLOSED as a lock candidate; lock v2.2 stands; the pools, columns and composer remain for reuse.
+- **261** RULED (owner's variant): no larger-core line on the 24 GB card; the coordinator checks the llama.cpp community
+  for a thinking-mode Qwen3-Omni GGUF that fits 24 GB and may pre-download it (program-level acquisition through the
+  umbrella lock and fetch scripts, never ad hoc); in parallel, option B (a new hearing-pass tool form, model-initiated
+  per decision 206) is designed and registered as the next SLURP line.
+- The owner's question is answered in the coordinator's briefing of the same day and recorded as decision 262's
+  proposal (below).
