@@ -112,6 +112,9 @@ def paired_run_ids(fit_id: str) -> list[str]:
     out = []
     for match in re.finditer(r"-FIT(?=-|$)", fit_id):
         out.append(fit_id[: match.start()] + fit_id[match.end():])
+    stripped = re.sub(r"-FIT-V\d+$", "", fit_id)  # "<run id>-FIT-V1" where the run id itself ends in -V1
+    if stripped != fit_id and stripped not in out:
+        out.append(stripped)
     return out
 
 
