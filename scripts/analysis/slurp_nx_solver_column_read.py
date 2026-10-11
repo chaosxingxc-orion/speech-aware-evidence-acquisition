@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""NX programme E2: the node-local reader for a sealed Solver template column.
+"""NX programme E2: the node-local reader for a sealed Solver template column (and, E-S2, supply column).
 
 Programme ``docs/readiness/2026-10-09-slurp-nx-node-extreme-programme-v1.md`` C0.1 / C1 item E2.
 A sealed run whose Solver node carries a ``template_variants`` group (item E1, receipt
@@ -39,6 +39,15 @@ cluster being one SLURP utterance id -- the first three colon-separated segments
 and the paired Wilson read: of the b + c discordant rows (arm right / delivering wrong = b, the
 reverse = c), the share b / (b + c) with its Wilson score CI95 -- a share whose interval lies
 above 1/2 is the arm winning the rows where the two disagree.
+
+SUPPLY COLUMNS (loop engineering E-S2, 2026-10-11). A run whose Solver node carries a ``supply_variants``
+group (receipt ``saea-supply-variant-arms-v3``; flown under the full graph or the review-off module graph, built
+by the consumption module's ``supply`` column kind) is read the same way: the arms differ in the SUPPLIED
+EVIDENCE (knob re-caps and/or one release swap) instead of the instruction template, every arm still answering
+over the same QueryState. The report then also carries ``arm_group_kind: "supply"`` and ``supply_stats``: per
+arm, the supplied-item count and the id-set difference against the delivering arm (rows identical, items added,
+items removed), read from the arm's sealed ``supplied_value_ids`` -- counts only. The per-error-item value-in-supply
+class (E1/E2/E3) needs the supplied value TEXT, which a sealed receipt does not carry, and is NOT computed here.
 
 Gold discipline: gold enters only offline, through the governed SLURP loaders exactly as
 ``scripts/analysis/slurp_s1_slu_error_taxonomy.py`` loads it (``train`` through the error-source
@@ -93,6 +102,9 @@ PRIMARY = "exact_set_normalised"
 VIEW_PRIMARY_METRIC = "exact_set"
 SECONDARIES = ("parse_valid", "empty_gold_false_fill", "nonempty_exact")
 V4_SCHEMA = "saea-supply-variant-arms-v4"
+V3_SCHEMA = "saea-supply-variant-arms-v3"
+#: receipt schema -> the arm group kind it seals.
+KIND_BY_SCHEMA = {V4_SCHEMA: "template", V3_SCHEMA: "supply"}
 
 
 class ColumnReadError(RuntimeError):
@@ -295,6 +307,7 @@ def read_columns(
     arm_ids: Sequence[str], delivering: str, twin: str | None = None,
     normalised_texts: Mapping[str, Mapping[str, str]] | None = None,
     seed: int = SEED, draws: int = DRAWS,
+    group_kind: str = "template", supplied_ids: Mapping[str, Mapping[str, Sequence[str]]] | None = None,
 ) -> dict:
     """The whole column read over ``texts[arm_id][sample_id] -> raw answer``.
 
@@ -341,7 +354,7 @@ def read_columns(
             "parse_raw_true_to_normalised_false": sum(
                 1 for s in ids if raw_s[s]["parsed"] and not norm_s[s]["parsed"]),
         }
-    return {
+    report = {
         "read_id": READ_ID, "recipe": RECIPE, "schema_version": SCHEMA_VERSION,
         "status": "DESCRIPTIVE",
         "rows": len(ids),
@@ -362,6 +375,48 @@ def read_columns(
         },
         "raw_vs_normalised": flips,
     }
+    if group_kind == "supply":
+        report["arm_group_kind"] = "supply"
+        report["supply_stats"] = supply_stats(supplied_ids or {}, arm_ids, delivering, ids)
+    elif group_kind != "template":
+        raise ColumnReadError(f"unknown arm group kind {group_kind!r}")
+    return report
+
+
+def supply_stats(
+    supplied_ids: Mapping[str, Mapping[str, Sequence[str]]], arm_ids: Sequence[str], delivering: str,
+    ids: Sequence[str],
+) -> dict:
+    """Per arm, from the sealed ``supplied_value_ids`` (ids only): the supplied-item count and the
+    id-set difference against the delivering arm. Counts and shares; never a value text."""
+
+    for arm in arm_ids:
+        if sorted(supplied_ids.get(arm, {})) != sorted(ids):
+            raise ColumnReadError(f"arm {arm!r} carries no sealed supplied ids for every roster row")
+    out = {}
+    n = len(ids)
+    for arm in arm_ids:
+        items = [len(supplied_ids[arm][s]) for s in ids]
+        entry = {
+            "rows": n, "items_total": sum(items), "items_mean": (sum(items) / n) if n else None,
+            "rows_with_no_items": sum(1 for v in items if v == 0),
+        }
+        if arm != delivering:
+            added = removed = identical = reordered = 0
+            for s in ids:
+                mine, ref = list(supplied_ids[arm][s]), list(supplied_ids[delivering][s])
+                added += len(set(mine) - set(ref))
+                removed += len(set(ref) - set(mine))
+                identical += int(set(mine) == set(ref))
+                reordered += int(set(mine) == set(ref) and mine != ref)
+            entry.update({
+                "rows_same_id_set": identical, "rows_same_set_other_order": reordered,
+                "items_added_vs_delivering": added, "items_removed_vs_delivering": removed,
+                "items_added_mean": (added / n) if n else None,
+                "items_removed_mean": (removed / n) if n else None,
+            })
+        out[arm] = entry
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -369,11 +424,11 @@ def read_columns(
 
 
 def load_sealed_arm_texts(outputs_rows: Sequence[Mapping], trace_records: Mapping[str, Mapping]) -> dict:
-    """The raw first-visit answer of every arm of every row of a sealed template column.
+    """The raw first-visit answer of every arm of every row of a sealed template or supply column.
 
     ``outputs_rows`` and ``trace_records`` are a verified bundle's own (``core.bundle.
     verify_bundle(...).outputs_rows`` / ``.trace_records``). Refuses a row whose receipt is not the
-    node-template (v4) shape, whose arm group differs from the first row's, whose first Solver visit
+    node-template (v4) or supply (v3) shape, whose arm group differs from the first row's, whose first Solver visit
     is not the full arm group, or whose trace pair disagrees with the arm's sealed contact.
     """
 
@@ -383,6 +438,9 @@ def load_sealed_arm_texts(outputs_rows: Sequence[Mapping], trace_records: Mappin
 
     arm_ids: tuple[str, ...] | None = None
     templates: list | None = None
+    declarations: list | None = None
+    kind: str | None = None
+    supplied: dict[str, dict[str, list[str]]] = {}
     delivering: str | None = None
     twin: str | None = None
     texts: dict[str, dict[str, str]] = {}
@@ -401,23 +459,38 @@ def load_sealed_arm_texts(outputs_rows: Sequence[Mapping], trace_records: Mappin
                 raise ColumnReadError(f"{sid}: a Solver visit sealed no template-variant custody")
             skipped.append(sid)
             continue
-        if not isinstance(receipt, Mapping) or receipt.get("schema") != V4_SCHEMA:
+        if not isinstance(receipt, Mapping) or receipt.get("schema") not in KIND_BY_SCHEMA:
             raise ColumnReadError(
-                f"{sid}: supply_variants is not a {V4_SCHEMA} node-template receipt; this reader "
-                "reads template columns only"
+                f"{sid}: supply_variants is not a {V4_SCHEMA} node-template or {V3_SCHEMA} supply "
+                "receipt; this reader reads template and supply columns only"
             )
+        row_kind = KIND_BY_SCHEMA[receipt["schema"]]
+        if kind is not None and row_kind != kind:
+            raise ColumnReadError(f"{sid}: the arm group kind ({row_kind}) differs from the first row's ({kind})")
         row_arm_ids = tuple(arm["arm_id"] for arm in receipt["arms"])
         validate_supply_variant_receipt(
             receipt, arm_ids=row_arm_ids, delivered_arm_id=row_arm_ids[-1],
             phase_id=receipt["phase_id"], error_type=ColumnReadError,
         )
-        row_templates = [arm["instruction_template"] for arm in receipt["arms"]]
+        if row_kind == "template":
+            row_templates = [arm["instruction_template"] for arm in receipt["arms"]]
+        else:  # a supply column: the declared supply of each arm (knobs, release swap, bound)
+            row_templates = [
+                {"resolved_knobs": arm.get("resolved_knobs"), "release_swap": arm.get("release_swap"),
+                 "max_supplied_items": arm.get("max_supplied_items")}
+                for arm in receipt["arms"]
+            ]
         row_twin = next((a["arm_id"] for a in receipt["arms"] if a.get("replicate_of")), None)
         if arm_ids is None:
             arm_ids, templates, delivering, twin = row_arm_ids, row_templates, row_arm_ids[-1], row_twin
+            kind = row_kind
             texts = {arm: {} for arm in arm_ids}
+            supplied = {arm: {} for arm in arm_ids}
         elif (row_arm_ids, row_templates, row_twin) != (arm_ids, templates, twin):
             raise ColumnReadError(f"{sid}: the arm group or its templates differ from the first row's")
+        if row_kind == "supply":
+            for arm_row in receipt["arms"]:
+                supplied[arm_row["arm_id"]][sid] = list(arm_row.get("supplied_value_ids") or [])
         if not solver:
             raise ColumnReadError(f"{sid}: template custody without a Solver visit")
         # the delivered row's OWN sealed normaliser, exactly where the column scorer reads it
@@ -449,7 +522,8 @@ def load_sealed_arm_texts(outputs_rows: Sequence[Mapping], trace_records: Mappin
         raise ColumnReadError("no row of the run carries template-variant custody")
     return {"arm_ids": arm_ids, "templates": templates, "delivering": delivering, "twin": twin,
             "texts": texts, "normaliser_ids": normaliser_ids,
-            "rows_without_solver_visit": sorted(skipped)}
+            "rows_without_solver_visit": sorted(skipped), "kind": kind,
+            "supplied_ids": supplied if kind == "supply" else None}
 
 
 def normalise_texts(
@@ -540,6 +614,18 @@ def render(report: Mapping) -> str:
         )
     lines += [""]
     lines += _render_view(report, raw["arms"], raw["mechanical_screen"], "RAW (diagnostic)")
+    if report.get("arm_group_kind") == "supply":
+        lines += ["", "## Supply columns: supplied items and id-set difference vs the delivering arm (ids only)", "",
+                  "| arm | items total | items mean | rows no items | rows same id set | rows same set other order "
+                  "| items added | items removed |",
+                  "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
+        for arm in report["arm_order"]:
+            st = report["supply_stats"][arm]
+            lines.append(
+                f"| {arm} | {st['items_total']} | {st['items_mean']:.2f} | {st['rows_with_no_items']} | "
+                f"{st.get('rows_same_id_set', '-')} | {st.get('rows_same_set_other_order', '-')} | "
+                f"{st.get('items_added_vs_delivering', '-')} | {st.get('items_removed_vs_delivering', '-')} |"
+            )
     for arm in report["arm_order"]:
         lines += ["", f"## Per slot type, normalised ({arm})", "",
                   "| type | gold | gold exact | gold missing | gold wrong | predicted | spurious |",
@@ -598,13 +684,15 @@ def build(args) -> dict:
     report = read_columns(
         sealed["texts"], gold, arm_ids=sealed["arm_ids"], delivering=sealed["delivering"],
         twin=sealed["twin"], normalised_texts=normalised, seed=args.seed, draws=args.draws,
+        group_kind=sealed["kind"], supplied_ids=sealed["supplied_ids"],
     )
     report["inputs"] = {
         "run_id": args.run_id, "attempt_id": args.attempt_id, "split": args.split,
         "manifest_sha256": hashlib.sha256(
             (directory / f"{args.run_id}.run-manifest.json").read_bytes()
         ).hexdigest(),
-        "templates": dict(zip(sealed["arm_ids"], sealed["templates"], strict=True)),
+        ("templates" if sealed["kind"] == "template" else "declarations"):
+            dict(zip(sealed["arm_ids"], sealed["templates"], strict=True)),
         "rows_without_solver_visit": len(sealed["rows_without_solver_visit"]),
         "deliver_normaliser_ids": dict(sorted(Counter(
             str(v) for v in sealed["normaliser_ids"].values()).items())),

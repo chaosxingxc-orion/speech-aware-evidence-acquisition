@@ -13,7 +13,8 @@ aliases ``a2`` and ``fold-a`` of the search driver's POOLS also resolve). Withou
 column is the run's DELIVERED answers (``<run>.outputs.jsonl``); the unmodified column is those
 answers as sealed, proved row by row against the sealed official per-sample fields. With
 ``--column <arm id>`` the column is the first-visit answer of that arm of a same-flight
-node-template group (item E1, receipt ``saea-supply-variant-arms-v4``), read through the E2 reader's
+node-template group (item E1, receipt ``saea-supply-variant-arms-v4``) or supply group (loop item E-S2,
+receipt ``saea-supply-variant-arms-v3``), read through the E2 reader's
 ``load_sealed_arm_texts`` over a verified bundle and then rendered through the delivered row's OWN sealed
 normaliser (``stage3_rollout_score.normalise_arm_answer``: v3 cited-answer unwrap + SLURP projection v3, the
 function the official column scorer calls). That NORMALISED answer is the unmodified column and the base the
@@ -193,7 +194,7 @@ def column_texts(data_root: Path, spec: dict, column: str | None):
         raise ApplyError(f"arm {column!r} is not in the run's arm group {list(sealed['arm_ids'])}")
     normalised = reader.normalise_texts({column: sealed["texts"][column]}, sealed["normaliser_ids"])[column]
     return dict(normalised), {
-        "kind": "template-arm", "arm_id": column, "delivering_arm": sealed["delivering"],
+        "kind": ("template-arm" if sealed.get("kind", "template") == "template" else "supply-arm"), "arm_id": column, "delivering_arm": sealed["delivering"],
         "arm_ids": list(sealed["arm_ids"]), "manifest_sha256": sha256_file(manifest),
         "base": BASE_NORMALISED_COLUMN, "base_rows": len(normalised)}
 

@@ -1017,6 +1017,11 @@ def render_supply_variant_first_visit(
                 raise Stage3ScoreError(f"{sid}: arm resolved knobs differ from declaration")
             if sealed["max_supplied_items"] != arm.max_supplied_items:
                 raise Stage3ScoreError(f"{sid}: arm supplied-item bound differs from declaration")
+            declared_swap = getattr(arm, "release_swap", None)
+            if not is_template and sealed.get("release_swap") != (
+                None if declared_swap is None else declared_swap.as_json()
+            ):
+                raise Stage3ScoreError(f"{sid}: arm release swap differs from declaration")
         first = solver[0].get("execution_receipt")
         contacts = first.get("contacts") if isinstance(first, Mapping) else None
         if not isinstance(contacts, list) or len(contacts) != len(arms):
@@ -1943,9 +1948,14 @@ def parse_solver_arm_group(values: Mapping[str, Any], solver: Mapping[str, Any],
                 locked_template=locked,
             )
         if declares_supply:
+            from speech_aware_evidence_acquisition.rails.knowledge_stores import (
+                declared_alternate_release_relpaths,
+            )
+
             return parse_supply_variants(
                 solver["supply_variants"], phase_id=solver.get("phase_id"),
                 first_phase_id=perception.get("phase_id"), declared_stores=tuple(stores),
+                declared_alternate_relpaths=declared_alternate_release_relpaths(stores),
             )
     except SupplyVariantError as error:
         raise Stage3ScoreError(f"the declared Solver arm group is invalid: {error}") from error
