@@ -1,6 +1,6 @@
 {
   "cell": "slurp-direct-only-fold-b-thinking-smoke-4-v1",
-  "composed_config_hash": "62e638acecb710372fa93d6a38dba826def623d24139b44a4c3e38952db11e0f",
+  "composed_config_hash": "96d6fc2c21b0f1f70fbce0bb161085266923224084a4f0183c5ea09f7b5c2449",
   "execution_plan": {
     "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-rec1-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 8,
     "planned_speech_audio_seconds": 20,
-    "protocol_hash": "04f7a1e1247b128bcaa7d63962d0ad37e2cb70dd4acbb2b55eb1f04fa1046c42",
+    "protocol_hash": "c52053f7c46bb86a0fa38d5006264402e80b4ac3beb2bafb75576f959978e5bd",
     "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe",
@@ -34,7 +34,7 @@
   "preparation_base_commit": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
-    "sha256": "250dac423b8241310c62a304a0146baf87c6c7c4d20481894f9dd2b08aade2a9"
+    "sha256": "69f171019ee4900b1674f65726563bac7cdf48d03de6e1b02f72af9af826b740"
   },
   "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1: the four-row Thinking decode-cost smoke of the 266-E bare-core read.",
   "quality_read_gate": "None: a smoke is inspected for structure and decode cost and never read for a number.",
