@@ -117,7 +117,7 @@ def paired_run_ids(fit_id: str) -> list[str]:
         out.append(stripped)
     # "<stem>-FIT-REC<n>-V1": the recovery re-registration's FIT run (the generation run id keeps its name, "<stem>-V1";
     # the 266-E Instruct rec1 of 2026-10-11 was the first such row).
-    rec = re.sub(r"-FIT-REC\d+-V(\d+)$", r"-V", fit_id)
+    rec = re.sub(r"-FIT-REC\d+-V(\d+)$", r"-V\1", fit_id)
     if rec != fit_id and rec not in out:
         out.append(rec)
     return out
