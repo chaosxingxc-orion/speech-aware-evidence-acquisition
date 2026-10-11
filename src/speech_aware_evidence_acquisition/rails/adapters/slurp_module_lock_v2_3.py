@@ -15,6 +15,13 @@ the store is empty, so the Solver route declines every phase and every request r
 The store is a COMPARATOR substrate (decision 263 A, question 2): the ACE column is non-delivering and can never be locked, so v2.3
 adds no delivered behaviour. Cells flown on v2.2 stay valid; a block selects v2.3 only through its ``lock`` key (or, since this
 successor is the module's ``CURRENT_LOCK``, as the null arm of new cells).
+
+CONSTRUCTION VARIANT (2026-10-12). Both locks have a construction variant, ``consumption_module.construction_roster: "r01c"``
+(``slurp_module_construction.py``), which re-pins the ``train-exemplars`` pool to the minus-r01 twin so the construction roster R01C
+(whose rows lie inside the lock's own pool) passes the runner's knowledge-source guard. It is a mechanism over the lock, not a lock: every
+other leaf is byte-identical, the loader accepts it only on R01C, and v2.3 refuses it (the ``ace-playbook`` i0 anchor names 50 R01C ids).
+It exists ONLY to flow the material-source column (the typed loop's proposer tables and ACE reflector material) without self-leakage; it
+never delivers a benefit claim.
 """
 
 from __future__ import annotations

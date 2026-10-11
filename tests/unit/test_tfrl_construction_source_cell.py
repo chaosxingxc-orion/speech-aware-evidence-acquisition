@@ -50,6 +50,7 @@ from speech_aware_evidence_acquisition.core import roster as roster_module  # no
 from speech_aware_evidence_acquisition.core.config import compose  # noqa: E402
 from speech_aware_evidence_acquisition.core.stage3_algorithms import validate_stage3_algorithm_label  # noqa: E402
 from speech_aware_evidence_acquisition.rails import consumption_module as cm  # noqa: E402
+from speech_aware_evidence_acquisition.rails.adapters import slurp_module_construction as variant  # noqa: E402
 from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import carrier_module_hooks  # noqa: E402
 from speech_aware_evidence_acquisition.rails.controllers import default_phase_program  # noqa: E402
 from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config  # noqa: E402
@@ -190,7 +191,7 @@ def test_the_cell_is_the_plain_review_off_lock_with_two_contacts_and_no_column(d
     assert parsed.max_contacts == 2 and parsed.supply_variant_group is None
 
 
-def test_the_cell_pins_r01c_vectors_and_the_roster_s_own_owed_agreement_table(derived):
+def test_the_cell_pins_r01c_vectors_and_the_roster_s_own_built_agreement_table(derived):
     document = baseline(derived.root)
     perception = document["knowledge_stores"]["intent-boundaries"]["phase_supply"]["perception"]
     solver = document["knowledge_stores"]["train-exemplars"]["phase_supply"]["solver"]
@@ -199,29 +200,41 @@ def test_the_cell_pins_r01c_vectors_and_the_roster_s_own_owed_agreement_table(de
     assert "fold-b" not in json.dumps(document).lower() and "nx-r6" not in json.dumps(document).lower()
     seed = next(c for c in document["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY]["components"] if c["component_id"] == cm.AGREE_VOTE_SEED)
     source = seed["params"]["agreement_source"]
-    assert source["relpath"] == dc.AGREEMENT_RELPATH and source["sha256"] == "0" * 64 and source["tool_contact_ledger_row"] == dc.AGREEMENT_ID
+    assert source["relpath"] == dc.AGREEMENT_RELPATH and source["tool_contact_ledger_row"] == dc.AGREEMENT_ID
+    assert source["sha256"] == variant.R01C_AGREEMENT["sha256"] == "87e253f66f3b5058e7c778034c343c4e9f0b43586d623d8e1fe6508f9bf3abb3"
     # the packet promotion receipt is the R01 one (the R01C rows are a selection of it)
     assert "CONSTRUCTION-R01" in document["speech_packet_promotion_receipt"]
     requirements = experiment(derived.root)["cells"][0]["readiness"]["requirements"]
     assert [r["kind"] for r in requirements] == ["decision", "preparation", "preparation"]
-    assert requirements[1]["relpath"] == dc.AGREEMENT_RELPATH and requirements[1]["sha256"] == "0" * 64
+    assert requirements[1]["relpath"] == dc.AGREEMENT_RELPATH and requirements[1]["sha256"] == variant.R01C_AGREEMENT["sha256"]
+    # the pool receipt of the variant is pinned beside the roster receipts; the full-pool receipt is not
+    receipts = {r["relpath"]: r for r in document["preparation_source_receipts"]}
+    assert "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-minus-r01.json" in receipts
+    assert "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json" not in receipts
+    assert receipts[dc.AGREEMENT_RECEIPT_RELPATH]["sha256"] == variant.R01C_AGREEMENT_RECEIPT_SHA256
 
 
-def test_requests_are_byte_identical_between_lock_v2_2_and_v2_3_except_the_inert_ace_store(derived):
-    """The choice of v2.2 for this cell costs nothing: the compiled policy blocks equal v2.3's except the ``ace-playbook`` declaration."""
+def test_the_variant_moves_only_the_pool_pins_and_refuses_lock_v2_3(derived):
+    """The construction variant on v2.2 differs from the plain v2.2 compile in exactly the two pool leaves; v2.3 (whose inert ace-playbook
+    anchor names 50 R01C ids) is refused, and P-ACE-0 makes the v2.2 choice cost nothing (the plain v2.2 and v2.3 policy blocks differ only by
+    that store)."""
 
     block = baseline(derived.root)["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY]
+    assert block["construction_roster"] == "r01c" and block["lock"] == "v2.2"
     hooks = carrier_module_hooks(repo_root=derived.root)
-    on_v22 = cm.compile_module(block, hooks, repo_root=derived.root)
-    on_v23 = cm.compile_module({**block, "lock": "v2.3"}, hooks, repo_root=derived.root)
-    a, b = on_v22.values(), on_v23.values()
+    plain_block = {k: v for k, v in block.items() if k != "construction_roster"}
+    on_variant = cm.compile_module(block, hooks, repo_root=derived.root)
+    on_plain = cm.compile_module(plain_block, hooks, repo_root=derived.root)
+    assert cm.differing_paths(on_variant.values(), on_plain.values()) == [
+        "knowledge_stores.train-exemplars.release.relpath", "knowledge_stores.train-exemplars.release.sha256",
+        "knowledge_stores.train-exemplars.snapshot.relpath", "knowledge_stores.train-exemplars.snapshot.sha256"]
+    assert on_variant.program_id == on_plain.program_id == tf.CONST_PROGRAM
+    with pytest.raises(cm.ConsumptionModuleConfigError, match="ace-playbook"):
+        cm.compile_module({**block, "lock": "v2.3"}, hooks, repo_root=derived.root)
+    a, b = on_plain.values(), cm.compile_module({**plain_block, "lock": "v2.3"}, hooks, repo_root=derived.root).values()
     assert set(b["knowledge_stores"]) - set(a["knowledge_stores"]) == {tf.ACE_STORE_ID}
-    stores_b = {k: v for k, v in b["knowledge_stores"].items() if k != tf.ACE_STORE_ID}
-    assert stores_b == a["knowledge_stores"]
-    for key in a:
-        if key != "knowledge_stores":
-            assert a[key] == b[key], key
-    assert on_v22.program_id == on_v23.program_id == tf.CONST_PROGRAM
+    assert {k: v for k, v in b["knowledge_stores"].items() if k != tf.ACE_STORE_ID} == a["knowledge_stores"]
+    assert all(a[key] == b[key] for key in a if key != "knowledge_stores")
 
 
 def test_the_experiment_fragments_are_held_and_carry_the_r01c_population(derived):
@@ -378,18 +391,19 @@ def test_flight_registration_owes_only_the_pre_flip_refusals(derived, tmp_path):
 # ---------------------------------------------------------------------------------------------------------------------------
 
 
-def test_the_measured_guard_is_recorded_as_a_blocker_and_agrees_with_the_data_root():
+def test_the_measured_guard_is_clean_and_the_resolved_blockers_are_recorded():
     facts = json.loads((REPO / tf.CONST_PACKAGE_DIR / "registered-facts-v1.json").read_text(encoding="utf-8"))
-    ids = {b["id"] for b in facts["blockers"]}
-    assert ids == {"knowledge-source-guard", "agreement-table-owed"}
+    assert facts["blockers"] == []
+    assert {b["id"] for b in facts["resolved_blockers"]} == {"knowledge-source-guard", "agreement-table-owed", "ace-i0-anchor-sources-inside-r01c",
+                                                             "ace-prior-score-outside-unit-interval"}
     guard = facts["knowledge_source_guard"]
     assert guard["measured"] is True and guard["roster_rows"] == 625
     pool = guard["stores"]["train-exemplars"]
-    assert pool["shared_with_roster"] == 625 and pool["declared_by_this_cell"] is True and guard["cell_conflict_rows"] == 625
+    assert pool["shared_with_roster"] == 0 and pool["declared_by_this_cell"] is True and guard["cell_conflict_rows"] == 0
     # the other two declared stores are clean; lock v2.3's ace-playbook store is NOT declared by this cell (its 50 sources lie inside R01C)
     assert guard["stores"]["intent-boundaries"]["shared_with_roster"] == 0 and guard["stores"]["slot-contracts"]["shared_with_roster"] == 0
     assert guard["stores"][tf.ACE_STORE_ID]["shared_with_roster"] == 50 and guard["stores"][tf.ACE_STORE_ID]["declared_by_this_cell"] is False
-    remedy = next(b for b in facts["blockers"] if b["id"] == "knowledge-source-guard")["pool_remedy"]
+    remedy = next(b for b in facts["resolved_blockers"] if b["id"] == "knowledge-source-guard")["pool_remedy"]
     assert remedy["shared_with_r01c"] == 0 and remedy["source_ids"] == 34474
     # the cell pins exactly the snapshot the guard measured
     declared = baseline(REPO)["knowledge_stores"]["train-exemplars"]["snapshot"]

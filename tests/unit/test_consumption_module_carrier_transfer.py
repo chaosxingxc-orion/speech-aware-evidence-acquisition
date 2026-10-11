@@ -36,17 +36,17 @@ NONE_MEMBERS = {
     "audio2tool": {
         "decision_supply_path", "default_deliver_normaliser", "deliver_stages", "perception_branch_frame",
         "flown_branch_programs", "delivered_path_admissions", "lock_versions", "current_lock",
-        "template_variant_frame", "perception_template_variant_frame", "supply_variant_frame", "lock_deliver_normalisers",
+        "template_variant_frame", "perception_template_variant_frame", "supply_variant_frame", "lock_deliver_normalisers", "construction",
     },
     "earnings": {
         "decision_supply_path", "decision_candidates", "max_decision_candidates", "deliver_stages",
         "perception_branch_frame", "flown_branch_programs", "delivered_path_admissions", "lock_versions",
-        "current_lock", "template_variant_frame", "perception_template_variant_frame", "supply_variant_frame", "lock_deliver_normalisers",
+        "current_lock", "template_variant_frame", "perception_template_variant_frame", "supply_variant_frame", "lock_deliver_normalisers", "construction",
     },
     "earnings22": {
         "decision_supply_path", "decision_candidates", "max_decision_candidates", "deliver_stages",
         "perception_branch_frame", "flown_branch_programs", "delivered_path_admissions", "lock_versions",
-        "current_lock", "template_variant_frame", "perception_template_variant_frame", "supply_variant_frame", "lock_deliver_normalisers",
+        "current_lock", "template_variant_frame", "perception_template_variant_frame", "supply_variant_frame", "lock_deliver_normalisers", "construction",
     },
 }
 

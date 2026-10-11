@@ -28,8 +28,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from ..consumption_module import POLICY_OWNED_KEYS, CarrierHooks
-from . import slurp_module_lock_v2_2 as lock_v2_2
-from . import slurp_module_lock_v2_3 as lock_v2_3
+from . import slurp_module_construction, slurp_module_lock_v2_2 as lock_v2_2, slurp_module_lock_v2_3 as lock_v2_3
 
 PROFILE = "slurp"
 
@@ -257,4 +256,5 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         template_variant_frame=TEMPLATE_VARIANT_FRAME,
         perception_template_variant_frame=PERCEPTION_TEMPLATE_VARIANT_FRAME,
         supply_variant_frame={**TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "solver", "supply_variants")},  # E-S1
+        construction=slurp_module_construction.construction_hooks(ROSTER_PIN_PATHS),  # the r01c variant (2026-10-12)
     )

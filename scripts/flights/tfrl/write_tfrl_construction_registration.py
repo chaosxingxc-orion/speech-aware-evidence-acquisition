@@ -36,6 +36,7 @@ if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from speech_aware_evidence_acquisition.core.config import compose, protocol_hash  # noqa: E402
+from speech_aware_evidence_acquisition.rails.adapters import slurp_module_construction as vc  # noqa: E402
 
 DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
 STATUS = reg.STATUS
@@ -50,8 +51,9 @@ PROHIBITIONS = [
     "No Fold B, Fold A, DEV or test contact: the column flies the construction roster R01C only.",
     "No supply arm, no template column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
     "No benefit claim and no admission: the column is the loop's material source (measurement design material-source).",
-    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the cells are flipped and the "
-    "knowledge-source-guard blocker is resolved.",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt and the cells are flipped.",
+    "The construction variant of the lock (consumption_module.construction_roster r01c) exists only to flow this column without "
+    "self-leakage; it never delivers a benefit claim.",
     "No paper-scale profile. No system-level claim.",
 ]
 
@@ -130,18 +132,23 @@ def draft_rows(ids: Mapping[str, Mapping], commit: str, at: str, pkg: str, shas:
             f"{at[:10]} at study commit {commit}. It admits nothing and claims no benefit."]
     lines.append("| " + " | ".join(c.replace("|", "/") for c in read) + " |")
     agree = [at[:10], dc.AGREEMENT_ID, "model-free-check",
-             ("OWED. Build the pre-computed, self-excluded exemplar-intent AGREEMENT table for the construction roster R01C, the vote table the "
+             ("BUILT (model-free). The pre-computed, self-excluded exemplar-intent AGREEMENT table for the construction roster R01C, the vote table the "
               f"construction-source column's boundary channel ranks with (baseline {arm['baseline_fragment']}, agreement_source "
-              "tool_contact_ledger_row = this row id): arithmetic over the pinned exemplar snapshot, the pinned pool key vectors and the roster's "
+              "tool_contact_ledger_row = this row id): arithmetic over the pinned MINUS-R01 exemplar snapshot (consumption_module.construction_roster "
+              "r01c; snapshot sha256 " + vc.MINUS_R01_POOL_SNAPSHOT["sha256"] + "), the pinned pool key vectors and the roster's "
               "pinned speech query vectors (content dimension, vectors/slurp-stage3-construction-r01c-v1/query-vectors-speech-content-v1.jsonl), "
-              "through the repository's own recall/rank/fuse, exactly as SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1 was built. reads_labels "
+              "through the repository's own recall/rank/fuse, exactly as SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-FOLD-B-V1 was built "
+              "(comparator cell slurp-native-stage3-var2-supply-variants-r01c-v1, which pins the same pool and declares no agreement_source). "
+              "Measured: 625 rows, every row 20 votes, 0 self-excluded exemplars, 0 rows without a vote, 59 facets voted for; its 400 rows "
+              "shared with SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-R01C-AGREEMENT-V1 are byte-identical. reads_labels "
               "false. Zero model, server, encoder, embedder, scorer, network, GPU and paid-API contacts."),
              "no model or tool contact; local arithmetic over receipt-pinned files (scripts/build_slurp_intent_exemplar_agreement.py)",
              "slurp TRAIN R01C construction 625", "discovery", arm["split_identity_hash"], "no", "0", "0", "0.0",
              "No new speech exposure: every vector read was sealed by SAEA-SLURP-STAGE3-CONSTRUCTION-R01-SPEECH-QUERY-ENCODING-V1 and its model-free "
              "selection. No gold label, annotation or reference transcript of any R01C row is opened.",
-             f"prepared/{dc.AGREEMENT_ID}/agreement.jsonl; prepared/{dc.AGREEMENT_ID}/receipt.json",
-             f"DRAFT. NOT RUN (an agent registers it; root countersigns, then runs it before the flip). Write-once; authorises no flight, no "
+             f"prepared/{dc.AGREEMENT_ID}/agreement.jsonl (sha256 {vc.R01C_AGREEMENT['sha256']}); prepared/{dc.AGREEMENT_ID}/receipt.json "
+             f"(sha256 {vc.R01C_AGREEMENT_RECEIPT_SHA256})",
+             f"DRAFT. BUILT by an agent 2026-10-12 (root countersignature pending). Write-once; authorises no flight, no "
              f"scoring and no readiness flip. Registered {at[:10]} at study commit {commit}."]
     lines.append("| " + " | ".join(c.replace("|", "/") for c in agree) + " |")
     return "\n".join(lines) + "\n"
@@ -161,23 +168,37 @@ def write_package(root: Path, commit: str, at: str, *, data_root: Path | None = 
     if not loader.get("ok", False):
         blockers.append({"id": "loader-refuses-the-derived-cell", "detail": loader.get("refusal"),
                          "remedy": "the derived cell does not verify under the real carrier hooks; fix the cell or the lock before any countersign"})
-    blockers.append({
-        "id": "knowledge-source-guard",
-        "detail": ("rails/runner.py (run_speech_native_agent_loop) refuses a query sample inside the composite knowledge source roster. The "
-                   "lock's train-exemplars pool release (size-pool-annotated-exemplars, 37,407 source ids) contains ALL 625 R01C rows, so this "
-                   "cell is refused before it dispatches one row. The committed VAR-2 R01C cell avoided this by pinning the "
-                   f"size-pool-annotated-exemplars-minus-r01 pool ({POOL_REMEDY['source_ids']:,} source ids, {POOL_REMEDY['shared_with_r01c']} shared "
-                   "with R01C); the module compiler takes the pool release from the lock layer only and has no roster pin for it. Measured: "
-                   + (json.dumps(guard, sort_keys=True) if guard.get("measured") else "data root unavailable at registration")),
-        "remedy": ("a lock layer (or a roster-pin path in the carrier hooks, rails/adapters/slurp_module_*.py) that pins the minus-r01 pool "
-                   "release and snapshot for cells flying R01C rows, plus an agreement table built against THAT pool; both are outside this "
-                   "package's authority"),
-        "pool_remedy": POOL_REMEDY})
-    blockers.append({
-        "id": "agreement-table-owed",
-        "detail": f"{dc.AGREEMENT_RELPATH} is a model-free preparation not yet built; the agree-vote-seed pin is zero until it is",
-        "remedy": "countersign the DRAFT preparation row, run scripts/build_slurp_intent_exemplar_agreement.py for R01C against the pool the "
-                  "guard blocker settles on, then re-register with the table's hash"})
+    if guard.get("measured") and guard.get("cell_conflict_rows", 0):
+        blockers.append({
+            "id": "knowledge-source-guard",
+            "detail": ("rails/runner.py (run_speech_native_agent_loop) refuses a query sample inside the composite knowledge source roster, and "
+                       "the cell's declared stores still share R01C rows. Measured: " + json.dumps(guard, sort_keys=True)),
+            "remedy": "the construction variant must pin the minus-r01 pool (rails/adapters/slurp_module_construction.py)"})
+    resolved = [
+        {"id": "knowledge-source-guard",
+         "was": ("the lock's train-exemplars pool release (size-pool-annotated-exemplars, 37,407 source ids) contained ALL 625 R01C rows, so the "
+                 "runner's knowledge-source guard refused the cell before it dispatched one row (the committed VAR-2 R01C cell avoided it with "
+                 "the minus-r01 pool)."),
+         "resolution": ("a CONSTRUCTION VARIANT of the lock, not a new lock: the block names consumption_module.construction_roster r01c and "
+                        "rails/adapters/slurp_module_construction.py moves the train-exemplars release and snapshot to the minus-r01 twins "
+                        f"({POOL_REMEDY['source_ids']:,} source ids, {POOL_REMEDY['shared_with_r01c']} shared with R01C); the loader accepts it "
+                        "only on R01C and the plain lock is refused on R01C with the guard's own message"),
+         "measured_now": guard if guard.get("measured") else "data root unavailable at registration",
+         "pool_remedy": POOL_REMEDY},
+        {"id": "agreement-table-owed",
+         "was": f"{dc.AGREEMENT_RELPATH} was a model-free preparation not yet built",
+         "resolution": (f"built model-free by scripts/build_slurp_intent_exemplar_agreement.py against the minus-r01 pool snapshot "
+                        f"({vc.R01C_AGREEMENT['relpath']}, sha256 {vc.R01C_AGREEMENT['sha256']}, receipt sha256 "
+                        f"{vc.R01C_AGREEMENT_RECEIPT_SHA256}; 625 rows, 20 votes each, 0 self-excluded); its 400 rows shared with "
+                        "SAEA-SLURP-KNOWLEDGE-OPPORTUNITY-R01C-AGREEMENT-V1 are byte-identical")},
+        {"id": "ace-i0-anchor-sources-inside-r01c",
+         "was": "the lock v2.3 ace-playbook i0 anchor row names 50 R01C source ids, so the guard would refuse the construction column on v2.3",
+         "resolution": ("the column stays on lock v2.2: the preparer takes carriers from the permitted roster, a subset of the construction "
+                        "scope, and the committed stage3-deltas-v1r scope IS R01C, so no anchor can be re-homed outside R01C; P-ACE-0 makes the "
+                        "v2.2 and v2.3 requests byte-identical, and the construction variant refuses v2.3")},
+        {"id": "ace-prior-score-outside-unit-interval",
+         "was": "playbook_release_rows wrote prior_score = float(total - rank), which KnowledgeSnapshot.frozen_json refuses",
+         "resolution": "rails/tfrl_ace_material.py now writes (total - rank) / total; the preparer accepts an i1 release with R01C carriers"}]
     protocol = {
         "cells": {k: {kk: v[kk] for kk in ("attempt_id", "cell", "composed_config_hash", "experiment", "fit_attempt_id", "fit_run_id",
                                            "protocol_hash", "rows", "run_id", "split_identity_hash")} for k, v in ids.items()},
@@ -189,7 +210,7 @@ def write_package(root: Path, commit: str, at: str, *, data_root: Path | None = 
         "the_question": ("None: this column estimates nothing. Its official per-row scores are the sealed material the contrast tables are read "
                          "from (failure cube by slot type and scenario, empty-gold false fill, intent rank, supply structure)."),
         "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration; run-cumulative budgets.",
-        "blockers": blockers}
+        "blockers": blockers, "resolved_blockers": resolved}
     protocol_sha = reg.wjson(root, f"{pkg}/protocol-registered-v1.json", protocol)
     route = {"arm": (f"Shared core.flight.cli campaign over {names['campaign']} through scripts/flights/tfrl/batch_chain_tfrl_const.sh and the "
                      "batch driver."),
@@ -250,7 +271,7 @@ def write_package(root: Path, commit: str, at: str, *, data_root: Path | None = 
                                   "permitted_roster": "SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1 (split identity 7c603857..., a subset of R01C)"}},
         "knowledge_source_guard": guard,
         "rows": tf.CONST_ROWS, "schema": "saea-registered-facts-v1", "stage3_measurement": measurement_blocks(ids),
-        "study_commit_at_registration": commit, "blockers": blockers, "status": "DRAFT-HELD"}
+        "study_commit_at_registration": commit, "blockers": blockers, "resolved_blockers": resolved, "status": "DRAFT-HELD"}
     shas["registered-facts-v1.json"] = reg.wjson(root, f"{pkg}/registered-facts-v1.json", facts)
     draft = {
         "_draft_note": ("A DRAFT for the coordinator to mint on the data root with scripts/flights/tfrl/tfrl_mint_receipt.py --kind construction. "
@@ -267,7 +288,7 @@ def write_package(root: Path, commit: str, at: str, *, data_root: Path | None = 
         "decision": "Fly the construction-source lock column (the plain lock on R01C) as the typed loop's proposer / reflector material source.",
         "decision_id": names["decision_id"],
         "eligible_run_ids": [arm["run_id"], arm["fit_run_id"], smoke["run_id"], smoke["fit_run_id"]],
-        "not_authorized": ["any flight before the cells are flipped, the receipt is minted and the knowledge-source-guard blocker is resolved",
+        "not_authorized": ["any flight before the cells are flipped and the receipt is minted",
                            "touching the resident session", "any ASR, transcript, encoder or paid-API contact",
                            "--allow-output-change on the re-pin tool", "any change beyond the registered plain lock"],
         "owner": "root", "population": {"count": tf.CONST_ROWS, "fold_a_contact_authorized": False, "fold_b_contact_authorized": False,
@@ -278,7 +299,7 @@ def write_package(root: Path, commit: str, at: str, *, data_root: Path | None = 
     shas["root-admission-draft-v1.json"] = reg.wjson(root, f"{pkg}/root-admission-draft-v1.json", draft)
     rows = draft_rows(ids, commit, at, pkg, shas)
     shas["draft-ledger-rows.md"] = reg.wr(root, f"{pkg}/draft-ledger-rows.md", rows)
-    readme = readme_text(ids, blockers, guard)
+    readme = readme_text(ids, blockers, guard, resolved)
     shas["README.md"] = reg.wr(root, f"{pkg}/README.md", readme)
     prereg = (f"# Loop construction-source lock column: preregistration (DRAFT / HELD)\n\nRegistered {at[:10]} at study commit `{commit}` by "
               "script. Development numbers only.\n\n"
@@ -297,7 +318,7 @@ def write_package(root: Path, commit: str, at: str, *, data_root: Path | None = 
     return result
 
 
-def readme_text(ids: Mapping[str, Mapping], blockers: list[Mapping[str, Any]], guard: Mapping[str, Any]) -> str:
+def readme_text(ids: Mapping[str, Mapping], blockers: list[Mapping[str, Any]], guard: Mapping[str, Any], resolved: list[Mapping[str, Any]]) -> str:
     arm, smoke = ids["arm"], ids["smoke"]
     cost = round(tf.CONST_MEASURED_GPU_H_PER_1000_ROWS * tf.CONST_ROWS / 1000.0, 2)
     return (
@@ -311,8 +332,9 @@ def readme_text(ids: Mapping[str, Mapping], blockers: list[Mapping[str, Any]], g
         "preparer forbids Fold B rows as carrier ids of a delta-store registration, so ACE playbook releases staged from a Fold B column are "
         "refused.\n\n"
         f"The cell `{arm['cell']}` (+ `{smoke['cell']}`, four rows) is the review-off COMP-1b module graph with NO columns and NO supply arms: "
-        f"the plain lock, program `{arm['program']}`, 2 contacts per row, lock `{tf.CONST_LOCK}` (requests byte-identical to lock v2.3; see the "
-        "guard blocker for why v2.2). Scorer `slurp-slu-official-train` (per-row official scores on disk), `stage3_algorithm` `shared-rollout`, "
+        f"the plain lock, program `{arm['program']}`, 2 contacts per row, lock `{tf.CONST_LOCK}` plus the CONSTRUCTION VARIANT `r01c` (requests "
+        "byte-identical to lock v2.3 apart from the inert ace-playbook store, proof P-ACE-0; v2.2 because the ace i0 anchor cannot be re-homed, "
+        "see the resolved blockers). Scorer `slurp-slu-official-train` (per-row official scores on disk), `stage3_algorithm` `shared-rollout`, "
         "measurement design `material-source` with `claims_benefit` false. It is the material source for iterations 1-3 of the typed loop; no "
         "benefit claim; it is re-flown only if the lock changes.\n\n"
         "## How the loop uses it\n\n"
@@ -328,7 +350,8 @@ def readme_text(ids: Mapping[str, Mapping], blockers: list[Mapping[str, Any]], g
         f"1.38 GPU-h per 1,000 rows at 2.00 contacts per row (NX R5 read), so about {cost} GPU-h for the column plus FIT and the four-row smoke; "
         f"planned cap {tf.CONST_PLANNED_GPU_HOURS_ARM} GPU-h (smoke {tf.CONST_PLANNED_GPU_HOURS_SMOKE}). Audio ceiling "
         f"{arm['family_budget']['repeated_speech_audio_seconds_cap']} s.\n\n"
-        "## Blockers (named, measured)\n\n" + "\n".join(f"- `{b['id']}`: {b['detail']}\n  Remedy: {b['remedy']}" for b in blockers) + "\n\n"
+        "## Blockers (named, measured)\n\n" + ("\n".join(f"- `{b['id']}`: {b['detail']}\n  Remedy: {b['remedy']}" for b in blockers) or "None open.") + "\n\n"
+        "## Resolved blockers\n\n" + "\n".join(f"- `{r['id']}`: was: {r['was']}. Resolution: {r['resolution']}." for r in resolved) + "\n\n"
         "## Files\n\n| file | what it is |\n| --- | --- |\n"
         "| `registered-facts-v1.json` | identities, accounting, cost estimate, roster evidence, the measured guard, the `stage3_measurement` blocks |\n"
         "| `protocol-registered-v1.json`, `*plan-registered-v1.json` | the registered protocol and the four plans (arm, arm FIT, smoke, smoke FIT) |\n"

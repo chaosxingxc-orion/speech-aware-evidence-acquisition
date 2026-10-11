@@ -769,3 +769,14 @@ def test_curate_then_release_end_to_end(tmp_path) -> None:
     for playbook in (i0, i1, i2):
         _, receipt = _release(tmp_path / f"i{playbook['iteration']}", playbook)
         assert receipt["iteration"] == playbook["iteration"]
+
+
+def test_release_rows_carry_a_rank_ordered_prior_score_inside_the_unit_interval() -> None:
+    """The snapshot refuses a prior_score outside [0, 1]; the rows rank by ``(total - rank) / total`` (strictly decreasing, top item 1.0)."""
+
+    items = [_item(f"Advice number {n}.", helpful=20 - n) for n in range(18)]
+    rows = ace.playbook_release_rows(_playbook(*items), carrier_sample_ids=["slurp:train:000001:audio-1"], legal_intent_ids=("iot_hue_lightoff",))
+    scores = [row["prior_score"] for row in rows]
+    assert len(scores) == 18 and scores[0] == 1.0 and scores[-1] == 1 / 18
+    assert all(0.0 < s <= 1.0 for s in scores) and scores == sorted(scores, reverse=True) and len(set(scores)) == 18
+    assert [row["content"] for row in rows][0].endswith("Advice number 0.")

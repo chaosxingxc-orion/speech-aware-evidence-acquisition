@@ -9,6 +9,13 @@ layer with ONE leaf moved, ``native_episode.deliver_normaliser.normaliser``
 module's ``CURRENT_LOCK`` (the null arm of new cells and the harness ``module`` class's
 OFF arm); it is still selected only by a block's ``lock`` key. The normaliser is version ``1`` and loads its pinned TRAIN tables by hash
 (``rails.delivery_normalisers``).
+
+CONSTRUCTION VARIANT (2026-10-12). Both locks have a construction variant, ``consumption_module.construction_roster: "r01c"``
+(``slurp_module_construction.py``), which re-pins the ``train-exemplars`` pool to the minus-r01 twin so the construction roster R01C
+(whose rows lie inside the lock's own pool) passes the runner's knowledge-source guard. It is a mechanism over the lock, not a lock: every
+other leaf is byte-identical, the loader accepts it only on R01C, and v2.3 refuses it (the ``ace-playbook`` i0 anchor names 50 R01C ids).
+It exists ONLY to flow the material-source column (the typed loop's proposer tables and ACE reflector material) without self-leakage; it
+never delivers a benefit claim.
 """
 
 from __future__ import annotations

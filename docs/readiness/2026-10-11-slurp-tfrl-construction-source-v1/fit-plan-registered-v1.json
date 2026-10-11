@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-tfrl-construction-lock-r01c-v1",
-  "composed_config_hash": "95bbfd8c22f80c44ce6d6cb9065574802d259f41bfa13bc77fe04e5e8107e8a0",
+  "composed_config_hash": "af82d47f817567dd19687bee6f81251d3be9e03c8537f9778da0e5d73d6a26e0",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 1.0,
     "planned_model_calls": 5000,
     "planned_speech_audio_seconds": 5454,
-    "protocol_hash": "5700e872da617e1838c05cc32dfc4021ff6ba9e810c67d816decf26e0733a2da",
+    "protocol_hash": "63ef31406679e4ec13d860cabb43a0ede46b70d38a6f166d351c04fdddd1c91c",
     "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515",
@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/protocol-registered-v1.json",
-    "sha256": "c21d7c34bb1465c2c0be4f36015df4c7f1fe7b9f996fc280fb06635046272bc1"
+    "sha256": "8e8228ef2fe8528829d259004c5efcb72d4a853958b9e56694b7434de898bf3b"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-11T12:00:00.000000+00:00",

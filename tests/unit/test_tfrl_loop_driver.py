@@ -739,27 +739,9 @@ def test_the_protocol_names_the_lock_the_material_source_and_fold_b_as_held_out_
 I0_REGISTRATION = REPO / lib.ACE_I0_REGISTRATION_RELPATH
 
 
-def rescaled_release_rows(real):
-    """``rails.tfrl_ace_material.playbook_release_rows`` with ``prior_score`` rescaled into (0, 1].
-
-    The shipped function writes ``float(total - rank)`` (18.0, 17.0, ...), which ``KnowledgeSnapshot.frozen_json`` refuses for every non-empty
-    playbook ("prior_score must be a probability in [0, 1]"); the empty release i0 passes only because its anchor row carries 0.0. The module is
-    not this package's to edit, so the roster-guard tests below stage rows with the rescaled order-preserving score and one strict xfail
-    test records the defect itself."""
-
-    def wrapped(playbook, *, carrier_sample_ids, legal_intent_ids):
-        rows = real(playbook, carrier_sample_ids=carrier_sample_ids, legal_intent_ids=legal_intent_ids)
-        top = max((row["prior_score"] for row in rows), default=1.0) or 1.0
-        return [dict(row, prior_score=row["prior_score"] / top) for row in rows]
-
-    return wrapped
-
-
 def staged_world(world, monkeypatch=None):
     """Iteration 1 through ``open --stage cell``: the playbook i1 and its release inputs are staged on the data root."""
 
-    if monkeypatch is not None:
-        monkeypatch.setattr(ace, "playbook_release_rows", rescaled_release_rows(ace.playbook_release_rows))
     assert world.run(*propose_args(world), fakes=Fakes())[0] == 0
     assert world.run(*open_cell_args(world))[0] == 0
     return json.loads((world.pkg / "ace-playbook-i1-release-registration.json").read_text(encoding="utf-8"))
@@ -830,11 +812,7 @@ def test_the_preparer_accepts_the_i1_release_with_r01c_carriers_and_refuses_it_w
     assert "subset of the permitted construction roster" in str(refusal.value)       # the roster guard, named
 
 
-@pytest.mark.xfail(strict=True, reason=("OPEN DEFECT in rails/tfrl_ace_material.playbook_release_rows (not editable here): prior_score = float(total - rank) "
-                                        "is up to 18.0 but the snapshot requires a probability in [0, 1], so every NON-EMPTY ace-playbook release "
-                                        "(i1 and later) is refused by KnowledgeSnapshot.frozen_json whatever the rosters; fix = divide by total. "
-                                        "Remove this mark when it is fixed (strict: an unexpected pass fails)."))
-def test_the_shipped_release_rows_survive_the_preparer_once_the_prior_score_defect_is_fixed(world):
+def test_the_shipped_release_rows_survive_the_preparer_with_a_rank_ordered_prior_score_in_unit_interval(world):
     from speech_aware_evidence_acquisition.core.semantic_knowledge_preparation import prepare_semantic_knowledge_store
 
     registration = staged_world(world)
