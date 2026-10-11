@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T06:10:44Z
+Last refreshed: 2026-10-11T06:32:28Z
+
+## 266 ruled A + E (owner, 2026-10-11): iteration-1 stall default (lock / twin / ACE i1) and a bare-core Thinking vs Instruct read on Fold B (2026-10-11T06:32:28Z, Fable 5.1 root)
+
+A: proposer + reflector cell i1 (~0.1 GPU-h) then the Fold B column lock / aa / ace (~1.1 GPU-h); the typed arm is empty by measurement. E: once the Thinking GGUF hashes are pinned (main verified vs the HF LFS pointer afdaeff6...4835; mmproj finishing), a direct-only Fold B chain: Instruct arm + in-chain replicate + Thinking arm under a new serving session with its own completion cap, 4-row smoke first for decode cost, content channel only delivered, resolved only above the cross-flight bar. Stale-test fixes merged (58768c220). Umbrella lock de-duplicated (d1a4f43). In build: E-T6 multi-store swaps, the loop driver + protocol, the 266-E registration. GPU idle. Open: 262.
+
+Superseded stamp: 2026-10-11T06:10:44Z
 
 ## 265 coverage pre-read: iteration 1 has NO candidate over the bar (composite -1.00 pp SLU, +0.07 intent); decision 266 proposed; five build branches merged (2026-10-11T06:10:44Z, Fable 5.1 root)
 

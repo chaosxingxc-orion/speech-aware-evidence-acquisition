@@ -1395,3 +1395,28 @@ missing window feature packets), so the two E22 registration-hash tests stay red
 defect of this wave. Merged this wave so far: E-T4 (ebd0ebacf), E-T2 (d42be260f), E-S1/E-S2 (2baf81110), E-T1 (9d5aa2076;
 `runtime.py` changed: re-pin at the flight commit), the pre-read (b089b2547), E-T3/E-T5 (efc9246ff: tables contract, cross-fitted delivery fitter, per-column labels). In build: E-T6, a root-cause of
 two pre-existing test failures.
+
+## Decision 266 ruled by the owner, 2026-10-11: A + E
+
+Owner, verbatim: 「决策266：A + E」 ("266: A + E.")
+
+- **266-A RULED**: iteration 1 of the typed loop flies the stall default -- one TRAIN Fold B cell with the lock, its
+  request-identical twin and the ACE i1 column (the typed arm empty by measurement; delivery-rule candidates read offline);
+  preceded by the text-only proposer + reflector cell i1 (about 0.1 GPU-h) so the archive records the refused typed
+  candidate and ACE gets its i1 playbook from the lock column's credit. Column cost about 1.1 GPU-h.
+- **266-E RULED**: a bare-core read on TRAIN Fold B, Thinking vs Instruct, direct-only program, same serving geometry
+  family, once the Thinking GGUF's per-file SHA-256 is pinned in the umbrella lock (main file verified against the
+  Hugging Face LFS pointer: afdaeff6f23c740429aadb3fa180f9d53b78278fe0d331b594b0b71bd9bf4835, 18,557,053,248 bytes; mmproj
+  expected 57b7240fb3d8941f5969d760c694a754cbe74f7db428605d63e1dacceda98b38, 2,207,465,664 bytes, download finishing).
+  This reopens the core line that decision 261 had limited to a pre-download; the model is admitted ONLY for this read,
+  not as the serving core of any system cell. Design constraints the registration must meet: (i) a new serving session
+  entry (the 24 GB card holds one core; the resident Instruct session must be released for the Thinking read under the
+  serving-entry protocol and restored afterwards; the uptime guard must be told); (ii) thinking-mode completions are long,
+  so the geometry declares its own completion cap and the chain runs a 4-row smoke FIRST to measure decode cost before the
+  1,080-row arm is queued; (iii) the delivered answer is the content channel only, reasoning text is never delivered,
+  never persisted beyond hashes and never enters the scorer; (iv) the comparison is cross-session by necessity, so the
+  chain carries the Instruct direct-only Fold B arm and its in-chain replicate beside the Thinking arm, and the read is
+  resolved only above the cross-flight bar (about 2.5 pp) -- a stronger core is expected to show more than that or the
+  line closes; (v) exposure rows for every contact; split role discovery (TRAIN Fold B).
+- Order: 266-A first (its cells exist once the loop driver lands), 266-E after the mmproj hash is pinned; both SLURP only;
+  the carriers stay held (242).
