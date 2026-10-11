@@ -163,6 +163,19 @@ _RUN_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}")
 _SCENARIO = re.compile(r"[a-z]{1,24}")
 _SLOT_TYPE = re.compile(r"[a-z_]{1,40}")
 _ITEM_ID = re.compile(r"ace:i[0-9]+:[0-9a-f]{12}")
+#: An item id as it appears inside a rendered prompt. The id is the first 12 hex
+#: characters of a digest, so by chance it can hold a run of exactly six digits
+#: (about 1 id in 14), which the bare-six-digit corpus-id detector would take for
+#: a sample identifier. It is an opaque pinned handle, never a corpus id.
+_ITEM_ID_IN_PROMPT = re.compile(r"(?<![0-9A-Za-z])ace:i[0-9]+:[0-9a-f]{12}(?![0-9a-f])")
+
+
+def _prompt_carries_sample_identifier(prompt: str) -> bool:
+    """The corpus-id detector applied to ``prompt`` with item-id handles masked."""
+
+    return _carries_sample_identifier(_ITEM_ID_IN_PROMPT.sub("ace:item", prompt))
+
+
 _TITLE = re.compile(r"[A-Za-z0-9 _.,:;()/%+=<>-]{1,80}")
 _LABEL = re.compile(r"[A-Za-z0-9_:.<>=+%/ -]{1,48}")
 _WORD = re.compile(r"[a-z0-9]+")
@@ -932,7 +945,7 @@ def render_reflector_request(
     for key, value in replacements.items():
         prompt = prompt.replace(key, value)
     _require("{{" not in prompt, "the instruction artefact has an unresolved placeholder")
-    _require(not _carries_sample_identifier(prompt), "the rendered prompt carries a sample identifier")
+    _require(not _prompt_carries_sample_identifier(prompt), "the rendered prompt carries a sample identifier")
     request = {
         "schema": REQUEST_SCHEMA,
         "messages": [{"role": "user", "content": prompt}],
