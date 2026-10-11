@@ -1,6 +1,6 @@
 {
   "cell": "slurp-direct-only-fold-b-thinking-smoke-4-v1",
-  "composed_config_hash": "456466eaa56d62d7f36889c8c1efdae692222067ca862e3e0804cf0231a181cc",
+  "composed_config_hash": "62e638acecb710372fa93d6a38dba826def623d24139b44a4c3e38952db11e0f",
   "execution_plan": {
     "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-rec1-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 8,
     "planned_speech_audio_seconds": 20,
-    "protocol_hash": "dbe794d0161bdd0477a3f482306d232a001637656ecf717c3bb39b63b7dd5adc",
+    "protocol_hash": "04f7a1e1247b128bcaa7d63962d0ad37e2cb70dd4acbb2b55eb1f04fa1046c42",
     "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe",
