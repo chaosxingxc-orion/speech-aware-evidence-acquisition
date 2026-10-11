@@ -6,7 +6,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-generation-v1",
+      "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1",
       "baseline_fragment": "slurp-direct-only-fold-b-instruct-baseline-v1",
       "cell_id": "slurp-direct-only-fold-b-instruct-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
@@ -64,7 +64,7 @@
   "fragment_kind": "saea-slurp-direct-only-fold-b-thinking-vs-instruct-v1",
   "generation_budget": {
     "cap": 1080,
-    "definition": "The direct-only phase program (configs/policy/phase-direct-only-v1.json: one phase, max_contacts 1, always-run-full-program) makes exactly ONE contact per row, so 1,080 x 1 = 1,080 is the program's exact maximum and its expectation at once. The live phase fit makes 1 + (2 + 1) x 1080 = 3,241 tokenizer endpoint calls under its own run id SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1. The GPU-hour ceiling is a BOUND, never a target. Budgets are run-cumulative across every attempt of a run id.",
+    "definition": "The direct-only phase program (configs/policy/phase-direct-only-v1.json: one phase, max_contacts 1, always-run-full-program) makes exactly ONE contact per row, so 1,080 x 1 = 1,080 is the program's exact maximum and its expectation at once. The live phase fit makes 1 + (2 + 1) x 1080 = 3,241 tokenizer endpoint calls under its own run id SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1. The GPU-hour ceiling is a BOUND, never a target. Budgets are run-cumulative across every attempt of a run id. Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt attempt-slurp-direct-only-fold-b-instruct-generation-v1 spent 0 contacts, so the run-cumulative budget equals the original plan.",
     "target": 1080
   },
   "population": {

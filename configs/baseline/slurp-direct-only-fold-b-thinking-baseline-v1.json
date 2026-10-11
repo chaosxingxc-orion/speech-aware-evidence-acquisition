@@ -2,8 +2,8 @@
   "arm": "speech-feature-query",
   "evidence_mismatch": false,
   "evidence_source": "none",
-  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
-  "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
   "live_phase_fit": {
     "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-v1",
     "contact_cap": 3241,

@@ -133,13 +133,26 @@ def derive_baseline(key: str) -> str:
     for forbidden in ("prepared_phase_supply", "native_episode", "phase_tools"):
         if forbidden in document:
             raise SystemExit(f"the parent baseline declares {forbidden}")
+    # The fold-excluded knowledge view (never the parent's full-TRAIN one): the runner's roster guard compares it with the query roster.
+    document["knowledge_snapshot_relpath"] = fam.KNOWLEDGE_SNAPSHOT_RELPATH
+    document["knowledge_snapshot_sha256"] = fam.KNOWLEDGE_SNAPSHOT_SHA256
     document["live_phase_fit"] = {"attempt_id": spec["fit_attempt"], "contact_cap": fam.fit_contact_cap(spec["rows"]), "run_id": spec["fit_run"]}
     document["live_phase_fit_audio_seconds_cap"] = fam.audio_cap(spec["roster"])
+    out = f"configs/baseline/{spec['baseline']}.json"
     if spec["core"] == "thinking":
         document["speech_packet_promotion_receipt"] = fam.THINK_PROMOTION_RECEIPT
         document["speech_packet_promotion_receipt_sha256"] = fam.UNPINNED_SHA
+        # Re-derivation after the pin step keeps the real pin: writing the zero sentinel back would undo
+        # scripts/slurp_fold_preprocess_thinking.py --pin-receipt --write (the flip refuses the sentinel).
+        if (REPO_ROOT / out).is_file():
+            existing = json.loads(rd(out))
+            real = existing.get("speech_packet_promotion_receipt_sha256")
+            if existing.get("speech_packet_promotion_receipt") == fam.THINK_PROMOTION_RECEIPT and real not in (None, fam.UNPINNED_SHA):
+                document["speech_packet_promotion_receipt_sha256"] = real
     document["what_this_is"] = f"Cell 266-E {spec['role']}: " + WHAT_THIS_IS[key]
-    out = f"configs/baseline/{spec['baseline']}.json"
+    rec = fam.recovery(key)
+    if rec:
+        document["what_this_is"] += f" Recovery rec1 ({rec['recovered_at']}): {rec['root_cause']}."
     wr(out, dump_like(raw, document))
     return out
 
@@ -149,6 +162,7 @@ def budgets(key: str) -> tuple[dict, dict]:
     rows = spec["rows"]
     calls = rows * fam.CONTACTS_PER_ROW
     audio = fam.audio_cap(spec["roster"])
+    calls, audio = fam.cumulative_budget(key, calls, audio)        # a recovered cell: the original plan plus the failed attempts' recorded spend
     family = {
         "asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0,
         "fit_endpoint_calls_cap": fam.fit_contact_cap(rows),
@@ -221,6 +235,11 @@ def derive_experiment(key: str, parent_arm: dict, parent_smoke: dict) -> str:
         "requirements": [decision],
         "state": "held",
     }
+    out = f"configs/experiment/{spec['cell']}.json"
+    if (REPO_ROOT / out).is_file():
+        # Re-derivation after the flip keeps the cell's readiness block (state, reason, pinned decision receipt): the flip's re-pin owns it, and
+        # resetting it to HELD here would silently un-flip a cell. A first derivation (no file yet) writes HELD.
+        cell["readiness"] = json.loads(rd(out))["cells"][0]["readiness"]
     document["population"] = {
         "count": rows,
         "dataset_fragment": fam.DATASET,
@@ -268,8 +287,13 @@ def derive_experiment(key: str, parent_arm: dict, parent_smoke: dict) -> str:
             "failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning marker is a "
             "failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read."
         )
+    rec = fam.recovery(key)
+    if rec:
+        # prose only (generation_budget is outside the request-identity proof); failure_policy stays byte-equal across the Instruct pair
+        document["generation_budget"]["definition"] += (
+            f" Recovery rec1 (the cell's single one; a second failure closes the cell): the failed predecessor attempt {rec['predecessor_attempt_id']} spent "
+            f"{fam.predecessor_spend(key)[0]} contacts, so the run-cumulative budget equals the original plan.")
     document.pop("analysis_binding", None)
-    out = f"configs/experiment/{spec['cell']}.json"
     wr(out, dump_like(rd(f"configs/experiment/{fam.PARENT_EXPERIMENT}.json"), document))
     return out
 

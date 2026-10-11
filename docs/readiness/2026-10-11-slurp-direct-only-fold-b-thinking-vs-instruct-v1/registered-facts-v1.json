@@ -110,15 +110,15 @@
   "finite_completion_and_react_exhaustion": "Not applicable by construction: the direct-only program carries no native_episode block, so neither finite_completion_policy nor react_exhaustion_policy exists to declare (finite_completion_policy_check.py scopes native cells only). A completion that reaches the cap yields a truncated or empty delivered content: a row-level outcome counted in the cap-hit and parse-failure tables, never a flight abort.",
   "identity": {
     "instruct": {
-      "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-generation-v1",
+      "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1",
       "baseline_fragment": "slurp-direct-only-fold-b-instruct-baseline-v1",
       "cell": "slurp-direct-only-fold-b-instruct-v1",
       "composed_config_hash": "369776f8830d6c6d72bd91303b8301545c7e1ea445c16866ecd4365d25f1bc86",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "declares_prepared_phase_supply": false,
-      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-instruct-fit-v1",
+      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-instruct-fit-rec1-v1",
       "fit_contact_cap": 3241,
-      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1",
+      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1",
       "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
       "policy": "phase-direct-only-v1",
       "protocol_hash": "3d5aeb32e04e6d44dae26bc30391289005264528931b6a74332e8a4edae32dd6",
@@ -185,6 +185,11 @@
       "service_session": "serving-slurp-thinking-direct-fold-b-np4-v1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
     }
+  },
+  "knowledge_snapshot": {
+    "note": "fold-excluded view (37,407 source rows; 0 Fold A and 0 Fold B ids); pinned by every 266-E baseline fragment",
+    "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
+    "sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b"
   },
   "pins": {
     "note": "per-file hashes live in the umbrella lock entry and in the runtime receipts; they are not copied into prose",

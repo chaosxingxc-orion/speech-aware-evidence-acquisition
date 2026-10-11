@@ -180,6 +180,119 @@ def test_measurement_blocks_declare_cross_flight_with_the_in_chain_replicate():
     assert blocks[fam.CELLS["smoke"]["run"]]["measurement_design"] == "form-proof"
 
 
+# ----------------------------------------------------------------------------------------------- knowledge pin and rec1 recovery
+
+FOLD_EXCLUDED_RELPATH = "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json"
+FOLD_EXCLUDED_SHA = "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b"
+FULL_TRAIN_SHA = "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8"
+
+
+@pytest.mark.parametrize("key", fam.ALL_KEYS)
+def test_every_baseline_pins_the_fold_excluded_knowledge_view(key):
+    """The runner's roster guard compares the pinned snapshot's source roster with the query roster even when evidence_source is none; the
+    full-TRAIN view contains every Fold B id and aborted the Instruct arm before any model contact (2026-10-11T20:07:46Z)."""
+
+    baseline = _json(f"configs/baseline/{fam.CELLS[key]['baseline']}.json")
+    assert baseline["knowledge_snapshot_relpath"] == FOLD_EXCLUDED_RELPATH == fam.KNOWLEDGE_SNAPSHOT_RELPATH
+    assert baseline["knowledge_snapshot_sha256"] == FOLD_EXCLUDED_SHA == fam.KNOWLEDGE_SNAPSHOT_SHA256
+    assert baseline["knowledge_snapshot_sha256"] != FULL_TRAIN_SHA == fam.FULL_TRAIN_KNOWLEDGE_SNAPSHOT_SHA256
+    assert "tfrl-folds" in baseline["knowledge_snapshot_relpath"]
+    assert _compose(key).values["knowledge_snapshot_sha256"] == FOLD_EXCLUDED_SHA
+
+
+@pytest.mark.parametrize("key", fam.ALL_KEYS)
+def test_the_pinned_knowledge_snapshot_is_disjoint_from_the_cells_roster(key):
+    import os  # noqa: PLC0415
+
+    data_root = os.environ.get("SPEECHRL_DATA_DIR")
+    snapshot_path = Path(data_root) / fam.KNOWLEDGE_SNAPSHOT_RELPATH if data_root else None
+    if snapshot_path is None or not snapshot_path.is_file():
+        pytest.skip("SPEECHRL_DATA_DIR (or the fold-excluded snapshot) is absent")
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    assert snapshot["snapshot_sha256"] == fam.KNOWLEDGE_SNAPSHOT_SHA256               # the pin is the snapshot's own content hash
+    roster = _json(_experiment(key)["population"]["roster_receipt"])
+    roster_ids = {item["sample_id"] for item in roster["items"]}
+    assert len(roster_ids) == fam.CELLS[key]["rows"]
+    assert not (set(snapshot["source_sample_ids"]) & roster_ids)                       # the runner's guard would pass
+    assert snapshot["source_split_identity_hash"] != roster["split_identity_hash"]
+
+
+def test_the_instruct_arm_resolves_to_the_rec1_identities_and_the_other_cells_keep_theirs():
+    spec = fam.CELLS["instruct"]
+    assert spec["run"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1"                  # the generation run id stays: the budget is run-cumulative
+    assert spec["attempt"] == "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1"
+    assert spec["fit_run"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1"
+    assert spec["fit_attempt"] == "attempt-slurp-direct-only-fold-b-instruct-fit-rec1-v1"
+    for key in ("smoke", "thinking", "replicate"):                                      # their attempts never opened
+        assert fam.recovery(key) is None and fam.rec_suffix(key) == ""
+        assert "rec1" not in json.dumps(fam.CELLS[key]) and fam.plan_file_name(key, "generation") == f"{key}-generation-plan-registered-v1.json"
+    rec = fam.recovery("instruct")
+    assert rec["predecessor_attempt_id"] == "attempt-slurp-direct-only-fold-b-instruct-generation-v1" != spec["attempt"]
+    assert rec["predecessor_fit_run_id"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1" != spec["fit_run"]
+    assert rec["predecessors"][0]["contacts_spent"] == 0 and rec["predecessors"][0]["speech_seconds_spent"] == 0.0
+    assert "20:07:46Z" in rec["predecessor_state"] and "77b2283e9" in rec["predecessor_state"]
+    assert fam.predecessor_spend("instruct") == (0, 0.0) and fam.predecessor_spend("thinking") == (0, 0.0)
+    assert fam.cumulative_budget("instruct", 1080, 3155) == (1080, 3155)               # run-cumulative budget = original plan + 0
+    assert fam.plan_file_name("instruct", "generation") == "instruct-generation-plan-registered-rec1-v1.json"
+    assert fam.plan_file_name("instruct", "fit") == "instruct-fit-plan-registered-rec1-v1.json"
+    assert fam.superseded_plan_file_names("instruct") == ["instruct-generation-plan-registered-v1.json", "instruct-fit-plan-registered-v1.json"]
+    assert fam.superseded_plan_file_names("replicate") == []
+    # eight first-registration ids (what the minted receipt lists) plus the rec1 FIT run id
+    eligible = fam.eligible_run_ids()
+    assert len(eligible) == 9 == len(set(eligible)) and eligible[-1] == spec["fit_run"]
+    assert fam.CELLS["instruct"]["run"] in eligible and rec["predecessor_fit_run_id"] in eligible
+
+
+def test_the_rec1_plans_are_in_the_package_and_the_first_attempt_instruct_plans_are_gone():
+    package = REPO / fam.PACKAGE
+    for kind in ("generation", "fit"):
+        assert (package / fam.plan_file_name("instruct", kind)).is_file()
+        assert not (package / f"instruct-{kind}-plan-registered-v1.json").exists()
+    spec = fam.CELLS["instruct"]
+    generation = _json(f"{fam.PACKAGE}/{fam.plan_file_name('instruct', 'generation')}")
+    fit = _json(f"{fam.PACKAGE}/{fam.plan_file_name('instruct', 'fit')}")
+    assert (generation["execution_plan"]["run_id"], generation["execution_plan"]["attempt_id"]) == (spec["run"], spec["attempt"])
+    assert (fit["execution_plan"]["run_id"], fit["execution_plan"]["attempt_id"]) == (spec["fit_run"], spec["fit_attempt"])
+    assert generation["recovery"]["predecessor_attempt_id"] == fam.recovery("instruct")["predecessor_attempt_id"]
+    budget = generation["recovery_budget"]
+    assert budget["original_plan"] == budget["cumulative_plan"] == {"planned_model_calls": 1080, "planned_speech_audio_seconds": 3155}
+    assert generation["execution_plan"]["planned_model_calls"] == 1080 and fit["execution_plan"]["planned_model_calls"] == 3241
+    for key in ("smoke", "thinking", "replicate"):
+        for kind in ("generation", "fit"):
+            assert "recovery" not in _json(f"{fam.PACKAGE}/{fam.plan_file_name(key, kind)}")
+    protocol = _json(f"{fam.PACKAGE}/protocol-registered-v1.json")
+    assert protocol["recovery"]["instruct"]["root_cause"] == fam.recovery("instruct")["root_cause"]
+    readme = (package / "README.md").read_text(encoding="utf-8")
+    assert "## Recovery rec1" in readme and spec["attempt"] in readme and spec["fit_run"] in readme and FOLD_EXCLUDED_SHA in readme
+
+
+def test_the_rec1_ledger_block_has_two_draft_rows_and_the_first_attempt_rows_are_unchanged():
+    text = LEDGER.read_text(encoding="utf-8")
+    start = text.index("## Cell 266-E recovery rec1")
+    end = text.find("\n## ", start + 1)
+    block = text[start:] if end == -1 else text[start:end]
+    rows = [line for line in block.splitlines() if line.startswith("| 2026-")]
+    assert len(rows) == 2 and all(r.count("|") == 16 for r in rows)
+    spec = fam.CELLS["instruct"]
+    assert [r.split("|")[2].strip() for r in rows] == [spec["run"], spec["fit_run"]]
+    for r in rows:
+        assert "countersignature pending" in r and "root countersigned" not in r.lower() and r.split("|")[9].strip() == "no"
+        assert spec["attempt"] in r or spec["fit_attempt"] in r
+    assert [r.split("|")[10].strip() for r in rows] == ["1080", "3241"]
+    # the first-attempt rows stay in the original block (append-only), with their original ids
+    original = [r for r in _ledger_rows() if r.split("|")[2].strip() in ("SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1", "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1")]
+    assert len(original) == 2
+    texts = _json(f"{fam.PACKAGE}/countersign-row-texts-v1.json")["rows"]
+    for run_id in (spec["run"], spec["fit_run"]):
+        assert "root countersigned" in texts[run_id] and "RECOVERY rec1" in texts[run_id] and "countersignature pending" not in texts[run_id]
+
+
+def test_the_flip_script_passes_the_rec1_plan_marker_for_the_recovered_cell_only():
+    text = (DIRECT / "direct_fb_flip.sh").read_text(encoding="utf-8")
+    assert 'PLAN_REC="${PLAN_REC_OF[$KIND]}"' in text and "fam.rec_suffix" in text
+    assert fam.rec_suffix("instruct") == "-rec1" and fam.rec_suffix("replicate") == "" and fam.rec_suffix("smoke") == "" and fam.rec_suffix("thinking") == ""
+
+
 # ----------------------------------------------------------------------------------------------- serving and chain
 
 
@@ -223,6 +336,10 @@ def test_the_chain_queue_per_segment(tmp_path, segment, expected):
     assert result.returncode == 0, result.stderr
     steps = json.loads((tmp_path / "queue.json").read_text(encoding="utf-8"))
     assert [s["short"] for s in steps] == [f"direct-fb-{k}" for k in expected]
+    if segment == "instruct":                      # the Instruct arm flies under the rec1 ids, then the replicate under its own (unchanged) ids
+        assert [(s["run_id"], s["gen_attempt_id"], s["fit_run_id"]) for s in steps] == [
+            ("SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1", "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1", "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1"),
+            ("SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1", "attempt-slurp-direct-only-fold-b-instruct-replicate-generation-v1", "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1")]
     for step in steps:
         spec = next(v for v in fam.CELLS.values() if v["cell"] == step["cell"])
         assert step["run_id"] == spec["run"] and step["gen_attempt_id"] == spec["attempt"] and step["experiment"] == spec["cell"]
@@ -345,9 +462,11 @@ def test_the_countersign_texts_name_the_packages_own_receipt():
     assert set(texts["rows"]) == {fam.CELLS[k][f] for k in fam.ALL_KEYS for f in ("run", "fit_run")}
 
 
-def test_the_draft_receipt_lists_the_eight_run_ids_and_mints_once(tmp_path):
+def test_the_draft_receipt_lists_the_eight_run_ids_plus_the_rec1_fit_run_and_mints_once(tmp_path):
     draft = _json(f"{fam.PACKAGE}/root-admission-draft-v1.json")
-    assert draft["eligible_run_ids"] == mint_mod.expected_eligible() and len(draft["eligible_run_ids"]) == 8
+    assert draft["eligible_run_ids"] == mint_mod.expected_eligible() and len(draft["eligible_run_ids"]) == 9
+    assert fam.CELLS["instruct"]["fit_run"] in draft["eligible_run_ids"]
+    assert draft["superseded_attempt_ids"] == [fam.recovery("instruct")["predecessor_attempt_id"], fam.recovery("instruct")["predecessor_fit_attempt_id"]]
     assert draft["status"] == "DRAFT-NOT-MINTED"
     summary = mint_mod.mint(str(REPO), str(tmp_path))
     receipt = json.loads((tmp_path / fam.DECISION_RELPATH).read_text(encoding="utf-8"))

@@ -2,12 +2,12 @@
   "arm": "speech-feature-query",
   "evidence_mismatch": false,
   "evidence_source": "none",
-  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame/snapshot.json",
-  "knowledge_snapshot_sha256": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+  "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
+  "knowledge_snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
   "live_phase_fit": {
-    "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-fit-v1",
+    "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-fit-rec1-v1",
     "contact_cap": 3241,
-    "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1"
+    "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1"
   },
   "live_phase_fit_audio_seconds_cap": 3155,
   "phase_material": {
@@ -32,6 +32,6 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Cell 266-E Instruct arm: the Instruct arm of the bare-core Thinking-versus-Instruct read (owner decision 266-E): the sealed slurp-direct-max512 form, one complete direct answer per row through the shared controller's direct-only phase program, FlightRuntime and OpenJiuwen on the resident Instruct session, TRAIN Fold B 1,080. No knowledge supply, no analytical tool, no native tool authority. The comparator of the read.",
+  "what_this_is": "Cell 266-E Instruct arm: the Instruct arm of the bare-core Thinking-versus-Instruct read (owner decision 266-E): the sealed slurp-direct-max512 form, one complete direct answer per row through the shared controller's direct-only phase program, FlightRuntime and OpenJiuwen on the resident Instruct session, TRAIN Fold B 1,080. No knowledge supply, no analytical tool, no native tool authority. The comparator of the read. Recovery rec1 (2026-10-11): the full-TRAIN knowledge view (609854e4...; 50,628 source rows, every Fold B id inside it) was pinned on a TRAIN-fold cell; corrected to the fold-excluded view of the same family (9c64e8ec...; 37,407 source rows, 0 Fold A and 0 Fold B ids).",
   "whole_roster_wave_barrier": true
 }
