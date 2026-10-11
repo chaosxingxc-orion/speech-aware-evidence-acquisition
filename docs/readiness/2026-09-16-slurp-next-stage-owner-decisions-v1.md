@@ -1614,3 +1614,14 @@ efficiency problem: find the root cause of the bottleneck and fix it.")
   for the chain and the flip so the reflector alone is re-flipped at the new flight commit and queued. The typed run's
   inspection is then run read-only on the sealed bytes before its ledger row is closed.
 - The uptime guard will HALT when it meets `batch-STOP`; the next chain start archives the STOP and the guard is re-armed.
+
+### Inspector fix merged; typed proposer inspected; ACE reflector flying alone (coordinator, 2026-10-11 12:18Z)
+
+- Merged 58ebe92ea: `batch_inspect.py` text-only branch (rows from the population; per-row ceiling = `execution_plan.planned_model_calls`
+  / rows, cross-checked against the generation and family caps; FINALIZED + COMPLETED at the flight commit; outputs == rows; trace
+  requests == calls_used <= rows x ceiling; no tools), `TFRL_ONLY=typed|ace` in the chain (queue builder `tfrl_i1_queue.py`) and
+  the flip. The sealed typed run passes the new inspection: 3 rows, 3 calls (no retries), 0 tool calls, 18,845 prompt / 555
+  completion tokens; its trace carries `speech_ref` and per-row `audio_seconds` as carrier ACCOUNTING only (no audio part in the
+  request; cost 5.95 s under the 18 s ceiling).
+- Reflector-only flip converged at 58ebe92ea (gate PASS); chain task SAEA-Queue-TFRLi1Ace started 12:17:38Z (54 calls); the
+  driver archived `batch-STOP` at start; the uptime guard (HALTed 12:04Z on the STOP) re-armed.

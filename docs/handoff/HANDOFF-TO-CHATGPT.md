@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T12:05:12Z
+Last refreshed: 2026-10-11T12:19:20Z
+
+## ACE reflector i1 FLYING alone (flight commit 58ebe92ea, task SAEA-Queue-TFRLi1Ace, 12:17Z); text-only inspector merged; typed run inspected PASS (2026-10-11T12:19:20Z, Fable 5.1 root)
+
+Inspector fix 58ebe92ea (text-only branch; TFRL_ONLY switches). Typed proposer run: 3 rows, 3 calls, inspection PASS (carrier audio seconds are accounting only). Reflector re-flipped alone and queued; STOP archived; uptime guard re-armed. Next at its seal: close rows -> `open --iter 1 --stage cell` -> column cell (lock / aa / ace): sign, mint, flip, queue. GPU packets rebuild (GPU fragment + swap-window chain) in build. No owner decision open.
+
+Superseded stamp: 2026-10-11T12:05:12Z
 
 ## i1 typed proposer sealed (9 contacts); batch STOP on the text-only inspection; reflector pending the inspector fix (2026-10-11T12:05:12Z, Fable 5.1 root)
 
