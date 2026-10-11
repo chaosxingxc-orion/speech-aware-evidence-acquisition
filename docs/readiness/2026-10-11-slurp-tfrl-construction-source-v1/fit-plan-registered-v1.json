@@ -36,9 +36,11 @@
   "plan_kind": "fit",
   "preparation_base_commit": "f0edc8a720a6ec7d0a2a4d1885f74d18e4d9b408",
   "prepared_phase_supply": {
-    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1/phase-supply-v1.json",
-    "sha256": "MINTED_AT_THE_FLIP"
+    "sha256": "a03325576a46f6483c7e5af9014e13697fd98ae9b65a392b61f9701ced0069e5"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/protocol-registered-v1.json",
