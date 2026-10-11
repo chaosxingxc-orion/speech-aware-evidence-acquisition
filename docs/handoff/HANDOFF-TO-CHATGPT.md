@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T07:14:51Z
+Last refreshed: 2026-10-11T07:48:03Z
+
+## Lock v2.3 merged (ace-playbook store at i0, P-ACE-0 proven, CURRENT_LOCK v2.3); loop material source = construction roster R01C (2026-10-11T07:48:03Z, Fable 5.1 root)
+
+Master f0edc8a72. The preparer's knowledge guard refuses Fold B carriers for delta-store releases, so proposer tables and ACE material come from a lock column on R01C (625 TRAIN rows outside both folds; one extra ~0.4 GPU-h column, flown once); Fold B = held-out selection; Fold A confirms. In build: the construction-source cell + driver switch + protocol rebuild; 266-E package; ledger consumed-flag restoration (all flights since 2026-10-09 were left at consumed=no) + a standing check. Flown-cell registration tests fixed (c47bcfde0). GPU idle; no owner decision open.
+
+Superseded stamp: 2026-10-11T07:14:51Z
 
 ## E-T6 and the loop driver merged; lock v2.3 (ace-playbook store, P-ACE-0) in build; 266-E package in build (2026-10-11T07:14:51Z, Fable 5.1 root)
 

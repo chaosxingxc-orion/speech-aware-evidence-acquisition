@@ -1448,3 +1448,20 @@ declaration-only, P-ACE-0 byte proof). Also in build: the 266-E direct-only Fold
 registration tests (successor-2, VER-1b) that recompose on the live tree after identity-bound changes. Order after these
 land: freeze one flight commit -> one re-pin of every live HELD package -> countersign the i1 proposer/reflector rows ->
 mint -> flip -> plan pins -> flip -> gates -> queue (GPU resumes).
+
+### Lock v2.3 (declaration-only) merged; material source moved to the construction roster (coordinator, 2026-10-11)
+
+- Merged f0edc8a72: `LOCK_V2_3` = v2.2 + the `ace-playbook` store declared at the empty i0 release (prepared write-once under
+  `knowledge/slurp/semantic/ace-playbook-i0/`; release sha256 4013e503..., snapshot pin 3c9f36f9...); P-ACE-0 proven (Perception
+  and Solver request payloads byte-identical under v2.2 and v2.3; the real i0 release supplies the Solver nothing);
+  `CURRENT_LOCK = LOCK_V2_3`; `lock_superseded_by` updated; no registered package changes its composed hash. The tfrl i1
+  cells derive on v2.3 under the real hooks.
+- Coordinator decision inside 263-A (no owner question): the semantic-knowledge preparer refuses TRAIN Fold B rows as the
+  carrier roster of a delta-store release (the 2026-09-23 construction-roster vs knowledge guard), so the proposer's tables
+  and the ACE reflector's material come from a lock column flown on the CONSTRUCTION roster R01C (625 TRAIN rows outside
+  Fold A and Fold B; the ROLL-1 / ADV-1 roster), not from Fold B. Fold B is then a true held-out selection split, as in
+  SkillOpt's train-vs-selection separation; Fold A confirms. Cost: one extra lock column on R01C (2 contacts per row, about
+  0.4 GPU-h), flown once since the lock does not change between iterations. The protocol file is regenerated accordingly.
+- Also merged: the flown-cell registration-test fixes (c47bcfde0; stale expectations from registration-time commits, not
+  runtime drift). The E22 hash tests stay red until the packet-gated re-pin. In build: 266-E package; ledger consumed-flag
+  restoration for every flight sealed since 2026-10-09 plus a standing check; the construction-source cell + driver switch.
