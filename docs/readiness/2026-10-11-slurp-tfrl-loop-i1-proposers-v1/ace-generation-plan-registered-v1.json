@@ -1,0 +1,48 @@
+{
+  "cell": "slurp-native-stage3-tfrl-ace-reflector-i1-v1",
+  "composed_config_hash": "130ac82d0f9b4a084b8c3d742f552eb34a7c7efea621a3d2a0458963bdc21e31",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-tfrl-ace-reflector-i1-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.1,
+    "planned_model_calls": 54,
+    "planned_speech_audio_seconds": 165,
+    "planned_speech_audio_seconds_note": "text-only contacts under the D2 freeze: realised speech seconds read 0 <= the declared ceiling",
+    "protocol_hash": "5fb59426475a42afa05c43378afb63ac4d8c22dd1c2ae6a55c59d2f3eaf6a01e",
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I1-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "b59c73f3b4014dcb77eb9f5f3a4a471027aff9f2cdf9b0d6218983f1c4830ab0",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli worker/campaign on this cell alone through the batch driver (text-only, no audio part).",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-tfrl-ace-reflector-i1-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 0,
+    "generation_calls_cap": 54,
+    "gpu_hours_fit_inclusive": 0.1,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 165
+  },
+  "loop_protocol": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json",
+    "status": "DRAFT-HELD"
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "0000000000000000000000000000000000000000",
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-proposers-v1/protocol-registered-v1.json",
+    "sha256": "9f6d28fa3517e3a5cfea6148a7cd3e7ee7110cf58c0ca99b865f2be1af0be90a"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I1-V1: text-only ACE reflector contacts (form proof).",
+  "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}

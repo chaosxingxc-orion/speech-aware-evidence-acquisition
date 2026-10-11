@@ -1,0 +1,46 @@
+{
+  "arm": "typed",
+  "artefact_hashes": {
+    "supply_fragment": "b6340f5f0e3382ffc1b39603d4e1cffc0e5b6768c28c46fdbe1397069c688833"
+  },
+  "candidate_id": null,
+  "credit": {
+    "contacts_per_row": 0.0,
+    "false_fill": {
+      "delta_pp": 0.0,
+      "n": 0
+    },
+    "intent": 0.0,
+    "non_empty_exact": {
+      "delta_pp": 0.0,
+      "n": 0
+    },
+    "per_scenario": {},
+    "slu_f1": 0.0,
+    "vs_lock": {
+      "intent": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "slu": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      }
+    },
+    "vs_parent": null,
+    "vs_twin": null
+  },
+  "iteration": 0,
+  "operator_class": null,
+  "parent_id": null,
+  "predicted_slu_pp": null,
+  "read": {
+    "attempt": 0,
+    "run_id": "lock-v2.2"
+  },
+  "schema": "saea-tfrl-archive-state-v1",
+  "state_id": "a8f1d50ef76ecf1209d7851a993eba5610abf695f14af0a7c90b53750bb35347",
+  "verdict": "accepted"
+}
