@@ -1721,3 +1721,28 @@ have curated from 0 items; the archive gets a write-once correction record rathe
 offline candidate (deliver rule `fx-oclock` on alarm `time`, target SPURIOUS) was skipped silently because the family is not in the
 fitter; the close step must record every candidate (refused `offline-family-unsupported` or read), and the i1 candidate is read
 offline on the sealed lock column.
+
+### 266-E Instruct arm ABORTED before the first contact (knowledge-roster guard); recovery rec1 + fold-excluded knowledge pin (coordinator, 2026-10-11)
+
+Flip chain converged at 77b2283e9 (four cells, `flight_registration_check` PASS x4, 20:03Z). The Instruct segment was flown first on
+the resident Instruct session (no swap needed; task SAEA-Queue-DirectFB-Instruct, 20:04Z). The arm ABORTED at 20:07:46Z with 0 calls
+and 0.0 speech-seconds (attempt `attempt-slurp-direct-only-fold-b-instruct-generation-v1`, state ABORTED, preserved unread): the
+runner's knowledge-source guard refused the AgentLoop because every one of the 1,080 Fold B query ids is in the pinned knowledge
+snapshot's source roster. Root cause: the four 266-E baseline fragments were derived from the DEV / test direct-only form and pin
+the FULL-TRAIN view `size-full-content-slot-fillers-intent-slot-frame` (50,628 source rows); the guard runs even though the
+direct-only program binds the snapshot invisibly (`evidence_source = none`). The fold-excluded twin
+`size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1` (37,407 source rows; 0 Fold A and 0 Fold B ids; its split identity
+differs from Fold B's) is the pin every TRAIN-fold cell already uses and is the honest pin for a bare-core read on a TRAIN fold.
+Fix (model-free, branch `sonnet/direct-fb-knowledge-pin-rec1`): the four baselines pin the fold-excluded view; the Instruct arm
+takes its single recovery re-registration (generation attempt `...-instruct-generation-rec1-v1`, FIT run
+`SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1`; run-cumulative budget = the original plan + 0); the smoke, Thinking and
+replicate attempts never opened and keep their ids; a unit test asserts the pin and the roster disjointness. The stale
+`locks/flight.lock` of the dead campaign process is reconciled by `scripts/flights/batch/lease_reconcile_direct_fb_instruct.sh`
+(receipt under `coordination/`). GPU idle from 20:08Z until the re-flip lands (about 1.5 h): the Thinking session is loaded during
+the flip so the Thinking arc (smoke, sign-off, arm) flies first when the flip ends, then one swap back for Instruct + replicate.
+Executed 20:20-20:36Z: lock reconciled (receipt `flight-lock-reconciliation-20261011T202011Z.json`); fix merged (ead664100); the two
+rec1 rows countersigned and the first-attempt generation row folded into the rec1 row (one row per run id, the tfrl i1 smoke
+precedent; the superseded FIT row `...-INSTRUCT-FIT-V1` stays); the eight-id decision receipt kept as
+`root-admission-v1.superseded-20261011T203519Z.json` and a nine-id receipt minted (sha 23cc42f8...; the protocol's recovery rule
+names a new FIT run id, so the receipt had to grow). Next: flip loop (all four cells: every baseline changed), pins, flip, gates, the
+Thinking session loaded during the flip, then think-all first and the Instruct pair after the swap back.
