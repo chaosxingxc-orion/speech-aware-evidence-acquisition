@@ -1343,3 +1343,55 @@ both program ids), E-T2 ACE material + deterministic curator + `ace-playbook` re
 delivery threshold fitter, E-T4 archive / meta / parent choice, E-T5 column algorithm labels. Merge order: E-S1 -> E-T1 ->
 E-T2 -> E-T3/E-T4/E-T5 -> driver; one flight commit, one re-pin. GPU stays idle until the pre-read clears and the
 iteration-1 proposer cell is countersigned.
+
+## 265 coverage pre-read (0 GPU): iteration 1 has NO candidate over the bar; decision 266 PROPOSED (coordinator, 2026-10-11)
+
+`docs/results/2026-10-11-slurp-tfrl-coverage-preread-fold-b-offline.md` (merged b089b2547; script
+`scripts/analysis/slurp_tfrl_coverage_preread.py`; source column = the R6-P1 delivering lock column on TRAIN Fold B, lock
+v2.2 + v4g, SLU 64.34 / intent 82.41; the recomputed exemplar top-20, vote shares and Perception block match the sealed
+ones on 1,080 / 1,080 rows; 0 contacts).
+
+| operator (cross-fitted on Fold B halves) | predicted SLU-F1 pp | predicted intent pp |
+| --- | ---: | ---: |
+| (a) credit-selected slot-card value lists | 0.00 (no cell survives the half split; oracle on all 18 reachable items +0.54) | 0 |
+| (b) exemplar pool re-weighting (expansion material = 0 rows) | -0.56 (5 gold boundaries gained, 2 lost, 36 exact prints lost) | +0.07 [+0.02, +0.12] |
+| (c) per-scenario anti-pattern guards | -0.45 [-1.13, +0.18] (in-sample +0.87: selection optimism 1.3 pp) | 0 |
+| composite | **-1.00** | **+0.07** |
+| largest honest number (non-credit reference: every card carries its 16 most frequent TRAIN values, +651 tokens per row, harm not netted) | +0.27 at 45 % conversion | -- |
+
+Why the construction class is exhausted on this column, measured: 139 of the 228 MISSING items (61 %) already have their
+value in the delivered supply (consumption, not construction); 155 of the 434 gold-side error items (36 %) are values TRAIN
+outside the folds never contains; only 18 MISSING items are in a store, not delivered and heard in the transcript, spread
+over 14 slot types; the gold intent boundary is already delivered on 142 of the 190 intent-wrong rows and the other 48 rank
+at a median of 21; the exemplar pool is already all of TRAIN minus the two folds, so there is nothing legal to add.
+
+**Reading.** The owner's knowledge-side premise (265) holds in kind but not in size: TRAIN knowledge is complete for the
+intent and slot-type inventory of this column, and the remaining SLU mass is (i) values TRAIN never shows and (ii) values
+already supplied and not used. Neither is a construction-from-TRAIN operation. Under the spec's 263-R1 default, iteration 1
+stalls at this pre-read: the typed arm has no candidate. This is the fifth independent reading since 2026-09-29 that the
+supply side of SLURP SLU is at its plateau at lock v2.2 (headroom note, S1 supply design, R5, VER-1, now the pre-read).
+
+- **266** (PROPOSED) What iteration 1 flies. Options:
+  - **A** the spec's stall default: one Fold B cell with lock / twin / ACE i1 (4 contacts per row, about 1.1 GPU-h); the typed
+    arm is empty by measurement; delivery candidates read offline; the ACE comparator gets its first point and the loop its
+    in-flight twin. Honest, cheap, and the curve starts where the record says it is.
+  - **B** fly the every-card N16 value list as a `claims_benefit: false` measurement (+0.27 ceiling, +651 tokens per row).
+  - **C** redirect iteration 1 to a CONSUMPTION operator over the 139 in-supply MISSING items (exact oracle about 9.2 pp).
+    Outside 265's class; the Solver contract is locked by decision 245 and every template column read null; would need a new
+    typed consumption operator (not free text) that the record does not yet contain.
+  - **D** open an out-of-split expansion source (`train_synthetic`): one ENCODE contact with its own owner row; the
+    in-store-not-delivered mass (18 items) says the gain would still be small.
+  - **E** test whether CORE capability, not the system, is the binding constraint: once the Thinking GGUF's hash is pinned,
+    one bare-core read on Fold B (direct-only program, Thinking vs Instruct, same serving geometry, mmproj bf16, about 1-2
+    GPU-h; thinking tokens raise latency and need a larger completion cap). The system is core-agnostic by design, so a
+    stronger core transfers every locked component; the 36 % not-in-TRAIN values and the 61 % consumption misses are both
+    core-side. This revisits decision 261 (the owner limited the thinking model to a pre-download) because the pre-read
+    changed the picture; it is put as a question, not acted on.
+  - Coordinator recommendation: **A + E** in that order (about 2.5-3 GPU-h total); C only if the owner wants a typed
+    consumption operator designed first (one more design note, no GPU).
+
+Also: the E22 package re-pin after the inert knowledge-snapshot pin cannot run yet (the generic flip's check refuses at the
+missing window feature packets), so the two E22 registration-hash tests stay red until the encoder pass; recorded, not a
+defect of this wave. Merged this wave so far: E-T4 (ebd0ebacf), E-T2 (d42be260f), E-S1/E-S2 (2baf81110), E-T1 (9d5aa2076;
+`runtime.py` changed: re-pin at the flight commit), the pre-read (b089b2547), E-T3/E-T5 (efc9246ff: tables contract, cross-fitted delivery fitter, per-column labels). In build: E-T6, a root-cause of
+two pre-existing test failures.

@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T05:35:56Z
+Last refreshed: 2026-10-11T06:10:44Z
+
+## 265 coverage pre-read: iteration 1 has NO candidate over the bar (composite -1.00 pp SLU, +0.07 intent); decision 266 proposed; five build branches merged (2026-10-11T06:10:44Z, Fable 5.1 root)
+
+`docs/results/2026-10-11-slurp-tfrl-coverage-preread-fold-b-offline.md` (R6-P1 lock column, Fold B, 0 contacts): (a) credit-selected value lists 0.00 (no cell survives the half split), (b) exemplar re-weighting -0.56 / intent +0.07, (c) anti-pattern guards -0.45 [-1.13, +0.18] after cross-fit (+0.87 in-sample). Measured blockers: 139 / 228 MISSING values already in the delivered supply; 155 / 434 error values absent from TRAIN; 18 reachable items over 14 types; exemplar pool = all TRAIN minus the folds. Reading: 265's premise holds in kind not in size; the supply side is at its plateau at lock v2.2. Decision 266 options A (stall default: lock / twin / ACE i1, ~1.1 GPU-h), B (every-card N16 list measurement), C (typed consumption operator; needs a design), D (train_synthetic expansion, one ENCODE contact), E (bare-core Thinking vs Instruct read on Fold B once the GGUF hash is pinned; revisits 261); coordinator recommends A + E. Merged: E-T4 ebd0ebacf, E-T2 d42be260f, E-S1/E-S2 2baf81110, E-T1 9d5aa2076 (runtime.py changed), pre-read b089b2547, E-T3/E-T5 efc9246ff. In build: E-T6 multi-store swaps, root-cause of two pre-existing test failures. E22 re-pin waits for the window feature packets. GPU idle. Open: 262, 266.
+
+Superseded stamp: 2026-10-11T05:35:56Z
 
 ## 263 A / 264 A / 265 agreed (owner, 2026-10-11): the autonomous typed loop is in build (2026-10-11T05:35:56Z, Fable 5.1 root)
 
