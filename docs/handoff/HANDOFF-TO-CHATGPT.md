@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T03:29:48Z
+Last refreshed: 2026-10-11T03:44:00Z
+
+## VER-1 results note merged (2026-10-11T03:44:00Z, Fable 5.1 root)
+
+`docs/results/2026-10-11-slurp-ver1-verification-layer-fold-b-fold-a-read.md`: NOT CONFIRMED on Fold A (fixed rule +0.56 [-0.40, +1.51] vs S0; +1.12 [-0.31, +2.56] vs the VER-1c lock column 65.85; non-empty rows -0.87); the only cross-pool CI-LB > 0 form is the 5-sample filter at s = 2 (+0.85 / +1.03 / +0.76). Decisions open: 259, 260; a direction briefing on the entity-content headroom follows.
+
+Superseded stamp: 2026-10-11T03:29:48Z
 
 ## VER-1 Fold A: NOT CONFIRMED (+0.56 [-0.40, +1.51] vs S0 under the fixed rule; non-empty rows -0.87); decision 260 proposed (2026-10-11T03:29:48Z, Fable 5.1 root)
 

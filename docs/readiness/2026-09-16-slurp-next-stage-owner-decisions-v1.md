@@ -1001,7 +1001,7 @@ FIXED on Fold B (n = 3, s = 2, c3 verdict x N1 >= 0.2): vs the pool's greedy sam
 [-1.72, -0.06]** (on Fold A the rule costs non-empty rows: 18 lost / 5 gained); 1 intent row moved; cross-fit picked
 "no gate" on one half. The pre-fixed criterion (CI-LB > 0 over the Fold A lock column and point >= 0.67) is NOT met:
 **NOT CONFIRMED** (decision 247 "stable" fails; the Fold B in-sample +1.29 / +1.43 shrank to +0.56, in line with the
-cross-fitted ~+1.0 minus the flight band). Oracle ceilings on Fold A: perfect gate +3.98, best of 3 samples +5.34.
+cross-fitted ~+1.0 minus the flight band). Oracle ceilings on Fold A: perfect gate on S0 +3.98 (on the filtered column +3.82), best of 3 samples +5.34. Results note: `docs/results/2026-10-11-slurp-ver1-verification-layer-fold-b-fold-a-read.md` (merged); it notes that the registry's and the VER-1b recipe's wordings of the criterion differ (greedy sample vs lock column; 7 rows vs 0.67 pp intent) and that the rule fails both.
 What remains true across both folds: the 5-sample support filter at s = 2 over v4g has CI-LB > 0 on every 5-sample pool
 read (VER-1a Fold B +0.85 [+0.35, +1.36]; ROLL-2 Fold A pool +1.03 [+0.47, +1.70]; ROLL-3 DEV +0.76 [+0.08, +1.45]),
 about +0.8..+1.0 pp at 6 contacts per row; the 3-sample form and the c3 gate do not replicate on Fold A.
