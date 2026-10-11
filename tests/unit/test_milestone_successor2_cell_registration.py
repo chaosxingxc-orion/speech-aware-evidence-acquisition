@@ -298,15 +298,18 @@ def test_one_attempt_semantics_and_no_recovery():
     assert "smoke" in " ".join(draft["not_authorized"]).lower()
 
 
-def test_the_cell_is_held_with_zero_own_supply_and_no_decision_requirement():
+def test_the_cell_carries_its_own_pinned_supply_and_the_minted_root_admission():
+    # Registered HELD with a zero-hash supply and no decision requirement; flipped to ready by 26545f617
+    # (2026-10-10), which pinned the cell's own prepared_phase_supply and added the root-admission decision
+    # requirement. The cell was then flown and sealed, so the post-flip shape is the stable invariant.
     cell = _experiment()["cells"][0]
-    assert cell["readiness"]["state"] == "held"
+    assert cell["readiness"]["state"] == "ready"
     kinds = [r["kind"] for r in cell["readiness"]["requirements"]]
-    assert "decision" not in kinds
+    assert "decision" in kinds
     supply = [r for r in cell["readiness"]["requirements"] if r["relpath"].endswith("phase-supply-v1.json")]
-    assert len(supply) == 1 and supply[0]["sha256"] == ZERO and supply[0]["relpath"] == f"prepared/{RUN}/phase-supply-v1.json"
-    assert "prepared_phase_supply" not in _baseline()
-    assert all(r["sha256"] != ZERO for r in cell["readiness"]["requirements"] if r is not supply[0])
+    assert len(supply) == 1 and supply[0]["sha256"] != ZERO and supply[0]["relpath"] == f"prepared/{RUN}/phase-supply-v1.json"
+    assert _baseline()["prepared_phase_supply"] == {"relpath": supply[0]["relpath"], "sha256": supply[0]["sha256"]}
+    assert all(r["sha256"] != ZERO for r in cell["readiness"]["requirements"])
     draft = _load(f"{PACKAGE}/root-admission-draft-v1.json")
     assert draft["status"] == "DRAFT-NOT-MINTED" and draft["eligible_run_ids"] == [RUN, FIT_RUN]
 
@@ -350,15 +353,22 @@ def test_measurement_block_is_a_cross_flight_no_harm_declaration_with_the_dev_of
     assert _experiment()["stage3_algorithm"]["id"] == _load("configs/experiment/slurp-native-stage3-nx-r5-composed-dev2000-added-v1.json")["stage3_algorithm"]["id"]
 
 
-def test_three_draft_ledger_rows_sit_in_one_contiguous_block_at_the_end():
+def test_three_countersigned_ledger_rows_sit_in_one_contiguous_block_of_their_own_section():
     lines = (REPO / "docs/exposure-ledger.md").read_text(encoding="utf-8").rstrip("\n").split("\n")
     heading = max(i for i, line in enumerate(lines) if line.startswith("## Test-sample successor 2:"))
-    tail = lines[heading:]
+    # Bound the tail at the next section: later registrations (VER-1a/1b/1c, the earnings22 all-off block) are
+    # appended after this section, so "the end of the ledger" was only true when the test was written.
+    following = next((i for i in range(heading + 1, len(lines)) if lines[i].startswith("## ")), len(lines))
+    tail = lines[heading:following]
+    while tail and not tail[-1].strip():
+        tail.pop()
     rows = [line for line in tail if line.startswith("| 2026-")]
     assert len(rows) == 3 and all(line.startswith("|") for line in tail[tail.index(next(l for l in tail if l.startswith("| date"))):])
     assert [row.split(" | ")[1] for row in rows] == [RUN, FIT_RUN, READ_RUN]
     for row in rows:
-        assert "DRAFT, root countersignature pending" in row and "ROOT COUNTERSIGNED" not in row
+        # Registered as DRAFT rows; root countersigned them 2026-10-10 (12:55Z run/FIT rows, 18:40Z analysis row)
+        # before the flight. The countersigned wording replaced the draft wording in the same row text.
+        assert "REGISTERED BEFORE CONTACT (root countersigned 2026-10-10T" in row and "DRAFT, root countersignature pending" not in row
         assert row.split(" | ")[8] == "no"  # consumed
     assert rows[0].split(" | ")[2] == "bounded-discovery-probe" and rows[2].split(" | ")[2] == "model-free-check"
     assert rows[0].split(" | ")[9] == "6020" and rows[1].split(" | ")[9] == "24080"
