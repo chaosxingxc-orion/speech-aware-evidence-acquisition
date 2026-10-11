@@ -6,7 +6,7 @@
         "worker",
         "campaign"
       ],
-      "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-generation-v1",
+      "attempt_id": "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1",
       "baseline_fragment": "slurp-direct-only-fold-b-instruct-baseline-v1",
       "cell_id": "slurp-direct-only-fold-b-instruct-v1",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
@@ -49,7 +49,7 @@
   },
   "execution_profile": "bounded-discovery-probe",
   "experiment_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1",
-  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, prompt, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new live_phase_fit run and attempt id); a second failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning marker is a failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read.",
+  "failure_policy": "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, prompt, geometry or cap change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new live_phase_fit run and attempt id); a second failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning marker is a failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read. This cell has used its single root-diagnosed recovery re-registration (rec1, the full-TRAIN knowledge view (609854e4...; 50,628 source rows, every Fold B id inside it) was pinned on a TRAIN-fold cell; corrected to the fold-excluded view of the same family (9c64e8ec...; 37,407 source rows, 0 Fold A and 0 Fold B ids)): a second failure closes the cell and the fix is proven on a four-row dry run.",
   "family_budget": {
     "asr_calls": 0,
     "ceilings_are_not_targets": true,
@@ -64,7 +64,7 @@
   "fragment_kind": "saea-slurp-direct-only-fold-b-thinking-vs-instruct-v1",
   "generation_budget": {
     "cap": 1080,
-    "definition": "The direct-only phase program (configs/policy/phase-direct-only-v1.json: one phase, max_contacts 1, always-run-full-program) makes exactly ONE contact per row, so 1,080 x 1 = 1,080 is the program's exact maximum and its expectation at once. The live phase fit makes 1 + (2 + 1) x 1080 = 3,241 tokenizer endpoint calls under its own run id SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1. The GPU-hour ceiling is a BOUND, never a target. Budgets are run-cumulative across every attempt of a run id.",
+    "definition": "The direct-only phase program (configs/policy/phase-direct-only-v1.json: one phase, max_contacts 1, always-run-full-program) makes exactly ONE contact per row, so 1,080 x 1 = 1,080 is the program's exact maximum and its expectation at once. The live phase fit makes 1 + (2 + 1) x 1080 = 3,241 tokenizer endpoint calls under its own run id SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1. The GPU-hour ceiling is a BOUND, never a target. Budgets are run-cumulative across every attempt of a run id. Recovery rec1: the failed predecessor attempt attempt-slurp-direct-only-fold-b-instruct-generation-v1 spent 0 contacts, so the run-cumulative budget equals the original plan.",
     "target": 1080
   },
   "population": {

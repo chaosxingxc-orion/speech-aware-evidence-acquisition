@@ -4,7 +4,7 @@
 Root's act, never an agent's. Copies ``docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/root-admission-draft-v1.json`` to
 ``$SPEECHRL_DATA_DIR/coordination/slurp-direct-only-fold-b-thinking-vs-instruct-v1/root-admission-v1.json``, sets ``status`` to ``decided`` and
 ``recorded_at_utc`` to now, re-hashes every antecedent ``{"path": ..., "sha256": ...}`` that names a repository file, and refuses to overwrite an
-existing receipt. The EIGHT ``eligible_run_ids`` (four generation run ids and their four FIT identities) and the budget caps are the draft's and are
+existing receipt. The ``eligible_run_ids`` (four generation run ids, their four first-registration FIT identities and the rec1 FIT run id of each recovered cell) and the budget caps are the draft's and are
 not edited here. The zero packet-promotion sentinel of the Thinking baselines is the flip's concern (``direct_fb_flip.sh``), not the receipt's.
 
     python scripts/flights/direct/direct_fb_mint_receipt.py [--coordinator "Fable5.1"] [--dry]
@@ -33,10 +33,7 @@ ROOT = os.environ.get(
 
 
 def expected_eligible() -> list[str]:
-    out: list[str] = []
-    for key in fam.ALL_KEYS:
-        out += [fam.CELLS[key]["run"], fam.CELLS[key]["fit_run"]]
-    return out
+    return fam.eligible_run_ids()
 
 
 def rehash(node, root: str) -> int:
