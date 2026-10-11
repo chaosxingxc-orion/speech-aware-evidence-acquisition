@@ -7,7 +7,7 @@ MODEL-FREE. Refuses before opening anything unless the package's READ row is ROO
 (``module_equivalence_proof.py --at a2t0 | e210``) is re-run on the tree. It reports ids and hashes only -- never an
 utterance, transcript, gold label or model output -- and states no verdict: the all-off arm claims no benefit.
 
-    python -B scripts/flights/module/module_alloff_read.py --carrier a2t|e21
+    python -B scripts/flights/module/module_alloff_read.py --carrier a2t|e21|e22
 """
 
 from __future__ import annotations
@@ -27,7 +27,11 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 import module_equivalence_proof as proof  # noqa: E402
 
 DATA = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
-STEMS = {"a2t": ("a2t-native-stage3-module-alloff-v1", "a2t0"), "e21": ("earnings21-native-stage3-module-alloff-v1", "e210")}
+STEMS = {"a2t": ("a2t-native-stage3-module-alloff-v1", "a2t0"), "e21": ("earnings21-native-stage3-module-alloff-v1", "e210"),
+         "e22": ("earnings22-native-stage3-module-alloff-v1", "e220")}
+#: Package directory per carrier (the Earnings-22 package carries its own date and stem).
+PACKAGES = {"a2t": "2026-09-30-a2t-native-stage3-module-alloff-v1", "e21": "2026-09-30-earnings21-native-stage3-module-alloff-v1",
+            "e22": "2026-10-11-earnings22-module-alloff-v1"}
 
 
 def main() -> int:
@@ -35,7 +39,7 @@ def main() -> int:
     parser.add_argument("--carrier", choices=sorted(STEMS), required=True)
     args = parser.parse_args()
     stem, at = STEMS[args.carrier]
-    package = REPO_ROOT / "docs" / "readiness" / f"2026-09-30-{stem}"
+    package = REPO_ROOT / "docs" / "readiness" / PACKAGES[args.carrier]
     facts = json.loads(io.open(package / "registered-facts-v1.json", encoding="utf-8").read())
     read_run = facts["read_run_id"]
     rows = [line for line in io.open(REPO_ROOT / "docs" / "exposure-ledger.md", encoding="utf-8")

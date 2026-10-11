@@ -109,7 +109,7 @@ CARRIERS = {
         "budget": {"arm": {"calls": 451, "audio": 40056, "gpu": 1.5, "scoring": 1}, "smoke": {"calls": 4, "audio": 360, "gpu": 0.3, "scoring": 0}},
         "lock_fragment": "e22-native-window-direct-base-v1",
         "baselines": {"arm": "e22-native-window-direct-dev10-v1", "smoke": "e22-native-window-direct-four-row-v1"},
-        "datasets": {"arm": "earnings22-dev-subset10", "smoke": "e22-native-window-four-row-v1"},
+        "datasets": {"arm": "earnings22-native-window-dev10-v1", "smoke": "e22-native-window-four-row-v1"},
         "model_fragment": "q4km-e22-native-window-packets-cddb000c-np4-max1024-v1",
         "inventory_receipt": "docs/readiness/2026-10-11-earnings22-module-alloff-v1/window-inventory-receipt-v1.json",
         "no_lock": "Earnings-22 has no locked system and no direct parent cell: the shared direct layer e22-native-window-direct-base-v1 (the phase-direct-only-v1 program and its one phase_material.direct entry, the generic transcription instruction bytes shared with E21) is the whole comparator, so the module's all-off arm is that base fragment plus the E21-shaped native-window geometry and pins on the Earnings-22 dev split. No knowledge supply, no ConEC layer, no entity scorer, no analytical tool.",
@@ -326,6 +326,15 @@ def derive_e22(spec: dict, ids: dict, block: dict, measurement: dict, package: s
                          "contiguous from w0001. No new sample authority: it names no id the dev split does not already contain."),
     }
     written["configs/dataset/e22-native-window-four-row-v1.json"] = wjson("configs/dataset/e22-native-window-four-row-v1.json", smoke_dataset)
+    # earnings22-dev-subset10 carries no split_id, which the flight runtime requires of every cell's dataset fragment;
+    # this is its native-window twin (the shape of earnings21-native-window-full44-v1, without a names supplement).
+    arm_dataset = {
+        "carrier_lock_key": spec["carrier_lock_key"], "split_id": "dev", "split_name": "dev",
+        "dataset_note": ("The whole Earnings-22 dev split (the 10 calls of earnings22-dev-subset10) with an explicit shared phase-runtime split ID. "
+                         "Both direct and any later agent arm use this identical dataset declaration. No names supplement exists or is needed: "
+                         "Earnings-22 has no ConEC layer."),
+    }
+    written["configs/dataset/earnings22-native-window-dev10-v1.json"] = wjson("configs/dataset/earnings22-native-window-dev10-v1.json", arm_dataset)
     for key in ("arm", "smoke"):
         units = pins[key]["units"]["unit_count"]
         document = {
