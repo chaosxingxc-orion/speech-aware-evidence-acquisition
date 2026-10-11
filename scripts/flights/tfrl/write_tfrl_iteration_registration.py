@@ -312,6 +312,35 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
     return {"ids": ids, "shas": shas, "blocks": blocks, "arms": arms, "blockers": blockers, "package": pkg}
 
 
+def proposers_recipe(iteration: int, ids: Mapping[str, Mapping], at: str) -> dict:
+    """The proposers package analysis recipe (the offline validation / archive step is the READ)."""
+
+    read_id = proposers_read_run_id(iteration)
+    return {
+        "authority": f"{DESIGN} sections 3 and 7; {tf.PROTOCOL_RELPATH}; {INSTRUMENT_NOTE}",
+        "cell_kind": "TEXT-ONLY PROPOSER / REFLECTOR -- form proof; the offline step validates and archives the sealed proposals",
+        "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+        "contacts": {"asr": 0, "encoder": 0, "model": 0, "scorer": 0, "server": 0, "tokenizer": 0},
+        "execution_profile": "model-free-check (the offline step); bounded-discovery-probe (the two text-only flights)",
+        "measurement_design": "form-proof",
+        "read_run_id": read_id,
+        "recipe_id": f"slurp-tfrl-proposers-i{iteration}-validation-analysis-v1",
+        "registered_at_utc": at,
+        "run_ids": {"typed": ids["typed"]["run_id"], "typed_fit": ids["typed"]["fit_run_id"], "ace": ids["ace"]["run_id"],
+                    "ace_fit": ids["ace"]["fit_run_id"], "read": read_id},
+        "schema": "saea-stage3-rollout-analysis-recipe-v1",
+        "stages": {
+            "1_validate_and_curate": (f"python -B scripts/flights/tfrl/tfrl_loop_driver.py --execute open --iter {iteration} --stage cell "
+                                      "(validates the sealed typed candidates through speech_aware_evidence_acquisition.rails.tfrl_typed_proposer "
+                                      "and curates the ACE deltas through speech_aware_evidence_acquisition.rails.tfrl_ace_material; "
+                                      "reads only sealed receipts, no row gold and no utterance text)"),
+            "2_archive": ("the same step writes the candidate states through speech_aware_evidence_acquisition.analysis.sealed_credit.archive "
+                          "(write-once receipts under the loop package); no score is computed and nothing is selected here"),
+        },
+        "what_is_not_here": "No score, no paired read, no margins block and no admission: the column cells and the loop's close step read effects.",
+    }
+
+
 def proposers_package(root: Path, iteration: int, commit: str, at: str) -> dict:
     pkgs = package_names(iteration)
     pkg = pkgs["proposers"]
@@ -339,30 +368,7 @@ def proposers_package(root: Path, iteration: int, commit: str, at: str) -> dict:
     shas["README.md"] = wr(root, f"{pkg}/README.md", (
         f"# Loop iteration {iteration}: typed proposer and ACE reflector cells (DRAFT / HELD)\n\nStatus: DRAFT / HELD. No ledger row, "
         "no countersignature, no flip. Text-only contacts (construction-proposer-text), form proof, claims_benefit false.\n"))
-    read_id = proposers_read_run_id(iteration)
-    recipe = {
-        "authority": f"{DESIGN} sections 3 and 7; {tf.PROTOCOL_RELPATH}; {INSTRUMENT_NOTE}",
-        "cell_kind": "TEXT-ONLY PROPOSER / REFLECTOR -- form proof; the offline step validates and archives the sealed proposals",
-        "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
-        "contacts": {"asr": 0, "encoder": 0, "model": 0, "scorer": 0, "server": 0, "tokenizer": 0},
-        "execution_profile": "model-free-check (the offline step); bounded-discovery-probe (the two text-only flights)",
-        "measurement_design": "form-proof",
-        "read_run_id": read_id,
-        "recipe_id": f"slurp-tfrl-proposers-i{iteration}-validation-analysis-v1",
-        "registered_at_utc": at,
-        "run_ids": {"typed": ids["typed"]["run_id"], "typed_fit": ids["typed"]["fit_run_id"], "ace": ids["ace"]["run_id"],
-                    "ace_fit": ids["ace"]["fit_run_id"], "read": read_id},
-        "schema": "saea-stage3-rollout-analysis-recipe-v1",
-        "stages": {
-            "1_validate_and_curate": (f"python -B scripts/flights/tfrl/tfrl_loop_driver.py --execute open --iter {iteration} --stage cell "
-                                      "(validates the sealed typed candidates through speech_aware_evidence_acquisition.rails.tfrl_typed_proposer "
-                                      "and curates the ACE deltas through speech_aware_evidence_acquisition.rails.tfrl_ace_material; "
-                                      "reads only sealed receipts, no row gold and no utterance text)"),
-            "2_archive": ("the same step writes the candidate states through speech_aware_evidence_acquisition.analysis.sealed_credit.archive "
-                          "(write-once receipts under the loop package); no score is computed and nothing is selected here"),
-        },
-        "what_is_not_here": "No score, no paired read, no margins block and no admission: the column cells and the loop's close step read effects.",
-    }
+    recipe = proposers_recipe(iteration, ids, at)
     shas["analysis-recipe-v1.json"] = wjson(root, f"{pkg}/analysis-recipe-v1.json", recipe)
     draft = {
         "_draft_note": "A DRAFT for the coordinator to mint with scripts/flights/tfrl/tfrl_mint_receipt.py --kind proposers. Authorises nothing "
