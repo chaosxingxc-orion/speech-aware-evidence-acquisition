@@ -8,7 +8,7 @@ analysis outputs under ``analysis/SAEA-SLURP-TFRL-LOOP-V1/`` (the tables, the pr
 
 THE FLOW (a GPU step sits between ``open --stage propose`` and ``open --stage cell``):
 
-    open  --iter t --stage propose   tables from the previous sealed column (VER-1a lock column for t = 1), the proposer / reflector
+    open  --iter t --stage propose   tables from the previous sealed column (the R6-P1 delivering lock column for t = 1), the proposer / reflector
                                      artefacts, the two text-only cells (HELD, DRAFT ledger rows)         -> countersign checklist
     [coordinator: countersign, mint, flip, queue; GPU flies the proposer + reflector cells]
     open  --iter t --stage cell      validate the sealed candidates, curate the ACE playbook i(t), derive the column cell and its
@@ -50,8 +50,10 @@ if str(REPO_ROOT / "src") not in sys.path:
 
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
 DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-VER1A_RUN_ID = "SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1"
-VER1A_ATTEMPT = "attempt-slurp-native-stage3-ver1a-samples-fold-b-generation-v1"
+#: The iteration-1 tables source: the sealed NX R6-P1 Fold B flight, delivering arm ``lock`` -- it has per-row official scores on disk
+#: (the VER-1a S0 sample pool, ``SAEA-SLURP-STAGE3-VER1A-SAMPLES-FOLD-B-V1``, does not). ``--source-run-id`` / ``--source-attempt`` override.
+R6P1_RUN_ID = "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1"
+R6P1_ATTEMPT = "attempt-slurp-native-stage3-nx-r6-perception-fold-b-generation-v1"
 TABLES_SCRIPT = "scripts/analysis/tfrl_contrast_tables.py"
 DELIVERY_FIT_SCRIPT = "scripts/analysis/tfrl_delivery_fit.py"
 ROLLOUT_SCORE_SCRIPT = "scripts/analysis/stage3_rollout_score.py"
@@ -181,9 +183,9 @@ def source_column(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     """The sealed, officially scored column the tables of iteration t are read from."""
 
     if t == 1:
-        return {"run_id": a.source_run_id or VER1A_RUN_ID, "attempt": a.source_attempt or VER1A_ATTEMPT,
+        return {"run_id": a.source_run_id or R6P1_RUN_ID, "attempt": a.source_attempt or R6P1_ATTEMPT,
                 "scorer": a.source_scorer or tf.SCORER, "arm": "lock", "rows": tf.ROWS, "split": "train",
-                "note": "the sealed VER-1a sample pool, sample 0 greedy = lock v2.2's own delivery"}
+                "note": "the sealed NX R6-P1 Fold B flight, delivering arm lock (lock v2.2's delivery; per-row official scores on disk)"}
     close = need_receipt(ctx, t - 1, "close")
     return {"run_id": close["column"]["run_id"], "attempt": close["column"]["attempt"], "scorer": tf.SCORER, "arm": "lock",
             "rows": tf.ROWS, "split": "train",

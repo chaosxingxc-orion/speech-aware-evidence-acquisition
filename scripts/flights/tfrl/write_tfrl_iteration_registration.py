@@ -195,10 +195,9 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
     blocks = measurement_blocks(ids, iteration, predicted_effect_pp, arms, mean_audio)
     blockers = []
     if not loader.get("ok", False):
-        blockers.append({"id": "ace-playbook-store-not-in-lock-layer", "detail": loader.get("refusal"),
-                         "remedy": "the lock layer (or a v2.2 successor in rails/adapters/slurp_module_hooks.py) must declare the "
-                                   "ace-playbook store with the empty release i0 before the loader's verify_declared_module accepts "
-                                   "the ace column; this package derives through a hooks wrapper that adds the store"})
+        blockers.append({"id": "loader-refuses-the-derived-cell", "detail": loader.get("refusal"),
+                         "remedy": "the derived cell does not verify under the real carrier hooks (lock v2.3); fix the cell or the lock "
+                                   "before any countersign"})
     if any(p["sha256"] == dv.ZERO for p in [dv.ace_alternate(spec["ace"])["release"], dv.ace_alternate(spec["ace"])["snapshot"]]):
         blockers.append({"id": "ace-release-pins-pending",
                          "detail": "the ace-playbook i0/i<t> release and snapshot pins are zeros until the releases are prepared "
@@ -208,7 +207,7 @@ def column_package(root: Path, iteration: int, spec: Mapping[str, Any], commit: 
                                            "protocol_hash", "rows", "run_id", "split_identity_hash")} for k, v in ids.items()},
         "decision_rule_fixed_here": (f"The selection rule, parent choice, edit budget, stop rule and curve are fixed in {tf.PROTOCOL_RELPATH} "
                                      "(sha256 pinned by the driver); this cell reads its own flight under that rule."),
-        "arms": arms, "one_factor": "the supply arms of the iteration over the unchanged lock v2.2 base on TRAIN Fold B",
+        "arms": arms, "one_factor": "the supply arms of the iteration over the unchanged lock v2.3 base (v2.2 plus the empty ace-playbook-i0 declaration) on TRAIN Fold B",
         "prohibitions": PROHIBITIONS, "protocol_id": f"slurp-tfrl-loop-i{iteration}-protocol-v1", "registered_at_utc": at,
         "schema": "saea-registered-protocol-v1", "status": STATUS, "study_commit_at_registration": commit,
         "the_question": (f"Which supply arm of iteration {iteration} ({', '.join(arms)}) raises official pooled SLU-F1 over the delivering "
@@ -389,7 +388,7 @@ def draft_text_only_rows(root: Path, iteration: int, ids: Mapping[str, Mapping],
 def draft_column_rows(ids: Mapping[str, Mapping], commit: str, at: str, arms: list[str], pkg: str, shas: Mapping[str, str]) -> str:
     cols = ["date", "run/experiment id", "execution profile", "scope", "model/tool", "speech carrier + split", "split role",
             "split identity hash", "consumed", "calls", "speech audio seconds", "gpu hours", "inherited exposure", "artifacts", "notes"]
-    scope = (f"DRAFT -- REGISTERED. Frozen core, np4 session; the review-off COMP-1b module graph at lock v2.2 with the Solver supply "
+    scope = (f"DRAFT -- REGISTERED. Frozen core, np4 session; the review-off COMP-1b module graph at lock v2.3 (v2.2 plus the empty ace-playbook-i0 declaration) with the Solver supply "
              f"arms {', '.join(arms)} (program {ids['arm']['program']}); no tool authority on any role")
     inherited = "TRAIN Fold B discovery rows already exposed by prior SLURP cells; this cell opens no split. Prior exposure is inherited in full."
     lines = [f"## Loop iteration column cell (DRAFT, coordinator countersignature pending) -- {pkg}", "",

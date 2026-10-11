@@ -4,7 +4,7 @@
 THREE FAMILIES OF CELL, all HELD, all config only (no contact, no ledger row, no receipt, no flip):
 
 1. the COLUMN cell ``slurp-native-stage3-tfrl-loop-i<t>-fold-b-v1`` and its four-row smoke: the review-off COMP-1b module graph at
-   lock v2.2 on TRAIN Fold B (the committed NX R6-P1 cell is the parent, exactly as VER-1a derives from it), with the Perception
+   lock v2.3 on TRAIN Fold B (the committed NX R6-P1 cell is the parent, exactly as VER-1a derives from it), with the Perception
    template columns removed and ONE Solver ``supply_variants`` block compiled by ``rails.consumption_module`` from ``kind: supply``
    columns (E-S1): ``par`` (the accumulated typed parent, iteration >= 2), ``typ`` (the typed child, when a valid candidate cleared
    the predicted bar), ``ace`` (``release_swap`` of the ``ace-playbook`` store to release ``i<t>``), the in-chain twin ``aa`` and the
@@ -13,11 +13,10 @@ THREE FAMILIES OF CELL, all HELD, all config only (no contact, no ledger row, no
    (``construction-proposer-text`` arm, programs ``phase-tfrl-typed-proposer-v1`` / ``phase-tfrl-ace-reflector-v1``, fragment blocks
    ``tfrl_proposer`` / ``tfrl_ace_reflector``), carried by construction-role carrier rosters drawn by a seeded rule from Fold B.
 
-INTERFACE ADAPTATION (reported). Lock v2.2 declares no ``ace-playbook`` store, and ``rails.consumption_module`` takes a
-``release_swap`` store from the lock layer only. This module compiles through a hooks wrapper that adds the store (empty release
-i0 as the primary, the iteration's release as the declared alternate). ``verify_declared_module`` under the REAL hooks will refuse
-the resulting cell until the lock layer (or a v2.2 successor) declares the store: :func:`loader_verification` reports that verdict
-in every derive report and the registration writer records it as a blocker.
+LOCK. The cells compose on lock v2.3 (``rails/adapters/slurp_module_lock_v2_3.py``): v2.2 plus the ``ace-playbook`` store declared at
+the EMPTY release i0 (owner decisions 263 A / 266-A), because ``rails.consumption_module`` takes a ``release_swap`` store from the lock
+layer only. The compile and the loader's ``verify_declared_module`` both run under the REAL carrier hooks; no wrapper remains.
+:func:`loader_verification` reports the loader's verdict in every derive report.
 
     python -B scripts/flights/tfrl/derive_tfrl_iteration_cells.py --iteration 1 [--typed-spec FILE] [--ace-pins FILE] [--dry-run]
 """
@@ -26,7 +25,6 @@ from __future__ import annotations
 
 import argparse
 import copy
-import dataclasses
 import hashlib
 import io
 import json
@@ -51,12 +49,6 @@ from speech_aware_evidence_acquisition.rails import consumption_module as cm  # 
 from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import carrier_module_hooks  # noqa: E402
 
 ZERO = "0" * 64
-ACE_STORE_CONTEXT_SUPPLY = {
-    "solver": {
-        "candidate_state_phase": "perception", "cap": tf.ALLOWANCE_ITEMS, "node_target": "solver",
-        "provider": "stage3-delta-candidate-bound-v1", "rank_by": "prior_score",
-    }
-}
 
 
 def rd(path: str, root: Path | None = None) -> str:
@@ -93,36 +85,6 @@ def ace_alternate(ace: Mapping[str, Any]) -> dict:
             "snapshot": pin(ace.get("snapshot_relpath") or f"{base}/snapshot.json", ace.get("snapshot_sha256"))}
 
 
-def ace_base_store(ace: Mapping[str, Any]) -> dict:
-    """The primary ``ace-playbook`` store every non-ace arm sees: the EMPTY release i0 routed ``context_supply`` to the Solver."""
-
-    base = "knowledge/slurp/semantic/ace-playbook-i0"
-    i0 = ace.get("base") or {}
-    return {
-        "context_supply": copy.deepcopy(ACE_STORE_CONTEXT_SUPPLY),
-        "release": pin(i0.get("release_relpath") or f"{base}/release.json", i0.get("release_sha256")),
-        "snapshot": pin(i0.get("snapshot_relpath") or f"{base}/snapshot.json", i0.get("snapshot_sha256")),
-        "store_role": "stage3-deltas",
-    }
-
-
-def hooks_with_ace_store(ace: Mapping[str, Any], repo_root: Path = REPO_ROOT) -> cm.CarrierHooks:
-    """SLURP's hooks, every lock layer extended by the ``ace-playbook`` store (the adaptation named in the module docstring)."""
-
-    base = carrier_module_hooks(repo_root=repo_root)
-    store = ace_base_store(ace)
-
-    def augment(factory):
-        def build():
-            layer = copy.deepcopy(dict(factory()))
-            layer["knowledge_stores"] = {**layer["knowledge_stores"], tf.ACE_STORE_ID: copy.deepcopy(store)}
-            return layer
-        return build
-
-    versions = {name: augment(factory) for name, factory in (base.lock_versions or {}).items()}
-    return dataclasses.replace(base, lock_layer=augment(base.lock_layer), lock_versions=versions)
-
-
 def column_spec(column_id: str, spec: Mapping[str, Any]) -> dict:
     """One ``kind: supply`` column from an arm spec ``{overrides?, release_swap?}`` (at least one is required)."""
 
@@ -145,8 +107,9 @@ def module_block(parent: Mapping[str, Any], spec: Mapping[str, Any], iteration: 
     """The parent's COMP-1b review-off module block with the Perception template columns replaced by the supply columns."""
 
     block = copy.deepcopy(dict(parent["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY]))
-    if (block.get("lock"), block.get("review_loop")) != (tf.LOCK, "off"):
-        raise SystemExit(f"the parent's module block is not review-off lock {tf.LOCK}")
+    if (block.get("lock"), block.get("review_loop")) != (tf.PARENT_LOCK, "off"):
+        raise SystemExit(f"the parent's module block is not review-off lock {tf.PARENT_LOCK}")
+    block["lock"] = tf.LOCK                                   # v2.3: v2.2 + the declared ace-playbook store
     block.pop("columns", None)
     block.pop("template_frame", None)
     columns = []
@@ -205,7 +168,7 @@ ALLOWED_DIFFS = (
 WHAT_THIS_IS = (
     "Autonomous typed loop with the ACE comparator (owner decision 263-A, design docs/superpowers/specs/"
     "2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md section 5): one same-flight SUPPLY-VARIANT cell on lock "
-    "v2.2 and TRAIN Fold B. THE BASE is the NX R6-P1 / VER-1a base -- COMP-1b (agree-vote-seed, centroid-boundary-key) as a "
+    "v2.3 (= v2.2 plus the declared, empty ace-playbook-i0 store) and TRAIN Fold B. THE BASE is the NX R6-P1 / VER-1a base -- COMP-1b (agree-vote-seed, centroid-boundary-key) as a "
     "consumption-module block, Reviewer loop OFF. THE COLUMN: at the one Solver visit the Solver is contacted K times over the SAME "
     "state, once per supply arm -- the typed arms (par = the accumulated typed parent, typ = the typed child, each a knob re-cap "
     "and/or one release swap), ace (the ACE playbook release swapped into the ace-playbook store), the in-chain twin aa "
@@ -247,8 +210,7 @@ def derive_iteration_baseline(iteration: int, kind: str, spec: Mapping[str, Any]
     raw = rd(f"configs/baseline/{parent_name}.json", repo_root)
     parent = json.loads(raw)
     block = module_block(parent, spec, iteration)
-    hooks = hooks_with_ace_store(spec["ace"], repo_root)
-    composed = cm.compile_module(block, hooks, repo_root=repo_root)
+    composed = cm.compile_module(block, carrier_module_hooks(repo_root=repo_root), repo_root=repo_root)
     arms = iteration_arms(spec, iteration)
     contacts = tf.ceiling(iteration, typed_present=bool(spec.get("typed")), parent_present=bool(spec.get("parent")))
     expected_program = f"phase-native-module-v1-c{contacts}"
