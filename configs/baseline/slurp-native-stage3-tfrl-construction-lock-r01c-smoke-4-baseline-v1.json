@@ -7,10 +7,10 @@
       "phase_supply": {
         "perception": {
           "agreement_source": {
-            "embedded_signal": "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it summarises is the row's own sealed R01C speech vector against the frozen pool -- and gold-free: the key is a released store property, never a label, transcript or future turn. OWED: built model-free by scripts/build_slurp_intent_exemplar_agreement.py with zero model, server, encoder, embedder, scorer, network and GPU contacts; the pin is zero until it is built.",
+            "embedded_signal": "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it summarises is the row's own sealed R01C speech vector against the frozen minus-r01 pool -- and gold-free: the key is a released store property, never a label, transcript or future turn. Built model-free by scripts/build_slurp_intent_exemplar_agreement.py with zero model, server, encoder, embedder, scorer, network and GPU contacts.",
             "kind": "sealed-agreement",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1/agreement.jsonl",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sha256": "87e253f66f3b5058e7c778034c343c4e9f0b43586d623d8e1fe6508f9bf3abb3",
             "tool_contact_ledger_row": "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1"
           },
           "dimensions": [
@@ -121,12 +121,12 @@
         }
       },
       "release": {
-        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/release.json",
-        "sha256": "171aa4a82c2b15fff2c72e907ea80298be8d72309cca0d7367eb50debb042129"
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/release.json",
+        "sha256": "83620eb0b02f12424a00cd5572904f4df48a49c329b1b0e1a9321d4b9ec14fd0"
       },
       "snapshot": {
-        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars/snapshot.json",
-        "sha256": "4c498dc0282055b9fe036ed7e950af519bd48b5f26e76876d0250727196a72e9"
+        "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+        "sha256": "6eaa03aea96a1928dd1ac29ecc71c3955c136498c9f8114266eaa830d1207c63"
       },
       "store_role": "train-exemplars"
     }
@@ -163,10 +163,10 @@
           "component_id": "agree-vote-seed",
           "params": {
             "agreement_source": {
-              "embedded_signal": "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it summarises is the row's own sealed R01C speech vector against the frozen pool -- and gold-free: the key is a released store property, never a label, transcript or future turn. OWED: built model-free by scripts/build_slurp_intent_exemplar_agreement.py with zero model, server, encoder, embedder, scorer, network and GPU contacts; the pin is zero until it is built.",
+              "embedded_signal": "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it summarises is the row's own sealed R01C speech vector against the frozen minus-r01 pool -- and gold-free: the key is a released store property, never a label, transcript or future turn. Built model-free by scripts/build_slurp_intent_exemplar_agreement.py with zero model, server, encoder, embedder, scorer, network and GPU contacts.",
               "kind": "sealed-agreement",
               "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1/agreement.jsonl",
-              "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+              "sha256": "87e253f66f3b5058e7c778034c343c4e9f0b43586d623d8e1fe6508f9bf3abb3",
               "tool_contact_ledger_row": "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1"
             },
             "k": 60,
@@ -227,6 +227,7 @@
           "state": "off"
         }
       ],
+      "construction_roster": "r01c",
       "lock": "v2.2",
       "module_id": "saea-evidence-consumption-module-v1",
       "profile": "slurp",
@@ -337,14 +338,14 @@
       "sha256": "3c152fc086ed1d1858f5b3021a336570d1b68c87f9c3a5abbe16209c009e2653"
     },
     {
-      "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json",
-      "root": "repository",
-      "sha256": "48d0f34cf536ebf9806d55b5dcced1b607080bec3c68ca7dea27cdb01478cc72"
-    },
-    {
       "relpath": "prepared/SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1/receipt.json",
       "root": "data",
       "sha256": "d5fa43dfb9cfe71402e256c015e5f0a1ce66e97b3ec5355a664eb9f69f8cdf0a"
+    },
+    {
+      "relpath": "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-minus-r01.json",
+      "root": "repository",
+      "sha256": "e4d7bb61a65dd17d42c3d601c4b3bd33effe48920dd59cb2e9232e739221d1c4"
     },
     {
       "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
@@ -370,6 +371,11 @@
       "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01.json",
       "root": "repository",
       "sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0"
+    },
+    {
+      "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1/receipt.json",
+      "root": "data",
+      "sha256": "ca6a516a2c2fd883b5b98a81bc02e63e88cef27796056710badd3f40e3bf7818"
     }
   ],
   "scorers": [
@@ -385,6 +391,6 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
-  "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1 on the construction roster R01C: the top-20 TRAIN construction-pool exemplars recalled by cosine against this row's OWN sealed R01C speech vector in the content retrieval dimension (the lock's pool release; see the package BLOCKER knowledge-source-guard: the lock's pool contains the R01C rows, which the runner refuses until a pool excluding R01 is pinned).",
+  "what_the_train_exemplars_store_is": "SLURP v2 base program module M1 / cell B1 on the construction roster R01C: the top-20 TRAIN construction-pool exemplars recalled by cosine against this row's OWN sealed R01C speech vector in the content retrieval dimension. The store is the size-pool-annotated-exemplars-MINUS-R01 release (34,474 source ids, 0 shared with R01C), pinned by the construction variant of the lock (consumption_module.construction_roster r01c): the lock's own pool contains the R01C rows, which the runner's knowledge-source guard refuses (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-minus-r01.json).",
   "what_this_is": "Four-row form smoke of the construction-source lock column. Construction-source lock column of the autonomous typed loop (coordinator resolution of 2026-10-11 to owner decision 263-A; design docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md sections 1.3, 3.1, 3.3). THE BASE is the NX R6-P1 / iteration-cell base -- COMP-1b (agree-vote-seed, centroid-boundary-key) as a consumption-module block on the lock, Reviewer loop OFF -- with NO columns and NO supply arms: the plain lock, Perception 1 + Solver 1 = 2 contacts per row, on the CONSTRUCTION roster SLURP-STAGE3-CONSTRUCTION-R01C (625 TRAIN rows outside Fold A and Fold B). It is the proposer / reflector MATERIAL SOURCE for iterations 1-3 of the typed loop: its official per-row scores feed the contrast tables; no benefit is claimed. Every policy block is the module compiler's output."
 }

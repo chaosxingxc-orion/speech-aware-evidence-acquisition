@@ -4,8 +4,8 @@
 # protocol hash propagates once), and only then is HEAD recorded as the column's flight commit. DRAFT / HELD: the coordinator runs this ONLY after
 #   1. countersigning the DRAFT rows (arm, arm FIT, smoke, smoke FIT, the READ row and the R01C agreement-table preparation row);
 #   2. minting the decision receipt with scripts/flights/tfrl/tfrl_mint_receipt.py --kind construction;
-#   3. building the R01C agreement table (scripts/build_slurp_intent_exemplar_agreement.py) against the pool the knowledge-source-guard blocker settles
-#      on, and re-registering with its hash; resolving that blocker (the runner refuses R01C rows inside the lock's exemplar pool);
+#   3. the R01C agreement table is BUILT (prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1, model-free, against the minus-r01 pool pinned by the
+#      construction variant consumption_module.construction_roster r01c; the runner refuses R01C rows inside the lock's own exemplar pool);
 #   4. no concurrent merge (a flip loop commits a half-resolved merge); no other experiment in flight (one experiment in flight).
 # After the flip, refresh the registered plan pins (scripts/flights/refresh_registered_plan_pins.py --package <dir> copies the minted supply pin
 # into the plans) and flip again. --allow-output-change must never be passed.

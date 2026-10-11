@@ -24,9 +24,9 @@
           },
           {
             "kind": "preparation",
-            "reason": "OWED. The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and THIS roster's own pinned speech query vectors (R01C) -- zero model, server, encoder, embedder, scorer, network and GPU contacts. The centroid key file is pinned where the loader verifies it (facet_source.sha256).",
+            "reason": "The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, BUILT model-free by scripts/build_slurp_intent_exemplar_agreement.py from the pinned minus-r01 exemplar snapshot, the pinned pool key vectors and THIS roster's own pinned speech query vectors (R01C) -- zero model, server, encoder, embedder, scorer, network and GPU contacts. The centroid key file is pinned where the loader verifies it (facet_source.sha256).",
             "relpath": "prepared/SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1/agreement.jsonl",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "87e253f66f3b5058e7c778034c343c4e9f0b43586d623d8e1fe6508f9bf3abb3"
           },
           {
             "kind": "preparation",

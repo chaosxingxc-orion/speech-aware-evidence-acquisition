@@ -15,9 +15,16 @@ roster's own and is OWED (a model-free preparation, hash zero until it is built)
 exactly as the loop's iteration cells derive from it.
 
 LOCK. The cell composes on ``tf.CONST_LOCK`` (v2.2), not v2.3: the v2.3 ``ace-playbook`` store declares ONE inert row whose source ids
-are 50 R01C rows, and ``rails/runner.py`` refuses a query sample that lies inside the composite knowledge source roster. Requests are
-byte-identical between v2.2 and v2.3 (proof P-ACE-0), so the column serves as the lock's material source. :func:`knowledge_source_guard`
-measures the remaining guard conflict (the lock's exemplar pool contains every R01C row) and the package records it as a BLOCKER.
+are 50 R01C rows, and ``rails/runner.py`` refuses a query sample that lies inside the composite knowledge source roster. The i0 anchor
+cannot be re-homed: the delta-store preparer takes carriers from the permitted roster, which must be a subset of the construction scope,
+and the committed ``stage3-deltas-v1r`` scope IS R01C -- every admissible carrier lies inside R01C. Requests are byte-identical between
+v2.2 and v2.3 (proof P-ACE-0), so the column on v2.2 serves as the lock's material source, and the construction variant refuses v2.3.
+
+CONSTRUCTION VARIANT. The lock's exemplar pool contains every R01C row, so the block names ``construction_roster: "r01c"``
+(``rails/adapters/slurp_module_construction.py``): the module compiles onto the lock layer with the ``train-exemplars`` release and
+snapshot moved to the minus-r01 twins (0 ids shared with R01C), and the loader accepts the variant only on R01C. The agreement table is
+the roster's own ``SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1``, built model-free against that minus-r01 pool. :func:`knowledge_source_guard`
+measures the runner's roster intersection for the cell's declared stores.
 
     python -B scripts/flights/tfrl/derive_tfrl_construction_cells.py [--dry-run]
 """
@@ -45,6 +52,7 @@ if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
 
 from speech_aware_evidence_acquisition.rails import consumption_module as cm  # noqa: E402
+from speech_aware_evidence_acquisition.rails.adapters import slurp_module_construction as variant  # noqa: E402
 from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import carrier_module_hooks  # noqa: E402
 
 ZERO = dv.ZERO
@@ -53,6 +61,9 @@ R01C_PIN_SOURCE = "slurp-native-stage3-var2-supply-variants-r01c-baseline-v1"
 AGREEMENT_ID = "SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-R01C-V1"
 AGREEMENT_RELPATH = f"prepared/{AGREEMENT_ID}/agreement.jsonl"
 AGREEMENT_RECEIPT_RELPATH = f"prepared/{AGREEMENT_ID}/receipt.json"
+AGREEMENT_RECEIPT_PIN = {"relpath": AGREEMENT_RECEIPT_RELPATH, "root": "data", "sha256": variant.R01C_AGREEMENT_RECEIPT_SHA256}
+#: The full-pool receipt the parent lists; the construction variant's pool is the minus-r01 twin, whose receipt VAR-2 R01C pins.
+FULL_POOL_RECEIPT = "docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars.json"
 SEGMENT_PATH = ("knowledge_stores", "intent-boundaries", "phase_supply", "perception", "query_source")
 CONTENT_PATH = ("knowledge_stores", "train-exemplars", "phase_supply", "solver", "query_source")
 #: Parent entries of ``preparation_source_receipts`` that name the Fold B roster (replaced by R01C's own).
@@ -65,6 +76,7 @@ ALLOWED_DIFFS = (
     "knowledge_stores.intent-boundaries.phase_supply.perception.agreement_source",
     "knowledge_stores.intent-boundaries.phase_supply.perception.query_source",
     "knowledge_stores.train-exemplars.phase_supply.solver.query_source",
+    "knowledge_stores.train-exemplars.release", "knowledge_stores.train-exemplars.snapshot",     # the construction variant's minus-r01 pool
 )
 
 WHAT_THIS_IS = (
@@ -78,9 +90,10 @@ WHAT_THIS_IS = (
 )
 WHAT_EXEMPLARS = (
     "SLURP v2 base program module M1 / cell B1 on the construction roster R01C: the top-20 TRAIN construction-pool exemplars recalled by "
-    "cosine against this row's OWN sealed R01C speech vector in the content retrieval dimension (the lock's pool release; see the package "
-    "BLOCKER knowledge-source-guard: the lock's pool contains the R01C rows, which the runner refuses until a pool excluding R01 is "
-    "pinned)."
+    "cosine against this row's OWN sealed R01C speech vector in the content retrieval dimension. The store is the size-pool-annotated-"
+    "exemplars-MINUS-R01 release (34,474 source ids, 0 shared with R01C), pinned by the construction variant of the lock "
+    "(consumption_module.construction_roster r01c): the lock's own pool contains the R01C rows, which the runner's knowledge-source guard "
+    "refuses (docs/receipts/knowledge/slurp-kb-size-pool-annotated-exemplars-minus-r01.json)."
 )
 HELD = (
     " HELD (DRAFT): the coordinator countersigns the DRAFT rows, mints the admission receipt and re-pins with "
@@ -106,7 +119,7 @@ def r01c_pins(repo_root: Path = REPO_ROOT) -> dict:
         return copy.deepcopy(node)
 
     receipts = [r for r in source["preparation_source_receipts"]
-                if "construction-r01" in r["relpath"].lower() or "CONSTRUCTION-R01" in r["relpath"]]
+                if "construction-r01" in r["relpath"].lower() or "CONSTRUCTION-R01" in r["relpath"] or "size-pool-annotated-exemplars-minus-r01" in r["relpath"]]
     return {
         "segments": at(SEGMENT_PATH), "content": at(CONTENT_PATH),
         "promotion": source["speech_packet_promotion_receipt"], "promotion_sha256": source["speech_packet_promotion_receipt_sha256"],
@@ -118,13 +131,13 @@ def agreement_source(parent_source: Mapping[str, Any]) -> dict:
     """The parent's ``agreement_source`` retargeted at the roster's own (OWED) table."""
 
     out = copy.deepcopy(dict(parent_source))
-    out["relpath"], out["sha256"], out["tool_contact_ledger_row"] = AGREEMENT_RELPATH, ZERO, AGREEMENT_ID
+    out["relpath"], out["sha256"], out["tool_contact_ledger_row"] = AGREEMENT_RELPATH, variant.R01C_AGREEMENT["sha256"], AGREEMENT_ID
     out["embedded_signal"] = (
         "derived: the share of this row's own top-20 sealed TRAIN-exemplar recall whose frozen build-time task_target equals each boundary "
         "intent, self-excluded by the row's utterance identity and normalised to 1. Speech-keyed by construction -- the recall it "
-        "summarises is the row's own sealed R01C speech vector against the frozen pool -- and gold-free: the key is a released store "
-        "property, never a label, transcript or future turn. OWED: built model-free by scripts/build_slurp_intent_exemplar_agreement.py "
-        "with zero model, server, encoder, embedder, scorer, network and GPU contacts; the pin is zero until it is built.")
+        "summarises is the row's own sealed R01C speech vector against the frozen minus-r01 pool -- and gold-free: the key is a released "
+        "store property, never a label, transcript or future turn. Built model-free by scripts/build_slurp_intent_exemplar_agreement.py "
+        "with zero model, server, encoder, embedder, scorer, network and GPU contacts.")
     return out
 
 
@@ -135,6 +148,7 @@ def module_block(parent: Mapping[str, Any]) -> dict:
     if (block.get("lock"), block.get("review_loop")) != (tf.PARENT_LOCK, "off"):
         raise SystemExit(f"the parent's module block is not review-off lock {tf.PARENT_LOCK}")
     block["lock"] = tf.CONST_LOCK
+    block["construction_roster"] = variant.CONSTRUCTION_R01C
     block["columns"] = []
     block.pop("template_frame", None)
     block.pop("supply_frame", None)
@@ -190,9 +204,10 @@ def derive_baseline(kind: str, *, repo_root: Path = REPO_ROOT, write: bool = Tru
     rows = tf.SMOKE_ROWS if kind == "smoke" else tf.CONST_ROWS
     document["native_contact_fit"] = {**parent["native_contact_fit"], "run_id": names["fit_run_id"], "attempt_id": names["fit_attempt_id"],
                                       "contact_cap": tf.fit_contact_cap(rows, tf.CONST_CONTACTS)}
-    keep = [r for r in parent["preparation_source_receipts"] if not any(m in r["relpath"] for m in FOLD_B_MARKERS)]
+    keep = [r for r in parent["preparation_source_receipts"]
+            if not any(m in r["relpath"] for m in FOLD_B_MARKERS) and r["relpath"] != FULL_POOL_RECEIPT]
     seen = {r["relpath"] for r in keep}
-    document["preparation_source_receipts"] = keep + [r for r in pins["receipts"] if r["relpath"] not in seen]
+    document["preparation_source_receipts"] = keep + [r for r in pins["receipts"] if r["relpath"] not in seen] + [AGREEMENT_RECEIPT_PIN]
     document["what_this_is"] = ("Four-row form smoke of the construction-source lock column. " if kind == "smoke" else "") + WHAT_THIS_IS
     document["what_the_train_exemplars_store_is"] = WHAT_EXEMPLARS
     episode = document["native_episode"]
@@ -238,11 +253,11 @@ def readiness_requirements(kind: str) -> list[dict]:
     names = tf.const_names(kind)
     decision = {"kind": "decision", "expected_decision_id": names["decision_id"], "relpath": names["decision_path"], "sha256": ZERO,
                 "reason": f"Decision {names['decision_id']} pinned by scripts/flights/repin_cell.py."}
-    agreement = {"kind": "preparation", "relpath": AGREEMENT_RELPATH, "sha256": ZERO,
-                 "reason": ("OWED. The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, built model-free by "
-                            "scripts/build_slurp_intent_exemplar_agreement.py from the pinned exemplar snapshot, the pinned pool key vectors and "
-                            "THIS roster's own pinned speech query vectors (R01C) -- zero model, server, encoder, embedder, scorer, network and GPU "
-                            "contacts. The centroid key file is pinned where the loader verifies it (facet_source.sha256).")}
+    agreement = {"kind": "preparation", "relpath": AGREEMENT_RELPATH, "sha256": variant.R01C_AGREEMENT["sha256"],
+                 "reason": ("The pre-computed exemplar-intent AGREEMENT table this cell's boundary channel ranks with, BUILT model-free by "
+                            "scripts/build_slurp_intent_exemplar_agreement.py from the pinned minus-r01 exemplar snapshot, the pinned pool key vectors "
+                            "and THIS roster's own pinned speech query vectors (R01C) -- zero model, server, encoder, embedder, scorer, network and "
+                            "GPU contacts. The centroid key file is pinned where the loader verifies it (facet_source.sha256).")}
     supply = {"kind": "preparation", "relpath": f"prepared/{names['run_id']}/phase-supply-v1.json", "sha256": ZERO,
               "reason": ("This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli "
                          "prepare-supply at the flip from the sealed R01C speech-query segment vectors, the centroid key file "
