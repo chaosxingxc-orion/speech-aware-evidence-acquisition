@@ -73,14 +73,16 @@ def test_the_slurp_default_resolves_per_lock_id():
         l22.default_deliver_normaliser_for_lock("v9.9")
     hooks = _hooks()
     assert hooks.default_deliver_normaliser() == V3  # the no-lock default is untouched
-    assert {k: v() for k, v in hooks.lock_deliver_normalisers.items()} == {"v2.0": V3, "v2.1": V3, "v2.2": V4G}
+    assert {k: v() for k, v in hooks.lock_deliver_normalisers.items()} == {"v2.0": V3, "v2.1": V3, "v2.2": V4G, "v2.3": V4G}
     assert V4G in DELIVERY_NORMALISERS.names()
     assert l22.LOCK_V2_2_COMPONENT_STATES["delivery-normaliser"]["state"] == "on (lock)"
 
 
-def test_current_lock_is_v2_2_since_decision_249():
-    """Step 7 left CURRENT_LOCK at v2.1; owner decision 249 (2026-10-10) moved it to v2.2."""
-    assert smh.CURRENT_LOCK == _hooks().current_lock == l22.LOCK_V2_2 == "v2.2"
+def test_current_lock_is_v2_3_since_decisions_249_and_263a():
+    """Step 7 left CURRENT_LOCK at v2.1; decision 249 (2026-10-10) moved it to v2.2; decisions 263 A / 266-A (2026-10-11)
+    moved it to the declaration-only successor v2.3 (v2.2 + the ace-playbook store at i0, byte-identical requests)."""
+    assert l22.LOCK_V2_2 == "v2.2"
+    assert smh.CURRENT_LOCK == _hooks().current_lock == "v2.3"
     # the other carriers still declare no lock versions
     assert ah.carrier_module_hooks(repo_root=_REPO).current_lock is None
     assert eh.carrier_module_hooks(repo_root=_REPO).current_lock is None

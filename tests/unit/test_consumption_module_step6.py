@@ -92,7 +92,7 @@ def _committed_module_entry() -> dict:
 def test_the_module_switch_is_one_key_whose_off_arm_compiles_to_the_lock():
     """The receipt entry's proof: ONE key; its OFF arm (the A/A's declared
     block) is the all-off block on lock v2.1 (the registered cell's lock, which
-    CURRENT_LOCK v2.2 superseded under decision 249) and compiles to exactly the
+    CURRENT_LOCK v2.3 superseded under decisions 249 and 263 A) and compiles to exactly the
     lock v2.1 blocks; its ON arm (the arm's declared block) moves, against the OFF
     arm, exactly the leaves of the two components it arms."""
 
@@ -105,7 +105,7 @@ def test_the_module_switch_is_one_key_whose_off_arm_compiles_to_the_lock():
     off, on = module_block_of(aa), module_block_of(arm)
     assert key == "native_episode.consumption_module"
     assert cm.is_module_off_block(off) and not cm.is_module_off_block(on)
-    assert off["lock"] == on["lock"] == "v2.1" and smh.CURRENT_LOCK == "v2.2"
+    assert off["lock"] == on["lock"] == "v2.1" and smh.CURRENT_LOCK == "v2.3"
     hooks = _hooks()
     off_policy = cm.compile_module(off, hooks)
     assert off_policy.values() == json.loads(json.dumps(dict(hooks.lock_versions["v2.1"]())))
@@ -154,7 +154,7 @@ def test_an_off_arm_on_a_stale_lock_is_refused(tmp_path):
         switch["off"]["lock"] = "v2.0"
         switch.pop("lock_superseded_by")
     result = _evaluate_with(tmp_path, mutate)
-    assert "CURRENT lock ('v2.2')" in _failures(result)
+    assert "CURRENT lock ('v2.3')" in _failures(result)
 
 
 def test_a_superseded_lock_needs_a_pending_entry_naming_the_current_lock(tmp_path):
@@ -168,7 +168,7 @@ def test_a_superseded_lock_needs_a_pending_entry_naming_the_current_lock(tmp_pat
 
     def no_marker(switch):
         switch.pop("lock_superseded_by")
-    assert "CURRENT lock ('v2.2')" in _failures(_evaluate_with(tmp_path, no_marker))
+    assert "CURRENT lock ('v2.3')" in _failures(_evaluate_with(tmp_path, no_marker))
 
     receipt = json.loads((_REPO / "docs/receipts/harness-admission.json").read_text(encoding="utf-8"))
     entry = next(e for e in receipt["entries"] if e["switch"]["table"] == MODULE_SWITCH_CLASS)

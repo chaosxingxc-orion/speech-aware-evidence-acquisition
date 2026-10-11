@@ -14,15 +14,11 @@ SLURP hard-codings the carrier-agnostic rails used to spell themselves now
 live HERE, behind the design's four hooks, and the rails reach them through
 ``CarrierHooks`` (``rails.consumption_module.carrier_hooks_for_lock_key``):
 
-* ``decision_candidates`` -- :func:`slurp_decision_candidates`, the
-  intent-boundary value-id shape ``<store>::intent-boundary:<intent_id>``
-  (formerly the body of ``perception_presentations.branch_supplied_intent_ids``,
-  which now delegates here);
-* ``max_decision_candidates`` -- SLURP's candidate-list ceiling (the
-  ``min_candidates`` bound of the loader and the Perception contract sentence);
-* ``delivered_units`` -- :func:`slurp_delivered_units`, the delivered answer's
-  (intent label, entities) through ``parse_slu_response`` (re-listen's
-  targeting, live and replayed);
+* ``decision_candidates`` -- :func:`slurp_decision_candidates`, the intent-boundary value-id shape
+  ``<store>::intent-boundary:<intent_id>`` (formerly ``perception_presentations.branch_supplied_intent_ids``);
+* ``max_decision_candidates`` -- SLURP's candidate-list ceiling (the loader's ``min_candidates`` bound);
+* ``delivered_units`` -- :func:`slurp_delivered_units`, the delivered answer's (intent label, entities) through
+  ``parse_slu_response`` (re-listen's targeting, live and replayed);
 * ``default_deliver_normaliser`` -- the projection v3 deliver node.
 """
 
@@ -33,6 +29,7 @@ from typing import Mapping, Sequence
 
 from ..consumption_module import POLICY_OWNED_KEYS, CarrierHooks
 from . import slurp_module_lock_v2_2 as lock_v2_2
+from . import slurp_module_lock_v2_3 as lock_v2_3
 
 PROFILE = "slurp"
 
@@ -112,9 +109,9 @@ LOCK_BASELINE_FRAGMENT = "slurp-native-default-plan-lock-baseline-v1"
 #: 204, docs/results/2026-09-30-slurp-v2-1-lock-v1.md) = v2.0 with ONE pin moved,
 #: the Reviewer template cell G5 flew. No ``lock`` key = v2.0, as before.
 LOCK_V2_0, LOCK_V2_1 = "v2.0", "v2.1"
-#: The CURRENT lock: v2.1 (decision 204), v2.2 since owner decision 249 (2026-10-10; R5 NEUTRAL = efficiency, no harm;
-#: v4g delivered gain locked; step-7 note); the null arm of new cells and the harness ``module`` class's OFF arm.
-CURRENT_LOCK = lock_v2_2.LOCK_V2_2
+#: The CURRENT lock: v2.2 since owner decision 249 (2026-10-10; v4g delivered gain locked); v2.3 since decisions 263 A / 266-A
+#: (2026-10-11; declaration-only: v2.2 + the ace-playbook store at i0, P-ACE-0 byte-identical). The null arm of new cells and the OFF arm.
+CURRENT_LOCK = lock_v2_3.LOCK_V2_3
 #: ``(relpath under configs/, sha256)``: v2.0 / v2.1 Reviewer templates.
 LOCK_V2_0_REVIEWER_TEMPLATE = (
     "probes/slurp_native_role_reviewer_v1.txt",
@@ -174,10 +171,8 @@ PERCEPTION_BRANCH_FRAME: Mapping[str, object] = {
 TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {"block_path": ("native_episode", "roles", "solver", "template_variants"), "node": "solver", "delivering_arm_id": "lock", "twin_arm_id": "aa"}
 PERCEPTION_TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {**TEMPLATE_VARIANT_FRAME, "node": "perception", "block_path": ("native_episode", "roles", "perception", "template_variants")}
 
-#: Ruling R3: ``{component id: admitting record}`` of the Perception
-#: components admitted to the delivered path. EMPTY: no column read has
-#: nominated one yet, so ``top2-contrast`` / ``forced-candidate-list`` may be
-#: ``column`` but never ``on``.
+#: Ruling R3: ``{component id: admitting record}`` of the Perception components admitted to the delivered path. EMPTY: no column read
+#: has nominated one yet, so ``top2-contrast`` / ``forced-candidate-list`` may be ``column`` but never ``on``.
 DELIVERED_PATH_ADMISSIONS: Mapping[str, str] = {}
 
 #: SLURP's delivered-row normaliser (``rails/delivery_normalisers.py``).
@@ -223,6 +218,10 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
 
     def lock_layer_v2_2() -> Mapping[str, object]:  # module step 7: v2.1 + the v4g normaliser
         return lock_v2_2.layer_from_v2_1(lock_layer_v2_1())
+
+    def lock_layer_v2_3() -> Mapping[str, object]:  # decision 263 A / 266-A: v2.2 + the ace-playbook store at i0
+        return lock_v2_3.layer_from_v2_2(lock_layer_v2_2())
+
     def deliver_stages() -> Mapping[str, Mapping[str, object]]:
         from .. import delivery_normalisers as dn  # noqa: PLC0415
 
@@ -250,8 +249,9 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         perception_branch_frame=PERCEPTION_BRANCH_FRAME,
         flown_branch_programs=FLOWN_BRANCH_PROGRAMS,
         delivered_path_admissions=DELIVERED_PATH_ADMISSIONS,
-        lock_versions={LOCK_V2_0: lock_layer, LOCK_V2_1: lock_layer_v2_1, lock_v2_2.LOCK_V2_2: lock_layer_v2_2},
-        lock_deliver_normalisers=lock_v2_2.lock_deliver_normalisers(),
+        lock_versions={LOCK_V2_0: lock_layer, LOCK_V2_1: lock_layer_v2_1, lock_v2_2.LOCK_V2_2: lock_layer_v2_2,
+                       lock_v2_3.LOCK_V2_3: lock_layer_v2_3},
+        lock_deliver_normalisers=lock_v2_3.lock_deliver_normalisers(),
         current_lock=CURRENT_LOCK,
         roster_pin_paths=ROSTER_PIN_PATHS,
         template_variant_frame=TEMPLATE_VARIANT_FRAME,
