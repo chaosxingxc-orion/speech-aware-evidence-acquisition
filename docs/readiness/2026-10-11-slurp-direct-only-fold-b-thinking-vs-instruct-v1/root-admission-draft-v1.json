@@ -119,8 +119,8 @@
       "protocol": "28b031f7b033f5586ff12a1d7a9d04a39216098d33f0fe548f0ba3cf7c05ed61"
     },
     "replicate": {
-      "composed_config": "4b6b8c85d43f1271ee5441f42f3b78b77c64197761de367ccee1af49b053282b",
-      "protocol": "d1a04c4881c5ba5554d88ea9bbeab7693864d9e6a1c868f0e949442955699776"
+      "composed_config": "8f0a99fae93f619e972c4bafb539852c933c11ba3b660a3a7c6aa0c80f9d5577",
+      "protocol": "ea4edabfd3c0d13ad4ab70ee94cc1914ace5316419fb9d7bf8eb2e1d8596919b"
     },
     "smoke": {
       "composed_config": "456466eaa56d62d7f36889c8c1efdae692222067ca862e3e0804cf0231a181cc",
