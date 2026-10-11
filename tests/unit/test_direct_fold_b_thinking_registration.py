@@ -246,14 +246,22 @@ def test_the_flip_script_refuses_the_zero_sentinel_and_can_be_narrowed_to_the_in
 
 def _ledger_rows() -> list[str]:
     text = LEDGER.read_text(encoding="utf-8")
-    block = text[text.index(fam.LEDGER_MARK):]
+    start = text.index(fam.LEDGER_MARK)
+    end = text.find("\n## ", start + 1)
+    block = text[start:] if end == -1 else text[start:end]
     return [line for line in block.splitlines() if line.startswith("| 2026-10-11")]
 
 
-def test_the_ledger_block_has_twelve_draft_unconsumed_rows_and_the_recipe_read_row_exists():
+def test_the_ledger_block_has_twelve_unconsumed_rows_and_the_recipe_read_row_exists():
     rows = _ledger_rows()
     assert len(rows) == 12 and all(r.count("|") == 16 for r in rows)
-    assert all("DRAFT, root countersignature pending" in r and "root countersigned" not in r.lower() for r in rows)
+    ids = {r.split("|")[2].strip() for r in rows}
+    # The packets row is countersigned; every other row is still a draft.
+    for r in rows:
+        if r.split("|")[2].strip() == fam.PACKETS_ROW_ID:
+            assert "root countersigned" in r.lower()
+        else:
+            assert "DRAFT, root countersignature pending" in r and "root countersigned" not in r.lower()
     ids = {r.split("|")[2].strip() for r in rows}
     for key in fam.ALL_KEYS:
         assert fam.CELLS[key]["run"] in ids and fam.CELLS[key]["fit_run"] in ids
