@@ -76,6 +76,11 @@ re-generated, so no flight variance enters.
 | cross-flight A/A, DEV-2000-ADDED | 1,000 | 1.2525 (intent 1.1520) | -0.25 measured | B6 pair |
 | terminal feedback on 4-16 trajectories | 4-16 | not readable | dominant | batch002 |
 
+**Collection columns (added 2026-10-11).** A column flown only to be READ OFFLINE as material (the typed loop's construction-source lock column,
+`docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/`) declares the design `material-source`: it estimates nothing (no contrast, no twin),
+carries no numeric floor, must declare `claims_benefit` false, and is legal at any row count. It is the form-proof rule (section 3 rule 5) for a
+cell that is not a four-row structural proof. `stage3_effect_floor_check.py` `FLOOR_TABLE` carries the same entry.
+
 ### 2e. DEV-2000-ADDED sealed pool (ROLL-3, 2026-09-27)
 
 `SAEA-SLURP-STAGE3-ROLL-3-DEV2000-ADDED-V1` sealed five temperature-0.7 Solver samples per row (seeds

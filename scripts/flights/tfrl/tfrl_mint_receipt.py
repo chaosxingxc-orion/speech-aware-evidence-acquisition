@@ -8,7 +8,8 @@ eligible run ids and the budget caps are the draft's and are not edited here.
 
     python scripts/flights/tfrl/tfrl_mint_receipt.py --iteration 1 --kind column [--coordinator "Fable5.1"] [--dry]
 
-``--kind column`` mints ``slurp-tfrl-loop-i<t>-admission-v1`` for the column cell and its smoke; ``--kind proposers`` mints
+``--kind construction`` mints ``slurp-tfrl-construction-lock-r01c-admission-v1`` for the construction-source lock column and its smoke (the
+typed loop's proposer / reflector material source on R01C; ``--iteration`` is ignored). ``--kind column`` mints ``slurp-tfrl-loop-i<t>-admission-v1`` for the column cell and its smoke; ``--kind proposers`` mints
 ``slurp-tfrl-proposers-i<t>-admission-v1`` for the text-only typed proposer and ACE reflector cells (two eligible run ids, no FIT identity: text-only).
 """
 
@@ -48,6 +49,10 @@ def rehash(node, root: str) -> int:
 
 
 def identities(iteration: int, kind: str) -> dict:
+    if kind == "construction":
+        arm, smoke = tf.const_names("arm"), tf.const_names("smoke")
+        return {"decision_id": arm["decision_id"], "decision_dir": Path(arm["decision_path"]).parent.name, "package": tf.CONST_PACKAGE_DIR,
+                "eligible": [arm["run_id"], arm["fit_run_id"], smoke["run_id"], smoke["fit_run_id"]]}
     if kind == "column":
         arm, smoke = tf.names(iteration, "arm"), tf.names(iteration, "smoke")
         return {"decision_id": f"slurp-tfrl-loop-i{iteration}-admission-v1", "decision_dir": f"slurp-tfrl-loop-i{iteration}-v1",
@@ -61,8 +66,8 @@ def identities(iteration: int, kind: str) -> dict:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
-    parser.add_argument("--iteration", type=int, required=True, choices=tf.ITERATIONS)
-    parser.add_argument("--kind", choices=("column", "proposers"), default="column")
+    parser.add_argument("--iteration", type=int, default=1, choices=tf.ITERATIONS, help="ignored for --kind construction")
+    parser.add_argument("--kind", choices=("column", "proposers", "construction"), default="column")
     parser.add_argument("--coordinator", default="Fable5.1")
     parser.add_argument("--dry", action="store_true", help="print the receipt, write nothing")
     args = parser.parse_args(argv)
@@ -71,7 +76,7 @@ def main(argv: list[str] | None = None) -> int:
     draft_path = f"{ident['package']}/root-admission-draft-v1.json"
     full = os.path.join(root, draft_path)
     if not os.path.isfile(full):
-        raise SystemExit(f"no DRAFT at {draft_path}: run write_tfrl_iteration_registration.py first")
+        raise SystemExit(f"no DRAFT at {draft_path}: run the registration writer first")
     draft = json.loads(io.open(full, encoding="utf-8").read())
     if draft.get("decision_id") != ident["decision_id"]:
         raise SystemExit(f"draft decision_id is {draft.get('decision_id')!r}, expected {ident['decision_id']!r}")

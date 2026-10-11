@@ -1,0 +1,46 @@
+{
+  "arms": {
+    "columns": {},
+    "delivering": "lock",
+    "order": [
+      "lock"
+    ],
+    "twin": null
+  },
+  "authority": "docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md sections 3.3 and 5; the coordinator resolution of 2026-10-11 (construction source); docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json",
+  "cell_kind": "CONSTRUCTION-SOURCE COLUMN -- a collection column read offline; no contrast, no claim",
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": "CPU official scorer job over derived copies only",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flight itself)",
+  "measurement_design": "material-source",
+  "read_run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-COLUMN-READ-V1",
+  "recipe_id": "slurp-tfrl-construction-lock-r01c-column-analysis-v1",
+  "registered_at_utc": "2026-10-11T12:00:00.000000+00:00",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01C",
+    "rows": 625,
+    "split_identity_hash": "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1",
+    "fit": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-FIT-V1",
+    "read": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-COLUMN-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_score": "one complete official scoring of the lock column (stage3_rollout_score.py or core.scoring_batch; never sharded) with per-row official scores on disk",
+    "2_tables": "python -B scripts/analysis/tfrl_contrast_tables.py --run-id SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1 --attempt attempt-slurp-native-stage3-tfrl-construction-lock-r01c-generation-v1 --arm lock --scorer slurp-slu-official-train --split train --rows 625 --data-root $SPEECHRL_DATA_DIR --lock $SAEA_DATASETS_LOCK --out-dir <analysis>/tables",
+    "3_loop": "the loop driver's open --iter t reads these tables (propose stage) for t = 1, 2 and 3 (the lock does not change)"
+  },
+  "what_is_not_here": "No margins block, no paired read and no admission: nothing is selected or locked here."
+}

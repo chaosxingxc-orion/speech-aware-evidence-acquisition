@@ -665,3 +665,209 @@ def test_the_archive_never_holds_a_text_field(world):
     for path in (world.pkg / "iterations" / "i1").glob("*.json"):
         text = path.read_text(encoding="utf-8")
         assert "epsilon" not in text and "boundary errors" not in text
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# the construction-source material (coordinator resolution of 2026-10-11): tables from the R01C column, ACE releases on the R01C rosters
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+class ArgvFakes(Fakes):
+    """``Fakes`` that also records the argv of every stand-in call, by step name."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.argvs: dict[str, list[list[str]]] = {}
+
+    def __call__(self, name: str, argv: list[str], produced: list[Path]) -> None:
+        self.argvs.setdefault(name, []).append(list(argv))
+        super().__call__(name, argv, produced)
+
+
+def flag(argv: list[str], name: str) -> str:
+    return argv[argv.index(name) + 1]
+
+
+def test_every_iteration_reads_its_tables_from_the_construction_column_never_from_fold_b(world):
+    fakes = ArgvFakes(pairs={"ace-vs-lock": contrast_doc(0.2, -0.7, 1.1), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)})
+    for t in (1, 2, 3):
+        assert world.run(*propose_args(world, t), fakes=fakes)[0] == 0
+        assert world.run(*open_cell_args(world, t))[0] == 0
+        assert world.run("close", "--iter", str(t), fakes=fakes)[0] == 0
+    assert len(fakes.argvs["tables"]) == 3
+    for argv in fakes.argvs["tables"]:
+        assert flag(argv, "--run-id") == tf.CONST_RUN_ID == "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1"
+        assert flag(argv, "--attempt") == tf.CONST_ATTEMPT_ID and flag(argv, "--rows") == "625" and flag(argv, "--arm") == "lock"
+        assert flag(argv, "--scorer") == "slurp-slu-official-train" and flag(argv, "--split") == "train"
+        assert "FOLD-B" not in " ".join(argv).upper() and "R6-PERCEPTION" not in " ".join(argv).upper()
+    for t in (1, 2, 3):
+        source = world.receipt(t, "open-propose")["source_column"]
+        assert source["run_id"] == tf.CONST_RUN_ID and source["rows"] == 625 and source["roster_id"] == tf.CONST_ROSTER_ID
+        assert source["roster"] == "docs/receipts/rosters/slurp-stage3-construction-r01c.json" and source["override"] is False
+    # the Fold B column of iteration t is read at close (selection) and feeds the next iteration only through the buffer and the counters
+    close_runs = {flag(a, "--run") for a in fakes.argvs["score-columns"]}
+    assert close_runs == {tf.names(t, "arm")["run_id"] for t in (1, 2, 3)}
+    assert all(flag(a, "--roster") == tf.ROSTER["arm"] for a in fakes.argvs["score-columns"])
+
+
+def test_a_source_override_is_recorded_and_changes_only_the_column_named(world):
+    fakes = ArgvFakes()
+    args = propose_args(world) + ["--source-run-id", "SAEA-OVERRIDE-RUN", "--source-attempt", "attempt-override"]
+    assert world.run(*args, fakes=fakes)[0] == 0
+    argv = fakes.argvs["tables"][0]
+    assert flag(argv, "--run-id") == "SAEA-OVERRIDE-RUN" and flag(argv, "--attempt") == "attempt-override" and flag(argv, "--rows") == "625"
+    assert world.receipt(1, "open-propose")["source_column"]["override"] is True
+
+
+def test_the_protocol_names_the_lock_the_material_source_and_fold_b_as_held_out_selection():
+    protocol = json.loads((REPO / tf.PROTOCOL_RELPATH).read_text(encoding="utf-8"))
+    assert protocol["lock"]["lock"] == "v2.3" and protocol["lock"]["parent_lock"] == "v2.2"
+    source = protocol["material_source"]
+    assert source["run_id"] == tf.CONST_RUN_ID and source["rows"] == 625 and source["roster"] == "SLURP-STAGE3-CONSTRUCTION-R01C"
+    assert source["measurement_design"] == "material-source" and source["claims_benefit"] is False and source["program"] == "phase-native-module-v1-c2"
+    assert "HELD-OUT selection" in source["fold_b_role"] and "numbers, not knowledge" in source["fold_b_role"]
+    roles = protocol["fold_roles"]
+    assert roles["material"]["roster"] == "SLURP-STAGE3-CONSTRUCTION-R01C" and "HELD-OUT selection" in roles["select"]["role"]
+    assert roles["confirm"]["fold"] == "SLURP-EVO-FOLD-A-V2"
+    assert "construction-source lock column" in protocol["ace"]["playbook_flow"] and "VER-1a" not in protocol["ace"]["playbook_flow"]
+    assert "construction-source lock column" in protocol["t_cap"]["lock_p99_supplied_tokens"]
+    assert source["ace_release_staging"]["forbidden_rosters"] == ["SLURP-EVO-FOLD-A-V2", "SLURP-EVO-FOLD-B-V2", "DEV-1000"]
+
+
+# ---- the ACE release staging and the preparer's roster guard
+
+I0_REGISTRATION = REPO / lib.ACE_I0_REGISTRATION_RELPATH
+
+
+def rescaled_release_rows(real):
+    """``rails.tfrl_ace_material.playbook_release_rows`` with ``prior_score`` rescaled into (0, 1].
+
+    The shipped function writes ``float(total - rank)`` (18.0, 17.0, ...), which ``KnowledgeSnapshot.frozen_json`` refuses for every non-empty
+    playbook ("prior_score must be a probability in [0, 1]"); the empty release i0 passes only because its anchor row carries 0.0. The module is
+    not this package's to edit, so the roster-guard tests below stage rows with the rescaled order-preserving score and one strict xfail
+    test records the defect itself."""
+
+    def wrapped(playbook, *, carrier_sample_ids, legal_intent_ids):
+        rows = real(playbook, carrier_sample_ids=carrier_sample_ids, legal_intent_ids=legal_intent_ids)
+        top = max((row["prior_score"] for row in rows), default=1.0) or 1.0
+        return [dict(row, prior_score=row["prior_score"] / top) for row in rows]
+
+    return wrapped
+
+
+def staged_world(world, monkeypatch=None):
+    """Iteration 1 through ``open --stage cell``: the playbook i1 and its release inputs are staged on the data root."""
+
+    if monkeypatch is not None:
+        monkeypatch.setattr(ace, "playbook_release_rows", rescaled_release_rows(ace.playbook_release_rows))
+    assert world.run(*propose_args(world), fakes=Fakes())[0] == 0
+    assert world.run(*open_cell_args(world))[0] == 0
+    return json.loads((world.pkg / "ace-playbook-i1-release-registration.json").read_text(encoding="utf-8"))
+
+
+def place_data_root_pins(world, registration: dict) -> None:
+    for key, source in (("construction_scope", tf.CONST_ROSTER["arm"]), ("permitted_roster", lib.ACE_CARRIER_ROSTER_RELPATH)):
+        pin = registration[key]
+        assert pin["root"] == "data" and tf.sha256_file(REPO / source) == pin["sha256"]          # the repository copy IS the pinned file
+        target = world.data / pin["relpath"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO / source, target)
+
+
+def test_release_staging_binds_the_registration_to_the_r01c_construction_rosters(world):
+    registration = staged_world(world)
+    i0 = json.loads(I0_REGISTRATION.read_text(encoding="utf-8"))
+    for key in ("construction_scope", "permitted_roster", "forbidden_rosters", "source_split_identity_hash", "builder_policy_id", "store_id",
+                "store_role", "source_partition_role", "carrier_lock_key"):
+        assert registration[key] == i0[key], key
+    assert registration["registration_id"] == "SAEA-SLURP-ACE-PLAYBOOK-PREPARATION-I1"
+    assert registration["output_namespace"] == "knowledge/slurp/semantic/ace-playbook-i1"
+    assert registration["authored_source"]["root"] == "data"
+    assert registration["authored_source"]["relpath"].startswith(f"{tf.ANALYSIS_ROOT}/i1/ace-release-staging/source-ace-playbook-i1")
+    assert (world.data / registration["authored_source"]["relpath"]).is_file()
+    assert tf.sha256_file(world.data / registration["authored_source"]["relpath"]) == registration["authored_source"]["sha256"]
+    receipt = world.receipt(1, "open-cell")["ace"]["release_staging"]
+    assert receipt["carrier_roster"] == lib.ACE_CARRIER_ROSTER_RELPATH and receipt["carriers"] == 50
+    assert receipt["source_split_identity_hash"] == i0["source_split_identity_hash"] and receipt["registration"]["sha256"]
+    # every source id of the staged rows is a carrier: inside the construction roster R01C, outside Fold B
+    source = json.loads((world.data / registration["authored_source"]["relpath"]).read_text(encoding="utf-8"))
+    carriers = {sid for row in source["rows"] for sid in row["source_sample_ids"]}
+    r01c = {str(i["sample_id"]) for i in json.loads((REPO / tf.CONST_ROSTER["arm"]).read_text(encoding="utf-8"))["items"]}
+    fold_b = {str(i["sample_id"]) for i in json.loads((REPO / tf.ROSTER["arm"]).read_text(encoding="utf-8"))["items"]}
+    assert len(carriers) == 50 and carriers <= r01c and carriers.isdisjoint(fold_b)
+    assert len(source["rows"]) == 18                                   # one authored row per playbook item
+
+
+def test_the_preparer_accepts_the_i1_release_with_r01c_carriers_and_refuses_it_with_fold_b_carriers(world, monkeypatch):
+    from speech_aware_evidence_acquisition.core.semantic_knowledge_preparation import (
+        SemanticKnowledgePreparationError, prepare_semantic_knowledge_store)
+
+    registration = staged_world(world, monkeypatch)
+    place_data_root_pins(world, registration)
+    mini = world.tmp / "mini-repo"                       # the preparer confines the registration and the repo-rooted pins to one repo root
+    for pin in registration["forbidden_rosters"]:
+        (mini / pin["relpath"]).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO / pin["relpath"], mini / pin["relpath"])
+    shutil.copyfile(world.pkg / "ace-playbook-i1-release-registration.json", mini / "ace-playbook-i1-release-registration.json")
+    result = prepare_semantic_knowledge_store(mini / "ace-playbook-i1-release-registration.json", repo_root=mini, data_root=world.data)
+    snapshot = json.loads((world.data / result["completion"]["snapshot"]["relpath"]).read_text(encoding="utf-8"))
+    r01c = {str(i["sample_id"]) for i in json.loads((REPO / tf.CONST_ROSTER["arm"]).read_text(encoding="utf-8"))["items"]}
+    fold_b = [str(i["sample_id"]) for i in json.loads((REPO / tf.ROSTER["arm"]).read_text(encoding="utf-8"))["items"]]
+    assert set(snapshot["source_sample_ids"]) <= r01c and set(snapshot["source_sample_ids"]).isdisjoint(fold_b)
+    assert result["completion"]["outer_construction_scope"]["split_identity_hash"] == "f56bc386776421aec2d8001d8697611b01c9b0562885a462759b15531e2f4515"
+    # the same playbook staged with FOLD B carriers (the defect of the first driver version) is refused by the same preparer
+    playbook = ace.load_playbook(world.analysis(1) / "playbook" / "playbook-i1.json")
+    binding = lib.ace_release_binding(REPO)
+    bad_path = mini / "ace-playbook-ifoldb-release-registration.json"
+    ace.build_playbook_release(
+        dict(playbook), data_root=world.data, carrier_sample_ids=sorted(fold_b)[:50], legal_intent_ids=INTENTS,
+        source_split_identity_hash=binding["source_split_identity_hash"], release_dir=f"{tf.ANALYSIS_ROOT}/i1/ace-release-foldb",
+        registration_binding=binding["registration_binding"], registration_path=bad_path,
+        registration_id="SAEA-SLURP-ACE-PLAYBOOK-PREPARATION-IFOLDB", output_namespace="knowledge/slurp/semantic/ace-playbook-ifoldb")
+    with pytest.raises(SemanticKnowledgePreparationError) as refusal:
+        prepare_semantic_knowledge_store(bad_path, repo_root=mini, data_root=world.data)
+    assert not (world.data / "knowledge" / "slurp" / "semantic" / "ace-playbook-ifoldb").exists()
+    assert "subset of the permitted construction roster" in str(refusal.value)       # the roster guard, named
+
+
+@pytest.mark.xfail(strict=True, reason=("OPEN DEFECT in rails/tfrl_ace_material.playbook_release_rows (not editable here): prior_score = float(total - rank) "
+                                        "is up to 18.0 but the snapshot requires a probability in [0, 1], so every NON-EMPTY ace-playbook release "
+                                        "(i1 and later) is refused by KnowledgeSnapshot.frozen_json whatever the rosters; fix = divide by total. "
+                                        "Remove this mark when it is fixed (strict: an unexpected pass fails)."))
+def test_the_shipped_release_rows_survive_the_preparer_once_the_prior_score_defect_is_fixed(world):
+    from speech_aware_evidence_acquisition.core.semantic_knowledge_preparation import prepare_semantic_knowledge_store
+
+    registration = staged_world(world)
+    place_data_root_pins(world, registration)
+    mini = world.tmp / "mini-repo"
+    for pin in registration["forbidden_rosters"]:
+        (mini / pin["relpath"]).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO / pin["relpath"], mini / pin["relpath"])
+    shutil.copyfile(world.pkg / "ace-playbook-i1-release-registration.json", mini / "ace-playbook-i1-release-registration.json")
+    prepare_semantic_knowledge_store(mini / "ace-playbook-i1-release-registration.json", repo_root=mini, data_root=world.data)
+
+
+def test_the_release_binding_refuses_a_permitted_roster_that_is_not_the_pinned_file_and_a_carrier_outside_r01c(tmp_path):
+    root = tmp_path / "repo"
+    (root / "docs/readiness/2026-10-11-slurp-tfrl-loop-v1").mkdir(parents=True)
+    (root / "docs/receipts/rosters").mkdir(parents=True)
+    shutil.copyfile(I0_REGISTRATION, root / lib.ACE_I0_REGISTRATION_RELPATH)
+    shutil.copyfile(REPO / tf.CONST_ROSTER["arm"], root / tf.CONST_ROSTER["arm"])
+    shutil.copyfile(REPO / lib.ACE_CARRIER_ROSTER_RELPATH, root / lib.ACE_CARRIER_ROSTER_RELPATH)
+    for pin in json.loads(I0_REGISTRATION.read_text(encoding="utf-8"))["forbidden_rosters"]:
+        (root / pin["relpath"]).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO / pin["relpath"], root / pin["relpath"])
+    assert len(lib.ace_release_binding(root)["carrier_sample_ids"]) == 50
+    # a tampered permitted roster no longer hashes to the registration's pin
+    permitted = json.loads((root / lib.ACE_CARRIER_ROSTER_RELPATH).read_text(encoding="utf-8"))
+    tampered = copy.deepcopy(permitted)
+    tampered["items"][0]["sample_id"] = "slurp:train:000000:audio-0000000000"      # sorts first, so it is a carrier; not an R01C row
+    (root / lib.ACE_CARRIER_ROSTER_RELPATH).write_text(json.dumps(tampered), encoding="utf-8")
+    with pytest.raises(lib.LoopError, match="does not hash"):
+        lib.ace_release_binding(root)
+    # even with the pin re-hashed, a carrier outside R01C (here a Fold B row) is refused by the driver itself
+    registration = json.loads((root / lib.ACE_I0_REGISTRATION_RELPATH).read_text(encoding="utf-8"))
+    registration["permitted_roster"]["sha256"] = tf.sha256_file(root / lib.ACE_CARRIER_ROSTER_RELPATH)
+    (root / lib.ACE_I0_REGISTRATION_RELPATH).write_text(json.dumps(registration), encoding="utf-8")
+    with pytest.raises(lib.LoopError, match="outside the construction roster"):
+        lib.ace_release_binding(root)

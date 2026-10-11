@@ -587,6 +587,51 @@ def put_state_idempotent(archive: Any, state: Mapping[str, Any]) -> bool:
     return False
 
 
+# ---------------------------------------------------------------------------------------------------------------------------
+# the ace-playbook release binding (releases i1+): the construction roster, never Fold B
+# ---------------------------------------------------------------------------------------------------------------------------
+
+#: The committed permitted roster of the ``stage3-deltas-v1r`` registration (SLURP-STAGE3-ADVANTAGE-R01C-DISAGREEING-V1, a subset of R01C): the
+#: repository copy is byte-identical to the data-root file the registration pins (sha256 checked below).
+ACE_CARRIER_ROSTER_RELPATH = "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json"
+ACE_I0_REGISTRATION_RELPATH = f"{tf.PACKAGE_DIR}/ace-playbook-i0-release-registration.json"
+
+
+def ace_release_binding(repo_root: Path) -> dict:
+    """The roster binding of every ``ace-playbook`` release i1 and later, read from the COMMITTED i0 registration.
+
+    ``registration_binding`` is that registration's ``construction_scope`` (R01C), ``permitted_roster`` (a subset of R01C) and
+    ``forbidden_rosters`` (Fold A, Fold B, DEV-1000); ``carrier_sample_ids`` are the first :data:`tf.ACE_CARRIERS` sorted ids of the permitted
+    roster, so the semantic-knowledge preparer accepts the release. Refuses (LoopError) when the repository copy of the permitted roster does not
+    hash to the registration's pin, when its split identity differs from the registration's, or when a carrier lies outside the construction
+    roster R01C or inside any committed forbidden roster (the Fold B guard of 2026-09-23)."""
+
+    root = Path(repo_root)
+    registration = json.loads((root / ACE_I0_REGISTRATION_RELPATH).read_text(encoding="utf-8"))
+    binding = {key: json.loads(json.dumps(registration[key])) for key in ("construction_scope", "permitted_roster", "forbidden_rosters")}
+    permitted_path = root / ACE_CARRIER_ROSTER_RELPATH
+    if tf.sha256_file(permitted_path) != binding["permitted_roster"]["sha256"]:
+        raise LoopError("the repository copy of the permitted roster does not hash to the i0 registration's pin")
+    permitted = json.loads(permitted_path.read_text(encoding="utf-8"))
+    identity = str(registration["source_split_identity_hash"])
+    if permitted.get("split_identity_hash") != identity:
+        raise LoopError("the permitted roster's split identity differs from the i0 registration's source_split_identity_hash")
+    carriers = sorted(str(item["sample_id"]) for item in permitted["items"])[: tf.ACE_CARRIERS]
+    scope = {str(item["sample_id"]) for item in json.loads((root / tf.CONST_ROSTER["arm"]).read_text(encoding="utf-8"))["items"]}
+    outside = [c for c in carriers if c not in scope]
+    if outside:
+        raise LoopError(f"{len(outside)} carrier id(s) lie outside the construction roster {tf.CONST_ROSTER_ID}")
+    for pin in binding["forbidden_rosters"]:
+        if pin.get("root") != "repo":
+            continue
+        forbidden = {str(item.get("sample_id") or item["id"])
+                     for item in json.loads((root / pin["relpath"]).read_text(encoding="utf-8"))["items"]}
+        shared = [c for c in carriers if c in forbidden]
+        if shared:
+            raise LoopError(f"{len(shared)} carrier id(s) lie inside the forbidden roster {pin['relpath']}")
+    return {"registration_binding": binding, "carrier_sample_ids": carriers, "source_split_identity_hash": identity}
+
+
 def lock_root_hash(repo_root: Path | None = None) -> str:
     """sha256 of the canonical lock v2.2 policy layer: the artefact hash of the typed root state."""
 

@@ -1,0 +1,52 @@
+{
+  "cell": "slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-v1",
+  "composed_config_hash": "bbd195db6f58088153ca9ed3f1755eed5280606b12587f38420a354c55e2393a",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 1.0,
+    "planned_model_calls": 8,
+    "planned_speech_audio_seconds": 35,
+    "protocol_hash": "fcfc17557c2bd60f137cdf9025cde232f95f47e2f18ee8471bb2d29046daa220",
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "e9dcea536028d17737b999c65267e47645ca7b3f6f9c4f57622961cf29363ed5",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli worker on this cell alone (the batch driver's smoke step); never scored.",
+  "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "experiment": "slurp-native-stage3-tfrl-construction-lock-r01c-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 32,
+    "generation_calls_cap": 8,
+    "gpu_hours_fit_inclusive": 1.0,
+    "native_task_contract_calls_cap": 8,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 35
+  },
+  "loop_protocol": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json",
+    "status": "DRAFT-HELD"
+  },
+  "plan_kind": "generation",
+  "preparation_base_commit": "f0edc8a720a6ec7d0a2a4d1885f74d18e4d9b408",
+  "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-11-slurp-tfrl-construction-source-v1/protocol-registered-v1.json",
+    "sha256": "c21d7c34bb1465c2c0be4f36015df4c7f1fe7b9f996fc280fb06635046272bc1"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-SMOKE-4-V1: structural form proof only: no score and no read.",
+  "registered_at_utc": "2026-10-11T12:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "unused_budget_is_not_attempt_authority": true
+}
