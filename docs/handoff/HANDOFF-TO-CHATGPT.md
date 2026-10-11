@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T15:37:07Z
+Last refreshed: 2026-10-11T18:49:39Z
+
+## Loop iteration 1 CLOSED (ACE refused: SLU +0.87 [-0.40, +2.10] vs lock, intent 0.00; typed arm empty; parent = lock); 266-E flip running (2026-10-11T18:49:39Z, Fable 5.1 root)
+
+Column sealed 18:33Z (4,320 contacts); close receipt, archive state e7b4fa57..., curve and proposer meta committed (899ba6fca); registry section "Loop iteration 1 CLOSED" (4818806e9). 266-E: eight flight rows countersigned (bdd550ecc), receipt minted, flip chain task SAEA-Flip-DirectFB running (~45 min); then chain segments: swap to Thinking -> smoke (decode cost) -> sign-off marker -> Thinking arm -> swap back -> Instruct arm + replicate. Results note for iteration 1 in progress (opus/tfrl-i1-results-note). Iteration 2 `open --iter 2 --stage propose` after the 266-E flip ends. No owner decision open.
+
+Superseded stamp: 2026-10-11T15:37:07Z
 
 ## Fold B column FLYING again at flight commit 2b6416686 (rec1 smoke, then 1,080 rows; task SAEA-Queue-TFRLi1Col, 15:36Z) (2026-10-11T15:37:07Z, Fable 5.1 root)
 
