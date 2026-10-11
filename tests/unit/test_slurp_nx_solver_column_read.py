@@ -357,10 +357,10 @@ def test_a_solver_visit_without_custody_is_refused():
         reader.load_sealed_arm_texts(outputs, trace)
 
 
-def test_a_supply_kind_receipt_is_not_a_template_column():
+def test_an_unregistered_receipt_schema_is_refused():
     outputs, trace = _sealed()
-    outputs[0]["supply_variants"] = dict(outputs[0]["supply_variants"], schema="saea-supply-variant-arms-v3")
-    with pytest.raises(reader.ColumnReadError, match="reads template columns only"):
+    outputs[0]["supply_variants"] = dict(outputs[0]["supply_variants"], schema="saea-supply-variant-arms-v2")
+    with pytest.raises(reader.ColumnReadError, match="reads template and supply columns only"):
         reader.load_sealed_arm_texts(outputs, trace)
 
 

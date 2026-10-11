@@ -86,7 +86,7 @@ COMPONENT_STATES: tuple[str, ...] = (STATE_ON, STATE_OFF, STATE_SHADOW, STATE_CO
 
 _BLOCK_REQUIRED = frozenset({"module_id", "profile", "components"})
 _BLOCK_OPTIONAL = frozenset({
-    "columns", "lock", "review_loop", "solver_tool_access", "template_frame",
+    "columns", "lock", "review_loop", "solver_tool_access", "template_frame", "supply_frame",
 })
 #: A lock-version name a block may declare (migration step 6, owner decision
 #: 204): ``v<major>.<minor>``, resolved through the carrier's ``lock_versions``.
@@ -165,6 +165,22 @@ _COLUMN_REQUIRED = frozenset({"column_id", "toggle", "to", "level"})
 #: ``template_variant_frame`` hook names the one it admits).
 COLUMN_KIND_TEMPLATE = "template"
 _TEMPLATE_COLUMN_KEYS = frozenset({"column_id", "kind", "node", "template", "template_tokens"})
+#: Loop engineering item E-S1 (2026-10-11): the node-SUPPLY column. It IS one
+#: non-delivering arm of the Solver's ``supply_variants`` block (the E42
+#: mechanism): the arm named ``column_id``, resolving its own supply -- knob-tail
+#: ``overrides`` and/or ONE ``release_swap`` -- over the SAME ``QueryState`` the
+#: delivering arm renders. It toggles no component and carries no template.
+COLUMN_KIND_SUPPLY = "supply"
+_SUPPLY_COLUMN_REQUIRED = frozenset({"column_id", "kind", "node", "max_supplied_items"})
+_SUPPLY_COLUMN_OPTIONAL = frozenset({"overrides", "release_swap"})
+#: The block-level frame every supply column set shares (measured by the cell
+#: author): ``twin`` adds the A/A arm the carrier's hook names;
+#: ``delivering_max_supplied_items`` is the delivering (and twin) arm's own
+#: supply bound; ``alternates`` is the OPTIONAL pass-through to
+#: ``knowledge_stores.<store>.alternates`` -- ``{store id: [{release, snapshot}]}``,
+#: each a ``{relpath, sha256}`` pin pair -- that a ``release_swap`` may name.
+_SUPPLY_FRAME_REQUIRED = frozenset({"twin", "fit_estimate", "delivering_max_supplied_items"})
+_SUPPLY_FRAME_OPTIONAL = frozenset({"alternates"})
 #: The block-level frame every template column set shares (measured by the cell
 #: author, never a placeholder: it enters the fail-closed fit refusal). ``twin``
 #: adds the A/A arm the carrier's hook names.
@@ -331,6 +347,12 @@ class CarrierHooks:
     #: "delivering_arm_id", "twin_arm_id"}``. ``None``: no analogue on this
     #: carrier, so a Perception template column refuses. Declared LAST.
     perception_template_variant_frame: Mapping[str, object] | None = None
+    #: Loop engineering item E-S1 (2026-10-11): where and at which node supply
+    #: columns compile -- ``{"block_path": the key path of the node's
+    #: ``supply_variants`` block, "node": the one node the carrier admits,
+    #: "delivering_arm_id", "twin_arm_id"}``. ``None``: supply columns refuse.
+    #: Declared LAST.
+    supply_variant_frame: Mapping[str, object] | None = None
     #: Design section 2d: ``tool_offer_units(delivered text) -> (context
     #: label, units, parsed)`` in the ``delivered_units`` shape -- the units a
     #: model-initiated tool offer (``verify_span(index)``) is indexed over on
@@ -472,6 +494,13 @@ class ColumnDecl:
     node: str | None = None
     template_json: str | None = None
     template_tokens: int = 0
+    #: E-S1: a ``supply`` column's canonical ``{max_supplied_items, overrides,
+    #: release_swap}`` (``None`` for every other kind). Declared LAST.
+    supply_json: str | None = None
+
+    @property
+    def supply(self) -> dict[str, object] | None:
+        return None if self.supply_json is None else json.loads(self.supply_json)
 
     @property
     def prepared_seed(self) -> dict[str, str] | None:
@@ -500,12 +529,22 @@ class ConsumptionModuleBlock:
     #: NX programme E1: the template columns' shared frame (canonical JSON), or
     #: ``None`` when the block declares no template column.
     template_frame_json: str | None = None
+    #: E-S1: the supply columns' shared frame (canonical JSON), or ``None``.
+    supply_frame_json: str | None = None
 
     @property
     def branch_columns(self) -> tuple[ColumnDecl, ...]:
-        """The Perception-branch columns (every column but the template kind)."""
+        """The Perception-branch columns (every column but the template and supply kinds)."""
 
-        return tuple(c for c in self.columns if c.kind != COLUMN_KIND_TEMPLATE)
+        return tuple(c for c in self.columns if c.kind == "branch")
+
+    @property
+    def supply_columns(self) -> tuple[ColumnDecl, ...]:
+        return tuple(c for c in self.columns if c.kind == COLUMN_KIND_SUPPLY)
+
+    @property
+    def supply_frame(self) -> dict[str, object] | None:
+        return None if self.supply_frame_json is None else json.loads(self.supply_frame_json)
 
     @property
     def template_columns(self) -> tuple[ColumnDecl, ...]:
@@ -598,9 +637,17 @@ def parse_consumption_module_block(
     if "solver_tool_access" in raw and (solver_access != "bounded-slot-lookup-v1" or review_loop != "off"):
         raise ConsumptionModuleConfigError("Solver tool access requires the explicit review-off profile")
     if review_loop == "off" and any(
-        not (isinstance(c, Mapping) and c.get("kind") == COLUMN_KIND_TEMPLATE) for c in columns
+        not (isinstance(c, Mapping) and c.get("kind") in (COLUMN_KIND_TEMPLATE, COLUMN_KIND_SUPPLY))
+        for c in columns
     ):
         raise ConsumptionModuleConfigError("review-off profile does not support branch columns")
+    if review_loop != "off" and any(
+        isinstance(c, Mapping) and c.get("kind") == COLUMN_KIND_SUPPLY for c in columns
+    ):
+        raise ConsumptionModuleConfigError(
+            "supply columns compile only under the explicit review-off profile (the module "
+            "program family carries their K - 1 ceiling term)"
+        )
     lock = raw.get("lock")
     if "lock" in raw and (not isinstance(lock, str) or _LOCK_VERSION.fullmatch(lock) is None):
         raise ConsumptionModuleConfigError(
@@ -668,7 +715,13 @@ def parse_consumption_module_block(
         raw.get("template_frame"), has_template_columns=any(
             c.kind == COLUMN_KIND_TEMPLATE for c in column_decls
         ),
-        has_branch_columns=any(c.kind != COLUMN_KIND_TEMPLATE for c in column_decls),
+        has_branch_columns=any(c.kind == "branch" for c in column_decls),
+        has_supply_columns=any(c.kind == COLUMN_KIND_SUPPLY for c in column_decls),
+    )
+    supply_frame_json = _parse_supply_frame(
+        raw.get("supply_frame"),
+        has_supply_columns=any(c.kind == COLUMN_KIND_SUPPLY for c in column_decls),
+        has_template_columns=any(c.kind == COLUMN_KIND_TEMPLATE for c in column_decls),
     )
     block_json = _canonical(dict(raw))
     identity = dict(raw)
@@ -687,11 +740,13 @@ def parse_consumption_module_block(
         review_loop=review_loop,
         solver_tool_access=solver_access,
         template_frame_json=template_frame_json,
+        supply_frame_json=supply_frame_json,
     )
 
 
 def _parse_template_frame(
     raw: object, *, has_template_columns: bool, has_branch_columns: bool,
+    has_supply_columns: bool = False,
 ) -> str | None:
     """The template columns' shared frame, fail-closed: present exactly when a
     template column is, never beside a Perception-branch column (one fan-out
@@ -715,6 +770,11 @@ def _parse_template_frame(
             "template columns cannot be declared beside Perception-branch columns: one "
             "fan-out mechanism per episode"
         )
+    if has_supply_columns:
+        raise ConsumptionModuleConfigError(
+            "template columns cannot be declared beside supply columns: one fan-out "
+            "mechanism per episode"
+        )
     if not isinstance(raw, Mapping) or set(raw) != _TEMPLATE_FRAME_KEYS:
         raise ConsumptionModuleConfigError(
             f"consumption_module.template_frame keys must be exactly {sorted(_TEMPLATE_FRAME_KEYS)}"
@@ -731,6 +791,76 @@ def _parse_template_frame(
             "consumption_module.template_frame.fit_estimate must be an object"
         )
     return _canonical(dict(raw))
+
+
+def _parse_supply_frame(
+    raw: object, *, has_supply_columns: bool, has_template_columns: bool,
+) -> str | None:
+    """The supply columns' shared frame, fail-closed: present exactly when a
+    supply column is, never beside a template column (one fan-out mechanism per
+    episode), with exactly the frame's keys. The fit numbers are CHECKED by
+    ``rails.supply_variants.parse_supply_variants`` at compile time."""
+
+    if raw is None:
+        if has_supply_columns:
+            raise ConsumptionModuleConfigError(
+                "consumption_module.supply_frame is required beside a supply column: it "
+                "carries the measured fit estimate and the delivering arm's supply bound"
+            )
+        return None
+    if not has_supply_columns:
+        raise ConsumptionModuleConfigError(
+            "consumption_module.supply_frame is declared but no supply column is"
+        )
+    if has_template_columns:
+        raise ConsumptionModuleConfigError(
+            "supply columns cannot be declared beside template columns: one fan-out "
+            "mechanism per episode"
+        )
+    if (
+        not isinstance(raw, Mapping) or not _SUPPLY_FRAME_REQUIRED <= set(raw)
+        or set(raw) - _SUPPLY_FRAME_REQUIRED - _SUPPLY_FRAME_OPTIONAL
+    ):
+        raise ConsumptionModuleConfigError(
+            f"consumption_module.supply_frame keys must be {sorted(_SUPPLY_FRAME_REQUIRED)} "
+            f"plus optional {sorted(_SUPPLY_FRAME_OPTIONAL)}"
+        )
+    value = raw["delivering_max_supplied_items"]
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise ConsumptionModuleConfigError(
+            "consumption_module.supply_frame.delivering_max_supplied_items must be a positive integer"
+        )
+    if not isinstance(raw["twin"], bool):
+        raise ConsumptionModuleConfigError("consumption_module.supply_frame.twin must be a bool")
+    if not isinstance(raw["fit_estimate"], Mapping):
+        raise ConsumptionModuleConfigError("consumption_module.supply_frame.fit_estimate must be an object")
+    frame = dict(raw)
+    if "alternates" in raw:
+        alternates = raw["alternates"]
+        if not isinstance(alternates, Mapping) or not alternates:
+            raise ConsumptionModuleConfigError(
+                "consumption_module.supply_frame.alternates must be a non-empty object "
+                "{store id: [{release, snapshot}]}"
+            )
+        clean: dict[str, list[dict[str, dict[str, str]]]] = {}
+        for store_id, rows in alternates.items():
+            field = f"consumption_module.supply_frame.alternates[{store_id!r}]"
+            _require_text(store_id, field=field)
+            if not isinstance(rows, list) or not rows:
+                raise ConsumptionModuleConfigError(f"{field} must be a non-empty list")
+            out_rows = []
+            for index, row in enumerate(rows):
+                if not isinstance(row, Mapping) or set(row) != {"release", "snapshot"}:
+                    raise ConsumptionModuleConfigError(
+                        f"{field}[{index}] must be exactly {{release, snapshot}}"
+                    )
+                out_rows.append({
+                    "release": _pin(row["release"], field=f"{field}[{index}].release"),
+                    "snapshot": _pin(row["snapshot"], field=f"{field}[{index}].snapshot"),
+                })
+            clean[store_id] = out_rows
+        frame["alternates"] = clean
+    return _canonical(frame)
 
 
 def _pin(value: object, *, field: str) -> dict[str, str]:
@@ -752,6 +882,9 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
         field = f"consumption_module.columns[{index}]"
         if not isinstance(entry, Mapping):
             raise ConsumptionModuleConfigError(f"{field} must be an object")
+        if entry.get("kind") == COLUMN_KIND_SUPPLY:
+            out.append(_parse_supply_column(entry, field=field))
+            continue
         if entry.get("kind") is not None:
             out.append(_parse_template_column(entry, field=field))
             continue
@@ -789,14 +922,14 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
     ids = [c.column_id for c in out]
     if len(set(ids)) != len(ids):
         raise ConsumptionModuleConfigError("consumption_module.columns ids must be distinct")
-    toggled = [c.toggle for c in out if c.kind != COLUMN_KIND_TEMPLATE]
+    toggled = [c.toggle for c in out if c.kind == "branch"]
     for decl in decls:
         if decl.state == STATE_COLUMN and toggled.count(decl.component_id) != 1:
             raise ConsumptionModuleConfigError(
                 f"component {decl.component_id!r} is in 'column' state and must be toggled "
                 "by exactly one column"
             )
-    if len({c.level for c in out if c.kind != COLUMN_KIND_TEMPLATE}) > 1:
+    if len({c.level for c in out if c.kind == "branch"}) > 1:
         raise ConsumptionModuleConfigError(
             "consumption_module.columns must share one level (one branch block per flight)"
         )
@@ -805,7 +938,64 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
             "consumption_module template columns must all name one node (one "
             "template_variants block per flight)"
         )
+    if len({c.node for c in out if c.kind == COLUMN_KIND_SUPPLY}) > 1:
+        raise ConsumptionModuleConfigError(
+            "consumption_module supply columns must all name one node (one "
+            "supply_variants block per flight)"
+        )
+    kinds = {c.kind for c in out}
+    if COLUMN_KIND_SUPPLY in kinds and len(kinds) > 1:
+        raise ConsumptionModuleConfigError(
+            "supply columns cannot be declared beside template or Perception-branch columns: "
+            "one fan-out mechanism per episode"
+        )
     return tuple(out)
+
+
+def _parse_supply_column(entry: Mapping, *, field: str) -> ColumnDecl:
+    """One ``kind: supply`` column, fail-closed on SHAPE: exactly its keys, a
+    supply bound, and at least one override or a release swap (an arm that
+    resolves nothing beside the delivering arm measures nothing -- the twin is
+    the frame's). The knob-path, store, alternate, identical-set and fit
+    refusals are ``rails.supply_variants``' own, applied at compile time."""
+
+    keys = set(entry)
+    if not _SUPPLY_COLUMN_REQUIRED <= keys or keys - _SUPPLY_COLUMN_REQUIRED - _SUPPLY_COLUMN_OPTIONAL:
+        raise ConsumptionModuleConfigError(
+            f"{field} keys must be {sorted(_SUPPLY_COLUMN_REQUIRED)} plus optional "
+            f"{sorted(_SUPPLY_COLUMN_OPTIONAL)} for a supply column, got {sorted(keys)}; a supply "
+            "column re-caps a selection or swaps one declared release and nothing else"
+        )
+    column_id = _require_text(entry["column_id"], field=f"{field}.column_id")
+    node = _require_text(entry["node"], field=f"{field}.node")
+    bound = entry["max_supplied_items"]
+    if isinstance(bound, bool) or not isinstance(bound, int) or bound < 1:
+        raise ConsumptionModuleConfigError(f"{field}.max_supplied_items must be a positive integer")
+    overrides = entry.get("overrides", {})
+    if not isinstance(overrides, Mapping) or not all(
+        isinstance(k, str) and isinstance(v, int) and not isinstance(v, bool) for k, v in overrides.items()
+    ):
+        raise ConsumptionModuleConfigError(f"{field}.overrides must be an object of knob path -> integer")
+    swap = entry.get("release_swap")
+    if swap is not None and (
+        not isinstance(swap, Mapping) or set(swap) != {"store_id", "release"}
+        or not isinstance(swap["store_id"], str) or not isinstance(swap["release"], str)
+    ):
+        raise ConsumptionModuleConfigError(f"{field}.release_swap must be exactly {{store_id, release}}")
+    if not overrides and swap is None:
+        raise ConsumptionModuleConfigError(
+            f"{field} declares neither overrides nor a release_swap: it would resolve the "
+            "delivering arm's own supply"
+        )
+    payload: dict[str, object] = {"max_supplied_items": bound}
+    if overrides:
+        payload["overrides"] = dict(overrides)
+    if swap is not None:
+        payload["release_swap"] = dict(swap)
+    return ColumnDecl(
+        column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_SUPPLY, node=node,
+        supply_json=_canonical(payload),
+    )
 
 
 def _parse_template_column(entry: Mapping, *, field: str) -> ColumnDecl:
@@ -816,7 +1006,8 @@ def _parse_template_column(entry: Mapping, *, field: str) -> ColumnDecl:
 
     if entry.get("kind") != COLUMN_KIND_TEMPLATE:
         raise ConsumptionModuleConfigError(
-            f"{field}.kind must be {COLUMN_KIND_TEMPLATE!r} or absent, got {entry.get('kind')!r}"
+            f"{field}.kind must be {COLUMN_KIND_TEMPLATE!r}, {COLUMN_KIND_SUPPLY!r} or absent, "
+            f"got {entry.get('kind')!r}"
         )
     if set(entry) != _TEMPLATE_COLUMN_KEYS:
         raise ConsumptionModuleConfigError(
@@ -1269,6 +1460,8 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         ceiling = sum(layer["native_episode"]["roles"][kind]["max_iterations"] for kind in ("perception", "solver"))
     if block.template_columns:
         ceiling += _compile_template_columns(block, hooks, writer, layer)
+    if block.supply_columns:
+        ceiling += _compile_supply_columns(block, hooks, writer, layer)
     level = _compile_perception_branches(block, hooks, writer)
     if level is not None:
         from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
@@ -1467,6 +1660,92 @@ def _compile_template_columns(
     return (len(rows) - 1) * (2 if at_perception else 1)
 
 
+def _compile_supply_columns(
+    block: ConsumptionModuleBlock, hooks: CarrierHooks, writer: _Writer, layer: Mapping,
+) -> int:
+    """Compile the supply columns into ONE ``supply_variants`` block at the
+    carrier's admitted node (E-S1): one arm per column in column order, the
+    twin when the frame asks for one, then the delivering arm -- LAST, with no
+    override and no release swap, so its request is the lock's own (invariants
+    I7 and I7v hold unchanged). ``arm_visits`` is ``first`` (the instrument
+    form). The frame's ``alternates`` are written to
+    ``knowledge_stores.<store>.alternates`` so a ``release_swap`` can name them.
+    Returns the extra contacts the block adds to the ceiling (K - 1).
+
+    The compiled block is parsed by the rails' own ``parse_supply_variants``
+    HERE, so an unadmitted knob path, an undeclared store or alternate, a
+    first-phase or other-node knob, two identical arms or a fit overrun is
+    refused at compile time, by that parser's name, before any config is
+    written."""
+
+    from .controllers import MODULE_PROGRAM_FAMILY_BASE, default_phase_program  # noqa: PLC0415
+    from .knowledge_stores import declared_alternate_release_relpaths  # noqa: PLC0415
+    from .supply_variants import (  # noqa: PLC0415
+        SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT, SupplyVariantError, parse_supply_variants,
+    )
+
+    sf = block.supply_frame
+    frame = _require_hook(hooks, "supply_variant_frame", "supply-columns")
+    nodes = {c.node for c in block.supply_columns}
+    if nodes != {frame["node"]}:
+        raise ConsumptionModuleConfigError(
+            f"supply columns name node(s) {sorted(nodes)}, but profile {hooks.profile!r} "
+            f"admits supply variants only at {frame['node']!r}"
+        )
+    rows: list[dict[str, object]] = []
+    for column in block.supply_columns:
+        spec = column.supply
+        row: dict[str, object] = {"arm_id": column.column_id, "max_supplied_items": spec["max_supplied_items"]}
+        if "overrides" in spec:
+            row["overrides"] = dict(spec["overrides"])
+        if "release_swap" in spec:
+            row["release_swap"] = dict(spec["release_swap"])
+        rows.append(row)
+    delivering_bound = sf["delivering_max_supplied_items"]
+    if sf["twin"]:
+        if frame.get("twin_arm_id") is None:
+            raise ConsumptionModuleConfigError(
+                f"profile {hooks.profile!r} names no twin arm id for supply columns"
+            )
+        rows.append({
+            "arm_id": frame["twin_arm_id"], "max_supplied_items": delivering_bound,
+            "replicate_of": frame["delivering_arm_id"],
+        })
+    rows.append({
+        "arm_id": frame["delivering_arm_id"], "deliver": True, "max_supplied_items": delivering_bound,
+    })
+    supply_block = {
+        "arms": rows, "fit_estimate": dict(sf["fit_estimate"]),
+        "arm_visits": SUPPLY_VARIANT_ARM_VISITS_INSTRUMENT,
+    }
+    path = tuple(frame["block_path"])
+    role = _node(layer, path[:-1], field="supply-columns")
+    stores = layer.get("knowledge_stores")
+    if not isinstance(stores, Mapping):
+        raise ConsumptionModuleConfigError("supply columns: the lock layer declares no knowledge_stores")
+    alternates = sf.get("alternates", {})
+    for store_id, pins in alternates.items():
+        if store_id not in stores or not isinstance(stores[store_id], Mapping):
+            raise ConsumptionModuleConfigError(
+                f"supply_frame.alternates names store {store_id!r}, which the lock layer does not declare"
+            )
+        writer.set(("knowledge_stores", store_id, "alternates"), pins,
+                   component_id="supply-columns", replace_only=False)
+    declared_alternates = declared_alternate_release_relpaths(
+        {sid: {"alternates": pins} for sid, pins in alternates.items()}
+    )
+    first_phase = default_phase_program(MODULE_PROGRAM_FAMILY_BASE).phase_names()[0]
+    try:
+        parse_supply_variants(
+            supply_block, phase_id=str(role.get("phase_id")), first_phase_id=first_phase,
+            declared_stores=tuple(stores), declared_alternate_relpaths=declared_alternates,
+        )
+    except SupplyVariantError as error:
+        raise ConsumptionModuleConfigError(f"supply columns are invalid: {error}") from error
+    writer.set(path, supply_block, component_id="supply-columns", replace_only=False)
+    return len(rows) - 1
+
+
 def delivered_perception_axes(raw_block: object) -> tuple[str, ...]:
     """The branch-row axes a declared block's ``on`` Perception components
     set on the delivering branch A -- what the loader passes to
@@ -1654,6 +1933,7 @@ def validate_module_header_receipt(receipt: object) -> Mapping[str, object]:
 __all__ = [
     "AGREE_VOTE_SEED",
     "CENTROID_BOUNDARY_KEY",
+    "COLUMN_KIND_SUPPLY",
     "COLUMN_KIND_TEMPLATE",
     "COMPONENT_CATALOGUE",
     "COMPONENT_STATES",
