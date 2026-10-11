@@ -587,12 +587,12 @@ def put_state_idempotent(archive: Any, state: Mapping[str, Any]) -> bool:
     return False
 
 
-def lock_root_hash() -> str:
+def lock_root_hash(repo_root: Path | None = None) -> str:
     """sha256 of the canonical lock v2.2 policy layer: the artefact hash of the typed root state."""
 
     from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import carrier_module_hooks  # noqa: PLC0415
 
-    layer = carrier_module_hooks(repo_root=REPO_ROOT).lock_versions[tf.LOCK]()
+    layer = carrier_module_hooks(repo_root=repo_root or REPO_ROOT).lock_versions[tf.LOCK]()
     return tf.canonical_sha256(layer)
 
 
