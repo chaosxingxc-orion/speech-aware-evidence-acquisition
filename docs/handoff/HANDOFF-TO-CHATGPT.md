@@ -1,6 +1,25 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T20:07:42Z
+Last refreshed: 2026-10-11T21:49:48Z
+
+## 266-E think-all segment FLYING at flight commit c9edf3244 (Thinking smoke -> decode-cost sign-off -> Thinking arm; task SAEA-Queue-DirectFB-ThinkAll, 21:50Z) after the Instruct arm's pre-contact abort and rec1 recovery (2026-10-11T21:49:48Z, Fable 5.1 root)
+
+The Instruct arm flown at 77b2283e9 (20:04Z) ABORTED at 20:07:46Z before any model contact: the runner's knowledge-source guard
+found every Fold B query id in the pinned FULL-TRAIN knowledge snapshot (the four 266-E baselines inherited the DEV/test
+direct-only form's pin; the direct-only program binds the snapshot invisibly, the guard runs regardless). 0 calls, 0 budget. Fix
+(branch `sonnet/direct-fb-knowledge-pin-rec1`, merged ead664100): the four baselines pin the fold-excluded view
+`size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1` (0 Fold A/B ids); the Instruct arm takes its single rec1
+re-registration (generation attempt `...-instruct-generation-rec1-v1`, FIT run `...-INSTRUCT-FIT-REC1-V1`); rec1 rows
+countersigned, the first-attempt generation row folded into the rec1 row, nine-id decision receipt minted (old kept as superseded),
+stale flight.lock reconciled (`lease_reconcile_direct_fb_instruct.sh`); flip chain converged at c9edf3244 with four gates PASS
+(21:48Z). Serving: the Thinking session (`serving-slurp-thinking-direct-fold-b-np4-v1`, ext4 copy) has been resident since 20:41Z
+(swap done during the flip; owner: rotation follows experiment needs); the Instruct session is recorded stopped; watchdog hold in
+place. Sequence now: smoke seals -> coordinator reads decode cost and writes `/home/chao/direct-fb-decode-signoff.marker` ->
+Thinking arm (1,080 rows) -> `serving_swap.sh slurp-np4` -> `batch_chain_direct_fb.sh instruct` (Instruct arm + replicate) ->
+remove the watchdog hold -> countersign the READ row -> `direct_fb_read.sh`. In parallel (model-free): `tfrl_loop_driver.py
+--execute open --iter 2 --stage propose --enums-from-gold` opens iteration 2 (proposer cells DRAFT-HELD until the GPU is free).
+
+Superseded stamp: 2026-10-11T20:07:42Z
 
 ## 266-E Instruct segment FLYING at flight commit 77b2283e9 (Instruct arm then request-identical replicate on the resident Instruct session; task SAEA-Queue-DirectFB-Instruct, 20:04Z); iteration-1 note and driver fixes merged (2026-10-11T20:07:42Z, Fable 5.1 root)
 
