@@ -96,3 +96,18 @@ No sealed Instruct direct-only Fold B column exists. The sealed direct-only (pha
 
 No system-level, superiority, generalisation, component-causal, admission, held-out, confirmatory or paper-scale claim. The Thinking model is admitted for
 this read only. Nothing here authorises a flight, a readiness flip or a serving swap.
+
+## Recovery rec1: the Instruct arm (the cell's single recovery re-registration)
+
+The predecessor attempt aborted before any model contact: "RailsRunnerError: AgentLoop query samples overlap the TRAIN knowledge source roster" (raised by the runner's roster guard, rails/runner.py). The guard compares the query roster with the pinned knowledge snapshot's source roster even when the program supplies no evidence. The Instruct arm is re-flown whole under the rec1 ids; the replicate, the Thinking arm and the smoke are untouched (their attempts never opened) and only take the knowledge pin.
+
+RECOVERY 2026-10-11 (the cell's single one; coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (0 calls, 0 speech-seconds): the cumulative budget equals the original plan (1080 calls, 3155 speech-seconds). The FIT cap is structural and unchanged (1 + 3 x rows). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged.
+
+- Failed attempt: `attempt-slurp-direct-only-fold-b-instruct-generation-v1` (ABORTED at 20:07:46Z at flight commit 77b2283e9 before any model contact, 0 calls / 0.0 speech-seconds; preserved unread (reserved 1080 calls / 3155 speech-seconds). The FIT attempt was never opened.)
+- Root cause: the full-TRAIN knowledge view (609854e4...; 50,628 source rows, every Fold B id inside it) was pinned on a TRAIN-fold cell; corrected to the fold-excluded view of the same family (9c64e8ec...; 37,407 source rows, 0 Fold A and 0 Fold B ids).
+- Fix: every 266-E baseline fragment now pins the fold-excluded knowledge view `knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json` (sha256 `9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b`); the single source is `scripts/flights/direct/direct_fb_family.py` and `direct_fb_derive_cells.py` writes it. The direct-only program supplies no evidence, so the pin changes no request; it only has to pass the runner's roster guard.
+- Re-flown whole under generation attempt `attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1` and FIT run `SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1` / attempt `attempt-slurp-direct-only-fold-b-instruct-fit-rec1-v1`; the generation run id `SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1` and the minted decision receipt are unchanged.
+- Run-cumulative plan budget: 1080 + 0 = 1080 calls; 3155 + 0 = 3155 speech-seconds; the FIT cap stays structural.
+- Plans: `instruct-generation-plan-registered-rec1-v1.json`, `instruct-fit-plan-registered-rec1-v1.json` (the first-attempt plan files are superseded and removed from the package; the git history keeps them, and the failed attempt stays on the data root).
+- Unchanged cells (their attempts never opened; they take only the knowledge pin): `slurp-direct-only-fold-b-thinking-smoke-4-v1`, `slurp-direct-only-fold-b-thinking-v1`, `slurp-direct-only-fold-b-instruct-replicate-v1`.
+- A second failure closes the cell; the fix is proven on a four-row dry run.

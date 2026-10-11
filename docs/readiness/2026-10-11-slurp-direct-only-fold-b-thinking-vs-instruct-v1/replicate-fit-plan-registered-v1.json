@@ -37,7 +37,7 @@
   "preparation_base_commit": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
-    "sha256": "936c99f64ecf69b66cc79718268c1d8a12a701d3a2bb37f87bb150288d5232be"
+    "sha256": "8919a7f5447fa92e6dd90070e2ff1fdfcc443957cc1430a56c3854445fbb0b31"
   },
   "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1: the live phase-fit spend identity of SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1.",
   "registered_at_utc": "2026-10-11T18:00:00.000000+00:00",

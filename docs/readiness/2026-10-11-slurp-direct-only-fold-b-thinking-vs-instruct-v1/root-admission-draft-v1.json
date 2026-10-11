@@ -90,7 +90,8 @@
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1",
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-V1",
     "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-V1",
-    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1"
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-REPLICATE-FIT-V1",
+    "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1"
   ],
   "failure_policy": "Stop and preserve on the first failure. AT MOST ONE root-diagnosed recovery re-registration per run id; a second failure closes the cell and the fix is proven on a four-row dry run. The budget is run-cumulative across attempts.",
   "not_authorized": [
@@ -111,6 +112,7 @@
     "test_contact_authorized": false
   },
   "recorded_at_utc": null,
+  "recovery_note": "The predecessor attempt aborted before any model contact: \"RailsRunnerError: AgentLoop query samples overlap the TRAIN knowledge source roster\" (raised by the runner's roster guard, rails/runner.py). The guard compares the query roster with the pinned knowledge snapshot's source roster even when the program supplies no evidence. The Instruct arm is re-flown whole under the rec1 ids; the replicate, the Thinking arm and the smoke are untouched (their attempts never opened) and only take the knowledge pin.",
   "registered_hashes": {
     "instruct": {
       "composed_config": "369776f8830d6c6d72bd91303b8301545c7e1ea445c16866ecd4365d25f1bc86",
@@ -137,5 +139,9 @@
     "slots": 4,
     "thinking_session": "serving-slurp-thinking-direct-fold-b-np4-v1"
   },
-  "status": "DRAFT-NOT-MINTED"
+  "status": "DRAFT-NOT-MINTED",
+  "superseded_attempt_ids": [
+    "attempt-slurp-direct-only-fold-b-instruct-generation-v1",
+    "attempt-slurp-direct-only-fold-b-instruct-fit-v1"
+  ]
 }
