@@ -248,6 +248,12 @@ _EXPECTED_PROGRAM_SHAPES = {
     # core.flight.runtime._default_construction_material dispatches the GEPA
     # material on, because both construction-visible cells fly the SAME arm.
     "phase-stage3-gepa-v1": (("gepa",), 1, "always-run-full-program"),
+    # Decision 263-A (2026-10-11), E-T1: the typed proposer and the ACE reflector,
+    # each ONE text-only phase and ONE contact, differing from the GEPA shape in
+    # exactly the response format (saea-tfrl-typed-candidate-v1 and
+    # saea-ace-delta-items-v1).
+    "phase-tfrl-typed-proposer-v1": (("propose",), 1, "always-run-full-program"),
+    "phase-tfrl-ace-reflector-v1": (("reflect",), 1, "always-run-full-program"),
     "phase-training-feedback-proposal-v1": (
         ("proposal",),
         1,

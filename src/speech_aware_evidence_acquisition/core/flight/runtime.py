@@ -64,6 +64,16 @@ from ...rails.stage3_advantage import STAGE3_ADVANTAGE_ARM
 from ...rails.stage3_advantage_material import AdvantageMaterial
 from ...rails.stage3_gepa import STAGE3_GEPA_PROGRAM_ID
 from ...rails.stage3_gepa_material import GepaMaterial
+from ...rails.tfrl_typed_proposer import (
+    TFRL_ACE_PROGRAM_ID,
+    TFRL_TYPED_PROGRAM_ID,
+    TfrlProposerError,
+    TfrlProposerMaterial,
+    build_ace_reflector_material,
+    build_typed_proposer_material,
+    read_ace_reflector_receipt,
+    read_typed_candidate_receipt,
+)
 from ...rails.phase_runner import run_continuous_program, run_program
 from ...rails.runner import RAILS_ARMS, run_rails_experiment
 from ...rails.task_adapter import TaskAdapter
@@ -812,7 +822,7 @@ def _default_construction_material(
     data_root: Path,
     repo_root: Path,
     samples: Sequence[object],
-) -> "ProposerMaterial | AdvantageMaterial | GepaMaterial":
+) -> "ProposerMaterial | AdvantageMaterial | GepaMaterial | TfrlProposerMaterial":
     """The config-driven default for the ``construction_material_resolver``
     seam, dispatched on the composed baseline's own ``arm``.
 
@@ -842,6 +852,24 @@ def _default_construction_material(
     unchanged.
     """
 
+    if str(values.get("policy") or "") in (TFRL_TYPED_PROGRAM_ID, TFRL_ACE_PROGRAM_ID):
+        # Decision 263-A: the typed proposer and the ACE reflector dispatch on
+        # the PROGRAM, beside the GEPA arm (``rails.tfrl_typed_proposer``).
+        builder = (
+            build_typed_proposer_material
+            if str(values.get("policy")) == TFRL_TYPED_PROGRAM_ID
+            else build_ace_reflector_material
+        )
+        try:
+            return builder(
+                values,
+                lock=lock,
+                data_root=Path(data_root),
+                repo_root=Path(repo_root),
+                samples=samples,
+            )
+        except TfrlProposerError as error:
+            raise FlightRuntimeError(str(error)) from None
     if str(values.get("arm") or "") == STAGE3_ADVANTAGE_ARM:
         if str(values.get("policy") or "") == STAGE3_GEPA_PROGRAM_ID:
             from ...rails.stage3_gepa_material import (  # noqa: PLC0415 (cycle guard)
@@ -5059,13 +5087,15 @@ class FlightRuntime:
                 samples=self._samples,
             )
             if not isinstance(
-                material, (ProposerMaterial, AdvantageMaterial, GepaMaterial)
+                material,
+                (ProposerMaterial, AdvantageMaterial, GepaMaterial, TfrlProposerMaterial),
             ):
                 raise FlightRuntimeError(
                     "construction_material_resolver must return a "
                     "rails.evolution.ProposerMaterial, a "
                     "rails.stage3_advantage_material.AdvantageMaterial or a "
-                    "rails.stage3_gepa_material.GepaMaterial"
+                    "rails.stage3_gepa_material.GepaMaterial or a "
+                    "rails.tfrl_typed_proposer.TfrlProposerMaterial"
                 )
             if not material.contacts:
                 raise FlightRuntimeError(
@@ -6892,6 +6922,14 @@ class FlightRuntime:
             def reader(text: str) -> Mapping[str, object]:
                 return parse_gepa_proposal(text).receipt()
 
+        elif policy == TFRL_TYPED_PROGRAM_ID:
+            reader_key = "tfrl_candidates"
+            reader = read_typed_candidate_receipt
+
+        elif policy == TFRL_ACE_PROGRAM_ID:
+            reader_key = "tfrl_reflector_deltas"
+            reader = read_ace_reflector_receipt
+
         elif self._arm() == STAGE3_ADVANTAGE_ARM:
             from ...rails.stage3_advantage import (  # noqa: PLC0415 (cycle guard)
                 parse_advantage_statements_v2,
@@ -6954,6 +6992,8 @@ class FlightRuntime:
                 (
                     "direct-construction-gepa"
                     if policy == STAGE3_GEPA_PROGRAM_ID
+                    else "direct-construction-tfrl"
+                    if policy in (TFRL_TYPED_PROGRAM_ID, TFRL_ACE_PROGRAM_ID)
                     else "direct-construction-advantage"
                     if self._arm() == STAGE3_ADVANTAGE_ARM
                     else "direct-construction-proposer"
