@@ -1,0 +1,57 @@
+{
+  "inputs": {
+    "iteration": 1,
+    "open_cell": "c8c9c22ef95849a12da6b97318c09eedb666b59a2abd9bca262cc3ea9a305f50",
+    "skip_playbook_file": true
+  },
+  "inputs_sha256": "605defdb492be2c8ded9418fb3ce23b4374de1f607a95484d2c2865ab3a9ec84",
+  "iteration": 1,
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "status": "done",
+  "step": "repair",
+  "steps": {
+    "corrections_written": [
+      {
+        "path": "state-e7b4fa572497c5c0dfecf6a5578a252c54e6307eb845f074f7551bf499c90464-playbook-hash.json",
+        "right": "e12fabcc1a8c72c93a2b0b5ceb14ba1d1168c93ac8ba4fbcc05ab5af4820e28e",
+        "state_id": "e7b4fa572497c5c0dfecf6a5578a252c54e6307eb845f074f7551bf499c90464",
+        "wrong": "6c69ae0382b7af7940820ad719b091c06e3af1ac59ea92810c9537b704e0691d"
+      }
+    ],
+    "offline": [
+      {
+        "clauses": {
+          "ci_lb_gt_0": {
+            "pass": false,
+            "threshold": 0.0,
+            "value": 0.0
+          },
+          "point_ge_floor": {
+            "pass": false,
+            "threshold": 0.67,
+            "value": 0.0
+          }
+        },
+        "cross_fitted": {
+          "ci95_slu_pp": [
+            0.0,
+            0.0
+          ],
+          "delta_slu_pp": 0.0,
+          "rows_edited": 0
+        },
+        "family": "fx-oclock",
+        "state_id": "ccbe1075a873c047af293b4a70b94dd765afaaf22b378c255649512d5e8db6f6",
+        "status": "refused"
+      }
+    ],
+    "playbook_binding": [
+      {
+        "corrected": true,
+        "ok": true,
+        "state_id": "e7b4fa572497c5c0dfecf6a5578a252c54e6307eb845f074f7551bf499c90464"
+      }
+    ],
+    "playbook_file": "skipped"
+  }
+}

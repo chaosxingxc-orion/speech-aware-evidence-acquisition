@@ -1,0 +1,52 @@
+{
+  "arm": "typed",
+  "artefact_hashes": {
+    "delivery_rule_table": "ed7dd061d631431119dff8ef84f466dad75901969fb6a14d1f7271ad24169ae1",
+    "supply_fragment": "b6340f5f0e3382ffc1b39603d4e1cffc0e5b6768c28c46fdbe1397069c688833"
+  },
+  "candidate_id": "688e0fd030d81c90378357cbc77609f21a536c3b9e91373f69fb38bda3f28a06",
+  "credit": {
+    "contacts_per_row": 0.0,
+    "false_fill": {
+      "delta_pp": 0.0,
+      "n": 0
+    },
+    "intent": 0.0,
+    "non_empty_exact": {
+      "delta_pp": 0.0,
+      "n": 0
+    },
+    "per_scenario": {
+      "per_scenario": {
+        "intent": 0.0,
+        "slu": 0.0
+      }
+    },
+    "slu_f1": 64.0042,
+    "vs_lock": {
+      "intent": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "slu": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      }
+    },
+    "vs_parent": null,
+    "vs_twin": null
+  },
+  "iteration": 1,
+  "operator_class": "delivery",
+  "parent_id": "a8f1d50ef76ecf1209d7851a993eba5610abf695f14af0a7c90b53750bb35347",
+  "predicted_slu_pp": null,
+  "read": {
+    "attempt": 1,
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1"
+  },
+  "schema": "saea-tfrl-archive-state-v1",
+  "state_id": "ccbe1075a873c047af293b4a70b94dd765afaaf22b378c255649512d5e8db6f6",
+  "verdict": "refused"
+}

@@ -75,3 +75,19 @@ scripts only with `--execute` (otherwise it prints the commands and stops before
   whatever the rosters (the empty release i0 passes only because its anchor row carries 0.0). The fix is to divide by `total`; the module is owned by the
   E-T2 change. `tests/unit/test_tfrl_loop_driver.py` stages the roster-guard proofs with an order-preserving rescale and records the defect in a strict
   xfail test, which fails (unexpected pass) the day the module is fixed, so the mark is removed then.
+
+## Planned GPU hours of iterations 2 and 3 (rule, 2026-10-11)
+
+Iteration 1 flew 4,320 contacts in 2.49 GPU-active hours against a planned 1.5 (calls and audio exactly at plan): 2.075 s per contact. From
+iteration 2 the column's `planned_gpu_hours` is DERIVED, not hand-set (`tfrl_family.planned_gpu_hours_arm`):
+`ceil(rows x contacts_per_row x 2.075 s x 1.3 / 3600)` rounded UP to 0.1 h (iteration 2 and 3, five contacts per row: 4.1 h). The smoke cell
+keeps its fixed 1.0 h. The pinned protocol JSON does not carry GPU hours, so it is unchanged (no rebuild was needed).
+
+## Repair of a closed iteration (one-off, idempotent)
+
+    python -B scripts/flights/tfrl/tfrl_loop_driver.py repair --iter 1 [--skip-playbook-file] [--execute]
+
+Makes `playbook/playbook-i<t>.json` the playbook behind the pinned release (the stale file is kept as `playbook-i<t>.superseded-<ts>.json`),
+writes a correction record under `archive/corrections/` for an archived ACE state that binds another playbook hash (state files are never
+edited; `Archive.states()` applies the record), and reads every offline candidate that has no archive state (an unsupported family is archived
+as refused with code `offline-family-unsupported`). Archive correction records are part of `archive_sha256`.

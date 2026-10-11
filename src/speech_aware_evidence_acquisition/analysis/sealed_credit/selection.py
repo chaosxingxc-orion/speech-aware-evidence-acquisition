@@ -137,7 +137,7 @@ def curve(states: Iterable[Mapping[str, Any]], arm: str = "typed", iterations: i
     level, level_id = dict(_ZERO), None
     for t in range(1, iterations + 1):
         flown = sorted(
-            (s for s in states if s["iteration"] == t and s["verdict"] in ("accepted", "refused")),
+            (s for s in states if s["iteration"] == t and s["verdict"] in ("accepted", "refused") and s.get("credit") is not None),
             key=lambda s: s["state_id"],
         )
         accepted = [s for s in flown if s["verdict"] == "accepted"]

@@ -192,7 +192,7 @@ class Runner:
         self.execute, self.cwd, self.python, self.fake = execute, Path(cwd or REPO_ROOT), python or sys.executable, fake
         self.log: list[StepResult] = []
 
-    def run(self, name: str, argv: Sequence[str], *, produces: Sequence[Path]) -> StepResult:
+    def run(self, name: str, argv: Sequence[str], *, produces: Sequence[Path], ok_codes: Sequence[int] = (0,)) -> StepResult:
         argv = [str(a) for a in argv]
         produced = [Path(p) for p in produces]
         if produced and all(p.exists() for p in produced):
@@ -208,7 +208,7 @@ class Runner:
         else:
             env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
             completed = subprocess.run([self.python, "-B", *argv], cwd=str(self.cwd), env=env, check=False)  # noqa: S603
-            if completed.returncode != 0:
+            if completed.returncode not in ok_codes:
                 raise LoopError(f"step {name} failed with exit status {completed.returncode}")
             missing = [str(p) for p in produced if not p.exists()]
             if missing:
@@ -576,15 +576,34 @@ def put_state_idempotent(archive: Any, state: Mapping[str, Any]) -> bool:
 
     from speech_aware_evidence_acquisition.analysis.sealed_credit.archive import ArchiveError  # noqa: PLC0415
 
+    wanted = json.loads(json.dumps(state))
+    # a state whose recorded hash was corrected by a correction record keeps its original state_id: the same artefact set under the
+    # corrected view is the same state (a re-run of the step must not archive a duplicate)
+    for held in archive.states():
+        if held.get("corrections") and held["state_id"] != wanted["state_id"] and held["artefact_hashes"] == wanted["artefact_hashes"]:
+            view = {k: v for k, v in held.items() if k not in ("corrections", "state_id")}
+            if view != {k: v for k, v in wanted.items() if k != "state_id"}:
+                raise ReceiptConflict(f"state {held['state_id'][:12]} is archived (corrected) with different content")
+            return False
     try:
         archive.get(state["state_id"])
     except ArchiveError:
         archive.put(state)
         return True
     existing = archive.get(state["state_id"])
-    if existing != json.loads(json.dumps(state)):
+    if existing != wanted:
         raise ReceiptConflict(f"state {state['state_id'][:12]} is archived with different content")
     return False
+
+
+def stored_state_id(archive: Any, state: Mapping[str, Any]) -> str:
+    """The id under which ``state`` is archived: its own, or the original id of the corrected state it equals."""
+
+    wanted = json.loads(json.dumps(state))
+    for held in archive.states():
+        if held.get("corrections") and held["artefact_hashes"] == wanted["artefact_hashes"] and held["state_id"] != wanted["state_id"]:
+            return held["state_id"]
+    return wanted["state_id"]
 
 
 # ---------------------------------------------------------------------------------------------------------------------------
@@ -671,6 +690,8 @@ def archive_sha256(archive_dir: Path) -> str:
     lines = []
     for path in sorted(Path(archive_dir).glob("state-*.json")):
         lines.append(f"{path.name}:{tf.sha256_file(path)}")
+    for path in sorted((Path(archive_dir) / "corrections").glob("state-*.json")):      # correction records are part of the archive
+        lines.append(f"corrections/{path.name}:{tf.sha256_file(path)}")
     return tf.sha256_bytes("\n".join(lines).encode("ascii"))
 
 

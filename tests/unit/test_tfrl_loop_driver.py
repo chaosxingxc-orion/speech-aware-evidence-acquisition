@@ -849,3 +849,205 @@ def test_the_release_binding_refuses_a_permitted_roster_that_is_not_the_pinned_f
     (root / lib.ACE_I0_REGISTRATION_RELPATH).write_text(json.dumps(registration), encoding="utf-8")
     with pytest.raises(lib.LoopError, match="outside the construction roster"):
         lib.ace_release_binding(root)
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# iteration-1 results-read defects (2026-10-11): stale playbook file, unread offline candidate, receipt flag, GPU plan
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def stale_empty_playbook(world: World, t: int = 1) -> dict:
+    """Write what the superseded first ``open --stage cell`` run left behind: the EMPTY playbook of the iteration."""
+
+    constants = ace.with_measured_lock_p99(14641)
+    empty = ace.curate(ace.empty_playbook(), [], {}, constants)
+    assert empty["iteration"] == t and not empty["items"]
+    path = world.analysis(t) / "playbook" / f"playbook-i{t}.json"
+    ace.write_playbook(path, empty)
+    return empty
+
+
+def make_ctx_for(world: World):
+    return drv.make_ctx(drv.build_parser().parse_args(["--repo-root", str(world.root), "--package-dir", str(world.pkg),
+                                                       "--data-root", str(world.data), "status"]))
+
+
+def test_a_stale_playbook_file_is_superseded_not_kept_and_not_the_one_the_receipt_names(world):
+    world.run(*propose_args(world), fakes=Fakes())
+    stale = stale_empty_playbook(world)
+    path = world.analysis(1) / "playbook" / "playbook-i1.json"
+    assert world.run(*open_cell_args(world))[0] == 0
+    receipt = world.receipt(1, "open-cell")
+    live = ace.load_playbook(path)
+    assert receipt["ace"]["playbook_file"] == "rewritten" and live["content_hash"] == receipt["ace"]["playbook_content_hash"]
+    assert len(live["items"]) == 18 and live["content_hash"] != stale["content_hash"]
+    kept = sorted(path.parent.glob("playbook-i1.superseded-*.json"))
+    assert len(kept) == 1 and ace.load_playbook(kept[0])["content_hash"] == stale["content_hash"]
+    before = {p.name: p.read_bytes() for p in path.parent.iterdir()}
+    assert world.run(*open_cell_args(world))[0] == 0
+    assert {p.name: p.read_bytes() for p in path.parent.iterdir()} == before
+
+
+def test_the_flown_playbook_is_resolved_by_the_hash_in_the_open_cell_receipt(world):
+    world.run(*propose_args(world), fakes=Fakes())
+    assert world.run(*open_cell_args(world))[0] == 0
+    ctx = make_ctx_for(world)
+    want = world.receipt(1, "open-cell")["ace"]["playbook_content_hash"]
+    stale_empty_playbook(world)
+    path, playbook = drv.resolve_playbook(ctx, 1)
+    assert path == drv.staging_playbook_file(ctx, 1) and playbook["content_hash"] == want
+    drv.staging_playbook_file(ctx, 1).unlink()
+    with pytest.raises(lib.LoopError, match="repair --iter 1"):
+        drv.resolve_playbook(ctx, 1)
+
+
+def test_the_next_iteration_curates_from_the_flown_playbook_even_when_the_primary_file_is_stale(world):
+    fakes = Fakes(pairs={"ace-vs-lock": contrast_doc(0.8, 0.1, 1.5), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)})
+    stall_iteration(world, fakes)
+    assert world.run("close", "--iter", "1", fakes=fakes)[0] == 0
+    stale_empty_playbook(world)
+    assert world.run(*propose_args(world, 2), fakes=Fakes())[0] == 0
+    assert world.run(*open_cell_args(world, 2))[0] == 0
+    grown = ace.load_playbook(world.analysis(2) / "playbook" / "playbook-i2.json")
+    assert len([i for i in grown["items"] if i["created_iteration"] == 1]) == 18
+
+
+def test_close_asserts_that_the_archived_playbook_hash_is_the_one_behind_the_release(world):
+    fakes = Fakes(pairs={"ace-vs-lock": contrast_doc(0.8, 0.1, 1.5), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)})
+    stall_iteration(world, fakes)
+    ctx = make_ctx_for(world)
+    opened = world.receipt(1, "open-cell")
+    good = ace.load_playbook(drv.staging_playbook_file(ctx, 1))
+    assert drv.assert_playbook_binding(ctx, 1, opened, good) == opened["ace"]["playbook_content_hash"]
+    other = ace.curate(ace.empty_playbook(), [], {}, ace.with_measured_lock_p99(14641))
+    with pytest.raises(lib.LoopError, match="not the one behind the pinned release"):
+        drv.assert_playbook_binding(ctx, 1, opened, other)
+    ace.write_playbook(drv.staging_playbook_file(ctx, 1), other)
+    code, text = world.run("close", "--iter", "1", fakes=fakes)
+    assert code == 3 and "staged release playbook" in text
+    assert [s for s in world.archive().states() if s["arm"] == "ace" and s["iteration"] == 1] == []
+
+
+def test_a_correction_record_repairs_the_archived_hash_without_editing_the_state_file(world):
+    fakes = Fakes(pairs={"ace-vs-lock": contrast_doc(0.8, 0.1, 1.5), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)})
+    stall_iteration(world, fakes)
+    assert world.run("close", "--iter", "1", fakes=fakes)[0] == 0
+    good = next(s for s in world.archive().states() if s["arm"] == "ace" and s["iteration"] == 1)
+    right = good["artefact_hashes"]["playbook_release"]
+    wrong_hash = tf.canonical_sha256({"the": "stale empty playbook"})
+    (world.pkg / "archive" / f"state-{good['state_id']}.json").unlink()
+    bad = ar.build_state(artefact_hashes={"playbook_release": wrong_hash}, parent_id=good["parent_id"], iteration=1, operator_class="playbook",
+                         candidate_id="ace-i1", verdict=good["verdict"], arm="ace", credit=good["credit"], run_id=good["read"]["run_id"],
+                         attempt=1)
+    world.archive().put(bad)
+    raw = (world.pkg / "archive" / f"state-{bad['state_id']}.json").read_bytes()
+    code, text = world.run("repair", "--iter", "1", "--skip-playbook-file", fakes=fakes)
+    assert code == 0, text
+    corrections = sorted((world.pkg / "archive" / "corrections").glob("state-*.json"))
+    assert [c.name for c in corrections] == [f"state-{bad['state_id']}-playbook-hash.json"]
+    record = json.loads(corrections[0].read_text(encoding="utf-8"))
+    assert (record["wrong"], record["right"], record["artefact"]) == (wrong_hash, right, "playbook_release")
+    assert record["derives_from"]["field"] == "ace.playbook_content_hash"
+    assert record["derives_from"]["receipt"].endswith("open-cell-receipt.json")
+    assert (world.pkg / "archive" / f"state-{bad['state_id']}.json").read_bytes() == raw
+    view = next(s for s in world.archive().states() if s["arm"] == "ace" and s["iteration"] == 1)
+    assert view["state_id"] == bad["state_id"] and view["artefact_hashes"]["playbook_release"] == right
+    assert view["corrections"][0]["wrong"] == wrong_hash
+    assert world.run("repair", "--iter", "1", "--skip-playbook-file", fakes=fakes)[0] == 0
+    assert len(list((world.pkg / "archive" / "corrections").glob("state-*.json"))) == 1
+    for name in ("close-receipt", "curve", "parent", "proposer-meta"):       # the close outputs that named the original (wrong-hash) state
+        (world.pkg / "iterations" / "i1" / f"{name}.json").unlink()
+    code, text = world.run("close", "--iter", "1", fakes=fakes)
+    assert code == 0, text
+    assert len([s for s in world.archive().states() if s["arm"] == "ace" and s["iteration"] == 1]) == 1
+    assert world.receipt(1, "close")["verdicts"]["ace"]["state_id"] == bad["state_id"]
+    sha_with = lib.archive_sha256(world.pkg / "archive")
+    shutil.rmtree(world.pkg / "archive" / "corrections")
+    assert lib.archive_sha256(world.pkg / "archive") != sha_with
+
+
+def delivery_entries(family: str, types: list[str], intents: list[str]) -> list[dict]:
+    cand = {"schema": tp.CANDIDATE_SCHEMA_ID, "iteration": 1, "parent_state_id": drv.ROOT_DISPLAY, "operator_class": "delivery",
+            "operator": "deliver-rule",
+            "target": {"failure_class": "SPURIOUS", "slot_types": types, "scenarios": ["alarm"], "value_in_supply": "none"},
+            "hypothesis_code": "rule-filter",
+            "applications": [{"family": family, "guard": "none", "types": types, "intents": intents}]}
+    return [{"allowed_classes": ["delivery", "scope"], "receipt": tp.read_typed_candidate_receipt(json.dumps(cand))}]
+
+
+def offline_world(world: World, entries: list[dict], fakes: Fakes) -> None:
+    typed = world.tmp / "typed.json"
+    typed.write_text(json.dumps(entries), encoding="utf-8")
+    pred = world.tmp / "pred.json"
+    pred.write_text(json.dumps({"schema": tp.PREDICTIONS_SCHEMA_ID, "predictions": {}}), encoding="utf-8")
+    assert world.run(*propose_args(world), fakes=fakes)[0] == 0
+    assert world.run(*open_cell_args(world, typed=typed, predictions=pred))[0] == 0
+
+
+def test_an_offline_candidate_of_an_unsupported_family_is_archived_refused_never_skipped(world):
+    entries = delivery_entries("fx-month-ordinal", ["date"], [])
+    fakes = Fakes(pairs={"ace-vs-lock": contrast_doc(0.2, -0.7, 1.1), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)})
+    offline_world(world, entries, fakes)
+    assert world.receipt(1, "open-cell")["offline"] == 1
+    assert world.run("close", "--iter", "1", fakes=fakes)[0] == 0
+    verdict = world.receipt(1, "close")["verdicts"]["offline"][0]
+    assert verdict["status"] == "refused" and verdict["refusal_code"] == "offline-family-unsupported"
+    assert not any(name.startswith("delivery-fit-") for name in fakes.calls)
+    child = next(s for s in world.archive().states() if s["arm"] == "typed" and s["iteration"] == 1)
+    assert child["verdict"] == "refused" and child["refusal_code"] == "offline-family-unsupported"
+    assert child["credit"] is None and child["read"] is None and child["candidate_id"] == entries[0]["receipt"]["candidate_id"]
+    parent = json.loads((world.pkg / "iterations" / "i1" / "parent.json").read_text(encoding="utf-8"))
+    assert parent["ranking"][0]["n_children"] == 0 and parent["masked_classes"] == []
+    assert world.run(*propose_args(world, 2), fakes=Fakes())[0] == 0
+    context = json.loads((world.analysis(2) / "proposer-context.json").read_text(encoding="utf-8"))
+    assert context["refused_buffer"][0]["refusal_code"] == "offline-family-unsupported"
+    assert "realised_d_slu_pp" not in context["refused_buffer"][0]
+
+
+def test_fx_oclock_is_read_by_the_fitter_with_the_candidates_own_scope(world):
+    entries = delivery_entries("fx-oclock", ["time"], ["alarm_query", "alarm_set"])
+    cid = entries[0]["receipt"]["candidate_id"]
+    argvs: list[list[str]] = []
+
+    class Spy(Fakes):
+        def __call__(self, name, argv, produced):
+            if name.startswith("delivery-fit-"):
+                argvs.append(list(argv))
+            super().__call__(name, argv, produced)
+
+    fakes = Spy(pairs={"ace-vs-lock": contrast_doc(0.2, -0.7, 1.1), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)},
+                fits={cid[:8]: fit_report(0.0, 0.0, refused=True)})
+    offline_world(world, entries, fakes)
+    assert world.run("close", "--iter", "1", fakes=fakes)[0] == 0
+    assert flag(argvs[0], "--family") == "oclock" and flag(argvs[0], "--types") == "time"
+    assert flag(argvs[0], "--intents") == "alarm_query,alarm_set"
+    verdict = world.receipt(1, "close")["verdicts"]["offline"][0]
+    assert verdict["status"] == "refused" and verdict["family"] == "fx-oclock" and "refusal_code" not in verdict
+    child = next(s for s in world.archive().states() if s["arm"] == "typed" and s["iteration"] == 1)
+    assert child["credit"] is not None and child["read"]["attempt"] == 1
+
+
+def test_the_receipt_separates_an_empty_typed_arm_by_measurement_from_the_input_flag(world):
+    world.run(*propose_args(world), fakes=Fakes())
+    assert world.run(*open_cell_args(world))[0] == 0
+    receipt = world.receipt(1, "open-cell")
+    assert receipt["inputs"]["typed_arm_empty"] is True and receipt["typed_arm_empty_by_measurement"] is False
+    w2 = World(world.tmp / "w2")
+    offline_world(w2, delivery_entries("fx-oclock", ["time"], []), Fakes())
+    receipt2 = w2.receipt(1, "open-cell")
+    assert receipt2["typed_arm"] == "empty (legal)" and receipt2["inputs"]["typed_arm_empty"] is False
+    assert receipt2["typed_arm_empty_by_measurement"] is True
+    w3 = World(world.tmp / "w3")
+    receipts = knob_receipt(12)
+    typed = w3.tmp / "typed.json"
+    typed.write_text(json.dumps(receipts), encoding="utf-8")
+    w3.run(*propose_args(w3), fakes=Fakes())
+    assert w3.run(*open_cell_args(w3, typed=typed, predictions=predictions(w3.tmp / "pred.json", receipts, 1.8)))[0] == 0
+    assert w3.receipt(1, "open-cell")["typed_arm_empty_by_measurement"] is False
+
+
+def test_planned_gpu_hours_derive_from_the_measured_iteration_one_rate():
+    assert tf.planned_gpu_hours_arm(1, tf.ROWS, 4) == tf.PLANNED_GPU_HOURS_ARM
+    assert tf.planned_gpu_hours_arm(2, tf.ROWS, 5) == 4.1 and tf.planned_gpu_hours_arm(3, tf.ROWS, 5) == 4.1
+    assert tf.planned_gpu_hours_arm(2, tf.ROWS, 4) == 3.3
+    assert tf.MEASURED_GPU_S_PER_CONTACT_I1 == pytest.approx(2.49 * 3600 / 4320, abs=1e-3)

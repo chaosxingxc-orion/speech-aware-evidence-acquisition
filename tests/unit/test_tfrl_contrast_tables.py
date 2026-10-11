@@ -351,3 +351,26 @@ def test_the_fit_report_seal_is_stable_and_text_free() -> None:
 
 def test_every_family_grid_contains_its_v4g_point() -> None:
     assert 0.10 in F.GRIDS["ee"] and 0.01 in F.GRIDS["ti"] and 0.10 in F.GRIDS["article"]
+
+
+def test_family_oclock_strips_a_trailing_oclock_token_from_a_time_filler_only() -> None:
+    pairs = [(0, _Ent("time", "seven o'clock")), (1, _Ent("time", "7 OClock")), (2, _Ent("time", "oclock")),
+             (3, _Ent("date", "five o'clock")), (4, _Ent("time", "half past"))]
+    out = F.apply_family("oclock", 1.0, list(pairs), "alarm_set", _Stats(), _env())
+    assert [e.filler for _i, e in out] == ["seven", "7", "oclock", "five o'clock", "half past"]
+
+
+def test_family_oclock_honours_the_candidates_intent_and_type_scope() -> None:
+    pairs = [(0, _Ent("time", "seven o'clock"))]
+    env = _env()
+    env["intents"] = ("alarm_query", "alarm_set")
+    assert F.apply_family("oclock", 1.0, list(pairs), "alarm_set", _Stats(), env)[0][1].filler == "seven"
+    assert F.apply_family("oclock", 1.0, list(pairs), "calendar_set", _Stats(), env) == pairs
+    assert F.apply_family("oclock", 1.0, list(pairs), None, _Stats(), env) == pairs
+    env2 = _env()
+    env2["types"] = ("date",)
+    assert F.apply_family("oclock", 1.0, list(pairs), "alarm_set", _Stats(), env2) == pairs
+
+
+def test_oclock_has_no_threshold_one_nominal_grid_point() -> None:
+    assert F.GRIDS["oclock"] == (1.0,) and "oclock" in F.FAMILIES
