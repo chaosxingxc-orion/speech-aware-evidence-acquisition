@@ -1690,7 +1690,8 @@ def draft_exposure_row(
         "execution profile": "bounded-discovery-probe",
         "scope": (
             f"REGISTERED -- {label} contact(s), decision 263-A / 264-A: text-only seam of the "
-            "frozen core, no audio part; aggregates of TRAIN Fold B credit; no per-row gold, "
+            "frozen core, no audio part; aggregates of the sealed construction-source lock column "
+            "(R01C, TRAIN rows outside both folds) credit; no per-row gold, "
             "no utterance text, no output text."
         ),
         "model/tool": (

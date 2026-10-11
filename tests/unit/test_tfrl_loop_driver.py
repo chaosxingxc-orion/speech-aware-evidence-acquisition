@@ -315,8 +315,8 @@ def test_open_propose_writes_the_artefacts_the_cells_and_the_receipt(world):
         assert experiment["stage3_algorithm"]["id"] == (tf.ALGORITHM_TYPED if kind == "typed" else tf.ALGORITHM_ACE)
     rows = (world.root / receipt["registration"]["package"] / "draft-ledger-rows.md").read_text(encoding="utf-8")
     assert "DRAFT" in rows and "consumed" in rows
-    # the real exposure ledger is untouched; the overlay's copy carries no TFRL row
-    assert "tfrl-loop" not in (world.root / "docs" / "exposure-ledger.md").read_text(encoding="utf-8").lower()
+    # the exposure ledger is untouched: the overlay's copy still equals the repository ledger (which since 2026-10-11 carries live TFRL rows)
+    assert (world.root / "docs" / "exposure-ledger.md").read_bytes() == (REPO / "docs" / "exposure-ledger.md").read_bytes()
     # the archive holds the two iteration-0 roots only
     assert sorted((s["arm"], s["iteration"]) for s in world.archive().states()) == [("ace", 0), ("typed", 0)]
 

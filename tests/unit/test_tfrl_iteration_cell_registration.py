@@ -477,3 +477,76 @@ def test_the_real_cell_gate_on_the_overlay_owes_only_the_pre_flip_refusals(tmp_p
         assert kinds <= owed, kinds
         assert {"not-ready", "row-not-countersigned", "receipt-missing"} <= kinds
         assert not result["passed"]
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# the proposers package: ledger artifacts cell, prompt pins, analysis recipe, scope text (first real flip, 2026-10-11)
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def _proposer_pins() -> dict:
+    from speech_aware_evidence_acquisition.rails import tfrl_typed_proposer as tp
+
+    dummy = {"relpath": "analysis/x.json", "sha256": "1" * 64}
+    return {"typed": {"tables": dummy, "context": dummy},
+            "ace": {"playbook": dummy, "token_cap": 16521, "materials": {s: dummy for s in tp.SCENARIOS}}}
+
+
+def _ledger_rows(text: str) -> dict:
+    from speech_aware_evidence_acquisition.contracts.ledger import _parse_ledger_tables
+
+    return {row["run/experiment id"]: row for row in _parse_ledger_tables(text)}
+
+
+def test_the_proposers_rows_carry_the_plan_path_the_prompt_hash_and_the_construction_scope(tmp_path):
+    import hashlib
+
+    root, _ = text_only(tmp_path)
+    proposers = reg.proposers_package(root, 1, COMMIT, AT)
+    text = reg.draft_text_only_rows(root, 1, proposers["ids"], proposers["shas"], AT,
+                                    {"typed": {"tables_sha256": "a" * 64, "archive_sha256": "b" * 64},
+                                     "ace": {"tables_sha256": "c" * 64, "archive_sha256": "b" * 64}}, COMMIT)
+    rows = _ledger_rows(text)
+    pkg = reg.package_names(1)["proposers"]
+    for kind, template in (("typed", "typed-proposer-v1.txt"), ("ace", "ace-reflector-v1.txt")):
+        row = rows[tf.names(1, kind)["run_id"]]
+        plan = f"{pkg}/{kind}-generation-plan-registered-v1.json"
+        assert row["artifacts"] == plan and (root / plan).is_file()                      # the gate reads this cell as a repository path
+        prompt = hashlib.sha256((REPO / "configs" / "probes" / "tfrl" / template).read_bytes()).hexdigest()
+        assert f"prompt sha256 {prompt}" in row["notes"] and "prompt sha256 pending" not in text
+        assert f"Plan SHA256 {hashlib.sha256((root / plan).read_bytes()).hexdigest()}" in row["notes"]
+        assert "Fold B credit" not in row["scope"] and "construction-source lock column" in row["scope"]
+    read = rows[reg.proposers_read_run_id(1)]
+    assert read["execution profile"] == "model-free-check" and read["calls"] == "0"
+    assert read["artifacts"] == f"{pkg}/analysis-recipe-v1.json" and (root / read["artifacts"]).is_file()
+
+
+def test_the_proposers_package_carries_an_analysis_recipe_naming_the_driver_step(tmp_path):
+    root, _ = text_only(tmp_path)
+    proposers = reg.proposers_package(root, 1, COMMIT, AT)
+    recipe = json.loads((root / proposers["package"] / "analysis-recipe-v1.json").read_text(encoding="utf-8"))
+    assert recipe["read_run_id"] == reg.proposers_read_run_id(1) == recipe["run_ids"]["read"]
+    assert "tfrl_loop_driver.py --execute open --iter 1 --stage cell" in recipe["stages"]["1_validate_and_curate"]
+    assert recipe["measurement_design"] == "form-proof" and "No benefit" in recipe["claim_boundary"]
+    assert set(recipe["contacts"].values()) == {0}
+    assert proposers["shas"]["analysis-recipe-v1.json"]
+
+
+def test_the_real_cell_gate_on_the_proposer_overlay_owes_only_the_pre_flip_refusals(tmp_path):
+    """The typed and ACE cells with their DRAFT rows (appended in the overlay's own ledger copy): no ``no-analysis-recipe``, no
+    ``read-row-missing``, no unresolvable artifact -- only what an unsigned, unminted, unflipped cell owes."""
+
+    root = tfrl_overlay.make_overlay(tmp_path / "o", REPO)
+    # iteration 2: the repository ledger already holds the (countersigned) iteration-1 proposer rows
+    result = reg.write_iteration(root, 2, spec(iteration=2), COMMIT, AT, pins=_proposer_pins(), append_ledger=True)
+    assert (root / result["proposers"]["package"] / "analysis-recipe-v1.json").is_file()
+    data = tmp_path / "data"
+    data.mkdir()
+    owed = {"not-ready", "row-not-countersigned", "receipt-missing", "registered-supply-binding", "no-decision-receipt"}
+    for kind in ("typed", "ace"):
+        cell = tf.names(2, kind)["experiment"]
+        out = flight_gate.evaluate(root, data, root / "docs" / "exposure-ledger.md", cells=[f"{cell}:{cell}"])
+        kinds = {f["kind"] for c in out["cells"] for f in c["findings"]}
+        assert "no-analysis-recipe" not in kinds and "read-row-missing" not in kinds, kinds
+        assert kinds <= owed, kinds
+        assert {"not-ready", "row-not-countersigned"} <= kinds
