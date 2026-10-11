@@ -202,12 +202,14 @@ def view_for(values: Mapping[str, object], items: Sequence[Mapping[str, object]]
 
 
 def verify_pins(
-    *, repo: Path = REPO, lock_path: Path, main_receipt: Path = pins_mod.LOCAL_MAIN_RECEIPT,
-    mmproj_receipt: Path = pins_mod.LOCAL_MMPROJ_RECEIPT, runtime_receipt_path: Path | None = None,
+    *, repo: Path = REPO, lock_path: Path, main_receipt: Path | None = None,
+    mmproj_receipt: Path | None = None, runtime_receipt_path: Path | None = None,
 ) -> tuple[dict, dict]:
     """The Thinking pins: local hash receipts proven equal to the umbrella lock text, then equal to the committed runtime receipt."""
 
-    pins = pins_mod.resolve_pins(lock_path=lock_path, main_receipt=main_receipt, mmproj_receipt=mmproj_receipt)
+    pins = pins_mod.resolve_pins(
+        lock_path=lock_path, main_receipt=main_receipt or pins_mod.LOCAL_MAIN_RECEIPT,
+        mmproj_receipt=mmproj_receipt or pins_mod.LOCAL_MMPROJ_RECEIPT)
     path = runtime_receipt_path or (repo / "docs" / RUNTIME_RECEIPT_RELPATH)
     receipt = json.loads(Path(path).read_text(encoding="utf-8"))
     if receipt.get("model_lock_key") != pins_mod.LOCK_KEY:
@@ -622,7 +624,7 @@ def baseline_substitution(text: str, receipt_path: str, sha256: str) -> tuple[st
 
 
 def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, receipt_path: Path = PROMOTION_RECEIPT,
-                packet_root: Path = PACKET_ROOT) -> int:
+                packet_root: Path = PACKET_ROOT, expected_rows: int = fam.ROWS) -> int:
     composed, values = compose_values(repo)
     check_config_identity(values, repo)
     pins, runtime_receipt = verify_pins(repo=repo, lock_path=lock_path or evo.umbrella_lock_path())
@@ -632,8 +634,8 @@ def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, recei
         expected_dataset_runtime_view_sha256=values["runtime_view_sha256"])
     expected_ids = {str(item["sample_id"]).replace(":", "/") for item in values["items"]}  # type: ignore[union-attr]
     packets = list(document["packets"])  # type: ignore[arg-type]
-    if document["count"] != fam.ROWS or {str(p["packet_id"]) for p in packets} != expected_ids:
-        raise SystemExit("the promotion receipt does not cover exactly the %d Fold B rows" % fam.ROWS)
+    if document["count"] != expected_rows or {str(p["packet_id"]) for p in packets} != expected_ids:
+        raise SystemExit("the promotion receipt does not cover exactly the %d Fold B rows" % expected_rows)
     if document["runtime_receipt_sha256"] != evo.canonical_sha256(runtime_receipt):
         raise SystemExit("the promotion receipt was produced under a different runtime receipt than the committed Thinking one")
     for packet in packets:

@@ -148,7 +148,10 @@ def test_every_cell_composes_is_held_and_declares_the_shared_form(key):
     if spec["core"] == "thinking":
         assert values["reasoning_content_guard"] == "refuse-think-marker-in-content"
         assert values["speech_packet_promotion_receipt"] == fam.THINK_PROMOTION_RECEIPT
-        assert values["speech_packet_promotion_receipt_sha256"] == fam.UNPINNED_SHA      # the flip refuses this sentinel
+        # The zero sentinel (the flip refuses it) until scripts/slurp_fold_preprocess_thinking.py --pin-receipt --write substitutes the
+        # sha256 of the real promotion receipt; afterwards the field must be a real 64-hex digest.
+        assert values["speech_packet_promotion_receipt_sha256"] == fam.UNPINNED_SHA or re.fullmatch(
+            r"[0-9a-f]{64}", values["speech_packet_promotion_receipt_sha256"])
     else:
         assert "reasoning_content_guard" not in values
         assert values["speech_packet_promotion_receipt_sha256"] != fam.UNPINNED_SHA
