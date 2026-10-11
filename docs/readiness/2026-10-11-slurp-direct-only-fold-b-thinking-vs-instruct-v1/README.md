@@ -82,6 +82,8 @@ Command sequence:
 7. Commit the two baselines, then the usual order: countersign the eight flight rows, `direct_fb_mint_receipt.py`, `direct_fb_flip.sh` (refuses while a zero sentinel remains), then
    `refresh_registered_plan_pins.py` and flip again if it says so. Never `--allow-output-change`.
 
+Recovery after a failed attempt (first real run, 2026-10-11): an attempt whose contacts were counted but that wrote no encoder receipt is FAILED and its spend is real (run-cumulative). The driver then refuses every start that does not name it: write `/home/chao/direct-fb-packets.recovery` with `SMOKE_ATTEMPT=<new id>`, `FOLD_ATTEMPT=<new id>` and `RECOVERY_OF=<failed attempt id>` (the wrapper forwards them as `--attempt-id` / `--recovery-of`), and register the ledger row at the extra spend first: `--check-ledger` expects calls = 1,080 + the calls of the failed attempt, and speech seconds = ceil(3,154.797375 + its seconds), with gpu hours 1.0. A used attempt id, a run directory without an attempt record, and a second failed attempt are refused (the single recovery is spent).
+
 Expected runtime (from the Instruct record of the same roster, `docs/checks/speech-aware-evidence-acquisition/2026-09-06-slurp-evo-s1/fold-packets/preprocess-fold-b.json`:
 1,080 contacts in 2,037.8 s at 4 workers on the `-np 4` sidecar = 0.53 rows per second, 31.8 rows per minute; promotion 10.7 s at 8 workers). The Thinking sidecar is the same
 geometry and the same audio-tower compute, so Fold B should take about 34 minutes for the 1,076 cold rows (+ about 11 s promotion), the smoke a few seconds of encoding, plus

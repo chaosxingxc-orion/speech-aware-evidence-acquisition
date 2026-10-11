@@ -17,6 +17,7 @@ import shutil
 import struct
 import subprocess
 import sys
+import threading
 import types
 from pathlib import Path
 
@@ -76,12 +77,19 @@ def _local_receipts(tmp: Path, monkeypatch, *, main_sha: str = MAIN_SHA) -> None
 
 
 def _ledger(tmp: Path, *, notes: str, consumed: str = "no", calls: str = "1080", seconds: str = "3155", split: str = SPLIT,
-            profile: str = "bounded-discovery-probe", row_id: str | None = None) -> Path:
+            profile: str = "bounded-discovery-probe", row_id: str | None = None, gpu: str = "1.0") -> Path:
     cells = ["2026-10-11T18:00:00+00:00", row_id or module.RUN_ID, profile, "scope", "model", "slurp TRAIN Fold B 1,080", "discovery", split,
-             consumed, calls, seconds, "0.0", "inherited", "artifact", notes]
+             consumed, calls, seconds, gpu, "inherited", "artifact", notes]
     path = tmp / "ledger.md"
     path.write_text("\n".join([LEDGER_HEADER, "|" + " --- |" * 15, "| " + " | ".join(cells) + " |"]) + "\n", encoding="utf-8")
     return path
+
+
+@pytest.fixture(autouse=True)
+def _isolated_data_root(tmp_path, monkeypatch):
+    """No test reads the host's real attempt store (it holds the failed first smoke attempt); World overrides this with its own root."""
+
+    monkeypatch.setattr(evo, "data_root", lambda: tmp_path / "isolated-data")
 
 
 # ------------------------------------------------------------------------------------------------ the real registration
@@ -89,7 +97,7 @@ def _ledger(tmp: Path, *, notes: str, consumed: str = "no", calls: str = "1080",
 
 def _args(**overrides):
     base = dict(roster="thinking-fold-b", workers=4, promote_workers=8, attempt_id=None, plan_calls=None, plan_speech_seconds=None,
-                output=None, promote_only=False, write=False)
+                output=None, promote_only=False, write=False, recovery_of=None)
     base.update(overrides)
     return types.SimpleNamespace(**base)
 
@@ -119,7 +127,7 @@ def test_the_smoke_is_the_registered_prefix_of_the_fold_b_view():
 def test_dry_run_prints_the_plan_without_any_encoder_call_or_media_read(roster, rows, tmp_path, monkeypatch, capsys):
     _local_receipts(tmp_path, monkeypatch)
     monkeypatch.setattr(module, "root_problems", lambda *a, **k: [])         # the host's real roots are empty today; do not depend on it
-    monkeypatch.setattr(evo, "data_root", lambda: pytest.fail("a dry-run must not open the data root"))
+    monkeypatch.setattr(module, "legacy_cache_findings", lambda *a, **k: pytest.fail("a dry-run must not open any media file"))
     monkeypatch.setattr(evo, "start_session", lambda **k: pytest.fail("a dry-run must not start a sidecar"))
     out = tmp_path / "plan.json"
     rc = module.dry_run(_args(roster=roster, output=out), lock_path=_fake_lock(tmp_path), ledger_path=REPO / "docs" / "exposure-ledger.md")
@@ -130,9 +138,9 @@ def test_dry_run_prints_the_plan_without_any_encoder_call_or_media_read(roster, 
     assert plan["promotes"] is (roster == "thinking-fold-b") and (plan["roots"]["promotion_receipt"] is not None) is plan["promotes"]
     assert plan["pins"]["decoder"]["sha256"] == MAIN_SHA and plan["pins"]["mmproj"]["sha256"] == MMPROJ_SHA
     assert plan["pins"]["llama_cpp_build_commit"] and plan["sidecar"]["slots"] == 4 and plan["sidecar"]["port"] == 8081
-    assert plan["row_total"] == {"calls": 1080, "speech_audio_seconds": 3155}
-    assert plan["declared_plan"]["calls"] == (4 if rows == 4 else 1080)
-    assert plan["ledger"]["present"] is True and plan["ledger"]["countersigned"] is False       # the row is a DRAFT today
+    assert plan["row_total"] == {"calls": 1080, "speech_audio_seconds": 3155, "gpu_hours": 1.0}
+    assert plan["declared_plan"]["calls_ceiling"] == rows and plan["declared_plan"]["gpu_hours"] == 1.0
+    assert plan["ledger"]["present"] is True and plan["ledger"]["problems"] == []               # the registered row matches the numbers, gpu hours included
 
 
 def test_the_dry_run_refuses_a_populated_packet_root(tmp_path, monkeypatch):
@@ -257,14 +265,16 @@ def test_an_absent_row_is_reported_and_a_draft_row_refuses_the_run(tmp_path, mon
     _local_receipts(tmp_path, monkeypatch)
     monkeypatch.setattr(module, "root_problems", lambda *a, **k: [])
     with pytest.raises(SystemExit, match="not root-countersigned"):
-        module.run(_args(), lock_path=_fake_lock(tmp_path), ledger_path=REPO / "docs" / "exposure-ledger.md")
+        module.run(_args(), lock_path=_fake_lock(tmp_path), ledger_path=_ledger(tmp_path, notes=DRAFT_NOTES, split=str(module.compose_values()[1]["split_identity_hash"])))
 
 
-def test_check_ledger_exits_non_zero_while_the_row_is_a_draft(capsys):
-    rc = module.check_ledger(_args())
-    assert rc in (0, 4) and json.loads(capsys.readouterr().out)["row"] == module.RUN_ID
-    if "DRAFT, root countersignature pending" in (REPO / "docs" / "exposure-ledger.md").read_text(encoding="utf-8").split(module.RUN_ID)[1][:6000]:
-        assert rc == 4
+def test_check_ledger_exits_non_zero_for_a_draft_and_zero_for_a_countersigned_row(tmp_path, capsys):
+    _, values = module.compose_values()
+    assert module.check_ledger(_args(), ledger_path=_ledger(tmp_path, notes=DRAFT_NOTES, split=str(values["split_identity_hash"]))) == 4
+    assert json.loads(capsys.readouterr().out)["row"] == module.RUN_ID
+    assert module.check_ledger(_args(), ledger_path=_ledger(tmp_path, notes=SIGNED_NOTES, split=str(values["split_identity_hash"]))) == 0
+    capsys.readouterr()
+    assert module.check_ledger(_args(), ledger_path=_ledger(tmp_path, notes=SIGNED_NOTES, split=str(values["split_identity_hash"]), gpu="0.0")) == 4
 
 
 # ------------------------------------------------------------------------------------------------- Instruct path unchanged
@@ -308,6 +318,10 @@ class World:
         self.receipt = self.packet_root / "EVO-FOLD-B-V2-promotion.json"
         self.contacts: list[str] = []
         self.sessions: list[dict] = []
+        self.plans: list[dict] = []
+        self._lock = threading.Lock()
+        self.drop_features = False        # a server that answers but caches nothing
+        self.server_creates_dirs = False  # the patched llama.cpp server does NOT create its cache directory
         items = []
         for index in range(self.ROWS):
             rel = f"datasets/slurp/audio-{index}.flac"
@@ -336,6 +350,9 @@ class World:
             def complete(self, messages, decoding_params):
                 relpath = messages[1]["content"][0]["media_relpath"]
                 world.contacts.append(relpath)
+                world.count(self.kwargs["run_dir"].name, (world.data / relpath).stat().st_size)
+                if world.drop_features or not (world.cache.is_dir() or world.server_creates_dirs):
+                    return
                 key = evo.legacy_audio_feature_cache_key((world.data / relpath).read_bytes())
                 world.cache.mkdir(parents=True, exist_ok=True)
                 payload = struct.pack("<QQ", 3, 2048) + bytes([int(key[-2:]) % 251]) * (3 * 2048 * 4)
@@ -347,6 +364,7 @@ class World:
         class Plan:
             def __init__(self, **kwargs):
                 self.kwargs = kwargs
+                world.plans.append(kwargs)
 
             def validate(self, source_root=None):
                 return self
@@ -365,6 +383,7 @@ class World:
 
         def start_session(**kwargs):
             world.sessions.append(kwargs)
+            world.open_attempt(kwargs["session_id"].split(module.RUN_ID + "-", 1)[1].removesuffix("-cpu-sidecar"))
             return types.SimpleNamespace(pid=4242, port=8081, session_id=kwargs["session_id"],
                                          as_json=lambda: {"session_id": kwargs["session_id"], "pid": 4242})
 
@@ -394,8 +413,35 @@ class World:
         monkeypatch.setattr(evo, "d1_media_supplement_sha256", lambda values: None)
         self.ledger = _ledger(tmp, notes=SIGNED_NOTES)
         self.lock = tmp / "lock.json"
+        monkeypatch.setattr(evo, "data_root", lambda: self.data)
+
+    def _record_path(self, attempt_id: str) -> Path:
+        return self.data / "attempts" / module.RUN_ID / f"{attempt_id}.json"
+
+    def open_attempt(self, attempt_id: str) -> None:
+        """What the attempt store does when the plan is reserved: an OPENED record with zero actuals."""
+
+        path = self._record_path(attempt_id)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps({"attempt_id": attempt_id, "state": "OPENED", "actual": {"calls": 0, "audio_seconds": 0.0}}), encoding="utf-8")
+
+    def count(self, attempt_id: str, size: int) -> None:
+      with self._lock:
+        record = json.loads(self._record_path(attempt_id).read_text(encoding="utf-8"))
+        record["actual"]["calls"] += 1
+        record["actual"]["audio_seconds"] += 1.0 + size % 3
+        self._record_path(attempt_id).write_text(json.dumps(record), encoding="utf-8")
+
+    def sync_ledger(self, **kwargs) -> Path:
+        """Register the row at the totals the attempt store implies (the coordinator's re-registration)."""
+
+        history, _ = module.attempt_history(self.data)
+        calls, seconds = module.expected_row_totals(self.values, module.summarize_history(history))
+        self.ledger = _ledger(self.tmp, notes=SIGNED_NOTES, calls=str(calls), seconds=str(seconds), **kwargs)
+        return self.ledger
 
     def run(self, roster: str, **overrides):
+        self.sync_ledger()
         out = self.tmp / f"report-{roster}.json"
         args = _args(roster=roster, workers=2, promote_workers=2, output=out, **overrides)
         rc = module.run(args, repo=REPO, lock_path=self.lock, ledger_path=self.ledger)
@@ -747,3 +793,124 @@ def test_the_package_readme_carries_the_runbook_the_writer_would_regenerate():
     for needle in ("direct_fb_packets.sh --check", "--pin-receipt", "Which registered files change hash", "smoke-roster-receipt-v1.json",
                    "Countersign text", "Expected runtime", "31.8 rows per minute"):
         assert needle in runbook, needle
+
+
+# ----------------------------------------------------------------------- first real run, 2026-10-11: the two defects
+
+
+def test_the_ledger_check_compares_gpu_hours_like_the_gate(tmp_path):
+    ok = module.ledger_state(_ledger(tmp_path, notes=SIGNED_NOTES), split_identity_hash=SPLIT)
+    assert ok["countersigned"] is True and ok["problems"] == []
+    zero = module.ledger_state(_ledger(tmp_path, notes=SIGNED_NOTES, gpu="0.0"), split_identity_hash=SPLIT)     # run 1: the row said 0.0
+    assert zero["countersigned"] is False and any("gpu hours" in problem and "0.0" in problem for problem in zero["problems"])
+    two = module.ledger_state(_ledger(tmp_path, notes=SIGNED_NOTES, gpu="2.0"), split_identity_hash=SPLIT)
+    assert two["countersigned"] is False
+    assert module.ROW_GPU_HOURS == module.ROSTERS["thinking-fold-b"].plan_gpu_hours == module.ROSTERS["thinking-smoke-4"].plan_gpu_hours
+
+
+def test_the_driver_creates_the_empty_legacy_cache_before_the_first_contact(world):
+    assert not world.cache.exists()                                   # nothing else creates it; the server does not
+    rc, report = world.run("thinking-smoke-4")
+    assert rc == 0 and world.cache.is_dir() and len(list(world.cache.glob("*.feat"))) == 2 and report["contacts"] == 2
+    assert not world.packet_root.exists()                             # the packet root itself stays absent until the promotion
+
+
+def test_answered_contacts_that_cached_nothing_fail_the_attempt_instead_of_crashing_in_the_inspector(world):
+    world.drop_features = True
+    with pytest.raises(SystemExit, match="holds no entry for 2 of 2 rows"):
+        world.run("thinking-smoke-4")
+    record = json.loads(world._record_path("attempt-packets-thinking-smoke-4-v1").read_text(encoding="utf-8"))
+    assert record["actual"]["calls"] == 2 and record["state"] == "OPENED"                   # the contacts ARE counted
+    assert not (world.data / "runs" / module.RUN_ID / "attempt-packets-thinking-smoke-4-v1" / module.ENCODER_RECEIPT_NAME).exists()
+
+
+def _fail_the_first_smoke(world):
+    world.drop_features = True
+    with pytest.raises(SystemExit):
+        world.run("thinking-smoke-4")
+    world.drop_features = False
+
+
+def test_a_failed_attempt_makes_every_default_start_ambiguous_and_refuses_it(world):
+    _fail_the_first_smoke(world)
+    with pytest.raises(SystemExit, match="already used"):                                    # the same id: never silently reused
+        world.run("thinking-smoke-4")
+    with pytest.raises(SystemExit, match="wrote NO encoder receipt"):                          # a new id without naming the failure
+        world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v2")
+    with pytest.raises(SystemExit, match="wrote NO encoder receipt"):                          # fold b is ambiguous too
+        world.run("thinking-fold-b", attempt_id="attempt-packets-thinking-fold-b-v2")
+    with pytest.raises(SystemExit, match="wrote NO encoder receipt"):                          # naming the wrong attempt
+        world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v2", recovery_of="attempt-other")
+    dry = module.dry_run
+    with pytest.raises(SystemExit, match="REFUSED"):
+        dry(_args(roster="thinking-fold-b"), lock_path=world.lock, ledger_path=world.sync_ledger())
+    assert world.sessions and len(world.sessions) == 1                                       # none of the refusals started a sidecar
+
+
+def test_the_labelled_recovery_declares_the_cumulative_spend_and_a_row_that_carries_it(world):
+    _fail_the_first_smoke(world)
+    # The ledger row is still the original: the recovery start needs the extra spend registered first.
+    original = _ledger(world.tmp, notes=SIGNED_NOTES)
+    with pytest.raises(SystemExit, match="budgets"):
+        module.run(_args(roster="thinking-smoke-4", workers=2, promote_workers=2, attempt_id="attempt-packets-thinking-smoke-4-v2",
+                         recovery_of="attempt-packets-thinking-smoke-4-v1"), lock_path=world.lock, ledger_path=original)
+    rc, report = world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v2",
+                           recovery_of="attempt-packets-thinking-smoke-4-v1")
+    assert rc == 0 and report["recovery_of"] == ["attempt-packets-thinking-smoke-4-v1"] and report["prior_calls"] == 2
+    assert world.plans[-1]["planned_model_calls"] == 2 + 2                                    # failed 2 + this attempt's 2
+    rc, report = world.run("thinking-fold-b", attempt_id="attempt-packets-thinking-fold-b-v2",
+                           recovery_of="attempt-packets-thinking-smoke-4-v1")
+    assert rc == 0 and report["contacts"] == 4 and report["skipped_warm_rows"] == 2           # the redone smoke rows are not contacted again
+    assert world.plans[-1]["planned_model_calls"] == 2 + 2 + 4
+
+
+def test_a_second_failure_stops_the_flight_and_a_recovery_flag_without_a_failure_is_refused(world):
+    with pytest.raises(SystemExit, match="no failed attempt exists"):
+        world.run("thinking-smoke-4", recovery_of="attempt-packets-thinking-smoke-4-v1")
+    _fail_the_first_smoke(world)
+    world.drop_features = True
+    with pytest.raises(SystemExit, match="holds no entry"):
+        world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v2", recovery_of="attempt-packets-thinking-smoke-4-v1")
+    world.drop_features = False
+    with pytest.raises(SystemExit, match="single recovery re-registration is spent"):
+        world.run("thinking-smoke-4", attempt_id="attempt-packets-thinking-smoke-4-v3", recovery_of="attempt-packets-thinking-smoke-4-v1")
+
+
+def test_a_run_directory_without_an_attempt_record_is_ambiguous(world):
+    (world.data / "runs" / module.RUN_ID / "attempt-orphan").mkdir(parents=True)
+    with pytest.raises(SystemExit, match="without an attempt record"):
+        world.run("thinking-smoke-4")
+
+
+def test_check_ledger_expects_the_failed_attempts_spend_in_the_row(world, capsys):
+    _fail_the_first_smoke(world)
+    capsys.readouterr()
+    stale = _ledger(world.tmp, notes=SIGNED_NOTES)
+    assert module.check_ledger(_args(), ledger_path=stale) == 4
+    state = json.loads(capsys.readouterr().out)
+    assert state["expected"]["calls"] == 1080 + 2 and state["expected"]["failed_attempts"] == ["attempt-packets-thinking-smoke-4-v1"]
+    assert module.check_ledger(_args(), ledger_path=world.sync_ledger()) == 0
+    capsys.readouterr()
+    assert module.check_ledger(_args(), ledger_path=world.sync_ledger(gpu="0.0")) == 4
+
+
+def test_the_first_attempt_declares_prior_plus_cold_rows_so_the_normal_chain_totals_the_row(world):
+    world.run("thinking-smoke-4")
+    world.run("thinking-fold-b")
+    assert [plan["planned_model_calls"] for plan in world.plans] == [2, 2 + 4]                  # smoke rows are not contacted twice
+
+
+def test_the_wrapper_forwards_the_recovery_labels_to_every_driver_call(host):
+    recovery = host.tmp / "recovery"
+    recovery.write_text("SMOKE_ATTEMPT=smoke-v2\nFOLD_ATTEMPT=fold-v2\nRECOVERY_OF=smoke-v1\n", encoding="utf-8")
+    result = host.run("--run", PACKETS_RECOVERY_FILE=str(recovery))
+    assert result.returncode == 0, result.stdout + result.stderr
+    calls = host.driver_calls()
+    smoke = [c for c in calls if "thinking-smoke-4" in c]
+    fold = [c for c in calls if "thinking-fold-b" in c]
+    assert smoke and fold
+    assert all("--attempt-id smoke-v2" in c and "--recovery-of smoke-v1" in c for c in smoke)
+    assert all("--attempt-id fold-v2" in c and "--recovery-of smoke-v1" in c for c in fold)
+    host.log.unlink()
+    host.run("--check", PACKETS_RECOVERY_FILE=str(host.tmp / "absent"))
+    assert not any("--recovery-of" in c or "--attempt-id" in c for c in host.driver_calls())

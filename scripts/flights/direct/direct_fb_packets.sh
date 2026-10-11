@@ -66,6 +66,22 @@ export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/
 # shellcheck source=../batch/serving_lib.sh
 source "$REPO/scripts/flights/batch/serving_lib.sh"
 
+# Recovery labelling. After a FAILED attempt (contacts counted, no encoder receipt) the driver refuses every default attempt id and demands
+# --recovery-of; the Windows task cannot take arguments, so the labels come from an optional shell-syntax file the coordinator writes:
+#   SMOKE_ATTEMPT=attempt-packets-thinking-smoke-4-v2   FOLD_ATTEMPT=attempt-packets-thinking-fold-b-v2   RECOVERY_OF=<failed attempt id>
+RECOVERY_FILE=${PACKETS_RECOVERY_FILE:-/home/chao/direct-fb-packets.recovery}
+SMOKE_ATTEMPT=; FOLD_ATTEMPT=; RECOVERY_OF=
+# shellcheck disable=SC1090
+[ -f "$RECOVERY_FILE" ] && . "$RECOVERY_FILE"
+ROSTER_ARGS=()
+roster_args() {  # roster_args <roster>: sets ROSTER_ARGS from the recovery labels
+  ROSTER_ARGS=()
+  local attempt=
+  case "$1" in thinking-smoke-4) attempt=$SMOKE_ATTEMPT ;; thinking-fold-b) attempt=$FOLD_ATTEMPT ;; esac
+  [ -z "$attempt" ] || ROSTER_ARGS+=(--attempt-id "$attempt")
+  [ -z "$RECOVERY_OF" ] || ROSTER_ARGS+=(--recovery-of "$RECOVERY_OF")
+}
+
 RC=0
 fail() { echo "REFUSED ($1): $2"; [ "$RC" = 0 ] && RC=$1; return 0; }
 
@@ -113,9 +129,13 @@ registry_guards() {
 }
 
 dry_runs() {
-  local roster
+  local roster out
   for roster in "$@"; do
-    driver --roster "$roster" --dry-run > /dev/null 2>&1 || fail 3 "the driver's dry-run refused for roster $roster (pins vs lock, roots, ledger, worker fit); run it by hand to read the reason"
+    roster_args "$roster"
+    if ! out=$(driver --roster "$roster" --dry-run "${ROSTER_ARGS[@]}" 2>&1); then
+      fail 3 "the driver's dry-run refused for roster $roster: $(printf '%s' "$out" | grep -E 'REFUSES|REFUSED|Error|error' | tail -2 | tr '
+' ' ' | cut -c1-400)"
+    fi
   done
 }
 
@@ -147,7 +167,8 @@ run_attempt() {  # run_attempt <roster> <rc-on-failure>
   ) &
   wd=$!
   echo "== attempt $roster $(date -u +%FT%TZ)"
-  driver --roster "$roster" --run --workers 4 --promote-workers 8 --output "$OUT/encoder-report-$roster.json"
+  roster_args "$roster"
+  driver --roster "$roster" --run --workers 4 --promote-workers 8 "${ROSTER_ARGS[@]}" --output "$OUT/encoder-report-$roster.json"
   rc=$?
   kill "$wd" 2>/dev/null
   echo "== attempt $roster exit $rc $(date -u +%FT%TZ)"
