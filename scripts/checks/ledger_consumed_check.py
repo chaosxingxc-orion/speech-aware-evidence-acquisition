@@ -6,7 +6,7 @@
 ``Verdict:`` disposition as the proof that a cell was flown. A flight that sealed while its rows
 still read ``no`` leaves the register understating exposure. This gate reports every such row.
 
-For each table row dated on or after ``--since`` (default 2026-10-01) whose ``consumed`` cell is
+For each table row dated on or after ``--since`` (default 2026-09-27) whose ``consumed`` cell is
 exactly ``no``:
 
 * with the data root present (``--data-root`` / ``$SPEECHRL_DATA_DIR``): a finding when the run id
@@ -31,7 +31,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT_DEFAULT = Path(__file__).resolve().parents[2]
-SINCE_DEFAULT = "2026-10-01"
+SINCE_DEFAULT = "2026-09-27"
 
 
 class LedgerConsumedCheckError(Exception):
