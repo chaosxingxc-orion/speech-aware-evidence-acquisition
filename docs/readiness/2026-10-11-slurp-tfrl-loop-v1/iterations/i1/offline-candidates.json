@@ -1,0 +1,41 @@
+{
+  "candidates": [
+    {
+      "candidate": {
+        "applications": [
+          {
+            "family": "fx-oclock",
+            "guard": "none",
+            "intents": [
+              "alarm_query",
+              "alarm_remove",
+              "alarm_set"
+            ],
+            "types": [
+              "time"
+            ]
+          }
+        ],
+        "hypothesis_code": "rule-filter",
+        "iteration": 1,
+        "operator": "deliver-rule",
+        "operator_class": "delivery",
+        "parent_state_id": "s0-lock-v2.2",
+        "schema": "saea-tfrl-typed-candidate-v1",
+        "target": {
+          "failure_class": "SPURIOUS",
+          "scenarios": [
+            "alarm"
+          ],
+          "slot_types": [
+            "time"
+          ],
+          "value_in_supply": "none"
+        }
+      },
+      "candidate_id": "688e0fd030d81c90378357cbc77609f21a536c3b9e91373f69fb38bda3f28a06",
+      "operator": "deliver-rule",
+      "operator_class": "delivery"
+    }
+  ]
+}

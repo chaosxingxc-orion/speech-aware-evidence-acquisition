@@ -1,0 +1,52 @@
+{
+  "arms": [
+    "ace",
+    "aa",
+    "lock"
+  ],
+  "blockers": [],
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-generation-v1",
+      "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-v1",
+      "composed_config_hash": "cdc70bd63b06ee19c622aef581cce5f99769270bcf2db4d1f4cfeaa36875b70a",
+      "experiment": "slurp-native-stage3-tfrl-loop-i1-fold-b-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-FIT-V1",
+      "protocol_hash": "56664b029aeb0c5f5c2b60d34a6e490b8d16e17f4a6680c8c45981c2a902536f",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
+      "composed_config_hash": "9a586366df91967ee8e17ad9c3a4e0eaa0a25cf1ff835a0a15e5cd60c93925f8",
+      "experiment": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1",
+      "protocol_hash": "d59d1e296d5c01748f4fe3821fa5aaa5c5b033967f586d520b04ecd4c47c3686",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "decision_rule_fixed_here": "The selection rule, parent choice, edit budget, stop rule and curve are fixed in docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json (sha256 pinned by the driver); this cell reads its own flight under that rule.",
+  "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration; run-cumulative budgets.",
+  "one_factor": "the supply arms of the iteration over the unchanged lock v2.3 base (v2.2 plus the empty ace-playbook-i0 declaration) on TRAIN Fold B",
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (Fold B only; Fold A confirmation and the DEV composed read are later registrations).",
+    "No candidate substitution by hand; only the labelled hand-author fallback, which needs an owner order.",
+    "No tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "No change of the delivering arm: lock carries no override and no release swap (invariants I7, I7v).",
+    "The ACE column is a non-delivering comparator and can never be locked (decision 245).",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt and the cells are flipped.",
+    "No paper-scale profile. No system-level claim."
+  ],
+  "protocol_id": "slurp-tfrl-loop-i1-protocol-v1",
+  "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "study_commit_at_registration": "0000000000000000000000000000000000000000",
+  "the_question": "Which supply arm of iteration 1 (ace, aa, lock) raises official pooled SLU-F1 over the delivering lock arm on TRAIN Fold B, paired per row, with the in-flight twin as the null?"
+}

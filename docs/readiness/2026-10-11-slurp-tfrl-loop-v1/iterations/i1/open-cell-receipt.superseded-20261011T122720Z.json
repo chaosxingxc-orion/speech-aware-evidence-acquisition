@@ -1,0 +1,56 @@
+{
+  "ace": {
+    "credit_used": false,
+    "curation": {
+      "constants_sha256": "0eeb1946f73ac9c8827686cbddadd3d97ad6e9822c98ae399b925c83d2b33552",
+      "counter_updates": {},
+      "deltas_in": 27,
+      "token_counter_id": "proxy-utf8-bytes-div-3-v1"
+    },
+    "deltas_in": 27,
+    "illegal_answers": 0,
+    "items": 27,
+    "playbook_content_hash": "e12fabcc1a8c72c93a2b0b5ceb14ba1d1168c93ac8ba4fbcc05ab5af4820e28e",
+    "playbook_iteration": 1,
+    "release_pins": "pending (zeros until the release is prepared)",
+    "release_staging": null
+  },
+  "arms": [
+    "ace",
+    "aa",
+    "lock"
+  ],
+  "blockers": [
+    {
+      "detail": "the ace-playbook i0/i<t> release and snapshot pins are zeros until the releases are prepared (prepare_semantic_knowledge_store over the driver's registration); re-run open --stage cell",
+      "id": "ace-release-pins-pending"
+    }
+  ],
+  "column_package": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1",
+  "inputs": {
+    "iteration": 1,
+    "predictions": "c3cd8b272a420ecbddb3f6905ec42ce74f7a7653bb6126d4716b466c188edc22",
+    "propose": "6cedf0ec108f3a41f4518292d8895a42cb1493817305bb6789069a5618674cf4",
+    "reflector_answers": "da8e2ff6b6ccfd28b94e03c392b5752a670161308eb0d11c57f178d1860a9edc",
+    "stage": "cell",
+    "typed_arm_empty": false,
+    "typed_receipts": "3890dc68e9eb6b2a41f06f2ca84322d0d8f4e7bd74c333374465c2b635e396ba"
+  },
+  "inputs_sha256": "c8c9c22ef95849a12da6b97318c09eedb666b59a2abd9bca262cc3ea9a305f50",
+  "iteration": 1,
+  "loader_verification": {
+    "ok": true,
+    "refusal": null
+  },
+  "not_flown": 0,
+  "offline": 1,
+  "parent_display_id": "s0-lock-v2.2",
+  "program": "phase-native-module-v1-c4",
+  "refused": 0,
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "stage": "cell",
+  "status": "done",
+  "step": "open-cell",
+  "typed_arm": "empty (legal)",
+  "valid": 1
+}

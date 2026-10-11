@@ -1,0 +1,51 @@
+{
+  "arms": {
+    "columns": {
+      "ace": {}
+    },
+    "delivering": "lock",
+    "order": [
+      "ace",
+      "aa",
+      "lock"
+    ],
+    "twin": "aa"
+  },
+  "authority": "docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md sections 5-7; docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "cell_kind": "SUPPLY-VARIANT COLUMN -- same-flight, claim ceiling nominated",
+  "claim_boundary": "No system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": "CPU official scorer jobs over derived copies only",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flight itself)",
+  "measurement_design": "same-flight-supply-variant",
+  "read_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-COLUMN-READ-V1",
+  "recipe_id": "slurp-tfrl-loop-i1-fold-b-column-analysis-v1",
+  "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "rows": 1080,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1",
+    "fit": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-FIT-V1",
+    "read": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-COLUMN-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_score": "scripts/analysis/stage3_rollout_score.py --mode supply-variants (one complete official scoring per arm, never sharded)",
+    "2_node_local": "scripts/analysis/slurp_nx_solver_column_read.py (supply stats, empty-gold false fill, non-empty exact)",
+    "3_paired": "scripts/analysis/stage3_paired_read.py --per-scenario: aa-vs-lock then each column-vs-lock (cluster key sample_id, 10,000 draws, seed 20260915)",
+    "4_loop": "scripts/flights/tfrl/tfrl_loop_driver.py close --iter 1: credit vectors, the preregistered selection rule, archive, curve"
+  },
+  "what_is_not_here": "No margins block and no admission: the loop driver applies the preregistered rule; nothing is locked here."
+}

@@ -1,0 +1,163 @@
+{
+  "_note": "Every model-free fact this DRAFT registration rests on, and the CANONICAL stage3_measurement block scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+  "accounting": {
+    "arm_generation_calls": 4320,
+    "arms": [
+      "ace",
+      "aa",
+      "lock"
+    ],
+    "contacts_per_row": 4,
+    "program": "phase-native-module-v1-c4",
+    "smoke_generation_calls": 16
+  },
+  "blockers": [],
+  "composed_config_hashes": {
+    "arm": "cdc70bd63b06ee19c622aef581cce5f99769270bcf2db4d1f4cfeaa36875b70a",
+    "smoke": "9a586366df91967ee8e17ad9c3a4e0eaa0a25cf1ff835a0a15e5cd60c93925f8"
+  },
+  "fit": {
+    "frame": {
+      "base_prompt_tokens": 2000,
+      "completion_ceiling": 512,
+      "slot_tokens": 24576,
+      "tokens_per_supplied_item": 235
+    },
+    "status": "PENDING_CHECK"
+  },
+  "identity": {
+    "arm": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-tfrl-loop-i1-fold-b-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-v1",
+      "composed_config_hash": "cdc70bd63b06ee19c622aef581cce5f99769270bcf2db4d1f4cfeaa36875b70a",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.5,
+        "planned_model_calls": 4320,
+        "planned_speech_audio_seconds": 12620,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-tfrl-loop-i1-fold-b-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 17280,
+        "generation_calls_cap": 4320,
+        "gpu_hours_fit_inclusive": 1.5,
+        "native_task_contract_calls_cap": 4320,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 12620
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-fit-v1",
+        "contact_cap": 17280,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "program": "phase-native-module-v1-c4",
+      "protocol_hash": "56664b029aeb0c5f5c2b60d34a6e490b8d16e17f4a6680c8c45981c2a902536f",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
+      "composed_config_hash": "9a586366df91967ee8e17ad9c3a4e0eaa0a25cf1ff835a0a15e5cd60c93925f8",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 1.0,
+        "planned_model_calls": 16,
+        "planned_speech_audio_seconds": 41,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 64,
+        "generation_calls_cap": 16,
+        "gpu_hours_fit_inclusive": 1.0,
+        "native_task_contract_calls_cap": 16,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 41
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1",
+        "contact_cap": 64,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i1-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "program": "phase-native-module-v1-c4",
+      "protocol_hash": "d59d1e296d5c01748f4fe3821fa5aaa5c5b033967f586d520b04ecd4c47c3686",
+      "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (Fold B only; Fold A confirmation and the DEV composed read are later registrations).",
+    "No candidate substitution by hand; only the labelled hand-author fallback, which needs an owner order.",
+    "No tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "No change of the delivering arm: lock carries no override and no release swap (invariants I7, I7v).",
+    "The ACE column is a non-delivering comparator and can never be locked (decision 245).",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt and the cells are flipped.",
+    "No paper-scale profile. No system-level claim."
+  ],
+  "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
+  "registration_basis": "docs/superpowers/specs/2026-10-11-slurp-autonomous-typed-loop-with-ace-comparator-design.md; owner decision 263-A. DRAFT: nothing here authorises a flip or a flight.",
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four Fold B rows prove FORM only: the phase-native-module-v1-c4 program loads, the supply arms fan out with the delivering arm last, the empty ace-playbook-i0 route renders zero bytes on the non-ace arms, every swap resolves its alternate and the episode completes. Scored by no one, read by no one.",
+      "primary_metric": "none (structural form only)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1": {
+      "aa_arm_id": "aa",
+      "claim": "nominated",
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "same-flight-supply-variant",
+      "nomination_rule": "official-column",
+      "note": "Loop iteration 1: arms ace, aa, lock over the delivering lock arm, paired per row inside one flight, preregistered selection rule in docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json. The expected effect is the typed arm's predicted effect when one flies (at least 1.5 pp, decision 192) and is 0.0 with claims_benefit false when the typed arm is empty (the iteration then measures the ACE comparator, the twin null and the offline delivery reads).",
+      "primary_metric": "official SLURP pooled SLU-F1 (micro), paired per row",
+      "primary_metric_key": "slu",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 1080,
+      "tuning_roster": "none",
+      "variant_cost": {
+        "extra_audio_seconds": 5.842217,
+        "extra_contacts_per_row": 2
+      }
+    }
+  },
+  "status": "DRAFT-HELD",
+  "study_commit_at_registration": "0000000000000000000000000000000000000000"
+}

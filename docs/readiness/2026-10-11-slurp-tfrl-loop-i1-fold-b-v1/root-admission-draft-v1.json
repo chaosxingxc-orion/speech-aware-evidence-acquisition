@@ -1,0 +1,80 @@
+{
+  "_draft_note": "A DRAFT for the coordinator to mint on the data root with scripts/flights/tfrl/tfrl_mint_receipt.py. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/analysis-recipe-v1.json",
+      "sha256": "ce082a4c84d125f2fece7884731df1e9fcdf657fe5cc944b6c6af12dac303792"
+    },
+    "loop_protocol": {
+      "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-v1/tfrl-loop-protocol-v1.json",
+      "sha256": "3dd2a6a2af0b4215f26a993f4aa5e5ccddf4692c80aa4703cb49576008e10168"
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/protocol-registered-v1.json",
+      "sha256": "40652fb807e7af182f27286a7e9d83304fb95fd8cf33ed9c3a0136afaa275a10"
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-11-slurp-tfrl-loop-i1-fold-b-v1/registered-facts-v1.json",
+      "sha256": "1d3c59bc9ad6ec3832565e4707fe160eee9d5de048edc9a6101b4634253652f3"
+    },
+    "registration_base_commit": "0000000000000000000000000000000000000000"
+  },
+  "authorization_basis": "Owner decisions 263-A / 264-A / 265 (2026-10-11); docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 17280,
+    "generation_calls_cap": 4320,
+    "gpu_hours_fit_inclusive": 1.5,
+    "native_task_contract_calls_cap": 4320,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 12620,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 64,
+      "generation_calls_cap": 16,
+      "gpu_hours_fit_inclusive": 1.0,
+      "native_task_contract_calls_cap": 16,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 41
+    }
+  },
+  "claim_boundary": "No system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "decision": "Fly the loop iteration 1 Fold B supply column (ace, aa, lock).",
+  "decision_id": "slurp-tfrl-loop-i1-admission-v1",
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-V1",
+    "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-FIT-V1",
+    "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-TFRL-LOOP-I1-FOLD-B-SMOKE-4-FIT-V1"
+  ],
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "touching the resident session",
+    "any ASR, transcript, encoder or paid-API contact",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered arms",
+    "substituting a candidate by hand"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_a_contact_authorized": false,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-native-candidate-five-train-a-np4-v1",
+    "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+    "no_child_start_stop": true
+  },
+  "status": "DRAFT-NOT-MINTED"
+}
