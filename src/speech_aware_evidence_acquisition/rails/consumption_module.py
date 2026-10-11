@@ -101,6 +101,7 @@ NODE_RECEIPT_SCHEMAS = frozenset({
     "saea-perception-branch-arms-v4",
     "saea-supply-variant-arms-v3",
     "saea-supply-variant-arms-v4",
+    "saea-supply-variant-arms-v5",
     "saea-solver-citations-v1",
     "saea-deliver-normaliser-v1",
     "saea-relisten-v1",
@@ -172,7 +173,7 @@ _TEMPLATE_COLUMN_KEYS = frozenset({"column_id", "kind", "node", "template", "tem
 #: delivering arm renders. It toggles no component and carries no template.
 COLUMN_KIND_SUPPLY = "supply"
 _SUPPLY_COLUMN_REQUIRED = frozenset({"column_id", "kind", "node", "max_supplied_items"})
-_SUPPLY_COLUMN_OPTIONAL = frozenset({"overrides", "release_swap"})
+_SUPPLY_COLUMN_OPTIONAL = frozenset({"overrides", "release_swap", "release_swaps"})
 #: The block-level frame every supply column set shares (measured by the cell
 #: author): ``twin`` adds the A/A arm the carrier's hook names;
 #: ``delivering_max_supplied_items`` is the delivering (and twin) arm's own
@@ -982,7 +983,39 @@ def _parse_supply_column(entry: Mapping, *, field: str) -> ColumnDecl:
         or not isinstance(swap["store_id"], str) or not isinstance(swap["release"], str)
     ):
         raise ConsumptionModuleConfigError(f"{field}.release_swap must be exactly {{store_id, release}}")
-    if not overrides and swap is None:
+    # Loop item E-T6 (2026-10-11): the plural form -- one swap per DISTINCT
+    # store. A one-element list is the one-store form and is canonicalised to
+    # ``release_swap`` so the compiled block (and its identity) is exactly the
+    # singular spelling's; two or more stores keep the list, ordered by store.
+    swaps = entry.get("release_swaps")
+    swap_list: list[dict[str, str]] = []
+    if swaps is not None:
+        if swap is not None:
+            raise ConsumptionModuleConfigError(
+                f"{field} declares both release_swap and release_swaps; declare one"
+            )
+        if not isinstance(swaps, Sequence) or isinstance(swaps, (str, bytes)) or not swaps:
+            raise ConsumptionModuleConfigError(
+                f"{field}.release_swaps must be a non-empty list of {{store_id, release}} objects"
+            )
+        for item in swaps:
+            if (
+                not isinstance(item, Mapping) or set(item) != {"store_id", "release"}
+                or not isinstance(item["store_id"], str) or not isinstance(item["release"], str)
+            ):
+                raise ConsumptionModuleConfigError(
+                    f"{field}.release_swaps entries must be exactly {{store_id, release}}"
+                )
+            swap_list.append({"store_id": item["store_id"], "release": item["release"]})
+        stores_named = [item["store_id"] for item in swap_list]
+        if len(set(stores_named)) != len(stores_named):
+            raise ConsumptionModuleConfigError(
+                f"{field}.release_swaps names a store twice; one swap per distinct store"
+            )
+        swap_list.sort(key=lambda item: item["store_id"])
+        if len(swap_list) == 1:
+            swap, swap_list = swap_list[0], []
+    if not overrides and swap is None and not swap_list:
         raise ConsumptionModuleConfigError(
             f"{field} declares neither overrides nor a release_swap: it would resolve the "
             "delivering arm's own supply"
@@ -992,6 +1025,8 @@ def _parse_supply_column(entry: Mapping, *, field: str) -> ColumnDecl:
         payload["overrides"] = dict(overrides)
     if swap is not None:
         payload["release_swap"] = dict(swap)
+    if swap_list:
+        payload["release_swaps"] = swap_list
     return ColumnDecl(
         column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_SUPPLY, node=node,
         supply_json=_canonical(payload),
@@ -1700,6 +1735,8 @@ def _compile_supply_columns(
             row["overrides"] = dict(spec["overrides"])
         if "release_swap" in spec:
             row["release_swap"] = dict(spec["release_swap"])
+        if "release_swaps" in spec:
+            row["release_swaps"] = [dict(item) for item in spec["release_swaps"]]
         rows.append(row)
     delivering_bound = sf["delivering_max_supplied_items"]
     if sf["twin"]:
