@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T12:02:12Z
+Last refreshed: 2026-10-11T12:05:12Z
+
+## i1 typed proposer sealed (9 contacts); batch STOP on the text-only inspection; reflector pending the inspector fix (2026-10-11T12:05:12Z, Fable 5.1 root)
+
+Typed proposer run COMPLETED at bd43ded89 (3 rows, 9 contacts). Driver STOP: the flight-checkout inspector cannot inspect a text-only cell (no native episode config) -> fix in build (text-only branch + `TFRL_ONLY=ace` chain/flip switches); then re-flip the reflector at the new commit, queue it (54 calls), archive the STOP, re-arm the uptime guard. GPU packets rebuild (GPU fragment, swap-window chain, new run id) in build. GPU idle; serving resident (restart due 15:38Z). No owner decision open.
+
+Superseded stamp: 2026-10-11T12:02:12Z
 
 ## i1 proposers FLYING (flight commit bd43ded89, task SAEA-Queue-TFRLi1Prop, 12:02Z); Thinking packets: no reuse (mmproj audio tower differs), CPU pass stopped, GPU pass in build (2026-10-11T12:02:12Z, Fable 5.1 root)
 

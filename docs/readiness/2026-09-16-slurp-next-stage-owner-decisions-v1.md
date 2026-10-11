@@ -1602,3 +1602,15 @@ efficiency problem: find the root cause of the bottleneck and fix it.")
 - **i1 proposers launched.** Fourth flip converged (both cells ready; flight commit bd43ded89; both launch gates PASS at 12:01Z);
   task SAEA-Queue-TFRLi1Prop started 12:02Z (typed proposer 9 calls, ACE reflector 54 calls, text-only; about 0.1 GPU-h) on the
   resident Instruct session with no sidecar running.
+
+### i1 typed proposer SEALED; batch STOP on its post-campaign inspection (coordinator, 2026-10-11 12:02Z)
+
+- `SAEA-SLURP-STAGE3-TFRL-PROPOSER-I1-V1` flew at bd43ded89 and sealed COMPLETED (3 carrier rows, 9 trace contacts, 31 s wall).
+  The batch driver then STOPped: the campaign-mode inspector (`batch_inspect.py`, taken from the FLIGHT checkout) derives rows
+  and the contact ceiling from the native episode config, which a text-only program does not have (`load_native_episode_config`
+  returns None -> "campaign inspection requires registered positive rows and native contact ceiling", rc 2). Step 2, the ACE
+  reflector cell, never started; no attempt was opened for it (not a recovery). Fix in build (`sonnet/batch-inspect-text-only`):
+  a text-only branch in the inspector (rows from the population, ceiling from the program's 1 + retries), plus `TFRL_ONLY=ace`
+  for the chain and the flip so the reflector alone is re-flipped at the new flight commit and queued. The typed run's
+  inspection is then run read-only on the sealed bytes before its ledger row is closed.
+- The uptime guard will HALT when it meets `batch-STOP`; the next chain start archives the STOP and the guard is re-armed.
