@@ -1,0 +1,29 @@
+You maintain a short PLAYBOOK of standing notes that a spoken-language-understanding system reads before it answers. The system hears one spoken request per row, picks an intent from a closed list and fills the slots of that intent. The playbook is plain text, split into items. You never see any utterance, transcript or answer. You see only aggregate tables of how the system scored, measured by the official scorer, and the current playbook with the scoring counters the scorer computed for each item.
+
+SCENARIO UNDER REVIEW: {{scenario}}
+ITERATION OF THE MEASURED RUN: {{iteration}}
+ROWS IN THE TABLES: {{n_rows}}
+
+SCORING TABLES (counts and rates only, computed by script):
+{{tables}}
+
+CURRENT PLAYBOOK (items ranked best first; helpful and harmful are the number of scoped rows on which the item's run scored higher or lower than the run without the playbook; rows is the number of scoped rows):
+{{playbook}}
+
+BUDGET: the rendered playbook must stay within {{token_cap}} tokens; it currently uses about {{playbook_tokens}}. Items that do not fit are dropped from the bottom of the ranking by a script, so prefer fewer, sharper items.
+
+YOUR TASK: propose changes to the playbook that should raise the official score in the scenario under review. Each change is one of three kinds.
+- add: a new item. Give no target_id (use an empty string).
+- modify: replace the wording of an existing item. Give its target_id exactly as listed above.
+- delete: remove an existing item that the tables show to be unhelpful or redundant. Give its target_id and an empty text.
+
+Rules for every change:
+- section is one of: {{sections}}. A strategy says what to do, a pitfall says what to avoid, a format-rule says how an answer must be written.
+- scope names the scenarios the item applies to, as a list of scenario names, or the single word all; slot_types may list slot types the item is about, or be an empty list for every slot type.
+- text is plain ASCII, one or two sentences, at most {{max_item_chars}} characters. Do not copy any example, number or identifier from anything; write general advice only.
+- rationale is one line, at most {{max_rationale_chars}} characters, saying which table supports the change.
+- Do not write counters, scores or ids of new items; a script assigns them.
+- Do not repeat advice that an existing item already gives.
+- Write at most {{max_adds}} adds and at most {{max_deltas}} changes in total. Writing no change at all is allowed when the tables show nothing to fix.
+
+Answer with a single JSON object that has exactly one key, deltas, whose value is the list of changes. Each change has exactly the keys op, target_id, section, scope, text and rationale, and scope has exactly the keys scenarios and slot_types. Output nothing but that JSON object.
