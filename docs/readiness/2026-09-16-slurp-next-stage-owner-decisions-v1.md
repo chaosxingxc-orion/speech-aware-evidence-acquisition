@@ -1133,3 +1133,57 @@ text: those updates never cleared noise. That negative result is as replicated a
   hearing-pass evidence tool (261-B) if it clears, the thinking-mode core only if it fits the card and the slot; and
   (e) the carriers run the SAME loop (ALL-OFF A/A -> one credit-selected construction update -> confirmation) once the
   owner releases their GPU, which is what turns "one task" into "several tasks" for the goal. Recommended: yes.
+
+## Owner request 2026-10-11: return to the algorithm; the lineage analysis and decision 263 PROPOSED (coordinator, 2026-10-11)
+
+Owner, verbatim: 「我认为不够，我们需要回归到算法本身，要识别算法本身是否有缺陷，你可以参考下从training free GRPO提出至今的
+training free RL的演进，每一个学术研究工作具体识别和发现了哪些问题，是怎样通过设计和优化学习算法去解决的？具体回答三个问题：
+1）面对我们的具体任务，应该采用哪一种学术基线更优？2）这个学术基线在我们的任务上还有哪些不足？3）我们对已经识别到的不足是否有
+提升和改进的措施和方案？」
+
+English: "I think that is not enough. We need to return to the algorithm itself and identify whether the algorithm has
+defects. Refer to the evolution of training-free RL from the proposal of Training-Free GRPO to now: which problems did
+each academic work identify, and how did it solve them by designing and optimising the learning algorithm? Answer three
+questions: (1) for our specific task, which academic baseline is the better one to adopt? (2) what does that baseline
+still lack on our task? (3) do we have measures and plans to improve the deficits we have identified?"
+
+Answer: `docs/readiness/2026-10-11-slurp-tfrl-lineage-and-algorithm-baseline-analysis-v1.md` (model-free). In short:
+- **Lineage.** Dynamic Cheatsheet -> GEPA -> Memento -> ReasoningBank/MaTTS -> Training-Free GRPO -> ACE -> procedural
+  knowledge / chain-of-experience -> SEAM -> RIZZ, plus the trained-RL credit-assignment line. The branch moved from
+  "write a lesson" (TF-GRPO semantic advantage) to "write a typed item, keep it incremental, verify it, scope it" (ACE
+  delta items; RIZZ verified-only, branch-routed updates). None of the training-free works states a noise model of its
+  evaluator, a form control, or a fresh-roster confirmation; credit assignment improved only in the trained branch.
+- **Q1.** ACE (arXiv 2510.04618) is the best structural fit (itemised incremental store, verifier-driven, no sampled
+  group needed; registered here as `ace-grow-refine-v1`, never flown). TF-GRPO stays as the second comparator (flown
+  here in faithful shape: CELL-1/2/3 -0.48 / +0.64 / -1.44 with twins reproducing the arms; signal empty on 400 of 625
+  rows). GEPA fails the evaluation-cost constraint (S1); Memento and SEAM train a component and are out of boundary.
+- **Q2.** Seven deficits of ACE on this task, each bound to a measurement: D1 weak reflector (repair 0/100); D2 prose
+  items pay a form cost (twins; `general` stratum); D3 no input key (the gains here are speech-keyed retrieval, B1
+  +12.6, COMP-1b intent +4.6/+5.8); D4 acceptance on one score with no noise model (A/A +1.87 [+0.41, +3.36]); D5 no
+  verifier at delivery (oracle +6.55 vs realised ~+0.9); D6 context growth vs the 24,576-token slot; D7 unscoped
+  updates (RIZZ interference; CELL-3 gate null).
+- **Q3.** D1, D2, D3, D4, D6, D7 are replaced in the sealed-credit loop of decision 262 (typed per-row official credit;
+  typed entries and deterministic rules; speech-keyed construction; the instrument as the acceptance test; fixed
+  budget; stratum protection), each with a replicated gain or a replicated null behind it. D5 was tested (VER-1) and
+  closed at ~+0.9 pp. The remaining algorithmic gap: the typed loop has never run autonomously for several iterations
+  with a proposer confined to typed operators; every accepted update was chosen by a person from the credit tables.
+- **263** (PROPOSED): run the sealed-credit loop autonomously for three iterations on lock v2.2 with the proposer
+  confined to typed operators (construction / supply / delivery-rule / scope), and fly ACE as published beside it at
+  the same token and contact budget as a third delivering-path column (Fold B select x3, Fold A confirm, then DEV);
+  about 11 GPU-h, SLURP only; claim rule: cumulative CI-LB > 0 on Fold A for the typed loop, ACE reported either way.
+  Options: **A (recommended)** typed loop + ACE comparator; **B** typed loop alone (~8 GPU-h); **C** no further SLURP
+  algorithm rounds, package 262 and release the carriers.
+
+**Also recorded today (coordinator):**
+- Merged to master: `sonnet/e21-seal-path` (899a17c48: seal-time trace emission shared by seal and wire-check, unit-
+  stitch trace, E21 wire-check successors, A2T paired-400 confinement, standing re-score fixture) and
+  `sonnet/e22-register` (c7b4b6e2a: E22 window inventory 10 calls / 451 windows receipted at 0 contacts, two HELD all-off
+  cells, `--carrier e22` plumbing, 19 preflight tests; first contact-requiring step = window feature packets; open:
+  scorer variant, data-use decision, knowledge-snapshot gap for phase-program baselines, a new serving session name).
+- Hearing-pass evidence survey for 261-B: `docs/readiness/2026-10-11-slurp-hearing-pass-evidence-survey-v1.md`
+  (read-only). Finding: nothing in the record yet supports option B. E4 failed on span, not hearing (63 of 122
+  replacements turned EXACT into BOUNDARY; "unheard" covered 67 % of delivered entities); the official scorer gives
+  partial credit by distance; the core's only self-initiated Solver tool record is solver-lookup (16 / 100 calls,
+  -5.13 [-9.49, -1.04] at n = 100); a tool schema shown to a non-calling Solver breaks 10-13 % of answers. A design
+  must be model-initiated at one node, words only, deterministic verifier, inside the slot budget, with a decision
+  oracle first. The design is deferred behind decision 263 because 263-C would close it and 263-A/B set the GPU order.

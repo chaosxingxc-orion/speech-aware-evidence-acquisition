@@ -1,6 +1,12 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T03:44:00Z
+Last refreshed: 2026-10-11T04:35:31Z
+
+## Lineage analysis answers the owner's algorithm question; decision 263 proposed; E21 seal path and E22 HELD registration merged (2026-10-11T04:35:31Z, Fable 5.1 root)
+
+`docs/readiness/2026-10-11-slurp-tfrl-lineage-and-algorithm-baseline-analysis-v1.md` (model-free): the training-free RL lineage from Training-Free GRPO (semantic advantage, experience library) through GEPA, ReasoningBank/MaTTS, Memento, ACE (brevity bias, context collapse, delta items), SEAM, RIZZ (verified, branch-routed updates) and the trained credit-assignment line, mapped onto P1-P8 of this task. Q1: ACE (arXiv 2510.04618) is the best-fitting academic baseline (registered `ace-grow-refine-v1`, never flown); TF-GRPO stays as the second comparator (flown: CELL-1/2/3 null with twins). Q2: seven deficits D1-D7 (weak reflector, prose cost, no speech key, acceptance without a noise model, no verifier at delivery, context growth, unscoped updates), each bound to a measurement. Q3: D1-D4, D6, D7 are replaced in the sealed-credit loop (262) with replicated evidence; D5 tested and closed at ~+0.9 (VER-1); the open gap is that the typed loop has never run autonomously. Decision 263 proposed: three autonomous typed-operator iterations on lock v2.2 with ACE as published as a third delivering-path column at equal budget (Fold B x3, Fold A confirm, DEV), ~11 GPU-h; options A (recommended) / B typed loop alone / C stop and package. Merged: `sonnet/e21-seal-path` (899a17c48) and `sonnet/e22-register` (c7b4b6e2a: inventory 10 calls / 451 windows, two HELD all-off cells; first contact-requiring step = window feature packets; knowledge-snapshot gap for phase-program baselines open). Hearing-pass evidence survey for 261-B on file (`docs/readiness/2026-10-11-slurp-hearing-pass-evidence-survey-v1.md`): no record supports option B yet; design deferred behind 263. GPU idle; serving resident; nothing queued. Open owner decisions: 262, 263.
+
+Superseded stamp: 2026-10-11T03:44:00Z
 
 ## VER-1 results note merged (2026-10-11T03:44:00Z, Fable 5.1 root)
 
