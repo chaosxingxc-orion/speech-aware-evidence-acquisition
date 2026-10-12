@@ -1854,3 +1854,22 @@ Executed 02:54-03:00Z: both flips converged (i2 column at cc51b4eff, Thinking ar
 chain started 02:57Z on the resident Instruct session (task SAEA-Queue-TFRLi2Col); the flip-acceleration branch merged (645dbf8ba:
 `flip_in_ext4.sh`, `SAEA_MAIN` in 96 scripts, lazy runtime imports in the flight CLI, `/mnt/` refusal, CLAUDE.md/AGENTS.md rule;
 ext4 import 0.43 s). The queue wrappers switch to `flip_in_ext4.sh` before the next flip (iteration 3 or the next 266-E step).
+
+### Loop iteration 2 column SEALED; close refused on an archived-duplicate candidate (fix in build); Thinking arm rec1 FLYING (coordinator, 2026-10-12 06:40Z)
+
+- **i2 column** `SAEA-SLURP-STAGE3-TFRL-LOOP-I2-FOLD-B-V1` sealed 05:49Z at cc51b4eff (smoke 4 rows + 1,080 rows x 4 contacts; 02:55-05:49Z);
+  rows closed. Descriptive paired reads (the close's sub-steps; CIs and the protocol verdict follow with the close receipt): ACE i2 (35-item
+  playbook with credit) vs lock pooled SLU-F1 **+1.38 pp**, span-F1 +1.50, per-row SLU +0.68, intent (action exact) **-0.56 pp**; twin vs lock
+  +0.32 SLU / -0.09 intent. Reading before the CI: the ACE point is under the 1.49 floor and the intent point is negative, so the selection
+  clauses (b, e) would refuse as in iteration 1; the comparator moved from +0.87 to +1.38 with credit-driven curation.
+- **Close refused** (`state ccbe1075a873 is archived with different content`): the i2 typed proposer re-proposed the i1 `fx-oclock` deliver rule
+  (new candidate id, same artefact set -> same archive state id); `open --stage cell` had not checked candidates against the archive, and the
+  write-once archive refused the second measurement at close. Both i2 offline candidates (`oclock`, `ee`) fitted +0.00 pp (refused). Fix in
+  build (`sonnet/tfrl-close-archived-duplicate`): archived duplicates are refused at open with code `duplicate-of-archived` and shown to the
+  proposer as re-proposed; a colliding offline read becomes a write-once `archive/rereads/` sibling; `close` exports the per-row scores and builds
+  the ACE credit itself (the ordering defect that skipped the i1 credit); an idempotent `repair --iter 2` lets the close complete. Row scores
+  i2 exported (1,080 rows).
+- **Ledger lapse recorded**: the i2 column READ row was countersigned only at 06:38Z, after the close's sub-steps had read the sealed column
+  (the i1 registration countersigned the READ row together with the flight rows; the i2 registration did not). Rule restated: countersign
+  the column READ row with the flight rows at registration, before any seal.
+- **Thinking arm rec1** flying since 06:01Z at a069b0ee1 on the max8192 session (gate passed; 302 rows by 06:31Z, about 10 rows per minute).
