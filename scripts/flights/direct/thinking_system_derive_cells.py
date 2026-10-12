@@ -45,6 +45,7 @@ from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import 
 
 ALLOWED_DIFFS = (
     "policy", "native_episode.consumption_module", "native_episode.roles.perception.template_variants", "native_contact_fit",
+    "preflight_budget_mode",
     "prepared_phase_supply", "what_this_is", "speech_packet_promotion_receipt", "speech_packet_promotion_receipt_sha256",
 )
 
@@ -142,6 +143,15 @@ def derive_baseline(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True
         raise SystemExit("the native_episode finite-completion / ReAct-exhaustion policies are not the registered ones")
     if (episode.get("review_loop"), episode.get("max_revisions")) != ("off", 0):
         raise SystemExit("the Thinking system cell must run the Reviewer loop off")
+    # Preflight fit (coordinator finding, 2026-10-12 19:40Z). The model-free preflight counts the JSON payload at 4 bytes per token
+    # (core.flight.runtime._default_token_counter, a placeholder): 21,269 "tokens" for the widest Solver render, where the exact
+    # native per-contact gate measured 14,641 on the same requests of the Instruct lock column (iteration 3: zero compactions in
+    # 1,080 rows, every context_compaction null). At the registered 4,096 cap the heuristic exceeds the physical 24,576 slot and
+    # the check refuses a fit the wire has. The cell therefore defers the preflight estimate to the registered exact per-contact
+    # gate (the mechanism the R01C recovery cells use). The lock's own context_fit_policy "compact-or-abstain" is kept (it is part
+    # of the compiled module block): at the wire the exact gate compacts or abstains a row that does not fit, and the Instruct lock
+    # column never compacted, so the two arms stay request-identical.
+    document["preflight_budget_mode"] = "defer-to-native-contact-fit"
     if "supply_variants" in json.dumps(episode["roles"]):
         raise SystemExit("the Thinking system cell carries no supply arms")
     left, right = dv._leaves(parent), dv._leaves(document)

@@ -310,6 +310,7 @@
   },
   "phase_tools": {},
   "policy": "phase-native-module-v1-c2",
+  "preflight_budget_mode": "defer-to-native-contact-fit",
   "preparation_source_receipts": [
     {
       "relpath": "knowledge/slurp/semantic/intent-boundaries-v1/completion.json",

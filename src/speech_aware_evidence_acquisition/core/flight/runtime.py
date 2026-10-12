@@ -2924,13 +2924,22 @@ class FlightRuntime:
                 raise FlightRuntimeError(
                     "native fit deferral is only valid for the default heuristic"
                 )
+            # 2026-10-12 (coordinator, 268-B registration): deferral is also
+            # valid under ``"compact-or-abstain"``. Both policies hand every
+            # realised request to the registered exact per-contact gate; the
+            # strict one aborts a wide request, the other compacts or abstains
+            # the row. Neither silently truncates, so the placeholder
+            # ~4-bytes-per-token preflight estimate (which over-counted the
+            # module Solver render by 45 % against the measured wire width)
+            # is recorded, never enforced, under either.
             if (
                 policy == "fixed" or obs_policy
                 or not isinstance(baseline_values.get("native_episode"), Mapping)
-                or self._context_fit_policy() != "raise"
+                or self._context_fit_policy() not in ("raise", "compact-or-abstain")
             ):
                 raise FlightRuntimeError(
-                    "native fit deferral requires a strict native episode"
+                    "native fit deferral requires a native episode with a "
+                    "context_fit_policy of 'raise' or 'compact-or-abstain'"
                 )
             from ..preparation_fit import validate_native_contact_fit_config
 

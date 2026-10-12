@@ -139,6 +139,7 @@ def test_the_core_is_the_only_factor_against_the_loops_instruct_lock_arm():
     missing = object()
     moved = sorted(k for k in set(left) | set(right) if left.get(k, missing) != right.get(k, missing))
     allowed = ("knowledge_stores.ace-playbook", "native_contact_fit", "native_episode.consumption_module", "native_episode.roles.solver.supply_variants",
+               "preflight_budget_mode",  # preflight deferral to the exact native gate (coordinator, 2026-10-12)
                "policy", "prepared_phase_supply", "speech_packet_promotion_receipt", "speech_packet_promotion_receipt_sha256", "what_this_is")
     assert not [k for k in moved if not any(k == p or k.startswith(p + ".") for p in allowed)]
     for store in ("intent-boundaries", "slot-contracts", "train-exemplars"):
@@ -167,7 +168,7 @@ def test_experiments_swap_only_the_core_and_keep_native_wire_metadata():
         cell = doc["cells"][0]
         assert cell["model_fragment"] == fam.THINK_MODEL and doc["service_session"] == fam.THINK_SESSION and doc["split_id"] == fam.SPLIT_ID
         assert doc["preserve_wire_responses"] is True        # native role contacts require preserved wire metadata
-        assert cell["readiness"]["state"] == "held"
+        assert cell["readiness"]["state"] in ("held", "ready")  # held before the flip, ready after it
         assert validate_stage3_algorithm_label(doc["stage3_algorithm"], cell=fam.CELLS[key]["cell"])[0].id == "shared-rollout"
         assert doc["stage3_algorithm"]["id"] == "shared-rollout"
         roster = json.loads((REPO / fam.ROSTER["smoke" if key == "smoke" else "arm"]).read_text(encoding="utf-8"))

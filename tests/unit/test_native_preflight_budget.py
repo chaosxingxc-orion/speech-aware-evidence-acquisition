@@ -51,6 +51,24 @@ def test_declared_heuristic_defer_records_overflow_without_certifying_capacity(m
     assert runtime._context_fit_policy() == "raise"
 
 
+def test_deferral_is_valid_under_compact_or_abstain(monkeypatch):
+    """2026-10-12: the exact per-contact gate compacts or abstains at the wire, so the placeholder estimate is recorded, not enforced."""
+    runtime, samples = _runtime(monkeypatch, native_episode={"context_fit_policy": "compact-or-abstain"})
+    receipts = runtime._assess_prompt_budget(samples)
+    assert len(receipts) == 4
+    for row in receipts:
+        assert row["decision"] == "COMPACT_REQUIRED" and row["physical_margin_tokens"] < 0
+        assert row["estimate_only"] is True and row["capacity_verified"] is False
+
+
+def test_deferral_refuses_an_unknown_fit_policy(monkeypatch):
+    from speech_aware_evidence_acquisition.rails.context_fit import ContextFitError
+
+    runtime, samples = _runtime(monkeypatch, native_episode={"context_fit_policy": "ignore"})
+    with pytest.raises((module.FlightRuntimeError, ContextFitError), match="context_fit_policy"):
+        runtime._assess_prompt_budget(samples)
+
+
 def test_omitted_mode_preserves_legacy_overflow_refusal(monkeypatch):
     runtime, samples = _runtime(monkeypatch)
     runtime._composed.values.pop("preflight_budget_mode")
@@ -62,7 +80,6 @@ def test_omitted_mode_preserves_legacy_overflow_refusal(monkeypatch):
     {"native_contact_fit": None},
     {"native_contact_fit": {"run_id": "fit-run"}},
     {"native_episode": None},
-    {"native_episode": {"context_fit_policy": "compact-or-abstain"}},
     {"policy": "fixed"},
     {"preflight_budget_mode": "ignore-overflow"},
 ])
