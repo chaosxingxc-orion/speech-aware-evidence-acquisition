@@ -1,0 +1,190 @@
+{
+  "arm": "construction-proposer-text",
+  "evidence_source": "none",
+  "instruction_note": "The contact's instruction is rendered at flight time from the pinned aggregate artefacts and is never written to a receipt.",
+  "modality_note": "TEXT ONLY: the construction-proposer-text arm is bound by the D2 freeze to its text fields; no audio part and no speech-feature packet is ever opened. The carrier row's audio seconds are declared as a positive ceiling because the execution contract requires a positive declaration; realised speech seconds read 0.",
+  "phase_material": {
+    "reflect": {
+      "instruction_fill": null,
+      "instruction_template": "probes/tfrl/ace-reflector-v1.txt",
+      "predecessor_binding": "none",
+      "response_format_id": "saea-ace-delta-items-v1"
+    }
+  },
+  "policy": "phase-tfrl-ace-reflector-v1",
+  "preparation_source_receipts": [
+    {
+      "relpath": "docs/receipts/rosters/slurp-tfrl-ace-reflector-fold-b-carriers-i3-v1.json",
+      "root": "repository",
+      "sha256": "3e13a274ee0432d5b6fc8f54359ef964ebd68ef4c27352bf45924ddf230a218b"
+    },
+    {
+      "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "root": "repository",
+      "sha256": "47b89b9e33b1aed553ad94a1819acba6ac8837130ca546c33219d91a1ab944a8"
+    }
+  ],
+  "roster_note": "The flown population is the 18 CARRIER rows of docs/receipts/rosters/slurp-tfrl-ace-reflector-fold-b-carriers-i3-v1.json (split identity c3338677474e905a67615e0afb7659f2191aaad2a04dfd7979f4687a63b1a2ee), a seeded selection of TRAIN Fold B; a carrier is an identity anchor only.",
+  "scorers": [
+    "cost"
+  ],
+  "scoring_note": "Only the 'cost' scorer: a proposal is an ARTIFACT validated or curated offline, never an answer to a scored row.",
+  "serving_geometry_note": "The resident SLURP session geometry (np4 x 24,576 = -c 98304) of the model fragment q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1, declared so rails.adapters.slurp_runtime.configured_geometry binds the real server args instead of its (8, 8192) defaults (the ADV-1 precedent).",
+  "serving_slot_tokens": 24576,
+  "serving_slots": 4,
+  "task_instruction": "You are one contact of an automated optimisation loop for a spoken-language-understanding system. Answer exactly once, in the closed format the instruction names.",
+  "tfrl_ace_reflector": {
+    "carriers": [
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-alarm.json",
+          "sha256": "9f74b70bd65e79b92719ac8e9ed0e5ecb2fe07ad11add89b5db38b37655b70b5"
+        },
+        "sample_id": "slurp:train:000485:audio-1498564256-headset",
+        "scenario": "alarm"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-audio.json",
+          "sha256": "3df34c9c44c160f94e2e68ae902f2022fe598aeaa0287b202a5d3440865d97ba"
+        },
+        "sample_id": "slurp:train:000652:audio-1498565788",
+        "scenario": "audio"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-calendar.json",
+          "sha256": "0dca96aaa991707486b532e8f7033ae362f4904bcd0ee9e11fb83df351768b2a"
+        },
+        "sample_id": "slurp:train:002021:audio-1501694900",
+        "scenario": "calendar"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-cooking.json",
+          "sha256": "21decb40fc80d1b1a73370351ae4ffe1b2749fd94e885e9da90bc7fb05bbb49c"
+        },
+        "sample_id": "slurp:train:002455:audio-1501758215-headset",
+        "scenario": "cooking"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-datetime.json",
+          "sha256": "96386e4e051155ba5c48e961e33e4a99c1f64a84a8cafa399e4c41b9ba7a3c07"
+        },
+        "sample_id": "slurp:train:002509:audio--1504192510",
+        "scenario": "datetime"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-email.json",
+          "sha256": "4de9d87f2f265605de4769ede9db61b96c5547d643fa6f45c91597bfe5d26a2b"
+        },
+        "sample_id": "slurp:train:002608:audio-1498565063",
+        "scenario": "email"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-general.json",
+          "sha256": "4f081c07a3b27b8c43b91e0f195318986b7b9e9cfe224f979d4e354248e330c3"
+        },
+        "sample_id": "slurp:train:003314:audio-1490007833-headset",
+        "scenario": "general"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-iot.json",
+          "sha256": "46f9e66d62ba2a0ec03470764865be52656f7f6497d0074852df86ada10ba5c7"
+        },
+        "sample_id": "slurp:train:004314:audio-1434527556-headset",
+        "scenario": "iot"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-lists.json",
+          "sha256": "62b593cd701341170843bab41a8b8d570be52d3de19a535e9cfa33a822c0ddd9"
+        },
+        "sample_id": "slurp:train:005388:audio-1495370580",
+        "scenario": "lists"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-music.json",
+          "sha256": "ec78975ed9ed9d93f2dfd949d7c694d836e0c83733dc32c21e13e622fbb7d42e"
+        },
+        "sample_id": "slurp:train:005756:audio-1501152648-headset",
+        "scenario": "music"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-news.json",
+          "sha256": "dbbe01b6a33d5970a7b5cd185a63ac14cccfe5dd66413ef1d7feac98d316d495"
+        },
+        "sample_id": "slurp:train:009848:audio--1504194889",
+        "scenario": "news"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-play.json",
+          "sha256": "ad74a46a200d6a4cf4531334b355142b7bd90ca74f44d4c8fe7eb911a4146e45"
+        },
+        "sample_id": "slurp:train:010657:audio-1490018444",
+        "scenario": "play"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-qa.json",
+          "sha256": "75a3d5919267170ab8b6fa999aca37c5a7c193d7c8c2d120dd906506c9ebdb56"
+        },
+        "sample_id": "slurp:train:010818:audio-1495370381-headset",
+        "scenario": "qa"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-recommendation.json",
+          "sha256": "5add5b6bd899718c07894eaa898b22e52df559c6a166fe66c19221cc2a432554"
+        },
+        "sample_id": "slurp:train:011009:audio-1490956570",
+        "scenario": "recommendation"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-social.json",
+          "sha256": "5f85fb28d667a46469eb6e780bb82ffd3e6c1aa91c51341eedb5b791474f6e11"
+        },
+        "sample_id": "slurp:train:011895:audio-1494418149-headset",
+        "scenario": "social"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-takeaway.json",
+          "sha256": "8984836dc39d04bdbe25bd28757256d392af7251dc74605779035ed61e06a3df"
+        },
+        "sample_id": "slurp:train:013709:audio-1502218530-headset",
+        "scenario": "takeaway"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-transport.json",
+          "sha256": "d34f315293a0f16aa3ee3b6a4581b36ecfbacc138e2e7b8f018da2b0c8c059c4"
+        },
+        "sample_id": "slurp:train:015392:audio-1490199793-headset",
+        "scenario": "transport"
+      },
+      {
+        "material": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-weather.json",
+          "sha256": "6b6d1b7b4ba756355105fe45a1de0b6437109fd00c4cfc4ab8c056d0a2321855"
+        },
+        "sample_id": "slurp:train:016291:audio-1501686460-headset",
+        "scenario": "weather"
+      }
+    ],
+    "playbook": {
+      "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i2/ace-release-staging/playbook-i2.json",
+      "sha256": "f05aae83ec64640418d5ad7c28bc888ff27a36c8b80d4a0065c86ec64d2b0c89"
+    },
+    "token_cap": 15608
+  },
+  "what_this_is": "Decision 263-A ACE reflector contact: one text-only contact per scenario reading that scenario's credit tables and the current playbook and answering under the saea-ace-delta-items-v1 schema. Readiness HELD: this registration authorises no flight, no readiness flip and no admission entry."
+}

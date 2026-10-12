@@ -1,0 +1,108 @@
+{
+  "cells": [
+    {
+      "allowed_execution_stages": [
+        "check",
+        "worker",
+        "campaign"
+      ],
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-ace-reflector-i3-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-tfrl-ace-reflector-i3-baseline-v1",
+      "cell_id": "slurp-native-stage3-tfrl-ace-reflector-i3-v1",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1",
+      "readiness": {
+        "reason": "Decision 263-A ACE reflector contact: one text-only contact per scenario reading that scenario's credit tables and the current playbook and answering under the saea-ace-delta-items-v1 schema. HELD (DRAFT): the coordinator countersigns the DRAFT rows, mints the admission receipt and re-pins with scripts/flights/repin_cell.py --set-ready (through scripts/flights/tfrl/tfrl_i1_flip.sh), which also mints this cell's own first-phase supply under its own run id (item E16); --allow-output-change must never be passed. Nothing here authorises a flight, a readiness flip or an admission entry.",
+        "requirements": [
+          {
+            "expected_decision_id": "slurp-tfrl-proposers-i3-admission-v1",
+            "kind": "decision",
+            "reason": "Decision slurp-tfrl-proposers-i3-admission-v1 pinned by scripts/flights/repin_cell.py.",
+            "relpath": "coordination/slurp-tfrl-proposers-i3-v1/root-admission-v1.json",
+            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          {
+            "kind": "preparation",
+            "reason": "The pinned playbook artefact the contact renders (data-root relative).",
+            "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i2/ace-release-staging/playbook-i2.json",
+            "sha256": "f05aae83ec64640418d5ad7c28bc888ff27a36c8b80d4a0065c86ec64d2b0c89"
+          }
+        ],
+        "state": "held"
+      },
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I3-V1"
+    }
+  ],
+  "date": "2026-10-11",
+  "execution_plan": {
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.1,
+    "planned_model_calls": 54,
+    "planned_speech_audio_seconds": 123,
+    "planned_speech_audio_seconds_note": "text-only contacts under the D2 freeze: realised speech seconds read 0 <= the declared ceiling",
+    "split_role": "discovery"
+  },
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-STAGE3-TFRL-ACE-REFLECTOR-I3-V1",
+  "failure_policy": "Stop on the first failure and preserve every contact; the registered retries are the only re-asks. No re-sampling and no best-of-N over proposals.",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 0,
+    "generation_calls_cap": 54,
+    "gpu_hours_fit_inclusive": 0.1,
+    "native_task_contract_calls_cap": 0,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 123
+  },
+  "fragment_kind": "saea-slurp-native-stage3-tfrl-ace-reflector-i3-v1",
+  "generation_budget": {
+    "cap": 54,
+    "definition": "18 carriers x (1 + 2 registered retries) = 54 calls, RUN-CUMULATIVE across every attempt of this run id; one phase, max_contacts 1.",
+    "target": 54
+  },
+  "population": {
+    "count": 18,
+    "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+    "decision_population": "Exactly the 18 CARRIER rows of docs/receipts/rosters/slurp-tfrl-ace-reflector-fold-b-carriers-i3-v1.json.",
+    "split_identity_hash": "c3338677474e905a67615e0afb7659f2191aaad2a04dfd7979f4687a63b1a2ee"
+  },
+  "populations": [
+    {
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "ids": [
+        "slurp:train:000485:audio-1498564256-headset",
+        "slurp:train:000652:audio-1498565788",
+        "slurp:train:002021:audio-1501694900",
+        "slurp:train:002455:audio-1501758215-headset",
+        "slurp:train:002509:audio--1504192510",
+        "slurp:train:002608:audio-1498565063",
+        "slurp:train:003314:audio-1490007833-headset",
+        "slurp:train:004314:audio-1434527556-headset",
+        "slurp:train:005388:audio-1495370580",
+        "slurp:train:005756:audio-1501152648-headset",
+        "slurp:train:009848:audio--1504194889",
+        "slurp:train:010657:audio-1490018444",
+        "slurp:train:010818:audio-1495370381-headset",
+        "slurp:train:011009:audio-1490956570",
+        "slurp:train:011895:audio-1494418149-headset",
+        "slurp:train:013709:audio-1502218530-headset",
+        "slurp:train:015392:audio-1490199793-headset",
+        "slurp:train:016291:audio-1501686460-headset"
+      ]
+    }
+  ],
+  "purpose": "Decision 263-A ACE reflector contact: one text-only contact per scenario reading that scenario's credit tables and the current playbook and answering under the saea-ace-delta-items-v1 schema. Text-only form: no benefit is claimed (fewer than 200 rows). Aggregates of the sealed construction-source lock column (R01C, TRAIN rows outside both folds) credit; no per-row gold, no utterance text, no output text.",
+  "service_session": "serving-slurp-native-candidate-five-train-a-np4-v1",
+  "split_id": "SLURP-EVO-FOLD-B-V2",
+  "split_id_note": "The runtime split id equals the dataset fragment split_name; the population is the explicit populations block.",
+  "stage3_algorithm": {
+    "id": "ace-grow-refine-v1",
+    "note": "The ACE reflector contact (arXiv:2510.04618): one contact per scenario reads that scenario's credit tables and the current playbook with its script-computed counters and proposes delta items; the deterministic curator, not the model, merges, counts and prunes.",
+    "operators_used": [
+      "update",
+      "selection"
+    ]
+  }
+}

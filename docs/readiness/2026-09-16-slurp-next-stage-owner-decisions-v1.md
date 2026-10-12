@@ -1873,3 +1873,25 @@ ext4 import 0.43 s). The queue wrappers switch to `flip_in_ext4.sh` before the n
   (the i1 registration countersigned the READ row together with the flight rows; the i2 registration did not). Rule restated: countersign
   the column READ row with the flight rows at registration, before any seal.
 - **Thinking arm rec1** flying since 06:01Z at a069b0ee1 on the max8192 session (gate passed; 302 rows by 06:31Z, about 10 rows per minute).
+
+### Loop iteration 2 CLOSED: ACE i2 refused by the point floor and the intent guard (SLU +1.38 [+0.15, +2.57]); typed arm empty; parent stays the lock (coordinator, 2026-10-12 07:35Z)
+
+`close --iter 2` (after `repair --iter 2 --duplicates-only`: the re-proposed fx-oclock rule reclassified `duplicate-of-archived` and re-read as
+`archive/rereads/ccbe1075...-i2.json`, +0.00 pp again; the new `ee5` offline candidate refused at +0.00 pp). ACE i2 (35-item playbook curated
+with the i1 official credit) on the i2 Fold B column, n = 1,080:
+
+| arm | SLU-F1 | intent | vs lock SLU pp [CI95] | vs lock intent pp [CI95] | vs twin SLU pp [CI95] |
+| --- | ---: | ---: | --- | --- | --- |
+| ace i2 | 65.88 | 82.41 | **+1.38 [+0.15, +2.57]** | -0.56 [-1.20, +0.09] | +1.06 (twin vs lock +0.32 [-0.33, +0.97]) |
+
+Clauses: a (CI-LB > 0) **PASS** (first time for the comparator); b (point >= 1.49) FAIL by 0.11 pp; c (beats twin) PASS; d vacuous; e
+(intent lo >= -0.65 and point >= 0) FAIL (point -0.56). **ACE i2 refused**; state cadd84f6... archived. Composition: false fill -2.81 pp on the
+392 empty-gold rows (i1: -4.34), non-empty exact +0.44 pp on 688 rows (i1: +0.58); per-scenario SLU from -3.73 (audio) to +4.07
+(recommendation), intent losses concentrated in cooking (-3.33) and four scenarios at -1.67. Curve: ACE i1 +0.87 -> i2 +1.38 with
+credit-driven curation (27 -> 35 items); the SLU gain is now statistically positive but under the 1.49 floor and bought with intent. The
+ACE credit for i3 is written by the close itself (`ace-credit.json`, row scores 1,080 rows). Typed arm: empty by measurement for the second
+iteration (deliver-rule class exhausted at +0.00; the proposer re-proposed a refused rule, now refused as a duplicate at open). Parent for
+iteration 3 = s0-lock-v2.2; `open --iter 3 --stage propose` running. Reading for the owner: two iterations in, the ACE prose-item comparator
+is converging toward the floor on SLU while costing intent; the typed operator class (deliver rules) is exhausted; iteration 3 is the last
+registered iteration of decision 263 and will decide whether the loop's ledger entry is "no typed candidate cleared the instrument" and
+"ACE converged but did not clear the floor".

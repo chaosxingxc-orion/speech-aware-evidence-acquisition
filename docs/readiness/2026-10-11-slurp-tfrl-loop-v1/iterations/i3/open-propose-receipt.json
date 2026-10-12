@@ -1,0 +1,288 @@
+{
+  "ace": {
+    "constants_sha256": "bb46d3203d5825fe0fd9b4cba1609d881fdf1f00c4d1aec56ab4bb61faa54e12",
+    "lock_p99_supplied_tokens": 13728,
+    "materials": 18,
+    "playbook_iteration": 2,
+    "t_cap": 15608
+  },
+  "archive_sha256": "457603180c7d386d2ac79ab9dd111d0bf52e4d2745d7363367a527bb7519778f",
+  "edit_budget_L_t": 1,
+  "inputs": {
+    "archive_sha256": "457603180c7d386d2ac79ab9dd111d0bf52e4d2745d7363367a527bb7519778f",
+    "enums": {
+      "intents": [
+        "alarm_query",
+        "alarm_remove",
+        "alarm_set",
+        "audio_volume_down",
+        "audio_volume_mute",
+        "audio_volume_other",
+        "audio_volume_up",
+        "calendar_query",
+        "calendar_remove",
+        "calendar_set",
+        "cooking_query",
+        "cooking_recipe",
+        "datetime_convert",
+        "datetime_query",
+        "email_addcontact",
+        "email_query",
+        "email_querycontact",
+        "email_sendemail",
+        "general_greet",
+        "general_joke",
+        "general_quirky",
+        "iot_cleaning",
+        "iot_coffee",
+        "iot_hue_lightchange",
+        "iot_hue_lightdim",
+        "iot_hue_lightoff",
+        "iot_hue_lighton",
+        "iot_hue_lightup",
+        "iot_wemo_off",
+        "iot_wemo_on",
+        "lists_createoradd",
+        "lists_query",
+        "lists_remove",
+        "music_dislikeness",
+        "music_likeness",
+        "music_query",
+        "music_settings",
+        "news_query",
+        "play_audiobook",
+        "play_game",
+        "play_music",
+        "play_podcasts",
+        "play_radio",
+        "qa_currency",
+        "qa_definition",
+        "qa_factoid",
+        "qa_maths",
+        "qa_stock",
+        "recommendation_events",
+        "recommendation_locations",
+        "recommendation_movies",
+        "social_post",
+        "social_query",
+        "takeaway_order",
+        "takeaway_query",
+        "transport_query",
+        "transport_taxi",
+        "transport_ticket",
+        "transport_traffic",
+        "weather_query"
+      ],
+      "scenarios": [
+        "alarm",
+        "audio",
+        "calendar",
+        "cooking",
+        "datetime",
+        "email",
+        "general",
+        "iot",
+        "lists",
+        "music",
+        "news",
+        "play",
+        "qa",
+        "recommendation",
+        "social",
+        "takeaway",
+        "transport",
+        "weather"
+      ],
+      "slot_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ]
+    },
+    "iteration": 3,
+    "p99": 13728,
+    "register": true,
+    "stage": "propose",
+    "tables_file_sha256": "c51f4c97490859581b01ec3c93df9ca8f129db6a6510778451a7f32c593be826"
+  },
+  "inputs_sha256": "b5c63add954ede9d53de63e82793a6d48a94db691080f4ede5660e1e31ab13c3",
+  "iteration": 3,
+  "parent_display_id": "s0-lock-v2.2",
+  "pins": {
+    "ace": {
+      "materials": {
+        "alarm": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-alarm.json",
+          "sha256": "9f74b70bd65e79b92719ac8e9ed0e5ecb2fe07ad11add89b5db38b37655b70b5"
+        },
+        "audio": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-audio.json",
+          "sha256": "3df34c9c44c160f94e2e68ae902f2022fe598aeaa0287b202a5d3440865d97ba"
+        },
+        "calendar": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-calendar.json",
+          "sha256": "0dca96aaa991707486b532e8f7033ae362f4904bcd0ee9e11fb83df351768b2a"
+        },
+        "cooking": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-cooking.json",
+          "sha256": "21decb40fc80d1b1a73370351ae4ffe1b2749fd94e885e9da90bc7fb05bbb49c"
+        },
+        "datetime": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-datetime.json",
+          "sha256": "96386e4e051155ba5c48e961e33e4a99c1f64a84a8cafa399e4c41b9ba7a3c07"
+        },
+        "email": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-email.json",
+          "sha256": "4de9d87f2f265605de4769ede9db61b96c5547d643fa6f45c91597bfe5d26a2b"
+        },
+        "general": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-general.json",
+          "sha256": "4f081c07a3b27b8c43b91e0f195318986b7b9e9cfe224f979d4e354248e330c3"
+        },
+        "iot": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-iot.json",
+          "sha256": "46f9e66d62ba2a0ec03470764865be52656f7f6497d0074852df86ada10ba5c7"
+        },
+        "lists": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-lists.json",
+          "sha256": "62b593cd701341170843bab41a8b8d570be52d3de19a535e9cfa33a822c0ddd9"
+        },
+        "music": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-music.json",
+          "sha256": "ec78975ed9ed9d93f2dfd949d7c694d836e0c83733dc32c21e13e622fbb7d42e"
+        },
+        "news": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-news.json",
+          "sha256": "dbbe01b6a33d5970a7b5cd185a63ac14cccfe5dd66413ef1d7feac98d316d495"
+        },
+        "play": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-play.json",
+          "sha256": "ad74a46a200d6a4cf4531334b355142b7bd90ca74f44d4c8fe7eb911a4146e45"
+        },
+        "qa": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-qa.json",
+          "sha256": "75a3d5919267170ab8b6fa999aca37c5a7c193d7c8c2d120dd906506c9ebdb56"
+        },
+        "recommendation": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-recommendation.json",
+          "sha256": "5add5b6bd899718c07894eaa898b22e52df559c6a166fe66c19221cc2a432554"
+        },
+        "social": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-social.json",
+          "sha256": "5f85fb28d667a46469eb6e780bb82ffd3e6c1aa91c51341eedb5b791474f6e11"
+        },
+        "takeaway": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-takeaway.json",
+          "sha256": "8984836dc39d04bdbe25bd28757256d392af7251dc74605779035ed61e06a3df"
+        },
+        "transport": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-transport.json",
+          "sha256": "d34f315293a0f16aa3ee3b6a4581b36ecfbacc138e2e7b8f018da2b0c8c059c4"
+        },
+        "weather": {
+          "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/ace-material/material-weather.json",
+          "sha256": "6b6d1b7b4ba756355105fe45a1de0b6437109fd00c4cfc4ab8c056d0a2321855"
+        }
+      },
+      "playbook": {
+        "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i2/ace-release-staging/playbook-i2.json",
+        "sha256": "f05aae83ec64640418d5ad7c28bc888ff27a36c8b80d4a0065c86ec64d2b0c89"
+      },
+      "token_cap": 15608
+    },
+    "typed": {
+      "context": {
+        "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/proposer-context.json",
+        "sha256": "a1a2a7a80df135b81b06d13562d05e7609360cad5b84541aa5ccde6a238f3081"
+      },
+      "tables": {
+        "relpath": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/proposer-tables.json",
+        "sha256": "831d19288658918e4d7637efdc066c88ef3bb1dcc051b480d80fa236509a7ecb"
+      }
+    }
+  },
+  "proposer_context_file_sha256": "a1a2a7a80df135b81b06d13562d05e7609360cad5b84541aa5ccde6a238f3081",
+  "proposer_tables_sha256": "4a00c91fe1f8ff1449f51023fdca6fdd2adaf9c98af976a61444737dda17f0f9",
+  "protocol_sha256": "3ba5e4ee441a9a292f316f0f804a0f53b6a618e43995d7b94803df825232dcb7",
+  "registration": {
+    "cells": {
+      "ace": "slurp-native-stage3-tfrl-ace-reflector-i3-v1",
+      "typed": "slurp-native-stage3-tfrl-proposer-i3-v1"
+    },
+    "package": "docs/readiness/2026-10-11-slurp-tfrl-loop-i3-proposers-v1",
+    "status": "DRAFT-HELD"
+  },
+  "roots": {
+    "ace": "81fc55040ca09bae05b9d908823a1fde6328c1ec089cb8c2e5410b0120e9c065",
+    "typed": "a8f1d50ef76ecf1209d7851a993eba5610abf695f14af0a7c90b53750bb35347"
+  },
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "source_column": {
+    "arm": "lock",
+    "attempt": "attempt-slurp-native-stage3-tfrl-construction-lock-r01c-generation-v1",
+    "note": "the sealed construction-source lock column (plain lock, roster R01C); the same column serves every iteration. Fold B is the held-out selection split and contributes only counters and the refused-candidate buffer.",
+    "override": false,
+    "roster": "docs/receipts/rosters/slurp-stage3-construction-r01c.json",
+    "roster_id": "SLURP-STAGE3-CONSTRUCTION-R01C",
+    "rows": 625,
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-CONSTRUCTION-LOCK-R01C-V1",
+    "scorer": "slurp-slu-official-train",
+    "split": "train"
+  },
+  "stage": "propose",
+  "status": "done",
+  "step": "open-propose",
+  "tables_sha256": "6c925de64265d5c53ea3536bffbc39694316e3669e13cf98eb838d6f192ae36d"
+}
