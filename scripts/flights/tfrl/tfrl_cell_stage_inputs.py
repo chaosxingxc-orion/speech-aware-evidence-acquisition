@@ -214,6 +214,7 @@ def build_reflector_answers(source: Mapping[str, Any], t: int) -> tuple[dict, di
     parsed = rejected = 0
     rejected_codes: dict[str, int] = {}
     deltas_by: dict[str, int] = {}
+    kept_prefix: dict[str, str] = {}
 
     def count(text: str) -> int:
         try:
@@ -237,8 +238,9 @@ def build_reflector_answers(source: Mapping[str, Any], t: int) -> tuple[dict, di
             if prev_n > 0 or n == 0:
                 dropped.append({"scenario": scn, "response_sha256_prefix": row["response_sha256"][:10], "deltas": n})
                 continue
-            replaced.append({"scenario": scn, "response_sha256_prefix": _prefix_of(source, answers[scn]), "deltas": prev_n})
+            replaced.append({"scenario": scn, "response_sha256_prefix": kept_prefix[scn], "deltas": prev_n})
         answers[scn] = text
+        kept_prefix[scn] = row["response_sha256"][:10]
         deltas_by[scn] = n
     doc = {"schema": ANSWERS_SCHEMA, "run_id": source["run_id"],
            "mapping": ANSWERS_MAPPING.format(roster=source["roster_relpath"]), "dropped_duplicates": dropped, "answers": answers}
@@ -247,13 +249,6 @@ def build_reflector_answers(source: Mapping[str, Any], t: int) -> tuple[dict, di
               "scenarios": len(answers), "scenarios_with_deltas": sum(1 for n in deltas_by.values() if n), "deltas_in_kept_answers": sum(deltas_by.values()),
               "dropped_duplicates": len(dropped), "replaced_empty_answers": len(replaced)}
     return doc, counts, doc_extra
-
-
-def _prefix_of(source: Mapping[str, Any], text: str) -> str:
-    for row in source["rows"]:
-        if row["text"] == text:
-            return row["response_sha256"][:10]
-    return ""
 
 
 def build_enums(analysis: Path) -> dict:
@@ -277,6 +272,8 @@ def _link_prepared(scratch: Path, data_root: Path, repo_root: Path) -> None:
     pins = [registration["construction_scope"], registration["permitted_roster"], *registration["forbidden_rosters"]]
     for pin in pins:
         if pin.get("root") == "data":
+            if not (data_root / pin["relpath"]).is_file():
+                raise ToolError(f"the preparer's data-root input {pin['relpath']} is missing")
             target = scratch / pin["relpath"]
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(data_root / pin["relpath"], target)
@@ -462,7 +459,7 @@ def run(args: argparse.Namespace) -> dict:
                 _install(p, args.supersede)
         report["ace_release"]["prepare"] = "prepared (scratch and real outputs byte-identical)"
         report["pins"] = pins
-        report["artefacts"] = [_row(ctx, p, with_installed=False) for p in plan]
+        report["artefacts"] = [_row(ctx, p, brief=True) for p in plan]
         manifest_path = A / f"cell-stage-inputs-i{t}.json"
         manifest_bytes = dumps(report)
         if manifest_path.is_file() and manifest_path.read_bytes() != manifest_bytes:
@@ -494,14 +491,19 @@ def _install(p: dict, supersede: bool) -> None:
     target.write_bytes(p["full"])
 
 
-def _row(ctx: drv.Ctx, p: Mapping[str, Any], *, with_installed: bool = True) -> dict:
+def _row(ctx: drv.Ctx, p: Mapping[str, Any], *, brief: bool = False) -> dict:
+    """One artefact row; ``brief`` (the manifest) leaves out what depends on the run (the comparison with the existing bytes, the install state)."""
+
     target: Path = p["target"]
     try:
         where = target.relative_to(ctx.data_root).as_posix()
     except ValueError:
         where = "repo:" + target.relative_to(ctx.repo_root).as_posix()
-    row = {"name": p["name"], "where": where, "sha256": p["fresh_sha256"], "core_sha256": sha256_bytes(p["core"]), "vs_existing": p["compare"]}
-    if with_installed and "installed" in p:
+    row = {"name": p["name"], "where": where, "sha256": p["fresh_sha256"], "core_sha256": sha256_bytes(p["core"])}
+    if brief:
+        return row
+    row["vs_existing"] = p["compare"]
+    if "installed" in p:
         row["installed"] = p["installed"]
     return row
 
