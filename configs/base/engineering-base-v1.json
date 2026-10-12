@@ -16,10 +16,10 @@
     },
     "hot": {
       "path": "/home/chao/saea-data/speechrl-data",
-      "resolves_to": "/mnt/wsl/saea-data-1/speechrl-data",
+      "resolves_to": "/mnt/saea-data-1/speechrl-data",
       "fstype": "ext4",
-      "backing": "E:\\saea-data-1.vhdx (2 TB dynamic, ext4 label saea-data-1), attached at logon by the scheduled task SAEA-Mount-Data1: wsl --mount --vhd E:\\saea-data-1.vhdx --name saea-data-1 --type ext4",
-      "role": "the single working copy of everything the runtime reads or writes during preparation, a flight, a seal or a read; decision 296: the directory speechrl-data/ inside the disk-1 mount (symlink /home/chao/saea-data -> /mnt/wsl/saea-data-1), name parity with the E: layout"
+      "backing": "E:\\saea-data-1.vhdx (2 TB dynamic, ext4 label saea-data-1), attached to the WSL VM at logon by the scheduled task SAEA-Mount-Data1 (wsl --mount --vhd E:\\saea-data-1.vhdx --bare) and mounted by /etc/fstab (LABEL=saea-data-1 /mnt/saea-data-1, nofail) on every distro start -- a distro instance stops whenever its last client session ends and takes per-instance mounts with it (incident 2026-10-12 14:33Z)",
+      "role": "the single working copy of everything the runtime reads or writes during preparation, a flight, a seal or a read; decision 296: the directory speechrl-data/ inside the disk-1 mount (symlink /home/chao/saea-data -> /mnt/saea-data-1), name parity with the E: layout"
     },
     "cold": {
       "path": "/mnt/wsl/saea-data-2",

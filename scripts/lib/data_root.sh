@@ -13,9 +13,9 @@
 #                           stderr) on any refusal; callers do `saea_data_root_init || exit 70`.
 #   saea_data_root_guard    refuse a data root that does not exist, or -- for every root other than the 9p E: original
 #                           -- one that is not on a mounted ext4 filesystem (the hot root /home/chao/saea-data/speechrl-data
-#                           sits inside the VHDX mount /mnt/wsl/saea-data-1 behind the symlink /home/chao/saea-data,
-#                           decision 296; after a reboot before the logon task
-#                           SAEA-Mount-Data1 ran it dangles, and a recreated directory on the /mnt/wsl tmpfs is refused)
+#                           sits inside the VHDX mount /mnt/saea-data-1 (fstab, LABEL=saea-data-1) behind the symlink
+#                           /home/chao/saea-data, decision 296; after a reboot before the logon task SAEA-Mount-Data1
+#                           attached the VHD the mount point is an empty root-fs directory and is refused)
 #   saea_fs_type <path>     the filesystem type of the mount holding <path> (findmnt; falls back to stat -f)
 #
 # Environment overrides for tests: SAEA_DATA_ROOT (the root itself), SAEA_DATA_ROOT_FINDMNT (a findmnt stand-in).

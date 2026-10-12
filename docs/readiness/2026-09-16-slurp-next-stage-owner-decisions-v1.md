@@ -2342,3 +2342,29 @@ note (Opus) and this ledger entry; no Fold A / DEV flights for refused states. R
 - **Operational lesson (recorded in memory):** two inline `bash -c` variable losses in one hour (a `for f in ...` test loop ran the
   full suite three times on /mnt/d; a `du -sh "$S/$d"` became `du -sh /` and walked /mnt/c over 9p during the migration); every WSL
   command that carries a variable runs from a scratchpad script file, no exceptions.
+
+### Migration incident 14:33Z: distro stop killed every lane; VHD re-mounted; lanes relaunched (coordinator, 2026-10-12 14:50Z)
+
+- **Lane 1 replaced (14:10Z):** the single-stream copy of `datasets/` ran at about 8 MB/s (774k small files; 9p round-trip bound, CPU
+  idle). Lane 3 (`/home/chao/saea-queue/migrate_static3_284.sh`, task SAEA-Migrate-Static3-284) copies `datasets/*` with 12 parallel
+  per-directory rsync streams, then the lane-1 remainder, then writes STATIC_DONE; measured 16.9 GB/min in its first minute (about 35x).
+- **Incident:** at 14:33:04Z every Task-Scheduler-owned wsl.exe session (lane 2, lane 3, SAEA-Cutover-296) ended with exit
+  0xC000013A (console control) at the same instant; the distro instance then stopped (kernel log: the data disk and the distro root
+  unmounted together; the WSL VM itself stayed up) and the data-disk mount vanished. No task of ours fired in that window (the only
+  scheduler entry is Windows' own SoftLandingDeferralTask at 14:29Z); the cause is not identified -- the signature is a kill of the
+  hidden console hosts. The VHD stayed attached to the VM (`/dev/sde`, label saea-data-1); re-mounted 14:41Z as root, 938 GB intact
+  (ext4 unmounted cleanly). A probe showed that systemd SYSTEM units do not outlive their wsl.exe session either (the distro stops
+  with its last client session), so Task-Scheduler sessions remain the only durable owner. Relaunched 14:44Z as tasks: lane 3
+  (idempotent resume), lane 2b (`migrate_static2b_284.sh`: `prepared/` with 12 parallel per-entry streams -- 1,955 entries -- then
+  vectors, wire-check, repos, environments; writes LANE2_DONE), SAEA-Cutover-296 (waits for both markers). Operational rule added to
+  memory: after any distro stop re-mount the VHD first (`blkid -L saea-data-1`); the locator `hot-mount` rule refuses flights while it
+  is absent.
+- **Second failure and the durable fix (14:43-14:47Z):** the 14:44Z relaunch failed instantly (every rsync rc=11, false STATIC_DONE /
+  LANE2_DONE markers): a `wsl --mount` is a per-distro-instance mount, and the distro instance stops whenever its last client session
+  ends (serving is off during the migration, so nothing kept it alive between the coordinator's sessions) -- the VHD stays attached to
+  the VM but its mount vanishes. Fix: `/etc/fstab` entry `LABEL=saea-data-1 /mnt/saea-data-1 ext4 defaults,nofail` on a root-filesystem
+  mount point (WSL processes fstab at every distro start; proven across a `wsl --terminate`), symlink `/home/chao/saea-data ->
+  /mnt/saea-data-1`, the logon task SAEA-Mount-Data1 switched to `--bare` (attach only). Manifest `roots.hot.resolves_to` and the
+  authority's comment follow; locator host mode PASS, 27 locator tests pass. The migration logs were rotated (`static.log.1-until-1443Z-
+  false-markers`, `cutover.log.1-until-1443Z`) so the false markers cannot trigger the cut-over wrapper; lane 3, lane 2b and
+  SAEA-Cutover-296 relaunched 14:47Z (72 rsync streams; 949 GB on ext4).
