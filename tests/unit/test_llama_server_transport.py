@@ -4022,6 +4022,13 @@ def test_reasoning_guard_forwards_the_finish_reason_so_an_empty_cap_hit_can_be_r
 def test_unguarded_transport_envelope_has_no_finish_reason_key(tmp_path):
     """I7: every non-reasoning fragment (the Instruct core among them) keeps the historical envelope bytes."""
 
-    transport = _transport(_base_url(), tmp_path, post=_length_post())
+    plain_post = lambda _url, _body: json.dumps(  # noqa: E731
+        {"choices": [{"message": {"content": "x"}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 1, "completion_tokens": 2}}
+    ).encode()
+    transport = _transport(_base_url(), tmp_path, post=plain_post)
     envelope = json.loads(transport(json.dumps(_boundary_payload(tmp_path)).encode()))
     assert set(envelope) == {"text", "usage"}
+    # Decision 286: a response that DOES carry reasoning bytes gains only the hash-and-stats ``reasoning`` object on any transport.
+    leaky = _transport(_base_url(), tmp_path, post=_length_post())
+    leaky_envelope = json.loads(leaky(json.dumps(_boundary_payload(tmp_path)).encode()))
+    assert set(leaky_envelope) == {"text", "usage", "reasoning"} and "private thoughts" not in json.dumps(leaky_envelope)

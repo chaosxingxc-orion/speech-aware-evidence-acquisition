@@ -139,8 +139,10 @@ def test_a_normal_answer_records_counts_and_no_forced_close(tmp_path):
     envelope = _send(transport, tmp_path, **KNOBS)
     assert envelope["text"] == "turn on the lights" and envelope["finish_reason"] == "stop"
     assert envelope["reasoning"] == {
+        "reasoning_content_sha256": hashlib.sha256(b"think think").hexdigest(),
         "reasoning_chars": 11, "reasoning_tokens": None, "reasoning_tokens_basis": "not-reported-by-server",
         "forced_close": False, "forced_close_basis": "reasoning-ends-with-pinned-budget-message",
+        "finish_reason": "stop", "reasoning_bytes_policy": "hash-and-stats-only-v1",
     }
     assert "think think" not in json.dumps(envelope)
 
@@ -179,8 +181,11 @@ def test_empty_content_at_the_cap_is_delivered_empty_with_its_finish_reason(tmp_
 def test_the_guarded_envelope_without_telemetry_is_unchanged(tmp_path):
     """The existing Thinking max8192 fragment declares no knob, so its transport has no telemetry and its envelope keeps its keys."""
 
-    transport = _transport(_base_url(), tmp_path, post=_post_script([_wire("x")], []), reasoning_content_guard=GUARD)
+    transport = _transport(_base_url(), tmp_path, post=_post_script([_wire("x", reasoning=None)], []), reasoning_content_guard=GUARD)
     assert set(_send(transport, tmp_path, max_tokens=8192)) == {"text", "usage", "finish_reason"}
+    # Decision 286: when the response does carry reasoning bytes the projection is added whatever the knobs.
+    carrying = _transport(_base_url(), tmp_path, post=_post_script([_wire("x")], []), reasoning_content_guard=GUARD)
+    assert set(_send(carrying, tmp_path, max_tokens=8192)) == {"text", "usage", "finish_reason", "reasoning"}
 
 
 def test_the_factory_arms_telemetry_and_the_pinned_message_from_the_composed_config(tmp_path):

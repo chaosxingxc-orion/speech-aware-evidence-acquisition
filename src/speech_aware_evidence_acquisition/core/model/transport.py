@@ -88,7 +88,8 @@ from ..reasoning_knobs import (
     REASONING_WIRE_KEYS,
     ReasoningKnobError,
     budget_message_from_server_args,
-    detect_forced_close,
+    project_reasoning_out_of_wire,
+    reasoning_summary,
     validate_request_controls,
 )
 from .native_history import project_native_history
@@ -1476,10 +1477,19 @@ class LlamaServerTransport:
             raise FrozenCoreError(
                 f"server returned HTTP {error.code} {error.reason}: {detail}"
             ) from error
+        stored_raw = raw
+        reasoning_summary_stored: dict[str, object] | None = None
         try:
             parsed = json.loads(raw.decode("utf-8"))
             choice = parsed["choices"][0]
             message = choice["message"]
+            # Owner decision 286: the reasoning bytes never reach the envelope or the preserved wire response. A response that
+            # carries ``message.reasoning_content`` is re-serialized without it (a ``reasoning`` object replaces it) BEFORE any
+            # further read; everything sealed downstream, including ``wire_response_sha256``, is defined over this stored
+            # projection. A response without the key is untouched byte for byte.
+            stored_raw, reasoning_summary_stored = project_reasoning_out_of_wire(
+                parsed, raw, getattr(self, "_forced_close_message", None),
+            )
             # Native tool-calling arm (D1a): read tool_calls off the message
             # ONLY when it is actually a mapping carrying a non-empty list --
             # `isinstance` guards a malformed `message` shape from raising an
@@ -1544,8 +1554,8 @@ class LlamaServerTransport:
                 # malformed-response failure. It has no model-visible text.
                 return json.dumps(
                     {
-                        "wire_response_b64": base64.b64encode(raw).decode("ascii"),
-                        "wire_response_sha256": hashlib.sha256(raw).hexdigest(),
+                        "wire_response_b64": base64.b64encode(stored_raw).decode("ascii"),
+                        "wire_response_sha256": hashlib.sha256(stored_raw).hexdigest(),
                         "wire_finish_reason": None,
                         "wire_response_error": str(error),
                     }
@@ -1564,33 +1574,27 @@ class LlamaServerTransport:
             # ``content`` empty. The server's finish reason is forwarded ONLY under the opt-in reasoning guard, so an empty delivery can
             # be receipted as a cap hit (``rails.runner.EMPTY_COMPLETION_SCHEMA``); every other transport envelope is byte-identical.
             envelope["finish_reason"] = choice.get("finish_reason") if isinstance(choice, Mapping) else None
-        if getattr(self, "_reasoning_telemetry", False):
-            # Decision 283 A: counts and booleans about the reasoning channel -- never its text. The pinned build reports no
-            # reasoning token count and no budget-hit signal on the wire, so ``reasoning_tokens`` is the server's own
-            # ``completion_tokens_details.reasoning_tokens`` when it sends one, else None (basis recorded), and
-            # ``forced_close`` is detected from the end of ``reasoning_content`` against the pinned budget message.
-            reasoning_text = message.get("reasoning_content") if isinstance(message, Mapping) else None
+        if reasoning_summary_stored is not None:
+            # Decision 286: hash and statistics of the dropped reasoning bytes -- on every path, whatever the knobs.
+            envelope["reasoning"] = reasoning_summary_stored
+        elif getattr(self, "_reasoning_telemetry", False):
+            # Decision 283 A: a reasoning fragment whose response carried no reasoning channel still reports zero counts.
             raw_usage = parsed.get("usage") if isinstance(parsed, Mapping) else None
             details = raw_usage.get("completion_tokens_details") if isinstance(raw_usage, Mapping) else None
-            server_tokens = details.get("reasoning_tokens") if isinstance(details, Mapping) else None
-            has_server_tokens = isinstance(server_tokens, int) and not isinstance(server_tokens, bool)
-            envelope["reasoning"] = {
-                "reasoning_chars": len(reasoning_text) if isinstance(reasoning_text, str) else 0,
-                "reasoning_tokens": server_tokens if has_server_tokens else None,
-                "reasoning_tokens_basis": "server-usage-details" if has_server_tokens else "not-reported-by-server",
-                "forced_close": detect_forced_close(reasoning_text, getattr(self, "_forced_close_message", None)),
-                "forced_close_basis": (
-                    "reasoning-ends-with-pinned-budget-message"
-                    if getattr(self, "_forced_close_message", None) else "no-pinned-budget-message"
-                ),
-            }
+            envelope["reasoning"] = reasoning_summary(
+                None, getattr(self, "_forced_close_message", None),
+                details.get("reasoning_tokens") if isinstance(details, Mapping) else None,
+                choice.get("finish_reason") if isinstance(choice, Mapping) else None,
+            )
         if self._preserve_wire_responses:
             # Keep the server bytes exactly as received. The adapter validates
             # the envelope and emits these fields on a separate trace channel;
             # MODEL_RESPONSE keeps its historical text/usage shape; its
             # normalized-envelope hash necessarily includes these opt-in fields.
-            envelope["wire_response_b64"] = base64.b64encode(raw).decode("ascii")
-            envelope["wire_response_sha256"] = hashlib.sha256(raw).hexdigest()
+            # ``wire_response_sha256`` is the hash of the STORED wire response (the decision-286 projection when the response
+            # carried reasoning; the server bytes otherwise). ``reasoning["reasoning_content_sha256"]`` binds the dropped bytes.
+            envelope["wire_response_b64"] = base64.b64encode(stored_raw).decode("ascii")
+            envelope["wire_response_sha256"] = hashlib.sha256(stored_raw).hexdigest()
             envelope["wire_finish_reason"] = (
                 choice.get("finish_reason") if isinstance(choice, Mapping) else None
             )

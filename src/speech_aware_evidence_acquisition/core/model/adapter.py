@@ -509,9 +509,9 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             # Present only when the transport forwarded it (the opt-in reasoning guard): no other COST record gains a key.
             cost_payload["finish_reason"] = forwarded_finish_reason
         if isinstance(forwarded_reasoning, Mapping):
-            # Present only when the fragment declared reasoning knobs (the transport's opt-in reasoning telemetry): no other COST
+            # Present only when the response carried a reasoning channel or the fragment declared reasoning knobs (decision 286 projection): no other COST
             # record gains a key. Counts and booleans only -- never reasoning text.
-            for key in ("reasoning_tokens", "reasoning_chars", "forced_close"):
+            for key in ("reasoning_tokens", "reasoning_chars", "forced_close", "reasoning_content_sha256", "reasoning_bytes_policy"):
                 if key in forwarded_reasoning:
                     cost_payload[key] = forwarded_reasoning[key]
         self._sink.emit("COST", f"{request_id}/cost", cost_payload)

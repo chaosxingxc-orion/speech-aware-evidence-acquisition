@@ -404,6 +404,69 @@ def knobs_sha256(values: Mapping[str, object]) -> str:
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
+#: Owner decision 286 (2026-10-12): the model's native reasoning trajectory is not a controllable input of the control plane, so its
+#: bytes are never part of the sealed trace. The trace keeps only the hash of the exact bytes as received plus statistics. Recorded in
+#: the transport envelope, the stored wire message and the COST record so a sealed trace says which policy produced it.
+REASONING_BYTES_POLICY = "hash-and-stats-only-v1"
+
+
+def reasoning_summary(
+    reasoning_text: object,
+    forced_close_message: str | None,
+    server_reasoning_tokens: object,
+    finish_reason: object,
+) -> dict[str, object]:
+    """The stored projection of one response's reasoning channel (decision 286); never carries the text.
+
+    ``reasoning_content_sha256`` is the sha256 of the exact UTF-8 bytes received (``None`` when the response had no string
+    reasoning). ``forced_close`` is computed from the text BEFORE the bytes are dropped.
+    """
+
+    has_tokens = isinstance(server_reasoning_tokens, int) and not isinstance(server_reasoning_tokens, bool)
+    is_text = isinstance(reasoning_text, str)
+    return {
+        "reasoning_content_sha256": hashlib.sha256(reasoning_text.encode("utf-8", "surrogatepass")).hexdigest() if is_text else None,
+        "reasoning_chars": len(reasoning_text) if is_text else 0,
+        "reasoning_tokens": server_reasoning_tokens if has_tokens else None,
+        "reasoning_tokens_basis": "server-usage-details" if has_tokens else "not-reported-by-server",
+        "forced_close": detect_forced_close(reasoning_text, forced_close_message),
+        "forced_close_basis": (
+            "reasoning-ends-with-pinned-budget-message" if forced_close_message else "no-pinned-budget-message"
+        ),
+        "finish_reason": finish_reason,
+        "reasoning_bytes_policy": REASONING_BYTES_POLICY,
+    }
+
+
+def project_reasoning_out_of_wire(
+    parsed: object, raw: bytes, forced_close_message: str | None,
+) -> tuple[bytes, dict[str, object] | None]:
+    """Return ``(stored_wire_bytes, summary)`` for one parsed server response.
+
+    A response whose first choice message carries a ``reasoning_content`` key is re-serialized with that key REMOVED and a
+    ``reasoning`` object (:func:`reasoning_summary`) in its place; ``parsed`` is mutated the same way so no later reader can reach the
+    bytes. Any other response returns ``(raw, None)`` untouched, byte for byte.
+    """
+
+    try:
+        choice = parsed["choices"][0]  # type: ignore[index]
+        message = choice["message"]
+    except (KeyError, IndexError, TypeError):
+        return raw, None
+    if not isinstance(message, dict) or "reasoning_content" not in message:
+        return raw, None
+    usage = parsed.get("usage") if isinstance(parsed, Mapping) else None
+    details = usage.get("completion_tokens_details") if isinstance(usage, Mapping) else None
+    server_tokens = details.get("reasoning_tokens") if isinstance(details, Mapping) else None
+    summary = reasoning_summary(
+        message["reasoning_content"], forced_close_message, server_tokens,
+        choice.get("finish_reason") if isinstance(choice, Mapping) else None,
+    )
+    del message["reasoning_content"]
+    message["reasoning"] = dict(summary)
+    return json.dumps(parsed).encode("utf-8"), summary
+
+
 def detect_forced_close(reasoning_text: object, forced_close_message: str | None) -> bool | None:
     """True when the reasoning channel ends with the pinned budget message (the sampler forces MESSAGE + end tag).
 
