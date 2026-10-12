@@ -9,6 +9,10 @@ from dataclasses import dataclass, field
 from ...core.model.native_framework_history import framework_contact_instruction
 from ...e0.d2_leakage import ARM_VISIBLE_FIELDS
 from ...rails.core_client import CoreCompletion, FrozenCoreClient, PreparedCoreRequest
+from ...core.reasoning_knobs import (
+    ReasoningKnobError, answer_only_decoding, fallback_receipt, fallback_reserve, last_cost_record,
+    resolve_node_decoding,
+)
 from .native_roles import (
     FROZEN_CORE_CALLBACK_MODEL, NativeRoleContactContext, NativeRoleModelRequest,
 )
@@ -306,6 +310,7 @@ class MeteredNativeSpeechRequest:
         solver_role_id: str | None = None,
         solver_sampling: Mapping[str, object] | None = None,
         role_completion_caps: Mapping[str, int] | None = None,
+        role_thinking_policy: Mapping[str, Mapping[str, object]] | None = None,
     ):
         if not isinstance(client, FrozenCoreClient):
             raise NativeSpeechRequestError("use the flight's existing FrozenCoreClient")
@@ -342,6 +347,11 @@ class MeteredNativeSpeechRequest:
                     "role_completion_caps must map role ids to positive integers"
                 )
         self._role_completion_caps = caps
+        # Decision 283 A: ``{role phase id: thinking override}``; None or empty leaves every request as composed before.
+        policy = dict(role_thinking_policy or {})
+        if any(not isinstance(role_id, str) or not role_id or not isinstance(entry, Mapping) for role_id, entry in policy.items()):
+            raise NativeSpeechRequestError("role_thinking_policy must map role ids to override mappings")
+        self._role_thinking_policy = policy
         self._owner = object()
         self._client = client
         self._binding_provider = binding_provider
@@ -355,6 +365,7 @@ class MeteredNativeSpeechRequest:
         request: NativeRoleModelRequest,
         *,
         binding_override: "NativeRoleSpeechBinding | None" = None,
+        answer_only: bool = False,
     ) -> PreparedNativeRoleContact:
         """Compose one immutable request from this caller's task state.
 
@@ -442,6 +453,19 @@ class MeteredNativeSpeechRequest:
         cap = self._role_completion_caps.get(request.role_id)
         if cap is not None:
             decoding["max_tokens"] = cap
+        # Decision 283 A: this role's own thinking override, composed at the same seam and nowhere else. A role with no entry
+        # (and every config without a policy) keeps the fragment's folded reasoning fields exactly.
+        if request.role_id in self._role_thinking_policy:
+            try:
+                decoding = resolve_node_decoding(decoding, self._role_thinking_policy, request.role_id)
+            except ReasoningKnobError as error:
+                raise NativeSpeechRequestError(str(error)) from error
+        if answer_only:
+            # The one receipted answer-only re-ask (decision 278): thinking off, max_tokens = the reserve.
+            try:
+                decoding = answer_only_decoding(decoding)
+            except ReasoningKnobError as error:
+                raise NativeSpeechRequestError(str(error)) from error
         kwargs["decoding_params"] = decoding
         instruction = framework_contact_instruction(
             role_id=binding.role_id, sample_id=binding.sample_id,
@@ -530,8 +554,57 @@ class MeteredNativeSpeechRequest:
         if not isinstance(prepared, PreparedNativeRoleContact) or prepared.owner is not self._owner:
             raise NativeSpeechRequestError("dispatch requires this adapter's prepared native contact")
         completion = self._client.complete_prepared_with_metadata(prepared.request)
+        completion = self._answer_only_fallback(prepared, completion)
         self._completion_sink(prepared.role_request, completion)
         return completion
+
+    def _answer_only_fallback(
+        self, prepared: PreparedNativeRoleContact, completion: CoreCompletion,
+    ) -> CoreCompletion:
+        """Decision 278 / 283 A: ONE receipted answer-only re-ask of a budgeted thinking contact that came back empty.
+
+        Fires only when the rendered request carried a thinking budget with room for an answer, the delivered text is empty and
+        the server stopped at its cap (finish reason ``length``; ``None`` when wire responses are not preserved). The re-ask is
+        the same role contact re-composed with ``enable_thinking: false`` and ``max_tokens`` = the reserve, dispatched through
+        the same client (metered, traced, and counted against the plan's model-call budget). Its completion replaces the empty
+        one for the episode; the ``saea-thinking-answer-fallback-v1`` receipt binds both requests. If it is empty too, the
+        caller sees that empty completion and the existing finite-completion disposition applies. No thinking text is carried.
+        """
+
+        if completion.text != "" or completion.tool_calls:
+            return completion
+        finish = completion.finish_reason
+        if finish not in ("length", None):
+            return completion
+        # The payload's own decoding block is the request's source of truth (the rendered HTTP body carries the same values at top
+        # level); reading it here keeps the check independent of how a caller renders the body.
+        reserve = fallback_reserve(prepared.request.as_payload().get("decoding_params") or {})
+        if reserve is None:
+            return completion
+        from ...core.tracing import get_current_trace_buffer  # noqa: PLC0415
+
+        trace = get_current_trace_buffer()
+        if trace is None:
+            raise NativeSpeechRequestError("the answer-only fallback needs a current trace buffer for its receipt")
+        first_id, first_cost = last_cost_record(trace)
+        reask_prepared = self.prepare(
+            prepared.role_request, binding_override=prepared.binding, answer_only=True,
+        )
+        second = self._client.complete_prepared_with_metadata(reask_prepared.request)
+        second_id, second_cost = last_cost_record(trace)
+        if second_id == first_id:
+            raise NativeSpeechRequestError("the answer-only re-ask left no COST record")
+        trace.emit(
+            "TOOL", f"{completion.agent_contact_id}/reasoning-fallback",
+            fallback_receipt(
+                agent_contact_id=completion.agent_contact_id,
+                first_request_id=completion.request_id, reask_request_id=second.request_id,
+                first_finish_reason=finish if finish is not None else first_cost.get("finish_reason"),
+                reask_finish_reason=second.finish_reason if second.finish_reason is not None else second_cost.get("finish_reason"),
+                first_tokens=first_cost, reask_tokens=second_cost, reserve=reserve, answered=second.text != "",
+            ),
+        )
+        return second
 
     def __call__(self, request: NativeRoleModelRequest) -> CoreCompletion:
         return self.dispatch(self.prepare(request))

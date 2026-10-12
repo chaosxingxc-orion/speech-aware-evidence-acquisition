@@ -84,6 +84,13 @@ from ..session import (
 from . import FrozenCoreContextSizeError, FrozenCoreError
 from . import native_evidence_projection as _native_evidence_projection_registration  # noqa: F401
 from . import native_slot_binding_view as _native_slot_binding_view_registration  # noqa: F401
+from ..reasoning_knobs import (
+    REASONING_WIRE_KEYS,
+    ReasoningKnobError,
+    budget_message_from_server_args,
+    detect_forced_close,
+    validate_request_controls,
+)
 from .native_history import project_native_history
 from .paths import _normalized_relative_path, _resolve_confined
 from .prepared_feature_cache import PreparedFeatureCacheGuard
@@ -533,6 +540,8 @@ class LlamaServerTransport:
         native_evidence_projection_context: object | None = None,
         native_role_query_placement: str | None = None,
         reasoning_content_guard: str | None = None,
+        reasoning_telemetry: bool = False,
+        forced_close_message: str | None = None,
     ) -> None:
         # Prompt ordering is part of the request's identity: the bytes the
         # model sees change with it, so it is a MODEL-CONFIG field (inside the
@@ -579,6 +588,18 @@ class LlamaServerTransport:
         if reasoning_content_guard is not None and reasoning_content_guard != REASONING_CONTENT_GUARD_THINK_MARKER:
             raise SessionError(f"reasoning_content_guard must be {REASONING_CONTENT_GUARD_THINK_MARKER} or absent")
         self._reasoning_content_guard = reasoning_content_guard
+        # Thinking-core harness knobs (decision 283 A): opt-in per-contact reasoning telemetry on the envelope, enabled only
+        # for a fragment that declares reasoning knobs. ``forced_close_message`` is the text of the server flag
+        # --reasoning-budget-message (pinned by the fragment's forced_close_message_sha256); None means a forced close cannot
+        # be detected from bytes. Both absent for every other fragment: the envelope and the request bytes do not move.
+        if not isinstance(reasoning_telemetry, bool):
+            raise SessionError("reasoning_telemetry must be a boolean")
+        if reasoning_telemetry and reasoning_content_guard is None:
+            raise SessionError("reasoning_telemetry requires reasoning_content_guard")
+        if forced_close_message is not None and (not isinstance(forced_close_message, str) or not forced_close_message):
+            raise SessionError("forced_close_message must be a non-empty string or absent")
+        self._reasoning_telemetry = reasoning_telemetry
+        self._forced_close_message = forced_close_message
         if native_evidence_projection is not None:
             if not isinstance(native_evidence_projection, str):
                 raise SessionError(
@@ -1304,6 +1325,17 @@ class LlamaServerTransport:
         except ValueError as error:
             raise FrozenCoreError(str(error)) from error
         body.update(native_controls)
+        if REASONING_WIRE_KEYS & set(decoding_params):
+            # Thinking-core knobs (decision 283 A): the two per-request reasoning fields are forwarded verbatim, shape-checked, and
+            # only to a transport armed with the reasoning guard (an Instruct fragment never declares them).
+            if not getattr(self, "_reasoning_content_guard", None):
+                raise FrozenCoreError(
+                    "decoding_params carries reasoning request controls but the transport has no reasoning_content_guard"
+                )
+            try:
+                validate_request_controls(decoding_params)
+            except ReasoningKnobError as error:
+                raise FrozenCoreError(str(error)) from error
         for key, value in decoding_params.items():
             if key in NATIVE_TOOL_REQUEST_CONTROL_KEYS:
                 continue
@@ -1532,6 +1564,26 @@ class LlamaServerTransport:
             # ``content`` empty. The server's finish reason is forwarded ONLY under the opt-in reasoning guard, so an empty delivery can
             # be receipted as a cap hit (``rails.runner.EMPTY_COMPLETION_SCHEMA``); every other transport envelope is byte-identical.
             envelope["finish_reason"] = choice.get("finish_reason") if isinstance(choice, Mapping) else None
+        if getattr(self, "_reasoning_telemetry", False):
+            # Decision 283 A: counts and booleans about the reasoning channel -- never its text. The pinned build reports no
+            # reasoning token count and no budget-hit signal on the wire, so ``reasoning_tokens`` is the server's own
+            # ``completion_tokens_details.reasoning_tokens`` when it sends one, else None (basis recorded), and
+            # ``forced_close`` is detected from the end of ``reasoning_content`` against the pinned budget message.
+            reasoning_text = message.get("reasoning_content") if isinstance(message, Mapping) else None
+            raw_usage = parsed.get("usage") if isinstance(parsed, Mapping) else None
+            details = raw_usage.get("completion_tokens_details") if isinstance(raw_usage, Mapping) else None
+            server_tokens = details.get("reasoning_tokens") if isinstance(details, Mapping) else None
+            has_server_tokens = isinstance(server_tokens, int) and not isinstance(server_tokens, bool)
+            envelope["reasoning"] = {
+                "reasoning_chars": len(reasoning_text) if isinstance(reasoning_text, str) else 0,
+                "reasoning_tokens": server_tokens if has_server_tokens else None,
+                "reasoning_tokens_basis": "server-usage-details" if has_server_tokens else "not-reported-by-server",
+                "forced_close": detect_forced_close(reasoning_text, getattr(self, "_forced_close_message", None)),
+                "forced_close_basis": (
+                    "reasoning-ends-with-pinned-budget-message"
+                    if getattr(self, "_forced_close_message", None) else "no-pinned-budget-message"
+                ),
+            }
         if self._preserve_wire_responses:
             # Keep the server bytes exactly as received. The adapter validates
             # the envelope and emits these fields on a separate trace channel;
@@ -1653,6 +1705,12 @@ def _llama_server_factory(
         native_evidence_projection_context=projection_context,
         native_role_query_placement=values.get("native_role_query_placement"),
         reasoning_content_guard=values.get("reasoning_content_guard"),
+        # Decision 283 A: absent from every fragment that declares no reasoning knob, so those transports keep their envelope.
+        reasoning_telemetry=bool(
+            {"reasoning_budget_tokens", "answer_reserve_tokens", "enable_thinking", "forced_close_message_sha256"}
+            & set(values)
+        ),
+        forced_close_message=budget_message_from_server_args(values.get("server_args")),
     )
 
 

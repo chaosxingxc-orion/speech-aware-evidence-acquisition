@@ -141,6 +141,7 @@ def run_agent_phase(
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
     request_batch_gate: RequestBatchGate | None = None,
     result_kind: str = "task-answer",
+    thinking_policy: Mapping[str, object] | None = None,
 ) -> AgentLoopSummary:
     """Run exactly one named phase of ``program`` for the whole roster in
     ``speech_packet_bindings``, as one blocking ``max_contacts=1`` call.
@@ -285,6 +286,8 @@ def run_agent_phase(
         # lets a reader tell which phase a trace record came from.
         trace_record_namespace=phase_name,
         **({"result_kind": "artifact"} if result_kind == "artifact" else {}),
+        # Decision 283 A: the per-node thinking override map, passed only when declared (byte-identical call otherwise).
+        **({"thinking_policy": thinking_policy} if thinking_policy else {}),
         **(
             {"request_batch_gate": request_batch_gate}
             if request_batch_gate is not None
@@ -408,6 +411,7 @@ def run_program(
     agent_runner: Callable[..., object] = run_speech_native_agent_loop,
     request_batch_gate: Callable[[str, tuple], None] | None = None,
     result_kind: str = "task-answer",
+    thinking_policy: Mapping[str, object] | None = None,
 ) -> tuple[AgentLoopSummary, ...]:
     """Run every phase of ``program`` in order, each as one whole-roster
     :func:`run_agent_phase` call (module docstring: this is how the barrier
@@ -483,6 +487,7 @@ def run_program(
                 else lambda batch, name=phase.name: request_batch_gate(name, batch)
             ),
             **({"result_kind": "artifact"} if result_kind == "artifact" else {}),
+            **({"thinking_policy": thinking_policy} if thinking_policy else {}),
         )
         summaries.append(summary)
         sealed_states = {
@@ -526,6 +531,7 @@ def run_continuous_program(
     native_episode_binding: object = None,
     initial_feedback_states: Mapping[str, object] | None = None,
     flown_sample_ids: Sequence[str] | None = None,
+    thinking_policy: Mapping[str, object] | None = None,
 ) -> AgentLoopSummary:
     """Run the WHOLE program as ONE continuous per-sample trajectory (E6).
 
@@ -700,6 +706,8 @@ def run_continuous_program(
         runner_options["initial_feedback_states"] = initial_feedback_states
     if native_episode_binding is not None:
         runner_options["native_episode_binding"] = native_episode_binding
+    if thinking_policy:
+        runner_options["thinking_policy"] = thinking_policy
     if whole_roster_wave_barrier:
         runner_options["whole_roster_wave_barrier"] = True
     if request_batch_gate is not None:

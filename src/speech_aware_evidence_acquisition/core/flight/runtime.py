@@ -7772,6 +7772,7 @@ class FlightRuntime:
                     or None
                 )
             native_binding = NativeEpisodeRunBinding(
+                thinking_policy=self._composed.values.get("thinking_policy") or None,
                 config=native_config, program=program,
                 material_for_phase=binding["material_for_phase"],
                 render_request=render_request, request_gate=native_fit_gate,
@@ -7912,6 +7913,9 @@ class FlightRuntime:
             live_options["initial_feedback_states"] = binding["initial_feedback_states"]
         if native_binding is not None:
             live_options["native_episode_binding"] = native_binding
+        # Decision 283 A: the composed per-node thinking override map (validated at composition), when declared.
+        if self._composed.values.get("thinking_policy"):
+            live_options["thinking_policy"] = self._composed.values["thinking_policy"]
         if planner is not None:
             live_options["stop_policy"] = planner
         if tool_dispatcher is not None:

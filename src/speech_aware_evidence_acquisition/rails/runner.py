@@ -1863,6 +1863,98 @@ def _empty_completion_receipted(buffers: Sequence[TraceBuffer]) -> Callable[[str
     return lookup
 
 
+def _role_thinking_policy(config, thinking_policy: Mapping[str, object] | None) -> dict[str, Mapping[str, object]] | None:
+    """Re-key a ``thinking_policy`` (keyed by role KIND: perception, solver, ...) by this episode's role phase ids.
+
+    Refuses a key that names no role of the episode, so a typo can never silently leave a node on its fragment default.
+    """
+
+    if not thinking_policy:
+        return None
+    by_kind = {role.role_kind: role.phase_id for role in config.roles}
+    unknown = sorted(set(thinking_policy) - set(by_kind))
+    if unknown:
+        raise RailsRunnerError(f"thinking_policy names nodes that are not roles of this episode: {unknown}")
+    return {by_kind[kind]: entry for kind, entry in thinking_policy.items()}
+
+
+def _apply_node_thinking(
+    decoding_params: dict[str, object], thinking_policy: Mapping[str, object] | None,
+    controller: object, contact_id: str,
+) -> None:
+    """Decision 283 A: resolve a contact's per-node thinking override in place (no-op without a policy or a named node)."""
+
+    if not thinking_policy:
+        return
+    namer = getattr(controller, "phase_name_for_contact", None)
+    node = namer(contact_id) if callable(namer) else None
+    if node is None:
+        return
+    from ..core.reasoning_knobs import ReasoningKnobError, resolve_node_decoding  # noqa: PLC0415
+
+    try:
+        resolved = resolve_node_decoding(decoding_params, thinking_policy, node)
+    except ReasoningKnobError as error:
+        raise RailsRunnerError(str(error)) from error
+    decoding_params.clear()
+    decoding_params.update(resolved)
+
+
+def _last_cost(trace_buffer: TraceBuffer) -> tuple[str | None, Mapping[str, object]]:
+    from ..core.reasoning_knobs import last_cost_record  # noqa: PLC0415
+
+    return last_cost_record(trace_buffer)
+
+
+def _reasoning_fallback_reask(
+    *, core_client: CoreClient, messages, arguments, trace_buffer: TraceBuffer,
+) -> tuple[str, Mapping[str, object]] | None:
+    """Decision 278 / 283 A: ONE receipted answer-only re-ask of a budgeted thinking contact that came back empty at its cap.
+
+    Eligible only when the request carries a thinking budget with room for an answer (``max_tokens`` > budget, thinking on) and
+    the recorded first completion hit its cap with empty content (finish reason ``length``, or completion tokens at
+    ``max_tokens``). The re-ask repeats the same messages and arguments with ``enable_thinking: false`` and ``max_tokens`` = the
+    reserve; it is metered and traced as an ordinary contact (it spends one unit of the plan's model-call budget) and leaves a
+    ``saea-thinking-answer-fallback-v1`` receipt (ids, finish reasons, token counts; no text). Thinking text is never carried: the
+    request is rebuilt from the same inputs. Returns the re-ask's text and its arguments, or None when not eligible.
+    """
+
+    from ..core.delivery import terminal_response_saturated  # noqa: PLC0415
+    from ..core.reasoning_knobs import answer_only_decoding, fallback_receipt, fallback_reserve  # noqa: PLC0415
+
+    decoding = arguments.get("decoding_params")
+    if not isinstance(decoding, Mapping):
+        return None
+    reserve = fallback_reserve(decoding)
+    if reserve is None:
+        return None
+    first_id, first_cost = _last_cost(trace_buffer)
+    finish = first_cost.get("finish_reason") if isinstance(first_cost.get("finish_reason"), str) else None
+    if not (finish == "length" or terminal_response_saturated(
+            {"completion_tokens": first_cost.get("completion_tokens")}, decoding.get("max_tokens"))):
+        return None
+    reask_arguments = {**arguments, "decoding_params": answer_only_decoding(decoding)}
+    text = core_client.complete(messages, **reask_arguments)
+    if not isinstance(text, str):
+        raise RailsRunnerError("frozen core response must be a string")
+    second_id, second_cost = _last_cost(trace_buffer)
+    if second_id == first_id:
+        raise RailsRunnerError("the answer-only re-ask left no COST record")
+    contact_id = arguments.get("agent_contact_id")
+    trace_buffer.emit(
+        "TOOL", f"{contact_id}/reasoning-fallback",
+        fallback_receipt(
+            agent_contact_id=contact_id,
+            first_request_id=None if first_id is None else first_id[: -len("/cost")],
+            reask_request_id=second_id[: -len("/cost")],
+            first_finish_reason=finish,
+            reask_finish_reason=second_cost.get("finish_reason"),
+            first_tokens=first_cost, reask_tokens=second_cost, reserve=reserve, answered=text != "",
+        ),
+    )
+    return text, reask_arguments
+
+
 def _complete_agent_request(
     *, core_client: CoreClient, messages, arguments, trace_buffer: TraceBuffer,
     prepared_request: PreparedCoreRequest | None = None,
@@ -1888,6 +1980,12 @@ def _complete_agent_request(
     if not native:
         if not isinstance(result, str):
             raise RailsRunnerError("frozen core response must be a string")
+        if result == "":
+            reask = _reasoning_fallback_reask(
+                core_client=core_client, messages=messages, arguments=arguments, trace_buffer=trace_buffer,
+            )
+            if reask is not None:
+                result, arguments = reask
         if result == "":
             _emit_empty_completion_receipt(trace_buffer, arguments)
         return result, None
@@ -1934,6 +2032,7 @@ def _run_agent_trajectory(
     observe_step: ObserveStep | None = None,
     record_namespace: str | None = None,
     knowledge_value_renderer: object = None,
+    thinking_policy: Mapping[str, object] | None = None,
 ) -> _AgentRuntimeOutcome:
     controller = controller_factory(prepared.sample.sample_id)
     if not callable(getattr(controller, "initial_contact", None)) or not callable(
@@ -1991,6 +2090,7 @@ def _run_agent_trajectory(
         )
         decoding_params = dict(base_decoding_params or {})
         decoding_params.update(dict(contact.decoding_params))
+        _apply_node_thinking(decoding_params, thinking_policy, controller, contact.contact_id)
         decoding_params["id_slot"] = slot_id
         messages = _agent_messages(
             adapter=adapter,
@@ -4702,6 +4802,9 @@ async def _invoke_native_role_episode(
         # declares. Empty for every config written before E39, which leaves
         # every composed request byte-identical.
         role_completion_caps=config.role_completion_caps,
+        # Decision 283 A: the per-node thinking override map, keyed by role phase id. None for every config that declares no
+        # ``thinking_policy`` -- which leaves every composed request byte-identical.
+        role_thinking_policy=_role_thinking_policy(config, binding.thinking_policy),
     )
     # E8b: the SAME request composer, bound to the cleaning contact's own
     # binding provider and to a completion sink that settles nothing. It is a
@@ -6609,6 +6712,7 @@ def _run_agent_openjiuwen(
     whole_roster_wave_barrier: bool = False,
     knowledge_value_renderer: object = None,
     native_episode_binding: NativeEpisodeRunBinding | None = None,
+    thinking_policy: Mapping[str, object] | None = None,
 ) -> tuple[_AgentRuntimeOutcome, ...]:
     """Run the speech AgentLoop on the pinned openJiuwen workflow engine."""
 
@@ -6908,6 +7012,11 @@ def _run_agent_openjiuwen(
     def request_arguments(node: _AgentContactNode, slot_id: int | None = None):
         decoding_params = dict(base_decoding_params or {})
         decoding_params.update(dict(node.contact.decoding_params))
+        _apply_node_thinking(
+            decoding_params, thinking_policy,
+            next((s.controller for s in states if s.prepared.index == node.task_index), None),
+            node.contact.contact_id,
+        )
         if slot_id is not None:
             decoding_params["id_slot"] = slot_id
         source_arguments = (
@@ -7466,6 +7575,8 @@ def run_speech_native_agent_loop(
     knowledge_value_renderer: object = None,
     result_kind: str = TASK_ANSWER_RESULT_KIND,
     native_episode_binding: NativeEpisodeRunBinding | None = None,
+    # Thinking-core harness knobs (decision 283 A): the composed config's per-node ``thinking_policy`` map, or None.
+    thinking_policy: Mapping[str, object] | None = None,
     initial_feedback_states: Mapping[str, object] | None = None,
     # E10c: the OPTIONAL roster restriction a resume-recovery hands this loop
     # (see _restricted_split_samples). ``None`` -- every other caller -- runs
@@ -7728,9 +7839,13 @@ def run_speech_native_agent_loop(
                 raise RailsRunnerError("execution unit differs from its registered original slice")
             else:
                 core_client.admit_registered_slice(record)
+    # Decision 278 / 283 A: a budgeted thinking request may spend one answer-only re-ask per contact. The plan ceiling allows the
+    # family-level number of fallback contacts per row (0 for every request that is not a budgeted thinking request).
+    from ..core.reasoning_knobs import fallback_contacts_per_row  # noqa: PLC0415
+
     planned_ceiling = (
         len(execution_units.units) if execution_units is not None else len(samples)
-    ) * max_contacts
+    ) * (max_contacts + fallback_contacts_per_row(controller_policy_id, decoding_params))
     if planned_ceiling > plan.planned_model_calls:
         raise RailsRunnerError(
             f"AgentLoop contact ceiling {planned_ceiling} exceeds the ExecutionPlan "
@@ -7888,6 +8003,7 @@ def run_speech_native_agent_loop(
                 whole_roster_wave_barrier=whole_roster_wave_barrier,
                 knowledge_value_renderer=knowledge_value_renderer,
                 native_episode_binding=native_episode_binding,
+                thinking_policy=thinking_policy,
             )
         )
     else:
@@ -7916,6 +8032,7 @@ def run_speech_native_agent_loop(
                     observe_step=observe_step,
                     record_namespace=trace_record_namespace,
                     knowledge_value_renderer=knowledge_value_renderer,
+                    thinking_policy=thinking_policy,
                 )
             finally:
                 set_current_trace_buffer(None)

@@ -28,6 +28,7 @@ from ..tracing import TraceSink
 from . import FrozenCoreError
 from .binding import _PayloadBindingMixin
 from .lifecycle import _AttemptLifecycleMixin
+from ..reasoning_knobs import ReasoningKnobError, validate_request_controls
 from .request_types import (
     ALLOWED_DECODING_KEYS,
     MAX_TOP_LOGPROBS,
@@ -206,6 +207,10 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
                     decoding_params, native_tools="tool_schemas" in self._allowlist
                 )
             except ValueError as error:
+                raise FrozenCoreError(str(error)) from error
+            try:
+                validate_request_controls(decoding_params)
+            except ReasoningKnobError as error:
                 raise FrozenCoreError(str(error)) from error
             if "id_slot" in decoding_params:
                 id_slot = decoding_params["id_slot"]
@@ -419,6 +424,7 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
             logprobs = parsed.get("logprobs")  # type: ignore[union-attr]
             tool_calls = parsed.get("tool_calls")  # type: ignore[union-attr]
             forwarded_finish_reason = parsed.get("finish_reason")  # type: ignore[union-attr]
+            forwarded_reasoning = parsed.get("reasoning")  # type: ignore[union-attr]
         except (KeyError, TypeError, ValueError, UnicodeError) as error:
             if wire_provenance is not None:
                 self._sink.emit(
@@ -502,6 +508,12 @@ class FrozenCoreAdapter(_PayloadBindingMixin, _AttemptLifecycleMixin):
         if isinstance(forwarded_finish_reason, str):
             # Present only when the transport forwarded it (the opt-in reasoning guard): no other COST record gains a key.
             cost_payload["finish_reason"] = forwarded_finish_reason
+        if isinstance(forwarded_reasoning, Mapping):
+            # Present only when the fragment declared reasoning knobs (the transport's opt-in reasoning telemetry): no other COST
+            # record gains a key. Counts and booleans only -- never reasoning text.
+            for key in ("reasoning_tokens", "reasoning_chars", "forced_close"):
+                if key in forwarded_reasoning:
+                    cost_payload[key] = forwarded_reasoning[key]
         self._sink.emit("COST", f"{request_id}/cost", cost_payload)
         return CoreResponse(
             text=text,

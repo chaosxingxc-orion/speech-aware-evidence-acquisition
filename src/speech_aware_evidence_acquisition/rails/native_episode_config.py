@@ -1004,6 +1004,9 @@ class NativeEpisodeRunBinding:
     node_batch: object = None
     node_pipeline: object = None
     workflow_panel: object = None
+    # Thinking-core harness knobs (decision 283 A): the composed config's per-node ``thinking_policy`` map, keyed by role kind,
+    # or None -- byte-identical to before. Resolved per contact at the request-composition seam.
+    thinking_policy: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
