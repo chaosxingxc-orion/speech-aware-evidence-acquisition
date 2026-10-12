@@ -13,7 +13,7 @@ mode; Thinking must FINISH the task and never be truncated midway; decide whethe
 intermediate results; and say whether llama.cpp can be configured externally so that some nodes think and others do
 not, to raise throughput.
 
-Decisions for the owner are numbered **274-282** (section 7). Unverified statements are marked **[unverified]**.
+Decisions for the owner are numbered **275-283** (274 is the owner's base-unification directive in the registry) (section 7). Unverified statements are marked **[unverified]**.
 
 ## 0. Findings in one screen
 
@@ -178,7 +178,7 @@ Each node runs in one of two modes.
     directly now." **[wording from memory; verify against the paper before pinning]**).
 - **No-think node.** Request `chat_template_kwargs = {"enable_thinking": false}` and `max_tokens = R`.
 
-Defaults (decision 275):
+Defaults (decision 276):
 
 | knob | value | why |
 | --- | ---: | --- |
@@ -241,7 +241,7 @@ re-opens a think block. Both are expected to be rare **[unverified until the smo
 `deliver-latest-or-abstain`, and the `finite_completion_policy_check.py` gate is unchanged. The new fallback (2.4) runs
 BEFORE the finite outcome is reached.
 
-### 2.4 The receipted fallback (decision 277)
+### 2.4 The receipted fallback (decision 278)
 
 Trigger: a thinking-node contact returns `finish_reason = length` with empty `content` (the forced close failed or a
 second think block ran out).
@@ -278,7 +278,7 @@ Assumptions **[unverified]**:
 - Per-token decode cost does not grow with the 3-5x longer module prompts. Longer prompts make attention per decoded
   token more expensive, so this likely understates the cost slightly.
 
-## 3. Context policy for reasoning (decision 278)
+## 3. Context policy for reasoning (decision 279)
 
 - **Qwen guidance.** "In multi-turn conversations, the historical model output should only include the final output
   part and does not need to include the thinking content" (https://huggingface.co/Qwen/Qwen3-8B). The Qwen3-Omni
@@ -320,7 +320,7 @@ Assumptions **[unverified]**:
 - **Required test (0 GPU).** On a stub server returning `reasoning_content`, no later request body of the same row
   carries any byte of it.
 
-## 4. Per-node thinking control (decision 279) and throughput
+## 4. Per-node thinking control (decision 280) and throughput
 
 ### 4.1 Mechanism
 
@@ -338,7 +338,7 @@ Alternatives:
   bytes). Two need 37.1 GB before any KV cache. The records call the card 24 GB, and even a 32 GB RTX 5090 cannot hold
   both. A per-node swap costs a model load per contact.
 
-Harness work (model-free; decision 282):
+Harness work (model-free; decision 283):
 1. Add `thinking_budget_tokens` and a shape-restricted `chat_template_kwargs` (exactly `{"enable_thinking": bool}`) to
    `core/model/request_types.py` `ALLOWED_DECODING_KEYS` (85-130). The transport already forwards allowed keys to the
    body and refuses collisions (`transport.py` 1299-1314). Add both to the encode-only refusal list
@@ -409,7 +409,7 @@ New model fragment `q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-max
 - `max_tokens` 4,096;
 - the added server flag `--reasoning-budget-message "<fixed sentence>"`;
 - `reasoning_content_guard` kept;
-- temperature 0, seed pinned (decision 281).
+- temperature 0, seed pinned (decision 282).
 
 This needs a new session id, because the server argv changes. Baseline / experiment: the lock v2.2 + v4g module program
 as c3, with the knobs below.
@@ -457,29 +457,29 @@ the preregistered number.
 
 ## 7. Decisions for the owner (proposed, numbered for the registry)
 
-- **274 Mechanism.** A = per-request `thinking_budget_tokens` / `chat_template_kwargs` on one resident Thinking server
+- **275 Mechanism.** A = per-request `thinking_budget_tokens` / `chat_template_kwargs` on one resident Thinking server
   (recommended; no rebase, no rebuild); B = server-global `--reasoning-budget` only (one budget for every node);
   C = no budget (today).
-- **275 Budget and reserve.** A = B 3,072, R 1,024, `max_tokens` 4,096 (recommended); B = B 2,048 / R 1,024
+- **276 Budget and reserve.** A = B 3,072, R 1,024, `max_tokens` 4,096 (recommended); B = B 2,048 / R 1,024
   (cheaper by about 0.3 GPU-h per c3 pass, 8.9 % forced closes); C = B 4,096 / R 1,024 (3.8 % forced closes, about
   +0.2 GPU-h).
-- **276 Forced-close marker.** A = `--reasoning-budget-message` with a fixed sentence (Qwen3-report style; a new
+- **277 Forced-close marker.** A = `--reasoning-budget-message` with a fixed sentence (Qwen3-report style; a new
   fragment and session; gives a detectable forced-close receipt) (recommended); B = bare `</think>` (no server flag
   change; forced closes not detectable from bytes).
-- **277 Fallback.** A = one receipted answer-only re-ask (`enable_thinking: false`, `max_tokens` R) per node,
+- **278 Fallback.** A = one receipted answer-only re-ask (`enable_thinking: false`, `max_tokens` R) per node,
   counted, then E13 abstention (recommended; the owner's "finish the task"); B = receipted abstention only.
-- **278 Reasoning context.** A = `drop-reasoning-v1` across nodes (recommended; Qwen guidance and the template
+- **279 Reasoning context.** A = `drop-reasoning-v1` across nodes (recommended; Qwen guidance and the template
   default); B = a bounded content-side summary (later, measured); C = carry raw reasoning (not recommended).
-- **279 Per-node policy for 268.** A = every node thinks, budgeted (recommended for the transfer read); B = Solver-only
+- **280 Per-node policy for 268.** A = every node thinks, budgeted (recommended for the transfer read); B = Solver-only
   thinking (cheaper, but confounds transfer with a node policy); then T1 decides the production policy.
-- **280 Column shape.** A = one pass of c3 (Perception + lock + in-row twin `aa`), dropping the loop's `ace`
+- **281 Column shape.** A = one pass of c3 (Perception + lock + in-row twin `aa`), dropping the loop's `ace`
   comparator (recommended; 5.9 GPU-h, 6.6-8.5 h wall); B = c4 as the loop flew it (7.9 GPU-h, 9-11 h); C = two passes
   (about 16-18 GPU-h).
-- **281 Decoding.** A = temperature 0 as in 266-E (recommended for comparability and the A/A twin); B = Qwen's
+- **282 Decoding.** A = temperature 0 as in 266-E (recommended for comparability and the A/A twin); B = Qwen's
   sampled settings (T3 measures it later).
-- **282 Engineering before registration.** A = implement section 4.1 items 1-5 with the 0-GPU tests on a branch
+- **283 Engineering before registration.** A = implement section 4.1 items 1-5 with the 0-GPU tests on a branch
   (model-free code agent; no GPU; outside a campaign window) (recommended); B = register 268 with the server-global
-  budget only (decision 274-B) and skip the harness knobs.
+  budget only (decision 275-B) and skip the harness knobs.
 
 ## 8. Sources
 

@@ -2006,3 +2006,32 @@ packets (done), and the remaining 9p consumers: the data-root subtrees the runti
 archive, the program's no-duplication rule); (4) measured efficiency targets: campaign prelude, seal, flip and check times before/after, as
 a gate. No new experiment is registered until the base manifest and its gate land; the flying i3 column (the loop's last iteration) is
 left to finish because it does not touch the consolidation and the card is otherwise idle; 268 flies only on the unified base.
+
+### Thinking-core engineering design (spec merged 5e20e1ba8): decisions 275-283 PROPOSED (coordinator, 2026-10-12 09:45Z)
+
+`docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md` answers the owner's three questions. (1) The PINNED llama.cpp
+fork (upstream fdbd6abee + 7 feature-cache commits) already supports a global `--reasoning-budget`, a per-request `thinking_budget_tokens`
+with a budget sampler that FORCES `</think>` (the model is made to close and answer, not cut off), `--reasoning-budget-message`, per-request
+`chat_template_kwargs.enable_thinking` (the Thinking GGUF's template honours `enable_thinking: false`; the checkpoint is "thinking-only",
+answer quality with thinking off unmeasured), and a mid-generation control call; no rebase needed. (2) Finishing the task: per node a
+reasoning budget B = 3,072 + answer reserve R = 1,024 (`max_tokens` 4,096; B covers 98.3 % of 266-E's self-terminated contacts; the 36
+runaways get a forced close); at 8,192 the module prompts of the ace arm no longer fit the 24,576-token slot; one receipted answer-only
+re-ask (thinking off) per node, then the existing abstention; an empty Perception contact would otherwise abstain the whole row (about
+6.6 % of rows). Likely runaway cause [unverified]: greedy decoding (Qwen warns of endless repetition at temperature 0; the checkpoint's
+config says 0.6). (3) Context: carry NO reasoning between nodes (`reasoning_context_policy = drop-reasoning-v1`): the harness already
+passes only `content`, the template drops prior reasoning. (4) Per-node control works through per-request fields on ONE resident Thinking
+server (two resident models impossible: 37 GB); Solver needs thinking, Perception must be measured (intent is decided at its shortlist and
+Thinking loses intent in general / music). Throughput per 1,080-row column: c4 unbudgeted 9.2 GPU-h (10-13 h wall); c4 budgeted 7.9;
+c3 (Perception + lock + twin) budgeted 5.9 (6.6-8.5 h); c3 Solver-only thinking 4.5 (4.9-6.4 h). Only single-pass c3 fits a working day.
+- **275** mechanism: A per-request controls on one resident Thinking server (recommended).
+- **276** budget/reserve: A B 3,072 / R 1,024 / cap 4,096 (recommended); B 2,048 / 1,024.
+- **277** forced-close marker: A `--reasoning-budget-message` with a fixed sentence (new fragment + session) (recommended).
+- **278** fallback: A one receipted answer-only re-ask per node then abstention (recommended).
+- **279** reasoning context: A drop-reasoning-v1 (recommended).
+- **280** per-node policy for 268: A every node thinks, budgeted (recommended for the transfer read); B Solver-only.
+- **281** column shape for 268: A one pass of c3 (lock + twin, no ace) (recommended).
+- **282** decoding: A temperature 0 as in 266-E (recommended for comparability); B Qwen's 0.6.
+- **283** engineering before registration: A implement the harness knobs (per-request budget / enable_thinking / budget message through the
+  transport, forced-close detection, the re-ask, hashed knobs) with 0-GPU stub-server tests first (recommended; started model-free now as
+  part of the base unification); B fly 268 with the global budget only.
+Sequencing under the owner's 09:20Z directive: 274 (base unification) and 283 land first; 268 flies on the unified base with 275-282 as ruled.
