@@ -1802,3 +1802,16 @@ proven end to end on a real contact; reasoning leak 0; prompt 2,272 tokens per c
 ceiling. Sign-off written (`/home/chao/direct-fb-decode-signoff.marker`, cap 8192) at 00:23:16Z; the chain opened the Thinking arm
 at 00:23:39Z (`batch-campaign-1-direct-fb-thinking-20261012T002339Z.log`). Reading rule unchanged: cap-hit rows are abstentions and
 are counted in the arm's cap-hit table; the arm's read is Thinking minus the mean of the two Instruct passes with the twin offset.
+
+### 266-E Thinking arm ABORTED before the first contact (exposure gate: FIT row GPU hours); coordinator error; rec1 recovery (coordinator, 2026-10-12 00:30Z)
+
+The Thinking arm opened at 00:23:39Z (flight commit 5daf057f8, session max8192) and the exposure gate refused the first model touch
+at 00:25:21Z: `execution plan claims 4.5 gpu hours but only 3.0 were pre-registered` (attempt ABORTED, 0 calls, 0.0 s). Root cause:
+the coordinator's in-place amendment at the decode-cost sign-off raised the GENERATION row to 4.5 GPU-h but left the live phase-fit
+row `...-THINKING-FIT-V1` at 3.0, and the gate reads the FIT-inclusive pre-registration (`gpu_hours_fit_inclusive` 4.5). The
+amendment script changed the gpu cell of the arm row only; a model-free check of "every row's gpu cell >= the plan's claim" did not
+exist. Consequences: the arm's (run, attempt) key is spent -> its single rec1 recovery (generation attempt `...-thinking-generation-rec1-v1`,
+FIT run `...-THINKING-FIT-REC1-V1`, both rows at 4.5 natively), eleven-id receipt, flip of the thinking kind only; the stale lock
+reconciled (receipt `flight-lock-reconciliation-20261012T003028Z.json`; script kept beside the Instruct one). A gate finding for the
+FIT-row GPU pre-registration is being added so this class is caught before a flight. GPU meanwhile: swapped back to Instruct 00:3xZ to
+fly the ACE reflector i2 (flip running) and return to the Thinking session when the arm's rec1 is flipped.
