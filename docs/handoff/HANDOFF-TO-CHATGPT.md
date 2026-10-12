@@ -1,6 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T19:12:58Z
+Last refreshed: 2026-10-12T20:13:34Z
+
+## 268-B ARMS FLYING at be7878fc6 (lock then aa on think-budget-np4; smoke signed off; ceilings amended 5.1 -> 8.4 GPU-h) (2026-10-12T20:13:34Z, Fable 5.1 root)
+
+Smoke sealed 19:55Z at c112da11b (4 rows, 8 contacts): 0 cap hits, 0 empty, 2 forced closes, reasoning means 1,985 / 1,768 tokens, 50.3 / 35.3 s per
+contact -> 6.42 GPU-h per 1,080-row pass (the bare-core model said 3.89); sign-off amendment commit 7b50fdbab (family GPU model from the smoke;
+lock/aa ceilings 8.4 on generation + FIT rows and plans; package regenerated; receipt re-minted b8c6c172...). Three launch defects fixed first
+(registry 19:55Z): WSLENV stale data root; hollow ext4 flip (wrapper now fails on refusal / gate FAIL, 22bdee18d); preflight placeholder
+over-count 21,269 vs the wire's 14,641 -> `preflight_budget_mode = defer-to-native-contact-fit`, valid under compact-or-abstain (16082c1a2).
+Arms chain: task SAEA-Chain-TSYS-Arms, log /home/chao/tsys-chain.out + /home/chao/batch-chain-tsys.out, driver status /home/chao/batch-status.jsonl;
+expected 7-9 h wall per arm. After both seals: `serving_swap.sh slurp-np4`, countersign the READ row (package text), `thinking_system_read.sh`
+(verdict + `p3_trigger_299`), registry + results note; then P3 per 299 A, carriers (272 B), SOTA redo (285), E: delete + 3.6 TB growth (297/298).
+
+Superseded stamp: 2026-10-12T19:12:58Z
 
 ## Data-root CUT-OVER DONE (all 43 subtrees sha256-verified, 3.42 M files, 1.69 TB); default flipped, locator green; 268 launches next (2026-10-12T19:12:58Z, Fable 5.1 root)
 

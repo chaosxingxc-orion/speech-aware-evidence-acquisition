@@ -2469,3 +2469,30 @@ solutions; 300: fix as you recommend, when the time comes; fact: closed manually
   carries the rule, the three baselines were re-derived (`thinking_system_derive_cells.py`), registration tests 15/15. The Thinking arm
   thus flies the same requests as the Instruct lock with no compaction expected (wire fit 14,641 + 4,096 + 28 + 3,072 reserve =
   21,837 < 24,576); any contact that does not fit compacts or abstains at the wire and is counted in the read's node table.
+
+### 268-B smoke read and sign-off amendment; arms launched (coordinator, 2026-10-12 20:10Z)
+
+- **Smoke** (`SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1`, flight commit c112da11b, sealed 19:55Z, 4 rows / 8 contacts on the
+  THINK-BUDGET session think-budget-np4): Perception 0 cap hits, 0 empty, 4 `stop` finishes, 1 forced close, completion p50 2,014 / max 3,196
+  tokens, prompt mean 3,608, 50.32 s per contact; Solver 0 cap hits, 0 empty, 4 `stop`, 1 forced close, completion p50 1,436 / max 3,121,
+  prompt mean 8,447 (wire tokens: the exact gate; consistent with the Instruct lock's 14,641 maximum), 35.31 s per contact; no reasoning
+  marker in content, no JSON failure. Receipt `analysis/SAEA-SLURP-SYSTEM-THINKING-CORE-FOLD-B-READ-V1/smoke-decode-cost.json`.
+- **Projection vs plan:** 6.42 slot-normalised GPU-h per 1,080-row pass against the registered 5.1 ceiling (3.89 expected x 1.3): the
+  bare-core COST channel's E[min(reasoning, 3,072)] = 848 tokens does not transfer to the system prompts, where the mean reasoning is
+  1,985 (Perception) / 1,768 (Solver) tokens -- the core thinks about twice as long with 8-15k tokens of knowledge in view.
+- **Sign-off amendment (commit 7b50fdbab), mirrored on every bound row before any arm contact (lesson of the 266-E Thinking rec1):** family
+  GPU model replaced by the smoke-measured per-contact seconds (`SMOKE_MEASURED_S_PER_CONTACT`; the pre-smoke model kept as
+  `modelled_row_seconds` for the design record); lock and aa ceilings 5.1 -> 8.4 GPU-h on the generation AND FIT rows and plans; package
+  regenerated (`thinking_system_write_registration.py`, plans, protocol, facts, README, preregistration); receipt re-minted (sha b8c6c172...;
+  the 5.1 receipt kept beside it as `root-admission-v1.superseded-<ts>-gpu51.json`); registration tests 15/15; decoding knobs unchanged
+  (budget 3,072, cap 4,096). Expected wall per arm 7.1-9.2 h; both arms about 13 GPU-h, roughly 15-18 h wall. The owner's 268 B brief
+  quoted "two c2 passes about 3.9 GPU-h each"; the measured cost is 1.65x that -- recorded here, not re-asked (298 A: experiments
+  start as soon as possible; the numeric GPU caps are retired, pre-registration is honest).
+- **Sign-off marker** `/home/chao/tsys-decode-signoff.marker` written 20:03Z; the chain's `arms` segment (lock then aa, one session) flies at
+  the flight commit of the amended flip; the smoke's seal at c112da11b is the sign-off evidence and is not re-flown (one-shot attempt).
+- **Flip and launch:** the amended package was re-pinned for the two arms only (`TSYS_KINDS="lock aa"`; the flown smoke keeps its
+  one-shot attempt), gate PASS for lock and aa, master fast-forwarded to flight commit be7878fc6 (20:11Z); the arms chain
+  (`chain_tsys_arms.sh`, task SAEA-Chain-TSYS-Arms) started 20:12Z on the think-budget-np4 session: lock (1,080 rows, 2,160 contacts),
+  then aa, one session, one flight commit; the first refused re-pin (the smoke's attempt already existed) and the ext4 worktree
+  left on a throwaway branch were both cleared (rules recorded). Swap back to slurp-np4, READ-row countersign and the read follow the
+  two seals.
