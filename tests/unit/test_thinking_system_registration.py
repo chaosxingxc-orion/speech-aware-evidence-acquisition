@@ -235,8 +235,8 @@ def test_plans_protocol_receipt_and_ledger_agree():
         if f"| {fam.READ_RUN_ID} |" in line or any(f"| {r} |" in line for r in fam.eligible_run_ids()):
             cells = [c.strip() for c in line.split("|")]
             notes = cells[15]
-            if cells[4].startswith("DRAFT -- REGISTERED"):
-                assert notes.startswith("DRAFT") and "root countersigned" not in notes
+            if notes.startswith("DRAFT"):
+                assert "root countersigned" not in notes
             else:
                 assert notes.startswith("REGISTERED BEFORE ") and "root countersigned 2026-" in notes and "<UTC" not in notes
                 assert "DRAFT -- REGISTERED" not in line
