@@ -2167,3 +2167,24 @@ in place. The forced-close sentence is VERIFIED against the Qwen3 technical repo
 the limited time by the user, I have to give the solution based on the thinking directly now." -- the report appends "\n</think>.\n\n", which
 llama.cpp's budget sampler supplies itself. Remaining prerequisites for 268: 274 base cut-over, the serving tasks for the budget session,
 owner rulings 285 / 286, i3 closed.
+
+### Owner input 2026-10-12 11:05Z: the SOTA table is provisional until the Thinking-mode base is locked (285 deferred); 286 RULED -- the native reasoning trajectory is not a controllable input, so its bytes are not part of the end-to-end trace (coordinator record)
+
+Owner, verbatim: 「SOTA对照表里面，我们之前没有用thinking模式作为同意的工程基座，所以这个对照目前看起来不足以支撑我们的结论，我们后续如果锁定thinking模式下的工程基座
+作为我们统一的工程基座的话，再做详细对比，你调研业内明确基线这件事情很有价值！决策286：这里面我们其实发现了一个很有价值的点，我们是否能够操控和优化模型原生
+的推理轨迹呢？我倾向于我们无法做到这件事情，那这样的话，是否还需要把它记录在我们端到端的轨迹中呢？他既不是阶段目标也不是可控的输入？」
+English: "The SOTA table compared systems that did not use Thinking mode as the unified engineering base, so it cannot yet support our
+conclusions; once the Thinking-mode base is locked as the unified base we redo the detailed comparison -- the survey of explicit industry
+baselines is valuable. 286: a valuable point surfaced here: can we manipulate and optimise the model's native reasoning trajectory? I lean
+to no. If so, does it even belong in our end-to-end trace? It is neither a stage goal nor a controllable input."
+Coordinator analysis: within the thesis object (a control plane OUTSIDE a frozen core, acting through inputs and decoding), the reasoning
+trajectory is reachable only through (a) what the context contains, (b) the budget / enable switch, (c) the forced-close marker, (d) sampling
+-- never its content. It is core-internal output: not a registered artefact, not a node input (decision 279: dropped between nodes), not
+a selection target. What the programme DOES need from it is bounded and non-textual: its length (tokens / chars), whether the budget forced
+the close, the finish reason, and an integrity hash so a sealed trace still binds the complete wire response. Ruling applied as 286 = C:
+**the sealed trace keeps `reasoning_content_sha256`, `reasoning_chars`, `reasoning_tokens` (when reported), `forced_close` and
+`finish_reason`; the reasoning bytes themselves are discarded at the transport before sealing**, on every path (direct, native role contacts
+with preserved wire responses). Replay (E10 trace replay) and the answer path never used the bytes. Implementation commissioned model-free
+(transport/sealing change + tests; the 266-E sealed traces that already hold reasoning bytes stay as flown; new cells re-pin at their flip).
+285 deferred: the comparator table stays as a survey asset (registered baselines per task); the claim-class comparison is redone once the
+unified base (Thinking mode, if 268 transfers) is locked.
