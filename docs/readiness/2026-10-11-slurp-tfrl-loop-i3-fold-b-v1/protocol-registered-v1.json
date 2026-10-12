@@ -21,11 +21,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i3-fold-b-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-tfrl-loop-i3-fold-b-smoke-4-v1",
-      "composed_config_hash": "9b3780d1281a37fc90cfd14f7198422fd0a79c9ecff090f03fcb3c201341e98e",
+      "composed_config_hash": "926f191affaa29b7046b3fdeb24de6ee57c277f47293ad38f992f13d97e7922c",
       "experiment": "slurp-native-stage3-tfrl-loop-i3-fold-b-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i3-fold-b-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "50fd1ac76707383bdfe39caf2e5f32bbd6323c9baa81bcc08787ce222057f0d6",
+      "protocol_hash": "31ce18754805a986b9e94e9f06549abe94aa0e90a00664740bc9a63e5e5b73bc",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
