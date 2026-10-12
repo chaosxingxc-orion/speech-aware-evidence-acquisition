@@ -13,7 +13,7 @@
 #   4. registering the SHARED in-chain A/A SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 (the coordinator's own
 #      cell and receipt): the W1 arm never flies without it in the same chain.
 # --allow-output-change must never be passed. Untracked files count as dirt for core.flight.cli check.
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 W1=$MAIN/scripts/flights/w1

@@ -14,9 +14,9 @@
 # touches the first-phase supply).
 # Sibling flips on master move this package's hashes: repin_loop_generic.sh re-runs each cycle until the package
 # converges at one HEAD (loop form). Untracked files count as dirt.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 for K in smoke aa arm; do
 cat > /home/chao/comp1bdev-$K-commit.txt <<M
 research: flip A2 ($K) to ready (COMP-1b on DEV-2000-ADDED, owner decision 198: the sealed DEV plan arm + the agreement term (w_agree 1.0, k 60, fuse 8-1-8; this roster's table SAEA-SLURP-INTENT-EXEMPLAR-AGREEMENT-DEV2000-ADDED-V1) + the centroid boundary key, no citation contract, with its in-chain A/A (the DEV plan arm's own bytes at k 60, prepared output digest d57ee9d6) and its four-row smoke; intent primary declared 3.8 pp from the COMP-1b Fold A read, official SLU-F1 (slurp-slu-official) the guard at h_SLU 1.2525; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-comp1b-dev2000-added-admission-v1)

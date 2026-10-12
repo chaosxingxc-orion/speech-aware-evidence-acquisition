@@ -14,7 +14,7 @@
 # dry-run-v1.md quotes the PRE-FLIP composed hash of the smoke exactly once: after the smoke flip, re-run
 # scripts/flights/batch/roll3_dry_run.py at the flipped bytes and rewrite that one line before the arm flip,
 # or the residue check refuses it (cell ROLL-2's lesson).
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-26-slurp-stage3-roll-3-dev2000-added-v1
 for K in smoke arm; do
 cat > /home/chao/roll3-$K-commit.txt <<M

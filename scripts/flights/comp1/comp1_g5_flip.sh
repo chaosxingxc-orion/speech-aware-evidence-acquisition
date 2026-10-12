@@ -22,7 +22,7 @@
 # pass: all five cycles re-run until one whole pass commits nothing, because a later flip rewrites shared
 # files (the exposure ledger) after an earlier cell reported "satisfied". Only then is HEAD recorded.
 # Untracked files count as dirt for core.flight.cli check.
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 CP=$MAIN/scripts/flights/comp1

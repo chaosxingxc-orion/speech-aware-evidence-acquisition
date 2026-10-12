@@ -5,7 +5,7 @@
 # SAEA-SLURP-STAGE3-CONV-FOLD-A-70-V1 and -FIT-V1 and this cell's caps (770 / 3080 / 1899 s / 1.0 GPU-h).
 # No smoke: 70 rows is itself a form proof (claims_benefit false) and the treatment form flew its own
 # four-row smoke registration under the AGREE package.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-26-slurp-stage3-conv-fold-a-70-v1
 cat > /home/chao/conv-arm-commit.txt <<M
 research: flip cell CONV (the 70-row conversion probe) to ready (owner decisions 133 and 134: the treatment w_agree 1.0 / k 60 / fuse 8-1-8 flies on exactly the 70 TRAIN Fold A rows whose gold intent boundary entry is newly delivered, against the already-sealed PLAN answers, reading P(correct given newly delivered) on intent correctness per row; form-proof, claims_benefit false, no pooled claim ever; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-conv-fold-a-70-admission-v1)

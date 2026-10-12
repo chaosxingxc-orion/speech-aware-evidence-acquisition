@@ -21,7 +21,7 @@
 # Sibling flips invalidate each other's pinned hashes: repin_loop_generic.sh re-runs each cycle
 # until the readiness package converges at one HEAD. Untracked files count as dirt for
 # core.flight.cli check; the tree must be clean of them before this runs.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-24-slurp-stage3-var1-v1
 cat > /home/chao/var1-smoke-commit.txt <<M
 research: flip the VAR-1 four-row family smoke to ready (Stage-3 construction-variant rollout: the VAR1-PER-K16C5 contract shape -- five Perception candidates, sixteen intent cards -- on the first four R01C rows; owner directive 2026-09-24, handoff routes F3/F4; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-var1-admission-v1)

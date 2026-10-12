@@ -50,6 +50,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -2525,11 +2526,36 @@ def build_arg_parser() -> argparse.ArgumentParser:
     return parser
 
 
+NINE_P_REFUSAL_EXIT = 64
+
+
+def nine_p_refusal(repo_root: Path) -> str | None:
+    """One-line refusal when ``repo_root`` resolves under ``/mnt/`` (9p), else ``None``.
+
+    Owner 2026-10-12: hot paths (re-pin/flip loops, git-heavy tooling) run on Linux-native ext4. The data root
+    is not affected. ``SAEA_ALLOW_9P_FLIP=1`` is the explicit escape hatch for the one-time migration.
+    """
+
+    if os.environ.get("SAEA_ALLOW_9P_FLIP") == "1":
+        return None
+    resolved = Path(repo_root).resolve().as_posix()
+    if resolved == "/mnt" or resolved.startswith("/mnt/"):
+        return (
+            f"refusing: repo root {resolved} is on /mnt (9p); run from an ext4 worktree "
+            "(scripts/flights/batch/flip_in_ext4.sh) or set SAEA_ALLOW_9P_FLIP=1"
+        )
+    return None
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = build_arg_parser()
     args = parser.parse_args(argv)
     if bool(args.decision) != bool(args.decision_id):
         parser.error("--decision and --decision-id must be given together")
+    refusal = nine_p_refusal(Path(args.repo_root))
+    if refusal is not None:
+        print(refusal, file=sys.stderr)
+        return NINE_P_REFUSAL_EXIT
     pairs = _pair_experiments_and_cells(getattr(args, "_ordered", []))
     decision = (args.decision, args.decision_id) if args.decision else None
     try:

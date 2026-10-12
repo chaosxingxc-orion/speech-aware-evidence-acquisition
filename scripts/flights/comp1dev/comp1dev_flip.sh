@@ -12,9 +12,9 @@
 # output digest d57ee9d6... (the sealed DEV plan arm's).
 # Sibling flips on master move this package's hashes: repin_loop_generic.sh re-runs each cycle until the package
 # converges at one HEAD (loop form). Untracked files count as dirt.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-comp-1-dev2000-added-v1
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 if grep -q "TO-BE-DECLARED-BY-COORDINATOR-FROM-THE-COMP-1-FOLD-A-READ" "$MAIN/$RD/registered-facts-v1.json" "$MAIN/$RD-preregistration.md"; then
   echo "refusing to flip: the arm's expected_effect_pp is still the placeholder (owner decision 139)"; exit 6
 fi

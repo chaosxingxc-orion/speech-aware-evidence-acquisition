@@ -13,7 +13,7 @@ import re
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import TYPE_CHECKING, Mapping, Sequence
 
 from ..bundle.git_commit import require_clean_study_repo
 from ..session.serving import assert_identity_matches, find_resident_session
@@ -21,7 +21,9 @@ from .lease import GenerationLease, WorkerExecutionPolicy
 from .queue import FlightDependency, FlightQueue, FlightReadiness
 from .receipts import persist_flight_receipts
 from .resume import ResumeRecoveryError, resume_declarations_from_document
-from .runtime import FlightRuntime
+
+if TYPE_CHECKING:  # annotations only; keeps the re-pin / light paths off the runtime stack
+    from .runtime import FlightRuntime
 
 
 EXECUTION_STAGES = frozenset({

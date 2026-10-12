@@ -77,6 +77,7 @@ build commit plus per-file GGUF SHA-256. Record every model or tool contact in
 
 - WSL2 `Ubuntu-24.04`; Python 3.12 in `~/.venvs/speechrl`.
 - Install: `uv pip install -e ".[dev]"`. Test: `pytest`.
+- Hot paths run on Linux-native ext4, never on `/mnt/*` (9p): feature packets, caches, re-pin/flip loops and any git-heavy tooling run from an ext4 worktree or ext4 data path; the `/mnt/d` master is the single writer and takes only fast-forwards from `scripts/flights/batch/flip_in_ext4.sh` (owner 2026-10-12; measured 38 s vs 0.8 s per CLI import, 7.6 s vs 0.4 s per git status).
 - Offline gates: `python scripts/checks/engineering_base_check.py`,
   `harness_admission_check.py`, `results_ledger_check.py`, `tool_catalog_check.py`,
   `experiment_handoff_check.py`, `openjiuwen_native_reuse_check.py`,

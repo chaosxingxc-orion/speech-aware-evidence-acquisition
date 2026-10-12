@@ -11,7 +11,7 @@
 #      slurp-stage3-wsv1-fold-a-admission-v1, four eligible run ids) with scripts/flights/wsv1/wsv1_mint_receipt.py.
 # --allow-output-change must never be passed: the flip mints each cell's own first-phase supply (item E16), and
 # the minted digests must be the AGREE arm's / smoke's (eab5c61e... / 308601c5...).
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 WS=$MAIN/scripts/flights/wsv1

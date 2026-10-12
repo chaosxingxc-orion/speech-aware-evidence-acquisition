@@ -12,9 +12,9 @@
 # supply must again carry output digest ba5e1faa...
 # Sibling flips on master move this package's hashes: repin_loop_generic.sh re-runs each cycle until the
 # package converges at one HEAD. Untracked files count as dirt.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-comp-1-fold-a-v1
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 if grep -q "TO-BE-DECLARED-BY-COORDINATOR-FROM-AGREE-AND-KPROBE-READS" "$MAIN/$RD/registered-facts-v1.json" "$MAIN/$RD-preregistration.md"; then
   echo "refusing to flip: the arm's expected_effect_pp is still the placeholder (owner decisions 139 and 152)"; exit 6
 fi

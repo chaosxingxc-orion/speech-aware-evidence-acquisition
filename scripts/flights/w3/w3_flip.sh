@@ -17,7 +17,7 @@
 # move this package's hashes: repin_loop_generic.sh re-runs each cycle until the package converges at
 # one HEAD; then re-run every cycle once more and require "satisfied at <the same HEAD>" with zero
 # "committed" lines. Untracked files count as dirt for core.flight.cli check.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1
 if [ ! -f /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-w3-contrast-fold-a-v1/root-admission-v1.json ]; then
   echo "refusing: the W3 decision receipt is not minted (scripts/flights/w3/w3_mint_receipt.py)"; exit 6
@@ -32,5 +32,5 @@ M
 done
 bash $SP/repin_loop_generic.sh $W3/w3_repin_smoke.sh $RD slurp-native-stage3-w3-fold-a-smoke-4-v1 smoke-generation /home/chao/w3-smoke-commit.txt || exit $?
 bash $SP/repin_loop_generic.sh $W3/w3_repin_arm.sh   $RD slurp-native-stage3-w3-fold-a-v1         generation       /home/chao/w3-arm-commit.txt   || exit $?
-cd /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition && git rev-parse HEAD > /home/chao/w3-flight-commit.txt
+cd ${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition} && git rev-parse HEAD > /home/chao/w3-flight-commit.txt
 echo "flight commit $(cat /home/chao/w3-flight-commit.txt)"

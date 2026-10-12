@@ -3,7 +3,7 @@
 # Root runs this AFTER minting coordination/slurp-stage3-advantage-r01-v1/root-admission-v1.json
 # (decision id slurp-stage3-advantage-r01-admission-v1); see section 13 of
 # docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1-preregistration.md for the mint command.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1
 for K in smoke arm; do
 cat > /home/chao/adv1-$K-commit.txt <<M

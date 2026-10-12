@@ -5,7 +5,7 @@
 #   3. filling the dry_run_read antecedent of root-admission-draft-sub10-v1.json with the committed read's path and
 #      minting coordination/e21-native-window-e41-v1/root-admission-sub10-v1.json (decision id
 #      e21-native-window-e41-sub10-admission-v1) with scripts/flights/e41/e41_mint_receipt.py --which sub10.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-e21-native-window-e41-v1
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 [ -f "$DATA/coordination/e21-native-window-e41-v1/root-admission-sub10-v1.json" ] || { echo "REFUSED: the sub10 decision receipt is not minted (the dry-run read must hold first)"; exit 3; }

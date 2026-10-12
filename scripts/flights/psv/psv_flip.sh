@@ -13,7 +13,7 @@
 # --allow-output-change must never be passed.
 #   bash scripts/flights/psv/psv_flip.sh [psv1 psv2 psv3 psv4]   (default psv1 psv2 unchanged; name psv3/psv4 to include them)
 # P-SV-4's package is dated 2026-09-30 (the others 2026-09-29); pkg_date below resolves it per cell.
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 PS=$MAIN/scripts/flights/psv

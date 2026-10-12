@@ -1,10 +1,12 @@
 #!/bin/bash
 # Usage: repin_loop_generic.sh <repin-script> <readiness-dir> <cell> <plan-prefix: smoke-generation|generation> <commit-msg-file>
 # Optional env PLAN_REC (e.g. -rec1): the plan file is <plan-prefix>-plan-registered<PLAN_REC>-v1.json (a recovered smoke's plan name).
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 PY=/home/chao/.venvs/speechrl/bin/python
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 SCRIPT=$1; RD=$2; CELL=$3; PLAN=$4; MSG=$5
+# Owner 2026-10-12: hot paths never run on /mnt/* (9p). Refuse (64) unless SAEA_ALLOW_9P_FLIP=1.
+case "$(realpath -m "$MAIN")" in /mnt/*) [ "$SAEA_ALLOW_9P_FLIP" = 1 ] || { echo "refusing: repo root $MAIN is on /mnt (9p); run via scripts/flights/batch/flip_in_ext4.sh or set SAEA_ALLOW_9P_FLIP=1"; exit 64; } ;; esac
 cd $MAIN || exit 1
 for pass in 1 2 3 4 5; do
   echo "######## $CELL pass $pass HEAD $(git rev-parse --short HEAD)"

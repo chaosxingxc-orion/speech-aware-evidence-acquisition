@@ -15,9 +15,9 @@
 # never re-flown or re-pinned by this family.
 # Sibling flips on master move this package's hashes: repin_loop_generic.sh re-runs each cycle until the
 # package converges at one HEAD. Untracked files count as dirt.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-29-slurp-stage3-comp1b-fold-a-v1
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 for K in smoke arm; do
 cat > /home/chao/comp1b-$K-commit.txt <<M
 research: flip COMP-1b ($K) to ready (COMP-1 minus the citation contract, 2026-09-29 SLU-harm attribution branch fable/comp1slu commit e30aa1b61: cell COMP-1's own agreement term (w_agree 1.0, k 60, fuse 8-1-8) and centroid boundary key, byte for byte, with the citation contract saea-solver-cited-answer-v1 reverted to the locked plan's non-cited program; comparator the EXISTING SEALED in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1, reused cross-flight, never re-flown (decision 160); intent primary declared 4.26 pp, official SLU-F1 the guard h_SLU 1.2485 (decision 133); re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-comp1b-fold-a-admission-v1)

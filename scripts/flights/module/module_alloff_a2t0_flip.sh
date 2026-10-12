@@ -8,9 +8,9 @@
 #   3. python -B scripts/analysis/module_equivalence_proof.py --at a2t0 reports ok.
 # The direct program declares no supplied first phase, so the re-pin creates no prepared artifact; --allow-output-change
 # must never be passed. Loop form: repin_loop_generic.sh re-runs each cycle until the package converges at one HEAD.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-30-a2t-native-stage3-module-alloff-v1
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 for K in smoke arm; do
 cat > /home/chao/module-alloff-a2t0-$K-commit.txt <<M
 research: flip the Audio2Tool consumption-module all-off arm ($K) to ready (carrier admission gate, design 2b.3: every component off compiles to the direct baseline bytes, byte proof a2t0; form proof, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt a2t-native-stage3-module-alloff-v1-admission-v1)

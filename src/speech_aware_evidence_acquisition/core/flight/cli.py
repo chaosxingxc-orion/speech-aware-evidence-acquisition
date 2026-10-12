@@ -7,9 +7,19 @@ import os
 from pathlib import Path
 
 from .campaign import CampaignError, declared_readiness, load_campaign_cells, run_campaign, run_node_panel
-from .factory import build_flight_runtime
 from .lease import WorkerExecutionPolicy
 from .receipts import persist_flight_receipts
+
+
+def build_flight_runtime(*args, **kwargs):
+    """Lazy forwarder to ``factory.build_flight_runtime``.
+
+    The factory pulls in the whole runtime stack (rails, carriers, model), which ``--help``, argument
+    errors and the plan loaders do not need. Kept as a module attribute so callers and tests can patch it.
+    """
+    from .factory import build_flight_runtime as _build
+
+    return _build(*args, **kwargs)
 
 
 def load_campaign_plan(repo: Path, path: Path):

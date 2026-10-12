@@ -13,7 +13,7 @@
 # E16) and the added store serves the Solver only, so the minted digests must be the AGREE arm's /
 # smoke's (eab5c61e... / 308601c5...). Sibling flips move this package's hashes: repin_loop_generic.sh
 # re-runs each cycle until it converges; re-run once more and require zero "committed" lines.
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 SP=$MAIN/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-w5-fold-a-v1
 if [ ! -f /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-w5-fold-a-v1/root-admission-v1.json ]; then

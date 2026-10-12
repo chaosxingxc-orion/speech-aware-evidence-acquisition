@@ -12,7 +12,7 @@
 #   bash scripts/flights/nx/nx_r1_flip.sh [1|2]
 # The optional argument is the R1 iteration (default 1); iteration 2 flips its own two cells, writes
 # /home/chao/nxr1i2-flight-commit.txt and needs its own minted receipt (coordination/slurp-nx-r1-i2-solver-fold-b-v1/).
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 NX=$MAIN/scripts/flights/nx
