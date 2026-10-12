@@ -1,6 +1,22 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T00:39:50Z
+Last refreshed: 2026-10-12T02:55:53Z
+
+## Loop i2 column FLYING (cc51b4eff, 02:57Z); Thinking arm rec1 flipped (a069b0ee1) and next; owner decision 267 (ext4 for hot paths) applied (2026-10-12T02:55:53Z, Fable 5.1 root)
+
+i2 cell stage opened (a20b403cf): typed arm empty by measurement (2 offline deliver-rule candidates read at close), ACE i2 playbook 35
+items curated WITH the i1 official credit (the i1 close had skipped `--row-scores`; credit built after the fact, receipt
+`iterations/i1/ace-credit-build-receipt.json`); column rows countersigned, receipt minted; flip converged at cc51b4eff; chain started
+02:57Z on the Instruct session (smoke 4 rows, then 1,080 rows x 4 contacts; plan 3.3 GPU-h). Thinking arm: rec1 registered
+(`...-THINKING-FIT-REC1-V1`, both rows 4.5 GPU-h; new gate finding `row-gpu-under-plan`), countersigned, eleven-id receipt, flip
+converged at a069b0ee1; flies after the i2 column seals (swap to the max8192 session, `chain_direct_fb_thinking.sh`; sign-off marker
+present). Decision 267 (owner 2026-10-12): hot paths on ext4, never /mnt (9p) -- merged 645dbf8ba (`flip_in_ext4.sh`, lazy CLI imports,
+`/mnt/` refusal, CLAUDE.md line); measured 38 s vs 0.4 s per CLI import, 7.6 s vs 0.4 s per git status. TODO before the next flip:
+rewrite `/home/chao/saea-queue/flip_*.sh` to call `flip_in_ext4.sh` (each call = one complete flip incl. pins refresh and gates).
+After the i2 column seals: `ledger_mark_consumed`, `close --iter 2 --row-scores <tfrl_row_scores export>` (do not skip it again),
+then `open --iter 3 --stage propose`.
+
+Superseded stamp: 2026-10-12T00:39:50Z
 
 ## 266-E Thinking arm ABORTED pre-contact (FIT row GPU pre-registration, coordinator error) -> rec1 in preparation; loop i2 proposer + reflector SEALED, cell-stage extraction tool in build (2026-10-12T00:39:50Z, Fable 5.1 root)
 

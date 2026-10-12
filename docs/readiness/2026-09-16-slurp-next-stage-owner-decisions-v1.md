@@ -1815,3 +1815,42 @@ FIT run `...-THINKING-FIT-REC1-V1`, both rows at 4.5 natively), eleven-id receip
 reconciled (receipt `flight-lock-reconciliation-20261012T003028Z.json`; script kept beside the Instruct one). A gate finding for the
 FIT-row GPU pre-registration is being added so this class is caught before a flight. GPU meanwhile: swapped back to Instruct 00:3xZ to
 fly the ACE reflector i2 (flip running) and return to the Thinking session when the arm's rec1 is flipped.
+
+### Loop iteration 2 cell stage opened (typed arm empty by measurement, ACE i2 = 35 items with credit); Thinking arm rec1 registered; both flips queued (coordinator, 2026-10-12 01:10Z)
+
+- **i2 proposers read** (READ row countersigned 00:38Z): `scripts/flights/tfrl/tfrl_cell_stage_inputs.py` (merged 5432eb4d4) replaces the
+  iteration-1 hand scripts; it reproduces every i1 artefact byte for byte (13 of 14; the release-pins file differs only in a free-text
+  field) and wrote the i2 inputs. Typed proposer i2: 3 contacts, 3 schema-valid candidates (2 distinct ids), all deliver-rule (offline
+  class). Reflector i2: 18 contacts parsed, 0 rejected, 11 scenario answers kept with 33 deltas, 7 duplicate-carrier answers dropped.
+- **ACE credit defect repaired.** The iteration-1 `close` ran without `--row-scores`, so the ACE per-row credit was never built and the
+  first i2 curation ran credit-free. Built after the fact with the driver's own function (`tfrl_row_scores.py` over the sealed i1
+  column, 1,080 rows; `ace-credit.json`; receipt `iterations/i1/ace-credit-build-receipt.json`), the i2 inputs re-extracted with
+  `--supersede`: playbook 27 -> 35 items, 33 deltas applied, counters from official credit (`credit_used: true`), content hash 5a092424...
+- **`open --iter 2 --stage cell`** (a20b403cf): 2 valid candidates, both offline (read at close), typed arm empty by measurement
+  (`typed_arm_empty_by_measurement: true`), loader verification ok, column package `docs/readiness/2026-10-11-slurp-tfrl-loop-i2-fold-b-v1`
+  (lock / aa / ace, 4 contacts per row, 4,320 contacts, GPU plan 3.3 h from the measured rate); rows countersigned, column receipt minted.
+- **Thinking arm rec1** (branch merged 507629001): ids `...-thinking-generation-rec1-v1` / FIT run `...-THINKING-FIT-REC1-V1`, both rows
+  4.5 GPU-h; `flight_registration_check` gains the blocking finding `row-gpu-under-plan` (a live generation or FIT row whose gpu cell is
+  under the plan's claim); rows countersigned and the first-attempt row folded (da13cc80b); eleven-id receipt minted (sha 0ccc7583...).
+- **Order (266 "A then E"):** flips back to back (i2 column, then the Thinking arm; task SAEA-Flip-I2Col-ThinkArm, 01:09Z); the i2
+  column flies first on the resident Instruct session (no swap), then one swap to the max8192 Thinking session for the arm.
+
+### Owner directive 2026-10-12 (decision 267, RULED): hot paths on Linux-native ext4, never on the Windows filesystem; flip acceleration
+
+Owner, verbatim: 「可以，你注意这个教训是我们之前就有过结论的！不要用windows原有的文件系统，要用linux原生的文件系统进行特征和缓存的制作！」
+English: "Fine, but note this lesson was already concluded before: do not use the original Windows filesystem; make features and caches
+on the Linux-native filesystem." Context: the coordinator's analysis of the flip chains (40-80 minutes per package) measured the cause as
+9p latency, not CPU: `import core.flight.cli` 38.3 s cold / 11.4 s warm from `/mnt/d/.../src` versus 0.84 s from an ext4 worktree;
+`git status` 7.6 s on /mnt/d versus 0.39 s on ext4 (18,575 tracked files); 20-40 python and 30-60 git calls per cell per flip. Threads
+or parallel re-pins cannot help (the cells of a package share the ledger and the protocol hash; convergence is serial by construction).
+Ruling applied as executable English: (1) flips / re-pins run from an ext4 worktree on a throwaway branch and the `/mnt/d` master takes
+only `git merge --ff-only` (`scripts/flights/batch/flip_in_ext4.sh`); the flip and re-pin scripts REFUSE a repo root under `/mnt/`
+unless `SAEA_ALLOW_9P_FLIP=1`; (2) the flight CLI, the re-pin tool and the registration check import the runtime lazily so `check`/
+`--help` do not pay the 38 s; (3) the rule is written into the study CLAUDE.md / AGENTS.md environment section. Not done (owner's
+call): one-pass convergence (compute the shared protocol hash once, write every cell, one commit) is a protocol change and stays
+proposed. The data root stays on `/mnt/e` (large bytes; read-mostly) with the existing ext4 copies for the model files and the
+feature cache (`/home/chao/feat-cache`, `/home/chao/models`).
+Executed 02:54-03:00Z: both flips converged (i2 column at cc51b4eff, Thinking arm rec1 at a069b0ee1; gates PASS); the i2 column
+chain started 02:57Z on the resident Instruct session (task SAEA-Queue-TFRLi2Col); the flip-acceleration branch merged (645dbf8ba:
+`flip_in_ext4.sh`, `SAEA_MAIN` in 96 scripts, lazy runtime imports in the flight CLI, `/mnt/` refusal, CLAUDE.md/AGENTS.md rule;
+ext4 import 0.43 s). The queue wrappers switch to `flip_in_ext4.sh` before the next flip (iteration 3 or the next 266-E step).
