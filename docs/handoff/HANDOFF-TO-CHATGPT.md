@@ -1,6 +1,23 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T00:25:03Z
+Last refreshed: 2026-10-12T00:39:50Z
+
+## 266-E Thinking arm ABORTED pre-contact (FIT row GPU pre-registration, coordinator error) -> rec1 in preparation; loop i2 proposer + reflector SEALED, cell-stage extraction tool in build (2026-10-12T00:39:50Z, Fable 5.1 root)
+
+Thinking arm opened 00:23:39Z and was refused at the first touch: `execution plan claims 4.5 gpu hours but only 3.0 were pre-registered`
+(the coordinator's sign-off amendment raised the generation row but not the live phase-fit row). 0 contacts; lock reconciled
+(`lease_reconcile_direct_fb_thinking.sh`, receipt 00:30Z); the arm's single rec1 recovery (new generation attempt, FIT run
+`...-THINKING-FIT-REC1-V1`, both rows 4.5) plus a model-free gate finding for FIT-row GPU pre-registration are being built on
+`sonnet/direct-fb-thinking-arm-rec1`; then countersign + fold, re-mint (11 ids), `DIRECT_FB_KINDS="thinking"` flip, swap to the max8192
+session, `batch_chain_direct_fb.sh thinking` (sign-off marker already present). Meanwhile the Instruct session is resident and the ACE
+reflector i2 flew (00:35-00:37Z, 18 contacts, flight commit 08caeb10a) after the typed proposer (23:31Z, 192ba338c); both rows closed;
+the i2 READ row countersigned 00:38Z. `scripts/flights/tfrl/tfrl_cell_stage_inputs.py` (typed receipts, reflector answers, predictions,
+enums, ACE i2 release staging + content-hash pins; i1 regression) is being built on `sonnet/tfrl-cell-stage-extract`; then
+`tfrl_loop_driver.py --execute open --iter 2 --stage cell ...`, the i2 column package, its flip and flight (Instruct session, about 2.5
+GPU-h, 5 contacts per row if a typed candidate exists). GPU scheduling: whichever of (Thinking arm rec1, i2 column) is flipped first
+flies first; one swap each way.
+
+Superseded stamp: 2026-10-12T00:25:03Z
 
 ## 266-E Thinking arm FLYING (00:23Z) after the smoke rec1 decode-cost sign-off at cap 8,192 (2026-10-12T00:25:03Z, Fable 5.1 root)
 
