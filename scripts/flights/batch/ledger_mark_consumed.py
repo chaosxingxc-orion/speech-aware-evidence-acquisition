@@ -36,7 +36,16 @@ from pathlib import Path
 
 LEDGER = "docs/exposure-ledger.md"
 RESULTS_DIR = "docs/results"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+def _authority_default() -> str:
+    """The data-root default assigned in scripts/lib/data_root.sh (decision 274: one authority)."""
+    lib = Path(__file__).resolve().parents[2] / "lib" / "data_root.sh"
+    match = re.search(r"^SAEA_DATA_ROOT_DEFAULT=(\S+)\s*$", lib.read_text(encoding="utf-8"), re.M)
+    if match is None:
+        raise SystemExit(f"{lib} does not assign SAEA_DATA_ROOT_DEFAULT")
+    return match.group(1)
+
+
+DEFAULT_DATA_ROOT = _authority_default()
 DATE_COL, RUN_COL, CONSUMED_COL, NOTES_COL = 1, 2, 9, 15
 EXPECTED_CELLS = 17
 STAMP = "ledger_mark_consumed.py"
@@ -49,7 +58,7 @@ _MF_TOKENS = re.compile(r"PAIRED-ANALYSIS|-READ(?:-|$)|-BUILD-|-PROOF-")
 
 
 def data_root_default() -> Path:
-    return Path(os.environ.get("SPEECHRL_DATA_DIR") or DEFAULT_DATA_ROOT)
+    return Path(os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or DEFAULT_DATA_ROOT)
 
 
 def iter_open_rows(lines: list[str], since: str):

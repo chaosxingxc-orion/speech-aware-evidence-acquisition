@@ -11,7 +11,9 @@
 #      SAEA_ONEPASS_NO_CHECK=1 (stage only, tests), SAEA_ONEPASS_OUT (directory for the summary/err files, default /home/chao).
 # Exit: 64 repo root on 9p; 2 usage; 4 the tool refused (the JSON error is printed); 5 a post-commit gate failed.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=${SAEA_FLIP_DATA:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+[ -n "${SAEA_FLIP_DATA:-}" ] && export SAEA_DATA_ROOT=$SAEA_FLIP_DATA  # test override, as before
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+DATA=${SAEA_DATA_ROOT:-$SAEA_DATA_ROOT_DEFAULT}  # resolved and guarded by saea_data_root_init before the first cd
 LOCK=${SAEA_FLIP_LOCK:-/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json}
 PY=${SAEA_PY:-/home/chao/.venvs/speechrl/bin/python}
 OUTDIR=${SAEA_ONEPASS_OUT:-/home/chao}
@@ -34,6 +36,8 @@ done
   || { echo "usage: onepass_flip.sh --readiness-dir RD --prereg F --package P --decision-path R --decision-id I --commit-msg FILE [--ready-receipt C]... [--flight-commit-file F]... CELL..." >&2; exit 2; }
 # Owner 2026-10-12: hot paths never run on /mnt/* (9p). Refuse (64) unless SAEA_ALLOW_9P_FLIP=1.
 case "$(realpath -m "$MAIN")" in /mnt/*) [ "$SAEA_ALLOW_9P_FLIP" = 1 ] || { echo "refusing: repo root $MAIN is on /mnt (9p); run via scripts/flights/batch/flip_in_ext4.sh or set SAEA_ALLOW_9P_FLIP=1"; exit 64; } ;; esac
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 cd "$MAIN" || exit 1
 # 2026-09-29: D3 freeze refuses a __pycache__ entry beside the frozen scoring sources.
 if [ -d "$MAIN/src" ]; then find "$MAIN/src" -type d -name __pycache__ -prune -exec rm -rf {} +; fi

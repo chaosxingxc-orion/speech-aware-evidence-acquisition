@@ -16,6 +16,8 @@ dist/
 
 # Never commit data, weights, audio or raw traces (SPEECHRL_DATA_DIR owns bytes)
 data/
+# ...except the data-root operations scripts (decision 274: scripts/data/migrate_data_root_ext4.sh), code, not bytes
+!/scripts/data/
 datasets/
 checkpoints/
 outputs/

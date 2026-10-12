@@ -1,0 +1,139 @@
+{
+ "schema": "saea-engineering-base-timing-receipt-v1",
+ "written_at": "2026-10-12T11:06:36.734650+00:00",
+ "host": "chao",
+ "python": "/home/chao/.venvs/speechrl/bin/python",
+ "module": "speech_aware_evidence_acquisition.core.flight.cli",
+ "repeat": 1,
+ "model_free": true,
+ "rows": [
+  {
+   "kind": "repo",
+   "path": "/home/chao/saea-worktrees/opus-base-unify",
+   "fstype": "ext4",
+   "cli_import": {
+    "best": 0.763,
+    "samples": [
+     {
+      "seconds": 0.763,
+      "ok": true
+     }
+    ]
+   },
+   "git_status": {
+    "best": 0.304,
+    "samples": [
+     {
+      "seconds": 0.304,
+      "ok": true,
+      "dirty_entries": 34
+     }
+    ]
+   }
+  },
+  {
+   "kind": "repo",
+   "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+   "fstype": "9p",
+   "cli_import": {
+    "best": 2.886,
+    "samples": [
+     {
+      "seconds": 2.886,
+      "ok": true
+     }
+    ]
+   },
+   "git_status": {
+    "best": 199.329,
+    "samples": [
+     {
+      "seconds": 199.329,
+      "ok": true,
+      "dirty_entries": 0
+     }
+    ]
+   }
+  },
+  {
+   "kind": "data-root",
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+   "resolved": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+   "fstype": "9p",
+   "snapshot_load": {
+    "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+    "best": 0.181,
+    "samples": [
+     {
+      "seconds": 0.181,
+      "ok": true,
+      "bytes": 13924980,
+      "sha256": "f549466f22bb0cae00a99849a1a811889eb82af9b632305c815fa123ad5795ca"
+     }
+    ]
+   },
+   "small_files": {
+    "subdir": "knowledge",
+    "best": 78.152,
+    "samples": [
+     {
+      "seconds": 7.815,
+      "ok": true,
+      "files": 200,
+      "scaled_to_2000_seconds": 78.152
+     }
+    ]
+   }
+  }
+ ],
+ "verdicts": [
+  {
+   "path": "/home/chao/saea-worktrees/opus-base-unify",
+   "measure": "cli_import",
+   "best_seconds": 0.763,
+   "budget_seconds": 2.0,
+   "within_budget": true
+  },
+  {
+   "path": "/home/chao/saea-worktrees/opus-base-unify",
+   "measure": "git_status",
+   "best_seconds": 0.304,
+   "budget_seconds": 1.0,
+   "within_budget": true
+  },
+  {
+   "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+   "measure": "cli_import",
+   "best_seconds": 2.886,
+   "budget_seconds": 2.0,
+   "within_budget": false
+  },
+  {
+   "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+   "measure": "git_status",
+   "best_seconds": 199.329,
+   "budget_seconds": 1.0,
+   "within_budget": false
+  },
+  {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+   "measure": "snapshot_load",
+   "best_seconds": 0.181,
+   "budget_seconds": 2.0,
+   "within_budget": true
+  },
+  {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+   "measure": "small_files",
+   "best_seconds": 78.152,
+   "budget_seconds": 3.0,
+   "within_budget": false
+  }
+ ],
+ "all_within_budget": false,
+ "not_measured_here": [
+  "flight_cli_check_seconds",
+  "campaign_prelude_seconds",
+  "seal_seconds"
+ ]
+}

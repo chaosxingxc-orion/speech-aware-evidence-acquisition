@@ -14,7 +14,9 @@
 # Agents never run this. A flight attaches automatically: core.flight.FlightRuntime.serve finds the resident session and compares
 # the identity fields session.json records (model fragment and its sha256, server_argv flag by flag, env).
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 FRAGMENT=q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1
 SESSION=serving-slurp-thinking-direct-fold-b-np4-max8192-v1
 S=$DATA/serving/$SESSION

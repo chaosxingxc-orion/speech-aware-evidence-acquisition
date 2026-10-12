@@ -22,7 +22,9 @@
 set -u
 ROSTER=${PREP_ROSTER:?PREP_ROSTER is required (a key of PREPROCESS_ROSTERS)}
 REPO=${PREP_REPO:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 WORKERS=${PREP_WORKERS:-4}
 PROMOTE_WORKERS=${PREP_PROMOTE_WORKERS:-8}
 FLOOR=${PREP_MEMORY_FLOOR_GB:-6}

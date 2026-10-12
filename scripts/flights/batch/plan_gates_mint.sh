@@ -2,7 +2,9 @@
 # Usage: plan_gates_mint.sh <default-plan-lock|default-plan-lock-replicate> [mint]
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 PY=/home/chao/.venvs/speechrl/bin/python
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN:$MAIN/src SPEECHRL_DATA_DIR=$DATA
 NAME=$1; MODE=$2
 cd $MAIN || exit 1

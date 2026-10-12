@@ -46,7 +46,9 @@ else
   export REPO=/home/chao/saea-worktrees/fable-batch-flight
 fi
 export FLIGHT_COMMIT=$(cat /home/chao/batch-flight-commit.txt)
-export DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+export DATA=$SAEA_DATA_ROOT
 export LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO/src
 export PY=/home/chao/.venvs/speechrl/bin/python

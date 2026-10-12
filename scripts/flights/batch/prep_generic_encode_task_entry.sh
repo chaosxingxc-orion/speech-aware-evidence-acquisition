@@ -17,7 +17,9 @@
 set -u
 SET=${PREP_SET:?PREP_SET is required (a key of prep_generic_steps.PREPARATION_SETS)}
 REPO=${PREP_REPO:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 DRY=${PREP_DRY:-0}
 STEPS=scripts/flights/batch/prep_generic_steps.py
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/src

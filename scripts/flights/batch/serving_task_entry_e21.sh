@@ -2,7 +2,9 @@
 # Entry point for the Windows Scheduled Task "SAEA-Serving-E21" (owner decision 91): owns the resident E21-geometry serving
 # wrapper (q4km-e21-native-window-packets-cddb000c-np4-max1024-v1) for the E35 cells. Same discipline as serving_task_entry.sh.
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 SID=serving-e21-native-window-flightruntime-np4-max1024-v1
 S=$DATA/serving/$SID
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
