@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "a5b60f13e8aaf6abaa4b4bd8ebca8d08cba1be72277297c8d67d5012d7391b23"
+    "sha256": "8da3d9bf33470267c0544ca59f04f8097c6b2b51edcb50fadeb9fe3c31fd39f7"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-12T20:01:27Z",
