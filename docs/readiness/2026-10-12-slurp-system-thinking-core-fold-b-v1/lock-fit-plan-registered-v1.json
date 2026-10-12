@@ -33,9 +33,11 @@
   "plan_kind": "fit",
   "preparation_base_commit": "22bdee18d93abdb952658d68cb3e980371ab5eda",
   "prepared_phase_supply": {
-    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1/phase-supply-v2.json",
-    "sha256": "MINTED_AT_THE_FLIP"
+    "sha256": "5625b8ecd6225d80c3891ed7af2f46812650a1e9f474bf640418f84d96b798ef"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
