@@ -1,6 +1,24 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-11T21:49:48Z
+Last refreshed: 2026-10-12T00:17:24Z
+
+## 266-E: Instruct pair SEALED (c9edf3244); Thinking line re-registered at cap 8,192 and FLYING think-all at 5daf057f8; loop i2 open, typed proposer SEALED, ACE reflector i2 held for its flip (2026-10-12T00:17:24Z, Fable 5.1 root)
+
+Instruct arm (rec1) and replicate sealed 22:18Z / 22:35Z (1,080 contacts each; unread until the Thinking arm seals). The first Thinking
+smoke (cap 2,048) measured completions 363 / 921 / 977 and one row that spent all 2,048 tokens reasoning with EMPTY content, which the
+wave raised on; the harness now seals that as the empty-phase marker plus an `empty-completion` receipt (`cap_hit`), the cap is 8,192
+(new fragment `...-max8192-v1`, new session `serving-slurp-thinking-direct-fold-b-np4-max8192-v1`, resident since 23:38Z), the
+Thinking arm ceiling 4.5 GPU-h, the smoke re-flown under rec1 (8 calls / 20 s cumulative); ten-id receipt minted; flip converged at
+5daf057f8 (gates PASS 00:16Z); think-all started 00:17Z. Loop iteration 2: propose stage opened (b4d930a22), rows countersigned
+(text-only audio ceilings 41 / 142 s), typed proposer SEALED 23:31Z (3 contacts); the ACE reflector i2 re-pin had been refused by a
+false positive of the sample-identifier detector on two playbook item ids (fixed 4c9d2bfb5: well-formed `ace:i<N>:<12 hex>` handles are
+masked at render; detector and i1 bytes unchanged); its flip (`TFRL_ONLY=ace`) and flight follow when the Instruct session is next
+resident (after the Thinking arm). Tooling: `ledger_mark_consumed.py` pairs `-FIT-REC<n>-V1` runs (aa67a6740). Registry sections:
+"266-E Instruct arm ABORTED before the first contact", "266-E Thinking decode-cost smoke", "266-E Instruct pair SEALED; Thinking line
+re-registered". Next after the Thinking arm seals: swap to Instruct, ACE reflector i2, countersign the 266-E READ row, `direct_fb_read.sh`,
+then `tfrl_loop_driver.py close` is NOT yet due (i2 needs its column); the i2 proposer reads come first.
+
+Superseded stamp: 2026-10-11T21:49:48Z
 
 ## 266-E think-all segment FLYING at flight commit c9edf3244 (Thinking smoke -> decode-cost sign-off -> Thinking arm; task SAEA-Queue-DirectFB-ThinkAll, 21:50Z) after the Instruct arm's pre-contact abort and rec1 recovery (2026-10-11T21:49:48Z, Fable 5.1 root)
 

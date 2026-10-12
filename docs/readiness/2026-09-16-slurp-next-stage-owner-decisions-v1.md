@@ -1764,3 +1764,30 @@ measured 150 aggregate tokens per second with a long tail), the smoke re-flown u
 budget 4 + 4 calls), the arm's attempt untouched; the harness fix lands model-free with a unit test on an empty-content length
 response. GPU meanwhile: the Instruct pair (ready at c9edf3244) flies on the Instruct session (swap back 21:5xZ) so the card is not
 idle during the repair; the Thinking arc resumes after the Instruct pair seals (one more swap).
+
+### 266-E Instruct pair SEALED; Thinking line re-registered (cap 8,192, smoke rec1); loop i2 opened, typed proposer sealed, reflector held on a detector false positive (coordinator, 2026-10-11 23:40Z)
+
+- **Instruct pair.** Flew on the resident Instruct session at c9edf3244: Instruct arm (rec1 attempt) 21:57-22:18Z, replicate
+  22:19-22:35Z, 1,080 contacts and 3,154.8 speech-seconds each, both attempts FINALIZED, manifests sealed; rows closed as consumed.
+  No score is read before the Thinking arm seals (registered read protocol: all three arms, one READ row).
+- **Thinking line.** Branch `sonnet/direct-fb-thinking-cap-8192` merged (59d33fd26): the harness seals an empty answer at the cap
+  as the explicit empty-phase marker plus a tool receipt `<contact>/empty-completion` (`cap_hit`, `completion_tokens`, `max_tokens`,
+  `finish_reason`, disposition) and the final-response gate lets only a receipted contact deliver empty bytes (the Instruct path is
+  request-identical; a test pins it); new model fragment `q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1` and
+  session `serving-slurp-thinking-direct-fold-b-np4-max8192-v1` (the cap lives in the fragment's decoding params and the session
+  attaches by fragment); Thinking arm GPU ceiling 4.5 h; smoke rec1 (generation attempt `...-smoke-4-generation-rec1-v1`, FIT run
+  `...-SMOKE-4-FIT-REC1-V1`, run-cumulative 8 calls / 20 s); rec1 rows countersigned, the first-attempt smoke row folded, the two
+  Thinking arm rows amended in place at the sign-off (cap, GPU hours, fragment, session; note appended); ten-id decision receipt
+  minted (sha f876b85b...). Flip (`DIRECT_FB_KINDS="smoke thinking"`) running; the new Thinking session loads meanwhile.
+- **Loop iteration 2.** `open --iter 2 --stage propose` done (b4d930a22; tables 6c925de6..., proposer tables 06c2ec29..., archive
+  d10541a9... with the ACE i1 refusal, the fx-oclock refusal and the playbook-hash correction). Rows registered and countersigned
+  (text-only ceilings 41 / 142 s as at i1). Typed proposer i2 SEALED 23:31Z (3 contacts, 13 s audio-equivalent; unread). The ACE
+  reflector i2 re-pin was refused by the sample-identifier guard: a false positive of the bare six-digit pattern on two of the 27
+  playbook item ids (`ace:i1:<12 hex>`), not on any text; the renderer now masks well-formed item handles (4c9d2bfb5; detector
+  unchanged, i1 prompt bytes unchanged). Its flip (`TFRL_ONLY=ace`) and flight follow when the Instruct session is next resident.
+- **Tooling.** `ledger_mark_consumed.py` pairs `-FIT-REC<n>-V1` runs with their generation run (aa67a6740); the Instruct FIT-REC1 row
+  is closed.
+Thinking flip converged at 5daf057f8 (two gates PASS, 00:16Z); the max8192 Thinking session resident since 23:38Z; think-all
+started 00:17Z (task SAEA-Queue-DirectFB-ThinkAll): smoke rec1 -> coordinator reads the decode cost and writes the sign-off marker
+naming 8192 -> Thinking arm (1,080 rows, ceiling 4.5 GPU-h). After the arm: swap to Instruct, fly the ACE reflector i2 cell (flip
+`TFRL_ONLY=ace`), countersign the 266-E READ row, `direct_fb_read.sh`.
