@@ -2018,3 +2018,7 @@ Read SAEA-SLURP-NX-R6-UPSTREAM-EMPTY-OFFLINE-V1 (recipe slurp-nx-r6-upstream-emp
 - Neither variant is predicted to reach the 1.5 pp bar alone on the v4g base.
 
 DESCRIPTIVE; TRAIN and DEV development numbers (decisions 28 and 86); thresholds explored on the scoring roster, cross-fit beside. Note: docs/results/2026-10-10-slurp-nx-r6-upstream-empty-decision-offline.md.
+
+## 2026-10-12: cell 266-E, bare-core read on TRAIN Fold B, Qwen3-Omni Thinking vs Instruct (Q4_K_M, direct-only) - RESOLVED-ABOVE-BAR (claims_benefit false; DESCRIPTIVE, zero contacts for the read) (Claude Opus 5.5)
+
+Runs SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1 (rec1) and -INSTRUCT-REPLICATE-V1 at c9edf3244, -THINKING-V1 (rec1, cap 8,192) at a069b0ee1; 1,080 contacts each; read SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-VS-INSTRUCT-READ-V1. SLU-F1 45.39 vs 33.40 / 33.58, **+11.90 pp [+9.34, +14.52]**; intent 76.76 vs 72.87 / 71.94, **+4.35 [+2.08, +6.62]**; A/A offset SLU +0.18, intent -0.93; 36 / 1,080 Thinking rows abstain at the cap; 22.75 vs 0.86 s per contact. Losses in music, lists, iot (SLU) and general, music (intent). Bare Thinking stays 18.95 pp SLU under the lock v2.2 system on Instruct (64.34). Development numbers (decisions 28 and 86). Note: docs/results/2026-10-12-slurp-266e-thinking-vs-instruct-bare-core-read.md.
