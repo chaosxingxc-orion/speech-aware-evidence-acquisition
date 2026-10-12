@@ -1991,3 +1991,18 @@ engineering analysis commissioned: llama.cpp (pinned featcache build) reasoning 
 answer reserve, never an empty answer at max_tokens), whether prior reasoning is carried in multi-turn context (Qwen guidance: not carried;
 the template strips it), and a per-node thinking policy for the module program (which nodes need reasoning, which run at budget 0) with a
 throughput model from the measured 22.8 s per contact and 1,032 tokens mean.
+
+### Owner directive 2026-10-12 09:20Z: unify the engineering base first (model, features, disk); lock experiment efficiency before any further experiment (decision 274 PROPOSED, coordinator record)
+
+Owner, verbatim: 「先把工程基座归一了，用什么模型，读取什么特征，从哪个盘读取，先锁定实验效率，而不是在一些明知道有缺陷的地方反复跑实验」
+English: "First unify the engineering base -- which model is used, which features are read, from which disk they are read -- and lock
+experiment efficiency first, instead of repeatedly running experiments on spots we already know are defective."
+Coordinator reading: a single declared base (one manifest, one gate) for (1) the core model(s): Instruct and Thinking Q4_K_M with their GGUF +
+mmproj hashes, serving geometry per core, decode policy per core (cap, reasoning budget, context policy); (2) the features: one speech-packet
+root per core on ext4 (`/home/chao/feat-cache/...-04ccc72a` Instruct, `...-thinking-gpu-afdaeff6` Thinking), knowledge snapshots cached on
+ext4 by content hash; (3) the disk: every hot path on Linux-native ext4 -- the repo flip worktree (done, 267), the model copies (done), the
+packets (done), and the remaining 9p consumers: the data-root subtrees the runtime reads and writes during a flight (`runs/`, `prepared/`,
+`analysis/`, `knowledge/`, `coordination/`, `serving/`) still on `/mnt/e`; `/mnt/e` becomes the archive (one working copy on ext4 + one
+archive, the program's no-duplication rule); (4) measured efficiency targets: campaign prelude, seal, flip and check times before/after, as
+a gate. No new experiment is registered until the base manifest and its gate land; the flying i3 column (the loop's last iteration) is
+left to finish because it does not touch the consolidation and the card is otherwise idle; 268 flies only on the unified base.
