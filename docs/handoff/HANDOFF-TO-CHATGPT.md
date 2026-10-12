@@ -1,6 +1,23 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T14:03:36Z
+Last refreshed: 2026-10-12T19:12:58Z
+
+## Data-root CUT-OVER DONE (all 43 subtrees sha256-verified, 3.42 M files, 1.69 TB); default flipped, locator green; 268 launches next (2026-10-12T19:12:58Z, Fable 5.1 root)
+
+The E: data root is migrated to the ext4 hot root `/home/chao/saea-data/speechrl-data` (disk 1, fstab-backed mount at `/mnt/saea-data-1`;
+decisions 274/284/288/296): five migration receipts under `<hot>/receipts/migration-ext4/`, every subtree `verified` by two-sided sha256
+manifests (table in the registry section of 19:20Z); the deletion set never entered the copy or was removed after verification. Authority
+default, manifest, `~/.bashrc`, queue wrappers and the umbrella guides point at the hot root; locator PASS (host mode with
+`--require-hot-mounted`, repository mode). The E: original is renamed `speechrl-data.retired-20261012` (297 B) until one full 268 chain
+has flown; disk growth to 3.6 TB and the delete share the next no-flight window (298 A). Owner rulings 297-300 recorded (299 A = the
+numeric P3 trigger, implemented in the 268 read script as `p3_trigger_299`; north star: training-free RL iterations approaching trained
+solutions). 268: six flight rows countersigned 15:27Z; next = mint, ext4 flip (`thinking_system_flip.sh` via `flip_package_ext4.sh`),
+register SAEA-Serving-THINKB / SAEA-Monitor-THINKB, swap to `think-budget-np4` (in parallel with the flip), chain
+`batch_chain_thinking_system.sh all` (smoke -> sign-off marker -> lock -> aa), swap back, READ row countersign, read. Then P3 per 299,
+carriers (272 B), SOTA redo (285). Incident of the day: the owner closed terminal windows at 14:33Z and every Task-Scheduler WSL job
+died with the distro instance; mitigated by the fstab mount; hidden conhost windows must be left alone.
+
+Superseded stamp: 2026-10-12T14:03:36Z
 
 ## Literal sweep + loop note merged; decision 296 hot-root relayout done; final verification pass SAEA-Cutover-296 waiting on the static lanes (2026-10-12T14:03:36Z, Fable 5.1 root)
 

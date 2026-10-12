@@ -2393,3 +2393,52 @@ solutions; 300: fix as you recommend, when the time comes; fact: closed manually
   wsl.exe sessions of the three tasks received the console-close control and died, and the distro instance stopped with its last
   session. Consequence already applied: fstab-backed mount; rule: closing console windows kills Task-Scheduler-owned WSL work --
   the owner is asked to leave hidden conhost windows alone, and the coordinator keeps the task set minimal.
+
+### Data-root CUT-OVER DONE: verification manifests, default flipped, locator green, E: original retired by rename (coordinator, 2026-10-12 19:20Z)
+
+- **Verification pass** (task SAEA-Cutover-296, 15:52-19:06Z, 274 tooling, `--jobs 20`): every subtree of the E: data root was rsynced
+  into the hot root `/home/chao/saea-data/speechrl-data` (a no-op where a lane had copied it) and verified by sha256 manifests of every
+  regular file on BOTH sides (relative path, size, sha256; sorted; compared byte-for-byte). Five receipts, all `all_verified = true`:
+  `run-20261012T155257Z-16514` (hot), `...172237Z-72788` (runtime), `...172515Z-346466` (derived), `...173445Z-1171280` (rest),
+  `...173457Z-1174317` (datasets, models); the receipts live under `<hot>/receipts/migration-ext4/` (and the parked copy under
+  `/home/chao/saea-migration/receipts-ext4/`). The owner's table (files / GB / first 12 hex of the manifest sha256 / symlinks
+  re-pointed off the E: path / seconds):
+
+  | subtree | verdict | files | GB | manifest sha256 | links re-pointed | s |
+  | --- | --- | ---: | ---: | --- | ---: | ---: |
+  | runs | verified | 27,402 | 84.27 | 513895e98710 | 0 | 397 |
+  | analysis | verified | 4,863 | 4.40 | c37a299b2806 | 61 | 18 |
+  | knowledge | verified | 200 | 0.61 | 898a8c630457 | 0 | 5 |
+  | prepared | verified | 1,776,869 | 11.13 | 9466f171aaaa | 0 | 2083 |
+  | coordination | verified | 281,945 | 46.29 | 45d2548928bb | 649 | 2795 |
+  | serving | verified | 517 | 3.60 | c7baef405e1b | 0 | 52 |
+  | attempts | verified | 3,685 | 0.00 | ada3e82230a1 | 0 | 29 |
+  | locks | verified | 20 | 0.00 | 7abdc37d9461 | 0 | 0 |
+  | vectors | verified | 53 | 3.92 | e12abaab98c1 | 0 | 32 |
+  | preparation-runs | verified | 43 | 0.02 | 153ec98e7d07 | 0 | 1 |
+  | provisional | verified | 6 | 0.00 | eeac7a65568b | 0 | 0 |
+  | receipts | verified | 8 | 0.02 | 542cb403df97 | 0 | 0 |
+  | trace-intermediates | verified | 30 | 0.11 | 9be19a10353f | 0 | 1 |
+  | wire-check | verified | 3,733 | 9.40 | 2580fe859656 | 0 | 44 |
+  | official-evaluator-source-bundles | verified | 2 | 0.02 | 35fd5077ea4b | 0 | 0 |
+  | references | verified | 20 | 0.00 | f096ca3406d8 | 0 | 0 |
+  | manifests | verified | 151 | 0.40 | e08467f03d37 | 0 | 4 |
+  | environments | verified | 18,161 | 0.59 | 1e19c0a82697 | 4 | 40 |
+  | repos | verified | 11,555 | 1.62 | 1d55af753735 | 0 | 35 |
+  | derived | verified | 102,678 | 191.59 | 719870483aff | 0 | 570 |
+  | archive, logs, program-archives, research, settlements, telemetry, working, four `saea-slurp-*-read-*` roots, `.bin`, six loose files | verified (18 rows) | 295 | 0.57 | (per-row in the receipt) | 0 | 12 |
+  | datasets | verified | 1,156,362 | 1080.64 | cd85e6ccc575 | 0 | 4764 |
+  | models | verified | 206 | 160.34 | 9de7ce6b2e74 | 5 | 717 |
+  | **total** | **43 rows, all verified** | **3,421,269** | **1,688.8** | | 719 | |
+
+  Deletion set (owner 2026-10-12): `_repro` (30 GB), `system-text-search` (32 GB) and `survey-*` (7.6 GB) never entered the ext4 copy;
+  the seventeen ChatGPT-line coordination packages were removed from it after verification (coordination 1,197 -> 1,180 entries).
+  Disk 1 after the pass: 1.5 TB used, 550 GB free of 2.0 TB (growth to 3.6 TB per 291/298 in the next no-flight window).
+- **Cut-over (284 step 2 closed, 294 A, 296):** `SAEA_DATA_ROOT_DEFAULT` = `/home/chao/saea-data/speechrl-data` (a literal: the locator
+  and the Python helpers read the assignment textually), manifest `roots.data_root.current` = the hot root with `status = cut-over`,
+  `~/.bashrc` exports the same value (comment names the authority), 19 queue wrappers rewritten to source the authority (the historical
+  migration lanes keep their labelled SRC literal), umbrella `CLAUDE.md` / `AGENTS.md` data-root line updated. Locator: PASS in host
+  mode with `--require-hot-mounted` and in repository mode (0 failures, 0 warnings).
+- **297 B executed:** the E: original is renamed to `speechrl-data.retired-20261012` (not deleted) until one full 268 chain has flown on
+  the new root; then deleted with the deletion set in the same window as the 3.6 TB growth (298 A).
+- Timing receipt: `docs/checks/speech-aware-evidence-acquisition/2026-10-12-engineering-base-timing/post-cut-over.json` (this commit).

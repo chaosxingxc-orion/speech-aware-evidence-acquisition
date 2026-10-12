@@ -4,7 +4,8 @@
 # configs/base/engineering-base-v1.json). Source it; it defines variables and functions and never acts on its own.
 #
 # Cut-over (decision 284 step 2) is the ONE line below that assigns SAEA_DATA_ROOT_DEFAULT: change it from the E:
-# original to $SAEA_HOT_DATA_ROOT, update roots.data_root.current in the manifest to match (the locator check
+# original to the hot root (a literal: the locator and the Python helpers read the assignment textually), update
+# roots.data_root.current in the manifest to match (the locator check
 # compares the two) and ~/.bashrc's SPEECHRL_DATA_DIR. Nothing else changes.
 #
 #   saea_data_root_init     resolve SAEA_DATA_ROOT (explicit SAEA_DATA_ROOT > the default below), export it and
@@ -22,7 +23,7 @@
 
 SAEA_LEGACY_DATA_ROOT=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SAEA_HOT_DATA_ROOT=/home/chao/saea-data/speechrl-data
-SAEA_DATA_ROOT_DEFAULT=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+SAEA_DATA_ROOT_DEFAULT=/home/chao/saea-data/speechrl-data
 
 saea_fs_type() {
   local path=$1 fm=${SAEA_DATA_ROOT_FINDMNT:-findmnt} t

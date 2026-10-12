@@ -1,0 +1,183 @@
+{
+ "schema": "saea-engineering-base-timing-receipt-v1",
+ "written_at": "2026-10-12T19:13:14.175179+00:00",
+ "host": "chao",
+ "python": "/home/chao/.venvs/speechrl/bin/python",
+ "module": "speech_aware_evidence_acquisition.core.flight.cli",
+ "repeat": 1,
+ "model_free": true,
+ "rows": [
+  {
+   "kind": "repo",
+   "path": "/home/chao/saea-worktrees/fable-batch-flight",
+   "fstype": "ext4",
+   "cli_import": {
+    "best": 0.53,
+    "samples": [
+     {
+      "seconds": 0.53,
+      "ok": true
+     }
+    ]
+   },
+   "git_status": {
+    "best": 0.257,
+    "samples": [
+     {
+      "seconds": 0.257,
+      "ok": true,
+      "dirty_entries": 0
+     }
+    ]
+   }
+  },
+  {
+   "kind": "repo",
+   "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+   "fstype": "9p",
+   "cli_import": {
+    "best": 1.325,
+    "samples": [
+     {
+      "seconds": 1.325,
+      "ok": true
+     }
+    ]
+   },
+   "git_status": {
+    "best": 3.73,
+    "samples": [
+     {
+      "seconds": 3.73,
+      "ok": true,
+      "dirty_entries": 4
+     }
+    ]
+   }
+  },
+  {
+   "kind": "data-root",
+   "path": "/home/chao/saea-data/speechrl-data",
+   "resolved": "/mnt/saea-data-1/speechrl-data",
+   "fstype": "ext4",
+   "snapshot_load": {
+    "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+    "best": 0.062,
+    "samples": [
+     {
+      "seconds": 0.062,
+      "ok": true,
+      "bytes": 13924980,
+      "sha256": "f549466f22bb0cae00a99849a1a811889eb82af9b632305c815fa123ad5795ca"
+     }
+    ]
+   },
+   "small_files": {
+    "subdir": "knowledge",
+    "best": 6.56,
+    "samples": [
+     {
+      "seconds": 0.656,
+      "ok": true,
+      "files": 200,
+      "scaled_to_2000_seconds": 6.56
+     }
+    ]
+   }
+  },
+  {
+   "kind": "data-root",
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+   "resolved": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+   "fstype": "9p",
+   "snapshot_load": {
+    "relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-pool-annotated-exemplars-minus-r01/snapshot.json",
+    "best": 2.038,
+    "samples": [
+     {
+      "seconds": 2.038,
+      "ok": true,
+      "bytes": 13924980,
+      "sha256": "f549466f22bb0cae00a99849a1a811889eb82af9b632305c815fa123ad5795ca"
+     }
+    ]
+   },
+   "small_files": {
+    "subdir": "knowledge",
+    "best": 46.593,
+    "samples": [
+     {
+      "seconds": 4.659,
+      "ok": true,
+      "files": 200,
+      "scaled_to_2000_seconds": 46.593
+     }
+    ]
+   }
+  }
+ ],
+ "verdicts": [
+  {
+   "path": "/home/chao/saea-worktrees/fable-batch-flight",
+   "measure": "cli_import",
+   "best_seconds": 0.53,
+   "budget_seconds": 2.0,
+   "within_budget": true
+  },
+  {
+   "path": "/home/chao/saea-worktrees/fable-batch-flight",
+   "measure": "git_status",
+   "best_seconds": 0.257,
+   "budget_seconds": 1.0,
+   "within_budget": true
+  },
+  {
+   "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+   "measure": "cli_import",
+   "best_seconds": 1.325,
+   "budget_seconds": 2.0,
+   "within_budget": true
+  },
+  {
+   "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+   "measure": "git_status",
+   "best_seconds": 3.73,
+   "budget_seconds": 1.0,
+   "within_budget": false
+  },
+  {
+   "path": "/home/chao/saea-data/speechrl-data",
+   "measure": "snapshot_load",
+   "best_seconds": 0.062,
+   "budget_seconds": 2.0,
+   "within_budget": true
+  },
+  {
+   "path": "/home/chao/saea-data/speechrl-data",
+   "measure": "small_files",
+   "best_seconds": 6.56,
+   "budget_seconds": 3.0,
+   "within_budget": false
+  },
+  {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+   "measure": "snapshot_load",
+   "best_seconds": 2.038,
+   "budget_seconds": 2.0,
+   "within_budget": false
+  },
+  {
+   "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+   "measure": "small_files",
+   "best_seconds": 46.593,
+   "budget_seconds": 3.0,
+   "within_budget": false
+  }
+ ],
+ "all_within_budget": false,
+ "not_measured_here": [
+  "flight_cli_check_seconds",
+  "campaign_prelude_seconds",
+  "seal_seconds"
+ ]
+}

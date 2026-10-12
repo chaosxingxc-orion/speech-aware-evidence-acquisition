@@ -5,9 +5,9 @@
   "authority": "Owner directive 2026-10-12 (decision 274 proposed) and owner ruling 284 (hot root = a 2 TB ext4 VHDX on E:). Design: docs/superpowers/specs/2026-10-12-engineering-base-unification-design.md. Gate: scripts/checks/engineering_base_locator_check.py. The data-root default itself lives in ONE line of scripts/lib/data_root.sh; roots.data_root.current must equal it.",
   "roots": {
     "data_root": {
-      "current": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
-      "status": "pre-cut-over",
-      "note": "The root every live script and the runtime (--data-root / SPEECHRL_DATA_DIR) use today. At cut-over it becomes roots.hot.path and status becomes cut-over."
+      "current": "/home/chao/saea-data/speechrl-data",
+      "status": "cut-over",
+      "note": "The root every live script and the runtime (--data-root / SPEECHRL_DATA_DIR) use; cut over on 2026-10-12 (decisions 284/288/296) from the E: original after the verified migration (receipts under <hot>/receipts/migration-ext4/)."
     },
     "legacy": {
       "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
