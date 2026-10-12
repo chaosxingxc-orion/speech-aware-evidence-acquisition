@@ -36,7 +36,7 @@
     "LLAMA_MTMD_FEAT_CACHE_DIR": "/home/chao/feat-cache/e21-strict-cache-qualification-v1",
     "LLAMA_MTMD_FEAT_CACHE_REQUIRE_HIT": "1",
     "LD_PRELOAD": "/home/chao/saea-runtime-probes/strict-cache-v1/libsaea_decode_fault.so",
-    "SAEA_CACHE_DECODE_FAULT_TRIGGER": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/e21-strict-cache-qualification-v1.trigger"
+    "SAEA_CACHE_DECODE_FAULT_TRIGGER": "${SAEA_DATA_ROOT}/coordination/e21-strict-cache-qualification-v1.trigger"
   },
   "feature_encoder_runtime_receipt": "receipts/runtime-q4km-e21-feature-preprocess-cddb000c.json",
   "preparation_basis": "Isolated test-only cache qualification. No prepared-cache client guard is selected because deliberate private-cache faults must reach the server refusal boundary. Original features and scientific serving remain unchanged. Pin the test interposer separately; do not use this model fragment for scientific generation."

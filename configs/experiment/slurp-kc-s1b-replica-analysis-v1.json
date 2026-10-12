@@ -33,11 +33,11 @@
     "inputs": {
       "closed_list": {
         "manifest": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.legal-label-projection-relock.run-manifest.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.legal-label-projection-relock.run-manifest.json",
           "sha256": "8fe10fa3c8144a9830b640452c14b71c9b3e5f9524caa949731c5e8a5ca8d67d"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-MF-LEGAL-LABEL-PROJECTION-RELOCK-V1/score-batch/closed-list-projected.score.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-MF-LEGAL-LABEL-PROJECTION-RELOCK-V1/score-batch/closed-list-projected.score.json",
           "sha256": "33e37956b5cc803a83ab680816ef5b8822171aaf199aa2caab1539e696b37711"
         },
         "scorers": {
@@ -46,11 +46,11 @@
       },
       "kc_s1a": {
         "manifest": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1/attempt-20260906T023017Z-38c20a/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1.legal-label-projection-relock.run-manifest.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1/attempt-20260906T023017Z-38c20a/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1.legal-label-projection-relock.run-manifest.json",
           "sha256": "637e0af9c76bbe6ce8147c1c6405ce67523778bbd7d294261fddfc0ac2363ec4"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-MF-LEGAL-LABEL-PROJECTION-RELOCK-V1/score-batch/kc-s1a-projected.score.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-MF-LEGAL-LABEL-PROJECTION-RELOCK-V1/score-batch/kc-s1a-projected.score.json",
           "sha256": "19221b8b8cefcbe7263a97addfb057d835c02cce9ba67217fb260bdb41ac8783"
         },
         "scorers": {
@@ -59,11 +59,11 @@
       },
       "kc_s1b": {
         "manifest": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
           "sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1/score-batch-decompose/kc-s1b-sealed.score.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1/score-batch-decompose/kc-s1b-sealed.score.json",
           "sha256": "5f1bd8fec45bef5e61892359e16d02377fa6ae198487cd3f7ddff5dc8ee91089"
         },
         "scorers": {
@@ -72,11 +72,11 @@
       },
       "replica": {
         "manifest": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/attempt-20260909T135929Z-cd0731/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1.run-manifest.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/attempt-20260909T135929Z-cd0731/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1.run-manifest.json",
           "sha256": "cbec7bfda47793bde18665ea29a6b5e68bb044fe144c07521404a38f5e452512"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/official-finalize/attempt-20260909T135929Z-cd0731.score.json",
+          "path": "${SAEA_DATA_ROOT}/analysis/SAEA-SLURP-KC-S1B-SAME-CONFIG-REPLICATE-V1/official-finalize/attempt-20260909T135929Z-cd0731.score.json",
           "sha256": "e419d91c64f36db0b42b7963ad4c087afa8d8ee41aea0462d2e4782a525254d7"
         },
         "scorers": {
@@ -85,7 +85,7 @@
       }
     },
     "metadata": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
       "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
     },
     "metrics": [
@@ -115,12 +115,12 @@
         "scenario_action_exact"
       ],
       "original_manifest": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
+        "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.run-manifest.json",
         "sha256": "f908ff4c7b0267322b34c7bf2ca9ad29d6db97ee8bb3cf18bf8824a057ebc94c"
       },
       "outputs_same_hash_and_path": true,
       "per_sample_manifest": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.legal-label-projection-relock.run-manifest.json",
+        "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1/attempt-20260905T060424Z-2c5596/SAEA-SLURP-DEV1000-CLOSED-LIST-DIRECT-V1.legal-label-projection-relock.run-manifest.json",
         "sha256": "8fe10fa3c8144a9830b640452c14b71c9b3e5f9524caa949731c5e8a5ca8d67d"
       },
       "source": "closed_list"
@@ -137,12 +137,12 @@
         "scenario_action_exact"
       ],
       "original_manifest": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1/attempt-20260906T023017Z-38c20a/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1.run-manifest.json",
+        "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1/attempt-20260906T023017Z-38c20a/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1.run-manifest.json",
         "sha256": "80f49ac029e4a8b41c22cb0ccb82ff2323f600b2c16502a78c99324fb9cfd617"
       },
       "outputs_same_hash_and_path": true,
       "per_sample_manifest": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1/attempt-20260906T023017Z-38c20a/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1.legal-label-projection-relock.run-manifest.json",
+        "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1/attempt-20260906T023017Z-38c20a/SAEA-SLURP-KC-S1A-SLOTS-DEV1000-V1.legal-label-projection-relock.run-manifest.json",
         "sha256": "637e0af9c76bbe6ce8147c1c6405ce67523778bbd7d294261fddfc0ac2363ec4"
       },
       "source": "kc_s1a"

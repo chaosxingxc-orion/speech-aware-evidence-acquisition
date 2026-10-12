@@ -20,6 +20,7 @@ scenario names, flags, scores, counts and hashes only.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -370,7 +371,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stage", choices=("smoke", "read"), required=True)
-    parser.add_argument("--data-root", type=Path, default=Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")))
+    parser.add_argument("--data-root", type=Path, default=Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")))
     parser.add_argument("--repo-root", type=Path, default=_REPO)
     parser.add_argument("--analysis-root", type=Path, default=None)
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)

@@ -37,7 +37,7 @@ What it proves, in the order the registration needs it:
 Usage (from a worktree, in WSL)::
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/src \\
-    SPEECHRL_DATA_DIR=/mnt/e/.../speechrl-data \\
+    SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT \\
     python -B scripts/flights/batch/verify1_dry_run.py \\
       --repo-root $REPO --data-root $DATA --lock-path $LOCK [--json out.json]
 """

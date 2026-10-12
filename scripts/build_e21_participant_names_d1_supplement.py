@@ -55,6 +55,7 @@ Usage::
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -85,9 +86,7 @@ CARRIER_LOCK_KEY = "conec"
 DEFAULT_EVIDENCE_LAYER_KEY = "e21_contexts"
 
 DEFAULT_DATA_ROOT = Path(
-    os.environ.get(
-        "SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-    )
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 )
 _PARTICIPANT_NAMES_RELDIR = Path("datasets/conec/earnings21/contexts/participant_names")
 DEFAULT_PARENT_D1 = REPO_ROOT / "docs/receipts/artifacts/d1-identity.json"

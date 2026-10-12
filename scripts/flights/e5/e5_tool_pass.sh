@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # E5-0 (owner decision 201): the pinned Whisper large-v3 transcript pass over SLURP TRAIN Fold A then Fold B, an
 # INSTRUMENT (it bounds what a perfect ASR tool call could yield; it is never a delivery step). One speech-tool
 # contact per utterance through the existing shared producer (core.preparation_speech_observations), zero core
@@ -21,7 +23,7 @@ set -u
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO=${SAEA_E5_REPO:-$(cd "$HERE/../../.." && pwd)}
 PY=${SAEA_E5_PY:-/home/chao/.venvs/saea-whisper-gpu/bin/python}
-DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 LOCK=${SAEA_E5_LOCK:-/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json}
 
 WHICH=${1:-}

@@ -1,9 +1,11 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Thin registered VAR-2 queue: shared WSL driver, then complete derived scoring.
 set -euo pipefail
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 PY=/home/chao/.venvs/speechrl/bin/python
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO/src SPEECHRL_DATA_DIR=$DATA
 export OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2
@@ -43,7 +45,7 @@ import json, os, shutil
 from pathlib import Path
 h=Path('/home/chao')
 r=Path('/home/chao/saea-worktrees/fable-batch-flight')
-d=Path('/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data')
+d=Path(__import__('os').environ['SAEA_DATA_ROOT'])
 p=json.loads((r/os.environ['VAR2_PROTOCOL']).read_text())
 a,s=p['cells'].get('arm',p['cells'].get('full')),p['cells']['smoke']
 for cell in (a,s):
@@ -77,7 +79,7 @@ $PY - <<'PYCODE'
 import json, os, subprocess
 from pathlib import Path
 r=Path('/home/chao/saea-worktrees/fable-batch-flight')
-d=Path('/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data')
+d=Path(__import__('os').environ['SAEA_DATA_ROOT'])
 p=json.loads((r/os.environ['VAR2_PROTOCOL']).read_text())
 a=p['cells'].get('arm',p['cells'].get('full'))
 subprocess.run([

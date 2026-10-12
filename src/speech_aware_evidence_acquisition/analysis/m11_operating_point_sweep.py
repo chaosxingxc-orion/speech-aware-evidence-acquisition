@@ -35,6 +35,7 @@ key-id-to-label mapping are the reader's, not a reimplementation.
 
 from __future__ import annotations
 
+import os
 import argparse
 import hashlib
 import json
@@ -1200,8 +1201,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--out", required=True, help="destination JSON path")
     parser.add_argument(
         "--data-root",
-        default="/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
-        help="SPEECHRL_DATA_DIR (holds the KB snapshot)",
+        default=os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET",
+        help="data root (default: SAEA_DATA_ROOT / SPEECHRL_DATA_DIR; holds the KB snapshot)",
     )
     args = parser.parse_args(argv)
     import speech_aware_evidence_acquisition as package

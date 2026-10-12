@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip the SLURP test-sample SUCCESSOR-2 composed cell (slurp-milestone-successor2-composed-v1; owner decisions 233, 241, 250 A,
 # 251 A) to ready on master: model-free, in LOOP FORM -- one convergence loop, re-run until one whole pass commits nothing, and only
 # then is HEAD recorded as the flight commit (/home/chao/ms2-flight-commit.txt). NO SMOKE cell exists and none is flipped: the
@@ -16,7 +18,7 @@
 # the plans) and flip again. --allow-output-change must never be passed.
 #   bash scripts/flights/nx/milestone_successor2_flip.sh
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 NX=$MAIN/scripts/flights/nx
 PY=/home/chao/.venvs/speechrl/bin/python

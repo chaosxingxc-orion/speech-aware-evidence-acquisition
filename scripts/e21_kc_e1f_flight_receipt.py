@@ -74,7 +74,7 @@ from speech_aware_evidence_acquisition.core.session.serving import (  # noqa: E4
 DATA_ROOT = Path(
     os.environ.get(
         "SPEECHRL_DATA_DIR",
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"),
     )
 )
 BINDING_RELPATH = "receipts/e21-predecessor-full44-direct-baseline-v2.json"

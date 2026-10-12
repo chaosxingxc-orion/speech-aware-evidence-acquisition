@@ -6,7 +6,7 @@
   "cpu_workers": 4,
   "dimension": 2048,
   "encoder": {
-    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "path": "${SAEA_DATA_ROOT}/coordination/a2t-speech-query-encoder-inventory-v2.json",
     "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
   },
   "expected_unique_spans": 1080,
@@ -23,7 +23,7 @@
   "roster_sha256": "1fe7908c31396774d7535fdf37bd791762215c324999d66ed7beb9e7b2f9033d",
   "schema": "saea-speech-query-encoding-protocol-v1",
   "sources": {
-    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-tfrl-fold-a-speech-query-source-inventory-v3.json",
+    "path": "${SAEA_DATA_ROOT}/coordination/slurp-tfrl-fold-a-speech-query-source-inventory-v3.json",
     "sha256": "43af4aba29630969e03d16a5bcb6fe99e4f5532b1d3a93c8d3da511261b1db14"
   }
 }

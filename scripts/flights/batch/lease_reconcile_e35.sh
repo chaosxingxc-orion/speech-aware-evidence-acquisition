@@ -1,6 +1,8 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Reconcile the flight.lock left by the aborted B9a arm (precedent: coordination/slurp-b1-exemplars-k20-anchor-v2/flight-lock-reconciliation-20260917T100537Z.json).
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 /home/chao/.venvs/speechrl/bin/python - "$DATA" <<'PY'
 import json, io, os, sys, hashlib, subprocess, shutil
 from datetime import datetime, timezone

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # COMP-1 SEAL-ONLY completion (owner decision 189 option A), then G5, on the SLURP np4 geometry through the batch
 # driver (owner decisions 22, 77, 160, 175, 181). ONE queue of two steps:
 #   step 1 (comp1seal, kind seal-only): core.flight.cli seal-only on the resume cell -- attempt
@@ -19,7 +21,7 @@
 # no other batch is running; neither predecessor attempt directory is touched.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 REPO=/home/chao/saea-worktrees/fable-batch-flight
 LOG=/home/chao/batch-chain-comp1seal.out
 QUEUE=/home/chao/batch-queue.json

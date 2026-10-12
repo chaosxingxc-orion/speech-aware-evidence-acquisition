@@ -35,6 +35,7 @@ exemplar text, note body or model output is printed or persisted -- ids, counts,
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -57,7 +58,7 @@ RECIPE = "slurp-scr-tf0-offline-learner-v1"
 SCHEMA = "saea-slurp-scr-tf0-v1"
 TABLE_SCHEMA = "saea-slurp-scr-routing-table-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ROSTER = "docs/receipts/rosters/slurp-evo-fold-b-v2.json"
 BOOT_DRAWS = 10_000
 BOOT_SEED = 20260915

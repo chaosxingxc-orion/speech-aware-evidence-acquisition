@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip P-SV-1 and P-SV-2 (each smoke, then arm) to ready on master: model-free, in LOOP FORM -- one convergence
 # loop over all four cycles, re-run until one whole pass commits nothing (a later flip rewrites shared files such
 # as the exposure ledger after an earlier cycle reported "satisfied"; sibling re-pins propagate the shared
@@ -14,7 +16,7 @@
 #   bash scripts/flights/psv/psv_flip.sh [psv1 psv2 psv3 psv4]   (default psv1 psv2 unchanged; name psv3/psv4 to include them)
 # P-SV-4's package is dated 2026-09-30 (the others 2026-09-29); pkg_date below resolves it per cell.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 PS=$MAIN/scripts/flights/psv
 CELLS=("$@"); [ ${#CELLS[@]} -eq 0 ] && CELLS=(psv1 psv2)

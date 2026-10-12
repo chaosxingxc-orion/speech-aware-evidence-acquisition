@@ -39,6 +39,7 @@ and GPU contacts.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -60,7 +61,7 @@ PRED_ATTEMPT = "attempt-slurp-native-stage3-relisten-fold-a-generation-v1"
 PRED_TRACE_SHA = "966613e416dd81c9cd5bbdc21b16050f394844e5b9da6522ed8451b1f1f233f6"
 COLUMNS = ("relisten-replace-only", "relisten-replace-drop-unheard")
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ROWS = 1080
 GATE_REPLACE_NET_RATE = 0.29
 GATE_DROP_NET_FP = 49.5

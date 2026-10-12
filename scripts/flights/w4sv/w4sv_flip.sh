@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip cell W4-SV (smoke, then arm) to ready on master: model-free, two cells in two LOOP cycles converging at ONE
 # HEAD, which becomes the W4-SV flight commit. Root runs this ONLY after:
 #   0. the arm-B blocker is fixed (docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/README.md, "BLOCKED") and
@@ -19,7 +21,7 @@ MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech
 SP=$MAIN/scripts/flights/batch
 PY=/home/chao/.venvs/speechrl/bin/python
 RD=docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1
-if [ ! -f /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-w4sv-fold-a-v1/root-admission-v1.json ]; then
+if [ ! -f $SAEA_DATA_ROOT/coordination/slurp-stage3-w4sv-fold-a-v1/root-admission-v1.json ]; then
   echo "refusing: the W4-SV decision receipt is not minted (scripts/flights/w4sv/w4sv_mint_receipt.py)"; exit 6
 fi
 VERDICT=$($PY -c "import json;d=json.load(open('$MAIN/$RD/arm-a-byte-identity-proof-v1.json'));print(d.get('arm_b_verdict'),d.get('verdict'))") || exit 8

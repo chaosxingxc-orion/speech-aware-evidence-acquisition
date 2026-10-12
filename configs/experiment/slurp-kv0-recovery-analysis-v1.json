@@ -17,11 +17,11 @@
     "inputs": {
       "kc_s1b": {
         "manifest": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1/attempt-20260906T025102Z-af6b04/SAEA-SLURP-KC-S1B-SLOTS-SCHEMA-DEV1000-V1.run-manifest.json",
           "sha256": "088c9307a39f38db124a5204793806e9a8589d942259b15e7826ad2685fe8d08"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1/score-batch-decompose/kc-s1b-sealed.score.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-MF9-SLOT-GAP-AUDIT-V1/score-batch-decompose/kc-s1b-sealed.score.json",
           "sha256": "5f1bd8fec45bef5e61892359e16d02377fa6ae198487cd3f7ddff5dc8ee91089"
         },
         "scorers": {
@@ -30,11 +30,11 @@
       },
       "kv0": {
         "manifest": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1.run-manifest.json",
           "sha256": "ffd1d3ee543dc73a0802600a9812f8cfe888cdb4bd6456c0667b57d6229ed9c7"
         },
         "score": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/score-batch/attempt-20260909T062500Z-74bfac.score.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-KV0-EXAMPLES-FREE-DEV1000-V1/attempt-20260909T062500Z-74bfac/score-batch/attempt-20260909T062500Z-74bfac.score.json",
           "sha256": "14b91511df514393412fae84f98c7e72e5576fd33b13753a5616b225949671ba"
         },
         "scorers": {
@@ -43,7 +43,7 @@
       }
     },
     "metadata": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
       "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
     },
     "metrics": [

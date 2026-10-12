@@ -48,6 +48,7 @@ metadata file rebuilds it rather than reusing it.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -1671,7 +1672,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
         "--data-root",
-        default="/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        default=(os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"),
         help="the controlled asset root (SPEECHRL_DATA_DIR)",
     )
     parser.add_argument("--repo-root", default=str(REPO), help="this study repository")

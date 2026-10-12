@@ -15,6 +15,7 @@ Run:
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -29,7 +30,7 @@ from speech_aware_evidence_acquisition.analysis.shared_json import (
 )
 from speech_aware_evidence_acquisition.rails.hashing import content_hash
 
-DEFAULT_DATA = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DEFAULT_DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 PREPARED_RELPATH = (
     "coordination/slurp-system-knowledge-value001-group-v1/prepared-contexts-v1.json"
 )

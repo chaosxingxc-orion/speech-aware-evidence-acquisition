@@ -1,9 +1,10 @@
 """The B9a-rec ACQUISITION READ (model-free, decision 58): rows routed ACQUIRE, what the kind (a) re-query acquired, and the
 official per-row outcome of those rows against the sealed PLAN arm. Reads sealed outputs + sealed per-sample official scores only;
 prints counts, ids-free aggregates and hashes -- never utterance text, gold or model output."""
+import os
 import json, io, glob, collections, statistics, hashlib, sys
 
-DATA = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ARM = f"{DATA}/runs/SAEA-SLURP-NATIVE-PLAN-ACQUISITION-B9A-RECOVERY-V1/attempt-slurp-native-plan-acquisition-b9a-recovery-train-fold-a-generation-v1"
 CMP = f"{DATA}/runs/SAEA-SLURP-NATIVE-DEFAULT-PLAN-LOCK-V1/attempt-slurp-native-default-plan-lock-train-fold-a-generation-v1"
 OUT = f"{DATA}/analysis/SAEA-SLURP-PLAN-ACQUISITION-B9A-RECOVERY-PAIRED-ANALYSIS-V1/acquisition-read.json"

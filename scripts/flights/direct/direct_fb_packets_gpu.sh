@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The Thinking-core speech-packet preparation chain of the 266-E read on the GPU (owner ruling of 2026-10-11: the CPU sidecar at 16-19 s per
 # row is unacceptable; this supersedes scripts/flights/direct/direct_fb_packets.sh, which now refuses unless --allow-cpu).
 #
@@ -49,7 +51,7 @@ case "$MODE:$STAGE" in
 esac
 
 REPO=${PACKETS_REPO:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=${SAEA_DATA:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 PY=${PACKETS_PY:-/home/chao/.venvs/speechrl/bin/python}
 DRIVER=$REPO/scripts/slurp_fold_preprocess_thinking.py
 SWAP=${PACKETS_SWAP:-$REPO/scripts/flights/batch/serving_swap.sh}

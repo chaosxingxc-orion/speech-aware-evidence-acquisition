@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip the W1 family (smoke, arm) to ready on master: model-free, two cells in the per-cell
 # repin_loop_generic.sh form, converged at ONE HEAD, which becomes the flight commit.
 # Root runs this ONLY after:
@@ -14,7 +16,7 @@
 #      cell and receipt): the W1 arm never flies without it in the same chain.
 # --allow-output-change must never be passed. Untracked files count as dirt for core.flight.cli check.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 W1=$MAIN/scripts/flights/w1
 RD=docs/readiness/2026-09-27-slurp-stage3-w1-card-selection-fold-a-v1

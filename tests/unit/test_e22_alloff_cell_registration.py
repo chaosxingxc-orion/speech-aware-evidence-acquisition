@@ -23,7 +23,7 @@ from speech_aware_evidence_acquisition.core.config import compose
 from speech_aware_evidence_acquisition.rails import consumption_module as cm
 
 _REPO = Path(__file__).resolve().parents[2]
-_DATA = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+_DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 _PACKAGE = _REPO / "docs/readiness/2026-10-11-earnings22-module-alloff-v1"
 _CELLS = {"arm": "earnings22-native-stage3-module-alloff-v1", "smoke": "earnings22-native-stage3-module-alloff-smoke-4-v1"}
 _BASELINES = {"arm": "e22-native-window-direct-dev10-v1", "smoke": "e22-native-window-direct-four-row-v1"}

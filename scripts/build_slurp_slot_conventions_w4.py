@@ -86,7 +86,7 @@ from speech_aware_evidence_acquisition.rails.semantic_knowledge_build import (  
 
 SCHEMA = "saea-slurp-slot-conventions-w4-v1"
 OUT_NAMESPACE = "prepared/SAEA-SLURP-SLOT-CONVENTIONS-W4-PREPARE-V1"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 PINS = {
     # content hashes (KnowledgeSnapshot.content_hash), checked after load

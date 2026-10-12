@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip cell A2T-AA (the four-row smoke, pass A and pass B) to ready on master at ONE commit: model-free.
 # Root runs this AFTER minting coordination/a2t-stage3-aa-paired-400-v1/root-admission-v1.json
 # (decision id a2t-stage3-aa-paired-400-admission-v1) with the six eligible run ids
@@ -11,7 +13,7 @@
 # Per-cell env files (a2taa_repin_smoke.sh / _a.sh / _b.sh) exist for repin_cell_generic.sh if root
 # prefers the loop; then flip in the order smoke, a, b and take b's flight commit.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
 PY=/home/chao/.venvs/speechrl/bin/python
 SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch

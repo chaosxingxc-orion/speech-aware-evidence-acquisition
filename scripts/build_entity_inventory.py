@@ -35,6 +35,7 @@ Usage:
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -73,9 +74,7 @@ DEFAULT_IDS_FILE = (
 DEFAULT_WORKERS = 12
 OUT_SUBDIR = Path("derived") / "entity-inventory" / "v1"
 DEFAULT_DATA_ROOT = Path(
-    os.environ.get(
-        "SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-    )
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 )
 
 

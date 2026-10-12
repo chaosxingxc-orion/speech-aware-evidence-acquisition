@@ -44,6 +44,7 @@ composed/protocol hashes the re-pin tool rewrites.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import copy
@@ -383,7 +384,7 @@ def _derive_experiment(parent: str, v: dict, *, note: str, failure_policy: str,
 def _data_root() -> str:
     import os  # noqa: PLC0415
 
-    return os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+    return (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 
 # --------------------------------------------------------------------------------------------

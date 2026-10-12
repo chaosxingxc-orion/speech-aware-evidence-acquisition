@@ -34,7 +34,7 @@ if str(REPO_ROOT / "src") not in sys.path:
 
 SCHEMA = "saea-tfrl-row-scores-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 
 def per_sample_scores(document: Mapping[str, Any], scorer: str) -> dict[str, float]:

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip cell W4-SV (smoke, then arm) to ready on master in LOOP FORM: one convergence loop over both cycles,
 # re-run until one whole pass commits nothing (a later flip rewrites shared files such as the exposure ledger
 # and the package's protocol document after an earlier cycle reported "satisfied"), bound 4 passes; only then
@@ -13,7 +15,7 @@
 # (eab5c61e... / 308601c5...). Untracked files count as dirt. Model-free; spawns core.flight.cli, so run it only
 # while a flying driver is mid-step (never between chain steps).
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 WS=$MAIN/scripts/flights/w4sv
 PY=/home/chao/.venvs/speechrl/bin/python

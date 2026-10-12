@@ -51,6 +51,7 @@ field against the committed report.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import collections
@@ -68,7 +69,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 READ_ID = "SAEA-SLURP-STAGE3-COMP1-SLU-HARM-ATTRIBUTION-V1"
 SCHEMA = "saea-comp1-slu-harm-attribution-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 REPORT = "docs/results/2026-09-29-slurp-comp1-slu-harm-attribution/report.json"
 ROSTER = "docs/receipts/rosters/slurp-evo-fold-a-v2.json"
 SCORER = "slurp-slu-official-train"

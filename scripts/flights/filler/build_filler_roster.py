@@ -32,6 +32,7 @@ tokenizer, scorer and network contacts (an offline socket guard is armed before 
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import glob
@@ -367,7 +368,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if os.environ.get("PYTHONDONTWRITEBYTECODE") != "1":
         raise SystemExit("PYTHONDONTWRITEBYTECODE=1 is required")
-    data_root = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+    data_root = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
     receipts = build(data_root)
     report = {}
     for relpath, document in receipts.items():

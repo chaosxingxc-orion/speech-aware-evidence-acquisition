@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The cell ROLL-AA read (board route F2, the Stage-3 within-flight A/A null; decision 58 by
 # script). MODEL-FREE: zero model / tokenizer / encoder / server contacts; scorer contacts only on
 # derived COPIES (two: one per sample index). Registered as
@@ -21,7 +23,7 @@
 # hashes only.
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 RUN=${RUN:-SAEA-SLURP-STAGE3-ROLL-AA-V1}
 ATTEMPT=${ATTEMPT:-attempt-slurp-native-stage3-roll-aa-v1-generation}
 ROSTER=${ROSTER:-docs/receipts/rosters/slurp-stage3-roll-aa-r01c-200-v1.json}

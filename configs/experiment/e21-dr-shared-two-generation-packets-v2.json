@@ -169,7 +169,7 @@
         "replacement_model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
         "fresh_cache_manifest": null,
         "promotion_receipt": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+          "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
           "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
         },
         "request_fit_receipt": null,
@@ -211,7 +211,7 @@
         "replacement_model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
         "fresh_cache_manifest": null,
         "promotion_receipt": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+          "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
           "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
         },
         "request_fit_receipt": null,
@@ -252,7 +252,7 @@
         "replacement_model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
         "fresh_cache_manifest": null,
         "promotion_receipt": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+          "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
           "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
         },
         "request_fit_receipt": null,
@@ -294,7 +294,7 @@
         "replacement_model_fragment": "q4km-e21-dr-full-packets-cddb000c-np6-v2",
         "fresh_cache_manifest": null,
         "promotion_receipt": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+          "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
           "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
         },
         "request_fit_receipt": null,

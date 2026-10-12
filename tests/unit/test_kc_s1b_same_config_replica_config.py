@@ -1,3 +1,4 @@
+import os
 import hashlib
 import json
 from pathlib import Path
@@ -32,7 +33,7 @@ def test_replica_keeps_four_fragments_and_held_readiness():
 def test_predecessor_manifest_hash_and_fit_endpoint_budget_are_exact():
     document = json.loads(CONFIG.read_text(encoding="utf-8"))
     predecessor = document["replication_source"]
-    data_root = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+    data_root = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
     manifest = data_root / predecessor["manifest_relpath"]
     assert hashlib.sha256(manifest.read_bytes()).hexdigest() == predecessor["manifest_sha256"]
     runtime = document["runtime_predecessor"]

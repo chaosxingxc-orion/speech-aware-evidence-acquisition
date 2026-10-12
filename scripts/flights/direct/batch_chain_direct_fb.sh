@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Decisions 77 / 266-E: fly the bare-core read (direct-only, TRAIN Fold B, Thinking versus Instruct) through the batch driver, one SEGMENT per
 # resident session. A driver run attaches to ONE session (BATCH_SESSION), and the 24 GB card holds one core, so the read is three segments:
 #
@@ -24,7 +26,7 @@ SEGMENT=${1:-think-all}
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SHORT=direct-fb
 LOG=/home/chao/batch-chain-$SHORT.out
 SIGNOFF_MARKER=/home/chao/direct-fb-decode-signoff.marker

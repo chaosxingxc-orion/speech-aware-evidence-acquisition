@@ -54,6 +54,7 @@ scenario names, sample ids and content hashes only.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -70,7 +71,7 @@ from pathlib import Path
 REPO = Path(
     "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"
 )
-DATA = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 UMBRELLA_LOCK = Path("/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json")
 sys.path.insert(0, str(REPO / "src"))
 

@@ -14,9 +14,12 @@ Repository rules (always; model-free, no data-root read, run anywhere):
                  ``status`` is ``pre-cut-over`` exactly when the current root is the legacy one.
 * ``live``       every declared live script exists, carries no hard-coded legacy root, and
                  sources the authority (entries also call ``saea_data_root_init``).
-* ``ratchet``    no file under ``scripts/ src/ configs/ tests/`` outside the committed
-                 baseline (``engineering_base_locator_baseline.json``) contains the legacy root
-                 literal (FAIL); a baseline file that no longer does is a WARN (shrink it).
+* ``ratchet``    no file under ``scripts/ src/ configs/ tests/`` contains a hard-coded data-root path
+                 (FAIL): the manifest's legacy root, ``/mnt/e/chao_workspace`` or any
+                 ``/mnt/e/.../speechrl-data``. The sweep is complete (owner rulings 289 B / 290 B,
+                 2026-10-12), so the frozen baseline (``engineering_base_locator_baseline.json``) must
+                 stay EMPTY (FAIL otherwise). Configs spell the root ``${SAEA_DATA_ROOT}``
+                 (``core/data_root_placeholder.py``), scripts source ``scripts/lib/data_root.sh``.
 * ``models``     each model's runtime receipt pins the declared GGUF sha256 and build commit;
                  the umbrella lock entry (when readable) names both declared sha256 values.
 * ``geometry``   each serving geometry's model fragment exists and agrees with the manifest
@@ -30,6 +33,9 @@ Host rules (``--host``; WSL only; light reads: mountinfo, stat, a few small-file
                  ``status == pre-cut-over``.
 * ``hot-mount``  the hot root exists and is a mounted ext4 (FAIL after cut-over or with
                  ``--require-hot-mounted``; WARN before).
+* ``e-free``     the E: drive (``/mnt/e``) has at least 500 GB free (decision 291: disk 1 grows to 3.6 TB
+                 inside E:, so the VHDX can only grow while E: keeps headroom); FAIL below the cap,
+                 WARN when E: is not readable on this host.
 * ``assets``     each model file exists with the declared size (no GGUF re-hash); each packet
                  root exists; each named promotion receipt hashes to its pin.
 
@@ -43,6 +49,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -55,6 +62,9 @@ SERVING_LIB_RELPATH = "scripts/flights/batch/serving_lib.sh"
 SCHEMA = "saea-engineering-base-v1"
 RATCHET_DIRS = ("scripts", "src", "configs", "tests")
 RATCHET_SUFFIXES = (".sh", ".py", ".json", ".ps1", ".md", ".txt", ".yaml", ".yml", ".toml")
+E_DRIVE_PATH = "/mnt/e"
+E_FREE_MIN_BYTES = 500 * 1000**3  # decision 291: refuse when E: free space drops under 500 GB
+GENERIC_DATA_ROOT_PATTERNS = (r"/mnt/e/chao_workspace", r"/mnt/e/[^\s\"']*speechrl-data")
 REFUSED_FSTYPES = frozenset({"9p", "v9fs", "drvfs", "tmpfs", "fuse", "fuseblk", "overlay", "cifs", "nfs"})
 REQUIRED_SECTIONS = ("roots", "hot_paths", "migration", "models", "packet_roots", "serving_geometries", "live_scripts", "timing_budget")
 AUTHORITY_VARIABLES = {
@@ -180,10 +190,15 @@ def check_live_scripts(repo: Path, manifest: Mapping, report: Report) -> None:
         report.ok("live", f"{len(manifest['live_scripts'])} live script(s) read the one authority")
 
 
+def forbidden_pattern(literal: str) -> "re.Pattern[bytes]":
+    parts = [re.escape(literal)] + list(GENERIC_DATA_ROOT_PATTERNS)
+    return re.compile("|".join(parts).encode("utf-8"))
+
+
 def literal_offenders(repo: Path, literal: str, skip: Iterable[str] = ()) -> list[str]:
     skipped = set(skip)
     offenders: list[str] = []
-    needle = literal.encode("utf-8")
+    pattern = forbidden_pattern(literal)
     for top in RATCHET_DIRS:
         base = repo / top
         if not base.is_dir():
@@ -195,7 +210,7 @@ def literal_offenders(repo: Path, literal: str, skip: Iterable[str] = ()) -> lis
             if rel in skipped:
                 continue
             try:
-                if needle in path.read_bytes():
+                if pattern.search(path.read_bytes()):
                     offenders.append(rel)
             except OSError:
                 continue
@@ -223,14 +238,12 @@ def load_baseline(path: Path) -> set[str]:
 
 def check_ratchet(repo: Path, manifest: Mapping, baseline: set[str], report: Report) -> list[str]:
     offenders = literal_offenders(repo, legacy_literal(manifest), ratchet_exempt(manifest))
-    new = [rel for rel in offenders if rel not in baseline]
-    for rel in new:
-        report.fail("ratchet", f"{rel}: new hard-coded legacy data root (read SAEA_DATA_ROOT / SPEECHRL_DATA_DIR instead)")
-    gone = sorted(baseline - set(offenders))
-    if gone:
-        report.warn("ratchet", f"{len(gone)} baseline file(s) no longer carry the literal; shrink the baseline (first: {gone[0]})")
-    if not new:
-        report.ok("ratchet", f"{len(offenders)} legacy-literal file(s), all in the frozen baseline")
+    for rel in offenders:
+        report.fail("ratchet", f"{rel}: hard-coded data-root path (config: ${{SAEA_DATA_ROOT}}; script: source {AUTHORITY_RELPATH}; python: SAEA_DATA_ROOT)")
+    if baseline:
+        report.fail("ratchet", f"the frozen baseline must be empty (sweep complete); it still lists {len(baseline)} file(s), first: {sorted(baseline)[0]}")
+    if not offenders and not baseline:
+        report.ok("ratchet", "no hard-coded data-root path under scripts/ src/ configs/ tests/; baseline empty")
     return offenders
 
 
@@ -424,6 +437,20 @@ def check_hot_filesystems(manifest: Mapping, mounts: Sequence[tuple[str, str]], 
         report.ok("hot-fs", f"{len(manifest['hot_paths'])} hot path(s) on ext4 (legacy data root excepted pre-cut-over)")
 
 
+def check_e_free_space(report: Report, *, path: str = E_DRIVE_PATH, minimum: int = E_FREE_MIN_BYTES, disk_usage=shutil.disk_usage) -> None:
+    """Decision 291: E: keeps at least ``minimum`` bytes (500 GB) free; the 3.6 TB VHDX grows inside it."""
+
+    try:
+        free = int(disk_usage(path).free)
+    except (OSError, ValueError):
+        report.warn("e-free", f"{path} is not readable on this host; the E: free-space cap (>= {minimum // 10**9} GB) was not measured")
+        return
+    if free < minimum:
+        report.fail("e-free", f"{path} has {free / 10**9:.0f} GB free, under the {minimum // 10**9} GB cap (decision 291): free E: before growing the VHDX or writing there")
+    else:
+        report.ok("e-free", f"{path} has {free / 10**9:.0f} GB free (cap >= {minimum // 10**9} GB)")
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -481,6 +508,8 @@ def run(
     host: bool = False,
     mountinfo_text: str | None = None,
     require_hot_mounted: bool = False,
+    e_path: str = E_DRIVE_PATH,
+    e_free_min_gb: float = E_FREE_MIN_BYTES / 10**9,
 ) -> Report:
     report = Report()
     manifest = load_manifest(manifest_path or repo / MANIFEST_RELPATH)
@@ -495,27 +524,29 @@ def run(
             mountinfo_text = Path("/proc/self/mountinfo").read_text(encoding="utf-8")
         mounts = parse_mountinfo(mountinfo_text)
         check_hot_filesystems(manifest, mounts, report, require_hot_mounted=require_hot_mounted)
+        check_e_free_space(report, path=e_path, minimum=int(e_free_min_gb * 10**9))
         check_assets(manifest, report)
     return report
 
 
 def write_baseline(repo: Path, manifest_path: Path | None, baseline_path: Path | None) -> int:
+    """The baseline is retired: this only (re)writes the EMPTY list, and refuses while any file carries a literal."""
+
     manifest = load_manifest(manifest_path or repo / MANIFEST_RELPATH)
     offenders = literal_offenders(repo, legacy_literal(manifest), ratchet_exempt(manifest))
-    live = {str(e["path"]) for e in manifest["live_scripts"]}
-    leaked = sorted(set(offenders) & live)
-    if leaked:
-        print(f"engineering base locator check: refusing to baseline live scripts: {', '.join(leaked)}", file=sys.stderr)
+    if offenders:
+        print(f"engineering base locator check: refusing to baseline {len(offenders)} file(s) with a hard-coded data-root path "
+              f"(first: {offenders[0]}); the baseline stays empty, fix the files", file=sys.stderr)
         return 1
     target = baseline_path or repo / BASELINE_RELPATH
     target.write_text(json.dumps({
         "schema": "saea-engineering-base-locator-baseline-v1",
         "literal": legacy_literal(manifest),
-        "note": "Frozen historical files that name the legacy E: data root by absolute path. They stay valid while the "
-                "legacy root (or its compatibility link, design section 6) resolves; new files must not join this list.",
-        "legacy_literal_files": offenders,
+        "note": "RETIRED and empty (owner rulings 289 B / 290 B, 2026-10-12): no file may name the data root by absolute path. "
+                "The ratchet refuses every hard-coded data-root path and refuses a non-empty list here.",
+        "legacy_literal_files": [],
     }, indent=1) + "\n", encoding="utf-8")
-    print(f"engineering base locator check: wrote {len(offenders)} baseline file(s) to {target}")
+    print(f"engineering base locator check: wrote the empty baseline to {target}")
     return 0
 
 
@@ -527,7 +558,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--umbrella-lock", type=Path, help="default: <repo>/../../docs/datasets.lock.json when present")
     parser.add_argument("--host", action="store_true", help="also check this host's filesystems and assets (WSL)")
     parser.add_argument("--require-hot-mounted", action="store_true", help="FAIL (not WARN) when the hot root is not a mounted ext4")
-    parser.add_argument("--write-baseline", action="store_true")
+    parser.add_argument("--e-path", default=E_DRIVE_PATH, help="mount point of the E: drive (host mode)")
+    parser.add_argument("--e-free-min-gb", type=float, default=E_FREE_MIN_BYTES / 10**9, help="E: free-space cap in GB (host mode)")
+    parser.add_argument("--write-baseline", action="store_true", help="rewrite the (empty) retired baseline; refused while a literal remains")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
     repo = args.repo_root.resolve()
@@ -539,7 +572,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             candidate = repo.parent.parent / "docs" / "datasets.lock.json"
             lock = candidate if candidate.is_file() else None
         report = run(repo, manifest_path=args.manifest, baseline_path=args.baseline, umbrella_lock=lock,
-                     host=args.host, require_hot_mounted=args.require_hot_mounted)
+                     host=args.host, require_hot_mounted=args.require_hot_mounted,
+                     e_path=args.e_path, e_free_min_gb=args.e_free_min_gb)
     except ManifestError as error:
         print(f"engineering base locator check: FAIL: {error}", file=sys.stderr)
         return 2

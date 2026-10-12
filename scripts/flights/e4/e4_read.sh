@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Cell E4-1's same-flight shadow-column read (owner decision 185; recipe
 # docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1/analysis-recipe-v1.json).
 #
@@ -38,7 +40,7 @@ done
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
-export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 source "$MAIN/scripts/flights/batch/read_lib.sh"
 RUN=SAEA-SLURP-STAGE3-RELISTEN-FOLD-A-V1
 # Owner decision 194: the arm sealed through the SEAL-ONLY completion; the delivered column and both shadow

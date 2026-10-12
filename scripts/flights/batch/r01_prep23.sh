@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Runbook for preparations 2c and 3 of the Stage-3 construction roster R01
 # (docs/readiness/2026-09-22-slurp-stage3-construction-r01-preparations-v1.md, sections 3, 4 and 8).
 #
@@ -23,7 +25,7 @@
 # prints the two mutating command lines instead of running them.
 set -u
 REPO=${REPO:-/home/chao/saea-worktrees/fable-s3q}
-DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 PY=${PY:-/home/chao/.venvs/speechrl/bin/python}
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/src
 DRY=${PREP23_DRY:-0}

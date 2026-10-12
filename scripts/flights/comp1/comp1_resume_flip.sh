@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # VARIANT 1 of the COMP-1 recovery: flip the RESUME-RECOVERY cell and G5's smoke and arm to ready on master,
 # model-free, converged at ONE HEAD, which becomes the flight commit of batch_chain_comp1_resume.sh.
 #
@@ -18,7 +20,7 @@
 # re-running all three until one whole pass commits nothing (a later flip rewrites the shared exposure ledger after
 # an earlier cell reported "satisfied"). Only then is HEAD recorded. Untracked files count as dirt.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 CP=$MAIN/scripts/flights/comp1
 G5=$MAIN/scripts/flights/g5

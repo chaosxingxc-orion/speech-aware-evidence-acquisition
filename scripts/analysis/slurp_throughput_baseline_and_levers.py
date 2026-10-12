@@ -17,6 +17,7 @@ Usage (WSL, speechrl venv or system python3, stdlib only):
         --out docs/receipts/slurp-throughput-baseline-and-levers-v1.json
 """
 from __future__ import annotations
+import os
 
 import argparse
 import collections
@@ -31,7 +32,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-DATA = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 RUN_ID = "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1"
 ATTEMPT = "attempt-slurp-native-stage3-roll-2-fold-a-v1-generation"
 SESSION = "serving-slurp-native-candidate-five-train-a-np4-v1"

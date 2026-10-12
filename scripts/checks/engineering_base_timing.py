@@ -18,7 +18,7 @@ status log, never measured here.
 Usage (WSL):
   python -B scripts/checks/engineering_base_timing.py --repo /home/chao/saea-worktrees/fable-batch-flight \\
       --repo /mnt/d/.../speech-aware-evidence-acquisition --root /home/chao/saea-data \\
-      --root /mnt/e/.../speechrl-data --out docs/checks/.../timing-receipt.json
+      --root $SAEA_DATA_ROOT --out docs/checks/.../timing-receipt.json
 Exit 0 when every measured minimum is within budget, 1 when one is over (the receipt is written
 either way), 2 on a usage error.
 """

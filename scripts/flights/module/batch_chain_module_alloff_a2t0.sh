@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Decisions 77 / 187 / 196: fly the Audio2Tool consumption-module ALL-OFF arm (carrier admission gate, design 2b.3) ONLY
 # after the owner reopens Audio2Tool (decision 187 keeps the GPU on SLURP until the SLURP lock), on the AUDIO2TOOL serving
 # geometry through the batch driver. ONE step: the four-row form smoke first (driver-enforced), then the 400-row arm.
@@ -15,9 +17,9 @@ COMMIT=$(cat /home/chao/module-alloff-a2t0-flight-commit.txt) || exit 1
 export BATCH_SESSION=serving-a2t-native-role-base-np3-max2048-v3
 echo "chain start $(date -u +%FT%TZ) commit $COMMIT session $BATCH_SESSION" >> $LOG
 if [ -n "$(pgrep -af 'core.flight.cli|batch_driver.sh' | grep -v pgrep)" ]; then echo "a batch is running; abort" >> $LOG; exit 7; fi
-S=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/$BATCH_SESSION
+S=$SAEA_DATA_ROOT/serving/$BATCH_SESSION
 if [ ! -f "$S/session.json" ] || [ -f "$S/session-stop.json" ]; then echo "the A2T session is not resident ($S); abort" >> $LOG; exit 8; fi
-SL=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-candidate-five-train-a-np4-v1
+SL=$SAEA_DATA_ROOT/serving/serving-slurp-native-candidate-five-train-a-np4-v1
 if [ -f "$SL/session.json" ] && [ ! -f "$SL/session-stop.json" ]; then echo "the SLURP session is still resident; abort" >> $LOG; exit 8; fi
 cd $MAIN || exit 1
 git -C "$REPO" checkout -q --detach "$COMMIT" || { echo "checkout failed" >> $LOG; exit 2; }

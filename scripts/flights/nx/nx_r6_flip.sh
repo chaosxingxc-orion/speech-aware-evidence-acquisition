@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip the NX R6-P1 cell (smoke, then arm) to ready on master: model-free, in LOOP FORM -- one convergence loop, re-run until one
 # whole pass commits nothing (a later flip rewrites shared files such as the exposure ledger after an earlier cycle reported
 # "satisfied"; the shared protocol hash propagates once), and only then is HEAD recorded as the NX R6-P1 flight commit. Root runs
@@ -15,7 +17,7 @@
 # the arm's pins and the ledger hashes (the decision receipt is already minted: the run ids did not change, so it is not re-minted).
 #   bash scripts/flights/nx/nx_r6_flip.sh
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 NX=$MAIN/scripts/flights/nx
 SLUG=nx-r6-perception-fold-b

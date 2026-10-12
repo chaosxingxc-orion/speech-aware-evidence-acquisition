@@ -171,6 +171,17 @@ path then resolves to the hot root on ext4: the path walk crosses 9p once for th
 from the VHDX. Windows-native tools cannot follow it (the same is true of the existing earnings22 media links).
 Decision 279.
 
+
+### 6.5 Literal sweep (owner rulings 289 B / 290 B, 2026-10-12) -- supersedes the baseline and the compatibility link
+
+The 341 frozen files were rewritten: configs spell `${SAEA_DATA_ROOT}` (`core/data_root_placeholder.py`; `compose()` hashes the
+unexpanded text and hands consumers expanded values; the preparation, promotion and pinned-document loaders expand what they
+read), shell scripts source `scripts/lib/data_root.sh` and call `saea_data_root_init`, Python scripts and tests read
+`SAEA_DATA_ROOT` / `SPEECHRL_DATA_DIR`. The ratchet baseline is empty and the locator gate refuses any hard-coded data-root path
+(`/mnt/e/chao_workspace`, `/mnt/e/.../speechrl-data`, the manifest's legacy root) and a non-empty baseline. No compatibility
+link is created after step 3. Host mode also refuses E: free space under 500 GB (decision 291). Historical receipts under `docs/`
+are immutable and keep their literals.
+
 ## 7. (d) Migration plan
 
 ### 7.1 What must not run

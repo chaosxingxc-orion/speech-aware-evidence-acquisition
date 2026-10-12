@@ -35,6 +35,7 @@ sorted before it is consumed and there is no resampling.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -68,7 +69,7 @@ from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (  # no
 READ_ID = "SAEA-SLURP-MF-GOLD-POSITION-SOLVER-FREEDOM-V1"
 RECIPE = "slurp-gold-position-and-solver-freedom-read-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 DEFAULT_MARKDOWN = "docs/results/2026-09-26-slurp-gold-position-and-solver-freedom-read.md"
 DEFAULT_ANALYSIS_DIR = "analysis/SLURP-GOLD-POSITION-SOLVER-FREEDOM-V1"
 RANK_DIAGNOSTIC = REPO_ROOT / "scripts/analysis/slurp_intent_retrieval_rank_diagnostic.py"

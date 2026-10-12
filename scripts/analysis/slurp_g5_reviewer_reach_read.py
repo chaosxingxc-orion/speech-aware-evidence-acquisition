@@ -19,6 +19,7 @@ and hashes only. Zero model, server, tokenizer, encoder, scorer-subprocess, netw
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -42,7 +43,7 @@ ARMS = (
 NARRATION = re.compile(r"tool[_ ]?call|tool result|\"tool\"\s*:|get_task_contract|task[-_ ]contract", re.I)
 DECLARED_REVIEWER_TOKEN_DELTA = -51
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 
 def sha256_file(path: Path) -> str:

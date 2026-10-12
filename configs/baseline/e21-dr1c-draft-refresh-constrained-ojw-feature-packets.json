@@ -42,7 +42,7 @@
   "speech_feature_key_representation_id": "saea-e21-dr1c-window-packets-v1:refresh",
   "speech_feature_matcher_policy_id": "saea-e21-dr1c-window-packets-v1",
   "prepared_window_feature_packets": {
-    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+    "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
     "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
   },
   "obs_prefetch_depth": 1,

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Reconcile the flight.lock left by the P-SV-1 arm SAEA-SLURP-STAGE3-PSV1-FOLD-B-V1 (flight commit b9af3e58), which
 # flew all 1,080 rows (8,709 calls) and ABORTED at seal (2026-09-29T14:19:36Z, BundleError on the seal invariant I7v:
 # "perception branch candidate_intent_ids must be a non-empty ordered list of distinct non-empty strings"; copy of
@@ -6,7 +8,7 @@
 # changed). The lock is filed into the run's records, never deleted. The run and attempt trees are left untouched:
 # recovery is expected to be seal-only after the receipt fix (no re-fly, no re-pin of the flown attempt). P-SV-2 is
 # held back (same validator) and the P-SV queue must not be restarted.
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 /home/chao/.venvs/speechrl/bin/python - "$DATA" <<'PY'
 import json, io, os, sys, hashlib, subprocess, shutil
 from datetime import datetime, timezone

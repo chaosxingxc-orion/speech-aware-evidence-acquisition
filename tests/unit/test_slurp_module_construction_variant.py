@@ -35,7 +35,7 @@ from speech_aware_evidence_acquisition.rails.adapters import slurp_module_constr
 from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import carrier_module_hooks  # noqa: E402
 from speech_aware_evidence_acquisition.rails.knowledge_stores import load_knowledge_store_binding  # noqa: E402
 
-DATA = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 CELL = tf.const_names("arm")["baseline"]
 VAR2 = "slurp-native-stage3-var2-supply-variants-r01c-baseline-v1"
 Q = cm.ConsumptionModuleConfigError

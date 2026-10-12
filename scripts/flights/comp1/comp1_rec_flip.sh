@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # VARIANT 2 of the COMP-1 recovery: flip the -REC recovery re-registration (smoke, arm) and G5's smoke and arm to
 # ready on master, model-free, converged at ONE HEAD, which becomes the flight commit of batch_chain_comp1_rec.sh.
 #
@@ -14,7 +16,7 @@
 # rebuilds it under the -REC run id and ASSERTS the output unchanged (arm ce68bebc..., smoke 1d55ea73...).
 # G5 never started in the aborted chain; it is re-converged here unchanged.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 CP=$MAIN/scripts/flights/comp1
 G5=$MAIN/scripts/flights/g5

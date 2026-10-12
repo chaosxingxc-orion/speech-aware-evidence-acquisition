@@ -32,7 +32,7 @@ the sealed ROLL-1 bundle under ``SPEECHRL_DATA_DIR``.
 Usage (from a worktree, in WSL)::
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/src \\
-    SPEECHRL_DATA_DIR=/mnt/e/.../speechrl-data \\
+    SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT \\
     python -B scripts/build_slurp_verify1_material.py \\
       --repo-root $REPO --data-root $SPEECHRL_DATA_DIR [--check] [--json out.json]
 

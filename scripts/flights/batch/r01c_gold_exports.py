@@ -11,6 +11,7 @@ legal to read, owner decision 82):
 
 Prints counts and sha256 digests only. WSL Python from the study root.
 """
+import os
 import argparse
 import hashlib
 import io
@@ -18,7 +19,7 @@ import json
 import os
 from pathlib import Path
 
-DATA = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 
 
 def main() -> int:

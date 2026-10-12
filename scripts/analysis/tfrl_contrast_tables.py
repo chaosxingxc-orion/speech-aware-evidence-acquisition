@@ -98,7 +98,7 @@ for _p in (str(REPO_ROOT / "src"), str(REPO_ROOT / "scripts" / "analysis")):
 SCHEMA = "saea-tfrl-contrast-tables-v1"
 READ_ID = "SAEA-SLURP-TFRL-TABLES-DEV-V1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 EXCHANGE_RATES_RELPATH = "analysis/SAEA-SLURP-NX-EXCHANGE-RATES-V1/report.json"
 
 MIN_CELL = 3

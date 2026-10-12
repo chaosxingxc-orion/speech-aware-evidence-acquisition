@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Usage: cell3_read.sh <arm|twin|own-null> -- the CELL-3 read (Stage-3 S3-6 iteration 3, the
 # coverage-gated application policy on the fresh DEV-2000-ADDED roster; owner decisions 83, 99,
 # 101, 106 and 110 pending; decision 58: reads are executed by script).
@@ -61,7 +63,7 @@ case $WHICH in
 esac
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 PKG=$MAIN/docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1
 ROOT=$SPEECHRL_DATA_DIR/analysis/$ROOT_ID
 mkdir -p "$ROOT" \

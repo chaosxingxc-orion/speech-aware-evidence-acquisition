@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The IDLE-FILLER QUEUE (owner decision 162). Loops forever; on every tick it asks
 # filler_queue_decide.py for ONE decision and records it in /home/chao/filler-queue.out:
 #   HALT      batch-STOP present -> log and exit 3 (never skip a failed chunk; root diagnoses, then restarts)
@@ -26,7 +28,7 @@ PY=${FILLER_PY:-/home/chao/.venvs/speechrl/bin/python}
 H=${FILLER_HOME:-/home/chao}
 LOG=${FILLER_QUEUE_LOG:-$H/filler-queue.out}
 STATE=${FILLER_STATE:-$H/filler-queue-state.jsonl}
-DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 CHAIN=${FILLER_CHAIN:-$FD/batch_chain_filler.sh}
 HOLD=${FILLER_HOLD:-/home/chao/saea-queue/filler.hold}
 DRY=0; ONCE=0; INTERVAL=60; STATUS_JSON=""

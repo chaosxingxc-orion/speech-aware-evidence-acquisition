@@ -33,6 +33,7 @@ score read:
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -46,7 +47,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 REPO_DEFAULT = Path(__file__).resolve().parents[3]
-DATA_DEFAULT = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA_DEFAULT = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 UMBRELLA_LOCK = Path(
     "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
 )

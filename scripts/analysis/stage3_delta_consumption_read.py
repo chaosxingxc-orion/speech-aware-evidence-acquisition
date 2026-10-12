@@ -60,6 +60,7 @@ The receipt fields this read binds, and nothing else:
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -81,9 +82,7 @@ from speech_aware_evidence_acquisition.rails.stage3_delta_supply import (  # noq
 )
 
 DATA = Path(
-    os.environ.get(
-        "SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-    )
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 )
 
 #: The native role graph's node order (``analysis.native_episode_dry_run.

@@ -1,9 +1,11 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Entry point for the Windows Scheduled Task "SAEA-Prep-R01" (owner decisions 93/94, 2026-09-22): the registered R01
 # packet promotion (run SAEA-SN-STAGE3-CONSTRUCTION-R01-PREPROCESS) on the CPU-only featcache sidecar (-ngl 0, 0 GPU-h),
 # beside the resident GPU session, with a host-memory watchdog: available memory below 6 GB stops the preprocess.
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN:$MAIN/src
 source /home/chao/.venvs/speechrl/bin/activate
 cd "$MAIN" || exit 1

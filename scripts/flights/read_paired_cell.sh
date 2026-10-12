@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The standard paired read of one sealed Stage-3 cell (owner decision 163), from its readiness package.
 #
 #   bash scripts/flights/read_paired_cell.sh docs/readiness/<package> [--passes vs-aa] [--output-base DIR]
@@ -15,7 +17,7 @@
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
-export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 PKG=${1:?usage: read_paired_cell.sh docs/readiness/<package> [--passes vs-aa,vs-comparator] [--output-base DIR]}
 shift
 case "$PKG" in /*) ;; *) PKG=$MAIN/$PKG ;; esac

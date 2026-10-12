@@ -1,11 +1,13 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # R-PRIM read by script (decision 58): one factor (the Reviewer verdict as a closed set of primitives, item E37, decision 84)
 # against the sealed PLAN arm at the plan's own null (PLANr). Driver = the repo copy scripts/analysis/plan_cell_read.py.
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONPATH=$MAIN/src
-export SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 ROOT=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-REVIEW-PRIMITIVES-PAIRED-ANALYSIS-V1
 mkdir -p $ROOT && cp $MAIN/scripts/analysis/plan_cell_read.py $ROOT/plan_cell_read.py && cp $MAIN/docs/readiness/2026-09-22-slurp-review-primitives-v1/registered-facts-v1.json $ROOT/registered-rprim.json && cd $ROOT || exit 1
 sha256sum plan_cell_read.py | cut -c1-16

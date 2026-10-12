@@ -2161,7 +2161,9 @@ def load_a2t_semantic_card_compilation_config(
             f"cannot read semantic-card compilation config {path}: {error}"
         ) from error
     try:
-        document = json.loads(raw.decode("utf-8"))
+        from ..core.data_root_placeholder import expand_data_root
+
+        document = expand_data_root(json.loads(raw.decode("utf-8")))
     except (UnicodeError, json.JSONDecodeError) as error:
         raise SemanticCardCompilationError(
             f"cannot parse semantic-card compilation config {path}: {error}"

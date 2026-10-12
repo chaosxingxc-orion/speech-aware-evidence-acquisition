@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip cell W4 (smoke, then arm) to ready on master: model-free, two cells in two cycles converging
 # at ONE HEAD, which becomes the W4 flight commit. Root runs this ONLY after:
 #   1. the coordinator has registered the knowledge wave's shared in-chain A/A
@@ -16,7 +18,7 @@
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 SP=$MAIN/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-w4-slot-conventions-fold-a-v1
-if [ ! -f /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-w4-fold-a-v1/root-admission-v1.json ]; then
+if [ ! -f $SAEA_DATA_ROOT/coordination/slurp-stage3-w4-fold-a-v1/root-admission-v1.json ]; then
   echo "refusing: the W4 decision receipt is not minted (scripts/flights/w4/w4_mint_receipt.py)"; exit 6
 fi
 if ! grep -rqs "SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1" "$MAIN/configs/experiment/"; then

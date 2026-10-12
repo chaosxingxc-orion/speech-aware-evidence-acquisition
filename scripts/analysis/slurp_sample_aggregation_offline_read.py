@@ -48,7 +48,7 @@ the repository.
 Run in WSL2::
 
     PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=<worktree>:<worktree>/src \\
-    SPEECHRL_DATA_DIR=/mnt/e/.../speechrl-data \\
+    SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT \\
     nice -n 10 python scripts/analysis/slurp_sample_aggregation_offline_read.py \\
       --run SAEA-SLURP-STAGE3-ROLLOUT-R01-V1 \\
       --attempt attempt-slurp-native-stage3-rollout-r01-generation-v1 \\

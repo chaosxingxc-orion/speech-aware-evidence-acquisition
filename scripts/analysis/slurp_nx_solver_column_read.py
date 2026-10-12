@@ -62,6 +62,7 @@ model, server, tokenizer, scorer-subprocess, network and GPU contact.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -88,7 +89,7 @@ DRAWS = 10_000
 CI_LEVEL = 0.95
 Z95 = 1.959963984540054
 DEFAULT_LOCK = "docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 #: ``(metric, subset of rows, higher_is_better)``. The primary is ``exact_set``.
 METRICS = (

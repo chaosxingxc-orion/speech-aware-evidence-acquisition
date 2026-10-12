@@ -75,7 +75,7 @@ from speech_aware_evidence_acquisition.reproduction import obs_ownership as own 
 DATA_ROOT = Path(
     os.environ.get(
         "SPEECHRL_DATA_DIR",
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"),
     )
 )
 

@@ -205,7 +205,7 @@ def test_protocol_sources_pin_the_step_2a_inventory_not_the_runtime_view() -> No
     assert sources["schema"] == "saea-speech-query-source-inventory-v1"
     assert sources["sha256"] == INVENTORY_SHA256
     assert sources["path"].endswith("/" + INVENTORY_RELPATH)
-    assert Path(sources["path"]).is_absolute()
+    assert sources["path"].startswith("${SAEA_DATA_ROOT}/")  # data-root placeholder (owner rulings 289 B / 290 B)
 
 
 def test_protocol_artifact_paths_are_confined_and_name_this_roster(tmp_path: Path) -> None:

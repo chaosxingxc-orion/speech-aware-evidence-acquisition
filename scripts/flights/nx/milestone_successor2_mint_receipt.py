@@ -15,6 +15,7 @@ and its FIT id) and the budget caps are the draft's and are not edited here.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -29,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import milestone_successor2_preflip_check as pf  # noqa: E402
 
-DATA = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ROOT = os.environ.get(
     "SAEA_STUDY_ROOT",
     "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",

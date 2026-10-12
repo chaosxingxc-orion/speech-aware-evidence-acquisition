@@ -19,6 +19,7 @@ countersigned form. That edit is a repository change the coordinator commits on 
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -34,7 +35,7 @@ sys.path.insert(0, str(HERE))
 
 import filler_family as ff  # noqa: E402
 
-DATA = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ROOT = Path(os.environ.get("SAEA_STUDY_ROOT", str(ff.REPO_ROOT)))
 LEDGER = "docs/exposure-ledger.md"
 DRAFT_MARK = "(DRAFT, root countersignature pending)"

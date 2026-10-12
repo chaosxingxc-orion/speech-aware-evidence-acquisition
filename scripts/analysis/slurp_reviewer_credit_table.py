@@ -31,6 +31,7 @@ only, never for selection.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -63,7 +64,7 @@ from speech_aware_evidence_acquisition.reproduction.slurp_scoring import (  # no
 READ_ID = "SAEA-SLURP-STAGE3-REVIEWER-CREDIT-TABLE-V1"
 RECIPE = "slurp-stage3-reviewer-credit-table-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ANALYSIS_DIR = f"analysis/{READ_ID}"
 IB_PREFIX = "intent-boundaries::intent-boundary:"
 EX_PREFIX = "train-exemplars::value:"

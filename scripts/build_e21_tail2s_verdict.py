@@ -431,7 +431,7 @@ def main(argv=None) -> int:
     parser.add_argument("--attempt-dir", type=Path, required=True)
     parser.add_argument("--run-id", default="SAEA-E21-FULL44-TAIL2S-V1")
     parser.add_argument("--data-root", type=Path, default=Path(
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+        (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")))
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--skip-windows", action="store_true")
     parser.add_argument(

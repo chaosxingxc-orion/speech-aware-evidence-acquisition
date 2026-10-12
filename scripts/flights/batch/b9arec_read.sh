@@ -1,9 +1,11 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # B9a-rec read by script (decision 58): one factor (the Acquisition node, kind (a)) against the sealed PLAN arm at the plan's own null (PLANr).
 PY=/home/chao/.venvs/speechrl/bin/python
 export PYTHONDONTWRITEBYTECODE=1
 export PYTHONPATH=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/src
-export SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 SRC=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-DEFAULT-PLAN-LOCK-REPLICATE-PAIRED-ANALYSIS-V1
 ROOT=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-PLAN-ACQUISITION-B9A-RECOVERY-PAIRED-ANALYSIS-V1
 mkdir -p $ROOT && cp $SRC/plan_cell_read.py $ROOT/plan_cell_read.py && cd $ROOT || exit 1

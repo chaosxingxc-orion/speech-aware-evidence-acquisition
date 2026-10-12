@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Usage: var1_read.sh own-null
 #        var1_read.sh variant <exk10|exk30|exdiv|perk16c5|planr>   -- one cell's pooled paired read
 #        var1_read.sh variant                                      -- all five, then the FAMILY read
@@ -47,7 +49,7 @@ WHICH=${1:-}
 CELL=${2:-}
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 PKG=$MAIN/docs/readiness/2026-09-24-slurp-stage3-var1-v1
 PKG_RELPATH=docs/readiness/2026-09-24-slurp-stage3-var1-v1
 LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json

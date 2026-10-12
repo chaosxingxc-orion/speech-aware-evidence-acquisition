@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The same-flight Perception-branch read of P-SV-1, P-SV-2 or P-SV-3 (owner decision 184).
 #
 #   bash scripts/flights/psv/psv_read.sh psv1|psv2|psv3|psv4 [--rescore] [--dry-run]
@@ -33,7 +35,7 @@ PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 LOCK=${SAEA_DATASETS_LOCK:-/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json}
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
-export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 source "$MAIN/scripts/flights/batch/read_lib.sh"
 usage() { echo "usage: psv_read.sh psv1|psv2|psv3|psv4 [--rescore] [--dry-run]"; exit 2; }
 K=$1

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The SUCCESSOR-2 test-sample milestone read (owner decisions 233 and 241): the NX R5 composed arm against the SEALED successor-1 COMP-1b and PLAN columns.
 #
 #   bash scripts/flights/nx/milestone_successor2_read.sh [--dry-run]
@@ -20,7 +22,7 @@
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
-export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 source "$MAIN/scripts/flights/batch/read_lib.sh"
 DRY=0
 while [ $# -gt 0 ]; do

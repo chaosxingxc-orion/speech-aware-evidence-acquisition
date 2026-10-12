@@ -1,9 +1,11 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Only the diagnosed zero-contact fit-count recovery. No network or assistant.
 set -euo pipefail
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 PY=/home/chao/.venvs/speechrl/bin/python
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 export BATCH_SESSION=serving-slurp-native-candidate-five-train-a-np4-v1
@@ -19,7 +21,7 @@ import hashlib,json,shutil
 from pathlib import Path
 h=Path('/home/chao')
 r=Path('/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition')
-d=Path('/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data')
+d=Path(__import__('os').environ['SAEA_DATA_ROOT'])
 proof=json.loads((r/'docs/receipts/continuation/2026-09-25-verify1-fit-count-recovery.json').read_text())
 for name,item in proof['evidence'].items():
     assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==item['sha256'],name

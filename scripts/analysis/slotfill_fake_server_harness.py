@@ -32,6 +32,7 @@ Usage (WSL, speechrl venv, PYTHONPATH pinned to this tree):
         --dispatch off --service measured --out /tmp/x.json
 """
 from __future__ import annotations
+import os
 
 import argparse
 import collections
@@ -45,7 +46,7 @@ import time
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-DATA = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 LOCK = Path(os.environ.get("SAEA_UMBRELLA_LOCK", "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"))
 DEFAULT_EXPERIMENT = "slurp-native-default-plan-lock-v1"
 ROLL2_TIMELINE = Path("/tmp/saea-slotfill/contacts-v1.json")

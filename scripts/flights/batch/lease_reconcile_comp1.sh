@@ -1,8 +1,10 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Reconcile the flight.lock left by the aborted COMP-1 arm SAEA-SLURP-STAGE3-COMP1-FOLD-A-V1
 # (abort 2026-09-28T03:28:18Z; copy of lease_reconcile_e35.sh with the run id, records package,
 # STOP evidence and authorisation changed). The lock is filed into the run's records, never deleted.
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 /home/chao/.venvs/speechrl/bin/python - "$DATA" <<'PY'
 import json, io, os, sys, hashlib, subprocess, shutil
 from datetime import datetime, timezone

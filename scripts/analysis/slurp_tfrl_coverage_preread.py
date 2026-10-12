@@ -62,6 +62,7 @@ are arithmetic over pinned, sha256-verified vector files.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -82,7 +83,7 @@ READ_ID = "SAEA-SLURP-TFRL-COVERAGE-PREREAD-V1"
 RECIPE = "slurp-tfrl-coverage-preread-fold-b-offline-v1"
 ANALYSIS_DIR = "analysis/" + READ_ID
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 COLUMN = {"label": "r6-lock", "title": "R6-P1 delivering lock column (lock v2.2, review-off COMP-1b, v4g)",
           "run_id": "SAEA-SLURP-STAGE3-NX-R6-PERCEPTION-FOLD-B-V1",

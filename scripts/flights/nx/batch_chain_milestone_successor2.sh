@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Decisions 77 / 151 / 187 / 250 / 251: fly the SLURP test-sample SUCCESSOR-2 composed milestone (the NX R5 composed arm on
 # SLURP-TEST-SAMPLE-3010-V1) on the SLURP np4 geometry (slurp-np4, session serving-slurp-native-candidate-five-train-a-np4-v1)
 # through the batch driver. ONE step, ONE cell, NO SMOKE: the queue step sets smoke_experiment and smoke_cell to None (batch_driver.sh
@@ -16,7 +18,7 @@
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
-DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 SHORT=ms2
 CELL=slurp-milestone-successor2-composed-v1
 RUN=SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1

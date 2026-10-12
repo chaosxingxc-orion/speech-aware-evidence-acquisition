@@ -11,6 +11,7 @@ utterance, transcript, gold label or model output -- and states no verdict: the 
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import glob
@@ -26,7 +27,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 
 import module_equivalence_proof as proof  # noqa: E402
 
-DATA = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 STEMS = {"a2t": ("a2t-native-stage3-module-alloff-v1", "a2t0"), "e21": ("earnings21-native-stage3-module-alloff-v1", "e210"),
          "e22": ("earnings22-native-stage3-module-alloff-v1", "e220")}
 #: Package directory per carrier (the Earnings-22 package carries its own date and stem).

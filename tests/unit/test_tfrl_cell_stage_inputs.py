@@ -7,6 +7,7 @@ root is present and skips cleanly otherwise. No test prints or asserts on uttera
 
 from __future__ import annotations
 
+import os
 import hashlib
 import json
 import sys
@@ -29,7 +30,7 @@ import tfrl_overlay  # noqa: E402
 from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: E402
 from speech_aware_evidence_acquisition.rails import tfrl_typed_proposer as tp  # noqa: E402
 
-REAL_DATA = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+REAL_DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 SLOT_TYPES = ["date", "time", "place_name"]
 INTENTS = sorted({f"{s}_query" for s in tp.SCENARIOS} | {"alarm_set"})
 

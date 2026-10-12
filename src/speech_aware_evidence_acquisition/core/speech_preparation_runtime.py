@@ -18,6 +18,7 @@ from pathlib import Path
 
 from ..contracts import ExecutionPlan
 from .attempts import AttemptStore
+from .data_root_placeholder import expand_data_root
 from .flight.lease import GenerationLease
 from .preparation import canonical_bytes, hash_stable_file
 from .preparation_runtime import verify_pinned_file
@@ -38,6 +39,7 @@ def _now():
 
 
 def pinned_json(binding):
+    binding = expand_data_root(binding)
     path = Path(binding["path"])
     _size, sha, fingerprint = hash_stable_file(path, "preparation binding")
     if sha != binding["sha256"]:
@@ -46,7 +48,7 @@ def pinned_json(binding):
     stat = path.stat()
     if (stat.st_ino, stat.st_size, stat.st_mtime_ns) != fingerprint:
         raise SpeechPreparationError("preparation binding changed during read")
-    return value
+    return expand_data_root(value)
 
 
 def confined(root, relative):

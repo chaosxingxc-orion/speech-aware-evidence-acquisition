@@ -13,6 +13,7 @@ Run:
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -23,7 +24,7 @@ from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-DATA = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 TOKENIZE = Path("/home/chao/llama.cpp/build/bin/llama-tokenize")
 GGUF = DATA / (
     "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/"

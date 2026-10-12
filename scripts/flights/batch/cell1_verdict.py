@@ -27,6 +27,7 @@ and metrics only, no utterance, gold or delivered text.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -41,9 +42,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 REPO_DEFAULT = Path(__file__).resolve().parents[3]
 DATA = Path(
-    os.environ.get(
-        "SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-    )
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 )
 
 #: 2026-09-24: one writer for every cell of the delta-cell family (CELL-1, CELL-2, later
