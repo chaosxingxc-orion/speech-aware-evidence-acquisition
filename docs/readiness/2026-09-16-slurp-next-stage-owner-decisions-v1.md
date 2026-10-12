@@ -2058,3 +2058,19 @@ disk. (D) Keep the hot set (~100 GB) on the WSL root ext4 (481 GB free) and leav
 for today, no headroom for derived media (179 GB) and feature caches (105 GB) growth.
 - **284 (PROPOSED)** hot data root location: **A** (recommended; VHDX size and mount automation as the base-unification spec states),
   D as the immediate stop-gap if A waits; B/C not recommended.
+
+### Decision 284 RULED (owner, 2026-10-12): the data-disk migration in three steps (coordinator record and execution log)
+
+Owner, verbatim: 「我理解我们得做一次数据盘变迁的内容，你这样去做，第一步是按照方案1，划分一块2TB的存储区出来，mount到linux里面，第二步，把E盘已经使用的部分，
+分析下哪些需要搬迁的，搬到ext4盘里面；第三步，删除E盘已经存量的内容，后再剥离一块盘出来，mount到ext4里面，最后给E盘留下500GB的空间就够了」
+English: "We need a data-disk migration. Do it this way: step 1, per option 1 carve out a 2 TB storage area and mount it into Linux; step 2,
+analyse which of E:'s used content needs to migrate and move it to the ext4 disk; step 3, delete the existing content on E:, then carve
+out another disk and mount it into ext4; in the end leaving E: with 500 GB of free space is enough."
+Execution log: step 1 done 10:05Z -- `E:\saea-data-1.vhdx` (2 TB expandable, diskpart), attached with `wsl --mount --vhd`, formatted
+ext4 (label `saea-data-1`, UUID 7456a22a-..., 0.5 % reserved), mounted at `/mnt/wsl/saea-data-1` with the stable path
+`/home/chao/saea-data` (symlink), logon auto-mount task `SAEA-Mount-Data1` registered (`wsl --mount --vhd E:\saea-data-1.vhdx --name
+saea-data-1 --type ext4`); every driver/chain gains a locator check that refuses to start when the mount is absent (base-unification
+spec). Step 2: inventory of E: (Windows-side sizes) in progress; the migration itself (rsync with checksums, per-subtree manifests)
+runs only when no flight writes to the data root (after the i3 column seals and closes) and before any new registration. Step 3 (delete
+the E: originals after verification, carve `saea-data-2.vhdx` of about 1.3 TB, leave about 500 GB free on E:) follows the verified
+migration and the cut-over of `SPEECHRL_DATA_DIR`; the deletion is executed only after the owner sees the verification manifests.
