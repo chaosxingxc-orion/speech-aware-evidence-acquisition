@@ -1,0 +1,2111 @@
+{
+  "schema": "saea-sota-comparator-table-v1",
+  "date": "2026-10-12",
+  "owner_decision": "273 A",
+  "status": "SURVEY RECORD. Model-free; no claim is made here. Our rows are quoted from sealed study reads and are development evidence (decisions 28, 86).",
+  "companion_note": "docs/readiness/2026-10-12-sota-comparator-table-v1.md",
+  "our_core": "Qwen3-Omni-30B-A3B-Instruct (Q4_K_M GGUF, llama.cpp llama-server, bf16 mmproj) behind an API-shaped boundary; zero parameter updates",
+  "training_regime_vocabulary": [
+    "fine-tuned on the task data",
+    "instruction-tuned general model zero-shot",
+    "training-free control of a frozen model",
+    "cascade ASR+LLM",
+    "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+    "oracle upper bound"
+  ],
+  "status_vocabulary": {
+    "VERIFIED": "the number was read in the primary source (paper table, model card, or the paper that reports it) on 2026-10-12",
+    "UNVERIFIED": "not verified from a primary source in this pass; the reason is in comparability",
+    "STUDY-OWN": "the study's own number, quoted from the cited study file; not re-derived"
+  },
+  "how_verified_vocabulary": [
+    "official table",
+    "leaderboard",
+    "reported by others",
+    "study result file"
+  ],
+  "derived_here": "Audio2Tool equal-tier means are arithmetic over the transcribed per-tier values; nothing else is computed in this record.",
+  "tasks": [
+    {
+      "task": "SLURP",
+      "official_scorer": "SLURP scripts/evaluation/evaluate.py (pinned commit 8eb1654...311f1), micro: scenario / action / intent (scenario_action) accuracy, entity span-F1, SLU-F1",
+      "published_population": "official test split, 2,974 sentences / 13,078 recordings (devel 8,690 recordings)",
+      "our_population": "signed 3,010-row test SAMPLE (one-shot), DEV-2000-ADDED, TRAIN Fold B"
+    },
+    {
+      "task": "Audio2Tool",
+      "official_scorer": "a2t-toolcall-official (vendored metrics.py @ b9d5383c, primary call) and a2t-toolcall-v2 (ordered sequence)",
+      "published_population": "Audio2Tool evaluation per tier (arXiv:2604.22821 Table 3; per-tier n not printed)",
+      "our_population": "union-4000 official population (500 per tier)"
+    },
+    {
+      "task": "Earnings-21",
+      "official_scorer": "corpus WER with the Whisper EnglishTextNormalizer (asr-wer-whisper) beside saea-scoring-v1; ConEC per-entity WER mirror",
+      "published_population": "all 44 calls (long-form or ConEC sentence-segmented)",
+      "our_population": "all 44 discovery calls, 1,593 fixed 90-s windows"
+    },
+    {
+      "task": "Earnings-22",
+      "official_scorer": "corpus WER with the Whisper normaliser; agentic error rate beside",
+      "published_population": "ESB short-form test subset (leaderboard) or the full 125-file corpus (long-form)",
+      "our_population": "ESB test subset, 2,735 utterances (two one-time reads, both spent)"
+    }
+  ],
+  "entries": [
+    {
+      "id": "slurp-pub-gold-hermit",
+      "task": "SLURP",
+      "dataset_split": "SLURP official test (2,974 sentences / 13,078 recordings), gold transcripts",
+      "metric": "intent accuracy (scenario_action) / SLU-F1 (official evaluate.py)",
+      "values": {
+        "intent_acc": 84.84,
+        "slu_f1": 78.19,
+        "scenario_acc": 90.15,
+        "action_acc": 86.99
+      },
+      "system": "Gold transcripts + HerMiT NLU",
+      "architecture": "text NLU on oracle transcripts",
+      "training_regime": "fine-tuned on the task data",
+      "input": "gold transcript text (oracle)",
+      "core_model_size": "not stated (HerMiT hierarchical multi-task NLU)",
+      "year": 2020,
+      "source": {
+        "arxiv": "2011.13205",
+        "url": "https://arxiv.org/abs/2011.13205",
+        "where": "Tables 7 and 8"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Oracle-transcript upper bound of the dataset paper, never a peer; full test split.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-multi-slurp-hermit",
+      "task": "SLURP",
+      "dataset_split": "SLURP official test, audio",
+      "metric": "intent accuracy / SLU-F1 (official)",
+      "values": {
+        "intent_acc": 78.33,
+        "slu_f1": 70.84,
+        "scenario_acc": 85.69,
+        "action_acc": 81.42
+      },
+      "system": "Multi-ASR adapted on SLURP + HerMiT",
+      "architecture": "trained ASR -> trained NLU pipeline",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "not stated",
+      "year": 2020,
+      "source": {
+        "arxiv": "2011.13205",
+        "url": "https://arxiv.org/abs/2011.13205",
+        "where": "Tables 7 and 8"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Best audio system of the dataset paper; ASR and NLU both trained on SLURP; full test split.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-google-sfid",
+      "task": "SLURP",
+      "dataset_split": "SLURP official test, audio",
+      "metric": "intent accuracy / SLU-F1 (official)",
+      "values": {
+        "intent_acc": 72.06,
+        "slu_f1": 64.02,
+        "scenario_acc": 78.87,
+        "action_acc": 74.31
+      },
+      "system": "Google ASR + SF-ID",
+      "architecture": "commercial ASR -> trained NLU pipeline",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "not stated",
+      "year": 2020,
+      "source": {
+        "arxiv": "2011.13205",
+        "url": "https://arxiv.org/abs/2011.13205",
+        "where": "Tables 7 and 8"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Weakest trained pipeline of the dataset paper; NLU trained on SLURP.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-cti",
+      "task": "SLURP",
+      "dataset_split": "SLURP official test, audio",
+      "metric": "intent accuracy / SLU-F1",
+      "values": {
+        "intent_acc": 82.93,
+        "slu_f1": 71.12
+      },
+      "system": "CTI (continuous token interface, pre-trained ASR + NLU, multi-task losses)",
+      "architecture": "end-to-end SLU from pre-trained networks",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "not stated in extracted text",
+      "year": 2022,
+      "source": {
+        "arxiv": "2104.07253",
+        "url": "https://arxiv.org/abs/2104.07253",
+        "where": "Table 2",
+        "venue": "ICASSP 2022"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Fine-tuned on SLURP.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-hubert-large-pf",
+      "task": "SLURP",
+      "dataset_split": "SLURP official test (paper states official train/validation/test sets)",
+      "metric": "IC accuracy / 'SF F1'",
+      "values": {
+        "intent_acc": 89.38,
+        "sf_f1": 78.43
+      },
+      "system": "HuBERT-large, partially fine-tuned (PF-hbt-large; the EF variant reads 89.22 / 78.92)",
+      "architecture": "end-to-end SLU on a fine-tuned SSL encoder",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "~316M (HuBERT large)",
+      "year": 2021,
+      "source": {
+        "arxiv": "2111.02735",
+        "url": "https://arxiv.org/abs/2111.02735",
+        "where": "SLU benchmark table"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Values verified; whether 'SF F1' is the official SLU-F1 is not stated in the extracted text (UNVERIFIED metric identity).",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-tcpgen",
+      "task": "SLURP",
+      "dataset_split": "SLURP official test, audio",
+      "metric": "SLU-F1 / intent accuracy",
+      "values": {
+        "intent_acc": 88.9,
+        "slu_f1": 79.5
+      },
+      "system": "E2E SLU + TCPGen + slot probability biasing (lambda 0.5)",
+      "architecture": "attention encoder-decoder SLU with tree-constrained pointer generator",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "not stated in extracted text",
+      "year": 2023,
+      "source": {
+        "arxiv": "2210.16554",
+        "url": "https://arxiv.org/abs/2210.16554",
+        "where": "Table 2",
+        "venue": "ICASSP 2023"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Fine-tuned on SLURP; biasing lists built from training slot values.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-universlu-14",
+      "task": "SLURP",
+      "dataset_split": "SLURP test, audio",
+      "metric": "IC accuracy / NER SLU-F1",
+      "values": {
+        "intent_acc": 90.3,
+        "slu_f1": 79.5
+      },
+      "system": "UniverSLU-14 (task specifier)",
+      "architecture": "Whisper-based multi-task SLU, prompt fine-tuned",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "Whisper backbone (size per paper, not re-read)",
+      "year": 2024,
+      "source": {
+        "arxiv": "2310.02973",
+        "url": "https://arxiv.org/abs/2310.02973",
+        "where": "Tables 3 and 4",
+        "venue": "NAACL 2024"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Highest verified intent accuracy found in this pass. Its Table 6 also prints 90.4 / 80.4 for a 3-task model and 89.6 / 79.7 as the prior SOTA; the row labels were not recoverable from the PDF text (see slurp-pub-universlu-3).",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-universlu-3",
+      "task": "SLURP",
+      "dataset_split": "SLURP test, audio",
+      "metric": "IC accuracy / NER SLU-F1",
+      "values": {
+        "intent_acc": 90.4,
+        "slu_f1": 80.4
+      },
+      "system": "UniverSLU-3 (task specifier), Table 6",
+      "architecture": "Whisper-based multi-task SLU",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "Whisper backbone",
+      "year": 2024,
+      "source": {
+        "arxiv": "2310.02973",
+        "url": "https://arxiv.org/abs/2310.02973",
+        "where": "Table 6"
+      },
+      "how_verified": "official table",
+      "status": "UNVERIFIED",
+      "comparability": "UNVERIFIED row assignment: the numbers are in Table 6 but the row label was lost in PDF text extraction.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-lauragpt",
+      "task": "SLURP",
+      "dataset_split": "SLURP test, audio",
+      "metric": "IC accuracy / NER SLU-F1",
+      "values": {
+        "intent_acc": 87.87,
+        "slu_f1": 73.45
+      },
+      "system": "LauraGPT (as reported in the UniverSLU comparison)",
+      "architecture": "speech LLM, multi-task trained",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "per LauraGPT paper",
+      "year": 2023,
+      "source": {
+        "arxiv": "2310.02973",
+        "url": "https://arxiv.org/abs/2310.02973",
+        "where": "Table 4"
+      },
+      "how_verified": "reported by others",
+      "status": "VERIFIED",
+      "comparability": "Value read from UniverSLU Table 4, not from the LauraGPT paper; SLURP in LauraGPT's training mix.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-sft-qwen2-audio",
+      "task": "SLURP",
+      "dataset_split": "SLURP official test (13,078 recordings), audio",
+      "metric": "intent accuracy / entity F1 / SLU-F1",
+      "values": {
+        "intent_acc": 88.13,
+        "entity_f1": 69.59,
+        "slu_f1": 76.75
+      },
+      "system": "Qwen2-Audio-7B-Instruct, full fine-tune, 100 % speech, direct mixing",
+      "architecture": "speech LLM fine-tuned end to end",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "7B",
+      "year": 2025,
+      "source": {
+        "arxiv": "2509.15389",
+        "url": "https://arxiv.org/abs/2509.15389",
+        "where": "Table 2",
+        "venue": "ICASSP 2026 per the umbrella record"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "The closest published speech-LLM line to our core class, but trained on SLURP. Same table: text-only fine-tune evaluated on speech 83.60 / 72.07 SLU-F1; oracle transcripts 91.29 / 85.93 SLU-F1. Mean of five seeds, beam 3.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-nemo-conformer",
+      "task": "SLURP",
+      "dataset_split": "split NOT STATED on the model card",
+      "metric": "intent accuracy / 'SLURP F1'",
+      "values": {
+        "intent_acc": 90.14,
+        "slu_f1": 82.27,
+        "span_f1": 76.89
+      },
+      "system": "NVIDIA NeMo slu_conformer_transformer_large_slurp (v1.13.0)",
+      "architecture": "Conformer-Transformer E2E SLU, ASR-pretrained encoder",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "127M",
+      "year": 2022,
+      "source": {
+        "url": "https://catalog.ngc.nvidia.com/orgs/nvidia/teams/nemo/models/slu_conformer_transformer_large_slurp",
+        "where": "model card performance table"
+      },
+      "how_verified": "reported by others (vendor model card)",
+      "status": "UNVERIFIED",
+      "comparability": "UNVERIFIED: the card does not state the split, and the assignment of 82.27 to SLU-F1 and 76.89 to span F1 is inferred (SLU-F1 >= span F1 by construction). Trained on SLURP real + synthetic. If it is the test split, it is the highest SLURP line found.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-chatgpt-0shot-gold",
+      "task": "SLURP",
+      "dataset_split": "SLURP test, gold transcripts",
+      "metric": "intent accuracy (60 intents)",
+      "values": {
+        "intent_acc": 79.25
+      },
+      "system": "ChatGPT, zero-shot prompt",
+      "architecture": "text LLM on oracle transcripts",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "gold transcript text (oracle)",
+      "core_model_size": "not disclosed",
+      "year": 2023,
+      "source": {
+        "arxiv": "2305.13512",
+        "url": "https://arxiv.org/abs/2305.13512",
+        "where": "Table 1"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Prompt-only, text-only, oracle transcripts, a 60-intent label list; not audio.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-chatgpt-asr-10shot",
+      "task": "SLURP",
+      "dataset_split": "SLURP test, ASR transcripts (16.7 % test WER per the paper)",
+      "metric": "intent accuracy",
+      "values": {
+        "intent_acc": 72.89
+      },
+      "system": "ASR -> ChatGPT, 10-shot (20-shot 73.96)",
+      "architecture": "ASR then prompted LLM",
+      "training_regime": "cascade ASR+LLM",
+      "input": "audio via ASR",
+      "core_model_size": "not disclosed",
+      "year": 2023,
+      "source": {
+        "arxiv": "2305.13512",
+        "url": "https://arxiv.org/abs/2305.13512",
+        "where": "Table 5"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "The only published prompt-only cascade intent number on SLURP audio found; few-shot, not zero-shot.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-chatgpt-slot-f1",
+      "task": "SLURP",
+      "dataset_split": "SLURP test, gold transcripts",
+      "metric": "slot-filling F1 (not evaluate.py SLU-F1)",
+      "values": {
+        "slot_f1_range": "12.03-13.35"
+      },
+      "system": "ChatGPT, 10/20/30-shot slot filling",
+      "architecture": "text LLM",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "gold transcript text",
+      "core_model_size": "not disclosed",
+      "year": 2023,
+      "source": {
+        "arxiv": "2305.13512",
+        "url": "https://arxiv.org/abs/2305.13512",
+        "where": "Table 4"
+      },
+      "how_verified": "reported by others",
+      "status": "UNVERIFIED",
+      "comparability": "UNVERIFIED in this pass: quoted from docs/readiness/2026-09-04-scoring-alignment-audit-slurp-earnings.md; Table 4 not re-read.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-salmonn-sf",
+      "task": "SLURP",
+      "dataset_split": "SLURP-derived slot-filling probe (subset per paper)",
+      "metric": "slot-value accuracy (not SLU-F1)",
+      "values": {
+        "sf_acc": 0.41,
+        "following_rate": 0.99
+      },
+      "system": "SALMONN (activation-tuned)",
+      "architecture": "speech LLM, task untrained",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "audio",
+      "core_model_size": "13B (Vicuna-13B backbone)",
+      "year": 2024,
+      "source": {
+        "arxiv": "2310.13289",
+        "url": "https://arxiv.org/abs/2310.13289",
+        "where": "Table 3(b)",
+        "venue": "ICLR 2024"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Different metric (accuracy of required slot values); the Whisper+Vicuna cascade reference value is 0.46. Not comparable to SLU-F1.",
+      "row_kind": "published"
+    },
+    {
+      "id": "slurp-pub-whisma-zs-sf",
+      "task": "SLURP",
+      "dataset_split": "SLURP re-split with held-out slot types (STSC zero-shot protocol)",
+      "metric": "SLU-F1 on unseen slot types",
+      "values": {
+        "slu_f1": 63.3,
+        "zs_whisper_slu": 50.0,
+        "supervised_snlu": 69.9
+      },
+      "system": "WHISMA (Whisper encoder + Llama-3, LoRA, ~2,000 h SLU data) + MR",
+      "architecture": "speech LLM fine-tuned on SLU data, zero-shot on unseen slot types",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "Llama-3 backbone (size per paper, not re-read)",
+      "year": 2024,
+      "source": {
+        "arxiv": "2408.16423",
+        "url": "https://arxiv.org/abs/2408.16423",
+        "where": "Table 3"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Not the standard test protocol; 'zero-shot' means unseen slot types after SLU fine-tuning.",
+      "row_kind": "published"
+    },
+    {
+      "row_kind": "ours",
+      "id": "slurp-ours-composed-v22-test-sample",
+      "task": "SLURP",
+      "dataset_split": "signed SLURP test SAMPLE SLURP-TEST-SAMPLE-3010-V1 (3,010 recordings / 682 prompts / 58 of 59 intents)",
+      "metric": "official evaluate.py pooled SLU-F1 / intent (scenario_action exact); post-stratified natural mixture (primary)",
+      "values": {
+        "slu_f1": 66.65,
+        "intent_acc": 82.36,
+        "slu_f1_raw": 66.3,
+        "intent_raw": 83.16,
+        "span_f1_raw": 58.38,
+        "scenario_exact_raw": 87.97,
+        "action_exact_raw": 85.71,
+        "contacts_per_row": 2.0
+      },
+      "system": "composed system: review-off COMP-1b on module lock v2.2 with v4g (NX R5 composed)",
+      "architecture": "training-free control plane (Perception + Solver contacts, knowledge supply, deterministic post-processing) around the frozen core",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct, Q4_K_M GGUF (30B total / ~3B active)",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/2026-10-10-slurp-milestone-successor2-composed-test-sample-read.md",
+        "where": "sections 0, 3.1, 3.2, 5"
+      },
+      "how_verified": "study result file (sealed one-shot read)",
+      "status": "STUDY-OWN",
+      "comparability": "Development evidence (decision 28), not a test claim; a 3,010-row sample of the 13,078-recording test split; no CI on levels; one-shot, the next test read needs a new allowance."
+    },
+    {
+      "row_kind": "ours",
+      "id": "slurp-ours-comp1b-test-sample",
+      "task": "SLURP",
+      "dataset_split": "same test sample (successor 1)",
+      "metric": "same",
+      "values": {
+        "slu_f1": 64.98,
+        "intent_acc": 82.82,
+        "slu_f1_raw": 64.14,
+        "intent_raw": 83.59,
+        "contacts_per_row": 4.06
+      },
+      "system": "COMP-1b (successor 1, full graph, v3 normaliser)",
+      "architecture": "training-free control plane",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/2026-10-10-slurp-milestone-successor2-composed-test-sample-read.md",
+        "where": "section 3.1"
+      },
+      "how_verified": "study result file",
+      "status": "STUDY-OWN",
+      "comparability": "As above."
+    },
+    {
+      "row_kind": "ours",
+      "id": "slurp-ours-plan-test-sample",
+      "task": "SLURP",
+      "dataset_split": "same test sample (successor 1)",
+      "metric": "same",
+      "values": {
+        "slu_f1": 64.18,
+        "intent_acc": 77.02,
+        "slu_f1_raw": 63.43,
+        "intent_raw": 78.67
+      },
+      "system": "PLAN (locked v2.0 default plan, successor 1)",
+      "architecture": "training-free control plane",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/2026-10-10-slurp-milestone-successor2-composed-test-sample-read.md",
+        "where": "section 3.1"
+      },
+      "how_verified": "study result file",
+      "status": "STUDY-OWN",
+      "comparability": "As above."
+    },
+    {
+      "row_kind": "ours",
+      "id": "slurp-ours-composed-dev2000-added",
+      "task": "SLURP",
+      "dataset_split": "DEV-2000-ADDED (1,000 devel recordings, natural mixture not guaranteed)",
+      "metric": "official pooled SLU-F1 (devel gold)",
+      "values": {
+        "slu_f1": 67.18
+      },
+      "system": "composed system (NX R5) on DEV-2000-ADDED",
+      "architecture": "training-free control plane",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/2026-10-10-slurp-nx-r5-composed-dev2000-added-read.md",
+        "where": "section 0 line 3, table 3a"
+      },
+      "how_verified": "study result file",
+      "status": "STUDY-OWN",
+      "comparability": "Devel roster; the intent LEVEL of the composed column is not printed in that note (only deltas)."
+    },
+    {
+      "row_kind": "ours",
+      "id": "slurp-ours-dev2000-added-bare-vs-plan",
+      "task": "SLURP",
+      "dataset_split": "DEV-2000-ADDED (1,000 devel recordings)",
+      "metric": "official pooled SLU-F1 / intent",
+      "values": {
+        "bare_core_slu_f1": 38.09,
+        "bare_core_intent": 61.7,
+        "plan_v20_slu_f1": 65.4,
+        "plan_v20_intent": 76.6,
+        "paired_delta_slu_f1": 27.3,
+        "paired_delta_intent": 14.9
+      },
+      "system": "bare frozen core (direct-only, closed-list instruction) vs locked v2.0 plan",
+      "architecture": "direct call vs training-free control plane",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/2026-09-22-slurp-b6-dev2000-added-direct-vs-plan-read.md",
+        "where": "headline"
+      },
+      "how_verified": "study result file (paired, utterance-clustered CI95 [+24.0, +30.5] SLU / [+11.8, +18.0] intent)",
+      "status": "STUDY-OWN",
+      "comparability": "Claim class A evidence (same core, same harness, paired)."
+    },
+    {
+      "row_kind": "ours",
+      "id": "slurp-ours-fold-b-lock-vs-bare",
+      "task": "SLURP",
+      "dataset_split": "TRAIN Fold B (SLURP-EVO-FOLD-B-V2, n = 1,080, discovery role)",
+      "metric": "official pooled SLU-F1 / intent",
+      "values": {
+        "lock_v22_v4g_slu_f1": 64.34,
+        "lock_v22_v4g_intent": 82.41,
+        "bare_instruct_slu_f1": 33.49,
+        "bare_instruct_intent": 72.41,
+        "bare_thinking_slu_f1": 45.39,
+        "bare_thinking_intent": 76.76
+      },
+      "system": "R6-P1 lock v2.2 + v4g on the Instruct core vs bare Instruct (mean of two passes) and bare Thinking core",
+      "architecture": "training-free control plane vs direct-only",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct / -Thinking, Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/2026-10-12-slurp-266e-thinking-vs-instruct-bare-core-read.md",
+        "where": "sections 1 and 6"
+      },
+      "how_verified": "study result file (bare-core contrast paired; system-vs-bare is cross-flight arithmetic, no paired CI)",
+      "status": "STUDY-OWN",
+      "comparability": "TRAIN fold, development numbers; system minus bare Instruct +30.85 SLU / +10.00 intent."
+    },
+    {
+      "id": "a2t-pub-qwen-3-omni-30b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 92.4,
+          "tier2": 84.6,
+          "tier3": 74.7,
+          "tier4": 33.4,
+          "tier5": 90.6,
+          "tier6": 81.5,
+          "tier7": 54.6,
+          "tier8": 41.7
+        },
+        "exact_match": {
+          "tier1": 92.4,
+          "tier2": 15.6,
+          "tier3": 28.6,
+          "tier4": 11.3,
+          "tier5": 36.0,
+          "tier6": 24.8,
+          "tier7": 16.3,
+          "tier8": 12.4
+        },
+        "slot_f1": {
+          "tier2": 21.7,
+          "tier3": 35.0,
+          "tier4": 23.4,
+          "tier5": 41.6,
+          "tier6": 32.4,
+          "tier7": 26.8,
+          "tier8": 19.9
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 69.19,
+        "em_mean_8_tiers": 29.68,
+        "em_mean_tiers_2_8": 20.71
+      },
+      "system": "Qwen-3-Omni-30B",
+      "architecture": "end-to-end SpeechLM",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "audio",
+      "core_model_size": "30B-A3B",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Same core model as ours (bf16 transformers path, the paper's harness). Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-qwen-2p5-omni-7b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 79.5,
+          "tier2": 80.6,
+          "tier3": 50.2,
+          "tier4": 22.4,
+          "tier5": 74.1,
+          "tier6": 68.3,
+          "tier7": 48.2,
+          "tier8": 36.5
+        },
+        "exact_match": {
+          "tier1": 79.5,
+          "tier2": 14.7,
+          "tier3": 32.1,
+          "tier4": 10.2,
+          "tier5": 40.2,
+          "tier6": 42.0,
+          "tier7": 26.1,
+          "tier8": 11.2
+        },
+        "slot_f1": {
+          "tier2": 19.3,
+          "tier3": 36.6,
+          "tier4": 14.5,
+          "tier5": 46.1,
+          "tier6": 48.2,
+          "tier7": 33.4,
+          "tier8": 17.6
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 57.48,
+        "em_mean_8_tiers": 32.0,
+        "em_mean_tiers_2_8": 25.21
+      },
+      "system": "Qwen-2.5-Omni-7B",
+      "architecture": "end-to-end SpeechLM",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "audio",
+      "core_model_size": "7B",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-kimi-7b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 75.4,
+          "tier2": 75.6,
+          "tier3": 46.5,
+          "tier4": 20.5,
+          "tier5": 70.6,
+          "tier6": 65.3,
+          "tier7": 45.7,
+          "tier8": 37.8
+        },
+        "exact_match": {
+          "tier1": 75.4,
+          "tier2": 12.4,
+          "tier3": 30.4,
+          "tier4": 9.0,
+          "tier5": 38.6,
+          "tier6": 39.1,
+          "tier7": 24.5,
+          "tier8": 10.6
+        },
+        "slot_f1": {
+          "tier2": 15.8,
+          "tier3": 32.1,
+          "tier4": 12.3,
+          "tier5": 43.4,
+          "tier6": 45.1,
+          "tier7": 31.3,
+          "tier8": 16.7
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 54.67,
+        "em_mean_8_tiers": 30.0,
+        "em_mean_tiers_2_8": 23.51
+      },
+      "system": "Kimi-7B (Kimi-Audio)",
+      "architecture": "end-to-end SpeechLM",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "audio",
+      "core_model_size": "7B",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-step-audio2-7b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 77.9,
+          "tier2": 76.5,
+          "tier3": 41.4,
+          "tier4": 15.1,
+          "tier5": 64.4,
+          "tier6": 58.2,
+          "tier7": 40.8,
+          "tier8": 34.2
+        },
+        "exact_match": {
+          "tier1": 77.9,
+          "tier2": 14.1,
+          "tier3": 26.4,
+          "tier4": 7.3,
+          "tier5": 35.4,
+          "tier6": 33.4,
+          "tier7": 18.6,
+          "tier8": 10.4
+        },
+        "slot_f1": {
+          "tier2": 17.3,
+          "tier3": 34.1,
+          "tier4": 14.4,
+          "tier5": 43.8,
+          "tier6": 43.6,
+          "tier7": 28.2,
+          "tier8": 15.6
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 51.06,
+        "em_mean_8_tiers": 27.94,
+        "em_mean_tiers_2_8": 20.8
+      },
+      "system": "Step-Audio2-7B",
+      "architecture": "end-to-end SpeechLM",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "audio",
+      "core_model_size": "7B",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-audio-flamingo-8b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 64.5,
+          "tier2": 75.3,
+          "tier3": 40.6,
+          "tier4": 7.9,
+          "tier5": 58.9,
+          "tier6": 44.6,
+          "tier7": 34.5,
+          "tier8": 30.4
+        },
+        "exact_match": {
+          "tier1": 64.5,
+          "tier2": 12.4,
+          "tier3": 25.4,
+          "tier4": 4.6,
+          "tier5": 28.5,
+          "tier6": 21.6,
+          "tier7": 15.7,
+          "tier8": 8.1
+        },
+        "slot_f1": {
+          "tier2": 15.7,
+          "tier3": 32.3,
+          "tier4": 2.3,
+          "tier5": 31.6,
+          "tier6": 31.3,
+          "tier7": 24.5,
+          "tier8": 14.5
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 44.59,
+        "em_mean_8_tiers": 22.6,
+        "em_mean_tiers_2_8": 16.61
+      },
+      "system": "Audio-Flamingo-8B (AudioFlamingo-3)",
+      "architecture": "end-to-end SpeechLM",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "audio",
+      "core_model_size": "8B",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-whisper-v3-plus-gemma-27b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 87.9,
+          "tier2": 78.9,
+          "tier3": 62.8,
+          "tier4": 26.3,
+          "tier5": 82.7,
+          "tier6": 77.1,
+          "tier7": 56.2,
+          "tier8": 50.5
+        },
+        "exact_match": {
+          "tier1": 87.9,
+          "tier2": 10.2,
+          "tier3": 36.9,
+          "tier4": 11.9,
+          "tier5": 42.3,
+          "tier6": 44.1,
+          "tier7": 26.4,
+          "tier8": 15.7
+        },
+        "slot_f1": {
+          "tier2": 19.5,
+          "tier3": 44.1,
+          "tier4": 18.2,
+          "tier5": 49.6,
+          "tier6": 52.3,
+          "tier7": 36.2,
+          "tier8": 25.6
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 65.3,
+        "em_mean_8_tiers": 34.42,
+        "em_mean_tiers_2_8": 26.79
+      },
+      "system": "Whisper v3 + Gemma 27B",
+      "architecture": "Whisper v3 ASR -> text LLM",
+      "training_regime": "cascade ASR+LLM",
+      "input": "audio",
+      "core_model_size": "1.55B ASR + 27B LLM",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-whisper-v3-plus-gemma-12b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 80.3,
+          "tier2": 75.2,
+          "tier3": 50.4,
+          "tier4": 18.9,
+          "tier5": 69.1,
+          "tier6": 64.2,
+          "tier7": 44.9,
+          "tier8": 46.5
+        },
+        "exact_match": {
+          "tier1": 80.3,
+          "tier2": 9.7,
+          "tier3": 30.8,
+          "tier4": 8.9,
+          "tier5": 35.9,
+          "tier6": 36.3,
+          "tier7": 21.6,
+          "tier8": 13.9
+        },
+        "slot_f1": {
+          "tier2": 17.9,
+          "tier3": 36.9,
+          "tier4": 14.7,
+          "tier5": 43.1,
+          "tier6": 45.3,
+          "tier7": 31.2,
+          "tier8": 22.0
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 56.19,
+        "em_mean_8_tiers": 29.68,
+        "em_mean_tiers_2_8": 22.44
+      },
+      "system": "Whisper v3 + Gemma 12B",
+      "architecture": "Whisper v3 ASR -> text LLM",
+      "training_regime": "cascade ASR+LLM",
+      "input": "audio",
+      "core_model_size": "1.55B ASR + 12B LLM",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-whisper-v3-plus-qwen-8b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 78.1,
+          "tier2": 67.4,
+          "tier3": 48.1,
+          "tier4": 17.6,
+          "tier5": 66.9,
+          "tier6": 61.8,
+          "tier7": 42.7,
+          "tier8": 43.5
+        },
+        "exact_match": {
+          "tier1": 78.1,
+          "tier2": 10.8,
+          "tier3": 29.4,
+          "tier4": 8.2,
+          "tier5": 34.1,
+          "tier6": 34.5,
+          "tier7": 20.1,
+          "tier8": 11.9
+        },
+        "slot_f1": {
+          "tier2": 15.4,
+          "tier3": 35.1,
+          "tier4": 14.1,
+          "tier5": 41.9,
+          "tier6": 44.2,
+          "tier7": 30.1,
+          "tier8": 19.5
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 53.26,
+        "em_mean_8_tiers": 28.39,
+        "em_mean_tiers_2_8": 21.29
+      },
+      "system": "Whisper v3 + Qwen 8B",
+      "architecture": "Whisper v3 ASR -> text LLM",
+      "training_regime": "cascade ASR+LLM",
+      "input": "audio",
+      "core_model_size": "1.55B ASR + 8B LLM",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-whisper-v3-plus-qwen-4b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 72.9,
+          "tier2": 39.6,
+          "tier3": 42.9,
+          "tier4": 14.3,
+          "tier5": 61.8,
+          "tier6": 56.7,
+          "tier7": 38.6,
+          "tier8": 31.6
+        },
+        "exact_match": {
+          "tier1": 72.9,
+          "tier2": 5.6,
+          "tier3": 26.1,
+          "tier4": 6.8,
+          "tier5": 31.4,
+          "tier6": 30.1,
+          "tier7": 17.2,
+          "tier8": 10.7
+        },
+        "slot_f1": {
+          "tier2": 11.6,
+          "tier3": 32.7,
+          "tier4": 12.6,
+          "tier5": 37.9,
+          "tier6": 38.3,
+          "tier7": 26.6,
+          "tier8": 17.6
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 44.8,
+        "em_mean_8_tiers": 25.1,
+        "em_mean_tiers_2_8": 18.27
+      },
+      "system": "Whisper v3 + Qwen 4B",
+      "architecture": "Whisper v3 ASR -> text LLM",
+      "training_regime": "cascade ASR+LLM",
+      "input": "audio",
+      "core_model_size": "1.55B ASR + 4B LLM",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-whisper-v3-plus-qwen-1p7b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 68.2,
+          "tier2": 33.6,
+          "tier3": 37.6,
+          "tier4": 11.4,
+          "tier5": 56.9,
+          "tier6": 51.4,
+          "tier7": 33.8,
+          "tier8": 18.9
+        },
+        "exact_match": {
+          "tier1": 68.2,
+          "tier2": 2.9,
+          "tier3": 22.4,
+          "tier4": 5.6,
+          "tier5": 27.8,
+          "tier6": 25.9,
+          "tier7": 14.7,
+          "tier8": 6.0
+        },
+        "slot_f1": {
+          "tier2": 4.2,
+          "tier3": 29.8,
+          "tier4": 10.8,
+          "tier5": 33.2,
+          "tier6": 31.4,
+          "tier7": 23.4,
+          "tier8": 18.9
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_8_tiers": 38.98,
+        "em_mean_8_tiers": 21.69,
+        "em_mean_tiers_2_8": 15.04
+      },
+      "system": "Whisper v3 + Qwen 1.7B",
+      "architecture": "Whisper v3 ASR -> text LLM",
+      "training_regime": "cascade ASR+LLM",
+      "input": "audio",
+      "core_model_size": "1.55B ASR + 1.7B LLM",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-oracle-gemma-12b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 84.1,
+          "tier2": 78.3,
+          "tier3": 59.2,
+          "tier4": 27.4,
+          "tier5": 80.8,
+          "tier6": 73.6,
+          "tier7": 55.7,
+          "tier8": null
+        },
+        "exact_match": {
+          "tier1": 84.1,
+          "tier2": 12.3,
+          "tier3": 37.6,
+          "tier4": 14.5,
+          "tier5": 45.0,
+          "tier6": 45.9,
+          "tier7": 29.9,
+          "tier8": null
+        },
+        "slot_f1": {
+          "tier2": 20.4,
+          "tier3": 42.7,
+          "tier4": 19.1,
+          "tier5": 51.5,
+          "tier6": 53.8,
+          "tier7": 38.8,
+          "tier8": null
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_tiers_1_7": 65.59
+      },
+      "system": "Gemma 12B (oracle ground-truth query text)",
+      "architecture": "text LLM on ground-truth query text (oracle setting; tier 8 not evaluated)",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "gold query text (oracle)",
+      "core_model_size": "12B",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "a2t-pub-oracle-qwen-8b",
+      "task": "Audio2Tool",
+      "dataset_split": "Audio2Tool evaluation per tier (paper does not print per-tier n); synthetic TTS speech",
+      "metric": "Tool Accuracy (ordered tool-name sequence) / Exact Match / Slot F1 (micro), zero-shot",
+      "values": {
+        "tool_acc": {
+          "tier1": 85.6,
+          "tier2": 77.1,
+          "tier3": 61.3,
+          "tier4": 26.8,
+          "tier5": 80.5,
+          "tier6": 75.2,
+          "tier7": 55.4,
+          "tier8": null
+        },
+        "exact_match": {
+          "tier1": 85.6,
+          "tier2": 10.1,
+          "tier3": 38.7,
+          "tier4": 12.6,
+          "tier5": 44.9,
+          "tier6": 46.8,
+          "tier7": 28.7,
+          "tier8": null
+        },
+        "slot_f1": {
+          "tier2": 19.3,
+          "tier3": 43.6,
+          "tier4": 18.9,
+          "tier5": 51.3,
+          "tier6": 54.6,
+          "tier7": 37.9,
+          "tier8": null
+        }
+      },
+      "derived_here": {
+        "tool_acc_mean_tiers_1_7": 65.99
+      },
+      "system": "Qwen 8B (oracle ground-truth query text)",
+      "architecture": "text LLM on ground-truth query text (oracle setting; tier 8 not evaluated)",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "gold query text (oracle)",
+      "core_model_size": "8B",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.22821",
+        "url": "https://arxiv.org/abs/2604.22821",
+        "where": "Table 3 (v2, 2026-04-28)",
+        "umbrella_registry_id": "OMR-ARXIV-2604.22821"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Tier-1 EM is printed equal to Acc (tier 1 is argument-free). Every row is zero-shot; the paper reports no fine-tuned system.",
+      "row_kind": "published"
+    },
+    {
+      "row_kind": "ours",
+      "id": "a2t-ours-native-direct-union4000",
+      "task": "Audio2Tool",
+      "dataset_split": "union-4000 official population (500 per tier, first successful speaker, the official loader's rule)",
+      "metric": "official protocol, primary call: tool accuracy / exact match (vendored official metrics.py @ b9d5383c)",
+      "values": {
+        "tool_acc": {
+          "tier1": 67.2,
+          "tier2": 78.4,
+          "tier3": 67.6,
+          "tier4": 29.0,
+          "tier5": 80.4,
+          "tier6": 76.0,
+          "tier7": 49.0,
+          "tier8": 48.6
+        },
+        "exact_match": {
+          "tier1": 16.0,
+          "tier2": 28.2,
+          "tier3": 20.4,
+          "tier4": 6.4,
+          "tier5": 21.8,
+          "tier6": 24.0,
+          "tier7": 10.6,
+          "tier8": 20.6
+        },
+        "tool_acc_pooled": 62.025,
+        "exact_match_pooled": 18.5
+      },
+      "derived_here": {
+        "em_mean_tiers_2_8": 18.86
+      },
+      "system": "direct call of the frozen core (SAEA-A2T-NATIVE-ROLE-DIRECT-UNION4000-V1)",
+      "architecture": "direct call",
+      "training_regime": "training-free control of a frozen model (direct-call baseline)",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/2026-09-27-a2t-earnings-gap-diagnosis.md",
+        "where": "Part A, table A1"
+      },
+      "how_verified": "study result file",
+      "status": "STUDY-OWN",
+      "comparability": "Equal tiers, so pooled = equal-tier mean. The official scorer reads only the first call against the primary gold tool; the paper's EM requires all tools. Tier 1 is not reproduced (direct 67.2 vs 92.4; EM collapses on extra deviceId keys)."
+    },
+    {
+      "row_kind": "ours",
+      "id": "a2t-ours-dual-store-system-union4000",
+      "task": "Audio2Tool",
+      "dataset_split": "same union-4000",
+      "metric": "same",
+      "values": {
+        "tool_acc": {
+          "tier1": 61.4,
+          "tier2": 75.8,
+          "tier3": 64.8,
+          "tier4": 24.4,
+          "tier5": 74.4,
+          "tier6": 72.8,
+          "tier7": 45.4,
+          "tier8": 48.4
+        },
+        "exact_match": {
+          "tier1": 9.8,
+          "tier2": 35.2,
+          "tier3": 27.4,
+          "tier4": 9.8,
+          "tier5": 27.8,
+          "tier6": 29.0,
+          "tier7": 12.4,
+          "tier8": 29.0
+        },
+        "tool_acc_pooled": 58.425,
+        "exact_match_pooled": 22.55
+      },
+      "derived_here": {
+        "em_mean_tiers_2_8": 24.37
+      },
+      "system": "native-role dual-store system (SAEA-A2T-NATIVE-ROLE-DUAL-STORE-UNION4000-RECOVERY-V1)",
+      "architecture": "training-free control plane",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/2026-09-27-a2t-earnings-gap-diagnosis.md",
+        "where": "Part A, table A1"
+      },
+      "how_verified": "study result file",
+      "status": "STUDY-OWN",
+      "comparability": "Ledger status PRIMARY_GAIN_TOOL_GUARD_FAILED_NOT_ADOPTED: exact +4.05 pp [+2.96, +5.17] but tool -3.60 pp. Not an adopted system."
+    },
+    {
+      "row_kind": "ours",
+      "id": "a2t-ours-official-protocol-population",
+      "task": "Audio2Tool",
+      "dataset_split": "official population, 500 per tier (tier 1 + tiers 2/5/8 + tiers 3/4/6/7 cells)",
+      "metric": "official protocol tool accuracy (natural mixture per tier)",
+      "values": {
+        "tool_acc": {
+          "tier1": 65.6,
+          "tier2": 79.6,
+          "tier3": 65.0,
+          "tier4": 28.2,
+          "tier5": 80.8,
+          "tier6": 75.8,
+          "tier7": 49.4,
+          "tier8": 46.8
+        },
+        "tool_acc_pooled": 61.4
+      },
+      "system": "official-protocol replication of the paper's released code (152-tool registry in the system prompt, greedy, 256 tokens)",
+      "architecture": "direct call",
+      "training_regime": "training-free control of a frozen model (direct-call baseline)",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/checks/speech-aware-evidence-acquisition/2026-09-04-a2t-tier258-official-population-v1/result-summary.json (and the tier1 / tier3467 siblings); umbrella wiki/experiments/speech-aware-evidence-acquisition/published-baselines.md audio2tool section"
+      },
+      "how_verified": "study result files",
+      "status": "STUDY-OWN",
+      "comparability": "NOT ACCEPTED as a calibration (1 of 8 tiers aligned in natural mixture, 7 of 8 equal-domain)."
+    },
+    {
+      "id": "e21-pub-whisper-large-v2",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, long-form (whole files)",
+      "metric": "WER, Whisper EnglishTextNormalizer, corpus",
+      "values": {
+        "wer": 9.7
+      },
+      "system": "Whisper large-v2",
+      "architecture": "general ASR (Whisper long-form decoding)",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "1.55B",
+      "year": 2022,
+      "source": {
+        "arxiv": "2212.04356",
+        "url": "https://arxiv.org/abs/2212.04356",
+        "where": "Appendix D.4 (long-form transcription table)"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Same metric family as ours; Whisper's decoding heuristics move this set by about 1.1 points (Whisper Table 7).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-whisper-mediumpen",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, long-form (whole files)",
+      "metric": "WER, Whisper EnglishTextNormalizer, corpus",
+      "values": {
+        "wer": 10.2
+      },
+      "system": "Whisper medium.en",
+      "architecture": "general ASR (Whisper long-form decoding)",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "769M",
+      "year": 2022,
+      "source": {
+        "arxiv": "2212.04356",
+        "url": "https://arxiv.org/abs/2212.04356",
+        "where": "Appendix D.4 (long-form transcription table)"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Same metric family as ours; Whisper's decoding heuristics move this set by about 1.1 points (Whisper Table 7).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-whisper-smallpen",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, long-form (whole files)",
+      "metric": "WER, Whisper EnglishTextNormalizer, corpus",
+      "values": {
+        "wer": 10.8
+      },
+      "system": "Whisper small.en",
+      "architecture": "general ASR (Whisper long-form decoding)",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "244M",
+      "year": 2022,
+      "source": {
+        "arxiv": "2212.04356",
+        "url": "https://arxiv.org/abs/2212.04356",
+        "where": "Appendix D.4 (long-form transcription table)"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Same metric family as ours; Whisper's decoding heuristics move this set by about 1.1 points (Whisper Table 7).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-whisper-basepen",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, long-form (whole files)",
+      "metric": "WER, Whisper EnglishTextNormalizer, corpus",
+      "values": {
+        "wer": 12.5
+      },
+      "system": "Whisper base.en",
+      "architecture": "general ASR (Whisper long-form decoding)",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "74M",
+      "year": 2022,
+      "source": {
+        "arxiv": "2212.04356",
+        "url": "https://arxiv.org/abs/2212.04356",
+        "where": "Appendix D.4 (long-form transcription table)"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Same metric family as ours; Whisper's decoding heuristics move this set by about 1.1 points (Whisper Table 7).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-whisper-tinypen",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, long-form (whole files)",
+      "metric": "WER, Whisper EnglishTextNormalizer, corpus",
+      "values": {
+        "wer": 17.0
+      },
+      "system": "Whisper tiny.en",
+      "architecture": "general ASR (Whisper long-form decoding)",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "39M",
+      "year": 2022,
+      "source": {
+        "arxiv": "2212.04356",
+        "url": "https://arxiv.org/abs/2212.04356",
+        "where": "Appendix D.4 (long-form transcription table)"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Same metric family as ours; Whisper's decoding heuristics move this set by about 1.1 points (Whisper Table 7).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-whisper-large-v3-lb",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, long-form",
+      "metric": "WER, leaderboard normaliser (Whisper normaliser + merge_compounds)",
+      "values": {
+        "wer": 9.71
+      },
+      "system": "openai/whisper-large-v3",
+      "architecture": "general ASR",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "1.55B",
+      "year": 2025,
+      "source": {
+        "url": "https://huggingface.co/spaces/hf-audio/open_asr_leaderboard (long-form tab)",
+        "study_file": "docs/readiness/2026-09-04-e21-full44-direct-baseline-v1-verdict.md"
+      },
+      "how_verified": "leaderboard",
+      "status": "UNVERIFIED",
+      "comparability": "UNVERIFIED in this pass: huggingface.co was unreachable from this machine; the value is the study's 2026-09-04 transcription. The leaderboard paper (arXiv:2510.06961 Table 5) prints only long-form AVERAGES (best open model Cohere Labs Transcribe 9.73, best closed ElevenLabs Scribe v2 7.32, whisper-large-v3 11.2), not the Earnings-21 column.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-trade",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21 long-form, no external segmentation",
+      "metric": "WER",
+      "values": {
+        "wer": 9.75,
+        "fastconformer_ft_lca_gt": 13.84
+      },
+      "system": "TRADE (transducer-augmented decoder speech LLM); FastConformer FT+LCA+GT reported beside it",
+      "architecture": "trained speech LLM / trained ASR",
+      "training_regime": "trained ASR / speech LLM (general ASR training; Earnings-specific training not stated)",
+      "input": "audio",
+      "core_model_size": "per paper",
+      "year": 2026,
+      "source": {
+        "arxiv": "2606.08486",
+        "url": "https://arxiv.org/abs/2606.08486",
+        "where": "Table 2"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Normaliser not re-checked in this pass.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-earnings21-paper",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls",
+      "metric": "WER, fstalign with Rev normalisation (different metric family)",
+      "values": {
+        "rev_espnet": 11.3,
+        "rev_kaldi": 13.2,
+        "microsoft": 15.8,
+        "speechmatics": 16.0,
+        "amazon": 17.0,
+        "google": 17.8,
+        "kaldi_org_librispeech": 48.8
+      },
+      "system": "commercial and Rev systems of 2021",
+      "architecture": "ASR",
+      "training_regime": "commercial / in-house trained ASR",
+      "input": "audio",
+      "core_model_size": "not disclosed",
+      "year": 2021,
+      "source": {
+        "arxiv": "2104.11348",
+        "url": "https://arxiv.org/abs/2104.11348",
+        "where": "Table 2"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "fstalign family; never differenced against Whisper-normaliser numbers.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-conec-row1-no-bias",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, SENTENCE-SEGMENTED",
+      "metric": "WER and per-entity WER ((S+D)/tagged reference words), Whisper normaliser then fstalign",
+      "values": {
+        "wer": 10.41,
+        "entity_wer": {
+          "PERSON": 45.9,
+          "ORG": 29.5,
+          "GPE": 18.8,
+          "LOC": 5.85,
+          "PRODUCT": 24.2,
+          "EVENT": 43.1,
+          "NORP": 9.55,
+          "FAC": 28.7
+        }
+      },
+      "system": "zipformer 71.5M, no biasing (row 1)",
+      "architecture": "ASR",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "71.5M zipformer",
+      "year": 2024,
+      "source": {
+        "anthology": "2024.lrec-main.328",
+        "url": "https://aclanthology.org/2024.lrec-main.328/",
+        "where": "Table 2",
+        "umbrella_registry_id": "aclanthology:2024.lrec-main.328"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Segmented: Whisper large reads 7.98 here vs about 10.3 whole-file, so about 2.3 points of any overall gap is segmentation. in-domain ASR trained on SPGISpeech; the biasing floor.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-conec-row4-real-context",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, SENTENCE-SEGMENTED",
+      "metric": "WER and per-entity WER ((S+D)/tagged reference words), Whisper normaliser then fstalign",
+      "values": {
+        "wer": 10.29,
+        "entity_wer": {
+          "PERSON": 39.8,
+          "ORG": 26.1,
+          "GPE": 18.4,
+          "LOC": 5.65,
+          "PRODUCT": 21.9,
+          "EVENT": 43.1,
+          "NORP": 9.55,
+          "FAC": 28.7
+        }
+      },
+      "system": "zipformer 71.5M + ConEC real context (slides + release + roster) shallow fusion (row 4)",
+      "architecture": "ASR",
+      "training_regime": "fine-tuned on the task data",
+      "input": "audio",
+      "core_model_size": "71.5M zipformer",
+      "year": 2024,
+      "source": {
+        "anthology": "2024.lrec-main.328",
+        "url": "https://aclanthology.org/2024.lrec-main.328/",
+        "where": "Table 2",
+        "umbrella_registry_id": "aclanthology:2024.lrec-main.328"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Segmented: Whisper large reads 7.98 here vs about 10.3 whole-file, so about 2.3 points of any overall gap is segmentation. the published context-biasing system; trained acoustic model, context injected at decode.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-conec-row5-oracle",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, SENTENCE-SEGMENTED",
+      "metric": "WER and per-entity WER ((S+D)/tagged reference words), Whisper normaliser then fstalign",
+      "values": {
+        "wer": 9.69,
+        "entity_wer": {
+          "PERSON": 13.0,
+          "ORG": 17.7,
+          "GPE": 12.9,
+          "LOC": 5.46,
+          "PRODUCT": 19.2,
+          "EVENT": 35.6,
+          "NORP": 5.53,
+          "FAC": 16.6
+        }
+      },
+      "system": "ConEC oracle substitution over row 1 (row 5)",
+      "architecture": "ASR",
+      "training_regime": "oracle upper bound (post-hoc substitution)",
+      "input": "audio",
+      "core_model_size": "71.5M zipformer",
+      "year": 2024,
+      "source": {
+        "anthology": "2024.lrec-main.328",
+        "url": "https://aclanthology.org/2024.lrec-main.328/",
+        "where": "Table 2",
+        "umbrella_registry_id": "aclanthology:2024.lrec-main.328"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Segmented: Whisper large reads 7.98 here vs about 10.3 whole-file, so about 2.3 points of any overall gap is segmentation. upper bound for any consumer of the context, not a system.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e21-pub-conec-row8-whisper-large",
+      "task": "Earnings-21",
+      "dataset_split": "Earnings-21, all 44 calls, SENTENCE-SEGMENTED",
+      "metric": "WER and per-entity WER ((S+D)/tagged reference words), Whisper normaliser then fstalign",
+      "values": {
+        "wer": 7.98,
+        "entity_wer": {
+          "PERSON": 28.9,
+          "ORG": 19.6,
+          "GPE": 17.0,
+          "LOC": 5.85,
+          "PRODUCT": 18.7,
+          "EVENT": 2.78,
+          "NORP": 8.54,
+          "FAC": 21.6
+        }
+      },
+      "system": "Whisper large 1550M, no biasing (row 8)",
+      "architecture": "ASR",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "1550M",
+      "year": 2024,
+      "source": {
+        "anthology": "2024.lrec-main.328",
+        "url": "https://aclanthology.org/2024.lrec-main.328/",
+        "where": "Table 2",
+        "umbrella_registry_id": "aclanthology:2024.lrec-main.328"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Segmented: Whisper large reads 7.98 here vs about 10.3 whole-file, so about 2.3 points of any overall gap is segmentation. the only row comparable in kind to a frozen general model.",
+      "row_kind": "published"
+    },
+    {
+      "row_kind": "ours",
+      "id": "e21-ours-bare-full44",
+      "task": "Earnings-21",
+      "dataset_split": "all 44 discovery calls (39.26 h), fixed 90-s windows (1,593), no VAD",
+      "metric": "corpus WER, Whisper normaliser both sides (no merge_compounds); ConEC PERSON entity WER (fstalign RecordTagWer mirror, official_tool_run false); numeric-value accuracy",
+      "values": {
+        "wer": 8.2,
+        "person_entity_wer": 22.49,
+        "org_entity_wer": 17.2,
+        "numeric_value_acc": 90.73
+      },
+      "system": "bare frozen core, direct call (SAEA-E21-FULL44-DIRECT-BASELINE-V2)",
+      "architecture": "direct call",
+      "training_regime": "training-free control of a frozen model (direct-call baseline)",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/readiness/2026-09-04-e21-full44-direct-baseline-v1-verdict.md; docs/readiness/2026-09-06-earnings-agentic-metric-baseline-v1.md"
+      },
+      "how_verified": "study result file",
+      "status": "STUDY-OWN",
+      "comparability": "Whole-file windows, not sentence-segmented; the entity scorer is a mirror, not the official tool."
+    },
+    {
+      "row_kind": "ours",
+      "id": "e21-ours-kc-e1f-repair",
+      "task": "Earnings-21",
+      "dataset_split": "same 44 calls / 1,593 windows",
+      "metric": "same",
+      "values": {
+        "person_entity_wer": 18.75,
+        "person_entity_wer_replicate": 18.86,
+        "wer": 8.154,
+        "person_delta_pp": 3.737,
+        "person_delta_ci90": [
+          2.653,
+          4.855
+        ]
+      },
+      "system": "KC-E1f: ConEC pre-meeting brief as a second-pass substitution-only entity repair",
+      "architecture": "training-free control plane (USE axis), 1 charged call per window",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio + own draft + capped ConEC brief",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/results/stage2-results-ledger.md (E21-KC-E1F-V1 / -V2 / -REP); umbrella published-baselines.md"
+      },
+      "how_verified": "study result file (ADMITTED under the own-null re-decision, REPLICATED 2026-09-09)",
+      "status": "STUDY-OWN",
+      "comparability": "The module is not in any default plan (the switch form is unflown). The corpus-WER improvement overlaps its own null and is withdrawn as a finding."
+    },
+    {
+      "row_kind": "ours",
+      "id": "e21-ours-tail2s-and-obs-e1",
+      "task": "Earnings-21",
+      "dataset_split": "same 44 calls",
+      "metric": "corpus WER (Whisper normaliser) / ConEC PERSON entity WER",
+      "values": {
+        "tail2s_wer": 7.271,
+        "tail2s_person": 23.17,
+        "obs_e1_wer": 7.151,
+        "obs_e1_person": 24.58
+      },
+      "system": "silence-tail OBS cell (NOT ADMITTED) and speaker-turn transport units OBS-E1 (REJECTED as HARM)",
+      "architecture": "observation-side variants",
+      "training_regime": "training-free control of a frozen model",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "umbrella wiki/experiments/speech-aware-evidence-acquisition/published-baselines.md (rows of 2026-09-08)"
+      },
+      "how_verified": "study result file",
+      "status": "STUDY-OWN",
+      "comparability": "Listed only because they are the lowest WERs on file; both trade PERSON accuracy for WER and are not admitted."
+    },
+    {
+      "id": "e22-pub-whisper-large-v3",
+      "task": "Earnings-22",
+      "dataset_split": "ESB Earnings22 test subset (short-form, Open ASR Leaderboard English)",
+      "metric": "WER, leaderboard normaliser",
+      "values": {
+        "wer": 11.29
+      },
+      "system": "openai/whisper-large-v3",
+      "architecture": "ASR / speech LLM",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "1.55B",
+      "year": 2025,
+      "source": {
+        "arxiv": "2509.14128",
+        "url": "https://arxiv.org/abs/2509.14128",
+        "where": "Table 5 (OpenASR leaderboard benchmarks)"
+      },
+      "how_verified": "reported by others (NVIDIA, leaderboard protocol)",
+      "status": "VERIFIED",
+      "comparability": "Short-form clips; leaderboard revisions move this column (the study's 2026-09-04 snapshot read whisper-large-v3 11.59).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e22-pub-voxtral-mini-3b-2507",
+      "task": "Earnings-22",
+      "dataset_split": "ESB Earnings22 test subset (short-form, Open ASR Leaderboard English)",
+      "metric": "WER, leaderboard normaliser",
+      "values": {
+        "wer": 10.65
+      },
+      "system": "Voxtral-Mini-3B-2507",
+      "architecture": "ASR / speech LLM",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "3B",
+      "year": 2025,
+      "source": {
+        "arxiv": "2509.14128",
+        "url": "https://arxiv.org/abs/2509.14128",
+        "where": "Table 5 (OpenASR leaderboard benchmarks)"
+      },
+      "how_verified": "reported by others (NVIDIA, leaderboard protocol)",
+      "status": "VERIFIED",
+      "comparability": "Short-form clips; leaderboard revisions move this column (the study's 2026-09-04 snapshot read whisper-large-v3 11.59).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e22-pub-phi-4-multimodal-instruct",
+      "task": "Earnings-22",
+      "dataset_split": "ESB Earnings22 test subset (short-form, Open ASR Leaderboard English)",
+      "metric": "WER, leaderboard normaliser",
+      "values": {
+        "wer": 10.5
+      },
+      "system": "Phi-4-multimodal-instruct",
+      "architecture": "ASR / speech LLM",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "5.6B",
+      "year": 2025,
+      "source": {
+        "arxiv": "2509.14128",
+        "url": "https://arxiv.org/abs/2509.14128",
+        "where": "Table 5 (OpenASR leaderboard benchmarks)"
+      },
+      "how_verified": "reported by others (NVIDIA, leaderboard protocol)",
+      "status": "VERIFIED",
+      "comparability": "Short-form clips; leaderboard revisions move this column (the study's 2026-09-04 snapshot read whisper-large-v3 11.59).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e22-pub-parakeet-tdt-0p6b-v3",
+      "task": "Earnings-22",
+      "dataset_split": "ESB Earnings22 test subset (short-form, Open ASR Leaderboard English)",
+      "metric": "WER, leaderboard normaliser",
+      "values": {
+        "wer": 11.19
+      },
+      "system": "Parakeet-TDT-0.6B-v3",
+      "architecture": "ASR / speech LLM",
+      "training_regime": "trained ASR (training mix per vendor; Earnings-22 train-split use not stated)",
+      "input": "audio",
+      "core_model_size": "0.6B",
+      "year": 2025,
+      "source": {
+        "arxiv": "2509.14128",
+        "url": "https://arxiv.org/abs/2509.14128",
+        "where": "Table 5 (OpenASR leaderboard benchmarks)"
+      },
+      "how_verified": "reported by others (NVIDIA, leaderboard protocol)",
+      "status": "VERIFIED",
+      "comparability": "Short-form clips; leaderboard revisions move this column (the study's 2026-09-04 snapshot read whisper-large-v3 11.59).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e22-pub-canary-1b-v2",
+      "task": "Earnings-22",
+      "dataset_split": "ESB Earnings22 test subset (short-form, Open ASR Leaderboard English)",
+      "metric": "WER, leaderboard normaliser",
+      "values": {
+        "wer": 11.79
+      },
+      "system": "Canary-1B-v2",
+      "architecture": "ASR / speech LLM",
+      "training_regime": "trained ASR (training mix per vendor; Earnings-22 train-split use not stated)",
+      "input": "audio",
+      "core_model_size": "1B",
+      "year": 2025,
+      "source": {
+        "arxiv": "2509.14128",
+        "url": "https://arxiv.org/abs/2509.14128",
+        "where": "Table 5 (OpenASR leaderboard benchmarks)"
+      },
+      "how_verified": "reported by others (NVIDIA, leaderboard protocol)",
+      "status": "VERIFIED",
+      "comparability": "Short-form clips; leaderboard revisions move this column (the study's 2026-09-04 snapshot read whisper-large-v3 11.59).",
+      "row_kind": "published"
+    },
+    {
+      "id": "e22-pub-qwen3-omni-nemotron-table8",
+      "task": "Earnings-22",
+      "dataset_split": "Open ASR Leaderboard English subset, Earnings22",
+      "metric": "WER",
+      "values": {
+        "qwen3_omni_30b_a3b": 12.3,
+        "nemotron_3_nano_omni_30b_a3b": 9.66
+      },
+      "system": "Qwen3-Omni-30B-A3B (same model as ours) and Nemotron 3 Nano Omni",
+      "architecture": "omni speech LLM",
+      "training_regime": "instruction-tuned general model zero-shot",
+      "input": "audio",
+      "core_model_size": "30B-A3B",
+      "year": 2026,
+      "source": {
+        "arxiv": "2604.24954",
+        "url": "https://arxiv.org/abs/2604.24954",
+        "where": "Table 8"
+      },
+      "how_verified": "reported by others (NVIDIA)",
+      "status": "VERIFIED",
+      "comparability": "Column assignment read from a multi-column PDF layout; the 12.3 matches the study's earlier transcription.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e22-pub-qwen3-omni-nemo",
+      "task": "Earnings-22",
+      "dataset_split": "ESB Earnings22 test subset, N = 2,741",
+      "metric": "WER, Whisper normaliser, greedy",
+      "values": {
+        "wer_zero_shot": 9.79,
+        "wer_nemo_fine_tuned": 8.89
+      },
+      "system": "Qwen3-Omni-30B-A3B-Instruct, zero-shot (and NeMo AutoModel fine-tuned)",
+      "architecture": "omni speech LLM",
+      "training_regime": "instruction-tuned general model zero-shot / fine-tuned on the task data (8.89)",
+      "input": "audio",
+      "core_model_size": "30B-A3B",
+      "year": 2026,
+      "source": {
+        "url": "https://docs.nvidia.com/nemo/automodel/latest/recipes-e2e-examples/qwen3-omni-asr",
+        "study_file": "docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-preregistration.md"
+      },
+      "how_verified": "reported by others (vendor documentation)",
+      "status": "UNVERIFIED",
+      "comparability": "UNVERIFIED in this pass: the current documentation page summarises AMI and macro results and did not show the Earnings22 row; the values are the study's 2026-09-04 transcription. The two vendor reports of the same model differ by 2.5 points.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e22-pub-lb-snapshot-floors",
+      "task": "Earnings-22",
+      "dataset_split": "ESB Earnings22 test subset",
+      "metric": "WER, leaderboard normaliser",
+      "values": {
+        "whisper_large_v3": 11.59,
+        "whisper_large_v3_turbo": 11.07,
+        "distil_large_v3p5": 10.83,
+        "qwen3_asr_0p6b": 10.78,
+        "qwen3_asr_1p7b": 9.73,
+        "whisper_base_en": 15.09
+      },
+      "system": "Open ASR Leaderboard snapshot of 2026-09-04",
+      "architecture": "ASR",
+      "training_regime": "general-purpose ASR model, not trained on the task data (zero-shot on the dataset)",
+      "input": "audio",
+      "core_model_size": "various",
+      "year": 2026,
+      "source": {
+        "url": "https://huggingface.co/spaces/hf-audio/open_asr_leaderboard",
+        "study_file": "docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-preregistration.md"
+      },
+      "how_verified": "leaderboard",
+      "status": "UNVERIFIED",
+      "comparability": "UNVERIFIED in this pass (huggingface.co unreachable). The per-dataset leaderboard leader on Earnings22 was not obtained.",
+      "row_kind": "published"
+    },
+    {
+      "id": "e22-pub-longform",
+      "task": "Earnings-22",
+      "dataset_split": "Earnings-22 full corpus (125 files), long-form",
+      "metric": "WER",
+      "values": {
+        "trade": 10.88,
+        "canary_1b_v2_parallel_chunks": 13.93,
+        "fastconformer_ft_lca_gt": 19.49,
+        "whisper_large_v2": 12.6
+      },
+      "system": "TRADE / Canary-1B-v2 / FastConformer (TRADE Table 2); Whisper large-v2 (Whisper App. D.4)",
+      "architecture": "ASR / speech LLM",
+      "training_regime": "trained ASR / speech LLM (general ASR training)",
+      "input": "audio",
+      "core_model_size": "various",
+      "year": 2026,
+      "source": {
+        "arxiv": "2606.08486 / 2212.04356",
+        "where": "TRADE Table 2; Whisper Appendix D.4"
+      },
+      "how_verified": "official table",
+      "status": "VERIFIED",
+      "comparability": "Long-form full corpus, not the ESB short-form subset the study read; the study has no full-corpus Earnings-22 number.",
+      "row_kind": "published"
+    },
+    {
+      "row_kind": "ours",
+      "id": "e22-ours-esb-test",
+      "task": "Earnings-22",
+      "dataset_split": "ESB Earnings22 test subset, 2,735 of the published 2,741 utterances (six calls, all in the study's confirmatory split)",
+      "metric": "corpus WER, Whisper normaliser; agentic error rate (HIGH-impact reference-word mass / reference words)",
+      "values": {
+        "wer_bare": 15.937,
+        "wer_tail2s": 9.24,
+        "agentic_error_rate_bare": 1.76,
+        "agentic_error_rate_tail2s": 1.59
+      },
+      "system": "bare frozen core, one utterance per contact; second read with a 2.0-s digital-silence tail per clip",
+      "architecture": "direct call (+ an admitted OBS media convention)",
+      "training_regime": "training-free control of a frozen model (direct-call baseline)",
+      "input": "audio",
+      "core_model_size": "Qwen3-Omni-30B-A3B-Instruct Q4_K_M",
+      "year": 2026,
+      "source": {
+        "study_file": "docs/readiness/2026-09-04-e22-esb-shortform-alignment-v1-verdict.md; docs/readiness/2026-09-07-e22-esb-shortform-tail2s-test-v1-verdict.md"
+      },
+      "how_verified": "study result file (both one-time test reads are spent)",
+      "status": "STUDY-OWN",
+      "comparability": "The silence tail is a model-usage convention published systems did not use, so 9.24 is not a like-for-like reproduction of the published protocol."
+    }
+  ]
+}
