@@ -19,7 +19,7 @@
             "kind": "decision",
             "reason": "Decision slurp-direct-only-fold-b-thinking-vs-instruct-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-direct-only-fold-b-thinking-vs-instruct-v1/root-admission-v1.json",
-            "sha256": "f876b85b9a453669ea9e955cbd212e512f30a2b6c72488f74baa066e784b86f1"
+            "sha256": "0ccc758386e6dbee3b4661164898e072b47bc37b7633b92bb28295c2b9bc84c6"
           }
         ],
         "state": "ready"

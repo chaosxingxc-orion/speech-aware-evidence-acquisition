@@ -1,7 +1,7 @@
 {
   "attached_generation_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1",
   "cell": "slurp-direct-only-fold-b-thinking-v1",
-  "composed_config_hash": "536ac8231ceeb8d3426c58a323cb02820ad9a3d7a87310d05dc92f8d14894ed2",
+  "composed_config_hash": "3cc0aaa963dfdd030d22f5efd264c31355a1a3d874d44ec585fd960b01992c17",
   "contact_cap": 3241,
   "execution_plan": {
     "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-rec1-v1",
@@ -10,7 +10,7 @@
     "planned_gpu_hours": 4.5,
     "planned_model_calls": 3241,
     "planned_speech_audio_seconds": 3155,
-    "protocol_hash": "a624e003085809a35a8e2870306be5ee13350f17834426e0c3c741dbc38c4653",
+    "protocol_hash": "1d8e73e5f5d5457178cecf135196c96e4573e5cb230e1394bd25b25946f2498c",
     "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-REC1-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -37,7 +37,7 @@
   "preparation_base_commit": "a057eea1d9479a8220dfe9b44d817faa1ec2a7a8",
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-direct-only-fold-b-thinking-vs-instruct-v1/protocol-registered-v1.json",
-    "sha256": "779495c086877edb3e1de6975adf093c9ffd54bbfa4f36be34d71fc4f99ff50b"
+    "sha256": "9a0ddbfdb53807d43f8e14a4fd80e7929cd371cb08583ac978084e3866e63610"
   },
   "purpose": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-REC1-V1: the live phase-fit spend identity of SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1.",
   "recovery": {
