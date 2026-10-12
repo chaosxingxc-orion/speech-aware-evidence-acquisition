@@ -1,0 +1,63 @@
+{
+ "schema": "saea-engineering-base-timing-receipt-v1",
+ "written_at": "2026-10-12T11:06:36.826625+00:00",
+ "host": "chao",
+ "python": "/home/chao/.venvs/speechrl/bin/python",
+ "module": "speech_aware_evidence_acquisition.core.flight.cli",
+ "repeat": 1,
+ "model_free": true,
+ "rows": [
+  {
+   "kind": "data-root",
+   "path": "/home/chao/saea-worktrees/opus-base-unify",
+   "resolved": "/home/chao/saea-worktrees/opus-base-unify",
+   "fstype": "ext4",
+   "snapshot_load": {
+    "relpath": "configs/base/engineering-base-v1.json",
+    "best": 0.0,
+    "samples": [
+     {
+      "seconds": 0.0,
+      "ok": true,
+      "bytes": 11641,
+      "sha256": "55209569dd5c501f1c309a26ac04012a3a3240c4df097c1120a8d69a28780ec3"
+     }
+    ]
+   },
+   "small_files": {
+    "subdir": "configs",
+    "best": 0.061,
+    "samples": [
+     {
+      "seconds": 0.015,
+      "ok": true,
+      "files": 500,
+      "scaled_to_2000_seconds": 0.061
+     }
+    ]
+   }
+  }
+ ],
+ "verdicts": [
+  {
+   "path": "/home/chao/saea-worktrees/opus-base-unify",
+   "measure": "snapshot_load",
+   "best_seconds": 0.0,
+   "budget_seconds": 2.0,
+   "within_budget": true
+  },
+  {
+   "path": "/home/chao/saea-worktrees/opus-base-unify",
+   "measure": "small_files",
+   "best_seconds": 0.061,
+   "budget_seconds": 3.0,
+   "within_budget": true
+  }
+ ],
+ "all_within_budget": true,
+ "not_measured_here": [
+  "flight_cli_check_seconds",
+  "campaign_prelude_seconds",
+  "seal_seconds"
+ ]
+}

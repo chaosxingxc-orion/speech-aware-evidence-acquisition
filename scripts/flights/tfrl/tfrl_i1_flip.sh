@@ -13,7 +13,9 @@
 #   TFRL_ITER=1 bash scripts/flights/tfrl/tfrl_i1_flip.sh [column|proposers]
 #   TFRL_ONLY=ace TFRL_ITER=1 bash scripts/flights/tfrl/tfrl_i1_flip.sh proposers   # flip ONLY the reflector (typed is flown and sealed; its re-pin would be refused); typed|ace, default both
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=${SAEA_FLIP_DATA:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+[ -n "${SAEA_FLIP_DATA:-}" ] && export SAEA_DATA_ROOT=$SAEA_FLIP_DATA  # test override, as before
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+DATA=${SAEA_DATA_ROOT:-$SAEA_DATA_ROOT_DEFAULT}  # resolved and guarded by saea_data_root_init before the first cd
 SP=$MAIN/scripts/flights/batch
 TF=$MAIN/scripts/flights/tfrl
 ITER=${TFRL_ITER:-1}
@@ -36,6 +38,8 @@ case "$ONLY" in ""|typed|ace) ;; *) echo "TFRL_ONLY must be typed or ace" >&2; e
 if [ -n "$ONLY" ] && [ "$WHICH" != proposers ]; then echo "TFRL_ONLY applies to the proposers mode only" >&2; exit 2; fi
 # Owner 2026-10-12: hot paths never run on /mnt/* (9p). Refuse (64) unless SAEA_ALLOW_9P_FLIP=1.
 case "$(realpath -m "$MAIN")" in /mnt/*) [ "$SAEA_ALLOW_9P_FLIP" = 1 ] || { echo "refusing: repo root $MAIN is on /mnt (9p); run via scripts/flights/batch/flip_in_ext4.sh or set SAEA_ALLOW_9P_FLIP=1"; exit 64; } ;; esac
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 cd "$MAIN" || exit 1
 # The smoke's single recovery (tfrl_family.SMOKE_RECOVERIES): "-rec1" when the iteration's smoke is re-flown under rec1 attempt ids, else "".
 # It marks the smoke's registered plan files (smoke-generation-plan-registered<rec>-v1.json); the attempt ids themselves are read from the fragments.

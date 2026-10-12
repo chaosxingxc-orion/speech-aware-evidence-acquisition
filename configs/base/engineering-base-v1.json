@@ -1,0 +1,151 @@
+{
+  "schema": "saea-engineering-base-v1",
+  "base_id": "engineering-base-v1",
+  "declared_at": "2026-10-12",
+  "authority": "Owner directive 2026-10-12 (decision 274 proposed) and owner ruling 284 (hot root = a 2 TB ext4 VHDX on E:). Design: docs/superpowers/specs/2026-10-12-engineering-base-unification-design.md. Gate: scripts/checks/engineering_base_locator_check.py. The data-root default itself lives in ONE line of scripts/lib/data_root.sh; roots.data_root.current must equal it.",
+  "roots": {
+    "data_root": {
+      "current": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "status": "pre-cut-over",
+      "note": "The root every live script and the runtime (--data-root / SPEECHRL_DATA_DIR) use today. At cut-over it becomes roots.hot.path and status becomes cut-over."
+    },
+    "legacy": {
+      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+      "fstype": "9p",
+      "role": "the E: NTFS original; source of the migration; deleted only after the owner has seen the verification manifests (decision 284 step 3)"
+    },
+    "hot": {
+      "path": "/home/chao/saea-data",
+      "resolves_to": "/mnt/wsl/saea-data-1",
+      "fstype": "ext4",
+      "backing": "E:\\saea-data-1.vhdx (2 TB dynamic, ext4 label saea-data-1), attached at logon by the scheduled task SAEA-Mount-Data1: wsl --mount --vhd E:\\saea-data-1.vhdx --name saea-data-1 --type ext4",
+      "role": "the single working copy of everything the runtime reads or writes during preparation, a flight, a seal or a read"
+    },
+    "cold": {
+      "path": "/mnt/wsl/saea-data-2",
+      "fstype": "ext4",
+      "status": "planned",
+      "backing": "E:\\saea-data-2.vhdx (about 1.3 TB, decision 284 step 3), created only after the E: originals are deleted",
+      "role": "raw datasets/ and models/ archive copies, reached from the hot root through the symlinks datasets and models (design section 4.3)"
+    },
+    "runtime_root": {"path": "/home/chao", "fstype": "ext4", "role": "llama.cpp checkouts, models/, venv, scheduler state"},
+    "feature_root": {"path": "/home/chao/feat-cache", "fstype": "ext4", "role": "speech packets per mmproj"},
+    "window_packet_root": {"path": "/home/chao/feat-packets", "fstype": "ext4", "role": "E21/E22 window packets"},
+    "worktrees": {"path": "/home/chao/saea-worktrees", "fstype": "ext4", "role": "flip and flight worktrees"},
+    "repo_master": {
+      "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition",
+      "fstype": "9p",
+      "exempt_from_ext4": true,
+      "role": "single writer; not a hot path: flips and flights run in ext4 worktrees and fast-forward it"
+    }
+  },
+  "hot_paths": ["data_root", "runtime_root", "feature_root", "window_packet_root", "worktrees"],
+  "migration": {
+    "hot_subtrees_first": ["runs", "analysis", "knowledge", "prepared", "coordination", "serving", "attempts", "locks"],
+    "runtime_read_subtrees": ["vectors", "preparation-runs", "system-text-search", "provisional", "receipts", "trace-intermediates", "wire-check", "official-evaluator-source-bundles", "references", "manifests", "environments", "repos"],
+    "then": ["derived"],
+    "rest_of_root": "every other entry of the legacy root (small historical subtrees and loose files, including .saea-runtime-identity-cache.json), copied to the hot root in the rest pass",
+    "to_cold_disk": ["datasets", "models"],
+    "never_moved": ["/home/chao/feat-cache", "/home/chao/feat-packets", "/home/chao/models"]
+  },
+  "models": [
+    {
+      "core": "instruct",
+      "lock_key": "qwen3-omni-30b-a3b-instruct-gguf-q4km",
+      "gguf": {"path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf", "sha256": "0751c279498785c0b07130ae7748038d1e2cfd04617928e4557063807f98066d", "size_bytes": 18557053952},
+      "mmproj": {"path": "/home/chao/models/qwen3-omni-30b-a3b-instruct-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Instruct-bf16.gguf", "sha256": "f0dfe825fb692d426362b1ac79678fc08daa4758f7151526cad110515f122883", "size_bytes": 2207465568},
+      "runtime_receipt": "docs/receipts/runtime-q4km-mmproj-free.json",
+      "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+      "role": "the serving core of every system cell"
+    },
+    {
+      "core": "thinking",
+      "lock_key": "qwen3-omni-30b-a3b-thinking-gguf-q4km",
+      "gguf": {"path": "/home/chao/models/qwen3-omni-30b-a3b-thinking-gguf-q4km/Qwen3-Omni-30B-A3B-Thinking-Q4_K_M.gguf", "sha256": "afdaeff6f23c740429aadb3fa180f9d53b78278fe0d331b594b0b71bd9bf4835", "size_bytes": 18557053248},
+      "mmproj": {"path": "/home/chao/models/qwen3-omni-30b-a3b-thinking-gguf-q4km/mmproj-Qwen3-Omni-30B-A3B-Thinking-bf16.gguf", "sha256": "57b7240fb3d8941f5969d760c694a754cbe74f7db428605d63e1dacceda98b38", "size_bytes": 2207465664},
+      "runtime_receipt": "docs/receipts/runtime-q4km-thinking-mmproj-free.json",
+      "llama_cpp_build_commit": "04ccc72a2207347ca76161b93fd9d846dd0a8675",
+      "role": "decision 266-E bare-core read and the decision 268 Thinking-core system column"
+    }
+  ],
+  "packet_roots": [
+    {
+      "id": "slurp-instruct", "core": "instruct", "carrier": "slurp",
+      "path": "/home/chao/feat-cache/slurp-q4km-packets-04ccc72a",
+      "promotion_receipts": [
+        {"name": "EVO-FOLDS-V2-promotion.json", "sha256": "4f048f47830a22d41d0bc81ccb453efd41bf8c6726a462bd1dc11eab36f30247"},
+        {"name": "DEV-1000-promotion.json", "sha256": "2accbdc5a2f39fa650218928f92ab7b304717e108646c78051f8c203426a8fe6"},
+        {"name": "DEV-2000-ADDED-promotion.json", "sha256": "978fc63888b99fa73ec5ca51ebb03676cb853f052125212f48326e213cf35091"},
+        {"name": "STAGE3-CONSTRUCTION-R01-promotion.json", "sha256": "a1664e34742dcd2d59c226da701395edf41d150bbbf8db4acc0cdae9c3c0250f"},
+        {"name": "TEST-SAMPLE-3010-promotion.json", "sha256": "d0a827b62e4c8b00facd753c9fd76cc2f5bcfbb3eea5038ca5c84e75814eaa28"},
+        {"name": "DEVEL-REMAINDER-promotion.json", "sha256": "e7e9b516ca17802cae7eb468b4bebaf8c04a836bba2c57b718295ee6760e9a3f"}
+      ]
+    },
+    {
+      "id": "slurp-thinking", "core": "thinking", "carrier": "slurp",
+      "path": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
+      "promotion_receipts": [
+        {"name": "EVO-FOLD-B-V2-promotion.json", "sha256": "ef409ef458be0dc2e21bc6a736abc498b0ef71e01a6b0c590ece54ce0cc54f61"}
+      ]
+    },
+    {
+      "id": "a2t-instruct-calibration-400", "core": "instruct", "carrier": "audio2tool",
+      "path": "/home/chao/feat-cache/a2t-calibration-400-packets-04ccc72a",
+      "promotion_receipts": [
+        {"name": "A2T-CALIBRATION-400-promotion.json", "sha256": "2b848b86a4228452d8965f4542005e3d28d3370243b3353dfd34c10cac2f8b92"}
+      ]
+    },
+    {
+      "id": "a2t-instruct-native-system-4000", "core": "instruct", "carrier": "audio2tool",
+      "path": "/home/chao/feat-cache/a2t-native-system-4000-packets-04ccc72a",
+      "promotion_receipts": [],
+      "promotion_receipt_under_data_root": {"relpath": "prepared/SAEA-A2T-NATIVE-SYSTEM-PACKETS-V1/promotion.json", "sha256": "720d81f63a1923f19893c0ee171e1ab7b47f9a946c1e62a06bdddd839243de8a"},
+      "note": "22 A2T baselines name this receipt by its ABSOLUTE legacy path; see the design, section 5 (absolute-path inventory)."
+    },
+    {"id": "e21-instruct-dr-full", "core": "instruct", "carrier": "earnings21", "path": "/home/chao/feat-packets/e21-cddb000c-dr-full-gpu-v1", "promotion_receipts": []},
+    {"id": "e21-instruct-loop", "core": "instruct", "carrier": "earnings21", "path": "/home/chao/feat-packets/e21-cddb000c-loop-gpu-v1", "promotion_receipts": []}
+  ],
+  "serving_geometries": [
+    {"target": "slurp-np4", "core": "instruct", "session_id": "serving-slurp-native-candidate-five-train-a-np4-v1", "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1", "ctx": 98304, "slots": 4, "max_tokens": 512, "packet_root": "slurp-instruct"},
+    {"target": "a2t-np3", "core": "instruct", "session_id": "serving-a2t-native-role-base-np3-max2048-v3", "model_fragment": "q4km-mmproj-free-a2t-native-role-np3-max2048-v1", "ctx": 98304, "slots": 3, "max_tokens": 2048, "packet_root": "a2t-instruct-native-system-4000"},
+    {"target": "e21-np4", "core": "instruct", "session_id": "serving-e21-native-window-flightruntime-np4-max1024-v1", "model_fragment": "q4km-e21-native-window-packets-cddb000c-np4-max1024-v1", "ctx": 98304, "slots": 4, "max_tokens": 1024, "packet_root": "e21-instruct-dr-full"},
+    {"target": "det-np1", "core": "instruct", "session_id": "serving-slurp-native-det-np1-nocache-v1", "model_fragment": "q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1", "ctx": 24576, "slots": 1, "max_tokens": 512, "packet_root": "slurp-instruct"},
+    {"target": "think-np4", "core": "thinking", "session_id": "serving-slurp-thinking-direct-fold-b-np4-max8192-v1", "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1", "ctx": 98304, "slots": 4, "max_tokens": 8192, "packet_root": "slurp-thinking"}
+  ],
+  "live_scripts": [
+    {"path": "scripts/flights/batch/batch_driver.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/serving_lib.sh", "role": "library"},
+    {"path": "scripts/flights/batch/serving_task_entry.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/serving_task_entry_a2t.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/serving_task_entry_e21.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/serving_monitor_start.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/serving_monitor_start_a2t.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/serving_monitor_start_e21.sh", "role": "entry"},
+    {"path": "scripts/flights/direct/serving_task_entry_think.sh", "role": "entry"},
+    {"path": "scripts/flights/direct/serving_monitor_start_think.sh", "role": "entry"},
+    {"path": "scripts/flights/det/serving_task_entry_det.sh", "role": "entry"},
+    {"path": "scripts/flights/det/serving_monitor_start_det.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/flip_package_ext4.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/onepass_flip.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/repin_cell_generic.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/main_gates_generic.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/status_probe.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/prep_generic_task_entry.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/prep_generic_encode_task_entry.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/plan_gates_mint.sh", "role": "entry"},
+    {"path": "scripts/flights/tfrl/tfrl_i1_flip.sh", "role": "entry"},
+    {"path": "scripts/flights/tfrl/tfrl_i1_read.sh", "role": "entry"},
+    {"path": "scripts/flights/batch/ledger_mark_consumed.py", "role": "python"},
+    {"path": "scripts/data/migrate_data_root_ext4.sh", "role": "tool"}
+  ],
+  "timing_budget": {
+    "note": "Model-free targets on the ext4 base, in seconds. Measured numbers live in receipts written by scripts/checks/engineering_base_timing.py under docs/checks/speech-aware-evidence-acquisition/2026-10-12-engineering-base-timing/. The last three are read from the next flight's batch-status.jsonl, not by the timing script.",
+    "cli_import_seconds": 2.0,
+    "git_status_seconds": 1.0,
+    "knowledge_snapshot_load_seconds": 2.0,
+    "small_file_stat_read_2000_seconds": 3.0,
+    "flight_cli_check_seconds": 60.0,
+    "campaign_prelude_seconds": 300.0,
+    "seal_seconds": 300.0
+  }
+}

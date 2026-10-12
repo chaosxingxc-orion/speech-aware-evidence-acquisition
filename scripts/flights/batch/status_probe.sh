@@ -1,6 +1,8 @@
 #!/bin/bash
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-export SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 cd $MAIN && bash scripts/serving_session.sh status --session-id serving-e21-native-window-flightruntime-np4-max1024-v1 2>&1 | /home/chao/.venvs/speechrl/bin/python -c "
 import json,sys; raw=sys.stdin.read()
 try: d=json.loads(raw)

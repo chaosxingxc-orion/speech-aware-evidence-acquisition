@@ -17,7 +17,9 @@
 # -np 1, -c 24576, --no-cache-prompt, no --slot-prompt-similarity), and refuses with the exact
 # differing field rather than spawning a second server.
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 FRAGMENT=q4km-mmproj-free-slurp-native-bounded-perception-proof-np1-nocache-ctx24k-max512-v1
 SESSION=serving-slurp-native-det-np1-nocache-v1
 S=$DATA/serving/$SESSION

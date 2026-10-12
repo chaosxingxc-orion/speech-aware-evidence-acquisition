@@ -22,7 +22,8 @@
 # Every path is overridable for the test harness (tests/unit/test_serving_swap.py); the defaults are this host's.
 
 SAEA_MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-SAEA_DATA=${SAEA_DATA:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh"  # decision 274: the one data-root authority
+SAEA_DATA=${SAEA_DATA:-${SAEA_DATA_ROOT:-$SAEA_DATA_ROOT_DEFAULT}}
 SAEA_RUNTIME_ROOT=${SAEA_RUNTIME_ROOT:-/home/chao}
 SAEA_SERVING_HOST=127.0.0.1
 SAEA_SERVING_PORT=8080

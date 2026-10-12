@@ -9,7 +9,9 @@
 #   TAG       short tag for the out/err files, e.g. rprim-smoke; ARM=1 marks the 1,080-row arm (records the flight commit, runs the summary)
 #   MSG       commit message file; ALLOW_OUTPUT_CHANGE=1 passes --allow-output-change (a re-pin whose prepared supply legitimately changes, e.g. a roster narrowing)
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
 PY=/home/chao/.venvs/speechrl/bin/python
 SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch

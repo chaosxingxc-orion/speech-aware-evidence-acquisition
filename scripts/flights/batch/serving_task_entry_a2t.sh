@@ -6,7 +6,9 @@
 # session identity from the SLURP np4 session: stop that one first (serving_switch_to_a2t.sh) -- serving_session.sh start
 # refuses while anything listens on the port.
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 SID=serving-a2t-native-role-base-np3-max2048-v3
 S=$DATA/serving/$SID
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src

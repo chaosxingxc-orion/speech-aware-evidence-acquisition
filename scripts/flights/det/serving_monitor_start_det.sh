@@ -1,7 +1,9 @@
 #!/bin/bash
 # Coordinator-owned monitor sampler for the resident session (appends monitor.jsonl every 10 s; the flight receipts summarise it).
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 source /home/chao/.venvs/speechrl/bin/activate
 cd "$MAIN" || exit 1

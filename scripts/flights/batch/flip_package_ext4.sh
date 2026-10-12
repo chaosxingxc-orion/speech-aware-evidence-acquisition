@@ -34,7 +34,8 @@ if [ "$1" = "--inner" ]; then
   M=${SAEA_MAIN:?}; cd "$M" || exit 1
   [ -f ~/.venvs/speechrl/bin/activate ] && source ~/.venvs/speechrl/bin/activate
   export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$M/src
-  export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+  source "$M/scripts/lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+  saea_data_root_init || exit 70
   LOG=$FPE_LOG; PKG=$FPE_PACKAGE
   REFRESH=${SAEA_REFRESH_PINS:-python -B scripts/flights/refresh_registered_plan_pins.py}
   REGCHECK=${SAEA_REGCHECK:-python -B scripts/checks/flight_registration_check.py}

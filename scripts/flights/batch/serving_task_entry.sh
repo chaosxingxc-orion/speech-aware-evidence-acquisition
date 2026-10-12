@@ -4,7 +4,9 @@
 # independent of any Claude Code process or interactive wsl.exe session. Reaps orphans, records a stale stop if needed,
 # starts the wrapper, archives the stale stop record once the new session.json exists, then waits on the wrapper.
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../lib/data_root.sh" || exit 70  # decision 274: the one data-root authority
+saea_data_root_init || exit 70
+DATA=$SAEA_DATA_ROOT
 S=$DATA/serving/serving-slurp-native-candidate-five-train-a-np4-v1
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 source /home/chao/.venvs/speechrl/bin/activate

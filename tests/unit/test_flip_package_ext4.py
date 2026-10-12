@@ -37,6 +37,9 @@ def _make_master(tmp_path: Path, flip_body: str | None = None) -> Path:
     (master / PKG).mkdir(parents=True)
     _git(master, "init", "-q", "-b", "master")
     shutil.copy(WRAPPER, master / "scripts" / "flights" / "batch" / "flip_package_ext4.sh")
+    # decision 274: the inner pass sources the one data-root authority from the worktree.
+    (master / "scripts" / "lib").mkdir(parents=True)
+    shutil.copy(REPO / "scripts" / "lib" / "data_root.sh", master / "scripts" / "lib" / "data_root.sh")
     # commits on the first pass only; stable on the second (flip_ran.txt exists)
     flip = flip_body or (
         "#!/bin/bash\n"
@@ -73,6 +76,8 @@ def _run(master: Path, tmp_path: Path, extra=(), env_extra=None, skip_alive=True
         SAEA_REGCHECK=fakes["SAEA_REGCHECK"],
     )
     env.pop("SAEA_ALLOW_9P_FLIP", None)
+    (tmp_path / "data").mkdir(exist_ok=True)
+    env["SAEA_DATA_ROOT"] = str(tmp_path / "data")  # hermetic: never the host data root
     if skip_alive:
         env["SAEA_FLIP_SKIP_ALIVE_CHECK"] = "1"
     else:
