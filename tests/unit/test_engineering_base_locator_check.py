@@ -34,7 +34,7 @@ def _load_module():
 ebl = _load_module()
 
 LEGACY = "/srv/legacy-e/speechrl-data"
-HOT = "/home/chao/saea-data"
+HOT = "/home/chao/saea-data/speechrl-data"
 GGUF_SHA = "a" * 64
 MMPROJ_SHA = "b" * 64
 
@@ -308,6 +308,33 @@ def test_hot_root_through_a_symlink_to_its_own_ext4_mount_passes(tmp_path: Path)
     ebl.check_hot_filesystems(_host_manifest(tmp_path, runtime=runtime, hot=link, status="cut-over"), mounts, report,
                               require_hot_mounted=True)
     assert report.failures == []
+
+
+def test_hot_root_as_a_directory_inside_its_ext4_mount_passes(tmp_path: Path) -> None:
+    """Decision 296: the hot root is <mount>/speechrl-data, not the mount point itself."""
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
+    mount = tmp_path / "mnt-wsl-saea-data-1"
+    (mount / "speechrl-data").mkdir(parents=True)
+    link = tmp_path / "saea-data"
+    link.symlink_to(mount)
+    report = ebl.Report()
+    mounts = ebl.parse_mountinfo(_mountinfo_for(mount, "ext4"))
+    ebl.check_hot_filesystems(_host_manifest(tmp_path, runtime=runtime, hot=link / "speechrl-data", status="cut-over"), mounts,
+                              report, require_hot_mounted=True)
+    assert report.failures == []
+    assert any("[hot-mount]" in line and str(mount.resolve()) in line for line in report.passes)
+
+
+def test_hot_root_on_the_root_filesystem_only_is_not_a_data_mount(tmp_path: Path) -> None:
+    runtime = tmp_path / "runtime"
+    runtime.mkdir()
+    hot = tmp_path / "hot"
+    hot.mkdir()
+    report = ebl.Report()
+    mounts = ebl.parse_mountinfo("1 0 8:1 / / rw - ext4 /dev/sda rw\n")
+    ebl.check_hot_filesystems(_host_manifest(tmp_path, runtime=runtime, hot=hot), mounts, report, require_hot_mounted=True)
+    assert any("[hot-mount]" in f and "mount point=/" in f for f in report.failures)
 
 
 def test_assets_sizes_and_promotion_receipt_hash(tmp_path: Path) -> None:

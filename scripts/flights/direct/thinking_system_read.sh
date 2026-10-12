@@ -5,7 +5,9 @@
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 source "$MAIN/scripts/flights/batch/read_lib.sh"
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
 cd "$MAIN" || exit 1
 STAGE=${1:-read}
 if [ "$STAGE" = "read" ]; then

@@ -32,6 +32,8 @@ persisted: contact text is reduced to booleans and counts at read time and dropp
 
 from __future__ import annotations
 
+import re
+
 import argparse
 import base64
 import json
@@ -51,6 +53,19 @@ import slurp_direct_fold_b_core_read as base  # noqa: E402
 import thinking_system_family as fam  # noqa: E402
 
 from speech_aware_evidence_acquisition.analysis.paired import resampled_statistic  # noqa: E402
+
+
+def _authority_default() -> str:
+    """The data-root default assigned in scripts/lib/data_root.sh (decision 274: one authority, no literal here)."""
+    lib = Path(__file__).resolve().parents[1] / "lib" / "data_root.sh"
+    match = re.search(r"^SAEA_DATA_ROOT_DEFAULT=(\S+)\s*$", lib.read_text(encoding="utf-8"), re.M)
+    if match is None:
+        raise SystemExit(f"{lib} does not assign SAEA_DATA_ROOT_DEFAULT")
+    return match.group(1)
+
+
+def _data_root_env() -> str:
+    return os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or _authority_default()
 
 SCHEMA_SMOKE = "saea-slurp-system-thinking-core-read-smoke-v1"
 SCHEMA_READ = "saea-slurp-system-thinking-core-read-v1"
@@ -303,7 +318,7 @@ def load_scored(data_root: Path, run_id: str, attempt_id: str) -> dict:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stage", choices=("smoke", "read"), required=True)
-    parser.add_argument("--data-root", type=Path, default=Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")))
+    parser.add_argument("--data-root", type=Path, default=Path(_data_root_env()))
     parser.add_argument("--repo-root", type=Path, default=_REPO)
     parser.add_argument("--analysis-root", type=Path, default=None)
     parser.add_argument("--seed", type=int, default=base.DEFAULT_SEED)

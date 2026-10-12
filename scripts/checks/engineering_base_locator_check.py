@@ -31,7 +31,8 @@ Host rules (``--host``; WSL only; light reads: mountinfo, stat, a few small-file
 * ``hot-fs``     every declared hot path resolves to a mounted ext4 (9p, drvfs, tmpfs, fuse
                  refused); the legacy data root is accepted with a WARN while
                  ``status == pre-cut-over``.
-* ``hot-mount``  the hot root exists and is a mounted ext4 (FAIL after cut-over or with
+* ``hot-mount``  the hot root exists on a mounted ext4 other than the root filesystem (the mount
+                 point itself or a directory inside it, decision 296) (FAIL after cut-over or with
                  ``--require-hot-mounted``; WARN before).
 * ``e-free``     the E: drive (``/mnt/e``) has at least 500 GB free (decision 291: disk 1 grows to 3.6 TB
                  inside E:, so the VHDX can only grow while E: keeps headroom); FAIL below the cap,
@@ -389,16 +390,23 @@ def parse_mountinfo(text: str) -> list[tuple[str, str]]:
     return mounts
 
 
-def fstype_of(path: str, mounts: Sequence[tuple[str, str]]) -> str | None:
-    """The fstype of the longest mount point that prefixes ``path`` (already resolved)."""
+def mount_of(path: str, mounts: Sequence[tuple[str, str]]) -> tuple[str, str] | None:
+    """``(mount point, fstype)`` of the longest mount point that prefixes ``path`` (already resolved)."""
 
-    best: tuple[int, str] | None = None
+    best: tuple[str, str] | None = None
     for point, fstype in mounts:
         prefix = point.rstrip("/") + "/"
         if path == point or path.startswith(prefix) or point == "/":
-            if best is None or len(point) > best[0]:
-                best = (len(point), fstype)
-    return None if best is None else best[1]
+            if best is None or len(point) > len(best[0]):
+                best = (point, fstype)
+    return best
+
+
+def fstype_of(path: str, mounts: Sequence[tuple[str, str]]) -> str | None:
+    """The fstype of the longest mount point that prefixes ``path`` (already resolved)."""
+
+    found = mount_of(path, mounts)
+    return None if found is None else found[1]
 
 
 def check_hot_filesystems(manifest: Mapping, mounts: Sequence[tuple[str, str]], report: Report, *, require_hot_mounted: bool) -> None:
@@ -421,13 +429,17 @@ def check_hot_filesystems(manifest: Mapping, mounts: Sequence[tuple[str, str]], 
             bad += 1
     hot = manifest["roots"]["hot"]["path"]
     resolved_hot = os.path.realpath(hot)
-    hot_fs = fstype_of(resolved_hot, mounts) if os.path.isdir(resolved_hot) else None
-    mounted_here = any(point == resolved_hot for point, _ in mounts)
-    if hot_fs == "ext4" and mounted_here:
-        report.ok("hot-mount", f"hot root {hot} -> {resolved_hot} is a mounted ext4")
+    found = mount_of(resolved_hot, mounts) if os.path.isdir(resolved_hot) else None
+    hot_fs = None if found is None else found[1]
+    # Decision 296: the hot root is a directory INSIDE the disk-1 mount (/mnt/wsl/saea-data-1/speechrl-data), so the rule is
+    # "on a mounted ext4 other than the root filesystem" -- an unmounted VHDX leaves the path absent or on the /mnt/wsl tmpfs.
+    mount_point = None if found is None else found[0]
+    on_data_mount = hot_fs == "ext4" and mount_point not in (None, "/")
+    if on_data_mount:
+        report.ok("hot-mount", f"hot root {hot} -> {resolved_hot} is on the mounted ext4 {mount_point}")
     else:
-        message = (f"hot root {hot} -> {resolved_hot} is not a mounted ext4 "
-                   f"(exists={os.path.isdir(resolved_hot)}, fstype={hot_fs}, own mount point={mounted_here})")
+        message = (f"hot root {hot} -> {resolved_hot} is not on a mounted ext4 data disk "
+                   f"(exists={os.path.isdir(resolved_hot)}, fstype={hot_fs}, mount point={mount_point})")
         if status == "cut-over" or require_hot_mounted:
             report.fail("hot-mount", message)
             bad += 1

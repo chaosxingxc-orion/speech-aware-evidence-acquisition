@@ -352,3 +352,11 @@ list the unregistered directories for a separate owner decision. Decision 282.
   about 500 GB of NTFS headroom. Not reformatting E: (1.6 TB would have to move first and Windows would lose the
   disk). `wsl --mount` is not persistent across reboots or `wsl --shutdown`; the logon task re-attaches it and every
   live entry script refuses to start when it is absent (section 8).
+
+## Amendment 296 (coordinator, 2026-10-12)
+
+The hot data root is `/home/chao/saea-data/speechrl-data`, the directory inside the disk-1 mount (`/mnt/wsl/saea-data-1/speechrl-data`
+behind the symlink `/home/chao/saea-data`), not the mount root: name parity with the E: layout and the umbrella's `SPEECHRL_DATA_DIR`, and
+the static migration lanes already copied there. Every mention of `/home/chao/saea-data` as the data root above reads as that directory;
+the locator `hot-mount` rule accepts a directory on a mounted ext4 other than the root filesystem. Migration receipts are written outside
+the data root during the verification pass (the verifier compares full manifests) and copied into `<hot>/receipts/migration-ext4/` after it.

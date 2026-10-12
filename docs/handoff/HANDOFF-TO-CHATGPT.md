@@ -1,6 +1,26 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T12:30:07Z
+Last refreshed: 2026-10-12T14:03:36Z
+
+## Literal sweep + loop note merged; decision 296 hot-root relayout done; final verification pass SAEA-Cutover-296 waiting on the static lanes (2026-10-12T14:03:36Z, Fable 5.1 root)
+
+Merged: the literal sweep (3cdc1aca3, 361 files, 289/290 B: no `/mnt/e` literal survives outside immutable `docs/` history; the locator
+ratchet refuses new ones) and the loop results note (d4c50b887; loop CLOSED, no admitted state; two proposer defects left open). Decision
+296 (coordinator under 274/284): the hot data root is `/home/chao/saea-data/speechrl-data` (inside the disk-1 mount, not the mount root).
+The first hot-phase task was stopped at 13:30Z after verifying runs / analysis / knowledge at the mount root (its later phases would have
+duplicated the lane copies and risked the 2 TB disk); those subtrees were moved under `speechrl-data/`, the symlinks re-pointed, the
+receipts parked at `/home/chao/saea-migration/receipts-ext4/`. Authority (`SAEA_HOT_DATA_ROOT`), manifest (`roots.hot`), migration default
+and the locator `hot-mount` rule (a directory on a mounted ext4 other than the root fs) follow 296; locator host mode PASS pre-cut-over.
+Task SAEA-Cutover-296 (`/home/chao/saea-queue/cutover_hot_296.sh`) waits for STATIC_DONE + LANE2_DONE (lane 1 on `datasets`, about 600 of
+1,450 GB by 13:21Z), then rsyncs + sha256-verifies every subtree into the hot root (hot, runtime minus system-text-search, derived, explicit
+rest list, datasets + models), drops the deletion set from the ext4 copy, copies the receipts into `<hot>/receipts/migration-ext4/` and
+writes `CUTOVER_COPY_DONE`. Only then: flip `SAEA_DATA_ROOT_DEFAULT` + `roots.data_root.current` + `~/.bashrc` + queue wrappers + the
+umbrella client-guide line; locator `--host --require-hot-mounted`; restart Instruct serving on the new root; timing receipt; the
+verification manifests go to the owner (requested explicitly) before any E: deletion (284 step 3; 291 disk growth to 3.6 TB). Serving is
+OFF and the GPU idle until then (288 A). After the cut-over: 268 on the unified base (serving tasks for the think-budget session,
+countersign seven rows, mint, ext4 flip, swap to think-budget-np4, smoke -> sign-off -> lock + aa), then P3/P4/285 as registered.
+
+Superseded stamp: 2026-10-12T12:30:07Z
 
 ## Loop CLOSED after i3 (no admitted state); data-root cut-over RUNNING (decision 284/288); 268 ready behind the cut-over (2026-10-12T12:30:07Z, Fable 5.1 root)
 

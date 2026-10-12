@@ -10,7 +10,9 @@
 # changes of design decision 282 (thinking_budget_tokens pass-through) being merged and the package re-derived (README, "Prerequisites").
 # --allow-output-change must never be passed.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 DIRD=$MAIN/scripts/flights/direct
 SLUG=thinking-system-fold-b

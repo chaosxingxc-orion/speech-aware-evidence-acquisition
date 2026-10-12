@@ -2288,3 +2288,57 @@ candidate that cleared the 1.5 pp predicted bar -- every fitted rule read +0.00 
 one-pass flips) is complete and reusable for a different operator class. Parent for any continuation: s0-lock-v2.2. Per 269 A: results
 note (Opus) and this ledger entry; no Fold A / DEV flights for refused states. Rows closed; GPU idle from 12:05Z; the data-root cut-over
 (288 A) starts now.
+
+### Literal sweep merged (289/290 B); loop results note merged; decision 296 executed (hot-root relayout); final verification pass queued (coordinator, 2026-10-12 14:05Z)
+
+- **Literal sweep merged** (`sonnet/data-root-literal-sweep`, 361 files, merge commit 3cdc1aca3; the one conflict in `core/config.py`
+  resolved by keeping both the reasoning-knob fold and the placeholder expansion; `test_config_composition` 92, `test_thinking_harness_knobs`
+  39 and `test_data_root_placeholder` 10 pass): the 341 carriers of the `/mnt/e/...` literal now resolve through the data-root authority --
+  `.sh` scripts source `scripts/lib/data_root.sh`, `.py` scripts read `SAEA_DATA_ROOT` then `SPEECHRL_DATA_DIR`, config fragments carry the
+  placeholder `${SAEA_DATA_ROOT}` (hashed unexpanded, expanded for consumers, collapsed back by `_canonical_hash`); the locator ratchet
+  baseline is empty and the check refuses any new literal; host mode gains the "E: free >= 500 GB" rule (291). Identity consequences: the
+  config text of 90 fragments changed, so their pins move -- flown cells keep their identity at their flight commits (A2T native-role, E21
+  window cells, the SLURP encoding protocols); unflown cells (A2T stage-3 all-off, E21/E22 all-off and direct, the e21 packet experiments,
+  the A2T knowledge compile and unflown SLURP preparation protocols) re-register at their next flip; four registered-hash tests stay red
+  until those re-pins (`test_e21_native_window_fit_registration`, `..._registration_prepare`, `test_e22_alloff_cell_registration`,
+  `test_e41_bounded_perception_note` -- the e41 one is a flown package and must not be regenerated). 1,826 files under `docs/` keep the
+  literal as immutable history; four Python helpers under `docs/` that live scripts import and a MANIFEST pins (`falsifier.py`,
+  `timing.py`, `score_r0bias.py`, `copycount_r0bias.py`) break without a compatibility link and need English successors under
+  `scripts/` (open item). Seven carriers merged after the sweep's branch point (the 268 package: `thinking_system_{flip,read,mint_receipt}`,
+  `batch_chain_thinking_system.sh`, the think-budget serving entry/monitor, `slurp_system_thinking_core_read.py`) were caught by the
+  ratchet and routed through the authority in the same commit (tooling, not pinned bytes; the 268 pins are unchanged).
+- **296 (RULED by the coordinator under 274/284, EXECUTED):** the hot data root is `/home/chao/saea-data/speechrl-data` -- the directory
+  inside the disk-1 mount (`/mnt/wsl/saea-data-1/speechrl-data` behind the symlink `/home/chao/saea-data`), name parity with the E: layout
+  and the umbrella's `SPEECHRL_DATA_DIR` -- not the mount root. The static lanes already copied there; the 274 tooling targeted the mount
+  root. Execution: the hot cut-over task SAEA-Cutover-Hot-284 (started 12:30Z) had verified `runs` (27,402 files, 84.3 GB, 2,487 s),
+  `analysis` (4,863 files, 4.4 GB, 61 symlinks re-pointed) and `knowledge` (200 files, 0.6 GB) at the mount root and was STOPPED by the
+  coordinator at 13:30Z during `prepared` -- its later phases (runtime, derived, rest) would have duplicated lane 1/2 copies at the mount
+  root (derived alone is hundreds of GB) and risked filling the 2 TB disk. Relayout 13:42Z (same filesystem, instant): the three verified
+  subtrees moved under `speechrl-data/`, the partial `prepared` copy dropped (lane 2 writes the final one), the 61 symlinks re-pointed
+  again under `speechrl-data/`, and the run's receipts moved OUT of the data root to `/home/chao/saea-migration/receipts-ext4/` -- the
+  verifier compares full sha256 manifests, so receipts inside `<hot>/receipts/` would make the `receipts` subtree MISMATCH. Authority and
+  manifest updated (`SAEA_HOT_DATA_ROOT`, `roots.hot.path` / `resolves_to`, the migration script's default target); the locator rule
+  `hot-mount` now reads "on a mounted ext4 other than the root filesystem" (mount point or a directory inside it; two new unit tests);
+  host mode PASS (0 failures, the pre-cut-over warning only).
+- **Final verification pass** = task SAEA-Cutover-296 (`/home/chao/saea-queue/cutover_hot_296.sh`, registered 13:45Z): waits for
+  STATIC_DONE + LANE2_DONE (lane 1 at `datasets`, 603 GB of about 1,450 GB copied by 13:21Z), then runs the 274 tooling with
+  `--target <hot> --receipt-dir /home/chao/saea-migration/receipts-ext4 --execute --jobs 20` over hot (runs analysis knowledge prepared
+  coordination serving attempts locks), runtime minus `system-text-search`, derived, an explicit rest list (archive logs program-archives
+  research settlements telemetry working the four `saea-slurp-*-read-*` scratch roots, `.bin`, the six loose telemetry/console files),
+  then datasets + models -- every subtree rsynced (a no-op where a lane already copied it) and verified by sha256 manifests on both sides;
+  then the deletion set is dropped from the ext4 copy (`_repro` 30 GB, `system-text-search` 32 GB never copied, `survey-*` 7.6 GB never
+  copied, the seventeen ChatGPT-line coordination packages out of `coordination` 44 GB), the receipts are copied into
+  `<hot>/receipts/migration-ext4/`, and `CUTOVER_COPY_DONE` is written. Only after that marker: flip `SAEA_DATA_ROOT_DEFAULT` + the
+  manifest's `roots.data_root.current` (the migrate script refuses a target that is the live root) + `~/.bashrc` + queue wrappers +
+  the umbrella client-guide line, locator `--host --require-hot-mounted`, restart Instruct serving on the new root, timing receipt, and
+  the verification manifests go to the owner before any E: deletion (284 step 3, 291 disk growth).
+- **Loop results note** merged (d4c50b887): `docs/results/2026-10-12-slurp-tfrl-loop-three-iterations-read.md` (Opus) + results-ledger
+  entry. Corrections: the i1 lock column reads 64.00 / 82.31 (64.34 / 82.41 is the system of record's Fold B level); every offline
+  deliver rule edited 0 rows (rules that never fired, not measured nulls). Two defects found, left open for the next loop use: (1) the
+  typed proposer's per-carrier class set (construction / supply / delivery+scope) is dropped by the receipt builder, so the validator's
+  class check never ran and at least 6 of the 9 delivery candidates came from carriers not offered delivery -- the construction and
+  supply classes were never actually proposed, so the loop did not test them; the evidence against construction remains the 265
+  pre-read; (2) the typed receipt field `sample_id_sha_prefix` holds the response-hash prefix.
+- **Operational lesson (recorded in memory):** two inline `bash -c` variable losses in one hour (a `for f in ...` test loop ran the
+  full suite three times on /mnt/d; a `du -sh "$S/$d"` became `du -sh /` and walked /mnt/c over 9p during the migration); every WSL
+  command that carries a variable runs from a scratchpad script file, no exceptions.

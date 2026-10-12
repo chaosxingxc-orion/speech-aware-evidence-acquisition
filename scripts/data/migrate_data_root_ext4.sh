@@ -17,7 +17,7 @@
 #               all      hot, runtime, derived, rest in that order (default)
 #   --subtrees  an explicit comma list instead of --phase
 #   --source    default: $SAEA_LEGACY_DATA_ROOT from scripts/lib/data_root.sh
-#   --target    default: $SAEA_HOT_DATA_ROOT from scripts/lib/data_root.sh (/home/chao/saea-data)
+#   --target    default: $SAEA_HOT_DATA_ROOT from scripts/lib/data_root.sh (/home/chao/saea-data/speechrl-data, decision 296)
 #   --receipt-dir  default: <target>/receipts/migration-ext4 (one directory per run, never overwritten)
 #   --jobs      parallel sha256 workers (default 8; the 2026-09-03 rule allows 8 during a campaign, 20 idle)
 #   --measure   dry-run only: also run `rsync --dry-run --stats` per subtree (walks 9p: slow)
