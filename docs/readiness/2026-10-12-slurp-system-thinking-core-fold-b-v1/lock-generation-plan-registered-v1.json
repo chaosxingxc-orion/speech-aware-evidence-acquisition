@@ -1,0 +1,73 @@
+{
+  "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
+  "composed_config_hash": "3c0a8e404d355bbca2eec4be708d9f856418809df38928ca0ec34a8cdbc258b2",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-generation-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 5.1,
+    "planned_model_calls": 2160,
+    "planned_speech_audio_seconds": 6310,
+    "protocol_hash": "6bedba034de6d1a02b32d6e99c97a9557ec39410c7975947658cd916c12d5884",
+    "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "Shared core.flight.cli campaign over configs/campaign/slurp-native-stage3-thinking-system-fold-b-lock-v1.json on the resident Thinking session (serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1); one official score over the complete manifest at finalize. Flown by scripts/flights/direct/batch_chain_thinking_system.sh.",
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "experiment": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 8640,
+    "generation_calls_cap": 2160,
+    "gpu_hours_fit_inclusive": 5.1,
+    "native_task_contract_calls_cap": 2160,
+    "official_complete_scoring_jobs": 1,
+    "repeated_speech_audio_seconds_cap": 6310
+  },
+  "one_factor": "The core: the Instruct model fragment and its speech packets are replaced by the Thinking core (q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1, budget 3072 + reserve 1024 = cap 4096). The system, the knowledge supply, the sealed query vectors and the roster are the loop's plain lock on TRAIN Fold B.",
+  "plan_kind": "generation",
+  "preparation_base_commit": "8a97939a352af74b984a8f1156f7c979b7a7c5b8",
+  "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "e22ad9464bf99513ebe84ab7125761c754fe7bda628c6ac44ccf39e67067d59f"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1: Thinking system arm (lock) of the 268-B read.",
+  "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
+  "schema": "saea-registered-generation-plan-v1",
+  "scoring": "One first complete official score after a successful seal; no partial score.",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "thinking_policy": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  },
+  "unused_budget_is_not_attempt_authority": true
+}

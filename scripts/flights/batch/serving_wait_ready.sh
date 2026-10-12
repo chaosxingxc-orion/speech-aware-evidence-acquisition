@@ -3,7 +3,7 @@
 # logged "np4 back: rc 0" while slurp_wait_ready.sh had printed SESSION STOPPED EARLY -- the old waits exited 0 on an
 # early stop and on a timeout, and took the PREVIOUS session's stop record for this start's).
 #
-#   serving_wait_ready.sh <slurp-np4|a2t-np3|e21-np4|det-np1|think-np4> [--since EPOCH] [--timeout SEC] [--poll SEC]
+#   serving_wait_ready.sh <slurp-np4|a2t-np3|e21-np4|det-np1|think-np4|think-budget-np4> [--since EPOCH] [--timeout SEC] [--poll SEC]
 #
 # READY (exit 0) only when serving_ready_probe.py proves all of: session.json of this start (started at or after
 # --since), no session-stop.json (a stale one from an earlier session must have been archived by the task entry,

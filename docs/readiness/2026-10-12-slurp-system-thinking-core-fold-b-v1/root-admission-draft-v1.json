@@ -1,0 +1,97 @@
+{
+  "_draft_note": "A DRAFT for the coordinator to mint on the data root with scripts/flights/direct/thinking_system_mint_receipt.py. It authorises nothing while its status is not 'decided'.",
+  "antecedents": {
+    "analysis_recipe": {
+      "path": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/analysis-recipe-v1.json",
+      "sha256": "17615be592c586c72c0231217bfb454d8e84dbe432c85cd7fb3f5cd6e1f49a74"
+    },
+    "protocol": {
+      "path": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
+      "sha256": "e22ad9464bf99513ebe84ab7125761c754fe7bda628c6ac44ccf39e67067d59f"
+    },
+    "registered_facts": {
+      "path": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/registered-facts-v1.json",
+      "sha256": "a66ee72c6cee6a53492ce2311af07e85ed0217f3f81b6a8900b6be0109eed799"
+    },
+    "registration_base_commit": "8a97939a352af74b984a8f1156f7c979b7a7c5b8"
+  },
+  "authorization_basis": "Owner decision 268 B (2026-10-12); docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md.",
+  "budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 8640,
+    "generation_calls_cap": 2160,
+    "gpu_hours_fit_inclusive": 5.1,
+    "native_task_contract_calls_cap": 2160,
+    "official_complete_scoring_jobs": 1,
+    "paid_api_calls": 0,
+    "plan_budget_is_run_cumulative": true,
+    "repeated_speech_audio_seconds_cap": 6310,
+    "smoke": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 32,
+      "generation_calls_cap": 8,
+      "gpu_hours_fit_inclusive": 0.5,
+      "native_task_contract_calls_cap": 8,
+      "official_complete_scoring_jobs": 0,
+      "repeated_speech_audio_seconds_cap": 21
+    },
+    "twin": {
+      "asr_calls": 0,
+      "ceilings_are_not_targets": true,
+      "encoder_calls": 0,
+      "fit_endpoint_calls_cap": 8640,
+      "generation_calls_cap": 2160,
+      "gpu_hours_fit_inclusive": 5.1,
+      "native_task_contract_calls_cap": 2160,
+      "official_complete_scoring_jobs": 1,
+      "repeated_speech_audio_seconds_cap": 6310
+    }
+  },
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "decision": "Fly the locked SLURP system on the Thinking core on TRAIN Fold B: four-row smoke, the lock arm and its request-identical twin.",
+  "decision_id": "slurp-system-thinking-core-fold-b-admission-v1",
+  "eligible_attempt_ids": [
+    "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-generation-v1",
+    "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-fit-v1",
+    "attempt-slurp-native-stage3-thinking-system-fold-b-lock-generation-v1",
+    "attempt-slurp-native-stage3-thinking-system-fold-b-lock-fit-v1",
+    "attempt-slurp-native-stage3-thinking-system-fold-b-aa-generation-v1",
+    "attempt-slurp-native-stage3-thinking-system-fold-b-aa-fit-v1"
+  ],
+  "eligible_run_ids": [
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1",
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-FIT-V1",
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1",
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-FIT-V1"
+  ],
+  "not_authorized": [
+    "any flight before the cells are flipped and the receipt is minted",
+    "starting or touching any serving session outside the registered swap",
+    "any ASR, transcript, encoder or paid-API contact",
+    "--allow-output-change on the re-pin tool",
+    "any change beyond the registered core swap and Thinking knobs",
+    "Fold A, DEV or test-split contact"
+  ],
+  "owner": "root",
+  "population": {
+    "count": 1080,
+    "fold_a_contact_authorized": false,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
+    "split_role": "discovery",
+    "test_contact_authorized": false
+  },
+  "recorded_at_utc": null,
+  "schema": "saea-campaign-decision-v1",
+  "service": {
+    "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "no_child_start_stop": true
+  },
+  "status": "DRAFT-NOT-MINTED"
+}

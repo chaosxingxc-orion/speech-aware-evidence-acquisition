@@ -1,0 +1,100 @@
+{
+  "arms": {
+    "aa": "its request-identical twin (separate cell, same chain)",
+    "lock": "the Thinking system arm"
+  },
+  "blockers": [],
+  "cells": {
+    "aa": {
+      "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-generation-v1",
+      "cell": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
+      "composed_config_hash": "affa273f05e05368887b34b0417d01b8a8c19ac0e14546ab701ebaae1dbfbff6",
+      "experiment": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-FIT-V1",
+      "protocol_hash": "24dc321f9b2fd16cd9ef54e1b5dfdf74a86e962cce290ead64b894a8ea9f7fd7",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "lock": {
+      "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-generation-v1",
+      "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
+      "composed_config_hash": "3c0a8e404d355bbca2eec4be708d9f856418809df38928ca0ec34a8cdbc258b2",
+      "experiment": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1",
+      "protocol_hash": "6bedba034de6d1a02b32d6e99c97a9557ec39410c7975947658cd916c12d5884",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
+      "composed_config_hash": "729c1eb710d67b6e2855790a2bf2bfebede45d26fe0a092de86ae1f5f81bf6d7",
+      "experiment": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-FIT-V1",
+      "protocol_hash": "cda99b285a5972808f394828da970a00b6a0f2c4d87db79aeab99c2edddf4fea",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "decision_rule_fixed_here": "The verdict words and their thresholds are fixed in scripts/analysis/slurp_system_thinking_core_read.py and in this package's README: HARM, TRANSFERS-ABOVE-BAR, PARTIAL, NO-TRANSFER at the 2.5 pp cross-flight bar with the in-chain twin offset.",
+  "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration per run id; run-cumulative budgets.",
+  "findings": [
+    {
+      "finding": "The engineering design's c3 shape (Perception + lock + in-row twin aa in one flight) cannot be compiled today: rails.consumption_module refuses a supply frame with no supply column (\"consumption_module.supply_frame is declared but no supply column is\") and rails.supply_variants admits only 1 to 6 candidate arms. The twin is therefore a second cell, request-identical to the arm, flown in the same chain (the 266-E replicate and the cell1 / gepacell twins are the precedent). Two c2 passes cost 4 contacts per row; the in-row c3 costs 3.",
+      "id": "twin-is-a-separate-cell",
+      "remedy": "decision 282 may admit a candidate-less twin group; the package is then re-derived with fam.TWIN_SHAPE = in-row."
+    },
+    {
+      "finding": "Native role contacts require preserved wire metadata (reproduction.ojw.native_roles._wire_turn: \"metered completion requires preserved wire metadata\"), so preserve_wire_responses must be true on the module graph. On the Thinking core the preserved wire bytes carry message.reasoning_content, which therefore lands in the sealed trace on the data root (never in Git, never delivered, never scored). Owner constraint (iii) of 266-E (reasoning text never persisted beyond hashes) cannot hold for a native cell.",
+      "id": "native-roles-require-preserved-wire",
+      "remedy": "owner acknowledgement, or an engineering change that strips reasoning_content before the wire bytes are sealed (hash semantics change)."
+    },
+    {
+      "finding": "At the registered completion cap 4096 the live prompt limit is 17406 tokens (24,576 - 3,072 reserve - 4096 - 2); the measured Solver prompt maximum on the Instruct lock is 14641, so no row is compacted or abstained by compact-or-abstain. At the superseded cap 8,192 the limit would be 13310 and the heaviest rows would be.",
+      "id": "context-fit-at-the-registered-cap",
+      "remedy": "none needed at 4,096; the live phase FIT re-measures on the real supply."
+    },
+    {
+      "finding": "core.model.request_types.ALLOWED_DECODING_KEYS does not yet list thinking_budget_tokens and the native-episode loader has no reasoning block or reasoning_context_policy (design decision 282). The knobs are registered in the model fragment (decoding_params.thinking_budget_tokens, --reasoning-budget-message), in each baseline's top-level thinking_policy block and in the family constants; compose() accepts them, a flight cannot honour them until the harness lands.",
+      "id": "harness-pass-through-pending",
+      "remedy": "merge the harness (decision 282), re-run thinking_system_derive_cells.py and thinking_system_write_registration.py, then countersign."
+    },
+    {
+      "finding": "The forced-close sentence is the design's wording of the Qwen3 technical report's stop sentence, flagged unverified in the design (section 1.2 / 6 (d)).",
+      "id": "budget-message-wording-unverified",
+      "remedy": "verify verbatim against arXiv:2505.09388 before a flight pins the fragment; change fam.THINK_BUDGET_MESSAGE and the model fragment together."
+    },
+    {
+      "finding": "The design recommends a 32-row smoke (the 266-E four-row smoke overstated cost 1.8x with one runaway in four); this registration keeps the loop's own four Fold B rows as ordered.",
+      "id": "smoke-size",
+      "remedy": "a larger smoke needs a prefix roster receipt and a SMOKE_ROWS change in the family."
+    },
+    {
+      "finding": "The new geometry target think-budget-np4 (scripts/flights/batch/serving_lib.sh) names the Windows scheduled tasks SAEA-Serving-THINKB and SAEA-Monitor-THINKB, which the coordinator registers (saea_task.ps1 pattern) before the first swap.",
+      "id": "swap-target-needs-scheduled-tasks",
+      "remedy": "register the two tasks; the entry scripts are scripts/flights/direct/serving_task_entry_think_budget.sh and serving_monitor_start_think_budget.sh."
+    }
+  ],
+  "one_factor": "the core (Thinking model fragment with a reasoning budget, its own speech packets); the system is the loop's plain lock on TRAIN Fold B",
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
+    "No supply arm, no template column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "The system is the loop's plain lock as it flies on the Instruct core: the knowledge supply, the module graph, the post-processing and the roster are not changed. The core is the ONE factor.",
+    "No reasoning text is ever delivered, scored or carried to another node (reasoning_context_policy drop-reasoning-v1); a delivered reasoning marker stops the flight.",
+    "No benefit claim and no admission: claims_benefit is false for every cell; the read measures transfer of a core lever.",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the harness of design decision 282 is merged, the package is re-derived and the cells are flipped.",
+    "No session is started by this registration. No paper-scale profile. No system-level claim."
+  ],
+  "protocol_id": "slurp-system-thinking-core-fold-b-protocol-v1",
+  "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "study_commit_at_registration": "8a97939a352af74b984a8f1156f7c979b7a7c5b8",
+  "the_question": "Does the +11.9 pp SLU-F1 / +4.35 intent lever of the bare Thinking core (266-E) stack on the locked system? The Thinking system arm is read against the Instruct lock column of loop iteration 3 (64.34 / 82.41) on the same 1,080 Fold B rows, with the in-chain twin as the null."
+}

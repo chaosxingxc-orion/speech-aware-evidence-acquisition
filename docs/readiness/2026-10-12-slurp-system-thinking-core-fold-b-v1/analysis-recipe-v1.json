@@ -1,0 +1,57 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md (decision 268 B); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "cell_kind": "CROSS-FLIGHT TRANSFER READ -- Thinking system arm vs the Instruct lock column, with an in-chain twin; claim ceiling none",
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "comparators": {
+    "bare_thinking_core": {
+      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-generation-rec1-v1",
+      "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1"
+    },
+    "instruct_lock_column": {
+      "arm": "lock",
+      "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i3-fold-b-generation-v1",
+      "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-V1"
+    }
+  },
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": "CPU official scorer jobs over derived copies only",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flights themselves)",
+  "measurement_design": "cross-flight-with-in-chain-replicate",
+  "read_run_id": "SAEA-SLURP-SYSTEM-THINKING-CORE-FOLD-B-READ-V1",
+  "recipe_id": "slurp-system-thinking-core-fold-b-read-v1",
+  "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
+  "roster": {
+    "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "rows": 1080,
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
+    "fit": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1",
+    "read": "SAEA-SLURP-SYSTEM-THINKING-CORE-FOLD-B-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-FIT-V1",
+    "twin": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
+    "twin_fit": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_score": "one complete official scoring per arm (core.scoring_batch; never sharded); the two comparators are already scored at their seals",
+    "2_read": "python -B scripts/analysis/slurp_system_thinking_core_read.py --stage read --data-root $SPEECHRL_DATA_DIR (through scripts/flights/direct/thinking_system_read.sh)",
+    "smoke": "python -B scripts/analysis/slurp_system_thinking_core_read.py --stage smoke (per-node decode cost; no countersignature; the sign-off for the arms)"
+  },
+  "verdict_words": [
+    "TRANSFERS-ABOVE-BAR",
+    "PARTIAL",
+    "NO-TRANSFER",
+    "HARM"
+  ],
+  "what_is_not_here": "No margins block and no admission: nothing is locked here."
+}

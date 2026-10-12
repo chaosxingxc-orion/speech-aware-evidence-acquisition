@@ -1,0 +1,15 @@
+#!/bin/bash
+# Read the 268-B read (model-free): refuses unless the READ row is root countersigned, then runs the preregistered reader.
+#   bash scripts/flights/direct/thinking_system_read.sh smoke   # per-node decode cost of the sealed smoke (no countersignature: nothing is scored)
+#   bash scripts/flights/direct/thinking_system_read.sh         # the full read, after BOTH arms are sealed
+PY=/home/chao/.venvs/speechrl/bin/python
+MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
+source "$MAIN/scripts/flights/batch/read_lib.sh"
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+cd "$MAIN" || exit 1
+STAGE=${1:-read}
+if [ "$STAGE" = "read" ]; then
+  read_require_countersigned docs/exposure-ledger.md SAEA-SLURP-SYSTEM-THINKING-CORE-FOLD-B-READ-V1 || exit 3
+fi
+$PY -B scripts/analysis/slurp_system_thinking_core_read.py --stage "$STAGE" --data-root "$SPEECHRL_DATA_DIR" --repo-root "$MAIN" || exit 2
+echo "268-B $STAGE done $(date -u +%T)"
