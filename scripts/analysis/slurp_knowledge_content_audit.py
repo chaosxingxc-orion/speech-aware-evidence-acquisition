@@ -97,7 +97,7 @@ READ_ID = "SAEA-SLURP-MF-KNOWLEDGE-CONTENT-AUDIT-V1"
 RECIPE = "slurp-knowledge-content-audit-v1"
 SCHEMA = "saea-slurp-knowledge-content-audit-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ANALYSIS_DIR = "analysis/SAEA-SLURP-KNOWLEDGE-CONTENT-AUDIT-V1"
 
 IB_DIM, POOL_DIM = "intent-boundary", "content"

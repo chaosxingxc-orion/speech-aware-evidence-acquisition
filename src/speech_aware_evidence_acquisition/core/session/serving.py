@@ -1155,6 +1155,7 @@ def resolve_serving_profile(repo_root: Path, model_fragment: str) -> dict[str, o
         runtime_receipt_relpath,
     )
     from . import load_runtime_receipt  # noqa: PLC0415 (CLI-only)
+    from ..data_root_placeholder import expand_data_root  # noqa: PLC0415 (CLI-only)
     from .paths import _sha256_file  # noqa: PLC0415 (CLI-only)
 
     values = read_fragment(repo_root, "model", model_fragment)
@@ -1218,7 +1219,7 @@ def resolve_serving_profile(repo_root: Path, model_fragment: str) -> dict[str, o
             server_args, slots=slots, context_tokens=slots * slot_tokens
         ),
         "server_env": {
-            str(key): str(value) for key, value in dict(values.get("server_env", {})).items()
+            str(key): str(value) for key, value in dict(expand_data_root(values.get("server_env", {}))).items()
         },
         "runtime_receipt": runtime_receipt,
         "runtime_receipt_relpath": runtime_receipt_relpath(values),

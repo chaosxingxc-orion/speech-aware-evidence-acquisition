@@ -19,6 +19,7 @@ Refuses to overwrite an existing receipt. Writes nothing with ``--dry``.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -27,7 +28,7 @@ import json
 import os
 from datetime import datetime, timezone
 
-DATA = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ROOT = os.environ.get("SAEA_STUDY_ROOT", "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition")
 PACKAGE = "docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1"
 DRAFT = PACKAGE + "/root-admission-sealonly-draft-v1.json"

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Owner decisions 77 / 160 / 164: fly the knowledge wave on the SLURP np4 geometry through the batch driver as
 # ONE chain with ONE shared in-chain A/A (SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1, the retained AGREE arm's own
 # bytes), in the order the A/A -> W1 -> W3a -> W4, each arm read against that A/A.
@@ -25,7 +27,7 @@
 # whose receipt does not list every run id eligible.
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 REPO=/home/chao/saea-worktrees/fable-batch-flight
 LOG=/home/chao/batch-chain-wave.out
 QUEUE=/home/chao/batch-queue.json

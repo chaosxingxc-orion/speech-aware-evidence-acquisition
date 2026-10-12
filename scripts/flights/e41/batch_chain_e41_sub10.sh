@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Decisions 77 / 91 / 158: fly the E41 sub10 re-read (one step, no smoke; flies ONLY after the E41 dry-run read held R1-R3)
 # on the E21 serving geometry through the batch driver. Mirrors scripts/flights/batch/batch_chain_e39b.sh, with the
 # serving-swap preconditions of scripts/flights/det/batch_chain_det.sh made explicit for the E21 geometry.
@@ -18,7 +20,7 @@
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 LOG=/home/chao/batch-chain-e41-sub10.out
 COMMIT=$(cat /home/chao/e41-sub10-flight-commit.txt) || exit 1
 export BATCH_SESSION=serving-e21-native-window-flightruntime-np4-max1024-v1

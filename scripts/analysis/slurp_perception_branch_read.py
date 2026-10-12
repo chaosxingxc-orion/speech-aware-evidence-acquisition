@@ -53,6 +53,7 @@ statistical functions are what a caller-side script (or a test) should import an
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -1354,7 +1355,7 @@ def main(argv: list[str] | None = None) -> int:
     recipe.add_argument("--roster", help="roster receipt relpath (repo-root relative)")
     recipe.add_argument("--level", type=int, choices=(1, 2), default=2)
     recipe.add_argument("--analysis-root", help="READ output directory")
-    recipe.add_argument("--data-root", default="/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+    recipe.add_argument("--data-root", default=(os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
     recipe.add_argument("--repo-root", default=str(REPO_ROOT))
     recipe.add_argument("--lock", default="/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json")
     recipe.add_argument("--scorer-id", default=DEFAULT_SCORER_ID)

@@ -30,6 +30,7 @@ byte-for-byte, like every other sealed analysis driver in this repository).
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -55,7 +56,7 @@ from speech_aware_evidence_acquisition.data.lock import load_lock  # noqa: E402
 from speech_aware_evidence_acquisition.data.slurp import load_slurp_split  # noqa: E402
 
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 READ_DESIGNS = {
     "same-flight-supply-variant": ("same-flight-supply-variant", 1080),
     "cross-flight": ("cross-flight-with-in-chain-replicate", 1000),

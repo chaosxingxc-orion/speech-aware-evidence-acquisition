@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The three label-free preparations of the SLURP test SAMPLE SLURP-TEST-SAMPLE-3010-V1, in order, through the
 # existing generic runners. Owner decision 156 of 2026-09-27 (row 156 of
 # docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md): the preparations may run ahead of the
@@ -48,7 +50,7 @@ case "$MODE:$STAGE" in
 esac
 
 REPO=${PREP_REPO:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 STEPS=scripts/flights/testsample/prep_test_sample_steps.py
 PACKET_ROOT=/home/chao/feat-cache/slurp-q4km-packets-04ccc72a
 PROMOTION_RECEIPT=TEST-SAMPLE-3010-promotion.json

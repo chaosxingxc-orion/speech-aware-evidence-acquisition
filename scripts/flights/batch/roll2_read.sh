@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The cell ROLL-2 sealed-pool read (the Stage-3 sealed-sample-pool asset on the v2.0 lock roster).
 # MODEL-FREE: zero model / tokenizer / encoder / server contacts; scorer contacts only on derived
 # COPIES (five: one per sample index). Registered as SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-READ-V1, a
@@ -20,7 +22,7 @@
 # files carry ids, stratum names, sample indices, scores, flags and hashes only.
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 RUN=${RUN:-SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1}
 ATTEMPT=${ATTEMPT:-attempt-slurp-native-stage3-roll-2-fold-a-v1-generation}
 ROSTER=${ROSTER:-docs/receipts/rosters/slurp-evo-fold-a-v2.json}

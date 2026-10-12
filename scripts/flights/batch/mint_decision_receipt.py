@@ -9,6 +9,7 @@ set, every referenced repo file is re-hashed, and the receipt is written under
         --from-date 2026-09-22 --name prune-reviewer1 --tag PRUNE-REVIEWER1 --date 2026-09-22 \
         --decision "..." --authority "..." --claim-boundary "..." [--expected-contacts 4320 --expected-gpu-hours 1.7]
 """
+import os
 import argparse
 import hashlib
 import io
@@ -16,7 +17,7 @@ import json
 import os
 from datetime import datetime, timezone
 
-DATA = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ROOT = os.environ.get("SAEA_STUDY_ROOT", "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition") + "/"
 
 

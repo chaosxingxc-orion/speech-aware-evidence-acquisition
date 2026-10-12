@@ -50,6 +50,7 @@ intent and slot TYPE labels, and hashes.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -70,7 +71,7 @@ READ_ID = "SAEA-SLURP-NX-R6-UPSTREAM-EMPTY-OFFLINE-V1"
 RECIPE = "slurp-nx-r6-upstream-empty-offline-v1"
 SCHEMA = "saea-slurp-nx-r6-upstream-empty-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 FOLD_B = {
     "i1": {"run_id": "SAEA-SLURP-STAGE3-NX-R1-SOLVER-FOLD-B-V1",

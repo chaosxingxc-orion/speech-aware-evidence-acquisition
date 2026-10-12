@@ -53,6 +53,7 @@ Usage::
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -341,7 +342,7 @@ def main() -> int:
     parser.add_argument(
         "--data-root",
         type=Path,
-        default=Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"),
+        default=Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")),
     )
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()

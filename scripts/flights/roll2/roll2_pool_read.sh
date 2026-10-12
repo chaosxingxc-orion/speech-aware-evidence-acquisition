@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The cell ROLL-2 sealed-pool read, all four stages of
 # docs/readiness/2026-09-26-slurp-stage3-roll-2-fold-a-v1/analysis-recipe-v1.json
 # (recipe slurp-stage3-roll-2-fold-a-sealed-pool-v1), registered as
@@ -30,7 +32,7 @@
 # No utterance text, gold label, transcript or model output is printed or persisted by the summary files.
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 export SAEA_ANALYSIS_WORKERS=${SAEA_ANALYSIS_WORKERS:-4}
 RUN=${RUN:-SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1}
 ATTEMPT=${ATTEMPT:-attempt-slurp-native-stage3-roll-2-fold-a-v1-generation}

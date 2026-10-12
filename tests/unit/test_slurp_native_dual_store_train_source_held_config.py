@@ -1,3 +1,4 @@
+import os
 import hashlib
 import json
 
@@ -8,7 +9,7 @@ from speech_aware_evidence_acquisition.core.config import compose
 from speech_aware_evidence_acquisition.rails.phase_supply import load_sealed_segment_vectors
 
 REPO = Path(__file__).resolve().parents[2]
-DATA = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 PROMOTION = Path("/home/chao/feat-cache/slurp-q4km-packets-04ccc72a/EVO-FOLDS-V2-promotion.json")
 EXPERIMENT = REPO / "configs/experiment/slurp-native-dual-store-train-source-folds-held-v1.json"
 MODEL = "q4km-mmproj-free-slurp-native-bounded-perception-proof-np4-ctx24k-max512-v1"

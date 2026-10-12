@@ -25,7 +25,7 @@ def _ids(iteration: int) -> tuple[str, str, str]:
 
 
 def _run(data: Path, *args: str):
-    env = dict(os.environ, SAEA_REPO_ROOT=str(REPO), SPEECHRL_DATA_DIR=str(data), PYTHONDONTWRITEBYTECODE="1")
+    env = dict(os.environ, SAEA_REPO_ROOT=str(REPO), SAEA_DATA_ROOT=str(data), SPEECHRL_DATA_DIR=str(data), PYTHONDONTWRITEBYTECODE="1")
     return subprocess.run(["bash", str(DRIVER), *args], capture_output=True, text=True, env=env, timeout=120)
 
 

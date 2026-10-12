@@ -109,7 +109,7 @@
     "selected": "np4/c36864/slot9216/max1024; both full selected-request checks pass2xreserve",
     "gpu_mmproj_allowed": false,
     "prior_np6_fit": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-PACKETS-JUDGE-FIT-V1/request-fit.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-LOOP-PACKETS-JUDGE-FIT-V1/request-fit.json",
       "sha256": "9e8cd1b7ae4953f960aa0ef3e8ba73870635714a762f679d1afd371d600628f2",
       "every_request_fits": false,
       "minimum_margin_tokens": -736
@@ -336,7 +336,7 @@
   },
   "preparation_note": "Seven global CPU preparation workers while the one complete DR score job runs; no input, prompt, plan or generation change.",
   "root_generation_admission": {
-    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/e21-loop-packets-np4-generation-admission-v1.json",
+    "path": "${SAEA_DATA_ROOT}/coordination/e21-loop-packets-np4-generation-admission-v1.json",
     "sha256": "90d2e014cbd177675fb88cc29153b11412846b30d0c162d050e53893ec04a1be"
   }
 }

@@ -4,7 +4,7 @@
   "probe": "P-A2T",
   "carrier": "audio2tool",
   "lock_revision": "f1388da9a3189541ab82adac88824a0661670c43",
-  "asset_dir": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/datasets/audio2tool",
+  "asset_dir": "${SAEA_DATA_ROOT}/datasets/audio2tool",
   "split_identity": {
     "receipt": "docs/receipts/probe-samples/r1-audio2tool-sample.json",
     "probe": "R1-audio2tool-direct",

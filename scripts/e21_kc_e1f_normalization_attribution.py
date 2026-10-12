@@ -98,7 +98,7 @@ EXPOSURE_ROW = "SAEA-E21-KC-E1F-VERDICT-V1"
 DEFAULT_DATA_ROOT = Path(
     os.environ.get(
         "SPEECHRL_DATA_DIR",
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"),
     )
 )
 

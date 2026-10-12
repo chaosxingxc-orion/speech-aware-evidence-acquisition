@@ -1,10 +1,12 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Usage: prune_read.sh <prune-reviewer1|prune-review-off> -- the decision-85 pruning cell read (decision 58 by script): one factor on the
 # R-PRIM base against the sealed R-PRIM arm at the plan's own null (PLAN vs PLANr). Driver = the repo copy scripts/analysis/plan_cell_read.py.
 NAME=$1; case $NAME in prune-reviewer1) TAG=PRUNE-REVIEWER1; SHORT=P1;; prune-review-off) TAG=PRUNE-REVIEW-OFF; SHORT=P0;; *) echo "unknown cell"; exit 2;; esac
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 ROOT=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-$TAG-PAIRED-ANALYSIS-V1
 mkdir -p $ROOT && cp $MAIN/scripts/analysis/plan_cell_read.py $ROOT/plan_cell_read.py && cp $MAIN/docs/readiness/2026-09-22-slurp-$NAME-v1/registered-facts-v1.json $ROOT/registered-$NAME.json && cd $ROOT || exit 1
 sha256sum plan_cell_read.py | cut -c1-16

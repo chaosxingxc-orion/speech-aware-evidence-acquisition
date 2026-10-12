@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The cell DET read (owner decision 140; decision 58: reads are executed by script). MODEL-FREE: zero
 # model / tokenizer / encoder / scorer / server contacts -- every byte it reads is already sealed.
 # Registered as SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-READ-V1 (a model-free-check row).
@@ -17,7 +19,7 @@
 # No utterance text, gold label, transcript or model output is printed or persisted.
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 LEFT_RUN=SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-A-V1
 LEFT_ATTEMPT=attempt-slurp-native-stage3-det-np1-fold-a-50-a-generation-v1
 RIGHT_RUN=SAEA-SLURP-STAGE3-DET-NP1-FOLD-A-50-B-V1

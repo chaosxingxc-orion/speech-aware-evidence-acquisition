@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip cell E4-1 (dry run, then arm) to ready on master: model-free, in LOOP FORM -- one convergence loop
 # over both cycles, re-run until one whole pass commits nothing (a later flip rewrites shared files such as
 # the exposure ledger after an earlier cycle reported "satisfied"), and only then is HEAD recorded as the
@@ -14,7 +16,7 @@
 # --allow-output-change must never be passed: the flip mints each cell's own first-phase supply (item E16);
 # the arm's minted digest must be the AGREE arm's (eab5c61e...).
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 WS=$MAIN/scripts/flights/e4
 RD=docs/readiness/2026-09-29-slurp-stage3-e4-relisten-fold-a-v1

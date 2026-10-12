@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Decisions 77 / 140: fly cell DET -- pass A, then pass B -- on the DET serving geometry through the
 # batch driver. TWO steps in ONE chain (the VAR1 PLAN / PLANR shape), no smoke: the form is the locked
 # plan itself, which has flown its own smoke and 1,080-row arm; the only new thing is the geometry,
@@ -18,7 +20,7 @@
 SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 LOG=/home/chao/batch-chain-det.out
 COMMIT=$(cat /home/chao/det-flight-commit.txt) || exit 1
 export BATCH_SESSION=serving-slurp-native-det-np1-nocache-v1

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Cell RANKVIS read (registered row SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1; the rank-ordered,
 # rank-visible rendering conversion probe, owner decision 171). MODEL-FREE: zero model / tokenizer /
 # encoder / server contacts; scorer output is read from the sealed per-sample scores only.
@@ -23,7 +25,7 @@
 # hashes only.
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 RUN_ID=SAEA-SLURP-STAGE3-RANKVIS-FOLD-A-119-V1
 ROW_LABEL="Cell RANKVIS read"
 

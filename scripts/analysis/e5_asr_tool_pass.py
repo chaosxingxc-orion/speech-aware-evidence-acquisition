@@ -61,7 +61,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
 
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
 REG_DIR = "docs/readiness/2026-09-29-slurp-asr-tool-pass-v1"
 PUBLISH_ROOT = "prepared/SAEA-SLURP-ASR-TRANSCRIPTS-V1"

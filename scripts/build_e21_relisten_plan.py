@@ -77,7 +77,7 @@ TWIN_SEED = 20260903
 DEFAULT_DATA_ROOT = Path(
     os.environ.get(
         "SPEECHRL_DATA_DIR",
-        "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"),
     )
 )
 

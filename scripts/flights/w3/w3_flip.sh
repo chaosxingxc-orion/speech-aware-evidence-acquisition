@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip the W3 family (four-row smoke, then the arm) to ready on master: model-free, one cell per cycle,
 # the two cycles converging at ONE HEAD, which becomes the flight commit. The shared wave-1 A/A
 # SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1 is the coordinator's and is flipped by the coordinator's own
@@ -19,7 +21,7 @@
 # "committed" lines. Untracked files count as dirt for core.flight.cli check.
 SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-w3-contrast-fold-a-v1
-if [ ! -f /mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-w3-contrast-fold-a-v1/root-admission-v1.json ]; then
+if [ ! -f $SAEA_DATA_ROOT/coordination/slurp-stage3-w3-contrast-fold-a-v1/root-admission-v1.json ]; then
   echo "refusing: the W3 decision receipt is not minted (scripts/flights/w3/w3_mint_receipt.py)"; exit 6
 fi
 W3=$(dirname "$0")

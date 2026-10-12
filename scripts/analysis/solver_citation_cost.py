@@ -26,6 +26,7 @@ retained past the id extraction.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -36,7 +37,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-DEFAULT_DATA = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DEFAULT_DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 DEFAULT_TOKENIZE = Path("/home/chao/llama.cpp/build/bin/llama-tokenize")
 GGUF_RELPATH = (
     "models/qwen3-omni-30b-a3b-instruct-gguf-q4km/Qwen3-Omni-30B-A3B-Instruct-Q4_K_M.gguf"

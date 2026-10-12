@@ -6,6 +6,7 @@
 WSL Python from the study root (reads the analysis root on the data root, writes docs/results, the exposure ledger, the
 results ledger and the decisions file). Counts and metrics only; no utterance text.
 """
+import os
 import argparse
 import hashlib
 import io
@@ -14,7 +15,7 @@ import os
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8")
-DATA = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 
 def sha(p):

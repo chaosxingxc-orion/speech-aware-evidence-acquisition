@@ -54,7 +54,7 @@ from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
 
 DERIVER = "scripts/flights/filler/derive_filler_cells.py"
 LEDGER = "docs/exposure-ledger.md"
-DATA_DEFAULT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DATA_DEFAULT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 BRANCH = "fable/filler"
 WORKTREE = "/home/chao/saea-worktrees/fable-filler"
 

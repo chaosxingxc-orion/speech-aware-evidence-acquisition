@@ -1,4 +1,5 @@
 """Complete synthetic baseline iterations use real proposal/history/accounting paths."""
+import os
 import copy
 import importlib.util
 import json
@@ -220,7 +221,7 @@ def test_malformed_plan_or_unbound_trial_cannot_be_retained(tmp_path, monkeypatc
 def test_exact_gepa_selector_matches_hash_pinned_upstream_helpers():
     from pathlib import Path
     import hashlib
-    path = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/references/system-context-baselines-iterations-v1/gepa/src/gepa/gepa_utils.py")
+    path = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET") + "/references/system-context-baselines-iterations-v1/gepa/src/gepa/gepa_utils.py")
     assert hashlib.sha256(path.read_bytes()).hexdigest() == "ac272a7d411c5c6273be369ec012d14121b1ce5a3bdc87409f419216b6f6a0e3"
     spec = importlib.util.spec_from_file_location("_pinned_gepa_utils", path)
     upstream = importlib.util.module_from_spec(spec)

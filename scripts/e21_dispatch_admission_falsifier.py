@@ -23,13 +23,14 @@ usage: e21_null_replicate_falsifier.py <attempt_dir> <run_id> <expected_windows>
 """
 
 from __future__ import annotations
+import os
 
 import json
 import sys
 from pathlib import Path
 
 SEALED_ATTEMPT = Path(
-    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/"
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET") + "/runs/"
     "SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338"
 )
 SEALED_RUN = "SAEA-E21-FULL44-DIRECT-BASELINE-V2"

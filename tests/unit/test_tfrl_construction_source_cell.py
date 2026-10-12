@@ -56,7 +56,7 @@ from speech_aware_evidence_acquisition.rails.controllers import default_phase_pr
 from speech_aware_evidence_acquisition.rails.native_episode_config import load_native_episode_config  # noqa: E402
 
 COMMIT, AT = "c" * 40, "2026-10-11T12:00:00.000000+00:00"
-DATA = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 FOLD_A, FOLD_B = "docs/receipts/rosters/slurp-evo-fold-a-v2.json", "docs/receipts/rosters/slurp-evo-fold-b-v2.json"
 PERMITTED = "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json"
 DEV_ROSTERS = ("docs/receipts/probe-samples/DEV-1000.json", "docs/receipts/rosters/slurp-dev-2000-added-v1.json",

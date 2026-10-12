@@ -33,7 +33,7 @@ def _load_module():
 
 ebl = _load_module()
 
-LEGACY = "/mnt/e/legacy/speechrl-data"
+LEGACY = "/srv/legacy-e/speechrl-data"
 HOT = "/home/chao/saea-data"
 GGUF_SHA = "a" * 64
 MMPROJ_SHA = "b" * 64
@@ -91,8 +91,8 @@ def _tree(tmp: Path, manifest: dict | None = None) -> Path:
     manifest = manifest if manifest is not None else _manifest(tmp)
     _write(repo / ebl.MANIFEST_RELPATH, json.dumps(manifest))
     _write(repo / ebl.AUTHORITY_RELPATH, _authority(manifest["roots"]["data_root"]["current"]))
-    _write(repo / ebl.BASELINE_RELPATH, json.dumps({"legacy_literal_files": ["scripts/old_read.py"]}))
-    _write(repo / "scripts/old_read.py", f'DATA = "{LEGACY}"\n')
+    _write(repo / ebl.BASELINE_RELPATH, json.dumps({"legacy_literal_files": []}))
+    _write(repo / "scripts/old_read.py", 'DATA = os.environ["SAEA_DATA_ROOT"]\n')
     _write(repo / "scripts/flights/batch/driver.sh",
            'source "$(dirname "$0")/../../lib/data_root.sh" || exit 70\nsaea_data_root_init || exit 70\n')
     _write(repo / "scripts/flights/batch/serving_lib.sh",
@@ -166,13 +166,31 @@ def test_missing_live_script_fails(tmp_path: Path) -> None:
     assert any("declared live script is missing" in f for f in _run(repo).failures)
 
 
-def test_new_literal_file_fails_and_a_cleaned_baseline_entry_warns(tmp_path: Path) -> None:
+def test_any_hard_coded_data_root_path_fails(tmp_path: Path) -> None:
     repo = _tree(tmp_path)
     _write(repo / "configs/experiment/new-cell.json", json.dumps({"path": f"{LEGACY}/runs/x"}))
-    (repo / "scripts/old_read.py").write_text('DATA = os.environ["SAEA_DATA_ROOT"]\n', encoding="utf-8")
     report = _run(repo)
-    assert any("configs/experiment/new-cell.json: new hard-coded" in f for f in report.failures)
-    assert any("no longer carry the literal" in w for w in report.warnings)
+    assert any("configs/experiment/new-cell.json: hard-coded data-root path" in f for f in report.failures)
+
+
+def test_generic_e_drive_data_root_paths_fail_whatever_the_manifest_legacy_root(tmp_path: Path) -> None:
+    for index, literal in enumerate(("/mnt/" + "e/chao_workspace/anything", "/mnt/" + "e/some/where/speechrl-data/runs")):
+        repo = _tree(tmp_path / f"t{index}")
+        _write(repo / "tests/unit/test_x.py", f'DATA = "{literal}"\n')
+        assert any("tests/unit/test_x.py: hard-coded" in f for f in _run(repo).failures), literal
+
+
+def test_the_placeholder_and_the_environment_spelling_pass(tmp_path: Path) -> None:
+    repo = _tree(tmp_path)
+    _write(repo / "configs/experiment/cell.json", json.dumps({"path": "${SAEA_DATA_ROOT}/runs/x"}))
+    _write(repo / "scripts/read.sh", 'DATA="$SAEA_DATA_ROOT"\n')
+    assert _run(repo).failures == []
+
+
+def test_a_non_empty_baseline_fails(tmp_path: Path) -> None:
+    repo = _tree(tmp_path)
+    _write(repo / ebl.BASELINE_RELPATH, json.dumps({"legacy_literal_files": ["scripts/old_read.py"]}))
+    assert any("baseline must be empty" in f for f in _run(repo).failures)
 
 
 def test_runtime_receipt_drift_fails(tmp_path: Path) -> None:
@@ -318,7 +336,34 @@ def test_manifest_errors_are_usage_errors(tmp_path: Path) -> None:
     assert ebl.main(["--repo-root", str(repo)]) == 2
 
 
-def test_write_baseline_refuses_to_freeze_a_live_script(tmp_path: Path) -> None:
+def test_write_baseline_refuses_while_a_literal_remains_and_writes_the_empty_list_otherwise(tmp_path: Path) -> None:
     repo = _tree(tmp_path)
     _write(repo / "scripts/flights/batch/driver.sh", f"saea_data_root_init\nDATA={LEGACY}\n")
     assert ebl.main(["--repo-root", str(repo), "--write-baseline"]) == 1
+    _write(repo / "scripts/flights/batch/driver.sh", 'source "$(dirname "$0")/../../lib/data_root.sh"\nsaea_data_root_init\n')
+    assert ebl.main(["--repo-root", str(repo), "--write-baseline"]) == 0
+    assert json.loads((repo / ebl.BASELINE_RELPATH).read_text(encoding="utf-8"))["legacy_literal_files"] == []
+
+
+class _Usage:
+    def __init__(self, free: int) -> None:
+        self.free = free
+
+
+def test_e_free_space_cap_refuses_under_500_gb() -> None:
+    assert ebl.E_FREE_MIN_BYTES == 500 * 10**9
+    low = ebl.Report()
+    ebl.check_e_free_space(low, disk_usage=lambda path: _Usage(499 * 10**9))
+    assert any("[e-free]" in f and "499 GB free" in f for f in low.failures)
+    enough = ebl.Report()
+    ebl.check_e_free_space(enough, disk_usage=lambda path: _Usage(500 * 10**9))
+    assert enough.failures == [] and any("[e-free]" in line for line in enough.passes)
+
+
+def test_e_free_space_warns_when_e_is_not_readable() -> None:
+    def boom(path):
+        raise FileNotFoundError(path)
+
+    report = ebl.Report()
+    ebl.check_e_free_space(report, disk_usage=boom)
+    assert report.failures == [] and any("[e-free]" in w for w in report.warnings)

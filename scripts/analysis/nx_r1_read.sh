@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The same-flight Solver template-column read of NX round R1 (NX programme C2 R1; instrument E1/E2).
 #
 #   bash scripts/analysis/nx_r1_read.sh [--iteration 1|2] [--rescore] [--dry-run] [--skip-offline]
@@ -58,7 +60,7 @@ PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 LOCK=${SAEA_DATASETS_LOCK:-/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json}
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
-export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 source "$MAIN/scripts/flights/batch/read_lib.sh"
 usage() { echo "usage: nx_r1_read.sh [--iteration 1|2] [--rescore] [--dry-run] [--skip-offline] | --iteration N --node-local-out <subfolder> [--dry-run]"; exit 2; }
 RESCORE=0

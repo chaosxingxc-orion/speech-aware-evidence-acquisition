@@ -5,12 +5,12 @@
       "sha256": "653c7556edf88e56af2e18a25239426b2efc3b080af0173fd65c87fe8e4f528b"
     },
     "metadata": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
       "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
     },
     "raw_source_diagnostics": {
       "attempt": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/attempts/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1/attempt-slurp-intent-hypothesis-source-generation-v1.json",
+        "path": "${SAEA_DATA_ROOT}/attempts/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1/attempt-slurp-intent-hypothesis-source-generation-v1.json",
         "sha256": "67fd53a945849bd03b543da621a8e787f7e194615c68b88f0776f477f826409f"
       },
       "bootstrap": {
@@ -25,12 +25,12 @@
         "sha256": "56a94af776d7d0d4a8e09b51d0f10a49ecf4fb71f4d29211355154cf57f21e4e"
       },
       "legal_intent_ids": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
+        "path": "${SAEA_DATA_ROOT}/prepared/SAEA-SLURP-NATIVE-CANDIDATE-CONTRACTS-PREPARE-V1/catalog.json",
         "sha256": "3e60268b3f940c3018ab8b8c80ccd988b1d1efd6c5a198929c6af05ba21f8263"
       },
       "max_candidates": 3,
       "raw_trace": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1/attempt-slurp-intent-hypothesis-source-generation-v1/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1.trace.jsonl",
+        "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1/attempt-slurp-intent-hypothesis-source-generation-v1/SAEA-SLURP-INTENT-HYPOTHESIS-SOURCE-V1.trace.jsonl",
         "sha256": "e990f3db2bbf105a09c0d1cf5f7ce6c3f75e5d21814f549d376ec773496873cf"
       },
       "source_quality_read_release": {
@@ -51,7 +51,7 @@
       "reference_source": {
         "allow_heldout": false,
         "allow_synthetic": false,
-        "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "data_root": "${SAEA_DATA_ROOT}",
         "kind": "slurp-split",
         "lock": {
           "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",

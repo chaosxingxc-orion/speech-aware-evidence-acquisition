@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Mapping
 
 from ..scoring import SCORING_STACK_VERSION
+from .data_root_placeholder import DATA_ROOT_PLACEHOLDER, collapse_data_root, expand_data_root, resolve_data_root_text  # noqa: F401 (re-exported)
 
 _KINDS = ("model", "dataset", "baseline", "experiment")
 _FRAGMENT_NAME_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
@@ -248,6 +249,8 @@ def drop_null_arms(values: Mapping[str, object]) -> dict[str, object]:
 
 
 def _canonical_hash(document: Mapping[str, object]) -> str:
+    # A document that carries the resolved data root (an expanded composed config) hashes as its placeholder form.
+    document = collapse_data_root(document)
     blob = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
@@ -303,7 +306,12 @@ def fragment_hash(fragment: Mapping[str, object]) -> str:
 
 
 def compose(
-    repo_root: Path, model: str, dataset: str, baseline: str, experiment: str
+    repo_root: Path,
+    model: str,
+    dataset: str,
+    baseline: str,
+    experiment: str,
+    data_root: "str | Path | None" = None,
 ) -> ComposedConfig:
     names = dict(zip(_KINDS, (model, dataset, baseline, experiment)))
     merged: dict[str, object] = {}
@@ -323,8 +331,9 @@ def compose(
     # is, and not silently resolved in the table's favour.
     composed = drop_null_arms(merged)
     assert_preparation_source_receipts_are_well_formed(composed)
+    # The hash is over the unexpanded text; consumers get the expanded values (DATA_ROOT_PLACEHOLDER).
     return ComposedConfig(
-        values=composed, config_hash=_canonical_hash(composed), fragments=names
+        values=expand_data_root(composed, data_root), config_hash=_canonical_hash(composed), fragments=names
     )
 
 

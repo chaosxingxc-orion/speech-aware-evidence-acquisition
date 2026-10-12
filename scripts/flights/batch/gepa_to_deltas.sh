@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Runbook: the Stage-3 GEPA arm's CURATION and RELEASE (design note
 # docs/superpowers/specs/2026-09-24-slurp-stage3-gepa-arm-design.md sections 3-4; owner decisions
 # 83 and 101).
@@ -58,7 +60,7 @@
 # GEPA_DELTAS_DRY=0 runs them. Commit the two materialised release registrations afterwards.
 set -u
 REPO=${REPO:-/home/chao/saea-worktrees/fable-gepa}
-DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 PY=${PY:-/home/chao/.venvs/speechrl/bin/python}
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/src
 DRY=${GEPA_DELTAS_DRY:-1}

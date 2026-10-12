@@ -1,11 +1,12 @@
 """E36b model-free replay: for the 18 sealed B9a-rec rows that routed ACQUIRE, how many values of the plan's released stores
 (composite snapshot, hash-verified through the real loader) match the row's recorded state filters, excluding the ids the row
 already held. Zero contacts. Prints counts and ids-free aggregates only (no value text, no utterance text)."""
+import os
 import json, io, glob, collections, sys
 from pathlib import Path
 
 REPO = Path("/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition")
-DATA = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 sys.path.insert(0, str(REPO / "src"))
 from speech_aware_evidence_acquisition.core.config import compose
 from speech_aware_evidence_acquisition.rails.knowledge_stores import load_knowledge_store_binding

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip NX round R5 (smoke, the module OFF-arm replicate, the composed arm) to ready on master: model-free, in LOOP FORM -- one convergence
 # loop, re-run until one whole pass commits nothing (a later flip rewrites shared files such as the exposure ledger; the shared protocol hash
 # propagates once), and only then is HEAD recorded as the NX R5 flight commit. HELD: root runs this ONLY after
@@ -12,7 +14,7 @@
 # hashes if instrument merges moved them: that is the coordinator's flip, exactly as the module flip would do.
 #   bash scripts/flights/nx/nx_r5_flip.sh
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 NX=$MAIN/scripts/flights/nx
 MOD=$MAIN/scripts/flights/module

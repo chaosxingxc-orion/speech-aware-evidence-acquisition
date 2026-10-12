@@ -1,7 +1,7 @@
 """After the readiness flip the composed config hash moves: recompute per cell and rewrite old -> new in the plans, the six E35 ledger rows and the receipt."""
 import io, json, sys, hashlib, re
 from pathlib import Path
-REPO = Path("/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"); DATA = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+REPO = Path("/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition"); DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 sys.path.insert(0, str(REPO / "src"))
 from speech_aware_evidence_acquisition.core.config import compose, protocol_hash
 RD = "docs/readiness/2026-09-22-e21-native-window-flightruntime-e35-v1"

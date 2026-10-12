@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # The sealed-pool read of ONE filler chunk: all four stages of
 # docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-cKK-v1/analysis-recipe-v1.json -- cell ROLL-3's
 # recipe (scripts/flights/roll3/roll3_pool_read.sh) with TRAIN gold, exactly as cell ROLL-2's read scored
@@ -23,7 +25,7 @@ case "$K" in *[!0-9]*) echo "chunk must be a number" >&2; exit 2;; esac
 K2=$(printf %02d "$((10#$K))")
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 export SAEA_ANALYSIS_WORKERS=${SAEA_ANALYSIS_WORKERS:-4}
 RD=docs/readiness/2026-09-27-slurp-stage3-filler-fold-b-c$K2-v1
 RUN=SAEA-SLURP-STAGE3-FILLER-FOLD-B-C$K2-V1

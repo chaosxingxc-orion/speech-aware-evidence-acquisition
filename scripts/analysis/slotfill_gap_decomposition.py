@@ -35,6 +35,7 @@ Usage (WSL, stdlib only):
         --compare-note --out /tmp/gap.json
 """
 from __future__ import annotations
+import os
 
 import argparse
 import collections
@@ -48,7 +49,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-DATA = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 RUN_ID = "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-V1"
 ATTEMPT = "attempt-slurp-native-stage3-roll-2-fold-a-v1-generation"
 FIT_RUN_ID = "SAEA-SLURP-STAGE3-ROLL-2-FOLD-A-FIT-V1"

@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Runbook for Stage-3 S3-3 and the ADV-1 registration fills
 # (docs/superpowers/specs/2026-09-22-stage3-tfrl-base-loop-engineering.md sections S3-3 and S3-4;
 # fill map docs/readiness/2026-09-22-slurp-stage3-advantage-r01-v1/fill-after-roll1-seal.json).
@@ -32,7 +34,7 @@
 # Commit the four touched paths afterwards, then re-pin with scripts/flights/repin_cell.py.
 set -u
 REPO=${REPO:-/home/chao/saea-worktrees/fable-s3adv}
-DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 PY=${PY:-/home/chao/.venvs/speechrl/bin/python}
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/src
 DRY=${ADV1_DRY:-1}

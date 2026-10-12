@@ -64,7 +64,7 @@ if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
 
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 #: The tables source of EVERY iteration: the sealed construction-source lock column (``tf.CONST_RUN_ID`` / ``tf.CONST_ATTEMPT_ID``, delivering arm
 #: ``lock``, TRAIN roster R01C, 625 rows), which has per-row official scores on disk. ``--source-run-id`` / ``--source-attempt`` override (tests,
 #: recovery) and are recorded in the receipt. The ACE release's carrier rosters are the ``stage3-deltas-v1r`` ones (ace-playbook i0 registration).

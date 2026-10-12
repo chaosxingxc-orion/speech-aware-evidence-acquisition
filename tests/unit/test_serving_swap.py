@@ -51,7 +51,7 @@ SIDECAR = "9000201 /home/chao/llama.cpp-featcache/build/bin/llama-server --host 
 PREPROCESS = "9000202 python -B scripts/slurp_evo_fold_preprocess.py --roster test-sample-3010 --run --workers 4"
 WORKTREE_PREPARE = (
     "9000301 python -B -m speech_aware_evidence_acquisition.core.flight.cli prepare-supply --repo-root "
-    "/home/chao/saea-worktrees/fable-x --data-root /mnt/e/x --runtime-root /home/chao --lock-path /tmp/l"
+    "/home/chao/saea-worktrees/fable-x --data-root /data/x --runtime-root /home/chao --lock-path /tmp/l"
 )
 WORKTREE_CHECK = "9000302 python -B -m speech_aware_evidence_acquisition.core.flight.cli check --repo-root /w"
 CAMPAIGN = "9000401 python -B -m speech_aware_evidence_acquisition.core.flight.cli campaign --repo-root /r"

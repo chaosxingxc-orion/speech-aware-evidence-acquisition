@@ -48,6 +48,7 @@ Run in WSL2::
 """
 
 from __future__ import annotations
+import os
 
 import hashlib
 import json
@@ -83,7 +84,7 @@ EXPERIMENT_FRAGMENT = "slurp-dev500-confirmatory-campaign-v1"
 PROMPT_ORDER = "speech-query-prefix-v2"
 FEATURE_ROOT = Path("/home/chao/feat-cache/slurp-q4km-packets-04ccc72a")
 SNAPSHOT_PATH = Path(
-    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/knowledge/slurp/"
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET") + "/knowledge/slurp/"
     "saea-kb-distmodel-v1/size-full/snapshot.json"
 )
 SNAPSHOT_SHA256 = "e27b274516604ffc0e21319758aea99dc027f459d480a32a74a715b023a51b57"

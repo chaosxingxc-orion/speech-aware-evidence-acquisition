@@ -1,11 +1,13 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # One-shot continuation after the 2026-09-25 external process termination.
 # The six-step queue retains completed steps. Skip only the already sealed smoke.
 # Refuse any opened final arm, previous continuation, live flight, or changed checkout.
 set -euo pipefail
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 PY=/home/chao/.venvs/speechrl/bin/python
 SP=$MAIN/scripts/flights/batch
 COMMIT=3ade29ffe2342ee65de47b6913990bd15fdcc24d
@@ -24,7 +26,7 @@ $PY - <<'PYCODE'
 from pathlib import Path
 import hashlib, json, os
 home=Path('/home/chao')
-data=Path('/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data')
+data=Path(__import__('os').environ['SAEA_DATA_ROOT'])
 queue=home/'batch-queue.json'
 raw=queue.read_bytes()
 steps=json.loads(raw)

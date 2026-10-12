@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Reconcile the flight.lock left by the 266-E Instruct arm SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1 (flight commit 77b2283e9),
 # which ABORTED at 2026-10-11T20:07:46Z BEFORE any model contact (0 calls, 0.0 speech-seconds): the runner's knowledge-source
 # guard refused the AgentLoop because every Fold B query id is in the pinned FULL-TRAIN knowledge snapshot's source roster
@@ -6,7 +8,7 @@
 # the run id, package, evidence and authorisation changed. The lock is filed into the package, never deleted. The run and
 # attempt trees are left untouched: recovery is the cell's single rec1 re-registration after the knowledge pin is corrected
 # to the fold-excluded view (registry entry of 2026-10-11, coordinator Fable 5.1).
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 /home/chao/.venvs/speechrl/bin/python - "$DATA" <<'PY'
 import json, io, os, sys, hashlib, subprocess, shutil
 from datetime import datetime, timezone

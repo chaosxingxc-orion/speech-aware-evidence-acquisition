@@ -46,6 +46,7 @@ output is printed or persisted -- ids are not persisted either; counts, rates, p
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -68,7 +69,7 @@ READ_ID_PREFIX = "SAEA-SLURP-VER1-OFFLINE"
 RECIPE = "slurp-ver1-offline-composer-v1"
 SCHEMA = "saea-slurp-ver1-offline-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 BOOT_DRAWS = 10_000
 BOOT_SEED = 20260915
 FLOOR_PP = 0.67

@@ -9,6 +9,7 @@ SHA-256 over sorted carrier-prefixed keys).
 """
 
 from __future__ import annotations
+import os
 
 import json
 import os
@@ -25,9 +26,7 @@ from speech_aware_evidence_acquisition.reproduction.sampling import (  # noqa: E
 
 SEED = 20260807
 DATA_ROOT = Path(
-    os.environ.get(
-        "SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-    )
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 )
 OUT_DIR = REPO_ROOT / "docs" / "receipts" / "probe-samples"
 

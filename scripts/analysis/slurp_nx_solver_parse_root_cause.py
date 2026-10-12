@@ -22,6 +22,7 @@ model, server, tokenizer, scorer, network and GPU contacts.  Deterministic apart
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import difflib
@@ -40,7 +41,7 @@ if str(REPO_ROOT / "src") not in sys.path:
 
 READ_ID = "SAEA-SLURP-NX-SOLVER-PARSE-ROOT-CAUSE-V1"
 ANALYSIS_DIR = "analysis/" + READ_ID
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 TAG = "<tool_call>"
 CLOSE = "</tool_call>"
 

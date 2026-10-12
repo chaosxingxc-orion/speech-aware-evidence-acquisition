@@ -314,7 +314,7 @@ def sealed_pool_binding(arm_module_hash: str) -> dict:
     every request of that pool was rendered from."""
 
     data_dir = os.environ.get(
-        "SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "SPEECHRL_DATA_DIR", (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"),
     )
     run_dir = Path(data_dir) / "runs" / AGREE_SEALED_RUN_ID
     manifests = sorted(run_dir.glob(f"*/{AGREE_SEALED_RUN_ID}.run-manifest.json"))

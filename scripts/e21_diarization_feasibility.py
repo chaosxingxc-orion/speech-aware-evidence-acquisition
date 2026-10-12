@@ -24,6 +24,7 @@ no hash, revision or path is copied into this file.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -48,9 +49,7 @@ SHARED_VENV = Path("/home/chao/.venvs/speechrl")
 DIAR_VENV = Path("/home/chao/.venvs/diar")
 
 DEFAULT_DATA_ROOT = Path(
-    os.environ.get(
-        "SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-    )
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 )
 
 

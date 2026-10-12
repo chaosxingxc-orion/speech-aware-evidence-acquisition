@@ -26,6 +26,7 @@ Deterministic apart from ``generated_at``; ``--check`` re-derives and diffs.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -45,7 +46,7 @@ ATTEMPT = "attempt-slurp-native-stage3-psv1-fold-b-generation-v1-seal-only"
 READ_ID = "SAEA-SLURP-SEALED-CREDIT-INNER-LOOP-RUN-2-PSV1-PREREAD-V1"
 A, B, T = "a-agree", "b-top2contrast", "t-twin"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 
 
 def _load_branch_read():

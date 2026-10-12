@@ -9,7 +9,7 @@ import json
 import statistics
 import sys
 
-DATA = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 CELLS = {
     "four-row": {"direct": ("SAEA-E21-NATIVE-WINDOW-DIRECT-FOUR-ROW-V1", "attempt-e21-native-window-direct-four-row-v1"),
                  "system": ("SAEA-E21-NATIVE-WINDOW-SYSTEM-FOUR-ROW-V1", "attempt-e21-native-window-system-four-row-recovery-v4")},

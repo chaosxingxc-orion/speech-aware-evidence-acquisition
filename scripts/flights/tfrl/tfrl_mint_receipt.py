@@ -18,6 +18,7 @@ typed loop's proposer / reflector material source on R01C; ``--iteration`` is ig
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -33,7 +34,7 @@ sys.path.insert(0, str(HERE))
 
 import tfrl_family as tf  # noqa: E402
 
-DATA = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ROOT = os.environ.get("SAEA_STUDY_ROOT", str(tf.REPO_ROOT))
 
 

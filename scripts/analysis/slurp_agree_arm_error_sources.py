@@ -48,6 +48,7 @@ the derivation and compares every output byte except that one field.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -93,7 +94,7 @@ from speech_aware_evidence_acquisition.analysis.sealed_credit.entity_states impo
 READ_ID = "SAEA-SLURP-STAGE3-AGREE-ERROR-SOURCES-V1"
 RECIPE = "slurp-agree-arm-error-sources-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 ANALYSIS_DIR = "analysis/SAEA-SLURP-STAGE3-AGREE-ERROR-SOURCES-V1"
 GOLD_POSITION = REPO_ROOT / "scripts/analysis/slurp_gold_position_and_solver_freedom_read.py"
 RANK_DIAGNOSTIC = REPO_ROOT / "scripts/analysis/slurp_intent_retrieval_rank_diagnostic.py"

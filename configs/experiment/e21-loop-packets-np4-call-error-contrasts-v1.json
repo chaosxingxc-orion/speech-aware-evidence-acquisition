@@ -9,7 +9,7 @@
     "id_field": "sample_id",
     "expected_ids_count": 44,
     "metadata": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/call-metadata.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/call-metadata.json",
       "sha256": "5631d6fee9ba032f95abdabf2f9ec9e7fc680b6fe9deb48cc37e50d72a12af23",
       "rows_key": "rows"
     },
@@ -25,12 +25,12 @@
         "rows_key": "read.scores.conec-entity-wer-official.per_sample"
       },
       "judge": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-PACKETS-NP4-JUDGE-GENERATION-V1/window-statistics.json",
+        "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-LOOP-PACKETS-NP4-JUDGE-GENERATION-V1/window-statistics.json",
         "sha256": null,
         "rows_key": "call_scores.conec-entity-wer-official.per_sample"
       },
       "twin": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-LOOP-PACKETS-NP4-TWIN-GENERATION-V1/window-statistics.json",
+        "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-LOOP-PACKETS-NP4-TWIN-GENERATION-V1/window-statistics.json",
         "sha256": null,
         "rows_key": "call_scores.conec-entity-wer-official.per_sample"
       }

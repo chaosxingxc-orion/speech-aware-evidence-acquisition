@@ -9,38 +9,38 @@
     "id_field": "window_id",
     "expected_ids_count": 1593,
     "metadata": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/window-metadata.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-PACKETS-SAVED-SCORE-ANALYSIS-V1/window-metadata.json",
       "sha256": "1c5a7c34e208a4148aa1d2d92f97f2116667285cd77dccdaa5ac990335046e75",
       "rows_key": "rows"
     },
     "inputs": {
       "historical_comparator": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-comparator.json",
+        "path": "${SAEA_DATA_ROOT}/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-comparator.json",
         "sha256": "98d431f24f6d94a4f08c1830ca08ed271106d33d660ac40d0fa93a1c3d7db144",
         "rows_key": "rows"
       },
       "historical_kc_e1f": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-kc-e1f.json",
+        "path": "${SAEA_DATA_ROOT}/runs/SAEA-E21-MF-WINDOW-PAIRING-V1/kce1f-v2-window-rows-kc-e1f.json",
         "sha256": "a668a45cec5cef38670279ab96f3d20dc9be328bb2c46569cd762a71193f6284",
         "rows_key": "rows"
       },
       "unit_constrained": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2/window-statistics-constrained.json",
+        "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2/window-statistics-constrained.json",
         "sha256": null,
         "rows_key": "rows"
       },
       "unit_free": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2/window-statistics-free.json",
+        "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-PACKETS-UNIT-GENERATION-V2/window-statistics-free.json",
         "sha256": null,
         "rows_key": "rows"
       },
       "self_constrained": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SELF-GENERATION-V2/window-statistics-constrained.json",
+        "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-PACKETS-SELF-GENERATION-V2/window-statistics-constrained.json",
         "sha256": null,
         "rows_key": "rows"
       },
       "self_free": {
-        "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-PACKETS-SELF-GENERATION-V2/window-statistics-free.json",
+        "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-PACKETS-SELF-GENERATION-V2/window-statistics-free.json",
         "sha256": null,
         "rows_key": "rows"
       }

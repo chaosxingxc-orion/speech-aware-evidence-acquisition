@@ -36,6 +36,7 @@ and with ``--append-ledger`` DRAFT exposure rows. No contact of any kind; flips 
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -280,7 +281,7 @@ def derive_e21(spec: dict, ids: dict, block: dict, measurement: dict, package: s
     return written
 
 
-DATA_ROOT = os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 #: A pin whose artifact does not exist yet (the Earnings-22 window feature packets need an encoder pass): an all-zero
 #: SHA-256 can never match a real file, so a runtime that reaches it refuses at "file missing" -- the first
 #: contact-requiring step -- and the package carries the placeholder as a named pending pin.

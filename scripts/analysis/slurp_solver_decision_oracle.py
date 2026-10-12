@@ -44,6 +44,7 @@ rates.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -66,7 +67,7 @@ READ_ID = "SAEA-SLURP-SOLVER-DECISION-ORACLE-OFFLINE-V1"
 RECIPE = "slurp-solver-decision-oracle-offline-v1"
 ANALYSIS_DIR = "analysis/" + READ_ID
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 SCORER = "slurp-slu-official-train"
 ROWS = 1080
 IB_FACET_MARK = "intent-boundary:"

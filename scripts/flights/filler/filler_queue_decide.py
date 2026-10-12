@@ -31,6 +31,7 @@ Every path and command is injectable so the rule is unit-tested without a WSL ho
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import json
@@ -221,7 +222,7 @@ def decide(env: Env) -> dict:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     parser.add_argument("--home", default="/home/chao")
-    parser.add_argument("--data-root", default=os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+    parser.add_argument("--data-root", default=(os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
     parser.add_argument("--main", default="/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition")
     parser.add_argument("--session", default=SESSION)
     parser.add_argument("--grace-seconds", type=float, default=300.0)

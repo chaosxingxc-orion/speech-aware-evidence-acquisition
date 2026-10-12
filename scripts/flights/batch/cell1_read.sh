@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Usage: cell1_read.sh <arm|twin> -- the CELL-1 read (Stage-3 S3-6 / S3-4s; owner decisions 83, 99, 101, 106; decision 58 by script):
 # the locked plan plus the per-node stage3-deltas-v1r store against the sealed PLAN arm at the plan's own null (PLAN vs PLANr);
 # the twin read is the arm read with one input changed (analysis-recipe-v1.json, twin_invocation). Driver = the repo copy
@@ -17,7 +19,7 @@ case $WHICH in
 esac
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 PKG=$MAIN/docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1
 ROOT=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-DELTA-CELL-$TAG-PAIRED-ANALYSIS-V1
 LOCK_ATTEMPT=${LOCK_ATTEMPT:-attempt-slurp-native-b5e-exemplars-k20-slot-store-v2-anchor-train-fold-a-generation-recovery-v1}

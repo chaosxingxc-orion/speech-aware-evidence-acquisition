@@ -105,7 +105,7 @@
     "unit_count": 342
   },
   "prepared_window_feature_packets": {
-    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-NATIVE-WINDOW-SUB10-V1/window-feature-packets.json",
+    "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-NATIVE-WINDOW-SUB10-V1/window-feature-packets.json",
     "sha256": "8bf4584eef07091c4f70bbfa31d6b5280306793a5d038c83e4f5059ffaf6f929"
   },
   "prompt_fit_multiple": 1.3333333333333333,

@@ -1,10 +1,12 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Independent local continuation. Wait for VAR-1 sealing, then smoke and VERIFY-1.
 # The owner approved these cells. No assistant, network, or credit-based scheduler.
 set -euo pipefail
 MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
 REPO=/home/chao/saea-worktrees/fable-batch-flight
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 PY=/home/chao/.venvs/speechrl/bin/python
 SP=$MAIN/scripts/flights/batch
 export PYTHONPATH=$MAIN/src PYTHONDONTWRITEBYTECODE=1
@@ -32,7 +34,7 @@ assert not any(e['event']=='STOP' for e in events)
 done={e['detail']['short'] for e in events if e['event']=='step-done'}
 assert done=={s['short'] for s in queue}
 assert events[-1]['event']=='driver-done'
-data=Path('/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data')
+data=Path(__import__('os').environ['SAEA_DATA_ROOT'])
 for s in queue:
     attempt=json.loads((data/'attempts'/s['run_id']/(s['gen_attempt_id']+'.json')).read_text())
     assert attempt['state']=='FINALIZED'

@@ -6,7 +6,7 @@
     },
     "left_job": "comparator",
     "metadata": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
       "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
     },
     "metrics": [
@@ -37,7 +37,7 @@
       "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/receipts/probe-samples/DEV-1000-NEW500.json",
       "sha256": "1feefb8c327c0234160e96906bd5344cfef25ac665ddbb4db957fab067a234a3"
     },
-    "score_batch": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/own-null-read-score-batch",
+    "score_batch": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-DEV1000-NULL-REPLICATE-V1/own-null-read-score-batch",
     "scorers": [
       "slurp-slu-official-projected-v2",
       "slurp-slu-f1-normalized-v1"

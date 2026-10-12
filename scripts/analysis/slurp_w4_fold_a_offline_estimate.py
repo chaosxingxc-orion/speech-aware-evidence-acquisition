@@ -69,7 +69,7 @@ from slurp_plan_bad_case_bank import _edit_distance, _fold_punct  # noqa: E402
 READ_ID = "SAEA-SLURP-W4-FOLD-A-OFFLINE-ESTIMATE-V1"
 SCHEMA = "saea-slurp-w4-fold-a-offline-estimate-v1"
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 OUT_DIR = "analysis/SAEA-SLURP-W4-FOLD-A-OFFLINE-ESTIMATE-V1"
 ROWS = 1080
 FOLD_A_SPLIT_IDENTITY = "61b0f06254975873bea6afb287ab54823dc71b57e5398697b9bef817e25398b6"

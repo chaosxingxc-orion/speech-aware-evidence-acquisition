@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Cell AGREE read (registered row SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-PAIRED-ANALYSIS-V1; recipe
 # slurp-stage3-agree-w1-fold-a-paired-analysis-v1). MODEL-FREE: zero model / tokenizer / encoder / server
 # contacts; scorer output is read from the sealed per-sample scores only.
@@ -13,7 +15,7 @@
 # is printed or persisted.
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 PKG=$MAIN/docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1
 BASE=$SPEECHRL_DATA_DIR/analysis/SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-PAIRED-ANALYSIS-V1
 ARM_RUN=SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-V1; ARM_ATT=attempt-slurp-native-stage3-agree-w1-fold-a-generation-v1; ARM_FIT=SAEA-SLURP-STAGE3-AGREE-W1-FOLD-A-FIT-V1

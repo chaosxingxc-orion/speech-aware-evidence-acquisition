@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Cell W4-SV's first-visit column read (owner decision 172; recipe
 # docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1/analysis-recipe-v1.json):
 #
@@ -29,7 +31,7 @@ done
 PY=/home/chao/.venvs/speechrl/bin/python
 MAIN=${SAEA_REPO_ROOT:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 export PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
-export SPEECHRL_DATA_DIR=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+export SPEECHRL_DATA_DIR=$SAEA_DATA_ROOT
 source "$MAIN/scripts/flights/batch/read_lib.sh"
 RUN=SAEA-SLURP-STAGE3-W4SV-FOLD-A-V1
 ATT=attempt-slurp-native-stage3-w4sv-fold-a-generation-v1

@@ -8,6 +8,7 @@ from collections.abc import Mapping
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from .data_root_placeholder import expand_data_root
 from .model import (
     inspect_legacy_cached_speech_feature_cache,
     materialize_legacy_cached_speech_feature_packets,
@@ -106,6 +107,7 @@ def _packet_id(sample_id: object) -> str:
 
 
 def _validate_plan(plan: Mapping[str, object]) -> dict[str, object]:
+    plan = expand_data_root(dict(plan))
     required = {
         "schema", "source_root", "source_roster_path", "source_roster_sha256",
         "cache_provenance_path", "cache_provenance_sha256", "cache_audit_path",

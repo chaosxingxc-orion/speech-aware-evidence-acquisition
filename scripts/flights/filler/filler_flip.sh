@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip a BATCH of filler chunks to ready on master, in LOOP FORM, converging at ONE HEAD -- the batch's
 # flight commit. Model-free (re-pin + prepare-supply + check; zero model, server, encoder, scorer contacts).
 #
@@ -21,7 +23,7 @@
 #   /home/chao/filler-flight-commit.txt       (the batch's HEAD)
 # --allow-output-change is never passed. Never edit scripts/flights/batch/ while a flight runs.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
 PY=/home/chao/.venvs/speechrl/bin/python
 SP=$MAIN/scripts/flights/batch

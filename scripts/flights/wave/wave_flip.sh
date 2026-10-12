@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Owner decision 164: flip the knowledge wave -- the SHARED in-chain A/A (SAEA-SLURP-STAGE3-WAVE1-AA-FOLD-A-V1,
 # the retained AGREE arm's own bytes), W1 (smoke, arm), W3a (smoke, arm) and W4 (smoke, arm) -- to ready on
 # master, model-free, converged at ONE HEAD, which becomes the flight commit of the one wave chain
@@ -22,7 +24,7 @@
 # whole pass commits nothing, because a later flip rewrites shared files (the exposure ledger) after an earlier
 # cell reported "satisfied". Only then is HEAD recorded. Untracked files count as dirt for core.flight.cli check.
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=$SAEA_DATA_ROOT
 SP=$MAIN/scripts/flights/batch
 WV=$MAIN/scripts/flights/wave
 PY=/home/chao/.venvs/speechrl/bin/python

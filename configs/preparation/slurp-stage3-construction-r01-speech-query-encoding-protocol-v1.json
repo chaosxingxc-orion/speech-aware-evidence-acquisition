@@ -6,7 +6,7 @@
   "cpu_workers": 4,
   "dimension": 2048,
   "encoder": {
-    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/a2t-speech-query-encoder-inventory-v2.json",
+    "path": "${SAEA_DATA_ROOT}/coordination/a2t-speech-query-encoder-inventory-v2.json",
     "sha256": "1548387ba91209921fd747e9eff981027be618c618b732efe20ca7d43680bb31"
   },
   "expected_unique_spans": 800,
@@ -23,7 +23,7 @@
   "roster_sha256": "fdb6521a0863b5f11f7ccea9fba5a1e598d65c5eb05b13a68d1198d5e01ba5f0",
   "schema": "saea-speech-query-encoding-protocol-v1",
   "sources": {
-    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/coordination/slurp-stage3-construction-r01-speech-query-source-inventory-v1.json",
+    "path": "${SAEA_DATA_ROOT}/coordination/slurp-stage3-construction-r01-speech-query-source-inventory-v1.json",
     "sha256": "a4ed13ad67441f5ceaf8be14ef52e3516a6c5f86d1155c6fb754a8ef6b2f771b",
     "schema": "saea-speech-query-source-inventory-v1",
     "built_by": "scripts/build_speech_query_source_inventory.py (model-free: byte hashes + audio header geometry; no decode, encoder, tokenizer or network)",

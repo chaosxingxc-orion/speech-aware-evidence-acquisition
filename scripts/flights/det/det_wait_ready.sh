@@ -1,9 +1,11 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Wait for the DET serving session to be resident and healthy, and PROVE its geometry from the live
 # server before anything flies: /props must report total_slots 1 and a per-slot n_ctx of 24576, and the
 # recorded session.json argv must carry --no-cache-prompt and neither --cache-prompt nor
 # --slot-prompt-similarity. A sibling of scripts/flights/batch/slurp_wait_ready.sh.
-S=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/serving/serving-slurp-native-det-np1-nocache-v1
+S=$SAEA_DATA_ROOT/serving/serving-slurp-native-det-np1-nocache-v1
 for i in $(seq 1 90); do
   if [ -f "$S/session.json" ] && [ ! -f "$S/session-stop.json" ] && curl -s -m 3 http://127.0.0.1:8080/health 2>/dev/null | grep -q '"ok"'; then
     echo "DET SESSION READY"

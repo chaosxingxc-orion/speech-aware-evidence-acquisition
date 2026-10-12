@@ -31,7 +31,7 @@
   "speech_feature_key_representation_id": "saea-e21-full44-direct-live-draft-packets-v1:direct",
   "speech_feature_matcher_policy_id": "saea-e21-full44-direct-live-draft-packets-v1",
   "prepared_window_feature_packets": {
-    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+    "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
     "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
   },
   "what_this_is": "Held packet-transport rendering of the existing full44 direct baseline. It keeps the fixed 90-second window roster and direct instruction, routes each actual window through the shared OpenJiuwen executor and direct-only EvidenceAgentController bridge, and reuses the completed source-bound full-window packets with zero new encoding. It grants no fit, generation, scoring or scientific authority."

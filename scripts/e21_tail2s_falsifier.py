@@ -11,6 +11,7 @@ usage: falsifier.py <attempt_dir> <run_id> <expected_windows> [out.json]
 """
 
 from __future__ import annotations
+import os
 
 import json
 import sys
@@ -22,7 +23,7 @@ REPO = Path(
 )
 TS2 = REPO / "docs/receipts/artifacts/d1-e21-buf90-1593-tail2s.json"
 SEALED_ATTEMPT = Path(
-    "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/"
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET") + "/runs/"
     "SAEA-E21-FULL44-DIRECT-BASELINE-V2/attempt-20260904T233816Z-bcd338"
 )
 TAIL_SECONDS = 2.0

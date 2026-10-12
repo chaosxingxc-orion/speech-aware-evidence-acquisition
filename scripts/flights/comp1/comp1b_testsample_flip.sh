@@ -1,4 +1,6 @@
 #!/bin/bash
+# Data root: the one authority (scripts/lib/data_root.sh); no hard-coded location.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")/../../lib" && pwd)/data_root.sh" && saea_data_root_init || return 70 2>/dev/null || exit 70
 # Flip the COMP-1b TEST-SAMPLE milestone (owner decisions 151 and 202) -- MILESTONE-00-PLAN (the comparator) then
 # MILESTONE-01 (COMP-1b) -- to ready on master: model-free, two cells converging at ONE HEAD, which becomes the flight
 # commit. NO SMOKE: the allowance names no smoke run id. Root runs this ONLY after:
@@ -14,7 +16,7 @@
 SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
+DATA=$SAEA_DATA_ROOT
 /home/chao/.venvs/speechrl/bin/python -B "$MAIN/scripts/flights/comp1/comp1b_testsample_preflip_check.py" \
   --repo-root "$MAIN" --data-root "$DATA" || { echo "milestone flip REFUSED by the preflip gate"; exit 6; }
 for K in plan arm; do

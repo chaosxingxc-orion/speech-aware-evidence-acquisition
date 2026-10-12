@@ -127,12 +127,12 @@
     "prepared_window_feature_packets": {
       "feature_root": "/home/chao/feat-packets/e21-cddb000c-dr-full-gpu-v1",
       "new_neural_contacts_required": 0,
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-packets.json",
       "requests": 1593,
       "sha256": "9aba4ff0d9a78dc66afcdf73f35bea0e7e6919e8448211f383f95219833a5115"
     },
     "window_feature_cache_audit": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-cache-audit.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-cache-audit.json",
       "sha256": "cc59a1dee59908c7fae25500b9ab40383b4aa9f9ef00a2946ba7c544b60180a8"
     },
     "window_feature_inventory": {
@@ -142,7 +142,7 @@
       "calls": 44,
       "output_schema": "saea-window-feature-inventory-v1",
       "output_sha256": "09a154a65b83171920b834e706558e75f1a661593cea1ef2ecf1f5503982573d",
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-SHARED-EXACT-WINDOW-INVENTORY-V1/window-inventory.json",
       "requests": 1593,
       "selected_audio_seconds": 141345.8526875,
       "sha256": "7b12a5c32654855701c48b57152ab1643e0c776b9a7a3853fda009a6ac78face",
@@ -151,7 +151,7 @@
       "window_sources_sha256": "f569c77f6e22315f57268b1688b3b70e0b1e037de3284d5d198fbec269e115d4"
     },
     "window_feature_preparation_provenance": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-preparation-provenance.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-E21-DR-FULL-WINDOW-GPU-ENCODING-V1/window-feature-preparation-provenance.json",
       "sha256": "72d097e3b153baccb75b4e6e221bc83a1ac60d36dd194c39822993db684ed757"
     }
   },

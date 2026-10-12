@@ -58,6 +58,7 @@ replicates, 95 % percentile CI) is seeded.  ``--check`` re-derives and compares.
 """
 
 from __future__ import annotations
+import os
 
 import argparse
 import hashlib
@@ -92,7 +93,7 @@ READ_ID = "SLURP-NODE-GAIN-LEDGER-FOLD-A-V1"
 RECIPE = "slurp-node-information-gain-ledger-v1"
 ANALYSIS_DIR = "analysis/" + READ_ID
 DEFAULT_LOCK = "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json"
-DEFAULT_DATA_ROOT = "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
+DEFAULT_DATA_ROOT = (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 PROGRAM = "phase-native-candidates-review-revise-v1"
 ROWS = 1080
 BOOT_SEED = 20260807

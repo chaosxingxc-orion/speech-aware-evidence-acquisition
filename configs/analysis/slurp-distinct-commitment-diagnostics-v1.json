@@ -23,12 +23,12 @@
     "inputs": {
       "closed_joint": {
         "manifest": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/declared-deliveries/slurp-distinct-closed-joint-dev1000-delivery-v1/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1--delivery-slurp-distinct-closed-joint-dev1000-delivery-v1.run-manifest.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/declared-deliveries/slurp-distinct-closed-joint-dev1000-delivery-v1/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1--delivery-slurp-distinct-closed-joint-dev1000-delivery-v1.run-manifest.json",
           "sha256": "25f6fd7070ad8cbdb0336e82711fd21671acdf4fb996810d9b0434f5ab966d67"
         },
         "score_receipt": {
           "cell_id": "slurp-distinct-closed-joint-dev1000-delivery-v1",
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/score-batch/slurp-distinct-closed-joint-dev1000-delivery-v1.complete-score-receipt.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-DISTINCT-CLOSED-JOINT-RECOVERY-V1/attempt-slurp-distinct-closed-joint-recovery-generation-v1/score-batch/slurp-distinct-closed-joint-dev1000-delivery-v1.complete-score-receipt.json",
           "sha256": "3272ebd67b5aae33f2c471035a0c0946c5e36f33ddf7620b7011abec4340b22f"
         },
         "score_source": "complete-score-receipt",
@@ -38,12 +38,12 @@
       },
       "hard_first": {
         "manifest": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/declared-deliveries/slurp-distinct-hard-first-dev1000-delivery-v1/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1--delivery-slurp-distinct-hard-first-dev1000-delivery-v1.run-manifest.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/declared-deliveries/slurp-distinct-hard-first-dev1000-delivery-v1/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1--delivery-slurp-distinct-hard-first-dev1000-delivery-v1.run-manifest.json",
           "sha256": "d351368b00471224bd0b71ea7684b0695011068597c9eaba04b64739799cda14"
         },
         "score_receipt": {
           "cell_id": "slurp-distinct-hard-first-dev1000-delivery-v1",
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/score-batch/slurp-distinct-hard-first-dev1000-delivery-v1.complete-score-receipt.json",
+          "path": "${SAEA_DATA_ROOT}/runs/SAEA-SLURP-DISTINCT-HARD-FIRST-RECOVERY-V1/attempt-slurp-distinct-hard-first-recovery-generation-v1/score-batch/slurp-distinct-hard-first-dev1000-delivery-v1.complete-score-receipt.json",
           "sha256": "c56a795bd73ce53c42bcd1523e4f2828149201ee29796398813de7ee9075ca3d"
         },
         "score_source": "complete-score-receipt",
@@ -78,7 +78,7 @@
       }
     },
     "metadata": {
-      "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
+      "path": "${SAEA_DATA_ROOT}/analysis/SAEA-SLURP-NULL-NEW500-CALIBRATION-RECOVERY-V1/roster-metadata.json",
       "sha256": "2f0e52cd159296c026fa87a54563f88418875364b23a3aabf146c3f44403b59b"
     },
     "metric_labels": {
@@ -131,7 +131,7 @@
       "reference_source": {
         "allow_heldout": false,
         "allow_synthetic": false,
-        "data_root": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data",
+        "data_root": "${SAEA_DATA_ROOT}",
         "kind": "slurp-split",
         "lock": {
           "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json",
@@ -149,7 +149,7 @@
           3
         ],
         "hypothesis_artifact": {
-          "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
+          "path": "${SAEA_DATA_ROOT}/prepared/SAEA-SLURP-DISTINCT-HYPOTHESIS-SOURCE-RECOVERY-V1/hypotheses.source.json",
           "sha256": "0146d87679a27f85ee7d0927039f8cd64805ceb40f3b42f3e788529d4a8863d3"
         },
         "original_attempt_state": "ABORTED",

@@ -26,6 +26,7 @@ receipts copied byte for byte rather than receipts synthesised here:
   hand-made selection without a split_identity_hash is refused -- which is exactly what
   stopped the first release attempt.
 """
+import os
 import argparse
 import hashlib
 import io
@@ -35,9 +36,7 @@ import shutil
 from pathlib import Path
 
 DATA = Path(
-    os.environ.get(
-        "SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"
-    )
+    (os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET")
 )
 
 

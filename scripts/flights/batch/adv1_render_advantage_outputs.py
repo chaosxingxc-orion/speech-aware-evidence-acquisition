@@ -8,6 +8,7 @@ under prepared/SAEA-SLURP-STAGE3-DELTAS-V1 from already-sealed, committed bytes.
 * permitted-roster.json -- the permitted support roster: the committed disagreeing-row roster receipt (its split identity
   is the registration's source_split_identity_hash), byte for byte.
 """
+import os
 import argparse
 import hashlib
 import io
@@ -16,7 +17,7 @@ import os
 import shutil
 from pathlib import Path
 
-DATA = Path(os.environ.get("SPEECHRL_DATA_DIR", "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data"))
+DATA = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 
 
 def sha(p: Path) -> str:

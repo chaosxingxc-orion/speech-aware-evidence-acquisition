@@ -31,6 +31,7 @@ usage: e21_obs_e1_falsifier.py <attempt_dir> <run_id> [out.json]
 """
 
 from __future__ import annotations
+import os
 
 import hashlib
 import io
@@ -45,7 +46,7 @@ REPO = Path(
     "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/"
     "speech-aware-evidence-acquisition"
 )
-DATA_ROOT = Path("/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data")
+DATA_ROOT = Path((os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR") or "SAEA_DATA_ROOT-UNSET"))
 PLAN = REPO / "docs/receipts/obs/e21-speaker-turn-units-v2.json"
 PLAN_SHA256 = "0f5f013959b89fa0acc3bb366324e701cbe3a022f7b29ef3e364d621d98eb03b"
 DIARIZATION_INPUTS = (
