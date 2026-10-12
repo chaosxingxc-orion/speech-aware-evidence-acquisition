@@ -24,6 +24,8 @@ ROW_KEYS = frozenset({
     "iteration", "operator_class", "n_accepted", "n_refused", "n_unflown",
     "mean_predicted_slu_pp", "mean_measured_slu_pp", "mean_realised_minus_predicted_pp",
 })
+#: Present only when at least one reread record exists: how many later proposals re-measured a state of this (iteration, class) group.
+OPTIONAL_ROW_KEYS = frozenset({"n_rereads"})
 
 
 class MetaSummaryError(RuntimeError):
@@ -42,7 +44,16 @@ def _mean(values: list[float]) -> float | None:
     return sum(values) / len(values) if values else None
 
 
-def build_meta_summary(states: Iterable[Mapping[str, Any]], arm: str = "typed") -> dict[str, Any]:
+def build_meta_summary(states: Iterable[Mapping[str, Any]], arm: str = "typed",
+                       rereads: Iterable[Mapping[str, Any]] | None = None) -> dict[str, Any]:
+    states = list(states)
+    reread_counts: dict[tuple[int, str], int] = {}
+    by_id = {s["state_id"]: s for s in states}
+    for r in (rereads or ()):
+        held = by_id.get(r["state_id"])
+        if held is not None and held["arm"] == arm and held.get("operator_class"):
+            key = (held["iteration"], held["operator_class"])
+            reread_counts[key] = reread_counts.get(key, 0) + 1
     groups: dict[tuple[int, str], list[Mapping[str, Any]]] = {}
     for s in states:
         if s["arm"] != arm or s["iteration"] < 1:
@@ -63,6 +74,7 @@ def build_meta_summary(states: Iterable[Mapping[str, Any]], arm: str = "typed") 
             "mean_predicted_slu_pp": _mean(predicted),
             "mean_measured_slu_pp": _mean(measured),
             "mean_realised_minus_predicted_pp": _mean([m - p for p, m in paired]),
+            **({"n_rereads": reread_counts.get((iteration, operator_class), 0)} if reread_counts else {}),
         })
     document = {"schema": SCHEMA, "never_shipped": True, "arm": arm, "rows": rows}
     assert_meta_clean(document)
@@ -79,8 +91,8 @@ def assert_meta_clean(document: Mapping[str, Any]) -> None:
     if set(document) != {"schema", "never_shipped", "arm", "rows"}:
         raise MetaSummaryError("unexpected top-level field in the meta summary")
     for row in document["rows"]:
-        if set(row) != ROW_KEYS:
-            raise MetaSummaryError(f"meta row must carry exactly {sorted(ROW_KEYS)}")
+        if not ROW_KEYS <= set(row) <= ROW_KEYS | OPTIONAL_ROW_KEYS:
+            raise MetaSummaryError(f"meta row must carry exactly {sorted(ROW_KEYS)} (plus optionally {sorted(OPTIONAL_ROW_KEYS)})")
         for key in row:
             if forbidden_key(key):
                 raise MetaSummaryError(f"text-bearing field {key!r} in the meta summary")

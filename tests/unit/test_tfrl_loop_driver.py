@@ -141,6 +141,13 @@ class Fakes:
         elif name.startswith("delivery-fit-"):
             key = name[len("delivery-fit-"):]
             produced[0].write_text(json.dumps(self.fits.get(key) or fit_report(0.2, -0.1, refused=True)), encoding="utf-8")
+        elif name == "row-scores":      # the stand-in of tfrl_row_scores.py: 12 synthetic rows, ace better on every even row
+            import tfrl_row_scores as rs
+
+            rows = [f"slurp:train:{i:06d}:audio-{i}" for i in range(12)]
+            doc = rs.build_row_scores({sid: 0.5 for sid in rows}, {sid: (0.7 if i % 2 == 0 else 0.4) for i, sid in enumerate(rows)},
+                                      {sid: {"scenario": "calendar", "slot_types": ["date"]} for sid in rows})
+            produced[0].write_text(json.dumps(doc), encoding="utf-8")
         else:  # pragma: no cover
             raise AssertionError(name)
 
@@ -966,8 +973,8 @@ def test_a_correction_record_repairs_the_archived_hash_without_editing_the_state
     assert lib.archive_sha256(world.pkg / "archive") != sha_with
 
 
-def delivery_entries(family: str, types: list[str], intents: list[str]) -> list[dict]:
-    cand = {"schema": tp.CANDIDATE_SCHEMA_ID, "iteration": 1, "parent_state_id": drv.ROOT_DISPLAY, "operator_class": "delivery",
+def delivery_entries(family: str, types: list[str], intents: list[str], iteration: int = 1) -> list[dict]:
+    cand = {"schema": tp.CANDIDATE_SCHEMA_ID, "iteration": iteration, "parent_state_id": drv.ROOT_DISPLAY, "operator_class": "delivery",
             "operator": "deliver-rule",
             "target": {"failure_class": "SPURIOUS", "slot_types": types, "scenarios": ["alarm"], "value_in_supply": "none"},
             "hypothesis_code": "rule-filter",
@@ -1051,3 +1058,198 @@ def test_planned_gpu_hours_derive_from_the_measured_iteration_one_rate():
     assert tf.planned_gpu_hours_arm(2, tf.ROWS, 5) == 4.1 and tf.planned_gpu_hours_arm(3, tf.ROWS, 5) == 4.1
     assert tf.planned_gpu_hours_arm(2, tf.ROWS, 4) == 3.3
     assert tf.MEASURED_GPU_S_PER_CONTACT_I1 == pytest.approx(2.49 * 3600 / 4320, abs=1e-3)
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# archived duplicates, rereads, and the self-built ACE credit (loop iteration 2, 2026-10-12)
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def typed_files(world: World, name: str, entries: list[dict]) -> tuple[Path, Path]:
+    typed = world.tmp / f"typed-{name}.json"
+    typed.write_text(json.dumps(entries), encoding="utf-8")
+    pred = world.tmp / f"pred-{name}.json"
+    pred.write_text(json.dumps({"schema": tp.PREDICTIONS_SCHEMA_ID, "predictions": {}}), encoding="utf-8")
+    return typed, pred
+
+
+def ipath(world: World, t: int, name: str) -> Path:
+    return world.pkg / "iterations" / f"i{t}" / name
+
+
+def jload(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+PAIRS = {"ace-vs-lock": contrast_doc(0.2, -0.7, 1.1), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)}
+
+
+def archived_oclock_world(world: World) -> tuple[Fakes, dict]:
+    """Iteration 1 closed with one refused fx-oclock offline state; returns the fakes and that archived state."""
+
+    fakes = Fakes(pairs=PAIRS)
+    offline_world(world, delivery_entries("fx-oclock", ["time"], ["alarm_query"]), fakes)
+    assert world.run("close", "--iter", "1", fakes=fakes)[0] == 0
+    archived = next(s for s in world.archive().states() if s["arm"] == "typed" and s["iteration"] == 1)
+    assert archived["verdict"] == "refused" and archived["credit"] is not None
+    return fakes, archived
+
+
+def chosen_parent(world: World) -> str:
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import parent_choice
+
+    return parent_choice.choose_parent(world.archive().states(), "typed")["parent_id"]
+
+
+def test_a_duplicate_of_an_archived_sibling_is_refused_at_open_reread_at_close_and_shown_to_the_proposer(world):
+    fakes, archived = archived_oclock_world(world)
+    raw = (world.pkg / "archive" / f"state-{archived['state_id']}.json").read_bytes()
+    assert world.run(*propose_args(world, 2), fakes=fakes)[0] == 0
+    entries2 = delivery_entries("fx-oclock", ["time"], ["alarm_query"], iteration=2)
+    cid2 = entries2[0]["receipt"]["candidate_id"]
+    assert cid2 != archived["candidate_id"]                      # the id carries the iteration; the artefact set does not
+    typed, pred = typed_files(world, "i2", entries2)
+    assert world.run(*open_cell_args(world, 2, typed=typed, predictions=pred))[0] == 0
+    receipt = world.receipt(2, "open-cell")
+    assert receipt["valid"] == 0 and receipt["offline"] == 0 and receipt["refused"] == 1
+    assert receipt["duplicates_of_archived"] == [{"candidate_id": cid2, "archived_state_id": archived["state_id"], "archived_status": "refused"}]
+    record = jload(ipath(world, 2, "candidates.json"))
+    assert record["candidates"] == [] and record["offline"] == []
+    assert record["refused"][0]["refusal_code"] == "duplicate-of-archived"
+    assert record["refused"][0]["archived_state_id"] == archived["state_id"] and record["refused"][0]["archived_status"] == "refused"
+    offline = jload(ipath(world, 2, "offline-candidates.json"))
+    assert offline["candidates"] == [] and [e["candidate_id"] for e in offline["reread_candidates"]] == [cid2]
+    # an idempotent re-run of the cell stage changes nothing
+    assert world.run(*open_cell_args(world, 2, typed=typed, predictions=pred))[0] == 0
+    assert jload(ipath(world, 2, "candidates.json")) == record
+    # close: the fit is a reread record beside the archive, never a state; the archived state is untouched
+    assert world.run("close", "--iter", "2", fakes=fakes)[0] == 0, world.out
+    close = world.receipt(2, "close")
+    assert "offline" not in close["verdicts"] and len(close["verdicts"]["rereads"]) == 1
+    assert close["verdicts"]["rereads"][0]["state_id"] == archived["state_id"]
+    reread = jload(world.pkg / "archive" / "rereads" / f"{archived['state_id']}-i2.json")
+    assert reread["iteration"] == 2 and reread["candidate_id"] == cid2 and reread["column"]["run_id"] == tf.names(2, "arm")["run_id"]
+    assert reread["credit"]["vs_lock"]["slu"]["point"] == 0.2
+    assert (world.pkg / "archive" / f"state-{archived['state_id']}.json").read_bytes() == raw
+    assert [s["iteration"] for s in world.archive().states() if s["arm"] == "typed"] == [0, 1]       # rereads are not states
+    assert chosen_parent(world) == jload(ipath(world, 2, "parent.json"))["parent_state_id"]
+    meta = jload(ipath(world, 2, "proposer-meta.json"))
+    assert [r["n_rereads"] for r in meta["rows"] if r["iteration"] == 1] == [1]
+    assert world.run("close", "--iter", "2", fakes=fakes)[0] == 0          # idempotent
+    # the next proposer sees the duplicate as re-proposed and refused
+    assert world.run(*propose_args(world, 3), fakes=Fakes())[0] == 0
+    buffer = jload(world.analysis(3) / "proposer-context.json")["refused_buffer"]
+    dup = [r for r in buffer if r["refusal_code"] == "duplicate-of-archived"]
+    assert len(dup) == 1 and dup[0]["archived_state_id"] == archived["state_id"][:16] and dup[0]["archived_status"] == "refused"
+    assert dup[0]["iteration"] == 2 and "realised_d_slu_pp" in dup[0]
+
+
+def test_repair_reclassifies_an_already_opened_duplicate_and_lets_close_complete(world, monkeypatch):
+    fakes, archived = archived_oclock_world(world)
+    assert world.run(*propose_args(world, 2), fakes=fakes)[0] == 0
+    dup = delivery_entries("fx-oclock", ["time"], ["alarm_query"], iteration=2)
+    new = delivery_entries("ee10", ["person"], [], iteration=2)
+    typed, pred = typed_files(world, "i2", dup + new)
+    with monkeypatch.context() as m:                              # an iteration opened before the duplicate rule existed
+        m.setattr(drv, "find_archived_duplicate", lambda *a, **k: None)
+        assert world.run(*open_cell_args(world, 2, typed=typed, predictions=pred))[0] == 0
+    assert world.receipt(2, "open-cell")["offline"] == 2
+    old_receipt = ipath(world, 2, "open-cell-receipt.json").read_bytes()
+    assert world.run("repair", "--iter", "2", "--duplicates-only", fakes=fakes)[0] == 0, world.out
+    cid_dup, cid_new = dup[0]["receipt"]["candidate_id"], new[0]["receipt"]["candidate_id"]
+    names = sorted(p.name for p in (world.pkg / "iterations" / "i2").iterdir())
+    superseded = [n for n in names if ".superseded-" in n]
+    assert len(superseded) == 3 and any(n.startswith("open-cell-receipt.superseded-") for n in superseded)
+    assert next(ipath(world, 2, n) for n in superseded if n.startswith("open-cell-receipt.")).read_bytes() == old_receipt
+    receipt = world.receipt(2, "open-cell")
+    assert receipt["offline"] == 1 and receipt["duplicates_of_archived"][0]["candidate_id"] == cid_dup
+    record = jload(ipath(world, 2, "candidates.json"))
+    assert record["offline"] == [cid_new] and record["refused"][0]["refusal_code"] == "duplicate-of-archived"
+    offline = jload(ipath(world, 2, "offline-candidates.json"))
+    assert [e["candidate_id"] for e in offline["candidates"]] == [cid_new]
+    assert [e["candidate_id"] for e in offline["reread_candidates"]] == [cid_dup]
+    # the second candidate is NOT a duplicate (no archived state shares its artefact set)
+    assert cid_new not in {d["candidate_id"] for d in receipt["duplicates_of_archived"]}
+    # idempotent: nothing more is superseded or rewritten
+    before = {p.name: p.read_bytes() for p in (world.pkg / "iterations" / "i2").iterdir()}
+    assert world.run("repair", "--iter", "2", "--duplicates-only", fakes=fakes)[0] == 0
+    assert {p.name: p.read_bytes() for p in (world.pkg / "iterations" / "i2").iterdir()} == before
+    assert world.run("close", "--iter", "2", fakes=fakes)[0] == 0, world.out
+    close = world.receipt(2, "close")
+    new_state = next(s for s in world.archive().states() if s["arm"] == "typed" and s["iteration"] == 2)
+    assert new_state["candidate_id"] == cid_new and [v["state_id"] for v in close["verdicts"]["offline"]] == [new_state["state_id"]]
+    assert [v["state_id"] for v in close["verdicts"]["rereads"]] == [archived["state_id"]]
+    assert (world.pkg / "archive" / "rereads" / f"{archived['state_id']}-i2.json").is_file()
+    assert len([s for s in world.archive().states() if s["arm"] == "typed" and s["iteration"] == 2]) == 1
+
+
+def test_repair_duplicates_only_refuses_a_closed_iteration(world):
+    fakes, _archived = archived_oclock_world(world)
+    code, text = world.run("repair", "--iter", "1", "--duplicates-only", fakes=fakes)
+    assert code == 3 and "closed" in text
+
+
+def test_a_fitted_artefact_set_that_collides_at_close_is_a_reread_not_a_crash(world):
+    # iteration 1 refuses (under the point floor) an ee10 rule (its fitted table is part of the state id); iteration 2 proposes it again under the same parent:
+    # the provisional id at open differs, the fitted one collides at close
+    e1 = delivery_entries("ee10", ["person"], [])
+    fakes = Fakes(pairs=PAIRS, fits={e1[0]["receipt"]["candidate_id"][:8]: fit_report(0.5, 0.1)})
+    offline_world(world, e1, fakes)
+    assert world.run("close", "--iter", "1", fakes=fakes)[0] == 0
+    child = next(s for s in world.archive().states() if s["arm"] == "typed" and s["iteration"] == 1)
+    assert child["verdict"] == "refused" and child["credit"] is not None
+    raw = (world.pkg / "archive" / f"state-{child['state_id']}.json").read_bytes()
+    e2 = delivery_entries("ee10", ["person"], [], iteration=2)
+    cid2 = e2[0]["receipt"]["candidate_id"]
+    fakes.fits[cid2[:8]] = fit_report(0.5, 0.1)
+    assert world.run(*propose_args(world, 2), fakes=fakes)[0] == 0
+    typed, pred = typed_files(world, "i2", e2)
+    code, text = world.run(*open_cell_args(world, 2, typed=typed, predictions=pred))
+    assert code == 0, text
+    assert world.receipt(2, "open-cell")["offline"] == 1                  # not detectable before the fit
+    assert world.run("close", "--iter", "2", fakes=fakes)[0] == 0, world.out
+    close = world.receipt(2, "close")
+    assert "offline" not in close["verdicts"] and close["verdicts"]["rereads"][0]["state_id"] == child["state_id"]
+    assert (world.pkg / "archive" / f"state-{child['state_id']}.json").read_bytes() == raw
+    assert not [s for s in world.archive().states() if s["arm"] == "typed" and s["iteration"] == 2]
+    assert jload(world.pkg / "archive" / "rereads" / f"{child['state_id']}-i2.json")["archived_verdict"] == "refused"
+
+
+def test_close_exports_the_row_scores_and_builds_the_ace_credit_itself(world):
+    fakes = Fakes(pairs={"ace-vs-lock": contrast_doc(0.8, 0.1, 1.5), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)})
+    stall_iteration(world, fakes)
+    assert world.run("close", "--iter", "1", fakes=fakes)[0] == 0
+    assert fakes.calls.index("score-columns") < fakes.calls.index("row-scores")
+    receipt = world.receipt(1, "close")
+    rows_path = world.analysis(1) / "row-scores-i1.json"
+    credit_path = world.analysis(1) / "ace-credit.json"
+    assert receipt["ace_credit"] == "written" and receipt["row_scores"]["source"] == "exported"
+    assert receipt["inputs"]["row_scores"] == tf.sha256_file(rows_path) and receipt["inputs"]["ace_credit"] == tf.sha256_file(credit_path)
+    credit = jload(credit_path)
+    assert credit["playbook_iteration"] == 1 and len(credit["rows"]) == 12
+    assert world.run("close", "--iter", "1", fakes=fakes)[0] == 0                    # idempotent (export is write-once)
+    assert fakes.calls.count("row-scores") == 1
+
+
+def test_close_keeps_row_scores_as_an_override_and_refuses_a_missing_file(world):
+    fakes = Fakes(pairs={"ace-vs-lock": contrast_doc(0.8, 0.1, 1.5), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)})
+    stall_iteration(world, fakes)
+    code, text = world.run("close", "--iter", "1", "--row-scores", str(world.tmp / "nope.json"), fakes=fakes)
+    assert code == 3 and "does not exist" in text
+    assert lib.read_receipt(world.pkg / "iterations" / "i1", "close") is None and "row-scores" not in fakes.calls
+    import tfrl_row_scores as rs
+
+    rows = [f"slurp:train:{i:06d}:a" for i in range(5)]
+    export = world.tmp / "own.json"
+    export.write_text(json.dumps(rs.build_row_scores({r: 0.5 for r in rows}, {r: 0.6 for r in rows},
+                                                     {r: {"scenario": "calendar", "slot_types": ["date"]} for r in rows})), encoding="utf-8")
+    assert world.run("close", "--iter", "1", "--row-scores", str(export), fakes=fakes)[0] == 0
+    assert "row-scores" not in fakes.calls and world.receipt(1, "close")["row_scores"]["source"] == "override"
+    assert len(jload(world.analysis(1) / "ace-credit.json")["rows"]) == 5
+
+
+def test_a_planned_close_names_the_row_score_export(world):
+    fakes = Fakes()
+    stall_iteration(world, fakes)
+    code, text = world.run("close", "--iter", "1")
+    assert code == 0 and "tfrl_row_scores.py" in text

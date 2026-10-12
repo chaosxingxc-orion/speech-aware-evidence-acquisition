@@ -692,6 +692,8 @@ def archive_sha256(archive_dir: Path) -> str:
         lines.append(f"{path.name}:{tf.sha256_file(path)}")
     for path in sorted((Path(archive_dir) / "corrections").glob("state-*.json")):      # correction records are part of the archive
         lines.append(f"corrections/{path.name}:{tf.sha256_file(path)}")
+    for path in sorted((Path(archive_dir) / "rereads").glob("*-i*.json")):             # so are the reread records
+        lines.append(f"rereads/{path.name}:{tf.sha256_file(path)}")
     return tf.sha256_bytes("\n".join(lines).encode("ascii"))
 
 

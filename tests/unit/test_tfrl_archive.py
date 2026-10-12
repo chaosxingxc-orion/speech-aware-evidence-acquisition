@@ -377,3 +377,59 @@ def test_an_unmeasured_refusal_has_no_credit_and_is_not_a_flown_child():
     assert curve[0]["marked"] == "unflown" and curve[0]["flown_children"] == []
     meta = ms.build_meta_summary(states, "typed")
     assert meta["rows"][0]["n_refused"] == 2 and meta["rows"][0]["mean_measured_slu_pp"] is None
+
+
+# ---- rereads ---------------------------------------------------------------------------------
+
+def reread_record(state_id, iteration=2, verdict="refused"):
+    return {"schema": ar.REREAD_SCHEMA, "state_id": state_id, "archived_verdict": "refused", "iteration": iteration,
+            "candidate_id": H(f"cand-{iteration}"), "column": {"run_id": f"run-i{iteration}", "attempt": 1}, "reread_verdict": verdict,
+            "clauses": {"ci_lb_gt_0": {"pass": False, "value": 0.0, "threshold": 0.0}}, "credit": credit(0.0, 0.0, 0.0, 0.0)}
+
+
+def test_a_reread_is_a_write_once_sibling_that_never_touches_the_state_or_the_parent_choice(tmp_path):
+    arch = ar.Archive(tmp_path / "arch")
+    r = root()
+    arch.put(r)
+    child = state("a", parent=r["state_id"], verdict="refused")
+    arch.put(child)
+    raw = (tmp_path / "arch" / f"state-{child['state_id']}.json").read_bytes()
+    states_before = arch.states()
+    path, created = arch.put_reread(reread_record(child["state_id"]))
+    assert created and path == tmp_path / "arch" / "rereads" / f"{child['state_id']}-i2.json"
+    assert arch.put_reread(reread_record(child["state_id"]))[1] is False                 # identical re-run accepted
+    changed = reread_record(child["state_id"])
+    changed["reread_verdict"] = "accepted"
+    with pytest.raises(ar.ArchiveError, match="different content"):
+        arch.put_reread(changed)
+    assert (tmp_path / "arch" / f"state-{child['state_id']}.json").read_bytes() == raw
+    assert arch.states() == states_before and [x["state_id"] for x in arch.rereads()] == [child["state_id"]]
+    assert pc.choose_parent(arch.states())["parent_id"] == r["state_id"]
+    arch.put_reread(reread_record(child["state_id"], iteration=3))                      # a later iteration is its own file
+    assert len(arch.rereads()) == 2
+
+
+def test_a_reread_needs_an_archived_state_and_carries_identifiers_only(tmp_path):
+    arch = ar.Archive(tmp_path / "arch")
+    r = root()
+    arch.put(r)
+    with pytest.raises(ar.ArchiveError):
+        arch.put_reread(reread_record(H("missing")))
+    bad = reread_record(r["state_id"])
+    bad["clauses"] = {"note": "free text"}
+    with pytest.raises(ar.ArchiveError):
+        arch.put_reread(bad)
+    bad = reread_record(r["state_id"])
+    bad["extra"] = 1
+    with pytest.raises(ar.ArchiveError):
+        arch.put_reread(bad)
+
+
+def test_the_meta_summary_counts_rereads_only_when_some_exist():
+    r = root()
+    child = state("a", parent=r["state_id"], verdict="refused")
+    plain = ms.build_meta_summary([r, child], "typed")
+    assert all("n_rereads" not in row for row in plain["rows"])
+    counted = ms.build_meta_summary([r, child], "typed", rereads=[reread_record(child["state_id"]), reread_record(child["state_id"], 3)])
+    assert [row["n_rereads"] for row in counted["rows"]] == [2]
+    ms.assert_meta_clean(counted)
