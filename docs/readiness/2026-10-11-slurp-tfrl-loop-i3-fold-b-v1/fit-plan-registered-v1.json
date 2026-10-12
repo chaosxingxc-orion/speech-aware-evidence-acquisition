@@ -36,9 +36,11 @@
   "plan_kind": "fit",
   "preparation_base_commit": "0000000000000000000000000000000000000000",
   "prepared_phase_supply": {
-    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-V1/phase-supply-v1.json",
-    "sha256": "MINTED_AT_THE_FLIP"
+    "sha256": "12b9a7b25df63fb13b51e78d42450a2a36b3dde19feaacaa15fc60db1dec5929"
+  },
+  "prepared_phase_supply_annotations": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i3-fold-b-v1/protocol-registered-v1.json",
