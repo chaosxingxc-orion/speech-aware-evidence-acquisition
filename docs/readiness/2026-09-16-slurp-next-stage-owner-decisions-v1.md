@@ -2255,3 +2255,16 @@ session, countersign + mint + ext4 flip, swap to think-budget-np4, smoke (per-no
 the unified base (re-optimise per-node policy, budget, throughput; re-run the SOTA comparison; new test allowance only after the DEV read);
 if not -> Instruct stays, 266-E stays a core note. P4: carriers (272 B after 268): A2T all-off A/A, E21 all-off, E22 packets + all-off, on
 the unified base. P5: consolidation: results notes, claim surface under 252 with the claim class ruled later, worktree cleanup, backups.
+
+### Owner rulings 2026-10-12 12:10Z: 287 A, 288 A (cut over right after the i3 seal), 289 B, 290 B, 291 = 1.6 TB and try to fold it into the existing 2 TB disk, 292 A, 293 B, 294 A, 295 A (coordinator record)
+
+Owner, verbatim: 「决策287：A；288：按你建议；决策289：B，决策290：B，决策291：按照1.6TB划分吧，另外看下能不能合到之前划分出的2TB空间里面；决策292：A；决策293：B；
+决策294：A，决策295：A」. Consequences: (287) base v1 + the locator gate become standing offline gates; (288) the data-root cut-over runs
+right after the i3 column seals; (289 B + 290 B) NO compatibility link and NO frozen absolute pins: every `/mnt/e/...` literal in configs,
+scripts and tests is rewritten to the new root (or to a data-root-relative form) in one sweep after the cut-over -- flown cells keep their
+historical identity at their flight commits in git history, unflown cells (Audio2Tool, E21, E22 all-off) re-register with their new
+prepared-supply identities, and the locator ratchet baseline goes to zero; (291) the second 1.6 TB is folded into disk 1 where possible:
+the VHDX is expandable (it occupies only used bytes), so disk 1's maximum grows 2 TB -> 3.6 TB (`diskpart expand vdisk` on the detached
+file + `resize2fs` inside WSL) in a quiet window, with the "E: keeps 500 GB free" rule enforced as a usage cap by the locator check instead
+of a second disk; (292) worktrees on merged branches and orphan directories are removed from WSL; (293) no backup job; (294) `~/.bashrc`
+and the queue wrappers switch to the data-root authority at the cut-over; (295) the E22 packet root is re-pinned at its encoder window.
