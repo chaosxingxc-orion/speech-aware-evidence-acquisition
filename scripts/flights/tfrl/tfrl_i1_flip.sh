@@ -13,7 +13,7 @@
 #   TFRL_ITER=1 bash scripts/flights/tfrl/tfrl_i1_flip.sh [column|proposers]
 #   TFRL_ONLY=ace TFRL_ITER=1 bash scripts/flights/tfrl/tfrl_i1_flip.sh proposers   # flip ONLY the reflector (typed is flown and sealed; its re-pin would be refused); typed|ace, default both
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=${SAEA_FLIP_DATA:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 SP=$MAIN/scripts/flights/batch
 TF=$MAIN/scripts/flights/tfrl
 ITER=${TFRL_ITER:-1}
@@ -50,6 +50,32 @@ for KIND in $KINDS; do
     "research: flip $LABEL ($KIND) to ready (owner decision 263-A: the autonomous typed loop with the ACE comparator; re-pinned by scripts/flights/repin_cell.py, decision receipt $DECDIR)" \
     > "/home/chao/$SHORT-$KIND-commit.txt"
 done
+# Owner decision 270 A (2026-10-12): FLIP_MODE=one-pass replaces the convergence loop below by ONE call of onepass_flip.sh -- every cell re-pinned,
+# the plan pins refreshed, the shared documents and ledger rows written once, ONE commit, then core.flight.cli check once per cell. Default stays
+# FLIP_MODE=iterate until the owner flips it. The refusals above (receipt, running batch, 9p) apply to both modes.
+if [ "${FLIP_MODE:-iterate}" = one-pass ]; then
+  ONEPASS_CELLS=(); ONEPASS_FLAGS=(--flight-commit-file "/home/chao/$SHORT-$WHICH-flight-commit.txt")
+  if [ "$WHICH" = column ]; then
+    ONEPASS_CELLS=("slurp-native-stage3-tfrl-loop-i$ITER-fold-b-smoke-4-v1" "slurp-native-stage3-tfrl-loop-i$ITER-fold-b-v1")
+    ONEPASS_FLAGS+=(--ready-receipt "slurp-native-stage3-tfrl-loop-i$ITER-fold-b-v1" --flight-commit-file "/home/chao/$SHORT-arm-flight-commit.txt")
+  else
+    for KIND in $KINDS; do
+      case "$KIND" in
+        typed) ONEPASS_CELLS+=("slurp-native-stage3-tfrl-proposer-i$ITER-v1") ;;
+        ace) ONEPASS_CELLS+=("slurp-native-stage3-tfrl-ace-reflector-i$ITER-v1") ;;
+      esac
+      ONEPASS_FLAGS+=(--ready-receipt "${ONEPASS_CELLS[-1]}" --flight-commit-file "/home/chao/$SHORT-$KIND-flight-commit.txt")
+    done
+  fi
+  printf '%s\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n' \
+    "research: flip $LABEL ($KINDS) to ready in one pass (owner decision 263-A: the autonomous typed loop with the ACE comparator; re-pinned by scripts/flights/repin_package_one_pass.py, decision receipt $DECDIR)" \
+    > "/home/chao/$SHORT-onepass-commit.txt"
+  bash "$SP/onepass_flip.sh" --readiness-dir "$RD" --prereg "$RD-preregistration.md" --package "$DECDIR" \
+    --decision-path "coordination/$DECDIR/root-admission-v1.json" --decision-id "${DECDIR%-v1}-admission-v1" \
+    --commit-msg "/home/chao/$SHORT-onepass-commit.txt" "${ONEPASS_FLAGS[@]}" "${ONEPASS_CELLS[@]}" || exit $?
+  echo "flight commit $(git rev-parse HEAD) ($LABEL $KINDS ready at it, one pass)"
+  exit 0
+fi
 CONVERGED=""
 for pass in 1 2 3 4; do
   BEFORE=$(git rev-parse HEAD)

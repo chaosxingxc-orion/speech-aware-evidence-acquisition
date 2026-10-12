@@ -17,7 +17,7 @@
 # before the Thinking packets exist (the sentinel check then does not apply).
 #   bash scripts/flights/direct/direct_fb_flip.sh
 MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
-DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
+DATA=${SAEA_FLIP_DATA:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 SP=$MAIN/scripts/flights/batch
 DIRD=$MAIN/scripts/flights/direct
 SLUG=direct-only-fold-b-thinking-vs-instruct
@@ -49,6 +49,21 @@ for KIND in $KINDS; do
     "research: flip $LABEL ($KIND) to ready (owner decision 266-E: the bare-core read on TRAIN Fold B, Thinking versus Instruct, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-$SLUG-admission-v1)" \
     > "/home/chao/$SHORT-$KIND-commit.txt"
 done
+# Owner decision 270 A (2026-10-12): FLIP_MODE=one-pass replaces the convergence loop below by ONE call of onepass_flip.sh -- every cell re-pinned,
+# the plan pins refreshed, the shared documents and ledger rows written once, ONE commit, then core.flight.cli check once per cell. Default stays
+# FLIP_MODE=iterate until the owner flips it. The refusals above (receipt, sentinel, 9p) apply to both modes.
+if [ "${FLIP_MODE:-iterate}" = one-pass ]; then
+  ONEPASS_CELLS=(); for KIND in $KINDS; do ONEPASS_CELLS+=("${CELL[$KIND]}"); done
+  printf '%s\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n' \
+    "research: flip $LABEL ($KINDS) to ready in one pass (owner decision 266-E: the bare-core read on TRAIN Fold B, Thinking versus Instruct, claims_benefit false; re-pinned by scripts/flights/repin_package_one_pass.py, decision receipt slurp-$SLUG-admission-v1)" \
+    > "/home/chao/$SHORT-onepass-commit.txt"
+  bash "$SP/onepass_flip.sh" --readiness-dir "$RD" --prereg "$RD-preregistration.md" --package "slurp-$SLUG-v1" \
+    --decision-path "coordination/slurp-$SLUG-v1/root-admission-v1.json" --decision-id "slurp-$SLUG-admission-v1" \
+    --commit-msg "/home/chao/$SHORT-onepass-commit.txt" --flight-commit-file "/home/chao/$SHORT-flight-commit.txt" \
+    "${ONEPASS_CELLS[@]}" || exit $?
+  echo "flight commit $(git rev-parse HEAD) ($LABEL $KINDS ready at it, one pass)"
+  exit 0
+fi
 CONVERGED=""
 for pass in 1 2 3 4; do
   BEFORE=$(git rev-parse HEAD)
