@@ -129,8 +129,23 @@ SMOKE_GPU_HOURS = 0.5
 WALL_FACTOR_RANGE = (1.11, 1.44)
 
 
+#: Sign-off amendment (coordinator, 2026-10-12 20:05Z, smoke SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1 at flight commit
+#: c112da11b, 4 rows / 8 contacts, 0 cap hits, 0 empty, 2 forced closes): the measured per-contact seconds on the SYSTEM prompts
+#: (Perception 50.32 s mean, Solver 35.31 s mean at np4; reasoning means 1,985 / 1,768 tokens against the 848 the bare-core COST
+#: channel predicted) replace the modelled Instruct-latency-plus-decode-increment estimate above. Projection 6.42 GPU-h per
+#: 1,080-row pass versus the 3.89 modelled; the registered ceiling moves from 5.1 to 8.4 per arm (x1.3 margin, ceil 0.1).
+SMOKE_MEASURED_S_PER_CONTACT = {"perception": 50.32, "solver": 35.31}
+
+
 def row_seconds(solver_contacts: int, *, budget: int | None = THINK_BUDGET_TOKENS) -> float:
-    """Slot-seconds of one row: Perception + ``solver_contacts`` Solvers, each Instruct latency plus the budgeted decode increment."""
+    """Slot-seconds of one row: Perception + ``solver_contacts`` Solvers, from the smoke's measured per-contact seconds (sign-off
+    amendment above); the modelled form (Instruct latency plus the budgeted decode increment) is kept in ``modelled_row_seconds``."""
+
+    return SMOKE_MEASURED_S_PER_CONTACT["perception"] + solver_contacts * SMOKE_MEASURED_S_PER_CONTACT["solver"]
+
+
+def modelled_row_seconds(solver_contacts: int, *, budget: int | None = THINK_BUDGET_TOKENS) -> float:
+    """The pre-smoke model: each role's Instruct latency plus the budgeted decode increment (kept for the design record)."""
 
     think = DECODE_S_PER_TOKEN * E_MIN_REASONING_TOKENS[budget]
     return (INSTRUCT_MODULE_S["perception"] + think) + solver_contacts * (INSTRUCT_MODULE_S["solver"] + think)
@@ -149,9 +164,9 @@ def planned_gpu_hours(rows: int, solver_contacts: int, *, budget: int | None = T
     return round(math.ceil(round(hours / GPU_ROUND_H, 9)) * GPU_ROUND_H, 1)
 
 
-def wall_hours(rows: int, solver_contacts: int, *, budget: int | None = THINK_BUDGET_TOKENS) -> tuple[float, float]:
+def wall_hours(rows: int, solver_contacts: int, *, budget: int | None = THINK_BUDGET_TOKENS, modelled: bool = False) -> tuple[float, float]:
     low, high = WALL_FACTOR_RANGE
-    base = expected_gpu_hours(rows, solver_contacts, budget=budget)
+    base = (modelled_expected_gpu_hours if modelled else expected_gpu_hours)(rows, solver_contacts, budget=budget)
     return round(base * low, 1), round(base * high, 1)
 
 
@@ -200,8 +215,14 @@ ALL_KEYS = ("smoke", "lock", "aa")
 #: design's c3 shape (Perception + lock + twin in one flight), registrable when the harness admits a candidate-less twin group (decision 282).
 TWIN_SHAPE = "separate-cell"
 #: Reference figures of the design's c3 shape under the same formula (1 Perception + 2 Solver contacts per row): about 5.9 GPU-h, 6.6-8.5 h wall.
-C3_EXPECTED_GPU_H = expected_gpu_hours(ROWS, 2)
-C3_PLANNED_GPU_H = planned_gpu_hours(ROWS, 2)
+def modelled_expected_gpu_hours(rows: int, solver_contacts: int, *, budget: int | None = THINK_BUDGET_TOKENS) -> float:
+    """The design's reference figure under the pre-smoke model (kept for the design record; never a registered ceiling)."""
+
+    return rows * modelled_row_seconds(solver_contacts, budget=budget) / THINK_SLOTS / 3600.0
+
+
+C3_EXPECTED_GPU_H = modelled_expected_gpu_hours(ROWS, 2)
+C3_PLANNED_GPU_H = round(math.ceil(round(C3_EXPECTED_GPU_H * GPU_MARGIN / GPU_ROUND_H, 9)) * GPU_ROUND_H, 1)
 #: The replicate each arm's ``stage3_measurement`` block names (instrument rule 3: the in-chain A/A of the cross-flight contrast).
 REPLICATE_OF = {"lock": "aa", "aa": "lock"}
 

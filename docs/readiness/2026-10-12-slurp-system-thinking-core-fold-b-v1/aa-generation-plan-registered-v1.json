@@ -1,14 +1,14 @@
 {
   "cell": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
-  "composed_config_hash": "7b4b9b1703bd0e5ab7f31ef025b1935ae842e13ace39c28199fdb0ca8e5b6784",
+  "composed_config_hash": "b0f6ed34a50ab17e5439e782cf5bc36520ca6c352585fea9e74a84d2ad89dffc",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-generation-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 5.1,
+    "planned_gpu_hours": 8.4,
     "planned_model_calls": 4320,
     "planned_speech_audio_seconds": 12620,
-    "protocol_hash": "b6c26a226c36e3ae5f4934f476bd0fff69017351a4a320156a742341ceb1af51",
+    "protocol_hash": "6ca365dbb6fa43abb6e273bce1cd29d700ab6d4163fe42bd16327f2dd67694df",
     "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -24,27 +24,25 @@
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 8640,
     "generation_calls_cap": 4320,
-    "gpu_hours_fit_inclusive": 5.1,
+    "gpu_hours_fit_inclusive": 8.4,
     "native_task_contract_calls_cap": 4320,
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_cap": 12620
   },
   "one_factor": "The core: the Instruct model fragment and its speech packets are replaced by the Thinking core (q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1, budget 3072 + reserve 1024 = cap 4096). The system, the knowledge supply, the sealed query vectors and the roster are the loop's plain lock on TRAIN Fold B.",
   "plan_kind": "generation",
-  "preparation_base_commit": "0bc748d6114a7cb5a6013ec2b2c981374781e16f",
+  "preparation_base_commit": "22bdee18d93abdb952658d68cb3e980371ab5eda",
   "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1/phase-supply-v1.json",
-    "sha256": "c4a7974f60263455a8a2acdd62d514e6bb99b8c4018558bdc2fa84209e30e966"
-  },
-  "prepared_phase_supply_annotations": {
-    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
+    "sha256": "MINTED_AT_THE_FLIP"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "f43621fe7bf10bc656726f1edb1c9a7706835a539a21d80d803990cf221ae7a1"
+    "sha256": "f9ce5c1cfa8698f3dc17b559c1acc867052124af258c81189b03b0b88322b634"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1: Thinking system in-chain twin (aa) of the 268-B read.",
-  "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-12T20:01:27Z",
   "schema": "saea-registered-generation-plan-v1",
   "scoring": "One first complete official score after a successful seal; no partial score.",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",

@@ -83,10 +83,11 @@ def test_budgets_follow_the_formula_in_one_place():
     assert arm["rows"] == 1080 and fam.generation_calls("lock") == 4320 and fam.generation_calls("smoke") == 16 and fam.program_calls("lock") == 2160
     assert fam.fit_contact_cap(1080) == 8640 == 1080 * 2 * tf.FIT_ENDPOINTS_PER_CONTACT and fam.fit_contact_cap(4) == 32
     assert fam.audio_cap("arm") == 12620 and fam.audio_cap("smoke") == 41
-    assert abs(fam.row_seconds(1) - 51.90) < 0.05
-    assert round(fam.expected_gpu_hours(1080, 1), 2) == 3.89 and fam.planned_gpu_hours(1080, 1) == 5.1 == arm["gpu_hours"] == fam.CELLS["aa"]["gpu_hours"]
-    # the design's c3 reference under the same formula: 5.91 GPU-h expected, 6.6-8.5 h wall
-    assert round(fam.C3_EXPECTED_GPU_H, 2) == 5.91 and fam.wall_hours(1080, 2) == (6.6, 8.5)
+    assert abs(fam.modelled_row_seconds(1) - 51.90) < 0.05            # the pre-smoke model (design record)
+    assert abs(fam.row_seconds(1) - 85.63) < 0.05                     # the smoke-measured seconds (sign-off amendment, 2026-10-12)
+    assert round(fam.expected_gpu_hours(1080, 1), 2) == 6.42 and fam.planned_gpu_hours(1080, 1) == 8.4 == arm["gpu_hours"] == fam.CELLS["aa"]["gpu_hours"]
+    # the design's c3 reference under the pre-smoke model: 5.91 GPU-h expected, 6.6-8.5 h wall
+    assert round(fam.C3_EXPECTED_GPU_H, 2) == 5.91 and fam.wall_hours(1080, 2, modelled=True) == (6.6, 8.5)
     for key in fam.ALL_KEYS:
         spec = fam.CELLS[key]
         family, plan = dc.budgets(key)
@@ -247,7 +248,7 @@ def test_plans_protocol_receipt_and_ledger_agree():
 def test_gpu_and_read_texts_name_the_formula_and_the_shapes():
     readme = (PKG / "README.md").read_text(encoding="utf-8")
     for needle in ("268 B", "think-budget-np4", "drop-reasoning-v1", "3072", "4096", "separate cell", "TRANSFERS-ABOVE-BAR", "PARTIAL", "NO-TRANSFER", "HARM",
-                   "flip_package_ext4.sh", "5.91", "3.89"):
+                   "flip_package_ext4.sh", "5.91", "6.42"):
         assert needle in readme, needle
     for script in ("thinking_system_flip.sh", "thinking_system_read.sh", "thinking_system_repin_cell.sh", "batch_chain_thinking_system.sh"):
         assert subprocess.run(["bash", "-n", str(REPO / "scripts/flights/direct" / script)], capture_output=True).returncode == 0

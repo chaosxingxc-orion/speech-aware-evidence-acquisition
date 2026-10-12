@@ -1,14 +1,14 @@
 {
   "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
-  "composed_config_hash": "e64986b3dd95d5a6c001257d1a406d2bd9cf9b02b340ab039bd74fe85ef75606",
+  "composed_config_hash": "f21facba847850249fa019bbc583379d229277a9d8c5bbf0d3f3a8ebb3714e77",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-fit-v1",
     "carrier_lock_key": "slurp",
     "execution_profile": "bounded-discovery-probe",
-    "planned_gpu_hours": 5.1,
+    "planned_gpu_hours": 8.4,
     "planned_model_calls": 8640,
     "planned_speech_audio_seconds": 12620,
-    "protocol_hash": "ff13157d1a095df10641e03b0f5c720f5e1476ef288e259773be4082ae394635",
+    "protocol_hash": "13c926742a3388b5354715d4df43f0ee8af694d0e8508ea1bd55c32c5f010237",
     "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -24,27 +24,25 @@
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 8640,
     "generation_calls_cap": 4320,
-    "gpu_hours_fit_inclusive": 5.1,
+    "gpu_hours_fit_inclusive": 8.4,
     "native_task_contract_calls_cap": 4320,
     "official_complete_scoring_jobs": 1,
     "repeated_speech_audio_seconds_cap": 12620
   },
   "one_factor": "The core: the Instruct model fragment and its speech packets are replaced by the Thinking core (q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1, budget 3072 + reserve 1024 = cap 4096). The system, the knowledge supply, the sealed query vectors and the roster are the loop's plain lock on TRAIN Fold B.",
   "plan_kind": "fit",
-  "preparation_base_commit": "0bc748d6114a7cb5a6013ec2b2c981374781e16f",
+  "preparation_base_commit": "22bdee18d93abdb952658d68cb3e980371ab5eda",
   "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1/phase-supply-v1.json",
-    "sha256": "5dd27125fe542779275ff6c0eaf1520d687657f9ef6e25b33dee7128b4100bdb"
-  },
-  "prepared_phase_supply_annotations": {
-    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
+    "sha256": "MINTED_AT_THE_FLIP"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "f43621fe7bf10bc656726f1edb1c9a7706835a539a21d80d803990cf221ae7a1"
+    "sha256": "f9ce5c1cfa8698f3dc17b559c1acc867052124af258c81189b03b0b88322b634"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1: request envelopes only; reads nothing.",
-  "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-12T20:01:27Z",
   "schema": "saea-registered-fit-plan-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
   "thinking_knobs": {

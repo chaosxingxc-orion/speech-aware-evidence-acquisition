@@ -42,8 +42,8 @@ The engineering design's c3 shape (Perception + lock + in-row twin aa in one fli
 
 expected = rows x [ (P_inst + d x E_B) + n_solver x (S_inst + d x E_B) ] / slots / 3600 with P_inst = 5.48 s and S_inst = 7.45 s (Instruct module column, i2), d = 0.02298 s per generated token (266-E fit), E_B = E[min(reasoning, B)] = 848 tokens at B = 3,072; ceiling = ceil_0.1(expected x 1.3).
 
-* One c2 pass (lock or twin): 2,160 contacts, expected 3.89 GPU-h, registered ceiling 5.1 GPU-h, wall 4.3-5.6 h.
-* Registered total (smoke + lock + twin): 4,328 contacts, expected 7.79 GPU-h, ceilings 10.7 GPU-h.
+* One c2 pass (lock or twin): 2,160 contacts, expected 6.42 GPU-h, registered ceiling 8.4 GPU-h, wall 7.1-9.2 h.
+* Registered total (smoke + lock + twin): 4,328 contacts, expected 12.84 GPU-h, ceilings 17.3 GPU-h.
 * The design's c3 reference under the same formula: expected 5.91 GPU-h, ceiling 7.7, wall 6.6-8.5 h (design table: 5.91 GPU-h, 6.6-8.5 h wall (section 4.3)).
 * the registry's 14 GPU-h counted 8,640 contacts at 22.8 s on the bare prompt; the design's model gives 18.4 GPU-h for two unbounded c4 passes.
 

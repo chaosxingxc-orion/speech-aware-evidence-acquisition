@@ -153,7 +153,7 @@ def cost_estimate() -> dict:
                              "expected_gpu_hours": round(2 * arm_expected, 2),
                              "planned_ceiling_gpu_hours": round(fam.CELLS["lock"]["gpu_hours"] + fam.CELLS["aa"]["gpu_hours"] + fam.SMOKE_GPU_HOURS, 1)},
         "design_c3_reference": {"shape": "Perception + lock + in-row twin, one pass", "expected_gpu_hours": round(fam.C3_EXPECTED_GPU_H, 2),
-                                "planned_ceiling_gpu_hours": fam.C3_PLANNED_GPU_H, "wall_hours_range": list(fam.wall_hours(fam.ROWS, 2)),
+                                "planned_ceiling_gpu_hours": fam.C3_PLANNED_GPU_H, "wall_hours_range": list(fam.wall_hours(fam.ROWS, 2, modelled=True)),
                                 "design_table": "5.91 GPU-h, 6.6-8.5 h wall (section 4.3)"},
         "superseded_estimate": "the registry's 14 GPU-h counted 8,640 contacts at 22.8 s on the bare prompt; the design's model gives 18.4 GPU-h for two unbounded c4 passes",
         "fallback_note": ("The answer-only fallback (decisions 277 A and 283 A) adds at most 2 contacts per row: planned_model_calls is rows x "

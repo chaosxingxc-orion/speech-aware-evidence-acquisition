@@ -31,19 +31,19 @@
       },
       "per_arm_pass_c2": {
         "contacts": 2160,
-        "expected_gpu_hours": 3.89,
-        "planned_ceiling_gpu_hours": 5.1,
+        "expected_gpu_hours": 6.42,
+        "planned_ceiling_gpu_hours": 8.4,
         "wall_hours_range": [
-          4.3,
-          5.6
+          7.1,
+          9.2
         ]
       },
       "registered_total": {
         "contacts": 4328,
-        "expected_gpu_hours": 7.79,
-        "planned_ceiling_gpu_hours": 10.7
+        "expected_gpu_hours": 12.84,
+        "planned_ceiling_gpu_hours": 17.3
       },
-      "row_slot_seconds_c2": 51.9,
+      "row_slot_seconds_c2": 85.63,
       "superseded_estimate": "the registry's 14 GPU-h counted 8,640 contacts at 22.8 s on the bare prompt; the design's model gives 18.4 GPU-h for two unbounded c4 passes"
     },
     "lock": "v2.2",
@@ -56,8 +56,8 @@
   },
   "blockers": [],
   "composed_config_hashes": {
-    "aa": "7b4b9b1703bd0e5ab7f31ef025b1935ae842e13ace39c28199fdb0ca8e5b6784",
-    "lock": "e64986b3dd95d5a6c001257d1a406d2bd9cf9b02b340ab039bd74fe85ef75606",
+    "aa": "b0f6ed34a50ab17e5439e782cf5bc36520ca6c352585fea9e74a84d2ad89dffc",
+    "lock": "f21facba847850249fa019bbc583379d229277a9d8c5bbf0d3f3a8ebb3714e77",
     "smoke": "ffdb79fa46b542f08d51458b53f0b8fee480f31f356bdf91a3ae63f84b2dafb5"
   },
   "context_fit": {
@@ -113,11 +113,11 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-aa-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
-      "composed_config_hash": "7b4b9b1703bd0e5ab7f31ef025b1935ae842e13ace39c28199fdb0ca8e5b6784",
+      "composed_config_hash": "b0f6ed34a50ab17e5439e782cf5bc36520ca6c352585fea9e74a84d2ad89dffc",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
-        "planned_gpu_hours": 5.1,
+        "planned_gpu_hours": 8.4,
         "planned_model_calls": 4320,
         "planned_speech_audio_seconds": 12620,
         "split_role": "discovery"
@@ -130,7 +130,7 @@
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 8640,
         "generation_calls_cap": 4320,
-        "gpu_hours_fit_inclusive": 5.1,
+        "gpu_hours_fit_inclusive": 8.4,
         "native_task_contract_calls_cap": 4320,
         "official_complete_scoring_jobs": 1,
         "repeated_speech_audio_seconds_cap": 12620
@@ -146,7 +146,7 @@
       "key": "aa",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "b6c26a226c36e3ae5f4934f476bd0fff69017351a4a320156a742341ceb1af51",
+      "protocol_hash": "6ca365dbb6fa43abb6e273bce1cd29d700ab6d4163fe42bd16327f2dd67694df",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
@@ -159,11 +159,11 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-lock-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
-      "composed_config_hash": "e64986b3dd95d5a6c001257d1a406d2bd9cf9b02b340ab039bd74fe85ef75606",
+      "composed_config_hash": "f21facba847850249fa019bbc583379d229277a9d8c5bbf0d3f3a8ebb3714e77",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
-        "planned_gpu_hours": 5.1,
+        "planned_gpu_hours": 8.4,
         "planned_model_calls": 4320,
         "planned_speech_audio_seconds": 12620,
         "split_role": "discovery"
@@ -176,7 +176,7 @@
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 8640,
         "generation_calls_cap": 4320,
-        "gpu_hours_fit_inclusive": 5.1,
+        "gpu_hours_fit_inclusive": 8.4,
         "native_task_contract_calls_cap": 4320,
         "official_complete_scoring_jobs": 1,
         "repeated_speech_audio_seconds_cap": 12620
@@ -192,7 +192,7 @@
       "key": "lock",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "ff13157d1a095df10641e03b0f5c720f5e1476ef288e259773be4082ae394635",
+      "protocol_hash": "13c926742a3388b5354715d4df43f0ee8af694d0e8508ea1bd55c32c5f010237",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
@@ -286,7 +286,7 @@
       "HARM"
     ]
   },
-  "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-12T20:01:27Z",
   "registration_basis": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md (decision 268 B); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
   "roster": {
     "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
@@ -333,7 +333,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "0bc748d6114a7cb5a6013ec2b2c981374781e16f",
+  "study_commit_at_registration": "22bdee18d93abdb952658d68cb3e980371ab5eda",
   "thinking_knobs": {
     "answer_fallback": {
       "enable_thinking": false,

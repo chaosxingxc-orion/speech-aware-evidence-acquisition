@@ -25,7 +25,7 @@
   "measurement_design": "cross-flight-with-in-chain-replicate",
   "read_run_id": "SAEA-SLURP-SYSTEM-THINKING-CORE-FOLD-B-READ-V1",
   "recipe_id": "slurp-system-thinking-core-fold-b-read-v1",
-  "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-12T20:01:27Z",
   "roster": {
     "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
     "roster_id": "SLURP-EVO-FOLD-B-V2",
