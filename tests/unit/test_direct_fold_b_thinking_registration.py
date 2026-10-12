@@ -223,7 +223,7 @@ def test_the_instruct_arm_resolves_to_the_rec1_identities_and_the_other_cells_ke
     assert spec["attempt"] == "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1"
     assert spec["fit_run"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1"
     assert spec["fit_attempt"] == "attempt-slurp-direct-only-fold-b-instruct-fit-rec1-v1"
-    for key in ("thinking", "replicate"):                                               # their attempts never opened
+    for key in ("replicate",):                                                          # its attempt never opened (the Thinking arm has its own rec1, below)
         assert fam.recovery(key) is None and fam.rec_suffix(key) == ""
         assert "rec1" not in json.dumps(fam.CELLS[key]) and fam.plan_file_name(key, "generation") == f"{key}-generation-plan-registered-v1.json"
     rec = fam.recovery("instruct")
@@ -237,9 +237,10 @@ def test_the_instruct_arm_resolves_to_the_rec1_identities_and_the_other_cells_ke
     assert fam.plan_file_name("instruct", "fit") == "instruct-fit-plan-registered-rec1-v1.json"
     assert fam.superseded_plan_file_names("instruct") == ["instruct-generation-plan-registered-v1.json", "instruct-fit-plan-registered-v1.json"]
     assert fam.superseded_plan_file_names("replicate") == []
-    # eight first-registration ids (what the minted receipt lists) plus the rec1 FIT run id of each recovered cell (smoke first, then the Instruct arm)
+    # eight first-registration ids (what the minted receipt lists) plus the rec1 FIT run id of each recovered cell (smoke, Thinking arm, Instruct arm)
     eligible = fam.eligible_run_ids()
-    assert len(eligible) == 10 == len(set(eligible)) and eligible[-1] == spec["fit_run"] and eligible[-2] == fam.CELLS["smoke"]["fit_run"]
+    assert len(eligible) == 11 == len(set(eligible)) and eligible[-1] == spec["fit_run"]
+    assert eligible[-2] == fam.CELLS["thinking"]["fit_run"] and eligible[-3] == fam.CELLS["smoke"]["fit_run"]
     assert fam.CELLS["instruct"]["run"] in eligible and rec["predecessor_fit_run_id"] in eligible
 
 
@@ -257,7 +258,7 @@ def test_the_rec1_plans_are_in_the_package_and_the_first_attempt_instruct_plans_
     budget = generation["recovery_budget"]
     assert budget["original_plan"] == budget["cumulative_plan"] == {"planned_model_calls": 1080, "planned_speech_audio_seconds": 3155}
     assert generation["execution_plan"]["planned_model_calls"] == 1080 and fit["execution_plan"]["planned_model_calls"] == 3241
-    for key in ("thinking", "replicate"):
+    for key in ("replicate",):
         for kind in ("generation", "fit"):
             assert "recovery" not in _json(f"{fam.PACKAGE}/{fam.plan_file_name(key, kind)}")
     protocol = _json(f"{fam.PACKAGE}/protocol-registered-v1.json")
@@ -290,7 +291,7 @@ def test_the_rec1_ledger_block_has_two_draft_rows_and_the_first_attempt_rows_are
 def test_the_flip_script_passes_the_rec1_plan_marker_for_the_recovered_cell_only():
     text = (DIRECT / "direct_fb_flip.sh").read_text(encoding="utf-8")
     assert 'PLAN_REC="${PLAN_REC_OF[$KIND]}"' in text and "fam.rec_suffix" in text
-    assert fam.rec_suffix("instruct") == "-rec1" and fam.rec_suffix("smoke") == "-rec1" and fam.rec_suffix("replicate") == "" and fam.rec_suffix("thinking") == ""
+    assert fam.rec_suffix("instruct") == "-rec1" and fam.rec_suffix("smoke") == "-rec1" and fam.rec_suffix("replicate") == "" and fam.rec_suffix("thinking") == "-rec1"
 
 
 # ----------------------------------------------------------------------------------------------- serving and chain
@@ -336,6 +337,9 @@ def test_the_chain_queue_per_segment(tmp_path, segment, expected):
     assert result.returncode == 0, result.stderr
     steps = json.loads((tmp_path / "queue.json").read_text(encoding="utf-8"))
     assert [s["short"] for s in steps] == [f"direct-fb-{k}" for k in expected]
+    if segment == "thinking":                      # the Thinking arm flies under its rec1 ids (the FIT row it is gated on carries 4.5 gpu hours)
+        assert [(s["run_id"], s["gen_attempt_id"], s["fit_run_id"]) for s in steps] == [
+            ("SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1", "attempt-slurp-direct-only-fold-b-thinking-generation-rec1-v1", "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-REC1-V1")]
     if segment == "instruct":                      # the Instruct arm flies under the rec1 ids, then the replicate under its own (unchanged) ids
         assert [(s["run_id"], s["gen_attempt_id"], s["fit_run_id"]) for s in steps] == [
             ("SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-V1", "attempt-slurp-direct-only-fold-b-instruct-generation-rec1-v1", "SAEA-SLURP-DIRECT-ONLY-FOLD-B-INSTRUCT-FIT-REC1-V1"),
@@ -464,11 +468,11 @@ def test_the_countersign_texts_name_the_packages_own_receipt():
 
 def test_the_draft_receipt_lists_the_eight_run_ids_plus_the_rec1_fit_runs_and_mints_once(tmp_path):
     draft = _json(f"{fam.PACKAGE}/root-admission-draft-v1.json")
-    assert draft["eligible_run_ids"] == mint_mod.expected_eligible() and len(draft["eligible_run_ids"]) == 10
-    assert fam.CELLS["instruct"]["fit_run"] in draft["eligible_run_ids"] and fam.CELLS["smoke"]["fit_run"] in draft["eligible_run_ids"]
+    assert draft["eligible_run_ids"] == mint_mod.expected_eligible() and len(draft["eligible_run_ids"]) == 11
+    for key in ("smoke", "thinking", "instruct"):
+        assert fam.CELLS[key]["fit_run"] in draft["eligible_run_ids"]
     assert draft["superseded_attempt_ids"] == [
-        fam.recovery("smoke")["predecessor_attempt_id"], fam.recovery("smoke")["predecessor_fit_attempt_id"],
-        fam.recovery("instruct")["predecessor_attempt_id"], fam.recovery("instruct")["predecessor_fit_attempt_id"]]
+        fam.recovery(key)[name] for key in ("smoke", "thinking", "instruct") for name in ("predecessor_attempt_id", "predecessor_fit_attempt_id")]
     assert draft["service"]["thinking_session"] == fam.THINK_SESSION
     assert draft["budget"]["thinking"]["gpu_hours_fit_inclusive"] == 4.5 and draft["budget"]["smoke"]["generation_calls_cap"] == 8
     assert draft["status"] == "DRAFT-NOT-MINTED"
@@ -553,9 +557,9 @@ def test_the_instruct_cells_are_untouched_by_the_cap_amendment():
     assert "rec1" in fam.CELLS["instruct"]["attempt"]                                   # the Instruct arm keeps its own rec1 identities
 
 
-def test_the_thinking_arm_keeps_its_ids_and_takes_the_amended_gpu_hour_ceiling():
+def test_the_thinking_arm_takes_the_amended_gpu_hour_ceiling_under_its_rec1_ids():
     thinking = fam.CELLS["thinking"]
-    assert fam.recovery("thinking") is None and "rec1" not in json.dumps(thinking)
+    assert fam.recovery("thinking") is not None and "rec1" in json.dumps(thinking)
     assert thinking["gpu_hours"] == fam.THINK_ARM_GPU_HOURS == 4.5
     assert _experiment("thinking")["execution_plan"]["planned_gpu_hours"] == 4.5
     assert _experiment("thinking")["family_budget"]["gpu_hours_fit_inclusive"] == 4.5
@@ -663,7 +667,7 @@ def test_the_flip_can_be_narrowed_to_the_smoke_and_the_thinking_arm_and_passes_t
     code = ("import sys; sys.path.insert(0, %r); import direct_fb_family as fam; "
             "print(' '.join(f'{k}={fam.rec_suffix(k)}' for k in ('smoke', 'thinking')))" % str(DIRECT))
     out = subprocess.run([sys.executable, "-B", "-c", code], capture_output=True, text=True)
-    assert out.stdout.split() == ["smoke=-rec1", "thinking="], out.stderr
+    assert out.stdout.split() == ["smoke=-rec1", "thinking=-rec1"], out.stderr
     # a narrowed pass never names an Instruct cell: the cell table is a lookup, not a loop
     assert "declare -A CELL=" in text and "for KIND in smoke thinking instruct replicate; do\n  PLAN_REC_OF" in text
 
@@ -702,3 +706,105 @@ def test_the_superseded_session_stop_helper_refuses_unsafe_states_and_stops_only
     assert any(line.startswith("-Stop SAEA-Serving-THINK") for line in ps) and any(line.startswith("-Stop SAEA-Monitor-THINK") for line in ps)
     assert not any(line.startswith("-Start") for line in ps)
     assert (sdir / "session-stop.json").is_file()
+
+
+# ----------------------------------------------------------------------------------------------- Thinking arm rec1 and the GPU pre-registration gate
+
+
+def _registration_check_module():
+    spec = importlib.util.spec_from_file_location("flight_registration_check_under_test", REPO / "scripts" / "checks" / "flight_registration_check.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_the_thinking_arm_resolves_to_the_rec1_identities_and_the_run_cumulative_budget():
+    spec, rec = fam.CELLS["thinking"], fam.recovery("thinking")
+    assert spec["run"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1"                    # the generation run id stays: the budget is run-cumulative
+    assert spec["attempt"] == "attempt-slurp-direct-only-fold-b-thinking-generation-rec1-v1"
+    assert spec["fit_run"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-REC1-V1"
+    assert spec["fit_attempt"] == "attempt-slurp-direct-only-fold-b-thinking-fit-rec1-v1"
+    assert rec["predecessor_attempt_id"] == "attempt-slurp-direct-only-fold-b-thinking-generation-v1" != spec["attempt"]
+    assert rec["predecessor_fit_run_id"] == "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1" != spec["fit_run"]
+    assert "00:25:21Z" in rec["predecessor_state"] and "5daf057f8" in rec["predecessor_state"] and "before any model contact" in rec["predecessor_state"]
+    assert fam.predecessor_spend("thinking") == (0, 0.0) and fam.cumulative_budget("thinking", 1080, 3155) == (1080, 3155)
+    assert fam.plan_file_name("thinking", "generation") == "thinking-generation-plan-registered-rec1-v1.json"
+    assert fam.superseded_plan_file_names("thinking") == ["thinking-generation-plan-registered-v1.json", "thinking-fit-plan-registered-v1.json"]
+    baseline = _json(f"configs/baseline/{spec['baseline']}.json")
+    assert baseline["live_phase_fit"] == {"attempt_id": spec["fit_attempt"], "contact_cap": 3241, "run_id": spec["fit_run"]}
+    assert _experiment("thinking")["cells"][0]["attempt_id"] == spec["attempt"]
+    package = REPO / fam.PACKAGE
+    for kind in ("generation", "fit"):
+        assert (package / fam.plan_file_name("thinking", kind)).is_file()
+        assert not (package / f"thinking-{kind}-plan-registered-v1.json").exists()
+    generation = _json(f"{fam.PACKAGE}/{fam.plan_file_name('thinking', 'generation')}")
+    fit = _json(f"{fam.PACKAGE}/{fam.plan_file_name('thinking', 'fit')}")
+    assert (generation["execution_plan"]["run_id"], generation["execution_plan"]["attempt_id"]) == (spec["run"], spec["attempt"])
+    assert (fit["execution_plan"]["run_id"], fit["execution_plan"]["attempt_id"]) == (spec["fit_run"], spec["fit_attempt"])
+    assert generation["recovery_budget"]["original_plan"] == generation["recovery_budget"]["cumulative_plan"] == {"planned_model_calls": 1080, "planned_speech_audio_seconds": 3155}
+    assert generation["execution_plan"]["planned_gpu_hours"] == fit["execution_plan"]["planned_gpu_hours"] == 4.5
+    assert generation["expected_session_id"] == fam.THINK_SESSION == fit["expected_session_id"]
+
+
+def test_the_thinking_rec1_ledger_block_carries_4_5_gpu_hours_on_both_rows_and_the_first_attempt_rows_stay():
+    text = LEDGER.read_text(encoding="utf-8")
+    start = text.index("## Cell 266-E recovery rec1: the Thinking arm")
+    end = text.find("\n## ", start + 1)
+    block = text[start:] if end == -1 else text[start:end]
+    rows = [line for line in block.splitlines() if line.startswith("| 2026-")]
+    spec = fam.CELLS["thinking"]
+    assert len(rows) == 2 and all(r.count("|") == 16 for r in rows)
+    assert [r.split("|")[2].strip() for r in rows] == [spec["run"], spec["fit_run"]]
+    for r in rows:
+        cells = [c.strip() for c in r.split("|")]
+        assert "countersignature pending" in r and "root countersigned" not in r.lower() and cells[9] == "no"
+        assert cells[12] == "4.5"                                                       # the gpu cell, on the generation AND the FIT row
+        assert f"max{fam.THINK_MAX_TOKENS}" in cells[5] and fam.THINK_MODEL in cells[5]
+    assert fam.THINK_SESSION in rows[0]                                                 # the generation row names the expected max8192 session
+    assert [r.split("|")[10].strip() for r in rows] == ["1080", "3241"]
+    original = [r for r in _ledger_rows() if r.split("|")[2].strip() in ("SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1", "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1")]
+    assert len(original) == 2                                                           # the first-attempt generation + FIT rows stay in the original block
+    texts = _json(f"{fam.PACKAGE}/countersign-row-texts-v1.json")["rows"]
+    assert "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1" not in texts
+    for run_id in (spec["run"], spec["fit_run"]):
+        assert "root countersigned" in texts[run_id] and "RECOVERY rec1" in texts[run_id] and "countersignature pending" not in texts[run_id]
+    assert "re-minted by the coordinator" in texts[spec["run"]]
+
+
+def test_the_flip_can_be_narrowed_to_the_thinking_arm_alone():
+    text = (DIRECT / "direct_fb_flip.sh").read_text(encoding="utf-8")
+    assert 'KINDS=${DIRECT_FB_KINDS:-"smoke thinking instruct replicate"}' in text and "for KIND in $KINDS; do" in text
+    assert 'case " $KINDS " in *" thinking "*|*" smoke "*) ;; *) break ;; esac' in text
+    assert fam.rec_suffix("thinking") == "-rec1" and fam.plan_file_name("thinking", "fit").endswith("-rec1-v1.json")
+
+
+@pytest.mark.parametrize("key", fam.ALL_KEYS)
+def test_every_live_266e_row_pre_registers_at_least_the_gpu_hours_its_plan_claims(key):
+    """The class of the 2026-10-12 Thinking abort: the exposure gate reads the matched row's gpu cell against the plan, and the FIT run has a row
+    of its own, so an amendment that raised only the generation row left the arm refused before any contact."""
+
+    check = _registration_check_module()
+    ledger = check.parse_ledger(REPO, Path("docs/exposure-ledger.md"))
+    spec = fam.CELLS[key]
+    for role, run_id in (("generation", spec["run"]), ("fit", spec["fit_run"])):
+        plan = _json(f"{fam.PACKAGE}/{fam.plan_file_name(key, role)}")
+        claim = max(plan["execution_plan"]["planned_gpu_hours"], plan["family_budget"]["gpu_hours_fit_inclusive"])
+        rows = ledger.get(run_id, [])
+        assert rows, f"{run_id} has no ledger row"
+        live = [r for r in rows if not check.row_consumed(r) and not check.SUPERSEDED_ROW.search(check.row_text(r))]
+        for row in live:
+            assert float(row["gpu hours"]) >= claim, (run_id, row["gpu hours"], claim)
+        assert check.gpu_row_findings(role, run_id, rows, claim) == []
+
+
+def test_the_registration_gate_flags_a_live_row_below_the_plan_gpu_claim_and_skips_history():
+    check = _registration_check_module()
+    short = {"gpu hours": "3.0", "consumed": "no", "notes": "REGISTERED (DRAFT, root countersignature pending)"}
+    (finding,) = check.gpu_row_findings("fit", "RUN-FIT", [short], 4.5)
+    assert finding.kind == "row-gpu-under-plan" and finding.severity is None and "3 gpu hours" in finding.message and "4.5" in finding.message
+    assert check.gpu_row_findings("fit", "RUN-FIT", [{**short, "gpu hours": "4.5"}], 4.5) == []
+    assert check.gpu_row_findings("fit", "RUN-FIT", [{**short, "consumed": "yes"}], 4.5) == []
+    assert check.gpu_row_findings("fit", "RUN-FIT", [{**short, "notes": "SUPERSEDED by the rec1 row"}], 4.5) == []
+    assert check.gpu_row_findings("fit", "RUN-FIT", [short], None) == []
+    assert check.planned_gpu_hours_of({"execution_plan": {"planned_gpu_hours": 4.5}}) == 4.5 and check.planned_gpu_hours_of({}) is None

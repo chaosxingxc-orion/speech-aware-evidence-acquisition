@@ -126,6 +126,8 @@ CONSUMED_COLUMN = "consumed"
 DATE_COLUMN = "date"
 NOTES_COLUMN = "notes"
 ARTIFACTS_COLUMN = "artifacts"
+GPU_COLUMN = "gpu hours"
+SUPERSEDED_ROW = re.compile(r"\bsuperseded\b", re.IGNORECASE)
 
 COUNTERSIGNED = re.compile(r"\broot\s+countersigned\b", re.IGNORECASE)
 PENDING = re.compile(r"countersignature\s+pending", re.IGNORECASE)
@@ -1869,6 +1871,44 @@ def _check_registered_supply_binding(report, baseline, index, package, ledger, *
             report.findings.append(Finding("population-config-binding", str(error), report.run_id))
 
 
+def planned_gpu_hours_of(fragment: dict[str, Any]) -> float | None:
+    """The GPU hours the cell's execution plan will claim at the exposure gate (``execution_plan.planned_gpu_hours``)."""
+
+    plan = fragment.get("execution_plan")
+    value = plan.get("planned_gpu_hours") if isinstance(plan, dict) else None
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return float(value)
+
+
+def gpu_row_findings(role: str, run_id: str, rows: list[dict[str, str]], planned: float | None) -> list[Finding]:
+    """A live ledger row whose ``gpu hours`` cell is below the plan's claim.
+
+    The exposure gate (``contracts.gate_exposure``) refuses a model touch when the plan claims more GPU hours than the matched
+    row pre-registered, and the live phase-fit run id has a row of its own: amending only the generation row leaves the FIT row
+    short and the arm aborts before contact (266-E Thinking arm, 2026-10-12). Consumed and superseded rows are history and skipped.
+    """
+
+    if planned is None:
+        return []
+    out: list[Finding] = []
+    for row in rows:
+        if row_consumed(row) or SUPERSEDED_ROW.search(row_text(row)) or GPU_COLUMN not in row:
+            continue
+        try:
+            registered = float(str(row[GPU_COLUMN]).replace("*", "").strip())
+        except ValueError:
+            continue
+        if registered < planned:
+            out.append(Finding(
+                "row-gpu-under-plan",
+                f"{run_id} ({role}): the exposure-ledger row pre-registers {registered:g} gpu hours but the plan claims "
+                f"{planned:g}; the exposure gate would refuse the model touch",
+                run_id,
+            ))
+    return out
+
+
 def check_cell(
     report: CellReport,
     cell: dict[str, Any],
@@ -1899,6 +1939,7 @@ def check_cell(
     report.run_ids = run_ids
     requirement = decision_requirement(cell)
     first_receipt: dict[str, Any] | None = None
+    planned_gpu = planned_gpu_hours_of(fragment)
     for role, run_id in run_ids.items():
         rows = ledger.get(run_id, [])
         if not rows:
@@ -1910,6 +1951,7 @@ def check_cell(
             report.findings.append(Finding(
                 "duplicate-row", f"{run_id} ({role}): {len(rows)} exposure-ledger rows", run_id
             ))
+        report.findings.extend(gpu_row_findings(role, run_id, rows, planned_gpu))
         signed = [row for row in rows if is_countersigned(row)]
         if not signed:
             state = "a DRAFT (root countersignature pending)" if any(
