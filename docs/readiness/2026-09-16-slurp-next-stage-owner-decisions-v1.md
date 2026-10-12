@@ -2188,3 +2188,9 @@ with preserved wire responses). Replay (E10 trace replay) and the answer path ne
 (transport/sealing change + tests; the 266-E sealed traces that already hold reasoning bytes stay as flown; new cells re-pin at their flip).
 285 deferred: the comparator table stays as a survey asset (registered baselines per task); the claim-class comparison is redone once the
 unified base (Thinking mode, if 268 transfers) is locked.
+286 implemented and merged: reasoning bytes are projected out at the transport on every path; the stored wire message carries a `reasoning`
+object (`reasoning_content_sha256`, `reasoning_chars`, `reasoning_tokens`, `forced_close`, `finish_reason`, bases, policy
+`hash-and-stats-only-v1`); `wire_response_sha256` hashes the stored projection, `reasoning_content_sha256` binds the dropped bytes;
+responses without reasoning are byte-identical to before (pinned). The 266-E Thinking traces hold no wire responses (preserve was false),
+so no sealed artefact contains reasoning bytes. The 268 package's stale "reasoning bytes land in the trace" finding text is refreshed at
+its next re-derive.
