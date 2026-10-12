@@ -2442,3 +2442,30 @@ solutions; 300: fix as you recommend, when the time comes; fact: closed manually
 - **297 B executed:** the E: original is renamed to `speechrl-data.retired-20261012` (not deleted) until one full 268 chain has flown on
   the new root; then deleted with the deletion set in the same window as the 3.6 TB growth (298 A).
 - Timing receipt: `docs/checks/speech-aware-evidence-acquisition/2026-10-12-engineering-base-timing/post-cut-over.json` (this commit).
+
+### 268 launch: three launch defects found and fixed before the first contact (coordinator, 2026-10-12 19:55Z)
+
+- **WSLENV carried the retired data root.** A Windows USER environment variable `SPEECHRL_DATA_DIR` (E: path) is shared into every
+  WSL session through `WSLENV`; after the cut-over the authority refused every flip and serving start ("inherited SPEECHRL_DATA_DIR
+  differs from the data root"), and the 19:14Z mint, running with the stale value, wrote the decision receipt onto a stray E:
+  directory. Fixed at the source (user variable set to the hot root; the stray receipt parked beside the real one as
+  `root-admission-v1.stray-env-20261012T1914Z.json`; re-minted on the hot root, sha 3cf64523...). Rule: processes started before
+  the change (this coordinator session included) carry the old value; every wsl call from such a session sets the variable.
+- **The ext4 flip wrapper reported success on a refused flip.** With the receipt absent the flip script exited 6, `flip_loop` saw
+  HEAD unchanged and called it converged, `flight_registration_check --cell` FAILED on all three cells, and `flip_package_ext4.sh`
+  still printed `FLIP_CHAIN_DONE rc=0` (the gate output is only tee'd). Rule until the wrapper is patched (next no-flip window):
+  read the gate block of the flip log before any chain launch; a 13-second three-cell flip is not a flip.
+- **The model-free preflight over-counts the module Solver render by 45 %.** `core.flight.cli check` refused the smoke and lock cells
+  with `prompt budget COMPACT_REQUIRED ... physical_margin_tokens -817` (rendered 21,269 "tokens" + 4,096 cap + speech + reserve
+  exceed the 24,576 slot). The preflight counts the JSON payload at 4 bytes per token (`_default_token_counter`, documented as a
+  placeholder); the exact native per-contact gate at the wire measured the same requests of the Instruct lock column (iteration 3)
+  at p50 10,236 / p90 12,551 / max 15,076 tokens with `context_compaction = null` on all 8,640 contacts (the registered fact 14,641 is
+  the Solver maximum). The package's prerequisite 3 ("17,406-token live limit, Solver maximum 14,641, no row compacted") was
+  therefore true at the wire and false for the heuristic, and no 24,576-slot cap above about 235 tokens could pass the heuristic.
+  Fix (commit 16082c1a2): the three cells declare `preflight_budget_mode = defer-to-native-contact-fit` (the R01C mechanism: the
+  estimate is recorded, admission is decided by the registered exact per-contact gate), and the runtime accepts that deferral under
+  `context_fit_policy = compact-or-abstain` as well as `raise` (both hand every realised request to the exact gate; neither silently
+  truncates) -- the lock's compact-or-abstain is part of the compiled module block and stays; two unit tests added, the derive script
+  carries the rule, the three baselines were re-derived (`thinking_system_derive_cells.py`), registration tests 15/15. The Thinking arm
+  thus flies the same requests as the Instruct lock with no compaction expected (wire fit 14,641 + 4,096 + 28 + 3,072 reserve =
+  21,837 < 24,576); any contact that does not fit compacts or abstains at the wire and is counted in the read's node table.

@@ -51,7 +51,12 @@ if [ "$1" = "--inner" ]; then
       echo "== flip pass $i at $before $(date -u +%H:%M:%SZ)" | tee -a "$LOG"
       bash "$FLIP" "$@" >> "$LOG" 2>&1; rc=$?
       after=$(git rev-parse HEAD); echo "   rc=$rc HEAD $after dirty=$(git status --porcelain | wc -l)" | tee -a "$LOG"
-      [ "$before" = "$after" ] && [ "$(git status --porcelain | wc -l)" = 0 ] && return 0
+      if [ "$before" = "$after" ] && [ "$(git status --porcelain | wc -l)" = 0 ]; then
+        # 2026-10-12: a REFUSED flip script (receipt missing, batch alive, check failed before any commit) also leaves HEAD
+        # unchanged; that is not a convergence. Only a clean pass that exits 0 converges.
+        [ $rc -eq 0 ] && return 0
+        echo "FLIP SCRIPT REFUSED (rc=$rc) with HEAD unchanged: not a convergence" | tee -a "$LOG"; return 2
+      fi
     done
     return 1
   }
@@ -80,9 +85,14 @@ if [ "$1" = "--inner" ]; then
   fi
   echo "== gate" | tee -a "$LOG"
   IFS=, read -ra CELLS <<< "$FPE_CELLS"
+  GATE_FAIL=0
   for c in "${CELLS[@]}"; do
-    $REGCHECK --cell "$c" 2>&1 | grep "^\s*\[\|check:" | cut -c1-200 | tee -a "$LOG"
+    gate_out=$($REGCHECK --cell "$c" 2>&1); gate_rc=$?
+    echo "$gate_out" | grep "^\s*\[\|check:" | cut -c1-200 | tee -a "$LOG"
+    if [ $gate_rc -ne 0 ] || echo "$gate_out" | grep -q "check: FAIL"; then GATE_FAIL=1; fi
   done
+  # 2026-10-12: a failed gate is a failed flip (the 19:17Z run printed FLIP_CHAIN_DONE over three FAILed cells); master is not fast-forwarded.
+  if [ $GATE_FAIL = 1 ]; then echo "GATE FAILED: master is NOT fast-forwarded (fix the cell, re-run the flip)" | tee -a "$LOG"; rm -f "$IMARK"; exit 7; fi
   FOUND=0
   for f in $(find "$CDIR" -maxdepth 1 -name '*flight-commit.txt' -newer "$IMARK" 2>/dev/null); do
     FOUND=1; echo "flight commit file: $(cat "$f") HEAD $(git rev-parse HEAD) ($f)" | tee -a "$LOG"
