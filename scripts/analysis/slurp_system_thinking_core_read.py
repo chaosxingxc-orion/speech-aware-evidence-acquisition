@@ -248,6 +248,39 @@ def verdict(contrast: Mapping, marker_total: int, bar_pp: float = BAR_PP, guard_
     return "NO-TRANSFER"
 
 
+#: Owner decision 299 A (2026-10-12): the P3 trigger that decides whether the engineering base is rebuilt around the Thinking core.
+#: Three conditions on the lock-vs-Instruct contrast and the Thinking lock arm's contacts: SLU CI95 lower bound above the twin
+#: offset AND point >= P3_SLU_POINT_PP; intent CI95 lower bound >= -INTENT_GUARD_PP; completion rate (contacts that neither hit
+#: the cap nor returned empty content) >= P3_COMPLETION_RATE. Three of three -> REBUILD-BASE-ON-THINKING; two -> THINKING-ON-SLURP-ONLY
+#: (carriers stay on Instruct, plus one DEV replicate); otherwise STAY-ON-INSTRUCT. A development reading, never a benefit claim: the
+#: benefit bar of the registered verdict stays BAR_PP (cross-flight, decision 190 instrument).
+P3_SLU_POINT_PP = 1.5
+P3_COMPLETION_RATE = 0.99
+
+
+def p3_trigger(contrast: Mapping, lock_nodes: Mapping[str, Mapping], *, slu_point_pp: float = P3_SLU_POINT_PP,
+               guard_pp: float = INTENT_GUARD_PP, completion_rate: float = P3_COMPLETION_RATE) -> dict:
+    """Decision 299 A: the three conditions, each reported, and the resulting direction word."""
+    slu, intent = contrast["slu_f1"], contrast["intent"]
+    d, o = slu["d_system_lock_vs_inst"], slu["o_twin_aa_vs_lock"]
+    contacts = sum(int(n.get("contacts") or 0) for n in lock_nodes.values())
+    incomplete = sum(int(n.get("cap_hits") or 0) + int(n.get("empty_content") or 0) for n in lock_nodes.values())
+    rate = (contacts - incomplete) / contacts if contacts else float("nan")
+    conditions = {
+        "slu_resolved_and_above_point": bool(d["ci95_lo_pp"] > abs(o["point_pp"]) and d["point_pp"] >= slu_point_pp),
+        "intent_guard": bool(intent["d_system_lock_vs_inst"]["ci95_lo_pp"] >= -guard_pp),
+        "completion_rate": bool(contacts and rate >= completion_rate),
+    }
+    met = sum(conditions.values())
+    direction = "REBUILD-BASE-ON-THINKING" if met == 3 else ("THINKING-ON-SLURP-ONLY" if met == 2 else "STAY-ON-INSTRUCT")
+    return {"decision": "299 A (owner 2026-10-12)", "conditions": conditions, "met": met, "direction": direction,
+            "slu_point_pp": d["point_pp"], "slu_ci95_lo_pp": d["ci95_lo_pp"], "twin_offset_abs_pp": abs(o["point_pp"]),
+            "intent_ci95_lo_pp": intent["d_system_lock_vs_inst"]["ci95_lo_pp"], "lock_contacts": contacts,
+            "lock_incomplete_contacts": incomplete, "lock_completion_rate": rate,
+            "thresholds": {"slu_point_pp": slu_point_pp, "intent_guard_pp": guard_pp, "completion_rate": completion_rate},
+            "note": "development reading on TRAIN Fold B; never a benefit claim (the benefit bar stays bar_pp)"}
+
+
 def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Sequence[str], cluster_of: Callable[[str], str], scenario_of: Callable[[str], str],
                flags: Mapping[str, Mapping[str, Mapping]], contacts_by_arm: Mapping[str, Sequence[Mapping]], *,
                seed: int = base.DEFAULT_SEED, draws: int = base.DEFAULT_DRAWS) -> dict:
@@ -261,6 +294,7 @@ def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Seque
         "interval": {"kind": "utterance-cluster bootstrap", "draws": draws, "seed": seed, "level": "CI95"},
         "contrast": contrast, "per_scenario": per_scenario_table(arms, ids, scenario_of),
         "nodes_by_arm": {key: node_table(contacts_by_arm[key]) for key in sorted(contacts_by_arm)},
+        "p3_trigger_299": p3_trigger(contrast, node_table(contacts_by_arm.get("lock", []))),
         "delivered_content": delivered, "reasoning_marker_total": markers,
         "scorer_parse_failures": {key: sum(1 for row in arms[key].values() if row.get("parsed", 1.0) == 0.0) for key in sorted(arms)},
         "contacts": CONTACTS_ZERO,
@@ -269,6 +303,12 @@ def read_stage(arms: Mapping[str, Mapping[str, Mapping[str, float]]], ids: Seque
 
 def render_markdown(result: Mapping) -> str:
     lines = [f"# 268-B read -- verdict {result.get('verdict', 'n/a')}", ""]
+    p3 = result.get("p3_trigger_299")
+    if p3:
+        lines += [f"Decision 299 A direction: **{p3['direction']}** ({p3['met']}/3 conditions: "
+                  + ", ".join(f"{k}={'yes' if v else 'no'}" for k, v in p3["conditions"].items())
+                  + f"; SLU {p3['slu_point_pp']:+.2f} pp, CI-lo {p3['slu_ci95_lo_pp']:+.2f} vs twin offset {p3['twin_offset_abs_pp']:.2f}; "
+                  + f"intent CI-lo {p3['intent_ci95_lo_pp']:+.2f}; completion {p3['lock_completion_rate']:.4f} over {p3['lock_contacts']} contacts)", ""]
     c = result.get("contrast")
     if c:
         s, i = c["slu_f1"], c["intent"]

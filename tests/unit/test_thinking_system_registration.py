@@ -228,9 +228,18 @@ def test_plans_protocol_receipt_and_ledger_agree():
     assert set(texts["rows"]) == set(fam.eligible_run_ids()) | {fam.READ_RUN_ID} and ledger.count(f"| {fam.READ_RUN_ID} |") == 1
     recipe = json.loads((PKG / "analysis-recipe-v1.json").read_text(encoding="utf-8"))
     assert recipe["read_run_id"] == fam.READ_RUN_ID and recipe["run_ids"]["read"] == fam.READ_RUN_ID
+    # Each row is in exactly one of two states: DRAFT (scope marker "DRAFT -- REGISTERED", no countersignature) or root-countersigned
+    # (marker removed, the package text with a real UTC stamp at the front of the notes cell). The six flight rows were countersigned on
+    # 2026-10-12 15:27Z; the READ row stays a draft until both arms are sealed (its text says so).
     for line in ledger.splitlines():
         if f"| {fam.READ_RUN_ID} |" in line or any(f"| {r} |" in line for r in fam.eligible_run_ids()):
-            assert "DRAFT" in line and "root countersigned" not in line.split("| ")[-1]
+            cells = [c.strip() for c in line.split("|")]
+            notes = cells[15]
+            if cells[4].startswith("DRAFT -- REGISTERED"):
+                assert notes.startswith("DRAFT") and "root countersigned" not in notes
+            else:
+                assert notes.startswith("REGISTERED BEFORE ") and "root countersigned 2026-" in notes and "<UTC" not in notes
+                assert "DRAFT -- REGISTERED" not in line
     assert (REPO / (fam.PREREG)).is_file()
 
 
