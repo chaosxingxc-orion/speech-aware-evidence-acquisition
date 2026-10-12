@@ -1970,3 +1970,24 @@ results note (Opus) -> decision 263 ledger entry; (2) 268-B: Thinking system col
 the gap; (3) carriers: A2T all-off A/A (~2 GPU-h), E21 all-off (~4), E22 packets + all-off (~3 + window); (4) engineering in parallel
 (model-free): 270 one-pass flips, knowledge snapshots cached on ext4 (the remaining 9p cost in `check`), registry/handoff hygiene;
 (5) consolidation: SOTA table (273), Stage-3 claim surface under 252, test-sample allowance only after 268 is measured.
+
+### Owner rulings 2026-10-12: 268 B, 269 A, 270 A, 271 A, 272 B, 273 A; Thinking-mode directive (coordinator record)
+
+Owner, verbatim: 「决策268：B；269：A；270：A；271：A；272：B；273：A，我给你一个明确的输入：如果thinking模式的模型效果在系统上可以叠加且更好的话，
+我们就需要基于thinking模式去优化和调整整个工程基座，注意一定要能够让thinking模式做完任务而不是中途截断！同时，注意上下文工程是否要带着thinking的
+中间结果，还是不带？另外你也要分析下llama.cpp是否可以通过外界配置哪些node可以开放thinking，哪些node其实不需要开放thinking来提高系统的吞吐效率！」
+English: "268: B; 269: A; 270: A; 271: A; 272: B; 273: A. A clear input: if the Thinking model's effect stacks on the system and is better,
+we must optimise and adjust the whole engineering base around Thinking mode -- and make sure Thinking mode FINISHES the task instead of
+being truncated midway. Also consider whether context engineering should carry Thinking's intermediate results or not. And analyse whether
+llama.cpp can be configured externally so that some nodes open thinking and others do not, to raise system throughput."
+
+Consequences: (268 B) the Thinking-core system column flies after iteration 3 closes; its registration (lock v2.2 + v4g module program on
+the Thinking core, Fold B, twin, cap and a reasoning budget that guarantees an answer) is prepared model-free now; (269 A) the loop ends
+with its results note and ledger entry, no Fold A / DEV flights for refused states; (270 A) one-pass flip convergence goes to engineering;
+(271 A) the 12-h uptime restart is retired (task SAEA-Serving-UptimeGuard disabled), the watchdog hold stays, a daily health check
+replaces it; (272 B) carriers wait for 268's result; (273 A) the SOTA comparator table is commissioned as a survey record. Thinking-mode
+engineering analysis commissioned: llama.cpp (pinned featcache build) reasoning controls -- `--reasoning-budget` / per-request budget,
+`--reasoning-format`, chat-template `enable_thinking`, what the Thinking GGUF's template supports -- the no-truncation guarantee (budget +
+answer reserve, never an empty answer at max_tokens), whether prior reasoning is carried in multi-turn context (Qwen guidance: not carried;
+the template strips it), and a per-node thinking policy for the module program (which nodes need reasoning, which run at budget 0) with a
+throughput model from the measured 22.8 s per contact and 1,032 tokens mean.
