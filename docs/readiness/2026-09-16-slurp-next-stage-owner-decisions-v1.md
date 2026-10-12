@@ -2268,3 +2268,8 @@ the VHDX is expandable (it occupies only used bytes), so disk 1's maximum grows 
 file + `resize2fs` inside WSL) in a quiet window, with the "E: keeps 500 GB free" rule enforced as a usage cap by the locator check instead
 of a second disk; (292) worktrees on merged branches and orphan directories are removed from WSL; (293) no backup job; (294) `~/.bashrc`
 and the queue wrappers switch to the data-root authority at the cut-over; (295) the E22 packet root is re-pinned at its encoder window.
+Executed 12:05-12:15Z: the i3 column sealed 12:05Z at d39224f1c (`close --iter 3` running); decision 292 A executed -- worktrees 117 -> 9
+(master, fable-batch-flight, fable-flip, the four unmerged codex branches, the two active agent worktrees), 87 merged-branch worktrees
+removed with their branches, 21 detached codex worktrees removed (HEAD shas in the receipt), 184 unregistered directories deleted;
+`/home/chao/saea-worktrees` 105 GB -> 4.5 GB (receipt `/home/chao/saea-migration/worktree-cleanup-20261012T120815Z.log`). Static migration
+554 GB copied by 12:11Z.
