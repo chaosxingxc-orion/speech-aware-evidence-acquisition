@@ -1,0 +1,24 @@
+{
+  "candidates": [],
+  "edit_budget_L_t": 1,
+  "flown": null,
+  "iteration": 3,
+  "not_flown": [],
+  "offline": [],
+  "parent_display_id": "s0-lock-v2.2",
+  "parent_state_id": "a8f1d50ef76ecf1209d7851a993eba5610abf695f14af0a7c90b53750bb35347",
+  "refused": [
+    {
+      "candidate_id": "7ed171a74c25435c19dfec7fd7745483c79da52fedc853a353d4e5c824a3a6fe",
+      "operator": "deliver-rule",
+      "operator_class": "delivery",
+      "refusal_code": "class-masked"
+    },
+    {
+      "candidate_id": "3b62d42d55103f14f88935a3482368016a6be049b83de4fc81016b6525c0a1b9",
+      "operator": "deliver-rule",
+      "operator_class": "delivery",
+      "refusal_code": "class-masked"
+    }
+  ]
+}

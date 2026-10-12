@@ -1,0 +1,241 @@
+{
+  "ace": {
+    "credit_used": true,
+    "curation": {
+      "constants_sha256": "0eeb1946f73ac9c8827686cbddadd3d97ad6e9822c98ae399b925c83d2b33552",
+      "counter_updates": {
+        "ace:i1:0e700fcdb0c2": {
+          "harmful": 3,
+          "helpful": 1,
+          "scoped_rows": 60
+        },
+        "ace:i1:1eca29986ff5": {
+          "harmful": 1,
+          "helpful": 0,
+          "scoped_rows": 10
+        },
+        "ace:i1:1f7640486f21": {
+          "harmful": 1,
+          "helpful": 0,
+          "scoped_rows": 6
+        },
+        "ace:i1:4726f942b8fc": {
+          "harmful": 0,
+          "helpful": 0,
+          "scoped_rows": 60
+        },
+        "ace:i1:4f4989fb27bc": {
+          "harmful": 0,
+          "helpful": 3,
+          "scoped_rows": 18
+        },
+        "ace:i1:5bd16d78f8a8": {
+          "harmful": 0,
+          "helpful": 1,
+          "scoped_rows": 24
+        },
+        "ace:i1:6e8178ed7c2f": {
+          "harmful": 0,
+          "helpful": 1,
+          "scoped_rows": 4
+        },
+        "ace:i1:83888f75c062": {
+          "harmful": 0,
+          "helpful": 1,
+          "scoped_rows": 21
+        },
+        "ace:i1:892982dbf632": {
+          "harmful": 1,
+          "helpful": 0,
+          "scoped_rows": 5
+        },
+        "ace:i1:bd15a72c525e": {
+          "harmful": 2,
+          "helpful": 7,
+          "scoped_rows": 47
+        },
+        "ace:i1:be3a73934e35": {
+          "harmful": 3,
+          "helpful": 0,
+          "scoped_rows": 21
+        },
+        "ace:i1:d8d9612208bb": {
+          "harmful": 0,
+          "helpful": 1,
+          "scoped_rows": 21
+        },
+        "ace:i1:da7fd32a9ac3": {
+          "harmful": 2,
+          "helpful": 2,
+          "scoped_rows": 15
+        },
+        "ace:i1:ec199bdffa85": {
+          "harmful": 0,
+          "helpful": 0,
+          "scoped_rows": 10
+        },
+        "ace:i1:f48e70c82724": {
+          "harmful": 1,
+          "helpful": 4,
+          "scoped_rows": 31
+        },
+        "ace:i2:053cd1eaa3fc": {
+          "harmful": 3,
+          "helpful": 3,
+          "scoped_rows": 19
+        },
+        "ace:i2:0bfc01f89d36": {
+          "harmful": 37,
+          "helpful": 44,
+          "scoped_rows": 1080
+        },
+        "ace:i2:11e28d52bea8": {
+          "harmful": 1,
+          "helpful": 0,
+          "scoped_rows": 10
+        },
+        "ace:i2:1422115b622b": {
+          "harmful": 1,
+          "helpful": 0,
+          "scoped_rows": 10
+        },
+        "ace:i2:1711100c59ab": {
+          "harmful": 1,
+          "helpful": 4,
+          "scoped_rows": 31
+        },
+        "ace:i2:1b2e7daba3c8": {
+          "harmful": 0,
+          "helpful": 0,
+          "scoped_rows": 3
+        },
+        "ace:i2:33aaeba61f20": {
+          "harmful": 0,
+          "helpful": 0,
+          "scoped_rows": 12
+        },
+        "ace:i2:35767d46b462": {
+          "harmful": 4,
+          "helpful": 4,
+          "scoped_rows": 35
+        },
+        "ace:i2:369863ec3458": {
+          "harmful": 0,
+          "helpful": 1,
+          "scoped_rows": 7
+        },
+        "ace:i2:4178bd9ebf34": {
+          "harmful": 3,
+          "helpful": 0,
+          "scoped_rows": 21
+        },
+        "ace:i2:5be91cd722ab": {
+          "harmful": 2,
+          "helpful": 7,
+          "scoped_rows": 60
+        },
+        "ace:i2:6f1e9746d777": {
+          "harmful": 1,
+          "helpful": 4,
+          "scoped_rows": 31
+        },
+        "ace:i2:727456a71a6d": {
+          "harmful": 0,
+          "helpful": 0,
+          "scoped_rows": 0
+        },
+        "ace:i2:7f7df185bd7a": {
+          "harmful": 5,
+          "helpful": 1,
+          "scoped_rows": 38
+        },
+        "ace:i2:840780ceab6a": {
+          "harmful": 2,
+          "helpful": 7,
+          "scoped_rows": 47
+        },
+        "ace:i2:9c601fdbba17": {
+          "harmful": 0,
+          "helpful": 0,
+          "scoped_rows": 11
+        },
+        "ace:i2:a3af08554aac": {
+          "harmful": 4,
+          "helpful": 5,
+          "scoped_rows": 35
+        },
+        "ace:i2:afcc51c42431": {
+          "harmful": 3,
+          "helpful": 0,
+          "scoped_rows": 21
+        },
+        "ace:i2:b54a452964ed": {
+          "harmful": 0,
+          "helpful": 1,
+          "scoped_rows": 4
+        },
+        "ace:i2:e5cf9c197cbb": {
+          "harmful": 3,
+          "helpful": 0,
+          "scoped_rows": 21
+        }
+      },
+      "deltas_in": 36,
+      "token_counter_id": "proxy-utf8-bytes-div-3-v1"
+    },
+    "deltas_in": 36,
+    "illegal_answers": 0,
+    "items": 36,
+    "playbook_content_hash": "1a93c7914150a4c2e755fe91cfaa248063f0eaeac7dabc42208bd4cbb8607d57",
+    "playbook_file": "written",
+    "playbook_iteration": 3,
+    "release_pins": "supplied",
+    "release_staging": {
+      "carrier_roster": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json",
+      "carriers": 50,
+      "empty": false,
+      "registration": {
+        "output_namespace": "knowledge/slurp/semantic/ace-playbook-i3",
+        "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-10-11-slurp-tfrl-loop-v1/ace-playbook-i3-release-registration.json",
+        "sha256": "593fffdc494bb089979cfb8bb559420ba32e7e73c2e46e0cc89250e43454cd2c"
+      },
+      "row_count": 36,
+      "source_split_identity_hash": "7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7"
+    }
+  },
+  "arms": [
+    "ace",
+    "aa",
+    "lock"
+  ],
+  "blockers": [],
+  "column_package": "docs/readiness/2026-10-11-slurp-tfrl-loop-i3-fold-b-v1",
+  "duplicates_of_archived": [],
+  "inputs": {
+    "iteration": 3,
+    "predictions": "779f558bb9cc19ec5db7f4285b465ad7bf9386f3bd293b0027eb4725506fde2f",
+    "propose": "b5c63add954ede9d53de63e82793a6d48a94db691080f4ede5660e1e31ab13c3",
+    "reflector_answers": "5cfc000557fb3aa276d01e3fa6b6fc5749d552fcae397e35ce353f5dc847c2f0",
+    "stage": "cell",
+    "typed_arm_empty": false,
+    "typed_receipts": "3035e9d6ce0ff65f014402ec6b80e4737df5a50885ec659a81c8a98f49310a54"
+  },
+  "inputs_sha256": "630a36696189af41fb3cf30c239477031c2db114ffa8b2e5ad17e4f166025637",
+  "iteration": 3,
+  "loader_verification": {
+    "ok": true,
+    "refusal": null
+  },
+  "not_flown": 0,
+  "offline": 0,
+  "parent_display_id": "s0-lock-v2.2",
+  "program": "phase-native-module-v1-c4",
+  "refused": 2,
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "stage": "cell",
+  "status": "done",
+  "step": "open-cell",
+  "typed_arm": "empty (legal)",
+  "typed_arm_empty_by_measurement": true,
+  "valid": 0
+}
