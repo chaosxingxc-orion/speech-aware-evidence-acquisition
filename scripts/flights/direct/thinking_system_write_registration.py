@@ -71,12 +71,12 @@ FINDINGS = [
                  f"{fam.SOLVER_PROMPT_TOKENS_MAX}, so no row is compacted or abstained by compact-or-abstain. At the superseded cap 8,192 the limit would "
                  f"be {fam.PROMPT_LIMIT_SUPERSEDED_8192} and the heaviest rows would be."),
      "remedy": "none needed at 4,096; the live phase FIT re-measures on the real supply."},
-    {"id": "harness-pass-through-pending",
-     "finding": ("core.model.request_types.ALLOWED_DECODING_KEYS does not yet list thinking_budget_tokens and the native-episode loader has no "
-                 "reasoning block or reasoning_context_policy (design decision 282). The knobs are registered in the model fragment "
-                 "(decoding_params.thinking_budget_tokens, --reasoning-budget-message), in each baseline's top-level thinking_policy block and in the "
-                 "family constants; compose() accepts them, a flight cannot honour them until the harness lands."),
-     "remedy": "merge the harness (decision 282), re-run thinking_system_derive_cells.py and thinking_system_write_registration.py, then countersign."},
+    {"id": "harness-pass-through-merged",
+     "finding": ("Resolved: the Thinking harness knobs are merged (decision 283 A, master 0e6ffbfd3). The model fragment carries the real keys "
+                 "reasoning_budget_tokens, answer_reserve_tokens, enable_thinking, reasoning_context_policy and forced_close_message_sha256 (pinned to the "
+                 "--reasoning-budget-message value in its server_args); they fold into decoding_params at composition; the baselines declare no thinking_policy "
+                 "(every node thinks); the plan ceiling is rows x (contacts + 2 fallback contacts)."),
+     "remedy": "none."},
     {"id": "budget-message-wording-unverified",
      "finding": ("The forced-close sentence is the design's wording of the Qwen3 technical report's stop sentence, flagged unverified in the design "
                  "(section 1.2 / 6 (d))."),
@@ -156,10 +156,11 @@ def cost_estimate() -> dict:
                                 "planned_ceiling_gpu_hours": fam.C3_PLANNED_GPU_H, "wall_hours_range": list(fam.wall_hours(fam.ROWS, 2)),
                                 "design_table": "5.91 GPU-h, 6.6-8.5 h wall (section 4.3)"},
         "superseded_estimate": "the registry's 14 GPU-h counted 8,640 contacts at 22.8 s on the bare prompt; the design's model gives 18.4 GPU-h for two unbounded c4 passes",
-        "fallback_note": ("The answer-only fallback (decision 277 A) adds at most 2 contacts per row once the harness lands; plan calls and the FIT cap "
-                          f"then rise to {fam.ROWS} x {fam.CONTACTS_PER_ROW + fam.FALLBACK_CONTACTS_PER_ROW_CEILING} = "
-                          f"{fam.ROWS * (fam.CONTACTS_PER_ROW + fam.FALLBACK_CONTACTS_PER_ROW_CEILING)} per arm. Not registered now: the program maximum today is "
-                          f"{fam.CONTACTS_PER_ROW} per row."),
+        "fallback_note": ("The answer-only fallback (decisions 277 A and 283 A) adds at most 2 contacts per row: planned_model_calls is rows x "
+                          f"({fam.CONTACTS_PER_ROW} + {fam.FALLBACK_CONTACTS_PER_ROW_CEILING}) = {fam.generation_calls('lock')} per arm (program maximum "
+                          f"{fam.program_calls('lock')}), and the speech-audio cap scales the same way. The FIT cap stays structural "
+                          f"(rows x program contacts x endpoints = {fam.fit_contact_cap(fam.ROWS)}). The GPU ceiling is unchanged: fallbacks are rare "
+                          "(answer-only, at most 1,024 tokens) and the budget closes every think block."),
     }
 
 
@@ -173,7 +174,7 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
                 "prepared_phase_supply": {"relpath": f"prepared/{i['run_id']}/phase-supply-v1.json", "sha256": "MINTED_AT_THE_FLIP",
                                           "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"},
                 "protocol_document": {"relpath": f"{pkg}/protocol-registered-v1.json", "sha256": protocol_sha}, "registered_at_utc": at, "status": STATUS,
-                "thinking_policy": json.loads(json.dumps(fam.THINKING_KNOBS)), "unused_budget_is_not_attempt_authority": True,
+                "thinking_knobs": json.loads(json.dumps(fam.THINKING_KNOBS)), "unused_budget_is_not_attempt_authority": True,
                 "one_factor": ("The core: the Instruct model fragment and its speech packets are replaced by the Thinking core "
                                f"({fam.THINK_MODEL}, budget {fam.THINK_BUDGET_TOKENS} + reserve {fam.THINK_ANSWER_RESERVE_TOKENS} = cap {fam.THINK_MAX_TOKENS}). "
                                "The system, the knowledge supply, the sealed query vectors and the roster are the loop's plain lock on TRAIN Fold B.")}

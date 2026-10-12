@@ -80,9 +80,9 @@ def test_program_is_the_plain_lock_c2_and_the_twin_is_a_separate_cell():
 
 def test_budgets_follow_the_formula_in_one_place():
     arm = fam.CELLS["lock"]
-    assert arm["rows"] == 1080 and fam.generation_calls("lock") == 2160 and fam.generation_calls("smoke") == 8
+    assert arm["rows"] == 1080 and fam.generation_calls("lock") == 4320 and fam.generation_calls("smoke") == 16 and fam.program_calls("lock") == 2160
     assert fam.fit_contact_cap(1080) == 8640 == 1080 * 2 * tf.FIT_ENDPOINTS_PER_CONTACT and fam.fit_contact_cap(4) == 32
-    assert fam.audio_cap("arm") == 6310 and fam.audio_cap("smoke") == 21
+    assert fam.audio_cap("arm") == 12620 and fam.audio_cap("smoke") == 41
     assert abs(fam.row_seconds(1) - 51.90) < 0.05
     assert round(fam.expected_gpu_hours(1080, 1), 2) == 3.89 and fam.planned_gpu_hours(1080, 1) == 5.1 == arm["gpu_hours"] == fam.CELLS["aa"]["gpu_hours"]
     # the design's c3 reference under the same formula: 5.91 GPU-h expected, 6.6-8.5 h wall
@@ -103,7 +103,10 @@ def test_thinking_knobs_are_one_place_and_consistent():
     assert fam.THINK_SESSION == "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1"
     assert "8192" not in fam.THINK_MODEL and fam.SUPERSEDED_THINK_MODEL.endswith("max8192-v1")
     fragment = js(f"configs/model/{fam.THINK_MODEL}.json")
-    assert fragment["decoding_params"]["max_tokens"] == fam.THINK_MAX_TOKENS and fragment["decoding_params"]["thinking_budget_tokens"] == fam.THINK_BUDGET_TOKENS
+    assert fragment["decoding_params"]["max_tokens"] == fam.THINK_MAX_TOKENS and "thinking_budget_tokens" not in fragment["decoding_params"]
+    for key, value in fam.FRAGMENT_KNOBS.items():
+        assert fragment[key] == value
+    assert fragment["forced_close_message_sha256"] == __import__("hashlib").sha256(fam.THINK_BUDGET_MESSAGE.encode()).hexdigest()
     assert fragment["decoding_params"]["temperature"] == 0
     args = fragment["server_args"]
     assert args[args.index("--reasoning-budget-message") + 1] == fam.THINK_BUDGET_MESSAGE and args[args.index("--reasoning-format") + 1] == "deepseek"
@@ -111,8 +114,9 @@ def test_thinking_knobs_are_one_place_and_consistent():
     # the live prompt limit at the registered cap clears the measured Solver prompt maximum; the superseded 8,192 cap would not
     assert fam.PROMPT_LIMIT_THINKING == 17406 > fam.SOLVER_PROMPT_TOKENS_MAX > fam.PROMPT_LIMIT_SUPERSEDED_8192 == 13310
     for key in fam.ALL_KEYS:
-        assert baseline(key)["thinking_policy"]["thinking_budget_tokens"] == 3072 and baseline(key)["thinking_policy"]["completion_cap"] == 4096
-        assert baseline(key)["thinking_policy"]["reasoning_context_policy"] == "drop-reasoning-v1"
+        assert "thinking_policy" not in baseline(key)  # the all-nodes-think arm declares no per-node policy
+        composed = compose(REPO, fam.THINK_MODEL, fam.DATASET, fam.CELLS[key]["baseline"], fam.CELLS[key]["cell"])
+        assert composed.values["decoding_params"]["thinking_budget_tokens"] == 3072 and composed.values["decoding_params"]["chat_template_kwargs"] == {"enable_thinking": True}
 
 
 def test_the_budget_session_is_registered_as_a_swap_target():
@@ -135,7 +139,7 @@ def test_the_core_is_the_only_factor_against_the_loops_instruct_lock_arm():
     missing = object()
     moved = sorted(k for k in set(left) | set(right) if left.get(k, missing) != right.get(k, missing))
     allowed = ("knowledge_stores.ace-playbook", "native_contact_fit", "native_episode.consumption_module", "native_episode.roles.solver.supply_variants",
-               "policy", "prepared_phase_supply", "speech_packet_promotion_receipt", "speech_packet_promotion_receipt_sha256", "thinking_policy", "what_this_is")
+               "policy", "prepared_phase_supply", "speech_packet_promotion_receipt", "speech_packet_promotion_receipt_sha256", "what_this_is")
     assert not [k for k in moved if not any(k == p or k.startswith(p + ".") for p in allowed)]
     for store in ("intent-boundaries", "slot-contracts", "train-exemplars"):
         assert mine["knowledge_stores"][store] == loop["knowledge_stores"][store]
@@ -202,7 +206,7 @@ def test_stage3_measurement_blocks():
     assert blocks[lock]["expected_effect_pp"] == fam.BARE_DELTA_SLU_PP == 11.90 and blocks[aa]["expected_effect_pp"] == 0.0
     assert blocks[smoke]["measurement_design"] == "form-proof" and blocks[smoke]["claims_benefit"] is False
     assert facts["accounting"]["twin_shape"] == "separate-cell" and facts["blockers"] == []
-    assert {f["id"] for f in facts["findings"]} >= {"twin-is-a-separate-cell", "native-roles-require-preserved-wire", "harness-pass-through-pending"}
+    assert {f["id"] for f in facts["findings"]} >= {"twin-is-a-separate-cell", "native-roles-require-preserved-wire", "harness-pass-through-merged"}
 
 
 def test_plans_protocol_receipt_and_ledger_agree():
@@ -212,7 +216,7 @@ def test_plans_protocol_receipt_and_ledger_agree():
         for kind in ("generation", "fit"):
             plan = json.loads((PKG / fam.plan_file_name(key, kind)).read_text(encoding="utf-8"))
             assert plan["expected_session_id"] == fam.THINK_SESSION and plan["protocol_document"]["sha256"] == protocol_sha
-            assert plan["thinking_policy"]["thinking_budget_tokens"] == 3072 and plan["execution_plan"]["split_role"] == "discovery"
+            assert plan["thinking_knobs"]["thinking_budget_tokens"] == 3072 and plan["execution_plan"]["split_role"] == "discovery"
             run = fam.CELLS[key]["run" if kind == "generation" else "fit_run"]
             assert plan["execution_plan"]["run_id"] == run
             assert plan["execution_plan"]["planned_gpu_hours"] == fam.CELLS[key]["gpu_hours"]

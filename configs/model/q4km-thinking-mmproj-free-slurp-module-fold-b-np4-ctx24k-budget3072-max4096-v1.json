@@ -6,19 +6,44 @@
   "timeout_seconds": 420,
   "runtime_receipt": "receipts/runtime-q4km-thinking-mmproj-free.json",
   "server_args": [
-    "-c", "98304", "-np", "4", "-b", "2048", "-ub", "512", "-fa", "on",
-    "-ngl", "999", "-ctk", "q8_0", "-ctv", "q8_0", "--cache-prompt",
-    "--cache-ram", "0", "--no-cache-idle-slots", "--slot-prompt-similarity", "0",
-    "--reasoning-format", "deepseek",
-    "--reasoning-budget-message", "Considering the limited time by the user, I have to give the solution based on the thinking directly now."
+    "-c",
+    "98304",
+    "-np",
+    "4",
+    "-b",
+    "2048",
+    "-ub",
+    "512",
+    "-fa",
+    "on",
+    "-ngl",
+    "999",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--cache-prompt",
+    "--cache-ram",
+    "0",
+    "--no-cache-idle-slots",
+    "--slot-prompt-similarity",
+    "0",
+    "--reasoning-format",
+    "deepseek",
+    "--reasoning-budget-message",
+    "Considering the limited time by the user, I have to give the solution based on the thinking directly now."
   ],
   "decoding_params": {
     "temperature": 0,
     "seed": 20260913,
     "max_tokens": 4096,
-    "thinking_budget_tokens": 3072,
     "id_slot": "per-sample"
   },
+  "reasoning_budget_tokens": 3072,
+  "answer_reserve_tokens": 1024,
+  "enable_thinking": true,
+  "reasoning_context_policy": "drop-reasoning-v1",
+  "forced_close_message_sha256": "aab2abbe2767036ab7019b3bc28d76e9ce288359f56c92774fe029069e166adf",
   "prompt_order": "speech-query-prefix-v2",
   "profile_slot_count": 4,
   "speech_feature_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
@@ -27,5 +52,5 @@
     "LLAMA_SPEECH_DECODER_SHA256": "afdaeff6f23c740429aadb3fa180f9d53b78278fe0d331b594b0b71bd9bf4835"
   },
   "reasoning_content_guard": "refuse-think-marker-in-content",
-  "geometry_basis": "Same geometry family as the resident Instruct session and the 266-E max8192 Thinking session (four decoder-only 24576-token slots under c98304 np4, q8_0 KV, mmproj-free decode over pre-materialised speech packets, the Thinking GGUF, its own packet root, --reasoning-format deepseek). Differs from the max8192 fragment ONLY in the no-truncation guarantee of the Thinking-core engineering design (docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md, decisions 275 and 276): a per-request reasoning budget thinking_budget_tokens 3072 (the budget sampler forces the think block closed), an answer reserve of 1024 so the completion cap is 4096 = 3072 + 1024 (at 8192 the module Solver prompt no longer fits the 24576-token slot beside the cap), and the server flag --reasoning-budget-message, which makes a forced close detectable in the reasoning bytes. Owner decision 268 B admits this model for the system-on-Thinking transfer read."
+  "geometry_basis": "Same geometry family as the resident Instruct session and the 266-E max8192 Thinking session (four decoder-only 24576-token slots under c98304 np4, q8_0 KV, mmproj-free decode over pre-materialised speech packets, the Thinking GGUF, its own packet root, --reasoning-format deepseek). Differs from the max8192 fragment ONLY in the no-truncation guarantee of the Thinking-core engineering design (docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md, decisions 275 and 276): a reasoning budget (fragment key reasoning_budget_tokens 3072, folded into the request as thinking_budget_tokens) (the budget sampler forces the think block closed), an answer reserve of 1024 so the completion cap is 4096 = 3072 + 1024 (at 8192 the module Solver prompt no longer fits the 24576-token slot beside the cap), and the server flag --reasoning-budget-message, which makes a forced close detectable in the reasoning bytes. Owner decision 268 B admits this model for the system-on-Thinking transfer read."
 }

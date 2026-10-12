@@ -45,7 +45,7 @@ from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import 
 
 ALLOWED_DIFFS = (
     "policy", "native_episode.consumption_module", "native_episode.roles.perception.template_variants", "native_contact_fit",
-    "prepared_phase_supply", "what_this_is", "speech_packet_promotion_receipt", "speech_packet_promotion_receipt_sha256", "thinking_policy",
+    "prepared_phase_supply", "what_this_is", "speech_packet_promotion_receipt", "speech_packet_promotion_receipt_sha256",
 )
 
 WHAT_THIS_IS = (
@@ -133,7 +133,9 @@ def derive_baseline(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True
     # are not valid input to the Thinking decoder).
     document["speech_packet_promotion_receipt"] = fam.THINK_PROMOTION_RECEIPT
     document["speech_packet_promotion_receipt_sha256"] = fam.thinking_promotion_sha256()
-    document["thinking_policy"] = {**copy.deepcopy(fam.THINKING_KNOBS), "harness_pass_through": "pending (design decision 282): the knobs are registered here and in the model fragment; the transport and the native-episode loader do not read them yet"}
+    # The Thinking knobs are the model fragment's own keys (core.reasoning_knobs); the all-nodes-think arm declares NO per-node thinking_policy.
+    if "thinking_policy" in document:
+        raise SystemExit("the all-nodes-think arm declares no thinking_policy")
     document["what_this_is"] = f"{ROLE_TEXT[key]} " + WHAT_THIS_IS
     episode = document["native_episode"]
     if episode.get("finite_completion_policy") != "deliver-latest-or-abstain" or episode.get("react_exhaustion_policy") != "continue-without-answer":
@@ -229,7 +231,7 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
         "cap": calls, "target": calls,
         "definition": (
             f"The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program {fam.PROGRAM}: {rows:,} x "
-            f"{fam.CONTACTS_PER_ROW} = {calls:,} is the exact program maximum and the expected spend. The live phase fit makes {rows} x "
+            f"{fam.CONTACTS_PER_ROW} = {rows * fam.CONTACTS_PER_ROW:,} is the exact program maximum; the plan ceiling adds {fam.FALLBACK_CONTACTS_PER_ROW_CEILING} answer-only fallback contacts per row (core.reasoning_knobs): {calls:,} = {rows:,} x {fam.CONTACTS_PER_ROW + fam.FALLBACK_CONTACTS_PER_ROW_CEILING}. The live phase fit makes {rows} x "
             f"{fam.CONTACTS_PER_ROW} x {tf.FIT_ENDPOINTS_PER_CONTACT} = {fam.fit_contact_cap(rows):,} tokenizer endpoint calls under its own run id "
             f"{spec['fit_run']}. The GPU-hour ceiling is a BOUND (rows x row-seconds of the design throughput model / {fam.THINK_SLOTS} slots x "
             f"{fam.GPU_MARGIN}), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id.")}
