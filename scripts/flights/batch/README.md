@@ -270,6 +270,22 @@ bash scripts/flights/batch/flip_package_ext4.sh --flip "<flip-script> [args]" --
      --pins-commit-msg <file> [--log <path>] [-- KEY=VALUE ...]
 ```
 
+`--mode iterate` (the DEFAULT; it stays the default until the owner flips it) runs the convergence loops described above. `--mode one-pass`
+(owner decision 270 A, 2026-10-12) runs the flip script ONCE with `FLIP_MODE=one-pass`: `scripts/flights/repin_package_one_pass.py`
+(`core/flight/repin_onepass.py`) computes the fixed point of every shared hash across the whole package model-free (config and protocol hashes,
+the protocol document sha, the refreshed plan pins, each plan sha in its own ledger row), writes everything once, commits ONCE and then runs
+`core.flight.cli check` once per cell on the committed tree. Only the prepared-artifact identity (which binds a configuration that holds its own
+pin) stays iterative, as a bounded re-verify of the cells whose fragments changed. All refusals (dirty tree, 9p root, missing receipt, consumed
+row, residue, check mismatch) are kept. `--verify-fixed-point` adds one iterative pass that must commit nothing. Supported by `direct_fb_flip.sh`
+and `tfrl_i1_flip.sh`:
+
+```
+bash scripts/flights/batch/flip_package_ext4.sh --mode one-pass [--verify-fixed-point] --flip "scripts/flights/tfrl/tfrl_i1_flip.sh column" \
+  --package docs/readiness/<tfrl-i3-fold-b-package> --cells <c1,c2> --pins-commit-msg <msg> -- TFRL_ITER=3
+bash scripts/flights/batch/flip_package_ext4.sh --mode one-pass --flip scripts/flights/direct/direct_fb_flip.sh \
+  --package docs/readiness/<direct-fb-package> --cells <c1,c2,...> --pins-commit-msg <msg>
+```
+
 The log (default `/home/chao/<package-basename>-flip.out`) carries the monitor milestones: `== flip pass N at <sha> <time>`, `   rc=... HEAD ... dirty=...`,
 `== refresh plan pins`, `   refresh rc=`, `   pins committed <short>`, `== gate`, the `flight registration check:` lines,
 `flight commit file: <sha> HEAD <sha>`, then `FLIP_CHAIN_DONE <utc>` or `FLIP DID NOT CONVERGE`. Exit codes are those of `flip_in_ext4.sh`

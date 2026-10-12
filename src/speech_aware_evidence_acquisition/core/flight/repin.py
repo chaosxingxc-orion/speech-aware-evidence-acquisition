@@ -1921,6 +1921,7 @@ def assert_no_residue(
     resume_parent_package_dirs: Iterable[Path] | None = None,
     superseded_donor_package_dirs: Iterable[Path] | None = None,
     explain: bool = False,
+    file_cache: dict | None = None,
 ) -> None:
     """Refuse if any OLD hash string remains anywhere under ``docs/`` or
     ``configs/`` after rewriting.
@@ -2008,8 +2009,15 @@ def assert_no_residue(
     old value: which of the rules above were considered for that file and
     what each one decided, so a refusal is diagnosable without re-deriving
     the exemption logic by hand.
+
+    ``file_cache`` (optional, owner decision 270 A) lets several calls over the
+    SAME unchanged tree -- the one-pass package re-pin runs this once per cell --
+    share one directory listing and one read of every file. A file that carries
+    none of the old values can never be a hit, so its exemption rules are not
+    evaluated at all (the ledger is the one exception: it is always row-filtered).
     """
 
+    cache = file_cache if file_cache is not None else {}
     values = sorted({value for value in old_values if value})
     if not values:
         return
@@ -2033,12 +2041,25 @@ def assert_no_residue(
         base = Path(repo_root) / root_name
         if not base.is_dir():
             continue
-        for path in sorted(base.rglob("*")):
-            if not path.is_file():
+        listing_key = ("listing", str(base))
+        if listing_key not in cache:
+            cache[listing_key] = [item for item in sorted(base.rglob("*")) if item.is_file()]
+        for path in cache[listing_key]:
+            if path not in cache:
+                try:
+                    cache[path] = path.read_text(encoding="utf-8")
+                except (OSError, UnicodeDecodeError):
+                    cache[path] = None
+            text = cache[path]
+            if text is None:
                 continue
-            try:
-                text = path.read_text(encoding="utf-8")
-            except (OSError, UnicodeDecodeError):
+            is_ledger = (
+                ledger_resolved is not None
+                and run_ids is not None
+                and path.name == ledger_resolved.name
+                and path.resolve() == ledger_resolved
+            )
+            if not is_ledger and not any(value in text for value in values):
                 continue
             resolved = path.resolve()
             is_own = resolved in own_resolved or (

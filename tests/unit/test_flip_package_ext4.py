@@ -153,3 +153,49 @@ def test_usage_errors(tmp_path):
     assert done.returncode == 2
     done = subprocess.run(["bash", str(WRAPPER), "--flip", "x"], capture_output=True, text=True, env=_clean_env())
     assert done.returncode == 2
+
+
+# ---- --mode one-pass (owner decision 270 A) ----
+
+
+def test_one_pass_mode_runs_the_flip_once_without_refresh_or_second_loop(tmp_path):
+    body = ('#!/bin/bash\ncd "$SAEA_MAIN" || exit 1\n'
+            '[ "$FLIP_MODE" = one-pass ] || { echo "not one-pass" >&2; exit 3; }\n'
+            'echo onepass > op.txt; git add op.txt; git commit -q -m onepass\n'
+            'git rev-parse HEAD > "$FAKE_COMMIT_FILE"\n')
+    master = _make_master(tmp_path, flip_body=body)
+    before = _git(master, "rev-parse", "HEAD")
+    done, log = _run(master, tmp_path, extra=["--mode", "one-pass"])
+    assert done.returncode == 0, done.stdout + done.stderr
+    text = log.read_text()
+    assert text.count("== one-pass flip at") == 1 and "== flip pass" not in text and "== refresh plan pins" not in text
+    assert "== gate" in text and "FLIP_CHAIN_DONE" in text
+    assert _git(master, "rev-list", "--count", f"{before}..HEAD") == "1"
+    assert (tmp_path / "x-flight-commit.txt").read_text().strip() == _git(master, "rev-parse", "HEAD")
+
+
+def test_one_pass_failure_and_verify_fixed_point(tmp_path):
+    failing = '#!/bin/bash\ncd "$SAEA_MAIN" || exit 1\nexit 9\n'
+    master = _make_master(tmp_path, flip_body=failing)
+    head = _git(master, "rev-parse", "HEAD")
+    done, log = _run(master, tmp_path, extra=["--mode", "one-pass"])
+    assert done.returncode == 6 and "ONE-PASS FLIP FAILED" in log.read_text()
+    assert _git(master, "rev-parse", "HEAD") == head
+    # verify: the iterative pass must commit nothing; a flip that still has work in iterate mode is refused
+    body = ('#!/bin/bash\ncd "$SAEA_MAIN" || exit 1\n'
+            'if [ "$FLIP_MODE" = one-pass ]; then echo a > a.txt; else date +%N >> b.txt; fi\n'
+            'git add -A; git commit -q -m x\n')
+    tmp2 = tmp_path / "v"
+    tmp2.mkdir()
+    master2 = _make_master(tmp2, flip_body=body)
+    done, log = _run(master2, tmp2, extra=["--mode", "one-pass", "--verify-fixed-point"])
+    assert done.returncode == 6 and "NOT A FIXED POINT" in log.read_text()
+
+
+def test_mode_defaults_to_iterate_and_rejects_unknown_values(tmp_path):
+    master = _make_master(tmp_path)
+    done, _ = _run(master, tmp_path, extra=["--mode", "bogus"])
+    assert done.returncode == 2
+    done, _ = _run(master, tmp_path, extra=["--verify-fixed-point"])
+    assert done.returncode == 2
+    assert 'MODE=iterate; VERIFY=0' in WRAPPER.read_text()

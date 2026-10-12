@@ -31,7 +31,7 @@ case "$SCRIPT" in /*) echo "refusing: flip script must be repo-relative or under
 # (a) refusals
 case "$(realpath -m "$WT")" in /mnt/*) [ "$SAEA_ALLOW_9P_FLIP" = 1 ] || { echo "refusing: worktree $WT is on /mnt (9p); use an ext4 path or set SAEA_ALLOW_9P_FLIP=1"; exit 64; } ;; esac
 if [ -z "$SAEA_FLIP_SKIP_ALIVE_CHECK" ]; then
-  ALIVE=$(pgrep -af 'batch_driver\.sh|core\.flight\.cli|repin_loop_generic\.sh|repin_cell\.py|scripts/flights/[a-z0-9_/]*(_flip|flip_all|flip_both)[a-z0-9_]*\.sh' | grep -v 'pgrep\|flip_in_ext4' | grep -v "^$$ \|^$PPID ")
+  ALIVE=$(pgrep -af 'batch_driver\.sh|core\.flight\.cli|repin_loop_generic\.sh|repin_cell\.py|repin_package_one_pass\.py|scripts/flights/[a-z0-9_/]*(_flip|flip_all|flip_both)[a-z0-9_]*\.sh' | grep -v 'pgrep\|flip_in_ext4' | grep -v "^$$ \|^$PPID ")
   if [ -n "$ALIVE" ]; then echo "refusing: a batch driver, flight CLI or another flip is alive:"; echo "$ALIVE" | head -5 | cut -c1-200; exit 3; fi
 fi
 DIRT=$(git -C "$MASTER" status --porcelain --untracked-files=no)
