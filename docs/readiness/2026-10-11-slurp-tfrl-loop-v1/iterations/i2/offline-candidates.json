@@ -1,0 +1,76 @@
+{
+  "candidates": [
+    {
+      "candidate": {
+        "applications": [
+          {
+            "family": "fx-oclock",
+            "guard": "none",
+            "intents": [
+              "alarm_query",
+              "alarm_remove",
+              "alarm_set"
+            ],
+            "types": [
+              "time"
+            ]
+          }
+        ],
+        "hypothesis_code": "rule-filter",
+        "iteration": 2,
+        "operator": "deliver-rule",
+        "operator_class": "delivery",
+        "parent_state_id": "s0-lock-v2.2",
+        "schema": "saea-tfrl-typed-candidate-v1",
+        "target": {
+          "failure_class": "SPURIOUS",
+          "scenarios": [
+            "alarm"
+          ],
+          "slot_types": [
+            "time"
+          ],
+          "value_in_supply": "none"
+        }
+      },
+      "candidate_id": "e05bb6e949e9b8dcb1fb4ce5b7a3714693c6c3e83852b47d67039bf3089ac8dc",
+      "operator": "deliver-rule",
+      "operator_class": "delivery"
+    },
+    {
+      "candidate": {
+        "applications": [
+          {
+            "family": "ee5",
+            "guard": "none",
+            "intents": [
+              "general_joke"
+            ],
+            "types": [
+              "joke_type"
+            ]
+          }
+        ],
+        "hypothesis_code": "rule-filter",
+        "iteration": 2,
+        "operator": "deliver-rule",
+        "operator_class": "delivery",
+        "parent_state_id": "s0-lock-v2.2",
+        "schema": "saea-tfrl-typed-candidate-v1",
+        "target": {
+          "failure_class": "SPURIOUS",
+          "scenarios": [
+            "general"
+          ],
+          "slot_types": [
+            "joke_type"
+          ],
+          "value_in_supply": "none"
+        }
+      },
+      "candidate_id": "714d10ffac3a77a65d7e61a841010e75dad14fd82680ee43a92e09ad48390772",
+      "operator": "deliver-rule",
+      "operator_class": "delivery"
+    }
+  ]
+}

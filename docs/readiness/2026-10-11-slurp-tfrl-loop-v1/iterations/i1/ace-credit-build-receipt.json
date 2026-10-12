@@ -1,0 +1,15 @@
+{
+  "schema": "saea-tfrl-ace-credit-build-receipt-v1",
+  "iteration": 1,
+  "built_at_utc": "2026-10-12T01:03:39.263778+00:00",
+  "built_by": "coordinator Fable 5.1 (the close step of iteration 1 ran without --row-scores: ace_credit not-built; built afterwards with the same library function lib.ace_credit_from_row_scores)",
+  "row_scores": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-TFRL-LOOP-V1/i1/row-scores-i1.json",
+    "sha256": "f4c1d2d5cac04b295e37af2f6f21b895e4dd34d168f49eddf76ee95084e978de"
+  },
+  "ace_credit": {
+    "path": "/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data/analysis/SAEA-SLURP-TFRL-LOOP-V1/i1/ace-credit.json",
+    "sha256": "1bf9054bfef3fc1302b59f9431c363ef84f67e17c598768f1383c65df318fc10",
+    "rows": 1080
+  }
+}
