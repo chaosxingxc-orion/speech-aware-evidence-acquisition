@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
-  "composed_config_hash": "96297faba545934ce4b568cc2d5f052c2df6e4733f6d5a8dec1935e177265e92",
+  "composed_config_hash": "ffdb79fa46b542f08d51458b53f0b8fee480f31f356bdf91a3ae63f84b2dafb5",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 16,
     "planned_speech_audio_seconds": 41,
-    "protocol_hash": "d0262c361721fe7372bf1fe4863418c6e336809e85c460c98be7ef0f27b3c1a7",
+    "protocol_hash": "e1b262e8fdb7cffb74826e7c205950a345e2b1f132908910fb0e57a59356e2ed",
     "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
@@ -33,15 +33,15 @@
   "plan_kind": "generation",
   "preparation_base_commit": "0bc748d6114a7cb5a6013ec2b2c981374781e16f",
   "prepared_phase_supply": {
-    "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
-    "sha256": "fc953d51f9e59b95283e36eaa2ab70d1fecf2dd8a670e613aa01422168ea8585"
+    "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1/phase-supply-v2.json",
+    "sha256": "bb6c622d68459c8bb17b5c42aa796225666fc3ba59e4ec6cd95968dacd8b065b"
   },
   "prepared_phase_supply_annotations": {
     "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "e6dbbbda6a5945c42541fa18a9e2fbac936e2fe2c511ab7050199f805fab08a8"
+    "sha256": "2b5fe191d9d128983a1b7c519d4f028489fffe8ea9dc65045cd8ba042b1e258b"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1: four-row form smoke of the Thinking system of the 268-B read.",
   "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",

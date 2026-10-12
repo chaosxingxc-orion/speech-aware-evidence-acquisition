@@ -32,11 +32,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
-      "composed_config_hash": "96297faba545934ce4b568cc2d5f052c2df6e4733f6d5a8dec1935e177265e92",
+      "composed_config_hash": "ffdb79fa46b542f08d51458b53f0b8fee480f31f356bdf91a3ae63f84b2dafb5",
       "experiment": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "d0262c361721fe7372bf1fe4863418c6e336809e85c460c98be7ef0f27b3c1a7",
+      "protocol_hash": "e1b262e8fdb7cffb74826e7c205950a345e2b1f132908910fb0e57a59356e2ed",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
