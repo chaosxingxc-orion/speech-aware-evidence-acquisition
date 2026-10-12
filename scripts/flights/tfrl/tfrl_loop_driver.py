@@ -592,13 +592,15 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     return payload
 
 
-def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mapping[str, Any]) -> dict:
-    """Curate playbook i(t) from the reflector's answers and the previous iteration's credit; stage its release inputs."""
+def ace_curate(ctx: Ctx, t: int, answers: Mapping[str, str], propose: Mapping[str, Any]) -> dict:
+    """The pure curation step of iteration ``t``: previous playbook + the reflector's parsed deltas + the previous iteration's credit.
+
+    Shared by :func:`ace_section` and ``tfrl_cell_stage_inputs.py`` so both run ONE curator code path. Reads only; writes nothing.
+    Returns ``{playbook, deltas_in, illegal, credit}``."""
 
     from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
 
-    previous = dict(resolve_playbook(ctx, t - 1)[1]) if t > 1 else dict(ace.load_playbook(A / "playbook" / "playbook-i0.json"))
-    answers = (_load_json(Path(a.reflector_answers)) if a.reflector_answers else {}).get("answers", {})
+    previous = dict(resolve_playbook(ctx, t - 1)[1]) if t > 1 else dict(ace.load_playbook(ctx.analysis(t) / "playbook" / "playbook-i0.json"))
     deltas: list[dict] = []
     illegal = 0
     for scenario in sorted(answers):
@@ -610,25 +612,46 @@ def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mappi
     credit = read_or_none(ctx.analysis(t - 1) / "ace-credit.json") if t > 1 else None
     constants = ace.with_measured_lock_p99(int(propose["ace"]["lock_p99_supplied_tokens"]))
     playbook = ace.curate(previous, deltas, credit or {}, constants)
+    return {"playbook": playbook, "deltas_in": len(deltas), "illegal": illegal, "credit": credit}
+
+
+def ace_stage_release(ctx: Ctx, t: int, playbook: dict, legal_intents: list[str], *, data_root: Path | None = None,
+                      registration_path: Path | None = None) -> dict:
+    """Write the release staging inputs of playbook ``t`` (and its registration) through ``build_playbook_release``.
+
+    ``data_root`` / ``registration_path`` default to the context's; ``tfrl_cell_stage_inputs.py`` passes scratch locations for its dry run."""
+
+    from speech_aware_evidence_acquisition.rails import tfrl_ace_material as ace  # noqa: PLC0415
+
+    binding = lib.ace_release_binding(ctx.repo_root)
+    return ace.build_playbook_release(
+        playbook, data_root=data_root or ctx.data_root, carrier_sample_ids=binding["carrier_sample_ids"], legal_intent_ids=legal_intents,
+        source_split_identity_hash=binding["source_split_identity_hash"],
+        release_dir=f"{tf.ANALYSIS_ROOT}/i{t}/ace-release-staging", registration_binding=binding["registration_binding"],
+        registration_path=registration_path or (ctx.package_dir / f"ace-playbook-i{t}-release-registration.json"),
+        registration_id=f"SAEA-SLURP-ACE-PLAYBOOK-PREPARATION-I{t}", output_namespace=f"knowledge/slurp/semantic/ace-playbook-i{t}")
+
+
+def ace_section(ctx: Ctx, t: int, a: argparse.Namespace, A: Path, propose: Mapping[str, Any]) -> dict:
+    """Curate playbook i(t) from the reflector's answers and the previous iteration's credit; stage its release inputs."""
+
+    answers = (_load_json(Path(a.reflector_answers)) if a.reflector_answers else {}).get("answers", {})
+    curated = ace_curate(ctx, t, answers, propose)
+    playbook, credit = curated["playbook"], curated["credit"]
+    illegal = curated["illegal"]
     playbook_path = A / "playbook" / f"playbook-i{t}.json"
     playbook_file_status = write_playbook_keyed(playbook_path, playbook)         # keyed by content; a stale file is kept as superseded
     legal_intents = _load_json(Path(a.enums_file))["intents"] if a.enums_file else []
     release = None
     if legal_intents:
-        binding = lib.ace_release_binding(ctx.repo_root)
-        release = ace.build_playbook_release(
-            playbook, data_root=ctx.data_root, carrier_sample_ids=binding["carrier_sample_ids"], legal_intent_ids=legal_intents,
-            source_split_identity_hash=binding["source_split_identity_hash"],
-            release_dir=f"{tf.ANALYSIS_ROOT}/i{t}/ace-release-staging", registration_binding=binding["registration_binding"],
-            registration_path=ctx.package_dir / f"ace-playbook-i{t}-release-registration.json",
-            registration_id=f"SAEA-SLURP-ACE-PLAYBOOK-PREPARATION-I{t}", output_namespace=f"knowledge/slurp/semantic/ace-playbook-i{t}")
+        release = ace_stage_release(ctx, t, playbook, legal_intents)
     pins_file = read_or_none(Path(a.ace_release_pins)) if a.ace_release_pins else None
     ace_pins = {"iteration": t}
     if pins_file:
         ace_pins.update(pins_file)
     receipt = {"playbook_iteration": playbook["iteration"], "playbook_content_hash": playbook["content_hash"], "items": len(playbook["items"]),
                "playbook_file": playbook_file_status,
-               "deltas_in": len(deltas), "illegal_answers": illegal, "curation": playbook.get("curation") and {
+               "deltas_in": curated["deltas_in"], "illegal_answers": illegal, "curation": playbook.get("curation") and {
                    k: v for k, v in playbook["curation"].items() if k in ("deltas_in", "counter_updates", "constants_sha256", "token_counter_id")},
                "release_staging": None if release is None else {
                    **{k: release[k] for k in ("row_count", "empty")}, "registration": release["registration"],
