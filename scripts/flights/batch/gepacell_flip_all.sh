@@ -12,7 +12,7 @@
 # ...-gepa-r01-twin-fit-v1, ...-gepa-r01-smoke-4-fit-v1 and ...-gepa-r01-smoke-4-twin-fit-v1)
 # are NOT flipped: they are spend
 # identities, never flown as generation cells.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-24-slurp-stage3-delta-cell-gepa-r01-v1
 for K in smoke twin-smoke arm twin; do
 cat > /home/chao/gepacell-$K-commit.txt <<M

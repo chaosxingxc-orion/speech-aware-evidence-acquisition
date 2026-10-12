@@ -10,11 +10,11 @@
 # re-pin creates no prepared artifact and no preparation requirement; --allow-output-change is never passed.
 # Per-cell env files (a2taa_repin_smoke.sh / _a.sh / _b.sh) exist for repin_cell_generic.sh if root
 # prefers the loop; then flip in the order smoke, a, b and take b's flight commit.
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
 PY=/home/chao/.venvs/speechrl/bin/python
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-a2t-stage3-aa-paired-400-v1
 PKG=a2t-stage3-aa-paired-400-v1
 PREREG=docs/readiness/2026-09-27-a2t-stage3-aa-paired-400-v1-preregistration.md

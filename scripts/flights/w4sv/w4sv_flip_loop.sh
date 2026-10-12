@@ -12,7 +12,7 @@
 # --allow-output-change must never be passed: the minted digests must be the AGREE arm's / smoke's
 # (eab5c61e... / 308601c5...). Untracked files count as dirt. Model-free; spawns core.flight.cli, so run it only
 # while a flying driver is mid-step (never between chain steps).
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 WS=$MAIN/scripts/flights/w4sv

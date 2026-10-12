@@ -19,7 +19,7 @@
 # read has sealed. Its prepared artifact MUST reproduce cell B6's
 # 36463545fa791723c2adee82db9fb8c78420c72d0ebc07d4ec179cc0ddb2e179 exactly -- a different value
 # means the replicate is not a replicate. Stop and report; never pass --allow-output-change.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-24-slurp-stage3-delta-cell-r03-gate-v1
 cat > /home/chao/cell3-planr-commit.txt <<M
 research: flip cell PLANr-DEV2000 to ready (the DEV-2000-ADDED roster's own null for Stage-3 iteration 3: the request-identical second pass of cell B6's plan arm, flown first so CELL-3 is not read under an imported margin; owner decisions 83, 99, 101, 106; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-delta-cell-r03-gate-admission-v1)

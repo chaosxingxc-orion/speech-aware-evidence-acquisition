@@ -8,12 +8,14 @@
 #   DEC_PATH  decision receipt relpath under the data root; DEC_ID its decision id
 #   TAG       short tag for the out/err files, e.g. rprim-smoke; ARM=1 marks the 1,080-row arm (records the flight commit, runs the summary)
 #   MSG       commit message file; ALLOW_OUTPUT_CHANGE=1 passes --allow-output-change (a re-pin whose prepared supply legitimately changes, e.g. a roster narrowing)
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 LOCK=/mnt/d/chao_workspace/exploring-l4-intelligence/docs/datasets.lock.json
 PY=/home/chao/.venvs/speechrl/bin/python
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$MAIN/src
+# Owner 2026-10-12: hot paths never run on /mnt/* (9p). Refuse (64) unless SAEA_ALLOW_9P_FLIP=1.
+case "$(realpath -m "$MAIN")" in /mnt/*) [ "$SAEA_ALLOW_9P_FLIP" = 1 ] || { echo "refusing: repo root $MAIN is on /mnt (9p); run via scripts/flights/batch/flip_in_ext4.sh or set SAEA_ALLOW_9P_FLIP=1"; exit 64; } ;; esac
 cd "$MAIN" || exit 1
 echo "== HEAD $(git rev-parse --short HEAD); tracked dirt: $(git status --short | grep -vc '^??')"
 $PY -B scripts/flights/repin_cell.py \

@@ -19,7 +19,7 @@
 #
 # The flip does not need the DET serving session: core.flight.cli check attaches to nothing.
 # The resident np4 session is swapped at LAUNCH time (batch_chain_det.sh's preconditions).
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-26-slurp-stage3-det-np1-fold-a-50-v1
 for K in a b; do
 cat > /home/chao/det-$K-commit.txt <<M

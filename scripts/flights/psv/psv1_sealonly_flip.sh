@@ -15,7 +15,7 @@
 #
 # Loop form (a later flip may rewrite the shared exposure ledger after an earlier cycle reported "satisfied"): the cycle
 # is re-run until a whole pass commits nothing, bound 4. Only then is HEAD recorded. Untracked files count as dirt.
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 RRD=docs/readiness/2026-09-29-slurp-stage3-psv1-fold-b-v1-resume-v1

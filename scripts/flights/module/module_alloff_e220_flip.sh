@@ -7,9 +7,9 @@
 #      (scripts/flights/module/module_alloff_mint_receipt.py --carrier e22);
 #   3. python -B scripts/analysis/module_equivalence_proof.py --at e220 reports ok.
 # --allow-output-change must never be passed. Loop form: repin_loop_generic.sh re-runs each cycle until convergence.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-10-11-earnings22-module-alloff-v1
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 for K in smoke arm; do
 cat > /home/chao/module-alloff-e220-$K-commit.txt <<M
 research: flip the Earnings-22 consumption-module all-off arm ($K) to ready (carrier admission gate, design 2b.3: every component off compiles to the E22 direct base bytes, byte proof e220; form proof, claims_benefit false; re-pinned by scripts/flights/repin_cell.py, decision receipt earnings22-native-stage3-module-alloff-v1-admission-v1)

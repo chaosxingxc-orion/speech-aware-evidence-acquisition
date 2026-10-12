@@ -13,7 +13,7 @@
 #      scripts/analysis/stage3_rollout_score.py --mode relisten wiring) into master.
 # --allow-output-change must never be passed: the flip mints each cell's own first-phase supply (item E16);
 # the arm's minted digest must be the AGREE arm's (eab5c61e...).
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 WS=$MAIN/scripts/flights/e4

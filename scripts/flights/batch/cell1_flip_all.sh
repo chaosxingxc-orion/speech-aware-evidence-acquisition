@@ -20,7 +20,7 @@
 # SAEA-SLURP-STAGE3-DELTA-CELL-SMOKE-4-V3-FIT-V1, or declared_readiness refuses the new smoke.
 # Every CELL-1 cell must be re-pinned in this one cycle: rails/knowledge_stores.py carries the fix
 # and is hashed into every prepared first-phase artifact identity.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-22-slurp-stage3-delta-cell-r01-v1
 for K in smoke twin-smoke arm twin; do
 cat > /home/chao/cell1-$K-commit.txt <<M

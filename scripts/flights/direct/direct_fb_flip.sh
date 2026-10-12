@@ -16,7 +16,7 @@
 # DIRECT_FB_KINDS (default "smoke thinking instruct replicate") narrows the flip, e.g. DIRECT_FB_KINDS="instruct replicate" to ready only the Instruct pair
 # before the Thinking packets exist (the sentinel check then does not apply).
 #   bash scripts/flights/direct/direct_fb_flip.sh
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 DIRD=$MAIN/scripts/flights/direct
@@ -26,6 +26,8 @@ LABEL=266-E
 RD=docs/readiness/2026-10-11-slurp-$SLUG-v1
 ZERO=0000000000000000000000000000000000000000000000000000000000000000
 KINDS=${DIRECT_FB_KINDS:-"smoke thinking instruct replicate"}
+# Owner 2026-10-12: hot paths never run on /mnt/* (9p). Refuse (64) unless SAEA_ALLOW_9P_FLIP=1.
+case "$(realpath -m "$MAIN")" in /mnt/*) [ "$SAEA_ALLOW_9P_FLIP" = 1 ] || { echo "refusing: repo root $MAIN is on /mnt (9p); run via scripts/flights/batch/flip_in_ext4.sh or set SAEA_ALLOW_9P_FLIP=1"; exit 64; } ;; esac
 cd "$MAIN" || exit 1
 if [ ! -f "$DATA/coordination/slurp-$SLUG-v1/root-admission-v1.json" ]; then
   echo "refusing: the $LABEL decision receipt is not minted (scripts/flights/direct/direct_fb_mint_receipt.py)"; exit 6

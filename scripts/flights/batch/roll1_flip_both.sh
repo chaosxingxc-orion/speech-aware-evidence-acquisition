@@ -1,6 +1,6 @@
 #!/bin/bash
 # Flip cell ROLL-1 (smoke, then the 800-row arm) to ready on master: model-free.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-22-slurp-stage3-rollout-r01-v1
 for K in smoke arm; do
 cat > /home/chao/roll1-$K-commit.txt <<M

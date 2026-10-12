@@ -14,7 +14,7 @@
 # and the run-cumulative budget (the arm fragments are untouched and stay ready); this loop flips the smoke again and re-converges
 # the arm's pins and the ledger hashes (the decision receipt is already minted: the run ids did not change, so it is not re-minted).
 #   bash scripts/flights/nx/nx_r6_flip.sh
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 NX=$MAIN/scripts/flights/nx

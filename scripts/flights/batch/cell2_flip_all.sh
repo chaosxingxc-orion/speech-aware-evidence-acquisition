@@ -11,7 +11,7 @@
 # The four FIT cells (slurp-native-stage3-delta-cell-r02-fit-v1, ...-r02-twin-fit-v1,
 # ...-r02-smoke-4-fit-v1 and ...-r02-smoke-4-twin-fit-v1) are NOT flipped: they are spend
 # identities, never flown as generation cells.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-24-slurp-stage3-delta-cell-r02-v1
 for K in smoke twin-smoke arm twin; do
 cat > /home/chao/cell2-$K-commit.txt <<M

@@ -21,12 +21,12 @@
 # repin_loop_generic.sh re-runs each cycle until the package converges at one HEAD; then re-run every
 # cycle once more and require "satisfied at <the same HEAD>" with zero "committed" lines. Untracked
 # files count as dirt for core.flight.cli check.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-g5-fold-a-v1
 # Owner decision 160 (2026-09-27): G5 is read at the SHARED in-chain A/A SAEA-SLURP-STAGE3-COMP1-AA-FOLD-A-V1,
 # its own A/A pair is superseded unflown and its campaign plan carries the arm alone. In that mode this
 # script must not run: the family flips ONLY through scripts/flights/comp1/comp1_g5_flip.sh.
-if ! grep -q "slurp-native-stage3-g5-aa-fold-a-v1" /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/configs/campaign/slurp-native-stage3-g5-fold-a-v1.json; then
+if ! grep -q "slurp-native-stage3-g5-aa-fold-a-v1" ${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/configs/campaign/slurp-native-stage3-g5-fold-a-v1.json; then
   echo "refusing (owner decision 160): the G5 campaign plan carries the arm alone -- use scripts/flights/comp1/comp1_g5_flip.sh"; exit 6
 fi
 G5=$(dirname "$0")
@@ -40,5 +40,5 @@ done
 bash $SP/repin_loop_generic.sh $G5/g5_repin_smoke.sh $RD slurp-native-stage3-g5-fold-a-smoke-4-v1 smoke-generation /home/chao/g5-smoke-commit.txt || exit $?
 bash $SP/repin_loop_generic.sh $G5/g5_repin_aa.sh    $RD slurp-native-stage3-g5-aa-fold-a-v1       aa-generation    /home/chao/g5-aa-commit.txt    || exit $?
 bash $SP/repin_loop_generic.sh $G5/g5_repin_arm.sh   $RD slurp-native-stage3-g5-fold-a-v1          generation       /home/chao/g5-arm-commit.txt   || exit $?
-cd /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition && git rev-parse HEAD > /home/chao/g5-flight-commit.txt
+cd ${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition} && git rev-parse HEAD > /home/chao/g5-flight-commit.txt
 echo "flight commit $(cat /home/chao/g5-flight-commit.txt)"

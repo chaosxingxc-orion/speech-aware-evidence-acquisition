@@ -9,7 +9,7 @@
 #
 # The two FIT cells (SAEA-SLURP-STAGE3-ROLL-AA-FIT-V1 and -SMOKE-4-FIT-V1) are NOT flipped: they
 # are spend identities, never flown as generation cells.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-24-slurp-stage3-roll-aa-v1
 for K in smoke arm; do
 cat > /home/chao/rollaa-$K-commit.txt <<M

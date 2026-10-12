@@ -1,4 +1,4 @@
 #!/bin/bash
 # Re-pin the A2 arm (COMP-1b on DEV-2000-ADDED). ARM=1: records the flight commit, prints the check summary and runs the results-ledger gate; the check attaches to NOTHING. Its re-minted supply must reproduce output digest ecca16a2... (the superseded placeholder arm's) through the generic flip. Model-free. Owner decision 198 (A2 = COMP-1b on DEV-2000-ADDED).
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1 CELL=slurp-native-stage3-comp1b-dev2000-added-v1 PKG=slurp-stage3-comp1b-dev2000-added-v1 PREREG=docs/readiness/2026-09-29-slurp-stage3-comp1b-dev2000-added-v1-preregistration.md DEC_PATH=coordination/slurp-stage3-comp1b-dev2000-added-v1/root-admission-v1.json DEC_ID=slurp-stage3-comp1b-dev2000-added-admission-v1 TAG=comp1bdev-arm ARM=1 MSG=/home/chao/comp1bdev-arm-commit.txt bash $SP/repin_cell_generic.sh

@@ -7,7 +7,7 @@
 # coordination/slurp-stage3-agree-w1-fold-a-v1/root-admission-v1.json is already minted with six eligible
 # run ids. --allow-output-change must never be passed: no cell carries a committed pin; the flip mints each
 # cell's own supply (item E16) and now keeps the agreement-table requirement beside it.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-26-slurp-stage3-agree-w1-fold-a-v1
 for K in smoke aa arm; do
 cat > /home/chao/agree-$K-commit.txt <<M
@@ -19,5 +19,5 @@ done
 bash $SP/repin_loop_generic.sh $SP/agree_repin_smoke.sh $RD slurp-native-stage3-agree-w1-fold-a-smoke-4-v1 smoke-generation /home/chao/agree-smoke-commit.txt || exit $?
 bash $SP/repin_loop_generic.sh $SP/agree_repin_aa.sh    $RD slurp-native-stage3-agree-aa-fold-a-v1       aa-generation    /home/chao/agree-aa-commit.txt    || exit $?
 bash $SP/repin_loop_generic.sh $SP/agree_repin_arm.sh   $RD slurp-native-stage3-agree-w1-fold-a-v1       generation       /home/chao/agree-arm-commit.txt   || exit $?
-cd /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition && git rev-parse HEAD > /home/chao/agree-flight-commit.txt
+cd ${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition} && git rev-parse HEAD > /home/chao/agree-flight-commit.txt
 echo "flight commit $(cat /home/chao/agree-flight-commit.txt)"

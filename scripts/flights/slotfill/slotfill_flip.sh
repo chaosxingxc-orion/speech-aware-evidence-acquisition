@@ -22,7 +22,7 @@
 # package's hashes: repin_loop_generic.sh re-runs each cycle until the package converges at one
 # HEAD; then re-run every cycle once more and require "satisfied at <the same HEAD>" with zero
 # "committed" lines. Untracked files count as dirt for core.flight.cli check.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-slotfill-fold-a-v1
 SF=$(dirname "$0")
 for K in smoke aa arm; do
@@ -35,5 +35,5 @@ done
 bash $SP/repin_loop_generic.sh $SF/slotfill_repin_smoke.sh $RD slurp-native-stage3-slotfill-fold-a-smoke-4-v1 smoke-generation /home/chao/slotfill-smoke-commit.txt || exit $?
 bash $SP/repin_loop_generic.sh $SF/slotfill_repin_aa.sh    $RD slurp-native-stage3-slotfill-aa-fold-a-v1       aa-generation    /home/chao/slotfill-aa-commit.txt    || exit $?
 bash $SP/repin_loop_generic.sh $SF/slotfill_repin_arm.sh   $RD slurp-native-stage3-slotfill-fold-a-v1          generation       /home/chao/slotfill-arm-commit.txt   || exit $?
-cd /mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition && git rev-parse HEAD > /home/chao/slotfill-flight-commit.txt
+cd ${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition} && git rev-parse HEAD > /home/chao/slotfill-flight-commit.txt
 echo "flight commit $(cat /home/chao/slotfill-flight-commit.txt)"

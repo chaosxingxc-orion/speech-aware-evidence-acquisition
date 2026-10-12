@@ -15,7 +15,7 @@
 # pending pin, an existing attempt). After the flip, refresh the registered plan pins (the writer copies the minted supply pin into
 # the plans) and flip again. --allow-output-change must never be passed.
 #   bash scripts/flights/nx/milestone_successor2_flip.sh
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 SP=$MAIN/scripts/flights/batch
 NX=$MAIN/scripts/flights/nx

@@ -11,7 +11,7 @@
 # --allow-output-change must never be passed. The replicate re-pin uses the module package's own script and may rewrite that package's registered
 # hashes if instrument merges moved them: that is the coordinator's flip, exactly as the module flip would do.
 #   bash scripts/flights/nx/nx_r5_flip.sh
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 NX=$MAIN/scripts/flights/nx

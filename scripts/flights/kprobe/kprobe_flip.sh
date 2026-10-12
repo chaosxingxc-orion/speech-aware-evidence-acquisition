@@ -12,7 +12,7 @@
 # plan's, which flew its own smoke; only one retrieval-key file differs.
 # Sibling flips on master move this package's hashes: repin_loop_generic.sh re-runs the cycle until the
 # package converges at one HEAD. Untracked files count as dirt for core.flight.cli check.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-kprobe-fold-a-55-v1
 cat > /home/chao/kprobe-arm-commit.txt <<M
 research: flip cell KPROBE (the 55-row centroid-key conversion probe) to ready (owner decision 145: the locked PLAN plan with one pin moved -- the intent-boundary Perception facet_source to the centroid key file, k 8 / fuse 8-1-8 unchanged -- flies on exactly the TRAIN Fold A rows whose gold intent boundary entry that key newly delivers, against the already-sealed PLAN answers, reading P(correct given newly delivered) on intent correctness per row behind a delivery gate; form-proof, claims_benefit false, no pooled claim ever; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-kprobe-fold-a-55-admission-v1)

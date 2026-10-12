@@ -13,8 +13,8 @@
 # script again (bound 3 passes) until it reports "satisfied at <the same HEAD>" with no "committed" line;
 # that HEAD is the flight commit, written to /home/chao/rankvis-flight-commit.txt (read by
 # batch_chain_rankvis.sh). Untracked files count as dirt for core.flight.cli check.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 RD=docs/readiness/2026-09-27-slurp-stage3-rankvis-probe-fold-a-v1
 cat > /home/chao/rankvis-arm-commit.txt <<M
 research: flip cell RANKVIS (the 119-row rank-visible rendering conversion probe) to ready (owner decision 171: the registered AGREE arm with one native_episode key added -- knowledge_value_rendering, retrieval-rank order with the rank shown on the intent-boundaries and train-exemplars blocks -- on the 119 TRAIN Fold A rows AGREE delivered and got wrong, read as m of 119 against the no-op expectation 15.9; form-proof, claims_benefit false, no pooled claim ever; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-rankvis-fold-a-119-admission-v1)

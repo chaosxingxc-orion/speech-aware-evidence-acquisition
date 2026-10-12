@@ -13,9 +13,9 @@
 # input to the first-phase supply). Sibling flips on master move this package's hashes:
 # repin_loop_generic.sh re-runs each cycle until the package converges; then re-run every cycle once more
 # and require "satisfied at <the same HEAD>" with zero "committed" lines. Untracked files count as dirt.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-27-slurp-stage3-reviewer-tfrl-v1
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 for K in smoke aa arm; do
 cat > /home/chao/revtfrl-$K-commit.txt <<M
 research: flip REV-TFRL-1 ($K) to ready (the first training-free RL optimisation of the Reviewer node, owner decision 165: the AGREE arm with the Reviewer instruction moved from G5's text to the contrastive review form selected offline over sealed TRAIN R01C trajectories, read on no harm at its in-chain A/A (AGREE with G5's Reviewer text) with the node's within-trajectory credit beside it; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-stage3-revtfrl-fold-a-admission-v1)

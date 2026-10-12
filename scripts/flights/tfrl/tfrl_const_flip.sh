@@ -10,7 +10,7 @@
 # After the flip, refresh the registered plan pins (scripts/flights/refresh_registered_plan_pins.py --package <dir> copies the minted supply pin
 # into the plans) and flip again. --allow-output-change must never be passed.
 #   bash scripts/flights/tfrl/tfrl_const_flip.sh
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 TF=$MAIN/scripts/flights/tfrl

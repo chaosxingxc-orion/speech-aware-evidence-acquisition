@@ -1,6 +1,6 @@
 #!/bin/bash
 # Flip cell R-PRIM (smoke, then the 1,080-row arm) to ready on master: model-free; the flight itself waits for the SLURP geometry.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-22-slurp-review-primitives-v1
 cat > /home/chao/rprim-smoke-commit.txt <<'M'
 research: flip the R-PRIM four-row smoke to ready (item E37, owner decision 84; re-pinned by scripts/flights/repin_cell.py, decision receipt slurp-review-primitives-admission-v1)

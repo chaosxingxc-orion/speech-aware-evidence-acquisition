@@ -15,7 +15,7 @@
 # (eab5c61e... / 308601c5...). Sibling flips move this package's hashes: repin_loop_generic.sh re-runs each cycle
 # until it converges; then re-run this script once more and require "satisfied at <the same HEAD>" with zero
 # "committed" lines. Untracked files count as dirt.
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 SP=$MAIN/scripts/flights/batch
 PY=/home/chao/.venvs/speechrl/bin/python
 RD=docs/readiness/2026-09-28-slurp-stage3-w4-sv-fold-a-v1

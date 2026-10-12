@@ -1,6 +1,6 @@
 #!/bin/bash
 # Flip the two decision-85 pruning cells (P1 prune-reviewer1, P0 prune-review-off): smoke then arm each, via the generic re-pin loop.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 for NAME in prune-reviewer1 prune-review-off; do
   RD=docs/readiness/2026-09-22-slurp-$NAME-v1
   for KIND in smoke arm; do

@@ -9,7 +9,7 @@
 # hashed into every prepared phase-supply artifact's identity. Re-pin the CELL-1 family in the same
 # cycle (scripts/flights/batch/cell1_flip_all.sh) and NEVER pass --allow-output-change: their
 # output is expected to reproduce byte for byte because no selection path moved.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-24-slurp-stage3-gepa-r01-v1
 for K in smoke arm; do
 cat > /home/chao/gepa-$K-commit.txt <<M

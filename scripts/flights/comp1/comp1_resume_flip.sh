@@ -17,7 +17,7 @@
 # Sequence (the comp1_g5_flip.sh shape): the resume cycle, then G5's smoke and arm cycles, then a CONVERGENCE pass
 # re-running all three until one whole pass commits nothing (a later flip rewrites the shared exposure ledger after
 # an earlier cell reported "satisfied"). Only then is HEAD recorded. Untracked files count as dirt.
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data
 SP=$MAIN/scripts/flights/batch
 CP=$MAIN/scripts/flights/comp1

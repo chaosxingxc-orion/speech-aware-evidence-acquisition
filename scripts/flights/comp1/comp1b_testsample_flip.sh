@@ -11,9 +11,9 @@
 #      is minted (scripts/flights/comp1/comp1b_testsample_mint_receipt.py).
 # Steps 1-3 are machine-checked below by comp1b_testsample_preflip_check.py; the flip refuses on any refusal.
 # --allow-output-change must never be passed. Loop form (repin_loop_generic.sh): sibling flips move hashes.
-SP=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/scripts/flights/batch
+SP=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}/scripts/flights/batch
 RD=docs/readiness/2026-09-29-slurp-stage3-comp1b-testsample-v1
-MAIN=/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition
+MAIN=${SAEA_MAIN:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
 DATA=${SPEECHRL_DATA_DIR:-/mnt/e/chao_workspace/exploring-l4-intelligence/speechrl-data}
 /home/chao/.venvs/speechrl/bin/python -B "$MAIN/scripts/flights/comp1/comp1b_testsample_preflip_check.py" \
   --repo-root "$MAIN" --data-root "$DATA" || { echo "milestone flip REFUSED by the preflip gate"; exit 6; }

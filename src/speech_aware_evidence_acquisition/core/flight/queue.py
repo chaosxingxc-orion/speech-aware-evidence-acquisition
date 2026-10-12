@@ -4,9 +4,10 @@ from __future__ import annotations
 from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import nullcontext
 from dataclasses import dataclass
-from typing import Callable, ContextManager, Mapping, Sequence
+from typing import TYPE_CHECKING, Callable, ContextManager, Mapping, Sequence
 
-from .runtime import FlightRuntime
+if TYPE_CHECKING:  # the runtime stack is heavy; annotations only (lazy import in FlightQueue.add)
+    from .runtime import FlightRuntime
 
 
 class FlightQueueError(RuntimeError):
@@ -99,6 +100,8 @@ class FlightQueue:
         self.completed: list[FlightQueueEntry] = []
 
     def add(self, flight: FlightRuntime) -> None:
+        from .runtime import FlightRuntime
+
         if not isinstance(flight, FlightRuntime):
             raise FlightQueueError("FlightQueue only accepts FlightRuntime instances")
         if flight.run_id in self._known:
