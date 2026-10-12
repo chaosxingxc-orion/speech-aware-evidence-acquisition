@@ -57,7 +57,7 @@
   "blockers": [],
   "composed_config_hashes": {
     "aa": "b0f6ed34a50ab17e5439e782cf5bc36520ca6c352585fea9e74a84d2ad89dffc",
-    "lock": "f21facba847850249fa019bbc583379d229277a9d8c5bbf0d3f3a8ebb3714e77",
+    "lock": "67b62f3e3dd687e610b4500c4e0b6addc94ac57710ac33e4eefb5679465482c4",
     "smoke": "ffdb79fa46b542f08d51458b53f0b8fee480f31f356bdf91a3ae63f84b2dafb5"
   },
   "context_fit": {
@@ -159,7 +159,7 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-lock-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
-      "composed_config_hash": "f21facba847850249fa019bbc583379d229277a9d8c5bbf0d3f3a8ebb3714e77",
+      "composed_config_hash": "67b62f3e3dd687e610b4500c4e0b6addc94ac57710ac33e4eefb5679465482c4",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -192,7 +192,7 @@
       "key": "lock",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "13c926742a3388b5354715d4df43f0ee8af694d0e8508ea1bd55c32c5f010237",
+      "protocol_hash": "30ddbdf80de728013f99af9d949af82b42c7e7f9b73f4fa4703ec8c35141e58b",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",

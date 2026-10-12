@@ -7,7 +7,7 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "f9ce5c1cfa8698f3dc17b559c1acc867052124af258c81189b03b0b88322b634"
+      "sha256": "a5b60f13e8aaf6abaa4b4bd8ebca8d08cba1be72277297c8d67d5012d7391b23"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/registered-facts-v1.json",
