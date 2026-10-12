@@ -2225,3 +2225,33 @@ two static lanes are copying datasets/models/derived there now), disk 2 is growt
   disk (recommended); B = none.
 - **294** `~/.bashrc` and the queue wrappers switch to the data-root authority at the cut-over (A).
 - **295** the three E22 fragments naming a missing packet root are re-pinned when E22's encoder window runs (A).
+
+### Owner decision brief 2026-10-12 11:40Z (second of the day): open decisions 287-295, current stage, plan (coordinator, on the owner's request)
+
+**Stage.** (1) SLURP system of record = lock v2.2 + v4g on the Instruct core (test sample read done). (2) The sealed-credit loop: i1, i2
+closed (ACE refused +0.87 then +1.38 [+0.15, +2.57]; typed arm empty), i3 column flying (seal ~11:55Z), then `close --iter 3`, the loop's
+results note and ledger entry (269 A). (3) 266-E read: bare Thinking +11.90 / +4.35 over bare Instruct; the system adds +31 / +10 over
+bare Instruct. (4) 268 B (system on the Thinking core) is registered (held) with the Thinking knobs (283 merged: budget 3,072 + reserve
+1,024 = cap 4,096, forced close verified against the Qwen3 report, drop-reasoning context, per-node policy, one receipted re-ask) and
+286 (reasoning bytes never sealed; hash + stats only). (5) 274 base unification: ext4 flips (267; 9 min for a proposer package, 34 min
+for a column package), one-pass flip mode (270, default still iterate), the base manifest + locator gate + migration tooling on a branch
+(merge after the i3 driver exits), data-disk migration (284) in progress: disk 1 (2 TB ext4 VHDX) mounted, static subtrees copying
+(327 GB of ~1,450 GB by 11:36Z, two lanes, ~110 MB/s), ChatGPT-line and Stage-1 artefacts excluded for deletion (~104 GB). (6) Carriers
+wait for 268 (272 B); SOTA table on file as a survey asset (285 deferred). (7) Housekeeping done: terminals (hidden task consoles,
+36 one-off tasks unregistered, watchdog and uptime guard retired), ledger closure gate PASS.
+
+**Open decisions** (recommendation first): 287 adopt base v1 + locator gate (A); 288 cut-over right after the i3 seal (A) vs after 268
+(B); 289 compatibility link on E: after step 3 (A); 290 keep the A2T/Earnings absolute pins frozen (A); 291 disk 2 = 1.3 TB (A);
+292 worktree cleanup from WSL (A); 293 backup to another physical disk (A); 294 `~/.bashrc` + queue wrappers to the data-root authority
+at the cut-over (A); 295 E22 packet-root re-pin at its encoder window (A).
+
+**Plan.** P0 (today): i3 seals -> close -> loop note -> merge 274 branch -> stop serving -> migrate the hot subtrees (runs, attempts,
+analysis, knowledge, coordination minus deletions, serving, locks, receipts, logs) -> final `--delete` sync of the static subtrees ->
+sha256 manifests -> flip the default line (data_root.sh), `~/.bashrc`, queue wrappers, umbrella CLAUDE.md -> locator gate --host PASS
+-> restart serving (Instruct) on the new root -> timing receipt. P1 (owner reviews the manifests): delete the E: originals + the deletion
+set -> compatibility link -> disk 2 (1.3 TB) -> E: ~500 GB free. P2: 268 on the unified base: register the serving tasks for the budget
+session, countersign + mint + ext4 flip, swap to think-budget-np4, smoke (per-node cap-hit table) -> sign-off -> lock pass -> aa pass
+(~4-6 h each) -> read (TRANSFERS / PARTIAL / NO-TRANSFER / HARM). P3 (branch on 268): if it transfers -> the Thinking-mode base becomes
+the unified base (re-optimise per-node policy, budget, throughput; re-run the SOTA comparison; new test allowance only after the DEV read);
+if not -> Instruct stays, 266-E stays a core note. P4: carriers (272 B after 268): A2T all-off A/A, E21 all-off, E22 packets + all-off, on
+the unified base. P5: consolidation: results notes, claim surface under 252 with the claim class ruled later, worktree cleanup, backups.
