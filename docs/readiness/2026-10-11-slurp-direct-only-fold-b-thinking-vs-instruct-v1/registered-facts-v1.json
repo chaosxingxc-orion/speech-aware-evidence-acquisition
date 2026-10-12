@@ -167,15 +167,15 @@
       "split_identity_hash": "26b306e5ccbfbe48ece85c7a3d07dacd947db9265cf5193bcb6e6d6e7f6500fe"
     },
     "thinking": {
-      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-generation-v1",
+      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-generation-rec1-v1",
       "baseline_fragment": "slurp-direct-only-fold-b-thinking-baseline-v1",
       "cell": "slurp-direct-only-fold-b-thinking-v1",
       "composed_config_hash": "db3b8d64761debd33d26b6a0de7854958fbd0bc2902b743942cdb5b3d3b835ec",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "declares_prepared_phase_supply": false,
-      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-v1",
+      "fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-rec1-v1",
       "fit_contact_cap": 3241,
-      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1",
+      "fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-REC1-V1",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1",
       "policy": "phase-direct-only-v1",
       "protocol_hash": "84641dec3506c9564cc0d3efe3197ce6df8156d9e8b569571978c6885305b0fc",

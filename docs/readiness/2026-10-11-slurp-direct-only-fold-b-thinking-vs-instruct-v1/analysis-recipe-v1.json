@@ -15,7 +15,7 @@
       "scores_sha256": "PENDING_SEAL"
     },
     "thinking": {
-      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-generation-v1",
+      "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-generation-rec1-v1",
       "outputs_sha256": "PENDING_SEAL",
       "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1",
       "run_manifest_sha256": "PENDING_SEAL",

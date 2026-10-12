@@ -5,9 +5,9 @@
   "knowledge_snapshot_relpath": "knowledge/slurp/saea-kb-distmodel-v1/size-full-content-slot-fillers-intent-slot-frame-tfrl-folds-v1/snapshot.json",
   "knowledge_snapshot_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
   "live_phase_fit": {
-    "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-v1",
+    "attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-rec1-v1",
     "contact_cap": 3241,
-    "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1"
+    "run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-REC1-V1"
   },
   "live_phase_fit_audio_seconds_cap": 3155,
   "phase_material": {
@@ -32,6 +32,6 @@
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_direct_closed_list.txt",
   "task_instruction_template_active": true,
-  "what_this_is": "Cell 266-E Thinking arm: the Thinking arm of the bare-core read (owner decision 266-E): the SAME direct-only form on the Thinking core (its own session, its own speech-packet root, completion cap 8192, --reasoning-format deepseek so reasoning never enters message.content), TRAIN Fold B 1,080. The delivered answer is the content channel only; reasoning text is never delivered, never persisted beyond hashes and never scored.",
+  "what_this_is": "Cell 266-E Thinking arm: the Thinking arm of the bare-core read (owner decision 266-E): the SAME direct-only form on the Thinking core (its own session, its own speech-packet root, completion cap 8192, --reasoning-format deepseek so reasoning never enters message.content), TRAIN Fold B 1,080. The delivered answer is the content channel only; reasoning text is never delivered, never persisted beyond hashes and never scored. Recovery rec1 (2026-10-12): an incomplete coordinator ledger amendment: when the completion cap and the arm's GPU ceiling were amended (3.0 to 4.5), the generation row's gpu cell was set to 4.5 but the live phase-fit row stayed at 3.0; corrected by the rec1 FIT row, which carries 4.5 natively (both rows are written from the same plan caps).",
   "whole_roster_wave_barrier": true
 }
