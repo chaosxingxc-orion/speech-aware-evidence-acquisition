@@ -1,0 +1,360 @@
+{
+  "_note": "Every model-free fact this DRAFT registration rests on, and the CANONICAL stage3_measurement blocks scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
+  "accounting": {
+    "arm_fit_endpoint_calls_cap": 8640,
+    "arm_generation_calls": 2160,
+    "arm_speech_audio_seconds_cap": 6310,
+    "contacts_per_row": 2,
+    "cost_estimate": {
+      "design_c3_reference": {
+        "design_table": "5.91 GPU-h, 6.6-8.5 h wall (section 4.3)",
+        "expected_gpu_hours": 5.91,
+        "planned_ceiling_gpu_hours": 7.7,
+        "shape": "Perception + lock + in-row twin, one pass",
+        "wall_hours_range": [
+          6.6,
+          8.5
+        ]
+      },
+      "fallback_note": "The answer-only fallback (decision 277 A) adds at most 2 contacts per row once the harness lands; plan calls and the FIT cap then rise to 1080 x 4 = 4320 per arm. Not registered now: the program maximum today is 2 per row.",
+      "formula": "expected = rows x [ (P_inst + d x E_B) + n_solver x (S_inst + d x E_B) ] / slots / 3600 with P_inst = 5.48 s and S_inst = 7.45 s (Instruct module column, i2), d = 0.02298 s per generated token (266-E fit), E_B = E[min(reasoning, B)] = 848 tokens at B = 3,072; ceiling = ceil_0.1(expected x 1.3)",
+      "inputs": {
+        "budget_tokens": 3072,
+        "decode_s_per_token": 0.02298,
+        "e_min_reasoning_tokens": 848,
+        "instruct_module_s": {
+          "perception": 5.48,
+          "solver": 7.45
+        },
+        "margin": 1.3,
+        "slots": 4
+      },
+      "per_arm_pass_c2": {
+        "contacts": 2160,
+        "expected_gpu_hours": 3.89,
+        "planned_ceiling_gpu_hours": 5.1,
+        "wall_hours_range": [
+          4.3,
+          5.6
+        ]
+      },
+      "registered_total": {
+        "contacts": 4328,
+        "expected_gpu_hours": 7.79,
+        "planned_ceiling_gpu_hours": 10.7
+      },
+      "row_slot_seconds_c2": 51.9,
+      "superseded_estimate": "the registry's 14 GPU-h counted 8,640 contacts at 22.8 s on the bare prompt; the design's model gives 18.4 GPU-h for two unbounded c4 passes"
+    },
+    "lock": "v2.2",
+    "program": "phase-native-module-v1-c2",
+    "rows": 1080,
+    "smoke_generation_calls": 8,
+    "smoke_speech_audio_seconds_cap": 21,
+    "twin_generation_calls": 2160,
+    "twin_shape": "separate-cell"
+  },
+  "blockers": [],
+  "composed_config_hashes": {
+    "aa": "affa273f05e05368887b34b0417d01b8a8c19ac0e14546ab701ebaae1dbfbff6",
+    "lock": "3c0a8e404d355bbca2eec4be708d9f856418809df38928ca0ec34a8cdbc258b2",
+    "smoke": "729c1eb710d67b6e2855790a2bf2bfebede45d26fe0a092de86ae1f5f81bf6d7"
+  },
+  "context_fit": {
+    "completion_cap": 4096,
+    "instruct_prompt_limit_tokens": 20990,
+    "prompt_limit_tokens": 17406,
+    "reserve_tokens": 3072,
+    "slot_tokens": 24576,
+    "solver_prompt_tokens_max_measured": 14641,
+    "superseded_cap_8192_prompt_limit_tokens": 13310
+  },
+  "findings": [
+    {
+      "finding": "The engineering design's c3 shape (Perception + lock + in-row twin aa in one flight) cannot be compiled today: rails.consumption_module refuses a supply frame with no supply column (\"consumption_module.supply_frame is declared but no supply column is\") and rails.supply_variants admits only 1 to 6 candidate arms. The twin is therefore a second cell, request-identical to the arm, flown in the same chain (the 266-E replicate and the cell1 / gepacell twins are the precedent). Two c2 passes cost 4 contacts per row; the in-row c3 costs 3.",
+      "id": "twin-is-a-separate-cell",
+      "remedy": "decision 282 may admit a candidate-less twin group; the package is then re-derived with fam.TWIN_SHAPE = in-row."
+    },
+    {
+      "finding": "Native role contacts require preserved wire metadata (reproduction.ojw.native_roles._wire_turn: \"metered completion requires preserved wire metadata\"), so preserve_wire_responses must be true on the module graph. On the Thinking core the preserved wire bytes carry message.reasoning_content, which therefore lands in the sealed trace on the data root (never in Git, never delivered, never scored). Owner constraint (iii) of 266-E (reasoning text never persisted beyond hashes) cannot hold for a native cell.",
+      "id": "native-roles-require-preserved-wire",
+      "remedy": "owner acknowledgement, or an engineering change that strips reasoning_content before the wire bytes are sealed (hash semantics change)."
+    },
+    {
+      "finding": "At the registered completion cap 4096 the live prompt limit is 17406 tokens (24,576 - 3,072 reserve - 4096 - 2); the measured Solver prompt maximum on the Instruct lock is 14641, so no row is compacted or abstained by compact-or-abstain. At the superseded cap 8,192 the limit would be 13310 and the heaviest rows would be.",
+      "id": "context-fit-at-the-registered-cap",
+      "remedy": "none needed at 4,096; the live phase FIT re-measures on the real supply."
+    },
+    {
+      "finding": "core.model.request_types.ALLOWED_DECODING_KEYS does not yet list thinking_budget_tokens and the native-episode loader has no reasoning block or reasoning_context_policy (design decision 282). The knobs are registered in the model fragment (decoding_params.thinking_budget_tokens, --reasoning-budget-message), in each baseline's top-level thinking_policy block and in the family constants; compose() accepts them, a flight cannot honour them until the harness lands.",
+      "id": "harness-pass-through-pending",
+      "remedy": "merge the harness (decision 282), re-run thinking_system_derive_cells.py and thinking_system_write_registration.py, then countersign."
+    },
+    {
+      "finding": "The forced-close sentence is the design's wording of the Qwen3 technical report's stop sentence, flagged unverified in the design (section 1.2 / 6 (d)).",
+      "id": "budget-message-wording-unverified",
+      "remedy": "verify verbatim against arXiv:2505.09388 before a flight pins the fragment; change fam.THINK_BUDGET_MESSAGE and the model fragment together."
+    },
+    {
+      "finding": "The design recommends a 32-row smoke (the 266-E four-row smoke overstated cost 1.8x with one runaway in four); this registration keeps the loop's own four Fold B rows as ordered.",
+      "id": "smoke-size",
+      "remedy": "a larger smoke needs a prefix roster receipt and a SMOKE_ROWS change in the family."
+    },
+    {
+      "finding": "The new geometry target think-budget-np4 (scripts/flights/batch/serving_lib.sh) names the Windows scheduled tasks SAEA-Serving-THINKB and SAEA-Monitor-THINKB, which the coordinator registers (saea_task.ps1 pattern) before the first swap.",
+      "id": "swap-target-needs-scheduled-tasks",
+      "remedy": "register the two tasks; the entry scripts are scripts/flights/direct/serving_task_entry_think_budget.sh and serving_monitor_start_think_budget.sh."
+    }
+  ],
+  "identity": {
+    "aa": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-aa-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
+      "composed_config_hash": "affa273f05e05368887b34b0417d01b8a8c19ac0e14546ab701ebaae1dbfbff6",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 5.1,
+        "planned_model_calls": 2160,
+        "planned_speech_audio_seconds": 6310,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 8640,
+        "generation_calls_cap": 2160,
+        "gpu_hours_fit_inclusive": 5.1,
+        "native_task_contract_calls_cap": 2160,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 6310
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-fit-v1",
+        "contact_cap": 8640,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-FIT-V1",
+      "key": "aa",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "program": "phase-native-module-v1-c2",
+      "protocol_hash": "24dc321f9b2fd16cd9ef54e1b5dfdf74a86e962cce290ead64b894a8ea9f7fd7",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
+      "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "lock": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-lock-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
+      "composed_config_hash": "3c0a8e404d355bbca2eec4be708d9f856418809df38928ca0ec34a8cdbc258b2",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 5.1,
+        "planned_model_calls": 2160,
+        "planned_speech_audio_seconds": 6310,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 8640,
+        "generation_calls_cap": 2160,
+        "gpu_hours_fit_inclusive": 5.1,
+        "native_task_contract_calls_cap": 2160,
+        "official_complete_scoring_jobs": 1,
+        "repeated_speech_audio_seconds_cap": 6310
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-fit-v1",
+        "contact_cap": 8640,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1",
+      "key": "lock",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "program": "phase-native-module-v1-c2",
+      "protocol_hash": "6bedba034de6d1a02b32d6e99c97a9557ec39410c7975947658cd916c12d5884",
+      "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
+      "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "arm": "speech-feature-query-native-tools",
+      "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-generation-v1",
+      "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-smoke-4-baseline-v1",
+      "carrier_lock_key": "slurp",
+      "cell": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
+      "composed_config_hash": "729c1eb710d67b6e2855790a2bf2bfebede45d26fe0a092de86ae1f5f81bf6d7",
+      "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
+      "execution_plan": {
+        "execution_profile": "bounded-discovery-probe",
+        "planned_gpu_hours": 0.5,
+        "planned_model_calls": 8,
+        "planned_speech_audio_seconds": 21,
+        "split_role": "discovery"
+      },
+      "execution_profile": "bounded-discovery-probe",
+      "experiment": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
+      "family_budget": {
+        "asr_calls": 0,
+        "ceilings_are_not_targets": true,
+        "encoder_calls": 0,
+        "fit_endpoint_calls_cap": 32,
+        "generation_calls_cap": 8,
+        "gpu_hours_fit_inclusive": 0.5,
+        "native_task_contract_calls_cap": 8,
+        "official_complete_scoring_jobs": 0,
+        "repeated_speech_audio_seconds_cap": 21
+      },
+      "fit": {
+        "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-fit-v1",
+        "contact_cap": 32,
+        "max_speech_packets": 1,
+        "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-FIT-V1"
+      },
+      "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-FIT-V1",
+      "key": "smoke",
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "program": "phase-native-module-v1-c2",
+      "protocol_hash": "cda99b285a5972808f394828da970a00b6a0f2c4d87db79aeab99c2edddf4fea",
+      "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1",
+      "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "knowledge_snapshot": {
+    "fold_excluded_view_sha256": "9c64e8ec48a0fce4f172bd190932f99c98c7efa18bbfb14526d54c62fdf7032b",
+    "full_train_view_sha256_must_be_absent": "609854e4211891614b621e6431ccf23706c2aa3a3bc9133dae9d9765628c88b8",
+    "module_cells_pin_stores_through": "knowledge_stores (the loop's Fold B pools)"
+  },
+  "pins": {
+    "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+    "serving_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+    "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/EVO-FOLD-B-V2-promotion.json",
+    "speech_packet_promotion_receipt_sha256": "ef409ef458be0dc2e21bc6a736abc498b0ef71e01a6b0c590ece54ce0cc54f61",
+    "speech_packet_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
+    "superseded": {
+      "cap": 8192,
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-direct-fold-b-np4-ctx24k-max8192-v1",
+      "serving_session": "serving-slurp-thinking-direct-fold-b-np4-max8192-v1"
+    },
+    "swap_target": "think-budget-np4"
+  },
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
+    "No supply arm, no template column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "The system is the loop's plain lock as it flies on the Instruct core: the knowledge supply, the module graph, the post-processing and the roster are not changed. The core is the ONE factor.",
+    "No reasoning text is ever delivered, scored or carried to another node (reasoning_context_policy drop-reasoning-v1); a delivered reasoning marker stops the flight.",
+    "No benefit claim and no admission: claims_benefit is false for every cell; the read measures transfer of a core lever.",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the harness of design decision 282 is merged, the package is re-derived and the cells are flipped.",
+    "No session is started by this registration. No paper-scale profile. No system-level claim."
+  ],
+  "read_rule": {
+    "bar_pp": 2.5,
+    "bare": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1",
+    "comparator": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-V1",
+    "intent_guard_pp": 0.65,
+    "reader": "scripts/analysis/slurp_system_thinking_core_read.py",
+    "verdict_words": [
+      "TRANSFERS-ABOVE-BAR",
+      "PARTIAL",
+      "NO-TRANSFER",
+      "HARM"
+    ]
+  },
+  "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
+  "registration_basis": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md (decision 268 B); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
+  "roster": {
+    "arm": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
+    "roster_id": "SLURP-EVO-FOLD-B-V2",
+    "smoke": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
+    "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+  },
+  "rows": 1080,
+  "schema": "saea-registered-facts-v1",
+  "stage3_measurement": {
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "The request-identical twin of the Thinking system arm: it measures the same-core offset the cross-flight contrast is judged against; expected_effect_pp is 0.0 because a request-identical pair is registered to look for no effect.",
+      "primary_metric": "official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, with intent accuracy (scenario_action) beside it",
+      "primary_metric_key": "slu",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
+      "rows": 1080,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 11.9,
+      "measurement_design": "cross-flight-with-in-chain-replicate",
+      "note": "Transfer of a core lever, not an admission: the declared prior is the bare-core delta of 266-E (+11.9 pp SLU-F1, +4.35 intent) and claims_benefit is false. The Thinking system arm is read cross-flight against the Instruct lock column of loop iteration 3 (SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-V1, same roster, same system) with the in-chain request-identical twin as the A/A replicate.",
+      "primary_metric": "official SLURP pooled SLU-F1 (micro; scorer slurp-slu-official-train, the pinned official evaluate.py), natural-mixture weighting, with intent accuracy (scenario_action) beside it",
+      "primary_metric_key": "slu",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "replicate_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
+      "rows": 1080,
+      "tuning_roster": "none"
+    },
+    "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1": {
+      "claims_benefit": false,
+      "expected_effect_pp": 0.0,
+      "measurement_design": "form-proof",
+      "note": "Four Fold B rows prove FORM only: the module program loads on the Thinking session, the Thinking packets resolve, reasoning stays out of the delivered content, the live phase fit passes at the cap and the episode completes; the per-node decode cost is reported. Scored by no one; four rows claim nothing under instrument rule 5.",
+      "primary_metric": "none (structural form and per-node decode cost only)",
+      "read_roster": "SLURP-EVO-FOLD-B-V2",
+      "rows": 4,
+      "tuning_roster": "none"
+    }
+  },
+  "status": "DRAFT-HELD",
+  "study_commit_at_registration": "8a97939a352af74b984a8f1156f7c979b7a7c5b8",
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  }
+}

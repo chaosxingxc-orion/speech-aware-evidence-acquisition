@@ -3,7 +3,7 @@
 # hand-run pair "WSL switch script + Windows scheduled-task switch" whose halves were run separately on 2026-09-27
 # (one ran while the other refused) and it never leaves the card without a server on a refusal it could foresee.
 #
-#   serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1|think-np4> [--dry-run] [--restart] [--min-host-free-gb 4.0]
+#   serving_swap.sh <slurp-np4|a2t-np3|e21-np4|det-np1|think-np4|think-budget-np4> [--dry-run] [--restart] [--min-host-free-gb 4.0]
 #                   [--margin-gb 0.5] [--wait-timeout 600] [--monitor-delay 20] [--no-restore]
 #                   [--gap-hook <script>]
 #   serving_swap.sh --stop-only [--dry-run]            stop the resident session and leave the card EMPTY (no target)
