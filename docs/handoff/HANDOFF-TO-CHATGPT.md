@@ -1,6 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T02:55:53Z
+Last refreshed: 2026-10-12T06:39:45Z
+
+## i2 column SEALED (descriptive: ACE +1.38 pp pooled SLU, intent -0.56; twin +0.32); close refused on an archived duplicate (fix in build); Thinking arm FLYING since 06:01Z (2026-10-12T06:39:45Z, Fable 5.1 root)
+
+i2 column sealed 05:49Z at cc51b4eff; rows closed (534348cb4); row scores i2 exported; column READ row countersigned late (lapse recorded,
+1f8a2670f). `close --iter 2` ran score-columns, node-local, the paired reads and the two offline fits (`oclock`, `ee`: +0.00, refused), then
+refused on `state ccbe1075a873 is archived with different content` (the i2 typed proposer re-proposed the i1 fx-oclock rule; same artefact
+set -> same state id). Branch `sonnet/tfrl-close-archived-duplicate` (in build): `duplicate-of-archived` at open, `archive/rereads/` at close,
+close builds row scores + ACE credit itself, idempotent `repair --iter 2`. Next: merge, `repair --iter 2`, `close --iter 2` (receipt, curve,
+parent), `open --iter 3 --stage propose`, then the i3 proposers (Instruct session) after the Thinking arm seals. Thinking arm rec1: flying at
+a069b0ee1 on the max8192 session, ~10 rows/min (302 by 06:31Z), expected seal ~07:50Z; then countersign the 266-E READ row, `direct_fb_read.sh`,
+swap back to Instruct, remove the watchdog hold. Registry: "Loop iteration 2 column SEALED; close refused..." (c178dff5a).
+
+Superseded stamp: 2026-10-12T02:55:53Z
 
 ## Loop i2 column FLYING (cc51b4eff, 02:57Z); Thinking arm rec1 flipped (a069b0ee1) and next; owner decision 267 (ext4 for hot paths) applied (2026-10-12T02:55:53Z, Fable 5.1 root)
 
