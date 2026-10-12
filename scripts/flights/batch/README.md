@@ -258,3 +258,35 @@ tick logs "watchdog held" and exits 0); remove the file to resume. Check it with
 `powershell -File scripts/flights/batch/saea_task.ps1 -Name SAEA-Watchdog -Status`, and preview its
 next decision without touching anything via
 `bash scripts/flights/batch/idle_watchdog.sh --dry-run`.
+
+## Package flips in one ext4 session (`flip_package_ext4.sh`)
+
+`flip_package_ext4.sh` replaces the hand-written queue flip wrappers. It runs the whole package flip (flip-script convergence loop, plan-pin
+refresh and commit, second convergence loop, per-cell registration gates, flight-commit report) inside ONE `flip_in_ext4.sh` worktree session
+and fast-forwards master once, then checks that master HEAD equals the reported flight commit. Usage:
+
+```
+bash scripts/flights/batch/flip_package_ext4.sh --flip "<flip-script> [args]" --package <readiness dir> --cells <c1,c2,...> \
+     --pins-commit-msg <file> [--log <path>] [-- KEY=VALUE ...]
+```
+
+The log (default `/home/chao/<package-basename>-flip.out`) carries the monitor milestones: `== flip pass N at <sha> <time>`, `   rc=... HEAD ... dirty=...`,
+`== refresh plan pins`, `   refresh rc=`, `   pins committed <short>`, `== gate`, the `flight registration check:` lines,
+`flight commit file: <sha> HEAD <sha>`, then `FLIP_CHAIN_DONE <utc>` or `FLIP DID NOT CONVERGE`. Exit codes are those of `flip_in_ext4.sh`
+(3 driver alive, 4 master dirty, 6 inner failure, 64 9p root) plus 9 for a master HEAD that differs from the reported flight commit. Run it only
+when no batch driver, flight CLI or flip is alive. Coordinator invocations (substitute the package, cells and message file):
+
+```
+# 1. direct-fb, all kinds
+bash scripts/flights/batch/flip_package_ext4.sh --flip scripts/flights/direct/direct_fb_flip.sh \
+  --package docs/readiness/<direct-fb-package> --cells <cell1,cell2,...> --pins-commit-msg <msg> --log /home/chao/direct-fb-flip.out
+# 2. direct-fb, thinking only
+bash scripts/flights/batch/flip_package_ext4.sh --flip scripts/flights/direct/direct_fb_flip.sh \
+  --package docs/readiness/<direct-fb-package> --cells <thinking cells> --pins-commit-msg <msg> -- DIRECT_FB_KINDS="thinking"
+# 3. tfrl column, iteration 3
+bash scripts/flights/batch/flip_package_ext4.sh --flip "scripts/flights/tfrl/tfrl_i1_flip.sh column" \
+  --package docs/readiness/<tfrl-i3-fold-b-package> --cells <i3 smoke cell,i3 cell> --pins-commit-msg <msg> -- TFRL_ITER=3
+# 4. tfrl proposers, ACE only, iteration 3
+bash scripts/flights/batch/flip_package_ext4.sh --flip "scripts/flights/tfrl/tfrl_i1_flip.sh proposers" \
+  --package docs/readiness/<tfrl-i3-proposers-package> --cells <ace cell> --pins-commit-msg <msg> -- TFRL_ITER=3 TFRL_ONLY=ace
+```
