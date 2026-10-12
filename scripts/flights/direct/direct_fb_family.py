@@ -105,6 +105,7 @@ FULL_TRAIN_KNOWLEDGE_SNAPSHOT_SHA256 = "609854e4211891614b621e6431ccf23706c2aa3a
 REC = "-rec1"
 _INSTRUCT_ATTEMPT = "attempt-slurp-direct-only-fold-b-instruct-generation-v1"
 _SMOKE_ATTEMPT = "attempt-slurp-direct-only-fold-b-thinking-smoke-4-generation-v1"
+_THINKING_ATTEMPT = "attempt-slurp-direct-only-fold-b-thinking-generation-v1"
 #: Each record carries the texts the writer prints (README section, preregistration section, ledger block, countersign text) so no recovery's
 #: wording is hard-coded in the writer: ``ledger_title`` (block heading), ``agent`` (the registering agent), ``fit_predecessor_phrase`` (what
 #: became of the superseded FIT attempt), ``fix`` (the repair) and ``unchanged`` (the cells the recovery leaves alone).
@@ -233,6 +234,70 @@ RECOVERIES: dict[str, dict] = {
             "still pin the PREVIOUS document's sha256; they were deliberately not rewritten while the pair flies, and the coordinator re-pins them after the "
             "Instruct pair seals. The Thinking arm's attempt never opened and keeps its ids; its plans change only through the cap (model fragment, session "
             "id, composed hashes) and the GPU-hour ceiling."
+        ),
+        "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
+        "fit_cap_rule": "The FIT cap is structural: 1 + (2 + 1) x rows.",
+    },
+    "thinking": {
+        "recovery_index": 1,
+        "recovered_at": "2026-10-12",
+        "ledger_title": "the Thinking arm re-registration (FIT-inclusive GPU pre-registration 3.0 to 4.5)",
+        "agent": "the 266-E Thinking arm GPU-pre-registration recovery agent",
+        "registered_at_utc": "2026-10-12T00:50:00.000000+00:00",
+        "base_commit": "08caeb10a",
+        "worktree": "/home/chao/saea-worktrees/sonnet-dfb-think-rec1",
+        "branch": "sonnet/direct-fb-thinking-arm-rec1",
+        "ledger_scope_tail": f"re-flown whole with the FIT-inclusive GPU pre-registration at {THINK_ARM_GPU_HOURS} (completion cap {THINK_MAX_TOKENS:,})",
+        "receipt_clause": (
+            "the generation run id `SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-V1` is unchanged; the decision receipt lists the new FIT run id "
+            "`SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-REC1-V1` in `eligible_run_ids` and is re-minted by the coordinator "
+            "(`direct_fb_mint_receipt.py`)"
+        ),
+        "countersign_receipt_clause": (
+            f"the decision receipt {DECISION_RELPATH} is re-minted by the coordinator so that its eligible_run_ids list the new FIT run id "
+            "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-REC1-V1 (the generation run id is unchanged)"
+        ),
+        "predecessor_attempt_id": _THINKING_ATTEMPT,
+        "predecessor_fit_run_id": "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1",
+        "predecessor_fit_attempt_id": "attempt-slurp-direct-only-fold-b-thinking-fit-v1",
+        "fit_predecessor_phrase": "never opened, no prepared directory exists for it on the data root",
+        "predecessor_state": (
+            "ABORTED at 2026-10-12T00:25:21Z at flight commit 5daf057f8 before any model contact (GateClosed: the FIT-inclusive GPU pre-registration "
+            "of the live phase-fit row still read 3.0 after the cap amendment raised the plan to 4.5), 0 calls / 0.0 speech-seconds; preserved unread. "
+            "The FIT attempt was never opened."
+        ),
+        "predecessors": [
+            {"attempt_id": _THINKING_ATTEMPT, "state": "ABORTED before any model contact", "contacts_spent": 0, "speech_seconds_spent": 0.0},
+        ],
+        "reason": (
+            "The predecessor attempt aborted before any model contact: \"GateClosed: execution plan claims 4.5 gpu hours but only 3.0 were "
+            "pre-registered; model touch refused\". The exposure gate reads the FIT-inclusive pre-registration, and the live phase-fit row "
+            "SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-FIT-V1 still read 3.0 GPU hours although the plan (gpu_hours_fit_inclusive) claimed 4.5. A "
+            "(run_id, attempt_id) pair is a one-time key, so the arm is re-flown whole under the rec1 ids. The smoke, the Instruct arm and its replicate "
+            "are untouched."
+        ),
+        "root_cause": (
+            "an incomplete coordinator ledger amendment: when the completion cap and the arm's GPU ceiling were amended (3.0 to 4.5), the generation row's "
+            "gpu cell was set to 4.5 but the live phase-fit row stayed at 3.0; corrected by the rec1 FIT row, which carries 4.5 natively "
+            "(both rows are written from the same plan caps)"
+        ),
+        "amendment": (
+            "RECOVERY 2026-10-12 (the cell's single one; coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of "
+            "the run id (core/model/adapter.py), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (0 calls, 0 "
+            "speech-seconds): the cumulative budget equals the original plan (1080 calls, 3155 speech-seconds). The FIT cap is structural and unchanged "
+            f"(1 + 3 x rows). The GPU-hour ceiling is {THINK_ARM_GPU_HOURS} on both the generation and the FIT-inclusive pre-registration. The FIT run id and "
+            "the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the "
+            "generation run id is unchanged."
+        ),
+        "fix": (
+            f"the rec1 FIT row and the rec1 generation row both carry {THINK_ARM_GPU_HOURS} GPU hours (the plan's gpu_hours_fit_inclusive); "
+            "`flight_registration_check.py` now blocks a live FIT row whose gpu cell is below the FIT plan's claim, and a unit test asserts it for every "
+            "live 266-E cell, so this class is caught model-free before a flight."
+        ),
+        "unchanged": (
+            "Unchanged: the smoke (flown twice; its rec1 attempt opened, 4 calls) and the Instruct pair (sealed); no baseline, experiment, plan or request "
+            "byte of theirs moves. The Thinking arm's model fragment, serving session and completion cap are unchanged; its plans change only through "
+            "the rec1 ids and the composed identities that carry them."
         ),
         "rule": "A second failure closes the cell; the fix is proven on a four-row dry run.",
         "fit_cap_rule": "The FIT cap is structural: 1 + (2 + 1) x rows.",
