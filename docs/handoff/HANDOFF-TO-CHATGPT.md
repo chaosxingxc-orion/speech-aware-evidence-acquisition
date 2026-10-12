@@ -1,6 +1,23 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T08:56:11Z
+Last refreshed: 2026-10-12T12:30:07Z
+
+## Loop CLOSED after i3 (no admitted state); data-root cut-over RUNNING (decision 284/288); 268 ready behind the cut-over (2026-10-12T12:30:07Z, Fable 5.1 root)
+
+i3 column sealed 12:05Z and closed: ACE i3 +0.27 [-1.15, +1.71] SLU (refused a, b), intent +0.46; the ACE curve +0.87 -> +1.38 -> +0.27; typed
+arm empty three times; loop complete, parent s0-lock-v2.2; results note in progress (`opus/tfrl-loop-results-note`). Owner rulings of the day:
+268 B, 269 A, 270 A, 271 A, 272 B, 273 A (table delivered, 285 deferred), 274 (base unification), 284 (three-step disk migration), 286
+(reasoning bytes never sealed; implemented), 287 A, 288 A, 289 B, 290 B, 291 (disk 1 grows to 3.6 TB), 292 A (done: worktrees 117 -> 9),
+293 B, 294 A, 295 A. Base: ext4 flips (267, one-pass mode 270), base manifest + locator gate + migration tooling merged (92e8938e7), Thinking
+knobs merged (283), 268 package re-derived on them (0943022b6). Migration: disk 1 = `E:\saea-data-1.vhdx` (2 TB ext4) at
+`/home/chao/saea-data`; static lanes copying datasets/models/derived (571 GB by 12:26Z); the hot cut-over task SAEA-Cutover-Hot-284 started
+12:40Z (serving stopped; phases hot/runtime/derived/rest with sha256 manifests; then datasets+models verification; deletion set removed from
+the ext4 copy). After CUTOVER_COPY_DONE: flip `SAEA_DATA_ROOT_DEFAULT` in `scripts/lib/data_root.sh` + the manifest's `roots.data_root.current`
++ `~/.bashrc` + queue wrappers + umbrella CLAUDE.md line; locator check `--host`; restart serving (Instruct) on the new root; timing receipt;
+merge the literal sweep (`sonnet/data-root-literal-sweep`, 289/290 B); owner reads the manifests; step 3 (delete E: originals, grow disk 1 to
+3.6 TB). Then 268: serving tasks for the budget session, countersign, mint, ext4 flip, swap to think-budget-np4, smoke, sign-off, lock + aa.
+
+Superseded stamp: 2026-10-12T08:56:11Z
 
 ## i3 column FLYING at d39224f1c (08:55Z, the loop's last registered iteration); 266-E note merged; 266-E rows closed (2026-10-12T08:56:11Z, Fable 5.1 root)
 
