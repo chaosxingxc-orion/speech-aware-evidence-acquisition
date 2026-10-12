@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-tfrl-loop-i3-fold-b-v1",
-  "composed_config_hash": "6afe922ed9ccffd840d7f7939ed49a27237eda8dd7da6c85f2752b1b1bb0504a",
+  "composed_config_hash": "773749402bd3fdbed28588e3dec5e10de22f303d29539aae202db2a199cce322",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-tfrl-loop-i3-fold-b-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 3.3,
     "planned_model_calls": 17280,
     "planned_speech_audio_seconds": 12620,
-    "protocol_hash": "9211251d94a0e56e3b9d4411d19f7365eeda7db97d3cf435879f4e8f9aa44145",
+    "protocol_hash": "0d18e50cc015e5117b689e008140b9f6502dfe0e0065f788c27f70d2d005e7c8",
     "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i3-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "ff78fff391e65e754a9774ef4eababa59768a622fa399c0795e935d450773efd"
+    "sha256": "dc22b9ac19d4b14896d01e8e2b92d9ab4698da9e7124671aa9f7a73890059b1d"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",

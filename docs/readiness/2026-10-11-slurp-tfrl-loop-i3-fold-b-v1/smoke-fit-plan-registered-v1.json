@@ -42,7 +42,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-11-slurp-tfrl-loop-i3-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "ff78fff391e65e754a9774ef4eababa59768a622fa399c0795e935d450773efd"
+    "sha256": "dc22b9ac19d4b14896d01e8e2b92d9ab4698da9e7124671aa9f7a73890059b1d"
   },
   "purpose": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-11T00:00:00.000000+00:00",
