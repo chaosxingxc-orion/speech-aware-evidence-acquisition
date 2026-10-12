@@ -1,0 +1,209 @@
+{
+  "ace_credit": "written",
+  "arms": [
+    "ace",
+    "aa",
+    "lock"
+  ],
+  "column": {
+    "attempt": "attempt-slurp-native-stage3-tfrl-loop-i2-fold-b-generation-v1",
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I2-FOLD-B-V1"
+  },
+  "credit_gaps": [
+    "per-scenario deltas parsed leniently from per-scenario-tables.json",
+    "false-fill / non-empty exact from the node-local report when present"
+  ],
+  "curve": {
+    "ace": [
+      {
+        "iteration": 1,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 2,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 3,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "unflown"
+      }
+    ],
+    "typed": [
+      {
+        "iteration": 1,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 2,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 3,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "unflown"
+      }
+    ]
+  },
+  "inputs": {
+    "ace_credit": "c9278475c059dc638394b6d95cfa3a0e0cea140395a64fd74da84ae6f47b17cf",
+    "column": [
+      "SAEA-SLURP-STAGE3-TFRL-LOOP-I2-FOLD-B-V1",
+      "attempt-slurp-native-stage3-tfrl-loop-i2-fold-b-generation-v1"
+    ],
+    "iteration": 2,
+    "open_cell": "007bfe92b54f2832f16e41f23a83511b0a27cb41bb86a1ccd6d2052d51720aba",
+    "row_scores": "84ee011498d4b952c1d7383f8616d558c629d3c8bd31c1e6e6193bbfec490db5",
+    "summary": "9b33b1df521fc86a3e6222cbf12890437bc3b6c0ad2b0fb133ecf5b8c8b98d0f"
+  },
+  "inputs_sha256": "a007215403ca32abf1e6d319fd2511bdd911323c5c3e6cbfd17ae4126dafa39a",
+  "iteration": 2,
+  "loop_complete": false,
+  "next_iteration": 3,
+  "parent_for_next": "s0-lock-v2.2",
+  "row_scores": {
+    "relpath_or_path": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i2/row-scores-i2.json",
+    "source": "exported"
+  },
+  "rules": {
+    "ci_lb_min_pp": 0.0,
+    "intent_guard_pp": 0.65,
+    "intent_point_floor_pp": 0.0,
+    "require_beat_twin": true,
+    "slu_floor_pp": 1.49
+  },
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "status": "done",
+  "step": "close",
+  "typed_arm_was_empty": true,
+  "verdicts": {
+    "ace": {
+      "accepted": false,
+      "clause_d": "vacuous (no previous-ACE-state column in this flight)",
+      "clauses": {
+        "a_ci_lb": {
+          "op": ">",
+          "pass": true,
+          "threshold": 0.0,
+          "value": 0.15174838347248226
+        },
+        "b_point_floor": {
+          "op": ">=",
+          "pass": false,
+          "threshold": 1.49,
+          "value": 1.3766932713932367
+        },
+        "c_beats_twin": {
+          "op": ">",
+          "pass": true,
+          "threshold": 0.3180057857251284,
+          "value": 1.3766932713932367
+        },
+        "e_intent_guard": {
+          "op": "lo>=lo_min and point>=point_min",
+          "pass": false,
+          "threshold": {
+            "lo_min": -0.65,
+            "point_min": 0.0
+          },
+          "value": {
+            "lo": -1.2037037037037037,
+            "point": -0.5555555555555536
+          }
+        }
+      },
+      "failed": [
+        "b_point_floor",
+        "e_intent_guard"
+      ],
+      "state_id": "cadd84f6bbefd9a0cb9dcf82e3be29c89944968acadfabcaeb143167c8334ccc",
+      "status": "refused"
+    },
+    "offline": [
+      {
+        "clauses": {
+          "ci_lb_gt_0": {
+            "pass": false,
+            "threshold": 0.0,
+            "value": 0.0
+          },
+          "point_ge_floor": {
+            "pass": false,
+            "threshold": 0.67,
+            "value": 0.0
+          }
+        },
+        "cross_fitted": {
+          "ci95_slu_pp": [
+            0.0,
+            0.0
+          ],
+          "delta_slu_pp": 0.0,
+          "rows_edited": 0
+        },
+        "family": "ee5",
+        "state_id": "ad25d9daac6aa3cf381343beb1410dabbbf6c71ccd22f30599d3ba50e43fb258",
+        "status": "refused"
+      }
+    ],
+    "rereads": [
+      {
+        "archived_status": "refused",
+        "candidate_id": "e05bb6e949e9b8dcb1fb4ce5b7a3714693c6c3e83852b47d67039bf3089ac8dc",
+        "clauses": {
+          "ci_lb_gt_0": {
+            "pass": false,
+            "threshold": 0.0,
+            "value": 0.0
+          },
+          "point_ge_floor": {
+            "pass": false,
+            "threshold": 0.67,
+            "value": 0.0
+          }
+        },
+        "created": true,
+        "cross_fitted": {
+          "ci95_slu_pp": [
+            0.0,
+            0.0
+          ],
+          "delta_slu_pp": 0.0,
+          "rows_edited": 0
+        },
+        "path": "ccbe1075a873c047af293b4a70b94dd765afaaf22b378c255649512d5e8db6f6-i2.json",
+        "reread": true,
+        "state_id": "ccbe1075a873c047af293b4a70b94dd765afaaf22b378c255649512d5e8db6f6",
+        "status": "refused"
+      }
+    ]
+  }
+}

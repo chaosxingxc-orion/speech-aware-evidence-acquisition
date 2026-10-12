@@ -170,7 +170,15 @@
   ],
   "blockers": [],
   "column_package": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-fold-b-v1",
+  "duplicates_of_archived": [
+    {
+      "archived_state_id": "ccbe1075a873c047af293b4a70b94dd765afaaf22b378c255649512d5e8db6f6",
+      "archived_status": "refused",
+      "candidate_id": "e05bb6e949e9b8dcb1fb4ce5b7a3714693c6c3e83852b47d67039bf3089ac8dc"
+    }
+  ],
   "inputs": {
+    "duplicate_reclassification": "023de780f8e7dbc5f688fa83a53eb5d5d036bfadffe671fa4e3e394a86423b72",
     "iteration": 2,
     "predictions": "9c575d95035ca096ad3071fcfb3e78336417e8ed7450c74665ef44df7619781a",
     "propose": "579659f221b3c9af76013ff1144cdb50068bfaa91ff6de9a7807026944b836b0",
@@ -179,22 +187,22 @@
     "typed_arm_empty": false,
     "typed_receipts": "c4847ba21467a16e1729bbb060c9e4c772f02e2e44207b629ad495695285575c"
   },
-  "inputs_sha256": "cbe44ca01b182d1c0beffebd659d73aefd19631392207c2554553b2b4a025dad",
+  "inputs_sha256": "007bfe92b54f2832f16e41f23a83511b0a27cb41bb86a1ccd6d2052d51720aba",
   "iteration": 2,
   "loader_verification": {
     "ok": true,
     "refusal": null
   },
   "not_flown": 0,
-  "offline": 2,
+  "offline": 1,
   "parent_display_id": "s0-lock-v2.2",
   "program": "phase-native-module-v1-c4",
-  "refused": 0,
+  "refused": 1,
   "schema": "saea-tfrl-loop-receipt-v1",
   "stage": "cell",
   "status": "done",
   "step": "open-cell",
   "typed_arm": "empty (legal)",
   "typed_arm_empty_by_measurement": true,
-  "valid": 2
+  "valid": 1
 }

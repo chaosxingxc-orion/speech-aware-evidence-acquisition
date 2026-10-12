@@ -1,0 +1,29 @@
+{
+  "arm": "typed",
+  "never_shipped": true,
+  "rows": [
+    {
+      "iteration": 1,
+      "mean_measured_slu_pp": 0.0,
+      "mean_predicted_slu_pp": null,
+      "mean_realised_minus_predicted_pp": null,
+      "n_accepted": 0,
+      "n_refused": 1,
+      "n_rereads": 1,
+      "n_unflown": 0,
+      "operator_class": "delivery"
+    },
+    {
+      "iteration": 2,
+      "mean_measured_slu_pp": 0.0,
+      "mean_predicted_slu_pp": null,
+      "mean_realised_minus_predicted_pp": null,
+      "n_accepted": 0,
+      "n_refused": 1,
+      "n_rereads": 0,
+      "n_unflown": 0,
+      "operator_class": "delivery"
+    }
+  ],
+  "schema": "saea-tfrl-proposer-meta-v1"
+}

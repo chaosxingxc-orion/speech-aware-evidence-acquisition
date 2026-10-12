@@ -1,0 +1,200 @@
+{
+  "ace": {
+    "credit_used": true,
+    "curation": {
+      "constants_sha256": "0eeb1946f73ac9c8827686cbddadd3d97ad6e9822c98ae399b925c83d2b33552",
+      "counter_updates": {
+        "ace:i1:053cd1eaa3fc": {
+          "harmful": 1,
+          "helpful": 1,
+          "scoped_rows": 25
+        },
+        "ace:i1:0bfc01f89d36": {
+          "harmful": 42,
+          "helpful": 50,
+          "scoped_rows": 1080
+        },
+        "ace:i1:0e700fcdb0c2": {
+          "harmful": 6,
+          "helpful": 5,
+          "scoped_rows": 60
+        },
+        "ace:i1:1422115b622b": {
+          "harmful": 5,
+          "helpful": 3,
+          "scoped_rows": 21
+        },
+        "ace:i1:1eca29986ff5": {
+          "harmful": 2,
+          "helpful": 2,
+          "scoped_rows": 10
+        },
+        "ace:i1:1f7640486f21": {
+          "harmful": 0,
+          "helpful": 0,
+          "scoped_rows": 6
+        },
+        "ace:i1:282bb3565fcc": {
+          "harmful": 2,
+          "helpful": 0,
+          "scoped_rows": 60
+        },
+        "ace:i1:4178bd9ebf34": {
+          "harmful": 2,
+          "helpful": 2,
+          "scoped_rows": 21
+        },
+        "ace:i1:4726f942b8fc": {
+          "harmful": 1,
+          "helpful": 2,
+          "scoped_rows": 60
+        },
+        "ace:i1:4f4989fb27bc": {
+          "harmful": 1,
+          "helpful": 2,
+          "scoped_rows": 18
+        },
+        "ace:i1:5819855d8289": {
+          "harmful": 9,
+          "helpful": 14,
+          "scoped_rows": 127
+        },
+        "ace:i1:5bd16d78f8a8": {
+          "harmful": 3,
+          "helpful": 2,
+          "scoped_rows": 24
+        },
+        "ace:i1:6c48310ae11f": {
+          "harmful": 4,
+          "helpful": 9,
+          "scoped_rows": 60
+        },
+        "ace:i1:6e8178ed7c2f": {
+          "harmful": 1,
+          "helpful": 1,
+          "scoped_rows": 4
+        },
+        "ace:i1:727456a71a6d": {
+          "harmful": 3,
+          "helpful": 2,
+          "scoped_rows": 23
+        },
+        "ace:i1:83888f75c062": {
+          "harmful": 0,
+          "helpful": 2,
+          "scoped_rows": 21
+        },
+        "ace:i1:892982dbf632": {
+          "harmful": 3,
+          "helpful": 0,
+          "scoped_rows": 5
+        },
+        "ace:i1:92b25f49cdd0": {
+          "harmful": 0,
+          "helpful": 2,
+          "scoped_rows": 21
+        },
+        "ace:i1:afcc51c42431": {
+          "harmful": 2,
+          "helpful": 2,
+          "scoped_rows": 21
+        },
+        "ace:i1:b8931a0bddd5": {
+          "harmful": 2,
+          "helpful": 3,
+          "scoped_rows": 31
+        },
+        "ace:i1:bd15a72c525e": {
+          "harmful": 4,
+          "helpful": 9,
+          "scoped_rows": 47
+        },
+        "ace:i1:be3a73934e35": {
+          "harmful": 2,
+          "helpful": 2,
+          "scoped_rows": 21
+        },
+        "ace:i1:d0e1e021fc9c": {
+          "harmful": 2,
+          "helpful": 3,
+          "scoped_rows": 31
+        },
+        "ace:i1:d8d9612208bb": {
+          "harmful": 0,
+          "helpful": 2,
+          "scoped_rows": 21
+        },
+        "ace:i1:da7fd32a9ac3": {
+          "harmful": 2,
+          "helpful": 0,
+          "scoped_rows": 15
+        },
+        "ace:i1:ec199bdffa85": {
+          "harmful": 1,
+          "helpful": 0,
+          "scoped_rows": 10
+        },
+        "ace:i1:f48e70c82724": {
+          "harmful": 2,
+          "helpful": 3,
+          "scoped_rows": 31
+        }
+      },
+      "deltas_in": 33,
+      "token_counter_id": "proxy-utf8-bytes-div-3-v1"
+    },
+    "deltas_in": 33,
+    "illegal_answers": 0,
+    "items": 35,
+    "playbook_content_hash": "5a09242493b3ae0cf53e968a36b28ced5bb481176faabd334de6cdcde5552914",
+    "playbook_file": "written",
+    "playbook_iteration": 2,
+    "release_pins": "supplied",
+    "release_staging": {
+      "carrier_roster": "docs/receipts/rosters/slurp-stage3-advantage-r01c-disagreeing-v1.json",
+      "carriers": 50,
+      "empty": false,
+      "registration": {
+        "output_namespace": "knowledge/slurp/semantic/ace-playbook-i2",
+        "path": "/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition/docs/readiness/2026-10-11-slurp-tfrl-loop-v1/ace-playbook-i2-release-registration.json",
+        "sha256": "9d43b5cad1bdc6ac8fd85e2ba765c0d47bdad437f8c09929ab784d3d51e2b7e7"
+      },
+      "row_count": 35,
+      "source_split_identity_hash": "7c603857503faacbc40999d0dd939202ac141ba50aac3fb5e3594542931c46d7"
+    }
+  },
+  "arms": [
+    "ace",
+    "aa",
+    "lock"
+  ],
+  "blockers": [],
+  "column_package": "docs/readiness/2026-10-11-slurp-tfrl-loop-i2-fold-b-v1",
+  "inputs": {
+    "iteration": 2,
+    "predictions": "9c575d95035ca096ad3071fcfb3e78336417e8ed7450c74665ef44df7619781a",
+    "propose": "579659f221b3c9af76013ff1144cdb50068bfaa91ff6de9a7807026944b836b0",
+    "reflector_answers": "b99256135792648426e433cd393100defd8b592bc894218311804414276b0cc2",
+    "stage": "cell",
+    "typed_arm_empty": false,
+    "typed_receipts": "c4847ba21467a16e1729bbb060c9e4c772f02e2e44207b629ad495695285575c"
+  },
+  "inputs_sha256": "cbe44ca01b182d1c0beffebd659d73aefd19631392207c2554553b2b4a025dad",
+  "iteration": 2,
+  "loader_verification": {
+    "ok": true,
+    "refusal": null
+  },
+  "not_flown": 0,
+  "offline": 2,
+  "parent_display_id": "s0-lock-v2.2",
+  "program": "phase-native-module-v1-c4",
+  "refused": 0,
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "stage": "cell",
+  "status": "done",
+  "step": "open-cell",
+  "typed_arm": "empty (legal)",
+  "typed_arm_empty_by_measurement": true,
+  "valid": 2
+}

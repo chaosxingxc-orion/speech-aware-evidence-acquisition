@@ -1,0 +1,28 @@
+{
+  "inputs": {
+    "iteration": 2,
+    "open_cell": "007bfe92b54f2832f16e41f23a83511b0a27cb41bb86a1ccd6d2052d51720aba"
+  },
+  "inputs_sha256": "2b9b5a36956ed21624dd1df71b741385a8c957222a2fb8e971a134da92e95f43",
+  "iteration": 2,
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "status": "done",
+  "step": "repair-duplicates",
+  "steps": {
+    "duplicates": {
+      "duplicates": [
+        {
+          "archived_state_id": "ccbe1075a873c047af293b4a70b94dd765afaaf22b378c255649512d5e8db6f6",
+          "archived_status": "refused",
+          "candidate_id": "e05bb6e949e9b8dcb1fb4ce5b7a3714693c6c3e83852b47d67039bf3089ac8dc"
+        }
+      ],
+      "status": "reclassified",
+      "superseded": [
+        "candidates.superseded-20261012T010412Z.json",
+        "offline-candidates.superseded-20261012T010412Z.json",
+        "open-cell-receipt.superseded-20261012T010412Z.json"
+      ]
+    }
+  }
+}

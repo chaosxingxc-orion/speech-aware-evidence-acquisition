@@ -1,0 +1,57 @@
+{
+  "archived_verdict": "refused",
+  "candidate_id": "e05bb6e949e9b8dcb1fb4ce5b7a3714693c6c3e83852b47d67039bf3089ac8dc",
+  "clauses": {
+    "ci_lb_gt_0": {
+      "pass": false,
+      "threshold": 0.0,
+      "value": 0.0
+    },
+    "point_ge_floor": {
+      "pass": false,
+      "threshold": 0.67,
+      "value": 0.0
+    }
+  },
+  "column": {
+    "attempt": 1,
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I2-FOLD-B-V1"
+  },
+  "credit": {
+    "contacts_per_row": 0.0,
+    "false_fill": {
+      "delta_pp": 0.0,
+      "n": 0
+    },
+    "intent": 0.0,
+    "non_empty_exact": {
+      "delta_pp": 0.0,
+      "n": 0
+    },
+    "per_scenario": {
+      "per_scenario": {
+        "intent": 0.0,
+        "slu": 0.0
+      }
+    },
+    "slu_f1": 64.5051,
+    "vs_lock": {
+      "intent": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "slu": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      }
+    },
+    "vs_parent": null,
+    "vs_twin": null
+  },
+  "iteration": 2,
+  "reread_verdict": "refused",
+  "schema": "saea-tfrl-archive-reread-v1",
+  "state_id": "ccbe1075a873c047af293b4a70b94dd765afaaf22b378c255649512d5e8db6f6"
+}
