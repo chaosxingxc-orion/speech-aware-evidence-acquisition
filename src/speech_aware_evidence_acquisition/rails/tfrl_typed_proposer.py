@@ -454,7 +454,8 @@ _OPTIONAL_TABLES: Mapping[str, tuple[str, ...]] = {
 }
 _REFUSED_BUFFER_KEYS = frozenset(
     {"candidate_id", "operator_class", "operator", "refusal_code",
-     "predicted_slu_pp", "realised_d_slu_pp", "iteration"}
+     "predicted_slu_pp", "realised_d_slu_pp", "iteration",
+     "archived_state_id", "archived_status"}
 )
 _META_KEYS = frozenset(
     {"proposed", "valid", "flown", "accepted", "refused",

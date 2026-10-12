@@ -18,6 +18,13 @@ THE FLOW (a GPU step sits between ``open --stage propose`` and ``open --stage ce
                                      archive (accepted / refused / unflown), curve, meta summary, parent choice, ACE credit file
                                                                                                            -> next-iteration checklist
 
+ARCHIVED DUPLICATES. A candidate whose artefact set equals a state archived in an earlier iteration (any status) is refused at ``open --stage cell``
+as ``duplicate-of-archived`` (receipt ``duplicates_of_archived``, ``candidates.json`` ``refused``, the proposer's next refused buffer); an offline
+duplicate is still re-measured at ``close`` and recorded as ``archive/rereads/<state-id>-i<t>.json`` (never a state, never a parent). A fitted
+artefact set that only collides at ``close`` is recorded the same way. ``repair --iter t --duplicates-only`` applies the classification to an
+iteration opened before the rule existed. ``close`` exports the per-row official scores itself (``row-scores-i<t>.json``) and always builds the
+ACE credit file; ``--row-scores`` is only an override.
+
 External analysis scripts (tables, rollout score, node-local reader, paired read, delivery fit) run only with ``--execute``;
 without it the driver prints the command it would run and stops before any archive write ("planned").
 
@@ -73,6 +80,10 @@ ARTEFACT_OF = {"exemplar-selection": "exemplar_index_release", "slot-card-subset
 FIT_FAMILY = {"ee5": "ee", "ee10": "ee", "ti0": "ti", "ti1": "ti", "fx-article": "article", "fx-oclock": "oclock"}
 #: The refusal code of an offline candidate whose family the fitter cannot read: the candidate is archived as REFUSED (unmeasured), never skipped.
 OFFLINE_UNSUPPORTED = "offline-family-unsupported"
+#: A valid candidate whose artefact set equals a state archived in an EARLIER iteration (any status) is a duplicate of that sibling: refused at
+#: ``open --stage cell`` with this code, never flown or read as a new state (``close`` records a re-measurement as a reread instead).
+DUPLICATE_OF_ARCHIVED = "duplicate-of-archived"
+ROW_SCORES_SCRIPT = "scripts/flights/tfrl/tfrl_row_scores.py"
 ROOT_DISPLAY = "s0-lock-v2.2"
 
 
@@ -177,6 +188,10 @@ def refused_buffer(ctx: Ctx, before_iteration: int) -> list[dict]:
             rows.append({"candidate_id": entry["candidate_id"][:16], "operator_class": entry["operator_class"],
                          "operator": entry["operator"], "refusal_code": entry["refusal_code"],
                          **({"predicted_slu_pp": entry["predicted_slu_pp"]} if entry.get("predicted_slu_pp") is not None else {}),
+                         **({"realised_d_slu_pp": entry["realised_d_slu_pp"]} if entry.get("realised_d_slu_pp") is not None else {}),
+                         # a duplicate shows which archived sibling it re-proposed (16-hex prefix) and that sibling's verdict
+                         **({"archived_state_id": entry["archived_state_id"][:16], "archived_status": entry["archived_status"]}
+                            if entry.get("archived_state_id") else {}),
                          "iteration": t})
     ops = operators_by_candidate(ctx)
     for s in ctx.archive().states():
@@ -443,6 +458,51 @@ def _artefact_hashes(parent_hashes: Mapping[str, str], operator: str, applicatio
     return {**parent_hashes, name: digest}
 
 
+def find_archived_duplicate(states: list[Mapping[str, Any]], t: int, parent_state: Mapping[str, Any], operator: str, applications: Any,
+                            override: Mapping[str, str] | None = None) -> "Mapping[str, Any] | None":
+    """The state archived in an EARLIER iteration whose artefact set equals the one this candidate would produce under ``parent_state``.
+
+    ``override`` is the builder's artefact hash (``None``: the provisional ``{operator, applications}`` digest that an unflown or an
+    unfitted offline state carries). States of iteration ``t`` itself are ignored, so a re-run of the same step stays idempotent.
+    A state is matched on its artefact set (the corrected view included), not on its candidate id: the id of a re-proposal differs (it
+    carries the iteration), the artefact set does not."""
+
+    hashes = _artefact_hashes(parent_state["artefact_hashes"], operator, applications, override)
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import archive as ar  # noqa: PLC0415
+
+    sid = ar.compute_state_id(hashes)
+    for s in states:
+        if s["iteration"] < t and (s["state_id"] == sid or s["artefact_hashes"] == hashes):
+            return s
+    return None
+
+
+def duplicate_refusal(entry: Mapping[str, Any], archived: Mapping[str, Any]) -> dict:
+    """The refused-list record of a duplicate: the code, the archived sibling and its verdict (and its realised SLU delta when measured)."""
+
+    credit = archived.get("credit")
+    realised = None
+    if credit is not None:
+        realised = (credit.get("vs_parent") or credit["vs_lock"])["slu"]["point"]
+    return {"candidate_id": entry["candidate_id"], "operator_class": entry["operator_class"], "operator": entry["operator"],
+            "refusal_code": DUPLICATE_OF_ARCHIVED, "archived_state_id": archived["state_id"], "archived_status": archived["verdict"],
+            **({"predicted_slu_pp": entry["predicted_slu_pp"]} if entry.get("predicted_slu_pp") is not None else {}),
+            **({"realised_d_slu_pp": realised} if realised is not None else {})}
+
+
+def supersede_file(path: Path) -> Path:
+    """Rename ``path`` to ``<stem>.superseded-<UTC mtime stamp><ext>`` (``-n`` on a clash); returns the new name."""
+
+    stamp = datetime.datetime.fromtimestamp(path.stat().st_mtime, tz=datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    target = path.with_name(f"{path.stem}.superseded-{stamp}{path.suffix}")
+    n = 1
+    while target.exists():
+        n += 1
+        target = path.with_name(f"{path.stem}.superseded-{stamp}-{n}{path.suffix}")
+    path.rename(target)
+    return target
+
+
 def knob_spec(candidate: Mapping[str, Any]) -> dict:
     """A ``knob-set`` candidate as a supply-column spec: the tail becomes the ``knowledge_stores.<tail>`` override path."""
 
@@ -482,7 +542,7 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     if not entries and not a.typed_arm_empty:
         raise lib.MissingInput("pass --typed-receipts F (sealed candidate receipts) or --typed-arm-empty (a legal state: the typed arm "
                                "is empty when no candidate cleared the bar)")
-    valid, refused = [], []
+    valid, refused, rereads = [], [], []
     seen: set[str] = set()
     for entry in entries:
         receipt = entry["receipt"]
@@ -498,6 +558,15 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
             continue
         seen.add(cid)
         if result.accepted:
+            archived = find_archived_duplicate(states, t, parent_state, candidate["operator"], candidate["applications"])
+            if archived is not None:          # the same artefact set as an earlier sibling: refused as a duplicate, never flown or read anew
+                dup = {"candidate_id": cid, "operator_class": candidate["operator_class"], "operator": candidate["operator"],
+                       "predicted_slu_pp": result.prediction.slu_pp if result.prediction else None}
+                refused.append(duplicate_refusal(dup, archived))
+                if result.read == "offline":  # an offline duplicate is still re-measured on this iteration's column (a reread, never a state)
+                    rereads.append({"candidate_id": cid, "operator_class": candidate["operator_class"], "operator": candidate["operator"],
+                                    "archived_state_id": archived["state_id"], "candidate": candidate})
+                continue
             valid.append({"candidate_id": cid, "operator_class": candidate["operator_class"], "operator": candidate["operator"],
                           "read": result.read, "predicted_slu_pp": result.prediction.slu_pp if result.prediction else None,
                           "candidate": candidate})
@@ -507,7 +576,7 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
                             **({"predicted_slu_pp": result.prediction.slu_pp} if result.prediction else {})})
     sf = sorted((v for v in valid if v["read"] == "sf"), key=lambda v: (-(v["predicted_slu_pp"] or 0.0), v["candidate_id"]))
     builder = load_builder(a.artefact_builder)
-    typed_spec, chosen, not_flown = None, None, []
+    typed_spec, chosen, not_flown, late_duplicates = None, None, [], set()
     for candidate in sf:
         if chosen is not None:
             not_flown.append({**candidate, "reason": "lower-predicted-than-the-flown-candidate"})
@@ -520,7 +589,13 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
         else:
             not_flown.append({**candidate, "reason": "artefact-builder-missing"})
             continue
+        archived = find_archived_duplicate(states, t, parent_state, candidate["operator"], candidate["candidate"]["applications"], hashes)
+        if archived is not None:              # the builder's artefact set equals an archived sibling: refuse it, the next candidate may fly
+            refused.append(duplicate_refusal(candidate, archived))
+            late_duplicates.add(candidate["candidate_id"])
+            continue
         chosen, typed_spec = {**candidate, "artefact_override": hashes}, spec
+    valid = [v for v in valid if v["candidate_id"] not in late_duplicates]
     offline = [v for v in valid if v["read"] == "offline"]
     # the accumulated typed parent is the previous accepted state's column spec
     parent_spec = None
@@ -562,7 +637,8 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     # offline candidates keep their candidate documents for the close step (family + guard)
     lib.write_json_new(ctx.receipts(t) / "offline-candidates.json",
                        {"candidates": [{"candidate_id": v["candidate_id"], "operator_class": v["operator_class"],
-                                        "operator": v["operator"], "candidate": v["candidate"]} for v in offline]})
+                                        "operator": v["operator"], "candidate": v["candidate"]} for v in offline],
+                        **({"reread_candidates": rereads} if rereads else {})})
     payload = {
         "status": "done", "iteration": t, "stage": "cell", "arms": arms, "program": written["column"]["package"] and
         f"phase-native-module-v1-c{tf.ceiling(t, typed_present=bool(typed_spec), parent_present=bool(parent_spec))}",
@@ -573,6 +649,9 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
         "parent_display_id": display_id(parent_state), "ace": ace_state["receipt"], "column_package": written["column"]["package"],
         "blockers": written["column"]["blockers"], "loader_verification": written["loader_verification"],
         "valid": len(valid), "refused": len(refused), "offline": len(offline), "not_flown": len(not_flown),
+        "duplicates_of_archived": [{"candidate_id": r["candidate_id"], "archived_state_id": r["archived_state_id"],
+                                    "archived_status": r["archived_status"]}
+                                   for r in refused if r.get("refusal_code") == DUPLICATE_OF_ARCHIVED],
     }
     inputs = {"iteration": t, "stage": "cell", "typed_receipts": tf.canonical_sha256(entries), "typed_arm_empty": bool(a.typed_arm_empty),
               "reflector_answers": sha_file(Path(a.reflector_answers)) if a.reflector_answers else None,
@@ -672,11 +751,14 @@ def _own(summary: Mapping[str, Any], arm: str) -> tuple[float, float]:
     return 100.0 * float(official["slu_f1"]), 100.0 * float(official["intent_accuracy"])
 
 
-def plan_offline_fits(ctx: Ctx, t: int, run: str, attempt: str) -> tuple[list, list]:
-    """Queue one fit per offline candidate whose family the fitter reads; the rest are returned as ``unsupported`` (never dropped)."""
+def plan_offline_fits(ctx: Ctx, t: int, run: str, attempt: str, *, key: str = "candidates") -> tuple[list, list]:
+    """Queue one fit per offline candidate whose family the fitter reads; the rest are returned as ``unsupported`` (never dropped).
+
+    ``key`` selects the list of ``offline-candidates.json``: ``candidates`` (new states) or ``reread_candidates`` (duplicates of an
+    archived state, re-measured on this iteration's column and recorded as rereads)."""
 
     A = ctx.analysis(t)
-    offline = (read_or_none(ctx.receipts(t) / "offline-candidates.json") or {}).get("candidates", [])
+    offline = (read_or_none(ctx.receipts(t) / "offline-candidates.json") or {}).get(key, [])
     fit_jobs, unsupported = [], []
     for entry in offline:
         app = entry["candidate"]["applications"][0]
@@ -696,6 +778,39 @@ def plan_offline_fits(ctx: Ctx, t: int, run: str, attempt: str) -> tuple[list, l
         ctx.runner.run(f"delivery-fit-{entry['candidate_id'][:8]}", argv, produces=[report], ok_codes=(0, 3))   # exit 3 = refused, report written
         fit_jobs.append((entry, report))
     return fit_jobs, unsupported
+
+
+def put_reread(archive: Any, held: Mapping[str, Any], t: int, candidate_id: str, run: str, report: Mapping[str, Any], status: str,
+               clauses: Mapping[str, Any]) -> dict:
+    """Record the re-measurement of the archived state ``held`` by candidate ``candidate_id`` of iteration ``t`` (write-once sibling
+    record under ``archive/rereads/``; the archived state is not touched)."""
+
+    from speech_aware_evidence_acquisition.analysis.sealed_credit import archive as ar  # noqa: PLC0415
+
+    record = {"schema": ar.REREAD_SCHEMA, "state_id": held["state_id"], "archived_verdict": held["verdict"], "iteration": t,
+              "candidate_id": candidate_id, "column": {"run_id": run, "attempt": 1}, "reread_verdict": status,
+              "clauses": json.loads(json.dumps(clauses)), "credit": lib.offline_credit_from_fit_report(report)}
+    path, created = archive.put_reread(record)
+    cross = report["cross_fitted"]
+    return {"reread": True, "state_id": held["state_id"], "archived_status": held["verdict"], "status": status, "clauses": clauses,
+            "candidate_id": candidate_id, "path": path.name, "created": created,
+            "cross_fitted": {"delta_slu_pp": cross["delta_slu_pp"], "ci95_slu_pp": cross["ci95_slu_pp"], "rows_edited": cross.get("rows_edited")}}
+
+
+def archive_rereads(ctx: Ctx, t: int, run: str, reread_jobs: list) -> list[dict]:
+    """Record the offline re-measurement of every duplicate proposal (``reread_candidates``) as a reread of the archived sibling it names."""
+
+    archive = ctx.archive()
+    by_id = {s["state_id"]: s for s in archive.states()}
+    out: list[dict] = []
+    for entry, report_path in reread_jobs:
+        report = _load_json(report_path)
+        status, clauses = lib.offline_verdict(report)
+        held = by_id.get(entry["archived_state_id"])
+        if held is None:
+            raise lib.LoopError(f"iteration {t}: reread candidate {entry['candidate_id'][:12]} names an unarchived state")
+        out.append(put_reread(archive, held, t, entry["candidate_id"], run, report, status, clauses))
+    return out
 
 
 def archive_offline(ctx: Ctx, t: int, parent_state: Mapping[str, Any], run: str, candidates: Mapping[str, Any],
@@ -718,6 +833,12 @@ def archive_offline(ctx: Ctx, t: int, parent_state: Mapping[str, Any], run: str,
             parent_id=parent_state["state_id"], iteration=t, operator_class=entry["operator_class"], candidate_id=entry["candidate_id"],
             verdict=status, arm="typed", credit=lib.offline_credit_from_fit_report(report), predicted_slu_pp=record["predicted_slu_pp"],
             run_id=run, attempt=1)
+        held = next((s for s in archive.states() if s["state_id"] == state["state_id"] or s["artefact_hashes"] == state["artefact_hashes"]),
+                    None)
+        if held is not None and not (held["iteration"] == t and held["candidate_id"] == entry["candidate_id"]):
+            # the fitted artefact set equals a state archived by another proposal: the archive stays untouched, the read is a reread
+            out.append(put_reread(archive, held, t, entry["candidate_id"], run, report, status, clauses))
+            continue
         lib.put_state_idempotent(archive, state)
         cross = report["cross_fitted"]
         out.append({"state_id": state["state_id"], "status": status, "clauses": clauses,
@@ -752,6 +873,18 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     ctx.runner.run("score-columns", [ROLLOUT_SCORE_SCRIPT, "--mode", "supply-variants", "--run", run, "--attempt", attempt, "--roster",
                                      roster_rel, "--analysis-root", sv, "--scorer-id", tf.SCORER, "--stage", "all", "--repo-root",
                                      ctx.repo_root, "--data-root", ctx.data_root], produces=[sv / "score-summary.json"])
+    # the ACE credit needs the per-row official scores that score-columns just wrote: export them here (write-once, by script) unless the
+    # coordinator passed its own file, so the credit can never be skipped (the i1 close skipped it)
+    if a.row_scores:
+        row_scores_path = Path(a.row_scores)
+        if not row_scores_path.is_file():
+            raise lib.MissingInput(f"--row-scores {row_scores_path} does not exist (omit the flag and close exports the row scores itself)")
+    else:
+        row_scores_path = A / f"row-scores-i{t}.json"
+        if tf.ARM_ACE in arms:
+            ctx.runner.run("row-scores", [ROW_SCORES_SCRIPT, "--run-id", run, "--attempt", attempt, "--scorer", tf.SCORER,
+                                          "--out", row_scores_path, "--data-root", ctx.data_root, "--lock", ctx.lock_path],
+                           produces=[row_scores_path])
     ctx.runner.run("node-local", [NODE_LOCAL_SCRIPT, "--data-root", ctx.data_root, "--lock", ctx.lock_path, "--run-id", run,
                                   "--attempt-id", attempt, "--split", "train", "--out-dir", A / "node-local"],
                    produces=[A / "node-local" / "report.json"])
@@ -769,8 +902,16 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
             "--seed", 20260915, "--draws", 10000, "--recipe-id", names["recipe_id"], "--title", f"loop i{t} {right} vs {left}",
             "--analysis-root", out], produces=[out / "score-contrasts.json"])
     fit_jobs, unsupported = plan_offline_fits(ctx, t, run, attempt)
+    reread_jobs, _reread_unsupported = plan_offline_fits(ctx, t, run, attempt, key="reread_candidates")
     if ctx.runner.planned:
         return {"status": "planned", "commands": [r.argv for r in ctx.runner.planned]}
+    # the ACE credit file is built BEFORE any archive write, so a failure here leaves nothing half-closed
+    ace_credit_path = A / "ace-credit.json"
+    ace_credit_status = "not-applicable"
+    if tf.ARM_ACE in arms:
+        credit_doc = lib.ace_credit_from_row_scores(_load_json(row_scores_path), playbook_iteration=t)
+        lib.write_json_new(ace_credit_path, credit_doc)
+        ace_credit_status = "written"
     summary = _load_json(sv / "score-summary.json")
     node_local = _load_json(A / "node-local" / "report.json")
     contacts = float(len(arms) + 1)
@@ -815,9 +956,13 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
             lib.write_json_new(ctx.package_dir / "archive-specs" / f"{state['state_id']}.json", pending["spec"])
         verdicts["typed"] = {"state_id": state["state_id"], **verdict.to_dict()}
     # ---- the offline (delivery / scope) candidates: read by the fitter, or recorded as refused-unmeasured; never skipped
-    offline_verdicts = archive_offline(ctx, t, parent_state, run, candidates, fit_jobs, unsupported)
+    offline_all = archive_offline(ctx, t, parent_state, run, candidates, fit_jobs, unsupported)
+    reread_verdicts = [v for v in offline_all if v.get("reread")] + archive_rereads(ctx, t, run, reread_jobs)
+    offline_verdicts = [v for v in offline_all if not v.get("reread")]
     if offline_verdicts:
         verdicts["offline"] = offline_verdicts
+    if reread_verdicts:
+        verdicts["rereads"] = reread_verdicts
     # ---- the ACE state: always the child of the previous ACE state (a refused state still generates the next reflection)
     ace_states = [s for s in states if s["arm"] == "ace" and s["iteration"] < t]
     previous_ace = sorted(ace_states, key=lambda s: (s["iteration"], s["state_id"]))[-1]
@@ -836,7 +981,7 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     # ---- curve, meta summary, parent choice
     states = archive.states()
     curves = {arm: selection.curve(states, arm) for arm in ("typed", "ace")}
-    meta = meta_summary.build_meta_summary(states, "typed")
+    meta = meta_summary.build_meta_summary(states, "typed", rereads=archive.rereads())
     chosen = parent_choice.choose_parent(states, "typed")
     parent_shown = display_id(next(s for s in states if s["state_id"] == chosen["parent_id"]))
     cdir = ctx.receipts(t)
@@ -844,14 +989,6 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     lib.write_json_new(cdir / "proposer-meta.json", meta)
     lib.write_json_new(cdir / "parent.json", {"parent_state_id": chosen["parent_id"], "parent_display_id": parent_shown,
                                               "masked_classes": chosen["masked_classes"], "ranking": chosen["ranking"]})
-    # ---- the ACE credit file for the next curation (per-row official scores, by script)
-    ace_credit_path = A / "ace-credit.json"
-    ace_credit_status = "not-built"
-    row_scores_path = Path(a.row_scores) if a.row_scores else None
-    if row_scores_path and row_scores_path.is_file():
-        credit_doc = lib.ace_credit_from_row_scores(_load_json(row_scores_path), playbook_iteration=t)
-        lib.write_json_new(ace_credit_path, credit_doc)
-        ace_credit_status = "written"
     done = selection.loop_complete(t)
     payload = {
         "status": "done", "iteration": t, "column": {"run_id": run, "attempt": attempt}, "arms": arms, "rules": rules,
@@ -859,10 +996,13 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
                                               "false-fill / non-empty exact from the node-local report when present"],
         "curve": {arm: [{"iteration": p["iteration"], "level": p["level"], "marked": p["marked"]} for p in pts] for arm, pts in curves.items()},
         "parent_for_next": parent_shown, "ace_credit": ace_credit_status, "loop_complete": done,
+        "row_scores": {"source": "override" if a.row_scores else "exported", "relpath_or_path": str(row_scores_path)
+                       if a.row_scores else row_scores_path.relative_to(ctx.data_root).as_posix()},
         "next_iteration": selection.next_iteration(t), "typed_arm_was_empty": not candidates["flown"],
     }
     inputs = {"iteration": t, "column": [run, attempt], "summary": sha_file(sv / "score-summary.json"),
-              "row_scores": sha_file(row_scores_path) if row_scores_path and row_scores_path.is_file() else None, "open_cell": opened["inputs_sha256"]}
+              "row_scores": sha_file(row_scores_path) if row_scores_path.is_file() else None,
+              "ace_credit": sha_file(ace_credit_path) if ace_credit_path.is_file() else None, "open_cell": opened["inputs_sha256"]}
     lib.write_receipt(ctx.receipts(t), "close", payload, inputs=inputs)
     if done:
         checklist(ctx, "loop complete (three iterations); next steps are human", [
@@ -871,8 +1011,8 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
             "owner rules the lock-admission path (design R4)"])
     else:
         checklist(ctx, f"next iteration {t + 1}", [
-            f"python -B scripts/flights/tfrl/tfrl_row_scores.py --run-id {run} --attempt {attempt} --out <F>; then close --iter {t} --row-scores <F>"
-            if ace_credit_status != "written" else "the ACE credit file is written",
+            f"the ACE credit file is written ({ace_credit_path.name}); row scores came from "
+            f"{'the --row-scores override' if a.row_scores else 'close itself (' + row_scores_path.name + ')'}",
             f"open --iter {t + 1} --stage propose (tables from the delivered column of iteration {t}; parent {parent_shown})",
             "countersign, mint, flip and queue (humans), as in iteration %d" % t])
     return payload
@@ -884,6 +1024,54 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
 
 CORRECTION_SLUG = "playbook-hash"
 CORRECTION_CAUSE = "stale-playbook-file-written-by-superseded-open-cell-run"
+
+
+def reclassify_duplicates(ctx: Ctx, t: int) -> dict:
+    """Idempotent: classify the offline candidates of the OPENED (not yet closed) iteration ``t`` that duplicate a state archived in an
+    earlier iteration as ``refused`` / ``duplicate-of-archived`` (what ``open --stage cell`` now does), for an iteration opened before that
+    rule existed. Nothing sealed is rewritten: ``candidates.json``, ``offline-candidates.json`` and the open-cell receipt are renamed
+    ``<name>.superseded-<ts>.json`` and re-written (the i1 precedent); the duplicate stays in ``offline-candidates.json`` as a
+    ``reread_candidates`` entry so ``close`` still re-measures it (a reread record, never a state). A flown candidate is never reclassified."""
+
+    opened = need_receipt(ctx, t, "open-cell")
+    record = read_or_none(ctx.receipts(t) / "candidates.json")
+    if record is None:
+        return {"status": "no-candidates", "duplicates": []}
+    states = ctx.archive().states()
+    parent_state = resolve_display(states, opened["parent_display_id"])
+    offline_doc = read_or_none(ctx.receipts(t) / "offline-candidates.json") or {"candidates": []}
+    offline_by_id = {e["candidate_id"]: e for e in offline_doc["candidates"]}
+    moved: list[tuple[dict, dict, Mapping[str, Any]]] = []
+    for c in record["candidates"]:
+        entry = offline_by_id.get(c["candidate_id"])
+        if entry is None or c["candidate_id"] == record.get("flown"):
+            continue
+        archived = find_archived_duplicate(states, t, parent_state, c["operator"], entry["candidate"]["applications"])
+        if archived is not None:
+            moved.append((c, entry, archived))
+    if not moved:
+        return {"status": "unchanged", "duplicates": []}
+    ids = {c["candidate_id"] for c, _e, _a in moved}
+    new_record = {**record, "candidates": [c for c in record["candidates"] if c["candidate_id"] not in ids],
+                  "offline": [i for i in record["offline"] if i not in ids],
+                  "refused": list(record["refused"]) + [duplicate_refusal(c, arc) for c, _e, arc in moved]}
+    new_offline = {**offline_doc, "candidates": [e for e in offline_doc["candidates"] if e["candidate_id"] not in ids],
+                   "reread_candidates": list(offline_doc.get("reread_candidates", [])) +
+                   [{"candidate_id": e["candidate_id"], "operator_class": e["operator_class"], "operator": e["operator"],
+                     "archived_state_id": arc["state_id"], "candidate": e["candidate"]} for _c, e, arc in moved]}
+    duplicates = [{"candidate_id": c["candidate_id"], "archived_state_id": arc["state_id"], "archived_status": arc["verdict"]}
+                  for c, _e, arc in moved]
+    payload = {k: v for k, v in opened.items() if k not in ("schema", "step", "inputs_sha256", "inputs")}
+    payload.update({"valid": len(new_record["candidates"]), "refused": len(new_record["refused"]), "offline": len(new_record["offline"]),
+                    "duplicates_of_archived": list(payload.get("duplicates_of_archived", [])) + duplicates})
+    inputs = {**opened["inputs"], "duplicate_reclassification": tf.canonical_sha256(sorted(
+        (d["candidate_id"], d["archived_state_id"]) for d in duplicates))}
+    superseded = [supersede_file(ctx.receipts(t) / name).name
+                  for name in ("candidates.json", "offline-candidates.json", "open-cell-receipt.json")]
+    lib.write_json_new(ctx.receipts(t) / "candidates.json", new_record)
+    lib.write_json_new(ctx.receipts(t) / "offline-candidates.json", new_offline)
+    lib.write_receipt(ctx.receipts(t), "open-cell", payload, inputs=inputs)
+    return {"status": "reclassified", "duplicates": duplicates, "superseded": superseded}
 
 
 def repair_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
@@ -900,6 +1088,18 @@ def repair_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     start(ctx, t, pin=False)
     opened = need_receipt(ctx, t, "open-cell")
     steps: dict[str, Any] = {}
+    # 0. archived duplicates of an iteration that is still open (no close receipt): the only step that applies before close
+    if lib.read_receipt(ctx.receipts(t), "close") is None:
+        steps["duplicates"] = reclassify_duplicates(ctx, t)
+        if a.duplicates_only:
+            payload = {"status": "done", "iteration": t, "steps": steps}
+            if steps["duplicates"]["status"] == "reclassified":
+                opened = need_receipt(ctx, t, "open-cell")
+            lib.write_receipt(ctx.receipts(t), "repair-duplicates", payload, inputs={"iteration": t, "open_cell": opened["inputs_sha256"]})
+            return payload
+        opened = need_receipt(ctx, t, "open-cell")
+    elif a.duplicates_only:
+        raise lib.LoopError(f"iteration {t} is closed; --duplicates-only applies before close")
     # 1. the playbook file
     behind = opened["ace"]["playbook_content_hash"]
     staged = staging_playbook_file(ctx, t)
@@ -938,6 +1138,7 @@ def repair_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     candidates = read_or_none(ctx.receipts(t) / "candidates.json")
     names = tf.names(t, "arm")
     fit_jobs, unsupported = plan_offline_fits(ctx, t, names["run_id"], names["attempt_id"])
+    reread_jobs, _reread_unsupported = plan_offline_fits(ctx, t, names["run_id"], names["attempt_id"], key="reread_candidates")
     if ctx.runner.planned:
         steps["planned"] = [r.argv for r in ctx.runner.planned]
         return {"status": "planned", "iteration": t, "steps": steps, "commands": steps["planned"]}
@@ -946,8 +1147,10 @@ def repair_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
     unsupported = [e for e in unsupported if e["candidate_id"] not in archived_ids]
     states = ctx.archive().states()
     parent_state = resolve_display(states, opened["parent_display_id"])
-    steps["offline"] = archive_offline(ctx, t, parent_state, names["run_id"], candidates or {"candidates": []}, fit_jobs, unsupported) \
+    offline_all = archive_offline(ctx, t, parent_state, names["run_id"], candidates or {"candidates": []}, fit_jobs, unsupported) \
         if candidates else []
+    steps["offline"] = [v for v in offline_all if not v.get("reread")]
+    steps["rereads"] = [v for v in offline_all if v.get("reread")] + archive_rereads(ctx, t, names["run_id"], reread_jobs)
     payload = {"status": "done", "iteration": t, "steps": steps}
     lib.write_receipt(ctx.receipts(t), "repair", payload, inputs={"iteration": t, "open_cell": opened["inputs_sha256"],
                                                                   "skip_playbook_file": bool(a.skip_playbook_file)})
@@ -1011,6 +1214,8 @@ def build_parser() -> argparse.ArgumentParser:
     r = sub.add_parser("repair", help="one-off, idempotent reconciliation of a closed iteration (see repair_iteration)")
     r.add_argument("--iter", type=int, required=True, dest="iteration")
     r.add_argument("--skip-playbook-file", action="store_true", help="do not touch the data-root playbook file")
+    r.add_argument("--duplicates-only", action="store_true",
+                   help="before close: only classify offline candidates that duplicate an archived state (duplicate-of-archived)")
     sub.add_parser("status")
     return parser
 

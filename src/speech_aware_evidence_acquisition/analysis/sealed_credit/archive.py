@@ -28,6 +28,11 @@ from typing import Any, Mapping
 
 SCHEMA = "saea-tfrl-archive-state-v1"
 CORRECTION_SCHEMA = "saea-tfrl-archive-correction-v1"
+#: A re-measurement of an already archived state (a later iteration proposed the same artefact set again). The archived state is
+#: write-once and stays untouched; the new read is a sibling record under ``<archive_dir>/rereads/``.
+REREAD_SCHEMA = "saea-tfrl-archive-reread-v1"
+#: A refused candidate whose artefact set equals an already archived state (any status) is a duplicate of that sibling.
+DUPLICATE_OF_ARCHIVED = "duplicate-of-archived"
 #: A refused state that carries no measurement (the instrument could not read the candidate) names why.
 UNMEASURED_REFUSAL_CODES = ("offline-family-unsupported",)
 ARTEFACT_NAMES = (
@@ -228,8 +233,32 @@ def validate_correction(record: Any) -> None:
     assert_no_text_fields(record)
 
 
+def validate_reread(record: Any) -> None:
+    """A reread record is identifiers, hashes and numbers only: the archived state it re-measures, the iteration and candidate that
+    proposed it again, the column it was read on, and the fitted result (a full credit vector plus the verdict clauses)."""
+
+    keys = {"schema", "state_id", "archived_verdict", "iteration", "candidate_id", "column", "reread_verdict", "clauses", "credit"}
+    if not isinstance(record, Mapping) or set(record) != keys or record["schema"] != REREAD_SCHEMA:
+        _fail(f"a reread record carries exactly {sorted(keys)} and schema {REREAD_SCHEMA}")
+    for key in ("state_id", "candidate_id"):
+        if not isinstance(record[key], str) or not _HEX64.match(record[key]):
+            _fail(f"reread.{key}: must be 64 lowercase hex characters")
+    if record["archived_verdict"] not in VERDICTS or record["reread_verdict"] not in ("accepted", "refused"):
+        _fail("reread verdicts: archived_verdict is a state verdict, reread_verdict is accepted or refused")
+    if not isinstance(record["iteration"], int) or isinstance(record["iteration"], bool) or record["iteration"] < 1:
+        _fail("reread.iteration must be an integer >= 1")
+    column = record["column"]
+    if not isinstance(column, Mapping) or set(column) != {"run_id", "attempt"} or not isinstance(column["attempt"], int):
+        _fail("reread.column must carry exactly run_id and attempt")
+    if not isinstance(record["clauses"], Mapping):
+        _fail("reread.clauses must be an object")
+    validate_credit(record["credit"])
+    assert_no_text_fields(record)
+
+
 class Archive:
-    """Write-once directory of state files (plus write-once correction records under ``corrections/``)."""
+    """Write-once directory of state files (plus write-once correction records under ``corrections/`` and write-once reread records
+    under ``rereads/``). Neither sibling directory is a state: :meth:`states` (and so parent choice) reads ``state-*.json`` only."""
 
     def __init__(self, directory: Path | str):
         self.directory = Path(directory)
@@ -300,6 +329,42 @@ class Archive:
             out.append(record)
         return out
 
+    # ---- rereads: the archived state of a duplicate proposal is never rewritten; the new measurement is a sibling record
+    # ``<archive_dir>/rereads/<state_id>-i<iteration>.json`` (write-once; an identical re-run is accepted, a different one refused).
+
+    def _reread_dir(self) -> Path:
+        return self.directory / "rereads"
+
+    def put_reread(self, record: Mapping[str, Any]) -> tuple[Path, bool]:
+        """Write one reread record; the archived state must exist. Returns ``(path, created)``."""
+
+        validate_reread(record)
+        self._read_raw(record["state_id"])           # the re-measured state exists
+        directory = self._reread_dir()
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / f"{record['state_id']}-i{record['iteration']}.json"
+        data = json.dumps(dict(record), indent=2, sort_keys=True) + "\n"
+        try:
+            with open(path, "x", encoding="utf-8", newline="\n") as handle:
+                handle.write(data)
+        except FileExistsError:
+            if path.read_text(encoding="utf-8") != data:
+                _fail(f"reread {path.name} is already recorded with different content (write-once)")
+            return path, False
+        return path, True
+
+    def reread_paths(self) -> list[Path]:
+        directory = self._reread_dir()
+        return sorted(directory.glob("*-i*.json")) if directory.is_dir() else []
+
+    def rereads(self) -> list[dict[str, Any]]:
+        out = []
+        for path in self.reread_paths():
+            record = json.loads(path.read_text(encoding="utf-8"))
+            validate_reread(record)
+            out.append(record)
+        return out
+
     def _read_raw(self, state_id: str) -> dict[str, Any]:
         path = self._path(state_id)
         try:
@@ -345,4 +410,5 @@ __all__ = [
     "ArchiveError", "Archive", "build_state", "compute_state_id", "validate_credit",
     "assert_no_text_fields", "forbidden_key", "SCHEMA", "ARTEFACT_NAMES", "VERDICTS", "ARMS",
     "CORRECTION_SCHEMA", "UNMEASURED_REFUSAL_CODES", "validate_correction",
+    "REREAD_SCHEMA", "DUPLICATE_OF_ARCHIVED", "validate_reread",
 ]
