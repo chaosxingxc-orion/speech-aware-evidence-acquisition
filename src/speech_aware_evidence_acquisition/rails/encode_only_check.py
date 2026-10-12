@@ -101,6 +101,10 @@ FORBIDDEN_PAYLOAD_KEYS = frozenset(
         "typical_p",
         "stream",
         "messages",
+        # Thinking-core harness knobs (decision 283 A): generation-side reasoning controls.
+        "thinking_budget_tokens",
+        "chat_template_kwargs",
+        "enable_thinking",
     }
 )
 

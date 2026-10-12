@@ -777,6 +777,7 @@ class EvidenceAgentController:
         self._review_for_phase = review_for_phase
         self._state_view_for_phase = state_view_for_phase
         self._contact_identity = contact_identity
+        self._contact_phases: dict[str, str] = {}
         self._sealed: dict[str, AgentStateArtifact] = {}
         self._reviews: dict[str, tuple[JudgeVerdict, ...]] = {}
         self._completed: list[str] = []
@@ -842,6 +843,9 @@ class EvidenceAgentController:
                 parallel_tool_calls=False,
             )
         self._pending_contact_id = material.contact_id
+        # Decision 283 A: remember which program phase (node) authored each contact, so the runner can resolve a per-node
+        # ``thinking_policy`` override without changing the contact plan's shape.
+        self._contact_phases[material.contact_id] = phase.name
         # WAVE R7: a cell may declare its OWN key-representation / matcher
         # identity instead of the program-derived default. It exists for the
         # folds: two arms of one cell can share a phase program and still be
@@ -864,6 +868,11 @@ class EvidenceAgentController:
             matcher_policy_id=matcher_policy_id,
             decoding_params=decoding_params,
         ).validate()
+
+    def phase_name_for_contact(self, contact_id: str) -> str | None:
+        """The program phase (node id) that authored ``contact_id``, or None for a contact this controller never dispatched."""
+
+        return self._contact_phases.get(contact_id)
 
     def initial_contact(self, context: AgentRuntimeContext) -> AgentContactPlan:
         if self._initial_dispatched or self._completed or context.contact_index != 0:
@@ -1832,6 +1841,19 @@ def module_program_family_ceiling(program_id: str) -> int:
             f"registered: {list(MODULE_PROGRAM_FAMILY_IDS)}"
         )
     return int(program_id[len(MODULE_PROGRAM_FAMILY_PREFIX):])
+
+
+def module_program_fallback_contacts_per_row(program_id: str) -> int:
+    """Family-level ``fallback_contacts_per_row`` (decision 278 / 283 A): the extra answer-only re-ask contacts a row's plan
+    ceiling must allow when its requests are budgeted thinking requests. Module family programs allow two (one per thinking
+    node of the review-off graph); every other program allows one."""
+
+    from ..core.reasoning_knobs import FALLBACK_CONTACTS_PER_ROW_DIRECT, FALLBACK_CONTACTS_PER_ROW_MODULE  # noqa: PLC0415
+
+    return (
+        FALLBACK_CONTACTS_PER_ROW_MODULE
+        if program_id in MODULE_PROGRAM_FAMILY_IDS else FALLBACK_CONTACTS_PER_ROW_DIRECT
+    )
 
 
 def module_program_family_id(ceiling: int) -> str:

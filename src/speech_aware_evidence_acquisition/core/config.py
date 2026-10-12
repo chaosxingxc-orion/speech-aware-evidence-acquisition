@@ -17,6 +17,12 @@ from pathlib import Path
 from typing import Mapping
 
 from ..scoring import SCORING_STACK_VERSION
+from .reasoning_knobs import (
+    ReasoningKnobError,
+    fold_into_decoding,
+    validate_fragment_knobs,
+    validate_thinking_policy,
+)
 
 _KINDS = ("model", "dataset", "baseline", "experiment")
 _FRAGMENT_NAME_PATTERN = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
@@ -132,6 +138,21 @@ def assert_preparation_source_receipts_are_well_formed(
             )
 
 
+def assert_reasoning_knobs_are_well_formed(values: Mapping[str, object]) -> None:
+    """Thinking-core harness knobs (decision 283 A): validate the model-fragment knobs and the per-node ``thinking_policy``.
+
+    Fail-closed at composition time, before any contact: ``max_tokens`` must equal budget + reserve, an Instruct fragment may
+    carry only ``reasoning_context_policy``, the pinned forced-close message hash must match the ``server_args`` value, and
+    every node override must resolve inside the geometry cap. A config that declares none of these is untouched.
+    """
+
+    try:
+        validate_fragment_knobs(values)
+        validate_thinking_policy(values.get("thinking_policy"), values)
+    except ReasoningKnobError as error:
+        raise ConfigError(str(error)) from error
+
+
 _REQUEST_INTEGER_BOUNDS = {
     "max_tokens": (1, None),
     "seed": (0, 2**32 - 2),  # UINT32_MAX asks llama.cpp for a random seed.
@@ -184,6 +205,12 @@ def effective_request_decoding_params(values: Mapping[str, object]) -> object:
     else:
         raise ConfigError("decoding_params must be a mapping when declared")
     resolved.update(override)
+    budget, reserve = resolved.get("thinking_budget_tokens"), values.get("answer_reserve_tokens")
+    if budget is not None and reserve is not None and resolved.get("max_tokens") != budget + reserve:
+        raise ConfigError(
+            "request_decoding_overrides.max_tokens must keep max_tokens equal to reasoning_budget_tokens + "
+            "answer_reserve_tokens"
+        )
     return resolved
 
 
@@ -323,6 +350,12 @@ def compose(
     # is, and not silently resolved in the table's favour.
     composed = drop_null_arms(merged)
     assert_preparation_source_receipts_are_well_formed(composed)
+    assert_reasoning_knobs_are_well_formed(composed)
+    # The knobs are the single hashed source of the two reasoning wire fields; they fold into decoding_params HERE so every
+    # consumer of the composed values sees the identical request shape. A config without knobs composes byte-identically.
+    folded = fold_into_decoding(composed)
+    if folded is not None:
+        composed = folded
     return ComposedConfig(
         values=composed, config_hash=_canonical_hash(composed), fragments=names
     )

@@ -127,6 +127,12 @@ ALLOWED_DECODING_KEYS = frozenset(
         # decoding mapping. The adapter restricts them to native-tool arms;
         # the transport moves them to the OpenAI request body's top level.
         *NATIVE_TOOL_REQUEST_CONTROL_KEYS,
+        # Thinking-core harness knobs (owner decision 283 A, 2026-10-12): the two per-request reasoning controls of the pinned
+        # llama.cpp build. ``thinking_budget_tokens`` arms the budget sampler that forces ``</think>``; the shape-restricted
+        # ``chat_template_kwargs`` is exactly ``{"enable_thinking": <bool>}``. Both reach a request only through the model
+        # fragment's reasoning knobs (core.reasoning_knobs) and the transport refuses them without the reasoning guard.
+        "thinking_budget_tokens",
+        "chat_template_kwargs",
     }
 )
 
