@@ -1895,3 +1895,34 @@ iteration 3 = s0-lock-v2.2; `open --iter 3 --stage propose` running. Reading for
 is converging toward the floor on SLU while costing intent; the typed operator class (deliver rules) is exhausted; iteration 3 is the last
 registered iteration of decision 263 and will decide whether the loop's ledger entry is "no typed candidate cleared the instrument" and
 "ACE converged but did not clear the floor".
+
+### 266-E READ: bare Thinking core +11.90 pp SLU-F1 / +4.35 intent over the bare Instruct core on TRAIN Fold B (RESOLVED-ABOVE-BAR); decision 268 PROPOSED (coordinator, 2026-10-12 08:10Z)
+
+All three arms sealed (Instruct arm rec1 22:18Z and replicate 22:35Z at c9edf3244; Thinking arm rec1 07:58Z at a069b0ee1, cap 8,192); the
+READ row countersigned 08:01Z before the read (`direct_fb_read.sh`, 0 contacts, `analysis/SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-VS-INSTRUCT-READ-V1/read.json`).
+
+| direct-only bare core, Fold B n = 1,080 | SLU-F1 | intent | note |
+| --- | ---: | ---: | --- |
+| Instruct (two request-identical passes) | 33.40 / 33.58 | 72.87 / 71.94 | twin offset SLU +0.18 [-1.16, +1.50], intent -0.93 [-1.85, 0.00] |
+| Thinking (cap 8,192, own packets) | **45.39** | **76.76** | 36 rows (3.3 %) at the cap with empty content (abstentions), 0 reasoning leaks |
+| Thinking minus mean Instruct | **+11.90 [+9.34, +14.52]** | **+4.35 [+2.08, +6.62]** | cluster bootstrap 10,000 draws; saves/harms (intent) 103/61 |
+
+Per scenario (natural mixture = equal-scenario, 60 rows each): SLU +27 alarm, +30 audio, +33 datetime, +24 transport, +23 weather, +22
+cooking, +17 calendar; losses lists -8.8, music -10.8, iot -2.6; intent general -15.8, music -12.5, cooking/datetime -3.3. Cost: 22.75 s per
+contact mean (p50 12.2, p99 198.8) versus 0.86 s on Instruct (26x); completion tokens mean 1,032 / p50 584 / p90 1,898; Thinking arm
+1,080 contacts in about 2.0 h wall. Reading against the system: lock v2.2 (+v4g) on the Instruct core reaches SLU 64.34 / intent 82.41 on
+this roster, i.e. the SYSTEM adds about +31 pp SLU / +9.5 intent to the bare Instruct core, 2.6x what the stronger core adds by itself;
+the question 266-E asked ("is core capability the binding constraint?") is answered: the core is a strong lever (+12 / +4) but not the
+dominant one, and the two are not known to be additive. Results note: `docs/results/2026-10-12-slurp-266e-thinking-vs-instruct-bare-core-read.md`.
+
+- **268 (PROPOSED)** The system on the Thinking core: fly the locked system (v2.2 + v4g, module program c4, the same knowledge supply)
+  on the Thinking core on TRAIN Fold B as ONE column with its twin (2 arms x 1,080 rows x 4 contacts; at 22.8 s per contact about 14
+  GPU-h on 4 slots; cap 8,192; the Thinking session max8192 already registered), read against the Instruct-core lock column (64.34 /
+  82.41, same roster, cross-flight bar 2.5 pp with the in-chain twin). Options: **A** fly it now (after the i3 proposers; the loop's i3
+  column waits ~14 h); **B** fly it after iteration 3 closes (the loop keeps its GPU order; 268 starts about 2026-10-13 morning); **C**
+  do not fly (keep the Instruct core as the study core; record 266-E as a core-capability note). Coordinator recommendation: **B** --
+  the loop's last registered iteration first (its i3 column is ~3 h), then 268; if the system transfers additively the composed read
+  would sit near SLU 76 / intent 86, which changes the Stage-3 claim surface and the SOTA framing (decision 252) and must be measured
+  before any test-sample allowance is drafted for it.
+Also 08:13Z: the first ext4 flip (decision 267) converged the i3 proposer package in 9 minutes end to end (checks 48 s, worktree 8 s,
+flip 367 s, fast-forward 133 s) against 40-80 minutes on the 9p mount; i3 proposers flying at 7250fac92 (task SAEA-Queue-TFRLi3Prop).

@@ -1,6 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T06:39:45Z
+Last refreshed: 2026-10-12T08:15:01Z
+
+## 266-E READ: bare Thinking +11.90 pp SLU / +4.35 intent over bare Instruct (Fold B); i2 CLOSED (ACE refused at +1.38 [+0.15, +2.57]); i3 proposers FLYING at 7250fac92; decision 268 proposed (2026-10-12T08:15:01Z, Fable 5.1 root)
+
+266-E (all three arms sealed; read 08:03Z): Thinking 45.39 / 76.76 vs Instruct 33.40-33.58 / 72.87-71.94; delta +11.90 [+9.34, +14.52] SLU,
++4.35 [+2.08, +6.62] intent; twin +0.18 / -0.93; 36 cap hits (3.3 %) as abstentions; 22.8 s per contact (26x Instruct). The locked system on
+the Instruct core is 64.34 / 82.41 on the same roster (+31 / +9.5 over bare Instruct). Decision 268 PROPOSED: the system on the Thinking core,
+one Fold B column with twin (~14 GPU-h), recommended after iteration 3 closes. Results note in progress on `opus/266e-results-note`. i2
+CLOSED: ACE i2 +1.38 [+0.15, +2.57] SLU (clause a PASS, b FAIL by 0.11, e FAIL intent -0.56), typed arm empty, parent lock. i3 propose
+opened and proposers countersigned (af3501390); the ext4 flip took 9 min (7250fac92); proposers flying 08:13Z on the Instruct session;
+then `tfrl_cell_stage_inputs.py --iter 3 --execute`, `open --iter 3 --stage cell`, column flip (ext4), column flight (~3 h), `close --iter 3`
+(loop complete -> Fold A confirmation / DEV composed read per the protocol checklist). Serving: Instruct resident; watchdog hold still in place.
+
+Superseded stamp: 2026-10-12T06:39:45Z
 
 ## i2 column SEALED (descriptive: ACE +1.38 pp pooled SLU, intent -0.56; twin +0.32); close refused on an archived duplicate (fix in build); Thinking arm FLYING since 06:01Z (2026-10-12T06:39:45Z, Fable 5.1 root)
 
