@@ -1,6 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T08:15:01Z
+Last refreshed: 2026-10-12T08:56:11Z
+
+## i3 column FLYING at d39224f1c (08:55Z, the loop's last registered iteration); 266-E note merged; 266-E rows closed (2026-10-12T08:56:11Z, Fable 5.1 root)
+
+i3: proposers sealed 08:16/08:18Z (7250fac92); cell stage opened (typed arm empty by measurement for the third time: 2 refused, 0 valid;
+ACE i3 36 items with the i2 credit); column rows countersigned WITH the READ row; column receipt minted; ext4 flip 34 min (d39224f1c);
+chain started 08:55Z on the Instruct session (smoke then 1,080 rows x 4 contacts, ~3 h). After the seal: `ledger_mark_consumed` x4,
+`close --iter 3` (the close builds row scores + ACE credit itself; use `--skip-process-guard` only if another family's driver runs), then
+the protocol's loop-complete checklist (Fold A confirmation of lock / aa / ACE final; DEV composed read; results note; owner rules the
+admission path). 266-E: results note merged (`docs/results/2026-10-12-slurp-266e-thinking-vs-instruct-bare-core-read.md`); READ, serving,
+packets and roster rows closed. Decision 268 (system on the Thinking core) awaits the owner; recommended after i3 closes. Watchdog hold
+still in place; Instruct resident.
+
+Superseded stamp: 2026-10-12T08:15:01Z
 
 ## 266-E READ: bare Thinking +11.90 pp SLU / +4.35 intent over bare Instruct (Fold B); i2 CLOSED (ACE refused at +1.38 [+0.15, +2.57]); i3 proposers FLYING at 7250fac92; decision 268 proposed (2026-10-12T08:15:01Z, Fable 5.1 root)
 
