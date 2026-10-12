@@ -2101,3 +2101,28 @@ Owner 2026-10-12 10:30Z: 「_repro/ 删除」 -- `_repro/` (29 GB) is DELETED wi
 migration task copies it before the ruling takes effect in the script's list; the ext4 copy is removed right after STATIC_DONE and the E:
 original goes with step 3. Final deletion set: system-text-search, the 2026-10-01..09 ChatGPT-line coordination packages, survey-*, _repro
 (about 104 GB).
+
+### Terminal clean-up (owner 2026-10-12 10:35Z) and the SOTA comparator table (273 delivered); decision 285 PROPOSED (coordinator)
+
+Owner: 「我们为什么开启了这么多terminal？哪些是必要的，那些是不需要的，这块要清理下！」 Finding: 81 orphaned `conhost.exe` console windows on the
+Windows side -- every scheduled-task launch (`wsl.exe` as an interactive task action) opened a visible console and the idle watchdog spawned a
+new one every five minutes; plus console hosts of agents' finished WSL calls and of unrelated programs. Necessary and kept: the serving
+session + its monitor (SAEA-Serving, SAEA-Monitor), the flying i3 column chain (SAEA-Queue-TFRLi3Col), the migration (SAEA-Migrate-Static-284),
+the serving entry tasks per geometry (SAEA-Serving-*/SAEA-Monitor-* are what `serving_swap.sh` starts), SAEA-Mount-Data1, SAEA-Batch-Driver, and
+today's live `wsl` sessions of the coordinator and the four agents. Cleaned: 34 stale console/host processes killed (orphans and the 10/8-10/9
+WSL hosts of finished tasks), 36 finished one-off tasks unregistered, SAEA-Watchdog disabled (the hold is permanent; a daily health check
+replaces it per 271 A), SAEA-Serving-UptimeGuard removed. Fix: `saea_task.ps1` now launches tasks through a hidden PowerShell console
+(`-WindowStyle Hidden`, task setting `-Hidden`), so no window appears per task (ca96adfae).
+
+SOTA comparator table (decision 273 A) merged: `docs/readiness/2026-10-12-sota-comparator-table-v1.{md,json}` (61f6d69e7). Headline: we
+reach fine-tuned SOTA on no task. SLURP: ours 82.36 intent / 66.65 SLU-F1 on the 3,010-row test sample vs fine-tuned UniverSLU-14 90.3 / 79.5
+and fine-tuned Qwen2-Audio-7B 88.13 / 76.75 (gap about -8 / -13); vs the best published zero-shot intent (ChatGPT on gold transcripts
+79.25) +3; no zero-shot audio model reports official SLU-F1. Audio2Tool: our direct call 62.03 tool accuracy vs the paper's 69.19 for the
+same core (tier 1 never reproduced); the dual-store system's exact match 24.37 vs 20.71 (+3.66, not adopted). Earnings-21: bare core 8.20
+WER vs Whisper large-v2 9.7 (zero-shot), KC-E1f PERSON entity WER 18.75 vs Whisper-large 28.9 -- the strongest position. Earnings-22: 9.24
+with the silence-tail convention vs Nemotron 3 Nano Omni 9.66 and NeMo fine-tuned Qwen3-Omni 8.89 [unverified]; not like-for-like.
+Many leaderboard values are UNVERIFIED (huggingface unreachable). Claim classes: A vs the direct call of our own core (large, replicated
+on SLURP), B vs published zero-shot systems (competitive on Earnings-21 and SLURP intent), C vs fine-tuned SOTA (not reached).
+- **285 (PROPOSED)** the claim class of the programme goal "at or above SOTA": A = class B (training-free / zero-shot systems) as the
+  comparator for every task, stated as such in every note (recommended; it is the claim the thesis supports); B = class C (fine-tuned),
+  which would require closing -8 / -13 on SLURP; C = class A only.
