@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "2b5fe191d9d128983a1b7c519d4f028489fffe8ea9dc65045cd8ba042b1e258b"
+    "sha256": "b05be1518d6173229d15a22b2e45ee43c62bedcf243ea54e1933a38e340e3cbf"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1: Thinking system in-chain twin (aa) of the 268-B read.",
   "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",

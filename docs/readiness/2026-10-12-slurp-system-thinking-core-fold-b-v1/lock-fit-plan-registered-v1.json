@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
-  "composed_config_hash": "77356219c163ff87b84c12bc77511b6b34fc43c65b1563b6abd9def409522eaf",
+  "composed_config_hash": "e64986b3dd95d5a6c001257d1a406d2bd9cf9b02b340ab039bd74fe85ef75606",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-fit-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 5.1,
     "planned_model_calls": 8640,
     "planned_speech_audio_seconds": 12620,
-    "protocol_hash": "7fdcb5e9972b33af53fe95b59f0a663e2ab57e14983a3f0b0f6e824709a0b3f1",
+    "protocol_hash": "ff13157d1a095df10641e03b0f5c720f5e1476ef288e259773be4082ae394635",
     "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "2b5fe191d9d128983a1b7c519d4f028489fffe8ea9dc65045cd8ba042b1e258b"
+    "sha256": "b05be1518d6173229d15a22b2e45ee43c62bedcf243ea54e1933a38e340e3cbf"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
