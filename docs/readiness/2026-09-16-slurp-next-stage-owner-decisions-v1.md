@@ -2273,3 +2273,18 @@ Executed 12:05-12:15Z: the i3 column sealed 12:05Z at d39224f1c (`close --iter 3
 removed with their branches, 21 detached codex worktrees removed (HEAD shas in the receipt), 184 unregistered directories deleted;
 `/home/chao/saea-worktrees` 105 GB -> 4.5 GB (receipt `/home/chao/saea-migration/worktree-cleanup-20261012T120815Z.log`). Static migration
 554 GB copied by 12:11Z.
+
+### Loop iteration 3 CLOSED; the loop is COMPLETE with no admitted state (coordinator, 2026-10-12 12:35Z)
+
+`close --iter 3` (row scores and ACE credit built by the close): ACE i3 (36 items) 64.72 SLU-F1 / 83.15 intent on the i3 Fold B column;
+vs lock SLU **+0.27 [-1.15, +1.71]**, intent +0.46 [-0.19, +1.20]; twin vs lock -0.37; false fill -4.08 pp (392 empty-gold rows), non-empty
+exact -0.73 pp. Clauses a (CI-LB > 0) and b (point floor) FAIL -> refused; typed arm empty by measurement (2 refused candidates). Curve of
+the ACE comparator: +0.87 -> +1.38 [+0.15, +2.57] -> +0.27: not monotone -- the credit-curated growth from 27 to 35 items helped SLU at i2
+and the 36-item i3 playbook gave it back while intent moved from -0.56 to +0.46. Ledger entry of decision 262 clause c, as measured over
+three iterations: (i) the typed operator class the proposer could reach (deliver rules over the i1-i3 contrast tables) produced no
+candidate that cleared the 1.5 pp predicted bar -- every fitted rule read +0.00 pp and the proposer re-proposed a refused rule once;
+(ii) the ACE prose-item form at equal budget peaked at +1.38 pp SLU (CI-LB +0.15) with an intent cost and did not clear the 1.49 floor;
+(iii) the loop's engineering (sealed archive with corrections and rereads, credit-driven curation, duplicate refusal, self-built credit,
+one-pass flips) is complete and reusable for a different operator class. Parent for any continuation: s0-lock-v2.2. Per 269 A: results
+note (Opus) and this ledger entry; no Fold A / DEV flights for refused states. Rows closed; GPU idle from 12:05Z; the data-root cut-over
+(288 A) starts now.

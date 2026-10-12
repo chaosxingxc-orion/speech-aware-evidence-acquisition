@@ -1,0 +1,130 @@
+{
+  "arm": "ace",
+  "artefact_hashes": {
+    "playbook_release": "1a93c7914150a4c2e755fe91cfaa248063f0eaeac7dabc42208bd4cbb8607d57"
+  },
+  "candidate_id": "ace-i3",
+  "credit": {
+    "contacts_per_row": 4.0,
+    "false_fill": {
+      "delta_pp": -4.081632653061225,
+      "n": 392
+    },
+    "intent": 83.14814814814817,
+    "non_empty_exact": {
+      "delta_pp": -0.7267441860465116,
+      "n": 688
+    },
+    "per_scenario": {
+      "alarm": {
+        "intent": -1.6666666666666667,
+        "slu": 4.949102135485073
+      },
+      "audio": {
+        "intent": 1.6666666666666667,
+        "slu": 6.541706282683402
+      },
+      "calendar": {
+        "intent": 1.6666666666666667,
+        "slu": 1.5811124855736325
+      },
+      "cooking": {
+        "intent": 1.6666666666666667,
+        "slu": 0.4560399771115886
+      },
+      "datetime": {
+        "intent": 0.0,
+        "slu": -1.2603084305042866
+      },
+      "email": {
+        "intent": -1.6666666666666667,
+        "slu": 0.2180279703845267
+      },
+      "general": {
+        "intent": 1.6666666666666667,
+        "slu": -4.511662221213325
+      },
+      "iot": {
+        "intent": -1.6666666666666667,
+        "slu": -2.312525345859451
+      },
+      "lists": {
+        "intent": 1.6666666666666667,
+        "slu": 8.429937311013457
+      },
+      "music": {
+        "intent": 1.6666666666666667,
+        "slu": 0.0
+      },
+      "news": {
+        "intent": 0.0,
+        "slu": 0.3024458952121778
+      },
+      "play": {
+        "intent": 0.0,
+        "slu": -3.6037794986534477
+      },
+      "qa": {
+        "intent": -1.6666666666666667,
+        "slu": 0.31752499108955723
+      },
+      "recommendation": {
+        "intent": 3.3333333333333335,
+        "slu": 0.38125151580579164
+      },
+      "social": {
+        "intent": 0.0,
+        "slu": 0.8561278418669382
+      },
+      "takeaway": {
+        "intent": 0.0,
+        "slu": 2.9959305671893977
+      },
+      "transport": {
+        "intent": 1.6666666666666667,
+        "slu": -5.2833654402476
+      },
+      "weather": {
+        "intent": 0.0,
+        "slu": 3.3025551799921615
+      }
+    },
+    "slu_f1": 64.723680196515,
+    "vs_lock": {
+      "intent": {
+        "hi": 1.2037037037037037,
+        "lo": -0.1851851851851852,
+        "point": 0.462962962962965
+      },
+      "slu": {
+        "hi": 1.7096738360964363,
+        "lo": -1.1480448562522612,
+        "point": 0.2704281321884383
+      }
+    },
+    "vs_parent": null,
+    "vs_twin": {
+      "intent": {
+        "hi": 0.4629629629629629,
+        "lo": -0.1851851851851852,
+        "point": 0.09259259259258856
+      },
+      "slu": {
+        "hi": 0.25492877639177747,
+        "lo": -1.0788969479670611,
+        "point": -0.37339176547581676
+      }
+    }
+  },
+  "iteration": 3,
+  "operator_class": "playbook",
+  "parent_id": "cadd84f6bbefd9a0cb9dcf82e3be29c89944968acadfabcaeb143167c8334ccc",
+  "predicted_slu_pp": null,
+  "read": {
+    "attempt": 1,
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-V1"
+  },
+  "schema": "saea-tfrl-archive-state-v1",
+  "state_id": "38c024f8083e2740ad1a424083a05b9dc00fdf59e24dcd53a3607d6fe74c35a0",
+  "verdict": "refused"
+}

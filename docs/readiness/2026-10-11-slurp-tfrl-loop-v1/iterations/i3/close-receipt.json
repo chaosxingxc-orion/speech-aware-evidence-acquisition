@@ -1,0 +1,151 @@
+{
+  "ace_credit": "written",
+  "arms": [
+    "ace",
+    "aa",
+    "lock"
+  ],
+  "column": {
+    "attempt": "attempt-slurp-native-stage3-tfrl-loop-i3-fold-b-generation-v1",
+    "run_id": "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-V1"
+  },
+  "credit_gaps": [
+    "per-scenario deltas parsed leniently from per-scenario-tables.json",
+    "false-fill / non-empty exact from the node-local report when present"
+  ],
+  "curve": {
+    "ace": [
+      {
+        "iteration": 1,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 2,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 3,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      }
+    ],
+    "typed": [
+      {
+        "iteration": 1,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 2,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "refused"
+      },
+      {
+        "iteration": 3,
+        "level": {
+          "hi": 0.0,
+          "lo": 0.0,
+          "point": 0.0
+        },
+        "marked": "unflown"
+      }
+    ]
+  },
+  "inputs": {
+    "ace_credit": "f728b702b7b9917d2873e4027201f637e6f2b63eb52ce7ec293103d02e5f84d6",
+    "column": [
+      "SAEA-SLURP-STAGE3-TFRL-LOOP-I3-FOLD-B-V1",
+      "attempt-slurp-native-stage3-tfrl-loop-i3-fold-b-generation-v1"
+    ],
+    "iteration": 3,
+    "open_cell": "630a36696189af41fb3cf30c239477031c2db114ffa8b2e5ad17e4f166025637",
+    "row_scores": "34cba8e77543ea1c04b7691eadc3e0b691d1509c3f097a73eef886fab47ede24",
+    "summary": "9f28b51a8875c5ebb2db24f2ccb608f8bf429798ceb03c94dbff18df9673a872"
+  },
+  "inputs_sha256": "bf830efcc5c7db95ba10604bf6c180361d8142a83836569f7eecd6253771c761",
+  "iteration": 3,
+  "loop_complete": true,
+  "next_iteration": null,
+  "parent_for_next": "s0-lock-v2.2",
+  "row_scores": {
+    "relpath_or_path": "analysis/SAEA-SLURP-TFRL-LOOP-V1/i3/row-scores-i3.json",
+    "source": "exported"
+  },
+  "rules": {
+    "ci_lb_min_pp": 0.0,
+    "intent_guard_pp": 0.65,
+    "intent_point_floor_pp": 0.0,
+    "require_beat_twin": true,
+    "slu_floor_pp": 1.49
+  },
+  "schema": "saea-tfrl-loop-receipt-v1",
+  "status": "done",
+  "step": "close",
+  "typed_arm_was_empty": true,
+  "verdicts": {
+    "ace": {
+      "accepted": false,
+      "clause_d": "vacuous (no previous-ACE-state column in this flight)",
+      "clauses": {
+        "a_ci_lb": {
+          "op": ">",
+          "pass": false,
+          "threshold": 0.0,
+          "value": -1.1480448562522612
+        },
+        "b_point_floor": {
+          "op": ">=",
+          "pass": false,
+          "threshold": 1.49,
+          "value": 0.2704281321884383
+        },
+        "c_beats_twin": {
+          "op": ">",
+          "pass": true,
+          "threshold": -0.37339176547581676,
+          "value": 0.2704281321884383
+        },
+        "e_intent_guard": {
+          "op": "lo>=lo_min and point>=point_min",
+          "pass": true,
+          "threshold": {
+            "lo_min": -0.65,
+            "point_min": 0.0
+          },
+          "value": {
+            "lo": -0.1851851851851852,
+            "point": 0.462962962962965
+          }
+        }
+      },
+      "failed": [
+        "a_ci_lb",
+        "b_point_floor"
+      ],
+      "state_id": "38c024f8083e2740ad1a424083a05b9dc00fdf59e24dcd53a3607d6fe74c35a0",
+      "status": "refused"
+    }
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "ace": [
+    {
+      "flown_children": [
+        {
+          "delta_vs_lock": {
+            "hi": 2.0978389683319034,
+            "lo": -0.3991914977289983,
+            "point": 0.865772656692454
+          },
+          "operator_class": "playbook",
+          "state_id": "e7b4fa572497c5c0dfecf6a5578a252c54e6307eb845f074f7551bf499c90464",
+          "verdict": "refused"
+        }
+      ],
+      "iteration": 1,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "refused",
+      "state_id": null
+    },
+    {
+      "flown_children": [
+        {
+          "delta_vs_lock": {
+            "hi": 2.5746121795985353,
+            "lo": 0.15174838347248226,
+            "point": 1.3766932713932367
+          },
+          "operator_class": "playbook",
+          "state_id": "cadd84f6bbefd9a0cb9dcf82e3be29c89944968acadfabcaeb143167c8334ccc",
+          "verdict": "refused"
+        }
+      ],
+      "iteration": 2,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "refused",
+      "state_id": null
+    },
+    {
+      "flown_children": [
+        {
+          "delta_vs_lock": {
+            "hi": 1.7096738360964363,
+            "lo": -1.1480448562522612,
+            "point": 0.2704281321884383
+          },
+          "operator_class": "playbook",
+          "state_id": "38c024f8083e2740ad1a424083a05b9dc00fdf59e24dcd53a3607d6fe74c35a0",
+          "verdict": "refused"
+        }
+      ],
+      "iteration": 3,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "refused",
+      "state_id": null
+    }
+  ],
+  "typed": [
+    {
+      "flown_children": [
+        {
+          "delta_vs_lock": {
+            "hi": 0.0,
+            "lo": 0.0,
+            "point": 0.0
+          },
+          "operator_class": "delivery",
+          "state_id": "ccbe1075a873c047af293b4a70b94dd765afaaf22b378c255649512d5e8db6f6",
+          "verdict": "refused"
+        }
+      ],
+      "iteration": 1,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "refused",
+      "state_id": null
+    },
+    {
+      "flown_children": [
+        {
+          "delta_vs_lock": {
+            "hi": 0.0,
+            "lo": 0.0,
+            "point": 0.0
+          },
+          "operator_class": "delivery",
+          "state_id": "ad25d9daac6aa3cf381343beb1410dabbbf6c71ccd22f30599d3ba50e43fb258",
+          "verdict": "refused"
+        }
+      ],
+      "iteration": 2,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "refused",
+      "state_id": null
+    },
+    {
+      "flown_children": [],
+      "iteration": 3,
+      "level": {
+        "hi": 0.0,
+        "lo": 0.0,
+        "point": 0.0
+      },
+      "marked": "unflown",
+      "state_id": null
+    }
+  ]
+}

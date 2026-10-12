@@ -1,0 +1,15 @@
+{
+  "masked_classes": [
+    "delivery"
+  ],
+  "parent_display_id": "s0-lock-v2.2",
+  "parent_state_id": "a8f1d50ef76ecf1209d7851a993eba5610abf695f14af0a7c90b53750bb35347",
+  "ranking": [
+    {
+      "lb_slu_pp": 0.0,
+      "n_children": 2,
+      "score": -0.5,
+      "state_id": "a8f1d50ef76ecf1209d7851a993eba5610abf695f14af0a7c90b53750bb35347"
+    }
+  ]
+}
