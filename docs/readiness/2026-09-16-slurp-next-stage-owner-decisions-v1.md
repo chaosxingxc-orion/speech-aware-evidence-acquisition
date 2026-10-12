@@ -2368,3 +2368,28 @@ note (Opus) and this ledger entry; no Fold A / DEV flights for refused states. R
   authority's comment follow; locator host mode PASS, 27 locator tests pass. The migration logs were rotated (`static.log.1-until-1443Z-
   false-markers`, `cutover.log.1-until-1443Z`) so the false markers cannot trigger the cut-over wrapper; lane 3, lane 2b and
   SAEA-Cutover-296 relaunched 14:47Z (72 rsync streams; 949 GB on ext4).
+
+### Owner rulings 297-300 and the 14:33Z incident cause (owner, 2026-10-12 15:25Z; recorded by the coordinator)
+
+Owner (verbatim): 「决策297：同意建议；决策298：同意建议，尽快启动实验；决策299：按你的建议走，最终目标是经过多轮training free RL迭代后能够逼近训练方案；决策300：按你建议到时修复；事实：手动关闭」
+English: "Decision 297: agree with the recommendation; 298: agree with the recommendation, start the experiments as soon as possible;
+299: follow your recommendation -- the final goal is that after several rounds of training-free RL iteration we approach the trained
+solutions; 300: fix as you recommend, when the time comes; fact: closed manually."
+
+- **297 B (RULED):** after the verification manifests pass, the E: original `speechrl-data` is RENAMED to `speechrl-data.retired-20261012`
+  (not deleted) until one full 268 chain has flown on the new root; then deleted together with the deletion set. Not a backup (293 B
+  stands): a delayed delete that keeps a zero-cost fallback for any missed path.
+- **298 A (RULED):** the VHDX growth to 3.6 TB (291) happens in the same no-flight window as the 297 delete (after the 268 read); the
+  experiments start as soon as the cut-over completes -- GPU idle time is to be minimised.
+- **299 A (RULED):** P3 trigger = on the 268 Fold B column, system-on-Thinking vs system-on-Instruct (v2.2 program): paired SLU CI
+  lower bound > 0 AND point estimate >= +1.5 pp, intent not worse by more than 0.65 pp, AND Thinking completion rate (no cap hit, no
+  empty answer) >= 99 %; all three -> the engineering base is rebuilt around Thinking (packets per mmproj for every carrier, baselines and
+  locks re-read on Thinking); two of three -> Thinking on SLURP only, carriers stay on Instruct, plus one DEV replicate. Owner's stated
+  end goal, recorded as the programme's north star for the iteration line: multiple rounds of training-free RL iteration that approach
+  the trained (fine-tuned) solutions.
+- **300 A (RULED):** the two typed-proposer defects (class set dropped by the receipt builder; `sample_id_sha_prefix` holds the
+  response-hash prefix) are fixed before the next loop reuse and proven on a 4-row dry run; no work now.
+- **Incident cause CLOSED:** the owner closed the terminal windows manually at about 10:33 local (14:33Z); the hidden-console
+  wsl.exe sessions of the three tasks received the console-close control and died, and the distro instance stopped with its last
+  session. Consequence already applied: fstab-backed mount; rule: closing console windows kills Task-Scheduler-owned WSL work --
+  the owner is asked to leave hidden conhost windows alone, and the coordinator keeps the task set minimal.
