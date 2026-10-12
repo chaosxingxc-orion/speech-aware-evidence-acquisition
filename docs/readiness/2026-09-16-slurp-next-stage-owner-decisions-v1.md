@@ -2126,3 +2126,22 @@ on SLURP), B vs published zero-shot systems (competitive on Earnings-21 and SLUR
 - **285 (PROPOSED)** the claim class of the programme goal "at or above SOTA": A = class B (training-free / zero-shot systems) as the
   comparator for every task, stated as such in every note (recommended; it is the claim the thesis supports); B = class C (fine-tuned),
   which would require closing -8 / -13 on SLURP; C = class A only.
+
+### 268-B package registered (DRAFT/HELD; merged): the system on the Thinking core; prerequisites; decision 286 PROPOSED (coordinator, 2026-10-12 10:50Z)
+
+Package `docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/` (family `scripts/flights/direct/thinking_system_family.py`): three cells
+on Fold B -- smoke (4 rows), lock (1,080 rows, plain lock v2.2 + v4g, program c2 = Perception + Solver) and its request-identical twin `aa`
+as a SECOND cell (the module compiler refuses a candidate-less in-row supply group, so the c3 in-row twin of the design needs the compiler
+change first; two c2 passes cost ~1.9 GPU-h more); Thinking packets root + receipt as in 266-E; comparators = the i3 lock arm (Instruct
+core, same roster) and the bare Thinking core (266-E). Knobs (design 275-282): budget 3,072 + reserve 1,024 = cap 4,096, forced-close
+message, drop-reasoning-v1, every node thinking; new fragment `...-module-fold-b-np4-ctx24k-budget3072-max4096-v1` and session
+`serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1` (`think-budget-np4` target; needs tasks SAEA-Serving-THINKB /
+SAEA-Monitor-THINKB). GPU: 51.9 slot-seconds per c2 row -> 3.89 GPU-h expected per pass (ceiling 5.1), two passes 7.8 expected / 10.7
+ceilings; wall ~4.3-5.6 h per pass. Read: `scripts/analysis/slurp_system_thinking_core_read.py` (verdicts TRANSFERS-ABOVE-BAR / PARTIAL /
+NO-TRANSFER / HARM; per-node cap-hit, forced-close and cost tables). Seven DRAFT ledger rows (8977-8983 at the branch's base).
+Prerequisites before countersign/flip: (1) the harness knobs (283, in build) merged and the package re-derived; (2) the serving tasks for the
+budget session registered; (3) the forced-close sentence verified; (4) **286 (PROPOSED)**: native role contacts require `preserve_wire_responses
+= true`, so the sealed trace on the data root will contain the Thinking `reasoning_content` bytes (hashed, under the data root, never in
+docs or notes). A = allow sealing reasoning bytes under the data root (recommended: sealed model output is already stored there; the
+no-persist rule covers documents, chat and notes); B = add a transport option that drops reasoning bytes before sealing (hash only).
+Sequencing: 274 (base) -> 283 (knobs) -> re-derive 268 -> i3 closed -> countersign, mint, ext4 flip, swap to think-budget-np4, chain.
