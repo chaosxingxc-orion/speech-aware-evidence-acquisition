@@ -1,6 +1,15 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T00:17:24Z
+Last refreshed: 2026-10-12T00:25:03Z
+
+## 266-E Thinking arm FLYING (00:23Z) after the smoke rec1 decode-cost sign-off at cap 8,192 (2026-10-12T00:25:03Z, Fable 5.1 root)
+
+Smoke rec1: p50 949 / mean 2,613 / max 8,192 completion tokens, 1 of 4 rows at the cap sealed as an empty-completion receipt (harness
+path proven), 41.4 s per contact, projection 3.11 GPU-h (ceiling 4.5). Marker written 00:23:16Z; arm opened 00:23:39Z; expected seal
+about 03:30-04:30Z. Then: swap to Instruct (`serving_swap.sh slurp-np4`), flip the ACE reflector i2 (`TFRL_ONLY=ace`, wrapper to make),
+fly it, countersign the 266-E READ row, `direct_fb_read.sh`; remove the watchdog hold after the Instruct restore.
+
+Superseded stamp: 2026-10-12T00:17:24Z
 
 ## 266-E: Instruct pair SEALED (c9edf3244); Thinking line re-registered at cap 8,192 and FLYING think-all at 5daf057f8; loop i2 open, typed proposer SEALED, ACE reflector i2 held for its flip (2026-10-12T00:17:24Z, Fable 5.1 root)
 

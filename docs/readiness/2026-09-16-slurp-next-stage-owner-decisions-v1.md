@@ -1791,3 +1791,14 @@ Thinking flip converged at 5daf057f8 (two gates PASS, 00:16Z); the max8192 Think
 started 00:17Z (task SAEA-Queue-DirectFB-ThinkAll): smoke rec1 -> coordinator reads the decode cost and writes the sign-off marker
 naming 8192 -> Thinking arm (1,080 rows, ceiling 4.5 GPU-h). After the arm: swap to Instruct, fly the ACE reflector i2 cell (flip
 `TFRL_ONLY=ace`), countersign the 266-E READ row, `direct_fb_read.sh`.
+
+### 266-E Thinking smoke rec1 read and decode-cost sign-off: cap 8,192 approved; Thinking arm FLYING (coordinator, 2026-10-12 00:23Z)
+
+Smoke rec1 (flight commit 5daf057f8, new session max8192) sealed its 4 rows 00:21Z, inspection PASS: completion tokens p50 949, mean
+2,613, p90 6,028, max 8,192; ONE row again exhausted the cap (the same runaway-reasoning behaviour at 4x the budget) and sealed as the
+empty-phase marker with an `empty-completion` receipt (`cap_hit` true, `finish_reason` length) -- the harness path of 59d33fd26 is
+proven end to end on a real contact; reasoning leak 0; prompt 2,272 tokens per contact; 41.4 s per contact mean (p50 30.2, p99
+93.2) on 4 slots; projection 3.11 GPU-h for 1,080 rows (upper bound 6.99 if every row ran like the tail) against the registered 4.5 h
+ceiling. Sign-off written (`/home/chao/direct-fb-decode-signoff.marker`, cap 8192) at 00:23:16Z; the chain opened the Thinking arm
+at 00:23:39Z (`batch-campaign-1-direct-fb-thinking-20261012T002339Z.log`). Reading rule unchanged: cap-hit rows are abstentions and
+are counted in the arm's cap-hit table; the arm's read is Thinking minus the mean of the two Instruct passes with the twin offset.
