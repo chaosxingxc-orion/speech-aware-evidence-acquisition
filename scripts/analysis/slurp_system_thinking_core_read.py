@@ -72,13 +72,21 @@ def wire_flags(wire: Mapping, budget_message: str) -> dict:
     choice = (wire.get("choices") or [{}])[0]
     message = choice.get("message") or {}
     content = message.get("content")
-    reasoning = message.get("reasoning_content")
     content_flags = base.text_flags(content)
+    # Decision 286: new traces carry the stored projection ``message.reasoning`` (hash and statistics, no bytes). Traces sealed before
+    # it (immutable) still carry ``reasoning_content``; read those the old way.
+    stats = message.get("reasoning")
+    reasoning = message.get("reasoning_content")
+    if isinstance(stats, Mapping):
+        chars, forced = int(stats.get("reasoning_chars") or 0), bool(stats.get("forced_close"))
+    else:
+        chars = len(reasoning) if isinstance(reasoning, str) else 0
+        forced = bool(isinstance(reasoning, str) and budget_message and budget_message in reasoning)
     return {
         "finish_reason": choice.get("finish_reason"),
         "empty_content": content_flags["empty"], "no_json_object": content_flags["no_object"], "marker_in_content": content_flags["leak"],
-        "reasoning_chars": len(reasoning) if isinstance(reasoning, str) else 0,
-        "forced_close": bool(isinstance(reasoning, str) and budget_message and budget_message in reasoning),
+        "reasoning_chars": chars,
+        "forced_close": forced,
     }
 
 

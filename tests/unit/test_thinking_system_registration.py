@@ -285,6 +285,9 @@ def test_reader_node_table_counts_without_text():
     flags = reader.wire_flags({"choices": [{"finish_reason": "stop", "message": {"content": "{}", "reasoning_content": "x " + fam.THINK_BUDGET_MESSAGE}}]},
                               fam.THINK_BUDGET_MESSAGE)
     assert flags["forced_close"] is True and flags["empty_content"] is False and "x" not in json.dumps(flags)
+    projected = reader.wire_flags({"choices": [{"finish_reason": "length", "message": {"content": "", "reasoning": {
+        "reasoning_chars": 321, "forced_close": True, "reasoning_content_sha256": "0" * 64}}}]}, fam.THINK_BUDGET_MESSAGE)
+    assert projected["reasoning_chars"] == 321 and projected["forced_close"] is True and projected["empty_content"] is True  # decision 286 form
     assert set(reader.VERDICT_WORDS) == {"TRANSFERS-ABOVE-BAR", "PARTIAL", "NO-TRANSFER", "HARM"}
 
 
