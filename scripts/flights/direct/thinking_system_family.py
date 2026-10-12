@@ -87,8 +87,12 @@ REASONING_CONTEXT_POLICY = "drop-reasoning-v1"          # decision 278 A: no rea
 NODE_MODES = {"perception": "think", "solver": "think"}   # decision 279 A: every node thinks, budgeted, for the transfer read
 ANSWER_FALLBACK = {"id": "saea-thinking-answer-fallback-v1", "mode": "answer-only re-ask", "enable_thinking": False,
                    "max_tokens": THINK_ANSWER_RESERVE_TOKENS, "per_node": 1}        # decision 277 A; the contact ceiling rises by 1 per node
-FALLBACK_CONTACTS_PER_ROW_CEILING = 2                   # at most one fallback per node (Perception, Solver) once the harness lands
+FALLBACK_CONTACTS_PER_ROW_CEILING = 2                   # core.reasoning_knobs.FALLBACK_CONTACTS_PER_ROW_MODULE: one answer-only re-ask per node (merged, decision 283 A)
+BUDGET_MESSAGE_SHA256 = __import__("hashlib").sha256(THINK_BUDGET_MESSAGE.encode("utf-8")).hexdigest()
 #: The registered knobs as one mapping, so the baseline, the plans, the facts and the tests all read the same bytes.
+#: The REAL fragment keys of the merged harness (core.reasoning_knobs.FRAGMENT_KNOB_KEYS); the wire fields fold into decoding_params at composition.
+FRAGMENT_KNOBS = {"reasoning_budget_tokens": THINK_BUDGET_TOKENS, "answer_reserve_tokens": THINK_ANSWER_RESERVE_TOKENS, "enable_thinking": True,
+                  "reasoning_context_policy": REASONING_CONTEXT_POLICY, "forced_close_message_sha256": BUDGET_MESSAGE_SHA256}
 THINKING_KNOBS = {
     "thinking_budget_tokens": THINK_BUDGET_TOKENS, "answer_reserve_tokens": THINK_ANSWER_RESERVE_TOKENS, "completion_cap": THINK_MAX_TOKENS,
     "budget_message": THINK_BUDGET_MESSAGE, "reasoning_context_policy": REASONING_CONTEXT_POLICY, "node_modes": dict(NODE_MODES),
@@ -241,12 +245,20 @@ def roster_audio(kind: str) -> float:
 
 
 def audio_cap(kind: str) -> int:
-    """Perception and Solver each re-send the row's speech packet: ceil(roster audio seconds x contacts per row)."""
+    """Every contact re-sends the row's speech packet, a fallback re-ask included: ceil(roster audio seconds x (contacts + fallback contacts per row))."""
 
-    return math.ceil(roster_audio(kind) * CONTACTS_PER_ROW - 1e-9)
+    return math.ceil(roster_audio(kind) * (CONTACTS_PER_ROW + FALLBACK_CONTACTS_PER_ROW_CEILING) - 1e-9)
 
 
 def generation_calls(key: str) -> int:
+    """The plan ceiling: rows x (program contacts + fallback contacts per row), the rule rails.runner applies (core.reasoning_knobs)."""
+
+    return CELLS[key]["rows"] * (CONTACTS_PER_ROW + FALLBACK_CONTACTS_PER_ROW_CEILING)
+
+
+def program_calls(key: str) -> int:
+    """The program maximum without fallbacks."""
+
     return CELLS[key]["rows"] * CONTACTS_PER_ROW
 
 

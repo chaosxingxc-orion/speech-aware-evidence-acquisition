@@ -2,8 +2,8 @@
   "_note": "Every model-free fact this DRAFT registration rests on, and the CANONICAL stage3_measurement blocks scripts/checks/stage3_effect_floor_check.py and scripts/checks/flight_registration_check.py resolve (keyed by run id).",
   "accounting": {
     "arm_fit_endpoint_calls_cap": 8640,
-    "arm_generation_calls": 2160,
-    "arm_speech_audio_seconds_cap": 6310,
+    "arm_generation_calls": 4320,
+    "arm_speech_audio_seconds_cap": 12620,
     "contacts_per_row": 2,
     "cost_estimate": {
       "design_c3_reference": {
@@ -16,7 +16,7 @@
           8.5
         ]
       },
-      "fallback_note": "The answer-only fallback (decision 277 A) adds at most 2 contacts per row once the harness lands; plan calls and the FIT cap then rise to 1080 x 4 = 4320 per arm. Not registered now: the program maximum today is 2 per row.",
+      "fallback_note": "The answer-only fallback (decisions 277 A and 283 A) adds at most 2 contacts per row: planned_model_calls is rows x (2 + 2) = 4320 per arm (program maximum 2160), and the speech-audio cap scales the same way. The FIT cap stays structural (rows x program contacts x endpoints = 8640). The GPU ceiling is unchanged: fallbacks are rare (answer-only, at most 1,024 tokens) and the budget closes every think block.",
       "formula": "expected = rows x [ (P_inst + d x E_B) + n_solver x (S_inst + d x E_B) ] / slots / 3600 with P_inst = 5.48 s and S_inst = 7.45 s (Instruct module column, i2), d = 0.02298 s per generated token (266-E fit), E_B = E[min(reasoning, B)] = 848 tokens at B = 3,072; ceiling = ceil_0.1(expected x 1.3)",
       "inputs": {
         "budget_tokens": 3072,
@@ -49,16 +49,16 @@
     "lock": "v2.2",
     "program": "phase-native-module-v1-c2",
     "rows": 1080,
-    "smoke_generation_calls": 8,
-    "smoke_speech_audio_seconds_cap": 21,
-    "twin_generation_calls": 2160,
+    "smoke_generation_calls": 16,
+    "smoke_speech_audio_seconds_cap": 41,
+    "twin_generation_calls": 4320,
     "twin_shape": "separate-cell"
   },
   "blockers": [],
   "composed_config_hashes": {
-    "aa": "affa273f05e05368887b34b0417d01b8a8c19ac0e14546ab701ebaae1dbfbff6",
-    "lock": "3c0a8e404d355bbca2eec4be708d9f856418809df38928ca0ec34a8cdbc258b2",
-    "smoke": "729c1eb710d67b6e2855790a2bf2bfebede45d26fe0a092de86ae1f5f81bf6d7"
+    "aa": "61f55fa328d8eb76f9add1cfbbfd005c3c4d3f0fc2fcea644b480f2d51be5dbb",
+    "lock": "5c1cacbe4e26e1c35e1c2c68c343212d5055911cff5a15f311d3c70e96a091d3",
+    "smoke": "bfe93a08ccb302252306170a055993c86b9a9dc4e01f9d948c5a0b7bba30f848"
   },
   "context_fit": {
     "completion_cap": 4096,
@@ -86,9 +86,9 @@
       "remedy": "none needed at 4,096; the live phase FIT re-measures on the real supply."
     },
     {
-      "finding": "core.model.request_types.ALLOWED_DECODING_KEYS does not yet list thinking_budget_tokens and the native-episode loader has no reasoning block or reasoning_context_policy (design decision 282). The knobs are registered in the model fragment (decoding_params.thinking_budget_tokens, --reasoning-budget-message), in each baseline's top-level thinking_policy block and in the family constants; compose() accepts them, a flight cannot honour them until the harness lands.",
-      "id": "harness-pass-through-pending",
-      "remedy": "merge the harness (decision 282), re-run thinking_system_derive_cells.py and thinking_system_write_registration.py, then countersign."
+      "finding": "Resolved: the Thinking harness knobs are merged (decision 283 A, master 0e6ffbfd3). The model fragment carries the real keys reasoning_budget_tokens, answer_reserve_tokens, enable_thinking, reasoning_context_policy and forced_close_message_sha256 (pinned to the --reasoning-budget-message value in its server_args); they fold into decoding_params at composition; the baselines declare no thinking_policy (every node thinks); the plan ceiling is rows x (contacts + 2 fallback contacts).",
+      "id": "harness-pass-through-merged",
+      "remedy": "none."
     },
     {
       "finding": "The forced-close sentence is the design's wording of the Qwen3 technical report's stop sentence, flagged unverified in the design (section 1.2 / 6 (d)).",
@@ -113,13 +113,13 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-aa-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
-      "composed_config_hash": "affa273f05e05368887b34b0417d01b8a8c19ac0e14546ab701ebaae1dbfbff6",
+      "composed_config_hash": "61f55fa328d8eb76f9add1cfbbfd005c3c4d3f0fc2fcea644b480f2d51be5dbb",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
         "planned_gpu_hours": 5.1,
-        "planned_model_calls": 2160,
-        "planned_speech_audio_seconds": 6310,
+        "planned_model_calls": 4320,
+        "planned_speech_audio_seconds": 12620,
         "split_role": "discovery"
       },
       "execution_profile": "bounded-discovery-probe",
@@ -129,11 +129,11 @@
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 8640,
-        "generation_calls_cap": 2160,
+        "generation_calls_cap": 4320,
         "gpu_hours_fit_inclusive": 5.1,
-        "native_task_contract_calls_cap": 2160,
+        "native_task_contract_calls_cap": 4320,
         "official_complete_scoring_jobs": 1,
-        "repeated_speech_audio_seconds_cap": 6310
+        "repeated_speech_audio_seconds_cap": 12620
       },
       "fit": {
         "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-fit-v1",
@@ -146,7 +146,7 @@
       "key": "aa",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "24dc321f9b2fd16cd9ef54e1b5dfdf74a86e962cce290ead64b894a8ea9f7fd7",
+      "protocol_hash": "1358351a67e6948d643b4b8e85d236b66581fb534f2bd7cd7235a1c4e388f9ee",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
@@ -159,13 +159,13 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-lock-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
-      "composed_config_hash": "3c0a8e404d355bbca2eec4be708d9f856418809df38928ca0ec34a8cdbc258b2",
+      "composed_config_hash": "5c1cacbe4e26e1c35e1c2c68c343212d5055911cff5a15f311d3c70e96a091d3",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
         "planned_gpu_hours": 5.1,
-        "planned_model_calls": 2160,
-        "planned_speech_audio_seconds": 6310,
+        "planned_model_calls": 4320,
+        "planned_speech_audio_seconds": 12620,
         "split_role": "discovery"
       },
       "execution_profile": "bounded-discovery-probe",
@@ -175,11 +175,11 @@
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 8640,
-        "generation_calls_cap": 2160,
+        "generation_calls_cap": 4320,
         "gpu_hours_fit_inclusive": 5.1,
-        "native_task_contract_calls_cap": 2160,
+        "native_task_contract_calls_cap": 4320,
         "official_complete_scoring_jobs": 1,
-        "repeated_speech_audio_seconds_cap": 6310
+        "repeated_speech_audio_seconds_cap": 12620
       },
       "fit": {
         "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-fit-v1",
@@ -192,7 +192,7 @@
       "key": "lock",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "6bedba034de6d1a02b32d6e99c97a9557ec39410c7975947658cd916c12d5884",
+      "protocol_hash": "8232d1b77cd7a275ff95f008d2df050301fba6794da9adc0bdd8aa00779d40c3",
       "roster_receipt": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
@@ -205,13 +205,13 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-fold-b-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
-      "composed_config_hash": "729c1eb710d67b6e2855790a2bf2bfebede45d26fe0a092de86ae1f5f81bf6d7",
+      "composed_config_hash": "bfe93a08ccb302252306170a055993c86b9a9dc4e01f9d948c5a0b7bba30f848",
       "dataset_fragment": "slurp-speech-native-evo-fold-b-1080",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
         "planned_gpu_hours": 0.5,
-        "planned_model_calls": 8,
-        "planned_speech_audio_seconds": 21,
+        "planned_model_calls": 16,
+        "planned_speech_audio_seconds": 41,
         "split_role": "discovery"
       },
       "execution_profile": "bounded-discovery-probe",
@@ -221,11 +221,11 @@
         "ceilings_are_not_targets": true,
         "encoder_calls": 0,
         "fit_endpoint_calls_cap": 32,
-        "generation_calls_cap": 8,
+        "generation_calls_cap": 16,
         "gpu_hours_fit_inclusive": 0.5,
-        "native_task_contract_calls_cap": 8,
+        "native_task_contract_calls_cap": 16,
         "official_complete_scoring_jobs": 0,
-        "repeated_speech_audio_seconds_cap": 21
+        "repeated_speech_audio_seconds_cap": 41
       },
       "fit": {
         "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-fit-v1",
@@ -238,7 +238,7 @@
       "key": "smoke",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "cda99b285a5972808f394828da970a00b6a0f2c4d87db79aeab99c2edddf4fea",
+      "protocol_hash": "cec00d1255e60fb9b07def5aa2d1e5b1f7f8df674d0b064954e0aa9dd0302d20",
       "roster_receipt": "docs/receipts/rosters/slurp-stage3-filler-fold-b-c01-smoke-4-v1.json",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1",
@@ -333,7 +333,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "8a97939a352af74b984a8f1156f7c979b7a7c5b8",
+  "study_commit_at_registration": "0bc748d6114a7cb5a6013ec2b2c981374781e16f",
   "thinking_knobs": {
     "answer_fallback": {
       "enable_thinking": false,

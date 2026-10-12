@@ -8,11 +8,11 @@
     "aa": {
       "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-generation-v1",
       "cell": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
-      "composed_config_hash": "affa273f05e05368887b34b0417d01b8a8c19ac0e14546ab701ebaae1dbfbff6",
+      "composed_config_hash": "61f55fa328d8eb76f9add1cfbbfd005c3c4d3f0fc2fcea644b480f2d51be5dbb",
       "experiment": "slurp-native-stage3-thinking-system-fold-b-aa-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-aa-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-FIT-V1",
-      "protocol_hash": "24dc321f9b2fd16cd9ef54e1b5dfdf74a86e962cce290ead64b894a8ea9f7fd7",
+      "protocol_hash": "1358351a67e6948d643b4b8e85d236b66581fb534f2bd7cd7235a1c4e388f9ee",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-AA-V1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
@@ -20,11 +20,11 @@
     "lock": {
       "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-generation-v1",
       "cell": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
-      "composed_config_hash": "3c0a8e404d355bbca2eec4be708d9f856418809df38928ca0ec34a8cdbc258b2",
+      "composed_config_hash": "5c1cacbe4e26e1c35e1c2c68c343212d5055911cff5a15f311d3c70e96a091d3",
       "experiment": "slurp-native-stage3-thinking-system-fold-b-lock-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-lock-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-FIT-V1",
-      "protocol_hash": "6bedba034de6d1a02b32d6e99c97a9557ec39410c7975947658cd916c12d5884",
+      "protocol_hash": "8232d1b77cd7a275ff95f008d2df050301fba6794da9adc0bdd8aa00779d40c3",
       "rows": 1080,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1",
       "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
@@ -32,11 +32,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
-      "composed_config_hash": "729c1eb710d67b6e2855790a2bf2bfebede45d26fe0a092de86ae1f5f81bf6d7",
+      "composed_config_hash": "bfe93a08ccb302252306170a055993c86b9a9dc4e01f9d948c5a0b7bba30f848",
       "experiment": "slurp-native-stage3-thinking-system-fold-b-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-fold-b-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-FIT-V1",
-      "protocol_hash": "cda99b285a5972808f394828da970a00b6a0f2c4d87db79aeab99c2edddf4fea",
+      "protocol_hash": "cec00d1255e60fb9b07def5aa2d1e5b1f7f8df674d0b064954e0aa9dd0302d20",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-SMOKE-4-V1",
       "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
@@ -61,9 +61,9 @@
       "remedy": "none needed at 4,096; the live phase FIT re-measures on the real supply."
     },
     {
-      "finding": "core.model.request_types.ALLOWED_DECODING_KEYS does not yet list thinking_budget_tokens and the native-episode loader has no reasoning block or reasoning_context_policy (design decision 282). The knobs are registered in the model fragment (decoding_params.thinking_budget_tokens, --reasoning-budget-message), in each baseline's top-level thinking_policy block and in the family constants; compose() accepts them, a flight cannot honour them until the harness lands.",
-      "id": "harness-pass-through-pending",
-      "remedy": "merge the harness (decision 282), re-run thinking_system_derive_cells.py and thinking_system_write_registration.py, then countersign."
+      "finding": "Resolved: the Thinking harness knobs are merged (decision 283 A, master 0e6ffbfd3). The model fragment carries the real keys reasoning_budget_tokens, answer_reserve_tokens, enable_thinking, reasoning_context_policy and forced_close_message_sha256 (pinned to the --reasoning-budget-message value in its server_args); they fold into decoding_params at composition; the baselines declare no thinking_policy (every node thinks); the plan ceiling is rows x (contacts + 2 fallback contacts).",
+      "id": "harness-pass-through-merged",
+      "remedy": "none."
     },
     {
       "finding": "The forced-close sentence is the design's wording of the Qwen3 technical report's stop sentence, flagged unverified in the design (section 1.2 / 6 (d)).",
@@ -95,6 +95,6 @@
   "registered_at_utc": "2026-10-12T12:00:00.000000+00:00",
   "schema": "saea-registered-protocol-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
-  "study_commit_at_registration": "8a97939a352af74b984a8f1156f7c979b7a7c5b8",
+  "study_commit_at_registration": "0bc748d6114a7cb5a6013ec2b2c981374781e16f",
   "the_question": "Does the +11.9 pp SLU-F1 / +4.35 intent lever of the bare Thinking core (266-E) stack on the locked system? The Thinking system arm is read against the Instruct lock column of loop iteration 3 (64.34 / 82.41) on the same 1,080 Fold B rows, with the in-chain twin as the null."
 }

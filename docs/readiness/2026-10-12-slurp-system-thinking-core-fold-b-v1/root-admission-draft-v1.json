@@ -7,13 +7,13 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "e22ad9464bf99513ebe84ab7125761c754fe7bda628c6ac44ccf39e67067d59f"
+      "sha256": "e497d61ffcf90c67baf90ec12f56f78ef230ba53dcc363d3456df099a486a0e2"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-12-slurp-system-thinking-core-fold-b-v1/registered-facts-v1.json",
-      "sha256": "a66ee72c6cee6a53492ce2311af07e85ed0217f3f81b6a8900b6be0109eed799"
+      "sha256": "74c9f55d08e505310a932e201f23e39d56506cb7aae89afa515d42530cac2e4d"
     },
-    "registration_base_commit": "8a97939a352af74b984a8f1156f7c979b7a7c5b8"
+    "registration_base_commit": "0bc748d6114a7cb5a6013ec2b2c981374781e16f"
   },
   "authorization_basis": "Owner decision 268 B (2026-10-12); docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md.",
   "budget": {
@@ -21,34 +21,34 @@
     "ceilings_are_not_targets": true,
     "encoder_calls": 0,
     "fit_endpoint_calls_cap": 8640,
-    "generation_calls_cap": 2160,
+    "generation_calls_cap": 4320,
     "gpu_hours_fit_inclusive": 5.1,
-    "native_task_contract_calls_cap": 2160,
+    "native_task_contract_calls_cap": 4320,
     "official_complete_scoring_jobs": 1,
     "paid_api_calls": 0,
     "plan_budget_is_run_cumulative": true,
-    "repeated_speech_audio_seconds_cap": 6310,
+    "repeated_speech_audio_seconds_cap": 12620,
     "smoke": {
       "asr_calls": 0,
       "ceilings_are_not_targets": true,
       "encoder_calls": 0,
       "fit_endpoint_calls_cap": 32,
-      "generation_calls_cap": 8,
+      "generation_calls_cap": 16,
       "gpu_hours_fit_inclusive": 0.5,
-      "native_task_contract_calls_cap": 8,
+      "native_task_contract_calls_cap": 16,
       "official_complete_scoring_jobs": 0,
-      "repeated_speech_audio_seconds_cap": 21
+      "repeated_speech_audio_seconds_cap": 41
     },
     "twin": {
       "asr_calls": 0,
       "ceilings_are_not_targets": true,
       "encoder_calls": 0,
       "fit_endpoint_calls_cap": 8640,
-      "generation_calls_cap": 2160,
+      "generation_calls_cap": 4320,
       "gpu_hours_fit_inclusive": 5.1,
-      "native_task_contract_calls_cap": 2160,
+      "native_task_contract_calls_cap": 4320,
       "official_complete_scoring_jobs": 1,
-      "repeated_speech_audio_seconds_cap": 6310
+      "repeated_speech_audio_seconds_cap": 12620
     }
   },
   "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
