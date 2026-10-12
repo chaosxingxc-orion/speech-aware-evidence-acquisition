@@ -2160,3 +2160,10 @@ at its cap; receipt `saea-thinking-answer-fallback-v1` at `<contact>/reasoning-f
 before. Tests: 39 + 24 new, the transport / adapter / controllers / runner / empty-completion suites pass; gates PASS. Open items: the
 supply-variant fit ceiling is not yet bound to B + R; the forced-close sentence is still to be verified verbatim against the Qwen3 report.
 `runtime.py` and `rails/*` changed, so every unflown registered cell re-pins at its next flip (the flying i3 column is unaffected).
+268 package re-derived on the merged knobs (0943022b6): the fragment carries the five knob keys (budget 3,072, reserve 1,024, cap 4,096,
+drop-reasoning-v1, message sha), `compose()` folds in `thinking_budget_tokens` and `chat_template_kwargs.enable_thinking`; plan ceilings rows x
+(2 contacts + 2 fallbacks) = 4,320 calls / 12,620 s per arm (16 / 41 s smoke), GPU ceilings unchanged (5.1 per arm); seven draft rows rewritten
+in place. The forced-close sentence is VERIFIED against the Qwen3 technical report (arXiv:2505.09388, thinking-budget section): "Considering
+the limited time by the user, I have to give the solution based on the thinking directly now." -- the report appends "\n</think>.\n\n", which
+llama.cpp's budget sampler supplies itself. Remaining prerequisites for 268: 274 base cut-over, the serving tasks for the budget session,
+owner rulings 285 / 286, i3 closed.
