@@ -2035,3 +2035,26 @@ c3 (Perception + lock + twin) budgeted 5.9 (6.6-8.5 h); c3 Solver-only thinking 
   transport, forced-close detection, the re-ask, hashed knobs) with 0-GPU stub-server tests first (recommended; started model-free now as
   part of the base unification); B fly 268 with the global budget only.
 Sequencing under the owner's 09:20Z directive: 274 (base unification) and 283 land first; 268 flies on the unified base with 275-282 as ruled.
+
+### Disk question 2026-10-12 (owner: "can part or all of E: become ext4?"): measured answer; decision 284 PROPOSED (coordinator, 10:00Z)
+
+Facts: E: is one NTFS partition spanning a 3.8 TB NVMe (disk 1; 1.6 TB used, 2.3 TB free); the WSL root is an ext4 VHDX at D:\wsl\Ubuntu-24.04
+(1 TB, 481 GB free); WSL 2.6.3 / kernel 6.6.87. Non-destructive test: a 20 GB VHDX file created on E: with diskpart, attached with
+`wsl --mount --vhd <file> --bare`, formatted ext4 inside WSL, benchmarked, detached and deleted.
+
+| path | seq write 2 GB | seq read 2 GB | create 2,000 small files | stat+read 2,000 files |
+| --- | ---: | ---: | ---: | ---: |
+| ext4 VHDX on E: (wsl --mount --vhd) | 899 MB/s | 1.6 GB/s | 0.03 s | 2.07 s |
+| /mnt/e (9p, today's data root) | 163 MB/s | 193 MB/s | 3.45 s | 5.91 s |
+| WSL root ext4 (D:\wsl vhdx) | 1.3 GB/s | 2.2 GB/s | 0.05 s | 2.36 s |
+
+Options: (A) an ext4 VHDX on E: (proposed 1.5 TB expandable) as the HOT data root; E: stays NTFS for Windows; near-native speed (small-file
+work 115x faster than 9p); needs a mount step after every reboot / `wsl --shutdown` (scheduled task at logon or a WSL boot script) and a
+locator check that refuses to start a flight when the mount is absent. (B) Reformat the whole E: as ext4 and `wsl --mount` the physical
+disk: full speed, but 1.6 TB must be moved off first (no room: D: 766 GB free + ext4 481 GB) and Windows loses the disk entirely (no
+ext4 driver; the disk goes offline while mounted). (C) Shrink E: and add an ext4 partition: `wsl --mount --partition` takes the WHOLE
+physical disk offline from Windows while mounted, so the NTFS part becomes unusable during every flight -- not viable for a Windows data
+disk. (D) Keep the hot set (~100 GB) on the WSL root ext4 (481 GB free) and leave E: as the archive -- zero infrastructure change, enough
+for today, no headroom for derived media (179 GB) and feature caches (105 GB) growth.
+- **284 (PROPOSED)** hot data root location: **A** (recommended; VHDX size and mount automation as the base-unification spec states),
+  D as the immediate stop-gap if A waits; B/C not recommended.
