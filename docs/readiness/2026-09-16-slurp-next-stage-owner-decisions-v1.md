@@ -2074,3 +2074,26 @@ spec). Step 2: inventory of E: (Windows-side sizes) in progress; the migration i
 runs only when no flight writes to the data root (after the i3 column seals and closes) and before any new registration. Step 3 (delete
 the E: originals after verification, carve `saea-data-2.vhdx` of about 1.3 TB, leave about 500 GB free on E:) follows the verified
 migration and the cut-over of `SPEECHRL_DATA_DIR`; the deletion is executed only after the owner sees the verification manifests.
+
+### Decision 284 step 2 (owner 2026-10-12 10:20Z): delete the ChatGPT-era and Stage-1 artefacts, migrate everything else; no hot/cold by current use (coordinator record)
+
+Owner, verbatim: 「ChatGPT和Stage1产物删掉，其他的都搬到ext4区，不能基于我们现在是否使用来判断冷热」 -- "Delete the ChatGPT-line and Stage-1
+products; move everything else to the ext4 area; do not judge hot/cold by whether we currently use it."
+Inventory of E: (1,556 GB, all under speechrl-data; Windows-side sizes): datasets 1,006 (cn-celeb2 144, contextasr-bench 134, librispeech 115,
+slue-sqa-5 110, air-bench 46, cn-celeb1 42, m3-slu 40, meld 32, speech-massive 30, notsofar1 26, fleurs-r 25, fsd50k 23, ... slurp 12.6,
+audio2tool 9.8, earnings21-22 5.2, conec 0.6; 28 umbrella lock keys), derived 178 (obs-slices 147), models 149, runs 77, coordination 43,
+system-text-search 31, _repro 29, prepared 10, wire-check 9, survey-* 7.5, analysis 4, vectors 3.6, serving 3.3, the rest < 2.
+DELETE (not migrated; the git-tracked records of these lines stay): `system-text-search/` (31 GB, decision-214 line, 2026-10-01..03);
+the ChatGPT-line `coordination/` packages of 2026-10-01..09 (four-node-round9-preview-v1/v2/v3 14.8, system-text-round8-preview-v1 5.3,
+slurp-system-text-seed-binding-recovery1-owner225 5.2, slurp-system-text-review-contract-engineering-v1 5.2, slurp-coherent-feedback-
+engineering-v1 1.4, local-joint-n100-custody-engineering-v1 1.0, update4/5/6-rejected-* 1.6, rejected-context-history-v1 0.6,
+system-text-compact-feedback-engineering-v1 0.5, system-text-feedback-streaming-v1 0.5, one-track-consolidation-20261007 0.3,
+local-node-k4-serving-start-v1 0.1, simple-consumption-capacity-v2 0.1; about 36 GB); the Stage-1 survey trees (`survey-fulltext`,
+`survey-backups`, `survey-fulltext-secondary-analysis`, `survey-fulltext-analysis`, `survey-bfs`, `survey-query-raw`, `survey-triage`,
+`survey-capability-delta`; 7.5 GB); `_repro/` (29 GB, the pre-study reproduction wavs/checkpoints of July 2026) -- flagged for the owner's
+word because it predates the ChatGPT line. Everything else migrates to `/home/chao/saea-data/speechrl-data/` (about 1,450 GB of the 2 TB
+disk 1). Execution: static subtrees (datasets, models, derived, prepared, vectors, repos, environments, wire-check, references, research,
+program-archives, manifests, archive, ...) started 10:22Z as task SAEA-Migrate-Static-284 (rsync -aH per subtree, logs under
+/home/chao/saea-migration/); the subtrees the flying i3 column writes (runs, attempts, analysis, knowledge, coordination minus the
+deleted packages, serving, locks, receipts, logs) follow after the seal with a final `--delete` pass; verification manifests per subtree;
+then the `SPEECHRL_DATA_DIR` cut-over; then step 3.
