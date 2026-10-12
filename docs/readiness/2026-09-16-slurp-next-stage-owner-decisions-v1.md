@@ -1926,3 +1926,47 @@ dominant one, and the two are not known to be additive. Results note: `docs/resu
   before any test-sample allowance is drafted for it.
 Also 08:13Z: the first ext4 flip (decision 267) converged the i3 proposer package in 9 minutes end to end (checks 48 s, worktree 8 s,
 flip 367 s, fast-forward 133 s) against 40-80 minutes on the 9p mount; i3 proposers flying at 7250fac92 (task SAEA-Queue-TFRLi3Prop).
+
+### Owner decision brief 2026-10-12 09:00Z: decisions 268-273 PROPOSED; current stage; plan after iteration 3 (coordinator, on the owner's request)
+
+Owner request (translated): "List in detail the items that need my decision and explain them; also lay out the current work stage and a
+detailed plan for the work after." Chat reply in Chinese; this is the English record.
+
+**Where the programme stands.** SLURP: lock v2.2 (+v4g post-processing) is the system of record (decision 249; test-sample read
+successor-2: v2.2 beats COMP-1b on the test sample; Fold B levels 64.34 SLU-F1 / 82.41 intent; bare Instruct core 33.49 / 72.41 on the
+same roster, so the system adds +30.85 / +10.00). The sealed-credit loop (decisions 262-266) ran iterations 1 and 2 end to end and
+iteration 3 is flying (d39224f1c): the typed operator class (deliver rules) is exhausted (empty arm three times, every candidate at +0.00,
+one re-proposal); the ACE prose-item comparator moved +0.87 -> +1.38 [+0.15, +2.57] SLU with credit-driven curation but fails the 1.49
+floor and costs intent (-0.56). 266-E: the Thinking core is +11.90 / +4.35 over the Instruct core bare, at 26x the decode cost and 3.3 %
+truncation abstentions. Carriers (Audio2Tool, E21, E22): hooks and all-off cells exist; A2T all-off A/A proven model-free; E21 needs about
+4 GPU-h; E22 needs its encoder packet window; none has flown (decision 242/252: SLURP lock first). Decision 267 (ext4 hot paths) landed:
+flips 9-34 min instead of 40-80.
+
+**Decisions requested.**
+- **268 System on the Thinking core.** The system is core-agnostic; 266-E says the core is a strong lever. One Fold B column of the locked
+  system (v2.2 + v4g, same knowledge supply) with its twin on the Thinking core, cap 8,192: 2 arms x 1,080 x 4 contacts, about 14 GPU-h
+  (22.8 s per contact), read against the Instruct lock column (cross-flight bar 2.5 pp with the in-chain twin). A = now (after the i3
+  column), B = after iteration 3 closes (recommended), C = do not fly. If additive the composed level would sit near 76 / 86 and the
+  Stage-3 claim surface (252) and any test allowance must be rebuilt around it; if it does not transfer, the Instruct core stays the study
+  core and 266-E is a core-capability note.
+- **269 Loop end state.** The protocol's completion checklist (Fold A confirmation of lock / aa / typed final / ACE final; DEV composed
+  read) presumes an accepted state. With no accepted typed state and a refused ACE: A = run only the loop's closing results note and the
+  ledger entry (0 GPU; recommended); B = still fly the ACE final on Fold A as a comparator record (~3 GPU-h); C = extend the loop by one
+  iteration with a NEW typed operator class designed first (consumption-side, decision 266-C's design note; 0 GPU until designed).
+- **270 One-pass flip convergence.** Engineering: compute the shared protocol hash once, write every cell, commit once (protocol change to
+  the flip; saves the 2-3 inner passes per cell). A = do it (Sonnet, model-free, tested on synthetic repos; recommended), B = keep the loop.
+- **271 Idle watchdog / uptime guard.** The hold has been in place since 2026-09-28 and serving rotation now follows experiment needs
+  (owner 2026-10-11). A = retire the 12-h uptime restart and keep the hold permanently with a daily health check (recommended), B = re-arm
+  the guard when idle.
+- **272 Carriers now.** The owner goal needs the base to run end to end on Audio2Tool, E21 and E22. A = start the carrier base runs now in
+  the GPU gaps (A2T all-off A/A on the frozen 400 split, E21 all-off ~4 GPU-h, E22 encoder window + all-off), using v2.2 as the SLURP
+  system of record while 268 is pending (recommended); B = wait for 268's result; C = wait for a SLURP system-level lock (252).
+- **273 SOTA comparator table.** "At or above SOTA on several tasks" needs a defined comparator: per task, the published training-free
+  numbers and the fine-tuned numbers, with the claim class the owner wants (training-free control of a frozen core vs any system). A =
+  commission the table as a Stage-1-style survey record first (0 GPU; recommended), B = claim only against direct-call baselines.
+
+**Plan after iteration 3 (sequence; GPU-hours are measured rates).** (1) today: i3 column seals (~11:50Z) -> `close --iter 3` -> loop
+results note (Opus) -> decision 263 ledger entry; (2) 268-B: Thinking system column (14 GPU-h, ~1 day with the swap) OR 272-A carriers in
+the gap; (3) carriers: A2T all-off A/A (~2 GPU-h), E21 all-off (~4), E22 packets + all-off (~3 + window); (4) engineering in parallel
+(model-free): 270 one-pass flips, knowledge snapshots cached on ext4 (the remaining 9p cost in `check`), registry/handoff hygiene;
+(5) consolidation: SOTA table (273), Stage-3 claim surface under 252, test-sample allowance only after 268 is measured.
