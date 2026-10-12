@@ -2194,3 +2194,34 @@ object (`reasoning_content_sha256`, `reasoning_chars`, `reasoning_tokens`, `forc
 responses without reasoning are byte-identical to before (pinned). The 266-E Thinking traces hold no wire responses (preserve was false),
 so no sealed artefact contains reasoning bytes. The 268 package's stale "reasoning bytes land in the trace" finding text is refreshed at
 its next re-derive.
+
+### 274 deliverable ready (branch `opus/engineering-base-unification`, d72faac0e; merge after the i3 driver exits): base manifest, locator gate, migration tooling; decisions 287-295 PROPOSED (coordinator, 2026-10-12 11:15Z)
+
+Spec `docs/superpowers/specs/2026-10-12-engineering-base-unification-design.md`; manifest `configs/base/engineering-base-v1.json` (two Q4_K_M
+cores with hashes + llama.cpp build 04ccc72a, five serving geometries, packet roots with promotion-receipt hashes, roots, subtree classes, the
+24 live scripts, a timing budget); `scripts/lib/data_root.sh` = the ONE default line + init guard (refuses a missing root, a non-ext4 root
+after the cut-over, a stale inherited `SPEECHRL_DATA_DIR`), read by 22 live scripts + `serving_lib.sh`; `engineering_base_locator_check.py`
+(manifest vs default line, live scripts, a ratchet baseline of the 341 frozen files carrying the `/mnt/e` literal, models vs runtime receipts
+and the umbrella lock, geometries vs fragments; `--host` adds ext4 / mount / sizes / receipt hashes); `scripts/data/migrate_data_root_ext4.sh`
+(dry-run default; `--phase hot|runtime|derived|rest|cold`; `--execute` refuses while a flight, flight lock, flip, serving start/monitor/swap
+or a server on 8080 is alive; rsync per subtree, absolute-symlink re-pointing, sha256 manifests both sides, receipts); `engineering_base_timing.py`
+(first receipt: CLI import 0.76 s ext4 vs 2.89 s 9p warm; git status 0.30 s vs 199 s under campaign load; 2,000-file stat+read 0.06 s vs 78 s).
+Findings that shape the cut-over: flights DO read raw audio (hash + sample-rate probe per row), so `datasets/` must be reachable under the
+data root; `derived/` must be a real directory (eight receipts pin `derived/...` relpaths); three surfaces bind the absolute root (serving
+session identity -> every session restarts after the cut-over; hypothesis-source artefacts -> re-prepare before reuse; semantic-authoring
+registrations -> need a compatibility link); the fit monitor restarts; 22 Audio2Tool + the Earnings baselines pin `/mnt/e/...` absolutely
+(kept frozen; resolved through a compatibility link once E: is emptied); three E22 fragments name a packet root that does not exist on this
+host; `~/.bashrc` exports the old `SPEECHRL_DATA_DIR`; 116 registered worktrees (89 on merged branches) and ~320 directories under
+`/home/chao/saea-worktrees`. Owner's 284 ruling supersedes the spec's hot/cold split: EVERYTHING migrates to disk 1 (1,450 GB of 2 TB; the
+two static lanes are copying datasets/models/derived there now), disk 2 is growth/archive space, no datasets/models links.
+- **287** adopt base v1 + the locator gate as a standing offline gate (recommended A).
+- **288** cut-over moment: A right after the i3 column seals (serving stopped, hot subtrees migrated, default line flipped, serving
+  restarted on the new root; ~1-2 h of GPU idle) (recommended); B after 268.
+- **289** compatibility link `E:...\speechrl-data -> disk 1` after step 3 so the 341 frozen absolute pins keep resolving (recommended A).
+- **290** keep the Audio2Tool / Earnings absolute pins frozen (their prepared-supply identities) (recommended A).
+- **291** disk 2 size: A 1.3 TB (E: keeps ~500 GB) per the owner's plan.
+- **292** worktree cleanup from WSL: remove worktrees on merged branches and orphan directories (recommended A; never from Windows).
+- **293** backup: both VHDXs and the source share ONE physical drive (E:); A = a periodic rsync of the sealed subtrees to D: or an external
+  disk (recommended); B = none.
+- **294** `~/.bashrc` and the queue wrappers switch to the data-root authority at the cut-over (A).
+- **295** the three E22 fragments naming a missing packet root are re-pinned when E22's encoder window runs (A).
