@@ -2097,3 +2097,7 @@ program-archives, manifests, archive, ...) started 10:22Z as task SAEA-Migrate-S
 /home/chao/saea-migration/); the subtrees the flying i3 column writes (runs, attempts, analysis, knowledge, coordination minus the
 deleted packages, serving, locks, receipts, logs) follow after the seal with a final `--delete` pass; verification manifests per subtree;
 then the `SPEECHRL_DATA_DIR` cut-over; then step 3.
+Owner 2026-10-12 10:30Z: 「_repro/ 删除」 -- `_repro/` (29 GB) is DELETED with the ChatGPT-line and Stage-1 artefacts. The running static
+migration task copies it before the ruling takes effect in the script's list; the ext4 copy is removed right after STATIC_DONE and the E:
+original goes with step 3. Final deletion set: system-text-search, the 2026-10-01..09 ChatGPT-line coordination packages, survey-*, _repro
+(about 104 GB).
