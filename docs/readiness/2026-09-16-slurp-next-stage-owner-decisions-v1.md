@@ -2145,3 +2145,18 @@ budget session registered; (3) the forced-close sentence verified; (4) **286 (PR
 docs or notes). A = allow sealing reasoning bytes under the data root (recommended: sealed model output is already stored there; the
 no-persist rule covers documents, chat and notes); B = add a transport option that drops reasoning bytes before sealing (hash only).
 Sequencing: 274 (base) -> 283 (knobs) -> re-derive 268 -> i3 closed -> countersign, mint, ext4 flip, swap to think-budget-np4, chain.
+
+### 283 A delivered: the Thinking harness knobs merged (0e6ffbfd3); 268 package being re-derived on them (coordinator, 2026-10-12 11:00Z)
+
+Model-fragment keys (all hashed into the fragment / composed / protocol hashes): `reasoning_budget_tokens`, `answer_reserve_tokens`
+(`max_tokens == budget + reserve` enforced), `enable_thinking`, `reasoning_context_policy` (`drop-reasoning-v1`), `forced_close_message_sha256`
+(the sha of the `--reasoning-budget-message` value in `server_args`); Instruct fragments accept only the context policy. Per-node
+`thinking_policy` in a baseline/experiment fragment (native path: role kinds perception / solver; direct path: phase names), hashed.
+Wire: `thinking_budget_tokens` and `chat_template_kwargs.enable_thinking` on the request (refused without the reasoning guard); COST record
+gains `reasoning_chars`, `reasoning_tokens` (null unless the server reports it), `forced_close` (reasoning ends with the pinned message).
+Fallback (278): one receipted answer-only re-ask (`enable_thinking: false`, `max_tokens` = reserve) when a budgeted contact returns empty
+at its cap; receipt `saea-thinking-answer-fallback-v1` at `<contact>/reasoning-fallback`; the re-ask is metered (plan ceiling rows x
+(max_contacts + 2) for module programs). Byte identity: the Instruct and the Thinking max8192 cells compose to the same config hashes as
+before. Tests: 39 + 24 new, the transport / adapter / controllers / runner / empty-completion suites pass; gates PASS. Open items: the
+supply-variant fit ceiling is not yet bound to B + R; the forced-close sentence is still to be verified verbatim against the Qwen3 report.
+`runtime.py` and `rails/*` changed, so every unflown registered cell re-pins at its next flip (the flying i3 column is unaffected).
