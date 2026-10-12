@@ -23,13 +23,15 @@ param(
   [int]$RepeatMinutes = 0
 )
 function Register-SaeaTask([string]$TaskName, [string]$TaskScript, [bool]$Strict, [int]$Repeat) {
-  $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -StartWhenAvailable
+  $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -StartWhenAvailable -Hidden
   if ($Repeat -gt 0) {
     $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes $Repeat)
   } else {
     $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddYears(1)
   }
-  $action = New-ScheduledTaskAction -Execute 'wsl.exe' -Argument ("-d Ubuntu-24.04 bash " + $TaskScript)
+  # Hidden console (owner 2026-10-12: every task launch used to open a visible console window and leaked a conhost; the
+  # watchdog alone spawned one every five minutes). wsl.exe inherits the hidden PowerShell console, so no window appears.
+  $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument ("-NoProfile -NonInteractive -WindowStyle Hidden -Command `"& wsl.exe -d Ubuntu-24.04 bash " + $TaskScript + "`"")
   if ($Strict) {
     Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -Force -ErrorAction Stop | Out-Null
   } else {
