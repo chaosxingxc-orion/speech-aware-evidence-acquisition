@@ -2537,3 +2537,23 @@ solutions; 300: fix as you recommend, when the time comes; fact: closed manually
 - **Results note:** `docs/results/2026-10-13-slurp-268b-thinking-system-fold-b-read.md` (Opus, from the read and smoke receipts); the
   READ row closes when the note cites it. Registered budget vs spend: planned 8.4 GPU-h per arm, spent about 9.4 (summed latency / 4
   slots); calls 2,160 of 4,320 planned per arm; audio 6,310 s per arm.
+
+### P3 programme under decision 299 A: the engineering base moves to the Thinking core -- plan of record (coordinator, 2026-10-13 16:20Z)
+
+Owner decision 299 A (2026-10-12) fires on the 268-B read (3 of 3 conditions). The rebuild is sequenced so that every GPU hour buys a
+registered read, in the owner's priority order (SLURP system optimisation first; the base runnable on A2T / E21 / E22 second; SOTA
+comparison last). Development numbers only until a DEV replicate exists; never a test claim without a signed allowance.
+
+| step | object | GPU | gate / output |
+| --- | --- | ---: | --- |
+| P3.0 | No-flight window: 297 B delete of `speechrl-data.retired-20261012` (E:), 298 A VHDX growth 2 -> 3.6 TB + `resize2fs`; then Instruct serving back on | 0 | locator `--host --require-hot-mounted` PASS; E: free >= 500 GB |
+| P3.1 | **Thinking system DEV replicate**: the lock v2.2 module graph on the Thinking core on DEV-2000-ADDED (lock + in-chain twin, same shape as 268-B), Thinking packets for the DEV roster encoded in the swap window (`direct_fb_packets_gpu.sh`, about 0.16 s per row), comparator = the Instruct lock already read on that roster | about 2 x 9.5 h | NOMINATED iff SLU CI95 lower bound > the twin offset and intent guard holds -> the Thinking system becomes the SLURP lock candidate v3.0 (Fold B + DEV replicated); the budget 3,072 / cap 4,096 knobs and `drop-reasoning-v1` are part of the lock |
+| P3.2 | **Carrier packets on the Thinking mmproj**: A2T frozen 400 (+ the 4,000 native-system roster if still live), E21 full discovery windows, E22 windows -- GPU encode, promotion receipts per root (same receipt form as the Fold B promotion) | about 1-3 h | promotion receipts; `derived_media_confinement_check` and the locator's packet-root rule PASS |
+| P3.3 | **Carrier baselines on Thinking**: A2T stage-3 all-off + direct, E21 all-off + direct, E22 all-off + direct, derived from the registered Instruct cells with the Thinking model fragment and the Thinking packet roots (the four red registration packages are re-pinned here); the thinking knobs are fixed at the SLURP values until a carrier smoke says otherwise | A2T about 2 x 1 h, E21 about 4 h, E22 about 4 h | each carrier: smoke -> sign-off -> arms; per-stratum tables with the paper column (A2T) / Whisper-normalised WER beside saea-scoring (Earnings); this closes the goal's "base runs on A2T / E21 / E22" item on the Thinking base |
+| P3.4 | **Serving geometry for Thinking**: measured 1.84 rows/min at np4 x 24,576; test np6 x 24,576 (KV at q8_0) and the per-node thinking policy (Perception without thinking, 273 A) as registered A/A-free throughput runs on the smoke roster only | about 1 h | a throughput receipt; no claim |
+| P3.5 | **SOTA redo (285)** on the Thinking base: the comparator table rebuilt with the P3.1 / P3.3 numbers, zero-shot and fine-tuned rows kept apart | 0 | `docs/readiness/<date>-sota-comparator-table-v2` |
+| P3.6 | Test-sample read of the Thinking system under a new allowance (successor-3), only after P3.1 is NOMINATED | about 2 x 25 h at 3,010 rows | owner signature first |
+
+Standing rules: one experiment in flight; a cell is admitted only after its predecessor is replicated or root-caused; every plan ceiling
+comes from a measured 4-slot throughput run (the 268-B overrun is the lesson); no flips or `core.flight.cli` checks while a driver is
+alive; the serving session is swapped, never restarted mid-flight.

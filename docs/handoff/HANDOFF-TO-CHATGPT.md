@@ -1,6 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-13T15:56:28Z
+Last refreshed: 2026-10-13T16:11:51Z
+
+## 268-B results note merged (370029d4a); READ row closed; P3 plan of record on file; no-flight window (297 B / 298 A) in progress (2026-10-13T16:11:51Z, Fable 5.1 root)
+
+Note: `docs/results/2026-10-13-slurp-268b-thinking-system-fold-b-read.md` (Opus) + results-ledger entry; ledger gates PASS. P3 plan (registry 16:20Z):
+P3.0 window (delete `speechrl-data.retired-20261012`, VHDX 2 -> 3.6 TB, resize2fs, serving back on) -> P3.1 Thinking system DEV-2000-ADDED replicate
+(lock + twin, Thinking packets for the DEV roster encoded in the swap window) -> P3.2 carrier packets on the Thinking mmproj (A2T 400, E21, E22)
+-> P3.3 carrier all-off/direct baselines on Thinking (re-pins the four red packages) -> P3.4 Thinking serving geometry receipt -> P3.5 SOTA redo (285)
+-> P3.6 test read under a new allowance only after P3.1 is NOMINATED. Every ceiling from a measured 4-slot throughput run.
+
+Superseded stamp: 2026-10-13T15:56:28Z
 
 ## 268-B READ: Thinking system TRANSFERS-ABOVE-BAR (SLU +7.15 [+5.08, +9.26], intent +2.31 [+0.56, +4.07] over the Instruct system on Fold B); 299 A -> REBUILD-BASE-ON-THINKING (2026-10-13T15:56:28Z, Fable 5.1 root)
 
