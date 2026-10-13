@@ -2496,3 +2496,13 @@ solutions; 300: fix as you recommend, when the time comes; fact: closed manually
   then aa, one session, one flight commit; the first refused re-pin (the smoke's attempt already existed) and the ext4 worktree
   left on a throwaway branch were both cleared (rules recorded). Swap back to slurp-np4, READ-row countersign and the read follow the
   two seals.
+
+### 268-B lock arm SEALED; aa arm flying (coordinator, 2026-10-13 06:05Z)
+
+- `SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1` sealed 05:58Z at flight commit be7878fc6: manifest COMPLETED, 2,160 contacts
+  (1,080 rows x Perception + Solver), 6,310 speech-audio seconds, summed call latency 37.65 h = about 9.4 slot-normalised GPU-h on the
+  4-slot session (wall 9 h 46 min, 1.84 rows/min) against the amended 8.4 ceiling (the smoke's per-contact seconds under-estimate
+  4-slot contention by about 1.5x; the ledger's gpu cell is a pre-registered ceiling, the seal records summed latency, no runtime abort --
+  the overrun is stated here and in the read, and the next Thinking registration plans from a measured 4-slot throughput run). The twin
+  `...-AA-V1` started 05:58:52Z on the same session and flight commit (registration gate ok, prelaunch ok); expected seal about 15:40Z.
+  Lock rows (generation + FIT) closed with `ledger_mark_consumed.py --apply`; the READ row stays a draft until the twin seals.
