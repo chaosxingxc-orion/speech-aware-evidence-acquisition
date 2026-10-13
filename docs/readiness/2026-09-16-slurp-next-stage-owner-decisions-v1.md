@@ -2639,3 +2639,29 @@ both layouts (`v1-legacy-response-hash-in-sample-id-field` / `v2-sample-id-sha-a
 loop package README carries a dated successor note (iterations 1-3 flew with both defects). Open item (pre-existing, fails on master
 too): `test_iteration_one_regression_reproduces_the_hand_built_inputs_byte_for_byte_except_the_pins_free_text` on the i1 ACE wrap
 receipt's `authored` / `source` fields. The loop is ready for its next use on the Thinking residuals (307).
+
+### NX-T R1 built and merged, HELD behind P3.1 (ruling 304: which nodes need thinking) (coordinator, 2026-10-13 20:05Z)
+
+- **Harness (merged bf6945a5d):** a same-flight column arm kind over the per-node decoding knobs -- `roles.perception.thinking_variants`
+  (level-2 Perception branch group; per-arm `thinking_policy` of `enable_thinking` / `reasoning_budget_tokens` / `answer_reserve_tokens`
+  per node, any other knob refused by name; receipt schema `saea-perception-branch-arms-v5` with an optional twin; the bundle verifier
+  re-reads each arm's trace request against its declared policy). The delivering arm and its twin declare no policy and take the
+  unchanged path: a unit test composes the unarmed 268-B lock request and the delivering arm's and finds the rendered body, the request
+  payload bytes and the role-request bytes equal minus the arm id; a 4-row production-graph test matches the delivering arm's Perception
+  and Solver requests to the unarmed plan per row. Every arm renders the delivering arm's evidence, template and QueryState; a non-
+  delivering arm's Solver prompt carries that arm's own Perception note (independent chains, no note sharing). 93 tests on the new and
+  touched files, gates PASS.
+- **Cell** `slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1` (+ smoke-4), TRAIN Fold B 1,080 rows, program `phase-native-module-v1-c10`
+  (2 + 2 x 4 contacts per row), Thinking packets of Fold B, session think-budget-np4, `defer-to-native-contact-fit`; arms: `both-on`
+  (delivering, last), `both-on-twin` (request-identical A/A null), `perception-off`, `solver-off`, `both-off` (the no-think core on the
+  same weights; `max_tokens` 1,024 for a no-think node). Measurement block: same-flight node column, SLU primary, intent secondary,
+  `claims_benefit` false, expected effect 7.15 pp (the Thinking-vs-Instruct system gap the no-think arm is expected to lose), external
+  reference = the 268-B twin offset +1.15. Ceiling `ceil_0.1(1,080 x 3.25 / 1.84 / 60 x 1.3)` = 41.4 GPU-h (expected 31.8; arm mix
+  1.0 + 1.0 + 0.6 + 0.6 + 0.05 full 268-B rows per row), smoke 0.5; calls 17,280 (10 per row + fallback allowance). Package
+  `docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/`; scripts `scripts/flights/nx/nxt_r1_*` (SHORT `nxt1`); reader
+  `scripts/analysis/slurp_nxt_thinking_policy_column_read.py` (per-arm levels, paired deltas vs both-on with cluster-bootstrap CI95,
+  per-node tokens, finish-reason / cap / empty / forced-close table, think-marker count, seconds per contact, throughput table).
+- **HELD** (303 A) until the P3.1 chain finishes: then re-derive, append + countersign the five rows, mint, ext4 flip, chain
+  (smoke -> sign-off marker `/home/chao/nxt1-decode-signoff.marker` -> column). Open: `enable_thinking: false` on the Thinking checkpoint
+  is unmeasured (the smoke settles it); `flight_registration_check.py` does not yet inspect the thinking-variant group; a pre-existing
+  i1 regression test failure (ACE wrap receipt `authored` / `source` fields) is on master and unrelated.
