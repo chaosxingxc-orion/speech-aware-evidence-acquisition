@@ -23,12 +23,16 @@
 # root-countersigned (driver --check-ledger); the script authorises nothing: the row's countersignature is the authorisation.
 #
 #   bash scripts/flights/direct/direct_fb_packets_gpu.sh --check            every guard, both dry-runs and the swap dry-run; no side effects
-#   bash scripts/flights/direct/direct_fb_packets_gpu.sh --run [--stage all|smoke|fold-b] [--max-fold-seconds N]
+#   bash scripts/flights/direct/direct_fb_packets_gpu.sh --run [--stage all|smoke|fold-b|dev2000-added] [--max-fold-seconds N]
 #   bash scripts/flights/direct/direct_fb_packets_gpu.sh --task             start the Windows task SAEA-Packets-THINK-GPU (survives the session)
 # --stage smoke: stop Instruct, the 4-row proof, then restore INSTRUCT (a short window); --stage fold-b: stop Instruct, Fold B, start Thinking.
+# --stage dev2000-added (P3.1): stop Instruct, encode the 1,000 DEV-2000-ADDED rows on the GPU (roster thinking-dev2000-added, its own run id, legacy cache
+#   and output directory), promote ADDITIVELY into the existing Thinking root under the NEW receipt DEV-2000-ADDED-promotion.json, then start the
+#   think-budget-np4 session (the replicate flights need the budget session). The exposure row SAEA-SLURP-DEV2000-ADDED-THINKING-PACKETS-GPU-V1 must be
+#   root-countersigned; --check --stage dev2000-added runs every guard and the DEV dry-run only (the Fold B dry-runs are skipped: their root is populated).
 # Exit codes: 0 ok; 2 dirty tree; 3 a dry-run refused; 4 another llama-server or a packet driver; 7 a flight is alive; 8 host memory, disk
 # or the swap dry-run short; 9 the Thinking serving entry is missing; 11 the exposure row is not countersigned; 12 task start failed;
-# 14 the Instruct stop failed; 20 smoke failed; 21 Fold B failed; 22 an encoder server did not go away; 23 the measured rate is
+# 14 the Instruct stop failed; 20 smoke failed; 21 Fold B failed; 26 DEV-2000-ADDED failed; 22 an encoder server did not go away; 23 the measured rate is
 # unacceptable; 24 the Thinking start failed; 25 the Instruct RESTORE failed; 64 usage.
 set -u
 MODE=
@@ -47,7 +51,8 @@ while [ $# -gt 0 ]; do
 done
 case "$MODE:$STAGE" in
   check:all|run:all|run:smoke|run:fold-b|task:all) ;;
-  *) echo "usage: direct_fb_packets_gpu.sh --check | --run [--stage all|smoke|fold-b] [--max-fold-seconds N] | --task"; exit 64 ;;
+  check:dev2000-added|run:dev2000-added|task:dev2000-added) ;;
+  *) echo "usage: direct_fb_packets_gpu.sh --check | --run [--stage all|smoke|fold-b|dev2000-added] [--max-fold-seconds N] | --task"; exit 64 ;;
 esac
 
 REPO=${PACKETS_REPO:-/mnt/d/chao_workspace/exploring-l4-intelligence/studies/speech-aware-evidence-acquisition}
@@ -57,6 +62,9 @@ DRIVER=$REPO/scripts/slurp_fold_preprocess_thinking.py
 SWAP=${PACKETS_SWAP:-$REPO/scripts/flights/batch/serving_swap.sh}
 INSTRUCT_TARGET=slurp-np4
 THINK_TARGET=think-np4
+DEV_ROSTER=thinking-dev2000-added
+CHECK_ARGS=()
+if [ "$STAGE" = dev2000-added ]; then THINK_TARGET=think-budget-np4; CHECK_ARGS=(--roster "$DEV_ROSTER"); fi
 HOLD=${PACKETS_WATCHDOG_HOLD:-/home/chao/saea-queue/watchdog.hold}
 DATA_DISK=${PACKETS_DATA_DISK:-/home/chao}
 START_FLOOR_GB=${PACKETS_START_FLOOR_GB:-8}
@@ -64,8 +72,10 @@ MIN_FREE_DISK_GB=${PACKETS_MIN_FREE_DISK_GB:-5}
 GONE_WAIT_SECONDS=${PACKETS_GONE_WAIT_SECONDS:-60}
 ENCODER_PORT=8081
 OUT=${PACKETS_OUT:-$DATA/prepared/slurp-direct-fb-thinking-packets-gpu-v1}
+[ "$STAGE" != dev2000-added ] || OUT=${PACKETS_OUT:-$DATA/prepared/slurp-dev2000-added-thinking-packets-gpu-v1}
 TASK_NAME=SAEA-Packets-THINK-GPU
 TASK_ENTRY=$REPO/scripts/flights/direct/direct_fb_packets_gpu_task_entry.sh
+[ "$STAGE" != dev2000-added ] || TASK_ENTRY=$REPO/scripts/flights/direct/direct_fb_packets_gpu_dev_task_entry.sh
 export SAEA_MAIN=$REPO SAEA_DATA=$DATA
 export SPEECHRL_DATA_DIR=$DATA PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$REPO:$REPO/src
 # shellcheck source=../batch/serving_lib.sh
@@ -73,14 +83,15 @@ source "$REPO/scripts/flights/batch/serving_lib.sh"
 
 # Recovery labelling (the GPU run id has its OWN file: the CPU run's /home/chao/direct-fb-packets.recovery must never leak into this run).
 RECOVERY_FILE=${PACKETS_RECOVERY_FILE:-/home/chao/direct-fb-packets-gpu.recovery}
-SMOKE_ATTEMPT=; FOLD_ATTEMPT=; RECOVERY_OF=
+[ "$STAGE" != dev2000-added ] || RECOVERY_FILE=${PACKETS_RECOVERY_FILE:-/home/chao/direct-fb-packets-gpu-dev2000-added.recovery}
+SMOKE_ATTEMPT=; FOLD_ATTEMPT=; DEV_ATTEMPT=; RECOVERY_OF=
 # shellcheck disable=SC1090
 [ -f "$RECOVERY_FILE" ] && . "$RECOVERY_FILE"
 ROSTER_ARGS=()
 roster_args() {
   ROSTER_ARGS=()
   local attempt=
-  case "$1" in thinking-smoke-4) attempt=$SMOKE_ATTEMPT ;; thinking-fold-b) attempt=$FOLD_ATTEMPT ;; esac
+  case "$1" in thinking-smoke-4) attempt=$SMOKE_ATTEMPT ;; thinking-fold-b) attempt=$FOLD_ATTEMPT ;; thinking-dev2000-added) attempt=$DEV_ATTEMPT ;; esac
   [ -z "$attempt" ] || ROSTER_ARGS+=(--attempt-id "$attempt")
   [ -z "$RECOVERY_OF" ] || ROSTER_ARGS+=(--recovery-of "$RECOVERY_OF")
 }
@@ -109,7 +120,7 @@ registry_guards() {
   git -C "$REPO" rev-parse HEAD > /dev/null 2>&1 || { fail 2 "$REPO is not a git checkout"; return 0; }
   dirt=$(git -C "$REPO" status --short | grep -vc '^??')
   [ "$dirt" = "0" ] || fail 2 "dirty tree ($dirt tracked changes); the launch binds a clean, countersigned HEAD"
-  driver --check-ledger > /dev/null || fail 11 "the exposure row SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1 is absent, inconsistent or not root-countersigned (driver --check-ledger)"
+  driver "${CHECK_ARGS[@]}" --check-ledger > /dev/null || fail 11 "the exposure row for stage $STAGE (SAEA-SLURP-DIRECT-ONLY-FOLD-B-THINKING-PACKETS-GPU-V1, or SAEA-SLURP-DEV2000-ADDED-THINKING-PACKETS-GPU-V1 for dev2000-added) is absent, inconsistent or not root-countersigned (driver --check-ledger)"
 }
 
 dry_runs() {
@@ -234,12 +245,16 @@ echo "direct_fb_packets_gpu $MODE stage $STAGE $(ts) HEAD $(git -C "$REPO" rev-p
 
 case "$MODE" in
   check)
-    registry_guards; runtime_guards; dry_runs thinking-smoke-4 thinking-fold-b; window_dry_run
+    registry_guards; runtime_guards
+    if [ "$STAGE" = dev2000-added ]; then dry_runs "$DEV_ROSTER"; else dry_runs thinking-smoke-4 thinking-fold-b; fi
+    window_dry_run
     [ "$RC" = 0 ] && echo "CHECK PASS: every guard, both dry-runs and the swap dry-run; nothing was started" || echo "CHECK REFUSED (first code $RC)"
     exit "$RC"
     ;;
   task)
-    registry_guards; runtime_guards; dry_runs thinking-smoke-4 thinking-fold-b; window_dry_run
+    registry_guards; runtime_guards
+    if [ "$STAGE" = dev2000-added ]; then dry_runs "$DEV_ROSTER"; else dry_runs thinking-smoke-4 thinking-fold-b; fi
+    window_dry_run
     [ "$RC" = 0 ] || { echo "TASK REFUSED (first code $RC); nothing was started"; exit "$RC"; }
     PS=$(saea_powershell)
     out=$("$PS" -NoProfile -File "$SAEA_TASK_PS1_WIN" -Name "$TASK_NAME" -Script "$TASK_ENTRY" -Start 2>&1 | tr -d '\r'; exit "${PIPESTATUS[0]}")
@@ -256,6 +271,7 @@ case "$MODE" in
       smoke) dry_runs thinking-smoke-4 ;;
       fold-b) dry_runs thinking-fold-b ;;
       all) dry_runs thinking-smoke-4 thinking-fold-b ;;
+      dev2000-added) dry_runs "$DEV_ROSTER" ;;
     esac
     window_dry_run
     [ "$RC" = 0 ] || { echo "RUN REFUSED (first code $RC); nothing was started"; exit "$RC"; }
@@ -282,6 +298,9 @@ case "$MODE" in
     if [ "$STAGE" = all ] || [ "$STAGE" = fold-b ]; then
       run_attempt thinking-fold-b 21
     fi
+    if [ "$STAGE" = dev2000-added ]; then
+      run_attempt "$DEV_ROSTER" 26      # exit 26: the DEV encoder/promotion failed (no rate gate: the Fold B smoke proved the GPU form)
+    fi
     if [ "$STAGE" = smoke ]; then
       event instruct-restore-start "stage smoke ends on the Instruct geometry"
       swap "$INSTRUCT_TARGET" --start-only
@@ -304,7 +323,11 @@ case "$MODE" in
     event window-end "packets prepared, Thinking resident"
     write_summary "ok" 0
     echo "WINDOW OK: packets promoted, the Thinking serving session is resident and ready; the watchdog hold $HOLD STAYS (remove it after the Instruct restore, package README step 9)."
-    echo "NEXT: python -B scripts/slurp_fold_preprocess_thinking.py --pin-receipt   (prints; add --write to substitute the zero sentinel in the two baselines)"
+    if [ "$STAGE" = dev2000-added ]; then
+      echo "NEXT: python -B scripts/slurp_fold_preprocess_thinking.py --roster $DEV_ROSTER --pin-receipt   (verification), then thinking_system_dev_derive_cells.py --require-receipt and the DEV package writer (package README, step 3)"
+    else
+      echo "NEXT: python -B scripts/slurp_fold_preprocess_thinking.py --pin-receipt   (prints; add --write to substitute the zero sentinel in the two baselines)"
+    fi
     exit 0
     ;;
 esac

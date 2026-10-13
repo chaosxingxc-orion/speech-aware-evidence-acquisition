@@ -1,0 +1,9 @@
+{
+  "execution_profile": "bounded-discovery-probe",
+  "experiment_id": "SAEA-SLURP-DEV2000-ADDED-THINKING-PACKETS-GPU-V1",
+  "feature_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
+  "legacy_cache_dir": "/home/chao/feat-cache/slurp-thinking-gpu-q4km-dev2000-added",
+  "preregistration": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1-preregistration.md",
+  "promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/DEV-2000-ADDED-promotion.json",
+  "purpose": "Exposure row SAEA-SLURP-DEV2000-ADDED-THINKING-PACKETS-GPU-V1 (registry 'P3 programme under decision 299 A', step P3.1; package docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1): materialize the Thinking-core speech-feature packets for the 1,000 SLURP DEV-2000-ADDED recordings (2,983.527 s) by one GPU encoder pass inside a serving-swap window: one contact per row at max_tokens 1 (the response is never read), then ADDITIVE promotion into the existing Thinking packet root under the new receipt DEV-2000-ADDED-promotion.json. The Instruct packets of these rows are decoder-ready outputs of the Instruct audio encoder and are not valid input to the Thinking decoder (748 of 860 mmproj tensors differ). Label-free: no gold, transcript or model output is opened. Keep the Fold B Thinking packets and receipt untouched."
+}

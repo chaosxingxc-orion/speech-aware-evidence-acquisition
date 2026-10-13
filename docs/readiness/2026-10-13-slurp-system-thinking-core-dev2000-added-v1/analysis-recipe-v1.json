@@ -1,0 +1,62 @@
+{
+  "authority": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md ('P3 programme under decision 299 A' (coordinator, 2026-10-13 16:20Z), step P3.1); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md; docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md",
+  "cell_kind": "CROSS-FLIGHT REPLICATE READ -- Thinking system arm vs the sealed Instruct lock column on DEV-2000-ADDED, with an in-chain twin; claim ceiling none",
+  "claim_boundary": "No benefit, system-level, superiority, generalisation, held-out, confirmatory or paper-scale claim.",
+  "comparators": {
+    "bare_instruct_core": {
+      "attempt_id": "attempt-slurp-direct-max512-dev2000-added-generation-v1",
+      "kind": "bare Instruct core (direct-only form, max512)",
+      "roster_identity": "split identity hash equal to this roster's (ledger row and reader assertion)",
+      "run_id": "SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1"
+    },
+    "bare_thinking_core": "none: no bare Thinking core run exists on DEV-2000-ADDED",
+    "instruct_lock_column": {
+      "arm": "composed",
+      "attempt_id": "attempt-slurp-native-stage3-nx-r5-composed-dev2000-added-generation-v1",
+      "roster_identity": "split identity hash equal to this roster's (asserted by the reader)",
+      "run_id": "SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1",
+      "study_commit": "9a0a3384b0eea234ef612bc6d44d7e1a6bb2e123"
+    }
+  },
+  "contacts": {
+    "asr": 0,
+    "encoder": 0,
+    "model": 0,
+    "scorer": "CPU official scorer jobs over derived copies only",
+    "server": 0,
+    "tokenizer": 0
+  },
+  "execution_profile": "model-free-check (the read); bounded-discovery-probe (the flights themselves)",
+  "measurement_design": "cross-flight-with-in-chain-replicate",
+  "read_run_id": "SAEA-SLURP-SYSTEM-THINKING-CORE-DEV2000-ADDED-READ-V1",
+  "recipe_id": "slurp-system-thinking-core-dev2000-added-read-v1",
+  "registered_at_utc": "2026-10-13T17:00:00.000000+00:00",
+  "roster": {
+    "relpath": "configs/dataset/slurp-speech-native-dev2000-added.json",
+    "roster_id": "SLURP-DEV-2000-ADDED-V1",
+    "roster_receipt": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    "rows": 1000,
+    "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
+  },
+  "run_ids": {
+    "arm": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-V1",
+    "fit": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-FIT-V1",
+    "read": "SAEA-SLURP-SYSTEM-THINKING-CORE-DEV2000-ADDED-READ-V1",
+    "smoke": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-V1",
+    "smoke_fit": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-FIT-V1",
+    "twin": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1",
+    "twin_fit": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-FIT-V1"
+  },
+  "schema": "saea-stage3-rollout-analysis-recipe-v1",
+  "stages": {
+    "1_score": "one complete official scoring per arm (core.scoring_batch; never sharded); the two comparators are already scored at their seals",
+    "2_read": "python -B scripts/analysis/slurp_system_thinking_core_dev_read.py --stage read --data-root $SPEECHRL_DATA_DIR (through scripts/flights/direct/thinking_system_dev_read.sh)",
+    "smoke": "python -B scripts/analysis/slurp_system_thinking_core_dev_read.py --stage smoke (per-node decode cost; no countersignature; the sign-off for the arms)"
+  },
+  "verdict_words": [
+    "NOMINATED",
+    "NOT-NOMINATED",
+    "HARM"
+  ],
+  "what_is_not_here": "No margins block and no admission: nothing is locked here."
+}
