@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "8290959623ea12385cc05d4d1641f2b532582b9ef9b57ebfcc7fe7a189917fd0"
+    "sha256": "e3c17476dcb4981bb1cf21b6d8e3f35ee1dba0de14635397e596f023176af897"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-V1: four-row form smoke of the Thinking system of the P3.1 replicate.",
   "registered_at_utc": "2026-10-13T17:06:14Z",

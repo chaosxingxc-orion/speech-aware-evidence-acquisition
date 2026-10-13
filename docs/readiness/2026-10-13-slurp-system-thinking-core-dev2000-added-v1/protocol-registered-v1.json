@@ -20,11 +20,11 @@
     "lock": {
       "attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-lock-generation-v1",
       "cell": "slurp-native-stage3-thinking-system-dev2000-added-lock-v1",
-      "composed_config_hash": "4c7fd091996c2062d79a3f8d13c0df855058b7d1c2eafa3ee2301a197bf365f0",
+      "composed_config_hash": "a106eabdd80b00887b170da52f1e809497a5f41b7dc2c532127eda22cbd160ae",
       "experiment": "slurp-native-stage3-thinking-system-dev2000-added-lock-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-lock-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-FIT-V1",
-      "protocol_hash": "c7e677606c2e2ab6a146d53b2b409b7bb523ccb6f442d1df113e582d1b7e0020",
+      "protocol_hash": "b80fc03df3505b49f2d39540dc293c8576b1bd42fc6a272e2e535ab276f7ea11",
       "rows": 1000,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-V1",
       "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
