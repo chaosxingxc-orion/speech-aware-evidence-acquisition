@@ -1097,6 +1097,50 @@ def _serving_geometry_max_tokens(values: Mapping) -> int | None:
     return None
 
 
+def _validate_thinking_group_against_values(group, values: Mapping) -> None:
+    """NX-T R1: resolve every arm's per-node policy against the composed fragment, before any contact.
+
+    The group must sit on a reasoning (Thinking) fragment; each arm's per-node override must resolve through
+    ``core.reasoning_knobs.resolve_node_decoding`` inside the serving geometry's output cap, and no arm's ``max_tokens`` may
+    exceed the group's fit ``completion_ceiling`` (the per-contact context-fit gate then runs on each arm's REAL request).
+    """
+
+    from ..core.reasoning_knobs import (  # noqa: PLC0415
+        ReasoningKnobError, fold_into_decoding, is_thinking_fragment, resolve_node_decoding,
+    )
+
+    if not is_thinking_fragment(values):
+        raise ValueError(
+            "roles.perception.thinking_variants is valid only on a reasoning fragment (reasoning_content_guard)"
+        )
+    folded = fold_into_decoding(values) or values
+    decoding = folded.get("decoding_params")
+    base = dict(decoding) if isinstance(decoding, Mapping) else {}
+    geometry = _serving_geometry_max_tokens(values)
+    ceiling = group.fit_estimate.completion_ceiling
+    base_cap = base.get("max_tokens")
+    if isinstance(base_cap, int) and base_cap > ceiling:
+        raise ValueError(
+            f"roles.perception.thinking_variants fit_estimate.completion_ceiling {ceiling} is below the delivering arm's "
+            f"max_tokens {base_cap}"
+        )
+    for branch in group.branches:
+        if branch.thinking_policy is None:
+            continue
+        for kind, entry in branch.thinking_policy.items():
+            try:
+                resolved = resolve_node_decoding(base, {kind: entry}, kind, cap=geometry)
+            except ReasoningKnobError as error:
+                raise ValueError(
+                    f"roles.perception.thinking_variants arm {branch.branch_id!r} {kind} policy does not resolve: {error}"
+                ) from error
+            if resolved["max_tokens"] > ceiling:
+                raise ValueError(
+                    f"roles.perception.thinking_variants arm {branch.branch_id!r} {kind} max_tokens {resolved['max_tokens']} "
+                    f"exceeds the group's fit completion_ceiling {ceiling}"
+                )
+
+
 def _supply_variant_arm_count(role: NativeEpisodeRole) -> int:
     """Item E42: this role's declared arm count, or 1 when it declares none.
 
@@ -1405,7 +1449,15 @@ def load_native_episode_config(
         # Same-flight instrument, PHASE 2 (merge set C): ``branches`` joins the
         # Perception-only row fields for the same reason -- it forks the FIRST
         # phase's own visit and nothing else may declare it.
-        perception_fields = {"branches"} if kind == "perception" else set()
+        perception_fields = {"branches", "thinking_variants"} if kind == "perception" else set()
+        # NX-T R1 (2026-10-13): ``thinking_variants`` is a Perception-only fan-out of the per-node thinking policy; it is one
+        # of the branch group's kinds, so it cannot combine with the other fan-out declarations of the node.
+        if isinstance(row, Mapping) and "thinking_variants" in row:
+            for other in ("branches", "template_variants", "supply_variants"):
+                if other in row:
+                    raise ValueError(
+                        f"roles.{kind}.thinking_variants cannot combine with roles.{kind}.{other}: one fan-out mechanism per node"
+                    )
         # NX programme E1 (2026-10-09): ``template_variants`` joins the row
         # fields of exactly the nodes ``rails.supply_variants.
         # TEMPLATE_VARIANT_NODES`` names (the Solver today). Declared on any
@@ -1647,6 +1699,30 @@ def load_native_episode_config(
                 "roles.perception.template_variants cannot combine with "
                 "native_episode.knowledge_index: the index appends to the system "
                 "message every arm shares and has no per-arm custody form"
+            )
+    # NX-T R1 (2026-10-13): the Perception's per-node THINKING-POLICY column, parsed HERE -- before any contact -- into the SAME
+    # level-2 branch group slot (mutually exclusive with ``branches`` and ``template_variants``). Every arm renders the
+    # delivering arm's own evidence and differs only in the thinking decoding of its own Perception and Solver contacts.
+    if "thinking_variants" in raw_roles["perception"]:
+        from .supply_variants import PerceptionBranchError, parse_perception_thinking_variants
+
+        try:
+            perception_branch_group = parse_perception_thinking_variants(
+                raw_roles["perception"]["thinking_variants"],
+                phase_id=raw_roles["perception"]["phase_id"],
+            )
+        except PerceptionBranchError as error:
+            raise ValueError(f"roles.perception.thinking_variants is invalid: {error}") from error
+        _validate_thinking_group_against_values(perception_branch_group, values)
+        if supply_variant_group is not None:
+            raise ValueError(
+                "roles.perception.thinking_variants cannot combine with a Solver supply_variants or template_variants group: "
+                "two fan-out mechanisms in one episode make the ceiling's extra-contact term ambiguous"
+            )
+        if knowledge_index_armed:
+            raise ValueError(
+                "roles.perception.thinking_variants cannot combine with native_episode.knowledge_index: the index appends to "
+                "the system message every arm shares and has no per-arm custody form"
             )
     if "branches" in raw_roles["perception"]:
         from .knowledge_stores import declared_alternate_release_relpaths

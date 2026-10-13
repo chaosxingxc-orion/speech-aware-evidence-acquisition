@@ -1,0 +1,237 @@
+"""Shared identities of NX-T R1: the per-node THINKING-POLICY column on the Thinking core, TRAIN Fold B.
+
+One module, imported by the derive, writer, mint, reader, chain and test scripts, so no id is spelled twice. Model-free. It reuses the 268-B
+family it extends instead of restating it: ``thinking_system_family`` (the Thinking model fragment, session, packet root and its pinned
+promotion receipt, the lock v2.2 + v4g plain-lock program, the Fold B roster) and ``tfrl_family`` (the FIT arithmetic and the derive helpers).
+
+WHAT THE CELL IS. Owner rulings 304 and 306/307 (2026-10-13): "are there nodes that do not need thinking?" becomes the FIRST node-level round on
+the Thinking base. ONE flight of the locked system (the 268-B lock) on TRAIN Fold B (1,080 rows) with a same-flight COLUMN over the per-node
+thinking policy (``roles.perception.thinking_variants``, receipt schema v5; harness commit on this branch). Every arm contacts Perception and the
+Solver; the arms differ ONLY in the thinking decoding of their own two contacts. Five arms, the delivering arm LAST:
+
+  ``perception-off``  Perception enable_thinking false (max_tokens = the 1,024 reserve), Solver thinking at budget 3,072 / cap 4,096
+  ``solver-off``      Perception thinking (the locked form), Solver enable_thinking false
+  ``both-off``        no thinking anywhere: the no-think core on the same weights
+  ``both-on-twin``    request-identical copy of the delivering arm: the column's own in-flight A/A null
+  ``both-on``         the delivering arm = the 268-B lock form (budget 3,072, cap 4,096, ``drop-reasoning-v1``); its requests are the lock's, byte for byte
+
+Ruling 2 of the coordinator: no note sharing. ``solver-off`` and the two Perception-off arms re-contact as INDEPENDENT chains, so the Solver prompt
+of a non-delivering arm differs by the arm's OWN Perception note; the evidence, the template and the QueryState are identical in every arm.
+
+GPU CEILING (coordinator ruling 4). Arm mix, in full 268-B rows per row (one 268-B row = one Thinking Perception contact + one Thinking Solver
+contact; measured 50.32 s + 35.31 s at np4, so the Perception contact is 0.588 of a row and the Solver contact 0.412): both-on 1.0 + both-on-twin 1.0 +
+perception-off 0.6 + solver-off 0.6 + both-off 0.05 = 3.25. The single-node-off arms are costed at 0.6 (the larger of 0.588 and 0.412, rounded up: a
+no-think contact costs a few hundred tokens, not zero); both-off at 0.05.
+    expected GPU-h = rows x 3.25 / 1.84 rows per minute / 60            (1.84 rows/min = measured full Thinking row throughput, np4 x 24,576)
+    ceiling        = ceil_0.1( expected x 1.3 )
+For 1,080 rows: expected 31.79 GPU-h, ceiling 41.4. The four-row smoke keeps the 0.5 GPU-h form allowance. Ceilings are bounds, never targets.
+"""
+
+from __future__ import annotations
+
+import json
+import math
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+DIRECT_DIR = HERE.parent / "direct"
+TFRL_DIR = HERE.parent / "tfrl"
+for _dir in (HERE, DIRECT_DIR, TFRL_DIR):
+    if str(_dir) not in sys.path:
+        sys.path.insert(0, str(_dir))
+
+import thinking_system_family as tsf  # noqa: E402
+import tfrl_family as tf  # noqa: E402
+
+REPO_ROOT = tf.REPO_ROOT
+
+DATE = "2026-10-13"
+SLUG = "nxt-r1-thinking-policy-fold-b"
+SHORT = "nxt1"
+PKG_NAME = "slurp-nxt-r1-thinking-policy-fold-b-v1"
+PACKAGE = f"docs/readiness/{DATE}-{PKG_NAME}"
+PREREG = f"{PACKAGE}-preregistration.md"
+DECISION_ID = "slurp-nxt-r1-thinking-policy-fold-b-admission-v1"
+DECISION_RELPATH = f"coordination/{PKG_NAME}/root-admission-v1.json"
+READ_RUN_ID = "SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1"
+RECIPE_ID = "slurp-nxt-r1-thinking-policy-fold-b-read-v1"
+READER = "scripts/analysis/slurp_nxt_thinking_policy_column_read.py"
+ANALYSIS_ROOT = f"analysis/{READ_RUN_ID}"
+COLUMN_DIR = "thinking-policy-columns"          # under the arm cell's run directory: the official per-arm column scores
+LEDGER_MARK = "## Cell NXT-R1: the per-node thinking-policy column on the Thinking core, TRAIN Fold B (one flight, five arms; smoke then 1,080 rows)"
+OWNER_RULINGS = "owner rulings 301-307 (2026-10-13), coordinator approval of the NX-T R1 design (rulings 1-5)"
+
+# ---- the system and the roster: exactly the 268-B lock, one flight --------------------------------------------------------------
+ROWS, SMOKE_ROWS = tsf.ROWS, tsf.SMOKE_ROWS
+LOCK, PROGRAM_BASE = tsf.LOCK, tsf.PROGRAM                 # v2.2; the plain lock program phase-native-module-v1-c2 (the base the column adds to)
+SCORER = tsf.SCORER
+DATASET, SPLIT_ID = tsf.DATASET, tsf.SPLIT_ID
+TUNING_ROSTER, READ_ROSTER = "none", tsf.READ_ROSTER
+ROSTER = dict(tsf.ROSTER)
+PARENT = tsf.CELLS                                          # the 268-B cells the baselines/experiments are derived from (lock + smoke)
+PARENT_SMOKE_KEY, PARENT_ARM_KEY = "smoke", "lock"
+
+# ---- the arms ----------------------------------------------------------------------------------------------------------------------
+OFF = {"enable_thinking": False}
+#: arm id -> its per-node override map (``core.reasoning_knobs.NODE_POLICY_KEYS`` per role kind); the delivering arm and the twin declare none.
+POLICIES = {
+    "perception-off": {"perception": dict(OFF)},
+    "solver-off": {"solver": dict(OFF)},
+    "both-off": {"perception": dict(OFF), "solver": dict(OFF)},
+}
+CANDIDATE_ARMS = tuple(POLICIES)
+TWIN, DELIVERING = "both-on-twin", "both-on"
+ARM_ORDER = (*CANDIDATE_ARMS, TWIN, DELIVERING)             # declared order; the delivering arm LAST
+K = len(ARM_ORDER)                                          # 5
+CONTACTS_PER_ROW = 2 + 2 * (K - 1)                          # review-off base 2 + one Perception and one Solver contact per non-delivering arm = 10
+PROGRAM = f"phase-native-module-v1-c{CONTACTS_PER_ROW}"     # phase-native-module-v1-c10
+#: Thinking contacts per row (an answer-only fallback re-ask is possible only for a budgeted thinking request): both-on 2 + twin 2 + perception-off
+#: 1 (its Solver) + solver-off 1 (its Perception) + both-off 0.
+THINKING_CONTACTS_PER_ROW = 2 + 2 + 1 + 1
+FALLBACK_CONTACTS_PER_ROW_CEILING = THINKING_CONTACTS_PER_ROW   # 6; the runner requires >= 2 for the module family, a larger plan is legal
+THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET = tsf.THINK_SESSION, tsf.THINK_MODEL, tsf.THINK_SWAP_TARGET
+THINK_PACKET_ROOT, THINK_PROMOTION_RECEIPT = tsf.THINK_PACKET_ROOT, tsf.THINK_PROMOTION_RECEIPT
+THINKING_KNOBS = json.loads(json.dumps(tsf.THINKING_KNOBS))
+NO_THINK_KNOBS = {"enable_thinking": False, "answer_reserve_tokens": tsf.THINK_ANSWER_RESERVE_TOKENS, "max_tokens": tsf.THINK_ANSWER_RESERVE_TOKENS,
+                  "budget_field": "absent (no thinking_budget_tokens)", "chat_template_kwargs": {"enable_thinking": False}}
+
+# ---- external references (the 268-B read; development numbers) ------------------------------------------------------------------
+THINKING_SYSTEM_SLU, THINKING_SYSTEM_INTENT = 71.61, 85.00                  # 268-B lock arm
+INSTRUCT_SYSTEM_SLU, INSTRUCT_SYSTEM_INTENT = 64.45, 82.69                  # the Instruct lock column of loop iteration 3
+TWIN_OFFSET_268B_SLU_PP, TWIN_OFFSET_268B_INTENT_PP = 1.15, -0.09            # 268-B cross-flight twin offset (external reference for the A/A)
+SYSTEM_DELTA_SLU_PP = 7.15                                                  # d_system of 268-B: the largest contrast the column can show (both-off ~ Instruct)
+FLOOR_SLU_PP, FLOOR_INTENT_PP = 1.49, 0.65                                  # decision 190 node-column floors at n = 1,080
+
+# ---- budget arithmetic (one place) ---------------------------------------------------------------------------------------------------
+ROW_COST = {"both-on": 1.0, "both-on-twin": 1.0, "perception-off": 0.6, "solver-off": 0.6, "both-off": 0.05}     # full 268-B rows per row
+ARM_MIX_ROWS = round(sum(ROW_COST.values()), 2)                                                             # 3.25
+ROWS_PER_MINUTE_FULL = 1.84                                                                                 # measured, np4 x 24,576 (P3 programme)
+GPU_MARGIN, GPU_ROUND_H = tf.GPU_PLAN_MARGIN, tf.GPU_PLAN_ROUND_H
+SMOKE_GPU_HOURS = tsf.SMOKE_GPU_HOURS
+PERCEPTION_SHARE_OF_ROW = tsf.SMOKE_MEASURED_S_PER_CONTACT["perception"] / (sum(tsf.SMOKE_MEASURED_S_PER_CONTACT.values()))
+THINK_SLOTS = tsf.THINK_SLOTS
+
+
+def expected_gpu_hours(rows: int) -> float:
+    """rows x arm mix (3.25 full rows per row) / 1.84 rows per minute / 60 (unrounded)."""
+
+    return rows * ARM_MIX_ROWS / ROWS_PER_MINUTE_FULL / 60.0
+
+
+def planned_gpu_hours(rows: int) -> float:
+    """The registered ceiling: ``ceil_0.1( expected x 1.3 )``."""
+
+    hours = expected_gpu_hours(rows) * GPU_MARGIN
+    return round(math.ceil(round(hours / GPU_ROUND_H, 9)) * GPU_ROUND_H, 1)
+
+
+def arm_row_equivalent_rows_per_minute(arm: str) -> float:
+    """The rows per minute an arm alone would run at, from its cost in full rows: ``1.84 / cost``."""
+
+    return ROWS_PER_MINUTE_FULL / ROW_COST[arm]
+
+
+def _spec(key: str, role: str, rows: int, roster: str, scoring_jobs: int, gpu: float, *, ids_stem: str, parent_key: str) -> dict:
+    up = ids_stem.upper()
+    parent = PARENT[parent_key]
+    return {
+        "key": key, "role": role, "rows": rows, "roster": roster, "gpu_hours": gpu, "scoring_jobs": scoring_jobs,
+        "parent": parent_key, "parent_cell": parent["cell"], "parent_baseline": parent["baseline"], "slug": parent["slug"],
+        "cell": f"slurp-native-stage3-{ids_stem}-v1",
+        "baseline": f"slurp-native-stage3-{ids_stem}-baseline-v1",
+        "run": f"SAEA-SLURP-STAGE3-{up}-V1",
+        "fit_run": f"SAEA-SLURP-STAGE3-{up}-FIT-V1",
+        "attempt": f"attempt-slurp-native-stage3-{ids_stem}-generation-v1",
+        "fit_attempt": f"attempt-slurp-native-stage3-{ids_stem}-fit-v1",
+        "model": THINK_MODEL, "session": THINK_SESSION,
+        "prefix": "smoke-" if key == "smoke" else "",
+        "campaign": f"configs/campaign/slurp-native-stage3-{ids_stem}-v1.json",
+    }
+
+
+CELLS = {
+    "smoke": _spec("smoke", "four-row form smoke of the thinking-policy column", SMOKE_ROWS, "smoke", 0, SMOKE_GPU_HOURS,
+                   ids_stem=f"{SLUG}-smoke-4", parent_key="smoke"),
+    "arm": _spec("arm", "thinking-policy column flight (five arms in one flight)", ROWS, "arm", 1, planned_gpu_hours(ROWS),
+                 ids_stem=SLUG, parent_key="lock"),
+}
+ARM_KEYS = ("arm",)
+ALL_KEYS = ("smoke", "arm")
+
+
+def eligible_run_ids() -> list[str]:
+    """The decision receipt's eligible run ids: each cell's generation run id then its FIT run id, in chain order."""
+
+    out: list[str] = []
+    for key in ALL_KEYS:
+        out += [CELLS[key]["run"], CELLS[key]["fit_run"]]
+    return out
+
+
+def eligible_attempt_ids() -> list[str]:
+    out: list[str] = []
+    for key in ALL_KEYS:
+        out += [CELLS[key]["attempt"], CELLS[key]["fit_attempt"]]
+    return out
+
+
+def fit_contact_cap(rows: int) -> int:
+    """rows x program contacts x endpoints per contact (never run-cumulative): 43,200 for a 1,080-row cell."""
+
+    return tf.fit_contact_cap(rows, CONTACTS_PER_ROW)
+
+
+def package_file(name: str) -> str:
+    return f"{PACKAGE}/{name}"
+
+
+def plan_file_name(key: str, plan_kind: str) -> str:
+    return f"{CELLS[key]['prefix']}{plan_kind}-plan-registered-v1.json"
+
+
+def roster_doc(kind: str) -> dict:
+    return json.loads((REPO_ROOT / ROSTER[kind]).read_text(encoding="utf-8"))
+
+
+def roster_audio(kind: str) -> float:
+    return sum(float(item["audio_seconds"]) for item in roster_doc(kind)["items"])
+
+
+def audio_cap(kind: str) -> int:
+    """Every contact re-sends the row's speech packet, a fallback re-ask included: ceil(roster audio seconds x (contacts + fallback contacts per row))."""
+
+    return math.ceil(roster_audio(kind) * (CONTACTS_PER_ROW + FALLBACK_CONTACTS_PER_ROW_CEILING) - 1e-9)
+
+
+def generation_calls(key: str) -> int:
+    """The plan ceiling: rows x (program contacts + fallback contacts per row) = rows x 16."""
+
+    return CELLS[key]["rows"] * (CONTACTS_PER_ROW + FALLBACK_CONTACTS_PER_ROW_CEILING)
+
+
+def program_calls(key: str) -> int:
+    return CELLS[key]["rows"] * CONTACTS_PER_ROW
+
+
+def extra_audio_seconds(kind: str) -> float:
+    """The audio the K - 1 extra arms re-send: every extra arm adds one Perception and one Solver contact (2 (K - 1) extra contacts per row)."""
+
+    return roster_audio(kind) * (CONTACTS_PER_ROW - 2)
+
+
+def thinking_promotion_sha256() -> str:
+    return tsf.thinking_promotion_sha256()
+
+
+#: Context fit at the 4,096-token cap is the 268-B lock's (every arm's request is at most that long): live prompt limit 17,406 against the measured
+#: Solver prompt maximum 14,641 (a non-delivering arm adds no evidence; its Perception note differs, which moves the Solver prompt by a few hundred
+#: tokens at most). The per-contact exact gate runs on every arm's REAL request.
+PROMPT_LIMIT_THINKING, SOLVER_PROMPT_TOKENS_MAX = tsf.PROMPT_LIMIT_THINKING, tsf.SOLVER_PROMPT_TOKENS_MAX
+#: The group's fit estimate (``thinking_frame.fit_estimate``): measured inputs of the 268-B lock (Solver prompt max 14,641 at 55 supplied items).
+#: base 2,000 + 55 x 235 = 14,925 -> the delivering arm's measured scale; completion ceiling = the geometry cap 4,096.
+FIT_ESTIMATE = {"base_prompt_tokens": 2000, "completion_ceiling": tsf.THINK_MAX_TOKENS, "slot_tokens": 24576, "tokens_per_supplied_item": 235}
+MAX_SUPPLIED_ITEMS = tf.DELIVERING_MAX_SUPPLIED_ITEMS      # 55: the lock's own supply bound; every arm renders the delivering arm's evidence
+
+
+__all__ = [name for name in globals() if not name.startswith("_")]

@@ -1074,6 +1074,7 @@ def _verify_perception_branch_trace_binding(
 
     from ...rails.native_episode_receipt import (
         PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS,
+        PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
         parse_perception_branch_note,
         validate_perception_branch_receipt,
     )
@@ -1084,7 +1085,7 @@ def _verify_perception_branch_trace_binding(
         if isinstance(item, Mapping) and item.get("replicate_of") is not None:
             twin_branch_id = item.get("branch_id")
             break
-    if twin_branch_id is None:
+    if twin_branch_id is None and branches.get("schema") != PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5:
         refuse("perception_branches has no declared twin")
     try:
         validate_perception_branch_receipt(
@@ -1159,6 +1160,72 @@ def _verify_perception_branch_trace_binding(
             "the delivering branch's note_sha256 must equal its own "
             "response_text_sha256 (its note IS its own response)"
         )
+    if branches.get("schema") == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5:
+        _verify_thinking_policy_wire(
+            branch_rows, contacts, visits, trace_records, refuse=refuse,
+        )
+
+
+#: The decoding fields a thinking-policy arm moves (``core.reasoning_knobs``): compared, per node, to the arm's declared policy.
+_THINKING_WIRE_KEYS = ("thinking_budget_tokens", "chat_template_kwargs", "max_tokens")
+
+
+def _verify_thinking_policy_wire(branch_rows, perception_contacts, visits, trace_records, *, refuse) -> None:
+    """NX-T R1 (schema v5): every arm's Perception and level-2 Solver request carries the thinking decoding its row declares.
+
+    A node WITHOUT an entry in the arm's policy must carry exactly the delivering arm's (A's) thinking fields for that node; a
+    node WITH one must carry ``chat_template_kwargs = {"enable_thinking": false}`` and no budget when it is off, and
+    ``thinking_budget_tokens`` equal to its declared budget when it names one. Read from the trace's own request payload, never
+    from the receipt's say-so. Counts nothing and prints nothing from any response.
+    """
+
+    solver_visits = [
+        visit for visit in visits if isinstance(visit, Mapping) and visit.get("stage") == "solver"
+    ]
+    solver_contacts = []
+    if solver_visits:
+        execution = solver_visits[0].get("execution_receipt")
+        solver_contacts = list(execution.get("contacts") or ()) if isinstance(execution, Mapping) else []
+    solver_request_by_agent = {
+        contact.get("agent_contact_id"): contact.get("request_id")
+        for contact in solver_contacts if isinstance(contact, Mapping)
+    }
+
+    def decoding_of(request_id: object, what: str) -> Mapping[str, object]:
+        record = trace_records.get(f"{request_id}/request") if isinstance(request_id, str) else None
+        payload = record.get("payload") if isinstance(record, Mapping) else None
+        decoding = payload.get("decoding_params") if isinstance(payload, Mapping) else None
+        if not isinstance(decoding, Mapping):
+            refuse(f"{what} request carries no decoding_params to compare with its thinking policy")
+        return decoding
+
+    def thinking_view(decoding: Mapping[str, object]) -> dict[str, object]:
+        return {key: decoding.get(key) for key in _THINKING_WIRE_KEYS}
+
+    a_row = branch_rows[-1]
+    a_view = {
+        "perception": thinking_view(decoding_of(perception_contacts[-1].get("request_id"), "delivering Perception")),
+        "solver": thinking_view(decoding_of(solver_request_by_agent.get(a_row.get("solver_contact_id")), "delivering Solver")),
+    }
+    for position, branch_row in enumerate(branch_rows):
+        policy = branch_row.get("thinking_policy") or {}
+        for kind in ("perception", "solver"):
+            request_id = (
+                perception_contacts[position].get("request_id") if kind == "perception"
+                else solver_request_by_agent.get(branch_row.get("solver_contact_id"))
+            )
+            what = f"Perception branch {position} {kind}"
+            view = thinking_view(decoding_of(request_id, what))
+            entry = policy.get(kind)
+            if entry is None:
+                if view != a_view[kind]:
+                    refuse(f"{what} request moved a thinking field its arm's thinking_policy does not name")
+                continue
+            if entry.get("enable_thinking") is False:
+                if view["chat_template_kwargs"] != {"enable_thinking": False} or view["thinking_budget_tokens"] is not None:
+                    refuse(f"{what} request is not the no-think form its thinking_policy declares")
+            elif "reasoning_budget_tokens" in entry and view["thinking_budget_tokens"] != entry["reasoning_budget_tokens"]:
+                refuse(f"{what} request carries another thinking budget than its thinking_policy declares")
 
 
 #: Item E4 (owner decision 185, 2026-09-28): the invariant code a post-accept

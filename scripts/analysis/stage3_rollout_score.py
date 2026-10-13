@@ -1591,7 +1591,7 @@ def render_perception_branch_columns(
         validate_perception_branch_receipt(
             branches_receipt, branch_ids=names,
             delivered_branch_id=group.delivering_branch.branch_id,
-            twin_branch_id=group.twin_branch.branch_id,
+            twin_branch_id=(group.twin_branch.branch_id if group.has_twin else None),
             phase_id=branches_receipt.get("phase_id"), level=2,
             error_type=Stage3ScoreError,
         )
@@ -1813,12 +1813,23 @@ def parse_perception_arm_group(values: Mapping[str, Any], perception: Mapping[st
 
     declares_branches = "branches" in perception
     declares_template = "template_variants" in perception
+    declares_thinking = "thinking_variants" in perception
     if declares_branches and declares_template:
         raise Stage3ScoreError(
             "the Perception role declares both branches and template_variants; "
             "one fan-out mechanism per node"
         )
+    if declares_thinking and (declares_branches or declares_template):
+        raise Stage3ScoreError(
+            "the Perception role declares thinking_variants beside branches or template_variants; "
+            "one fan-out mechanism per node"
+        )
     try:
+        if declares_thinking:
+            # NX-T R1: the per-node thinking-policy column (receipt schema v5); every arm renders the delivering arm's evidence.
+            from speech_aware_evidence_acquisition.rails.supply_variants import parse_perception_thinking_variants
+
+            return parse_perception_thinking_variants(perception["thinking_variants"], phase_id=perception.get("phase_id"))
         if declares_template:
             phase_id = perception.get("phase_id")
             material = values.get("phase_material")
