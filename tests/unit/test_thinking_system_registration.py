@@ -240,7 +240,8 @@ def test_plans_protocol_receipt_and_ledger_agree():
             if notes.startswith("DRAFT"):
                 assert "root countersigned" not in notes
             else:
-                assert notes.startswith("REGISTERED BEFORE ") and "root countersigned 2026-" in notes and "<UTC" not in notes
+                # countersigned (REGISTERED BEFORE ...) or, after the seal, closed by ledger_mark_consumed.py (CONSUMED (...) in front)
+                assert notes.startswith(("REGISTERED BEFORE ", "CONSUMED (")) and "root countersigned 2026-" in notes and "<UTC" not in notes
                 assert "DRAFT -- REGISTERED" not in line
     assert (REPO / (fam.PREREG)).is_file()
 
