@@ -61,8 +61,9 @@ def test_typed_receipts_keep_the_i1_list_shape_and_count_refusals_by_code():
     source = {"rows": [row("a", json.dumps(delivery_candidate()), "1"), row("b", json.dumps(delivery_candidate()), "2"),
                        row("c", "not json at all", "3")]}
     entries, counts = tool.build_typed_receipts(source)
-    assert isinstance(entries, list) and [sorted(e) for e in entries] == [["receipt", "sample_id_sha_prefix"]] * 3
-    assert entries[0]["sample_id_sha_prefix"] == hashlib.sha256(b"1").hexdigest()[:12]
+    assert isinstance(entries, list) and [sorted(e) for e in entries] == [["receipt", "response_sha256_prefix", "sample_id_sha_prefix"]] * 3
+    assert entries[0]["response_sha256_prefix"] == hashlib.sha256(b"1").hexdigest()[:12]
+    assert entries[0]["sample_id_sha_prefix"] == hashlib.sha256(b"a").hexdigest()[:12]
     assert counts == {"contacts": 3, "schema_valid": 2, "schema_refused": 1, "refusal_codes": {"not-json": 1}, "distinct_candidates": 1,
                       "by_class_operator": {"delivery/deliver-rule": 2}}
 
@@ -224,7 +225,13 @@ def test_execute_writes_the_input_set_once_and_a_rerun_is_a_no_op(world):
     assert code == 0, text
     report = json.loads(text)
     assert report["mode"] == "execute"
-    for name in ("typed-receipts-i1.json", "predictions-i1.json", "reflector-answers-i1.json", "enums-i1.json", "ace-release-pins-i1.json",
+    # ruling 300 A: the sealed i1 typed receipts are the OLD layout (response-hash prefix in sample_id_sha_prefix, no offered classes). They stay
+    # readable and labelled; the fresh build is the new layout, so the comparison reports a difference by design.
+    assert states["typed-receipts-i1.json"] == {"state": "differs", "fields": ["<document>"]}
+    live_entries = json.loads((REAL_DATA / tf.ANALYSIS_ROOT / "i1" / "typed-receipts-i1.json").read_text(encoding="utf-8"))
+    assert {lib.typed_entry_layout(e) for e in live_entries} == {lib.TYPED_ENTRY_LAYOUT_V1}
+    assert all(lib.typed_entry_response_prefix(e) == e["sample_id_sha_prefix"] for e in live_entries)
+    for name in ("predictions-i1.json", "reflector-answers-i1.json", "enums-i1.json", "ace-release-pins-i1.json",
                  "ace-i1-release-files.json", "cell-stage-inputs-i1.json"):
         assert (world.A / name).is_file(), name
     assert (world.A / "ace-release-staging" / "playbook-i1.json").is_file()
@@ -305,7 +312,7 @@ def test_iteration_one_regression_reproduces_the_hand_built_inputs_byte_for_byte
     report = json.loads("\n".join(out))
     assert report["mode"] == "dry-run"
     states = {a["name"].split("/")[-1]: a["vs_existing"] for a in report["artefacts"]}
-    for name in ("typed-receipts-i1.json", "predictions-i1.json", "reflector-answers-i1.json", "enums-i1.json", "authored-ace-playbook-i1.json",
+    for name in ("predictions-i1.json", "reflector-answers-i1.json", "enums-i1.json", "authored-ace-playbook-i1.json",
                  "playbook-i1.json", "source-ace-playbook-i1.json", "source-ace-playbook-i1-wrap-receipt.json",
                  "ace-playbook-i1-release-registration.json", "release.json", "snapshot.json", "completion.json", "ace-i1-release-files.json"):
         assert states[name] == {"state": "identical"}, name
@@ -315,3 +322,51 @@ def test_iteration_one_regression_reproduces_the_hand_built_inputs_byte_for_byte
     for key in ("release_relpath", "release_sha256", "snapshot_relpath", "snapshot_sha256", "snapshot_file_sha256"):
         assert report["pins"][key] == live[key], key
     assert report["counts"]["playbook"]["content_hash"] == "e12fabcc1a8c72c93a2b0b5ceb14ba1d1168c93ac8ba4fbcc05ab5af4820e28e"
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# owner ruling 300 A: the offered class set and the two hash prefixes
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def test_v2_entries_hold_the_sample_id_sha_the_response_sha_and_the_offered_classes_and_count_the_class_violations():
+    source = {"offered_classes": {"a": ["supply"], "b": ["delivery", "scope"], "c": ["construction"]},
+              "rows": [row("a", json.dumps(delivery_candidate()), "1"), row("b", json.dumps(delivery_candidate()), "2"),
+                       row("c", "not json at all", "3")]}
+    entries, counts = tool.build_typed_receipts(source)
+    assert [sorted(e) for e in entries] == [["allowed_classes", "receipt", "response_sha256_prefix", "sample_id_sha_prefix"]] * 3
+    assert entries[0]["sample_id_sha_prefix"] == hashlib.sha256(b"a").hexdigest()[:12]
+    assert entries[0]["response_sha256_prefix"] == hashlib.sha256(b"1").hexdigest()[:12]
+    assert entries[0]["sample_id_sha_prefix"] != entries[0]["response_sha256_prefix"]
+    assert [e["allowed_classes"] for e in entries] == [["supply"], ["delivery", "scope"], ["construction"]]
+    assert all(lib.typed_entry_layout(e) == lib.TYPED_ENTRY_LAYOUT_V2 for e in entries)
+    assert counts["class_not_offered"] == 1                       # the delivery candidate of carrier "a", offered only supply
+
+
+def test_a_contact_missing_from_the_proposer_brief_stops_the_extractor_instead_of_dropping_the_class_check():
+    with pytest.raises(tool.ToolError):
+        tool.build_typed_receipts({"offered_classes": {"a": ["supply"]}, "rows": [row("zz", json.dumps(delivery_candidate()), "1")]})
+
+
+def test_both_entry_layouts_are_readable_and_the_old_one_is_labelled():
+    legacy = {"receipt": {"response_sha256": hashlib.sha256(b"1").hexdigest()}, "sample_id_sha_prefix": hashlib.sha256(b"1").hexdigest()[:12]}
+    entries, _ = tool.build_typed_receipts({"offered_classes": {"a": ["supply"]}, "rows": [row("a", json.dumps(delivery_candidate()), "1")]})
+    assert lib.typed_entry_layout(legacy) == lib.TYPED_ENTRY_LAYOUT_V1 and lib.typed_entry_layout(entries[0]) == lib.TYPED_ENTRY_LAYOUT_V2
+    assert lib.typed_entry_response_prefix(legacy) == lib.typed_entry_response_prefix(entries[0]) == hashlib.sha256(b"1").hexdigest()[:12]
+    assert lib.typed_entry_sample_id_prefix(legacy) is None
+    assert lib.typed_entry_sample_id_prefix(entries[0]) == hashlib.sha256(b"a").hexdigest()[:12]
+
+
+def test_the_offered_classes_are_read_from_the_registered_proposer_brief(tmp_path):
+    names = tf.names(1, "typed")
+    brief = tmp_path / "configs" / "baseline" / f"{names['baseline']}.json"
+    brief.parent.mkdir(parents=True)
+    brief.write_text(json.dumps({"tfrl_proposer": {"carriers": [{"sample_id": "a", "allowed_classes": ["supply"]},
+                                                                {"sample_id": "b", "allowed_classes": ["delivery", "scope"]}]}}), encoding="utf-8")
+    assert tool.offered_classes(tmp_path, names) == {"a": ["supply"], "b": ["delivery", "scope"]}
+    brief.write_text(json.dumps({"tfrl_proposer": {"carriers": [{"sample_id": "a"}]}}), encoding="utf-8")
+    with pytest.raises(lib.MissingInput):
+        tool.offered_classes(tmp_path, names)
+    brief.unlink()
+    with pytest.raises(lib.MissingInput):
+        tool.offered_classes(tmp_path, names)

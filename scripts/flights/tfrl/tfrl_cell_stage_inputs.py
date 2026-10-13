@@ -126,6 +126,19 @@ def supersede_name(path: Path) -> Path:
 # ---------------------------------------------------------------------------------------------------------------------------
 
 
+def offered_classes(repo_root: Path, names: Mapping[str, Any]) -> dict[str, list[str]]:
+    """The proposer brief's per-carrier offered class sets (``tfrl_proposer.carriers`` of the registered baseline fragment), fail-closed."""
+
+    path = repo_root / "configs" / "baseline" / f"{names['baseline']}.json"
+    if not path.is_file():
+        raise lib.MissingInput(f"the proposer brief {path.relative_to(repo_root).as_posix()} is missing; the offered class set cannot be read")
+    carriers = (json.loads(path.read_text(encoding="utf-8")).get("tfrl_proposer") or {}).get("carriers") or []
+    out = {str(c["sample_id"]): [str(x) for x in c["allowed_classes"]] for c in carriers if c.get("allowed_classes")}
+    if not out:
+        raise lib.MissingInput("the proposer brief declares no per-carrier allowed_classes")
+    return out
+
+
 def sealed_source(data_root: Path, repo_root: Path, t: int, kind: str) -> dict:
     """The sealed outputs of iteration ``t``'s proposer (``typed``) or reflector (``ace``): ids, rows, digest, roster."""
 
@@ -137,7 +150,8 @@ def sealed_source(data_root: Path, repo_root: Path, t: int, kind: str) -> dict:
     rows = [json.loads(line) for line in raw.decode("utf-8").splitlines() if line.strip()]
     admitted = [r for r in rows if r.get("admitted", True)]
     roster_path = repo_root / names["carrier_roster"]
-    return {"kind": kind, "run_id": names["run_id"], "attempt_id": names["attempt_id"], "outputs_relpath": path.relative_to(data_root).as_posix(),
+    offered = offered_classes(repo_root, names) if kind == "typed" else None
+    return {"kind": kind, "offered_classes": offered, "run_id": names["run_id"], "attempt_id": names["attempt_id"], "outputs_relpath": path.relative_to(data_root).as_posix(),
             "outputs_sha256": sha256_bytes(raw), "rows": admitted, "rows_total": len(rows), "roster_relpath": names["carrier_roster"],
             "roster": json.loads(roster_path.read_text(encoding="utf-8")), "roster_sha256": sha256_bytes(roster_path.read_bytes())}
 
@@ -157,7 +171,17 @@ def provenance(t: int, source: Mapping[str, Any] | None, extra: Mapping[str, Any
 def build_typed_receipts(source: Mapping[str, Any]) -> tuple[list[dict], dict]:
     from speech_aware_evidence_acquisition.rails import tfrl_typed_proposer as tp  # noqa: PLC0415
 
-    entries = [{"receipt": tp.read_typed_candidate_receipt(r["text"]), "sample_id_sha_prefix": r["response_sha256"][:12]} for r in source["rows"]]
+    offered = source.get("offered_classes")           # sample_id -> offered class set, from the proposer brief (None: legacy source)
+    entries = []
+    for r in source["rows"]:
+        entry = {"receipt": tp.read_typed_candidate_receipt(r["text"]),
+                 "sample_id_sha_prefix": hashlib.sha256(str(r["sample_id"]).encode("utf-8")).hexdigest()[:12],
+                 "response_sha256_prefix": r["response_sha256"][:12]}
+        if offered is not None:
+            if r["sample_id"] not in offered:
+                raise ToolError("a sealed proposer contact has no offered class set in the proposer brief; refusing to drop the class check")
+            entry["allowed_classes"] = list(offered[r["sample_id"]])
+        entries.append(entry)
     codes: dict[str, int] = {}
     for entry in entries:
         for code in entry["receipt"].get("refusal_codes") or []:
@@ -167,6 +191,9 @@ def build_typed_receipts(source: Mapping[str, Any]) -> tuple[list[dict], dict]:
     counts = {"contacts": len(entries), "schema_valid": len(legal), "schema_refused": len(entries) - len(legal),
               "refusal_codes": dict(sorted(codes.items())), "distinct_candidates": len(set(ids)),
               "by_class_operator": _tally(f"{r['operator_class']}/{r['operator']}" for r in legal)}
+    if offered is not None:
+        counts["class_not_offered"] = sum(1 for e in entries if e["receipt"].get("legal")
+                                          and e["receipt"]["operator_class"] not in e["allowed_classes"])
     return entries, counts
 
 

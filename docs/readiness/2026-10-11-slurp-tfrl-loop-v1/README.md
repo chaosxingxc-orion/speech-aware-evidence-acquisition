@@ -91,3 +91,21 @@ Makes `playbook/playbook-i<t>.json` the playbook behind the pinned release (the 
 writes a correction record under `archive/corrections/` for an archived ACE state that binds another playbook hash (state files are never
 edited; `Archive.states()` applies the record), and reads every offline candidate that has no archive state (an unsupported family is archived
 as refused with code `offline-family-unsupported`). Archive correction records are part of `archive_sha256`.
+
+## Successor note 2026-10-13: typed-proposer fixes (owner ruling 300 A)
+
+Iterations 1-3 flew with two defects in the typed-proposer receipt path. The sealed packages in this directory are unchanged; this note
+supersedes nothing and describes the code fixes only.
+
+1. Offered class set dropped. `derive_tfrl_iteration_cells.derive_text_only` registers a per-carrier `allowed_classes` set (construction /
+   supply / delivery+scope) in the proposer brief, but `tfrl_cell_stage_inputs.build_typed_receipts` did not carry it into the typed receipts,
+   so `tp.validate_candidate(allowed_classes=...)` never ran in `open --stage cell`. At least 6 of the 9 delivery candidates came from carriers
+   that were not offered delivery, and the construction and supply classes were never proposed. Fix: each entry now carries `allowed_classes`
+   read (fail-closed) from `tfrl_proposer.carriers` of the registered baseline fragment; a legal candidate whose class is outside its carrier's
+   set is refused with the finding `class-not-allowed` (it does not shadow an identical candidate from an offered carrier); `candidates.json`
+   records `offered_class_check` and the close receipt carries `typed_class_check` (`applied`, `class_not_offered`, `entry_layouts`).
+2. Mislabelled hash field. `sample_id_sha_prefix` held `response_sha256[:12]`. It now holds `sha256(sample_id)[:12]`, and the response-hash
+   prefix is recorded under `response_sha256_prefix`. Readers accept both layouts: `tfrl_loop_lib.typed_entry_layout` labels an entry
+   `v1-legacy-response-hash-in-sample-id-field` (old) or `v2-sample-id-sha-and-response-sha-prefixes` (new).
+
+Receipts sealed for iterations 1-3 stay in the v1 layout without `allowed_classes`; their close summaries read `applied: false`.

@@ -698,3 +698,44 @@ def archive_sha256(archive_dir: Path) -> str:
 
 
 __all__ = [name for name in globals() if not name.startswith("_")]
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# typed-receipt entry layouts (owner ruling 300 A, 2026-10-12)
+# ---------------------------------------------------------------------------------------------------------------------------
+
+#: Layout label of an entry sealed before the fix: ``sample_id_sha_prefix`` held the RESPONSE-hash prefix and no offered class set was carried.
+TYPED_ENTRY_LAYOUT_V1 = "v1-legacy-response-hash-in-sample-id-field"
+#: Layout label of an entry built after the fix: ``sample_id_sha_prefix`` is ``sha256(sample_id)[:12]``, ``response_sha256_prefix`` is
+#: ``receipt.response_sha256[:12]`` and ``allowed_classes`` is the carrier's offered class set from the proposer brief.
+TYPED_ENTRY_LAYOUT_V2 = "v2-sample-id-sha-and-response-sha-prefixes"
+FINDING_CLASS_NOT_OFFERED = "class-not-allowed"   # the validator's own refusal code (``tfrl_typed_proposer.validate_candidate``)
+
+
+def typed_entry_layout(entry: Mapping[str, Any]) -> str:
+    """Label the layout of one typed-receipt entry. Both layouts stay readable; the old one is labelled, never rewritten."""
+
+    if "response_sha256_prefix" in entry:
+        return TYPED_ENTRY_LAYOUT_V2
+    return TYPED_ENTRY_LAYOUT_V1
+
+
+def typed_entry_response_prefix(entry: Mapping[str, Any]) -> str | None:
+    """The response-hash prefix of an entry under either layout (v1 stored it in ``sample_id_sha_prefix``)."""
+
+    if "response_sha256_prefix" in entry:
+        return str(entry["response_sha256_prefix"])
+    receipt = entry.get("receipt") or {}
+    digest = receipt.get("response_sha256")
+    if isinstance(digest, str):
+        return digest[:12]
+    legacy = entry.get("sample_id_sha_prefix")
+    return str(legacy) if legacy is not None else None
+
+
+def typed_entry_sample_id_prefix(entry: Mapping[str, Any]) -> str | None:
+    """The sample-id sha prefix of an entry: ``None`` for a v1 entry (its field never held it)."""
+
+    if typed_entry_layout(entry) == TYPED_ENTRY_LAYOUT_V2:
+        return str(entry["sample_id_sha_prefix"])
+    return None

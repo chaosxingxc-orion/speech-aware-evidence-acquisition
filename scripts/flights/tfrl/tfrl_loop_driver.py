@@ -544,6 +544,8 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
                                "is empty when no candidate cleared the bar)")
     valid, refused, rereads = [], [], []
     seen: set[str] = set()
+    layouts = sorted({lib.typed_entry_layout(e) for e in entries})
+    with_classes = sum(1 for e in entries if e.get("allowed_classes"))
     for entry in entries:
         receipt = entry["receipt"]
         if not receipt.get("legal"):
@@ -554,6 +556,12 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
         result = tp.validate_candidate(candidate, enums=tables_doc.enums, archive=view, predictor=predictor,
                                        allowed_classes=entry.get("allowed_classes"), pool_sizes=tables_doc.pool_sizes())
         cid = result.candidate_id
+        if lib.FINDING_CLASS_NOT_OFFERED in result.codes:
+            # named finding (ruling 300 A): the class is not in the carrier's offered set. The same artefact offered by a carrier that WAS
+            # offered the class stays eligible, so this refusal never enters ``seen``.
+            refused.append({"candidate_id": cid, "operator_class": candidate["operator_class"], "operator": candidate["operator"],
+                            "refusal_code": lib.FINDING_CLASS_NOT_OFFERED, "offered_classes": list(entry.get("allowed_classes") or [])})
+            continue
         if cid in seen:
             continue
         seen.add(cid)
@@ -632,6 +640,9 @@ def open_cell(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
               "candidates": [{"candidate_id": v["candidate_id"], "operator_class": v["operator_class"], "operator": v["operator"],
                               "read": v["read"], "predicted_slu_pp": v["predicted_slu_pp"]} for v in valid],
               "refused": refused, "flown": chosen["candidate_id"] if chosen else None,
+              "offered_class_check": {"entries": len(entries), "entries_with_offered_classes": with_classes, "entry_layouts": layouts,
+                                      "applied": bool(entries) and with_classes == len(entries),
+                                      "class_not_offered": sum(1 for r in refused if r.get("refusal_code") == lib.FINDING_CLASS_NOT_OFFERED)},
               "offline": [v["candidate_id"] for v in offline], "not_flown": [{"candidate_id": n["candidate_id"], "reason": n["reason"]} for n in not_flown]}
     lib.write_json_new(ctx.receipts(t) / "candidates.json", record)
     # offline candidates keep their candidate documents for the close step (family + guard)
@@ -999,6 +1010,10 @@ def close_iteration(ctx: Ctx, t: int, a: argparse.Namespace) -> dict:
         "row_scores": {"source": "override" if a.row_scores else "exported", "relpath_or_path": str(row_scores_path)
                        if a.row_scores else row_scores_path.relative_to(ctx.data_root).as_posix()},
         "next_iteration": selection.next_iteration(t), "typed_arm_was_empty": not candidates["flown"],
+        # ruling 300 A: the per-carrier class set is checked at validation; a candidate outside its carrier's offered set is refused as
+        # class-not-allowed. applied=false means the receipts predate the fix (iterations 1-3 flew with the class check off).
+        "typed_class_check": candidates.get("offered_class_check") or {"applied": False, "class_not_offered": 0,
+                                                                         "entry_layouts": [lib.TYPED_ENTRY_LAYOUT_V1]},
     }
     inputs = {"iteration": t, "column": [run, attempt], "summary": sha_file(sv / "score-summary.json"),
               "row_scores": sha_file(row_scores_path) if row_scores_path.is_file() else None,

@@ -1253,3 +1253,74 @@ def test_a_planned_close_names_the_row_score_export(world):
     stall_iteration(world, fakes)
     code, text = world.run("close", "--iter", "1")
     assert code == 0 and "tfrl_row_scores.py" in text
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# owner ruling 300 A: the offered class set is checked at validation (the i2 / i3 shape: carriers offered one class proposed another)
+# ---------------------------------------------------------------------------------------------------------------------------
+
+
+def _delivery_candidate() -> dict:
+    return {"schema": tp.CANDIDATE_SCHEMA_ID, "iteration": 1, "parent_state_id": drv.ROOT_DISPLAY, "operator_class": "delivery",
+            "operator": "deliver-rule", "hypothesis_code": "rule-filter",
+            "target": {"failure_class": "SPURIOUS", "slot_types": ["person"], "scenarios": ["social"], "value_in_supply": "none"},
+            "applications": [{"family": "ee10", "guard": "wilson", "types": ["person"], "intents": []}]}
+
+
+def test_a_candidate_outside_its_carriers_offered_class_set_is_refused_with_the_named_finding(world):
+    delivery = tp.read_typed_candidate_receipt(json.dumps(_delivery_candidate()))
+    knob = knob_receipt(12)[0]
+    # the i2 / i3 shape: the delivery candidate came from a carrier that was offered only construction; the knob from the supply carrier
+    entries = [{"allowed_classes": ["construction"], "receipt": delivery}, knob]
+    typed = world.tmp / "typed.json"
+    typed.write_text(json.dumps(entries), encoding="utf-8")
+    pred = predictions(world.tmp / "pred.json", [knob], 1.8)
+    world.run(*propose_args(world), fakes=Fakes())
+    assert world.run(*open_cell_args(world, typed=typed, predictions=pred))[0] == 0
+    record = json.loads((world.pkg / "iterations" / "i1" / "candidates.json").read_text(encoding="utf-8"))
+    assert [r["refusal_code"] for r in record["refused"]] == ["class-not-allowed"] == [lib.FINDING_CLASS_NOT_OFFERED]
+    assert record["refused"][0]["offered_classes"] == ["construction"] and record["offline"] == []
+    assert record["offered_class_check"]["class_not_offered"] == 1 and record["offered_class_check"]["applied"] is True
+    assert record["flown"] == knob["receipt"]["candidate_id"]
+
+
+def test_the_class_finding_reaches_the_iteration_close_summary(world):
+    delivery = tp.read_typed_candidate_receipt(json.dumps(_delivery_candidate()))
+    entries = [{"allowed_classes": ["construction"], "receipt": delivery}]
+    typed = world.tmp / "typed.json"
+    typed.write_text(json.dumps(entries), encoding="utf-8")
+    pred = world.tmp / "pred.json"
+    pred.write_text(json.dumps({"schema": tp.PREDICTIONS_SCHEMA_ID, "predictions": {}}), encoding="utf-8")
+    fakes = Fakes(pairs={"ace-vs-lock": contrast_doc(0.2, -0.7, 1.1), "aa-vs-lock": contrast_doc(0.1, -0.7, 0.9)})
+    assert world.run(*propose_args(world), fakes=fakes)[0] == 0
+    assert world.run(*open_cell_args(world, typed=typed, predictions=pred))[0] == 0
+    code, text = world.run("close", "--iter", "1", fakes=fakes)
+    assert code == 0, text
+    check = world.receipt(1, "close")["typed_class_check"]
+    assert check["class_not_offered"] == 1 and check["applied"] is True
+
+
+def test_an_offered_duplicate_is_not_shadowed_by_a_refused_copy_from_a_carrier_not_offered_the_class(world):
+    delivery = tp.read_typed_candidate_receipt(json.dumps(_delivery_candidate()))
+    entries = [{"allowed_classes": ["supply"], "receipt": delivery}, {"allowed_classes": ["delivery", "scope"], "receipt": delivery}]
+    typed = world.tmp / "typed.json"
+    typed.write_text(json.dumps(entries), encoding="utf-8")
+    pred = world.tmp / "pred.json"
+    pred.write_text(json.dumps({"schema": tp.PREDICTIONS_SCHEMA_ID, "predictions": {}}), encoding="utf-8")
+    world.run(*propose_args(world), fakes=Fakes())
+    assert world.run(*open_cell_args(world, typed=typed, predictions=pred))[0] == 0
+    record = json.loads((world.pkg / "iterations" / "i1" / "candidates.json").read_text(encoding="utf-8"))
+    assert record["offline"] == [delivery["candidate_id"]] and record["offered_class_check"]["class_not_offered"] == 1
+
+
+def test_receipts_sealed_before_the_fix_still_open_and_the_check_is_labelled_not_applied(world):
+    legacy = [{"receipt": tp.read_typed_candidate_receipt(json.dumps(_delivery_candidate())), "sample_id_sha_prefix": "0" * 12}]
+    assert lib.typed_entry_layout(legacy[0]) == lib.TYPED_ENTRY_LAYOUT_V1
+    typed = world.tmp / "typed.json"
+    typed.write_text(json.dumps(legacy), encoding="utf-8")
+    pred = world.tmp / "pred.json"
+    pred.write_text(json.dumps({"schema": tp.PREDICTIONS_SCHEMA_ID, "predictions": {}}), encoding="utf-8")
+    world.run(*propose_args(world), fakes=Fakes())
+    assert world.run(*open_cell_args(world, typed=typed, predictions=pred))[0] == 0
+    check = json.loads((world.pkg / "iterations" / "i1" / "candidates.json").read_text(encoding="utf-8"))["offered_class_check"]
+    assert check["applied"] is False and check["entry_layouts"] == [lib.TYPED_ENTRY_LAYOUT_V1] and check["class_not_offered"] == 0
