@@ -165,6 +165,11 @@ class DryRunArm(object):
     instruction_template: Mapping[str, str] | None = None
     instruction_sha256: str | None = None
     instruction_chars: int | None = None
+    #: NX-T R1 (thinking-policy arms): the arm's declared per-node override map, and the per-node wire fields its
+    #: Perception and Solver requests would carry (``thinking_budget_tokens`` / ``chat_template_kwargs`` / ``max_tokens``),
+    #: resolved from the composed fragment by ``core.reasoning_knobs.resolve_node_decoding``. ``None`` for every other kind.
+    thinking_policy: Mapping[str, Mapping[str, object]] | None = None
+    node_decoding: Mapping[str, Mapping[str, object]] | None = None
 
     def as_json(self) -> dict[str, object]:
         row: dict[str, object] = {
@@ -183,6 +188,11 @@ class DryRunArm(object):
             )
             row["instruction_sha256"] = self.instruction_sha256
             row["instruction_chars"] = self.instruction_chars
+        if self.node_decoding is not None:
+            row["thinking_policy"] = None if self.thinking_policy is None else {
+                kind: dict(entry) for kind, entry in self.thinking_policy.items()
+            }
+            row["node_decoding"] = {kind: dict(fields) for kind, fields in self.node_decoding.items()}
         return row
 
 
@@ -643,13 +653,38 @@ def dry_run_native_episode(
         template_phase = supply_variant_phase
     else:
         perception_group = binding["episode"].perception_branch_group
-        if perception_group is not None and perception_group.is_template:
+        if perception_group is not None and perception_group.renders_unvaried_evidence:
             template_entries = [
                 (branch.branch_id, branch.deliver, branch.max_supplied_items,
                  branch.instruction_template)
                 for branch in perception_group.branches
             ]
             template_phase = binding["episode"].perception_branch_phase_id
+    # NX-T R1: a thinking-policy group's arms render the node's locked instruction (no template) and differ in the per-node
+    # thinking decoding of their own contacts; the walk reports each arm's resolved per-node wire fields.
+    thinking_policy_by_arm: dict[str, Mapping[str, Mapping[str, object]] | None] = {}
+    thinking_base: dict[str, object] | None = None
+    episode_group = binding["episode"].perception_branch_group
+    if episode_group is not None and episode_group.is_thinking:
+        from ..core.reasoning_knobs import fold_into_decoding
+
+        thinking_policy_by_arm = {b.branch_id: b.thinking_policy for b in episode_group.branches}
+        folded = fold_into_decoding(binding["values"]) or binding["values"]
+        decoding_values = folded.get("decoding_params")
+        thinking_base = dict(decoding_values) if isinstance(decoding_values, Mapping) else {}
+
+    def _arm_node_decoding(arm_id: str) -> dict[str, dict[str, object]] | None:
+        if thinking_base is None:
+            return None
+        from ..core.reasoning_knobs import resolve_node_decoding
+
+        policy = thinking_policy_by_arm.get(arm_id) or {}
+        out: dict[str, dict[str, object]] = {}
+        for kind in ("perception", "solver"):
+            resolved = resolve_node_decoding(thinking_base, policy, kind)
+            out[kind] = {key: resolved.get(key) for key in ("thinking_budget_tokens", "chat_template_kwargs", "max_tokens")}
+        return out
+
     # Cell RANKVIS (owner decision 171): honour native_episode.
     # knowledge_value_rendering exactly as rails.runner.
     # _invoke_native_role_episode does -- the stores whose newly supplied
@@ -796,6 +831,8 @@ def dry_run_native_episode(
                     ),
                     instruction_sha256=_sha256(instruction),
                     instruction_chars=len(instruction),
+                    thinking_policy=thinking_policy_by_arm.get(arm_id),
+                    node_decoding=_arm_node_decoding(arm_id),
                 ))
             template_arms = tuple(walked_template)
         text = answer(phase, visits[phase])

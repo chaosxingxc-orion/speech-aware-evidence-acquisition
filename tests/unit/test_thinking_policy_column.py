@@ -696,3 +696,34 @@ def test_the_v5_perception_receipt_is_a_registered_node_receipt():
     )
     cm.validate_module_header_receipt(receipt)
     assert receipt["program_ceiling"] == 10
+
+
+# ---------------------------------------------------------------------------
+# 6. The column scorer's arm-group parser and the review-off rehearsal profile
+# ---------------------------------------------------------------------------
+
+
+def test_the_official_column_scorer_parses_a_thinking_group_and_refuses_double_declaration():
+    import sys
+    from pathlib import Path
+
+    scripts = Path(__file__).resolve().parents[2] / "scripts" / "analysis"
+    if str(scripts) not in sys.path:
+        sys.path.insert(0, str(scripts))
+    import stage3_rollout_score as mod
+
+    group = mod.parse_perception_arm_group({}, {"phase_id": "perception", "thinking_variants": _block()}, {})
+    assert group.is_thinking and group.branch_ids == _group().branch_ids
+    with pytest.raises(mod.Stage3ScoreError, match="beside branches or template_variants"):
+        mod.parse_perception_arm_group({}, {"phase_id": "perception", "thinking_variants": _block(), "branches": {}}, {})
+    with pytest.raises(mod.Stage3ScoreError):
+        mod.parse_perception_arm_group({}, {"phase_id": "perception", "thinking_variants": {"arms": []}}, {})
+
+
+def test_the_review_off_rehearsal_profile_admits_a_thinking_group():
+    from speech_aware_evidence_acquisition.analysis import native_graph_rehearsal as graph
+
+    v = _values()
+    v["native_graph_capacity_profile"] = "review-off-v1"
+    parsed = graph.rehearsal_profile(v, "review-off-v1")
+    assert parsed.max_contacts == 10 and parsed.perception_branch_group.is_thinking

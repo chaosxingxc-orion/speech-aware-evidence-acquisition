@@ -49,7 +49,7 @@ def rehearsal_profile(values, profile):
             # same P/S graph with extra Perception and Solver contacts; any
             # other branch group (per-branch seeds and routers) stays outside.
             or (config.role("perception").perception_branches is not None
-                and not config.role("perception").perception_branches.is_template)
+                and not config.role("perception").perception_branches.renders_unvaried_evidence)
             or config.role("solver").samples != 1
             # NX programme E1: a node-template arm group is a P/S graph with
             # extra Solver contacts and no extra node, so the review-off
