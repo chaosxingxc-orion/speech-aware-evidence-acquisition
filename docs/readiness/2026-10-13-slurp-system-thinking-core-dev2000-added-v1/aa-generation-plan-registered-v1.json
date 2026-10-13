@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-thinking-system-dev2000-added-aa-v1",
-  "composed_config_hash": "9b8cb4a7ab760b1b8c220b614c3ea52395dc7730cdcd3a2503fb95982979f6be",
+  "composed_config_hash": "14df130665316b8b7efb4f4db40aab14c1396107767cd1385783d2a3783bc814",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-aa-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 11.8,
     "planned_model_calls": 4000,
     "planned_speech_audio_seconds": 11935,
-    "protocol_hash": "cf02fa4c73ea45c12fe0d159aedca26cad99bb03f5d236f4a7e37616c8affa17",
+    "protocol_hash": "4ef656b6df537112f8b0e3067b36170da7515a5752820715c8b3c196fa198dbc",
     "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67",
@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "e3c17476dcb4981bb1cf21b6d8e3f35ee1dba0de14635397e596f023176af897"
+    "sha256": "ad97fc6eda547883d44ebeb753adcb04adc47282b56d5191f77186418d1a6a10"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1: Thinking system in-chain twin (aa) of the P3.1 replicate.",
   "registered_at_utc": "2026-10-13T17:06:14Z",

@@ -20,7 +20,7 @@
             "kind": "decision",
             "reason": "Decision slurp-system-thinking-core-dev2000-added-admission-v1 pinned by scripts/flights/repin_cell.py.",
             "relpath": "coordination/slurp-system-thinking-core-dev2000-added-v1/root-admission-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "cb5354a6aa9d62175317cc1d6731040be64d9d7064176c98397e8a283ae83cb8"
           },
           {
             "kind": "preparation",
@@ -32,10 +32,10 @@
             "kind": "preparation",
             "reason": "This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli prepare-supply at the flip from the sealed DEV-2000-ADDED speech-query segment vectors, the centroid key file SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the DEV-2000-ADDED agreement table (item E16). --allow-output-change must never be passed.",
             "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1/phase-supply-v1.json",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            "sha256": "52abe75a3b93ba64c383a815ed2ac01158c8533b62046e7d50c26237c5fc815d"
           }
         ],
-        "state": "held"
+        "state": "ready"
       },
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1"
     }
