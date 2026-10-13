@@ -2557,3 +2557,18 @@ comparison last). Development numbers only until a DEV replicate exists; never a
 Standing rules: one experiment in flight; a cell is admitted only after its predecessor is replicated or root-caused; every plan ceiling
 comes from a measured 4-slot throughput run (the 268-B overrun is the lesson); no flips or `core.flight.cli` checks while a driver is
 alive; the serving session is swapped, never restarted mid-flight.
+
+### No-flight window executed: 297 B delete, 298 A disk growth; Instruct serving back on (coordinator, 2026-10-13 16:35Z)
+
+- **298 A:** serving stopped 16:12Z (card empty, no flight, no agent session); `wsl --shutdown`; `diskpart expand vdisk maximum=3686400` on
+  `E:\saea-data-1.vhdx` (virtual size 3,600 GB; the file stays dynamic, 1.6 TB on disk); re-attached with `wsl --mount --vhd --bare`;
+  `/etc/fstab` remounted it by label (device letter moved sde -> sdd); `resize2fs` online -> filesystem 3.5 TB, 1.5 TB used, 2.1 TB free.
+  Locator host mode with `--require-hot-mounted`: PASS (0 failures, 0 warnings). Instruct session slurp-np4 restarted 16:17Z (health ok,
+  22.9 GB resident).
+- **297 B:** the retired E: original `speechrl-data.retired-20261012` deleted 16:17-16:30Z (one full 268-B chain had flown on the new root;
+  the verification manifests are on file). PowerShell `Remove-Item` stopped on paths beyond MAX_PATH; `rmdir /s /q` with the `\\?\` prefix
+  finished it. E: now 1.67 TB used / 2.43 TB free (the >= 500 GB rule holds with margin). The umbrella `exploring-l4-intelligence/runs`
+  directory on E: is an unrelated pre-program leftover and was not touched.
+- Engineering base after the window: hot root `/home/chao/saea-data/speechrl-data` on the 3.5 TB ext4 disk, authority default, manifest
+  `status = cut-over`, fstab mount, WSLENV user variable aligned, flips on ext4, hidden-console scheduled tasks. Merged agent worktrees
+  removed (loop note, literal sweep, base unification, 268-B note); P3.1 package work proceeds in `sonnet-tsys-dev`.
