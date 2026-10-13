@@ -1,6 +1,16 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-13T16:11:51Z
+Last refreshed: 2026-10-13T17:24:44Z
+
+## P3.1 FLYING: Thinking system on DEV-2000-ADDED at 37b0ed0aa (smoke -> sign-off -> lock -> aa; DEV packets promoted; window 297B/298A done) (2026-10-13T17:24:44Z, Fable 5.1 root)
+
+Package `docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/` (parent = sealed NX R5 composed DEV cell, lock v2.2 program c2; bare =
+direct-max512 DEV Instruct); DEV Thinking packets 17:05Z (1,000 rows, receipt 1a6dca3a...); rows countersigned; receipt cb5354a6...; flip 37b0ed0aa;
+task SAEA-Chain-TSYSD 17:22Z, logs /home/chao/tsysd-chain.out + /home/chao/batch-chain-tsysd.out; ceilings 11.8 GPU-h per arm. After both seals:
+`serving_swap.sh slurp-np4`, countersign the READ row, `thinking_system_dev_read.sh` (NOMINATED / NOT-NOMINATED / HARM). Owner decisions pending
+301-306 (test allowance timing, carrier scope/order, GPU queue, budget as part of the lock, E22 form); registry 16:20Z P3 plan stands.
+
+Superseded stamp: 2026-10-13T16:11:51Z
 
 ## 268-B results note merged (370029d4a); READ row closed; P3 plan of record on file; no-flight window (297 B / 298 A) in progress (2026-10-13T16:11:51Z, Fable 5.1 root)
 

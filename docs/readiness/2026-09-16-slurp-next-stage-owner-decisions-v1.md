@@ -2572,3 +2572,27 @@ alive; the serving session is swapped, never restarted mid-flight.
 - Engineering base after the window: hot root `/home/chao/saea-data/speechrl-data` on the 3.5 TB ext4 disk, authority default, manifest
   `status = cut-over`, fstab mount, WSLENV user variable aligned, flips on ext4, hidden-console scheduled tasks. Merged agent worktrees
   removed (loop note, literal sweep, base unification, 268-B note); P3.1 package work proceeds in `sonnet-tsys-dev`.
+
+### P3.1 LAUNCHED: the Thinking system on DEV-2000-ADDED (lock + twin + smoke) at flight commit 37b0ed0aa (coordinator, 2026-10-13 17:25Z)
+
+- **Package** `docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/` (Sonnet, merged 9b3e1b0d0; family
+  `scripts/flights/direct/thinking_system_dev_family.py` importing the Fold B family unchanged; SHORT `tsysd`). Parent and comparator:
+  the sealed NX R5 composed cell on DEV-2000-ADDED (`SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1`, study commit 9a0a3384b; lock v2.2
+  with v4g, review off, program `phase-native-module-v1-c2`, 2 contacts per row) -- the brief's `module-comp1b-dev2000-added` cells carry
+  lock v2.1 with the Reviewer loop (11 contacts per row) and only their twin sealed, so they are not request-identical. Bare comparator:
+  `SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1` (bare Instruct; roster identity ee6c43cd... matches); no bare Thinking core exists on DEV.
+  Knowledge view: the parent's full-TRAIN pin. Knobs identical to 268-B (budget 3,072, cap 4,096, `drop-reasoning-v1`,
+  `preflight_budget_mode = defer-to-native-contact-fit`). Ceilings from measured throughput: `ceil_0.1(rows / 1.84 / 60 x 1.3)` = 11.8 GPU-h
+  per arm, smoke 0.5 (registered total 24.1).
+- **DEV Thinking packets:** row `SAEA-SLURP-DEV2000-ADDED-THINKING-PACKETS-GPU-V1` appended and countersigned 16:59Z; GPU window
+  `direct_fb_packets_gpu.sh --run --stage dev2000-added` 17:02-17:06Z (Instruct stopped, 1,000 rows encoded at 0.114 s per row, 0 failed,
+  promoted into the Thinking packet root as `DEV-2000-ADDED-promotion.json`, sha 1a6dca3a...; think-budget-np4 session started and ready);
+  receipt pinned, cells re-derived with `--require-receipt`, package re-written, seven rows appended; six flight rows countersigned
+  17:06:48Z (READ row stays a draft); decision receipt minted (sha cb5354a6...); ext4 flip 17:13-17:21Z, gate PASS for all three cells,
+  master fast-forwarded to 37b0ed0aa; chain task SAEA-Chain-TSYSD started 17:22Z (smoke -> sign-off marker
+  `/home/chao/tsysd-decode-signoff.marker` -> lock -> aa, one session). Expected: lock about 9.5 h, aa about 9.5 h.
+- **Read rule** (`scripts/analysis/slurp_system_thinking_core_dev_read.py`): NOMINATED iff the SLU CI95 lower bound exceeds the twin
+  offset and the intent guard (0.65 pp) holds; the 2.5 pp bar and the decision-299 completion rate are reported beside the word. A
+  NOMINATED read makes the Thinking system the SLURP lock candidate v3.0 (Fold B + DEV replicated); a test read needs a new allowance.
+- Housekeeping: two test fixes (closed rows accepted; DEV package rows accepted), the Git Bash path-conversion trap on `saea_task.ps1`
+  (register tasks from PowerShell or with `MSYS_NO_PATHCONV=1`).
