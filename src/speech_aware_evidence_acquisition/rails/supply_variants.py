@@ -104,7 +104,9 @@ from .native_episode_receipt import (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
     parse_perception_branch_note,
+    perception_branch_thinking_policy_error,
     perception_branch_key_source_error,
     perception_branch_note_fields_error,
     validate_perception_branch_receipt,
@@ -1753,6 +1755,11 @@ class PerceptionBranch:
     # The measured token count of the template this branch renders; 0 when
     # the branch is not a template branch. Enters only the fit estimate.
     template_tokens: int = 0
+    # NX-T R1 (2026-10-13): this branch's per-node THINKING-POLICY override, ``{role kind: {enable_thinking |
+    # reasoning_budget_tokens | answer_reserve_tokens}}`` (``core.reasoning_knobs.NODE_POLICY_KEYS``), or ``None`` for A, the twin
+    # and every branch of the other kinds. Written only by :func:`parse_perception_thinking_variants`. Declared LAST, so every
+    # branch parsed before this field existed composes byte-identically.
+    thinking_policy: "Mapping[str, Mapping[str, object]] | None" = None
 
     @property
     def is_twin(self) -> bool:
@@ -1788,6 +1795,10 @@ class PerceptionBranch:
                 {} if self.instruction_template is None
                 else {"instruction_template": self.instruction_template.as_json()}
             ),
+            **(
+                {} if self.thinking_policy is None
+                else {"thinking_policy": canonical_thinking_policy(self.thinking_policy)}
+            ),
         }
 
 
@@ -1808,6 +1819,24 @@ class PerceptionBranchGroup:
         return any(branch.instruction_template is not None for branch in self.branches)
 
     @property
+    def is_thinking(self) -> bool:
+        """True for a group :func:`parse_perception_thinking_variants` built: every non-A, non-twin branch varies the per-node
+        thinking policy and nothing else (the receipt then seals as schema v5)."""
+
+        return any(branch.thinking_policy is not None for branch in self.branches)
+
+    @property
+    def renders_unvaried_evidence(self) -> bool:
+        """True when every branch renders the delivering branch's own evidence (a template or a thinking-policy group): no
+        branch seed, no presentation, no contract item, and the Solver supply is re-resolved from each branch's own note."""
+
+        return self.is_template or self.is_thinking
+
+    @property
+    def has_twin(self) -> bool:
+        return any(branch.is_twin for branch in self.branches)
+
+    @property
     def branch_count(self) -> int:
         return len(self.branches)
 
@@ -1820,7 +1849,7 @@ class PerceptionBranchGroup:
         return self.branches[-1]
 
     @property
-    def twin_branch(self) -> PerceptionBranch:
+    def twin_branch(self) -> PerceptionBranch:  # raises when the group declares none (a v5 column may)
         for branch in self.branches:
             if branch.is_twin:
                 return branch
@@ -1925,6 +1954,142 @@ def parse_perception_template_variants(
     return PerceptionBranchGroup(
         branches=branches, fit_estimate=group.fit_estimate,
         level=PERCEPTION_BRANCH_LEVEL_SOLVER,
+    )
+
+
+#: NX-T R1 (2026-10-13): the thinking-policy column. The block is the template block's shape with ``thinking_policy`` in place
+#: of ``instruction_template``; the only knobs an arm may set are ``core.reasoning_knobs.NODE_POLICY_KEYS``, per role kind.
+THINKING_VARIANT_BLOCK_KEYS = frozenset({"node", "arms", "max_supplied_items", "fit_estimate"})
+THINKING_VARIANT_ARM_KEYS = frozenset({"arm_id", "deliver", "replicate_of", "thinking_policy"})
+THINKING_VARIANT_ROLE_KINDS: tuple[str, ...] = ("perception", "solver")
+MIN_THINKING_CANDIDATE_ARMS = 1
+MAX_THINKING_CANDIDATE_ARMS = 6
+
+
+def canonical_thinking_policy(policy: Mapping[str, Mapping[str, object]]) -> dict[str, dict[str, object]]:
+    """The policy as plain dicts in sorted key order (the form receipts, hashes and ``as_json`` carry)."""
+
+    return {kind: {key: policy[kind][key] for key in sorted(policy[kind])} for kind in sorted(policy)}
+
+
+def _thinking_policy(value: object, *, field: str) -> dict[str, dict[str, object]]:
+    reason = perception_branch_thinking_policy_error(value)
+    if reason is not None or value is None:
+        raise PerceptionBranchError(f"{field}: {reason or 'a candidate arm must declare a thinking_policy'}")
+    return canonical_thinking_policy(value)  # type: ignore[arg-type]
+
+
+def parse_perception_thinking_variants(block: object, *, phase_id: str) -> PerceptionBranchGroup:
+    """Parse ``roles.perception.thinking_variants`` into a LEVEL-2 Perception branch group whose axis is the per-node thinking
+    policy (NX-T R1, owner ruling 304; the later budget round uses the same arm kind).
+
+    Same-flight COLUMN over the decoding knobs: every arm renders the delivering arm's own evidence, template and QueryState (no
+    seed, no presentation, no template); only the per-node ``enable_thinking`` / ``reasoning_budget_tokens`` /
+    ``answer_reserve_tokens`` of the arm's own contacts differ. Each candidate arm is one Perception contact plus its own
+    first-visit Solver contact that reads THAT arm's Perception note (contact term ``base + 2 (K - 1)``).
+
+    Refusals, each raised by name before any contact: a block that is not exactly ``node``/``arms``/``max_supplied_items``/
+    ``fit_estimate``; a ``node`` other than ``perception``; 1..6 candidate arms; at most one twin (the twin is OPTIONAL here,
+    unlike the template kind); an arm key outside ``arm_id``/``deliver``/``replicate_of``/``thinking_policy``; a policy naming
+    any other knob or role kind; a candidate without a policy; a delivering arm or twin that declares one; two arms with the
+    same policy; a delivering arm that is not last; a twin that is not the delivering arm's; an estimated prompt above the live
+    slot limit.
+    """
+
+    if not isinstance(block, Mapping) or set(block) != THINKING_VARIANT_BLOCK_KEYS:
+        raise PerceptionBranchError(
+            "roles.perception.thinking_variants must be an object with exactly "
+            f"{sorted(THINKING_VARIANT_BLOCK_KEYS)}"
+        )
+    if block["node"] != "perception":
+        raise PerceptionBranchError(
+            f"thinking_variants names node {block['node']!r} but sits on the 'perception' role; a variant is declared on "
+            "exactly the node it names"
+        )
+    max_items = _positive_int(block["max_supplied_items"], field="thinking_variants.max_supplied_items")
+    rows = block["arms"]
+    if (
+        not isinstance(rows, Sequence) or isinstance(rows, (str, bytes))
+        or not all(isinstance(row, Mapping) for row in rows)
+    ):
+        raise PerceptionBranchError("thinking_variants.arms must be an ordered list of arm objects")
+    twins = [row for row in rows if row.get("replicate_of") is not None]
+    if len(twins) > 1:
+        raise PerceptionBranchError("thinking_variants admits at most one replicate_of twin")
+    candidates = len(rows) - len(twins) - 1
+    if not MIN_THINKING_CANDIDATE_ARMS <= candidates <= MAX_THINKING_CANDIDATE_ARMS:
+        raise PerceptionBranchError(
+            f"thinking_variants must declare between {MIN_THINKING_CANDIDATE_ARMS} and {MAX_THINKING_CANDIDATE_ARMS} "
+            f"candidate policy arms (plus the delivering arm and at most one twin); this block declares {max(candidates, 0)}"
+        )
+    fit_estimate = parse_supply_variant_fit_estimate(block["fit_estimate"])
+    branches: list[PerceptionBranch] = []
+    for position, row in enumerate(rows):
+        where = f"thinking_variants.arms[{position}]"
+        unknown = sorted(set(row) - THINKING_VARIANT_ARM_KEYS)
+        if unknown or "arm_id" not in row:
+            raise PerceptionBranchError(
+                f"{where} must carry arm_id plus optional {sorted(THINKING_VARIANT_ARM_KEYS - {'arm_id'})}; unknown keys: "
+                f"{unknown}; a thinking arm overrides the per-node thinking policy and nothing else"
+            )
+        arm_id = _nonempty_str(row["arm_id"], field=f"{where}.arm_id")
+        deliver = row.get("deliver", False)
+        if not isinstance(deliver, bool):
+            raise PerceptionBranchError(f"{where}.deliver must be a bool")
+        raw_replicate = row.get("replicate_of")
+        replicate_of = None if raw_replicate is None else _nonempty_str(raw_replicate, field=f"{where}.replicate_of")
+        if deliver and replicate_of is not None:
+            raise PerceptionBranchError(f"{where} declares both deliver: true and replicate_of")
+        policy = None
+        if "thinking_policy" in row:
+            if deliver or replicate_of is not None:
+                raise PerceptionBranchError(
+                    f"{where} is the delivering arm or the twin and must declare no thinking_policy: it runs the locked "
+                    "form, so its requests are the locked plan's byte for byte"
+                )
+            policy = _thinking_policy(row["thinking_policy"], field=f"{where}.thinking_policy")
+        elif not deliver and replicate_of is None:
+            raise PerceptionBranchError(f"{where} is a candidate arm and must declare a thinking_policy")
+        branches.append(PerceptionBranch(
+            branch_id=arm_id, deliver=deliver, knobs=(), max_supplied_items=max_items,
+            replicate_of=replicate_of, thinking_policy=policy,
+        ))
+    ids = [branch.branch_id for branch in branches]
+    if len(set(ids)) != len(ids):
+        raise PerceptionBranchError("thinking_variants arm ids must be distinct")
+    delivering = [branch.branch_id for branch in branches if branch.deliver]
+    if len(delivering) != 1:
+        raise PerceptionBranchError(
+            f"thinking_variants must declare exactly one arm with deliver: true; this block declares {len(delivering)}"
+        )
+    if not branches[-1].deliver:
+        raise PerceptionBranchError(
+            f"thinking_variants delivering arm {delivering[0]!r} must be the LAST arm: the delivered text is then the group's "
+            "final contact's own response, so invariant I7 holds with no new exception"
+        )
+    for branch in branches:
+        if branch.replicate_of is not None and branch.replicate_of != branches[-1].branch_id:
+            raise PerceptionBranchError(
+                f"thinking_variants arm {branch.branch_id!r} names replicate_of {branch.replicate_of!r}, which is not the "
+                f"delivering arm {branches[-1].branch_id!r}"
+            )
+    policies = [json.dumps(canonical_thinking_policy(b.thinking_policy), sort_keys=True) for b in branches if b.thinking_policy]
+    if len(set(policies)) != len(policies):
+        raise PerceptionBranchError(
+            "two thinking_variants arms declare the same policy; two spellings of one configuration spend a contact per row "
+            "and measure nothing"
+        )
+    for branch in branches:
+        estimated = fit_estimate.base_prompt_tokens + branch.max_supplied_items * fit_estimate.tokens_per_supplied_item
+        if estimated > fit_estimate.prompt_limit_tokens:
+            raise PerceptionBranchError(
+                f"thinking_variants arm {branch.branch_id!r} estimates {estimated} prompt tokens, which exceeds the "
+                f"{fit_estimate.prompt_limit_tokens}-token limit of a {fit_estimate.slot_tokens}-token slot with its "
+                f"registered {fit_estimate.reserve_tokens}-token reserve, the {fit_estimate.completion_ceiling}-token "
+                f"completion ceiling and the {REGISTERED_SPECIAL_TOKEN_RESERVE}-token special reserve"
+            )
+    return PerceptionBranchGroup(
+        branches=tuple(branches), fit_estimate=fit_estimate, level=PERCEPTION_BRANCH_LEVEL_SOLVER,
     )
 
 
@@ -2435,8 +2600,12 @@ def perception_branch_record(
     min_candidates_met: bool | None = None,
     candidate_intent_ids_raw_count: int | None = None,
     template_group: bool = False,
+    thinking_group: bool = False,
 ) -> dict[str, object]:
     """One branch's receipt row (design section 3, "Receipt").
+
+    ``thinking_group`` (NX-T R1) selects the v5 row shape: the v3 row plus ``thinking_policy`` -- ``None`` for A and the twin,
+    the declared override map for every other branch.
 
     ``template_group`` (NX programme E1, Perception node) selects the v4 row
     shape: the v3 row plus ``instruction_template`` -- ``None`` for A and the
@@ -2604,6 +2773,16 @@ def perception_branch_record(
             f"perception branch {branch.branch_id!r} declares an instruction_template "
             "but its row is not the template (v4) shape"
         )
+    if template_group and thinking_group:
+        raise PerceptionBranchError("a perception branch row is a template (v4) row or a thinking (v5) row, never both")
+    if thinking_group:
+        record["thinking_policy"] = (
+            None if branch.thinking_policy is None else canonical_thinking_policy(branch.thinking_policy)
+        )
+    elif branch.thinking_policy is not None:
+        raise PerceptionBranchError(
+            f"perception branch {branch.branch_id!r} declares a thinking_policy but its row is not the thinking (v5) shape"
+        )
     if has_level2:
         record["solver_contact_id"] = _nonempty_str(
             solver_contact_id,
@@ -2635,7 +2814,8 @@ def perception_branch_receipt(
 
     return {
         "schema": (
-            PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 if group.is_template
+            PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5 if group.is_thinking
+            else PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 if group.is_template
             else PERCEPTION_BRANCH_RECEIPT_SCHEMA
         ),
         "phase_id": _nonempty_str(
@@ -2812,8 +2992,9 @@ def replay_perception_branch_block(
     result = dict(block)
     # Every block is rebuilt under the CURRENT schema (v3), as v1 -> v2 was before.
     # A v4 (template) block stays v4: its rows carry the template axis.
+    # A v5 (thinking-policy) block stays v5: its rows carry the thinking axis.
     result["schema"] = (
-        PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 if schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4
+        schema if schema in (PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5)
         else PERCEPTION_BRANCH_RECEIPT_SCHEMA
     )
     result["branches"] = rebuilt
@@ -2857,7 +3038,15 @@ __all__ = [
     "parse_perception_branch_knob",
     "parse_perception_branches",
     "parse_perception_template_variants",
+    "parse_perception_thinking_variants",
+    "canonical_thinking_policy",
+    "THINKING_VARIANT_BLOCK_KEYS",
+    "THINKING_VARIANT_ARM_KEYS",
+    "THINKING_VARIANT_ROLE_KINDS",
+    "MIN_THINKING_CANDIDATE_ARMS",
+    "MAX_THINKING_CANDIDATE_ARMS",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5",
     "perception_branch_ceiling",
     "perception_branch_record",
     "perception_branch_receipt",

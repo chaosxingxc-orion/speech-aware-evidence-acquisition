@@ -435,6 +435,10 @@ def _perception_branches_identity(raw_native_episode: object) -> Mapping[str, ob
     template_variants = perception.get("template_variants")
     if isinstance(template_variants, Mapping):
         return {"template_variants": dict(template_variants)}
+    # NX-T R1: the thinking-policy block is an input to the prepared first-phase supply identity too, under its own key.
+    thinking_variants = perception.get("thinking_variants")
+    if isinstance(thinking_variants, Mapping):
+        return {"thinking_variants": dict(thinking_variants)}
     return {}
 
 
@@ -7735,7 +7739,8 @@ class FlightRuntime:
             # NX programme E1, Perception node: a template group varies the
             # instruction only, so every branch shares the flight's own supply
             # and no branch seed (or branch identity receipt) exists.
-            if perception_branch_group is not None and not perception_branch_group.is_template:
+            # NX-T R1: a thinking-policy group varies the decoding only, so it shares the flight's own supply too.
+            if perception_branch_group is not None and not perception_branch_group.renders_unvaried_evidence:
                 _branch_facet_seed, branch_value_seed = self._phase_supply_seeds(
                     program, binding, supply_specs, plan,
                 )

@@ -1878,6 +1878,29 @@ def _role_thinking_policy(config, thinking_policy: Mapping[str, object] | None) 
     return {by_kind[kind]: entry for kind, entry in thinking_policy.items()}
 
 
+def _branch_thinking_policy(config, group) -> dict[str, dict[str, Mapping[str, object]]] | None:
+    """NX-T R1: re-key a thinking-policy column's per-branch ``{role kind: override}`` maps by this episode's role phase ids.
+
+    ``{branch id: {role phase id: override}}`` for every candidate branch; ``None`` when the group is not a thinking-policy
+    group (every other config). A policy naming a role kind that is not a role of the episode is refused by name.
+    """
+
+    if group is None or not group.is_thinking:
+        return None
+    by_kind = {role.role_kind: role.phase_id for role in config.roles}
+    out: dict[str, dict[str, Mapping[str, object]]] = {}
+    for branch in group.branches:
+        if branch.thinking_policy is None:
+            continue
+        unknown = sorted(set(branch.thinking_policy) - set(by_kind))
+        if unknown:
+            raise RailsRunnerError(
+                f"thinking arm {branch.branch_id!r} names nodes that are not roles of this episode: {unknown}"
+            )
+        out[branch.branch_id] = {by_kind[kind]: entry for kind, entry in branch.thinking_policy.items()}
+    return out
+
+
 def _apply_node_thinking(
     decoding_params: dict[str, object], thinking_policy: Mapping[str, object] | None,
     controller: object, contact_id: str,
@@ -2631,6 +2654,12 @@ async def _invoke_native_role_episode(
     perception_template_mode = bool(
         perception_branch_group is not None and perception_branch_group.is_template
     )
+    # NX-T R1 (2026-10-13): True when the Perception branch group is the per-node THINKING-POLICY kind -- every branch renders
+    # the delivering branch's own evidence and instruction and differs only in the thinking decoding of its own contacts
+    # (applied at request composition, ``reproduction.ojw.native_request``). False for every config written before NX-T R1.
+    perception_thinking_mode = bool(
+        perception_branch_group is not None and perception_branch_group.is_thinking
+    )
     # LEVEL 2 (merge set C item 1): the Solver's own phase id, resolved once,
     # so the Solver-fan-out messages/settle/contact-context seams below can
     # tell "this is the Solver's own phase" from "this is Perception's own
@@ -3062,7 +3091,7 @@ async def _invoke_native_role_episode(
         branch_index = perception_branch_group.branch_ids.index(branch_id)
         extra_item = None
         presentation_skip_reason = None
-        if branch.deliver or branch.is_twin or branch.instruction_template is not None:
+        if branch.deliver or branch.is_twin or branch.instruction_template is not None or branch.thinking_policy is not None:
             # NX programme E1, Perception node: a template branch varies the
             # instruction (set by the caller before the contact plan is minted)
             # and nothing else, so it renders the SAME evidence blocks over the
@@ -4549,6 +4578,7 @@ async def _invoke_native_role_episode(
             contrast_block_sha256=pending_row.get("contrast_block_sha256"),
             min_candidates_met=min_candidates_met,
             template_group=perception_template_mode,
+            thinking_group=perception_thinking_mode,
         )
 
     def read_perception_branch_solver_record(branch_index, result):
@@ -4805,6 +4835,9 @@ async def _invoke_native_role_episode(
         # Decision 283 A: the per-node thinking override map, keyed by role phase id. None for every config that declares no
         # ``thinking_policy`` -- which leaves every composed request byte-identical.
         role_thinking_policy=_role_thinking_policy(config, binding.thinking_policy),
+        # NX-T R1: the per-branch thinking override map of a thinking-policy column, ``{branch id: {role phase id: override}}``.
+        # None for every config that declares no ``roles.perception.thinking_variants`` -- byte-identical requests.
+        branch_thinking_policy=_branch_thinking_policy(config, perception_branch_group),
     )
     # E8b: the SAME request composer, bound to the cleaning contact's own
     # binding provider and to a completion sink that settles nothing. It is a
@@ -6449,6 +6482,7 @@ async def _invoke_native_role_episode(
                             solver_row["candidate_supply_value_ids"]
                         ),
                         template_group=perception_template_mode,
+                        thinking_group=perception_thinking_mode,
                     ))
                 branches_block["branches"] = sealed_branches
                 if perception_template_mode and [

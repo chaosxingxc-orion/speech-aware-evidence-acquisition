@@ -1743,14 +1743,20 @@ PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1 = "saea-perception-branch-arms-v1"
 #: is. Sealed by a ``roles.perception.template_variants`` group; v1-v3 verify
 #: unchanged under their own rules.
 PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4 = "saea-perception-branch-arms-v4"
+#: v5 (2026-10-13, NX-T R1, the per-node THINKING-POLICY column): v3 plus ``thinking_policy`` on every branch row --
+#: ``None`` for A and the twin, the declared ``{role kind: {enable_thinking | reasoning_budget_tokens |
+#: answer_reserve_tokens}}`` override map for every other branch, whose ONLY axis it is. Sealed by a
+#: ``roles.perception.thinking_variants`` group, whose twin is OPTIONAL (the column may fly without an in-flight A/A).
+PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5 = "saea-perception-branch-arms-v5"
 PERCEPTION_BRANCH_RECEIPT_SCHEMAS = (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2,
     PERCEPTION_BRANCH_RECEIPT_SCHEMA, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
 )
 #: The schemas whose rows carry the v2 note-parse fields (v2 and every later one).
 PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS = (
     PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2, PERCEPTION_BRANCH_RECEIPT_SCHEMA,
-    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4,
+    PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
 )
 #: The three retrieval-key pins a ``key_source`` branch may swap (v3).
 PERCEPTION_BRANCH_KEY_SOURCE_FIELDS = ("facet_source", "query_source", "agreement_source")
@@ -1948,6 +1954,36 @@ _PERCEPTION_BRANCH_V2_EXTRA_FIELDS = frozenset({"candidate_intent_ids_raw_count"
 _PERCEPTION_BRANCH_V3_EXTRA_FIELDS = frozenset({"key_source"})
 #: Schema v4 adds exactly one more field per branch row (the template axis).
 _PERCEPTION_BRANCH_V4_EXTRA_FIELDS = frozenset({"instruction_template"})
+#: Schema v5 adds exactly one more field per branch row (the thinking-policy axis); it carries no ``instruction_template``.
+_PERCEPTION_BRANCH_V5_EXTRA_FIELDS = frozenset({"thinking_policy"})
+#: The role kinds and keys a branch's ``thinking_policy`` may name (``core.reasoning_knobs.NODE_POLICY_KEYS``, restated so this
+#: module keeps its "no runtime or framework imports" rule).
+_THINKING_POLICY_ROLE_KINDS = ("perception", "solver")
+_THINKING_POLICY_KEYS = frozenset({"reasoning_budget_tokens", "answer_reserve_tokens", "enable_thinking"})
+
+
+def perception_branch_thinking_policy_error(policy: object) -> str | None:
+    """Why a v5 row's ``thinking_policy`` is malformed, or ``None`` when it is ``None`` or well formed."""
+
+    if policy is None:
+        return None
+    if not isinstance(policy, Mapping) or not policy:
+        return "perception branch thinking_policy must be None or a non-empty mapping of role kind to override"
+    for kind, entry in policy.items():
+        if kind not in _THINKING_POLICY_ROLE_KINDS:
+            return f"perception branch thinking_policy names role kind {kind!r}; admitted: {list(_THINKING_POLICY_ROLE_KINDS)}"
+        if not isinstance(entry, Mapping) or not entry or set(entry) - _THINKING_POLICY_KEYS:
+            return (
+                f"perception branch thinking_policy[{kind!r}] must be a non-empty mapping over "
+                f"{sorted(_THINKING_POLICY_KEYS)}"
+            )
+        for key, value in entry.items():
+            if key == "enable_thinking":
+                if not isinstance(value, bool):
+                    return "perception branch thinking_policy enable_thinking must be a boolean"
+            elif isinstance(value, bool) or not isinstance(value, int) or value < 0:
+                return f"perception branch thinking_policy {key} must be a non-negative integer"
+    return None
 _PERCEPTION_BRANCH_LEVELS = (1, 2)
 _PERCEPTION_BRANCH_VISITS = "first"
 
@@ -1957,7 +1993,7 @@ def validate_perception_branch_receipt(
     *,
     branch_ids: Sequence[str],
     delivered_branch_id: str,
-    twin_branch_id: str,
+    twin_branch_id: str | None,
     phase_id: str,
     level: int,
     error_type: type[Exception] = ValueError,
@@ -2018,7 +2054,13 @@ def validate_perception_branch_receipt(
             "perception branch receipt requires the delivering branch (A) to be "
             "the last declared branch",
         )
-    if not isinstance(twin_branch_id, str) or twin_branch_id not in declared:
+    twin_optional = (
+        isinstance(perception_branches, Mapping)
+        and perception_branches.get("schema") == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5
+    )
+    if twin_branch_id is None and twin_optional:
+        pass                                     # a v5 (thinking-policy) column may fly without a twin
+    elif not isinstance(twin_branch_id, str) or twin_branch_id not in declared:
         _raise(error_type, "perception branch receipt names an undeclared twin branch")
     if level not in _PERCEPTION_BRANCH_LEVELS:
         _raise(error_type, "perception branch receipt level must be 1 or 2")
@@ -2029,7 +2071,10 @@ def validate_perception_branch_receipt(
         _raise(error_type, "perception branch receipt has an unregistered schema")
     is_v2 = schema in PERCEPTION_BRANCH_NOTE_FIELD_SCHEMAS
     is_v4 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4
-    is_v3 = schema in (PERCEPTION_BRANCH_RECEIPT_SCHEMA, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4)
+    is_v5 = schema == PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5
+    is_v3 = schema in (
+        PERCEPTION_BRANCH_RECEIPT_SCHEMA, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4, PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5,
+    )
     if perception_branches["phase_id"] != phase_id:
         _raise(error_type, "perception branch receipt names another phase")
     if perception_branches["level"] != level:
@@ -2068,6 +2113,8 @@ def validate_perception_branch_receipt(
         expected_fields = expected_fields | _PERCEPTION_BRANCH_V3_EXTRA_FIELDS
     if is_v4:
         expected_fields = expected_fields | _PERCEPTION_BRANCH_V4_EXTRA_FIELDS
+    if is_v5:
+        expected_fields = expected_fields | _PERCEPTION_BRANCH_V5_EXTRA_FIELDS
     contact_ids: list[str] = []
     delivering_ids: tuple[str, ...] | None = None
     delivering_request_sha256: str | None = None
@@ -2087,7 +2134,7 @@ def validate_perception_branch_receipt(
             _raise(error_type, "perception branch lacks its contact identity")
         contact_ids.append(contact_id)
         replicate_of = row.get("replicate_of")
-        is_twin = row["branch_id"] == twin_branch_id
+        is_twin = twin_branch_id is not None and row["branch_id"] == twin_branch_id
         if is_twin:
             if replicate_of != delivered_branch_id:
                 _raise(
@@ -2224,12 +2271,17 @@ def validate_perception_branch_receipt(
                 "perception branch instruction_template must be None or exactly "
                 "{relpath, sha256} with a lowercase 64-hex sha256",
             )
+        thinking_policy = row.get("thinking_policy") if is_v5 else None
+        reason = perception_branch_thinking_policy_error(thinking_policy)
+        if reason is not None:
+            _raise(error_type, reason)
         if deliver or is_twin:
             if (
                 paths or release_swap is not None or presentation_id is not None
                 or min_candidates is not None or presentation_skip_reason is not None
                 or contrast_block_sha256 is not None or min_candidates_met is not None
                 or key_source is not None or instruction_template is not None
+                or thinking_policy is not None
             ):
                 _raise(
                     error_type,
@@ -2239,7 +2291,7 @@ def validate_perception_branch_receipt(
         elif not (
             paths or release_swap is not None or presentation_id is not None
             or min_candidates is not None or key_source is not None
-            or instruction_template is not None
+            or instruction_template is not None or thinking_policy is not None
         ):
             _raise(
                 error_type,
@@ -2254,6 +2306,15 @@ def validate_perception_branch_receipt(
                 error_type,
                 "a v4 (template) perception branch declares its instruction_template "
                 "as its only axis",
+            )
+        elif is_v5 and (
+            thinking_policy is None
+            or paths or release_swap is not None or presentation_id is not None
+            or min_candidates is not None or key_source is not None
+        ):
+            _raise(
+                error_type,
+                "a v5 (thinking-policy) perception branch declares its thinking_policy as its only axis",
             )
         ids = _sequence(
             row["supplied_value_ids"], "perception branch supplied_value_ids", error_type=error_type,
@@ -2334,10 +2395,10 @@ def validate_perception_branch_receipt(
             delivering_ids = tuple(ids)
     if len(set(contact_ids)) != len(contact_ids):
         _raise(error_type, "perception branches must have distinct contact ids")
-    if not twin_seen:
+    if not twin_seen and not (twin_branch_id is None and twin_optional):
         _raise(error_type, "perception branch receipt does not carry the declared twin")
     for row in rows:
-        if row["branch_id"] != twin_branch_id:
+        if twin_branch_id is None or row["branch_id"] != twin_branch_id:
             continue
         if delivering_ids is None or tuple(row["supplied_value_ids"]) != delivering_ids:
             _raise(
@@ -2359,6 +2420,8 @@ __all__ = [
     "supply_variant_arm_release_swaps",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V4",
+    "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V5",
+    "perception_branch_thinking_policy_error",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V1",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMA_V2",
     "PERCEPTION_BRANCH_RECEIPT_SCHEMAS",

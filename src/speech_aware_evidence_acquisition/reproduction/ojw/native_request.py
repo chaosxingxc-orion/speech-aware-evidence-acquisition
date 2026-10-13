@@ -311,6 +311,7 @@ class MeteredNativeSpeechRequest:
         solver_sampling: Mapping[str, object] | None = None,
         role_completion_caps: Mapping[str, int] | None = None,
         role_thinking_policy: Mapping[str, Mapping[str, object]] | None = None,
+        branch_thinking_policy: Mapping[str, Mapping[str, Mapping[str, object]]] | None = None,
     ):
         if not isinstance(client, FrozenCoreClient):
             raise NativeSpeechRequestError("use the flight's existing FrozenCoreClient")
@@ -352,6 +353,22 @@ class MeteredNativeSpeechRequest:
         if any(not isinstance(role_id, str) or not role_id or not isinstance(entry, Mapping) for role_id, entry in policy.items()):
             raise NativeSpeechRequestError("role_thinking_policy must map role ids to override mappings")
         self._role_thinking_policy = policy
+        # NX-T R1 (2026-10-13): ``{perception branch id: {role phase id: thinking override}}`` -- the per-ARM override of a
+        # thinking-policy column, composed at this same seam on top of the role-level one. None or empty (every adapter written
+        # before NX-T R1) leaves every composed request as before.
+        branch_policy = {
+            str(branch_id): dict(entries) for branch_id, entries in dict(branch_thinking_policy or {}).items()
+        }
+        if any(
+            not branch_id or not isinstance(entries, Mapping) or not entries
+            or any(not isinstance(role_id, str) or not role_id or not isinstance(entry, Mapping)
+                   for role_id, entry in entries.items())
+            for branch_id, entries in branch_policy.items()
+        ):
+            raise NativeSpeechRequestError(
+                "branch_thinking_policy must map branch ids to {role id: override mapping} maps"
+            )
+        self._branch_thinking_policy = branch_policy
         self._owner = object()
         self._client = client
         self._binding_provider = binding_provider
@@ -460,6 +477,16 @@ class MeteredNativeSpeechRequest:
                 decoding = resolve_node_decoding(decoding, self._role_thinking_policy, request.role_id)
             except ReasoningKnobError as error:
                 raise NativeSpeechRequestError(str(error)) from error
+        # NX-T R1: this contact's ARM override (the per-node thinking policy of the Perception branch it belongs to), composed after
+        # the role-level one. The delivering branch and the twin have no entry, so their requests are the locked plan's.
+        arm_id = getattr(request.context, "perception_branch_id", None)
+        if arm_id is not None and arm_id in self._branch_thinking_policy:
+            arm_policy = self._branch_thinking_policy[arm_id]
+            if request.role_id in arm_policy:
+                try:
+                    decoding = resolve_node_decoding(decoding, arm_policy, request.role_id)
+                except ReasoningKnobError as error:
+                    raise NativeSpeechRequestError(str(error)) from error
         if answer_only:
             # The one receipted answer-only re-ask (decision 278): thinking off, max_tokens = the reserve.
             try:

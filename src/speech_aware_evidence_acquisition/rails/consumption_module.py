@@ -87,6 +87,7 @@ COMPONENT_STATES: tuple[str, ...] = (STATE_ON, STATE_OFF, STATE_SHADOW, STATE_CO
 _BLOCK_REQUIRED = frozenset({"module_id", "profile", "components"})
 _BLOCK_OPTIONAL = frozenset({
     "columns", "lock", "review_loop", "solver_tool_access", "template_frame", "supply_frame", "construction_roster",
+    "thinking_frame",
 })
 #: A lock-version name a block may declare (migration step 6, owner decision
 #: 204): ``v<major>.<minor>``, resolved through the carrier's ``lock_versions``.
@@ -99,6 +100,7 @@ _PROFILE = re.compile(r"^[a-z][a-z0-9]*$")
 NODE_RECEIPT_SCHEMAS = frozenset({
     "saea-perception-branch-arms-v1",
     "saea-perception-branch-arms-v4",
+    "saea-perception-branch-arms-v5",
     "saea-supply-variant-arms-v3",
     "saea-supply-variant-arms-v4",
     "saea-supply-variant-arms-v5",
@@ -166,6 +168,15 @@ _COLUMN_REQUIRED = frozenset({"column_id", "toggle", "to", "level"})
 #: ``template_variant_frame`` hook names the one it admits).
 COLUMN_KIND_TEMPLATE = "template"
 _TEMPLATE_COLUMN_KEYS = frozenset({"column_id", "kind", "node", "template", "template_tokens"})
+#: NX-T R1 (2026-10-13): the per-node THINKING-POLICY column. It IS one non-delivering arm of the Perception node's
+#: ``thinking_variants`` block: the arm named ``column_id``, whose own Perception and Solver contacts carry the declared
+#: ``thinking_policy`` (``{role kind: {enable_thinking | reasoning_budget_tokens | answer_reserve_tokens}}``) over the SAME
+#: evidence, template and QueryState the delivering arm renders. It toggles no component and carries no template.
+COLUMN_KIND_THINKING = "thinking"
+_THINKING_COLUMN_KEYS = frozenset({"column_id", "kind", "node", "thinking_policy"})
+#: The block-level frame every thinking column set shares: ``twin`` adds the request-identical A/A arm the carrier's hook names;
+#: ``max_supplied_items`` bounds the evidence every arm renders; ``fit_estimate`` is the measured fail-closed fit estimate.
+_THINKING_FRAME_KEYS = frozenset({"max_supplied_items", "twin", "fit_estimate"})
 #: Loop engineering item E-S1 (2026-10-11): the node-SUPPLY column. It IS one
 #: non-delivering arm of the Solver's ``supply_variants`` block (the E42
 #: mechanism): the arm named ``column_id``, resolving its own supply -- knob-tail
@@ -365,6 +376,10 @@ class CarrierHooks:
     #: "delivering_arm_id", "twin_arm_id"}``. ``None``: no analogue on this
     #: carrier, so a Perception template column refuses. Declared LAST.
     perception_template_variant_frame: Mapping[str, object] | None = None
+    #: NX-T R1 (2026-10-13): where thinking-policy columns compile -- ``{"block_path": the key path of the Perception role's
+    #: ``thinking_variants`` block, "node": "perception", "delivering_arm_id", "twin_arm_id"}``. ``None``: no analogue on this
+    #: carrier, so a thinking column refuses. Declared after the Perception template frame.
+    thinking_variant_frame: Mapping[str, object] | None = None
     #: Loop engineering item E-S1 (2026-10-11): where and at which node supply
     #: columns compile -- ``{"block_path": the key path of the node's
     #: ``supply_variants`` block, "node": the one node the carrier admits,
@@ -518,6 +533,12 @@ class ColumnDecl:
     #: E-S1: a ``supply`` column's canonical ``{max_supplied_items, overrides,
     #: release_swap}`` (``None`` for every other kind). Declared LAST.
     supply_json: str | None = None
+    #: NX-T R1: a ``thinking`` column's canonical ``thinking_policy`` (``None`` for every other kind). Declared LAST.
+    thinking_json: str | None = None
+
+    @property
+    def thinking_policy(self) -> dict[str, object] | None:
+        return None if self.thinking_json is None else json.loads(self.thinking_json)
 
     @property
     def supply(self) -> dict[str, object] | None:
@@ -552,6 +573,8 @@ class ConsumptionModuleBlock:
     template_frame_json: str | None = None
     #: E-S1: the supply columns' shared frame (canonical JSON), or ``None``.
     supply_frame_json: str | None = None
+    #: NX-T R1: the thinking columns' shared frame (canonical JSON), or ``None`` when the block declares no thinking column.
+    thinking_frame_json: str | None = None
     #: The construction variant of the lock the block composes onto (``ConstructionHooks.variants``), or ``None``.
     construction_roster: str | None = None
 
@@ -568,6 +591,14 @@ class ConsumptionModuleBlock:
     @property
     def supply_frame(self) -> dict[str, object] | None:
         return None if self.supply_frame_json is None else json.loads(self.supply_frame_json)
+
+    @property
+    def thinking_columns(self) -> tuple[ColumnDecl, ...]:
+        return tuple(c for c in self.columns if c.kind == COLUMN_KIND_THINKING)
+
+    @property
+    def thinking_frame(self) -> dict[str, object] | None:
+        return None if self.thinking_frame_json is None else json.loads(self.thinking_frame_json)
 
     @property
     def template_columns(self) -> tuple[ColumnDecl, ...]:
@@ -660,7 +691,7 @@ def parse_consumption_module_block(
     if "solver_tool_access" in raw and (solver_access != "bounded-slot-lookup-v1" or review_loop != "off"):
         raise ConsumptionModuleConfigError("Solver tool access requires the explicit review-off profile")
     if review_loop == "off" and any(
-        not (isinstance(c, Mapping) and c.get("kind") in (COLUMN_KIND_TEMPLATE, COLUMN_KIND_SUPPLY))
+        not (isinstance(c, Mapping) and c.get("kind") in (COLUMN_KIND_TEMPLATE, COLUMN_KIND_SUPPLY, COLUMN_KIND_THINKING))
         for c in columns
     ):
         raise ConsumptionModuleConfigError("review-off profile does not support branch columns")
@@ -751,6 +782,10 @@ def parse_consumption_module_block(
         has_supply_columns=any(c.kind == COLUMN_KIND_SUPPLY for c in column_decls),
         has_template_columns=any(c.kind == COLUMN_KIND_TEMPLATE for c in column_decls),
     )
+    thinking_frame_json = _parse_thinking_frame(
+        raw.get("thinking_frame"),
+        has_thinking_columns=any(c.kind == COLUMN_KIND_THINKING for c in column_decls),
+    )
     block_json = _canonical(dict(raw))
     identity = dict(raw)
     if "columns" in identity:
@@ -769,8 +804,36 @@ def parse_consumption_module_block(
         solver_tool_access=solver_access,
         template_frame_json=template_frame_json,
         supply_frame_json=supply_frame_json,
+        thinking_frame_json=thinking_frame_json,
         construction_roster=construction_roster,
     )
+
+
+def _parse_thinking_frame(raw: object, *, has_thinking_columns: bool) -> str | None:
+    """The thinking columns' shared frame, fail-closed: present exactly when a thinking column is, with exactly the frame's
+    keys. The fit numbers are CHECKED by ``rails.supply_variants.parse_perception_thinking_variants`` at compile time."""
+
+    if raw is None:
+        if has_thinking_columns:
+            raise ConsumptionModuleConfigError(
+                "consumption_module.thinking_frame is required beside a thinking column: it carries the measured fit "
+                "estimate and the evidence bound the arms share"
+            )
+        return None
+    if not has_thinking_columns:
+        raise ConsumptionModuleConfigError("consumption_module.thinking_frame is declared but no thinking column is")
+    if not isinstance(raw, Mapping) or set(raw) != _THINKING_FRAME_KEYS:
+        raise ConsumptionModuleConfigError(
+            f"consumption_module.thinking_frame keys must be exactly {sorted(_THINKING_FRAME_KEYS)}"
+        )
+    bound = raw["max_supplied_items"]
+    if isinstance(bound, bool) or not isinstance(bound, int) or bound < 1:
+        raise ConsumptionModuleConfigError("consumption_module.thinking_frame.max_supplied_items must be a positive integer")
+    if not isinstance(raw["twin"], bool):
+        raise ConsumptionModuleConfigError("consumption_module.thinking_frame.twin must be a bool")
+    if not isinstance(raw["fit_estimate"], Mapping):
+        raise ConsumptionModuleConfigError("consumption_module.thinking_frame.fit_estimate must be an object")
+    return _canonical(dict(raw))
 
 
 def _parse_template_frame(
@@ -914,6 +977,9 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
         if entry.get("kind") == COLUMN_KIND_SUPPLY:
             out.append(_parse_supply_column(entry, field=field))
             continue
+        if entry.get("kind") == COLUMN_KIND_THINKING:
+            out.append(_parse_thinking_column(entry, field=field))
+            continue
         if entry.get("kind") is not None:
             out.append(_parse_template_column(entry, field=field))
             continue
@@ -972,7 +1038,16 @@ def _parse_columns(columns: list, decls: list[ComponentDecl]) -> tuple[ColumnDec
             "consumption_module supply columns must all name one node (one "
             "supply_variants block per flight)"
         )
+    if len({c.node for c in out if c.kind == COLUMN_KIND_THINKING}) > 1:
+        raise ConsumptionModuleConfigError(
+            "consumption_module thinking columns must all name one node (one thinking_variants block per flight)"
+        )
     kinds = {c.kind for c in out}
+    if COLUMN_KIND_THINKING in kinds and len(kinds) > 1:
+        raise ConsumptionModuleConfigError(
+            "thinking columns cannot be declared beside template, supply or Perception-branch columns: one fan-out "
+            "mechanism per episode"
+        )
     if COLUMN_KIND_SUPPLY in kinds and len(kinds) > 1:
         raise ConsumptionModuleConfigError(
             "supply columns cannot be declared beside template or Perception-branch columns: "
@@ -1058,6 +1133,29 @@ def _parse_supply_column(entry: Mapping, *, field: str) -> ColumnDecl:
     return ColumnDecl(
         column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_SUPPLY, node=node,
         supply_json=_canonical(payload),
+    )
+
+
+def _parse_thinking_column(entry: Mapping, *, field: str) -> ColumnDecl:
+    """One ``kind: thinking`` column, fail-closed on SHAPE: exactly its keys and a well-formed per-node policy (the
+    ``core.reasoning_knobs`` keys only, over the roles ``rails.supply_variants.THINKING_VARIANT_ROLE_KINDS`` names). The
+    contradiction, geometry and fit refusals are ``rails.supply_variants`` and the loader's own, applied at compile time."""
+
+    from .native_episode_receipt import perception_branch_thinking_policy_error  # noqa: PLC0415
+
+    if set(entry) != _THINKING_COLUMN_KEYS:
+        raise ConsumptionModuleConfigError(
+            f"{field} keys must be exactly {sorted(_THINKING_COLUMN_KEYS)} for a thinking column, got {sorted(entry)}; a "
+            "thinking column overrides the per-node thinking policy and nothing else"
+        )
+    column_id = _require_text(entry["column_id"], field=f"{field}.column_id")
+    node = _require_text(entry["node"], field=f"{field}.node")
+    policy = entry["thinking_policy"]
+    reason = perception_branch_thinking_policy_error(policy)
+    if reason is not None or policy is None:
+        raise ConsumptionModuleConfigError(f"{field}.thinking_policy: {reason or 'a thinking column must declare a policy'}")
+    return ColumnDecl(
+        column_id, "", STATE_ON, 0, None, kind=COLUMN_KIND_THINKING, node=node, thinking_json=_canonical(dict(policy)),
     )
 
 
@@ -1532,6 +1630,8 @@ def _compile(block: ConsumptionModuleBlock, hooks: CarrierHooks) -> ComposedPoli
         ceiling += _compile_template_columns(block, hooks, writer, layer)
     if block.supply_columns:
         ceiling += _compile_supply_columns(block, hooks, writer, layer)
+    if block.thinking_columns:
+        ceiling += _compile_thinking_columns(block, hooks, writer, layer)
     level = _compile_perception_branches(block, hooks, writer)
     if level is not None:
         from .supply_variants import perception_branch_ceiling  # noqa: PLC0415
@@ -1728,6 +1828,50 @@ def _compile_template_columns(
     # Perception (level-2) block adds one extra Perception contact AND one extra
     # Solver contact per non-delivering arm.
     return (len(rows) - 1) * (2 if at_perception else 1)
+
+
+def _compile_thinking_columns(
+    block: ConsumptionModuleBlock, hooks: CarrierHooks, writer: _Writer, layer: Mapping,
+) -> int:
+    """Compile the thinking columns into ONE ``thinking_variants`` block at the Perception node (NX-T R1): one arm per column
+    in column order, the twin when the frame asks for one, then the delivering arm -- LAST, with no policy, so its requests
+    are the lock's own. Returns the extra contacts the block adds to the ceiling: one Perception AND one Solver contact per
+    non-delivering arm, ``2 (K - 1)``.
+
+    The compiled block is parsed by the rails' own ``parse_perception_thinking_variants`` HERE, so an unknown knob or role
+    kind, a policy-less candidate, two identical policies or a fit overrun is refused at compile time, by that parser's name,
+    before any config is written."""
+
+    from .supply_variants import PerceptionBranchError, parse_perception_thinking_variants  # noqa: PLC0415
+
+    tf = block.thinking_frame
+    frame = _require_hook(hooks, "thinking_variant_frame", "thinking-columns")
+    nodes = {c.node for c in block.thinking_columns}
+    if nodes != {frame["node"]}:
+        raise ConsumptionModuleConfigError(
+            f"thinking columns name node(s) {sorted(nodes)}, but profile {hooks.profile!r} admits thinking variants only at "
+            f"{frame['node']!r}"
+        )
+    rows: list[dict[str, object]] = [
+        {"arm_id": c.column_id, "thinking_policy": c.thinking_policy} for c in block.thinking_columns
+    ]
+    if tf["twin"]:
+        if frame.get("twin_arm_id") is None:
+            raise ConsumptionModuleConfigError(f"profile {hooks.profile!r} names no twin arm id for thinking columns")
+        rows.append({"arm_id": frame["twin_arm_id"], "replicate_of": frame["delivering_arm_id"]})
+    rows.append({"arm_id": frame["delivering_arm_id"], "deliver": True})
+    thinking_block = {
+        "node": frame["node"], "arms": rows, "max_supplied_items": tf["max_supplied_items"],
+        "fit_estimate": dict(tf["fit_estimate"]),
+    }
+    path = tuple(frame["block_path"])
+    role = _node(layer, path[:-1], field="thinking-columns")
+    try:
+        parse_perception_thinking_variants(thinking_block, phase_id=str(role.get("phase_id")))
+    except PerceptionBranchError as error:
+        raise ConsumptionModuleConfigError(f"thinking columns are invalid: {error}") from error
+    writer.set(path, thinking_block, component_id="thinking-columns", replace_only=False)
+    return (len(rows) - 1) * 2
 
 
 def _compile_supply_columns(
@@ -2008,6 +2152,7 @@ __all__ = [
     "CENTROID_BOUNDARY_KEY",
     "COLUMN_KIND_SUPPLY",
     "COLUMN_KIND_TEMPLATE",
+    "COLUMN_KIND_THINKING",
     "COMPONENT_CATALOGUE",
     "COMPONENT_STATES",
     "CONSUMPTION_MODULE_CONFIG_KEY",
