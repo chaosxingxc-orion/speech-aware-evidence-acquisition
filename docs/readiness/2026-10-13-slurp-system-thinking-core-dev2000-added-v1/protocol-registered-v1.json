@@ -93,9 +93,9 @@
     "No session is started by this registration. No paper-scale profile. No system-level claim. No test-sample read (P3.6 needs a new owner-signed allowance)."
   ],
   "protocol_id": "slurp-system-thinking-core-dev2000-added-protocol-v1",
-  "registered_at_utc": "2026-10-13T17:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-13T16:59:01Z",
   "schema": "saea-registered-protocol-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
-  "study_commit_at_registration": "4d3826f084ec76eccda54a98335e96a6e78898d4",
+  "study_commit_at_registration": "d7ebce9db20e38bc2e3f77b7589770037c36016b",
   "the_question": "Does the Fold B transfer (+7.15 pp SLU-F1 / +2.31 intent over the Instruct system) replicate on DEV-2000-ADDED? The Thinking system arm is read against the sealed Instruct column SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1 on the same 1,000 rows, with the in-chain twin as the null."
 }

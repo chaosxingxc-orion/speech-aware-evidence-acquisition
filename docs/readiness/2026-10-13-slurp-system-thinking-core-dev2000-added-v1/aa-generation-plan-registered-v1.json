@@ -31,7 +31,7 @@
   },
   "one_factor": "The core: the Instruct model fragment and its speech packets are replaced by the Thinking core (q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1, budget 3072 + reserve 1024 = cap 4096). The system, the knowledge supply, the sealed query vectors and the roster are the sealed Instruct NX R5 composed cell's on DEV-2000-ADDED.",
   "plan_kind": "generation",
-  "preparation_base_commit": "4d3826f084ec76eccda54a98335e96a6e78898d4",
+  "preparation_base_commit": "d7ebce9db20e38bc2e3f77b7589770037c36016b",
   "prepared_phase_supply": {
     "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1/phase-supply-v1.json",
@@ -39,10 +39,10 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "75ad8652a3a2097121aea091dcc46935be21c08ee9a9c16a8a4e343616f2ad2d"
+    "sha256": "1f25d46e794632a8af36cdfd5bbb37952611d2fe75323099aaec56ee35fd5092"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1: Thinking system in-chain twin (aa) of the P3.1 replicate.",
-  "registered_at_utc": "2026-10-13T17:00:00.000000+00:00",
+  "registered_at_utc": "2026-10-13T16:59:01Z",
   "schema": "saea-registered-generation-plan-v1",
   "scoring": "One first complete official score after a successful seal; no partial score.",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",

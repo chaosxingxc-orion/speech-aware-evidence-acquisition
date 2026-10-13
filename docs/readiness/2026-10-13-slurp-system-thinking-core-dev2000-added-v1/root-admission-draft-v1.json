@@ -3,17 +3,17 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/analysis-recipe-v1.json",
-      "sha256": "3339f56876519425ab931838ba83dd2e0b39ef6db5e0020368d05cba97aa4f14"
+      "sha256": "2982bd558514ca5e0b8d4e0284f8a3604a2333772d74ac54391da8e6e4b08da7"
     },
     "protocol": {
       "path": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/protocol-registered-v1.json",
-      "sha256": "75ad8652a3a2097121aea091dcc46935be21c08ee9a9c16a8a4e343616f2ad2d"
+      "sha256": "1f25d46e794632a8af36cdfd5bbb37952611d2fe75323099aaec56ee35fd5092"
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/registered-facts-v1.json",
-      "sha256": "01b7f60daaeb4d0dbda9ab92a3747703158b0dc84b6335601b59b9ee604eb6ac"
+      "sha256": "addd0d72912202a5419e80f866ced842a44795df52880279c922d2608b6d83b7"
     },
-    "registration_base_commit": "4d3826f084ec76eccda54a98335e96a6e78898d4"
+    "registration_base_commit": "d7ebce9db20e38bc2e3f77b7589770037c36016b"
   },
   "authorization_basis": "Registry 'P3 programme under decision 299 A' (coordinator, 2026-10-13 16:20Z), step P3.1 (decision 299 A); docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md.",
   "budget": {
