@@ -73,7 +73,6 @@ def slurp_decision_candidates(supplied_value_ids: Sequence[str]) -> tuple[str, .
             break
     return tuple(seen)
 
-
 def slurp_max_decision_candidates() -> int:
     """SLURP's candidate-list ceiling (the ``max_decision_candidates`` hook):
     ``rails.candidate_semantic_supply.DEFAULT_MAX_SLURP_CANDIDATES`` (3), the
@@ -170,13 +169,6 @@ PERCEPTION_BRANCH_FRAME: Mapping[str, object] = {
 TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {"block_path": ("native_episode", "roles", "solver", "template_variants"), "node": "solver", "delivering_arm_id": "lock", "twin_arm_id": "aa"}
 PERCEPTION_TEMPLATE_VARIANT_FRAME: Mapping[str, object] = {**TEMPLATE_VARIANT_FRAME, "node": "perception", "block_path": ("native_episode", "roles", "perception", "template_variants")}
 
-#: NX-T R1 (2026-10-13): where thinking-policy columns compile -- the Perception role's ``thinking_variants`` block; arm
-#: ``both-on`` delivers (the locked form) and ``both-on-twin`` is the request-identical A/A.
-THINKING_VARIANT_FRAME: Mapping[str, object] = {
-    "block_path": ("native_episode", "roles", "perception", "thinking_variants"), "node": "perception",
-    "delivering_arm_id": "both-on", "twin_arm_id": "both-on-twin",
-}
-
 #: Ruling R3: ``{component id: admitting record}`` of the Perception components admitted to the delivered path. EMPTY: no column read
 #: has nominated one yet, so ``top2-contrast`` / ``forced-candidate-list`` may be ``column`` but never ``on``.
 DELIVERED_PATH_ADMISSIONS: Mapping[str, str] = {}
@@ -262,7 +254,7 @@ def carrier_module_hooks(*, repo_root: Path | None = None) -> CarrierHooks:
         roster_pin_paths=ROSTER_PIN_PATHS,
         template_variant_frame=TEMPLATE_VARIANT_FRAME,
         perception_template_variant_frame=PERCEPTION_TEMPLATE_VARIANT_FRAME,
-        thinking_variant_frame=THINKING_VARIANT_FRAME,
+        thinking_variant_frame={**PERCEPTION_TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "perception", "thinking_variants"), "delivering_arm_id": "both-on", "twin_arm_id": "both-on-twin"},  # NX-T R1
         supply_variant_frame={**TEMPLATE_VARIANT_FRAME, "block_path": ("native_episode", "roles", "solver", "supply_variants")},  # E-S1
         construction=slurp_module_construction.construction_hooks(ROSTER_PIN_PATHS),  # the r01c variant (2026-10-12)
     )

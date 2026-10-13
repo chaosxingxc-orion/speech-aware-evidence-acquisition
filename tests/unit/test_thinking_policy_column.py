@@ -727,3 +727,65 @@ def test_the_review_off_rehearsal_profile_admits_a_thinking_group():
     v["native_graph_capacity_profile"] = "review-off-v1"
     parsed = graph.rehearsal_profile(v, "review-off-v1")
     assert parsed.max_contacts == 10 and parsed.perception_branch_group.is_thinking
+
+
+def test_the_dry_run_walks_every_thinking_arm_model_free_and_reports_each_arms_node_decoding(tmp_path):
+    from speech_aware_evidence_acquisition.analysis.native_episode_dry_run import dry_run_native_episode
+    from speech_aware_evidence_acquisition.rails.controllers import PhaseProgram, PhaseSpec
+    from speech_aware_evidence_acquisition.rails.material import PhaseMaterial
+
+    from test_rails_frozen_core_client import _World as DryWorld, _plan
+    from test_rails_runner import _FakeAdapter, _knowledge_snapshot
+
+    group = _group()
+    world = DryWorld(tmp_path)
+    world.samples = world.samples[:1]
+    sample = world.samples[0]
+    program = PhaseProgram(
+        program_id="dry-run-thinking-policy-proof-v1",
+        phases=tuple(
+            PhaseSpec(name=phase, purpose="answer" if phase == "solver" else phase, knowledge="supplied", response_format_id=None, barrier=False)
+            for phase in harness_module.PHASES
+        ),
+        max_contacts=10, stop_rule="native-role-episode",
+    ).validate()
+    episode = _perception_live_config(group=group, max_contacts=10)
+
+    def material_for_phase(phase, context, prior):
+        return PhaseMaterial(instruction=f"dry-run instruction for {phase}", response_format=None, contact_id=f"dry-run:{phase}",
+                             purpose="answer" if phase == "solver" else phase).validate()
+
+    phase_binding = {
+        "material_for_phase": material_for_phase, "supply_for_phase": None, "knowledge_snapshot": _knowledge_snapshot(),
+        "speech_packet_bindings": {sample.sample_id: {"packet_id": sample.audio_ref.path, "sha256": sample.audio_ref.sha256}},
+        "query_source": "speech_audio", "supply_specs": {},
+    }
+    runtime = SimpleNamespace(
+        _composed=SimpleNamespace(values={}), _plan=_plan(), _samples=tuple(world.samples), _adapter=_FakeAdapter(samples=tuple(world.samples)),
+        _phase_supply_seeds=lambda *args, **kwargs: ({}, {}),
+        _dry_run_binding={
+            "policy": program.program_id, "program": program, "episode": episode, "phase_binding": phase_binding, "store_ids": (),
+            "supply_variant_for_phase": None, "template_variant_materials": {}, "values": _values(),
+        },
+    )
+    document = dry_run_native_episode(
+        runtime, answers={"perception": "perception draft", "solver": "solver draft"}, node_order=("perception", "solver"),
+    ).as_json()
+    perception = next(n for n in document["nodes"] if n["phase"] == "perception")
+    arms = {a["arm_id"]: a for a in perception["supply_variant_arms"]}
+    assert list(arms) == list(fam_arm_order())
+    locked = hashlib.sha256(b"dry-run instruction for perception").hexdigest()
+    assert len({a["instruction_sha256"] for a in arms.values()}) == 1 and arms["both-on"]["instruction_sha256"] == locked
+    on = {"thinking_budget_tokens": 3072, "chat_template_kwargs": {"enable_thinking": True}, "max_tokens": 4096}
+    off = {"thinking_budget_tokens": None, "chat_template_kwargs": {"enable_thinking": False}, "max_tokens": 1024}
+    assert arms["both-on"]["node_decoding"] == arms["both-on-twin"]["node_decoding"] == {"perception": on, "solver": on}
+    assert arms["perception-off"]["node_decoding"] == {"perception": off, "solver": on}
+    assert arms["solver-off"]["node_decoding"] == {"perception": on, "solver": off}
+    assert arms["both-off"]["node_decoding"] == {"perception": off, "solver": off}
+    assert arms["solver-off"]["thinking_policy"] == {"solver": OFF} and arms["both-on"]["thinking_policy"] is None
+    assert len({tuple(a["supplied_value_ids"]) for a in arms.values()}) == 1                # the evidence is unvaried
+    assert next(n for n in document["nodes"] if n["phase"] == "solver")["supply_variant_arms"] == []
+
+
+def fam_arm_order():
+    return _group().branch_ids

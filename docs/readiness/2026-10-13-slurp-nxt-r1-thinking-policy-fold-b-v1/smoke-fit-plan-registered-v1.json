@@ -1,0 +1,122 @@
+{
+  "arm_order": [
+    "perception-off",
+    "solver-off",
+    "both-off",
+    "both-on-twin",
+    "both-on"
+  ],
+  "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1",
+  "composed_config_hash": "41c9bdb3b8a5668a1564185a72eb8e74c1317d2d8a021501e5683bc504584292",
+  "execution_plan": {
+    "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-fit-v1",
+    "carrier_lock_key": "slurp",
+    "execution_profile": "bounded-discovery-probe",
+    "planned_gpu_hours": 0.5,
+    "planned_model_calls": 160,
+    "planned_speech_audio_seconds": 163,
+    "protocol_hash": "9242b6244182e4ef6d180cebcd921b22c598043b3b3a0506d3906dde623bd238",
+    "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-FIT-V1",
+    "schema": "saea-execution-plan-v1",
+    "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32",
+    "split_role": "discovery",
+    "study": "speech-aware-evidence-acquisition"
+  },
+  "execution_route": "The shared core.flight.cli FIT path under this cell's own native_contact_fit ids; request envelopes only, no generation.",
+  "expected_session_id": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+  "experiment": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1",
+  "family_budget": {
+    "asr_calls": 0,
+    "ceilings_are_not_targets": true,
+    "encoder_calls": 0,
+    "fit_endpoint_calls_cap": 160,
+    "generation_calls_cap": 64,
+    "gpu_hours_fit_inclusive": 0.5,
+    "native_task_contract_calls_cap": 64,
+    "official_complete_scoring_jobs": 0,
+    "repeated_speech_audio_seconds_cap": 163
+  },
+  "no_think_node": {
+    "answer_reserve_tokens": 1024,
+    "budget_field": "absent (no thinking_budget_tokens)",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "enable_thinking": false,
+    "max_tokens": 1024
+  },
+  "one_factor": "The per-node thinking decoding of the non-delivering arms (enable_thinking false at the named node). The delivering arm is the 268-B lock form (budget 3072 + reserve 1024 = cap 4096); the system, the knowledge supply, the sealed query vectors and the roster are the 268-B lock's.",
+  "plan_kind": "fit",
+  "preparation_base_commit": "e1b6bdba33b99d970bdc5e68437997fd236f8dfb",
+  "prepared_phase_supply": {
+    "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
+    "relpath": "prepared/SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-V1/phase-supply-v1.json",
+    "sha256": "MINTED_AT_THE_FLIP"
+  },
+  "protocol_document": {
+    "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
+    "sha256": "890e226a860b5c19bf6ef1548f2030d9f6727e1db7a2c93787a9a44924c68b3d"
+  },
+  "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-FIT-V1: request envelopes only; reads nothing.",
+  "registered_at_utc": "2026-10-13T19:08:50.000000+00:00",
+  "schema": "saea-registered-fit-plan-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "thinking_arms": {
+    "both-off": {
+      "thinking_policy": {
+        "perception": {
+          "enable_thinking": false
+        },
+        "solver": {
+          "enable_thinking": false
+        }
+      }
+    },
+    "both-on": {
+      "role": "delivering",
+      "thinking_policy": null
+    },
+    "both-on-twin": {
+      "role": "twin",
+      "thinking_policy": null
+    },
+    "perception-off": {
+      "thinking_policy": {
+        "perception": {
+          "enable_thinking": false
+        }
+      }
+    },
+    "solver-off": {
+      "thinking_policy": {
+        "solver": {
+          "enable_thinking": false
+        }
+      }
+    }
+  },
+  "thinking_knobs": {
+    "answer_fallback": {
+      "enable_thinking": false,
+      "id": "saea-thinking-answer-fallback-v1",
+      "max_tokens": 1024,
+      "mode": "answer-only re-ask",
+      "per_node": 1
+    },
+    "answer_reserve_tokens": 1024,
+    "budget_message": "Considering the limited time by the user, I have to give the solution based on the thinking directly now.",
+    "completion_cap": 4096,
+    "decoding": {
+      "seed": 20260913,
+      "temperature": 0
+    },
+    "node_modes": {
+      "perception": "think",
+      "solver": "think"
+    },
+    "reasoning_context_policy": "drop-reasoning-v1",
+    "reasoning_format": "deepseek",
+    "thinking_budget_tokens": 3072
+  },
+  "unused_budget_is_not_attempt_authority": true
+}

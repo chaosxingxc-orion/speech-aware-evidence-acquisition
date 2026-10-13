@@ -1,0 +1,102 @@
+{
+  "arms": {
+    "both-off": {
+      "perception": {
+        "enable_thinking": false
+      },
+      "solver": {
+        "enable_thinking": false
+      }
+    },
+    "both-on": "the delivering arm = the 268-B lock form",
+    "both-on-twin": "the request-identical twin (in-flight A/A)",
+    "perception-off": {
+      "perception": {
+        "enable_thinking": false
+      }
+    },
+    "solver-off": {
+      "solver": {
+        "enable_thinking": false
+      }
+    }
+  },
+  "blockers": [],
+  "cells": {
+    "arm": {
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
+      "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
+      "composed_config_hash": "0e19d4b2ea882167fbe67ddbd16ea02ce7ec0d80e16b6447fe5e5e4f8ffc93bb",
+      "experiment": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-V1",
+      "protocol_hash": "572c615ded13b241b5483e4cd29cfbb40a8ccb21a69d376666f20dc5b38dd1e5",
+      "rows": 1080,
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1",
+      "split_identity_hash": "4407794c4a5d2e8883d93fdf242deb33c0987405d62e05a7d8416f5251a3484a"
+    },
+    "smoke": {
+      "attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-generation-v1",
+      "cell": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1",
+      "composed_config_hash": "41c9bdb3b8a5668a1564185a72eb8e74c1317d2d8a021501e5683bc504584292",
+      "experiment": "slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-v1",
+      "fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-smoke-4-fit-v1",
+      "fit_run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-FIT-V1",
+      "protocol_hash": "9242b6244182e4ef6d180cebcd921b22c598043b3b3a0506d3906dde623bd238",
+      "rows": 4,
+      "run_id": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-SMOKE-4-V1",
+      "split_identity_hash": "bdd025a1f1c0a4a1ebd1b1204e7d3e781c3ae2543db7be324420f85171576e32"
+    }
+  },
+  "decision_rule_fixed_here": "The node words and their thresholds are fixed in scripts/analysis/slurp_nxt_thinking_policy_column_read.py and in this package's README: NEEDS-THINKING, NO-RESOLVED-LOSS, GAIN (plus NOT-NEEDED-AT-THE-FLOOR) against the in-flight twin offset and the decision-190 node-column floors.",
+  "failure_policy": "Stop and preserve on the first failure; at most one root-diagnosed recovery re-registration per run id; run-cumulative budgets.",
+  "findings": [
+    {
+      "finding": "The Thinking GGUF's chat template carries an enable_thinking branch that pre-fills an empty think block, but the model card calls the checkpoint thinking-only: a no-think answer from it is out of distribution and UNMEASURED (design section 1.3). The smoke-4 cell settles whether enable_thinking false answers with no reasoning bytes and no think marker, and the read reports per arm and node the completion-token and finish-reason table, the reasoning-character and marker counts, so a no-think arm that still reasons is visible.",
+      "id": "no-think-on-a-thinking-only-checkpoint-is-unmeasured",
+      "remedy": "the coordinator reads `nxt_r1_read.sh smoke` before the sign-off marker; a no-think arm that emits markers or empty answers stops the column flight."
+    },
+    {
+      "finding": "Independent chains, no note sharing (coordinator ruling 2): the evidence, the instruction template and the QueryState are identical in every arm, but a non-delivering arm's Solver prompt carries THAT arm's Perception note, which a no-think Perception writes differently. The perception-off and both-off contrasts therefore measure the node together with its downstream effect on the Solver, and solver-off re-contacts Perception (a request-identical contact whose note may differ by np4 batching jitter), which the in-flight twin both-on-twin measures.",
+      "id": "solver-prompt-differs-by-the-arms-own-note",
+      "remedy": "none; stated so the attribution is not over-read."
+    },
+    {
+      "finding": "The column carries its own A/A null, both-on-twin (a request-identical copy of the delivering both-on arm; same policy, same bytes). The 268-B cross-flight twin offset (+1.15 SLU, -0.09 intent) is the external reference, reported beside the in-flight offset and never used in a node word. The receipt schema v5 makes the twin optional, so a later budget round may fly without one.",
+      "id": "in-flight-twin-and-the-external-reference",
+      "remedy": "none."
+    },
+    {
+      "finding": "Ruling 303 A: one experiment in flight. The P3.1 chain (SAEA-Chain-TSYSD) occupies the Thinking session; this package is DRAFT / HELD until it has finished. The session is the 268-B think-budget-np4 session (budget 3072, cap 4096, same model fragment): no per-arm session, the per-request fields carry the arm.",
+      "id": "serial-gpu-and-the-resident-session",
+      "remedy": "the coordinator flips the cells only after the P3.1 chain has sealed."
+    },
+    {
+      "finding": "As in the 268-B cells the model-free preflight counts the payload at 4 bytes per token (a placeholder) and would refuse the Solver render at the 4,096 cap; the cells defer to the registered exact per-contact context-fit gate (preflight_budget_mode defer-to-native-contact-fit), which runs on every arm's REAL request. A no-think arm's smaller cap (1,024) only widens its prompt limit.",
+      "id": "preflight-defers-to-the-exact-gate",
+      "remedy": "none."
+    },
+    {
+      "finding": "scripts/checks/flight_registration_check.py's node-column findings (aa-arm-missing, variant-cost-mismatch, template-summary-mismatch) read only the Solver's template_variants block and are a no-op for a Perception-node group; the declaration is nevertheless complete (aa_arm_id, variant_cost, template_variants summary) and stage3_effect_floor_check validates its shape.",
+      "id": "flight-registration-check-does-not-yet-read-the-thinking-block",
+      "remedy": "widen NODE_COLUMN_PATH when the checker is next touched (not part of this package)."
+    }
+  ],
+  "one_factor": "the per-node thinking decoding of the non-delivering arms; the system is the 268-B Thinking lock on TRAIN Fold B",
+  "prohibitions": [
+    "No test-split, DEV or Fold A contact (TRAIN Fold B only).",
+    "No supply arm, no template column, no tool schema on any role; no Reviewer or Planner visit; max_revisions 0.",
+    "The system is the 268-B Thinking lock: the knowledge supply, the module graph, the post-processing and the roster are not changed. The per-node thinking decoding of the non-delivering arms is the ONLY varied factor.",
+    "No arm may set any knob other than enable_thinking / reasoning_budget_tokens / answer_reserve_tokens (rails.supply_variants.parse_perception_thinking_variants refuses the rest by name).",
+    "No reasoning text is ever delivered, scored or carried to another node (reasoning_context_policy drop-reasoning-v1); a delivered reasoning marker stops the flight.",
+    "No benefit claim and no admission: claims_benefit is false; the read attributes a thinking cost or gain to a node.",
+    "No flight before the coordinator countersigns the DRAFT rows, mints the decision receipt, the harness commit is on master, the P3.1 chain has finished and the cells are flipped.",
+    "No session is started by this registration. No paper-scale profile. No system-level claim."
+  ],
+  "protocol_id": "slurp-nxt-r1-thinking-policy-fold-b-protocol-v1",
+  "registered_at_utc": "2026-10-13T19:08:50.000000+00:00",
+  "schema": "saea-registered-protocol-v1",
+  "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
+  "study_commit_at_registration": "e1b6bdba33b99d970bdc5e68437997fd236f8dfb",
+  "the_question": "Which nodes of the locked Thinking system do not need thinking (owner ruling 304)? Each non-delivering arm is read PAIRED per row against the delivering both-on arm on the same 1,080 Fold B rows in one flight, with the in-flight twin as the null."
+}

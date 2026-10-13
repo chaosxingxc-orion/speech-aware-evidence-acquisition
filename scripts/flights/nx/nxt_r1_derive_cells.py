@@ -1,0 +1,322 @@
+#!/usr/bin/env python3
+"""Derive the two cells of NX-T R1 (config only): the per-node thinking-policy column on the Thinking core, TRAIN Fold B.
+
+WHAT THE CELLS ARE. The 268-B Thinking lock cell -- the loop's plain lock (lock v2.2 + the v4g post-processing, the review-off COMP-1b module graph, no
+supply arm) on the Thinking core -- with exactly ONE addition: the Perception role's ``thinking_variants`` block, compiled by the consumption module's
+``thinking`` column kind (three candidate arms ``perception-off`` / ``solver-off`` / ``both-off``, the request-identical twin ``both-on-twin`` and the
+delivering arm ``both-on`` LAST). The program grows from ``phase-native-module-v1-c2`` to ``phase-native-module-v1-c10`` (2 + 2 (K - 1), K = 5). The
+model fragment, the serving session, the Thinking packets and their promotion receipt, the knowledge supply, the sealed Fold B speech-query vectors,
+the agreement table, the centroid keys and the roster are the 268-B cell's, byte for byte. Nothing is hand-edited: every baseline is the 268-B parent
+plus the compiler's output plus the registered diff, and the script refuses a leaf that moved beyond :data:`ALLOWED_DIFFS`.
+
+Cells: ``smoke`` (the loop's own four Fold B rows) and ``arm`` (the 1,080-row column flight). CONFIG ONLY: no contact, no ledger row, no receipt, no
+flip. Both cells are HELD.
+
+    python -B scripts/flights/nx/nxt_r1_derive_cells.py [--dry-run]
+"""
+
+from __future__ import annotations
+
+import argparse
+import copy
+import json
+import re
+import sys
+from pathlib import Path
+from typing import Any, Mapping
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
+import nxt_r1_family as fam  # noqa: E402
+
+REPO_ROOT = fam.REPO_ROOT
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
+
+import derive_tfrl_iteration_cells as dv  # noqa: E402
+import tfrl_family as tf  # noqa: E402
+
+from speech_aware_evidence_acquisition.rails import consumption_module as cm  # noqa: E402
+from speech_aware_evidence_acquisition.rails.adapters.slurp_module_hooks import carrier_module_hooks  # noqa: E402
+
+ALLOWED_DIFFS = (
+    "policy", "native_episode.consumption_module", "native_episode.roles.perception.thinking_variants", "native_contact_fit",
+    "prepared_phase_supply", "what_this_is",
+)
+
+WHAT_THIS_IS = (
+    "Cell NXT-R1 (owner ruling 304 of 2026-10-13: which nodes do not need thinking?): the 268-B Thinking system -- the locked SLURP system "
+    "(lock v2.2 + v4g, review-off module graph, program phase-native-module-v1-c2 as the base) on the Thinking core -- with a same-flight COLUMN over the "
+    "PER-NODE THINKING POLICY. The Perception role carries roles.perception.thinking_variants: arms perception-off (Perception enable_thinking false, "
+    "Solver thinking), solver-off (Perception thinking, Solver enable_thinking false), both-off (no thinking anywhere), both-on-twin (a request-identical copy "
+    "of the delivering arm: the column's own in-flight A/A null) and both-on (the delivering arm = the 268-B lock form, budget 3072 + reserve 1024 = cap "
+    "4096, reasoning_context_policy drop-reasoning-v1; its requests are the lock's byte for byte). Every arm renders the delivering arm's evidence, "
+    "template and QueryState; the arms differ only in the thinking decoding of their own Perception and Solver contacts, and an arm's Solver prompt differs by "
+    "that arm's OWN Perception note (independent chains, no note sharing). Program phase-native-module-v1-c10: 2 + 2 (5 - 1) = 10 contacts per row. "
+    "Every policy block is the module compiler's output."
+)
+
+ROLE_TEXT = {
+    "smoke": ("Four-row form smoke of the thinking-policy column: it proves that the c10 module program with five arms loads on the Thinking session, that "
+              "each arm's Perception and Solver requests carry their own thinking fields, that enable_thinking false on the Thinking checkpoint answers "
+              "without reasoning bytes and without a think marker in the delivered content, that the live phase fit and the seal work, and what a contact costs "
+              "per arm and per node (completion tokens, finish reasons, seconds)."),
+    "arm": "The thinking-policy column flight of NX-T R1: five arms over the same 1,080 Fold B rows in one flight.",
+}
+
+HELD = (
+    " HELD: root countersigns the DRAFT rows, mints the admission receipt (scripts/flights/nx/nxt_r1_mint_receipt.py), swaps the serving geometry to the "
+    "Thinking session (scripts/flights/batch/serving_swap.sh think-budget-np4) and flips the cells with scripts/flights/batch/flip_package_ext4.sh through "
+    "scripts/flights/nx/nxt_r1_flip.sh, which also mints each cell's own first-phase supply under its own run id (item E16); --allow-output-change must "
+    "never be passed. Nothing here authorises a flight, a readiness flip or an admission entry."
+)
+
+
+def rd(path: str, root: Path = REPO_ROOT) -> str:
+    return dv.rd(path, root)
+
+
+def parent_stem(key: str) -> str:
+    """The parent cell's id stem (``thinking-system-fold-b-lock`` / ``...-smoke-4``) the experiment text is rewritten from."""
+
+    cell = fam.CELLS[key]["parent_cell"]
+    return cell[len("slurp-native-stage3-"):-len("-v1")]
+
+
+def own_stem(key: str) -> str:
+    cell = fam.CELLS[key]["cell"]
+    return cell[len("slurp-native-stage3-"):-len("-v1")]
+
+
+def substitute(text: str, key: str) -> str:
+    old, new = parent_stem(key), own_stem(key)
+    return text.replace(old, new).replace(old.upper(), new.upper())
+
+
+def thinking_columns() -> list[dict]:
+    return [{"column_id": arm, "kind": "thinking", "node": "perception", "thinking_policy": json.loads(json.dumps(fam.POLICIES[arm]))}
+            for arm in fam.CANDIDATE_ARMS]
+
+
+def module_block(parent: Mapping[str, Any]) -> dict:
+    """The 268-B plain-lock block with the three thinking columns and the thinking frame added (twin on)."""
+
+    block = copy.deepcopy(dict(parent["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY]))
+    if (block.get("lock"), block.get("review_loop")) != (fam.LOCK, "off") or block.get("columns") != []:
+        raise SystemExit(f"the parent's module block is not the plain review-off lock {fam.LOCK} with no columns")
+    block["columns"] = thinking_columns()
+    block["thinking_frame"] = {"max_supplied_items": fam.MAX_SUPPLIED_ITEMS, "twin": True, "fit_estimate": dict(fam.FIT_ESTIMATE)}
+    return block
+
+
+def derive_baseline(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True) -> dict:
+    spec = fam.CELLS[key]
+    raw = rd(f"configs/baseline/{spec['parent_baseline']}.json", repo_root)
+    parent = json.loads(raw)
+    block = module_block(parent)
+    composed = cm.compile_module(block, carrier_module_hooks(repo_root=repo_root), repo_root=repo_root)
+    if composed.program_id != fam.PROGRAM or composed.program_ceiling != fam.CONTACTS_PER_ROW:
+        raise SystemExit(f"compiled program {composed.program_id} / {composed.program_ceiling}, expected {fam.PROGRAM} / {fam.CONTACTS_PER_ROW}")
+    document = composed.apply_to(parent)
+    document["native_episode"][cm.CONSUMPTION_MODULE_CONFIG_KEY] = block
+    out = f"configs/baseline/{spec['baseline']}.json"
+    existing_supply = None
+    if (repo_root / out).is_file():
+        # Re-derivation after the flip keeps the cell's minted first-phase supply pin: resetting it here would silently un-flip the cell.
+        existing_supply = json.loads(rd(out, repo_root)).get("prepared_phase_supply")
+    document.pop("prepared_phase_supply", None)                       # E16: the flip mints this cell's own
+    if existing_supply is not None:
+        document["prepared_phase_supply"] = existing_supply
+    document["native_contact_fit"] = {**parent["native_contact_fit"], "run_id": spec["fit_run"], "attempt_id": spec["fit_attempt"],
+                                      "contact_cap": fam.fit_contact_cap(spec["rows"])}
+    if document.get("speech_packet_promotion_receipt") != fam.THINK_PROMOTION_RECEIPT:
+        raise SystemExit("the parent does not pin the Thinking packet root's promotion receipt")
+    if document.get("speech_packet_promotion_receipt_sha256") != fam.thinking_promotion_sha256():
+        raise SystemExit("the parent's promotion receipt sha256 is not the Thinking baseline's pin")
+    # The column is the ONLY per-node thinking mechanism: no top-level thinking_policy (the delivering arm runs the locked form).
+    if "thinking_policy" in document:
+        raise SystemExit("the column cell declares no cell-level thinking_policy")
+    document["what_this_is"] = f"{ROLE_TEXT[key]} " + WHAT_THIS_IS
+    episode = document["native_episode"]
+    if episode.get("finite_completion_policy") != "deliver-latest-or-abstain" or episode.get("react_exhaustion_policy") != "continue-without-answer":
+        raise SystemExit("the native_episode finite-completion / ReAct-exhaustion policies are not the registered ones")
+    if (episode.get("review_loop"), episode.get("max_revisions")) != ("off", 0):
+        raise SystemExit("the thinking-policy cell must run the Reviewer loop off")
+    if document.get("preflight_budget_mode") != "defer-to-native-contact-fit":
+        raise SystemExit("preflight_budget_mode must stay defer-to-native-contact-fit (the exact per-contact gate decides the fit)")
+    if "supply_variants" in json.dumps(episode["roles"]) or "template_variants" in json.dumps(episode["roles"]):
+        raise SystemExit("the thinking-policy cell carries no supply or template arms")
+    left, right = dv._leaves(parent), dv._leaves(document)
+    missing = object()
+    moved = sorted(k for k in set(left) | set(right) if left.get(k, missing) != right.get(k, missing))
+    stray = [k for k in moved if not any(k == p or k.startswith(p + ".") for p in ALLOWED_DIFFS)]
+    if stray:
+        raise SystemExit(f"leaves moved beyond the registered diff: {stray[:12]}")
+    if write:
+        dv.wr(out, dv.dump_like(raw, document), repo_root)
+    return {"path": out, "document": document, "block": block, "program": composed.program_id, "ceiling": composed.program_ceiling,
+            "loader_verification": dv.loader_verification(block, document, repo_root)}
+
+
+def budgets(key: str, repo_root: Path = REPO_ROOT) -> tuple[dict, dict]:
+    spec = fam.CELLS[key]
+    rows = spec["rows"]
+    calls = fam.generation_calls(key)
+    audio = fam.audio_cap(spec["roster"])
+    family = {
+        "asr_calls": 0, "ceilings_are_not_targets": True, "encoder_calls": 0, "fit_endpoint_calls_cap": fam.fit_contact_cap(rows),
+        "generation_calls_cap": calls, "gpu_hours_fit_inclusive": spec["gpu_hours"], "native_task_contract_calls_cap": calls,
+        "official_complete_scoring_jobs": spec["scoring_jobs"], "repeated_speech_audio_seconds_cap": audio,
+    }
+    plan = {"execution_profile": "bounded-discovery-probe", "planned_gpu_hours": spec["gpu_hours"], "planned_model_calls": calls,
+            "planned_speech_audio_seconds": audio, "split_role": "discovery"}
+    return family, plan
+
+
+def readiness_requirements(key: str, parent_cell: Mapping[str, Any]) -> list[dict]:
+    """The decision receipt, the parent's Fold B agreement-table requirement (byte for byte) and the cell's OWN first-phase supply (zero sha)."""
+
+    spec = fam.CELLS[key]
+    decision = {"kind": "decision", "expected_decision_id": fam.DECISION_ID, "relpath": fam.DECISION_RELPATH, "sha256": "0" * 64,
+                "reason": f"Decision {fam.DECISION_ID} pinned by scripts/flights/repin_cell.py."}
+    agreement = next(r for r in parent_cell["readiness"]["requirements"] if r["relpath"].endswith("FOLD-B-V1/agreement.jsonl"))
+    supply = {"kind": "preparation", "relpath": f"prepared/{spec['run']}/phase-supply-v1.json", "sha256": "0" * 64,
+              "reason": ("This cell's OWN prepared first-phase Perception supply, built model-free under its own run id with core.flight.cli "
+                         "prepare-supply at the flip from the sealed TRAIN Fold B speech-query segment vectors, the centroid key file "
+                         "SAEA-SLURP-INTENT-BOUNDARY-CENTROID-KEYS-V1 and the Fold B agreement table (item E16). --allow-output-change must "
+                         "never be passed.")}
+    return [decision, agreement, supply]
+
+
+def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True) -> dict:
+    spec = fam.CELLS[key]
+    smoke = key == "smoke"
+    raw = rd(f"configs/experiment/{spec['parent_cell']}.json", repo_root)
+    document = json.loads(substitute(raw, key))
+    parent_cell = json.loads(raw)["cells"][0]
+    cell = document["cells"][0]
+    if cell["cell_id"] != spec["cell"] or cell["run_id"] != spec["run"] or cell["baseline_fragment"] != spec["baseline"]:
+        raise SystemExit(f"id rewrite produced {cell['cell_id']!r} / {cell['run_id']!r} / {cell['baseline_fragment']!r}")
+    roster = fam.roster_doc(spec["roster"])
+    ids = [str(item["sample_id"]) for item in roster["items"]]
+    if len(ids) != spec["rows"]:
+        raise SystemExit(f"{fam.ROSTER[spec['roster']]} has {len(ids)} rows, expected {spec['rows']}")
+    rows = spec["rows"]
+    calls = fam.generation_calls(key)
+    family, plan = budgets(key, repo_root)
+    document["date"] = fam.DATE
+    document["experiment_id"] = spec["run"]
+    document["execution_plan"], document["family_budget"] = plan, family
+    document["fragment_kind"] = f"saea-{cell['cell_id']}"
+    document["service_session"] = spec["session"]
+    document["preserve_wire_responses"] = True
+    document["stage3_algorithm"] = {
+        "id": "none", "operators_used": [],
+        "note": ("This cell carries NO training-free RL operator and says so explicitly: it is a same-flight node column over the per-node thinking policy "
+                 "(NX-T R1) -- three candidate policy arms and an in-flight request-identical twin read as columns against the delivering both-on arm (the "
+                 "268-B lock form) -- with no rollout pool, no per-sample credit, no update operator and no evolving store.")}
+    document["split_id"] = fam.SPLIT_ID
+    document["population"] = {
+        "count": rows, "dataset_fragment": fam.DATASET, "roster_receipt": fam.ROSTER[spec["roster"]],
+        "split_identity_hash": roster["split_identity_hash"],
+        "decision_population": (
+            f"TRAIN Fold B ({roster['roster_id']}): {rows} rows of {fam.ROSTER[spec['roster']]}"
+            + ("; four of its rows, structural form proof only, no score and no read." if smoke else
+               "; discovery role, rollout-exposed, never a test claim (owner decisions 28 and 86); the roster of the 268-B read, so the delivering arm "
+               "is also comparable cross-flight to the 268-B lock arm."))}
+    document["populations"] = [{"dataset_fragment": fam.DATASET, "ids": ids}]
+    cell.update(attempt_id=spec["attempt"], model_fragment=spec["model"],
+                allowed_execution_stages=["check", "prepare-supply", "worker"] + ([] if smoke else ["campaign"]))
+    document["generation_budget"] = {
+        "cap": calls, "target": calls,
+        "definition": (
+            f"The review-off module graph (perception 1, solver 1; Reviewer and Planner never visited) under program {fam.PROGRAM} with the five-arm "
+            f"thinking-policy column at the Perception node: {rows:,} x {fam.CONTACTS_PER_ROW} = {rows * fam.CONTACTS_PER_ROW:,} is the exact program "
+            f"maximum (2 + 2 (K - 1), K = {fam.K}); the plan ceiling adds {fam.FALLBACK_CONTACTS_PER_ROW_CEILING} answer-only fallback contacts per row (one per "
+            f"budgeted-thinking contact of the five arms: 2 + 2 + 1 + 1 + 0, core.reasoning_knobs): {calls:,} = {rows:,} x "
+            f"{fam.CONTACTS_PER_ROW + fam.FALLBACK_CONTACTS_PER_ROW_CEILING}. The live phase fit makes {rows} x {fam.CONTACTS_PER_ROW} x "
+            f"{tf.FIT_ENDPOINTS_PER_CONTACT} = {fam.fit_contact_cap(rows):,} tokenizer endpoint calls under its own run id {spec['fit_run']}. The GPU-hour "
+            f"ceiling is a BOUND (rows x {fam.ARM_MIX_ROWS} full-row equivalents / {fam.ROWS_PER_MINUTE_FULL} rows per minute / 60 x {fam.GPU_MARGIN}, "
+            "ceil 0.1), never a target. The budget is RUN-CUMULATIVE across every attempt of this run id.")}
+    out = f"configs/experiment/{spec['cell']}.json"
+    cell["readiness"] = {
+        "reason": (f"{ROLE_TEXT[key]} Registered before contact on {fam.DATE} by script (decision 58) from the 268-B Thinking lock cell and the module "
+                   "compiler (owner ruling 304)." + HELD),
+        "requirements": readiness_requirements(key, parent_cell), "state": "held"}
+    if (repo_root / out).is_file():
+        # Re-derivation after the flip keeps the cell's readiness block (state, reason, pinned receipts): the flip's re-pin owns it.
+        cell["readiness"] = json.loads(rd(out, repo_root))["cells"][0]["readiness"]
+    if smoke:
+        document["purpose"] = (
+            f"Four-row structural form smoke of NX-T R1: that {fam.PROGRAM} (ceiling {fam.CONTACTS_PER_ROW}) with the five-arm thinking-policy column loads "
+            f"on the Thinking session ({fam.THINK_SESSION}), that each arm's Perception and Solver requests carry exactly their declared thinking fields, "
+            "that enable_thinking false on the Thinking checkpoint (an inherited template branch, unmeasured) answers with no reasoning bytes and no think "
+            "marker in the delivered content, that the live phase fit passes at the 4,096-token cap, that the v5 arm receipt seals and that the episode "
+            "completes, and what a contact costs per arm and per node (completion tokens, finish reasons, seconds). Scored by no one and read by no one: "
+            "four rows are never evidence of benefit or harm.")
+        document["failure_policy"] = (
+            "Stop on the first failure and preserve every contact. No retry, no scoring, no partial quality read. A failed smoke stops the cell and the "
+            "column flight does not open. The smoke is re-flown whole at most once under one root-diagnosed recovery re-registration; a second failure closes "
+            "the cell and the fix is proven on a four-row dry run.")
+    else:
+        document["purpose"] = (
+            f"{spec['run']}: which nodes of the locked Thinking system need thinking (owner ruling 304)? One flight, five arms over TRAIN Fold B 1,080: the "
+            "delivering both-on arm (the 268-B lock form), its request-identical twin both-on-twin (the in-flight A/A), perception-off, solver-off and "
+            "both-off. Each non-delivering arm is read PAIRED per row against both-on (official SLU-F1 primary, intent secondary; utterance-cluster bootstrap "
+            "CI95), beside the per-node reasoning statistics, the cap-hit / empty-completion / forced-close table and the throughput table. claims_benefit is "
+            "false: a per-node attribution, not an admission; development numbers only (owner decisions 28 and 86); never a test claim. Nothing here "
+            "authorises a flight, a readiness flip or an admission entry.")
+        document["failure_policy"] = (
+            "Stop and preserve on the first failure. No automatic restart, replay, row filtering, roster, role-graph, prompt, knowledge, geometry or cap "
+            "change. AT MOST ONE root-diagnosed recovery re-registration per run id (a new generation attempt id AND a new native_contact_fit run and attempt "
+            "id); a second failure closes the cell and the fix is proven on a four-row dry run. A response whose delivered content carries a reasoning "
+            "marker is a failure of the read, not of a row: it stops the flight (reasoning_content_guard). A partial manifest is never scored and never read.")
+    document["core_read_design"] = {
+        "arms": {arm: spec["run"] for arm in fam.ARM_ORDER},
+        "chain": "swap to the Thinking session -> smoke -> coordinator sign-off -> the column flight -> swap back to the Instruct session",
+        "reading": ("official SLU-F1 and intent paired per row: each of perception-off / solver-off / both-off minus the delivering both-on arm, the twin "
+                    "both-on-twin minus both-on as the in-flight A/A, beside the per-arm per-node reasoning, cap-hit, empty, forced-close, finish-reason and "
+                    "seconds-per-contact tables and the throughput table"),
+        "this_cell": spec["role"],
+    }
+    leftovers = [m.group(0) for m in re.finditer(r".{40}(?:thinking-system|THINKING-SYSTEM|owner decision 268|Thinking system arm).{20}", json.dumps(document))]
+    if leftovers:
+        raise SystemExit(f"inherited parent identity text survived the rewrite ({key}): {leftovers[:3]}")
+    if write:
+        dv.wr(out, dv.dump_like(raw, document), repo_root)
+    return {"path": out, "document": document}
+
+
+def write_campaign(key: str, *, repo_root: Path = REPO_ROOT, write: bool = True) -> str:
+    spec = fam.CELLS[key]
+    plan = {"cells": [{"cell": spec["cell"], "experiment": spec["cell"]}], "schema": "saea-campaign-plan-v1"}
+    if write:
+        dv.wr(spec["campaign"], json.dumps(plan, indent=2, sort_keys=True) + "\n", repo_root)
+    return spec["campaign"]
+
+
+def derive(*, repo_root: Path = REPO_ROOT, write: bool = True) -> dict:
+    out: dict[str, Any] = {"cells": {}, "_documents": {}}
+    for key in fam.ALL_KEYS:
+        baseline = derive_baseline(key, repo_root=repo_root, write=write)
+        experiment = derive_experiment(key, repo_root=repo_root, write=write)
+        out["cells"][key] = {"baseline": baseline["path"], "experiment": experiment["path"], "loader_verification": baseline["loader_verification"]}
+        out["_documents"][key] = {"baseline": baseline["document"], "experiment": experiment["document"], "block": baseline["block"]}
+        out["program"], out["ceiling"] = baseline["program"], baseline["ceiling"]
+    out["campaigns"] = [write_campaign(key, repo_root=repo_root, write=write) for key in fam.ARM_KEYS]
+    return out
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
+    parser.add_argument("--dry-run", action="store_true", help="derive and verify in memory; write nothing")
+    args = parser.parse_args(argv)
+    result = derive(write=not args.dry_run)
+    result.pop("_documents", None)
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
