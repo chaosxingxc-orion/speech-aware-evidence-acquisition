@@ -50,6 +50,10 @@ Modes::
     python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-smoke-4 --run      # via direct_fb_packets_gpu.sh (--geometry gpu)
     python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-fold-b --run       # via direct_fb_packets_gpu.sh (--geometry gpu)
     python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-fold-b --promote-only --attempt-id <new>
+    python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-dev2000-added --dry-run       # P3.1: the DEV-2000-ADDED Thinking packets
+    python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-dev2000-added --run           # via direct_fb_packets_gpu.sh --stage dev2000-added
+    python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-dev2000-added --check-ledger  # exit 0 only if countersigned
+    python -B scripts/slurp_fold_preprocess_thinking.py --roster thinking-dev2000-added --pin-receipt   # verification only (DEV cells pin the sha at derive time)
     python -B scripts/slurp_fold_preprocess_thinking.py --check-ledger                       # exit 0 only if countersigned
     python -B scripts/slurp_fold_preprocess_thinking.py --smoke-rate                         # exit 0 only if the measured rate fits the cap
     python -B scripts/slurp_fold_preprocess_thinking.py --pin-receipt [--write]              # model-free
@@ -58,6 +62,11 @@ Modes::
 ``--dry-run`` prints the plan (rows, roots, pins, ledger state, serving/GPU state as information) and makes no encoder call, opens no media
 file and starts no process; it never refuses over a resident serving session (the pre-window check runs it while the card is occupied). ``--pin-receipt`` verifies the written promotion receipt against the pins, the runtime receipt and the packets on disk
 and substitutes its sha256 for the zero sentinel in the two Thinking baselines (printed only without ``--write``).
+
+``thinking-dev2000-added`` (P3.1, registry "P3 programme under decision 299 A") is the DEV-2000-ADDED roster: 1,000 ``slurp:devel:`` rows with
+``split_role="dev"``, encoded on the GPU into its OWN legacy cache and promoted ADDITIVELY into the existing Thinking packet root under the NEW
+receipt ``DEV-2000-ADDED-promotion.json`` (the Fold B receipt and packets are never touched; the packet root may already be populated by Fold B).
+Its run id, sidecar fragment (own cache dir), experiment fragment and row totals are :data:`DEV_SPEC`; the Fold B rosters are unchanged.
 
 Label-free by construction: samples come from the frozen runtime view of Fold B, which carries media identity and nothing else.
 No gold, transcript or model output is opened, read or printed; the one-token responses are discarded unread.
@@ -179,6 +188,43 @@ DRAFT_TOKEN = re.compile(r"\bdraft\b", re.IGNORECASE)
 COUNTERSIGNED_TOKEN = re.compile(r"root countersigned", re.IGNORECASE)
 
 
+class DevSpec(NamedTuple):
+    """What a DEV-style Thinking roster changes against the Fold B one: its own run id, fragments, cache, receipt and row totals (P3.1)."""
+
+    run_id: str
+    sidecar_fragment: str
+    experiment_fragment: str
+    dataset_fragment: str
+    sample_id_prefix: str
+    split_role: str
+    packet_root: Path          # the EXISTING Thinking packet root (additive promotion)
+    legacy_cache: Path         # its OWN legacy cache: a Fold B cache entry would be a foreign entry for this roster
+    promotion_receipt: Path    # NEW receipt under the existing root
+    roster_receipt: str        # repo-relative roster receipt whose split identity the view must carry
+    expected_rows: int
+    row_calls: int             # the ledger row total of calls before any failed-attempt spend
+    row_speech_seconds: int
+
+
+#: Mirrors ``scripts/flights/direct/thinking_system_dev_family`` (a test asserts the equality).
+DEV_SPEC = DevSpec(
+    run_id="SAEA-SLURP-DEV2000-ADDED-THINKING-PACKETS-GPU-V1",
+    sidecar_fragment="q4km-thinking-feature-preprocess-gpu-np1-dev2000-added-v1",
+    experiment_fragment="slurp-dev2000-added-thinking-preprocess-gpu-v1",
+    dataset_fragment="slurp-speech-native-dev2000-added",
+    sample_id_prefix="slurp:devel:",
+    split_role="dev",
+    packet_root=Path(fam.THINK_PACKET_ROOT),
+    legacy_cache=Path("/home/chao/feat-cache/slurp-thinking-gpu-q4km-dev2000-added"),
+    promotion_receipt=Path(fam.THINK_PACKET_ROOT) / "DEV-2000-ADDED-promotion.json",
+    roster_receipt="docs/receipts/rosters/slurp-dev-2000-added-v1.json",
+    expected_rows=1000, row_calls=1000, row_speech_seconds=2984,
+)
+DEV_ROSTER_KEY = "thinking-dev2000-added"
+#: The active DEV spec, set by ``apply_roster`` (None for the Fold B rosters, whose behaviour is unchanged).
+ACTIVE_DEV: DevSpec | None = None
+
+
 class ThinkingRoster(NamedTuple):
     key: str
     rows: int | None  # None = every row of the Fold B view
@@ -187,15 +233,20 @@ class ThinkingRoster(NamedTuple):
     plan_calls: int
     plan_speech_seconds: int
     plan_gpu_hours: float
+    dev: DevSpec | None = None
 
 
 def _rosters(geometry: Geometry) -> dict[str, ThinkingRoster]:
-    return {
+    rosters = {
         "thinking-smoke-4": ThinkingRoster(
             "thinking-smoke-4", fam.SMOKE_ROWS, False, geometry.smoke_attempt, fam.SMOKE_ROWS, SMOKE_SPEECH_SECONDS, 1.0),
         "thinking-fold-b": ThinkingRoster(
             "thinking-fold-b", None, True, geometry.fold_attempt, ROW_CALLS, ROW_SPEECH_SECONDS, 1.0),
     }
+    if geometry.key == "gpu":   # the DEV roster exists on the GPU geometry only
+        rosters[DEV_ROSTER_KEY] = ThinkingRoster(
+            DEV_ROSTER_KEY, None, True, "attempt-packets-thinking-gpu-dev2000-added-v1", DEV_SPEC.row_calls, DEV_SPEC.row_speech_seconds, 1.0, DEV_SPEC)
+    return rosters
 
 
 ROSTERS: dict[str, ThinkingRoster] = _rosters(GEOMETRY)
@@ -217,6 +268,25 @@ def apply_geometry(key: str, *, allow_cpu: bool = False) -> Geometry:
     PACKET_ROOT, LEGACY_CACHE, PROMOTION_RECEIPT = geometry.packet_root, geometry.legacy_cache, geometry.promotion_receipt
     ROSTERS.update(_rosters(geometry))
     return geometry
+
+
+def apply_roster(key: str | None) -> DevSpec | None:
+    """Rebind the module run bindings for a DEV roster (run id, fragments, roots, receipt); a Fold B roster restores the geometry values."""
+
+    global ACTIVE_DEV, RUN_ID, SIDECAR_FRAGMENT, EXPERIMENT_FRAGMENT, DATASET_FRAGMENT, PACKET_ROOT, LEGACY_CACHE, PROMOTION_RECEIPT
+    roster = ROSTERS.get(key) if key else None
+    dev = roster.dev if roster is not None else None
+    if dev is not None and GEOMETRY.key != "gpu":
+        raise SystemExit("REFUSED: the DEV roster exists on the GPU geometry only")
+    ACTIVE_DEV = dev
+    if dev is None:
+        RUN_ID, SIDECAR_FRAGMENT, EXPERIMENT_FRAGMENT = GEOMETRY.run_id, GEOMETRY.sidecar_fragment, GEOMETRY.experiment_fragment
+        DATASET_FRAGMENT = fam.DATASET
+        PACKET_ROOT, LEGACY_CACHE, PROMOTION_RECEIPT = GEOMETRY.packet_root, GEOMETRY.legacy_cache, GEOMETRY.promotion_receipt
+    else:
+        RUN_ID, SIDECAR_FRAGMENT, EXPERIMENT_FRAGMENT, DATASET_FRAGMENT = dev.run_id, dev.sidecar_fragment, dev.experiment_fragment, dev.dataset_fragment
+        PACKET_ROOT, LEGACY_CACHE, PROMOTION_RECEIPT = dev.packet_root, dev.legacy_cache, dev.promotion_receipt
+    return dev
 
 
 def log(message: str) -> None:
@@ -241,7 +311,7 @@ def check_config_identity(values: Mapping[str, object], repo: Path = REPO) -> No
         ("feature_root", str(PACKET_ROOT)),
         ("legacy_cache_dir", str(LEGACY_CACHE)),
         ("promotion_receipt", str(PROMOTION_RECEIPT)),
-        ("split_role", "discovery"),
+        ("split_role", ACTIVE_DEV.split_role if ACTIVE_DEV is not None else "discovery"),
         ("execution_profile", EXECUTION_PROFILE),
     )
     for key, expected in expectations:
@@ -252,17 +322,22 @@ def check_config_identity(values: Mapping[str, object], repo: Path = REPO) -> No
         raise SystemExit("the sidecar fragment writes its feature cache to %r, not %s" % (served, LEGACY_CACHE))
     if PACKET_ROOT == evo.DEFAULT_FEATURE_ROOT or LEGACY_CACHE == evo.DEFAULT_LEGACY_CACHE_DIR:
         raise SystemExit("the Thinking roots may not be the Instruct roots")
-    roster_doc = json.loads((repo / fam.ROSTER["arm"]).read_text(encoding="utf-8"))
+    expected_rows = ACTIVE_DEV.expected_rows if ACTIVE_DEV is not None else fam.ROWS
+    roster_path = ACTIVE_DEV.roster_receipt if ACTIVE_DEV is not None else fam.ROSTER["arm"]
+    label = "DEV-2000-ADDED" if ACTIVE_DEV is not None else "Fold B"
+    roster_doc = json.loads((repo / roster_path).read_text(encoding="utf-8"))
     if values.get("split_identity_hash") != roster_doc.get("split_identity_hash"):
-        raise SystemExit("the dataset view's split identity differs from the Fold B roster receipt's")
+        raise SystemExit("the dataset view split identity differs from the %s roster receipt" % label)
     items = values.get("items")
     if values.get("schema") != "saea-speech-native-runtime-view-v1" or not isinstance(items, list):
         raise SystemExit("dataset fragment is not a speech-native runtime view")
-    if len(items) != fam.ROWS or int(values.get("count", -1)) != fam.ROWS:
-        raise SystemExit("the Fold B runtime view must carry exactly %d rows" % fam.ROWS)
+    if len(items) != expected_rows or int(values.get("count", -1)) != expected_rows:
+        raise SystemExit("the %s runtime view must carry exactly %d rows" % (label, expected_rows))
 
 
 def smoke_ids(repo: Path = REPO) -> list[str]:
+    if ACTIVE_DEV is not None:        # the DEV roster has no smoke prefix: the Fold B smoke rows are not its rows
+        return []
     path = repo / fam.ROSTER["smoke"]
     document = json.loads(path.read_text(encoding="utf-8"))
     return [str(item["sample_id"]) for item in document["items"]]
@@ -322,9 +397,10 @@ def ledger_state(
     """
 
     if expected_calls is None:
-        expected_calls = GEOMETRY.row_calls
+        expected_calls = ACTIVE_DEV.row_calls if ACTIVE_DEV is not None else GEOMETRY.row_calls
     if expected_seconds is None:
-        expected_seconds = ROW_SPEECH_SECONDS + (SMOKE_SPEECH_SECONDS if GEOMETRY.smoke_in_row else 0)
+        expected_seconds = (ACTIVE_DEV.row_speech_seconds if ACTIVE_DEV is not None
+                            else ROW_SPEECH_SECONDS + (SMOKE_SPEECH_SECONDS if GEOMETRY.smoke_in_row else 0))
     rows = _parse_ledger_tables(Path(ledger_path).read_text(encoding="utf-8"))
     matched = [row for row in rows if row.get("run/experiment id") == RUN_ID]
     problems: list[str] = []
@@ -335,8 +411,9 @@ def ledger_state(
     row = matched[0]
     if row.get("execution profile") != EXECUTION_PROFILE:
         problems.append("execution profile %r, registered %r" % (row.get("execution profile"), EXECUTION_PROFILE))
-    if row.get("split role") != "discovery" or row.get("split identity hash") != split_identity_hash:
-        problems.append("split role / identity differ from Fold B's")
+    expected_role = ACTIVE_DEV.split_role if ACTIVE_DEV is not None else "discovery"
+    if row.get("split role") != expected_role or row.get("split identity hash") != split_identity_hash:
+        problems.append("split role / identity differ from the %s roster" % ("DEV-2000-ADDED" if ACTIVE_DEV is not None else "Fold B"))
     try:
         numbers = (int(row["calls"]), int(row["speech audio seconds"]), float(row["gpu hours"]))
     except (KeyError, ValueError):
@@ -443,6 +520,8 @@ def expected_row_totals(values: Mapping[str, object], context: AttemptContext) -
 
     items = list(values["items"])  # type: ignore[arg-type]
     fold_audio = sum(float(item["audio_seconds"]) for item in items)
+    if ACTIVE_DEV is not None:        # no smoke attempt in the DEV row: its total is the roster own
+        return (ACTIVE_DEV.row_calls + context.wasted_calls, math.ceil(round(fold_audio + context.wasted_audio_seconds, 6)))
     smoke_audio = sum(float(item["audio_seconds"]) for item in items[: fam.SMOKE_ROWS]) if GEOMETRY.smoke_in_row else 0.0
     return (GEOMETRY.row_calls + context.wasted_calls,
             math.ceil(round(fold_audio + smoke_audio + context.wasted_audio_seconds, 6)))
@@ -648,7 +727,7 @@ def _prepare(args, roster: ThinkingRoster, *, repo: Path, lock_path: Path | None
                           expected_calls=calls, expected_seconds=seconds)
     problems = root_problems(
         roster, packet_root=PACKET_ROOT, legacy_cache=LEGACY_CACHE, promotion_receipt=PROMOTION_RECEIPT,
-        allow_populated_root=bool(getattr(args, "promote_only", False)))
+        allow_populated_root=bool(getattr(args, "promote_only", False)) or ACTIVE_DEV is not None)   # the DEV promotion is ADDITIVE on the Fold B root
     return composed, values, pins, runtime_receipt, ledger, items, slots, attempt_id, problems, context
 
 
@@ -786,7 +865,8 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
 
     lock = evo.load_lock(lock_path or evo.umbrella_lock_path())
     root = evo.data_root()
-    samples = evo.roster_samples(view_for(values, items), root, args.promote_workers, "slurp:train:", roster.key)
+    samples = evo.roster_samples(view_for(values, items), root, args.promote_workers,
+                                 ACTIVE_DEV.sample_id_prefix if ACTIVE_DEV is not None else "slurp:train:", roster.key)
     audio_seconds = sum(float(sample.audio_seconds) for sample in samples)
     log("roster %s: %d samples, %.6f audio-s, config %s" % (roster.key, len(samples), audio_seconds, composed.config_hash[:16]))
 
@@ -826,7 +906,7 @@ def run(args, *, repo: Path = REPO, lock_path: Path | None = None, ledger_path: 
         speech = args.plan_speech_seconds if args.plan_speech_seconds is not None else cold_speech
         plan = evo.ExecutionPlan(
             run_id=RUN_ID, execution_profile=str(values["execution_profile"]), carrier_lock_key=evo.SLURP_LOCK_KEY,
-            split_role="discovery", split_identity_hash=str(values["split_identity_hash"]), planned_model_calls=calls,
+            split_role=ACTIVE_DEV.split_role if ACTIVE_DEV is not None else "discovery", split_identity_hash=str(values["split_identity_hash"]), planned_model_calls=calls,
             planned_gpu_hours=roster.plan_gpu_hours, planned_speech_audio_seconds=speech, protocol_hash=composed.config_hash,
             attempt_id=attempt_id, owner_allowance=values.get("owner_allowance")).validate(source_root=repo)
         log("frozen-core gate PASS (lock %s)" % gate.assert_model_touch_allowed(plan)[:12])
@@ -966,6 +1046,8 @@ def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, recei
                 packet_root: Path | None = None, expected_rows: int = fam.ROWS) -> int:
     receipt_path = receipt_path or PROMOTION_RECEIPT
     packet_root = packet_root or PACKET_ROOT
+    if ACTIVE_DEV is not None and expected_rows == fam.ROWS:
+        expected_rows = ACTIVE_DEV.expected_rows
     composed, values = compose_values(repo)
     check_config_identity(values, repo)
     pins, runtime_receipt = verify_pins(repo=repo, lock_path=lock_path or evo.umbrella_lock_path())
@@ -976,7 +1058,7 @@ def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, recei
     expected_ids = {str(item["sample_id"]).replace(":", "/") for item in values["items"]}  # type: ignore[union-attr]
     packets = list(document["packets"])  # type: ignore[arg-type]
     if document["count"] != expected_rows or {str(p["packet_id"]) for p in packets} != expected_ids:
-        raise SystemExit("the promotion receipt does not cover exactly the %d Fold B rows" % expected_rows)
+        raise SystemExit("the promotion receipt does not cover exactly the %d %s rows" % (expected_rows, "DEV-2000-ADDED" if ACTIVE_DEV is not None else "Fold B"))
     if document["runtime_receipt_sha256"] != evo.canonical_sha256(runtime_receipt):
         raise SystemExit("the promotion receipt was produced under a different runtime receipt than the committed Thinking one")
     for packet in packets:
@@ -989,7 +1071,7 @@ def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, recei
         if loaded.mmproj_sha256 != pins["mmproj"]["sha256"] or loaded.audio_sha256 != packet["audio_sha256"]:
             raise SystemExit("packet %s on disk disagrees with the receipt" % packet["packet_id"])
     changed: list[str] = []
-    for relpath in BASELINES:
+    for relpath in (() if ACTIVE_DEV is not None else BASELINES):   # the DEV cells pin the sha at derive time (thinking_system_dev_derive_cells.py)
         path = repo / relpath
         text = path.read_text(encoding="utf-8")
         new_text, did = baseline_substitution(text, str(receipt_path), sha256)
@@ -1000,7 +1082,9 @@ def pin_receipt(args, *, repo: Path = REPO, lock_path: Path | None = None, recei
                     handle.write(new_text)
     summary = {"promotion_receipt": str(receipt_path), "promotion_receipt_sha256": sha256, "packets": len(packets),
                "baselines_changed": changed, "written": bool(args.write and changed),
-               "next": "commit the two baselines, then re-pin per the package README (direct_fb_flip.sh; never --allow-output-change)"}
+               "next": ("re-run scripts/flights/direct/thinking_system_dev_derive_cells.py --require-receipt and the DEV package writer, then commit"
+                        if ACTIVE_DEV is not None else
+                        "commit the two baselines, then re-pin per the package README (direct_fb_flip.sh; never --allow-output-change)")}
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0
 
@@ -1013,6 +1097,9 @@ def smoke_rate(args, *, data_root: Path | None = None) -> int:
     is absent or unusable.
     """
 
+    if ACTIVE_DEV is not None:
+        print(json.dumps({"usable": False, "reason": "the DEV roster has no smoke: the Fold B smoke proved the GPU encoder form"}, sort_keys=True))
+        return 6
     root = Path(data_root) if data_root is not None else evo.data_root()
     attempt_id = args.attempt_id or ROSTERS["thinking-smoke-4"].default_attempt_id
     path = root / "runs" / RUN_ID / attempt_id / ENCODER_RECEIPT_NAME
@@ -1081,6 +1168,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     apply_geometry(args.geometry, allow_cpu=args.allow_cpu)
+    apply_roster(args.roster)
     if args.pin_receipt:
         return pin_receipt(args)
     if args.check_ledger:

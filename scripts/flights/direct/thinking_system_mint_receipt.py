@@ -47,8 +47,8 @@ ROOT = os.environ.get(
 )
 
 
-def expected_eligible() -> list[str]:
-    return fam.eligible_run_ids()
+def expected_eligible(family=None) -> list[str]:
+    return (family or fam).eligible_run_ids()
 
 
 def rehash(node, root: str) -> int:
@@ -66,20 +66,24 @@ def rehash(node, root: str) -> int:
     return count
 
 
-def mint(root: str, data: str, coordinator: str = "Fable5.1", dry: bool = False, now: datetime | None = None) -> dict:
-    """Build (and, unless dry, write) the receipt; returns a summary. Raises SystemExit on any mismatch."""
+def mint(root: str, data: str, coordinator: str = "Fable5.1", dry: bool = False, now: datetime | None = None, family=None,
+         tool: str = "scripts/flights/direct/thinking_system_mint_receipt.py") -> dict:
+    """Build (and, unless dry, write) the receipt; returns a summary. Raises SystemExit on any mismatch.
 
+    ``family`` selects the package family (default: the 268-B Fold B family); the DEV wrapper passes ``thinking_system_dev_family``."""
+
+    fam = family or globals()["fam"]
     draft_path = f"{fam.PACKAGE}/root-admission-draft-v1.json"
     draft = json.loads(io.open(os.path.join(root, draft_path), encoding="utf-8").read())
     if draft.get("decision_id") != fam.DECISION_ID:
         raise SystemExit(f"draft decision_id is {draft.get('decision_id')!r}, expected {fam.DECISION_ID!r}")
-    if draft.get("eligible_run_ids") != expected_eligible():
+    if draft.get("eligible_run_ids") != expected_eligible(fam):
         raise SystemExit("the draft's eligible_run_ids are not this read's six run ids")
     receipt = json.loads(json.dumps(draft))
     receipt["status"] = "decided"
     receipt["recorded_at_utc"] = (now or datetime.now(timezone.utc)).isoformat()
     receipt["coordinator"] = coordinator
-    receipt["minted_from"] = {"template_receipt": draft_path, "tool": "scripts/flights/direct/thinking_system_mint_receipt.py"}
+    receipt["minted_from"] = {"template_receipt": draft_path, "tool": tool}
     receipt.pop("_draft_note", None)
     rehashed = rehash(receipt, root)
     out = os.path.join(data, fam.DECISION_RELPATH)
