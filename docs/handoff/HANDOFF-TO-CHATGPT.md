@@ -1,6 +1,20 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-12T20:13:34Z
+Last refreshed: 2026-10-13T15:56:28Z
+
+## 268-B READ: Thinking system TRANSFERS-ABOVE-BAR (SLU +7.15 [+5.08, +9.26], intent +2.31 [+0.56, +4.07] over the Instruct system on Fold B); 299 A -> REBUILD-BASE-ON-THINKING (2026-10-13T15:56:28Z, Fable 5.1 root)
+
+Both arms sealed at be7878fc6 (lock 05:58Z, aa 15:39Z; 2,160 contacts each; about 9.4 slot-normalised GPU-h each vs the 8.4 ceiling, stated).
+Levels on TRAIN Fold B: Instruct lock 64.45 / 82.69, bare Thinking 45.39 / 76.76, Thinking system 71.61 / 85.00, twin 72.75 / 84.91 (twin offset
++1.15 [-0.09, +2.42] SLU, -0.09 intent). 100 % completion (0 cap hits / empty / no-JSON on 4,320 contacts), forced closes on 18 % Perception /
+46 % Solver contacts, 0 reasoning markers delivered. Read: `analysis/SAEA-SLURP-SYSTEM-THINKING-CORE-FOLD-B-READ-V1/read.json`; registry section
+15:50Z; results note `docs/results/2026-10-13-slurp-268b-thinking-system-fold-b-read.md` (Opus). Card back on slurp-np4. NEXT (P3, owner 299 A):
+the no-flight window first (297 B delete of `speechrl-data.retired-20261012`, 298 A VHDX growth to 3.6 TB), then the Thinking base rebuild:
+Thinking packets for A2T/E21/E22 (GPU encode), carrier all-off/direct baselines and the SLURP lock re-registered on Thinking, a DEV-2000-ADDED
+replicate of the Thinking system before any lock, serving geometry from measured throughput, SOTA redo (285). Development numbers only; never
+a test claim.
+
+Superseded stamp: 2026-10-12T20:13:34Z
 
 ## 268-B ARMS FLYING at be7878fc6 (lock then aa on think-budget-np4; smoke signed off; ceilings amended 5.1 -> 8.4 GPU-h) (2026-10-12T20:13:34Z, Fable 5.1 root)
 

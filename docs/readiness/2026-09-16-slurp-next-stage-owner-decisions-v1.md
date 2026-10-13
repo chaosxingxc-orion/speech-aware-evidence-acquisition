@@ -2506,3 +2506,34 @@ solutions; 300: fix as you recommend, when the time comes; fact: closed manually
   the overrun is stated here and in the read, and the next Thinking registration plans from a measured 4-slot throughput run). The twin
   `...-AA-V1` started 05:58:52Z on the same session and flight commit (registration gate ok, prelaunch ok); expected seal about 15:40Z.
   Lock rows (generation + FIT) closed with `ledger_mark_consumed.py --apply`; the READ row stays a draft until the twin seals.
+
+### 268-B READ: the locked system on the Thinking core TRANSFERS-ABOVE-BAR; decision 299 A fires (REBUILD-BASE-ON-THINKING) (coordinator, 2026-10-13 15:50Z)
+
+- **Seals:** lock `SAEA-SLURP-STAGE3-THINKING-SYSTEM-FOLD-B-LOCK-V1` 05:58Z and twin `...-AA-V1` 15:39Z, both at flight commit be7878fc6 on the
+  think-budget-np4 session (budget 3,072, cap 4,096, `drop-reasoning-v1`, reasoning bytes hash-and-stats only), 2,160 contacts each (1,080
+  rows x Perception + Solver), summed latency 37.65 / 37.82 h (about 9.4 slot-normalised GPU-h each against the 8.4 ceiling, stated).
+  Rows closed with `ledger_mark_consumed.py --apply`; the READ row `SAEA-SLURP-SYSTEM-THINKING-CORE-FOLD-B-READ-V1` root-countersigned
+  15:42:31Z after both seals and before any number was read; card swapped back to slurp-np4 at 15:42Z.
+- **Read** (`analysis/SAEA-SLURP-SYSTEM-THINKING-CORE-FOLD-B-READ-V1/read.json`, utterance-cluster bootstrap CI95; comparators: the
+  Instruct lock column of loop iteration 3 and the bare Thinking core of 266-E; all TRAIN Fold B, development numbers, never a test claim):
+
+  | metric | Instruct lock (i3) | bare Thinking (266-E) | Thinking system (lock) | twin (aa) | d_system | CI95 | twin offset | vs bare |
+  | --- | ---: | ---: | ---: | ---: | ---: | --- | ---: | ---: |
+  | SLU-F1 | 64.45 | 45.39 | 71.61 | 72.75 | +7.15 | [+5.08, +9.26] | +1.15 [-0.09, +2.42] | +26.21 [+23.84, +28.64] |
+  | intent | 82.69 | 76.76 | 85.00 | 84.91 | +2.31 | [+0.56, +4.07] | -0.09 [-1.30, +1.11] | +8.24 [+6.20, +10.37] |
+
+  Verdict **TRANSFERS-ABOVE-BAR** (d_system >= 2.5, CI95 lower bound 5.08 above the twin offset 1.15, intent guard holds, 0 reasoning
+  markers in content). Equal-scenario weighting SLU +7.68 / intent +2.31; 16 of 18 scenarios gain SLU (music -4.20, transport -0.52);
+  intent saves 59 / harms 34 vs the Instruct system. Transfer share of the bare 266-E delta (+11.90): 60 %. Completion: 0 cap hits, 0
+  length finishes, 0 empty, 0 no-JSON on all 4,320 contacts (the bare Thinking core at cap 8,192 had 36 empty rows); the budget sampler
+  forced the close on 190 / 496 (lock) and 189 / 470 (aa) Perception / Solver contacts, tokens p50 1,964 / 2,408, p99 about 3,190;
+  58-67 s per contact at np4.
+- **Decision 299 A trigger: 3 of 3 -> REBUILD-BASE-ON-THINKING** (`p3_trigger_299` in the read: SLU resolved above the twin offset and
+  >= +1.5 pp; intent CI95 lower bound +0.56 >= -0.65; completion 100 %). Consequence (P3): the engineering base is rebuilt around the
+  Thinking core -- Thinking speech packets for every carrier (A2T / E21 / E22 via the Thinking mmproj, GPU encode), the SLURP lock and
+  the carrier all-off/direct baselines re-registered and re-read on Thinking, serving geometry planned from measured 4-slot throughput
+  (1.84 rows/min at np4 x 24,576 with budget 3,072), the SOTA comparison redone on the Thinking base (285). A DEV-2000-ADDED replicate of
+  the Thinking system precedes any lock (decision 28: Fold B numbers are development numbers).
+- **Results note:** `docs/results/2026-10-13-slurp-268b-thinking-system-fold-b-read.md` (Opus, from the read and smoke receipts); the
+  READ row closes when the note cites it. Registered budget vs spend: planned 8.4 GPU-h per arm, spent about 9.4 (summed latency / 4
+  slots); calls 2,160 of 4,320 planned per arm; audio 6,310 s per arm.
