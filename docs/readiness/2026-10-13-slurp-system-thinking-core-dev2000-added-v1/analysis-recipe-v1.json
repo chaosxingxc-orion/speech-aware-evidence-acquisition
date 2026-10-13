@@ -30,7 +30,7 @@
   "measurement_design": "cross-flight-with-in-chain-replicate",
   "read_run_id": "SAEA-SLURP-SYSTEM-THINKING-CORE-DEV2000-ADDED-READ-V1",
   "recipe_id": "slurp-system-thinking-core-dev2000-added-read-v1",
-  "registered_at_utc": "2026-10-13T16:59:01Z",
+  "registered_at_utc": "2026-10-13T17:06:14Z",
   "roster": {
     "relpath": "configs/dataset/slurp-speech-native-dev2000-added.json",
     "roster_id": "SLURP-DEV-2000-ADDED-V1",

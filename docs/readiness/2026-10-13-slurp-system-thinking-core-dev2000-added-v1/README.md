@@ -15,7 +15,7 @@ The 268-B read found the locked system on the Thinking core TRANSFERS-ABOVE-BAR 
 5. **context-fit-at-the-registered-cap.** At the registered completion cap 4096 the live prompt limit is 17406 tokens (24,576 - 3,072 reserve - 4096 - 2); the measured Solver prompt maximum on the Instruct lock is 14641. DEV rows carry the full-TRAIN knowledge view the parent pins; the live phase FIT re-measures on the real supply and compact-or-abstain handles an overflow. Remedy: none needed unless the FIT refuses; then stop for the coordinator.
 6. **no-bare-thinking-core-on-dev.** There is no bare Thinking core run on DEV-2000-ADDED (carrier and bare baselines on Thinking are step P3.3). The read therefore orients with the bare INSTRUCT core (SAEA-SLURP-DIRECT-MAX512-DEV2000-ADDED-V1, split identity equal to the roster's) and says so; the nomination rests on the Instruct lock column and the twin only. Remedy: none.
 
-Receipt state at generation: `/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/DEV-2000-ADDED-promotion.json` is ABSENT (the baselines carry the zero sentinel; the mint, the flip and the chain refuse).
+Receipt state at generation: `/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/DEV-2000-ADDED-promotion.json` is PRESENT and pinned.
 
 ## What is registered
 

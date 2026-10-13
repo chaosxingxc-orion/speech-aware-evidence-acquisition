@@ -1,6 +1,6 @@
 {
   "cell": "slurp-native-stage3-thinking-system-dev2000-added-smoke-4-v1",
-  "composed_config_hash": "abbb969ef94cb6f562ef116d83a2c6443600116eaf5d54180eac82dde1a1641a",
+  "composed_config_hash": "0bd48e70106edbf97f960ae863d60cb94b690397b59af17cf7ea8b26e324f218",
   "execution_plan": {
     "attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-smoke-4-generation-v1",
     "carrier_lock_key": "slurp",
@@ -8,7 +8,7 @@
     "planned_gpu_hours": 0.5,
     "planned_model_calls": 16,
     "planned_speech_audio_seconds": 33,
-    "protocol_hash": "acf5d1c046d33ce84a5351de1cf8b8aaef76eccef4c3ac0314b4dd78310580be",
+    "protocol_hash": "ce5374166481c839f93f6266ccf7c83f494e08e200c84b0166ad9978ad4fddea",
     "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-V1",
     "schema": "saea-execution-plan-v1",
     "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0",
@@ -31,7 +31,7 @@
   },
   "one_factor": "The core: the Instruct model fragment and its speech packets are replaced by the Thinking core (q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1, budget 3072 + reserve 1024 = cap 4096). The system, the knowledge supply, the sealed query vectors and the roster are the sealed Instruct NX R5 composed cell's on DEV-2000-ADDED.",
   "plan_kind": "generation",
-  "preparation_base_commit": "d7ebce9db20e38bc2e3f77b7589770037c36016b",
+  "preparation_base_commit": "aabd72d6893ecf53129c4fb0d9e4b10413237771",
   "prepared_phase_supply": {
     "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)",
     "relpath": "prepared/SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-V1/phase-supply-v1.json",
@@ -39,10 +39,10 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "1f25d46e794632a8af36cdfd5bbb37952611d2fe75323099aaec56ee35fd5092"
+    "sha256": "7523d82007986a3510abab41a78ef2331552c23917f8652db62397d0072a2923"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-V1: four-row form smoke of the Thinking system of the P3.1 replicate.",
-  "registered_at_utc": "2026-10-13T16:59:01Z",
+  "registered_at_utc": "2026-10-13T17:06:14Z",
   "schema": "saea-registered-generation-plan-v1",
   "scoring": "None: the smoke is never scored.",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",

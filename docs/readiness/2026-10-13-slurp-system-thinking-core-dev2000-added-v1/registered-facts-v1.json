@@ -36,17 +36,11 @@
     "twin_generation_calls": 4000,
     "twin_shape": "separate-cell"
   },
-  "blockers": [
-    {
-      "clears_with": "direct_fb_packets_gpu.sh --run --stage dev2000-added, then derive --require-receipt and re-write this package",
-      "detail": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/DEV-2000-ADDED-promotion.json does not exist; the baselines carry the zero sentinel",
-      "id": "thinking-dev-promotion-receipt-absent"
-    }
-  ],
+  "blockers": [],
   "composed_config_hashes": {
-    "aa": "f08e7af287f0060e452dfa12f735f8ec84eca9cf499d0b458150cb111782fadd",
-    "lock": "fec707abf0d9e65a21c8356f45b33d29983a97bfa4908a288d4ce9da464e3dc8",
-    "smoke": "abbb969ef94cb6f562ef116d83a2c6443600116eaf5d54180eac82dde1a1641a"
+    "aa": "9b8cb4a7ab760b1b8c220b614c3ea52395dc7730cdcd3a2503fb95982979f6be",
+    "lock": "4c7fd091996c2062d79a3f8d13c0df855058b7d1c2eafa3ee2301a197bf365f0",
+    "smoke": "0bd48e70106edbf97f960ae863d60cb94b690397b59af17cf7ea8b26e324f218"
   },
   "context_fit": {
     "completion_cap": 4096,
@@ -94,7 +88,7 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-dev2000-added-aa-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-dev2000-added-aa-v1",
-      "composed_config_hash": "f08e7af287f0060e452dfa12f735f8ec84eca9cf499d0b458150cb111782fadd",
+      "composed_config_hash": "9b8cb4a7ab760b1b8c220b614c3ea52395dc7730cdcd3a2503fb95982979f6be",
       "dataset_fragment": "slurp-speech-native-dev2000-added",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -127,7 +121,7 @@
       "key": "aa",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "2b967b669cac93e1c0751064fc4b899d343a8f854327c695cd0e8e07d4ec5bd8",
+      "protocol_hash": "cf02fa4c73ea45c12fe0d159aedca26cad99bb03f5d236f4a7e37616c8affa17",
       "roster_receipt": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
       "rows": 1000,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1",
@@ -140,7 +134,7 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-dev2000-added-lock-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-dev2000-added-lock-v1",
-      "composed_config_hash": "fec707abf0d9e65a21c8356f45b33d29983a97bfa4908a288d4ce9da464e3dc8",
+      "composed_config_hash": "4c7fd091996c2062d79a3f8d13c0df855058b7d1c2eafa3ee2301a197bf365f0",
       "dataset_fragment": "slurp-speech-native-dev2000-added",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -173,7 +167,7 @@
       "key": "lock",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "3511469a4d3f6cf21d9e3b473cce9edeb8cebcffd12fe4c9d425bde7d1e8f2e4",
+      "protocol_hash": "c7e677606c2e2ab6a146d53b2b409b7bb523ccb6f442d1df113e582d1b7e0020",
       "roster_receipt": "docs/receipts/rosters/slurp-dev-2000-added-v1.json",
       "rows": 1000,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-V1",
@@ -186,7 +180,7 @@
       "baseline_fragment": "slurp-native-stage3-thinking-system-dev2000-added-smoke-4-baseline-v1",
       "carrier_lock_key": "slurp",
       "cell": "slurp-native-stage3-thinking-system-dev2000-added-smoke-4-v1",
-      "composed_config_hash": "abbb969ef94cb6f562ef116d83a2c6443600116eaf5d54180eac82dde1a1641a",
+      "composed_config_hash": "0bd48e70106edbf97f960ae863d60cb94b690397b59af17cf7ea8b26e324f218",
       "dataset_fragment": "slurp-speech-native-dev2000-added",
       "execution_plan": {
         "execution_profile": "bounded-discovery-probe",
@@ -219,7 +213,7 @@
       "key": "smoke",
       "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
       "program": "phase-native-module-v1-c2",
-      "protocol_hash": "acf5d1c046d33ce84a5351de1cf8b8aaef76eccef4c3ac0314b4dd78310580be",
+      "protocol_hash": "ce5374166481c839f93f6266ccf7c83f494e08e200c84b0166ad9978ad4fddea",
       "roster_receipt": null,
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-V1",
@@ -242,8 +236,8 @@
     "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
     "serving_session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
     "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/DEV-2000-ADDED-promotion.json",
-    "speech_packet_promotion_receipt_present": false,
-    "speech_packet_promotion_receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "speech_packet_promotion_receipt_present": true,
+    "speech_packet_promotion_receipt_sha256": "1a6dca3a3f2b9bf98fb52ebcec83bb13f8b105658ee6d01bf757b4a330d4e52c",
     "speech_packet_root": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6",
     "swap_target": "think-budget-np4"
   },
@@ -268,7 +262,7 @@
       "HARM"
     ]
   },
-  "registered_at_utc": "2026-10-13T16:59:01Z",
+  "registered_at_utc": "2026-10-13T17:06:14Z",
   "registration_basis": "docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md ('P3 programme under decision 299 A' (coordinator, 2026-10-13 16:20Z), step P3.1); docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md. DRAFT: nothing here authorises a flip or a flight.",
   "roster": {
     "arm": "configs/dataset/slurp-speech-native-dev2000-added.json",
@@ -315,7 +309,7 @@
     }
   },
   "status": "DRAFT-HELD",
-  "study_commit_at_registration": "d7ebce9db20e38bc2e3f77b7589770037c36016b",
+  "study_commit_at_registration": "aabd72d6893ecf53129c4fb0d9e4b10413237771",
   "thinking_knobs": {
     "answer_fallback": {
       "enable_thinking": false,

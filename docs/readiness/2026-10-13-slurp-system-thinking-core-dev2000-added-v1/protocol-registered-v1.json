@@ -3,22 +3,16 @@
     "aa": "its request-identical twin (separate cell, same chain)",
     "lock": "the Thinking system arm"
   },
-  "blockers": [
-    {
-      "clears_with": "direct_fb_packets_gpu.sh --run --stage dev2000-added, then derive --require-receipt and re-write this package",
-      "detail": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/DEV-2000-ADDED-promotion.json does not exist; the baselines carry the zero sentinel",
-      "id": "thinking-dev-promotion-receipt-absent"
-    }
-  ],
+  "blockers": [],
   "cells": {
     "aa": {
       "attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-aa-generation-v1",
       "cell": "slurp-native-stage3-thinking-system-dev2000-added-aa-v1",
-      "composed_config_hash": "f08e7af287f0060e452dfa12f735f8ec84eca9cf499d0b458150cb111782fadd",
+      "composed_config_hash": "9b8cb4a7ab760b1b8c220b614c3ea52395dc7730cdcd3a2503fb95982979f6be",
       "experiment": "slurp-native-stage3-thinking-system-dev2000-added-aa-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-aa-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-FIT-V1",
-      "protocol_hash": "2b967b669cac93e1c0751064fc4b899d343a8f854327c695cd0e8e07d4ec5bd8",
+      "protocol_hash": "cf02fa4c73ea45c12fe0d159aedca26cad99bb03f5d236f4a7e37616c8affa17",
       "rows": 1000,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-AA-V1",
       "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
@@ -26,11 +20,11 @@
     "lock": {
       "attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-lock-generation-v1",
       "cell": "slurp-native-stage3-thinking-system-dev2000-added-lock-v1",
-      "composed_config_hash": "fec707abf0d9e65a21c8356f45b33d29983a97bfa4908a288d4ce9da464e3dc8",
+      "composed_config_hash": "4c7fd091996c2062d79a3f8d13c0df855058b7d1c2eafa3ee2301a197bf365f0",
       "experiment": "slurp-native-stage3-thinking-system-dev2000-added-lock-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-lock-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-FIT-V1",
-      "protocol_hash": "3511469a4d3f6cf21d9e3b473cce9edeb8cebcffd12fe4c9d425bde7d1e8f2e4",
+      "protocol_hash": "c7e677606c2e2ab6a146d53b2b409b7bb523ccb6f442d1df113e582d1b7e0020",
       "rows": 1000,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-V1",
       "split_identity_hash": "ee6c43cd4dd8fc2a583d2dd053e799c2d002efa3755fcd092ba7c7565431bf67"
@@ -38,11 +32,11 @@
     "smoke": {
       "attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-smoke-4-generation-v1",
       "cell": "slurp-native-stage3-thinking-system-dev2000-added-smoke-4-v1",
-      "composed_config_hash": "abbb969ef94cb6f562ef116d83a2c6443600116eaf5d54180eac82dde1a1641a",
+      "composed_config_hash": "0bd48e70106edbf97f960ae863d60cb94b690397b59af17cf7ea8b26e324f218",
       "experiment": "slurp-native-stage3-thinking-system-dev2000-added-smoke-4-v1",
       "fit_attempt_id": "attempt-slurp-native-stage3-thinking-system-dev2000-added-smoke-4-fit-v1",
       "fit_run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-FIT-V1",
-      "protocol_hash": "acf5d1c046d33ce84a5351de1cf8b8aaef76eccef4c3ac0314b4dd78310580be",
+      "protocol_hash": "ce5374166481c839f93f6266ccf7c83f494e08e200c84b0166ad9978ad4fddea",
       "rows": 4,
       "run_id": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-SMOKE-4-V1",
       "split_identity_hash": "fee83441e514473dc4ab798f8554882bc5753c7fc4924eda0e72c7af7ed51ef0"
@@ -93,9 +87,9 @@
     "No session is started by this registration. No paper-scale profile. No system-level claim. No test-sample read (P3.6 needs a new owner-signed allowance)."
   ],
   "protocol_id": "slurp-system-thinking-core-dev2000-added-protocol-v1",
-  "registered_at_utc": "2026-10-13T16:59:01Z",
+  "registered_at_utc": "2026-10-13T17:06:14Z",
   "schema": "saea-registered-protocol-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
-  "study_commit_at_registration": "d7ebce9db20e38bc2e3f77b7589770037c36016b",
+  "study_commit_at_registration": "aabd72d6893ecf53129c4fb0d9e4b10413237771",
   "the_question": "Does the Fold B transfer (+7.15 pp SLU-F1 / +2.31 intent over the Instruct system) replicate on DEV-2000-ADDED? The Thinking system arm is read against the sealed Instruct column SAEA-SLURP-STAGE3-NX-R5-COMPOSED-DEV2000-ADDED-V1 on the same 1,000 rows, with the in-chain twin as the null."
 }

@@ -365,7 +365,7 @@
   "speech_feature_key_representation_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-v1:query-speech",
   "speech_feature_matcher_policy_id": "saea-slurp-task-agent-anchor-exemplars-k20-replicate-v1",
   "speech_packet_promotion_receipt": "/home/chao/feat-cache/slurp-q4km-packets-thinking-gpu-afdaeff6/DEV-2000-ADDED-promotion.json",
-  "speech_packet_promotion_receipt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "speech_packet_promotion_receipt_sha256": "1a6dca3a3f2b9bf98fb52ebcec83bb13f8b105658ee6d01bf757b4a330d4e52c",
   "task_instruction_fill": "slurp-label-inventory",
   "task_instruction_template": "probes/slurp_native_role_context_v3.txt",
   "task_instruction_template_active": true,
