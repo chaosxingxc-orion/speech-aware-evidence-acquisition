@@ -1,6 +1,19 @@
 # Handoff to ChatGPT — the Stage-3 entry point from the Fable 5.1 side
 
-Last refreshed: 2026-10-13T17:24:44Z
+Last refreshed: 2026-10-13T18:57:21Z
+
+## Owner rulings 301-307: SLURP training-free RL iteration on the Thinking base comes BEFORE carriers; successor-3 allowance signed; NX-T R1 (per-node thinking) in build (2026-10-13T18:57:21Z, Fable 5.1 root)
+
+301 A: test allowance successor-3 signed (`docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json`, permitted ids
+SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1/-FIT-V1; first contact gated on P3.1 NOMINATED). 302 A carriers A2T->E21->E22
+all-off/direct; 303 A serial GPU; 304 lock the knobs, FIRST node round = which nodes need thinking; 305/306 as recommended. 307 (owner priority):
+after P3.1, iterate the training-free RL optimisation on SLURP on the Thinking base to a plateau (NX-T R1 thinking allocation -> R2 budget ->
+USE/SUPPLY rounds -> loop mechanisms ACE / typed proposer / GEPA re-run on the Thinking residuals, each adapted to the speech-agentic-system
+pattern -> composition -> DEV -> test), carriers only as GPU fillers or after the plateau. In build: NX-T R1 same-flight column
+`slurp-native-stage3-nxt-r1-thinking-policy-fold-b-v1` (arms both-on delivering, both-on-twin, perception-off, solver-off, both-off; Fold B;
+Thinking packets; ceiling from 3.25 full rows per row at 1.84 rows/min x 1.3). P3.1 lock arm flying since 17:33Z (about 1.6 rows/min).
+
+Superseded stamp: 2026-10-13T17:24:44Z
 
 ## P3.1 FLYING: Thinking system on DEV-2000-ADDED at 37b0ed0aa (smoke -> sign-off -> lock -> aa; DEV packets promoted; window 297B/298A done) (2026-10-13T17:24:44Z, Fable 5.1 root)
 
