@@ -2627,3 +2627,15 @@ and only then start the other experiments?"
   after the SLURP line plateaus; the test read (301 A) stays attached to the SLURP line. Rationale recorded: the research object is the
   system and its training-free optimisation; the Thinking core changes the residual-error profile, so every node mechanism must be
   re-measured there; carriers only prove portability of the base.
+
+### 300 A executed: the two typed-proposer defects fixed (coordinator, 2026-10-13 19:05Z)
+
+Merged `sonnet/tfrl-proposer-fixes-300a` (cba223c5b): (1) the offered class set per carrier now travels from the registered
+`tfrl_proposer.carriers` block into every typed-receipt entry (`allowed_classes`) and the validator refuses an out-of-class candidate
+with the finding `class-not-allowed` (`FINDING_CLASS_NOT_OFFERED`); `candidates.json` carries an `offered_class_check` block and the
+close receipt a `typed_class_check` block; sealed iteration 1-3 receipts carry no class set and read `applied: false`. (2)
+`sample_id_sha_prefix` now holds sha256(sample id)[:12]; the response-hash prefix lives under `response_sha256_prefix`; readers accept
+both layouts (`v1-legacy-response-hash-in-sample-id-field` / `v2-sample-id-sha-and-response-sha-prefixes`). Eight new unit tests; the
+loop package README carries a dated successor note (iterations 1-3 flew with both defects). Open item (pre-existing, fails on master
+too): `test_iteration_one_regression_reproduces_the_hand_built_inputs_byte_for_byte_except_the_pins_free_text` on the i1 ACE wrap
+receipt's `authored` / `source` fields. The loop is ready for its next use on the Thinking residuals (307).
