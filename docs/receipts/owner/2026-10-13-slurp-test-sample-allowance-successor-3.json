@@ -1,0 +1,157 @@
+{
+  "analysis_read_run_id_not_a_permission": {
+    "run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-PAIRED-ANALYSIS-V1",
+    "statement": "The model-free paired analysis identity (ledger kind model-free-check). It reads sealed outputs only and, as in successor 1, is not a permitted run id."
+  },
+  "attempt_budget": {
+    "preparation_run_ids": 1,
+    "read_run_ids": 1,
+    "statement": "No automatic retry. The generation identity is consumed by its sole attempt; any failure stops this successor comparison."
+  },
+  "budgets": {
+    "contacts_per_row": 2,
+    "fit_endpoint_cap_per_arm": 24080,
+    "fit_endpoint_cap_total": 24080,
+    "generation_cap_per_arm": 6020,
+    "generation_cap_total": 6020,
+    "gpu_hour_cap_per_arm_fit_inclusive": 4.6,
+    "official_score_jobs_total": 1,
+    "repeated_speech_audio_seconds_cap": 16413
+  },
+  "closure_status": "SLURP-TEST-CLOSURE-10068-V1 (split identity 377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b) receives NO allowance receipt now and stays pending-owner until the Stage-3 closure read (decision 151). It is named here only as the partition sibling whose committed item list proves this roster's exemption from the parent/sibling intersection; nothing in this file may be read as authorising a contact with it.",
+  "date": "2026-10-13",
+  "dated_owner_decision": "Owner decision 301, 2026-10-13 UTC (docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md, section 'Owner rulings 301-306', ruling 301 A). The owner's words, verbatim, in Chinese: \"决策301：A\" -- English translation by the coordinator: \"Decision 301: A\", where option A was: sign the successor-3 allowance now (same terms as v2: one attempt per id, aggregate-only, no smoke, no re-fly) so that the Thinking system's test read flies automatically once P3.1 (the DEV-2000-ADDED replicate, package docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1) reads NOMINATED; only the lock arm flies on the sample; the comparator is the sealed successor-2 v2.2 test read; the declared twin offset is the DEV twin offset, with the no-in-chain-replicate limitation stated in the read. Decision 299 A (2026-10-12) is the trigger that rebuilt the base around the Thinking core after the 268-B read (SLU +7.15 [+5.08, +9.26] over the Instruct system on TRAIN Fold B).",
+  "derived_from": {
+    "partition_proof_receipt": {
+      "arithmetic": {
+        "closure_recordings": 10068,
+        "intersection_prompt_numbers": 0,
+        "intersection_recordings": 0,
+        "intersection_utterances": 0,
+        "parent_recordings": 13078,
+        "sample_recordings": 3010,
+        "union_equals_parent": true,
+        "union_recordings": 13078,
+        "union_split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d"
+      },
+      "proof_sha256": "d3bedeaaf29b9a0d44dd83193c3ea2c2c567c40822d400f8b0116b8ed1bbe510",
+      "repo_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json",
+      "schema": "saea-test-sample-partition-proof-v1",
+      "sha256": "859472d1ba73bea1ead1af12d7fd61ac5207d828af388436073dcfac32c9fc57",
+      "sources_checked": 87,
+      "verdict": "CLEAN"
+    },
+    "sibling_roster": {
+      "allowance": "NONE. The closure roster stays pending-owner until the Stage-3 closure read (decision 151); no allowance receipt is written for it now, so every final-report plan carrying 377b937d... is refused by contracts.plan.require_owner_split_allowance for want of a committed receipt naming that hash, and THIS receipt refuses it at check 7 because it binds one split identity only.",
+      "carrier_split_identity_hash": "7f4de1fa4e91d46f07687ec3ac561bce29be8e00b99741712a2ad0cba835a4a8",
+      "recordings": 10068,
+      "repo_relpath": "docs/receipts/rosters/slurp-test-closure-10068-v1.json",
+      "roster_id": "SLURP-TEST-CLOSURE-10068-V1",
+      "sha256": "f836a66193e2c5d1d0e1dda8e9c3b88de4e6d0f4887c0435119559423e7ea0d8",
+      "split_identity_hash": "377b937df3c29e52e3596426741b03129fa526bf677d92b5c03b78dd8dc2457b",
+      "utterances": 2292
+    },
+    "source_roster": {
+      "allowance": "docs/receipts/owner/2026-09-23-slurp-test-split-allowance-v1.json, status pending-owner, sha256 7b7bf3dcf56f56979dfc82738858cf98dcc226a3a3ff2f4643c163b32e3cb1cd; left byte-identical by this signature. Its read run ids are void to the extent of decision 141 (the final read is the closure, not the full split); its preparation ids remain unauthorised.",
+      "carrier_split_identity_hash": "3f7063cb8b1e60d69c383d2215b5f244bbd7164d484010193a093a5e879389bd",
+      "recordings": 13078,
+      "repo_relpath": "docs/receipts/rosters/slurp-test-full-13078-v1.json",
+      "roster_id": "SLURP-TEST-FULL-13078-V1",
+      "sha256": "b925e90ab99727e7d0ff9fc4ec6b7c91a0d86bff0a5b0a4746b9cc98237b19c3",
+      "split_identity_hash": "7247647b8c8b37becd564b7031691565d4e6b09d8e124823054906d36372c95d",
+      "utterances": 2974
+    },
+    "statement": "The sample is one member of a two-part partition of the frozen FULL test split, partitioned by PROMPT so sample and closure share no sentence; the partition is re-proved from committed item lists by the gate at every touch (owner decision 147, contracts.gate_exposure._final_report_partition_exemptions) and was re-proved again when this file was written: sample and closure are disjoint at recording, utterance and prompt-number level, their union is exactly the parent's 13,078 ids, and the union hashes to the parent's identity."
+  },
+  "first_contact_gate": {
+    "basis": "P3.1 read NOMINATED on DEV-2000-ADDED (the Thinking system lock + twin at flight commit 37b0ed0aa; read run id SAEA-SLURP-SYSTEM-THINKING-CORE-DEV2000-ADDED-READ-V1)",
+    "status": "PENDING: the first contact with the sample under this receipt is gated on the coordinator reporting the P3.1 read (NOMINATED under the preregistered rule: SLU CI95 lower bound above the twin offset and the intent guard holding) to the owner in conversation; a NOT-NOMINATED or HARM read leaves this receipt unused.",
+    "rule": "same as v2: one attempt per permitted run id, aggregate-only reporting, no smoke on the sample, no re-fly"
+  },
+  "milestone_rule": "This allowance authorizes only the fresh NX R5 composed arm, flown ONCE on the unchanged 3010-row sample and read cross-flight against the SEALED successor-1 PLAN and COMP-1b columns. Keep original scientific settings and registered thresholds. Never use milestone outcomes for tuning. One complete official score for the sealed arm; read only after the arm finalizes with one score. No reseal, retry or rescore of the new arm, and no re-flight, rescore or re-read of the sealed successor-1 columns.",
+  "not_authorized": [
+    "new encoding",
+    "old attempt reads or scoring",
+    "re-flight, rescore or re-read of the sealed successor-1 columns",
+    "additional milestone arms",
+    "test-sample smoke",
+    "closure or complementary test contacts",
+    "P-SV-4 release",
+    "other carrier GPU flights"
+  ],
+  "permitted_run_ids": [
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1",
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-FIT-V1"
+  ],
+  "preparation_run_ids": [
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-FIT-V1"
+  ],
+  "prior_exposure": "Existing label-free sample preparations, the failed original PLAN generation (3010 output records, 12343 model contacts, unread) and the SEALED, SCORED and READ successor-1 PLAN and COMP-1b columns (6020 trajectories, read 2026-10-01 under owner decision 213) are inherited exposure. This is not an unexposed sample.",
+  "read_run_ids": [
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1"
+  ],
+  "run_ids": {
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-FIT-V1": {
+      "core_contacts": 0,
+      "execution_profile": "bounded-discovery-probe",
+      "kind": "preparation",
+      "reads_labels": false,
+      "serves_read_run_id": "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR3-THINKING-SYSTEM-V1",
+      "subkind": "native_contact_fit"
+    },
+    "SAEA-SLURP-TEST-SAMPLE-3010-MILESTONE-SUCCESSOR2-COMPOSED-V1": {
+      "execution_profile": "bounded-discovery-probe",
+      "kind": "read",
+      "reads_labels": "Official scoring only after complete delivery. No labels, transcripts or future state enter runtime.",
+      "rows": 3010,
+      "what": "NX R5 composed arm (COMP-1b on module lock v2.2 with v4g, review-off), one attempt"
+    }
+  },
+  "schema": "saea-owner-split-allowance-v1",
+  "signature": {
+    "signed_by": "owner, in conversation (ruling 301 A, 2026-10-13 17:40Z)",
+    "recorded_by": "coordinator Fable 5.1",
+    "recorded_at_utc": "2026-10-13T17:38:33+00:00"
+  },
+  "split": {
+    "audio_seconds_total": 8206.436875,
+    "carrier_lock_key": "slurp",
+    "carrier_split_identity_hash": "6c1283003458abe08b8c636b14643e62c56d9cc858560d171aa6f97641fbd167",
+    "carrier_split_identity_hash_basis": "sha256 over the LF-joined sorted BARE sample ids, the rails.knowledge_build.freeze_slurp_split_identity convention recorded in docs/receipts/knowledge/slurp-split-identity.json; recomputed from the same 3,010 ids and equal to the roster receipt's carrier_split_identity_hash",
+    "counts_source": "recordings, utterances (distinct utterance_id), headset / far-field and audio seconds are recomputed from the roster receipt's committed items and equal its counts and channel_counts blocks (design note section 2: 3,010 / 682 / 1,456 / 1,554 / 8,206.436875 s). The roster receipt carries durations only, so media bytes are the sum of the per-row 'bytes' of the committed FULL-split D1 media supplement docs/receipts/artifacts/d1-slurp-test-full.json (sha256 d68bd784b58a62062cd5ffa3896d21a6a55985fac6abcdcc98f3ceab0cdb4138) over exactly the sample's ids, all at 16,000 Hz; the same sum over the FULL ids reproduces the parent's 700,033,078. No audio file was opened.",
+    "disjointness_receipt_relpath": "docs/checks/speech-aware-evidence-acquisition/2026-09-27-slurp-test-sample-roster/disjointness.json",
+    "disjointness_receipt_sha256": "859472d1ba73bea1ead1af12d7fd61ac5207d828af388436073dcfac32c9fc57",
+    "far_field_recordings": 1554,
+    "headset_recordings": 1456,
+    "intents_covered": "58 of the 59 scored test intents; 'general_greet' (one test prompt) is in the closure only (decision 146)",
+    "media_bytes_total": 155430109,
+    "recordings": 3010,
+    "roster_id": "SLURP-TEST-SAMPLE-3010-V1",
+    "roster_receipt_relpath": "docs/receipts/rosters/slurp-test-sample-3010-v1.json",
+    "roster_receipt_sha256": "48d9fb336ce99ad1725bf5ca0f74687d37711d685fa9fb4f594b2f1d88344e6d",
+    "split_identity_hash": "0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9",
+    "split_identity_hash_basis": "sha256 over the LF-joined sorted carrier-prefixed 'slurp/<sample_id>' ids -- the core.roster / data.splits convention, which is the value an ExecutionPlan declares and which this allowance binds; recomputed from the 3,010 committed item ids of the roster receipt when this file was written and equal to the value in owner decision 151",
+    "split_name": "TEST-SAMPLE",
+    "utterances": 682
+  },
+  "status": "authorised",
+  "study": "speech-aware-evidence-acquisition",
+  "supersedes": {
+    "path": "docs/receipts/owner/2026-10-10-slurp-test-sample-successor2-allowance-v1.json",
+    "sha256": "4e04b23f89b9eb06c1b228649a6f991fb9399dea6efbaf4d168a4b731d9e388d",
+    "scope": "New successor run identities only; old bytes and their historical permissions are preserved, not reactivated."
+  },
+  "venue": "The sample's milestone reads run in THIS study repository, not in a papers/<slug> carrier, for the reason the owner's decisions give in substance: decision 141 permits the test sample as a development-side COMPARISON instrument for milestone checks during Stage-3 iteration, and decision 151 signs it now so that a dev-admitted composed arm can be checked without waiting for a paper repository; a milestone read is not the final read, makes no publication-grade claim, and its numbers are development evidence under owner decision 28 (dev numbers are not test claims) exactly as every DEV roster read is. The final read stays on the CLOSURE roster, whose venue is still the open question of decision 108 (protocol section 6; Remedy A, promotion to an admitted papers/<slug> repository, remains the recommendation) and which this receipt does not decide. Stated plainly: the owner did not dictate a venue sentence in so many words; this paragraph is the coordinator's statement of the reason the two decisions carry, written so that check 9 of contracts.plan.require_owner_split_allowance has a reason to read rather than a blank.",
+  "status_meaning": "AUTHORISED for the SAMPLE roster only, on the owner's explicit confirmation in conversation of 2026-10-10 (decision 251 option A). contracts.plan.require_owner_split_allowance accepts a 'final-report' ExecutionPlan against this file when the plan pins these exact bytes, carries execution_profile 'bounded-discovery-probe', declares carrier 'slurp' and split identity 0164dabf7b30f8e06f830ba28af849cef7459e8c8821cfbea7a56cabb32470f9, and names one of the permitted_run_ids. Authorisation is not a contact: every contact still needs its pre-registered exposure row, its root countersignature, its decision receipt and the one-attempt terms (no smoke, no recovery, no re-read, no selection).",
+  "core": {
+    "model": "Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M (qwen3-omni-30b-a3b-thinking-gguf-q4km)",
+    "session_target": "think-budget-np4",
+    "decoding": {
+      "reasoning_budget_tokens": 3072,
+      "completion_cap": 4096,
+      "reasoning_context_policy": "drop-reasoning-v1",
+      "reasoning_bytes": "hash-and-stats-only-v1"
+    },
+    "packets": "the Thinking mmproj packets for the sample roster, promoted in a GPU swap window under their own countersigned exposure row before any contact"
+  }
+}

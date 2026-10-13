@@ -2596,3 +2596,34 @@ alive; the serving session is swapped, never restarted mid-flight.
   NOMINATED read makes the Thinking system the SLURP lock candidate v3.0 (Fold B + DEV replicated); a test read needs a new allowance.
 - Housekeeping: two test fixes (closed rows accepted; DEV package rows accepted), the Git Bash path-conversion trap on `saea_task.ps1`
   (register tasks from PowerShell or with `MSYS_NO_PATHCONV=1`).
+
+### Owner rulings 301-306 and the priority correction 307 (owner, 2026-10-13 17:40Z; recorded by the coordinator)
+
+Owner (verbatim): 「决策301：A，决策302：A，决策303：A；决策304：可以lock，但是要考虑一个问题，是否有一些节点不需要开思考模式？；决策305/306：按你建议；
+你的实验安排我有些疑问，我们为什么不是优先把training free RL在SLURP上的优化方向和优势都迭代好了之后，算法都按照speech agentic system的模式都进行了相应的适配和改造之后，再开展其他内容的实验呢？」
+English: "301: A; 302: A; 303: A; 304: the lock is fine, but consider one question -- are there nodes that do not need thinking mode at
+all?; 305/306: as you recommend. I have a doubt about your experiment ordering: why do we not first iterate the training-free RL
+optimisation directions and advantages on SLURP to completion, adapt and rework the algorithms into the speech agentic system pattern,
+and only then start the other experiments?"
+
+- **301 A (RULED):** test-sample allowance successor-3 is signed now (`docs/receipts/owner/2026-10-13-slurp-test-sample-allowance-successor-3.json`,
+  same terms as v2: one attempt per id, aggregate-only, no smoke, no re-fly); the read flies automatically once P3.1 reads NOMINATED on DEV:
+  the Thinking system lock arm on the 3,010-row sample, comparator = the sealed successor-2 v2.2 test read, declared twin offset = the
+  DEV twin offset (no in-chain replicate on the test sample; the limitation is stated in the read).
+- **302 A (RULED):** carriers A2T -> E21 -> E22, all-off and direct baselines only on the Thinking core (the A2T Instruct A/A paired 400 is the
+  comparator); **but see 307 for the ordering**.
+- **303 A (RULED):** strict serial GPU queue (one experiment in flight).
+- **304 (RULED, with a question):** v3.0 locks the current decoding knobs (budget 3,072, cap 4,096, drop-reasoning-v1); the owner's question
+  "which nodes do not need thinking at all" becomes the FIRST node-level round on the Thinking base (per-node thinking policy, decision
+  273 A mechanism): Perception off / Solver on, Perception on / Solver off, both on (the lock), both off (= the Instruct-like no-think
+  core on the same weights), read at n = 1,080 on Fold B with the twin design; throughput and the per-node reasoning statistics are the
+  secondary read.
+- **305 (noted), 306 A (RULED):** E22 stays in scope in the E21 form, last among the carriers.
+- **307 (owner priority correction, RULED by the question itself):** after the DEV replicate (P3.1), the programme iterates the
+  training-free RL optimisation on SLURP on the Thinking base until it plateaus -- node-level rounds (thinking allocation per node,
+  reasoning budget, Solver template / USE, knowledge SUPPLY), then the loop mechanisms (reflective playbook ACE, typed proposer, GEPA /
+  template population) re-run on the Thinking residuals, each adapted to the speech-agentic-system pattern (node-local tables, same-flight
+  columns, twin designs) -- BEFORE the carrier baselines (P3.2/P3.3) and the SOTA redo. Carriers run only as GPU fillers in forced gaps or
+  after the SLURP line plateaus; the test read (301 A) stays attached to the SLURP line. Rationale recorded: the research object is the
+  system and its training-free optimisation; the Thinking core changes the residual-error profile, so every node mechanism must be
+  re-measured there; carriers only prove portability of the base.
