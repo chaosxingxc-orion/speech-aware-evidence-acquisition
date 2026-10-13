@@ -207,14 +207,17 @@ on SLURP only, carriers stay on Instruct, plus one DEV replicate.
 **Met 3 / 3. Direction: REBUILD-BASE-ON-THINKING.** The reader notes: "development reading on TRAIN Fold B; never a
 benefit claim (the benefit bar stays bar_pp)".
 
-What it triggers (P3 of the registry plan "branch on 268", line "if it transfers", plus 299 A, 285 and 286):
+What it triggers (registry "268-B READ" 15:50Z, on master at `32cebe703`; P3 of the registry plan "branch on 268";
+299 A, 285 and 286):
 
-- Thinking speech packets per mmproj for every carrier (Audio2Tool, Earnings-21, Earnings-22), since the Thinking audio
-  tower differs from the Instruct one;
-- baselines and locks re-read on the Thinking core; per-node thinking policy, budget and throughput re-optimised;
-- serving geometry and the next Thinking registration planned from a measured 4-slot throughput run (registry 06:05Z),
-  not from a 4-row smoke;
-- a DEV read before any new test allowance (registry P3: "new test allowance only after the DEV read");
+- Thinking speech packets for every carrier (Audio2Tool, Earnings-21, Earnings-22) through the Thinking mmproj, GPU
+  encode, since the Thinking audio tower differs from the Instruct one;
+- the SLURP lock and the carrier all-off / direct baselines re-registered and re-read on the Thinking core; per-node
+  thinking policy, budget and throughput re-optimised;
+- serving geometry planned from measured 4-slot throughput (1.84 rows/min at np4 x 24,576 with budget 3,072), not from
+  a 4-row smoke;
+- **a DEV-2000-ADDED replicate of the Thinking system before any lock** (decision 28: Fold B numbers are development
+  numbers), and a DEV read before any new test allowance (registry P3);
 - the SOTA comparison redone on the Thinking base once it is locked (285 deferred until then; the comparator table
   stays a survey asset).
 
@@ -267,18 +270,16 @@ engineering work, not evidence of a benefit.
   analysis-recipe-v1.json}`.
 - Registry: `docs/readiness/2026-09-16-slurp-next-stage-owner-decisions-v1.md`, sections "Owner rulings 2026-10-12: 268
   B ...", "Owner input 2026-10-12 11:05Z ... 286 RULED", the 274 / P0-P5 plan, "Owner rulings 297-300", "268 launch:
-  three launch defects" (19:55Z), "268-B smoke read and sign-off amendment" (20:10Z), "268-B lock arm SEALED" (06:05Z).
-- Exposure ledger: the 268-B aa row (CONSUMED note with 37.82 h) in the master working tree of 2026-10-13.
+  three launch defects" (19:55Z), "268-B smoke read and sign-off amendment" (20:10Z), "268-B lock arm SEALED" (06:05Z),
+  and "268-B READ" (15:50Z), which landed on master at `32cebe703` after this note's base `23d52cb73` (read there with
+  `git diff 23d52cb73 32cebe703`; its numbers agree with `read.json`).
+- Exposure ledger: the 268-B aa row (CONSUMED note with 37.82 h, sealed 15:38:31Z) as of master `32cebe703`.
 - Precedent and comparator context: `docs/results/2026-10-12-slurp-266e-thinking-vs-instruct-bare-core-read.md`,
   `docs/results/2026-10-12-slurp-tfrl-loop-three-iterations-read.md` (Instruct lock i3 64.45 / 82.69).
 
 **Not verified here.**
 
-- The registry section "268-B READ" (15:50Z) named in the brief does not exist at base `23d52cb73`; this note relies on
-  the read outputs directly.
 - "Cost 1.5x the Instruct system per row": no file read here states it. The only 1.5x the sources carry is the registry's
   smoke-vs-4-slot contention factor (measured 9.4 vs projected 6.42 GPU-h, 1.46x). The Instruct system's per-arm
   slot-normalised GPU-h is not in these files (the i3 column's 2.48 GPU-active h covers a whole multi-arm column).
-- "DEV-2000-ADDED replicate before any lock": the sources say "new test allowance only after the DEV read" (P3) and,
-  for the two-of-three branch only, "one DEV replicate" (299 A); the roster name is not in them.
 - GPU-active hours from the monitor; only summed latency and wall spans are given.
