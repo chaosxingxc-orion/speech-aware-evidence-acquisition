@@ -254,7 +254,7 @@ def test_plans_protocol_receipt_and_draft_rows_agree():
             assert plan["execution_plan"]["run_id"] == run and plan["execution_plan"]["planned_gpu_hours"] == fam.CELLS[key]["gpu_hours"]
             assert plan["execution_plan"]["split_role"] == "dev"
             assert rows_text.count(f"| {run} |") == 1
-            assert ledger.count(f"| {run} |") == 0                      # this package appends nothing to the ledger
+            assert ledger.count(f"| {run} |") in (0, 1)                 # DRAFT until --append-ledger flights; one row afterwards
     draft = json.loads((PKG / "root-admission-draft-v1.json").read_text(encoding="utf-8"))
     assert draft["eligible_run_ids"] == fam.eligible_run_ids() and draft["eligible_attempt_ids"] == fam.eligible_attempt_ids()
     assert draft["decision_id"] == fam.DECISION_ID and draft["status"] == "DRAFT-NOT-MINTED" and draft["service"]["expected_session_id"] == fam.THINK_SESSION
