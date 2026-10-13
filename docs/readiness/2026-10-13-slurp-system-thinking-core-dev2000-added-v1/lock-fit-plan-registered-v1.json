@@ -39,7 +39,7 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-system-thinking-core-dev2000-added-v1/protocol-registered-v1.json",
-    "sha256": "7523d82007986a3510abab41a78ef2331552c23917f8652db62397d0072a2923"
+    "sha256": "8290959623ea12385cc05d4d1641f2b532582b9ef9b57ebfcc7fe7a189917fd0"
   },
   "purpose": "SAEA-SLURP-STAGE3-THINKING-SYSTEM-DEV2000-ADDED-LOCK-FIT-V1: request envelopes only; reads nothing.",
   "registered_at_utc": "2026-10-13T17:06:14Z",
