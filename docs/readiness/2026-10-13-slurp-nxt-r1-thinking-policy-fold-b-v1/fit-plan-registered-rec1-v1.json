@@ -57,12 +57,12 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "08f788f919694efe00aca2b171fb09e96371828e4652402640f986124343c1a5"
+    "sha256": "e8d2b762367b0c21deec7aa41778ae4c5abf68b7024c3190909e171ecb516682"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-FIT-REC1-V1: request envelopes only; reads nothing.",
   "recovery": {
     "amendment": "RECOVERY 2026-10-14 (the cell's single one; owner decision 309 A, coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (1,204 calls, 3298.26 speech-seconds, read from the attempt record into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling does not change.",
-    "base_commit": "774c38d9138837d1e663c983b7cf765b8a4cbe31",
+    "base_commit": "283ab0045",
     "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
     "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
     "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1",
@@ -79,7 +79,7 @@
     "reason": "The predecessor attempt was killed by a Windows Update forced restart of the host (System event log 1074: 15:29Z MoUsoCoreWorker \"operating system: Service Pack (planned)\", 15:33Z TrustedInstaller \"operating system: upgrade (planned)\"). The trace sink buffers until the seal, so the attempt left no trace and the E10 mode-A resume has nothing to replay; the column flight is re-flown WHOLE under the rec1 ids. The smoke cell sealed at 2026-10-14T12:16Z, was signed off at 12:18:33Z and is NOT re-flown.",
     "recovered_at": "2026-10-14",
     "recovery_index": 1,
-    "registered_at_utc": "2026-10-14T16:30:00.000000+00:00",
+    "registered_at_utc": "2026-10-14T16:58:26Z",
     "root_cause": "infrastructure, not the cell: a Windows Update forced restart (System event log 1074) killed the host session; no defect in the cell, the runtime or any registered knob",
     "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
   },
@@ -101,7 +101,7 @@
     },
     "rule": "The adapter budget is run-cumulative across the attempts of a run id; the FIT cap is structural and never scaled."
   },
-  "registered_at_utc": "2026-10-14T11:52:20Z",
+  "registered_at_utc": "2026-10-14T16:58:26Z",
   "schema": "saea-registered-fit-plan-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
   "thinking_arms": {

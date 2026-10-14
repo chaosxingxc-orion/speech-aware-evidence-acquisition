@@ -3,7 +3,7 @@
   "antecedents": {
     "analysis_recipe": {
       "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/analysis-recipe-v1.json",
-      "sha256": "6f3684126aa268a3e047a8a267d595afd3e8d16a28a2e57109f3b838f0ee0867"
+      "sha256": "1c67d683a5bc344a72250cd8585087c61c19d68ebc4d1cf0d398651faea2d6f9"
     },
     "predecessor_snapshots": {
       "arm": {
@@ -13,25 +13,25 @@
     },
     "protocol": {
       "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-      "sha256": "08f788f919694efe00aca2b171fb09e96371828e4652402640f986124343c1a5"
+      "sha256": "e8d2b762367b0c21deec7aa41778ae4c5abf68b7024c3190909e171ecb516682"
     },
     "recovery_plans": {
       "arm": {
         "fit": {
           "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/fit-plan-registered-rec1-v1.json",
-          "sha256": "16f91d546cee7fa58fa5819b0253cee7c04d7554418917df99e549c6e75ce49d"
+          "sha256": "55413c38df5ca427c10b2bc33781f3a1c684a1e1e9a80ff74e0d5ec9359eab89"
         },
         "generation": {
           "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/generation-plan-registered-rec1-v1.json",
-          "sha256": "6d2e57e7b355bd3927737d0cc64c6408ba6f5a6f0f64603865cc926d9e35d430"
+          "sha256": "ec0f08d541dab2d2c323a05be4b586c894613436d937035254849a6bf3531cf0"
         }
       }
     },
     "registered_facts": {
       "path": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/registered-facts-v1.json",
-      "sha256": "90af020267f7b1af3f1c17a0961a2a8c2cce9addf2f66a0dfc1dffd9d1133426"
+      "sha256": "13c3a96b79d822fb19725a99c46b795b9aedf02d59afde1c87f36b2df5fbc837"
     },
-    "registration_base_commit": "774c38d9138837d1e663c983b7cf765b8a4cbe31"
+    "registration_base_commit": "283ab0045"
   },
   "authorization_basis": "owner rulings 301-307 (2026-10-13), coordinator approval of the NX-T R1 design (rulings 1-5); docs/readiness/2026-09-26-slurp-stage3-measurement-instrument-v1.md; docs/superpowers/specs/2026-10-12-thinking-core-engineering-base-design.md.",
   "budget": {
@@ -96,7 +96,7 @@
   "recovery": {
     "arm": {
       "amendment": "RECOVERY 2026-10-14 (the cell's single one; owner decision 309 A, coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (1,204 calls, 3298.26 speech-seconds, read from the attempt record into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling does not change.",
-      "base_commit": "774c38d9138837d1e663c983b7cf765b8a4cbe31",
+      "base_commit": "283ab0045",
       "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
       "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
       "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1",
@@ -113,7 +113,7 @@
       "reason": "The predecessor attempt was killed by a Windows Update forced restart of the host (System event log 1074: 15:29Z MoUsoCoreWorker \"operating system: Service Pack (planned)\", 15:33Z TrustedInstaller \"operating system: upgrade (planned)\"). The trace sink buffers until the seal, so the attempt left no trace and the E10 mode-A resume has nothing to replay; the column flight is re-flown WHOLE under the rec1 ids. The smoke cell sealed at 2026-10-14T12:16Z, was signed off at 12:18:33Z and is NOT re-flown.",
       "recovered_at": "2026-10-14",
       "recovery_index": 1,
-      "registered_at_utc": "2026-10-14T16:30:00.000000+00:00",
+      "registered_at_utc": "2026-10-14T16:58:26Z",
       "root_cause": "infrastructure, not the cell: a Windows Update forced restart (System event log 1074) killed the host session; no defect in the cell, the runtime or any registered knob",
       "rule": "A second failure closes the cell; the fix is proven on a four-row dry run."
     }

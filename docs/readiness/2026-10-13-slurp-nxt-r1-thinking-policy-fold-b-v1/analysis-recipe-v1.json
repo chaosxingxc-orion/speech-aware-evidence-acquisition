@@ -28,7 +28,7 @@
   "measurement_design": "same-flight-node-column",
   "read_run_id": "SAEA-SLURP-NXT-R1-THINKING-POLICY-FOLD-B-READ-V1",
   "recipe_id": "slurp-nxt-r1-thinking-policy-fold-b-read-v1",
-  "registered_at_utc": "2026-10-14T11:52:20Z",
+  "registered_at_utc": "2026-10-14T16:58:26Z",
   "roster": {
     "relpath": "docs/receipts/rosters/slurp-evo-fold-b-v2.json",
     "roster_id": "SLURP-EVO-FOLD-B-V2",
