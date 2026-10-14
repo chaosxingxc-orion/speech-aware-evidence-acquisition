@@ -2771,3 +2771,32 @@ receipt's `authored` / `source` fields. The loop is ready for its next use on th
   updates to month end (coordinator, needs the owner's admin authorisation); B: the owner pauses updates in Settings (5 weeks); C: accept the risk.
 - **311 (notified): startup order.** The coordinator changes SAEA-Mount-Data1 to trigger at startup and, after the attach, to run `mount -a` inside
   the distro with retries, so the data root mounts whichever starts first; serving tasks remain manual.
+
+### Owner rulings 308-311 (owner, 2026-10-14 about 16:00Z; recorded by the coordinator)
+
+Owner (verbatim): 「决策308：按你的建议走；决策309：这里面 暴露了一个问题，我们的实验中断后恢复的能力太差了，你要系统性整改，另外分析下为什么需要用这么多gpu hours?我们目前应该不涉及大规模实验才对，即便要做大规模实验，你现在的实验基线锁定了吗？决策310：授权；决策311：可以；」 and, a few minutes later:
+「我认为现在的实验效率太低了，你分析下根因，以及寻找下如何提升实验效率的方式和方法！」
+English: "308: go with your recommendation. 309: this exposes a problem -- our ability to recover an interrupted experiment is far too weak; rectify it
+systematically; also analyse why so many GPU hours are needed -- we should not be running large-scale experiments at this point, and even if we
+were, is your experimental baseline locked? 310: authorised. 311: fine." / "I think the experiments are far too inefficient now; analyse the root
+causes and find ways and methods to raise experimental efficiency."
+
+- **308 A (RULED, done):** v2 allowance signed (`docs/receipts/owner/2026-10-14-slurp-test-sample-allowance-successor-3-v2.json`, status authorised,
+  sha efd20fb6...), pinned into `configs/experiment/slurp-test-sample-3010-thinking-preprocess-gpu-v1.json`; the DRAFT file removed; package tests 19/19.
+- **309 (RULED: systematic rectification):** two engineering lines opened in worktrees -- (a) a generic recovery re-registration library
+  (`scripts/flights/lib/recovery.py`, lifted from the 266-E rec1 mechanism) applied to NX-T R1 as rec1 (new generation attempt id, new FIT run,
+  cumulative spend read from the attempt record); (b) per-row durable checkpoints in `FlightRuntime` (append + fsync after every row; the seal
+  verifies them) and resume mode B (checkpoint replay) so a crash loses only the rows in flight. Root cause of the total loss: the TraceSink
+  buffers every record until the seal; the attempt directory held only the session-attach receipt after three hours.
+- **310 A (RULED, done):** policy `NoAutoRebootWithLoggedOnUsers = 1`, `AlwaysAutoRebootAtScheduledTime = 0`, active hours 08-02, updates paused to
+  2026-11-18 (registry under HKLM, reversible).
+- **311 (RULED, done):** `scripts/flights/batch/saea_mount_data1.ps1` registered as SAEA-Mount-Data1 (at startup + at logon, highest privileges):
+  attach with retries, `mount -a` inside the distro, verify the data root; tested 16:03Z (exit 0, root visible).
+- **GPU-hours and the baseline (answer to 309):** no large-scale experiment is running; every read is a development read at the instrument's floor
+  (decision 231: n = 1,080 same-flight paired; cross-flight reads need a twin and the 2.5 pp bar). The hours come from the Thinking core: about
+  2,000 reasoning tokens per contact, 58 s (Perception) and 70 s (Solver) per contact at four slots, 46 % of Solver contacts forced-closed at the
+  3,072 budget -- 98 s per lock row against about 30 s on the Instruct core; a five-arm column is 3.32 lock-row equivalents per row, so 1,080 rows
+  = 24.5 GPU-h expected and 41.4 registered with the 1.3 margin. The baseline IS locked for development: lock candidate v3.0 (lock v2.2 + v4g on
+  the Thinking core, budget 3,072 / cap 4,096 / drop-reasoning-v1; ruling 304), replicated on Fold B and DEV; it is the delivering arm of every
+  node round; only the test-sample claim (successor 3) is still open.
+- **Efficiency analysis and measures:** section "Experimental efficiency: root causes and measures" below.
