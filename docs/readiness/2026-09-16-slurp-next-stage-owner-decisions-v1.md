@@ -2844,3 +2844,20 @@ on the Thinking core against about 3 on the Instruct core.
 
 **What is NOT the cause.** Not sample size inflation (n = 1,080 is the floor, not a choice), not large-scale confirmatory work (none is running),
 not an unlocked baseline (v3.0 is the delivering arm of every round).
+
+### Owner rulings 312-315 (owner, 2026-10-14 about 16:40Z; recorded by the coordinator)
+
+Owner (verbatim): 「决策312：不加，决策313,314,315：按照你的建议走；」 English: "312: no (no second GPU); 313, 314, 315: go with your recommendations."
+
+- **312 B (RULED):** no second GPU and no rented GPU; one serial RTX 5090 remains the budget.
+- **313 A (RULED):** from NX-T R2 onward, same-flight node columns carry no twin arm (the in-flight A/A offset on this core is measured twice:
+  268-B SLU +1.15 / intent -0.09, P3.1 SLU -0.61 / intent +1.60; the paired floor 0.7 pp stands) and at most two candidate arms per round;
+  twins remain mandatory for cross-flight reads (DEV replicates, composition, test).
+- **314 A (RULED):** machine sign-off between smoke and column: the chain writes the sign-off marker itself when the registered conditions hold
+  (no reasoning bytes or think markers on no-think nodes, zero cap hits / empty answers / malformed JSON, measured mix within 1.3x the registered
+  one); the coordinator keeps a veto window (the chain waits a registered number of minutes before the column starts). Engineering item.
+- **315 A (RULED):** the Thinking serving-geometry receipt flies FIRST (np4 x 24k control, np6 x 20k, np8 x 16k; 4-row form proofs; throughput
+  only), then NX-T R1 rec1 is registered pinned to the geometry the receipt picks and re-flown.
+- Order of work now: geometry package (Sonnet, in build) -> register / countersign / mint / flip / chain / read (about 2 h GPU) -> rec1
+  registration on the chosen geometry -> column re-fly; checkpoint + resume mode B (Sonnet, in build) merges when ready and applies to the
+  flights after it; successor-3 test read follows the column.
