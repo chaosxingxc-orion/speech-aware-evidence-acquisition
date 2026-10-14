@@ -1,0 +1,28 @@
+{
+  "_note": "Fallback table for nxt_r1_family.resolve_geometry (owner decision 315 A). The geometry row of scripts/flights/batch/serving_lib.sh (G_SID / G_FRAGMENT) is authoritative and wins whenever it has a row for the target. The np4 row mirrors that row (a unit test keeps them equal). The np6 / np8 rows are PROVISIONAL hints (names follow the np4 pattern and may differ): they are untested until the model fragments and serving rows land, and the derive refuses a target whose model fragment is not on disk.",
+  "default": "think-budget-np4",
+  "schema": "saea-nxt-r1-geometry-targets-v1",
+  "targets": {
+    "think-budget-np4": {
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np4-ctx24k-budget3072-max4096-v1",
+      "provisional": false,
+      "session": "serving-slurp-thinking-module-fold-b-np4-budget3072-max4096-v1",
+      "slot_tokens": 24576,
+      "slots": 4
+    },
+    "think-budget-np6": {
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np6-ctx20k-budget3072-max4096-v1",
+      "provisional": true,
+      "session": "serving-slurp-thinking-module-fold-b-np6-budget3072-max4096-v1",
+      "slot_tokens": 20480,
+      "slots": 6
+    },
+    "think-budget-np8": {
+      "model_fragment": "q4km-thinking-mmproj-free-slurp-module-fold-b-np8-ctx16k-budget3072-max4096-v1",
+      "provisional": true,
+      "session": "serving-slurp-thinking-module-fold-b-np8-budget3072-max4096-v1",
+      "slot_tokens": 16384,
+      "slots": 8
+    }
+  }
+}

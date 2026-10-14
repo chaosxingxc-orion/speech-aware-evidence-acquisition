@@ -170,6 +170,19 @@ def cost_estimate() -> dict:
     }
 
 
+def context_fit() -> dict:
+    """The arm's context fit on the selected geometry. The control reads the registered 268-B numbers (slot 24,576, prompt limit 17,406). A smaller slot
+    (np6 x 20k, np8 x 16k) lowers the prompt limit by the same amount; ``solver_prompt_fits_measured_max`` says whether the measured Solver prompt maximum
+    still fits (the exact per-contact gate decides on the live /props geometry; a row that cannot fit is refused there, not here)."""
+
+    slot = fam.ACTIVE_GEOMETRY["slot_tokens"]
+    limit = slot - fam.tsf.RESERVE_TOKENS - fam.tsf.THINK_MAX_TOKENS - fam.tsf.SPECIAL_RESERVE
+    return {"slot_tokens": slot, "slots": fam.ACTIVE_GEOMETRY["slots"], "reserve_tokens": fam.tsf.RESERVE_TOKENS, "completion_cap": fam.tsf.THINK_MAX_TOKENS,
+            "prompt_limit_tokens": limit, "solver_prompt_tokens_max_measured": fam.SOLVER_PROMPT_TOKENS_MAX,
+            "solver_prompt_fits_measured_max": fam.SOLVER_PROMPT_TOKENS_MAX <= limit, "control_prompt_limit_tokens": fam.PROMPT_LIMIT_THINKING,
+            "fit_estimate": dict(fam.FIT_ESTIMATE), "max_supplied_items": fam.MAX_SUPPLIED_ITEMS}
+
+
 def existing_plan(root: Path, pkg: str, key: str) -> dict | None:
     """The cell's committed generation plan (rec1 name first, then the first-attempt name), or ``None`` on a first registration."""
 
@@ -188,7 +201,7 @@ def plan_docs(root: Path, ids: Mapping[str, Mapping], commit: str, at: str, prot
     for key in fam.ALL_KEYS:
         i = ids[key]
         spec = fam.CELLS[key]
-        base = {"cell": i["cell"], "composed_config_hash": i["composed_config_hash"], "expected_session_id": fam.THINK_SESSION, "experiment": i["experiment"],
+        base = {"cell": i["cell"], "composed_config_hash": i["composed_config_hash"], "expected_session_id": spec["session"], "experiment": i["experiment"],
                 "family_budget": i["family_budget"], "preparation_base_commit": commit,
                 "prepared_phase_supply": {"relpath": f"prepared/{i['run_id']}/phase-supply-v1.json", "sha256": "MINTED_AT_THE_FLIP",
                                           "note": "the flip mints this cell's own first-phase supply under its own run id (item E16)"},
@@ -230,9 +243,6 @@ LEDGER_COLUMNS = reg.LEDGER_COLUMNS
 INHERITED = reg.LEDGER_INHERITED
 RECOVERY_LEDGER_MARK = "## Cell NXT-R1 recovery rec1: "
 RECOVERY_AUTHORITY = "owner ruling 304 of 2026-10-13 (the per-node thinking-policy column) and owner decision 309 A of 2026-10-14 (recovery re-registration)"
-THINK_MODEL_TEXT = ("Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M (qwen3-omni-30b-a3b-thinking-gguf-q4km), decoder-only build 04ccc72a, c98304 np4 x 24,576 "
-                    f"max{fam.tsf.THINK_MAX_TOKENS} (reasoning budget {fam.tsf.THINK_BUDGET_TOKENS}), q8_0 KV, --reasoning-format deepseek (model fragment {fam.THINK_MODEL}); "
-                    "its own promoted speech packets; module program " + fam.PROGRAM + "; per-arm enable_thinking false at the named node; no tool authority")
 SCOPE = (f"the 268-B Thinking lock system (plain review-off COMP-1b module graph on lock {fam.LOCK}) with the five-arm per-node thinking-policy column at the Perception "
          f"node (program {fam.PROGRAM}, {fam.CONTACTS_PER_ROW} contacts per row), TRAIN Fold B (owner ruling 304)")
 
@@ -247,7 +257,7 @@ def draft_rows(ids: Mapping[str, Mapping], commit: str, at: str, pkg: str, shas:
             plan = f"{pkg}/{fam.plan_file_name(key, 'fit' if fit else 'generation')}"
             calls = i["family_budget"]["fit_endpoint_calls_cap" if fit else "generation_calls_cap"]
             rows.append([at[:10], i["fit_run_id"] if fit else i["run_id"], i["execution_profile"],
-                         f"DRAFT -- REGISTERED. {fam.CELLS[key]['role'].capitalize()}: {SCOPE}" + (" -- FIT spend identity" if fit else ""), THINK_MODEL_TEXT,
+                         f"DRAFT -- REGISTERED. {fam.CELLS[key]['role'].capitalize()}: {SCOPE}" + (" -- FIT spend identity" if fit else ""), fam.think_model_text(key),
                          f"slurp TRAIN Fold B {i['rows']}", "discovery", i["split_identity_hash"], "no", str(calls),
                          str(i["family_budget"]["repeated_speech_audio_seconds_cap"]), str(i["family_budget"]["gpu_hours_fit_inclusive"]), INHERITED, plan,
                          f"DRAFT at study commit {commit}; plan SHA256 {shas.get(Path(plan).name, 'pending')}; nothing authorised."])
@@ -415,7 +425,7 @@ def recovery_blocks(root: Path, ids: Mapping[str, Mapping], at: str, recovery_at
             fam.RECOVERIES, key, mark=RECOVERY_LEDGER_MARK, authority=RECOVERY_AUTHORITY, package=fam.PACKAGE, role=spec["role"], run=i["run_id"],
             fit_run=i["fit_run_id"], attempt=i["attempt_id"], fit_attempt=i["fit_attempt_id"], session=fam.THINK_SESSION, scope=scope,
             fit_scope=f"Cell NXT-R1 {spec['role']} -- RECOVERY rec1 live phase-fit spend identity, request envelopes only, no generation.",
-            model_tool=THINK_MODEL_TEXT, carrier=f"slurp TRAIN Fold B {i['rows']:,}", split_hash=i["split_identity_hash"], caps=i["family_budget"],
+            model_tool=fam.think_model_text(key), carrier=f"slurp TRAIN Fold B {i['rows']:,}", split_hash=i["split_identity_hash"], caps=i["family_budget"],
             config_hash=i["composed_config_hash"], protocol_hash=i["protocol_hash"], registered_at=recovery_at, base_commit=recovery_base,
             worktree=worktree, branch=branch, plan_names=(fam.plan_file_name(key, "generation"), fam.plan_file_name(key, "fit")), inherited=INHERITED)
     return out
@@ -433,6 +443,24 @@ def recovery_markdown(ids: Mapping[str, Mapping]) -> str:
             fam.RECOVERIES, key, role=spec["role"], run=i["run_id"], attempt=i["attempt_id"], fit_run=i["fit_run_id"], fit_attempt=i["fit_attempt_id"],
             caps=i["family_budget"], plan_names=(fam.plan_file_name(key, "generation"), fam.plan_file_name(key, "fit")))
     return out
+
+
+def geometry_markdown() -> str:
+    """README / preregistration text for a non-control serving geometry (owner decision 315 A); empty for the control."""
+
+    g = fam.ACTIVE_GEOMETRY
+    if g["target"] == fam.DEFAULT_GEOMETRY:
+        return ""
+    fit = context_fit()
+    return (
+        f"\n## Serving geometry of the re-flown column flight: {g['target']} (owner decision 315 A, 2026-10-14)\n\n"
+        f"The rec1 re-fly runs on the geometry a throughput receipt picked: {g['slots']} slots x {g['slot_tokens']:,} tokens, session `{g['session']}`, model "
+        f"fragment `{g['model_fragment']}` (resolved from {g['source']}). ONLY the geometry leaves move against the np4 x 24k control (`service_session`, the cell's "
+        "model-fragment reference and, inside the fragment, `server_args` / `profile_slot_count` / `geometry_basis`); every other leaf is the control's byte for byte "
+        "(the proof is `geometry` in `registered-facts-v1.json`). The decoding knobs (budget 3,072 / cap 4,096 / drop-reasoning-v1) do not move with geometry. The "
+        f"prompt limit on this slot is {fit['prompt_limit_tokens']:,} tokens against the measured Solver prompt maximum {fit['solver_prompt_tokens_max_measured']:,} "
+        f"(fits: {fit['solver_prompt_fits_measured_max']}); the exact per-contact gate decides on the live geometry. The smoke stays on the control geometry (sealed there).\n"
+        f"The chain swaps to `{g['target']}` (`serving_swap.sh {g['target']}`) before the arm segment.\n")
 
 
 def recovery_sequence_text(ids: Mapping[str, Mapping]) -> str:
@@ -531,9 +559,8 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
                        "arm_speech_audio_seconds_cap": arm["family_budget"]["repeated_speech_audio_seconds_cap"],
                        "smoke_speech_audio_seconds_cap": smoke["family_budget"]["repeated_speech_audio_seconds_cap"], "cost_estimate": cost},
         "blockers": blockers, "composed_config_hashes": {k: v["composed_config_hash"] for k, v in ids.items()},
-        "context_fit": {"slot_tokens": fam.tsf.SLOT_TOKENS, "reserve_tokens": fam.tsf.RESERVE_TOKENS, "completion_cap": fam.tsf.THINK_MAX_TOKENS,
-                        "prompt_limit_tokens": fam.PROMPT_LIMIT_THINKING, "solver_prompt_tokens_max_measured": fam.SOLVER_PROMPT_TOKENS_MAX,
-                        "fit_estimate": dict(fam.FIT_ESTIMATE), "max_supplied_items": fam.MAX_SUPPLIED_ITEMS},
+        "context_fit": context_fit(),
+        "geometry": dc.geometry_proof(root),
         "findings": FINDINGS, "identity": ids,
         "pins": {"model_fragment": fam.THINK_MODEL, "serving_session": fam.THINK_SESSION, "swap_target": fam.THINK_SWAP_TARGET,
                  "speech_packet_root": fam.THINK_PACKET_ROOT, "speech_packet_promotion_receipt": fam.THINK_PROMOTION_RECEIPT,
@@ -593,7 +620,7 @@ def write_package(root: Path, commit: str, at: str | None, *, append_ledger: boo
     blocks = recovery_blocks(root, ids, at, recovery_at, recovery_base, recovery_worktree, recovery_branch)
     shas["draft-ledger-rows.md"] = reg.wr(root, f"{pkg}/draft-ledger-rows.md", rows_text + "".join(blocks.values()))
     shas["countersign-row-texts-v1.json"] = reg.wjson(root, f"{pkg}/countersign-row-texts-v1.json", countersign_texts(ids))
-    recovery_md = recovery_markdown(ids)
+    recovery_md = recovery_markdown(ids) + (geometry_markdown() if recov else "")
     shas["README.md"] = reg.wr(root, f"{pkg}/README.md", readme_text(ids, cost) + recovery_md + (recovery_sequence_text(ids) if recov else ""))
     prereg = (f"# NX-T R1: the per-node thinking-policy column, preregistration (DRAFT / HELD)\n\nRegistered {at[:10]} at study commit `{commit}` by script. "
               "Development numbers only.\n\n"
@@ -632,7 +659,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--data-root", default=os.environ.get("SAEA_DATA_ROOT") or os.environ.get("SPEECHRL_DATA_DIR"),
                         help="re-verify the predecessor snapshot against this data root when its attempt record is present")
     parser.add_argument("--no-derive", action="store_true", help="do not re-derive the fragments first")
+    parser.add_argument("--geometry", default=None,
+                        help=f"serving geometry of the arm cell (owner decision 315 A): {fam.DEFAULT_GEOMETRY} (default; byte-identical to the control), "
+                             "think-budget-np6 or think-budget-np8 (untested until their model fragments land); omitted = the committed selection")
     args = parser.parse_args(argv)
+    dc.apply_geometry_arg(args.geometry, Path(args.root))
     result = write_package(Path(args.root), args.study_commit, args.registered_at, append_ledger=args.append_ledger, derive=not args.no_derive,
                            recovery_at=args.recovery_registered_at, recovery_base=args.recovery_base_commit,
                            append_recovery_ledger=args.append_recovery_ledger, recovery_worktree=args.recovery_worktree,

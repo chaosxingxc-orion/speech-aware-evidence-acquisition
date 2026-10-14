@@ -57,12 +57,12 @@
   },
   "protocol_document": {
     "relpath": "docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/protocol-registered-v1.json",
-    "sha256": "7a3bc25eafe16e71751142fefc10452e2221dc5653cb9d0d54eaad27dc252481"
+    "sha256": "08f788f919694efe00aca2b171fb09e96371828e4652402640f986124343c1a5"
   },
   "purpose": "SAEA-SLURP-STAGE3-NXT-R1-THINKING-POLICY-FOLD-B-V1: thinking-policy column flight (five arms in one flight) of NX-T R1.",
   "recovery": {
     "amendment": "RECOVERY 2026-10-14 (the cell's single one; owner decision 309 A, coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (1,204 calls, 3298.26 speech-seconds, read from the attempt record into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling does not change.",
-    "base_commit": "e5eaee22289199997ecea7a01bc5aa5ca026b7d6",
+    "base_commit": "774c38d9138837d1e663c983b7cf765b8a4cbe31",
     "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
     "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
     "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1",

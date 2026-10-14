@@ -103,7 +103,7 @@
   "recovery": {
     "arm": {
       "amendment": "RECOVERY 2026-10-14 (the cell's single one; owner decision 309 A, coordinator brief, Fable 5.1). The generation budget is run-cumulative across the attempts of the run id (core/model/adapter.py; every attempt state counts, an OPENED one included), so the rec1 plan carries the original plan plus the failed attempt's recorded spend (1,204 calls, 3298.26 speech-seconds, read from the attempt record into docs/readiness/2026-10-13-slurp-nxt-r1-thinking-policy-fold-b-v1/predecessor-snapshot-arm-rec1-v1.json). The FIT cap is structural and unchanged (rows x program contacts x endpoints per contact). The FIT run id and the FIT attempt id both take the rec1 marker because the cell is re-flown whole and a (run_id, attempt_id) pair is a one-time key; the generation run id is unchanged. The registered GPU-hour ceiling does not change.",
-      "base_commit": "e5eaee22289199997ecea7a01bc5aa5ca026b7d6",
+      "base_commit": "774c38d9138837d1e663c983b7cf765b8a4cbe31",
       "fit_cap_rule": "The FIT cap is structural: rows x program contacts x endpoints per contact.",
       "predecessor_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
       "predecessor_fit_attempt_id": "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1",
@@ -129,7 +129,7 @@
   "registered_at_utc": "2026-10-14T11:52:20Z",
   "schema": "saea-registered-protocol-v1",
   "status": "DRAFT-HELD-REGISTERED_BEFORE_CONTACT_AWAITING_COORDINATOR_COUNTERSIGN_AND_READINESS_FLIP",
-  "study_commit_at_registration": "e5eaee22289199997ecea7a01bc5aa5ca026b7d6",
+  "study_commit_at_registration": "774c38d9138837d1e663c983b7cf765b8a4cbe31",
   "superseded_attempt_ids": [
     "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-generation-v1",
     "attempt-slurp-native-stage3-nxt-r1-thinking-policy-fold-b-fit-v1"

@@ -530,7 +530,7 @@ def test_the_chain_flip_and_read_scripts_consume_the_family_record():
     for script in ("batch_chain_nxt_r1.sh", "nxt_r1_flip.sh", "nxt_r1_read.sh", "nxt_r1_repin_cell.sh"):
         assert subprocess.run(["bash", "-n", str(nx / script)], capture_output=True).returncode == 0
     # arm-only: the smoke must be sealed and the marker present; all refuses to re-fly the smoke attempt; the chain flies the family's rec1 ids
-    assert "smoke|arm|all|arm-only)" in chain and "arm-only) run_driver arm" in chain and "use arm-only" in chain and "exit 9" in chain
+    assert "arm|arm-only)" in chain and "arm-only) run_driver arm" in chain and "use arm-only" in chain and "exit 9" in chain
     assert '"$SMOKE_STATE" = sealed' in chain and "COMPLETED" in chain and "no sign-off marker" in chain
     assert 'spec["attempt"]' in chain and "gen_attempt_id" in chain and "generation-v1" not in chain
     assert "PLAN_REC=" in flip and "rec_suffix" in flip and "generation-v1" not in read and "nxt_r1_family" in read
@@ -541,3 +541,163 @@ def test_the_writer_cli_exposes_the_recovery_flags():
     assert out.returncode == 0
     for flag in ("--append-recovery-ledger", "--recovery-registered-at", "--recovery-base-commit", "--study-commit"):
         assert flag in out.stdout
+
+
+# ---- serving geometry of the re-flown arm (owner decision 315 A) --------------------------------------------------------------------------
+
+
+def _fake_repo(tmp_path: Path, *, lib_row: bool, fragment: dict | None) -> Path:
+    """A repo-shaped temp root: scripts/flights/batch/serving_lib.sh with an np6 row (or not) and configs/model with the np6 fragment (or not)."""
+
+    root = tmp_path / "repo"
+    (root / "scripts/flights/batch").mkdir(parents=True)
+    (root / "configs/model").mkdir(parents=True)
+    rows = "    think-budget-np6)\n      G_SID=serving-test-np6\n      G_FRAGMENT=frag-np6\n      G_LABEL=X ;;\n" if lib_row else ""
+    (root / "scripts/flights/batch/serving_lib.sh").write_text("case \"$1\" in\n" + rows + "    *) return 1 ;;\nesac\n", encoding="utf-8")
+    if fragment is not None:
+        (root / "configs/model/frag-np6.json").write_text(json.dumps(fragment), encoding="utf-8")
+    return root
+
+
+def _np6_fragment(**overrides) -> dict:
+    doc = json.loads((REPO / "configs/model" / f"{fam.CONTROL_MODEL}.json").read_text(encoding="utf-8"))
+    args = list(doc["server_args"])
+    args[args.index("-c") + 1], args[args.index("-np") + 1] = "122880", "6"
+    doc.update(server_args=args, profile_slot_count=6, geometry_basis="np6 x 20480 test geometry basis")
+    doc.update(overrides)
+    return doc
+
+
+def test_the_default_geometry_is_the_control_and_the_selection_file_is_absent():
+    g = fam.ACTIVE_GEOMETRY
+    assert g["target"] == fam.DEFAULT_GEOMETRY == "think-budget-np4" and not (REPO / fam.GEOMETRY_SELECTION).exists()
+    assert (g["session"], g["model_fragment"]) == (fam.CONTROL_SESSION, fam.CONTROL_MODEL) == (fam.tsf.THINK_SESSION, fam.tsf.THINK_MODEL)
+    assert (g["slots"], g["slot_tokens"], g["fragment_present"], g["provisional"]) == (4, 24576, True, False)
+    assert fam.CELLS["arm"]["model"] == fam.CONTROL_MODEL and fam.CELLS["arm"]["session"] == fam.CONTROL_SESSION
+    assert fam.CELLS["smoke"]["model"] == fam.CONTROL_MODEL and fam.THINK_SLOTS == 4
+    assert "c98304 np4 x 24,576 max4096" in fam.think_model_text("arm") and fam.think_model_text("arm") == fam.think_model_text("smoke")
+    facts = json.loads((PKG / "registered-facts-v1.json").read_text(encoding="utf-8"))
+    proof = facts["geometry"]
+    assert proof["is_control"] is True and proof["moved_leaves"] == [] and proof["stray_leaves"] == [] and proof["ok"] is True
+    assert proof["allowed_leaves"] == ["server_args", "geometry_basis", "profile_slot_count"]
+    assert proof["decoding_knobs_never_move"] == {"reasoning_budget_tokens": 3072, "completion_cap": 4096, "reasoning_context_policy": "drop-reasoning-v1"}
+    assert facts["context_fit"]["slot_tokens"] == 24576 and facts["context_fit"]["prompt_limit_tokens"] == fam.PROMPT_LIMIT_THINKING == 17406
+    assert facts["context_fit"]["solver_prompt_fits_measured_max"] is True
+
+
+def test_the_geometry_table_agrees_with_the_serving_lib_row_for_every_target_the_lib_knows():
+    table = json.loads(fam.GEOMETRY_TABLE_PATH.read_text(encoding="utf-8"))
+    assert table["default"] == fam.DEFAULT_GEOMETRY and set(table["targets"]) == {"think-budget-np4", "think-budget-np6", "think-budget-np8"}
+    for target, hint in table["targets"].items():
+        row = fam._serving_lib_row(target, REPO)
+        if target == "think-budget-np4":
+            assert row == {"session": hint["session"], "model_fragment": hint["model_fragment"]} and hint["provisional"] is False
+        elif row is not None:                                   # the other agent's rows, once they land, must agree with (or replace) the hints
+            assert row["session"] == hint["session"] and row["model_fragment"] == hint["model_fragment"]
+        else:
+            assert hint["provisional"] is True
+        assert hint["slots"] * hint["slot_tokens"] in (98304, 122880, 131072)
+
+
+def test_geometry_resolution_is_data_driven_and_refuses_what_is_not_there(tmp_path):
+    root = _fake_repo(tmp_path, lib_row=True, fragment=_np6_fragment())
+    g = fam.resolve_geometry("think-budget-np6", root)
+    assert (g["session"], g["model_fragment"], g["slots"], g["slot_tokens"]) == ("serving-test-np6", "frag-np6", 6, 20480)
+    assert g["fragment_present"] is True and g["provisional"] is False and "serving_lib.sh geometry row" in g["source"]
+    root2 = _fake_repo(tmp_path / "b", lib_row=False, fragment=None)
+    hinted = fam.resolve_geometry("think-budget-np8", root2)
+    assert hinted["provisional"] is True and hinted["fragment_present"] is False and (hinted["slots"], hinted["slot_tokens"]) == (8, 16384)
+    with pytest.raises(ValueError, match="unknown serving geometry"):
+        fam.resolve_geometry("think-budget-np9", root2)
+    with pytest.raises(ValueError, match="not present"):
+        fam.select_geometry("think-budget-np8", root2, write=True)
+    assert not (root2 / fam.GEOMETRY_SELECTION).exists() and fam.ACTIVE_GEOMETRY["target"] == "think-budget-np4"
+
+
+def test_select_geometry_moves_only_the_arm_and_writes_or_removes_the_selection_file(tmp_path):
+    root = _fake_repo(tmp_path, lib_row=True, fragment=_np6_fragment())
+    (root / fam.PACKAGE).mkdir(parents=True)
+    smoke_before = dict(fam.CELLS["smoke"])
+    try:
+        g = fam.select_geometry("think-budget-np6", root)
+        selection = json.loads((root / fam.GEOMETRY_SELECTION).read_text(encoding="utf-8"))
+        assert selection["target"] == "think-budget-np6" and selection["session"] == "serving-test-np6" and "315 A" in selection["decision"]
+        assert (fam.THINK_SESSION, fam.THINK_MODEL, fam.THINK_SWAP_TARGET, fam.THINK_SLOTS) == ("serving-test-np6", "frag-np6", "think-budget-np6", 6)
+        assert (fam.CELLS["arm"]["session"], fam.CELLS["arm"]["model"]) == ("serving-test-np6", "frag-np6") and fam.CELLS["smoke"] == smoke_before
+        assert fam.geometry_of("smoke")["target"] == "think-budget-np4" and g["slot_tokens"] == 20480 and fam.THINK_SLOTS == 6
+        assert "c122880 np6 x 20,480 max4096" in fam.think_model_text("arm") and "c98304 np4 x 24,576" in fam.think_model_text("smoke")
+        fam.select_geometry("think-budget-np4", root)                        # the control removes the selection file
+        assert not (root / fam.GEOMETRY_SELECTION).exists() and fam.CELLS["arm"]["session"] == fam.CONTROL_SESSION
+    finally:
+        fam.select_geometry("think-budget-np4", REPO, write=False)
+    assert fam.ACTIVE_GEOMETRY["target"] == "think-budget-np4" and fam.CELLS["arm"]["model"] == fam.CONTROL_MODEL and fam.THINK_SLOTS == 4
+
+
+def _overlay_root(tmp_path: Path, fragment: dict) -> Path:
+    """A repo-shaped overlay: every entry of the real tree symlinked, except configs/model, which is the real fragments plus the np6 test fragment."""
+
+    root = tmp_path / "overlay"
+    root.mkdir(parents=True)
+    for entry in REPO.iterdir():
+        if entry.name not in ("configs", ".git"):
+            (root / entry.name).symlink_to(entry)
+    (root / "configs").mkdir()
+    for entry in (REPO / "configs").iterdir():
+        if entry.name != "model":
+            (root / "configs" / entry.name).symlink_to(entry)
+    (root / "configs/model").mkdir()
+    for entry in (REPO / "configs/model").iterdir():
+        (root / "configs/model" / entry.name).symlink_to(entry)
+    name = fam.resolve_geometry("think-budget-np6", REPO)["model_fragment"]        # the lib row once it lands, else the provisional hint
+    (root / "configs/model" / f"{name}.json").write_text(json.dumps(fragment), encoding="utf-8")
+    return root
+
+
+def test_the_geometry_proof_accepts_only_the_geometry_leaves(tmp_path):
+    import nxt_r1_derive_cells as derive
+
+    ok_root = _overlay_root(tmp_path / "ok", _np6_fragment())
+    hint = {"model_fragment": fam.resolve_geometry("think-budget-np6", REPO)["model_fragment"]}     # the overlay holds a fragment under this name
+    try:
+        fam.select_geometry("think-budget-np6", ok_root, write=False)
+        proof = derive.geometry_proof(ok_root)
+        assert proof["ok"] is True and proof["is_control"] is False and proof["target"] == "think-budget-np6" and proof["stray_leaves"] == []
+        assert proof["moved_leaves"] and all(any(k.startswith(p) for p in fam.GEOMETRY_LEAVES) for k in proof["moved_leaves"])
+        assert {k.split("[")[0].split(".")[0] for k in proof["moved_leaves"]} <= set(fam.GEOMETRY_LEAVES)
+        # a decoding knob riding along with the geometry refuses the derive
+        bad = _np6_fragment(decoding_params={**_np6_fragment()["decoding_params"], "seed": 1})
+        (ok_root / "configs/model" / f"{hint['model_fragment']}.json").unlink()
+        (ok_root / "configs/model" / f"{hint['model_fragment']}.json").write_text(json.dumps(bad), encoding="utf-8")
+        fam.select_geometry("think-budget-np6", ok_root, write=False)
+        with pytest.raises(SystemExit, match="does not compose|beyond the geometry set"):
+            derive.geometry_proof(ok_root)
+        # so does a server flag other than the -c / -np values
+        flag = _np6_fragment()
+        flag["server_args"] = flag["server_args"] + ["--extra-flag"]
+        (ok_root / "configs/model" / f"{hint['model_fragment']}.json").unlink()
+        (ok_root / "configs/model" / f"{hint['model_fragment']}.json").write_text(json.dumps(flag), encoding="utf-8")
+        fam.select_geometry("think-budget-np6", ok_root, write=False)
+        with pytest.raises(SystemExit, match="beyond the geometry set"):
+            derive.geometry_proof(ok_root)
+    finally:
+        fam.select_geometry("think-budget-np4", REPO, write=False)
+    assert fam.ACTIVE_GEOMETRY["target"] == "think-budget-np4"
+
+
+def test_the_server_arg_mask_ignores_only_the_slot_geometry_values():
+    import nxt_r1_derive_cells as derive
+
+    a = ["-c", "98304", "-np", "4", "-fa", "on"]
+    b = ["-c", "122880", "-np", "6", "-fa", "on"]
+    assert derive._server_args_without_geometry(a) == derive._server_args_without_geometry(b)
+    assert derive._server_args_without_geometry(a) != derive._server_args_without_geometry(["-c", "98304", "-np", "4", "-fa", "off"])
+
+
+def test_the_derive_and_writer_accept_geometry_and_the_chain_swaps_to_the_chosen_target():
+    for script in ("nxt_r1_derive_cells.py", "nxt_r1_write_registration.py"):
+        out = subprocess.run([sys.executable, "-B", str(REPO / "scripts/flights/nx" / script), "--help"], capture_output=True, text=True, cwd=REPO)
+        assert out.returncode == 0 and "--geometry" in out.stdout and "think-budget-np4" in out.stdout
+    chain = (REPO / "scripts/flights/nx/batch_chain_nxt_r1.sh").read_text(encoding="utf-8")
+    assert "ARM_SWAP_TARGET" in chain and 'serving_swap.sh "$SWAP_TARGET"' in chain and "ACTIVE_GEOMETRY" in chain
+    assert "THINK_SESSION=serving-slurp" not in chain and "f.THINK_SESSION" in chain and "f.CONTROL_SESSION" in chain
+    assert "arm geometry" in chain and "exit 9" in chain

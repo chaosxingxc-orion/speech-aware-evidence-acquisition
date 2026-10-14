@@ -77,6 +77,66 @@ def rd(path: str, root: Path = REPO_ROOT) -> str:
     return dv.rd(path, root)
 
 
+def _server_args_without_geometry(args: list) -> list:
+    """``server_args`` with the values of ``-c`` and ``-np`` masked: the only flags a slot-geometry change may move."""
+
+    out, skip = [], False
+    for index, token in enumerate(args):
+        if skip:
+            skip = False
+            continue
+        out.append(token)
+        if token in ("-c", "-np") and index + 1 < len(args):
+            out.append("<geometry>")
+            skip = True
+    return out
+
+
+def geometry_proof(repo_root: Path = REPO_ROOT) -> dict:
+    """Prove that the selected serving geometry moves ONLY the geometry leaves (owner decision 315 A).
+
+    Composes the arm cell on the control model fragment and on the selected one and compares every leaf of the composed config: the moved leaves must be
+    inside :data:`nxt_r1_family.GEOMETRY_LEAVES`, the decoding knobs must be equal, and ``server_args`` may differ only in the values of ``-c`` and ``-np``.
+    The experiment side (``service_session`` and the cell's ``model_fragment``) is the other two geometry leaves; the check that no other experiment leaf
+    names the control session or fragment runs in :func:`derive_experiment`. Raises ``SystemExit`` on a stray leaf; returns the registered proof."""
+
+    from speech_aware_evidence_acquisition.core.config import compose
+
+    geometry, spec = fam.ACTIVE_GEOMETRY, fam.CELLS["arm"]
+    proof = {"target": geometry["target"], "session": geometry["session"], "model_fragment": geometry["model_fragment"], "control_model_fragment": fam.CONTROL_MODEL,
+             "control_session": fam.CONTROL_SESSION, "resolution": geometry["source"], "provisional": geometry["provisional"],
+             "slots": geometry["slots"], "slot_tokens": geometry["slot_tokens"], "allowed_leaves": list(fam.GEOMETRY_LEAVES),
+             "allowed_experiment_leaves": list(fam.GEOMETRY_EXPERIMENT_KEYS),
+             "decoding_knobs_never_move": {"reasoning_budget_tokens": fam.tsf.THINK_BUDGET_TOKENS, "completion_cap": fam.tsf.THINK_MAX_TOKENS,
+                                           "reasoning_context_policy": "drop-reasoning-v1"}}
+    if geometry["model_fragment"] == fam.CONTROL_MODEL:
+        return {**proof, "is_control": True, "moved_leaves": [], "stray_leaves": [], "ok": True}
+    if not geometry["fragment_present"]:
+        raise SystemExit(f"geometry {geometry['target']}: model fragment {geometry['fragment_path']} is not present; cannot prove the geometry leaves")
+    from speech_aware_evidence_acquisition.core.config import ConfigError
+
+    control = compose(Path(repo_root), fam.CONTROL_MODEL, fam.DATASET, spec["baseline"], spec["cell"]).values
+    try:
+        chosen = compose(Path(repo_root), geometry["model_fragment"], fam.DATASET, spec["baseline"], spec["cell"]).values
+    except ConfigError as error:                       # e.g. a moved decoding knob: composition itself refuses it (max_tokens = budget + reserve)
+        raise SystemExit(f"the selected geometry {geometry['target']} does not compose: {error}") from error
+    left, right = dv._leaves(control), dv._leaves(chosen)
+    missing = object()
+    moved = sorted(k for k in set(left) | set(right) if left.get(k, missing) != right.get(k, missing))
+    stray = [k for k in moved if not any(k == p or k.startswith(p) for p in fam.GEOMETRY_LEAVES)]
+    if _server_args_without_geometry(list(control["server_args"])) != _server_args_without_geometry(list(chosen["server_args"])):
+        stray.append("server_args (a flag other than the -c / -np values differs)")
+    for knob in ("decoding_params", "reasoning_budget_tokens", "answer_reserve_tokens", "reasoning_context_policy", "enable_thinking"):
+        if control.get(knob) != chosen.get(knob):
+            stray.append(knob)
+    if stray:
+        raise SystemExit(f"the selected geometry {geometry['target']} moves leaves beyond the geometry set: {stray[:12]}")
+    return {**proof, "is_control": False, "moved_leaves": moved, "stray_leaves": [], "ok": True,
+            "baseline_leaves_left_at_control": [k for k in ("serving_slot_tokens",) if k in dv._leaves(json.loads((Path(repo_root) / "configs" / "baseline" / f"{spec['baseline']}.json").read_text(encoding='utf-8')))],
+            "note": ("the baseline's serving_slot_tokens and the module block's fit_estimate.slot_tokens stay at the control's 24576 (every other leaf is the parent's "
+                     "byte for byte); the exact per-contact context-fit gate decides on the live /props geometry")}
+
+
 def same_json(path: str, document: Mapping[str, Any], root: Path = REPO_ROOT) -> bool:
     """True when the file on disk already holds exactly this document (key order aside): an unchanged cell is not rewritten, so a recovery of one cell
     leaves the other cell's committed bytes alone."""
@@ -269,7 +329,7 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
     if smoke:
         document["purpose"] = (
             f"Four-row structural form smoke of NX-T R1: that {fam.PROGRAM} (ceiling {fam.CONTACTS_PER_ROW}) with the five-arm thinking-policy column loads "
-            f"on the Thinking session ({fam.THINK_SESSION}), that each arm's Perception and Solver requests carry exactly their declared thinking fields, "
+            f"on the Thinking session ({spec['session']}), that each arm's Perception and Solver requests carry exactly their declared thinking fields, "
             "that enable_thinking false on the Thinking checkpoint (an inherited template branch, unmeasured) answers with no reasoning bytes and no think "
             "marker in the delivered content, that the live phase fit passes at the 4,096-token cap, that the v5 arm receipt seals and that the episode "
             "completes, and what a contact costs per arm and per node (completion tokens, finish reasons, seconds). Scored by no one and read by no one: "
@@ -299,6 +359,11 @@ def derive_experiment(key: str, *, repo_root: Path = REPO_ROOT, write: bool = Tr
                     "seconds-per-contact tables and the throughput table"),
         "this_cell": spec["role"],
     }
+    if spec["model"] != fam.CONTROL_MODEL or spec["session"] != fam.CONTROL_SESSION:
+        # a non-control geometry: the control session / fragment names live nowhere in the experiment except as the two geometry leaves, which hold the new ones
+        names = [m for m in (fam.CONTROL_MODEL, fam.CONTROL_SESSION) if m in json.dumps(document)]
+        if names:
+            raise SystemExit(f"the selected geometry left the control geometry names in the experiment: {names}")
     leftovers = [m.group(0) for m in re.finditer(r".{40}(?:thinking-system|THINKING-SYSTEM|owner decision 268|Thinking system arm).{20}", json.dumps(document))]
     if leftovers:
         raise SystemExit(f"inherited parent identity text survived the rewrite ({key}): {leftovers[:3]}")
@@ -324,13 +389,29 @@ def derive(*, repo_root: Path = REPO_ROOT, write: bool = True) -> dict:
         out["_documents"][key] = {"baseline": baseline["document"], "experiment": experiment["document"], "block": baseline["block"]}
         out["program"], out["ceiling"] = baseline["program"], baseline["ceiling"]
     out["campaigns"] = [write_campaign(key, repo_root=repo_root, write=write) for key in fam.ARM_KEYS]
+    out["geometry"] = geometry_proof(repo_root)
     return out
+
+
+def apply_geometry_arg(target: str | None, repo_root: Path = REPO_ROOT, write: bool = True) -> None:
+    """``--geometry <target>``: select the arm's serving geometry before deriving (no argument keeps the committed selection; the control is the default)."""
+
+    if target is None:
+        return
+    try:
+        fam.select_geometry(target, repo_root, write=write)
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("--dry-run", action="store_true", help="derive and verify in memory; write nothing")
+    parser.add_argument("--geometry", default=None,
+                        help=f"serving geometry of the arm cell (owner decision 315 A): {fam.DEFAULT_GEOMETRY} (default, byte-identical to the control), "
+                             "think-budget-np6 or think-budget-np8 (untested until their model fragments land)")
     args = parser.parse_args(argv)
+    apply_geometry_arg(args.geometry, write=not args.dry_run)
     result = derive(write=not args.dry_run)
     result.pop("_documents", None)
     print(json.dumps(result, indent=2, sort_keys=True))

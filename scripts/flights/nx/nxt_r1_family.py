@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -92,7 +93,110 @@ PROGRAM = f"phase-native-module-v1-c{CONTACTS_PER_ROW}"     # phase-native-modul
 #: 1 (its Solver) + solver-off 1 (its Perception) + both-off 0.
 THINKING_CONTACTS_PER_ROW = 2 + 2 + 1 + 1
 FALLBACK_CONTACTS_PER_ROW_CEILING = THINKING_CONTACTS_PER_ROW   # 6; the runner requires >= 2 for the module family, a larger plan is legal
-THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET = tsf.THINK_SESSION, tsf.THINK_MODEL, tsf.THINK_SWAP_TARGET
+# ---- the Thinking serving geometry (owner decision 315 A, 2026-10-14) ----------------------------------------------------------------
+#: The column flight (the ``arm`` cell) runs on whichever Thinking serving geometry a throughput receipt picks: the np4 x 24k control (default), np6 x 20k
+#: or np8 x 16k. ONLY the geometry leaves move (the serving session, the model-fragment reference and, inside that fragment, ``server_args`` /
+#: ``profile_slot_count`` / ``geometry_basis``); the decoding knobs (budget 3,072 / cap 4,096 / drop-reasoning-v1) never move with geometry. The smoke is sealed
+#: on the control and always stays on it. The choice is committed state: ``<package>/geometry-selection-v1.json`` (absent = the control, byte-identical to the
+#: first registration); ``--geometry`` on the derive / writer writes it through :func:`select_geometry`.
+#: Resolution is data-driven: the geometry row of ``scripts/flights/batch/serving_lib.sh`` (``G_SID`` / ``G_FRAGMENT``) when it has one, else the provisional
+#: table ``nxt_r1_geometry_targets.json``. The np6 / np8 path is UNTESTED until their fragments and serving rows land.
+CONTROL_SESSION, CONTROL_MODEL, CONTROL_SWAP_TARGET = tsf.THINK_SESSION, tsf.THINK_MODEL, tsf.THINK_SWAP_TARGET
+CONTROL_SLOTS, CONTROL_SLOT_TOKENS = tsf.THINK_SLOTS, tsf.SLOT_TOKENS
+DEFAULT_GEOMETRY = CONTROL_SWAP_TARGET                      # think-budget-np4
+GEOMETRY_TABLE_PATH = HERE / "nxt_r1_geometry_targets.json"
+GEOMETRY_SELECTION = f"{PACKAGE}/geometry-selection-v1.json"
+SERVING_LIB = "scripts/flights/batch/serving_lib.sh"
+#: Composed-config leaves a geometry change may move (``compose`` values of the arm cell); the experiment's ``service_session`` and the cell's
+#: ``model_fragment`` reference move with them. Anything else that moves refuses the derive.
+GEOMETRY_LEAVES = ("server_args", "geometry_basis", "profile_slot_count")
+GEOMETRY_EXPERIMENT_KEYS = ("service_session", "cells.0.model_fragment")
+
+
+def _serving_lib_row(target: str, root: Path) -> dict | None:
+    path = Path(root) / SERVING_LIB
+    if not path.is_file():
+        return None
+    match = re.search(rf"^\s*{re.escape(target)}\)\s*\n(.*?);;", path.read_text(encoding="utf-8"), re.M | re.S)
+    if not match:
+        return None
+    sid, fragment = re.search(r"G_SID=(\S+)", match.group(1)), re.search(r"G_FRAGMENT=(\S+)", match.group(1))
+    return {"session": sid.group(1), "model_fragment": fragment.group(1)} if sid and fragment else None
+
+
+def resolve_geometry(target: str, root: Path | str | None = None) -> dict:
+    """Resolve a serving target to its session, model fragment and slot geometry. Raises ``ValueError`` for an unknown target."""
+
+    root = Path(root) if root else REPO_ROOT
+    table = json.loads(GEOMETRY_TABLE_PATH.read_text(encoding="utf-8"))["targets"]
+    row, hint = _serving_lib_row(target, root), table.get(target)
+    if row is None and hint is None:
+        raise ValueError(f"unknown serving geometry target {target!r}: no row in {SERVING_LIB} and none in {GEOMETRY_TABLE_PATH.name}")
+    chosen = row or hint
+    source = f"{SERVING_LIB} geometry row" if row else f"{GEOMETRY_TABLE_PATH.name} (provisional: {SERVING_LIB} has no row for it yet)"
+    fragment_path = root / "configs" / "model" / f"{chosen['model_fragment']}.json"
+    present = fragment_path.is_file()
+    slots, slot_tokens = (hint or {}).get("slots"), (hint or {}).get("slot_tokens")
+    if present:
+        args = json.loads(fragment_path.read_text(encoding="utf-8"))["server_args"]
+        total, slots = int(args[args.index("-c") + 1]), int(args[args.index("-np") + 1])
+        slot_tokens = total // slots
+    if not slots or not slot_tokens:
+        raise ValueError(f"geometry {target!r}: no slot geometry (fragment absent and no table hint)")
+    return {"target": target, "session": chosen["session"], "model_fragment": chosen["model_fragment"], "source": source, "fragment_present": present,
+            "fragment_path": f"configs/model/{chosen['model_fragment']}.json", "slots": int(slots), "slot_tokens": int(slot_tokens),
+            "provisional": row is None and bool((hint or {}).get("provisional"))}
+
+
+def _read_selection(root: Path) -> str:
+    path = Path(root) / GEOMETRY_SELECTION
+    return json.loads(path.read_text(encoding="utf-8"))["target"] if path.is_file() else DEFAULT_GEOMETRY
+
+
+ACTIVE_GEOMETRY = resolve_geometry(_read_selection(REPO_ROOT))
+THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET = ACTIVE_GEOMETRY["session"], ACTIVE_GEOMETRY["model_fragment"], ACTIVE_GEOMETRY["target"]
+
+
+def geometry_of(key: str) -> dict:
+    """The serving geometry a cell runs on: the smoke is sealed on the control; the arm follows the selection."""
+
+    return resolve_geometry(CONTROL_SWAP_TARGET) if key == "smoke" else ACTIVE_GEOMETRY
+
+
+def select_geometry(target: str, root: Path | str | None = None, *, write: bool = True) -> dict:
+    """Select the arm's serving geometry: refuses a non-control target whose model fragment is not on disk, writes (or, for the control, removes) the
+    committed selection file, and updates this module's identities in place."""
+
+    global ACTIVE_GEOMETRY, THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET, THINK_SLOTS
+    root = Path(root) if root else REPO_ROOT
+    geometry = resolve_geometry(target, root)
+    if target != DEFAULT_GEOMETRY and not geometry["fragment_present"]:
+        raise ValueError(f"geometry {target!r}: model fragment {geometry['fragment_path']} is not present in this tree; the np6/np8 path waits for its fragment")
+    path = root / GEOMETRY_SELECTION
+    if write:
+        if target == DEFAULT_GEOMETRY:
+            if path.is_file():
+                path.unlink()
+        else:
+            path.write_bytes((json.dumps({"schema": "saea-nxt-r1-geometry-selection-v1", "target": target, "decision": "owner decision 315 A (2026-10-14)",
+                                          "session": geometry["session"], "model_fragment": geometry["model_fragment"]}, indent=2, sort_keys=True) + "\n").encode("utf-8"))
+    ACTIVE_GEOMETRY = geometry
+    THINK_SESSION, THINK_MODEL, THINK_SWAP_TARGET, THINK_SLOTS = geometry["session"], geometry["model_fragment"], geometry["target"], geometry["slots"]
+    if "CELLS" in globals():
+        CELLS["arm"]["model"], CELLS["arm"]["session"] = THINK_MODEL, THINK_SESSION
+    return geometry
+
+
+def think_model_text(key: str) -> str:
+    """The ledger model/tool text of a cell, geometry-aware (the control reads ``c98304 np4 x 24,576``)."""
+
+    g = geometry_of(key)
+    return ("Frozen Qwen3-Omni-30B-A3B-Thinking Q4_K_M (qwen3-omni-30b-a3b-thinking-gguf-q4km), decoder-only build 04ccc72a, "
+            f"c{g['slots'] * g['slot_tokens']} np{g['slots']} x {g['slot_tokens']:,} max{tsf.THINK_MAX_TOKENS} (reasoning budget {tsf.THINK_BUDGET_TOKENS}), q8_0 KV, "
+            f"--reasoning-format deepseek (model fragment {g['model_fragment']}); its own promoted speech packets; module program {PROGRAM}; "
+            "per-arm enable_thinking false at the named node; no tool authority")
+
+
 THINK_PACKET_ROOT, THINK_PROMOTION_RECEIPT = tsf.THINK_PACKET_ROOT, tsf.THINK_PROMOTION_RECEIPT
 THINKING_KNOBS = json.loads(json.dumps(tsf.THINKING_KNOBS))
 NO_THINK_KNOBS = {"enable_thinking": False, "answer_reserve_tokens": tsf.THINK_ANSWER_RESERVE_TOKENS, "max_tokens": tsf.THINK_ANSWER_RESERVE_TOKENS,
@@ -112,7 +216,7 @@ ROWS_PER_MINUTE_FULL = 1.84                                                     
 GPU_MARGIN, GPU_ROUND_H = tf.GPU_PLAN_MARGIN, tf.GPU_PLAN_ROUND_H
 SMOKE_GPU_HOURS = tsf.SMOKE_GPU_HOURS
 PERCEPTION_SHARE_OF_ROW = tsf.SMOKE_MEASURED_S_PER_CONTACT["perception"] / (sum(tsf.SMOKE_MEASURED_S_PER_CONTACT.values()))
-THINK_SLOTS = tsf.THINK_SLOTS
+THINK_SLOTS = ACTIVE_GEOMETRY["slots"]
 
 
 def expected_gpu_hours(rows: int) -> float:
@@ -228,7 +332,7 @@ def _spec(key: str, role: str, rows: int, roster: str, scoring_jobs: int, gpu: f
         "fit_run": f"SAEA-SLURP-STAGE3-{up}-FIT{rec_up}-V1",
         "attempt": f"attempt-slurp-native-stage3-{ids_stem}-generation{rec}-v1",
         "fit_attempt": f"attempt-slurp-native-stage3-{ids_stem}-fit{rec}-v1",
-        "model": THINK_MODEL, "session": THINK_SESSION,
+        "model": CONTROL_MODEL if key == "smoke" else THINK_MODEL, "session": CONTROL_SESSION if key == "smoke" else THINK_SESSION,
         "prefix": "smoke-" if key == "smoke" else "",
         "campaign": f"configs/campaign/slurp-native-stage3-{ids_stem}-v1.json",
     }
